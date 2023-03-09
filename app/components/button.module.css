@@ -1,0 +1,35 @@
+.icon-button {
+  background-color: var(--white);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: all .3s ease;
+  overflow: hidden;
+  user-select: none;
+}
+
+.border {
+  border: var(--border-in-light);
+}
+
+.icon-button:hover {
+  filter: brightness(0.9) hue-rotate(0.01turn);
+}
+
+.icon-button-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-button-text {
+  margin-left: 5px;
+  font-size: 12px;
+}
