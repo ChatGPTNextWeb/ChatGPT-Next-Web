@@ -142,7 +142,7 @@
   flex-direction: row; 
 }
 
-.chat-message-reverse {
+.chat-message-user {
   display: flex;
   flex-direction: row-reverse;
 }
@@ -154,7 +154,7 @@
   align-items: flex-start;
 }
 
-.chat-message-reverse > .chat-message-container {
+.chat-message-user > .chat-message-container {
   align-items: flex-end;
 }
 
@@ -167,6 +167,11 @@
   margin-top: 5px;
   user-select: text;
 }
+
+.chat-message-user > .chat-message-container > .chat-message-item {
+  background-color: var(--second);
+}
+
 .chat-message-actions{
   display: flex;
   flex-direction: row-reverse;
