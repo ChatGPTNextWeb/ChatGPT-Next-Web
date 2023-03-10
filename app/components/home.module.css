@@ -1,7 +1,7 @@
 .container {
   max-width: 1080px;
-  max-height: 780px;
   min-width: 600px;
+  min-height: 480px;
   width: 90vw;
   height: 90vh;
   background-color: var(--white);
@@ -19,7 +19,7 @@
   background-color: var(--second);
   display: flex;
   flex-direction: column;
-  box-shadow:inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
+  box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
 }
 
 .sidebar-header {
@@ -40,7 +40,7 @@
 }
 
 .sidebar-sub-title {
-  font-size: 12px; 
+  font-size: 12px;
   font-weight: 400px;
 }
 
@@ -59,9 +59,23 @@
   border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: var(--card-shadow);
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
   user-select: none;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
 
 .chat-item:hover {
@@ -69,12 +83,34 @@
 }
 
 .chat-item-selected {
-  border: 2px solid var(--primary);
+  border-color: var(--primary);
 }
 
 .chat-item-title {
   font-size: 14px;
   font-weight: bolder;
+  display: block;
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-item-delete {
+  position: absolute;
+  top: 10px;
+  right: -20px;
+  transition: all ease 0.3s;
+  opacity: 0;
+}
+
+.chat-item:hover > .chat-item-delete {
+  opacity: 0.5;
+  right: 10px;
+}
+
+.chat-item:hover > .chat-item-delete:hover {
+  opacity: 1;
 }
 
 .chat-item-info {
@@ -85,8 +121,11 @@
   margin-top: 8px;
 }
 
-.chat-item-count {}
-.chat-item-date {}
+.chat-item-count {
+}
+
+.chat-item-date {
+}
 
 .sidebar-tail {
   display: flex;
@@ -97,6 +136,7 @@
 .sidebar-actions {
   display: inline-flex;
 }
+
 .sidebar-action:last-child {
   margin-left: 15px;
 }
@@ -116,17 +156,26 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .chat-header-title {
   font-size: 20px;
   font-weight: bolder;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
+
 .chat-header-sub-title {
   font-size: 14px;
   margin-top: 5px;
 }
+
 .chat-actions {
   display: inline-flex;
 }
+
 .chat-action-button {
   margin-left: 10px;
 }
@@ -137,9 +186,10 @@
   padding: 20px;
   margin-bottom: 100px;
 }
+
 .chat-message {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
 }
 
 .chat-message-user {
@@ -148,42 +198,68 @@
 }
 
 .chat-message-container {
-  width: 60%;
+  max-width: 60%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  animation: slide-in ease 0.3s;
 }
 
 .chat-message-user > .chat-message-container {
   align-items: flex-end;
 }
 
-.chat-message-avtar {}
+.chat-message-avatar {
+  margin-top: 20px;
+}
+
+.chat-message-status {
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+
+.user-avtar {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  border-radius: 10px;
+}
+
 .chat-message-item {
+  margin-top: 5px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 10px;
   font-size: 14px;
-  margin-top: 5px;
   user-select: text;
+  word-break: break-all;
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
   background-color: var(--second);
 }
 
-.chat-message-actions{
+.chat-message-actions {
   display: flex;
   flex-direction: row-reverse;
   width: 100%;
-  padding: 5px 10px;
+  padding-top: 5px;
   box-sizing: border-box;
 }
-.chat-message-action-date{
+
+.chat-message-action-date {
   font-size: 12px;
   color: #aaa;
 }
-.chat-message-action-button{}
+
+.chat-message-action-button {
+}
 
 .chat-input-panel {
   position: absolute;
@@ -199,7 +275,9 @@
   flex: 1;
 }
 
-.chat-input-panel-multi {}
+.chat-input-panel-multi {
+}
+
 .chat-input {
   height: 100%;
   width: 100%;
@@ -217,7 +295,7 @@
   border: 1px solid var(--primary);
 }
 
-.chat-input-send{
+.chat-input-send {
   background-color: var(--primary);
   color: white;
 

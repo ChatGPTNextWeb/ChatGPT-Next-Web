@@ -8,11 +8,10 @@
 
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
-  --card-shadow:0px 2px 4px 0px rgb(0, 0, 0, 0.05);
- 
+  --card-shadow: 0px 2px 4px 0px rgb(0, 0, 0, 0.05);
 
   /* stroke */
-  --border-in-light:  1px solid rgb(222, 222, 222);
+  --border-in-light: 1px solid rgb(222, 222, 222);
 }
 
 body {

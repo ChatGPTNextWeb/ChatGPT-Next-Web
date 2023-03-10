@@ -1,5 +1,6 @@
 import { OpenAIApi, Configuration } from "openai";
 import { apiKey } from "./config";
+import { ChatRequest } from "./typing";
 
 // set up openai api client
 const config = new Configuration({
@@ -7,17 +8,12 @@ const config = new Configuration({
 });
 const openai = new OpenAIApi(config);
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   try {
+    const requestBody = (await req.json()) as ChatRequest;
     const completion = await openai.createChatCompletion(
       {
-        messages: [
-          {
-            role: "user",
-            content: "hello",
-          },
-        ],
-        model: "gpt-3.5-turbo",
+        ...requestBody,
       },
       {
         proxy: {
