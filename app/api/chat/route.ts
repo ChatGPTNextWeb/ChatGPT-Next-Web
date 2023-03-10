@@ -3,26 +3,15 @@ import { ChatRequest } from "./typing";
 
 const isProd = process.env.NODE_ENV === "production";
 
-let openai: OpenAIApi | undefined;
-async function initService() {
-  let apiKey = process.env.OPENAI_API_KEY;
+let apiKey = process.env.OPENAI_API_KEY;
 
-  if (!isProd) {
-    apiKey = await (await import("./config")).apiKey;
-  }
-
-  openai = new OpenAIApi(
-    new Configuration({
-      apiKey,
-    })
-  );
-}
+const openai = new OpenAIApi(
+  new Configuration({
+    apiKey,
+  })
+);
 
 export async function POST(req: Request) {
-  if (!openai) {
-    await initService();
-  }
-
   try {
     const requestBody = (await req.json()) as ChatRequest;
     const completion = await openai!.createChatCompletion(
