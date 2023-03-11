@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-async function createStream(payload: string) {
+async function createStream(payload: ReadableStream<Uint8Array>) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
@@ -52,8 +52,7 @@ async function createStream(payload: string) {
 export async function POST(req: NextRequest) {
   try {
     console.log("Request", req);
-    const body = await req.text();
-    const stream = await createStream(body);
+    const stream = await createStream(req.body!);
     return new Response(stream);
   } catch (error) {
     console.error(error);
