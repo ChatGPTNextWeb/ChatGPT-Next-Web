@@ -1,21 +1,31 @@
 import type { ChatRequest, ChatReponse } from "./api/chat/typing";
 import { Message } from "./store";
 
-const makeRequestParam = (messages: Message[], stream = false): ChatRequest => {
+const makeRequestParam = (
+  messages: Message[],
+  options?: {
+    filterBot?: boolean;
+    stream?: boolean;
+  }
+): ChatRequest => {
+  let sendMessages = messages.map((v) => ({
+    role: v.role,
+    content: v.content,
+  }));
+
+  if (options?.filterBot) {
+    sendMessages = sendMessages.filter((m) => m.role !== "assistant");
+  }
+
   return {
     model: "gpt-3.5-turbo",
-    messages: messages
-      .map((v) => ({
-        role: v.role,
-        content: v.content,
-      }))
-      .filter((m) => m.role !== "assistant"),
-    stream,
+    messages: sendMessages,
+    stream: options?.stream,
   };
 };
 
 export async function requestChat(messages: Message[]) {
-  const req: ChatRequest = makeRequestParam(messages);
+  const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
 
   const res = await fetch("/api/chat", {
     method: "POST",
@@ -31,10 +41,15 @@ export async function requestChat(messages: Message[]) {
 export async function requestChatStream(
   messages: Message[],
   options?: {
+    filterBot?: boolean;
     onMessage: (message: string, done: boolean) => void;
+    onError: (error: Error) => void;
   }
 ) {
-  const req = makeRequestParam(messages, true);
+  const req = makeRequestParam(messages, {
+    stream: true,
+    filterBot: options?.filterBot,
+  });
 
   const res = await fetch("/api/chat-stream", {
     method: "POST",
@@ -64,6 +79,8 @@ export async function requestChatStream(
     }
 
     options?.onMessage(responseText, true);
+  } else {
+    options?.onError(new Error("NetWork Error"));
   }
 }
 

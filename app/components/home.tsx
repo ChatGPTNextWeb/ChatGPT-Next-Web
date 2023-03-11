@@ -6,6 +6,8 @@ import "katex/dist/katex.min.css";
 import RemarkMath from "remark-math";
 import RehypeKatex from "rehype-katex";
 
+import EmojiPicker, { Emoji, EmojiClickData } from "emoji-picker-react";
+
 import { IconButton } from "./button";
 import styles from "./home.module.css";
 
@@ -20,7 +22,8 @@ import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
-import { Message, useChatStore } from "../store";
+import { Message, SubmitKey, useChatStore } from "../store";
+import { Card, List, ListItem, Popover } from "./ui-lib";
 
 export function Markdown(props: { content: string }) {
   return (
@@ -31,11 +34,17 @@ export function Markdown(props: { content: string }) {
 }
 
 export function Avatar(props: { role: Message["role"] }) {
+  const config = useChatStore((state) => state.config);
+
   if (props.role === "assistant") {
     return <BotIcon className={styles["user-avtar"]} />;
   }
 
-  return <div className={styles["user-avtar"]}>🤣</div>;
+  return (
+    <div className={styles["user-avtar"]}>
+      <Emoji unified={config.avatar} size={18} />
+    </div>
+  );
 }
 
 export function ChatItem(props: {
@@ -148,11 +157,11 @@ export function Chat() {
   });
 
   return (
-    <div className={styles.chat} key={session.topic}>
-      <div className={styles["chat-header"]}>
+    <div className={styles.chat} key={session.id}>
+      <div className={styles["window-header"]}>
         <div>
-          <div className={styles["chat-header-title"]}>{session.topic}</div>
-          <div className={styles["chat-header-sub-title"]}>
+          <div className={styles["window-header-title"]}>{session.topic}</div>
+          <div className={styles["window-header-sub-title"]}>
             与 ChatGPT 的 {session.messages.length} 条对话
           </div>
         </div>
@@ -181,7 +190,7 @@ export function Chat() {
                 <div className={styles["chat-message-avatar"]}>
                   <Avatar role={message.role} />
                 </div>
-                {message.preview && (
+                {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>正在输入…</div>
                 )}
                 <div className={styles["chat-message-item"]}>
@@ -235,6 +244,9 @@ export function Chat() {
 export function Home() {
   const [createNewSession] = useChatStore((state) => [state.newSession]);
 
+  // settings
+  const [openSettings, setOpenSettings] = useState(false);
+
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -255,7 +267,10 @@ export function Home() {
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
             <div className={styles["sidebar-action"]}>
-              <IconButton icon={<SettingsIcon />} />
+              <IconButton
+                icon={<SettingsIcon />}
+                onClick={() => setOpenSettings(!openSettings)}
+              />
             </div>
             <div className={styles["sidebar-action"]}>
               <a href="https://github.com/Yidadaa" target="_blank">
@@ -273,7 +288,94 @@ export function Home() {
         </div>
       </div>
 
-      <Chat key="chat" />
+      <div className={styles["window-content"]}>
+        {openSettings ? <Settings /> : <Chat key="chat" />}
+      </div>
     </div>
+  );
+}
+
+export function EmojiPickerModal(props: {
+  show: boolean;
+  onClose: (_: boolean) => void;
+}) {
+  return <div className=""></div>;
+}
+
+export function Settings() {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [config, updateConfig] = useChatStore((state) => [
+    state.config,
+    state.updateConfig,
+  ]);
+
+  return (
+    <>
+      <div className={styles["window-header"]}>
+        <div>
+          <div className={styles["window-header-title"]}>设置</div>
+          <div className={styles["window-header-sub-title"]}>设置选项</div>
+        </div>
+      </div>
+      <div className={styles["settings"]}>
+        <List>
+          <ListItem>
+            <div className={styles["settings-title"]}>头像</div>
+            <Popover
+              onClose={() => setShowEmojiPicker(false)}
+              content={
+                <EmojiPicker
+                  lazyLoadEmojis
+                  onEmojiClick={(e) => {
+                    updateConfig((config) => (config.avatar = e.unified));
+                    setShowEmojiPicker(false);
+                  }}
+                />
+              }
+              open={showEmojiPicker}
+            >
+              <div
+                className={styles.avatar}
+                onClick={() => setShowEmojiPicker(true)}
+              >
+                <Avatar role="user" />
+              </div>
+            </Popover>
+          </ListItem>
+
+          <ListItem>
+            <div className={styles["settings-title"]}>发送键</div>
+            <div className="">
+              <select
+                value={config.submitKey}
+                onChange={(e) => {
+                  updateConfig(
+                    (config) =>
+                      (config.submitKey = e.target.value as any as SubmitKey)
+                  );
+                }}
+              >
+                {Object.entries(SubmitKey).map(([k, v]) => (
+                  <option value={k} key={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </ListItem>
+        </List>
+        <List>
+          <ListItem>
+            <div className={styles["settings-title"]}>最大记忆历史消息数</div>
+            <div className="">{config.historyMessageCount}</div>
+          </ListItem>
+
+          <ListItem>
+            <div className={styles["settings-title"]}>发送机器人回复消息</div>
+            <div className="">{config.sendBotMessages ? "是" : "否"}</div>
+          </ListItem>
+        </List>
+      </div>
+    </>
   );
 }

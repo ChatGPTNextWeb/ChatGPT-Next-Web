@@ -14,7 +14,7 @@
 }
 
 .sidebar {
-  max-width: 300px;
+  width: 300px;
   padding: 20px;
   background-color: var(--second);
   display: flex;
@@ -141,14 +141,19 @@
   margin-left: 15px;
 }
 
+.window-content {
+  width: 100%;
+  height: 100%;
+}
+
 .chat {
   display: flex;
   flex-direction: column;
-  width: 100%;
   position: relative;
+  height: 100%;
 }
 
-.chat-header {
+.window-header {
   padding: 14px 20px;
   border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
 
@@ -157,7 +162,7 @@
   align-items: center;
 }
 
-.chat-header-title {
+.window-header-title {
   font-size: 20px;
   font-weight: bolder;
   overflow: hidden;
@@ -167,7 +172,7 @@
   -webkit-box-orient: vertical;
 }
 
-.chat-header-sub-title {
+.window-header-sub-title {
   font-size: 14px;
   margin-top: 5px;
 }
@@ -302,4 +307,17 @@
   position: absolute;
   right: 30px;
   bottom: 10px;
+}
+
+.settings {
+  padding: 20px;
+}
+
+.settings-title {
+  font-size: 14px;
+  font-weight: bolder;
+}
+
+.avatar {
+  cursor: pointer;
 }

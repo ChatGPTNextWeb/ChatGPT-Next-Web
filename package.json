@@ -14,6 +14,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-katex": "^3.0.0",
+    "emoji-picker-react": "^4.4.7",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "eventsource-parser": "^0.1.0",

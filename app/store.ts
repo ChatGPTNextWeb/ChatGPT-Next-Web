@@ -10,8 +10,19 @@ export type Message = ChatCompletionResponseMessage & {
   streaming?: boolean;
 };
 
+export enum SubmitKey {
+  Enter = "Enter",
+  CtrlEnter = "Ctrl + Enter",
+  ShiftEnter = "Shift + Enter",
+  AltEnter = "Alt + Enter",
+}
+
 interface ChatConfig {
-  maxToken: number;
+  maxToken?: number;
+  historyMessageCount: number; // -1 means all
+  sendBotMessages: boolean; // send bot's message or not
+  submitKey: SubmitKey;
+  avatar: string;
 }
 
 interface ChatStat {
@@ -21,6 +32,7 @@ interface ChatStat {
 }
 
 interface ChatSession {
+  id: number;
   topic: string;
   memoryPrompt: string;
   messages: Message[];
@@ -35,6 +47,7 @@ function createEmptySession(): ChatSession {
   const createDate = new Date().toLocaleString();
 
   return {
+    id: Date.now(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
     messages: [
@@ -54,6 +67,7 @@ function createEmptySession(): ChatSession {
 }
 
 interface ChatStore {
+  config: ChatConfig;
   sessions: ChatSession[];
   currentSessionIndex: number;
   removeSession: (index: number) => void;
@@ -71,6 +85,9 @@ interface ChatStore {
     messageIndex: number,
     updater: (message?: Message) => void
   ) => void;
+
+  getConfig: () => ChatConfig;
+  updateConfig: (updater: (config: ChatConfig) => void) => void;
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -78,6 +95,22 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
+      config: {
+        historyMessageCount: 5,
+        sendBotMessages: false as boolean,
+        submitKey: SubmitKey.CtrlEnter,
+        avatar: "1fae0",
+      },
+
+      getConfig() {
+        return get().config;
+      },
+
+      updateConfig(updater) {
+        const config = get().config;
+        updater(config);
+        set(() => ({ config }));
+      },
 
       selectSession(index: number) {
         set({
@@ -126,7 +159,9 @@ export const useChatStore = create<ChatStore>()(
           set(() => ({ currentSessionIndex: index }));
         }
 
-        return sessions[index];
+        const session = sessions[index];
+
+        return session;
       },
 
       onNewMessage(message) {
@@ -144,6 +179,7 @@ export const useChatStore = create<ChatStore>()(
           date: new Date().toLocaleString(),
         };
 
+        // get last five messges
         const messages = get().currentSession().messages.concat(message);
         get().onNewMessage(message);
 
@@ -158,17 +194,25 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
-        requestChatStream(messages, {
+        const fiveMessages = messages.slice(-5);
+
+        requestChatStream(fiveMessages, {
           onMessage(content, done) {
             if (done) {
-              get().updateStat(message);
+              botMessage.streaming = false;
+              get().updateStat(botMessage);
               get().summarizeSession();
             } else {
               botMessage.content = content;
-              botMessage.streaming = false;
               set(() => ({}));
             }
           },
+          onError(error) {
+            botMessage.content = "出错了，稍后重试吧";
+            botMessage.streaming = false;
+            set(() => ({}));
+          },
+          filterBot: !get().config.sendBotMessages,
         });
       },
 

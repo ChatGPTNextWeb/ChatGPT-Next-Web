@@ -1,6 +1,7 @@
 :root {
   /* color */
   --white: white;
+  --black: --black;
   --gray: rgb(250, 250, 250);
   --primary: rgb(29, 147, 171);
   --second: rgb(231, 248, 255);
@@ -39,4 +40,10 @@ body {
   border-radius: 20px;
   border: 6px solid transparent;
   background-clip: content-box;
+}
+
+select {
+  border: var(--border-in-light);
+  padding: 10px;
+  border-radius: 10px;
 }
