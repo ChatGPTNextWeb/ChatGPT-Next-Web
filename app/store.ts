@@ -2,11 +2,12 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
-import { requestChat, requestWithPrompt } from "./requests";
+import { requestChat, requestChatStream, requestWithPrompt } from "./requests";
 import { trimTopic } from "./utils";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
+  streaming?: boolean;
 };
 
 interface ChatConfig {
@@ -65,6 +66,11 @@ interface ChatStore {
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
+  updateMessage: (
+    sessionIndex: number,
+    messageIndex: number,
+    updater: (message?: Message) => void
+  ) => void;
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -141,12 +147,42 @@ export const useChatStore = create<ChatStore>()(
         const messages = get().currentSession().messages.concat(message);
         get().onNewMessage(message);
 
-        const res = await requestChat(messages);
-
-        get().onNewMessage({
-          ...res.choices[0].message!,
+        const botMessage: Message = {
+          content: "",
+          role: "assistant",
           date: new Date().toLocaleString(),
+          streaming: true,
+        };
+
+        get().updateCurrentSession((session) => {
+          session.messages.push(botMessage);
         });
+
+        requestChatStream(messages, {
+          onMessage(content, done) {
+            if (done) {
+              get().updateStat(message);
+              get().summarizeSession();
+            } else {
+              botMessage.content = content;
+              botMessage.streaming = false;
+              set(() => ({}));
+            }
+          },
+        });
+      },
+
+      updateMessage(
+        sessionIndex: number,
+        messageIndex: number,
+        updater: (message?: Message) => void
+      ) {
+        const sessions = get().sessions;
+        const session = sessions.at(sessionIndex);
+        const messages = session?.messages;
+        console.log(sessions, messages?.length, messages?.at(messageIndex));
+        updater(messages?.at(messageIndex));
+        set(() => ({ sessions }));
       },
 
       onBotResponse(message) {

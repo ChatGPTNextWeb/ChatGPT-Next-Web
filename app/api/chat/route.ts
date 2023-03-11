@@ -2,8 +2,7 @@ import { OpenAIApi, Configuration } from "openai";
 import { ChatRequest } from "./typing";
 
 const isProd = process.env.NODE_ENV === "production";
-
-let apiKey = process.env.OPENAI_API_KEY;
+const apiKey = process.env.OPENAI_API_KEY;
 
 const openai = new OpenAIApi(
   new Configuration({

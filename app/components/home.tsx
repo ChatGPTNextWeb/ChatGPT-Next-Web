@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import "katex/dist/katex.min.css";
+import RemarkMath from "remark-math";
+import RehypeKatex from "rehype-katex";
 
 import { IconButton } from "./button";
 import styles from "./home.module.css";
@@ -18,6 +21,14 @@ import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
 import { Message, useChatStore } from "../store";
+
+export function Markdown(props: { content: string }) {
+  return (
+    <ReactMarkdown remarkPlugins={[RemarkMath]} rehypePlugins={[RehypeKatex]}>
+      {props.content}
+    </ReactMarkdown>
+  );
+}
 
 export function Avatar(props: { role: Message["role"] }) {
   if (props.role === "assistant") {
@@ -174,11 +185,12 @@ export function Chat() {
                   <div className={styles["chat-message-status"]}>正在输入…</div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {message.preview && !isUser ? (
+                  {(message.preview || message.content.length === 0) &&
+                  !isUser ? (
                     <LoadingIcon />
                   ) : (
                     <div className="markdown-body">
-                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                      <Markdown content={message.content} />
                     </div>
                   )}
                 </div>

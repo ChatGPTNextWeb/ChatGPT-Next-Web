@@ -1,8 +1,8 @@
 import type { ChatRequest, ChatReponse } from "./api/chat/typing";
 import { Message } from "./store";
 
-export async function requestChat(messages: Message[]) {
-  const req: ChatRequest = {
+const makeRequestParam = (messages: Message[], stream = false): ChatRequest => {
+  return {
     model: "gpt-3.5-turbo",
     messages: messages
       .map((v) => ({
@@ -10,7 +10,12 @@ export async function requestChat(messages: Message[]) {
         content: v.content,
       }))
       .filter((m) => m.role !== "assistant"),
+    stream,
   };
+};
+
+export async function requestChat(messages: Message[]) {
+  const req: ChatRequest = makeRequestParam(messages);
 
   const res = await fetch("/api/chat", {
     method: "POST",
@@ -21,6 +26,45 @@ export async function requestChat(messages: Message[]) {
   });
 
   return (await res.json()) as ChatReponse;
+}
+
+export async function requestChatStream(
+  messages: Message[],
+  options?: {
+    onMessage: (message: string, done: boolean) => void;
+  }
+) {
+  const req = makeRequestParam(messages, true);
+
+  const res = await fetch("/api/chat-stream", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(req),
+  });
+
+  let responseText = "";
+
+  if (res.ok) {
+    const reader = res.body?.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const content = await reader?.read();
+      const text = decoder.decode(content?.value);
+      responseText += text;
+
+      const done = !content || content.done;
+      options?.onMessage(responseText, false);
+
+      if (done) {
+        break;
+      }
+    }
+
+    options?.onMessage(responseText, true);
+  }
 }
 
 export async function requestWithPrompt(messages: Message[], prompt: string) {
