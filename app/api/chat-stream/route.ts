@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-async function createStream(payload: ChatRequest) {
+async function createStream(payload: string) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
@@ -16,7 +16,7 @@ async function createStream(payload: ChatRequest) {
       Authorization: `Bearer ${apiKey}`,
     },
     method: "POST",
-    body: JSON.stringify(payload),
+    body: payload,
   });
 
   const stream = new ReadableStream({
@@ -51,7 +51,8 @@ async function createStream(payload: ChatRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as ChatRequest;
+    console.log("Request", req);
+    const body = await req.text();
     const stream = await createStream(body);
     return new Response(stream);
   } catch (error) {
