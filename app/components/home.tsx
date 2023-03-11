@@ -130,11 +130,14 @@ export function Chat() {
     );
 
   useEffect(() => {
-    latestMessageRef.current?.scrollIntoView(false);
+    latestMessageRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
   });
 
   return (
-    <div className={styles.chat}>
+    <div className={styles.chat} key={session.topic}>
       <div className={styles["chat-header"]}>
         <div>
           <div className={styles["chat-header-title"]}>{session.topic}</div>
