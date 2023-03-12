@@ -30,7 +30,17 @@ interface ChatConfig {
   submitKey: SubmitKey;
   avatar: string;
   theme: Theme;
+  tightBorder: boolean;
 }
+
+const DEFAULT_CONFIG: ChatConfig = {
+  historyMessageCount: 5,
+  sendBotMessages: false as boolean,
+  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  avatar: "1fae0",
+  theme: Theme.Auto as Theme,
+  tightBorder: false,
+};
 
 interface ChatStat {
   tokenCount: number;
@@ -94,6 +104,7 @@ interface ChatStore {
   ) => void;
 
   getConfig: () => ChatConfig;
+  resetConfig: () => void;
   updateConfig: (updater: (config: ChatConfig) => void) => void;
 }
 
@@ -103,11 +114,11 @@ export const useChatStore = create<ChatStore>()(
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
       config: {
-        historyMessageCount: 5,
-        sendBotMessages: false as boolean,
-        submitKey: SubmitKey.CtrlEnter as SubmitKey,
-        avatar: "1fae0",
-        theme: Theme.Auto as Theme,
+        ...DEFAULT_CONFIG,
+      },
+
+      resetConfig() {
+        set(() => ({ config: { ...DEFAULT_CONFIG } }));
       },
 
       getConfig() {

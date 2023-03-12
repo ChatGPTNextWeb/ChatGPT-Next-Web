@@ -1,18 +1,33 @@
-.container {
-  max-width: 1080px;
-  min-width: 600px;
-  min-height: 480px;
-  width: 90vw;
-  height: 90vh;
+@mixin container {
   background-color: var(--white);
   border: var(--border-in-light);
   border-radius: 20px;
   box-shadow: var(--shadow);
   color: var(--black);
   background-color: var(--white);
+  min-width: 600px;
+  min-height: 480px;
 
   display: flex;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+.container {
+  @include container();
+
+  max-width: 1080px;
+  max-height: 864px;
+  width: 90vw;
+  height: 90vh;
+}
+
+.tight-container {
+  @include container();
+
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
 }
 
 .sidebar {

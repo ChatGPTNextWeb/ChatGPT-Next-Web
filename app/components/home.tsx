@@ -291,11 +291,16 @@ export function Home() {
 
   // settings
   const [openSettings, setOpenSettings] = useState(false);
+  const config = useChatStore((state) => state.config);
 
   useSwitchTheme();
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${
+        config.tightBorder ? styles["tight-container"] : styles.container
+      }`}
+    >
       <div className={styles.sidebar}>
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>ChatGPT Next</div>
@@ -347,9 +352,10 @@ export function Home() {
 
 export function Settings() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [config, updateConfig] = useChatStore((state) => [
+  const [config, updateConfig, resetConfig] = useChatStore((state) => [
     state.config,
     state.updateConfig,
+    state.resetConfig,
   ]);
 
   return (
@@ -361,7 +367,12 @@ export function Settings() {
         </div>
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
-            <IconButton icon={<ResetIcon />} bordered title="重置所有选项" />
+            <IconButton
+              icon={<ResetIcon />}
+              onClick={resetConfig}
+              bordered
+              title="重置所有选项"
+            />
           </div>
         </div>
       </div>
@@ -431,6 +442,19 @@ export function Settings() {
                 ))}
               </select>
             </div>
+          </ListItem>
+
+          <ListItem>
+            <div className={styles["settings-title"]}>紧凑边框</div>
+            <input
+              type="checkbox"
+              checked={config.tightBorder}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.tightBorder = e.currentTarget.checked)
+                )
+              }
+            ></input>
           </ListItem>
         </List>
         <List>
