@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./globals.scss";
 import "./markdown.css";
 
 export const metadata = {

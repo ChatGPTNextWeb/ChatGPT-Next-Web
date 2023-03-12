@@ -6,10 +6,10 @@ import "katex/dist/katex.min.css";
 import RemarkMath from "remark-math";
 import RehypeKatex from "rehype-katex";
 
-import EmojiPicker, { Emoji, EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { Emoji, Theme as EmojiTheme } from "emoji-picker-react";
 
 import { IconButton } from "./button";
-import styles from "./home.module.css";
+import styles from "./home.module.scss";
 
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
@@ -21,8 +21,9 @@ import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
+import ResetIcon from "../icons/reload.svg";
 
-import { Message, SubmitKey, useChatStore } from "../store";
+import { Message, SubmitKey, useChatStore, Theme } from "../store";
 import { Card, List, ListItem, Popover } from "./ui-lib";
 
 export function Markdown(props: { content: string }) {
@@ -101,12 +102,34 @@ export function ChatList() {
   );
 }
 
+function useSubmitHandler() {
+  const config = useChatStore((state) => state.config);
+  const submitKey = config.submitKey;
+
+  const shouldSubmit = (e: KeyboardEvent) => {
+    if (e.key !== "Enter") return false;
+
+    return (
+      (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
+      (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
+      (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
+      config.submitKey === SubmitKey.Enter
+    );
+  };
+
+  return {
+    submitKey,
+    shouldSubmit,
+  };
+}
+
 export function Chat() {
   type RenderMessage = Message & { preview?: boolean };
 
   const session = useChatStore((state) => state.currentSession());
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { submitKey, shouldSubmit } = useSubmitHandler();
 
   const onUserInput = useChatStore((state) => state.onUserInput);
   const onUserSubmit = () => {
@@ -116,7 +139,7 @@ export function Chat() {
     setUserInput("");
   };
   const onInputKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter" && (e.shiftKey || e.ctrlKey || e.metaKey)) {
+    if (shouldSubmit(e)) {
       onUserSubmit();
       e.preventDefault();
     }
@@ -165,12 +188,20 @@ export function Chat() {
             与 ChatGPT 的 {session.messages.length} 条对话
           </div>
         </div>
-        <div className={styles["chat-actions"]}>
-          <div className={styles["chat-action-button"]}>
-            <IconButton icon={<BrainIcon />} bordered />
+        <div className={styles["window-actions"]}>
+          <div className={styles["window-action-button"]}>
+            <IconButton
+              icon={<BrainIcon />}
+              bordered
+              title="查看压缩后的历史 Prompt（开发中）"
+            />
           </div>
-          <div className={styles["chat-action-button"]}>
-            <IconButton icon={<ExportIcon />} bordered />
+          <div className={styles["window-action-button"]}>
+            <IconButton
+              icon={<ExportIcon />}
+              bordered
+              title="导出聊天记录为 Markdown（开发中）"
+            />
           </div>
         </div>
       </div>
@@ -223,7 +254,7 @@ export function Chat() {
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
             className={styles["chat-input"]}
-            placeholder="输入消息，Ctrl + Enter 发送"
+            placeholder={`输入消息，${submitKey} 发送`}
             rows={3}
             onInput={(e) => setUserInput(e.currentTarget.value)}
             value={userInput}
@@ -232,7 +263,7 @@ export function Chat() {
           <IconButton
             icon={<SendWhiteIcon />}
             text={"发送"}
-            className={styles["chat-input-send"]}
+            className={styles["chat-input-send"] + " no-dark"}
             onClick={onUserSubmit}
           />
         </div>
@@ -241,11 +272,27 @@ export function Chat() {
   );
 }
 
+function useSwitchTheme() {
+  const config = useChatStore((state) => state.config);
+
+  useEffect(() => {
+    document.body.classList.remove("light");
+    document.body.classList.remove("dark");
+    if (config.theme === "dark") {
+      document.body.classList.add("dark");
+    } else if (config.theme === "light") {
+      document.body.classList.add("light");
+    }
+  }, [config.theme]);
+}
+
 export function Home() {
   const [createNewSession] = useChatStore((state) => [state.newSession]);
 
   // settings
   const [openSettings, setOpenSettings] = useState(false);
+
+  useSwitchTheme();
 
   return (
     <div className={styles.container}>
@@ -260,7 +307,10 @@ export function Home() {
           </div>
         </div>
 
-        <div className={styles["sidebar-body"]}>
+        <div
+          className={styles["sidebar-body"]}
+          onClick={() => setOpenSettings(false)}
+        >
           <ChatList />
         </div>
 
@@ -295,13 +345,6 @@ export function Home() {
   );
 }
 
-export function EmojiPickerModal(props: {
-  show: boolean;
-  onClose: (_: boolean) => void;
-}) {
-  return <div className=""></div>;
-}
-
 export function Settings() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [config, updateConfig] = useChatStore((state) => [
@@ -316,6 +359,11 @@ export function Settings() {
           <div className={styles["window-header-title"]}>设置</div>
           <div className={styles["window-header-sub-title"]}>设置选项</div>
         </div>
+        <div className={styles["window-actions"]}>
+          <div className={styles["window-action-button"]}>
+            <IconButton icon={<ResetIcon />} bordered title="重置所有选项" />
+          </div>
+        </div>
       </div>
       <div className={styles["settings"]}>
         <List>
@@ -326,6 +374,7 @@ export function Settings() {
               content={
                 <EmojiPicker
                   lazyLoadEmojis
+                  theme={EmojiTheme.AUTO}
                   onEmojiClick={(e) => {
                     updateConfig((config) => (config.avatar = e.unified));
                     setShowEmojiPicker(false);
@@ -355,8 +404,28 @@ export function Settings() {
                   );
                 }}
               >
-                {Object.entries(SubmitKey).map(([k, v]) => (
-                  <option value={k} key={v}>
+                {Object.values(SubmitKey).map((v) => (
+                  <option value={v} key={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </ListItem>
+
+          <ListItem>
+            <div className={styles["settings-title"]}>主题</div>
+            <div className="">
+              <select
+                value={config.theme}
+                onChange={(e) => {
+                  updateConfig(
+                    (config) => (config.theme = e.target.value as any as Theme)
+                  );
+                }}
+              >
+                {Object.values(Theme).map((v) => (
+                  <option value={v} key={v}>
                     {v}
                   </option>
                 ))}
@@ -366,13 +435,36 @@ export function Settings() {
         </List>
         <List>
           <ListItem>
-            <div className={styles["settings-title"]}>最大记忆历史消息数</div>
-            <div className="">{config.historyMessageCount}</div>
+            <div className={styles["settings-title"]}>最大上下文消息数</div>
+            <input
+              type="range"
+              title={config.historyMessageCount.toString()}
+              value={config.historyMessageCount}
+              min="5"
+              max="20"
+              step="5"
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.historyMessageCount = e.target.valueAsNumber)
+                )
+              }
+            ></input>
           </ListItem>
 
           <ListItem>
-            <div className={styles["settings-title"]}>发送机器人回复消息</div>
-            <div className="">{config.sendBotMessages ? "是" : "否"}</div>
+            <div className={styles["settings-title"]}>
+              上下文中包含机器人消息
+            </div>
+            <input
+              type="checkbox"
+              checked={config.sendBotMessages}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.sendBotMessages = e.currentTarget.checked)
+                )
+              }
+            ></input>
           </ListItem>
         </List>
       </div>

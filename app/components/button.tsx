@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import styles from "./button.module.css";
+import styles from "./button.module.scss";
 
 export function IconButton(props: {
   onClick?: () => void;
@@ -8,6 +8,7 @@ export function IconButton(props: {
   text?: string;
   bordered?: boolean;
   className?: string;
+  title?: string;
 }) {
   return (
     <div
@@ -16,6 +17,7 @@ export function IconButton(props: {
         ` ${props.bordered && styles.border} ${props.className ?? ""}`
       }
       onClick={props.onClick}
+      title={props.title}
     >
       <div className={styles["icon-button-icon"]}>{props.icon}</div>
       {props.text && (

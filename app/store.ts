@@ -17,12 +17,19 @@ export enum SubmitKey {
   AltEnter = "Alt + Enter",
 }
 
+export enum Theme {
+  Auto = "auto",
+  Dark = "dark",
+  Light = "light",
+}
+
 interface ChatConfig {
   maxToken?: number;
   historyMessageCount: number; // -1 means all
   sendBotMessages: boolean; // send bot's message or not
   submitKey: SubmitKey;
   avatar: string;
+  theme: Theme;
 }
 
 interface ChatStat {
@@ -98,8 +105,9 @@ export const useChatStore = create<ChatStore>()(
       config: {
         historyMessageCount: 5,
         sendBotMessages: false as boolean,
-        submitKey: SubmitKey.CtrlEnter,
+        submitKey: SubmitKey.CtrlEnter as SubmitKey,
         avatar: "1fae0",
+        theme: Theme.Auto as Theme,
       },
 
       getConfig() {
@@ -224,7 +232,6 @@ export const useChatStore = create<ChatStore>()(
         const sessions = get().sessions;
         const session = sessions.at(sessionIndex);
         const messages = session?.messages;
-        console.log(sessions, messages?.length, messages?.at(messageIndex));
         updater(messages?.at(messageIndex));
         set(() => ({ sessions }));
       },

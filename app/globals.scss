@@ -1,0 +1,141 @@
+@mixin light {
+  /* color */
+  --white: white;
+  --black: rgb(48, 48, 48);
+  --gray: rgb(250, 250, 250);
+  --primary: rgb(29, 147, 171);
+  --second: rgb(231, 248, 255);
+  --hover-color: #f3f3f3;
+
+  /* shadow */
+  --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
+  --card-shadow: 0px 2px 4px 0px rgb(0, 0, 0, 0.05);
+
+  /* stroke */
+  --border-in-light: 1px solid rgb(222, 222, 222);
+}
+
+@mixin dark {
+  /* color */
+  --white: rgb(30, 30, 30);
+  --black: rgb(187, 187, 187);
+  --gray: rgb(21, 21, 21);
+  --primary: rgb(29, 147, 171);
+  --second: rgb(27 38 42);
+  --hover-color: #323232;
+
+  --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
+}
+
+.light {
+  @include light;
+}
+
+.dark {
+  @include dark;
+}
+
+.mask {
+  filter: invert(0.8);
+}
+
+:root {
+  @include light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include dark;
+  }
+}
+
+body {
+  background-color: var(--gray);
+  color: var(--black);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+select {
+  border: var(--border-in-light);
+  padding: 8px 10px;
+  border-radius: 10px;
+  appearance: none;
+  cursor: pointer;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  background-color: var(--white);
+  color: var(--black);
+  appearance: none;
+  border: var(--border-in-light);
+  border-radius: 5px;
+  height: 16px;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="checkbox"]:checked::after {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary);
+  content: " ";
+  border-radius: 2px;
+}
+
+input[type="range"] {
+  appearance: none;
+  border: var(--border-in-light);
+  border-radius: 10px;
+  padding: 5px 15px 5px 10px;
+  background-color: var(--white);
+  color: var(--black);
+
+  &::before {
+    content: attr(value);
+    font-size: 12px;
+  }
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  height: 8px;
+  width: 20px;
+  background-color: var(--primary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all ease 0.3s;
+  margin-left: 5px;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scaleY(1.2);
+  width: 24px;
+}

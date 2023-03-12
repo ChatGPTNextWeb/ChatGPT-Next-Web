@@ -1,4 +1,4 @@
-import styles from "./ui-lib.module.css";
+import styles from "./ui-lib.module.scss";
 
 export function Popover(props: {
   children: JSX.Element;

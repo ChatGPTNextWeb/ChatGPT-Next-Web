@@ -8,7 +8,7 @@
 
   box-shadow: var(--card-shadow);
   cursor: pointer;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   overflow: hidden;
   user-select: none;
 }
@@ -27,6 +27,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  div:not(:global(.no-dark)) > .icon-button-icon {
+    filter: invert(0.5);
+  }
+
+  .icon-button:hover {
+    filter: brightness(1.2) hue-rotate(0.01turn);
+  }
 }
 
 .icon-button-text {

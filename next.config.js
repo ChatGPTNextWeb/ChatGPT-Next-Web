@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+const withLess = require("next-with-less");
+
+const nextConfig = withLess({
   experimental: {
     appDir: true,
   },
@@ -11,6 +14,6 @@ const nextConfig = {
 
     return config;
   },
-};
+});
 
 module.exports = nextConfig;

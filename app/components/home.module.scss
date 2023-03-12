@@ -8,6 +8,8 @@
   border: var(--border-in-light);
   border-radius: 20px;
   box-shadow: var(--shadow);
+  color: var(--black);
+  background-color: var(--white);
 
   display: flex;
   overflow: hidden;
@@ -177,11 +179,11 @@
   margin-top: 5px;
 }
 
-.chat-actions {
+.window-actions {
   display: inline-flex;
 }
 
-.chat-action-button {
+.window-action-button {
   margin-left: 10px;
 }
 
@@ -237,13 +239,14 @@
 }
 
 .chat-message-item {
-  margin-top: 5px;
+  margin-top: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 10px;
   font-size: 14px;
   user-select: text;
   word-break: break-all;
+  border: var(--border-in-light);
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
@@ -289,11 +292,12 @@
   border-radius: 10px;
   border: var(--border-in-light);
   box-shadow: var(--card-shadow);
+  background-color: var(--white);
+  color: var(--black);
   font-family: inherit;
   padding: 10px 14px;
   resize: none;
   outline: none;
-  color: #333;
 }
 
 .chat-input:focus {
