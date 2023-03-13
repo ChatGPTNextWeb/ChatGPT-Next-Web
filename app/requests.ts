@@ -74,9 +74,7 @@ export async function requestChatStream(
 
       while (true) {
         // handle time out, will stop if no response in 10 secs
-        const timeoutId = setTimeout(() => finish(), 10000);
         const content = await reader?.read();
-        clearTimeout(timeoutId);
         const text = decoder.decode(content?.value);
         responseText += text;
 
@@ -90,9 +88,11 @@ export async function requestChatStream(
 
       finish();
     } else {
+      console.error("Stream Error");
       options?.onError(new Error("Stream Error"));
     }
   } catch (err) {
+    console.error("NetWork Error");
     options?.onError(new Error("NetWork Error"));
   }
 }

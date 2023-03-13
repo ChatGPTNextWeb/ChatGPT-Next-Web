@@ -229,7 +229,7 @@ export const useChatStore = create<ChatStore>()(
             }
           },
           onError(error) {
-            botMessage.content = "出错了，稍后重试吧";
+            botMessage.content += "\n\n出错了，稍后重试吧";
             botMessage.streaming = false;
             set(() => ({}));
           },
