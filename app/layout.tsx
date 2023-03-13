@@ -1,5 +1,5 @@
 import "./globals.scss";
-import "./markdown.css";
+import "./markdown.scss";
 
 export const metadata = {
   title: "ChatGPT Next Web",

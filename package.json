@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "local:dev": "./dev/proxychains.exe -f ./scripts/proxychains.conf yarn dev",
+    "local:start": "./dev/proxychains.exe -f ./scripts/proxychains.conf yarn start",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

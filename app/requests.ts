@@ -51,35 +51,48 @@ export async function requestChatStream(
     filterBot: options?.filterBot,
   });
 
-  const res = await fetch("/api/chat-stream", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(req),
-  });
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 10000);
 
-  let responseText = "";
+  try {
+    const res = await fetch("/api/chat-stream", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req),
+      signal: controller.signal,
+    });
 
-  if (res.ok) {
-    const reader = res.body?.getReader();
-    const decoder = new TextDecoder();
+    let responseText = "";
 
-    while (true) {
-      const content = await reader?.read();
-      const text = decoder.decode(content?.value);
-      responseText += text;
+    const finish = () => options?.onMessage(responseText, true);
 
-      const done = !content || content.done;
-      options?.onMessage(responseText, false);
+    if (res.ok) {
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
 
-      if (done) {
-        break;
+      while (true) {
+        // handle time out, will stop if no response in 10 secs
+        const timeoutId = setTimeout(() => finish(), 10000);
+        const content = await reader?.read();
+        clearTimeout(timeoutId);
+        const text = decoder.decode(content?.value);
+        responseText += text;
+
+        const done = !content || content.done;
+        options?.onMessage(responseText, false);
+
+        if (done) {
+          break;
+        }
       }
-    }
 
-    options?.onMessage(responseText, true);
-  } else {
+      finish();
+    } else {
+      options?.onError(new Error("Stream Error"));
+    }
+  } catch (err) {
     options?.onError(new Error("NetWork Error"));
   }
 }
@@ -87,7 +100,7 @@ export async function requestChatStream(
 export async function requestWithPrompt(messages: Message[], prompt: string) {
   messages = messages.concat([
     {
-      role: "system",
+      role: "user",
       content: prompt,
       date: new Date().toLocaleString(),
     },

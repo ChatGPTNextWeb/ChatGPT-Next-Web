@@ -41,6 +41,11 @@
 
 :root {
   @include light;
+
+  --window-width: 90vw;
+  --window-height: 90vh;
+  --sidebar-width: 300px;
+  --window-content-width: calc(var(--window-width) - var(--sidebar-width));
 }
 
 @media (prefers-color-scheme: dark) {

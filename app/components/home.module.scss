@@ -1,3 +1,5 @@
+@import "./window.scss";
+
 @mixin container {
   background-color: var(--white);
   border: var(--border-in-light);
@@ -11,6 +13,9 @@
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
+
+  width: var(--window-width);
+  height: var(--window-height);
 }
 
 .container {
@@ -18,20 +23,20 @@
 
   max-width: 1080px;
   max-height: 864px;
-  width: 90vw;
-  height: 90vh;
 }
 
 .tight-container {
+  --window-width: 100vw;
+  --window-height: 100vw;
+
   @include container();
 
-  width: 100vw;
-  height: 100vh;
   border-radius: 0;
 }
 
 .sidebar {
-  width: 300px;
+  width: var(--sidebar-width);
+  box-sizing: border-box;
   padding: 20px;
   background-color: var(--second);
   display: flex;
@@ -159,7 +164,7 @@
 }
 
 .window-content {
-  width: 100%;
+  width: var(--window-content-width);
   height: 100%;
 }
 
@@ -168,38 +173,6 @@
   flex-direction: column;
   position: relative;
   height: 100%;
-}
-
-.window-header {
-  padding: 14px 20px;
-  border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.window-header-title {
-  font-size: 20px;
-  font-weight: bolder;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.window-header-sub-title {
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.window-actions {
-  display: inline-flex;
-}
-
-.window-action-button {
-  margin-left: 10px;
 }
 
 .chat-body {
@@ -220,7 +193,7 @@
 }
 
 .chat-message-container {
-  max-width: 60%;
+  max-width: 80%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -254,13 +227,14 @@
 }
 
 .chat-message-item {
+  max-width: 100%;
   margin-top: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 10px;
   font-size: 14px;
   user-select: text;
-  word-break: break-all;
+  word-break: break-word;
   border: var(--border-in-light);
 }
 
@@ -326,17 +300,4 @@
   position: absolute;
   right: 30px;
   bottom: 10px;
-}
-
-.settings {
-  padding: 20px;
-}
-
-.settings-title {
-  font-size: 14px;
-  font-weight: bolder;
-}
-
-.avatar {
-  cursor: pointer;
 }

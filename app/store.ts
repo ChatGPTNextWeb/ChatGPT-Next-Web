@@ -108,6 +108,8 @@ interface ChatStore {
   updateConfig: (updater: (config: ChatConfig) => void) => void;
 }
 
+const LOCAL_KEY = "chat-next-web-store";
+
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
@@ -254,16 +256,16 @@ export const useChatStore = create<ChatStore>()(
       summarizeSession() {
         const session = get().currentSession();
 
-        if (session.topic !== DEFAULT_TOPIC) return;
-
-        requestWithPrompt(
-          session.messages,
-          "简明扼要地 10 字以内总结主题"
-        ).then((res) => {
-          get().updateCurrentSession(
-            (session) => (session.topic = trimTopic(res))
+        if (session.topic === DEFAULT_TOPIC) {
+          // should summarize topic
+          requestWithPrompt(session.messages, "返回这句话的简要主题").then(
+            (res) => {
+              get().updateCurrentSession(
+                (session) => (session.topic = trimTopic(res))
+              );
+            }
           );
-        });
+        }
       },
 
       updateStat(message) {
@@ -280,6 +282,8 @@ export const useChatStore = create<ChatStore>()(
         set(() => ({ sessions }));
       },
     }),
-    { name: "chat-next-web-store" }
+    {
+      name: LOCAL_KEY,
+    }
   )
 );
