@@ -299,7 +299,7 @@ function useSwitchTheme() {
 
 export function Home() {
   const [createNewSession] = useChatStore((state) => [state.newSession]);
-  const loading = !useChatStore.persist.hasHydrated();
+  const loading = !useChatStore?.persist?.hasHydrated();
 
   // settings
   const [openSettings, setOpenSettings] = useState(false);
