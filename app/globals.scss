@@ -46,6 +46,17 @@
   --window-height: 90vh;
   --sidebar-width: 300px;
   --window-content-width: calc(var(--window-width) - var(--sidebar-width));
+  --message-max-width: 80%;
+}
+
+@media only screen and (max-width: 600px) {
+  :root {
+    --window-width: 100vw;
+    --window-height: 100vh;
+    --sidebar-width: 100vw;
+    --window-content-width: var(--window-width);
+    --message-max-width: 100%;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
