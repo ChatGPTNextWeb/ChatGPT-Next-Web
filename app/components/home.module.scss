@@ -9,6 +9,8 @@
   background-color: var(--white);
   min-width: 600px;
   min-height: 480px;
+  max-width: 900px;
+  max-height: 720px;
 
   display: flex;
   overflow: hidden;
@@ -28,6 +30,9 @@
   --window-content-width: calc(var(--window-width) - var(--sidebar-width));
 
   @include container();
+
+  max-width: 100vw;
+  max-height: 100vh;
 
   border-radius: 0;
 }
@@ -53,8 +58,10 @@
 
 @media only screen and (max-width: 600px) {
   .container {
-    min-width: unset;
     min-height: unset;
+    min-width: unset;
+    max-height: unset;
+    min-width: unset;
     border: 0;
     border-radius: 0;
   }
