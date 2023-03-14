@@ -20,14 +20,12 @@
 
 .container {
   @include container();
-
-  max-width: 1080px;
-  max-height: 864px;
 }
 
 .tight-container {
   --window-width: 100vw;
   --window-height: 100vh;
+  --window-content-width: calc(var(--window-width) - var(--sidebar-width));
 
   @include container();
 
@@ -42,6 +40,43 @@
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
+}
+
+.window-content {
+  width: var(--window-content-width);
+  height: 100%;
+}
+
+.mobile {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    min-width: unset;
+    min-height: unset;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .sidebar {
+    position: absolute;
+    top: -100%;
+    z-index: 999;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    height: 80vh;
+    box-shadow: var(--shadow);
+    transition: all ease 0.3s;
+  }
+
+  .sidebar-show {
+    top: 0;
+  }
+
+  .mobile {
+    display: block;
+  }
 }
 
 .sidebar-header {
@@ -72,7 +107,6 @@
 }
 
 .chat-list {
-  width: 260px;
 }
 
 .chat-item {
@@ -159,13 +193,8 @@
   display: inline-flex;
 }
 
-.sidebar-action:last-child {
-  margin-left: 15px;
-}
-
-.window-content {
-  width: var(--window-content-width);
-  height: 100%;
+.sidebar-action:not(:last-child) {
+  margin-right: 15px;
 }
 
 .chat {
@@ -193,7 +222,7 @@
 }
 
 .chat-message-container {
-  max-width: 80%;
+  max-width: var(--message-max-width);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -227,6 +256,7 @@
 }
 
 .chat-message-item {
+  box-sizing: border-box;
   max-width: 100%;
   margin-top: 10px;
   border-radius: 10px;
@@ -255,9 +285,6 @@
   color: #aaa;
 }
 
-.chat-message-action-button {
-}
-
 .chat-input-panel {
   position: absolute;
   bottom: 20px;
@@ -272,15 +299,12 @@
   flex: 1;
 }
 
-.chat-input-panel-multi {
-}
-
 .chat-input {
   height: 100%;
   width: 100%;
   border-radius: 10px;
   border: var(--border-in-light);
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
   background-color: var(--white);
   color: var(--black);
   font-family: inherit;

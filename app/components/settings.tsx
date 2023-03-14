@@ -5,15 +5,15 @@ import EmojiPicker, { Emoji, Theme as EmojiTheme } from "emoji-picker-react";
 import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
+import CloseIcon from "../icons/close.svg";
 
 import { List, ListItem, Popover } from "./ui-lib";
 
 import { IconButton } from "./button";
 import { SubmitKey, useChatStore, Theme } from "../store";
 import { Avatar } from "./home";
-import dynamic from "next/dynamic";
 
-export function Settings() {
+export function Settings(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [config, updateConfig, resetConfig] = useChatStore((state) => [
     state.config,
@@ -29,6 +29,14 @@ export function Settings() {
           <div className={styles["window-header-sub-title"]}>设置选项</div>
         </div>
         <div className={styles["window-actions"]}>
+          <div className={styles["window-action-button"]}>
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={props.closeSettings}
+              bordered
+              title="重置所有选项"
+            />
+          </div>
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ResetIcon />}

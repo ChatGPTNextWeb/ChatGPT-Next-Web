@@ -21,21 +21,12 @@ import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
+import MenuIcon from "../icons/menu.svg";
+import CloseIcon from "../icons/close.svg";
 
 import { Message, SubmitKey, useChatStore, Theme } from "../store";
 import { Settings } from "./settings";
 import dynamic from "next/dynamic";
-
-export const LazySettings = dynamic(
-  async () => await (await import("./settings")).Settings,
-  {
-    loading: () => (
-      <div className="">
-        <LoadingIcon />
-      </div>
-    ),
-  }
-);
 
 export function Markdown(props: { content: string }) {
   return (
@@ -134,7 +125,7 @@ function useSubmitHandler() {
   };
 }
 
-export function Chat() {
+export function Chat(props: { showSideBar?: () => void }) {
   type RenderMessage = Message & { preview?: boolean };
 
   const session = useChatStore((state) => state.currentSession());
@@ -200,6 +191,14 @@ export function Chat() {
           </div>
         </div>
         <div className={styles["window-actions"]}>
+          <div className={styles["window-action-button"] + " " + styles.mobile}>
+            <IconButton
+              icon={<MenuIcon />}
+              bordered
+              title="查看消息列表"
+              onClick={props?.showSideBar}
+            />
+          </div>
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<BrainIcon />}
@@ -300,6 +299,7 @@ function useSwitchTheme() {
 export function Home() {
   const [createNewSession] = useChatStore((state) => [state.newSession]);
   const loading = !useChatStore?.persist?.hasHydrated();
+  const [showSideBar, setShowSideBar] = useState(true);
 
   // settings
   const [openSettings, setOpenSettings] = useState(false);
@@ -322,7 +322,9 @@ export function Home() {
         config.tightBorder ? styles["tight-container"] : styles.container
       }`}
     >
-      <div className={styles.sidebar}>
+      <div
+        className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
+      >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>ChatGPT Next</div>
           <div className={styles["sidebar-sub-title"]}>
@@ -342,6 +344,12 @@ export function Home() {
 
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
+            <div className={styles["sidebar-action"] + " " + styles.mobile}>
+              <IconButton
+                icon={<CloseIcon />}
+                onClick={() => setShowSideBar(!showSideBar)}
+              />
+            </div>
             <div className={styles["sidebar-action"]}>
               <IconButton
                 icon={<SettingsIcon />}
@@ -365,7 +373,11 @@ export function Home() {
       </div>
 
       <div className={styles["window-content"]}>
-        {openSettings ? <LazySettings /> : <Chat key="chat" />}
+        {openSettings ? (
+          <Settings closeSettings={() => setOpenSettings(false)} />
+        ) : (
+          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+        )}
       </div>
     </div>
   );
