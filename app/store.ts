@@ -258,13 +258,14 @@ export const useChatStore = create<ChatStore>()(
 
         if (session.topic === DEFAULT_TOPIC) {
           // should summarize topic
-          requestWithPrompt(session.messages, "返回这句话的简要主题").then(
-            (res) => {
-              get().updateCurrentSession(
-                (session) => (session.topic = trimTopic(res))
-              );
-            }
-          );
+          requestWithPrompt(
+            session.messages,
+            "直接返回这句话的简要主题，不要解释"
+          ).then((res) => {
+            get().updateCurrentSession(
+              (session) => (session.topic = trimTopic(res))
+            );
+          });
         }
       },
 
