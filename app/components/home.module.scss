@@ -27,7 +27,7 @@
 
 .tight-container {
   --window-width: 100vw;
-  --window-height: 100vw;
+  --window-height: 100vh;
 
   @include container();
 
