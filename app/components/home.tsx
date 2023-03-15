@@ -311,8 +311,8 @@ function exportMessages(messages: Message[], topic: string) {
     title: "导出聊天记录为 Markdown", children: <div className="markdown-body">
       <pre className={styles['export-content']}>{mdText}</pre>
     </div>, actions: [
-      <IconButton icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(mdText)} />,
-      <IconButton icon={<DownloadIcon />} bordered text="下载文件" onClick={() => downloadAs(mdText, filename)} />
+      <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(mdText)} />,
+      <IconButton key="download" icon={<DownloadIcon />} bordered text="下载文件" onClick={() => downloadAs(mdText, filename)} />
     ]
   })
 }
