@@ -6,7 +6,7 @@
   --primary: rgb(29, 147, 171);
   --second: rgb(231, 248, 255);
   --hover-color: #f3f3f3;
-  --bar-color: var(--primary);
+  --bar-color: rgba(0, 0, 0, 0.1);
 
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
@@ -25,7 +25,7 @@
   --second: rgb(27 38 42);
   --hover-color: #323232;
 
-  --bar-color: var(--primary);
+  --bar-color: rgba(255, 255, 255, 0.1);
 
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
 }
@@ -82,7 +82,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  --bar-width: 1px;
+  --bar-width: 5px;
   width: var(--bar-width);
   height: var(--bar-width);
 }
@@ -162,4 +162,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 div.math {
   overflow-x: auto;
+}
+
+.modal-mask {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

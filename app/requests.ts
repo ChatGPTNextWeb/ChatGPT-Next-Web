@@ -1,6 +1,8 @@
 import type { ChatRequest, ChatReponse } from "./api/chat/typing";
 import { Message } from "./store";
 
+const TIME_OUT_MS = 30000
+
 const makeRequestParam = (
   messages: Message[],
   options?: {
@@ -52,7 +54,7 @@ export async function requestChatStream(
   });
 
   const controller = new AbortController();
-  const reqTimeoutId = setTimeout(() => controller.abort(), 10000);
+  const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
     const res = await fetch("/api/chat-stream", {
@@ -78,7 +80,7 @@ export async function requestChatStream(
 
       while (true) {
         // handle time out, will stop if no response in 10 secs
-        const resTimeoutId = setTimeout(() => finish(), 10000);
+        const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
         const text = decoder.decode(content?.value);
