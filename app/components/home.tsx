@@ -60,9 +60,8 @@ export function ChatItem(props: {
 }) {
   return (
     <div
-      className={`${styles["chat-item"]} ${
-        props.selected && styles["chat-item-selected"]
-      }`}
+      className={`${styles["chat-item"]} ${props.selected && styles["chat-item-selected"]
+        }`}
       onClick={props.onClick}
     >
       <div className={styles["chat-item-title"]}>{props.title}</div>
@@ -152,25 +151,25 @@ export function Chat(props: { showSideBar?: () => void }) {
     .concat(
       isLoading
         ? [
-            {
-              role: "assistant",
-              content: "……",
-              date: new Date().toLocaleString(),
-              preview: true,
-            },
-          ]
+          {
+            role: "assistant",
+            content: "……",
+            date: new Date().toLocaleString(),
+            preview: true,
+          },
+        ]
         : []
     )
     .concat(
       userInput.length > 0
         ? [
-            {
-              role: "user",
-              content: userInput,
-              date: new Date().toLocaleString(),
-              preview: true,
-            },
-          ]
+          {
+            role: "user",
+            content: userInput,
+            date: new Date().toLocaleString(),
+            preview: true,
+          },
+        ]
         : []
     );
 
@@ -236,7 +235,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                 )}
                 <div className={styles["chat-message-item"]}>
                   {(message.preview || message.content.length === 0) &&
-                  !isUser ? (
+                    !isUser ? (
                     <LoadingIcon />
                   ) : (
                     <div className="markdown-body">
@@ -318,12 +317,12 @@ export function Home() {
 
   return (
     <div
-      className={`${
-        config.tightBorder ? styles["tight-container"] : styles.container
-      }`}
+      className={`${config.tightBorder ? styles["tight-container"] : styles.container
+        }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
+        onClick={() => setShowSideBar(false)}
       >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>ChatGPT Next</div>

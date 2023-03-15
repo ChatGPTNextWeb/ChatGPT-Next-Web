@@ -45,7 +45,7 @@
   --window-width: 90vw;
   --window-height: 90vh;
   --sidebar-width: 300px;
-  --window-content-width: calc(var(--window-width) - var(--sidebar-width));
+  --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 80%;
 }
 
@@ -154,4 +154,8 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scaleY(1.2);
   width: 24px;
+}
+
+div.math {
+  overflow-x: auto;
 }
