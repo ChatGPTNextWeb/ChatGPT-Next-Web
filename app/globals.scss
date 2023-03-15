@@ -95,6 +95,7 @@ body {
   background-color: var(--bar-color);
   border-radius: 20px;
   background-clip: content-box;
+  border: 1px solid transparent;
 }
 
 select {

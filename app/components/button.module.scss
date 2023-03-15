@@ -18,7 +18,8 @@
 }
 
 .icon-button:hover {
-  filter: brightness(0.9) hue-rotate(0.01turn);
+  filter: brightness(0.9);
+  border-color: var(--primary);
 }
 
 .icon-button-icon {
@@ -35,7 +36,7 @@
   }
 
   .icon-button:hover {
-    filter: brightness(1.2) hue-rotate(0.01turn);
+    filter: brightness(1.2);
   }
 }
 
