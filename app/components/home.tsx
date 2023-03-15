@@ -23,9 +23,13 @@ import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import MenuIcon from "../icons/menu.svg";
 import CloseIcon from "../icons/close.svg";
+import CopyIcon from "../icons/copy.svg";
+import DownloadIcon from "../icons/download.svg";
 
 import { Message, SubmitKey, useChatStore, Theme } from "../store";
 import { Settings } from "./settings";
+import { showModal } from "./ui-lib";
+import { copyToClipboard, downloadAs } from "../utils";
 
 export function Markdown(props: { content: string }) {
   return (
@@ -208,7 +212,10 @@ export function Chat(props: { showSideBar?: () => void }) {
             <IconButton
               icon={<ExportIcon />}
               bordered
-              title="导出聊天记录为 Markdown（开发中）"
+              title="导出聊天记录"
+              onClick={() => {
+                exportMessages(session.messages, session.topic)
+              }}
             />
           </div>
         </div>
@@ -292,6 +299,22 @@ function useSwitchTheme() {
       document.body.classList.add("light");
     }
   }, [config.theme]);
+}
+
+function exportMessages(messages: Message[], topic: string) {
+  const mdText = `# ${topic}\n\n` + messages.map(m => {
+    return m.role === 'user' ? `## ${m.content}` : m.content.trim()
+  }).join('\n\n')
+  const filename = `${topic}.md`
+
+  showModal({
+    title: "导出聊天记录为 Markdown", children: <div className="markdown-body">
+      <pre className={styles['export-content']}>{mdText}</pre>
+    </div>, actions: [
+      <IconButton icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(mdText)} />,
+      <IconButton icon={<DownloadIcon />} bordered text="下载文件" onClick={() => downloadAs(mdText, filename)} />
+    ]
+  })
 }
 
 export function Home() {

@@ -29,6 +29,7 @@
     transform: translateY(10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -55,4 +56,69 @@
 
 .list .list-item:last-child {
   border: 0;
+}
+
+
+
+.modal-container {
+  box-shadow: var(--card-shadow);
+  background-color: var(--white);
+  border-radius: 12px;
+  width: 50vw;
+
+  --modal-padding: 20px;
+
+  .modal-header {
+    padding: var(--modal-padding);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--border-in-light);
+
+    .modal-title {
+      font-weight: bolder;
+      font-size: 16px;
+    }
+
+    .modal-close-btn {
+      cursor: pointer;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
+
+  .modal-content {
+    height: 40vh;
+    padding: var(--modal-padding);
+    overflow: auto;
+  }
+
+  .modal-footer {
+    padding: var(--modal-padding);
+    display: flex;
+    justify-content: flex-end;
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+
+      .modal-action {
+        &:not(:last-child) {
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .modal-container {
+    width: 90vw;
+
+    .modal-content {
+      height: 50vh;
+    }
+  }
 }
