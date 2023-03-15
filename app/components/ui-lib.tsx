@@ -1,4 +1,5 @@
 import styles from "./ui-lib.module.scss";
+import LoadingIcon from "../icons/three-dots.svg";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -35,4 +36,14 @@ export function ListItem(props: { children: JSX.Element[] }) {
 
 export function List(props: { children: JSX.Element[] }) {
   return <div className={styles.list}>{props.children}</div>;
+}
+
+export function Loading() {
+  return <div style={{
+    height: "100vh",
+    width: "100vw",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  }}><LoadingIcon /></div>
 }

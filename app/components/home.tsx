@@ -26,7 +26,6 @@ import CloseIcon from "../icons/close.svg";
 
 import { Message, SubmitKey, useChatStore, Theme } from "../store";
 import { Settings } from "./settings";
-import dynamic from "next/dynamic";
 
 export function Markdown(props: { content: string }) {
   return (

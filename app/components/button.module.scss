@@ -29,14 +29,22 @@
   align-items: center;
 }
 
-@media (prefers-color-scheme: dark) {
-  div:not(:global(.no-dark)) > .icon-button-icon {
+@mixin dark-button {
+  div:not(:global(.no-dark))>.icon-button-icon {
     filter: invert(0.5);
   }
 
   .icon-button:hover {
     filter: brightness(1.2) hue-rotate(0.01turn);
   }
+}
+
+:global(.dark) {
+  @include dark-button;
+}
+
+@media (prefers-color-scheme: dark) {
+  @include dark-button;
 }
 
 .icon-button-text {

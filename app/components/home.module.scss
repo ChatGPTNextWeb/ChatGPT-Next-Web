@@ -38,6 +38,7 @@
 }
 
 .sidebar {
+  top: 0;
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
@@ -68,17 +69,15 @@
 
   .sidebar {
     position: absolute;
-    top: -100%;
+    left: -100%;
     z-index: 999;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    height: 80vh;
-    box-shadow: var(--shadow);
+    height: 100vh;
     transition: all ease 0.3s;
+    box-shadow: none;
   }
 
   .sidebar-show {
-    top: 0;
+    left: 0;
   }
 
   .mobile {
