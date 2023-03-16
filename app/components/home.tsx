@@ -177,10 +177,14 @@ export function Chat(props: { showSideBar?: () => void }) {
     );
 
   useEffect(() => {
-    latestMessageRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-    });
+    const dom = latestMessageRef.current;
+    const rect = dom?.getBoundingClientRect();
+    if (dom && rect && rect?.top >= document.documentElement.clientHeight - 120) {
+      dom.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
+      });
+    }
   });
 
   return (
@@ -322,7 +326,7 @@ export function Home() {
   const loading = !useChatStore?.persist?.hasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
-  // settings
+  // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
 
