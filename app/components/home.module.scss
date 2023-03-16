@@ -317,6 +317,12 @@
   outline: none;
 }
 
+@media only screen and (max-width: 600px) {
+  .chat-input {
+    font-size: 16px;
+  }
+}
+
 .chat-input:focus {
   border: 1px solid var(--primary);
 }
