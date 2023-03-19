@@ -29,7 +29,7 @@ import DownloadIcon from "../icons/download.svg";
 import { Message, SubmitKey, useChatStore, Theme } from "../store";
 import { Settings } from "./settings";
 import { showModal } from "./ui-lib";
-import { copyToClipboard, downloadAs } from "../utils";
+import { copyToClipboard, downloadAs, isIOS } from "../utils";
 
 export function Markdown(props: { content: string }) {
   return (
@@ -177,9 +177,8 @@ export function Chat(props: { showSideBar?: () => void }) {
     );
 
   useEffect(() => {
-    const dom = latestMessageRef.current;
-    const rect = dom?.getBoundingClientRect();
-    if (dom && rect && rect?.top >= document.documentElement.clientHeight - 120) {
+    const dom = latestMessageRef.current
+    if (dom && !isIOS()) {
       dom.scrollIntoView({
         behavior: "smooth",
         block: "end"
