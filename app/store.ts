@@ -23,7 +23,7 @@ export enum Theme {
   Light = "light",
 }
 
-interface ChatConfig {
+export interface ChatConfig {
   maxToken?: number;
   historyMessageCount: number; // -1 means all
   compressMessageLengthThreshold: number;
@@ -35,7 +35,7 @@ interface ChatConfig {
 }
 
 const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 5,
+  historyMessageCount: 4,
   compressMessageLengthThreshold: 500,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
@@ -44,13 +44,13 @@ const DEFAULT_CONFIG: ChatConfig = {
   tightBorder: false,
 };
 
-interface ChatStat {
+export interface ChatStat {
   tokenCount: number;
   wordCount: number;
   charCount: number;
 }
 
-interface ChatSession {
+export interface ChatSession {
   id: number;
   topic: string;
   memoryPrompt: string;
@@ -190,23 +190,19 @@ export const useChatStore = create<ChatStore>()(
       },
 
       onNewMessage(message) {
+        get().updateCurrentSession(session => {
+          session.lastUpdate = new Date().toLocaleString()
+        })
         get().updateStat(message);
         get().summarizeSession();
       },
 
       async onUserInput(content) {
-        const message: Message = {
+        const userMessage: Message = {
           role: "user",
           content,
           date: new Date().toLocaleString(),
         };
-
-        get().updateCurrentSession((session) => {
-          session.messages.push(message);
-        });
-
-        // get last five messges
-        const messages = get().currentSession().messages.concat(message);
 
         const botMessage: Message = {
           content: "",
@@ -215,13 +211,18 @@ export const useChatStore = create<ChatStore>()(
           streaming: true,
         };
 
+        // get recent messages 
+        const recentMessages = get().getMessagesWithMemory()
+        const sendMessages = recentMessages.concat(userMessage)
+
+        // save user's and bot's message
         get().updateCurrentSession((session) => {
+          session.messages.push(userMessage);
           session.messages.push(botMessage);
         });
 
-        const recentMessages = get().getMessagesWithMemory()
-
-        requestChatStream(recentMessages, {
+        console.log('[User Input] ', sendMessages)
+        requestChatStream(sendMessages, {
           onMessage(content, done) {
             if (done) {
               botMessage.streaming = false;
@@ -243,11 +244,12 @@ export const useChatStore = create<ChatStore>()(
       getMessagesWithMemory() {
         const session = get().currentSession()
         const config = get().config
-        const recentMessages = session.messages.slice(-config.historyMessageCount);
+        const n = session.messages.length
+        const recentMessages = session.messages.slice(n - config.historyMessageCount);
 
         const memoryPrompt: Message = {
           role: 'system',
-          content: '这是你和用户的历史聊天总结：' + session.memoryPrompt,
+          content: '这是 ai 和用户的历史聊天总结作为前情提要：' + session.memoryPrompt,
           date: ''
         }
 
@@ -285,22 +287,26 @@ export const useChatStore = create<ChatStore>()(
           });
         }
 
+        const config = get().config
         const messages = get().getMessagesWithMemory()
-        const toBeSummarizedMsgs = messages.slice(session.lastSummarizeIndex)
-        const historyMsgLength = session.memoryPrompt.length + toBeSummarizedMsgs.reduce((pre, cur) => pre + cur.content.length, 0)
-        const lastSummarizeIndex = messages.length
-        if (historyMsgLength > 500) {
+        const toBeSummarizedMsgs = get().getMessagesWithMemory()
+        const historyMsgLength = toBeSummarizedMsgs.reduce((pre, cur) => pre + cur.content.length, 0)
+        const lastSummarizeIndex = session.messages.length
+
+        console.log('[Chat History] ', messages, historyMsgLength, config.compressMessageLengthThreshold)
+
+        if (historyMsgLength > config.compressMessageLengthThreshold) {
           requestChatStream(toBeSummarizedMsgs.concat({
             role: 'system',
-            content: '总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 50 字以内',
+            content: '总结一下 ai 和用户的对话，用作后续的上下文提示 prompt，控制在 100 字以内，你在回复时用 ai 自称',
             date: ''
           }), {
             filterBot: false,
             onMessage(message, done) {
               session.memoryPrompt = message
-              session.lastSummarizeIndex = lastSummarizeIndex
               if (done) {
                 console.log('[Memory] ', session.memoryPrompt)
+                session.lastSummarizeIndex = lastSummarizeIndex
               }
             },
             onError(error) {
