@@ -26,7 +26,7 @@ import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 
-import { Message, SubmitKey, useChatStore, Theme } from "../store";
+import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { Settings } from "./settings";
 import { showModal } from "./ui-lib";
 import { copyToClipboard, downloadAs, isIOS } from "../utils";
@@ -189,8 +189,8 @@ export function Chat(props: { showSideBar?: () => void }) {
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
-        <div>
-          <div className={styles["window-header-title"]}>{session.topic}</div>
+        <div className={styles["window-header-title"]}>
+          <div className={styles["window-header-main-title"]}>{session.topic}</div>
           <div className={styles["window-header-sub-title"]}>
             与 ChatGPT 的 {session.messages.length} 条对话
           </div>
@@ -210,7 +210,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               bordered
               title="查看压缩后的历史 Prompt"
               onClick={() => {
-                showMemoryPrompt(session.memoryPrompt)
+                showMemoryPrompt(session)
               }}
             />
           </div>
@@ -323,12 +323,12 @@ function exportMessages(messages: Message[], topic: string) {
   })
 }
 
-function showMemoryPrompt(prompt: string) {
+function showMemoryPrompt(session: ChatSession) {
   showModal({
-    title: "上下文记忆 Prompt", children: <div className="markdown-body">
-      <pre className={styles['export-content']}>{prompt}</pre>
+    title: `上下文记忆 Prompt (${session.lastSummarizeIndex} of ${session.messages.length})`, children: <div className="markdown-body">
+      <pre className={styles['export-content']}>{session.memoryPrompt || '无'}</pre>
     </div>, actions: [
-      <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(prompt)} />,
+      <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(session.memoryPrompt)} />,
     ]
   })
 }

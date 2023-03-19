@@ -26,8 +26,8 @@ export function Settings(props: { closeSettings: () => void }) {
   return (
     <>
       <div className={styles["window-header"]}>
-        <div>
-          <div className={styles["window-header-title"]}>设置</div>
+        <div className={styles["window-header-title"]}>
+          <div className={styles["window-header-main-title"]}>设置</div>
           <div className={styles["window-header-sub-title"]}>设置选项</div>
         </div>
         <div className={styles["window-actions"]}>
@@ -140,14 +140,14 @@ export function Settings(props: { closeSettings: () => void }) {
         </List>
         <List>
           <ListItem>
-            <div className={styles["settings-title"]}>最大上下文消息数</div>
+            <div className={styles["settings-title"]}>附带历史消息数</div>
             <input
               type="range"
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
-              min="5"
-              max="20"
-              step="5"
+              min="2"
+              max="25"
+              step="2"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
@@ -156,7 +156,6 @@ export function Settings(props: { closeSettings: () => void }) {
               }
             ></input>
           </ListItem>
-
 
           <ListItem>
             <div className={styles["settings-title"]}>
