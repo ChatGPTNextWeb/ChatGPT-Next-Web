@@ -339,3 +339,9 @@
 .export-content {
   white-space: break-spaces;
 }
+
+.loading-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

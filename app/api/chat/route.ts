@@ -20,6 +20,7 @@ export async function POST(req: Request) {
 
     return new Response(JSON.stringify(completion.data));
   } catch (e) {
+    console.error("[Chat] ", e);
     return new Response(JSON.stringify(e));
   }
 }

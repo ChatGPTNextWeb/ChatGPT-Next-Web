@@ -8,8 +8,6 @@ async function createStream(payload: ReadableStream<Uint8Array>) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  console.log("[ChatStream]", payload);
-
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     headers: {
       "Content-Type": "application/json",
@@ -51,11 +49,10 @@ async function createStream(payload: ReadableStream<Uint8Array>) {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("Request", req);
     const stream = await createStream(req.body!);
     return new Response(stream);
   } catch (error) {
-    console.error(error);
+    console.error("[Chat Stream]", error);
   }
 }
 
