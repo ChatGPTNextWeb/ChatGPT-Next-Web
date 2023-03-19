@@ -6,6 +6,7 @@ import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
 import CloseIcon from "../icons/close.svg";
+import ClearIcon from "../icons/clear.svg";
 
 import { List, ListItem, Popover } from "./ui-lib";
 
@@ -15,10 +16,11 @@ import { Avatar } from "./home";
 
 export function Settings(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [config, updateConfig, resetConfig] = useChatStore((state) => [
+  const [config, updateConfig, resetConfig, clearAllData] = useChatStore((state) => [
     state.config,
     state.updateConfig,
     state.resetConfig,
+    state.clearAllData,
   ]);
 
   return (
@@ -31,10 +33,10 @@ export function Settings(props: { closeSettings: () => void }) {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<CloseIcon />}
-              onClick={props.closeSettings}
+              icon={<ClearIcon />}
+              onClick={clearAllData}
               bordered
-              title="重置所有选项"
+              title="清除所有数据"
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -43,6 +45,14 @@ export function Settings(props: { closeSettings: () => void }) {
               onClick={resetConfig}
               bordered
               title="重置所有选项"
+            />
+          </div>
+          <div className={styles["window-action-button"]}>
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={props.closeSettings}
+              bordered
+              title="关闭"
             />
           </div>
         </div>
@@ -142,6 +152,24 @@ export function Settings(props: { closeSettings: () => void }) {
                 updateConfig(
                   (config) =>
                     (config.historyMessageCount = e.target.valueAsNumber)
+                )
+              }
+            ></input>
+          </ListItem>
+
+
+          <ListItem>
+            <div className={styles["settings-title"]}>
+              历史消息压缩长度阈值
+            </div>
+            <input
+              type="number"
+              min={500}
+              max={4000}
+              value={config.compressMessageLengthThreshold}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.compressMessageLengthThreshold = e.currentTarget.valueAsNumber)
                 )
               }
             ></input>

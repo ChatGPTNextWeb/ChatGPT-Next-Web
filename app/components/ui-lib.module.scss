@@ -90,7 +90,7 @@
   }
 
   .modal-content {
-    height: 40vh;
+    max-height: 40vh;
     padding: var(--modal-padding);
     overflow: auto;
   }
@@ -118,7 +118,7 @@
     width: 90vw;
 
     .modal-content {
-      height: 50vh;
+      max-height: 50vh;
     }
   }
 }

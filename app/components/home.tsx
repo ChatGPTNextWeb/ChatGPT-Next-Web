@@ -208,7 +208,10 @@ export function Chat(props: { showSideBar?: () => void }) {
             <IconButton
               icon={<BrainIcon />}
               bordered
-              title="查看压缩后的历史 Prompt（开发中）"
+              title="查看压缩后的历史 Prompt"
+              onClick={() => {
+                showMemoryPrompt(session.memoryPrompt)
+              }}
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -316,6 +319,16 @@ function exportMessages(messages: Message[], topic: string) {
     </div>, actions: [
       <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(mdText)} />,
       <IconButton key="download" icon={<DownloadIcon />} bordered text="下载文件" onClick={() => downloadAs(mdText, filename)} />
+    ]
+  })
+}
+
+function showMemoryPrompt(prompt: string) {
+  showModal({
+    title: "上下文记忆 Prompt", children: <div className="markdown-body">
+      <pre className={styles['export-content']}>{prompt}</pre>
+    </div>, actions: [
+      <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(prompt)} />,
     ]
   })
 }
