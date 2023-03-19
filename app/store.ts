@@ -26,6 +26,7 @@ export enum Theme {
 interface ChatConfig {
   maxToken?: number;
   historyMessageCount: number; // -1 means all
+  compressMessageLengthThreshold: number;
   sendBotMessages: boolean; // send bot's message or not
   submitKey: SubmitKey;
   avatar: string;
@@ -35,9 +36,10 @@ interface ChatConfig {
 
 const DEFAULT_CONFIG: ChatConfig = {
   historyMessageCount: 5,
-  sendBotMessages: false as boolean,
+  compressMessageLengthThreshold: 500,
+  sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
-  avatar: "1fae0",
+  avatar: "1f603",
   theme: Theme.Auto as Theme,
   tightBorder: false,
 };
@@ -55,7 +57,7 @@ interface ChatSession {
   messages: Message[];
   stat: ChatStat;
   lastUpdate: string;
-  deleted?: boolean;
+  lastSummarizeIndex: number;
 }
 
 const DEFAULT_TOPIC = "新的聊天";
@@ -80,6 +82,7 @@ function createEmptySession(): ChatSession {
       charCount: 0,
     },
     lastUpdate: createDate,
+    lastSummarizeIndex: 0,
   };
 }
 
@@ -93,7 +96,6 @@ interface ChatStore {
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
-  onBotResponse: (message: Message) => void;
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -102,10 +104,12 @@ interface ChatStore {
     messageIndex: number,
     updater: (message?: Message) => void
   ) => void;
+  getMessagesWithMemory: () => Message[];
 
   getConfig: () => ChatConfig;
   resetConfig: () => void;
   updateConfig: (updater: (config: ChatConfig) => void) => void;
+  clearAllData: () => void;
 }
 
 const LOCAL_KEY = "chat-next-web-store";
@@ -186,9 +190,6 @@ export const useChatStore = create<ChatStore>()(
       },
 
       onNewMessage(message) {
-        get().updateCurrentSession((session) => {
-          session.messages.push(message);
-        });
         get().updateStat(message);
         get().summarizeSession();
       },
@@ -200,9 +201,12 @@ export const useChatStore = create<ChatStore>()(
           date: new Date().toLocaleString(),
         };
 
+        get().updateCurrentSession((session) => {
+          session.messages.push(message);
+        });
+
         // get last five messges
         const messages = get().currentSession().messages.concat(message);
-        get().onNewMessage(message);
 
         const botMessage: Message = {
           content: "",
@@ -215,14 +219,13 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
-        const fiveMessages = messages.slice(-5);
+        const recentMessages = get().getMessagesWithMemory()
 
-        requestChatStream(fiveMessages, {
+        requestChatStream(recentMessages, {
           onMessage(content, done) {
             if (done) {
               botMessage.streaming = false;
-              get().updateStat(botMessage);
-              get().summarizeSession();
+              get().onNewMessage(botMessage)
             } else {
               botMessage.content = content;
               set(() => ({}));
@@ -237,6 +240,24 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
+      getMessagesWithMemory() {
+        const session = get().currentSession()
+        const config = get().config
+        const recentMessages = session.messages.slice(-config.historyMessageCount);
+
+        const memoryPrompt: Message = {
+          role: 'system',
+          content: '这是你和用户的历史聊天总结：' + session.memoryPrompt,
+          date: ''
+        }
+
+        if (session.memoryPrompt) {
+          recentMessages.unshift(memoryPrompt)
+        }
+
+        return recentMessages
+      },
+
       updateMessage(
         sessionIndex: number,
         messageIndex: number,
@@ -249,10 +270,6 @@ export const useChatStore = create<ChatStore>()(
         set(() => ({ sessions }));
       },
 
-      onBotResponse(message) {
-        get().onNewMessage(message);
-      },
-
       summarizeSession() {
         const session = get().currentSession();
 
@@ -260,12 +277,36 @@ export const useChatStore = create<ChatStore>()(
           // should summarize topic
           requestWithPrompt(
             session.messages,
-            "直接返回这句话的简要主题，不要解释"
+            "直接返回这句话的简要主题，不要解释，如果没有主题，请直接返回“闲聊”"
           ).then((res) => {
             get().updateCurrentSession(
               (session) => (session.topic = trimTopic(res))
             );
           });
+        }
+
+        const messages = get().getMessagesWithMemory()
+        const toBeSummarizedMsgs = messages.slice(session.lastSummarizeIndex)
+        const historyMsgLength = session.memoryPrompt.length + toBeSummarizedMsgs.reduce((pre, cur) => pre + cur.content.length, 0)
+        const lastSummarizeIndex = messages.length
+        if (historyMsgLength > 500) {
+          requestChatStream(toBeSummarizedMsgs.concat({
+            role: 'system',
+            content: '总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 50 字以内',
+            date: ''
+          }), {
+            filterBot: false,
+            onMessage(message, done) {
+              session.memoryPrompt = message
+              session.lastSummarizeIndex = lastSummarizeIndex
+              if (done) {
+                console.log('[Memory] ', session.memoryPrompt)
+              }
+            },
+            onError(error) {
+              console.error('[Summarize] ', error)
+            },
+          })
         }
       },
 
@@ -281,6 +322,13 @@ export const useChatStore = create<ChatStore>()(
         const index = get().currentSessionIndex;
         updater(sessions[index]);
         set(() => ({ sessions }));
+      },
+
+      clearAllData() {
+        if (confirm('确认清除所有聊天、设置数据？')) {
+          localStorage.clear()
+          location.reload()
+        }
       },
     }),
     {

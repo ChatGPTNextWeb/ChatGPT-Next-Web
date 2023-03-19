@@ -161,6 +161,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
   width: 24px;
 }
 
+input[type="number"] {
+  appearance: none;
+  border-radius: 10px;
+  border: var(--border-in-light);
+  height: 32px;
+  box-sizing: border-box;
+  background: var(--white);
+  color: var(--black);
+  padding: 0 10px;
+}
+
 div.math {
   overflow-x: auto;
 }
