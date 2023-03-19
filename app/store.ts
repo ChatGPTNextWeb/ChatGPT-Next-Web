@@ -36,7 +36,7 @@ export interface ChatConfig {
 
 const DEFAULT_CONFIG: ChatConfig = {
   historyMessageCount: 4,
-  compressMessageLengthThreshold: 500,
+  compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
@@ -105,6 +105,7 @@ interface ChatStore {
     updater: (message?: Message) => void
   ) => void;
   getMessagesWithMemory: () => Message[];
+  getMemoryPrompt: () => Message,
 
   getConfig: () => ChatConfig;
   resetConfig: () => void;
@@ -241,17 +242,23 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
+      getMemoryPrompt() {
+        const session = get().currentSession()
+
+        return {
+          role: 'system',
+          content: '这是 ai 和用户的历史聊天总结作为前情提要：' + session.memoryPrompt,
+          date: ''
+        } as Message
+      },
+
       getMessagesWithMemory() {
         const session = get().currentSession()
         const config = get().config
         const n = session.messages.length
         const recentMessages = session.messages.slice(n - config.historyMessageCount);
 
-        const memoryPrompt: Message = {
-          role: 'system',
-          content: '这是 ai 和用户的历史聊天总结作为前情提要：' + session.memoryPrompt,
-          date: ''
-        }
+        const memoryPrompt = get().getMemoryPrompt()
 
         if (session.memoryPrompt) {
           recentMessages.unshift(memoryPrompt)
@@ -288,17 +295,24 @@ export const useChatStore = create<ChatStore>()(
         }
 
         const config = get().config
-        const messages = get().getMessagesWithMemory()
-        const toBeSummarizedMsgs = get().getMessagesWithMemory()
+        let toBeSummarizedMsgs = session.messages.slice(session.lastSummarizeIndex)
         const historyMsgLength = toBeSummarizedMsgs.reduce((pre, cur) => pre + cur.content.length, 0)
+
+        if (historyMsgLength > 4000) {
+          toBeSummarizedMsgs = toBeSummarizedMsgs.slice(-config.historyMessageCount)
+        }
+
+        // add memory prompt
+        toBeSummarizedMsgs.unshift(get().getMemoryPrompt())
+
         const lastSummarizeIndex = session.messages.length
 
-        console.log('[Chat History] ', messages, historyMsgLength, config.compressMessageLengthThreshold)
+        console.log('[Chat History] ', toBeSummarizedMsgs, historyMsgLength, config.compressMessageLengthThreshold)
 
         if (historyMsgLength > config.compressMessageLengthThreshold) {
           requestChatStream(toBeSummarizedMsgs.concat({
             role: 'system',
-            content: '总结一下 ai 和用户的对话，用作后续的上下文提示 prompt，控制在 100 字以内，你在回复时用 ai 自称',
+            content: '简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 50 字以内',
             date: ''
           }), {
             filterBot: false,
