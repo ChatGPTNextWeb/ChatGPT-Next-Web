@@ -30,3 +30,8 @@ export function downloadAs(text: string, filename: string) {
 
   document.body.removeChild(element);
 }
+
+export function isIOS() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(userAgent);
+}
