@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Emoji } from "emoji-picker-react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
-import { Markdown } from './markdown'
 
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
@@ -23,10 +21,31 @@ import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
-import { Settings } from "./settings";
 import { showModal } from "./ui-lib";
 import { copyToClipboard, downloadAs, isIOS } from "../utils";
 
+import dynamic from "next/dynamic";
+
+export function Loading(props: {
+  noLogo?: boolean
+}) {
+  return <div className={styles['loading-content']}>
+    {!props.noLogo && <BotIcon />}
+    <LoadingIcon />
+  </div>
+}
+
+const Markdown = dynamic(async () => (await import('./markdown')).Markdown, {
+  loading: () => <LoadingIcon />
+})
+
+const Settings = dynamic(async () => (await import('./settings')).Settings, {
+  loading: () => <Loading noLogo />
+})
+
+const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
+  loading: () => <LoadingIcon />
+})
 
 export function Avatar(props: { role: Message["role"] }) {
   const config = useChatStore((state) => state.config);
@@ -334,12 +353,7 @@ export function Home() {
   useSwitchTheme();
 
   if (loading) {
-    return (
-      <div>
-        <Avatar role="assistant"></Avatar>
-        <LoadingIcon />
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

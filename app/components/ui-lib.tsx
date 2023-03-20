@@ -2,7 +2,6 @@ import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 import { createRoot } from 'react-dom/client'
-import { IconButton } from "./button";
 
 export function Popover(props: {
   children: JSX.Element;
