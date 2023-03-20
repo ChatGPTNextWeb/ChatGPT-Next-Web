@@ -1,15 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import "katex/dist/katex.min.css";
-import RemarkMath from "remark-math";
-import RehypeKatex from "rehype-katex";
-
 import { Emoji } from "emoji-picker-react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
+import { Markdown } from './markdown'
 
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
@@ -31,13 +27,6 @@ import { Settings } from "./settings";
 import { showModal } from "./ui-lib";
 import { copyToClipboard, downloadAs, isIOS } from "../utils";
 
-export function Markdown(props: { content: string }) {
-  return (
-    <ReactMarkdown remarkPlugins={[RemarkMath]} rehypePlugins={[RehypeKatex]}>
-      {props.content}
-    </ReactMarkdown>
-  );
-}
 
 export function Avatar(props: { role: Message["role"] }) {
   const config = useChatStore((state) => state.config);

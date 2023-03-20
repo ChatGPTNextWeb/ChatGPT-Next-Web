@@ -1,5 +1,6 @@
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
+import "./styles/prism.scss";
 
 export const metadata = {
   title: "ChatGPT Next Web",
@@ -13,10 +14,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <meta
-        name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-      />
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        />
+        <link rel="manifest" href="/site.webmanifest"></link>
+      </head>
       <body>{children}</body>
     </html>
   );

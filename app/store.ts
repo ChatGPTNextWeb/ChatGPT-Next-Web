@@ -24,7 +24,7 @@ export enum Theme {
 }
 
 export interface ChatConfig {
-  maxToken?: number;
+  maxToken?: number
   historyMessageCount: number; // -1 means all
   compressMessageLengthThreshold: number;
   sendBotMessages: boolean; // send bot's message or not
@@ -282,7 +282,7 @@ export const useChatStore = create<ChatStore>()(
       summarizeSession() {
         const session = get().currentSession();
 
-        if (session.topic === DEFAULT_TOPIC) {
+        if (session.topic === DEFAULT_TOPIC && session.messages.length >= 3) {
           // should summarize topic
           requestWithPrompt(
             session.messages,
