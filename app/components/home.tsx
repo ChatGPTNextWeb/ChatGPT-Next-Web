@@ -198,7 +198,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]}>
+        <div className={styles["window-header-title"]} onClick={props?.showSideBar}>
           <div className={styles["window-header-main-title"]}>{session.topic}</div>
           <div className={styles["window-header-sub-title"]}>
             {Locale.Chat.SubTitle(session.messages.length)}
@@ -343,7 +343,7 @@ function showMemoryPrompt(session: ChatSession) {
 }
 
 export function Home() {
-  const [createNewSession] = useChatStore((state) => [state.newSession]);
+  const [createNewSession, currentIndex, removeSession] = useChatStore((state) => [state.newSession, state.currentSessionIndex, state.removeSession]);
   const loading = !useChatStore?.persist?.hasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
@@ -364,7 +364,6 @@ export function Home() {
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
-        onClick={() => setShowSideBar(false)}
       >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>ChatGPT Next</div>
@@ -378,7 +377,10 @@ export function Home() {
 
         <div
           className={styles["sidebar-body"]}
-          onClick={() => setOpenSettings(false)}
+          onClick={() => {
+            setOpenSettings(false)
+            setShowSideBar(false)
+          }}
         >
           <ChatList />
         </div>
@@ -388,7 +390,11 @@ export function Home() {
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
                 icon={<CloseIcon />}
-                onClick={() => setShowSideBar(!showSideBar)}
+                onClick={() => {
+                  if (confirm('删除选中的对话？')) {
+                    removeSession(currentIndex)
+                  }
+                }}
               />
             </div>
             <div className={styles["sidebar-action"]}>
