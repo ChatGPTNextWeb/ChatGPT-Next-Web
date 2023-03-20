@@ -6,14 +6,37 @@ export type { LocaleType } from './cn'
 type Lang = 'en' | 'cn'
 
 const LANG_KEY = 'lang'
+
+function getItem(key: string) {
+    try {
+        return localStorage.getItem(key)
+    } finally {
+        return null
+    }
+}
+
+function setItem(key: string, value: string) {
+    try {
+        localStorage.setItem(key, value)
+    } finally { }
+}
+
+function getLanguage() {
+    try {
+        return navigator.language.toLowerCase()
+    } finally {
+        return 'cn'
+    }
+}
+
 export function getLang(): Lang {
-    const savedLang = localStorage?.getItem(LANG_KEY)
+    const savedLang = getItem(LANG_KEY)
 
     if (['en', 'cn'].includes(savedLang ?? '')) {
         return savedLang as Lang
     }
 
-    const lang = navigator.language.toLowerCase()
+    const lang = getLanguage()
 
     if (lang.includes('zh') || lang.includes('cn')) {
         return 'cn'
@@ -23,7 +46,7 @@ export function getLang(): Lang {
 }
 
 export function changeLang(lang: Lang) {
-    localStorage.setItem(LANG_KEY, lang)
+    setItem(LANG_KEY, lang)
     location.reload()
 }
 
