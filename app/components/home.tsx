@@ -23,6 +23,7 @@ import DownloadIcon from "../icons/download.svg";
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal } from "./ui-lib";
 import { copyToClipboard, downloadAs, isIOS } from "../utils";
+import Locale from '../locales'
 
 import dynamic from "next/dynamic";
 
@@ -77,7 +78,7 @@ export function ChatItem(props: {
     >
       <div className={styles["chat-item-title"]}>{props.title}</div>
       <div className={styles["chat-item-info"]}>
-        <div className={styles["chat-item-count"]}>{props.count} 条对话</div>
+        <div className={styles["chat-item-count"]}>{Locale.ChatItem.ChatItemCount(props.count)}</div>
         <div className={styles["chat-item-date"]}>{props.time}</div>
       </div>
       <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
@@ -200,7 +201,7 @@ export function Chat(props: { showSideBar?: () => void }) {
         <div className={styles["window-header-title"]}>
           <div className={styles["window-header-main-title"]}>{session.topic}</div>
           <div className={styles["window-header-sub-title"]}>
-            与 ChatGPT 的 {session.messages.length} 条对话
+            {Locale.Chat.SubTitle(session.messages.length)}
           </div>
         </div>
         <div className={styles["window-actions"]}>
@@ -208,7 +209,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             <IconButton
               icon={<MenuIcon />}
               bordered
-              title="查看消息列表"
+              title={Locale.Chat.Actions.ChatList}
               onClick={props?.showSideBar}
             />
           </div>
@@ -216,7 +217,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             <IconButton
               icon={<BrainIcon />}
               bordered
-              title="查看压缩后的历史 Prompt"
+              title={Locale.Chat.Actions.CompressedHistory}
               onClick={() => {
                 showMemoryPrompt(session)
               }}
@@ -226,7 +227,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             <IconButton
               icon={<ExportIcon />}
               bordered
-              title="导出聊天记录"
+              title={Locale.Chat.Actions.Export}
               onClick={() => {
                 exportMessages(session.messages, session.topic)
               }}
@@ -251,7 +252,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                   <Avatar role={message.role} />
                 </div>
                 {(message.preview || message.streaming) && (
-                  <div className={styles["chat-message-status"]}>正在输入…</div>
+                  <div className={styles["chat-message-status"]}>{Locale.Chat.Typing}</div>
                 )}
                 <div className={styles["chat-message-item"]}>
                   {(message.preview || message.content.length === 0) &&
@@ -283,7 +284,7 @@ export function Chat(props: { showSideBar?: () => void }) {
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
             className={styles["chat-input"]}
-            placeholder={`输入消息，${submitKey} 发送`}
+            placeholder={Locale.Chat.Input(submitKey)}
             rows={3}
             onInput={(e) => setUserInput(e.currentTarget.value)}
             value={userInput}
@@ -291,7 +292,7 @@ export function Chat(props: { showSideBar?: () => void }) {
           />
           <IconButton
             icon={<SendWhiteIcon />}
-            text={"发送"}
+            text={Locale.Chat.Send}
             className={styles["chat-input-send"] + " no-dark"}
             onClick={onUserSubmit}
           />
@@ -322,21 +323,21 @@ function exportMessages(messages: Message[], topic: string) {
   const filename = `${topic}.md`
 
   showModal({
-    title: "导出聊天记录为 Markdown", children: <div className="markdown-body">
+    title: Locale.Export.Title, children: <div className="markdown-body">
       <pre className={styles['export-content']}>{mdText}</pre>
     </div>, actions: [
-      <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(mdText)} />,
-      <IconButton key="download" icon={<DownloadIcon />} bordered text="下载文件" onClick={() => downloadAs(mdText, filename)} />
+      <IconButton key="copy" icon={<CopyIcon />} bordered text={Locale.Export.Copy} onClick={() => copyToClipboard(mdText)} />,
+      <IconButton key="download" icon={<DownloadIcon />} bordered text={Locale.Export.Download} onClick={() => downloadAs(mdText, filename)} />
     ]
   })
 }
 
 function showMemoryPrompt(session: ChatSession) {
   showModal({
-    title: `上下文记忆 Prompt (${session.lastSummarizeIndex} of ${session.messages.length})`, children: <div className="markdown-body">
-      <pre className={styles['export-content']}>{session.memoryPrompt || '无'}</pre>
+    title: `${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`, children: <div className="markdown-body">
+      <pre className={styles['export-content']}>{session.memoryPrompt || Locale.Memory.EmptyContent}</pre>
     </div>, actions: [
-      <IconButton key="copy" icon={<CopyIcon />} bordered text="全部复制" onClick={() => copyToClipboard(session.memoryPrompt)} />,
+      <IconButton key="copy" icon={<CopyIcon />} bordered text={Locale.Memory.Copy} onClick={() => copyToClipboard(session.memoryPrompt)} />,
     ]
   })
 }
@@ -405,7 +406,7 @@ export function Home() {
           <div>
             <IconButton
               icon={<AddIcon />}
-              text={"新的聊天"}
+              text={Locale.Home.NewChat}
               onClick={createNewSession}
             />
           </div>

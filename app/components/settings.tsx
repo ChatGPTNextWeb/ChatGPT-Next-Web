@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-import EmojiPicker, { Emoji, Theme as EmojiTheme } from "emoji-picker-react";
+import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import styles from "./settings.module.scss";
 
@@ -13,6 +13,8 @@ import { List, ListItem, Popover } from "./ui-lib";
 import { IconButton } from "./button";
 import { SubmitKey, useChatStore, Theme } from "../store";
 import { Avatar } from "./home";
+
+import Locale, { changeLang, getLang } from '../locales'
 
 export function Settings(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -27,8 +29,8 @@ export function Settings(props: { closeSettings: () => void }) {
     <>
       <div className={styles["window-header"]}>
         <div className={styles["window-header-title"]}>
-          <div className={styles["window-header-main-title"]}>设置</div>
-          <div className={styles["window-header-sub-title"]}>设置选项</div>
+          <div className={styles["window-header-main-title"]}>{Locale.Settings.Title}</div>
+          <div className={styles["window-header-sub-title"]}>{Locale.Settings.SubTitle}</div>
         </div>
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
@@ -36,7 +38,7 @@ export function Settings(props: { closeSettings: () => void }) {
               icon={<ClearIcon />}
               onClick={clearAllData}
               bordered
-              title="清除所有数据"
+              title={Locale.Settings.Actions.ClearAll}
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -44,7 +46,7 @@ export function Settings(props: { closeSettings: () => void }) {
               icon={<ResetIcon />}
               onClick={resetConfig}
               bordered
-              title="重置所有选项"
+              title={Locale.Settings.Actions.ResetAll}
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -52,7 +54,7 @@ export function Settings(props: { closeSettings: () => void }) {
               icon={<CloseIcon />}
               onClick={props.closeSettings}
               bordered
-              title="关闭"
+              title={Locale.Settings.Actions.Close}
             />
           </div>
         </div>
@@ -60,7 +62,7 @@ export function Settings(props: { closeSettings: () => void }) {
       <div className={styles["settings"]}>
         <List>
           <ListItem>
-            <div className={styles["settings-title"]}>头像</div>
+            <div className={styles["settings-title"]}>{Locale.Settings.Avatar}</div>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
               content={
@@ -85,7 +87,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </ListItem>
 
           <ListItem>
-            <div className={styles["settings-title"]}>发送键</div>
+            <div className={styles["settings-title"]}>{Locale.Settings.SendKey}</div>
             <div className="">
               <select
                 value={config.submitKey}
@@ -106,7 +108,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </ListItem>
 
           <ListItem>
-            <div className={styles["settings-title"]}>主题</div>
+            <div className={styles["settings-title"]}>{Locale.Settings.Theme}</div>
             <div className="">
               <select
                 value={config.theme}
@@ -126,7 +128,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </ListItem>
 
           <ListItem>
-            <div className={styles["settings-title"]}>紧凑边框</div>
+            <div className={styles["settings-title"]}>{Locale.Settings.TightBorder}</div>
             <input
               type="checkbox"
               checked={config.tightBorder}
@@ -137,10 +139,30 @@ export function Settings(props: { closeSettings: () => void }) {
               }
             ></input>
           </ListItem>
+
+          <ListItem>
+            <div className={styles["settings-title"]}>{Locale.Settings.Lang.Name}</div>
+            <div className="">
+              <select
+                value={getLang()}
+                onChange={(e) => {
+                  changeLang(e.target.value as any)
+                }}
+              >
+                <option value='en' key='en'>
+                  {Locale.Settings.Lang.Options.en}
+                </option>
+
+                <option value='cn' key='cn'>
+                  {Locale.Settings.Lang.Options.cn}
+                </option>
+              </select>
+            </div>
+          </ListItem>
         </List>
         <List>
           <ListItem>
-            <div className={styles["settings-title"]}>附带历史消息数</div>
+            <div className={styles["settings-title"]}>{Locale.Settings.HistoryCount}</div>
             <input
               type="range"
               title={config.historyMessageCount.toString()}
@@ -159,7 +181,7 @@ export function Settings(props: { closeSettings: () => void }) {
 
           <ListItem>
             <div className={styles["settings-title"]}>
-              历史消息压缩长度阈值
+              {Locale.Settings.CompressThreshold}
             </div>
             <input
               type="number"
@@ -169,21 +191,6 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) =>
                 updateConfig(
                   (config) => (config.compressMessageLengthThreshold = e.currentTarget.valueAsNumber)
-                )
-              }
-            ></input>
-          </ListItem>
-
-          <ListItem>
-            <div className={styles["settings-title"]}>
-              上下文中包含机器人消息
-            </div>
-            <input
-              type="checkbox"
-              checked={config.sendBotMessages}
-              onChange={(e) =>
-                updateConfig(
-                  (config) => (config.sendBotMessages = e.currentTarget.checked)
                 )
               }
             ></input>
