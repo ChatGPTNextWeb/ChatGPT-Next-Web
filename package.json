@@ -27,6 +27,8 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "rehype-katex": "^6.0.2",
+    "rehype-prism-plus": "^1.5.1",
+    "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.59.2",
     "typescript": "4.9.5",

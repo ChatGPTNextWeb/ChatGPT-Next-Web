@@ -117,13 +117,13 @@ input[type="checkbox"] {
   border-radius: 5px;
   height: 16px;
   width: 16px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 input[type="checkbox"]:checked::after {
-  display: block;
+  display: inline-block;
   width: 8px;
   height: 8px;
   background-color: var(--primary);
