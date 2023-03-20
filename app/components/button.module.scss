@@ -30,6 +30,12 @@
   align-items: center;
 }
 
+@media only screen and (max-width: 600px) {
+  .icon-button {
+    padding: 16px;
+  }
+}
+
 @mixin dark-button {
   div:not(:global(.no-dark))>.icon-button-icon {
     filter: invert(0.5);
