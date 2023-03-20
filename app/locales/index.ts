@@ -10,7 +10,7 @@ const LANG_KEY = 'lang'
 function getItem(key: string) {
     try {
         return localStorage.getItem(key)
-    } finally {
+    } catch {
         return null
     }
 }
@@ -18,13 +18,13 @@ function getItem(key: string) {
 function setItem(key: string, value: string) {
     try {
         localStorage.setItem(key, value)
-    } finally { }
+    } catch { }
 }
 
 function getLanguage() {
     try {
         return navigator.language.toLowerCase()
-    } finally {
+    } catch {
         return 'cn'
     }
 }
