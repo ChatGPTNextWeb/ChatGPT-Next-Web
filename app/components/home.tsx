@@ -400,7 +400,10 @@ export function Home() {
             <div className={styles["sidebar-action"]}>
               <IconButton
                 icon={<SettingsIcon />}
-                onClick={() => setOpenSettings(!openSettings)}
+                onClick={() => {
+                  setOpenSettings(true)
+                  setShowSideBar(false)
+                }}
               />
             </div>
             <div className={styles["sidebar-action"]}>
@@ -421,7 +424,10 @@ export function Home() {
 
       <div className={styles["window-content"]}>
         {openSettings ? (
-          <Settings closeSettings={() => setOpenSettings(false)} />
+          <Settings closeSettings={() => {
+            setOpenSettings(false)
+            setShowSideBar(true)
+          }} />
         ) : (
           <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
         )}
