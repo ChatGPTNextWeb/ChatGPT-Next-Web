@@ -1,3 +1,5 @@
+import Locale from './locales'
+
 export function trimTopic(topic: string) {
   const s = topic.split("");
   let lastChar = s.at(-1); // 获取 s 的最后一个字符
@@ -12,9 +14,9 @@ export function trimTopic(topic: string) {
 
 export function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text).then(res => {
-    alert('复制成功')
+    alert(Locale.Copy.Success)
   }).catch(err => {
-    alert('复制失败，请赋予剪切板权限')
+    alert(Locale.Copy.Failed)
   })
 }
 

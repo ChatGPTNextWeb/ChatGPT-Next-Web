@@ -2,8 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
-import { requestChat, requestChatStream, requestWithPrompt } from "./requests";
+import { requestChatStream, requestWithPrompt } from "./requests";
 import { trimTopic } from "./utils";
+
+import Locale from './locales'
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -60,7 +62,7 @@ export interface ChatSession {
   lastSummarizeIndex: number;
 }
 
-const DEFAULT_TOPIC = "新的聊天";
+const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 
 function createEmptySession(): ChatSession {
   const createDate = new Date().toLocaleString();
@@ -72,7 +74,7 @@ function createEmptySession(): ChatSession {
     messages: [
       {
         role: "assistant",
-        content: "有什么可以帮你的吗",
+        content: Locale.Store.BotHello,
         date: createDate,
       },
     ],
@@ -234,7 +236,7 @@ export const useChatStore = create<ChatStore>()(
             }
           },
           onError(error) {
-            botMessage.content += "\n\n出错了，稍后重试吧";
+            botMessage.content += "\n\n" + Locale.Store.Error;
             botMessage.streaming = false;
             set(() => ({}));
           },
@@ -247,7 +249,7 @@ export const useChatStore = create<ChatStore>()(
 
         return {
           role: 'system',
-          content: '这是 ai 和用户的历史聊天总结作为前情提要：' + session.memoryPrompt,
+          content: Locale.Store.Prompt.History(session.memoryPrompt),
           date: ''
         } as Message
       },
@@ -286,7 +288,7 @@ export const useChatStore = create<ChatStore>()(
           // should summarize topic
           requestWithPrompt(
             session.messages,
-            "直接返回这句话的简要主题，不要解释，如果没有主题，请直接返回“闲聊”"
+            Locale.Store.Prompt.Topic
           ).then((res) => {
             get().updateCurrentSession(
               (session) => (session.topic = trimTopic(res))
@@ -312,7 +314,7 @@ export const useChatStore = create<ChatStore>()(
         if (historyMsgLength > config.compressMessageLengthThreshold) {
           requestChatStream(toBeSummarizedMsgs.concat({
             role: 'system',
-            content: '简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 50 字以内',
+            content: Locale.Store.Prompt.Summarize,
             date: ''
           }), {
             filterBot: false,
@@ -345,7 +347,7 @@ export const useChatStore = create<ChatStore>()(
       },
 
       clearAllData() {
-        if (confirm('确认清除所有聊天、设置数据？')) {
+        if (confirm(Locale.Store.ConfirmClearAll)) {
           localStorage.clear()
           location.reload()
         }
