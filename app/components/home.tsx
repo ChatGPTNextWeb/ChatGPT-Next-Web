@@ -22,31 +22,31 @@ import DownloadIcon from "../icons/download.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal } from "./ui-lib";
-import { copyToClipboard, downloadAs, isIOS } from "../utils";
-import Locale from '../locales'
+import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
+import Locale from "../locales";
 
 import dynamic from "next/dynamic";
 
-export function Loading(props: {
-  noLogo?: boolean
-}) {
-  return <div className={styles['loading-content']}>
-    {!props.noLogo && <BotIcon />}
-    <LoadingIcon />
-  </div>
+export function Loading(props: { noLogo?: boolean }) {
+  return (
+    <div className={styles["loading-content"]}>
+      {!props.noLogo && <BotIcon />}
+      <LoadingIcon />
+    </div>
+  );
 }
 
-const Markdown = dynamic(async () => (await import('./markdown')).Markdown, {
-  loading: () => <LoadingIcon />
-})
+const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+  loading: () => <LoadingIcon />,
+});
 
-const Settings = dynamic(async () => (await import('./settings')).Settings, {
-  loading: () => <Loading noLogo />
-})
+const Settings = dynamic(async () => (await import("./settings")).Settings, {
+  loading: () => <Loading noLogo />,
+});
 
 const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
-  loading: () => <LoadingIcon />
-})
+  loading: () => <LoadingIcon />,
+});
 
 export function Avatar(props: { role: Message["role"] }) {
   const config = useChatStore((state) => state.config);
@@ -72,13 +72,16 @@ export function ChatItem(props: {
 }) {
   return (
     <div
-      className={`${styles["chat-item"]} ${props.selected && styles["chat-item-selected"]
-        }`}
+      className={`${styles["chat-item"]} ${
+        props.selected && styles["chat-item-selected"]
+      }`}
       onClick={props.onClick}
     >
       <div className={styles["chat-item-title"]}>{props.title}</div>
       <div className={styles["chat-item-info"]}>
-        <div className={styles["chat-item-count"]}>{Locale.ChatItem.ChatItemCount(props.count)}</div>
+        <div className={styles["chat-item-count"]}>
+          {Locale.ChatItem.ChatItemCount(props.count)}
+        </div>
         <div className={styles["chat-item-date"]}>{props.time}</div>
       </div>
       <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
@@ -163,34 +166,34 @@ export function Chat(props: { showSideBar?: () => void }) {
     .concat(
       isLoading
         ? [
-          {
-            role: "assistant",
-            content: "……",
-            date: new Date().toLocaleString(),
-            preview: true,
-          },
-        ]
+            {
+              role: "assistant",
+              content: "……",
+              date: new Date().toLocaleString(),
+              preview: true,
+            },
+          ]
         : []
     )
     .concat(
       userInput.length > 0
         ? [
-          {
-            role: "user",
-            content: userInput,
-            date: new Date().toLocaleString(),
-            preview: true,
-          },
-        ]
+            {
+              role: "user",
+              content: userInput,
+              date: new Date().toLocaleString(),
+              preview: true,
+            },
+          ]
         : []
     );
 
   useEffect(() => {
-    const dom = latestMessageRef.current
+    const dom = latestMessageRef.current;
     if (dom && !isIOS()) {
       dom.scrollIntoView({
         behavior: "smooth",
-        block: "end"
+        block: "end",
       });
     }
   });
@@ -198,8 +201,13 @@ export function Chat(props: { showSideBar?: () => void }) {
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]} onClick={props?.showSideBar}>
-          <div className={styles["window-header-main-title"]}>{session.topic}</div>
+        <div
+          className={styles["window-header-title"]}
+          onClick={props?.showSideBar}
+        >
+          <div className={styles["window-header-main-title"]}>
+            {session.topic}
+          </div>
           <div className={styles["window-header-sub-title"]}>
             {Locale.Chat.SubTitle(session.messages.length)}
           </div>
@@ -219,7 +227,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               bordered
               title={Locale.Chat.Actions.CompressedHistory}
               onClick={() => {
-                showMemoryPrompt(session)
+                showMemoryPrompt(session);
               }}
             />
           </div>
@@ -229,7 +237,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               bordered
               title={Locale.Chat.Actions.Export}
               onClick={() => {
-                exportMessages(session.messages, session.topic)
+                exportMessages(session.messages, session.topic);
               }}
             />
           </div>
@@ -252,14 +260,23 @@ export function Chat(props: { showSideBar?: () => void }) {
                   <Avatar role={message.role} />
                 </div>
                 {(message.preview || message.streaming) && (
-                  <div className={styles["chat-message-status"]}>{Locale.Chat.Typing}</div>
+                  <div className={styles["chat-message-status"]}>
+                    {Locale.Chat.Typing}
+                  </div>
                 )}
                 <div className={styles["chat-message-item"]}>
                   {(message.preview || message.content.length === 0) &&
-                    !isUser ? (
+                  !isUser ? (
                     <LoadingIcon />
                   ) : (
-                    <div className="markdown-body">
+                    <div
+                      className="markdown-body"
+                      onContextMenu={(e) => {
+                        if (selectOrCopy(e.currentTarget, message.content)) {
+                          e.preventDefault()
+                        }
+                      }}
+                    >
                       <Markdown content={message.content} />
                     </div>
                   )}
@@ -317,33 +334,71 @@ function useSwitchTheme() {
 }
 
 function exportMessages(messages: Message[], topic: string) {
-  const mdText = `# ${topic}\n\n` + messages.map(m => {
-    return m.role === 'user' ? `## ${m.content}` : m.content.trim()
-  }).join('\n\n')
-  const filename = `${topic}.md`
+  const mdText =
+    `# ${topic}\n\n` +
+    messages
+      .map((m) => {
+        return m.role === "user" ? `## ${m.content}` : m.content.trim();
+      })
+      .join("\n\n");
+  const filename = `${topic}.md`;
 
   showModal({
-    title: Locale.Export.Title, children: <div className="markdown-body">
-      <pre className={styles['export-content']}>{mdText}</pre>
-    </div>, actions: [
-      <IconButton key="copy" icon={<CopyIcon />} bordered text={Locale.Export.Copy} onClick={() => copyToClipboard(mdText)} />,
-      <IconButton key="download" icon={<DownloadIcon />} bordered text={Locale.Export.Download} onClick={() => downloadAs(mdText, filename)} />
-    ]
-  })
+    title: Locale.Export.Title,
+    children: (
+      <div className="markdown-body">
+        <pre className={styles["export-content"]}>{mdText}</pre>
+      </div>
+    ),
+    actions: [
+      <IconButton
+        key="copy"
+        icon={<CopyIcon />}
+        bordered
+        text={Locale.Export.Copy}
+        onClick={() => copyToClipboard(mdText)}
+      />,
+      <IconButton
+        key="download"
+        icon={<DownloadIcon />}
+        bordered
+        text={Locale.Export.Download}
+        onClick={() => downloadAs(mdText, filename)}
+      />,
+    ],
+  });
 }
 
 function showMemoryPrompt(session: ChatSession) {
   showModal({
-    title: `${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`, children: <div className="markdown-body">
-      <pre className={styles['export-content']}>{session.memoryPrompt || Locale.Memory.EmptyContent}</pre>
-    </div>, actions: [
-      <IconButton key="copy" icon={<CopyIcon />} bordered text={Locale.Memory.Copy} onClick={() => copyToClipboard(session.memoryPrompt)} />,
-    ]
-  })
+    title: `${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`,
+    children: (
+      <div className="markdown-body">
+        <pre className={styles["export-content"]}>
+          {session.memoryPrompt || Locale.Memory.EmptyContent}
+        </pre>
+      </div>
+    ),
+    actions: [
+      <IconButton
+        key="copy"
+        icon={<CopyIcon />}
+        bordered
+        text={Locale.Memory.Copy}
+        onClick={() => copyToClipboard(session.memoryPrompt)}
+      />,
+    ],
+  });
 }
 
 export function Home() {
-  const [createNewSession, currentIndex, removeSession] = useChatStore((state) => [state.newSession, state.currentSessionIndex, state.removeSession]);
+  const [createNewSession, currentIndex, removeSession] = useChatStore(
+    (state) => [
+      state.newSession,
+      state.currentSessionIndex,
+      state.removeSession,
+    ]
+  );
   const loading = !useChatStore?.persist?.hasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
@@ -359,8 +414,9 @@ export function Home() {
 
   return (
     <div
-      className={`${config.tightBorder ? styles["tight-container"] : styles.container
-        }`}
+      className={`${
+        config.tightBorder ? styles["tight-container"] : styles.container
+      }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
@@ -378,8 +434,8 @@ export function Home() {
         <div
           className={styles["sidebar-body"]}
           onClick={() => {
-            setOpenSettings(false)
-            setShowSideBar(false)
+            setOpenSettings(false);
+            setShowSideBar(false);
           }}
         >
           <ChatList />
@@ -391,8 +447,8 @@ export function Home() {
               <IconButton
                 icon={<CloseIcon />}
                 onClick={() => {
-                  if (confirm('删除选中的对话？')) {
-                    removeSession(currentIndex)
+                  if (confirm(Locale.Home.DeleteChat)) {
+                    removeSession(currentIndex);
                   }
                 }}
               />
@@ -401,8 +457,8 @@ export function Home() {
               <IconButton
                 icon={<SettingsIcon />}
                 onClick={() => {
-                  setOpenSettings(true)
-                  setShowSideBar(false)
+                  setOpenSettings(true);
+                  setShowSideBar(false);
                 }}
               />
             </div>
@@ -424,10 +480,12 @@ export function Home() {
 
       <div className={styles["window-content"]}>
         {openSettings ? (
-          <Settings closeSettings={() => {
-            setOpenSettings(false)
-            setShowSideBar(true)
-          }} />
+          <Settings
+            closeSettings={() => {
+              setOpenSettings(false);
+              setShowSideBar(true);
+            }}
+          />
         ) : (
           <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
         )}

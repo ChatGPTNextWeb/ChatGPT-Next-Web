@@ -1,4 +1,5 @@
-import Locale from './locales'
+import { showToast } from "./components/ui-lib";
+import Locale from "./locales";
 
 export function trimTopic(topic: string) {
   const s = topic.split("");
@@ -13,19 +14,25 @@ export function trimTopic(topic: string) {
 }
 
 export function copyToClipboard(text: string) {
-  navigator.clipboard.writeText(text).then(res => {
-    alert(Locale.Copy.Success)
-  }).catch(err => {
-    alert(Locale.Copy.Failed)
-  })
+  navigator.clipboard
+    .writeText(text)
+    .then((res) => {
+      showToast(Locale.Copy.Success);
+    })
+    .catch((err) => {
+      showToast(Locale.Copy.Failed);
+    });
 }
 
 export function downloadAs(text: string, filename: string) {
-  const element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  element.setAttribute('download', filename);
+  const element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+  );
+  element.setAttribute("download", filename);
 
-  element.style.display = 'none';
+  element.style.display = "none";
   document.body.appendChild(element);
 
   element.click();
@@ -36,4 +43,16 @@ export function downloadAs(text: string, filename: string) {
 export function isIOS() {
   const userAgent = navigator.userAgent.toLowerCase();
   return /iphone|ipad|ipod/.test(userAgent);
+}
+
+export function selectOrCopy(el: HTMLElement, content: string) {
+  const currentSelection = window.getSelection();
+
+  if (currentSelection?.type === "Range") {
+    return false;
+  }
+
+  copyToClipboard(content);
+
+  return true;
 }
