@@ -1,89 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+<img src="./static/icon.svg" alt="预览"/>
 
-## Getting Started
+<h1 align="center">ChatGPT Next Web</h1>
 
-First, run the development server:
+一键免费部署你的私人 ChatGPT 网页应用。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+[开始试用](https://chat-gpt-next-web.vercel.app/) / [反馈问题](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+</div>
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## 主要功能
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- 在 1 分钟内使用 Vercel 的 Serverless 能力**免费一键部署**
+- 精心设计的 UI，同时兼容电脑和手机访问的响应式设计，支持深色模式
+- 极致优化的首屏加载速度（~85kb）
+- 自动压缩历史记录，在节省 Token 的同时支持超长对话记录
+- 一键导出聊天记录，完整的 Markdown 支持
+- 你拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
 
-## Learn More
+## 使用
 
-To learn more about Next.js, take a look at the following resources:
+1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys);
+2. 点击右侧按钮开始部署：
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY)
+3. 部署完毕后，即可开始使用；
+4. （可选）[绑定自定义域名](https://vercel.com/docs/concepts/projects/domains/add-a-domain)。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 开发
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+点击下方按钮，开始二次开发：
 
-## Deploy on Vercel
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 截图
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<div align="center">主界面</div>
 
-## build log
-### raw
-Route (app)                                Size     First Load JS
-┌ ○ /                                      449 kB          517 kB
-├ λ /api/chat                              0 B                0 B
-└ ℇ /api/chat-stream                       0 B                0 B
-+ First Load JS shared by all              68.8 kB
-  ├ chunks/455-0a9fbb1180548580.js         66.4 kB
-  ├ chunks/main-app-19b36671ec6a549e.js    204 B
-  └ chunks/webpack-dd78d1150b6f4f4a.js     2.15 kB
+![主界面](./static/cover.png)
 
-Route (pages)                              Size     First Load JS
-─ ○ /404                                   179 B          84.6 kB
-+ First Load JS shared by all              84.4 kB
-  ├ chunks/main-303e01cd7449e20b.js        82.1 kB
-  ├ chunks/pages/_app-907dedfd0e4177db.js  192 B
+<div align="center">设置页</div>
 
-### dynamic markdown
-Route (app)                                Size     First Load JS
-┌ ○ /                                      64.2 kB         133 kB
-├ λ /api/chat                              0 B                0 B
-└ ℇ /api/chat-stream                       0 B                0 B
-+ First Load JS shared by all              68.9 kB
-  ├ chunks/455-0a9fbb1180548580.js         66.4 kB
-  ├ chunks/main-app-19b36671ec6a549e.js    204 B
-  └ chunks/webpack-3b3874680bea117d.js     2.26 kB
+![设置](./static/settings.png)
 
-Route (pages)                              Size     First Load JS
-─ ○ /404                                   179 B          84.7 kB
-+ First Load JS shared by all              84.5 kB
-  ├ chunks/main-303e01cd7449e20b.js        82.1 kB
-  ├ chunks/pages/_app-907dedfd0e4177db.js  192 B
-  └ chunks/webpack-3b3874680bea117d.js     2.26 kB
+<div align="center">更多展示</div>
 
-### dynamic emoji
-Route (app)                                Size     First Load JS
-┌ ○ /                                      16.1 kB          85 kB
-├ λ /api/chat                              0 B                0 B
-└ ℇ /api/chat-stream                       0 B                0 B
-+ First Load JS shared by all              68.9 kB
-  ├ chunks/455-0a9fbb1180548580.js         66.4 kB
-  ├ chunks/main-app-19b36671ec6a549e.js    204 B
-  └ chunks/webpack-2bfaffd64d73d7a1.js     2.33 kB
+![更多展示](./static/more.png)
 
-Route (pages)                              Size     First Load JS
-─ ○ /404                                   179 B          84.8 kB
-+ First Load JS shared by all              84.6 kB
-  ├ chunks/main-303e01cd7449e20b.js        82.1 kB
-  ├ chunks/pages/_app-907dedfd0e4177db.js  192 B
-  └ chunks/webpack-2bfaffd64d73d7a1.js     2.33 kB
+## LICENSE
+
+- [Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)

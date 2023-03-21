@@ -273,7 +273,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                       className="markdown-body"
                       onContextMenu={(e) => {
                         if (selectOrCopy(e.currentTarget, message.content)) {
-                          e.preventDefault()
+                          e.preventDefault();
                         }
                       }}
                     >
@@ -463,7 +463,10 @@ export function Home() {
               />
             </div>
             <div className={styles["sidebar-action"]}>
-              <a href="https://github.com/Yidadaa" target="_blank">
+              <a
+                href="https://github.com/Yidadaa/ChatGPT-Next-Web"
+                target="_blank"
+              >
                 <IconButton icon={<GithubIcon />} />
               </a>
             </div>
