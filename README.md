@@ -7,7 +7,7 @@
 
 One-Click to deploy your own ChatGPT web UI.
 
-[开始试用](https://chat-gpt-next-web.vercel.app/) / [反馈问题](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
+[开始试用 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈问题 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY)
 
