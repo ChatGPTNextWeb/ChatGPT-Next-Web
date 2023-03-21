@@ -1,7 +1,7 @@
 import type { ChatRequest, ChatReponse } from "./api/chat/typing";
-import { Message } from "./store";
+import { filterConfig, isValidModel, Message, ModelConfig } from "./store";
 
-const TIME_OUT_MS = 30000
+const TIME_OUT_MS = 30000;
 
 const makeRequestParam = (
   messages: Message[],
@@ -44,6 +44,7 @@ export async function requestChatStream(
   messages: Message[],
   options?: {
     filterBot?: boolean;
+    modelConfig?: ModelConfig;
     onMessage: (message: string, done: boolean) => void;
     onError: (error: Error) => void;
   }
@@ -52,6 +53,13 @@ export async function requestChatStream(
     stream: true,
     filterBot: options?.filterBot,
   });
+
+  // valid and assign model config
+  if (options?.modelConfig) {
+    Object.assign(req, filterConfig(options.modelConfig));
+  }
+
+  console.log("[Request] ", req);
 
   const controller = new AbortController();
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
