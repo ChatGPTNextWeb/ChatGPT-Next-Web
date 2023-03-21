@@ -451,6 +451,7 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: LOCAL_KEY,
+      version: 1,
     }
   )
 );

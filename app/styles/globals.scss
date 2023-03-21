@@ -60,6 +60,10 @@
     --window-content-width: var(--window-width);
     --message-max-width: 100%;
   }
+
+  .no-mobile {
+    display: none;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

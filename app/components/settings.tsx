@@ -147,18 +147,6 @@ export function Settings(props: { closeSettings: () => void }) {
             </select>
           </ListItem>
 
-          <SettingItem title={Locale.Settings.TightBorder}>
-            <input
-              type="checkbox"
-              checked={config.tightBorder}
-              onChange={(e) =>
-                updateConfig(
-                  (config) => (config.tightBorder = e.currentTarget.checked)
-                )
-              }
-            ></input>
-          </SettingItem>
-
           <SettingItem title={Locale.Settings.Lang.Name}>
             <div className="">
               <select
@@ -177,6 +165,20 @@ export function Settings(props: { closeSettings: () => void }) {
               </select>
             </div>
           </SettingItem>
+
+          <div className="no-mobile">
+            <SettingItem title={Locale.Settings.TightBorder}>
+              <input
+                type="checkbox"
+                checked={config.tightBorder}
+                onChange={(e) =>
+                  updateConfig(
+                    (config) => (config.tightBorder = e.currentTarget.checked)
+                  )
+                }
+              ></input>
+            </SettingItem>
+          </div>
         </List>
         <List>
           <SettingItem
