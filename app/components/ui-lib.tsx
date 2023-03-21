@@ -1,7 +1,7 @@
 import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
-import { createRoot } from 'react-dom/client'
+import { createRoot } from "react-dom/client";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -41,50 +41,102 @@ export function List(props: { children: JSX.Element[] }) {
 }
 
 export function Loading() {
-  return <div style={{
-    height: "100vh",
-    width: "100vw",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  }}><LoadingIcon /></div>
+  return (
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <LoadingIcon />
+    </div>
+  );
 }
 
 interface ModalProps {
-  title: string,
-  children?: JSX.Element,
-  actions?: JSX.Element[],
-  onClose?: () => void,
+  title: string;
+  children?: JSX.Element;
+  actions?: JSX.Element[];
+  onClose?: () => void;
 }
 export function Modal(props: ModalProps) {
-  return <div className={styles['modal-container']}>
-    <div className={styles['modal-header']}>
-      <div className={styles['modal-title']}>{props.title}</div>
+  return (
+    <div className={styles["modal-container"]}>
+      <div className={styles["modal-header"]}>
+        <div className={styles["modal-title"]}>{props.title}</div>
 
-      <div className={styles['modal-close-btn']} onClick={props.onClose}>
-        <CloseIcon />
+        <div className={styles["modal-close-btn"]} onClick={props.onClose}>
+          <CloseIcon />
+        </div>
+      </div>
+
+      <div className={styles["modal-content"]}>{props.children}</div>
+
+      <div className={styles["modal-footer"]}>
+        <div className={styles["modal-actions"]}>
+          {props.actions?.map((action, i) => (
+            <div key={i} className={styles["modal-action"]}>
+              {action}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-
-    <div className={styles['modal-content']}>{props.children}</div>
-
-    <div className={styles['modal-footer']}>
-      <div className={styles['modal-actions']}>
-        {props.actions?.map((action, i) => <div key={i} className={styles['modal-action']}>{action}</div>)}
-      </div>
-    </div>
-  </div>
+  );
 }
 
 export function showModal(props: ModalProps) {
-  const div = document.createElement('div')
+  const div = document.createElement("div");
   div.className = "modal-mask";
-  document.body.appendChild(div)
+  document.body.appendChild(div);
 
-  const root = createRoot(div)
-  root.render(<Modal {...props} onClose={() => {
+  const root = createRoot(div);
+  const closeModal = () => {
     props.onClose?.();
     root.unmount();
     div.remove();
-  }}></Modal>)
+  };
+
+  div.onclick = (e) => {
+    if (e.target === div) {
+      closeModal();
+    }
+  };
+
+  root.render(<Modal {...props} onClose={closeModal}></Modal>);
+}
+
+export type ToastProps = { content: string };
+
+export function Toast(props: ToastProps) {
+  return (
+    <div className={styles["toast-container"]}>
+      <div className={styles["toast-content"]}>{props.content}</div>
+    </div>
+  );
+}
+
+export function showToast(content: string, delay = 3000) {
+  const div = document.createElement("div");
+  div.className = styles.show;
+  document.body.appendChild(div);
+
+  const root = createRoot(div);
+  const close = () => {
+    div.classList.add(styles.hide);
+
+    setTimeout(() => {
+      root.unmount();
+      div.remove();
+    }, 300);
+  };
+
+  setTimeout(() => {
+    close();
+  }, delay);
+
+  root.render(<Toast content={content} />);
 }

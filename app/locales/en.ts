@@ -27,6 +27,7 @@ const en: LocaleType = {
     },
     Home: {
         NewChat: 'New Chat',
+        DeleteChat: 'Confirm to delete the selected conversation?',
     },
     Settings: {
         Title: 'Settings',
