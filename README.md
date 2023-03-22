@@ -13,7 +13,7 @@ One-Click to deploy your own ChatGPT web UI.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
-![主界面](./static/cover.jpg)
+![主界面](./static/cover.png)
 
 </div>
 
@@ -57,9 +57,9 @@ One-Click to deploy your own ChatGPT web UI.
 
 ## 截图 Screenshots
 
-![设置 Settings](./static/settings.jpg)
+![设置 Settings](./static/settings.png)
 
-![更多展示 More](./static/more.jpg)
+![更多展示 More](./static/more.png)
 
 ## LICENSE
 
