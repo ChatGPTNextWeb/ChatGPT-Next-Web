@@ -7,7 +7,7 @@
 
 One-Click to deploy your own ChatGPT web UI.
 
-[开始试用 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈问题 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
+[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈问题 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -19,12 +19,12 @@ One-Click to deploy your own ChatGPT web UI.
 
 ## 主要功能
 
-- 在 1 分钟内使用 Vercel 的 Serverless 能力**免费一键部署**
-- 精心设计的 UI，同时兼容电脑和手机访问的响应式设计，支持深色模式
-- 极致优化的首屏加载速度（~85kb）
-- 自动压缩历史记录，在节省 Token 的同时支持超长对话记录
+- 在 1 分钟内使用 Vercel **免费一键部署**
+- 精心设计的 UI，响应式设计，支持深色模式
+- 极快的首屏加载速度（~85kb）
+- 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
 - 一键导出聊天记录，完整的 Markdown 支持
-- 你拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
+- 拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
 
 ## Features
 
@@ -57,13 +57,9 @@ One-Click to deploy your own ChatGPT web UI.
 
 ## 截图 Screenshots
 
-<div align="center">设置页 Settings</div>
+![设置 Settings](./static/settings.jpg)
 
-![设置](./static/settings.jpg)
-
-<div align="center">更多展示 More</div>
-
-![更多展示](./static/more.jpg)
+![更多展示 More](./static/more.jpg)
 
 ## LICENSE
 
