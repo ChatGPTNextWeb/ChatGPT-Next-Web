@@ -26,6 +26,7 @@ import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
 import Locale from "../locales";
 
 import dynamic from "next/dynamic";
+import { REPO_URL } from "../constant";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -466,10 +467,7 @@ export function Home() {
               />
             </div>
             <div className={styles["sidebar-action"]}>
-              <a
-                href="https://github.com/Yidadaa/ChatGPT-Next-Web"
-                target="_blank"
-              >
+              <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} />
               </a>
             </div>

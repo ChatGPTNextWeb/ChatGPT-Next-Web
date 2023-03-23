@@ -1,13 +1,11 @@
 {
   "name": "chatgpt-next-web",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.1",
+  "private": false,
   "scripts": {
-    "dev": "next dev",
-    "local:dev": "./dev/proxychains.exe -f ./scripts/proxychains.conf yarn dev",
-    "local:start": "./dev/proxychains.exe -f ./scripts/proxychains.conf yarn start",
-    "build": "next build",
-    "start": "next start",
+    "dev": "cross-env COMMIT_ID=$(git rev-parse --short HEAD) next dev",
+    "build": "cross-env COMMIT_ID=$(git rev-parse --short HEAD) next build",
+    "start": "cross-env COMMIT_ID=$(git rev-parse --short HEAD) next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -17,10 +15,12 @@
     "@types/react-dom": "^18.0.11",
     "@types/react-katex": "^3.0.0",
     "@vercel/analytics": "^0.1.11",
+    "cross-env": "^7.0.3",
     "emoji-picker-react": "^4.4.7",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "eventsource-parser": "^0.1.0",
+    "git-rev-sync": "^3.0.2",
     "next": "^13.2.3",
     "openai": "^3.2.1",
     "react": "^18.2.0",

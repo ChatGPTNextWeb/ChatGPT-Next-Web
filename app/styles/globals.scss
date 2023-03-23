@@ -83,6 +83,8 @@ body {
   justify-content: center;
   align-items: center;
   user-select: none;
+  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -191,4 +193,15 @@ div.math {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.link {
+  font-size: 12px;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 5px 10px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
