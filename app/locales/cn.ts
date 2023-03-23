@@ -1,4 +1,5 @@
 const cn = {
+  WIP: "该功能仍在开发中……",
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
@@ -8,6 +9,8 @@ const cn = {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
       Export: "导出聊天记录",
+      Copy: "复制",
+      Stop: "停止",
     },
     Typing: "正在输入…",
     Input: (submitKey: string) => `输入消息，${submitKey} 发送`,

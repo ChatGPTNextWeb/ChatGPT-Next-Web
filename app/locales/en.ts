@@ -1,6 +1,7 @@
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
+  WIP: "WIP...",
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
   },
@@ -10,6 +11,8 @@ const en: LocaleType = {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
       Export: "Export All Messages as Markdown",
+      Copy: "Copy",
+      Stop: "Stop",
     },
     Typing: "Typing…",
     Input: (submitKey: string) =>

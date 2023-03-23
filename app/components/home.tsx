@@ -21,7 +21,7 @@ import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
-import { showModal } from "./ui-lib";
+import { showModal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
 import Locale from "../locales";
 
@@ -166,6 +166,8 @@ export function Chat(props: { showSideBar?: () => void }) {
   };
   const latestMessageRef = useRef<HTMLDivElement>(null);
 
+  const [hoveringMessage, setHoveringMessage] = useState(false);
+
   const messages = (session.messages as RenderMessage[])
     .concat(
       isLoading
@@ -195,7 +197,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   useLayoutEffect(() => {
     setTimeout(() => {
       const dom = latestMessageRef.current;
-      if (dom && !isIOS()) {
+      if (dom && !isIOS() && !hoveringMessage) {
         dom.scrollIntoView({
           behavior: "smooth",
           block: "end",
@@ -250,7 +252,15 @@ export function Chat(props: { showSideBar?: () => void }) {
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div
+        className={styles["chat-body"]}
+        onMouseOver={() => {
+          setHoveringMessage(true);
+        }}
+        onMouseOut={() => {
+          setHoveringMessage(false);
+        }}
+      >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -271,6 +281,25 @@ export function Chat(props: { showSideBar?: () => void }) {
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
+                  {!isUser && (
+                    <div className={styles["chat-message-top-actions"]}>
+                      {message.streaming && (
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => showToast(Locale.WIP)}
+                        >
+                          {Locale.Chat.Actions.Stop}
+                        </div>
+                      )}
+
+                      <div
+                        className={styles["chat-message-top-action"]}
+                        onClick={() => copyToClipboard(message.content)}
+                      >
+                        {Locale.Chat.Actions.Copy}
+                      </div>
+                    </div>
+                  )}
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />
