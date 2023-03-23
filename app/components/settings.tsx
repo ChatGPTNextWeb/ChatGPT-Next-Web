@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
@@ -15,6 +15,9 @@ import { SubmitKey, useChatStore, Theme, ALL_MODELS } from "../store";
 import { Avatar } from "./home";
 
 import Locale, { changeLang, getLang } from "../locales";
+import { checkUpstreamLatestCommitId, getCurrentCommitId } from "../utils";
+import Link from "next/link";
+import { UPDATE_URL } from "../constant";
 
 function SettingItem(props: {
   title: string;
@@ -44,6 +47,23 @@ export function Settings(props: { closeSettings: () => void }) {
       state.clearAllData,
     ]
   );
+
+  const currentId = getCurrentCommitId();
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [remoteId, setRemoteId] = useState<string>();
+  const hasNewVersion = currentId !== remoteId;
+
+  function checkUpdate(force = false) {
+    setCheckingUpdate(true);
+    checkUpstreamLatestCommitId(force).then((id) => {
+      setRemoteId(id);
+      setCheckingUpdate(false);
+    });
+  }
+
+  useEffect(() => {
+    checkUpdate();
+  }, []);
 
   return (
     <>
@@ -107,6 +127,31 @@ export function Settings(props: { closeSettings: () => void }) {
                 <Avatar role="user" />
               </div>
             </Popover>
+          </SettingItem>
+
+          <SettingItem
+            title={Locale.Settings.Update.Version(currentId)}
+            subTitle={
+              checkingUpdate
+                ? Locale.Settings.Update.IsChecking
+                : hasNewVersion
+                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
+                : Locale.Settings.Update.IsLatest
+            }
+          >
+            {checkingUpdate ? (
+              <div />
+            ) : hasNewVersion ? (
+              <Link href={UPDATE_URL} target="_blank" className="link">
+                {Locale.Settings.Update.GoToUpdate}
+              </Link>
+            ) : (
+              <IconButton
+                icon={<ResetIcon></ResetIcon>}
+                text={Locale.Settings.Update.CheckUpdate}
+                onClick={() => checkUpdate(true)}
+              />
+            )}
           </SettingItem>
 
           <SettingItem title={Locale.Settings.SendKey}>

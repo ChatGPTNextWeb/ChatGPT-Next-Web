@@ -11,7 +11,7 @@ const nextConfig = {
     }); // 针对 SVG 的处理规则
 
     return config;
-  },
+  }
 };
 
 module.exports = nextConfig;
