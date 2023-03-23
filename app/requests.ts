@@ -1,5 +1,5 @@
 import type { ChatRequest, ChatReponse } from "./api/chat/typing";
-import { filterConfig, isValidModel, Message, ModelConfig } from "./store";
+import { filterConfig, Message, ModelConfig } from "./store";
 
 const TIME_OUT_MS = 30000;
 

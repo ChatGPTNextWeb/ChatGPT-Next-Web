@@ -74,24 +74,3 @@ export function getCurrentCommitId() {
 
   return currentId;
 }
-
-let remoteId: string;
-export async function checkUpstreamLatestCommitId(force = false) {
-  if (!force && remoteId) {
-    return remoteId;
-  }
-
-  const owner = "Yidadaa";
-  const repo = "ChatGPT-Next-Web";
-  const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`;
-
-  try {
-    const data = await (await fetch(url)).json();
-    const sha = data[0].sha as string;
-    remoteId = sha.substring(0, 7);
-    return remoteId;
-  } catch (error) {
-    console.error("[Fetch Upstream Commit Id]", error);
-    return getCurrentCommitId();
-  }
-}
