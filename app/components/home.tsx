@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -192,14 +192,16 @@ export function Chat(props: { showSideBar?: () => void }) {
         : []
     );
 
-  useEffect(() => {
-    const dom = latestMessageRef.current;
-    if (dom && !isIOS()) {
-      dom.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      const dom = latestMessageRef.current;
+      if (dom && !isIOS()) {
+        dom.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }
+    }, 500);
   });
 
   return (
@@ -296,9 +298,9 @@ export function Chat(props: { showSideBar?: () => void }) {
             </div>
           );
         })}
-        <span ref={latestMessageRef} style={{ opacity: 0 }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
           -
-        </span>
+        </div>
       </div>
 
       <div className={styles["chat-input-panel"]}>

@@ -2,10 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
-import { requestChatStream, requestWithPrompt } from "./requests";
-import { trimTopic } from "./utils";
+import { requestChatStream, requestWithPrompt } from "../requests";
+import { trimTopic } from "../utils";
 
-import Locale from "./locales";
+import Locale from "../locales";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;

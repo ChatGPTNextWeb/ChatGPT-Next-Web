@@ -11,11 +11,17 @@ import ClearIcon from "../icons/clear.svg";
 import { List, ListItem, Popover } from "./ui-lib";
 
 import { IconButton } from "./button";
-import { SubmitKey, useChatStore, Theme, ALL_MODELS } from "../store";
+import {
+  SubmitKey,
+  useChatStore,
+  Theme,
+  ALL_MODELS,
+  useUpdateStore,
+} from "../store";
 import { Avatar } from "./home";
 
 import Locale, { changeLang, getLang } from "../locales";
-import { checkUpstreamLatestCommitId, getCurrentCommitId } from "../utils";
+import { getCurrentCommitId } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 
@@ -48,15 +54,15 @@ export function Settings(props: { closeSettings: () => void }) {
     ]
   );
 
-  const currentId = getCurrentCommitId();
+  const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const [remoteId, setRemoteId] = useState<string>();
+  const currentId = getCurrentCommitId();
+  const remoteId = updateStore.remoteId;
   const hasNewVersion = currentId !== remoteId;
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
-    checkUpstreamLatestCommitId(force).then((id) => {
-      setRemoteId(id);
+    updateStore.getLatestCommitId(force).then(() => {
       setCheckingUpdate(false);
     });
   }
