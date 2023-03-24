@@ -67,7 +67,7 @@ You can star or watch this project or follow author to get release notifictions 
 
 在开始写代码之前，需要在项目根目录新建一个 `.env.local` 文件，里面填入环境变量：
 
-Before development, you must create a new `.env.local` file at project root, and place your api key into it:
+Before starting development, you must create a new `.env.local` file at project root, and place your api key into it:
 
 ```
 OPENAI_API_KEY=<your api key here>
