@@ -88,6 +88,34 @@ Before starting development, you must create a new `.env.local` file at project 
 OPENAI_API_KEY=<your api key here>
 ```
 
+### 本地开发 Local Development
+> 如果你是中国大陆用户，不建议在本地进行开发，除非你能够独立解决 OpenAI API 本地代理问题。
+
+1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
+2. 执行 `yarn install && yarn dev` 即可。
+
+### 本地部署 Local Deployment
+请直接询问 ChatGPT，使用下列 Prompt：
+```
+如何使用 pm2 和 yarn 部署 nextjs 项目到 ubuntu 服务器上，项目编译命令为 yarn build，启动命令为 yarn start，启动时需要设置环境变量为 OPENAI_API_KEY，端口为 3000，使用 ngnix 做反向代理
+```
+
+Please ask ChatGPT with prompt:
+```
+how to deploy nextjs project with pm2 and yarn on my ubuntu server, the build command is `yarn build`, the start command is `yarn start`, the project must start with env var named `OPENAI_API_KEY`, the port is 3000, use ngnix
+```
+
+### Docker Deployment
+请直接询问 ChatGPT，使用下列 Prompt：
+```
+如何使用 docker 部署 nextjs 项目到 ubuntu 服务器上，项目编译命令为 yarn build，启动命令为 yarn start，启动时需要设置环境变量为 OPENAI_API_KEY，端口为 3000，使用 ngnix 做反向代理
+```
+
+Please ask ChatGPT with prompt:
+```
+how to deploy nextjs project with docker on my ubuntu server, the build command is `yarn build`, the start command is `yarn start`, the project must start with env var named `OPENAI_API_KEY`, the port is 3000, use ngnix
+```
+
 ## 截图 Screenshots
 
 ![设置 Settings](./static/settings.png)
