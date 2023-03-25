@@ -1,13 +1,18 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/prism.scss";
+import process from "child_process";
 
 export const metadata = {
   title: "ChatGPT Next Web",
-  description: "Your personal ChatGPT Chat Bot."
+  description: "Your personal ChatGPT Chat Bot.",
 };
 
-const COMMIT_ID = process.env.COMMIT_ID
+const COMMIT_ID = process
+  .execSync("git rev-parse --short HEAD")
+  .toString()
+  .trim();
 
 export default function RootLayout({
   children,

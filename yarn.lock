@@ -1313,6 +1313,11 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/git-rev-sync@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@types/git-rev-sync/-/git-rev-sync-2.0.0.tgz#9de6e18cb01e65f769de77175bbe93254664023e"
+  integrity sha512-qGYApbb0m8Ofy3pwYks+kYVIZQAN/cqNucJGbl5O5GpLw9JSzp74rkTWDhPv3brrJfJb5/ixtimLJpo4tfh2QA==
+
 "@types/hast@^2.0.0":
   version "2.3.4"
   resolved "https://registry.npmmirror.com/@types/hast/-/hast-2.3.4.tgz#8aa5ef92c117d20d974a82bdfb6a648b08c0bafc"
