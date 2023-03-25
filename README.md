@@ -51,9 +51,24 @@ One-Click to deploy your own ChatGPT web UI.
 
 ## 保持更新 Keep Updated
 
+如果你按照上述步骤一键部署了自己的项目，可能会发现总是提示“存在更新”的问题，这是由于 Vercel 会默认为你创建一个新项目而不是 fork 本项目，这会导致无法正确地检测更新。
+推荐你按照下列步骤重新部署：
+- 删除掉原先的 repo；
+- fork 本项目；
+- 前往 vercel 控制台，删除掉原先的 project，然后新建 project，选择你刚刚 fork 出来的项目重新进行部署即可；
+- 在重新部署的过程中，请手动添加名为 `OPENAI_API_KEY` 的环境变量，并填入你的 api key 作为值。
+
 本项目会持续更新，如果你想让代码库总是保持更新，可以查看 [Github 的文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) 了解如何让 fork 的项目与上游代码同步，建议定期进行同步操作以获得新功能。
 
 你可以 star/watch 本项目或者 follow 作者来及时获得新功能更新通知。
+
+If you have deployed your own project with just one click following the steps above, you may encounter the issue of "Updates Available" constantly showing up. This is because Vercel will create a new project for you by default instead of forking this project, resulting in the inability to detect updates correctly.
+
+We recommend that you follow the steps below to re-deploy:
+- Delete the original repo;
+- Fork this project;
+- Go to the Vercel dashboard, delete the original project, then create a new project and select the project you just forked to redeploy;
+- Please manually add an environment variable named `OPENAI_API_KEY` and enter your API key as the value during the redeploy process.
 
 This project will be continuously maintained. If you want to keep the code repository up to date, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code. It is recommended to perform synchronization operations regularly.
 
