@@ -3,9 +3,9 @@
   "version": "1.1",
   "private": false,
   "scripts": {
-    "dev": "cross-env COMMIT_ID=$(git rev-parse --short HEAD) next dev",
-    "build": "cross-env COMMIT_ID=$(git rev-parse --short HEAD) next build",
-    "start": "cross-env COMMIT_ID=$(git rev-parse --short HEAD) next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -20,7 +20,6 @@
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "eventsource-parser": "^0.1.0",
-    "git-rev-sync": "^3.0.2",
     "next": "^13.2.3",
     "openai": "^3.2.1",
     "react": "^18.2.0",
