@@ -84,7 +84,7 @@ You can star or watch this project or follow author to get release notifictions 
 code1,code2,code3
 ```
 
-增加或修改该环境变量后，请重新部署项目使改动生效。
+增加或修改该环境变量后，请**重新部署**项目使改动生效。
 
 This project provides limited access control. Please add an environment variable named `CODE` on the environment variables page. The value should be a custom control code separated by comma like this:
 
@@ -150,6 +150,10 @@ how to deploy nextjs project with docker on my ubuntu server, the build command 
 The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time. 
 
 If you would like to contribute your API key, you can email it to the author and indicate the expiration date of the API key.
+
+## 鸣谢 Special Thanks
+### 捐赠者 Sponsor
+[@mushan0x0](https://github.com/mushan0x0)
 
 ## LICENSE
 
