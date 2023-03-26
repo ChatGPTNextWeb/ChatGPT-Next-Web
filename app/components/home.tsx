@@ -205,7 +205,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   const latestMessageRef = useRef<HTMLDivElement>(null);
 
   // wont scroll while hovering messages
-  const [hoveringMessage, setHoveringMessage] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(false);
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -238,7 +238,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   useLayoutEffect(() => {
     setTimeout(() => {
       const dom = latestMessageRef.current;
-      if (dom && !isIOS() && !hoveringMessage) {
+      if (dom && !isIOS() && autoScroll) {
         dom.scrollIntoView({
           behavior: "smooth",
           block: "end",
@@ -293,15 +293,7 @@ export function Chat(props: { showSideBar?: () => void }) {
         </div>
       </div>
 
-      <div
-        className={styles["chat-body"]}
-        onMouseOver={() => {
-          setHoveringMessage(true);
-        }}
-        onMouseOut={() => {
-          setHoveringMessage(false);
-        }}
-      >
+      <div className={styles["chat-body"]}>
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -385,6 +377,9 @@ export function Chat(props: { showSideBar?: () => void }) {
             onInput={(e) => setUserInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={(e) => onInputKeyDown(e as any)}
+            onFocus={() => setAutoScroll(true)}
+            onBlur={() => setAutoScroll(false)}
+            autoFocus
           />
           <IconButton
             icon={<SendWhiteIcon />}
