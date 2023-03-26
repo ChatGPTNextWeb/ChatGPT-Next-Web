@@ -47,7 +47,7 @@ const en: LocaleType = {
       Close: "Close",
     },
     Lang: {
-      Name: "语言",
+      Name: "Language",
       Options: {
         cn: "中文",
         en: "English",
