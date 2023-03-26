@@ -14,7 +14,7 @@ export function middleware(req: NextRequest, res: NextResponse) {
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
 
-  if (!ACCESS_CODES.has(hashedCode)) {
+  if (ACCESS_CODES.size > 0 && !ACCESS_CODES.has(hashedCode)) {
     return NextResponse.json(
       {
         needAccessCode: true,

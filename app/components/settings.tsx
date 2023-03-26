@@ -239,19 +239,23 @@ export function Settings(props: { closeSettings: () => void }) {
           </div>
         </List>
         <List>
-          <SettingItem
-            title={Locale.Settings.AccessCode.Title}
-            subTitle={Locale.Settings.AccessCode.SubTitle}
-          >
-            <input
-              value={accessStore.accessCode}
-              type="text"
-              placeholder={Locale.Settings.AccessCode.Placeholder}
-              onChange={(e) => {
-                accessStore.updateCode(e.currentTarget.value);
-              }}
-            ></input>
-          </SettingItem>
+          {enabledAccessControl ? (
+            <SettingItem
+              title={Locale.Settings.AccessCode.Title}
+              subTitle={Locale.Settings.AccessCode.SubTitle}
+            >
+              <input
+                value={accessStore.accessCode}
+                type="text"
+                placeholder={Locale.Settings.AccessCode.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateCode(e.currentTarget.value);
+                }}
+              ></input>
+            </SettingItem>
+          ) : (
+            <></>
+          )}
 
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
