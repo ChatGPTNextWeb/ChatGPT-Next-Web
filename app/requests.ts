@@ -35,6 +35,10 @@ function getHeaders() {
     headers["access-code"] = accessStore.accessCode;
   }
 
+  if (accessStore.token && accessStore.token.length > 0) {
+    headers["token"] = accessStore.token;
+  }
+
   return headers;
 }
 
