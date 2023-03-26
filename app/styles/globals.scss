@@ -167,7 +167,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   width: 24px;
 }
 
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
@@ -176,6 +177,7 @@ input[type="number"] {
   background: var(--white);
   color: var(--black);
   padding: 0 10px;
+  max-width: 50%;
 }
 
 div.math {

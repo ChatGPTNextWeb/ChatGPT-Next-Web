@@ -57,20 +57,27 @@ export function selectOrCopy(el: HTMLElement, content: string) {
   return true;
 }
 
+export function queryMeta(key: string, defaultValue?: string): string {
+  let ret: string;
+  if (document) {
+    const meta = document.head.querySelector(
+      `meta[name='${key}']`
+    ) as HTMLMetaElement;
+    ret = meta?.content ?? "";
+  } else {
+    ret = defaultValue ?? "";
+  }
+
+  return ret;
+}
+
 let currentId: string;
 export function getCurrentCommitId() {
   if (currentId) {
     return currentId;
   }
 
-  if (document) {
-    const meta = document.head.querySelector(
-      "meta[name='version']"
-    ) as HTMLMetaElement;
-    currentId = meta?.content ?? "";
-  } else {
-    currentId = process.env.COMMIT_ID ?? "";
-  }
+  currentId = queryMeta("version");
 
   return currentId;
 }
