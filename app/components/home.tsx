@@ -27,6 +27,7 @@ import Locale from "../locales";
 
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
+import { ControllerPool } from "../requests";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -146,28 +147,67 @@ function useSubmitHandler() {
 export function Chat(props: { showSideBar?: () => void }) {
   type RenderMessage = Message & { preview?: boolean };
 
-  const session = useChatStore((state) => state.currentSession());
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
 
   const onUserInput = useChatStore((state) => state.onUserInput);
+
+  // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
     setIsLoading(true);
     onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
   };
+
+  // stop response
+  const onUserStop = (messageIndex: number) => {
+    console.log(ControllerPool, sessionIndex, messageIndex);
+    ControllerPool.stop(sessionIndex, messageIndex);
+  };
+
+  // check if should send message
   const onInputKeyDown = (e: KeyboardEvent) => {
     if (shouldSubmit(e)) {
       onUserSubmit();
       e.preventDefault();
     }
   };
+  const onRightClick = (e: any, message: Message) => {
+    // auto fill user input
+    if (message.role === "user") {
+      setUserInput(message.content);
+    }
+
+    // copy to clipboard
+    if (selectOrCopy(e.currentTarget, message.content)) {
+      e.preventDefault();
+    }
+  };
+
+  const onResend = (botIndex: number) => {
+    // find last user input message and resend
+    for (let i = botIndex; i >= 0; i -= 1) {
+      if (messages[i].role === "user") {
+        setIsLoading(true);
+        onUserInput(messages[i].content).then(() => setIsLoading(false));
+        return;
+      }
+    }
+  };
+
+  // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
 
+  // wont scroll while hovering messages
   const [hoveringMessage, setHoveringMessage] = useState(false);
 
+  // preview messages
   const messages = (session.messages as RenderMessage[])
     .concat(
       isLoading
@@ -194,6 +234,7 @@ export function Chat(props: { showSideBar?: () => void }) {
         : []
     );
 
+  // auto scroll
   useLayoutEffect(() => {
     setTimeout(() => {
       const dom = latestMessageRef.current;
@@ -283,12 +324,19 @@ export function Chat(props: { showSideBar?: () => void }) {
                 <div className={styles["chat-message-item"]}>
                   {!isUser && (
                     <div className={styles["chat-message-top-actions"]}>
-                      {message.streaming && (
+                      {message.streaming ? (
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => showToast(Locale.WIP)}
+                          onClick={() => onUserStop(i)}
                         >
                           {Locale.Chat.Actions.Stop}
+                        </div>
+                      ) : (
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => onResend(i)}
+                        >
+                          {Locale.Chat.Actions.Retry}
                         </div>
                       )}
 
@@ -306,11 +354,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                   ) : (
                     <div
                       className="markdown-body"
-                      onContextMenu={(e) => {
-                        if (selectOrCopy(e.currentTarget, message.content)) {
-                          e.preventDefault();
-                        }
-                      }}
+                      onContextMenu={(e) => onRightClick(e, message)}
                     >
                       <Markdown content={message.content} />
                     </div>
