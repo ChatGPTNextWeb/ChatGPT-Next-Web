@@ -17,6 +17,7 @@ const en: LocaleType = {
       Export: "Export All Messages as Markdown",
       Copy: "Copy",
       Stop: "Stop",
+      Retry: "Retry",
     },
     Typing: "Typing…",
     Input: (submitKey: string) =>
