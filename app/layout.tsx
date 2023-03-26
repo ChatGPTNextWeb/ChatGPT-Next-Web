@@ -3,16 +3,32 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/prism.scss";
 import process from "child_process";
+import { ACCESS_CODES } from "./api/access";
+
+const COMMIT_ID = process
+  .execSync("git rev-parse --short HEAD")
+  .toString()
+  .trim();
 
 export const metadata = {
   title: "ChatGPT Next Web",
   description: "Your personal ChatGPT Chat Bot.",
 };
 
-const COMMIT_ID = process
-  .execSync("git rev-parse --short HEAD")
-  .toString()
-  .trim();
+function Meta() {
+  const metas = {
+    version: COMMIT_ID,
+    access: ACCESS_CODES.size > 0 ? "enabled" : "disabled",
+  };
+
+  return (
+    <>
+      {Object.entries(metas).map(([k, v]) => (
+        <meta name={k} content={v} key={k} />
+      ))}
+    </>
+  );
+}
 
 export default function RootLayout({
   children,
@@ -26,7 +42,7 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         />
-        <meta name="version" content={COMMIT_ID} />
+        <Meta />
         <link rel="manifest" href="/site.webmanifest"></link>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
