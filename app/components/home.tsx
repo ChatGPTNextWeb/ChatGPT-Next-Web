@@ -465,6 +465,16 @@ function showMemoryPrompt(session: ChatSession) {
   });
 }
 
+const useHasHydrated = () => {
+  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  return hasHydrated;
+};
+
 export function Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
@@ -473,7 +483,7 @@ export function Home() {
       state.removeSession,
     ]
   );
-  const loading = !useChatStore?.persist?.hasHydrated();
+  const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
   // setting
