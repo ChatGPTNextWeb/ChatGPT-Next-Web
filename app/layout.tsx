@@ -55,6 +55,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap"
           rel="stylesheet"
         ></link>
+        <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>{children}</body>
     </html>
