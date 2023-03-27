@@ -358,12 +358,20 @@ function useSwitchTheme() {
   const config = useChatStore((state) => state.config);
 
   useEffect(() => {
+    const metaDescription = document.querySelector('meta[name="theme-color"]');
+
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
     if (config.theme === "dark") {
       document.body.classList.add("dark");
+      if (metaDescription){
+        metaDescription.setAttribute('content', "#151515");
+      }
     } else if (config.theme === "light") {
       document.body.classList.add("light");
+      if (metaDescription){
+        metaDescription.setAttribute('content', "#fafafa");
+      }
     }
   }, [config.theme]);
 }
