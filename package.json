@@ -4,13 +4,15 @@
   "private": false,
   "license": "Anti 996",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "yarn fetch && next dev",
+    "build": "yarn fetch && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fetch": "node ./scripts/fetch-prompts.mjs"
   },
   "dependencies": {
     "@svgr/webpack": "^6.5.1",
+    "@types/js-search": "^1.4.0",
     "@types/node": "^18.14.6",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
@@ -22,7 +24,9 @@
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "eventsource-parser": "^0.1.0",
+    "js-search": "^2.0.0",
     "next": "^13.2.3",
+    "node-fetch": "^3.3.1",
     "openai": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
