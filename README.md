@@ -109,29 +109,36 @@ OPENAI_API_KEY=<your api key here>
 ```
 
 ### 本地开发 Local Development
+
 > 如果你是中国大陆用户，不建议在本地进行开发，除非你能够独立解决 OpenAI API 本地代理问题。
 
 1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
 2. 执行 `yarn install && yarn dev` 即可。
 
 ### 本地部署 Local Deployment
+
 请直接询问 ChatGPT，使用下列 Prompt：
+
 ```
 如何使用 pm2 和 yarn 部署 nextjs 项目到 ubuntu 服务器上，项目编译命令为 yarn build，启动命令为 yarn start，启动时需要设置环境变量为 OPENAI_API_KEY，端口为 3000，使用 ngnix 做反向代理
 ```
 
 Please ask ChatGPT with prompt:
+
 ```
 how to deploy nextjs project with pm2 and yarn on my ubuntu server, the build command is `yarn build`, the start command is `yarn start`, the project must start with env var named `OPENAI_API_KEY`, the port is 3000, use ngnix
 ```
 
 ### Docker Deployment
+
 请直接询问 ChatGPT，使用下列 Prompt：
+
 ```
 如何使用 docker 部署 nextjs 项目到 ubuntu 服务器上，项目编译命令为 yarn build，启动命令为 yarn start，启动时需要设置环境变量为 OPENAI_API_KEY，端口为 3000，使用 ngnix 做反向代理
 ```
 
 Please ask ChatGPT with prompt:
+
 ```
 how to deploy nextjs project with docker on my ubuntu server, the build command is `yarn build`, the start command is `yarn start`, the project must start with env var named `OPENAI_API_KEY`, the port is 3000, use ngnix
 ```
@@ -143,17 +150,21 @@ how to deploy nextjs project with docker on my ubuntu server, the build command 
 ![更多展示 More](./static/more.png)
 
 ## 说明 Attention
+
 本项目的演示地址所用的 OpenAI 账户的免费额度将于 2023-04-01 过期，届时将无法通过演示地址在线体验。
 
 如果你想贡献出自己的 API Key，可以通过作者主页的邮箱发送给作者，并标注过期时间。
 
-The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time. 
+The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time.
 
 If you would like to contribute your API key, you can email it to the author and indicate the expiration date of the API key.
 
 ## 鸣谢 Special Thanks
+
 ### 捐赠者 Sponsor
+
 [@mushan0x0](https://github.com/mushan0x0)
+[@ClarenceDan](https://github.com/ClarenceDan)
 
 ## LICENSE
 
