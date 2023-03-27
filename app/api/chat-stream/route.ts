@@ -1,4 +1,3 @@
-import type { ChatRequest } from "../chat/typing";
 import { createParser } from "eventsource-parser";
 import { NextRequest } from "next/server";
 
