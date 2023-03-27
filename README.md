@@ -166,6 +166,9 @@ If you would like to contribute your API key, you can email it to the author and
 [@mushan0x0](https://github.com/mushan0x0)
 [@ClarenceDan](https://github.com/ClarenceDan)
 
+### 贡献者 Contributor
+[@AprilNEA](https://github.com/AprilNEA)
+
 ## LICENSE
 
 - [Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)
