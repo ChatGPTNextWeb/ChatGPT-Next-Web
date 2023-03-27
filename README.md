@@ -163,6 +163,8 @@ If you would like to contribute your API key, you can email it to the author and
 ### 贡献者 Contributor
 
 [@AprilNEA](https://github.com/AprilNEA)
+[@iSource](https://github.com/iSource)
+[@iFwu](https://github.com/iFwu)
 
 ## LICENSE
 
