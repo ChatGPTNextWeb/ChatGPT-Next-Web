@@ -7,7 +7,7 @@
 
 One-Click to deploy your own ChatGPT web UI.
 
-[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈问题 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
+[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [微信群](https://user-images.githubusercontent.com/16968934/227772522-b3ba3713-9206-4c8d-a81f-22300b7c313a.jpg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -84,7 +84,7 @@ You can star or watch this project or follow author to get release notifictions 
 code1,code2,code3
 ```
 
-增加或修改该环境变量后，请重新部署项目使改动生效。
+增加或修改该环境变量后，请**重新部署**项目使改动生效。
 
 This project provides limited access control. Please add an environment variable named `CODE` on the environment variables page. The value should be a custom control code separated by comma like this:
 
@@ -109,18 +109,22 @@ OPENAI_API_KEY=<your api key here>
 ```
 
 ### 本地开发 Local Development
+
 > 如果你是中国大陆用户，不建议在本地进行开发，除非你能够独立解决 OpenAI API 本地代理问题。
 
 1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
 2. 执行 `yarn install && yarn dev` 即可。
 
 ### 本地部署 Local Deployment
+
 请直接询问 ChatGPT，使用下列 Prompt：
+
 ```
 如何使用 pm2 和 yarn 部署 nextjs 项目到 ubuntu 服务器上，项目编译命令为 yarn build，启动命令为 yarn start，启动时需要设置环境变量为 OPENAI_API_KEY，端口为 3000，使用 ngnix 做反向代理
 ```
 
 Please ask ChatGPT with prompt:
+
 ```
 how to deploy nextjs project with pm2 and yarn on my ubuntu server, the build command is `yarn build`, the start command is `yarn start`, the project must start with env var named `OPENAI_API_KEY`, the port is 3000, use ngnix
 ```
@@ -157,13 +161,21 @@ Please replace `OPEN_API_KEY` and `CODE` with your own credentials at the approp
 ![更多展示 More](./static/more.png)
 
 ## 说明 Attention
+
 本项目的演示地址所用的 OpenAI 账户的免费额度将于 2023-04-01 过期，届时将无法通过演示地址在线体验。
 
 如果你想贡献出自己的 API Key，可以通过作者主页的邮箱发送给作者，并标注过期时间。
 
-The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time. 
+The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time.
 
 If you would like to contribute your API key, you can email it to the author and indicate the expiration date of the API key.
+
+## 鸣谢 Special Thanks
+
+### 捐赠者 Sponsor
+
+[@mushan0x0](https://github.com/mushan0x0)
+[@ClarenceDan](https://github.com/ClarenceDan)
 
 ## LICENSE
 
