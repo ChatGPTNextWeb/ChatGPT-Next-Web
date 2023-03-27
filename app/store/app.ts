@@ -2,7 +2,11 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
-import { requestChatStream, requestWithPrompt } from "../requests";
+import {
+  ControllerPool,
+  requestChatStream,
+  requestWithPrompt,
+} from "../requests";
 import { trimTopic } from "../utils";
 
 import Locale from "../locales";
@@ -45,22 +49,24 @@ export interface ChatConfig {
 
 export type ModelConfig = ChatConfig["modelConfig"];
 
+const ENABLE_GPT4 = true;
+
 export const ALL_MODELS = [
   {
     name: "gpt-4",
-    available: false,
+    available: ENABLE_GPT4,
   },
   {
     name: "gpt-4-0314",
-    available: false,
+    available: ENABLE_GPT4,
   },
   {
     name: "gpt-4-32k",
-    available: false,
+    available: ENABLE_GPT4,
   },
   {
     name: "gpt-4-32k-0314",
-    available: false,
+    available: ENABLE_GPT4,
   },
   {
     name: "gpt-3.5-turbo",
@@ -296,6 +302,8 @@ export const useChatStore = create<ChatStore>()(
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
+        const sessionIndex = get().currentSessionIndex;
+        const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
         get().updateCurrentSession((session) => {
@@ -303,13 +311,16 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
+        // make request
         console.log("[User Input] ", sendMessages);
         requestChatStream(sendMessages, {
           onMessage(content, done) {
+            // stream response
             if (done) {
               botMessage.streaming = false;
               botMessage.content = content;
               get().onNewMessage(botMessage);
+              ControllerPool.remove(sessionIndex, messageIndex);
             } else {
               botMessage.content = content;
               set(() => ({}));
@@ -319,6 +330,15 @@ export const useChatStore = create<ChatStore>()(
             botMessage.content += "\n\n" + Locale.Store.Error;
             botMessage.streaming = false;
             set(() => ({}));
+            ControllerPool.remove(sessionIndex, messageIndex);
+          },
+          onController(controller) {
+            // collect controller for stop/retry
+            ControllerPool.addController(
+              sessionIndex,
+              messageIndex,
+              controller
+            );
           },
           filterBot: !get().config.sendBotMessages,
           modelConfig: get().config.modelConfig,
