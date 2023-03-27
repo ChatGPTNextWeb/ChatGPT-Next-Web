@@ -356,33 +356,21 @@ export function Chat(props: { showSideBar?: () => void }) {
 
 function useSwitchTheme() {
   const config = useChatStore((state) => state.config);
-  const screenWidth = window.innerWidth;
 
   useEffect(() => {
-    const metaDescription = document.querySelector('meta[name="theme-color"]');
-
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
+
     if (config.theme === "dark") {
       document.body.classList.add("dark");
-      if (metaDescription) {
-        if (screenWidth < 600) {
-          metaDescription.setAttribute('content', "#1a262a");
-        } else {
-          metaDescription.setAttribute('content', "#151515");
-        }
-      }
     } else if (config.theme === "light") {
       document.body.classList.add("light");
-      if (metaDescription) {
-        if (screenWidth < 600) {
-          metaDescription.setAttribute('content', "#e7f8ff");
-        } else {
-          metaDescription.setAttribute('content', "#fafafa");
-        }
-      }
     }
-  }, [config.theme,screenWidth]);
+
+    const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
+    const metaDescription = document.querySelector('meta[name="theme-color"]');
+    metaDescription?.setAttribute('content', themeColor);
+  }, [config.theme]);
 }
 
 function exportMessages(messages: Message[], topic: string) {

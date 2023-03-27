@@ -7,6 +7,7 @@
   --second: rgb(231, 248, 255);
   --hover-color: #f3f3f3;
   --bar-color: rgba(0, 0, 0, 0.1);
+  --theme-color: var(--gray);
 
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
@@ -28,6 +29,8 @@
   --bar-color: rgba(255, 255, 255, 0.1);
 
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
+
+  --theme-color: var(--gray);
 }
 
 .light {
@@ -84,7 +87,11 @@ body {
   align-items: center;
   user-select: none;
   font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
-    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+
+  @media only screen and (max-width: 600px) {
+    background-color: var(--second);
+  }
 }
 
 ::-webkit-scrollbar {
