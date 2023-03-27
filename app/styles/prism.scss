@@ -1,4 +1,9 @@
 .markdown-body {
+  pre {
+    background: #282a36;
+    color: #f8f8f2;
+  }
+
   code[class*="language-"],
   pre[class*="language-"] {
     color: #f8f8f2;
@@ -116,32 +121,32 @@
   }
 }
 
-@mixin light {
-  .markdown-body pre[class*="language-"] {
-    filter: invert(1) hue-rotate(50deg) brightness(1.3);
-  }
-}
+// @mixin light {
+//   .markdown-body pre[class*="language-"] {
+//     filter: invert(1) hue-rotate(50deg) brightness(1.3);
+//   }
+// }
 
-@mixin dark {
-  .markdown-body pre[class*="language-"] {
-    filter: none;
-  }
-}
+// @mixin dark {
+//   .markdown-body pre[class*="language-"] {
+//     filter: none;
+//   }
+// }
 
-:root {
-  @include light();
-}
+// :root {
+// @include light();
+// }
 
-.light {
-  @include light();
-}
+// .light {
+//   @include light();
+// }
 
-.dark {
-  @include dark();
-}
+// .dark {
+//   @include dark();
+// }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    @include dark();
-  }
-}
+// @media (prefers-color-scheme: dark) {
+//   :root {
+//     @include dark();
+//   }
+// }
