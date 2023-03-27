@@ -6,14 +6,18 @@ async function createStream(req: NextRequest) {
   const decoder = new TextDecoder();
 
   let apiKey = process.env.OPENAI_API_KEY;
-
+  let apiBasePath = process.env.OPENAI_API_BASE_PATH;
+  if (apiBasePath) {
+    apiBasePath = apiBasePath.replace(/\/+$/, "");
+  }
+  
   const userApiKey = req.headers.get("token");
   if (userApiKey) {
     apiKey = userApiKey;
     console.log("[Stream] using user api key");
   }
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch(`${apiBasePath ? apiBasePath : 'https://api.openai.com/v1'}/chat/completions`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
