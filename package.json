@@ -2,6 +2,7 @@
   "name": "chatgpt-next-web",
   "version": "1.1",
   "private": false,
+  "license": "Anti 996",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

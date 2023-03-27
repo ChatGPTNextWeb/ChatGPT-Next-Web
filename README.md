@@ -131,28 +131,11 @@ how to deploy nextjs project with pm2 and yarn on my ubuntu server, the build co
 
 ### 容器部署 Docker Deployment
 
-1. 首先拉取镜像
 ```shell
-docker pull aprilnea/chatgpt-next-web
-```
-2. 运行
-```shell
+docker pull yidadaa/chatgpt-next-web
+
 docker run -d -p 3000:3000 -e OPEN_API_KEY="" -e CODE="" aprilnea/chatgpt-next-web
 ```
-请在适当位置替换你的 `OPEN_API-KEY` 和 `CODE`
-
-
-1. First, pull the image
-```shell
-docker pull aprilnea/chatgpt-next-web
-```
-
-2. Run the container
-```shell
-docker run -d -p 3000:3000 -e OPEN_API_KEY="" -e CODE="" aprilnea/chatgpt-next-web
-```
-Please replace `OPEN_API_KEY` and `CODE` with your own credentials at the appropriate locations.
-
 
 ## 截图 Screenshots
 
@@ -178,6 +161,7 @@ If you would like to contribute your API key, you can email it to the author and
 [@ClarenceDan](https://github.com/ClarenceDan)
 
 ### 贡献者 Contributor
+
 [@AprilNEA](https://github.com/AprilNEA)
 
 ## LICENSE
