@@ -220,6 +220,10 @@ export function Settings(props: { closeSettings: () => void }) {
                 <option value="cn" key="cn">
                   {Locale.Settings.Lang.Options.cn}
                 </option>
+
+                <option value="tw" key="tw">
+                  {Locale.Settings.Lang.Options.tw}
+                </option>
               </select>
             </div>
           </SettingItem>
