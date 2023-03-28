@@ -45,8 +45,9 @@ const cn = {
     Lang: {
       Name: "Language",
       Options: {
-        cn: "中文",
+        cn: "简体中文",
         en: "English",
+        tw: "繁體中文",
       },
     },
     Avatar: "头像",

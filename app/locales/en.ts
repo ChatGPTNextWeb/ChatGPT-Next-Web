@@ -49,8 +49,9 @@ const en: LocaleType = {
     Lang: {
       Name: "语言",
       Options: {
-        cn: "中文",
+        cn: "简体中文",
         en: "English",
+        tw: "繁體中文",
       },
     },
     Avatar: "Avatar",
