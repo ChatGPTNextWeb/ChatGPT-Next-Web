@@ -3,7 +3,7 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/prism.scss";
 import process from "child_process";
-import { ACCESS_CODES } from "./api/access";
+import { ACCESS_CODES, IS_IN_DOCKER } from "./api/access";
 
 let COMMIT_ID: string | undefined;
 try {
@@ -28,7 +28,7 @@ export const metadata = {
 function Meta() {
   const metas = {
     version: COMMIT_ID ?? "unknown",
-    access: ACCESS_CODES.size > 0 ? "enabled" : "disabled",
+    access: (ACCESS_CODES.size > 0 || IS_IN_DOCKER) ? "enabled" : "disabled",
   };
 
   return (
