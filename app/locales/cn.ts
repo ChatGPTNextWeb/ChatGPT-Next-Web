@@ -62,6 +62,16 @@ const cn = {
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "紧凑边框",
+    Prompt: {
+      Disable: {
+        Title: "禁用提示词自动补全",
+        SubTitle: "禁用后将无法自动根据输入补全",
+      },
+      List: "自定义提示词列表",
+      ListCount: (builtin: number, custom: number) =>
+        `内置 ${builtin} 条，用户定义 ${custom} 条`,
+      Edit: "编辑",
+    },
     HistoryCount: {
       Title: "附带历史消息数",
       SubTitle: "每次请求携带的历史消息数",

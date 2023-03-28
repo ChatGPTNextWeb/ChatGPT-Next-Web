@@ -40,6 +40,8 @@ export interface ChatConfig {
   theme: Theme;
   tightBorder: boolean;
 
+  disablePromptHint: boolean;
+
   modelConfig: {
     model: string;
     temperature: number;
@@ -123,6 +125,8 @@ const DEFAULT_CONFIG: ChatConfig = {
   avatar: "1f603",
   theme: Theme.Auto as Theme,
   tightBorder: false,
+
+  disablePromptHint: false,
 
   modelConfig: {
     model: "gpt-3.5-turbo",
