@@ -561,7 +561,10 @@ export function Home() {
             <IconButton
               icon={<AddIcon />}
               text={Locale.Home.NewChat}
-              onClick={createNewSession}
+              onClick={()=>{
+                createNewSession();
+                setShowSideBar(false);
+              }}
             />
           </div>
         </div>
