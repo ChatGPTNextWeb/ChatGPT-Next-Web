@@ -131,10 +131,12 @@ function useSubmitHandler() {
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
       (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
+      (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
       (config.submitKey === SubmitKey.Enter &&
         !e.altKey &&
         !e.ctrlKey &&
-        !e.shiftKey)
+        !e.shiftKey &&
+        !e.metaKey)
     );
   };
 
@@ -163,6 +165,7 @@ export function Chat(props: { showSideBar?: () => void }) {
     setIsLoading(true);
     onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
+    inputRef.current?.focus();
   };
 
   // stop response
@@ -203,6 +206,7 @@ export function Chat(props: { showSideBar?: () => void }) {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // wont scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
@@ -371,6 +375,7 @@ export function Chat(props: { showSideBar?: () => void }) {
       <div className={styles["chat-input-panel"]}>
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
+            ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
             rows={3}
