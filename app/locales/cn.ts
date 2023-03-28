@@ -1,7 +1,7 @@
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请在设置页填写授权码。",
+    Unauthorized: "现在是未授权状态，请联系微信l0112153，并在设置页填写授权码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
