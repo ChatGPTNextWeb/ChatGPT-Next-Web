@@ -1,9 +1,10 @@
 import CN from './cn'
 import EN from './en'
+import TW from './tw'
 
 export type { LocaleType } from './cn'
 
-type Lang = 'en' | 'cn'
+type Lang = 'en' | 'cn' | 'tw'
 
 const LANG_KEY = 'lang'
 
@@ -32,7 +33,7 @@ function getLanguage() {
 export function getLang(): Lang {
     const savedLang = getItem(LANG_KEY)
 
-    if (['en', 'cn'].includes(savedLang ?? '')) {
+    if (['en', 'cn', 'tw'].includes(savedLang ?? '')) {
         return savedLang as Lang
     }
 
@@ -40,6 +41,8 @@ export function getLang(): Lang {
 
     if (lang.includes('zh') || lang.includes('cn')) {
         return 'cn'
+    } else if (lang.includes('tw')) {
+        return 'tw'
     } else {
         return 'en'
     }
@@ -50,4 +53,4 @@ export function changeLang(lang: Lang) {
     location.reload()
 }
 
-export default { en: EN, cn: CN }[getLang()]
+export default { en: EN, cn: CN, tw: TW }[getLang()]
