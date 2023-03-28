@@ -21,6 +21,7 @@ export enum SubmitKey {
   CtrlEnter = "Ctrl + Enter",
   ShiftEnter = "Shift + Enter",
   AltEnter = "Alt + Enter",
+  MetaEnter = "⌘ + Enter",
 }
 
 export enum Theme {
