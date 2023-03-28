@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -28,6 +29,7 @@ import Locale from "../locales";
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ControllerPool } from "../requests";
+import { Prompt, usePromptStore } from "../store/prompt";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -146,24 +148,77 @@ function useSubmitHandler() {
   };
 }
 
+export function PromptHints(props: {
+  prompts: Prompt[];
+  onPromptSelect: (prompt: Prompt) => void;
+}) {
+  if (props.prompts.length === 0) return null;
+
+  return (
+    <div className={styles["prompt-hints"]}>
+      {props.prompts.map((prompt, i) => (
+        <div
+          className={styles["prompt-hint"]}
+          key={prompt.title + i.toString()}
+          onClick={() => props.onPromptSelect(prompt)}
+        >
+          <div className={styles["hint-title"]}>{prompt.title}</div>
+          <div className={styles["hint-content"]}>{prompt.content}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function Chat(props: { showSideBar?: () => void }) {
   type RenderMessage = Message & { preview?: boolean };
 
+  const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
 
-  const onUserInput = useChatStore((state) => state.onUserInput);
+  // prompt hints
+  const promptStore = usePromptStore();
+  const [promptHints, setPromptHints] = useState<Prompt[]>([]);
+  const onSearch = useDebouncedCallback(
+    (text: string) => {
+      if (chatStore.config.disablePromptHint) return;
+      setPromptHints(promptStore.search(text));
+    },
+    100,
+    { leading: true, trailing: true }
+  );
+
+  const onPromptSelect = (prompt: Prompt) => {
+    setUserInput(prompt.content);
+    setPromptHints([]);
+    inputRef.current?.focus();
+  };
+
+  // only search prompts when user input is short
+  const SEARCH_TEXT_LIMIT = 10;
+  const onInput = (text: string) => {
+    setUserInput(text);
+    const n = text.trim().length;
+    if (n === 0 || n > SEARCH_TEXT_LIMIT) {
+      setPromptHints([]);
+    } else {
+      onSearch(text);
+    }
+  };
 
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
     setIsLoading(true);
-    onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
     inputRef.current?.focus();
   };
@@ -198,7 +253,9 @@ export function Chat(props: { showSideBar?: () => void }) {
     for (let i = botIndex; i >= 0; i -= 1) {
       if (messages[i].role === "user") {
         setIsLoading(true);
-        onUserInput(messages[i].content).then(() => setIsLoading(false));
+        chatStore
+          .onUserInput(messages[i].content)
+          .then(() => setIsLoading(false));
         return;
       }
     }
@@ -206,7 +263,6 @@ export function Chat(props: { showSideBar?: () => void }) {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // wont scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
@@ -373,17 +429,21 @@ export function Chat(props: { showSideBar?: () => void }) {
       </div>
 
       <div className={styles["chat-input-panel"]}>
+        <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
-            rows={3}
-            onInput={(e) => setUserInput(e.currentTarget.value)}
+            rows={4}
+            onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={(e) => onInputKeyDown(e as any)}
             onFocus={() => setAutoScroll(true)}
-            onBlur={() => setAutoScroll(false)}
+            onBlur={() => {
+              setAutoScroll(false);
+              setTimeout(() => setPromptHints([]), 100);
+            }}
             autoFocus
           />
           <IconButton
@@ -411,9 +471,11 @@ function useSwitchTheme() {
       document.body.classList.add("light");
     }
 
-    const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
+    const themeColor = getComputedStyle(document.body)
+      .getPropertyValue("--theme-color")
+      .trim();
     const metaDescription = document.querySelector('meta[name="theme-color"]');
-    metaDescription?.setAttribute('content', themeColor);
+    metaDescription?.setAttribute("content", themeColor);
   }, [config.theme]);
 }
 
@@ -566,7 +628,7 @@ export function Home() {
             <IconButton
               icon={<AddIcon />}
               text={Locale.Home.NewChat}
-              onClick={()=>{
+              onClick={() => {
                 createNewSession();
                 setShowSideBar(false);
               }}

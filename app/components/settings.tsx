@@ -7,8 +7,9 @@ import styles from "./settings.module.scss";
 import ResetIcon from "../icons/reload.svg";
 import CloseIcon from "../icons/close.svg";
 import ClearIcon from "../icons/clear.svg";
+import EditIcon from "../icons/edit.svg";
 
-import { List, ListItem, Popover } from "./ui-lib";
+import { List, ListItem, Popover, showToast } from "./ui-lib";
 
 import { IconButton } from "./button";
 import {
@@ -19,12 +20,13 @@ import {
   useUpdateStore,
   useAccessStore,
 } from "../store";
-import { Avatar } from "./home";
+import { Avatar, PromptHints } from "./home";
 
 import Locale, { changeLang, getLang } from "../locales";
 import { getCurrentCommitId } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
+import { SearchService, usePromptStore } from "../store/prompt";
 
 function SettingItem(props: {
   title: string;
@@ -77,6 +79,10 @@ export function Settings(props: { closeSettings: () => void }) {
     () => accessStore.enabledAccessControl(),
     []
   );
+
+  const promptStore = usePromptStore();
+  const builtinCount = SearchService.count.builtin;
+  const customCount = promptStore.prompts.size ?? 0;
 
   return (
     <>
@@ -241,6 +247,37 @@ export function Settings(props: { closeSettings: () => void }) {
               ></input>
             </SettingItem>
           </div>
+        </List>
+        <List>
+          <SettingItem
+            title={Locale.Settings.Prompt.Disable.Title}
+            subTitle={Locale.Settings.Prompt.Disable.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.disablePromptHint}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.disablePromptHint = e.currentTarget.checked)
+                )
+              }
+            ></input>
+          </SettingItem>
+
+          <SettingItem
+            title={Locale.Settings.Prompt.List}
+            subTitle={Locale.Settings.Prompt.ListCount(
+              builtinCount,
+              customCount
+            )}
+          >
+            <IconButton
+              icon={<EditIcon />}
+              text={Locale.Settings.Prompt.Edit}
+              onClick={() => showToast(Locale.WIP)}
+            />
+          </SettingItem>
         </List>
         <List>
           {enabledAccessControl ? (

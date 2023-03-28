@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import JsSearch from "js-search";
+import Fuse from "fuse.js";
+import { showToast } from "../components/ui-lib";
 
 export interface Prompt {
   id?: number;
-  shortcut: string;
   title: string;
   content: string;
 }
@@ -22,36 +22,30 @@ export const PROMPT_KEY = "prompt-store";
 
 export const SearchService = {
   ready: false,
-  progress: 0, // 0 - 1, 1 means ready
-  engine: new JsSearch.Search("prompts"),
-  deleted: new Set<number>(),
+  engine: new Fuse<Prompt>([], { keys: ["title"] }),
+  count: {
+    builtin: 0,
+  },
 
-  async init(prompts: PromptStore["prompts"]) {
-    this.engine.addIndex("id");
-    this.engine.addIndex("shortcut");
-    this.engine.addIndex("title");
-
-    const n = prompts.size;
-    let count = 0;
-    for await (const prompt of prompts.values()) {
-      this.engine.addDocument(prompt);
-      count += 1;
-      this.progress = count / n;
+  init(prompts: Prompt[]) {
+    if (this.ready) {
+      return;
     }
+    this.engine.setCollection(prompts);
     this.ready = true;
   },
 
   remove(id: number) {
-    this.deleted.add(id);
+    this.engine.remove((doc) => doc.id === id);
   },
 
   add(prompt: Prompt) {
-    this.engine.addDocument(prompt);
+    this.engine.add(prompt);
   },
 
   search(text: string) {
-    const results = this.engine.search(text) as Prompt[];
-    return results.filter((v) => !v.id || !this.deleted.has(v.id));
+    const results = this.engine.search(text);
+    return results.map((v) => v.item);
   },
 };
 
@@ -91,6 +85,35 @@ export const usePromptStore = create<PromptStore>()(
     {
       name: PROMPT_KEY,
       version: 1,
+      onRehydrateStorage(state) {
+        const PROMPT_URL = "./prompts.json";
+
+        type PromptList = Array<[string, string]>;
+
+        fetch(PROMPT_URL)
+          .then((res) => res.json())
+          .then((res) => {
+            const builtinPrompts = [res.en, res.cn]
+              .map((promptList: PromptList) => {
+                return promptList.map(
+                  ([title, content]) =>
+                    ({
+                      title,
+                      content,
+                    } as Prompt)
+                );
+              })
+              .concat([...(state?.prompts?.values() ?? [])]);
+
+            const allPromptsForSearch = builtinPrompts.reduce(
+              (pre, cur) => pre.concat(cur),
+              []
+            );
+            SearchService.count.builtin = res.en.length + res.cn.length;
+            SearchService.init(allPromptsForSearch);
+            showToast(`已加载 ${allPromptsForSearch.length} 条 Prompts`);
+          });
+      },
     }
   )
 );
