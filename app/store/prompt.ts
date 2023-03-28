@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
-import { showToast } from "../components/ui-lib";
 
 export interface Prompt {
   id?: number;
@@ -111,7 +110,6 @@ export const usePromptStore = create<PromptStore>()(
             );
             SearchService.count.builtin = res.en.length + res.cn.length;
             SearchService.init(allPromptsForSearch);
-            showToast(`已加载 ${allPromptsForSearch.length} 条 Prompts`);
           });
       },
     }
