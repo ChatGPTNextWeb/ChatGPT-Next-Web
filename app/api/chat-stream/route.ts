@@ -1,5 +1,6 @@
 import { createParser } from "eventsource-parser";
 import { NextRequest } from "next/server";
+import { BASE_PATH } from "openai/base";
 
 async function createStream(req: NextRequest) {
   const encoder = new TextEncoder();
@@ -13,7 +14,12 @@ async function createStream(req: NextRequest) {
     console.log("[Stream] using user api key");
   }
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  let basePath = BASE_PATH;
+  if (process.env.OPENAI_API_BASE_PATH) {
+    basePath = process.env.OPENAI_API_BASE_PATH.replace(/\/+$/, "");
+  }
+
+  const res = await fetch(basePath + "/chat/completions", {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,

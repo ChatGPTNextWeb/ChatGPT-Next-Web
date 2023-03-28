@@ -10,10 +10,16 @@ export async function POST(req: Request) {
       apiKey = userApiKey;
     }
 
+    let basePath = undefined;
+    if (process.env.OPENAI_API_BASE_PATH) {
+      basePath = process.env.OPENAI_API_BASE_PATH.replace(/\/+$/, "");
+    }  
+
     const openai = new OpenAIApi(
       new Configuration({
         apiKey,
-      })
+      }),
+      basePath
     );
 
     const requestBody = (await req.json()) as ChatRequest;
