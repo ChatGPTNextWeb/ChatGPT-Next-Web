@@ -14,4 +14,8 @@ const nextConfig = {
   }
 };
 
+if (process.env.DOCKER) {
+  nextConfig.output = 'standalone'
+}
+
 module.exports = nextConfig;

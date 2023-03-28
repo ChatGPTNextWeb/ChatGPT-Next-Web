@@ -354,7 +354,7 @@ export function Settings(props: { closeSettings: () => void }) {
             <input
               type="number"
               min={100}
-              max={4000}
+              max={4096}
               value={config.modelConfig.max_tokens}
               onChange={(e) =>
                 updateConfig(

@@ -131,10 +131,12 @@ function useSubmitHandler() {
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
       (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
+      (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
       (config.submitKey === SubmitKey.Enter &&
         !e.altKey &&
         !e.ctrlKey &&
-        !e.shiftKey)
+        !e.shiftKey &&
+        !e.metaKey)
     );
   };
 
@@ -163,6 +165,7 @@ export function Chat(props: { showSideBar?: () => void }) {
     setIsLoading(true);
     onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
+    inputRef.current?.focus();
   };
 
   // stop response
@@ -203,6 +206,7 @@ export function Chat(props: { showSideBar?: () => void }) {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // wont scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
@@ -371,6 +375,7 @@ export function Chat(props: { showSideBar?: () => void }) {
       <div className={styles["chat-input-panel"]}>
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
+            ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
             rows={3}
@@ -399,11 +404,16 @@ function useSwitchTheme() {
   useEffect(() => {
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
+
     if (config.theme === "dark") {
       document.body.classList.add("dark");
     } else if (config.theme === "light") {
       document.body.classList.add("light");
     }
+
+    const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
+    const metaDescription = document.querySelector('meta[name="theme-color"]');
+    metaDescription?.setAttribute('content', themeColor);
   }, [config.theme]);
 }
 
@@ -465,6 +475,16 @@ function showMemoryPrompt(session: ChatSession) {
   });
 }
 
+const useHasHydrated = () => {
+  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  return hasHydrated;
+};
+
 export function Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
@@ -473,7 +493,7 @@ export function Home() {
       state.removeSession,
     ]
   );
-  const loading = !useChatStore?.persist?.hasHydrated();
+  const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
   // setting
@@ -546,7 +566,10 @@ export function Home() {
             <IconButton
               icon={<AddIcon />}
               text={Locale.Home.NewChat}
-              onClick={createNewSession}
+              onClick={()=>{
+                createNewSession();
+                setShowSideBar(false);
+              }}
             />
           </div>
         </div>
