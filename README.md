@@ -157,11 +157,7 @@ If you would like to contribute your API key, you can email it to the author and
 [@hoochanlon](https://github.com/hoochanlon)
 
 ### 贡献者 Contributor
-
-[@AprilNEA](https://github.com/AprilNEA)
-[@iSource](https://github.com/iSource)
-[@iFwu](https://github.com/iFwu)
-[@xiaotianxt](https://github.com/xiaotianxt)
+[Contributors](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ## LICENSE
 
