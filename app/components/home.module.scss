@@ -333,11 +333,65 @@
 
 .chat-input-panel {
   position: absolute;
-  bottom: 20px;
+  bottom: 0px;
   display: flex;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  flex-direction: column;
+}
+
+@mixin single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prompt-hints {
+  min-height: 20px;
+  width: 100%;
+  max-height: 50vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+
+  background-color: var(--white);
+  border: var(--border-in-light);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+
+  .prompt-hint {
+    color: var(--black);
+    padding: 6px 10px;
+    animation: slide-in ease 0.3s;
+    cursor: pointer;
+    transition: all ease 0.3s;
+    border: transparent 1px solid;
+    margin: 4px;
+    border-radius: 8px;
+
+    &:not(:last-child) {
+      margin-top: 0;
+    }
+
+    .hint-title {
+      font-size: 12px;
+      font-weight: bolder;
+
+      @include single-line();
+    }
+    .hint-content {
+      font-size: 12px;
+
+      @include single-line();
+    }
+
+    &-selected,
+    &:hover {
+      border-color: var(--primary);
+    }
+  }
 }
 
 .chat-input-panel-inner {
@@ -375,7 +429,7 @@
 
   position: absolute;
   right: 30px;
-  bottom: 10px;
+  bottom: 30px;
 }
 
 .export-content {
