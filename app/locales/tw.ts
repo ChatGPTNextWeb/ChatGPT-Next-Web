@@ -64,6 +64,16 @@ const tw: LocaleType = {
     SendKey: "發送鍵",
     Theme: "主題",
     TightBorder: "緊湊邊框",
+    Prompt: {
+      Disable: {
+        Title: "禁用提示詞自動補全",
+        SubTitle: "禁用後將無法自動根據輸入補全",
+      },
+      List: "自定義提示詞列表",
+      ListCount: (builtin: number, custom: number) =>
+        `內置 ${builtin} 條，用戶定義 ${custom} 條`,
+      Edit: "編輯",
+    },
     HistoryCount: {
       Title: "附帶歷史消息數",
       SubTitle: "每次請求攜帶的歷史消息數",
@@ -117,4 +127,3 @@ const tw: LocaleType = {
 };
 
 export default tw;
-

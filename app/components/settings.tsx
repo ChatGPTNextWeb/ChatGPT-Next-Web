@@ -22,7 +22,7 @@ import {
 } from "../store";
 import { Avatar, PromptHints } from "./home";
 
-import Locale, { changeLang, getLang } from "../locales";
+import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { getCurrentCommitId } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
@@ -212,26 +212,18 @@ export function Settings(props: { closeSettings: () => void }) {
           </ListItem>
 
           <SettingItem title={Locale.Settings.Lang.Name}>
-            <div className="">
-              <select
-                value={getLang()}
-                onChange={(e) => {
-                  changeLang(e.target.value as any);
-                }}
-              >
-                <option value="en" key="en">
-                  {Locale.Settings.Lang.Options.en}
+            <select
+              value={getLang()}
+              onChange={(e) => {
+                changeLang(e.target.value as any);
+              }}
+            >
+              {AllLangs.map((lang) => (
+                <option value={lang} key={lang}>
+                  {Locale.Settings.Lang.Options[lang]}
                 </option>
-
-                <option value="cn" key="cn">
-                  {Locale.Settings.Lang.Options.cn}
-                </option>
-
-                <option value="tw" key="tw">
-                  {Locale.Settings.Lang.Options.tw}
-                </option>
-              </select>
-            </div>
+              ))}
+            </select>
           </SettingItem>
 
           <div className="no-mobile">
