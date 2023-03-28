@@ -203,7 +203,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   };
 
   // only search prompts when user input is short
-  const SEARCH_TEXT_LIMIT = 10;
+  const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
     setUserInput(text);
     const n = text.trim().length;
