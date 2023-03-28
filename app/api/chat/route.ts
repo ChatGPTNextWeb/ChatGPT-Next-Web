@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     const openai = new OpenAIApi(
       new Configuration({
         apiKey,
+        basePath: "https://closeai.deno.dev/v1",
       })
     );
 
