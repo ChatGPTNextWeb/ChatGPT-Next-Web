@@ -66,6 +66,16 @@ const en: LocaleType = {
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
+    Prompt: {
+      Disable: {
+        Title: "Disable auto-completion",
+        SubTitle: "After disabling, auto-completion will not be available",
+      },
+      List: "Prompt List",
+      ListCount: (builtin: number, custom: number) =>
+        `${builtin} built-in, ${custom} user-defined`,
+      Edit: "Edit",
+    },
     HistoryCount: {
       Title: "Attached Messages Count",
       SubTitle: "Number of sent messages attached per request",
