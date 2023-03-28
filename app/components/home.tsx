@@ -165,6 +165,7 @@ export function Chat(props: { showSideBar?: () => void }) {
     setIsLoading(true);
     onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
+    inputRef.current?.focus();
   };
 
   // stop response
@@ -205,21 +206,10 @@ export function Chat(props: { showSideBar?: () => void }) {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
-  const inputPanelRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // wont scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
-  useEffect(() => {
-    const handleMouseDown = (e: MouseEvent) => {
-      // check if click on input panel
-      setAutoScroll(
-        !!inputPanelRef.current &&
-          inputPanelRef.current.contains(e.target as HTMLElement)
-      );
-    };
-    document.addEventListener("mousedown", handleMouseDown);
-    return () => document.removeEventListener("mousedown", handleMouseDown);
-  });
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -382,15 +372,18 @@ export function Chat(props: { showSideBar?: () => void }) {
         </div>
       </div>
 
-      <div className={styles["chat-input-panel"]} ref={inputPanelRef}>
+      <div className={styles["chat-input-panel"]}>
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
+            ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
             rows={3}
             onInput={(e) => setUserInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={(e) => onInputKeyDown(e as any)}
+            onFocus={() => setAutoScroll(true)}
+            onBlur={() => setAutoScroll(false)}
             autoFocus
           />
           <IconButton
