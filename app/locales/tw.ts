@@ -53,6 +53,10 @@ const tw: LocaleType = {
       },
     },
     Avatar: "大頭貼",
+    FontSize: {
+      Title: "字型大小",
+      SubTitle: "聊天內容的字型大小",
+    },
     Update: {
       Version: (x: string) => `當前版本：${x}`,
       IsLatest: "已是最新版本",

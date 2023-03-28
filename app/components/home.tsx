@@ -178,6 +178,7 @@ export function Chat(props: { showSideBar?: () => void }) {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+  const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -406,6 +407,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                   ) : (
                     <div
                       className="markdown-body"
+                      style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
                     >
                       <Markdown content={message.content} />
