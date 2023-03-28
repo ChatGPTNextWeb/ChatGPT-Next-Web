@@ -14,3 +14,4 @@ export function getAccessCodes(): Set<string> {
 }
 
 export const ACCESS_CODES = getAccessCodes();
+export const IS_IN_DOCKER = process.env.DOCKER;
