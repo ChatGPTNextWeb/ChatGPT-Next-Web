@@ -64,6 +64,7 @@ const cn = {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
     },
+
     Update: {
       Version: (x: string) => `当前版本：${x}`,
       IsLatest: "已是最新版本",
@@ -97,6 +98,14 @@ const cn = {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可绕过受控访问限制",
       Placeholder: "OpenAI API Key",
+    },
+    Usage: {
+      Title: "账户余额",
+      SubTitle(granted: any, used: any) {
+        return `总共 $${granted}，已使用 $${used}`;
+      },
+      IsChecking: "正在检查…",
+      Check: "重新检查",
     },
     AccessCode: {
       Title: "访问码",
