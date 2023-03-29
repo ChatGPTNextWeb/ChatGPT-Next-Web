@@ -301,7 +301,7 @@ export function Chat(props: { showSideBar?: () => void }) {
       const dom = latestMessageRef.current;
       if (dom && !isIOS() && autoScroll) {
         dom.scrollIntoView({
-          behavior: "smooth",
+          behavior: "auto",
           block: "end",
         });
       }
