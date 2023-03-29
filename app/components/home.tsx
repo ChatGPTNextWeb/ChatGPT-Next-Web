@@ -128,7 +128,7 @@ function useSubmitHandler() {
 
   const shouldSubmit = (e: KeyboardEvent) => {
     if (e.key !== "Enter") return false;
-
+ 
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
@@ -170,7 +170,7 @@ export function PromptHints(props: {
   );
 }
 
-export function Chat(props: { showSideBar?: () => void }) {
+export function Chat(props: { showSideBar?: () => void, sideBarShowing?: boolean }) {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -178,6 +178,7 @@ export function Chat(props: { showSideBar?: () => void }) {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+  const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -205,6 +206,11 @@ export function Chat(props: { showSideBar?: () => void }) {
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
+    const textareaDom = inputRef.current
+    if (textareaDom) {
+      const paddingBottomNum: number = parseInt(window.getComputedStyle(textareaDom).paddingBottom, 10);
+      textareaDom.scrollTop = textareaDom.scrollHeight - textareaDom.offsetHeight + paddingBottomNum;
+    }
     setUserInput(text);
     const n = text.trim().length;
     if (n === 0 || n > SEARCH_TEXT_LIMIT) {
@@ -374,7 +380,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {!isUser && (
+                  {(!isUser && !(message.preview || message.content.length === 0)) && (
                     <div className={styles["chat-message-top-actions"]}>
                       {message.streaming ? (
                         <div
@@ -406,6 +412,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                   ) : (
                     <div
                       className="markdown-body"
+                      style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
                     >
                       <Markdown content={message.content} />
@@ -444,7 +451,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 100);
             }}
-            autoFocus
+            autoFocus={!props?.sideBarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -646,7 +653,7 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+          <Chat key="chat" showSideBar={() => setShowSideBar(true)} sideBarShowing={showSideBar} />
         )}
       </div>
     </div>

@@ -226,6 +226,26 @@ export function Settings(props: { closeSettings: () => void }) {
             </select>
           </SettingItem>
 
+          <SettingItem
+            title={Locale.Settings.FontSize.Title}
+            subTitle={Locale.Settings.FontSize.SubTitle}
+          >
+            <input
+              type="range"
+              title={`${config.fontSize ?? 14}px`}
+              value={config.fontSize}
+              min="12"
+              max="18"
+              step="1"
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.fontSize = Number.parseInt(e.currentTarget.value))
+                )
+              }
+            ></input>
+          </SettingItem>
+
           <div className="no-mobile">
             <SettingItem title={Locale.Settings.TightBorder}>
               <input
@@ -369,7 +389,7 @@ export function Settings(props: { closeSettings: () => void }) {
               type="range"
               value={config.modelConfig.temperature.toFixed(1)}
               min="0"
-              max="1"
+              max="2"
               step="0.1"
               onChange={(e) => {
                 updateConfig(

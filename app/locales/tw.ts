@@ -1,3 +1,4 @@
+import { SubmitKey } from "../store/app";
 import type { LocaleType } from "./index";
 
 const tw: LocaleType = {
@@ -19,7 +20,13 @@ const tw: LocaleType = {
       Retry: "重試",
     },
     Typing: "正在輸入…",
-    Input: (submitKey: string) => `輸入訊息後，按下 ${submitKey} 鍵即可發送`,
+    Input: (submitKey: string) =>  {
+      var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
+      if (submitKey === String(SubmitKey.Enter)) {
+        inputHints += "，Shift + Enter 鍵換行";
+      }
+      return inputHints;
+    },
     Send: "發送",
   },
   Export: {
@@ -53,6 +60,10 @@ const tw: LocaleType = {
       },
     },
     Avatar: "大頭貼",
+    FontSize: {
+      Title: "字型大小",
+      SubTitle: "聊天內容的字型大小",
+    },
     Update: {
       Version: (x: string) => `當前版本：${x}`,
       IsLatest: "已是最新版本",
