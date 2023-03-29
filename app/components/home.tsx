@@ -374,7 +374,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {!isUser && (
+                  {(!isUser && !(message.preview || message.content.length === 0)) && (
                     <div className={styles["chat-message-top-actions"]}>
                       {message.streaming ? (
                         <div
