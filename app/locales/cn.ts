@@ -17,7 +17,7 @@ const cn = {
       Retry: "重试",
     },
     Typing: "正在输入…",
-    Input: (submitKey: string) => `输入消息，${submitKey} 发送`,
+    Input: (submitKey: string) => `输入消息，${submitKey} 发送, Shift + Enter 换行`,
     Send: "发送",
   },
   Export: {

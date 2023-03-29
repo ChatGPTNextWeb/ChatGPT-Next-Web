@@ -19,7 +19,7 @@ const tw: LocaleType = {
       Retry: "重試",
     },
     Typing: "正在輸入…",
-    Input: (submitKey: string) => `輸入訊息後，按下 ${submitKey} 鍵即可發送`,
+    Input: (submitKey: string) => `輸入訊息後，按下 ${submitKey} 鍵即可發送, Shift + Enter 鍵換行`,
     Send: "發送",
   },
   Export: {

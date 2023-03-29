@@ -1117,3 +1117,6 @@
 .markdown-body ::-webkit-calendar-picker-indicator {
   filter: invert(50%);
 }
+.markdown-body .line-break {
+  white-space: pre-wrap;
+}
