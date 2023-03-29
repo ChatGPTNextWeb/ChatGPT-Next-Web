@@ -170,7 +170,7 @@ export function PromptHints(props: {
   );
 }
 
-export function Chat(props: { showSideBar?: () => void }) {
+export function Chat(props: { showSideBar?: () => void, sideBarShowing?: boolean }) {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -446,7 +446,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 100);
             }}
-            autoFocus
+            autoFocus={!props?.sideBarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -648,7 +648,7 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+          <Chat key="chat" showSideBar={() => setShowSideBar(true)} sideBarShowing={showSideBar} />
         )}
       </div>
     </div>
