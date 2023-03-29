@@ -51,6 +51,10 @@ const cn = {
       },
     },
     Avatar: "头像",
+    FontSize: {
+      Title: "字体大小",
+      SubTitle: "聊天内容的字体大小",
+    },
     Update: {
       Version: (x: string) => `当前版本：${x}`,
       IsLatest: "已是最新版本",
