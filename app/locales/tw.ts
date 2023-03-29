@@ -3,45 +3,45 @@ import type { LocaleType } from "./index";
 const tw: LocaleType = {
   WIP: "該功能仍在開發中……",
   Error: {
-    Unauthorized: "現在是未授權狀態，請在設置頁填寫授權碼。",
+    Unauthorized: "目前您的狀態是未授權，請前往設定頁面填寫授權碼。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 條對話`,
   },
   Chat: {
-    SubTitle: (count: number) => `與 ChatGPT 的 ${count} 條對話`,
+    SubTitle: (count: number) => `您已經與 ChatGPT 進行了 ${count} 條對話`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看壓縮後的歷史 Prompt",
-      Export: "導出聊天記錄",
+      Export: "匯出聊天紀錄",
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
     },
     Typing: "正在輸入…",
-    Input: (submitKey: string) => `輸入消息，${submitKey} 發送`,
+    Input: (submitKey: string) => `輸入訊息後，按下 ${submitKey} 鍵即可發送`,
     Send: "發送",
   },
   Export: {
-    Title: "導出聊天記錄為 Markdown",
-    Copy: "全部複製",
-    Download: "下載文件",
+    Title: "匯出聊天記錄為 Markdown",
+    Copy: "複製全部",
+    Download: "下載檔案",
   },
   Memory: {
     Title: "上下文記憶 Prompt",
     EmptyContent: "尚未記憶",
-    Copy: "全部複製",
+    Copy: "複製全部",
   },
   Home: {
-    NewChat: "新的聊天",
-    DeleteChat: "確認刪除選中的對話？",
+    NewChat: "新的對話",
+    DeleteChat: "確定要刪除選取的對話嗎？",
   },
   Settings: {
-    Title: "設置",
-    SubTitle: "設置選項",
+    Title: "設定",
+    SubTitle: "設定選項",
     Actions: {
       ClearAll: "清除所有數據",
-      ResetAll: "重置所有選項",
+      ResetAll: "重置所有設定",
       Close: "關閉",
     },
     Lang: {
@@ -52,7 +52,7 @@ const tw: LocaleType = {
         tw: "繁體中文",
       },
     },
-    Avatar: "頭像",
+    Avatar: "大頭貼",
     Update: {
       Version: (x: string) => `當前版本：${x}`,
       IsLatest: "已是最新版本",
@@ -66,8 +66,8 @@ const tw: LocaleType = {
     TightBorder: "緊湊邊框",
     Prompt: {
       Disable: {
-        Title: "禁用提示詞自動補全",
-        SubTitle: "禁用後將無法自動根據輸入補全",
+        Title: "停用提示詞自動補全",
+        SubTitle: "若停用後，將無法自動根據輸入進行補全",
       },
       List: "自定義提示詞列表",
       ListCount: (builtin: number, custom: number) =>
@@ -75,16 +75,16 @@ const tw: LocaleType = {
       Edit: "編輯",
     },
     HistoryCount: {
-      Title: "附帶歷史消息數",
-      SubTitle: "每次請求攜帶的歷史消息數",
+      Title: "附帶歷史訊息數",
+      SubTitle: "每次請求附帶的歷史訊息數",
     },
     CompressThreshold: {
-      Title: "歷史消息長度壓縮閾值",
-      SubTitle: "當未壓縮的歷史消息超過該值時，將進行壓縮",
+      Title: "歷史訊息長度壓縮閾值",
+      SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
     },
     Token: {
       Title: "API Key",
-      SubTitle: "使用自己的 Key 可繞過受控訪問限制",
+      SubTitle: "使用自己的 Key 可規避受控訪問限制",
       Placeholder: "OpenAI API Key",
     },
     AccessCode: {
@@ -102,27 +102,27 @@ const tw: LocaleType = {
       SubTitle: "單次交互所用的最大 Token 數",
     },
     PresencePenlty: {
-      Title: "話題新鮮度 (presence_penalty)",
+      Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
   },
   Store: {
-    DefaultTopic: "新的聊天",
-    BotHello: "有什麼可以幫你的嗎",
-    Error: "出錯了，稍後重試吧",
+    DefaultTopic: "新的對話",
+    BotHello: "請問需要我的協助嗎？",
+    Error: "出錯了，請稍後再嘗試",
     Prompt: {
       History: (content: string) =>
-        "這是 ai 和用戶的歷史聊天總結作為前情提要：" + content,
+        "這是 AI 與用戶的歷史聊天總結，作為前情提要：" + content,
       Topic:
-        "直接返回這句話的簡要主題，不要解釋，如果沒有主題，請直接返回「閒聊」",
+        "直接返回這句話的簡要主題，無須解釋，若無主題，請直接返回「閒聊」",
       Summarize:
-        "簡要總結一下你和用戶的對話，用作後續的上下文提示 prompt，控制在 50 字以內",
+        "簡要總結一下你和用戶的對話，作為後續的上下文提示 prompt，且字數控制在 50 字以內",
     },
-    ConfirmClearAll: "確認清除所有聊天、設置數據？",
+    ConfirmClearAll: "確認清除所有對話、設定數據？",
   },
   Copy: {
-    Success: "已寫入剪切板",
-    Failed: "複製失敗，請賦予剪切板權限",
+    Success: "已複製到剪貼簿中",
+    Failed: "複製失敗，請賦予剪貼簿權限",
   },
 };
 
