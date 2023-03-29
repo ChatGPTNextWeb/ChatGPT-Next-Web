@@ -155,6 +155,28 @@ OPENAI_API_KEY=<your api key here>
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
+使用Systemd守护运行
+```
+[Unit]
+Description=ChatGPT-Next-Web
+After=network.target
+
+[Service]
+User=
+Group=
+Type=simple
+ExecStart=/usr/bin/yarn start
+WorkingDirectory=/path/to/dir
+Environment=OPENAI_API_KEY=""
+Environment=CODE="" 
+Environment=PORT=
+Environment=BASE_URL=""
+Environment=PROTOCOL=https
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ### 容器部署 Docker Deployment
 
 ```shell
