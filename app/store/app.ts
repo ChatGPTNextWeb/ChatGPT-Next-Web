@@ -40,6 +40,8 @@ export interface ChatConfig {
   theme: Theme;
   tightBorder: boolean;
 
+  disablePromptHint: boolean;
+
   modelConfig: {
     model: string;
     temperature: number;
@@ -124,6 +126,8 @@ const DEFAULT_CONFIG: ChatConfig = {
   theme: Theme.Auto as Theme,
   tightBorder: false,
 
+  disablePromptHint: false,
+
   modelConfig: {
     model: "gpt-3.5-turbo",
     temperature: 1,
@@ -190,7 +194,7 @@ interface ChatStore {
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
-    updater: (message?: Message) => void
+    updater: (message?: Message) => void,
   ) => void;
   getMessagesWithMemory: () => Message[];
   getMemoryPrompt: () => Message;
@@ -338,7 +342,7 @@ export const useChatStore = create<ChatStore>()(
             ControllerPool.addController(
               sessionIndex,
               messageIndex,
-              controller
+              controller,
             );
           },
           filterBot: !get().config.sendBotMessages,
@@ -361,7 +365,7 @@ export const useChatStore = create<ChatStore>()(
         const config = get().config;
         const n = session.messages.length;
         const recentMessages = session.messages.slice(
-          n - config.historyMessageCount
+          n - config.historyMessageCount,
         );
 
         const memoryPrompt = get().getMemoryPrompt();
@@ -376,7 +380,7 @@ export const useChatStore = create<ChatStore>()(
       updateMessage(
         sessionIndex: number,
         messageIndex: number,
-        updater: (message?: Message) => void
+        updater: (message?: Message) => void,
       ) {
         const sessions = get().sessions;
         const session = sessions.at(sessionIndex);
@@ -393,24 +397,24 @@ export const useChatStore = create<ChatStore>()(
           requestWithPrompt(session.messages, Locale.Store.Prompt.Topic).then(
             (res) => {
               get().updateCurrentSession(
-                (session) => (session.topic = trimTopic(res))
+                (session) => (session.topic = trimTopic(res)),
               );
-            }
+            },
           );
         }
 
         const config = get().config;
         let toBeSummarizedMsgs = session.messages.slice(
-          session.lastSummarizeIndex
+          session.lastSummarizeIndex,
         );
         const historyMsgLength = toBeSummarizedMsgs.reduce(
           (pre, cur) => pre + cur.content.length,
-          0
+          0,
         );
 
         if (historyMsgLength > 4000) {
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
-            -config.historyMessageCount
+            -config.historyMessageCount,
           );
         }
 
@@ -423,7 +427,7 @@ export const useChatStore = create<ChatStore>()(
           "[Chat History] ",
           toBeSummarizedMsgs,
           historyMsgLength,
-          config.compressMessageLengthThreshold
+          config.compressMessageLengthThreshold,
         );
 
         if (historyMsgLength > config.compressMessageLengthThreshold) {
@@ -445,7 +449,7 @@ export const useChatStore = create<ChatStore>()(
               onError(error) {
                 console.error("[Summarize] ", error);
               },
-            }
+            },
           );
         }
       },
@@ -474,6 +478,6 @@ export const useChatStore = create<ChatStore>()(
     {
       name: LOCAL_KEY,
       version: 1,
-    }
-  )
+    },
+  ),
 );
