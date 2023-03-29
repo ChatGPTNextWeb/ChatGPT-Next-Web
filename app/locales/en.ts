@@ -1,3 +1,4 @@
+import { SubmitKey } from "../store/app";
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
@@ -20,8 +21,13 @@ const en: LocaleType = {
       Retry: "Retry",
     },
     Typing: "Typing…",
-    Input: (submitKey: string) =>
-      `Type something and press ${submitKey} to send`,
+    Input: (submitKey: string) => {
+      var inputHints = `Type something and press ${submitKey} to send`;
+      if (submitKey === String(SubmitKey.Enter)) {
+        inputHints += ", press Shift + Enter to newline";
+      }
+      return inputHints;
+    },
     Send: "Send",
   },
   Export: {
