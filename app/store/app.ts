@@ -206,6 +206,10 @@ interface ChatStore {
   clearAllData: () => void;
 }
 
+function countMessages(msgs: Message[]) {
+  return msgs.reduce((pre, cur) => pre + cur.content.length, 0);
+}
+
 const LOCAL_KEY = "chat-next-web-store";
 
 export const useChatStore = create<ChatStore>()(
@@ -393,8 +397,12 @@ export const useChatStore = create<ChatStore>()(
       summarizeSession() {
         const session = get().currentSession();
 
-        if (session.topic === DEFAULT_TOPIC && session.messages.length >= 3) {
-          // should summarize topic
+        // should summarize topic after chating more than 50 words
+        const SUMMARIZE_MIN_LEN = 50;
+        if (
+          session.topic === DEFAULT_TOPIC &&
+          countMessages(session.messages) >= SUMMARIZE_MIN_LEN
+        ) {
           requestWithPrompt(session.messages, Locale.Store.Prompt.Topic).then(
             (res) => {
               get().updateCurrentSession(
@@ -408,10 +416,7 @@ export const useChatStore = create<ChatStore>()(
         let toBeSummarizedMsgs = session.messages.slice(
           session.lastSummarizeIndex,
         );
-        const historyMsgLength = toBeSummarizedMsgs.reduce(
-          (pre, cur) => pre + cur.content.length,
-          0,
-        );
+        const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
         if (historyMsgLength > 4000) {
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(

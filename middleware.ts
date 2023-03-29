@@ -6,7 +6,7 @@ export const config = {
   matcher: ["/api/chat", "/api/chat-stream"],
 };
 
-export function middleware(req: NextRequest, res: NextResponse) {
+export function middleware(req: NextRequest) {
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
   const hashedCode = md5.hash(accessCode ?? "").trim();
@@ -18,14 +18,37 @@ export function middleware(req: NextRequest, res: NextResponse) {
   if (ACCESS_CODES.size > 0 && !ACCESS_CODES.has(hashedCode) && !token) {
     return NextResponse.json(
       {
+        error: true,
         needAccessCode: true,
-        hint: "Please go settings page and fill your access code.",
+        msg: "Please go settings page and fill your access code.",
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
-  return NextResponse.next();
+  // inject api key
+  if (!token) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (apiKey) {
+      req.headers.set("token", apiKey);
+    } else {
+      return NextResponse.json(
+        {
+          error: true,
+          msg: "Empty Api Key",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+  }
+
+  return NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  });
 }

@@ -18,6 +18,7 @@ const cn = {
       Stop: "停止",
       Retry: "重试",
     },
+    Rename: "重命名对话",
     Typing: "正在输入…",
     Input: (submitKey: string) => {
       var inputHints = `输入消息，${submitKey} 发送`;
@@ -63,6 +64,7 @@ const cn = {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
     },
+
     Update: {
       Version: (x: string) => `当前版本：${x}`,
       IsLatest: "已是最新版本",
@@ -77,7 +79,7 @@ const cn = {
     Prompt: {
       Disable: {
         Title: "禁用提示词自动补全",
-        SubTitle: "禁用后将无法自动根据输入补全",
+        SubTitle: "在输入框开头输入 / 即可触发自动补全",
       },
       List: "自定义提示词列表",
       ListCount: (builtin: number, custom: number) =>
@@ -96,6 +98,14 @@ const cn = {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可绕过受控访问限制",
       Placeholder: "OpenAI API Key",
+    },
+    Usage: {
+      Title: "账户余额",
+      SubTitle(granted: any, used: any) {
+        return `总共 $${granted}，已使用 $${used}`;
+      },
+      IsChecking: "正在检查…",
+      Check: "重新检查",
     },
     AccessCode: {
       Title: "访问码",
@@ -124,7 +134,7 @@ const cn = {
       History: (content: string) =>
         "这是 ai 和用户的历史聊天总结作为前情提要：" + content,
       Topic:
-        "直接返回这句话的简要主题，不要解释，如果没有主题，请直接返回“闲聊”",
+        "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊”",
       Summarize:
         "简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 50 字以内",
     },
