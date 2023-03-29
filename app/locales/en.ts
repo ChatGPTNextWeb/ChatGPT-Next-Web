@@ -20,6 +20,7 @@ const en: LocaleType = {
       Stop: "Stop",
       Retry: "Retry",
     },
+    Rename: "Rename Chat",
     Typing: "Typing…",
     Input: (submitKey: string) => {
       var inputHints = `Type something and press ${submitKey} to send`;
@@ -79,7 +80,7 @@ const en: LocaleType = {
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
-        SubTitle: "After disabling, auto-completion will not be available",
+        SubTitle: "Input / to trigger auto-completion",
       },
       List: "Prompt List",
       ListCount: (builtin: number, custom: number) =>
@@ -99,6 +100,14 @@ const en: LocaleType = {
       Title: "API Key",
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
+    },
+    Usage: {
+      Title: "Account Balance",
+      SubTitle(granted: any, used: any) {
+        return `Total $${granted}, Used $${used}`;
+      },
+      IsChecking: "Checking...",
+      Check: "Check Again",
     },
     AccessCode: {
       Title: "Access Code",
@@ -129,7 +138,7 @@ const en: LocaleType = {
         "This is a summary of the chat history between the AI and the user as a recap: " +
         content,
       Topic:
-        "Provide a brief topic of the sentence without explanation. If there is no topic, return 'Chitchat'.",
+        "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
         "Summarize our discussion briefly in 50 characters or less to use as a prompt for future context.",
     },

@@ -78,9 +78,9 @@ This project will be continuously maintained. If you want to keep the code repos
 
 You can star or watch this project or follow author to get release notifictions in time.
 
-## 访问控制 Access Control
+## 配置密码 Password
 
-本项目提供有限的权限控制功能，请在环境变量页增加名为 `CODE` 的环境变量，值为用英文逗号分隔的自定义控制码：
+本项目提供有限的权限控制功能，请在 Vercel 项目控制面板的环境变量页增加名为 `CODE` 的环境变量，值为用英文逗号分隔的自定义密码：
 
 ```
 code1,code2,code3
@@ -88,13 +88,45 @@ code1,code2,code3
 
 增加或修改该环境变量后，请**重新部署**项目使改动生效。
 
-This project provides limited access control. Please add an environment variable named `CODE` on the environment variables page. The value should be a custom control code separated by comma like this:
+This project provides limited access control. Please add an environment variable named `CODE` on the vercel environment variables page. The value should be passwords separated by comma like this:
 
 ```
 code1,code2,code3
 ```
 
 After adding or modifying this environment variable, please redeploy the project for the changes to take effect.
+
+## 环境变量 Environment Variables
+
+### `OPENAI_API_KEY` (required)
+
+OpanAI 密钥。
+
+Your openai api key.
+
+### `CODE` (optional)
+
+访问密码，可选，可以使用逗号隔开多个密码。
+
+Access passsword, separated by comma.
+
+### `BASE_URL` (optional)
+
+> Default: `api.openai.com`
+
+OpenAI 接口代理 URL。
+
+Override openai api request base url.
+
+### `PROTOCOL` (optional)
+
+> Default: `https`
+
+> Values: `http` | `https`
+
+OpenAI 接口协议。
+
+Override openai api request protocol.
 
 ## 开发 Development
 
@@ -118,10 +150,10 @@ OPENAI_API_KEY=<your api key here>
 2. 执行 `yarn install && yarn dev` 即可。
 
 ### 本地部署 Local Deployment
+
 ```shell
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
-
 
 ### 容器部署 Docker Deployment
 
@@ -157,6 +189,7 @@ If you would like to contribute your API key, you can email it to the author and
 [@hoochanlon](https://github.com/hoochanlon)
 
 ### 贡献者 Contributor
+
 [Contributors](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ## LICENSE

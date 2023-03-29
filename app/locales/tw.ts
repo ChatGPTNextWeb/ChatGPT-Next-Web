@@ -19,8 +19,9 @@ const tw: LocaleType = {
       Stop: "停止",
       Retry: "重試",
     },
+    Rename: "重命名對話",
     Typing: "正在輸入…",
-    Input: (submitKey: string) =>  {
+    Input: (submitKey: string) => {
       var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 鍵換行";
@@ -78,7 +79,7 @@ const tw: LocaleType = {
     Prompt: {
       Disable: {
         Title: "停用提示詞自動補全",
-        SubTitle: "若停用後，將無法自動根據輸入進行補全",
+        SubTitle: "在輸入框開頭輸入 / 即可觸發自動補全",
       },
       List: "自定義提示詞列表",
       ListCount: (builtin: number, custom: number) =>
@@ -97,6 +98,14 @@ const tw: LocaleType = {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可規避受控訪問限制",
       Placeholder: "OpenAI API Key",
+    },
+    Usage: {
+      Title: "帳戶餘額",
+      SubTitle(granted: any, used: any) {
+        return `總共 $${granted}，已使用 $${used}`;
+      },
+      IsChecking: "正在檢查…",
+      Check: "重新檢查",
     },
     AccessCode: {
       Title: "訪問碼",
@@ -124,8 +133,7 @@ const tw: LocaleType = {
     Prompt: {
       History: (content: string) =>
         "這是 AI 與用戶的歷史聊天總結，作為前情提要：" + content,
-      Topic:
-        "直接返回這句話的簡要主題，無須解釋，若無主題，請直接返回「閒聊」",
+      Topic: "直接返回這句話的簡要主題，無須解釋，若無主題，請直接返回「閒聊」",
       Summarize:
         "簡要總結一下你和用戶的對話，作為後續的上下文提示 prompt，且字數控制在 50 字以內",
     },
