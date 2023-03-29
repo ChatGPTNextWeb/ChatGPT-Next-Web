@@ -97,6 +97,11 @@ const cn = {
       SubTitle: "使用自己的 Key 可绕过受控访问限制",
       Placeholder: "OpenAI API Key",
     },
+    AccountBalance: {
+      Title: "账户余额",
+      SubTitle: "查看当前 Key 账户余额",
+      Placeholder: "-1"
+    },
     AccessCode: {
       Title: "访问码",
       SubTitle: "现在是受控访问状态",

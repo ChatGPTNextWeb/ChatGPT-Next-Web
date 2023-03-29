@@ -98,6 +98,11 @@ const tw: LocaleType = {
       SubTitle: "使用自己的 Key 可規避受控訪問限制",
       Placeholder: "OpenAI API Key",
     },
+    AccountBalance: {
+      Title: "賬戶余額",
+      SubTitle: "查詢當前 Key 的賬戶余額",
+      Placeholder: "-1"
+    },
     AccessCode: {
       Title: "訪問碼",
       SubTitle: "現在是受控訪問狀態",

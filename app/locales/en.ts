@@ -100,6 +100,11 @@ const en: LocaleType = {
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
     },
+    AccountBalance: {
+      Title: "Account Balance",
+      SubTitle: "Query balance of current key",
+      Placeholder: "-1"
+    },
     AccessCode: {
       Title: "Access Code",
       SubTitle: "Access control enabled",

@@ -38,7 +38,7 @@ function getHeaders() {
   if (accessStore.token && accessStore.token.length > 0) {
     headers["token"] = accessStore.token;
   }
-
+ 
   return headers;
 }
 
@@ -55,6 +55,22 @@ export async function requestChat(messages: Message[]) {
   });
 
   return (await res.json()) as ChatReponse;
+}
+
+export async function requestCreditSummary() {
+  const res = await fetch("/api/credit-summary", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getHeaders(),
+    },
+  });
+  return (await res.json())
+} 
+
+export async function requestAccountBalance() {
+  const res = await requestCreditSummary();
+  return res?.total_available ?? -1
 }
 
 export async function requestChatStream(

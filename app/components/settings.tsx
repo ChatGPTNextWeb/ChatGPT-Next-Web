@@ -27,6 +27,7 @@ import { getCurrentCommitId } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
+import { requestAccountBalance, requestCreditSummary, requestWithPrompt } from "../requests";
 
 function SettingItem(props: {
   title: string;
@@ -72,6 +73,7 @@ export function Settings(props: { closeSettings: () => void }) {
 
   useEffect(() => {
     checkUpdate();
+    requestAccountBalance().then((res)=> setAccountBalance(res))
   }, []);
 
   const accessStore = useAccessStore();
@@ -83,6 +85,8 @@ export function Settings(props: { closeSettings: () => void }) {
   const promptStore = usePromptStore();
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.prompts.size ?? 0;
+
+  const [accountBalance, setAccountBalance] = useState(-1);
 
   return (
     <>
@@ -320,7 +324,21 @@ export function Settings(props: { closeSettings: () => void }) {
               placeholder={Locale.Settings.Token.Placeholder}
               onChange={(e) => {
                 accessStore.updateToken(e.currentTarget.value);
+                requestAccountBalance().then((res)=> setAccountBalance(res))
               }}
+            ></input>
+          </SettingItem>
+
+          <SettingItem
+            title={Locale.Settings.AccountBalance.Title}
+            subTitle={Locale.Settings.AccountBalance.SubTitle}
+          >
+            <input
+              value={accountBalance}
+              type="number"
+              style={{maxWidth: '15%', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              placeholder={Locale.Settings.AccountBalance.Placeholder}
+              disabled= {true}
             ></input>
           </SettingItem>
 
