@@ -232,7 +232,7 @@ export function Settings(props: { closeSettings: () => void }) {
           >
             <input
               type="range"
-              title={config.fontSize.toString() + 'px'}
+              title={`${config.fontSize ?? 14}px`}
               value={config.fontSize}
               min="12"
               max="18"
