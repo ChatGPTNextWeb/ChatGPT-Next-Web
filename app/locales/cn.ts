@@ -1,3 +1,5 @@
+import { SubmitKey } from "../store/app";
+
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
@@ -17,7 +19,13 @@ const cn = {
       Retry: "重试",
     },
     Typing: "正在输入…",
-    Input: (submitKey: string) => `输入消息，${submitKey} 发送`,
+    Input: (submitKey: string) => {
+      var inputHints = `输入消息，${submitKey} 发送`;
+      if (submitKey === String(SubmitKey.Enter)) {
+        inputHints += "，Shift + Enter 换行";
+      }
+      return inputHints;
+    },
     Send: "发送",
   },
   Export: {
@@ -45,11 +53,16 @@ const cn = {
     Lang: {
       Name: "Language",
       Options: {
-        cn: "中文",
+        cn: "简体中文",
         en: "English",
+        tw: "繁體中文",
       },
     },
     Avatar: "头像",
+    FontSize: {
+      Title: "字体大小",
+      SubTitle: "聊天内容的字体大小",
+    },
     Update: {
       Version: (x: string) => `当前版本：${x}`,
       IsLatest: "已是最新版本",
@@ -61,6 +74,16 @@ const cn = {
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "紧凑边框",
+    Prompt: {
+      Disable: {
+        Title: "禁用提示词自动补全",
+        SubTitle: "禁用后将无法自动根据输入补全",
+      },
+      List: "自定义提示词列表",
+      ListCount: (builtin: number, custom: number) =>
+        `内置 ${builtin} 条，用户定义 ${custom} 条`,
+      Edit: "编辑",
+    },
     HistoryCount: {
       Title: "附带历史消息数",
       SubTitle: "每次请求携带的历史消息数",
