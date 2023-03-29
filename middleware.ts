@@ -3,7 +3,7 @@ import { ACCESS_CODES } from "./app/api/access";
 import md5 from "spark-md5";
 
 export const config = {
-  matcher: ["/api/chat", "/api/chat-stream"],
+  matcher: ["/api/openai", "/api/chat-stream"],
 };
 
 export function middleware(req: NextRequest) {
@@ -32,6 +32,7 @@ export function middleware(req: NextRequest) {
   if (!token) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (apiKey) {
+      console.log("[Auth] set system token");
       req.headers.set("token", apiKey);
     } else {
       return NextResponse.json(
@@ -44,6 +45,8 @@ export function middleware(req: NextRequest) {
         },
       );
     }
+  } else {
+    console.log("[Auth] set user token");
   }
 
   return NextResponse.next({
