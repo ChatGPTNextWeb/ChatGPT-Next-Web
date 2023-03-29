@@ -34,7 +34,6 @@ export function Markdown(props: { content: string }) {
       components={{
         pre: PreCode,
       }}
-      className="line-break"
     >
       {props.content}
     </ReactMarkdown>
