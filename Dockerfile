@@ -28,6 +28,8 @@ COPY . .
 
 RUN yarn build
 
+RUN node scripts/fetch-prompts.mjs
+
 FROM base AS runner
 WORKDIR /app
 
