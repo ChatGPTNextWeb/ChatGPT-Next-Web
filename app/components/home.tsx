@@ -333,7 +333,17 @@ export function Chat(props: {
           className={styles["window-header-title"]}
           onClick={props?.showSideBar}
         >
-          <div className={styles["window-header-main-title"]}>
+          <div
+            className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
+            onClick={() => {
+              const newTopic = prompt(Locale.Chat.Rename, session.topic);
+              if (newTopic && newTopic !== session.topic) {
+                chatStore.updateCurrentSession(
+                  (session) => (session.topic = newTopic!),
+                );
+              }
+            }}
+          >
             {session.topic}
           </div>
           <div className={styles["window-header-sub-title"]}>
