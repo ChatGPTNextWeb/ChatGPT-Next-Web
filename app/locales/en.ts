@@ -79,7 +79,7 @@ const en: LocaleType = {
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
-        SubTitle: "After disabling, auto-completion will not be available",
+        SubTitle: "Input / to trigger auto-completion",
       },
       List: "Prompt List",
       ListCount: (builtin: number, custom: number) =>
