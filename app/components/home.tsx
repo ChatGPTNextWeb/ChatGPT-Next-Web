@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  ChangeEvent,
+} from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 import { IconButton } from "./button";
@@ -74,6 +80,16 @@ export function ChatItem(props: {
   time: string;
   selected: boolean;
 }) {
+  const [updateTitle] = useChatStore((state) => [state.updateTitle]);
+  const [title, setTitle] = useState(props.title);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleInputBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length == 0) setTitle(props.title);
+    setIsEditing(false);
+    updateTitle(e.target.value);
+  };
+
   return (
     <div
       className={`${styles["chat-item"]} ${
@@ -81,7 +97,20 @@ export function ChatItem(props: {
       }`}
       onClick={props.onClick}
     >
-      <div className={styles["chat-item-title"]}>{props.title}</div>
+      <div
+        className={styles["chat-item-title"]}
+        onDoubleClick={() => setIsEditing(true)}
+      >
+        {isEditing ? (
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={handleInputBlur}
+          />
+        ) : (
+          title
+        )}
+      </div>
       <div className={styles["chat-item-info"]}>
         <div className={styles["chat-item-count"]}>
           {Locale.ChatItem.ChatItemCount(props.count)}
@@ -102,7 +131,7 @@ export function ChatList() {
       state.currentSessionIndex,
       state.selectSession,
       state.removeSession,
-    ]
+    ],
   );
 
   return (
@@ -194,7 +223,7 @@ export function Chat(props: { showSideBar?: () => void }) {
       setPromptHints(promptStore.search(text));
     },
     100,
-    { leading: true, trailing: true }
+    { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -280,7 +309,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               preview: true,
             },
           ]
-        : []
+        : [],
     )
     .concat(
       userInput.length > 0
@@ -292,7 +321,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               preview: true,
             },
           ]
-        : []
+        : [],
     );
 
   // auto scroll
@@ -375,32 +404,33 @@ export function Chat(props: { showSideBar?: () => void }) {
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {(!isUser && !(message.preview || message.content.length === 0)) && (
-                    <div className={styles["chat-message-top-actions"]}>
-                      {message.streaming ? (
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => onUserStop(i)}
-                        >
-                          {Locale.Chat.Actions.Stop}
-                        </div>
-                      ) : (
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => onResend(i)}
-                        >
-                          {Locale.Chat.Actions.Retry}
-                        </div>
-                      )}
+                  {!isUser &&
+                    !(message.preview || message.content.length === 0) && (
+                      <div className={styles["chat-message-top-actions"]}>
+                        {message.streaming ? (
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onUserStop(i)}
+                          >
+                            {Locale.Chat.Actions.Stop}
+                          </div>
+                        ) : (
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onResend(i)}
+                          >
+                            {Locale.Chat.Actions.Retry}
+                          </div>
+                        )}
 
-                      <div
-                        className={styles["chat-message-top-action"]}
-                        onClick={() => copyToClipboard(message.content)}
-                      >
-                        {Locale.Chat.Actions.Copy}
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => copyToClipboard(message.content)}
+                        >
+                          {Locale.Chat.Actions.Copy}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />
@@ -555,7 +585,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);

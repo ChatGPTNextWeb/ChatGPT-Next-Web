@@ -192,6 +192,7 @@ interface ChatStore {
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
+  updateTitle: (title: string) => void;
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
@@ -388,6 +389,10 @@ export const useChatStore = create<ChatStore>()(
         const messages = session?.messages;
         updater(messages?.at(messageIndex));
         set(() => ({ sessions }));
+      },
+
+      updateTitle(title: string) {
+        get().updateCurrentSession((session) => (session.topic = title));
       },
 
       summarizeSession() {
