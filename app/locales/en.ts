@@ -55,6 +55,10 @@ const en: LocaleType = {
       },
     },
     Avatar: "Avatar",
+    FontSize: {
+      Title: "Font Size",
+      SubTitle: "Adjust font size of chat content",
+    },
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Latest version",

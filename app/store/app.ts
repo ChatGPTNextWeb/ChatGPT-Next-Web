@@ -31,12 +31,12 @@ export enum Theme {
 }
 
 export interface ChatConfig {
-  maxToken?: number;
   historyMessageCount: number; // -1 means all
   compressMessageLengthThreshold: number;
   sendBotMessages: boolean; // send bot's message or not
   submitKey: SubmitKey;
   avatar: string;
+  fontSize: number;
   theme: Theme;
   tightBorder: boolean;
 
@@ -123,6 +123,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
+  fontSize: 14,
   theme: Theme.Auto as Theme,
   tightBorder: false,
 
