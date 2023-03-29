@@ -292,6 +292,7 @@
   position: absolute;
   right: 20px;
   top: -26px;
+  left: 100px;
   transition: all ease 0.3s;
   opacity: 0;
   pointer-events: none;
@@ -302,6 +303,7 @@
   .chat-message-top-action {
     opacity: 0.5;
     color: var(--black);
+    white-space: nowrap;
     cursor: pointer;
 
     &:hover {
