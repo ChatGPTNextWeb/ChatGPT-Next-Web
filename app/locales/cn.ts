@@ -1,3 +1,5 @@
+import { SubmitKey } from "../store/app";
+
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
@@ -17,7 +19,13 @@ const cn = {
       Retry: "重试",
     },
     Typing: "正在输入…",
-    Input: (submitKey: string) => `输入消息，${submitKey} 发送`,
+    Input: (submitKey: string) => {
+      var inputHints = `输入消息，${submitKey} 发送`;
+      if (submitKey === String(SubmitKey.Enter)) {
+        inputHints += ", Shift + Enter 换行";
+      }
+      return inputHints;
+    },
     Send: "发送",
   },
   Export: {
