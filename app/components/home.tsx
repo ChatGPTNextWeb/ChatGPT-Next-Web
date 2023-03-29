@@ -275,6 +275,7 @@ export function Chat(props: {
         chatStore
           .onUserInput(messages[i].content)
           .then(() => setIsLoading(false));
+        inputRef.current?.focus();
         return;
       }
     }
@@ -319,7 +320,6 @@ export function Chat(props: {
       const dom = latestMessageRef.current;
       if (dom && !isIOS() && autoScroll) {
         dom.scrollIntoView({
-          behavior: "smooth",
           block: "end",
         });
       }
@@ -444,7 +444,7 @@ export function Chat(props: {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "3em" }}>
           -
         </div>
       </div>
