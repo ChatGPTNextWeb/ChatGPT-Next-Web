@@ -146,7 +146,7 @@ function useSubmitHandler() {
   };
 }
 
-export function Chat(props: { showSideBar?: () => void }) {
+export function Chat(props: { showSideBar?: () => void, sideBarShowing?: boolean }) {
   type RenderMessage = Message & { preview?: boolean };
 
   const [session, sessionIndex] = useChatStore((state) => [
@@ -384,7 +384,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             onKeyDown={(e) => onInputKeyDown(e as any)}
             onFocus={() => setAutoScroll(true)}
             onBlur={() => setAutoScroll(false)}
-            autoFocus
+            autoFocus={!props?.sideBarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -584,7 +584,7 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+          <Chat key="chat" showSideBar={() => setShowSideBar(true)} sideBarShowing={showSideBar}/>
         )}
       </div>
     </div>
