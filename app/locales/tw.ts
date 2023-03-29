@@ -23,7 +23,7 @@ const tw: LocaleType = {
     Input: (submitKey: string) =>  {
       var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", Shift + Enter 鍵換行";
+        inputHints += "，Shift + Enter 鍵換行";
       }
       return inputHints;
     },

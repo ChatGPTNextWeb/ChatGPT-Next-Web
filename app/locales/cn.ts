@@ -22,7 +22,7 @@ const cn = {
     Input: (submitKey: string) => {
       var inputHints = `输入消息，${submitKey} 发送`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", Shift + Enter 换行";
+        inputHints += "，Shift + Enter 换行";
       }
       return inputHints;
     },
