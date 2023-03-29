@@ -251,20 +251,37 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.FontSize.Title}
             subTitle={Locale.Settings.FontSize.SubTitle}
           >
-            <input
-              type="range"
-              title={`${config.fontSize ?? 14}px`}
-              value={config.fontSize}
-              min="12"
-              max="18"
-              step="1"
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.fontSize = Number.parseInt(e.currentTarget.value)),
-                )
-              }
-            ></input>
+            <>
+              <span
+                id="fontSizeDisplay"
+                style={{ fontSize: `${config.fontSize ?? 14}px` }}
+              >
+                {config.fontSize ?? 14}px
+              </span>
+              <input
+                type="range"
+                title={`${config.fontSize ?? 14}px`}
+                value={config.fontSize}
+                min="12"
+                max="18"
+                step="1"
+                onChange={(e) =>
+                  updateConfig(
+                    (config) =>
+                      (config.fontSize = Number.parseInt(
+                        e.currentTarget.value,
+                      )),
+                  )
+                }
+                onMouseMove={(e) => {
+                  const fontSizeDisplay =
+                    document.getElementById("fontSizeDisplay");
+                  if (fontSizeDisplay) {
+                    fontSizeDisplay.innerText = `${e.currentTarget.value}px`;
+                  }
+                }}
+              ></input>
+            </>
           </SettingItem>
 
           <div className="no-mobile">
