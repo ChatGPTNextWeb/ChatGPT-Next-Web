@@ -221,6 +221,14 @@
   margin-bottom: 100px;
 }
 
+.chat-body-title {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .chat-message {
   display: flex;
   flex-direction: row;

@@ -19,6 +19,7 @@ const tw: LocaleType = {
       Stop: "停止",
       Retry: "重試",
     },
+    Rename: "重命名對話",
     Typing: "正在輸入…",
     Input: (submitKey: string) => {
       var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
