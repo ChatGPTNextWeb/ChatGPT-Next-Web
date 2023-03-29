@@ -20,8 +20,7 @@ const en: LocaleType = {
       Retry: "Retry",
     },
     Typing: "Typing…",
-    Input: (submitKey: string) =>
-      `Type something and press ${submitKey} to send`,
+    Input: (submitKey: string) => `Type something and press ${submitKey} to send, press Shift + Enter to newline`,
     Send: "Send",
   },
   Export: {
