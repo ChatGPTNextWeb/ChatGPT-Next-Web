@@ -31,7 +31,6 @@ export function middleware(req: NextRequest) {
   // inject api key
   if (!token) {
     const apiKey = process.env.OPENAI_API_KEY;
-    console.log("apiKey", apiKey);
     if (apiKey) {
       req.headers.set("token", apiKey);
     } else {
