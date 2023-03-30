@@ -31,9 +31,18 @@ export function middleware(req: NextRequest) {
   // inject api key
   if (!token) {
     const apiKey = process.env.OPENAI_API_KEY;
+    const azureApiKey = process.env.AZURE_API_KEY;
+    const azureAccount = process.env.AZURE_ACCOUNT;
+    const azureModel = process.env.AZURE_MODEL;
+
     if (apiKey) {
       console.log("[Auth] set system token");
       req.headers.set("token", apiKey);
+    } else if (azureApiKey && azureAccount && azureModel) {
+      console.log("[Auth] set system azure token");
+      req.headers.set("azure-api-key", azureApiKey);
+      req.headers.set("azure-account", azureAccount);
+      req.headers.set("azure-model", azureModel);
     } else {
       return NextResponse.json(
         {
