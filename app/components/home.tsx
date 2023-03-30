@@ -282,10 +282,9 @@ export function Chat(props: {
   };
 
   // for auto-scroll
-  const latestMessageRef = useRef<HTMLDivElement>(null);
-
+  const chatBodyRef = useRef<HTMLDivElement>(null);
   // wont scroll while hovering messages
-  const [autoScroll, setAutoScroll] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(true);
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -317,15 +316,12 @@ export function Chat(props: {
   // auto scroll
   useLayoutEffect(() => {
     setTimeout(() => {
-      const dom = latestMessageRef.current;
-      if (dom && !isIOS() && autoScroll) {
-        dom.scrollIntoView({
-          block: "end",
-        });
+      const chatBody = chatBodyRef.current;
+      if (chatBody && !isIOS() && autoScroll) {
+        chatBody.scrollTo(0, chatBody.scrollHeight)
       }
     }, 500);
   });
-
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
@@ -382,10 +378,10 @@ export function Chat(props: {
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div ref={chatBodyRef} className={styles["chat-body"]}>
         {messages.map((message, i) => {
           const isUser = message.role === "user";
-
+          
           return (
             <div
               key={i}
@@ -454,9 +450,6 @@ export function Chat(props: {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "4em" }}>
-          -
-        </div>
       </div>
 
       <div className={styles["chat-input-panel"]}>
