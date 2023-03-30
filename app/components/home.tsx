@@ -102,7 +102,7 @@ export function ChatList() {
       state.currentSessionIndex,
       state.selectSession,
       state.removeSession,
-    ]
+    ],
   );
 
   return (
@@ -183,6 +183,7 @@ export function Chat(props: {
   ]);
   const fontSize = useChatStore((state) => state.config.fontSize);
 
+  const chatBodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -196,7 +197,7 @@ export function Chat(props: {
       setPromptHints(promptStore.search(text));
     },
     100,
-    { leading: true, trailing: true }
+    { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -210,9 +211,16 @@ export function Chat(props: {
     if (!dom) return;
     const paddingBottomNum: number = parseInt(
       window.getComputedStyle(dom).paddingBottom,
-      10
+      10,
     );
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
+  };
+
+  const scrollBottom = () => {
+    setTimeout(() => {
+      const dom = chatBodyRef.current;
+      dom && (dom.scrollTop = dom?.scrollHeight ?? 0);
+    }, 1000 * 0.5);
   };
 
   // only search prompts when user input is short
@@ -241,6 +249,7 @@ export function Chat(props: {
     setUserInput("");
     setPromptHints([]);
     inputRef.current?.focus();
+    scrollBottom();
   };
 
   // stop response
@@ -300,7 +309,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     )
     .concat(
       userInput.length > 0
@@ -312,7 +321,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     );
 
   // auto scroll
@@ -340,7 +349,7 @@ export function Chat(props: {
               const newTopic = prompt(Locale.Chat.Rename, session.topic);
               if (newTopic && newTopic !== session.topic) {
                 chatStore.updateCurrentSession(
-                  (session) => (session.topic = newTopic!)
+                  (session) => (session.topic = newTopic!),
                 );
               }
             }}
@@ -383,7 +392,7 @@ export function Chat(props: {
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div ref={chatBodyRef} className={styles["chat-body"]}>
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -586,7 +595,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
