@@ -82,20 +82,25 @@ export function Avatar(props: { role: Message["role"] }) {
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
-  onEdit?: (title: string) => void;
   title: string;
   count: number;
   time: string;
   selected: boolean;
 }) {
+  const updateTitle = useChatStore((state) => state.updateTitle);
+
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState(props.title);
+
+  useEffect(() => {
+    setTitle(props.title);
+  }, [props.title]);
 
   function editCompleted() {
     setIsEditingTitle(false);
     // Blank will be restored to its original state
     if (!title) setTitle(props.title);
-    props.onEdit && props.onEdit(title);
+    updateTitle(title);
   }
 
   return (
@@ -146,19 +151,14 @@ export function ChatItem(props: {
 }
 
 export function ChatList() {
-  const [
-    sessions,
-    selectedIndex,
-    selectSession,
-    removeSession,
-    editDialogTitle,
-  ] = useChatStore((state) => [
-    state.sessions,
-    state.currentSessionIndex,
-    state.selectSession,
-    state.removeSession,
-    state.updateSessionTitle,
-  ]);
+  const [sessions, selectedIndex, selectSession, removeSession] = useChatStore(
+    (state) => [
+      state.sessions,
+      state.currentSessionIndex,
+      state.selectSession,
+      state.removeSession,
+    ],
+  );
 
   return (
     <div className={styles["chat-list"]}>
@@ -171,7 +171,6 @@ export function ChatList() {
           selected={i === selectedIndex}
           onClick={() => selectSession(i)}
           onDelete={() => removeSession(i)}
-          onEdit={(title: string) => editDialogTitle(i, title)}
         />
       ))}
     </div>
