@@ -89,7 +89,9 @@ export function isValidNumber(x: number, min: number, max: number) {
   return typeof x === "number" && x <= max && x >= min;
 }
 
-export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
+export function filterConfig(oldConfig: ModelConfig): Partial<ModelConfig> {
+  const config = Object.assign({}, oldConfig);
+
   const validator: {
     [k in keyof ModelConfig]: (x: ModelConfig[keyof ModelConfig]) => boolean;
   } = {
@@ -103,7 +105,7 @@ export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
       return isValidNumber(x as number, -2, 2);
     },
     temperature(x) {
-      return isValidNumber(x as number, 0, 1);
+      return isValidNumber(x as number, 0, 2);
     },
   };
 
@@ -193,6 +195,7 @@ interface ChatStore {
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
+  updateTitle: (title: string) => void;
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
@@ -404,6 +407,10 @@ export const useChatStore = create<ChatStore>()(
         const messages = session?.messages;
         updater(messages?.at(messageIndex));
         set(() => ({ sessions }));
+      },
+
+      updateTitle(title: string) {
+        get().updateCurrentSession((session) => (session.topic = title));
       },
 
       summarizeSession() {
