@@ -30,6 +30,7 @@ import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
+import { Voice } from "./voice";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -396,6 +397,7 @@ export function Chat(props: {
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
                   <Avatar role={message.role} />
+                  <Voice text={message.content}></Voice>
                 </div>
                 {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>
