@@ -174,7 +174,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   width: 24px;
 }
 
-input[type="password"],
 input[type="number"],
 input[type="text"] {
   appearance: none;
@@ -246,4 +245,11 @@ pre {
       opacity: 1;
     }
   }
+}
+@font-face {
+  font-family: "ZhuZiAWan";
+  src: url("https://npm.elemecdn.com/anzhiyu-blog@2.0.4/fonts/ZhuZiAWan.woff2");
+}
+* {
+  font-family: ZhuZiAWan;
 }

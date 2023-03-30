@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import isMobile from "is-mobile";
 
 import { type ChatCompletionResponseMessage } from "openai";
 import {
@@ -117,6 +118,11 @@ export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
   return config;
 }
 
+let TIGHTBORDER = true;
+if (isMobile()) {
+  TIGHTBORDER = false;
+}
+
 const DEFAULT_CONFIG: ChatConfig = {
   historyMessageCount: 4,
   compressMessageLengthThreshold: 1000,
@@ -125,7 +131,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: false,
+  tightBorder: TIGHTBORDER,
 
   disablePromptHint: false,
 
