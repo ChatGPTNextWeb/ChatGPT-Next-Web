@@ -6,13 +6,9 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY package.json yarn.lock* package-lock.json* ./
+COPY package.json yarn.lock ./
 
-RUN \
-  if [ -f yarn.lock ]; then yarn install --frozen-lockfile --network-timeout 100000; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN yarn install
 
 FROM base AS builder
 
