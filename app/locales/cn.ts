@@ -52,7 +52,7 @@ const cn = {
       Close: "关闭",
     },
     Lang: {
-      Name: "Language",
+      Name: "语言",
       Options: {
         cn: "简体中文",
         en: "English",
