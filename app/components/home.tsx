@@ -199,7 +199,10 @@ export function PromptHints(props: {
   );
 }
 
-export function Chat(props: { showSideBar?: () => void }) {
+export function Chat(props: {
+  showSideBar?: () => void;
+  sideBarShowing?: boolean;
+}) {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -219,7 +222,6 @@ export function Chat(props: { showSideBar?: () => void }) {
   const [promptHints, setPromptHints] = useState<Prompt[]>([]);
   const onSearch = useDebouncedCallback(
     (text: string) => {
-      if (chatStore.config.disablePromptHint) return;
       setPromptHints(promptStore.search(text));
     },
     100,
@@ -232,15 +234,31 @@ export function Chat(props: { showSideBar?: () => void }) {
     inputRef.current?.focus();
   };
 
+  const scrollInput = () => {
+    const dom = inputRef.current;
+    if (!dom) return;
+    const paddingBottomNum: number = parseInt(
+      window.getComputedStyle(dom).paddingBottom,
+      10
+    );
+    dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
+  };
+
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
+    scrollInput();
     setUserInput(text);
     const n = text.trim().length;
-    if (n === 0 || n > SEARCH_TEXT_LIMIT) {
+
+    // clear search results
+    if (n === 0) {
       setPromptHints([]);
-    } else {
-      onSearch(text);
+    } else if (!chatStore.config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
+      // check if need to trigger auto completion
+      if (text.startsWith("/") && text.length > 1) {
+        onSearch(text.slice(1));
+      }
     }
   };
 
@@ -250,6 +268,7 @@ export function Chat(props: { showSideBar?: () => void }) {
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
+    setPromptHints([]);
     inputRef.current?.focus();
   };
 
@@ -286,6 +305,7 @@ export function Chat(props: { showSideBar?: () => void }) {
         chatStore
           .onUserInput(messages[i].content)
           .then(() => setIsLoading(false));
+        inputRef.current?.focus();
         return;
       }
     }
@@ -330,7 +350,6 @@ export function Chat(props: { showSideBar?: () => void }) {
       const dom = latestMessageRef.current;
       if (dom && !isIOS() && autoScroll) {
         dom.scrollIntoView({
-          behavior: "smooth",
           block: "end",
         });
       }
@@ -344,7 +363,17 @@ export function Chat(props: { showSideBar?: () => void }) {
           className={styles["window-header-title"]}
           onClick={props?.showSideBar}
         >
-          <div className={styles["window-header-main-title"]}>
+          <div
+            className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
+            onClick={() => {
+              const newTopic = prompt(Locale.Chat.Rename, session.topic);
+              if (newTopic && newTopic !== session.topic) {
+                chatStore.updateCurrentSession(
+                  (session) => (session.topic = newTopic!)
+                );
+              }
+            }}
+          >
             {session.topic}
           </div>
           <div className={styles["window-header-sub-title"]}>
@@ -439,6 +468,7 @@ export function Chat(props: { showSideBar?: () => void }) {
                       className="markdown-body"
                       style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => setUserInput(message.content)}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -455,7 +485,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "4em" }}>
           -
         </div>
       </div>
@@ -476,7 +506,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 100);
             }}
-            autoFocus
+            autoFocus={!props?.sideBarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -678,7 +708,11 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+          <Chat
+            key="chat"
+            showSideBar={() => setShowSideBar(true)}
+            sideBarShowing={showSideBar}
+          />
         )}
       </div>
     </div>

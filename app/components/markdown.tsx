@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import "katex/dist/katex.min.css";
 import RemarkMath from "remark-math";
+import RemarkBreaks from "remark-breaks";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypePrsim from "rehype-prism-plus";
@@ -29,7 +30,7 @@ export function PreCode(props: { children: any }) {
 export function Markdown(props: { content: string }) {
   return (
     <ReactMarkdown
-      remarkPlugins={[RemarkMath, RemarkGfm]}
+      remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
       rehypePlugins={[RehypeKatex, [RehypePrsim, { ignoreMissing: true }]]}
       components={{
         pre: PreCode,
