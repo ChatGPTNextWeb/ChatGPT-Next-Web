@@ -87,7 +87,7 @@ body {
   align-items: center;
   user-select: none;
   font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
-  "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
@@ -119,6 +119,11 @@ select {
   cursor: pointer;
   background-color: var(--white);
   color: var(--black);
+  text-align: center;
+}
+
+input {
+  text-align: center;
 }
 
 input[type="checkbox"] {
