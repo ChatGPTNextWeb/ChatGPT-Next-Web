@@ -23,7 +23,13 @@ import DownloadIcon from "../icons/download.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal, showToast } from "./ui-lib";
-import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
+import {
+  copyToClipboard,
+  downloadAs,
+  isIOS,
+  isMobileScreen,
+  selectOrCopy,
+} from "../utils";
 import Locale from "../locales";
 
 import dynamic from "next/dynamic";
@@ -102,7 +108,7 @@ export function ChatList() {
       state.currentSessionIndex,
       state.selectSession,
       state.removeSession,
-    ]
+    ],
   );
 
   return (
@@ -196,7 +202,7 @@ export function Chat(props: {
       setPromptHints(promptStore.search(text));
     },
     100,
-    { leading: true, trailing: true }
+    { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -210,7 +216,7 @@ export function Chat(props: {
     if (!dom) return;
     const paddingBottomNum: number = parseInt(
       window.getComputedStyle(dom).paddingBottom,
-      10
+      10,
     );
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
   };
@@ -284,9 +290,7 @@ export function Chat(props: {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
-
-  // wont scroll while hovering messages
-  const [autoScroll, setAutoScroll] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(true);
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -300,7 +304,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     )
     .concat(
       userInput.length > 0
@@ -312,14 +316,24 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     );
 
   // auto scroll
   useLayoutEffect(() => {
     setTimeout(() => {
       const dom = latestMessageRef.current;
-      if (dom && !isIOS() && autoScroll) {
+      const inputDom = inputRef.current;
+
+      // only scroll when input overlaped message body
+      let shouldScroll = true;
+      if (dom && inputDom) {
+        const domRect = dom.getBoundingClientRect();
+        const inputRect = inputDom.getBoundingClientRect();
+        shouldScroll = domRect.top > inputRect.top;
+      }
+
+      if (dom && autoScroll && shouldScroll) {
         dom.scrollIntoView({
           block: "end",
         });
@@ -340,7 +354,7 @@ export function Chat(props: {
               const newTopic = prompt(Locale.Chat.Rename, session.topic);
               if (newTopic && newTopic !== session.topic) {
                 chatStore.updateCurrentSession(
-                  (session) => (session.topic = newTopic!)
+                  (session) => (session.topic = newTopic!),
                 );
               }
             }}
@@ -475,7 +489,7 @@ export function Chat(props: {
             onFocus={() => setAutoScroll(true)}
             onBlur={() => {
               setAutoScroll(false);
-              setTimeout(() => setPromptHints([]), 100);
+              setTimeout(() => setPromptHints([]), 500);
             }}
             autoFocus={!props?.sideBarShowing}
           />
@@ -586,7 +600,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
@@ -604,7 +618,9 @@ export function Home() {
   return (
     <div
       className={`${
-        config.tightBorder ? styles["tight-container"] : styles.container
+        config.tightBorder && !isMobileScreen()
+          ? styles["tight-container"]
+          : styles.container
       }`}
     >
       <div
