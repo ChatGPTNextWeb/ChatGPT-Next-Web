@@ -489,7 +489,7 @@ export function Chat(props: {
             onFocus={() => setAutoScroll(true)}
             onBlur={() => {
               setAutoScroll(false);
-              setTimeout(() => setPromptHints([]), 100);
+              setTimeout(() => setPromptHints([]), 500);
             }}
             autoFocus={!props?.sideBarShowing}
           />
