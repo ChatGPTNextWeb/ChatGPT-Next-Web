@@ -47,6 +47,37 @@ function SettingItem(props: {
   );
 }
 
+function InputRange({
+  title,
+  min,
+  max,
+  step,
+  value,
+  onChange,
+}: {
+  title?: string;
+  min: string;
+  max: string;
+  step: string;
+  value: any;
+  onChange: (config: any) => void;
+}) {
+  return (
+    <div className="input-range">
+      <span>{value}</span>
+      <input
+        title={title}
+        type="range"
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        onChange={onChange}
+      ></input>
+    </div>
+  );
+}
+
 export function Settings(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [config, updateConfig, resetConfig, clearAllData] = useChatStore(
@@ -251,8 +282,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.FontSize.Title}
             subTitle={Locale.Settings.FontSize.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               title={`${config.fontSize ?? 14}px`}
               value={config.fontSize}
               min="12"
@@ -264,7 +294,7 @@ export function Settings(props: { closeSettings: () => void }) {
                     (config.fontSize = Number.parseInt(e.currentTarget.value)),
                 )
               }
-            ></input>
+            ></InputRange>
           </SettingItem>
 
           <div className="no-mobile">
@@ -371,8 +401,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
               min="2"
@@ -384,7 +413,7 @@ export function Settings(props: { closeSettings: () => void }) {
                     (config.historyMessageCount = e.target.valueAsNumber),
                 )
               }
-            ></input>
+            ></InputRange>
           </SettingItem>
 
           <SettingItem
@@ -429,8 +458,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.Temperature.Title}
             subTitle={Locale.Settings.Temperature.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               value={config.modelConfig.temperature.toFixed(1)}
               min="0"
               max="2"
@@ -442,7 +470,7 @@ export function Settings(props: { closeSettings: () => void }) {
                       e.currentTarget.valueAsNumber),
                 );
               }}
-            ></input>
+            ></InputRange>
           </SettingItem>
           <SettingItem
             title={Locale.Settings.MaxTokens.Title}
@@ -466,12 +494,11 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.PresencePenlty.Title}
             subTitle={Locale.Settings.PresencePenlty.SubTitle}
           >
-            <input
-              type="range"
-              value={config.modelConfig.presence_penalty.toFixed(1)}
+            <InputRange
               min="-2"
               max="2"
               step="0.5"
+              value={config.modelConfig.presence_penalty.toFixed(1)}
               onChange={(e) => {
                 updateConfig(
                   (config) =>
@@ -479,7 +506,7 @@ export function Settings(props: { closeSettings: () => void }) {
                       e.currentTarget.valueAsNumber),
                 );
               }}
-            ></input>
+            />
           </SettingItem>
         </List>
       </div>

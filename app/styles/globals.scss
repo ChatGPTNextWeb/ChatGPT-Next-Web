@@ -146,15 +146,22 @@ input[type="checkbox"]:checked::after {
 
 input[type="range"] {
   appearance: none;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.input-range{
   border: var(--border-in-light);
   border-radius: 10px;
   padding: 5px 15px 5px 10px;
-  background-color: var(--white);
-  color: var(--black);
-
-  &::before {
-    content: attr(value);
-    font-size: 12px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  width: 156px;
+  height: 27.5px;
+  box-sizing: border-box;
+  >input {
+    width: 110px;
   }
 }
 
