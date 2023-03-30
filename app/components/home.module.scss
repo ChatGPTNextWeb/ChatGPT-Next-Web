@@ -169,13 +169,38 @@
   transition: all ease 0.3s;
   opacity: 0;
 }
+.chat-item-edit {
+  position: absolute;
+  top: 11px;
+  right: -25px;
+  transition: all ease 0.3s;
+  opacity: 0;
+}
+.chat-item-edit-input[type=text] {
+  font-size: 14px;
+  color: black;
+  font-weight: bolder;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px rgb(29,147,171) solid;
+  outline: none;
+
+}
 
 .chat-item:hover > .chat-item-delete {
   opacity: 0.5;
   right: 10px;
 }
 
-.chat-item:hover > .chat-item-delete:hover {
+.chat-item:hover > .chat-item-edit {
+  opacity: 0.5;
+  right: 35px;
+}
+
+.chat-item:hover > .chat-item-delete,
+.chat-item:hover > .chat-item-edit {
   opacity: 1;
 }
 

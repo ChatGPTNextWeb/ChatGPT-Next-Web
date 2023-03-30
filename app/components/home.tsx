@@ -15,6 +15,7 @@ import ExportIcon from "../icons/export.svg";
 import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
+import EditIcon from "../icons/edit-title.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import MenuIcon from "../icons/menu.svg";
 import CloseIcon from "../icons/close.svg";
@@ -69,11 +70,16 @@ export function Avatar(props: { role: Message["role"] }) {
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
+  onEdit?: (title: string) => void;
   title: string;
   count: number;
   time: string;
   selected: boolean;
 }) {
+  const [dialog, setDialog] = useState({
+    isEdit: false,
+    title: props.title,
+  });
   return (
     <div
       className={`${styles["chat-item"]} ${
@@ -81,7 +87,30 @@ export function ChatItem(props: {
       }`}
       onClick={props.onClick}
     >
-      <div className={styles["chat-item-title"]}>{props.title}</div>
+      <div className={styles["chat-item-title"]}>
+        {dialog.isEdit ? (
+          <input
+            autoFocus
+            type="text"
+            className={styles["chat-item-edit-input"]}
+            value={dialog.title}
+            onChange={(data) => {
+              setDialog({
+                ...dialog,
+                title: data.target.value,
+              });
+            }}
+            onBlur={editCompleted}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                editCompleted();
+              }
+            }}
+          />
+        ) : (
+          <div>{dialog.title}</div>
+        )}
+      </div>
       <div className={styles["chat-item-info"]}>
         <div className={styles["chat-item-count"]}>
           {Locale.ChatItem.ChatItemCount(props.count)}
@@ -91,19 +120,41 @@ export function ChatItem(props: {
       <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
         <DeleteIcon />
       </div>
+      <div className={styles["chat-item-edit"]} onClick={editStart}>
+        <EditIcon />
+      </div>
     </div>
   );
+
+  function editStart() {
+    setDialog({
+      ...dialog,
+      isEdit: true,
+    });
+  }
+  function editCompleted() {
+    setDialog({
+      ...dialog,
+      isEdit: false,
+    });
+    props.onEdit && props.onEdit(dialog.title);
+  }
 }
 
 export function ChatList() {
-  const [sessions, selectedIndex, selectSession, removeSession] = useChatStore(
-    (state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.removeSession,
-    ]
-  );
+  const [
+    sessions,
+    selectedIndex,
+    selectSession,
+    removeSession,
+    editDialogTitle,
+  ] = useChatStore((state) => [
+    state.sessions,
+    state.currentSessionIndex,
+    state.selectSession,
+    state.removeSession,
+    state.editDialogTitle,
+  ]);
 
   return (
     <div className={styles["chat-list"]}>
@@ -116,6 +167,7 @@ export function ChatList() {
           selected={i === selectedIndex}
           onClick={() => selectSession(i)}
           onDelete={() => removeSession(i)}
+          onEdit={(title: string) => editDialogTitle(i, title)}
         />
       ))}
     </div>
@@ -196,7 +248,7 @@ export function Chat(props: {
       setPromptHints(promptStore.search(text));
     },
     100,
-    { leading: true, trailing: true }
+    { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -210,7 +262,7 @@ export function Chat(props: {
     if (!dom) return;
     const paddingBottomNum: number = parseInt(
       window.getComputedStyle(dom).paddingBottom,
-      10
+      10,
     );
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
   };
@@ -300,7 +352,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     )
     .concat(
       userInput.length > 0
@@ -312,7 +364,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     );
 
   // auto scroll
@@ -340,7 +392,7 @@ export function Chat(props: {
               const newTopic = prompt(Locale.Chat.Rename, session.topic);
               if (newTopic && newTopic !== session.topic) {
                 chatStore.updateCurrentSession(
-                  (session) => (session.topic = newTopic!)
+                  (session) => (session.topic = newTopic!),
                 );
               }
             }}
@@ -586,7 +638,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);

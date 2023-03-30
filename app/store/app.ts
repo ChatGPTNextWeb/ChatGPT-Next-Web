@@ -186,6 +186,7 @@ interface ChatStore {
   removeSession: (index: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
+  editDialogTitle: (index: number, title: string) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
@@ -261,6 +262,17 @@ export const useChatStore = create<ChatStore>()(
 
           return {
             currentSessionIndex: nextIndex,
+            sessions,
+          };
+        });
+      },
+
+      editDialogTitle(index: number, title: string) {
+        set((state) => {
+          const sessions = state.sessions;
+          sessions[index].topic = title;
+
+          return {
             sessions,
           };
         });
