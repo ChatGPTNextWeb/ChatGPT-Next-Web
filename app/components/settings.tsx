@@ -267,19 +267,17 @@ export function Settings(props: { closeSettings: () => void }) {
             ></input>
           </SettingItem>
 
-          <div className="no-mobile">
-            <SettingItem title={Locale.Settings.TightBorder}>
-              <input
-                type="checkbox"
-                checked={config.tightBorder}
-                onChange={(e) =>
-                  updateConfig(
-                    (config) => (config.tightBorder = e.currentTarget.checked),
-                  )
-                }
-              ></input>
-            </SettingItem>
-          </div>
+          <SettingItem title={Locale.Settings.TightBorder}>
+            <input
+              type="checkbox"
+              checked={config.tightBorder}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.tightBorder = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </SettingItem>
         </List>
         <List>
           <SettingItem
