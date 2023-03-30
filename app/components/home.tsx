@@ -88,10 +88,16 @@ export function ChatItem(props: {
   time: string;
   selected: boolean;
 }) {
-  const [dialog, setDialog] = useState({
-    isEdit: false,
-    title: props.title,
-  });
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [title, setTitle] = useState(props.title);
+
+  function editCompleted() {
+    setIsEditingTitle(false);
+    // Blank will be restored to its original state
+    if (!title) setTitle(props.title);
+    props.onEdit && props.onEdit(title);
+  }
+
   return (
     <div
       className={`${styles["chat-item"]} ${
@@ -100,17 +106,14 @@ export function ChatItem(props: {
       onClick={props.onClick}
     >
       <div className={styles["chat-item-title"]}>
-        {dialog.isEdit ? (
+        {isEditingTitle ? (
           <input
             autoFocus
             type="text"
             className={styles["chat-item-edit-input"]}
-            value={dialog.title}
+            value={title}
             onChange={(data) => {
-              setDialog({
-                ...dialog,
-                title: data.target.value,
-              });
+              setTitle(data.target.value);
             }}
             onBlur={editCompleted}
             onKeyDown={(event) => {
@@ -120,7 +123,7 @@ export function ChatItem(props: {
             }}
           />
         ) : (
-          <div>{dialog.title}</div>
+          title
         )}
       </div>
       <div className={styles["chat-item-info"]}>
@@ -132,25 +135,14 @@ export function ChatItem(props: {
       <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
         <DeleteIcon />
       </div>
-      <div className={styles["chat-item-edit"]} onClick={editStart}>
+      <div
+        className={styles["chat-item-edit"]}
+        onClick={() => setIsEditingTitle(true)}
+      >
         <EditIcon />
       </div>
     </div>
   );
-
-  function editStart() {
-    setDialog({
-      ...dialog,
-      isEdit: true,
-    });
-  }
-  function editCompleted() {
-    setDialog({
-      ...dialog,
-      isEdit: false,
-    });
-    props.onEdit && props.onEdit(dialog.title);
-  }
 }
 
 export function ChatList() {
@@ -165,7 +157,7 @@ export function ChatList() {
     state.currentSessionIndex,
     state.selectSession,
     state.removeSession,
-    state.editDialogTitle,
+    state.updateSessionTitle,
   ]);
 
   return (
