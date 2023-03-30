@@ -53,12 +53,13 @@
   --sidebar-width: 300px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 80%;
+  --full-height: 100vh;
 }
 
 @media only screen and (max-width: 600px) {
   :root {
     --window-width: 100vw;
-    --window-height: 100vh;
+    --window-height: var(--full-height);
     --sidebar-width: 100vw;
     --window-content-width: var(--window-width);
     --message-max-width: 100%;
@@ -80,7 +81,7 @@ body {
   color: var(--black);
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: var(--full-height);
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -201,7 +202,7 @@ div.math {
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: var(--full-height);
   width: 100vw;
   background-color: rgba($color: #000000, $alpha: 0.5);
   display: flex;

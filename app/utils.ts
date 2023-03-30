@@ -45,6 +45,10 @@ export function isIOS() {
   return /iphone|ipad|ipod/.test(userAgent);
 }
 
+export function isMobileScreen() {
+  return window.innerWidth <= 600;
+}
+
 export function selectOrCopy(el: HTMLElement, content: string) {
   const currentSelection = window.getSelection();
 
