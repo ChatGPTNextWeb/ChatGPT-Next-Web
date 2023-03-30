@@ -169,24 +169,29 @@
   transition: all ease 0.3s;
   opacity: 0;
 }
+
 .chat-item-edit {
   position: absolute;
-  top: 11px;
-  right: -25px;
+  top: 12px;
+  right: -24px;
   transition: all ease 0.3s;
   opacity: 0;
 }
+
 .chat-item-edit-input[type=text] {
   font-size: 14px;
   color: black;
   font-weight: bolder;
   padding: 0;
   box-sizing: border-box;
-  width: 100%;
+  width: auto;
   height: 100%;
+  min-height: 24px;
   border: 1px rgb(29,147,171) solid;
   outline: none;
-
+  text-align: left;
+  overflow: auto;
+  resize: none;
 }
 
 .chat-item:hover > .chat-item-delete {
