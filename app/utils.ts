@@ -4,7 +4,7 @@ import Locale from "./locales";
 export function trimTopic(topic: string) {
   const s = topic.split("");
   let lastChar = s.at(-1); // 获取 s 的最后一个字符
-  let pattern = /[，。！？、]/; // 定义匹配中文标点符号的正则表达式
+  let pattern = /[，。！？、,.!?]/; // 定义匹配中文和英文标点符号的正则表达式
   while (lastChar && pattern.test(lastChar!)) {
     s.pop();
     lastChar = s.at(-1);
@@ -28,7 +28,7 @@ export function downloadAs(text: string, filename: string) {
   const element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
   );
   element.setAttribute("download", filename);
 
@@ -61,7 +61,7 @@ export function queryMeta(key: string, defaultValue?: string): string {
   let ret: string;
   if (document) {
     const meta = document.head.querySelector(
-      `meta[name='${key}']`
+      `meta[name='${key}']`,
     ) as HTMLMetaElement;
     ret = meta?.content ?? "";
   } else {
