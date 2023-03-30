@@ -92,7 +92,7 @@ const cn = {
     },
     CompressThreshold: {
       Title: "历史消息长度压缩阈值",
-      SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
+      SubTitle: "当未压缩的历史消息超过该值时，将进行压缩（500 ~ 4000）",
     },
     Token: {
       Title: "API Key",
@@ -119,7 +119,7 @@ const cn = {
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
-      SubTitle: "单次交互所用的最大 Token 数",
+      SubTitle: "单次交互所用的最大 Token 数（100 ~ 4096）",
     },
     PresencePenlty: {
       Title: "话题新鲜度 (presence_penalty)",
