@@ -76,7 +76,7 @@ export function queryMeta(key: string, defaultValue?: string): string {
 }
 
 let currentId: string;
-export function getCurrentCommitId() {
+export function getCurrentVersion() {
   if (currentId) {
     return currentId;
   }
