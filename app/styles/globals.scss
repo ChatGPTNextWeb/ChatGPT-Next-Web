@@ -186,6 +186,11 @@ input[type="text"] {
   color: var(--black);
   padding: 0 10px;
   max-width: 50%;
+  text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button{
+    -webkit-appearance: none;
 }
 
 div.math {
