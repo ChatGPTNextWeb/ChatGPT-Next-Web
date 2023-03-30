@@ -169,15 +169,6 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 ![更多展示 More](./static/more.png)
 
-## 说明 Attention
-
-本项目的演示地址所用的 OpenAI 账户的免费额度将于 2023-04-01 过期，届时将无法通过演示地址在线体验。
-
-如果你想贡献出自己的 API Key，可以通过作者主页的邮箱发送给作者，并标注过期时间。
-
-The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time.
-
-If you would like to contribute your API key, you can email it to the author and indicate the expiration date of the API key.
 
 ## 捐赠 Donate USDT
 > BNB Smart Chain (BEP 20)
