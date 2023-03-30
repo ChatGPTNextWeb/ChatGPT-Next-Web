@@ -320,7 +320,7 @@ export function Settings(props: { closeSettings: () => void }) {
             >
               <input
                 value={accessStore.accessCode}
-                type="text"
+                type="password"
                 placeholder={Locale.Settings.AccessCode.Placeholder}
                 onChange={(e) => {
                   accessStore.updateCode(e.currentTarget.value);
