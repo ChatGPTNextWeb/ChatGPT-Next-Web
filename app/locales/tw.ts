@@ -92,7 +92,7 @@ const tw: LocaleType = {
     },
     CompressThreshold: {
       Title: "歷史訊息長度壓縮閾值",
-      SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
+      SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮（500 ~ 4000）",
     },
     Token: {
       Title: "API Key",
@@ -119,7 +119,7 @@ const tw: LocaleType = {
     },
     MaxTokens: {
       Title: "單次回復限制 (max_tokens)",
-      SubTitle: "單次交互所用的最大 Token 數",
+      SubTitle: "單次交互所用的最大 Token 數（100 ~ 4096）",
     },
     PresencePenlty: {
       Title: "話題新穎度 (presence_penalty)",
