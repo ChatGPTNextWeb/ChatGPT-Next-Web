@@ -1,26 +1,12 @@
 import { createParser } from "eventsource-parser";
 import { NextRequest } from "next/server";
+import { requestOpenai } from "../common";
 
 async function createStream(req: NextRequest) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  let apiKey = process.env.OPENAI_API_KEY;
-
-  const userApiKey = req.headers.get("token");
-  if (userApiKey) {
-    apiKey = userApiKey;
-    console.log("[Stream] using user api key");
-  }
-
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    method: "POST",
-    body: req.body,
-  });
+  const res = await requestOpenai(req);
 
   const stream = new ReadableStream({
     async start(controller) {
