@@ -27,8 +27,7 @@ export const useUpdateStore = create<UpdateStore>()(
 
         try {
           const data = await (await fetch(FETCH_TAG_URL)).json();
-          const sha = data[0].name as string;
-          const remoteId = sha.substring(0, 7);
+          const remoteId = data[0].name as string;
           set(() => ({
             lastUpdate: Date.now(),
             remoteId,
