@@ -194,6 +194,7 @@ interface ChatStore {
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
+  removeMessage: (sessionIndex: number, messageIndex: number) => void;
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
@@ -382,6 +383,15 @@ export const useChatStore = create<ChatStore>()(
         }
 
         return recentMessages;
+      },
+
+      removeMessage(sessionIndex: number, messageIndex: number) {
+        const sessions = get().sessions;
+        const session = sessions.at(sessionIndex);
+        const messages = session?.messages;
+        // remove user's message and bot's response
+        messages?.splice(messageIndex, 2);
+        set(() => ({ sessions }));
       },
 
       updateMessage(

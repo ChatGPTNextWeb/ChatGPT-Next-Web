@@ -324,8 +324,21 @@
   }
 }
 
-.chat-message-user > .chat-message-container > .chat-message-item {
-  background-color: var(--second);
+.chat-message-user > .chat-message-container {
+  .chat-message-top-actions {
+    flex-direction: row;
+    right: unset;
+    left: 20px;
+  }
+  &:hover {
+    .chat-message-top-actions {
+      left: 10px;
+    }
+  }
+
+  & > .chat-message-item {
+    background-color: var(--second);
+  }
 }
 
 .chat-message-actions {

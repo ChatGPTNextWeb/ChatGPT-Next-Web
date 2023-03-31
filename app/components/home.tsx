@@ -274,6 +274,10 @@ export function Chat(props: {
     }
   };
 
+  const onMessageDelete = (messageIndex: number) => {
+    chatStore.removeMessage(sessionIndex, messageIndex);
+  };
+
   const onResend = (botIndex: number) => {
     // find last user input message and resend
     for (let i = botIndex; i >= 0; i -= 1) {
@@ -418,33 +422,45 @@ export function Chat(props: {
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {!isUser &&
-                    !(message.preview || message.content.length === 0) && (
-                      <div className={styles["chat-message-top-actions"]}>
-                        {message.streaming ? (
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onUserStop(i)}
-                          >
-                            {Locale.Chat.Actions.Stop}
-                          </div>
-                        ) : (
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onResend(i)}
-                          >
-                            {Locale.Chat.Actions.Retry}
-                          </div>
-                        )}
+                  {!isUser
+                    ? !(message.preview || message.content.length === 0) && (
+                        <div className={styles["chat-message-top-actions"]}>
+                          {message.streaming ? (
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onUserStop(i)}
+                            >
+                              {Locale.Chat.Actions.Stop}
+                            </div>
+                          ) : (
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onResend(i)}
+                            >
+                              {Locale.Chat.Actions.Retry}
+                            </div>
+                          )}
 
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => copyToClipboard(message.content)}
-                        >
-                          {Locale.Chat.Actions.Copy}
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => copyToClipboard(message.content)}
+                          >
+                            {Locale.Chat.Actions.Copy}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )
+                    : !(message.preview || message.content.length === 0) && (
+                        <div className={styles["chat-message-top-actions"]}>
+                          {!message.streaming && (
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={(e) => onMessageDelete(i)}
+                            >
+                              {Locale.Chat.Actions.Delete}
+                            </div>
+                          )}
+                        </div>
+                      )}
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />

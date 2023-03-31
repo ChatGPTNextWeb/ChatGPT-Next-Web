@@ -19,6 +19,7 @@ const en: LocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      Delete: "Delete",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
