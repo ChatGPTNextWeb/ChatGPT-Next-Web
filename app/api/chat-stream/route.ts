@@ -1,6 +1,7 @@
 import { createParser } from "eventsource-parser";
 import { NextRequest } from "next/server";
 import { requestOpenai } from "../common";
+import { PageConfig } from "next/types";
 
 async function createStream(req: NextRequest) {
   const encoder = new TextEncoder();
@@ -56,6 +57,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const config = {
-  runtime: "edge",
+export const config: PageConfig = {
+  runtime: process.env.STANDALONE ? "nodejs" : "edge",
 };

@@ -16,7 +16,7 @@ RUN apk update && apk add --no-cache git
 
 ENV OPENAI_API_KEY=""
 ENV CODE=""
-ARG DOCKER=true
+ARG STANDALONE=true
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

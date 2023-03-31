@@ -177,7 +177,13 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ```shell
 docker pull yidadaa/chatgpt-next-web
 
-docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-web
+# https_proxy 指向代理，需要带协议前缀 例如: https_proxy=https://192.168.1.1:7890
+docker run -it --rm \
+  -p 3000:3000 \
+  -e https_proxy="" \
+  -e OPENAI_API_KEY="" \
+  -e CODE="" \
+  --name chatgpt-next-web yidadaa/chatgpt-next-web
 ```
 
 ## 截图 Screenshots

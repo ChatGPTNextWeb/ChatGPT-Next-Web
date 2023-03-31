@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requestOpenai } from "../common";
+import { PageConfig } from "next/types";
+
+export const config: PageConfig = {
+  runtime: process.env.STANDALONE ? "nodejs" : "edge",
+};
 
 async function makeRequest(req: NextRequest) {
   try {
