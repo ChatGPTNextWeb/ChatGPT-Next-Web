@@ -53,7 +53,7 @@ const tw: LocaleType = {
       Close: "關閉",
     },
     Lang: {
-      Name: "語言",
+      Name: "Language",
       Options: {
         cn: "简体中文",
         en: "English",
