@@ -11,7 +11,27 @@ const nextConfig = {
     }); // 针对 SVG 的处理规则
 
     return config;
-  }
+  },
+  async redirects() {
+    if (!process.env.DOMAIN) {
+      return []
+    }
+
+    return [
+      {
+        source: '/',
+        destination: `https://${process.env.DOMAIN}/`,
+        has: [
+          {
+            type: 'host',
+            value: process.env.DOMAIN,
+            not: true
+          },
+        ],
+        permanent: true,
+      },
+    ]
+  },
 };
 
 if (process.env.DOCKER) {
