@@ -173,6 +173,39 @@ docker pull yidadaa/chatgpt-next-web
 docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-web
 ```
 
+### Docker-Compose 部署
+
+1. 克隆项目
+
+```
+git clone https://github.com/Yidadaa/ChatGPT-Next-Web.git
+```
+
+2. 修改 docker-compose.yml 文件中 `OPEN_API_KEY` 和 `CODE` 环境变量的值，例如：
+
+  ```
+    environment:
+      - OPENAI_API_KEY=sk*****kk
+      - CODE=code1,code2,code3
+  ```
+
+3. 运行与维护
+
+```
+#启动容器
+docker-compose up -d
+
+#查看容器状态
+docker ps
+
+#停止并移除
+docker-compose down
+```
+
+4. 关于更新
+
+默认通过 watchtower 更新计划为每隔6小时执行一次，并自动清理旧容器。
+
 ## 截图 Screenshots
 
 ![设置 Settings](./static/settings.png)
