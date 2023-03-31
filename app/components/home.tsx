@@ -613,12 +613,12 @@ export function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const signature = urlParams.get("signature");
-    // 不是企业微信环境，拦截
-    fetch(`//192.168.5.198/api/check_user_white/?signature=${signature}`)
+    // 是否在白名单
+    fetch(`${process.env.API_URL}/api/check_user_white/?signature=${signature}`)
       .then((response) => response.json())
       .then((data) => {
         const { code, msg } = data;
-        setIsAllow(code === 0); // 是否在白名单
+        setIsAllow(code === 0);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -644,8 +644,7 @@ export function Home() {
   }
 
   const goApply = () => {
-    location.href =
-      "http://work-order.zhiketong.net/#/process/create-ticket?processId=117";
+    location.href = `${process.env.APPLY_URL}/#/process/create-ticket?processId=117`;
   };
 
   return (
@@ -656,7 +655,7 @@ export function Home() {
           : styles.container
       }`}
     >
-      {!isWorkWechat() ? (
+      {isWorkWechat() ? (
         <h2 className="not-wx-work">请在企业微信里使用Gpt~</h2>
       ) : typeof isAllow === "boolean" && !isAllow ? (
         <h2 className="not-allow">
