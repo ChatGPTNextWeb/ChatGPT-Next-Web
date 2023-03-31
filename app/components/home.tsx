@@ -608,12 +608,45 @@ export function Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
+  const [isAllow, setIsAllow] = useState(undefined);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const signature = urlParams.get("signature");
+    // 不是企业微信环境，拦截
+    fetch(`//192.168.5.198/api/check_user_white/?signature=${signature}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const { code, msg } = data;
+        setIsAllow(code === 0); // 是否在白名单
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
+  const isWorkWechat = () => {
+    //获取user-agaent标识头
+    const ua = window.navigator.userAgent.toLowerCase();
+    //判断ua和微信浏览器的标识头是否匹配
+    if (
+      ua.match(/micromessenger/i) == "micromessenger" &&
+      ua.match(/wxwork/i) == "wxwork"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   useSwitchTheme();
 
   if (loading) {
     return <Loading />;
   }
+
+  const goApply = () => {
+    location.href =
+      "http://work-order.zhiketong.net/#/process/create-ticket?processId=117";
+  };
 
   return (
     <div
@@ -623,85 +656,100 @@ export function Home() {
           : styles.container
       }`}
     >
-      <div
-        className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
-      >
-        <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-          <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
-          </div>
-          <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
-          </div>
-        </div>
+      {!isWorkWechat() ? (
+        <h2 className="not-wx-work">请在企业微信里使用Gpt~</h2>
+      ) : typeof isAllow === "boolean" && !isAllow ? (
+        <h2 className="not-allow">
+          <span className="text">您不在白名单内，请走工单审批使用Gpt~</span>
+          <span onClick={goApply} className={styles["button"]}>
+            去申请
+          </span>
+        </h2>
+      ) : (
+        <>
+          <div
+            className={
+              styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`
+            }
+          >
+            <div className={styles["sidebar-header"]}>
+              <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+              <div className={styles["sidebar-sub-title"]}>
+                Build your own AI assistant.
+              </div>
+              <div className={styles["sidebar-logo"]}>
+                <ChatGptIcon />
+              </div>
+            </div>
 
-        <div
-          className={styles["sidebar-body"]}
-          onClick={() => {
-            setOpenSettings(false);
-            setShowSideBar(false);
-          }}
-        >
-          <ChatList />
-        </div>
-
-        <div className={styles["sidebar-tail"]}>
-          <div className={styles["sidebar-actions"]}>
-            <div className={styles["sidebar-action"] + " " + styles.mobile}>
-              <IconButton
-                icon={<CloseIcon />}
-                onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat)) {
-                    removeSession(currentIndex);
-                  }
-                }}
-              />
-            </div>
-            <div className={styles["sidebar-action"]}>
-              <IconButton
-                icon={<SettingsIcon />}
-                onClick={() => {
-                  setOpenSettings(true);
-                  setShowSideBar(false);
-                }}
-              />
-            </div>
-            <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} />
-              </a>
-            </div>
-          </div>
-          <div>
-            <IconButton
-              icon={<AddIcon />}
-              text={Locale.Home.NewChat}
+            <div
+              className={styles["sidebar-body"]}
               onClick={() => {
-                createNewSession();
+                setOpenSettings(false);
                 setShowSideBar(false);
               }}
-            />
-          </div>
-        </div>
-      </div>
+            >
+              <ChatList />
+            </div>
 
-      <div className={styles["window-content"]}>
-        {openSettings ? (
-          <Settings
-            closeSettings={() => {
-              setOpenSettings(false);
-              setShowSideBar(true);
-            }}
-          />
-        ) : (
-          <Chat
-            key="chat"
-            showSideBar={() => setShowSideBar(true)}
-            sideBarShowing={showSideBar}
-          />
-        )}
-      </div>
+            <div className={styles["sidebar-tail"]}>
+              <div className={styles["sidebar-actions"]}>
+                <div className={styles["sidebar-action"] + " " + styles.mobile}>
+                  <IconButton
+                    icon={<CloseIcon />}
+                    onClick={() => {
+                      if (confirm(Locale.Home.DeleteChat)) {
+                        removeSession(currentIndex);
+                      }
+                    }}
+                  />
+                </div>
+                <div className={styles["sidebar-action"]}>
+                  <IconButton
+                    icon={<SettingsIcon />}
+                    onClick={() => {
+                      setOpenSettings(true);
+                      setShowSideBar(false);
+                    }}
+                  />
+                </div>
+                <div className={styles["sidebar-action"]}>
+                  <a href={REPO_URL} target="_blank">
+                    <IconButton icon={<GithubIcon />} />
+                  </a>
+                </div>
+              </div>
+              <div>
+                <IconButton
+                  icon={<AddIcon />}
+                  text={Locale.Home.NewChat}
+                  onClick={() => {
+                    createNewSession();
+                    setShowSideBar(false);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles["window-content"]}>
+            {openSettings ? (
+              <Settings
+                closeSettings={() => {
+                  setOpenSettings(false);
+                  setShowSideBar(true);
+                }}
+              />
+            ) : (
+              <Chat
+                key="chat"
+                showSideBar={() => setShowSideBar(true)}
+                sideBarShowing={showSideBar}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
