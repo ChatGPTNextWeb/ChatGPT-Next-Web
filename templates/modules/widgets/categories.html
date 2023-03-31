@@ -1,0 +1,13 @@
+<div
+  class="w-full cursor-pointer overflow-hidden rounded-xl bg-white p-3 shadow transition-all duration-500 hover:shadow-md dark:bg-slate-800"
+>
+  <h2 class="inline-flex items-center gap-2 text-base dark:text-slate-50">
+    <span class="i-tabler-category text-lg"></span>
+    分类目录
+  </h2>
+  <div class="mt-2" th:with="categories = ${categoryFinder.listAsTree()}">
+    <ul class="space-y-1">
+      <li th:replace="~{modules/category-tree :: single(categories=${categories})}" />
+    </ul>
+  </div>
+</div>

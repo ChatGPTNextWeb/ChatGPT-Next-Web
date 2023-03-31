@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = '标签 - ' + ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+>
+  <th:block th:fragment="content">
+    <div class="rounded-xl bg-white p-4 shadow transition-all duration-500 hover:shadow-md dark:bg-slate-800">
+      <th:block th:replace="~{modules/tag-filter}" />
+    </div>
+
+    <th:block th:with="tag = ${tagFinder.list(1,1).items[0]}">
+      <th:block th:if="${tag}" th:with="posts = ${postFinder.listByTag(1,10,tag.metadata.name)}">
+        <div
+          id="post-list"
+          th:if="${posts.total gt 0}"
+          th:with="postItems=${posts.items},list_layout=${theme.config.layout.post_list_layout}"
+          class="mt-6 grid grid-cols-1 gap-6"
+          th:classappend="|${list_layout == 'grid_3' ? 'md:grid-cols-2 xl:grid-cols-3' : ''} ${list_layout == 'grid_2' ? 'md:grid-cols-2' : ''}|"
+        >
+          <th:block th:each="post : ${postItems}">
+            <th:block
+              th:replace="~{modules/post-card :: post-card(${post},true,true,true,${list_layout == 'single' ? 'column' : 'row'})}"
+            />
+          </th:block>
+        </div>
+
+        <div th:if="${posts.total == 0}" class="mt-6 flex items-center justify-center">
+          <span class="text-sm font-light text-gray-600 dark:text-slate-200">此标签下没有文章</span>
+        </div>
+
+        <div th:if="${posts.total gt 10}" class="mt-10 flex justify-end">
+          <a
+            class="group inline-flex items-center gap-2 truncate text-sm text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-200"
+            th:href="@{${tag.status.permalink}}"
+          >
+            <span>更多文章</span>
+            <span class="i-tabler-chevron-right -translate-x-1 text-lg transition-all group-hover:translate-x-0"></span>
+          </a>
+        </div>
+      </th:block>
+    </th:block>
+  </th:block>
+</html>

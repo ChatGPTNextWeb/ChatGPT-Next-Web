@@ -1,0 +1,29 @@
+<div
+  class="w-full cursor-pointer overflow-hidden rounded-xl bg-white p-3 shadow transition-all duration-500 hover:shadow-md dark:bg-slate-800"
+>
+  <h2 class="inline-flex items-center gap-2 text-base dark:text-slate-50">
+    <span class="i-tabler-stairs-up text-lg text-red-600 dark:text-red-700"></span>
+    热门文章
+  </h2>
+  <div>
+    <ul role="list" class="divide-y divide-gray-100 dark:divide-slate-700" th:with="posts = ${postFinder.list(1,10)}">
+      <li class="py-3" th:each="post : ${posts}">
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-sm font-medium line-clamp-2 hover:text-gray-500 hover:underline dark:text-slate-100">
+              <a th:text="${post.spec.title}" th:href="@{${post.status.permalink}}" th:title="${post.spec.title}"></a>
+            </h3>
+            <p
+              class="text-xs tabular-nums text-gray-500 dark:text-slate-400"
+              th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')+' 发布'}"
+            ></p>
+          </div>
+          <div class="inline-flex items-center gap-1 text-xs text-gray-600 dark:text-slate-500">
+            <span class="i-tabler-eye"></span>
+            <span th:text="${post.stats.visit}" class="tabular-nums"> </span>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" th:fragment="html (title,hero,content,head,footer,sidebar,contentClass)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" th:href="@{/assets/dist/style.css?v={version}(version=${theme.spec.version})}" />
+    <script th:src="@{/assets/dist/main.iife.js?v={version}(version=${theme.spec.version})}"></script>
+    <th:block th:if="${head != null}">
+      <th:block th:replace="${head}" />
+    </th:block>
+    <script>
+      main.initColorScheme("[[${theme.config.style.color_scheme}]]",[[${theme.config.style.enable_change_color_scheme}]])
+    </script>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-900">
+    <th:block th:replace="~{modules/header}" />
+    <th:block th:if="${hero != null}">
+      <th:block th:replace="${hero}" />
+    </th:block>
+    <th:block th:unless="${hero != null}">
+      <th:block th:replace="~{modules/hero :: hero(isHome = true, cover = null, title = null)}" />
+    </th:block>
+    <section class="container mx-auto mt-6 grid grid-cols-4 gap-6" th:classappend="${contentClass}">
+      <div class="col-span-4 sm:col-span-3">
+        <th:block th:replace="${content}" />
+      </div>
+      <th:block th:if="${sidebar != null}">
+        <th:block th:replace="${sidebar}" />
+      </th:block>
+      <th:block th:if="${sidebar == null}">
+        <th:block th:replace="~{modules/sidebar :: sidebar(prepend = null)}" />
+      </th:block>
+    </section>
+    <th:block th:replace="~{modules/footer}" />
+    <th:block th:if="${footer != null}">
+      <th:block th:replace="${footer}" />
+    </th:block>
+  </body>
+</html>

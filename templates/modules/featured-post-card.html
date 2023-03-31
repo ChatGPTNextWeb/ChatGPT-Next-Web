@@ -1,0 +1,65 @@
+<div
+  th:fragment="featured-post-card(post)"
+  class="group grid cursor-pointer grid-cols-1 overflow-hidden rounded-xl bg-white shadow-md transition-all duration-500 hover:shadow-lg dark:bg-slate-800 sm:grid-cols-5"
+>
+  <div th:if="${not #strings.isEmpty(post.spec.cover)}" class="aspect-w-16 aspect-h-9 col-span-3">
+    <a th:href="@{${post.status.permalink}}" th:title="${post.spec.title}">
+      <img
+        th:src="${post.spec.cover}"
+        th:alt="${post.spec.title}"
+        class="h-full w-full object-cover transition-all duration-500"
+      />
+    </a>
+  </div>
+  <div class="relative col-span-2 flex flex-col gap-2 p-4">
+    <div
+      th:if="${not #lists.isEmpty(post.categories)} or ${not #lists.isEmpty(post.tags)}"
+      class="flex flex-wrap items-center gap-2"
+    >
+      <a
+        th:if="${#lists.size(post.categories)} gt 0"
+        th:href="@{${post.categories[0].status.permalink}}"
+        th:title="${post.categories[0].spec.displayName}"
+        th:text="${post.categories[0].spec.displayName}"
+        class="mr-1 text-sm font-medium text-gray-800 hover:text-gray-900 dark:text-slate-500 dark:hover:text-slate-600"
+      >
+      </a>
+      <a
+        th:each="tag : ${post.tags}"
+        th:href="@{${tag.status.permalink}}"
+        th:title="${tag.spec.displayName}"
+        th:text="|#${tag.spec.displayName}|"
+        class="cursor-pointer text-sm italic text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-500"
+      >
+      </a>
+    </div>
+    <h1
+      class="cursor-pointer text-2xl font-medium transition-all line-clamp-2 hover:text-gray-500 hover:underline dark:text-slate-50 dark:hover:text-white"
+    >
+      <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+    </h1>
+    <p class="font-sm font-light line-clamp-6 dark:text-slate-200" th:text="${post.status.excerpt}"></p>
+    <div class="mt-4 flex flex-1 items-center justify-start gap-2">
+      <a th:href="@{${post.owner.permalink}}" th:title="${post.owner.displayName}">
+        <img
+          th:src="${post.owner.avatar ?: #theme.assets('/images/default-avatar.svg')}"
+          th:title="${post.owner.displayName}"
+          th:alt="${post.owner.displayName}"
+          class="h-8 w-8 rounded-full border drop-shadow-sm dark:border-slate-700"
+        />
+      </a>
+      <a
+        th:href="@{${post.owner.permalink}}"
+        th:title="${post.owner.displayName}"
+        class="text-sm font-medium text-gray-900 hover:text-gray-600 dark:text-slate-100 dark:hover:text-slate-200"
+        th:if="${#strings.isEmpty(post.owner.avatar)}"
+        th:text="${post.owner.displayName}"
+      ></a>
+      <span
+        class="text-sm tabular-nums text-gray-600 dark:text-slate-300"
+        th:text="|发布于 ${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}|"
+      >
+      </span>
+    </div>
+  </div>
+</div>

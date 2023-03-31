@@ -1,0 +1,48 @@
+<div
+  class="w-full cursor-pointer overflow-hidden rounded-xl bg-white p-3 shadow transition-all duration-500 hover:shadow-md dark:bg-slate-800"
+  th:with="stats = ${siteStatsFinder.getStats()}"
+>
+  <div class="flex flex-col items-center justify-center gap-4">
+    <div th:if="${not #strings.isEmpty(theme.config.sidebar.profile.logo)}" class="relative h-24 w-24">
+      <img th:src="${theme.config.sidebar.profile.logo}" th:alt="${site.title}" class="h-full w-full rounded-full" />
+    </div>
+    <div><h1 class="text-2xl font-medium dark:text-slate-50" th:text="${site.title}"></h1></div>
+    <div th:if="${not #strings.isEmpty(site.subtitle)}">
+      <p class="text-center text-sm text-gray-700 dark:text-slate-300" th:text="${site.subtitle}"></p>
+    </div>
+    <div class="grid grid-cols-4 gap-5">
+      <div class="inline-flex flex-col items-center">
+        <span class="text-xl font-medium tabular-nums text-gray-900 dark:text-slate-100" th:text="${stats.post}"></span>
+        <span class="text-xs font-light text-gray-600 dark:text-slate-300">文章数</span>
+      </div>
+      <div class="inline-flex flex-col items-center">
+        <span
+          class="text-xl font-medium tabular-nums text-gray-900 dark:text-slate-100"
+          th:text="${stats.category}"
+        ></span>
+        <span class="text-xs font-light text-gray-600 dark:text-slate-300">分类数</span>
+      </div>
+      <div class="inline-flex flex-col items-center">
+        <span
+          class="text-xl font-medium tabular-nums text-gray-900 dark:text-slate-100"
+          th:text="${stats.comment}"
+        ></span>
+        <span class="text-xs font-light text-gray-600 dark:text-slate-300">评论数</span>
+      </div>
+      <div class="inline-flex flex-col items-center">
+        <span class="text-xl font-medium tabular-nums text-gray-900 dark:text-slate-100" th:text="${stats.visit}"></span
+        ><span class="text-xs font-light text-gray-600 dark:text-slate-300">访问量</span>
+      </div>
+    </div>
+    <div th:with="social_medias = ${theme.config.sidebar.social_media}" class="grid grid-cols-6 items-center gap-5">
+      <a
+        th:each="social_media : ${social_medias}"
+        class="flex cursor-pointer items-center justify-center rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700"
+        th:href="${social_media.url}"
+        target="_blank"
+      >
+        <span class="text-gray-600 dark:text-slate-400" th:classappend="${social_media.icon}"></span>
+      </a>
+    </div>
+  </div>
+</div>

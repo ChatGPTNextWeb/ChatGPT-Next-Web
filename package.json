@@ -1,51 +1,68 @@
 {
-  "name": "chatgpt-next-web",
-  "version": "1.1",
-  "private": false,
-  "license": "Anti 996",
+  "name": "@halo-dev/theme-earth",
+  "private": true,
+  "version": "1.2.1",
+  "description": "Default theme for Halo 2.0",
   "scripts": {
-    "dev": "yarn fetch && next dev",
-    "build": "yarn fetch && next build",
-    "start": "next start",
-    "lint": "next lint",
-    "fetch": "node ./scripts/fetch-prompts.mjs",
-    "prepare": "husky install"
+    "dev": "vite build --watch",
+    "build": "tsc && vite build",
+    "lint": "eslint ./src --ext .js,.cjs,.mjs,.ts,.cts,.mts --ignore-path .gitignore",
+    "prettier": "prettier --write './src/**/*.{js,ts,css,json,ml,yaml,html}' './templates/**/*.html'",
+    "release": "release-it"
   },
-  "dependencies": {
-    "@svgr/webpack": "^6.5.1",
-    "@vercel/analytics": "^0.1.11",
-    "emoji-picker-react": "^4.4.7",
-    "eventsource-parser": "^0.1.0",
-    "fuse.js": "^6.6.2",
-    "next": "^13.2.3",
-    "node-fetch": "^3.3.1",
-    "openai": "^3.2.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-markdown": "^8.0.5",
-    "rehype-katex": "^6.0.2",
-    "rehype-prism-plus": "^1.5.1",
-    "remark-gfm": "^3.0.1",
-    "remark-math": "^5.1.1",
-    "sass": "^1.59.2",
-    "spark-md5": "^3.0.2",
-    "use-debounce": "^9.0.3",
-    "zustand": "^4.3.6"
+  "keywords": [
+    "halo",
+    "halo-theme",
+    "halo-template"
+  ],
+  "homepage": "https://github.com/halo-dev/theme-earth#readme",
+  "bugs": {
+    "url": "https://github.com/halo-dev/theme-earth/issues"
+  },
+  "author": {
+    "name": "Halo OSS Organization",
+    "url": "https://github.com/halo-dev",
+    "email": "hi@halo.run"
+  },
+  "maintainers": [
+    {
+      "name": "Ryan Wang",
+      "url": "https://github.com/ruibaby",
+      "email": "i@ryanc.cc"
+    }
+  ],
+  "license": "GPL-3.0",
+  "repository": {
+    "url": "https://github.com/halo-dev/theme-earth",
+    "type": "git"
   },
   "devDependencies": {
-    "@types/node": "^18.14.6",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@types/react-katex": "^3.0.0",
-    "@types/spark-md5": "^3.0.2",
-    "cross-env": "^7.0.3",
+    "@iconify-json/bx": "^1.1.6",
+    "@iconify-json/gg": "^1.1.4",
+    "@iconify-json/simple-icons": "^1.1.46",
+    "@iconify-json/tabler": "^1.1.67",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.9",
+    "@types/alpinejs": "^3.7.1",
+    "@types/node": "18.11.9",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "autoprefixer": "^10.4.14",
     "eslint": "^8.36.0",
-    "eslint-config-next": "13.2.3",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.2.0",
-    "prettier": "^2.8.7",
-    "typescript": "4.9.5"
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.4",
+    "prettier-plugin-tailwindcss": "^0.1.13",
+    "release-it": "^15.9.0",
+    "tailwindcss": "^3.2.7",
+    "tailwindcss-plugin-icons": "^2.1.1",
+    "typescript": "^4.9.5",
+    "vite": "^4.2.0"
+  },
+  "dependencies": {
+    "alpinejs": "^3.12.0",
+    "tocbot": "^4.20.1"
   }
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = |作者：${author.spec.displayName} - ${site.title}|, hero = ~{::hero}, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+>
+  <th:block th:fragment="hero">
+    <th:block
+      th:replace="~{modules/hero :: hero(isHome = false, cover = ${theme.config.layout.header_background_image}, title = |作者：${author.spec.displayName}|)}"
+    />
+  </th:block>
+  <th:block th:fragment="content">
+    <div
+      id="post-list"
+      th:if="${posts.total gt 0}"
+      th:with="postItems=${posts.items},list_layout=${theme.config.layout.post_list_layout}"
+      class="grid grid-cols-1 gap-6"
+      th:classappend="|${list_layout == 'grid_3' ? 'md:grid-cols-2 xl:grid-cols-3' : ''} ${list_layout == 'grid_2' ? 'md:grid-cols-2' : ''}|"
+    >
+      <th:block th:each="post : ${postItems}">
+        <th:block
+          th:replace="~{modules/post-card :: post-card(${post},true,true,true,${list_layout == 'single' ? 'column' : 'row'})}"
+        />
+      </th:block>
+    </div>
+
+    <div th:if="${posts.total == 0}" class="mt-6 flex items-center justify-center">
+      <span class="text-sm font-light text-gray-600 dark:text-slate-200">此分类下没有文章</span>
+    </div>
+
+    <div class="mt-6 flex items-center justify-between" th:if="${posts.hasPrevious() || posts.hasNext()}">
+      <a
+        th:href="@{${posts.prevUrl}}"
+        class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+      >
+        <span class="i-tabler-arrow-left text-lg transition-all group-hover:-translate-x-1"></span>
+        <span>上一页</span>
+      </a>
+      <span class="text-sm text-gray-900 dark:text-slate-50" th:text="|${posts.page} / ${posts.totalPages}|"></span>
+      <a
+        th:href="@{${posts.nextUrl}}"
+        class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+      >
+        <span>下一页</span>
+        <span class="i-tabler-arrow-right text-lg transition-all group-hover:translate-x-1"></span>
+      </a>
+    </div>
+  </th:block>
+</html>

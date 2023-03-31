@@ -1,0 +1,10 @@
+<aside th:fragment="sidebar (prepend)" class="col-span-1 hidden h-full flex-col gap-6 sm:flex">
+  <th:block th:with="widgets = ${theme.config.sidebar.widgets} ">
+    <th:block th:if="${prepend != null}">
+      <th:block th:replace="${prepend}" />
+    </th:block>
+    <th:block th:each="widget : ${widgets}">
+      <th:block th:replace="~{'modules/widgets/'+${widget.value}}" />
+    </th:block>
+  </th:block>
+</aside>

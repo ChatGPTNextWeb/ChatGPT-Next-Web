@@ -1,0 +1,49 @@
+<section th:fragment="hero(isHome, cover, title)">
+  <div
+    th:if="${theme.config.layout.header_widget != 'none'} and ${isHome}"
+    class="bg-cover bg-center bg-no-repeat"
+    th:styleappend="${theme.config.layout.header_background_type == 'image' ? 'background-image: url(' + theme.config.layout.header_background_image + ');' : 'background: ' + theme.config.layout.header_background + ';'}"
+    th:classappend="${theme.config.layout.header_widget == 'site_title' ? 'h-96' : ''}"
+  >
+    <th:block th:switch="${theme.config.layout.header_widget}">
+      <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
+        <div class="container mx-auto py-6" th:if="${posts.total gt 0}">
+          <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
+        </div>
+      </th:block>
+      <th:block th:case="latest_post_grid" th:with="posts = ${postFinder.list(1,5)}">
+        <div class="container mx-auto grid grid-cols-1 gap-3 py-6 sm:grid-cols-5" th:if="${posts.total gt 0}">
+          <div class="col-span-1 sm:col-span-3">
+            <th:block
+              th:replace="~{modules/post-card :: post-card(post=${posts.items[0]},cover=true,animation=false,border=false,direction='row')}"
+            />
+          </div>
+          <div class="col-span-1 grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2">
+            <th:block th:each="post,postStat : ${posts.items}">
+              <th:block th:if="${postStat.index != 0}">
+                <th:block
+                  th:replace="~{modules/post-card :: post-card(post=${post},cover=false,animation=false,border=false,direction='row')}"
+                />
+              </th:block>
+            </th:block>
+          </div>
+        </div>
+      </th:block>
+      <th:block th:case="site_title">
+        <div class="container mx-auto flex h-full flex-col items-center justify-center gap-3 py-6">
+          <span class="text-5xl text-white" th:text="${site.title}"></span>
+          <span class="text-sm font-light text-white opacity-50" th:text="${site.subtitle}"></span>
+        </div>
+      </th:block>
+    </th:block>
+  </div>
+  <div
+    th:if="${theme.config.layout.content_header} and ${not #strings.isEmpty(cover)}"
+    class="h-96 bg-cover bg-center bg-no-repeat"
+    th:style="'background-image: url('+${cover}+')'"
+  >
+    <div class="container mx-auto flex h-full flex-col items-center justify-center gap-3 py-6">
+      <span class="text-5xl text-white" th:text="${title}"></span>
+    </div>
+  </div>
+</section>

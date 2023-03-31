@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${error.status} + ' | ' + ${#strings.defaultString(error.title, 'Internal server error')} + ' - ' +${site.title}, hero = null, header = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+>
+  <th:block th:fragment="content">
+    <section class="flex items-center dark:bg-gray-900 dark:text-gray-100">
+      <div class="container mx-auto my-8 flex flex-col items-center justify-center px-5">
+        <div class="max-w-md text-center">
+          <h2 class="mb-8 text-9xl font-extrabold dark:text-gray-600" th:text="${error.status}"></h2>
+          <p
+            class="mb-8 text-2xl font-semibold md:text-3xl"
+            th:text="${#strings.defaultString(error.title, 'Internal server error')}"
+          ></p>
+          <p th:if="${not #strings.isEmpty(error.detail)}" class="mb-8 text-gray-500" th:text="${error.detail}"></p>
+          <a
+            th:href="@{${site.url}}"
+            class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+          >
+            <span class="i-tabler-arrow-left text-lg transition-all group-hover:-translate-x-1"></span>
+            <span>返回首页</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </th:block>
+</html>

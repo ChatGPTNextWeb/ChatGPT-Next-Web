@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = '链接 - ' + ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = ~{::sidebar}, contentClass = '')}"
+>
+  <th:block th:fragment="content">
+    <div class="rounded-xl bg-white p-4 dark:bg-slate-800">
+      <h1 class="mb-3 text-2xl font-medium dark:text-slate-50">链接</h1>
+      <div class="flex flex-col gap-4">
+        <th:block th:each="group : ${groups}">
+          <h2 class="mt-2 text-lg font-medium dark:text-slate-50" th:text="${group.spec.displayName}"></h2>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <a th:each="link : ${group.links}" th:href="${link.spec.url}" target="_blank">
+              <div
+                class="relative flex items-center space-x-3 rounded border border-gray-300 bg-white px-5 py-4 shadow-sm hover:border-gray-400 hover:shadow dark:border-slate-600 dark:bg-slate-700 dark:hover:border-slate-700"
+              >
+                <div class="flex-shrink-0">
+                  <img class="h-12 w-12 rounded-full" th:src="${link.spec.logo}" th:alt="${link.spec.displayName}" />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div>
+                    <p
+                      class="truncate text-sm font-medium text-gray-900 dark:text-slate-100"
+                      th:text="${link.spec.displayName}"
+                    ></p>
+                    <p
+                      class="truncate text-sm text-gray-500 dark:text-slate-400"
+                      th:text="${link.spec.description}"
+                    ></p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </th:block>
+</html>

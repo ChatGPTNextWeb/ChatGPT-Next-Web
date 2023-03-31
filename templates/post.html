@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${post.spec.title} + ' - ' + ${site.title}, hero = ~{::hero}, content = ~{::content}, head = null, footer = ~{::footer}, sidebar = ~{::sidebar}, contentClass = ${theme.config.layout.content_header} and ${not #strings.isEmpty(post.spec.cover)} ? '!-mt-20' : '')}"
+>
+  <th:block th:fragment="hero">
+    <th:block
+      th:replace="~{modules/hero :: hero(isHome = false, cover = ${post.spec.cover}, title = ${post.spec.title})}"
+    />
+  </th:block>
+  <th:block th:fragment="footer">
+    <script>
+      main.generateToc();
+    </script>
+  </th:block>
+  <th:block th:fragment="sidebar_prepend">
+    <div
+      class="w-full cursor-pointer overflow-hidden rounded-xl bg-white p-3 shadow transition-all duration-500 hover:shadow-md dark:bg-slate-800"
+    >
+      <h2 class="inline-flex items-center gap-2 text-base dark:text-slate-50">
+        <span class="i-tabler-list text-lg"></span>
+        目录
+      </h2>
+      <div class="toc mt-2"></div>
+    </div>
+  </th:block>
+  <th:block th:fragment="sidebar">
+    <th:block th:replace="~{modules/sidebar :: sidebar(prepend = ~{::sidebar_prepend})}"></th:block>
+  </th:block>
+  <th:block th:fragment="content">
+    <div x-data="postUpvote" class="rounded-xl bg-white p-4 dark:bg-slate-800">
+      <div th:attr="x-data=|{name:'${post.metadata.name}'}|" class="flex items-center justify-between">
+        <div class="inline-flex items-center justify-start gap-2">
+          <a th:href="@{${post.owner.permalink}}" th:title="${post.owner.displayName}">
+            <img
+              th:if="${not #strings.isEmpty(post.owner.avatar)}"
+              th:src="${post.owner.avatar}"
+              class="h-10 w-10 rounded-full"
+              th:alt="${post.owner.displayName}"
+            />
+          </a>
+          <div class="flex flex-col gap-0.5">
+            <a
+              th:href="@{${post.owner.permalink}}"
+              th:title="${post.owner.displayName}"
+              class="text-sm font-semibold text-gray-900 hover:text-gray-600 dark:text-slate-100 dark:hover:text-slate-200"
+              th:text="${post.owner.displayName}"
+            ></a>
+            <div class="flex items-center gap-2 text-xs font-light text-gray-600 dark:text-slate-100">
+              <span th:text="|发布于 ${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}|"></span>
+              <span class="text-gray-300 dark:text-slate-200">/</span>
+              <span th:text="|${post.stats?.visit ?:0} 阅读|"></span>
+              <span class="text-gray-300 dark:text-slate-200">/</span>
+              <span th:text="|${post.stats?.comment ?:0} 评论|"> </span>
+              <span class="text-gray-300 dark:text-slate-200">/</span>
+              <span th:attr="data-upvote-post-name=${post.metadata.name}" th:text="|${post.stats?.upvote ?:0} 点赞|">
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="inline-flex flex-row gap-1">
+          <div
+            @click="handleUpvote(name)"
+            class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600"
+            :class="{'bg-gray-100 dark:bg-slate-600':upvoted(name)}"
+          >
+            <div
+              class="i-tabler-heart text-lg text-gray-600 hover:text-red-600"
+              :class="{'text-red-600 dark:text-red-400':upvoted(name)}"
+            ></div>
+          </div>
+          <a
+            th:if="${pluginFinder.available('PluginCommentWidget')} and ${post.spec.allowComment} and ${site.comment.enable}"
+            href="#comment"
+            class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600"
+          >
+            <div
+              class="i-tabler-message-circle text-lg text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-50"
+            ></div>
+          </a>
+          <div th:if="${false}" class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600">
+            <div
+              class="i-tabler-share text-lg text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-50"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <h1 class="my-3 text-2xl font-medium dark:text-slate-50" th:text="${post.spec.title}"></h1>
+      <div class="flex gap-2">
+        <a
+          th:each="tag : ${post.tags}"
+          th:href="@{${tag.status.permalink}}"
+          th:title="${tag.spec.displayName}"
+          th:text="|#${tag.spec.displayName}|"
+          class="cursor-pointer text-sm italic text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-500"
+        >
+        </a>
+      </div>
+      <article
+        id="content"
+        class="prose prose-base mt-4 !max-w-none prose-pre:p-0 dark:prose-invert"
+        th:utext="${post.content.content}"
+      ></article>
+      <div
+        class="mt-10 flex flex-col sm:flex-row sm:justify-between"
+        th:with="postCursor = ${postFinder.cursor(post.metadata.name)}"
+      >
+        <div class="flex justify-start">
+          <a
+            th:if="${postCursor.hasPrevious()}"
+            role="navigation"
+            class="group inline-flex items-center gap-2 truncate text-sm text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-200"
+            th:href="@{${postCursor.previous.status.permalink}}"
+            th:title="${postCursor.previous.spec.title}"
+          >
+            <span class="i-tabler-chevron-left translate-x-1 text-lg transition-all group-hover:-translate-x-0"></span>
+            <span th:text="${#strings.abbreviate(postCursor.previous.spec.title,20)}"></span>
+          </a>
+        </div>
+        <div class="flex justify-end">
+          <a
+            th:if="${postCursor.hasNext()}"
+            role="navigation"
+            class="group inline-flex items-center gap-2 truncate text-sm text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-200"
+            th:href="@{${postCursor.next.status.permalink}}"
+            th:title="${postCursor.next.spec.title}"
+          >
+            <span th:text="${#strings.abbreviate(postCursor.next.spec.title,20)}"></span>
+            <span class="i-tabler-chevron-right -translate-x-1 text-lg transition-all group-hover:translate-x-0"></span>
+          </a>
+        </div>
+      </div>
+      <hr class="my-10 dark:border-slate-700" />
+      <!-- https://github.com/halo-sigs/plugin-comment-widget -->
+      <div
+        th:if="${pluginFinder.available('PluginCommentWidget')} and ${post.spec.allowComment} and ${site.comment.enable}"
+      >
+        <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50">评论</h2>
+        <halo:comment
+          group="content.halo.run"
+          kind="Post"
+          th:attr="name=${post.metadata.name}"
+          colorScheme="window.main.currentColorScheme"
+        />
+      </div>
+    </div>
+
+    <a
+      sec:authorize="isAuthenticated()"
+      th:href="'/console#/posts/editor?name='+${post.metadata.name}+'&returnToView=true'"
+      id="edit-button"
+      class="fixed bottom-10 right-10 flex h-14 w-14 items-center justify-center rounded-full bg-[#4CCBA0] text-white shadow transition-all duration-300 hover:opacity-80 hover:shadow-lg"
+    >
+      <div class="i-tabler-edit !h-7 !w-7"></div>
+    </a>
+  </th:block>
+</html>

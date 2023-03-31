@@ -1,0 +1,49 @@
+<ul id="filters" class="flex flex-wrap gap-2">
+  <li>
+    <a
+      href="/"
+      class="inline-flex cursor-pointer items-center rounded px-2 py-1 font-medium text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-slate-50"
+      th:classappend="${category == null} ? '!text-gray-900 !bg-gray-100 dark:!bg-slate-700 dark:!text-slate-50'"
+    >
+      <span class="truncate text-base"> 全部 </span>
+    </a>
+  </li>
+  <th:block th:with="categories = ${categoryFinder.listAsTree()}">
+    <li
+      x-data="dropdown"
+      @mouseenter="open()"
+      @mouseleave="close()"
+      class="relative cursor-pointer transition-all"
+      th:each="categoryItem : ${categories}"
+    >
+      <a
+        th:href="@{${categoryItem.status.permalink}}"
+        class="inline-flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-slate-50"
+        th:classappend="${category} and ${category.metadata.name == categoryItem.metadata.name} ? '!text-gray-900 !bg-gray-100 dark:!bg-slate-700 dark:!text-slate-50'"
+      >
+        <span class="truncate text-base" th:text="${categoryItem.spec.displayName}"> </span>
+        <span
+          th:if="${not #lists.isEmpty(categoryItem.children)}"
+          class="i-tabler-chevron-right text-lg transition-all duration-300"
+          x-bind:class="show ? 'rotate-90' : ''"
+        ></span>
+      </a>
+
+      <ul
+        th:if="${not #lists.isEmpty(categoryItem.children)}"
+        @mouseenter="open()"
+        @mouseleave="close()"
+        x-show="show"
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        class="absolute left-0 z-10 mt-2 w-60 overflow-hidden rounded bg-white p-2 shadow dark:bg-slate-800"
+      >
+        <li th:replace="~{modules/category-tree :: single(categories=${categoryItem.children})}" />
+      </ul>
+    </li>
+  </th:block>
+</ul>
