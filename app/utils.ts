@@ -45,6 +45,10 @@ export function isIOS() {
   return /iphone|ipad|ipod/.test(userAgent);
 }
 
+export function isMobileScreen() {
+  return window.innerWidth <= 600;
+}
+
 export function selectOrCopy(el: HTMLElement, content: string) {
   const currentSelection = window.getSelection();
 
@@ -72,7 +76,7 @@ export function queryMeta(key: string, defaultValue?: string): string {
 }
 
 let currentId: string;
-export function getCurrentCommitId() {
+export function getCurrentVersion() {
   if (currentId) {
     return currentId;
   }

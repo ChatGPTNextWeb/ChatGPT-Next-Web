@@ -1,0 +1,16 @@
+# .github/workflows/sync.yml
+name: Sync Fork
+
+on:
+    schedule:
+        - cron: "0 8 * * *" # 每天0点触发
+jobs:
+    repo-sync:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: TG908/fork-sync@v1.1
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }} # 这个 token action 会默认配置, 这里只需这样写就行
+                  owner: Yidadaa # fork 上游项目 owner
+                  head: main # fork 上游项目需要同步的分支
+                  base: main # 需要同步到本项目的目标分支

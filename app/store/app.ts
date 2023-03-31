@@ -89,7 +89,9 @@ export function isValidNumber(x: number, min: number, max: number) {
   return typeof x === "number" && x <= max && x >= min;
 }
 
-export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
+export function filterConfig(oldConfig: ModelConfig): Partial<ModelConfig> {
+  const config = Object.assign({}, oldConfig);
+
   const validator: {
     [k in keyof ModelConfig]: (x: ModelConfig[keyof ModelConfig]) => boolean;
   } = {
@@ -103,7 +105,7 @@ export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
       return isValidNumber(x as number, -2, 2);
     },
     temperature(x) {
-      return isValidNumber(x as number, 0, 1);
+      return isValidNumber(x as number, 0, 2);
     },
   };
 
