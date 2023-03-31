@@ -28,7 +28,7 @@ jobs:
           images: yidadaa/chatgpt-next-web
           tags: |
             type=raw,value=latest
-            type=semver,pattern={{version}}
+            type=ref,event=tag
       
       - 
         name: Set up QEMU
