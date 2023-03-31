@@ -218,7 +218,6 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
-  margin-bottom: 100px;
 }
 
 .chat-body-title {
@@ -342,9 +341,6 @@
 }
 
 .chat-input-panel {
-  position: absolute;
-  bottom: 0px;
-  display: flex;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
