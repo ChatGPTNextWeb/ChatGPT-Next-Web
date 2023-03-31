@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  chatgpt-next-web:
+    container_name: chatgpt-next-web
+    image: yidadaa/chatgpt-next-web:latest
+    ports:
+      - 3000:3000
+    environment:
+      - OPENAI_API_KEY=[YOUR_API_KEY_HERE]
+      - CODE=[YOUR_CODE_HERE]
+    restart: always
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    environment:
+      - TZ=Asia/Shanghai
+    command: --schedule "0 */6 * * *" --cleanup # Detect and clean up old containers every 6 hours.
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
