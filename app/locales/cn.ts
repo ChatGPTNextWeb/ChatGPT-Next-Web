@@ -76,6 +76,7 @@ const cn = {
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "紧凑边框",
+    SendPreviewBubble: "发送预览气泡",
     Prompt: {
       Disable: {
         Title: "禁用提示词自动补全",

@@ -292,6 +292,8 @@ export function Chat(props: {
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
+  const config = useChatStore((state) => state.config);
+
   // preview messages
   const messages = (session.messages as RenderMessage[])
     .concat(
@@ -305,19 +307,18 @@ export function Chat(props: {
             },
           ]
         : [],
-    )
-    .concat(
-      userInput.length > 0
-        ? [
-            {
-              role: "user",
-              content: userInput,
-              date: new Date().toLocaleString(),
-              preview: true,
-            },
-          ]
-        : [],
-    );
+    ).concat(
+        userInput.length > 0 && config.sendPreviewBubble
+          ? [
+              {
+                role: "user",
+                content: userInput,
+                date: new Date().toLocaleString(),
+                preview: false,
+              },
+            ]
+          : [],
+    ); 
 
   // auto scroll
   useLayoutEffect(() => {
