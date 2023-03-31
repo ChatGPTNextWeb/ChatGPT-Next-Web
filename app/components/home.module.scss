@@ -422,6 +422,11 @@
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
+    height: 25px;
+
+    &:focus {
+      height: auto;
+    }
   }
 }
 
