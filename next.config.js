@@ -21,11 +21,10 @@ const nextConfig = {
       {
         source: '/',
         destination: `https://${process.env.DOMAIN}/`,
-        has: [
+        missing: [
           {
             type: 'host',
-            value: process.env.DOMAIN,
-            not: true
+            value: process.env.DOMAIN
           },
         ],
         permanent: true,
