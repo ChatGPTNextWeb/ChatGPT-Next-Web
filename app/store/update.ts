@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FETCH_COMMIT_URL } from "../constant";
-import { getCurrentCommitId } from "../utils";
+import { FETCH_COMMIT_URL, FETCH_TAG_URL } from "../constant";
+import { getCurrentVersion } from "../utils";
 
 export interface UpdateStore {
   lastUpdate: number;
@@ -19,16 +19,17 @@ export const useUpdateStore = create<UpdateStore>()(
       remoteId: "",
 
       async getLatestCommitId(force = false) {
-        const overOneHour = Date.now() - get().lastUpdate > 3600 * 1000;
-        const shouldFetch = force || overOneHour;
+        const overTenMins = Date.now() - get().lastUpdate > 10 * 60 * 1000;
+        const shouldFetch = force || overTenMins;
         if (!shouldFetch) {
-          return getCurrentCommitId();
+          return getCurrentVersion();
         }
 
         try {
+          // const data = await (await fetch(FETCH_TAG_URL)).json();
+          // const remoteId = data[0].name as string;
           const data = await (await fetch(FETCH_COMMIT_URL)).json();
-          const sha = data[0].sha as string;
-          const remoteId = sha.substring(0, 7);
+          const remoteId = (data[0].sha as string).substring(0, 7);
           set(() => ({
             lastUpdate: Date.now(),
             remoteId,
@@ -37,13 +38,13 @@ export const useUpdateStore = create<UpdateStore>()(
           return remoteId;
         } catch (error) {
           console.error("[Fetch Upstream Commit Id]", error);
-          return getCurrentCommitId();
+          return getCurrentVersion();
         }
       },
     }),
     {
       name: UPDATE_KEY,
       version: 1,
-    }
-  )
+    },
+  ),
 );
