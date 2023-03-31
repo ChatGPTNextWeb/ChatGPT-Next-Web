@@ -54,11 +54,12 @@ const en: LocaleType = {
       Close: "Close",
     },
     Lang: {
-      Name: "语言",
+      Name: "Language",
       Options: {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
+        es: "Español",
       },
     },
     Avatar: "Avatar",
