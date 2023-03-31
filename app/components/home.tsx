@@ -655,7 +655,7 @@ export function Home() {
           : styles.container
       }`}
     >
-      {isWorkWechat() ? (
+      {!isWorkWechat() ? (
         <h2 className="not-wx-work">请在企业微信里使用Gpt~</h2>
       ) : typeof isAllow === "boolean" && !isAllow ? (
         <h2 className="not-allow">
