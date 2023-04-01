@@ -15,6 +15,7 @@ export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
   isEditing: boolean;
+  editingText: string;
 };
 
 export enum SubmitKey {
@@ -193,7 +194,7 @@ interface ChatStore {
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserEdit: (message: Message) => void;
-  onConfirmEdit: (index: number, content: string) => void;
+  onConfirmEdit: (index: number) => void;
   onCancelEdit: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
   summarizeSession: () => void;
@@ -304,16 +305,20 @@ export const useChatStore = create<ChatStore>()(
 
       onUserEdit(message) {
         message.isEditing = true;
+        message.editingText = message.content;
         set(() => ({}))
       },
 
-      onConfirmEdit(index, content) {
+      onConfirmEdit(index) {
         const session = get().currentSession();
-        session.messages = session.messages.slice(0, index)
-        get().onUserInput(content)
+        const content = session.messages[index].editingText;
+        session.messages = session.messages.slice(0, index);
+        get().onUserInput(content);
       },
+
       onCancelEdit(message) {
         message.isEditing = false;
+        message.editingText = "";
         set(() => ({}))
       },
       async onUserInput(content) {
@@ -321,7 +326,8 @@ export const useChatStore = create<ChatStore>()(
           role: "user",
           content,
           date: new Date().toLocaleString(),
-          isEditing: false
+          isEditing: false,
+          editingText: ""
         };
 
         const botMessage: Message = {
@@ -329,7 +335,8 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           date: new Date().toLocaleString(),
           streaming: true,
-          isEditing: false
+          isEditing: false,
+          editingText: ""
         };
 
         // get recent messages
@@ -465,7 +472,8 @@ export const useChatStore = create<ChatStore>()(
               role: "system",
               content: Locale.Store.Prompt.Summarize,
               date: "",
-              isEditing: false
+              isEditing: false,
+              editingText: ""
             }),
             {
               filterBot: false,

@@ -191,12 +191,6 @@ export function Chat(props: {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messageInputRefs = useRef<HTMLDivElement[]>([]);
-  // avoid rendered more hooks error
-  const setMessageInputRef = (element: HTMLDivElement | null, index: number) => {
-    if (element) {
-      messageInputRefs.current[index] = element; 
-    }
-  };
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -295,12 +289,12 @@ export function Chat(props: {
     }
   };
 
-  const confirmEdit = (index: number, content: string) => {
-    chatStore.onConfirmEdit(index, content);
+  const confirmEdit = (index: number) => {
+    chatStore.onConfirmEdit(index);
   }
 
-  const cancelEdit = (index: Message) => { 
-    chatStore.onCancelEdit(index);
+  const cancelEdit = (message: Message) => { 
+    chatStore.onCancelEdit(message);
   }
   
   const onEdit = (message: Message) => {
@@ -321,7 +315,8 @@ export function Chat(props: {
               content: "……",
               date: new Date().toLocaleString(),
               preview: true,
-              isEditing: false
+              isEditing: false,
+              editingText: "",
             },
           ]
         : [],
@@ -334,7 +329,8 @@ export function Chat(props: {
               content: userInput,
               date: new Date().toLocaleString(),
               preview: true,
-              isEditing: false
+              isEditing: false,
+              editingText: "",
             },
           ]
         : [],
@@ -478,7 +474,9 @@ export function Chat(props: {
                       {message.isEditing ? (
                         <div 
                           key={i}
-                          ref={(element) => setMessageInputRef(element, i)}
+                          onInput={(e) => {
+                            message.editingText = e.currentTarget.textContent ?? ""
+                          }}
                           contentEditable={true} 
                           suppressContentEditableWarning={true}
                           style={{ outline: "0px solid transparent"}}
@@ -512,7 +510,7 @@ export function Chat(props: {
                 <div style={{display: "flex"}}>
                   <div
                     className={styles["chat-message-action-edit"]}
-                    onClick={() => confirmEdit(i, messageInputRefs.current[i].innerText)}>
+                    onClick={() => confirmEdit(i)}>
                     {Locale.Chat.Actions.Confirm}
                   </div>
 
