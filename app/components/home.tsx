@@ -453,7 +453,10 @@ export function Chat(props: {
                       className="markdown-body"
                       style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => setUserInput(message.content)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen()) return;
+                        setUserInput(message.content);
+                      }}
                     >
                       <Markdown content={message.content} />
                     </div>
