@@ -86,7 +86,7 @@ const cn = {
       List: "自定义提示词列表",
       ListCount: (builtin: number, custom: number) =>
         `内置 ${builtin} 条，用户定义 ${custom} 条`,
-      Edit: "编辑",
+      Edit: "编辑"
     },
     HistoryCount: {
       Title: "附带历史消息数",

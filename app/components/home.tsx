@@ -467,16 +467,6 @@ export function Chat(props: {
                         </div>
                       </div>
                     )}
-                  {isUser && !message.preview && !message.isEditing && (
-                      <div className={styles["chat-message-top-left-actions"]}>
-                        <div
-                          className={styles["chat-message-top-left-action"]}
-                          onClick={() => onEdit(message)}>,
-                          {Locale.Chat.Actions.Edit}
-                        </div>
-                      </div>
-                    )
-                  }
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />
@@ -503,6 +493,16 @@ export function Chat(props: {
                     </div>
                   )}
                 </div>
+                {isUser && !message.preview && !message.isEditing && (
+                      <div className={styles["chat-message-bottom-actions"]}>
+                        <div
+                          className={styles["chat-message-bottom-action"]}
+                          onClick={() => onEdit(message)}>
+                          {Locale.Chat.Actions.Edit}
+                        </div>
+                      </div>
+                    )
+                }
                 {!isUser && !message.preview && (
                   <div className={styles["chat-message-actions"]}>
                     <div className={styles["chat-message-action-date"]}>
