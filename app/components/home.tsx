@@ -288,18 +288,6 @@ export function Chat(props: {
     }
   };
 
-  const confirmEdit = (index: number) => {
-    chatStore.onConfirmEdit(index);
-  }
-
-  const cancelEdit = (message: Message) => { 
-    chatStore.onCancelEdit(message);
-  }
-  
-  const onEdit = (message: Message) => {
-    chatStore.onUserEdit(message);
-  }
-
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -490,7 +478,7 @@ export function Chat(props: {
                       <div className={styles["chat-message-bottom-actions"]}>
                         <div
                           className={styles["chat-message-bottom-action"]}
-                          onClick={() => onEdit(message)}>
+                          onClick={() => chatStore.onUserEdit(message)}>
                           {Locale.Chat.Actions.Edit}
                         </div>
                       </div>
@@ -507,13 +495,13 @@ export function Chat(props: {
                 <div style={{display: "flex"}}>
                   <div
                     className={styles["chat-message-action-edit"]}
-                    onClick={() => confirmEdit(i)}>
+                    onClick={() => chatStore.onConfirmEdit(i)}>
                     {Locale.Chat.Actions.Confirm}
                   </div>
 
                   <div
                     className={styles["chat-message-action-edit"]}
-                    onClick={() => cancelEdit(message)}>
+                    onClick={() => chatStore.onCancelEdit(message)}>
                     {Locale.Chat.Actions.Cancel}
                   </div>
                 </div>
