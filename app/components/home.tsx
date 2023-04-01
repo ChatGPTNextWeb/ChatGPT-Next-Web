@@ -367,12 +367,12 @@ export function Chat(props: {
       ),
       actions: [
         <IconButton
-          key="exportPng"
+          key="exportJpeg"
           icon={<ExportImage />}
           bordered
           text={Locale.Chat.Actions.ExportImage}
           onClick={() => {
-            dataUrl.current && exportPng(topic, dataUrl.current);
+            dataUrl.current && exportJpeg(topic, dataUrl.current);
           }}
         />,
       ],
@@ -632,11 +632,13 @@ function showMemoryPrompt(session: ChatSession) {
   });
 }
 
-function exportPng(topic: string, dataURL: string) {
-  const a = document.createElement("a");
-  a.href = dataURL;
-  a.download = `${topic}-${new Date().toLocaleString()}.jpg`;
-  a.click();
+function exportJpeg(topic: string, dataURL: string) {
+  const link = document.createElement("a");
+  link.href = dataURL;
+  link.download = `${topic}-${new Date().toLocaleString()}.jpg`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 const useHasHydrated = () => {
