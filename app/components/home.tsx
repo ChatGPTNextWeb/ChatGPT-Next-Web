@@ -190,7 +190,6 @@ export function Chat(props: {
   const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const messageInputRefs = useRef<HTMLDivElement[]>([]);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -315,7 +314,6 @@ export function Chat(props: {
               content: "……",
               date: new Date().toLocaleString(),
               preview: true,
-              isEditing: false,
               editingText: "",
             },
           ]
@@ -329,7 +327,6 @@ export function Chat(props: {
               content: userInput,
               date: new Date().toLocaleString(),
               preview: true,
-              isEditing: false,
               editingText: "",
             },
           ]
@@ -471,7 +468,7 @@ export function Chat(props: {
                       onContextMenu={(e) => onRightClick(e, message)}
                       onDoubleClickCapture={() => setUserInput(message.content)}
                     >
-                      {message.isEditing ? (
+                      {message.editingText ? (
                         <div 
                           key={i}
                           onInput={(e) => {
@@ -489,7 +486,7 @@ export function Chat(props: {
                     </div>
                   )}
                 </div>
-                {isUser && !message.preview && !message.isEditing && (
+                {isUser && !message.preview && !message.editingText && (
                       <div className={styles["chat-message-bottom-actions"]}>
                         <div
                           className={styles["chat-message-bottom-action"]}
@@ -506,7 +503,7 @@ export function Chat(props: {
                     </div>
                   </div>
                 )}
-                {isUser && message.isEditing && (
+                {isUser && message.editingText && (
                 <div style={{display: "flex"}}>
                   <div
                     className={styles["chat-message-action-edit"]}

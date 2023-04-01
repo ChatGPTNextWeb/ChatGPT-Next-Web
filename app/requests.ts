@@ -174,7 +174,7 @@ export async function requestWithPrompt(messages: Message[], prompt: string) {
       role: "user",
       content: prompt,
       date: new Date().toLocaleString(),
-      isEditing: false
+      editingText: ""
     },
   ]);
 

@@ -14,7 +14,6 @@ import Locale from "../locales";
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
-  isEditing: boolean;
   editingText: string;
 };
 
@@ -171,7 +170,7 @@ function createEmptySession(): ChatSession {
         role: "assistant",
         content: Locale.Store.BotHello,
         date: createDate,
-        isEditing: false
+        editingText: ""
       },
     ],
     stat: {
@@ -304,7 +303,6 @@ export const useChatStore = create<ChatStore>()(
       },
 
       onUserEdit(message) {
-        message.isEditing = true;
         message.editingText = message.content;
         set(() => ({}))
       },
@@ -317,7 +315,6 @@ export const useChatStore = create<ChatStore>()(
       },
 
       onCancelEdit(message) {
-        message.isEditing = false;
         message.editingText = "";
         set(() => ({}))
       },
@@ -326,7 +323,6 @@ export const useChatStore = create<ChatStore>()(
           role: "user",
           content,
           date: new Date().toLocaleString(),
-          isEditing: false,
           editingText: ""
         };
 
@@ -335,7 +331,6 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           date: new Date().toLocaleString(),
           streaming: true,
-          isEditing: false,
           editingText: ""
         };
 
@@ -472,7 +467,6 @@ export const useChatStore = create<ChatStore>()(
               role: "system",
               content: Locale.Store.Prompt.Summarize,
               date: "",
-              isEditing: false,
               editingText: ""
             }),
             {
