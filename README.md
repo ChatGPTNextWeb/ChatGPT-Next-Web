@@ -7,7 +7,7 @@
 
 One-Click to deploy your own ChatGPT web UI.
 
-[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
+[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Donate](#捐赠-donate-usdt)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -36,7 +36,17 @@ One-Click to deploy your own ChatGPT web UI.
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
 
-## 使用
+## 开发计划 Roadmap
+- System Prompt: pin a user defined prompt as system prompt 为每个对话设置系统 Prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
+- User Prompt: user can edit and save custom prompts to prompt list 允许用户自行编辑内置 Prompt 列表
+- Self-host Model: support llama, alpaca, ChatGLM, BELLE etc. 支持自部署的大语言模型
+- Plugins: support network search, caculator, any other apis etc. 插件机制，支持联网搜索、计算器、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
+
+### 不会开发的功能 Not in Plan
+- User login, accounts, cloud sync 用户登陆、账号管理、消息云同步
+- UI text customize 界面文字自定义
+
+## 开始使用
 
 1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys);
 2. 点击右侧按钮开始部署：
@@ -169,15 +179,12 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 ![更多展示 More](./static/more.png)
 
-## 说明 Attention
 
-本项目的演示地址所用的 OpenAI 账户的免费额度将于 2023-04-01 过期，届时将无法通过演示地址在线体验。
-
-如果你想贡献出自己的 API Key，可以通过作者主页的邮箱发送给作者，并标注过期时间。
-
-The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time.
-
-If you would like to contribute your API key, you can email it to the author and indicate the expiration date of the API key.
+## 捐赠 Donate USDT
+> BNB Smart Chain (BEP 20)
+```
+0x67cD02c7EB62641De576a1fA3EdB32eA0c3ffD89
+```
 
 ## 鸣谢 Special Thanks
 
@@ -194,4 +201,4 @@ If you would like to contribute your API key, you can email it to the author and
 
 ## LICENSE
 
-- [Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)
+[Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)

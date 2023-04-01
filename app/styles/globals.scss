@@ -53,14 +53,19 @@
   --sidebar-width: 380px;
   --sidebar-collapse-width: 8vh;
   --window-content-width: calc(100% - var(--sidebar-width));
+<<<<<<< HEAD
   --window-content-width-collapse: calc(100% - var(--sidebar-collapse-width));
   --message-max-width: 90%;
+=======
+  --message-max-width: 80%;
+  --full-height: 100%;
+>>>>>>> upstream/main
 }
 
 @media only screen and (max-width: 600px) {
   :root {
     --window-width: 100vw;
-    --window-height: 100vh;
+    --window-height: var(--full-height);
     --sidebar-width: 100vw;
     --window-content-width: var(--window-width);
     --message-max-width: 100%;
@@ -76,13 +81,16 @@
     @include dark;
   }
 }
+html {
+  height: var(--full-height);
+}
 
 body {
   background-color: var(--gray);
   color: var(--black);
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: var(--full-height);
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -121,6 +129,11 @@ select {
   cursor: pointer;
   background-color: var(--white);
   color: var(--black);
+  text-align: center;
+}
+
+input {
+  text-align: center;
 }
 
 input[type="checkbox"] {
@@ -198,7 +211,7 @@ div.math {
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: var(--full-height);
   width: 100vw;
   background-color: rgba($color: #000000, $alpha: 0.5);
   display: flex;

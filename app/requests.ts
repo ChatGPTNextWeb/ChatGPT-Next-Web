@@ -69,10 +69,9 @@ export async function requestChat(messages: Message[]) {
 }
 
 export async function requestUsage() {
-  const res = await requestOpenaiClient("dashboard/billing/credit_grants")(
-    null,
-    "GET",
-  );
+  const res = await requestOpenaiClient(
+    "dashboard/billing/credit_grants?_vercel_no_cache=1",
+  )(null, "GET");
 
   try {
     const response = (await res.json()) as {

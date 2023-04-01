@@ -24,8 +24,14 @@ import LeftIcon from "../icons/left.svg";
 import RightIcon from "../icons/right.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
-import { showModal } from "./ui-lib";
-import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
+import { showModal, showToast } from "./ui-lib";
+import {
+  copyToClipboard,
+  downloadAs,
+  isIOS,
+  isMobileScreen,
+  selectOrCopy,
+} from "../utils";
 import Locale from "../locales";
 
 import dynamic from "next/dynamic";
@@ -274,6 +280,7 @@ export function Chat(props: {
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
+    setPromptHints([]);
     inputRef.current?.focus();
   };
 
@@ -318,9 +325,7 @@ export function Chat(props: {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
-
-  // wont scroll while hovering messages
-  const [autoScroll, setAutoScroll] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(true);
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -353,7 +358,17 @@ export function Chat(props: {
   useLayoutEffect(() => {
     setTimeout(() => {
       const dom = latestMessageRef.current;
-      if (dom && !isIOS() && autoScroll) {
+      const inputDom = inputRef.current;
+
+      // only scroll when input overlaped message body
+      let shouldScroll = true;
+      if (dom && inputDom) {
+        const domRect = dom.getBoundingClientRect();
+        const inputRect = inputDom.getBoundingClientRect();
+        shouldScroll = domRect.top > inputRect.top;
+      }
+
+      if (dom && autoScroll && shouldScroll) {
         dom.scrollIntoView({
           block: "end",
         });
@@ -473,6 +488,7 @@ export function Chat(props: {
                       className="markdown-body"
                       style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => setUserInput(message.content)}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -508,7 +524,7 @@ export function Chat(props: {
             onFocus={() => setAutoScroll(true)}
             onBlur={() => {
               setAutoScroll(false);
-              setTimeout(() => setPromptHints([]), 100);
+              setTimeout(() => setPromptHints([]), 500);
             }}
             autoFocus={!props?.sidebarShowing}
           />
@@ -641,7 +657,9 @@ export function Home() {
   return (
     <div
       className={`${
-        config.tightBorder ? styles["tight-container"] : styles.container
+        config.tightBorder && !isMobileScreen()
+          ? styles["tight-container"]
+          : styles.container
       }`}
     >
       <div
