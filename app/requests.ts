@@ -2,6 +2,10 @@ import type { ChatRequest, ChatReponse } from "./api/openai/typing";
 import { filterConfig, Message, ModelConfig, useAccessStore } from "./store";
 import Locale from "./locales";
 
+if (!Array.prototype.at) {
+  require('array.prototype.at/auto');
+}
+
 const TIME_OUT_MS = 30000;
 
 const makeRequestParam = (
