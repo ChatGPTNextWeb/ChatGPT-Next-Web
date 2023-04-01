@@ -66,6 +66,12 @@
   display: flex;
   flex-direction: column;
 }
+.window-content-collapse {
+  width: var(--window-content-width-collapse);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
 .mobile {
   display: none;

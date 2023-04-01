@@ -779,7 +779,13 @@ export function Home() {
         </div>
       </div>
 
-      <div className={styles["window-content"]}>
+      <div
+        className={
+          sidebarCollapse
+            ? styles["window-content-collapse"]
+            : styles["window-content-collapse"]
+        }
+      >
         {openSettings ? (
           <Settings
             closeSettings={() => {
