@@ -618,8 +618,8 @@ export function Home() {
     (state) => [
       state.newSession,
       state.currentSessionIndex,
-      state.removeSession
-    ],
+      state.removeSession,
+    ]
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
