@@ -20,6 +20,7 @@ import MenuIcon from "../icons/menu.svg";
 import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
+import ExportImage from "../icons/export-image.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal, showToast } from "./ui-lib";
@@ -36,6 +37,7 @@ import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
+import { toPng } from "html-to-image";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -341,6 +343,9 @@ export function Chat(props: {
     }, 500);
   });
 
+  //export image
+  const [exportImageLoading, setExportImageLoading] = useState(false);
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
@@ -394,10 +399,28 @@ export function Chat(props: {
               }}
             />
           </div>
+          <div className={styles["window-action-button"]}>
+            {exportImageLoading ? (
+              <IconButton
+                icon={<LoadingIcon />}
+                bordered
+                title={Locale.Chat.Actions.GeneratingImage}
+              />
+            ) : (
+              <IconButton
+                icon={<ExportImage />}
+                bordered
+                title={Locale.Chat.Actions.ExportImage}
+                onClick={() => {
+                  exportImage(session.topic, setExportImageLoading);
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div className={styles["chat-body"]} id="chat-body">
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -582,6 +605,30 @@ function showMemoryPrompt(session: ChatSession) {
       />,
     ],
   });
+}
+
+async function exportImage(
+  topic: string,
+  setExportImageLoading: (loading: boolean) => void,
+) {
+  setExportImageLoading(true);
+  const element = document.querySelector("#chat-body") as HTMLElement;
+  try {
+    const dataURL = await toPng(element, {
+      width: element.scrollWidth,
+      height: element.scrollHeight,
+    });
+    let link = document.createElement("a");
+    link.download = `${topic}-${new Date().toLocaleString()}.png`;
+    link.href = dataURL;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setExportImageLoading(false);
+  } catch (error) {
+    showToast(Locale.Export.Failed);
+    setExportImageLoading(false);
+  }
 }
 
 const useHasHydrated = () => {
