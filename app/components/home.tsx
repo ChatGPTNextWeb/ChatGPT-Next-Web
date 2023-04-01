@@ -37,7 +37,6 @@ import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
-import { toPng } from "html-to-image";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -59,6 +58,14 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
 const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,
 });
+
+const HtmlToImage = dynamic(
+  async () => (await import("./html-to-image")).HtmlToImage,
+  {
+    loading: () => <LoadingIcon />,
+    ssr: false,
+  },
+);
 
 export function Avatar(props: { role: Message["role"] }) {
   const config = useChatStore((state) => state.config);
@@ -343,8 +350,34 @@ export function Chat(props: {
     }, 500);
   });
 
-  //export image
-  const [exportImageLoading, setExportImageLoading] = useState(false);
+  // export image
+  const dataUrl = useRef("");
+
+  async function exportImage(topic: string) {
+    showModal({
+      title: Locale.Export.Image,
+      children: (
+        <div className={styles["image-body"]}>
+          <HtmlToImage
+            getDataUrl={(url) => {
+              dataUrl.current = url;
+            }}
+          />
+        </div>
+      ),
+      actions: [
+        <IconButton
+          key="exportPng"
+          icon={<ExportImage />}
+          bordered
+          text={Locale.Chat.Actions.ExportImage}
+          onClick={() => {
+            dataUrl.current && exportPng(topic, dataUrl.current);
+          }}
+        />,
+      ],
+    });
+  }
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -400,22 +433,14 @@ export function Chat(props: {
             />
           </div>
           <div className={styles["window-action-button"]}>
-            {exportImageLoading ? (
-              <IconButton
-                icon={<LoadingIcon />}
-                bordered
-                title={Locale.Chat.Actions.GeneratingImage}
-              />
-            ) : (
-              <IconButton
-                icon={<ExportImage />}
-                bordered
-                title={Locale.Chat.Actions.ExportImage}
-                onClick={() => {
-                  exportImage(session.topic, setExportImageLoading);
-                }}
-              />
-            )}
+            <IconButton
+              icon={<ExportImage />}
+              bordered
+              title={Locale.Chat.Actions.ExportImage}
+              onClick={() => {
+                exportImage(session.topic);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -607,28 +632,11 @@ function showMemoryPrompt(session: ChatSession) {
   });
 }
 
-async function exportImage(
-  topic: string,
-  setExportImageLoading: (loading: boolean) => void,
-) {
-  setExportImageLoading(true);
-  const element = document.querySelector("#chat-body") as HTMLElement;
-  try {
-    const dataURL = await toPng(element, {
-      width: element.scrollWidth,
-      height: element.scrollHeight,
-    });
-    let link = document.createElement("a");
-    link.download = `${topic}-${new Date().toLocaleString()}.png`;
-    link.href = dataURL;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setExportImageLoading(false);
-  } catch (error) {
-    showToast(Locale.Export.Failed);
-    setExportImageLoading(false);
-  }
+function exportPng(topic: string, dataURL: string) {
+  const a = document.createElement("a");
+  a.href = dataURL;
+  a.download = `${topic}-${new Date().toLocaleString()}.jpg`;
+  a.click();
 }
 
 const useHasHydrated = () => {
