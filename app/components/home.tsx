@@ -108,7 +108,7 @@ export function ChatList() {
       state.currentSessionIndex,
       state.selectSession,
       state.removeSession,
-    ]
+    ],
   );
 
   return (
@@ -202,7 +202,7 @@ export function Chat(props: {
       setPromptHints(promptStore.search(text));
     },
     100,
-    { leading: true, trailing: true }
+    { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -216,7 +216,7 @@ export function Chat(props: {
     if (!dom) return;
     const paddingBottomNum: number = parseInt(
       window.getComputedStyle(dom).paddingBottom,
-      10
+      10,
     );
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
   };
@@ -246,7 +246,7 @@ export function Chat(props: {
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
     setPromptHints([]);
-    inputRef.current?.focus();
+    if (!isMobileScreen()) inputRef.current?.focus();
   };
 
   // stop response
@@ -290,6 +290,7 @@ export function Chat(props: {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
+  const dialogBoxRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
   // preview messages
@@ -304,7 +305,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     )
     .concat(
       userInput.length > 0
@@ -316,7 +317,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : []
+        : [],
     );
 
   // auto scroll
@@ -324,6 +325,7 @@ export function Chat(props: {
     setTimeout(() => {
       const dom = latestMessageRef.current;
       const inputDom = inputRef.current;
+      const dialogBox = dialogBoxRef.current!;
 
       // only scroll when input overlaped message body
       let shouldScroll = true;
@@ -334,8 +336,9 @@ export function Chat(props: {
       }
 
       if (dom && autoScroll && shouldScroll) {
-        dom.scrollIntoView({
-          block: "end",
+        console.log(dialogBox.scrollHeight, dialogBox.clientHeight);
+        dialogBox.scrollTo({
+          top: dialogBox.scrollHeight - dialogBox.clientHeight,
         });
       }
     }, 500);
@@ -354,7 +357,7 @@ export function Chat(props: {
               const newTopic = prompt(Locale.Chat.Rename, session.topic);
               if (newTopic && newTopic !== session.topic) {
                 chatStore.updateCurrentSession(
-                  (session) => (session.topic = newTopic!)
+                  (session) => (session.topic = newTopic!),
                 );
               }
             }}
@@ -397,7 +400,7 @@ export function Chat(props: {
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div className={styles["chat-body"]} ref={dialogBoxRef}>
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -445,8 +448,7 @@ export function Chat(props: {
                         </div>
                       </div>
                     )}
-                  {(message.preview || message.content.length === 0) &&
-                  !isUser ? (
+                  {message.preview || message.content.length === 0 ? (
                     <LoadingIcon />
                   ) : (
                     <div
@@ -484,21 +486,21 @@ export function Chat(props: {
           <textarea
             ref={inputRef}
             className={styles["chat-input"]}
-            placeholder={Locale.Chat.Input(submitKey)}
-            rows={4}
+            placeholder={isMobileScreen() ? "" : Locale.Chat.Input(submitKey)}
+            rows={isMobileScreen() ? 2 : 4}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={(e) => onInputKeyDown(e as any)}
             onFocus={() => setAutoScroll(true)}
             onBlur={() => {
-              setAutoScroll(false);
+              if (!isMobileScreen()) setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
             }}
             autoFocus={!props?.sideBarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
+            text={isMobileScreen() ? "" : Locale.Chat.Send}
             className={styles["chat-input-send"] + " no-dark"}
             onClick={onUserSubmit}
           />
@@ -603,7 +605,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
@@ -651,16 +653,6 @@ export function Home() {
 
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
-            <div className={styles["sidebar-action"] + " " + styles.mobile}>
-              <IconButton
-                icon={<CloseIcon />}
-                onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat)) {
-                    removeSession(currentIndex);
-                  }
-                }}
-              />
-            </div>
             <div className={styles["sidebar-action"]}>
               <IconButton
                 icon={<SettingsIcon />}

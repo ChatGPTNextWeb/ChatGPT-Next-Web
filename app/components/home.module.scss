@@ -144,8 +144,10 @@
   }
 }
 
-.chat-item:hover {
-  background-color: var(--hover-color);
+@media only screen and (min-width: 600px) {
+  .chat-item:hover {
+    background-color: var(--hover-color);
+  }
 }
 
 .chat-item-selected {
@@ -168,6 +170,13 @@
   right: -20px;
   transition: all ease 0.3s;
   opacity: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-item-delete {
+    right: 10px;
+    opacity: 0.5;
+  }
 }
 
 .chat-item:hover > .chat-item-delete {
@@ -422,6 +431,7 @@
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
+    padding: 10px 5px;
   }
 }
 
