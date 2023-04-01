@@ -340,6 +340,15 @@ export function Chat(props: {
       }
     }, 500);
   });
+  
+  // Fix Chinese input method "Enter" issue
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.keyCode == 229) e.stopPropagation();
+    },
+    true,
+  );
 
   return (
     <div className={styles.chat} key={session.id}>
