@@ -88,12 +88,24 @@
   }
 
   .sidebar {
+    //width: 100vw;
     position: absolute;
-    left: -100%;
+    //left: -100%;
     z-index: 999;
     height: var(--full-height);
     transition: all ease 0.3s;
     box-shadow: none;
+  }
+
+  .sidebar-collapse {
+    display: none;
+  }
+
+  .window-content-collapse {
+    width: var(--window-content-width);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .sidebar-show {

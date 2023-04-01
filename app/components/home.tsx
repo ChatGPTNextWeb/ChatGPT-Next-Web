@@ -17,7 +17,7 @@ import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import MenuIcon from "../icons/menu.svg";
-//import CloseIcon from "../icons/close.svg";
+import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LeftIcon from "../icons/left.svg";
@@ -211,17 +211,17 @@ export function PromptHints(props: {
   );
 }
 
-export function Chat(props: {
-  showSideBar?: () => void;
-  sidebarShowing?: boolean;
-}) {
+export function Chat() {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
-  const [session, sessionIndex] = useChatStore((state) => [
-    state.currentSession(),
-    state.currentSessionIndex,
-  ]);
+  const [sidebarCollapse, setSideBarCollapse, session, sessionIndex] =
+    useChatStore((state) => [
+      state.sidebarCollapse,
+      state.setSidebarCollapse,
+      state.currentSession(),
+      state.currentSessionIndex,
+    ]);
   const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -381,7 +381,11 @@ export function Chat(props: {
       <div className={styles["window-header"]}>
         <div
           className={styles["window-header-title"]}
-          onClick={props?.showSideBar}
+          //onClick={() => {
+          //  if (window.innerWidth < 768) {
+          //    setSideBarCollapse(!sidebarCollapse);
+          //  }
+          //}}
         >
           <div
             className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
@@ -406,7 +410,9 @@ export function Chat(props: {
               icon={<MenuIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
-              onClick={props?.showSideBar}
+              onClick={() => {
+                setSideBarCollapse(!sidebarCollapse);
+              }}
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -526,7 +532,7 @@ export function Chat(props: {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
             }}
-            autoFocus={!props?.sidebarShowing}
+            autoFocus={sidebarCollapse}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -638,7 +644,6 @@ export function Home() {
     ],
   );
   const loading = !useHasHydrated();
-  const [showSideBar, setShowSideBar] = useState(true);
   const [sidebarCollapse, setSideBarCollapse] = useChatStore((state) => [
     state.sidebarCollapse,
     state.setSidebarCollapse,
@@ -664,9 +669,7 @@ export function Home() {
     >
       <div
         className={
-          sidebarCollapse
-            ? ` ${styles["sidebar-collapse"]}`
-            : styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`
+          sidebarCollapse ? styles["sidebar-collapse"] : styles["sidebar"]
         }
       >
         <div
@@ -699,7 +702,9 @@ export function Home() {
           className={styles["sidebar-body"]}
           onClick={() => {
             setOpenSettings(false);
-            setShowSideBar(false);
+            if (window.innerWidth < 768) {
+              setSideBarCollapse(true);
+            }
           }}
         >
           <ChatList />
@@ -719,17 +724,6 @@ export function Home() {
                 : styles["sidebar-actions"]
             }
           >
-            {/*
-            <div className={styles["sidebar-action"] + " " + styles.mobile}>
-              <IconButton
-                icon={<CloseIcon />}
-                onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat)) {
-                    removeSession(currentIndex);
-                  }
-                }}
-              />
-							</div>*/}
             <div
               className={
                 sidebarCollapse
@@ -757,6 +751,23 @@ export function Home() {
               className={
                 sidebarCollapse
                   ? styles["sidebar-action-collapse"]
+                  : styles["sidebar-action"] + " " + styles.mobile
+              }
+            >
+              <IconButton
+                icon={<CloseIcon />}
+                onClick={() => {
+                  if (confirm(Locale.Home.DeleteChat)) {
+                    removeSession(currentIndex);
+                  }
+                }}
+              />
+            </div>
+
+            <div
+              className={
+                sidebarCollapse
+                  ? styles["sidebar-action-collapse"]
                   : styles["sidebar-action"]
               }
             >
@@ -764,7 +775,7 @@ export function Home() {
                 icon={<SettingsIcon />}
                 onClick={() => {
                   setOpenSettings(true);
-                  setShowSideBar(false);
+                  setSideBarCollapse(true);
                 }}
               />
             </div>
@@ -790,7 +801,7 @@ export function Home() {
               text={sidebarCollapse ? undefined : Locale.Home.NewChat}
               onClick={() => {
                 createNewSession();
-                setShowSideBar(false);
+                setSideBarCollapse(true);
               }}
             />
           </div>
@@ -808,15 +819,11 @@ export function Home() {
           <Settings
             closeSettings={() => {
               setOpenSettings(false);
-              setShowSideBar(true);
+              setSideBarCollapse(false);
             }}
           />
         ) : (
-          <Chat
-            key="chat"
-            showSideBar={() => setShowSideBar(true)}
-            sidebarShowing={showSideBar}
-          />
+          <Chat key="chat" />
         )}
       </div>
     </div>
