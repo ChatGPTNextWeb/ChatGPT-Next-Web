@@ -51,6 +51,7 @@
   --window-width: 90vw;
   --window-height: 90vh;
   --sidebar-width: 300px;
+  --sidebar-collapse-width: 8vh;
   --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 80%;
 }
@@ -87,7 +88,7 @@ body {
   align-items: center;
   user-select: none;
   font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
-  "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);

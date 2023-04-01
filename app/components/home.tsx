@@ -17,12 +17,14 @@ import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import MenuIcon from "../icons/menu.svg";
-import CloseIcon from "../icons/close.svg";
+//import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
+import LeftIcon from "../icons/left.svg";
+import RightIcon from "../icons/right.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
-import { showModal, showToast } from "./ui-lib";
+import { showModal } from "./ui-lib";
 import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
 import Locale from "../locales";
 
@@ -74,14 +76,36 @@ export function ChatItem(props: {
   time: string;
   selected: boolean;
 }) {
-  return (
+  const [sidebarCollapse] = useChatStore((state) => [state.sidebarCollapse]);
+  return sidebarCollapse ? (
+    <div
+      className={`${styles["chat-item-collapse"]} ${
+        props.selected && styles["chat-item-selected"]
+      }`}
+      onClick={props.onClick}
+    >
+      <div className={styles["chat-item-info-collapse"]}>
+        {Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")}
+      </div>
+      <div
+        className={
+          sidebarCollapse
+            ? styles["chat-item-delete-collapse"]
+            : styles["chat-item-delete"]
+        }
+        onClick={props.onDelete}
+      >
+        <DeleteIcon />
+      </div>
+    </div>
+  ) : (
     <div
       className={`${styles["chat-item"]} ${
         props.selected && styles["chat-item-selected"]
       }`}
       onClick={props.onClick}
     >
-      <div className={styles["chat-item-title"]}>{props.title}</div>
+      <div>{props.title}</div>
       <div className={styles["chat-item-info"]}>
         <div className={styles["chat-item-count"]}>
           {Locale.ChatItem.ChatItemCount(props.count)}
@@ -96,29 +120,40 @@ export function ChatItem(props: {
 }
 
 export function ChatList() {
-  const [sessions, selectedIndex, selectSession, removeSession] = useChatStore(
-    (state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.removeSession,
-    ],
-  );
+  const [
+    sidebarCollapse,
+    sessions,
+    selectedIndex,
+    selectSession,
+    removeSession,
+  ] = useChatStore((state) => [
+    state.sidebarCollapse,
+    state.sessions,
+    state.currentSessionIndex,
+    state.selectSession,
+    state.removeSession,
+  ]);
 
   return (
-    <div className={styles["chat-list"]}>
-      {sessions.map((item, i) => (
-        <ChatItem
-          title={item.topic}
-          time={item.lastUpdate}
-          count={item.messages.length}
-          key={i}
-          selected={i === selectedIndex}
-          onClick={() => selectSession(i)}
-          onDelete={() => removeSession(i)}
-        />
-      ))}
-    </div>
+    <>
+      <div className={styles["gpt-logo-collapse"]}>
+        {sidebarCollapse ? <BotIcon /> : null}
+      </div>
+
+      <div className={styles["chat-list-collapse"]}>
+        {sessions.map((item, i) => (
+          <ChatItem
+            title={item.topic}
+            time={item.lastUpdate}
+            count={item.messages.length}
+            key={i}
+            selected={i === selectedIndex}
+            onClick={() => selectSession(i)}
+            onDelete={() => removeSession(i)}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -172,7 +207,7 @@ export function PromptHints(props: {
 
 export function Chat(props: {
   showSideBar?: () => void;
-  sideBarShowing?: boolean;
+  sidebarShowing?: boolean;
 }) {
   type RenderMessage = Message & { preview?: boolean };
 
@@ -475,7 +510,7 @@ export function Chat(props: {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 100);
             }}
-            autoFocus={!props?.sideBarShowing}
+            autoFocus={!props?.sidebarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -588,6 +623,10 @@ export function Home() {
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
+  const [sidebarCollapse, setSideBarCollapse] = useChatStore((state) => [
+    state.sidebarCollapse,
+    state.setSidebarCollapse,
+  ]);
 
   // setting
   const [openSettings, setOpenSettings] = useState(false);
@@ -606,16 +645,36 @@ export function Home() {
       }`}
     >
       <div
-        className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
+        className={
+          sidebarCollapse
+            ? ` ${styles["sidebar-collapse"]}`
+            : styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`
+        }
       >
-        <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-          <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
-          </div>
-          <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
-          </div>
+        <div
+          className={
+            sidebarCollapse
+              ? styles["sidebar-header-collapse"]
+              : styles["sidebar-header"]
+          }
+        >
+          {sidebarCollapse ? null : (
+            <>
+              <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+              <div className={styles["sidebar-sub-title"]}>
+                Build your own AI assistant.
+              </div>
+            </>
+          )}
+          {sidebarCollapse ? (
+            <div className={styles["sidebar-logo-collapse"]}>
+              <ChatGptIcon />
+            </div>
+          ) : (
+            <div className={styles["sidebar-logo"]}>
+              <ChatGptIcon />
+            </div>
+          )}
         </div>
 
         <div
@@ -628,8 +687,21 @@ export function Home() {
           <ChatList />
         </div>
 
-        <div className={styles["sidebar-tail"]}>
-          <div className={styles["sidebar-actions"]}>
+        <div
+          className={
+            sidebarCollapse
+              ? styles["sidebar-tail-collapse"]
+              : styles["sidebar-tail"]
+          }
+        >
+          <div
+            className={
+              sidebarCollapse
+                ? styles["sidebar-actions-collapse"]
+                : styles["sidebar-actions"]
+            }
+          >
+            {/*
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
                 icon={<CloseIcon />}
@@ -639,8 +711,37 @@ export function Home() {
                   }
                 }}
               />
+							</div>*/}
+            <div
+              className={
+                sidebarCollapse
+                  ? styles["sidebar-action-collapse"]
+                  : styles["sidebar-action"]
+              }
+            >
+              {sidebarCollapse ? (
+                <IconButton
+                  icon={<RightIcon />}
+                  onClick={() => {
+                    setSideBarCollapse(false);
+                  }}
+                />
+              ) : (
+                <IconButton
+                  icon={<LeftIcon />}
+                  onClick={() => {
+                    setSideBarCollapse(true);
+                  }}
+                />
+              )}
             </div>
-            <div className={styles["sidebar-action"]}>
+            <div
+              className={
+                sidebarCollapse
+                  ? styles["sidebar-action-collapse"]
+                  : styles["sidebar-action"]
+              }
+            >
               <IconButton
                 icon={<SettingsIcon />}
                 onClick={() => {
@@ -649,16 +750,26 @@ export function Home() {
                 }}
               />
             </div>
-            <div className={styles["sidebar-action"]}>
+            <div
+              className={
+                sidebarCollapse
+                  ? styles["sidebar-action-collapse"]
+                  : styles["sidebar-action"]
+              }
+            >
               <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} />
               </a>
             </div>
           </div>
-          <div>
+          <div
+            className={
+              sidebarCollapse ? styles["sidebar-action-collapse"] : undefined
+            }
+          >
             <IconButton
               icon={<AddIcon />}
-              text={Locale.Home.NewChat}
+              text={sidebarCollapse ? undefined : Locale.Home.NewChat}
               onClick={() => {
                 createNewSession();
                 setShowSideBar(false);
@@ -680,7 +791,7 @@ export function Home() {
           <Chat
             key="chat"
             showSideBar={() => setShowSideBar(true)}
-            sideBarShowing={showSideBar}
+            sidebarShowing={showSideBar}
           />
         )}
       </div>
