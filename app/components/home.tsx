@@ -108,7 +108,7 @@ export function ChatList() {
       state.currentSessionIndex,
       state.selectSession,
       state.removeSession,
-    ],
+    ]
   );
 
   return (
@@ -202,7 +202,7 @@ export function Chat(props: {
       setPromptHints(promptStore.search(text));
     },
     100,
-    { leading: true, trailing: true },
+    { leading: true, trailing: true }
   );
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -216,7 +216,7 @@ export function Chat(props: {
     if (!dom) return;
     const paddingBottomNum: number = parseInt(
       window.getComputedStyle(dom).paddingBottom,
-      10,
+      10
     );
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
   };
@@ -304,7 +304,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : [],
+        : []
     )
     .concat(
       userInput.length > 0
@@ -316,7 +316,7 @@ export function Chat(props: {
               preview: true,
             },
           ]
-        : [],
+        : []
     );
 
   // auto scroll
@@ -354,7 +354,7 @@ export function Chat(props: {
               const newTopic = prompt(Locale.Chat.Rename, session.topic);
               if (newTopic && newTopic !== session.topic) {
                 chatStore.updateCurrentSession(
-                  (session) => (session.topic = newTopic!),
+                  (session) => (session.topic = newTopic!)
                 );
               }
             }}
@@ -470,7 +470,7 @@ export function Chat(props: {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "4em" }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "1px" }}>
           -
         </div>
       </div>
@@ -600,7 +600,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ],
+    ]
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
