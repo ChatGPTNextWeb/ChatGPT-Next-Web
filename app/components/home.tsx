@@ -20,8 +20,6 @@ import MenuIcon from "../icons/menu.svg";
 import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
-import OkIcon from "../icons/ok.svg";
-import ErrorIcon from "../icons/error.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal, showToast } from "./ui-lib";
@@ -192,11 +190,11 @@ export function Chat(props: {
   const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const MessageInputRefs = useRef<HTMLDivElement[]>([]);
+  const messageInputRefs = useRef<HTMLDivElement[]>([]);
   // avoid rendered more hooks error
   const setMessageInputRef = (element: HTMLDivElement | null, index: number) => {
     if (element) {
-      MessageInputRefs.current[index] = element; 
+      messageInputRefs.current[index] = element; 
     }
   };
   const [userInput, setUserInput] = useState("");
@@ -511,14 +509,19 @@ export function Chat(props: {
                   </div>
                 )}
                 {isUser && message.isEditing && (
-                  <div className={styles["chat-message-actions"]}>
-                    <div className={styles["chat-message-action-edit-button"]} onClick={()=>{confirmEdit(i, MessageInputRefs.current[i].innerText!!)}}> 
-                      <OkIcon />
-                    </div>
-                    <div className={styles["chat-message-action-edit-button"]} onClick={()=>{cancelEdit(message)}}>
-                      <ErrorIcon />  
-                    </div>
+                <div style={{display: "flex"}}>
+                  <div
+                    className={styles["chat-message-action-edit"]}
+                    onClick={() => confirmEdit(i, messageInputRefs.current[i].innerText)}>
+                    {Locale.Chat.Actions.Confirm}
                   </div>
+
+                  <div
+                    className={styles["chat-message-action-edit"]}
+                    onClick={() => cancelEdit(message)}>
+                    {Locale.Chat.Actions.Cancel}
+                  </div>
+                </div>
                 )}
               </div>
             </div>

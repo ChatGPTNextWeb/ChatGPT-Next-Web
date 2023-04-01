@@ -20,6 +20,8 @@ const en: LocaleType = {
       Stop: "Stop",
       Retry: "Retry",
       Edit: "Edit",
+      Confirm: "confirm",
+      Cancel: "cancel"
     },
     Rename: "Rename Chat",
     Typing: "Typing…",

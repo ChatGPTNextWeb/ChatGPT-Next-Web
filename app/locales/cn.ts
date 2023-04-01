@@ -17,7 +17,9 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
-      Edit: "编辑"
+      Edit: "编辑",
+      Confirm: "确认",
+      Cancel: "取消",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",

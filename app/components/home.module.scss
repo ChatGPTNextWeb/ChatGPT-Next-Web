@@ -375,24 +375,14 @@
 }
 
 .chat-message-action-edit {
+  font-size: 12px;
+  color: black;
   opacity: 0.5;
-  color: var(--black);
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.chat-message-action-edit-button {
-  width: 24px;
-  height: 15px;
-  opacity: 1;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid rgba(29.044500000000014, 147.21574999999993, 170.85, 1); 
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   &:not(:first-child) {
-    margin-right: 5px;
+    margin-left: 5px;
+  }
+  &:hover {
+    opacity: 1;
   }
 }
 
