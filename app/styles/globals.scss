@@ -53,13 +53,9 @@
   --sidebar-width: 380px;
   --sidebar-collapse-width: 8vh;
   --window-content-width: calc(100% - var(--sidebar-width));
-<<<<<<< HEAD
   --window-content-width-collapse: calc(100% - var(--sidebar-collapse-width));
   --message-max-width: 90%;
-=======
-  --message-max-width: 80%;
   --full-height: 100%;
->>>>>>> upstream/main
 }
 
 @media only screen and (max-width: 600px) {
