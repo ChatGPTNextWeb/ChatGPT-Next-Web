@@ -7,8 +7,8 @@ services:
     ports:
       - 3000:3000
     environment:
-      - OPENAI_API_KEY=[YOUR_API_KEY_HERE]
-      - CODE=[YOUR_CODE_HERE]
+      - OPENAI_API_KEY=
+      - CODE=
     restart: always
 
   watchtower:
