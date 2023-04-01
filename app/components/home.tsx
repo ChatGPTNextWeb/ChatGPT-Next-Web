@@ -146,7 +146,7 @@ export function ChatList() {
         {sidebarCollapse ? <BotIcon /> : null}
       </div>
 
-      <div className={styles["chat-list-collapse"]}>
+      <div className={styles["chat-list"]}>
         {sessions.map((item, i) => (
           <ChatItem
             title={item.topic}
@@ -155,7 +155,7 @@ export function ChatList() {
             key={i}
             selected={i === selectedIndex}
             onClick={() => selectSession(i)}
-            onDelete={() => removeSession(i)}
+            onDelete={() => confirm(Locale.Home.DeleteChat) && removeSession(i)}
           />
         ))}
       </div>
@@ -494,7 +494,10 @@ export function Chat() {
                       className="markdown-body"
                       style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => setUserInput(message.content)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen()) return;
+                        setUserInput(message.content);
+                      }}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -511,7 +514,7 @@ export function Chat() {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "4em" }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "1px" }}>
           -
         </div>
       </div>
