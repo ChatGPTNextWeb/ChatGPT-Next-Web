@@ -60,6 +60,7 @@ const en: LocaleType = {
         en: "English",
         tw: "繁體中文",
         es: "Español",
+        fr: "Français",
       },
     },
     Avatar: "Avatar",
