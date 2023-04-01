@@ -20,6 +20,8 @@ import MenuIcon from "../icons/menu.svg";
 import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
+import OkIcon from "../icons/ok.svg";
+import ErrorIcon from "../icons/error.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal, showToast } from "./ui-lib";
@@ -190,6 +192,13 @@ export function Chat(props: {
   const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const MessageInputRefs = useRef<HTMLDivElement[]>([]);
+  // avoid rendered more hooks error
+  const setMessageInputRef = (element: HTMLDivElement | null, index: number) => {
+    if (element) {
+      MessageInputRefs.current[index] = element; 
+    }
+  };
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -288,6 +297,18 @@ export function Chat(props: {
     }
   };
 
+  const confirmEdit = (index: number, content: string) => {
+    chatStore.onConfirmEdit(index, content);
+  }
+
+  const cancelEdit = (index: Message) => { 
+    chatStore.onCancelEdit(index);
+  }
+  
+  const onEdit = (message: Message) => {
+    chatStore.onUserEdit(message);
+  }
+
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -302,6 +323,7 @@ export function Chat(props: {
               content: "……",
               date: new Date().toLocaleString(),
               preview: true,
+              isEditing: false
             },
           ]
         : [],
@@ -314,6 +336,7 @@ export function Chat(props: {
               content: userInput,
               date: new Date().toLocaleString(),
               preview: true,
+              isEditing: false
             },
           ]
         : [],
@@ -400,7 +423,6 @@ export function Chat(props: {
       <div className={styles["chat-body"]}>
         {messages.map((message, i) => {
           const isUser = message.role === "user";
-
           return (
             <div
               key={i}
@@ -445,6 +467,16 @@ export function Chat(props: {
                         </div>
                       </div>
                     )}
+                  {isUser && !message.preview && !message.isEditing && (
+                      <div className={styles["chat-message-top-left-actions"]}>
+                        <div
+                          className={styles["chat-message-top-left-action"]}
+                          onClick={() => onEdit(message)}>,
+                          {Locale.Chat.Actions.Edit}
+                        </div>
+                      </div>
+                    )
+                  }
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />
@@ -455,7 +487,19 @@ export function Chat(props: {
                       onContextMenu={(e) => onRightClick(e, message)}
                       onDoubleClickCapture={() => setUserInput(message.content)}
                     >
-                      <Markdown content={message.content} />
+                      {message.isEditing ? (
+                        <div 
+                          key={i}
+                          ref={(element) => setMessageInputRef(element, i)}
+                          contentEditable={true} 
+                          suppressContentEditableWarning={true}
+                          style={{ outline: "0px solid transparent"}}
+                        >
+                          {message.content}
+                        </div>
+                      ) : (
+                        <Markdown content={message.content} />
+                      )}
                     </div>
                   )}
                 </div>
@@ -463,6 +507,16 @@ export function Chat(props: {
                   <div className={styles["chat-message-actions"]}>
                     <div className={styles["chat-message-action-date"]}>
                       {message.date.toLocaleString()}
+                    </div>
+                  </div>
+                )}
+                {isUser && message.isEditing && (
+                  <div className={styles["chat-message-actions"]}>
+                    <div className={styles["chat-message-action-edit-button"]} onClick={()=>{confirmEdit(i, MessageInputRefs.current[i].innerText!!)}}> 
+                      <OkIcon />
+                    </div>
+                    <div className={styles["chat-message-action-edit-button"]} onClick={()=>{cancelEdit(message)}}>
+                      <ErrorIcon />  
                     </div>
                   </div>
                 )}

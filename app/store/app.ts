@@ -14,6 +14,7 @@ import Locale from "../locales";
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
+  isEditing: boolean;
 };
 
 export enum SubmitKey {
@@ -169,6 +170,7 @@ function createEmptySession(): ChatSession {
         role: "assistant",
         content: Locale.Store.BotHello,
         date: createDate,
+        isEditing: false
       },
     ],
     stat: {
@@ -190,6 +192,9 @@ interface ChatStore {
   newSession: () => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
+  onUserEdit: (message: Message) => void;
+  onConfirmEdit: (index: number, content: string) => void;
+  onCancelEdit: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
@@ -297,11 +302,26 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
+      onUserEdit(message) {
+        message.isEditing = true;
+        set(() => ({}))
+      },
+
+      onConfirmEdit(index, content) {
+        const session = get().currentSession();
+        session.messages = session.messages.slice(0, index)
+        get().onUserInput(content)
+      },
+      onCancelEdit(message) {
+        message.isEditing = false;
+        set(() => ({}))
+      },
       async onUserInput(content) {
         const userMessage: Message = {
           role: "user",
           content,
           date: new Date().toLocaleString(),
+          isEditing: false
         };
 
         const botMessage: Message = {
@@ -309,6 +329,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           date: new Date().toLocaleString(),
           streaming: true,
+          isEditing: false
         };
 
         // get recent messages
@@ -444,6 +465,7 @@ export const useChatStore = create<ChatStore>()(
               role: "system",
               content: Locale.Store.Prompt.Summarize,
               date: "",
+              isEditing: false
             }),
             {
               filterBot: false,
