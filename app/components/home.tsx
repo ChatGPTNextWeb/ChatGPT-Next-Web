@@ -134,7 +134,7 @@ function useSubmitHandler() {
 
   const shouldSubmit = (e: KeyboardEvent) => {
     if (e.key !== "Enter") return false;
-
+    if (e.key === 'Enter' && !e.isComposing) return false
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
