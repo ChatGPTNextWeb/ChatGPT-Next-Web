@@ -17,6 +17,8 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
+      ExportImage: "导出图片",
+      GeneratingImage: "正在生成图片",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -33,6 +35,8 @@ const cn = {
     Title: "导出聊天记录为 Markdown",
     Copy: "全部复制",
     Download: "下载文件",
+    Image: "导出图片",
+    Failed: "导出失败",
   },
   Memory: {
     Title: "上下文记忆 Prompt",

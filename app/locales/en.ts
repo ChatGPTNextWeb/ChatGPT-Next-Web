@@ -19,6 +19,8 @@ const en: LocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      ExportImage: "Export All Messages as Image",
+      GeneratingImage: "Generating Image",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -35,6 +37,8 @@ const en: LocaleType = {
     Title: "All Messages",
     Copy: "Copy All",
     Download: "Download",
+    Image: "Export Image",
+    Failed: "Export Failed",
   },
   Memory: {
     Title: "Memory Prompt",

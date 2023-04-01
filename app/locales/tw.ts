@@ -18,6 +18,8 @@ const tw: LocaleType = {
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
+      ExportImage: "匯出圖片",
+      GeneratingImage: "正在生成圖片",
     },
     Rename: "重命名對話",
     Typing: "正在輸入…",
@@ -34,6 +36,8 @@ const tw: LocaleType = {
     Title: "匯出聊天記錄為 Markdown",
     Copy: "複製全部",
     Download: "下載檔案",
+    Image: "匯出圖片",
+    Failed: "匯出失敗",
   },
   Memory: {
     Title: "上下文記憶 Prompt",
