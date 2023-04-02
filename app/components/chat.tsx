@@ -602,6 +602,11 @@ export function Chat(props: {
                     <div className={styles["chat-message-action-date"]}>
                       {message.date.toLocaleString()}
                     </div>
+                    {message.model && (
+                      <div className={styles["chat-message-action-date"]}>
+                        {message.model}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

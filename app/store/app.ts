@@ -14,6 +14,7 @@ import Locale from "../locales";
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
+  model?: string;
 };
 
 export enum SubmitKey {
@@ -322,6 +323,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           date: new Date().toLocaleString(),
           streaming: true,
+          model: get().config.modelConfig.model,
         };
 
         // get recent messages
