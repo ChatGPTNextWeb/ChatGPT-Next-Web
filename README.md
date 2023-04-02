@@ -1,5 +1,7 @@
 <div align="center">
 <img src="./static/icon.svg" alt="预览"/>
+本项目的解构图:
+![Visualization of the codebase](./diagram.svg)
 
 <h1 align="center">ChatGPT Next Web</h1>
 
