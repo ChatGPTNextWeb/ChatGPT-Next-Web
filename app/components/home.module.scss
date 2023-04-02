@@ -26,13 +26,13 @@
 @media only screen and (min-width: 600px) {
   .tight-container {
     --window-width: 100vw;
-    --window-height: 100vh;
+    --window-height: var(--full-height);
     --window-content-width: calc(100% - var(--sidebar-width));
 
     @include container();
 
     max-width: 100vw;
-    max-height: 100vh;
+    max-height: var(--full-height);
 
     border-radius: 0;
   }
@@ -74,7 +74,7 @@
     position: absolute;
     left: -100%;
     z-index: 999;
-    height: 100vh;
+    height: var(--full-height);
     transition: all ease 0.3s;
     box-shadow: none;
   }
@@ -218,7 +218,14 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
-  margin-bottom: 100px;
+}
+
+.chat-body-title {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .chat-message {
@@ -292,6 +299,7 @@
   position: absolute;
   right: 20px;
   top: -26px;
+  left: 100px;
   transition: all ease 0.3s;
   opacity: 0;
   pointer-events: none;
@@ -302,6 +310,7 @@
   .chat-message-top-action {
     opacity: 0.5;
     color: var(--black);
+    white-space: nowrap;
     cursor: pointer;
 
     &:hover {
@@ -332,12 +341,63 @@
 }
 
 .chat-input-panel {
-  position: absolute;
-  bottom: 20px;
-  display: flex;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  flex-direction: column;
+}
+
+@mixin single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prompt-hints {
+  min-height: 20px;
+  width: 100%;
+  max-height: 50vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+
+  background-color: var(--white);
+  border: var(--border-in-light);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+
+  .prompt-hint {
+    color: var(--black);
+    padding: 6px 10px;
+    animation: slide-in ease 0.3s;
+    cursor: pointer;
+    transition: all ease 0.3s;
+    border: transparent 1px solid;
+    margin: 4px;
+    border-radius: 8px;
+
+    &:not(:last-child) {
+      margin-top: 0;
+    }
+
+    .hint-title {
+      font-size: 12px;
+      font-weight: bolder;
+
+      @include single-line();
+    }
+    .hint-content {
+      font-size: 12px;
+
+      @include single-line();
+    }
+
+    &-selected,
+    &:hover {
+      border-color: var(--primary);
+    }
+  }
 }
 
 .chat-input-panel-inner {
@@ -354,7 +414,7 @@
   background-color: var(--white);
   color: var(--black);
   font-family: inherit;
-  padding: 10px 14px;
+  padding: 10px 14px 50px;
   resize: none;
   outline: none;
 }
@@ -375,7 +435,7 @@
 
   position: absolute;
   right: 30px;
-  bottom: 10px;
+  bottom: 30px;
 }
 
 .export-content {

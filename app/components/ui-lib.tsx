@@ -36,7 +36,7 @@ export function ListItem(props: { children: JSX.Element[] }) {
   return <div className={styles["list-item"]}>{props.children}</div>;
 }
 
-export function List(props: { children: JSX.Element[] }) {
+export function List(props: { children: JSX.Element[] | JSX.Element }) {
   return <div className={styles.list}>{props.children}</div>;
 }
 

@@ -7,8 +7,9 @@ import styles from "./settings.module.scss";
 import ResetIcon from "../icons/reload.svg";
 import CloseIcon from "../icons/close.svg";
 import ClearIcon from "../icons/clear.svg";
+import EditIcon from "../icons/edit.svg";
 
-import { List, ListItem, Popover } from "./ui-lib";
+import { List, ListItem, Popover, showToast } from "./ui-lib";
 
 import { IconButton } from "./button";
 import {
@@ -19,12 +20,14 @@ import {
   useUpdateStore,
   useAccessStore,
 } from "../store";
-import { Avatar } from "./home";
+import { Avatar, PromptHints } from "./home";
 
-import Locale, { changeLang, getLang } from "../locales";
-import { getCurrentCommitId } from "../utils";
+import Locale, { AllLangs, changeLang, getLang } from "../locales";
+import { getCurrentVersion } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
+import { SearchService, usePromptStore } from "../store/prompt";
+import { requestUsage } from "../requests";
 
 function SettingItem(props: {
   title: string;
@@ -57,7 +60,7 @@ export function Settings(props: { closeSettings: () => void }) {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentId = getCurrentCommitId();
+  const currentId = getCurrentVersion();
   const remoteId = updateStore.remoteId;
   const hasNewVersion = currentId !== remoteId;
 
@@ -68,15 +71,39 @@ export function Settings(props: { closeSettings: () => void }) {
     });
   }
 
+  const [usage, setUsage] = useState<{
+    granted?: number;
+    used?: number;
+  }>();
+  const [loadingUsage, setLoadingUsage] = useState(false);
+  function checkUsage() {
+    setLoadingUsage(true);
+    requestUsage()
+      .then((res) =>
+        setUsage({
+          granted: res?.total_granted,
+          used: res?.total_used,
+        }),
+      )
+      .finally(() => {
+        setLoadingUsage(false);
+      });
+  }
+
   useEffect(() => {
     checkUpdate();
+    checkUsage();
   }, []);
 
   const accessStore = useAccessStore();
   const enabledAccessControl = useMemo(
     () => accessStore.enabledAccessControl(),
-    []
+    [],
   );
+
+  const promptStore = usePromptStore();
+  const builtinCount = SearchService.count.builtin;
+  const customCount = promptStore.prompts.size ?? 0;
 
   return (
     <>
@@ -173,7 +200,7 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.submitKey = e.target.value as any as SubmitKey)
+                    (config.submitKey = e.target.value as any as SubmitKey),
                 );
               }}
             >
@@ -193,7 +220,7 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.theme}
               onChange={(e) => {
                 updateConfig(
-                  (config) => (config.theme = e.target.value as any as Theme)
+                  (config) => (config.theme = e.target.value as any as Theme),
                 );
               }}
             >
@@ -206,37 +233,82 @@ export function Settings(props: { closeSettings: () => void }) {
           </ListItem>
 
           <SettingItem title={Locale.Settings.Lang.Name}>
-            <div className="">
-              <select
-                value={getLang()}
-                onChange={(e) => {
-                  changeLang(e.target.value as any);
-                }}
-              >
-                <option value="en" key="en">
-                  {Locale.Settings.Lang.Options.en}
+            <select
+              value={getLang()}
+              onChange={(e) => {
+                changeLang(e.target.value as any);
+              }}
+            >
+              {AllLangs.map((lang) => (
+                <option value={lang} key={lang}>
+                  {Locale.Settings.Lang.Options[lang]}
                 </option>
-
-                <option value="cn" key="cn">
-                  {Locale.Settings.Lang.Options.cn}
-                </option>
-              </select>
-            </div>
+              ))}
+            </select>
           </SettingItem>
 
-          <div className="no-mobile">
-            <SettingItem title={Locale.Settings.TightBorder}>
-              <input
-                type="checkbox"
-                checked={config.tightBorder}
-                onChange={(e) =>
-                  updateConfig(
-                    (config) => (config.tightBorder = e.currentTarget.checked)
-                  )
-                }
-              ></input>
-            </SettingItem>
-          </div>
+          <SettingItem
+            title={Locale.Settings.FontSize.Title}
+            subTitle={Locale.Settings.FontSize.SubTitle}
+          >
+            <input
+              type="range"
+              title={`${config.fontSize ?? 14}px`}
+              value={config.fontSize}
+              min="12"
+              max="18"
+              step="1"
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.fontSize = Number.parseInt(e.currentTarget.value)),
+                )
+              }
+            ></input>
+          </SettingItem>
+
+          <SettingItem title={Locale.Settings.TightBorder}>
+            <input
+              type="checkbox"
+              checked={config.tightBorder}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.tightBorder = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </SettingItem>
+        </List>
+        <List>
+          <SettingItem
+            title={Locale.Settings.Prompt.Disable.Title}
+            subTitle={Locale.Settings.Prompt.Disable.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.disablePromptHint}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.disablePromptHint = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </SettingItem>
+
+          <SettingItem
+            title={Locale.Settings.Prompt.List}
+            subTitle={Locale.Settings.Prompt.ListCount(
+              builtinCount,
+              customCount,
+            )}
+          >
+            <IconButton
+              icon={<EditIcon />}
+              text={Locale.Settings.Prompt.Edit}
+              onClick={() => showToast(Locale.WIP)}
+            />
+          </SettingItem>
         </List>
         <List>
           {enabledAccessControl ? (
@@ -272,6 +344,28 @@ export function Settings(props: { closeSettings: () => void }) {
           </SettingItem>
 
           <SettingItem
+            title={Locale.Settings.Usage.Title}
+            subTitle={
+              loadingUsage
+                ? Locale.Settings.Usage.IsChecking
+                : Locale.Settings.Usage.SubTitle(
+                    usage?.granted ?? "[?]",
+                    usage?.used ?? "[?]",
+                  )
+            }
+          >
+            {loadingUsage ? (
+              <div />
+            ) : (
+              <IconButton
+                icon={<ResetIcon></ResetIcon>}
+                text={Locale.Settings.Usage.Check}
+                onClick={checkUsage}
+              />
+            )}
+          </SettingItem>
+
+          <SettingItem
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
           >
@@ -279,13 +373,13 @@ export function Settings(props: { closeSettings: () => void }) {
               type="range"
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
-              min="2"
+              min="0"
               max="25"
               step="2"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.historyMessageCount = e.target.valueAsNumber)
+                    (config.historyMessageCount = e.target.valueAsNumber),
                 )
               }
             ></input>
@@ -304,7 +398,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 updateConfig(
                   (config) =>
                     (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 )
               }
             ></input>
@@ -317,7 +411,8 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.modelConfig.model}
               onChange={(e) => {
                 updateConfig(
-                  (config) => (config.modelConfig.model = e.currentTarget.value)
+                  (config) =>
+                    (config.modelConfig.model = e.currentTarget.value),
                 );
               }}
             >
@@ -336,13 +431,13 @@ export function Settings(props: { closeSettings: () => void }) {
               type="range"
               value={config.modelConfig.temperature.toFixed(1)}
               min="0"
-              max="1"
+              max="2"
               step="0.1"
               onChange={(e) => {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.temperature =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 );
               }}
             ></input>
@@ -360,7 +455,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.max_tokens =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 )
               }
             ></input>
@@ -379,7 +474,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.presence_penalty =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 );
               }}
             ></input>

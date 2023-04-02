@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -22,12 +23,19 @@ import DownloadIcon from "../icons/download.svg";
 
 import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
 import { showModal, showToast } from "./ui-lib";
-import { copyToClipboard, downloadAs, isIOS, selectOrCopy } from "../utils";
+import {
+  copyToClipboard,
+  downloadAs,
+  isIOS,
+  isMobileScreen,
+  selectOrCopy,
+} from "../utils";
 import Locale from "../locales";
 
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ControllerPool } from "../requests";
+import { Prompt, usePromptStore } from "../store/prompt";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -100,7 +108,7 @@ export function ChatList() {
       state.currentSessionIndex,
       state.selectSession,
       state.removeSession,
-    ]
+    ],
   );
 
   return (
@@ -113,7 +121,7 @@ export function ChatList() {
           key={i}
           selected={i === selectedIndex}
           onClick={() => selectSession(i)}
-          onDelete={() => removeSession(i)}
+          onDelete={() => confirm(Locale.Home.DeleteChat) && removeSession(i)}
         />
       ))}
     </div>
@@ -124,17 +132,19 @@ function useSubmitHandler() {
   const config = useChatStore((state) => state.config);
   const submitKey = config.submitKey;
 
-  const shouldSubmit = (e: KeyboardEvent) => {
+  const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key !== "Enter") return false;
-
+    if (e.key === "Enter" && e.nativeEvent.isComposing) return false;
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
       (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
+      (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
       (config.submitKey === SubmitKey.Enter &&
         !e.altKey &&
         !e.ctrlKey &&
-        !e.shiftKey)
+        !e.shiftKey &&
+        !e.metaKey)
     );
   };
 
@@ -144,25 +154,99 @@ function useSubmitHandler() {
   };
 }
 
-export function Chat(props: { showSideBar?: () => void }) {
+export function PromptHints(props: {
+  prompts: Prompt[];
+  onPromptSelect: (prompt: Prompt) => void;
+}) {
+  if (props.prompts.length === 0) return null;
+
+  return (
+    <div className={styles["prompt-hints"]}>
+      {props.prompts.map((prompt, i) => (
+        <div
+          className={styles["prompt-hint"]}
+          key={prompt.title + i.toString()}
+          onClick={() => props.onPromptSelect(prompt)}
+        >
+          <div className={styles["hint-title"]}>{prompt.title}</div>
+          <div className={styles["hint-content"]}>{prompt.content}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function Chat(props: {
+  showSideBar?: () => void;
+  sideBarShowing?: boolean;
+}) {
   type RenderMessage = Message & { preview?: boolean };
 
+  const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+  const fontSize = useChatStore((state) => state.config.fontSize);
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
 
-  const onUserInput = useChatStore((state) => state.onUserInput);
+  // prompt hints
+  const promptStore = usePromptStore();
+  const [promptHints, setPromptHints] = useState<Prompt[]>([]);
+  const onSearch = useDebouncedCallback(
+    (text: string) => {
+      setPromptHints(promptStore.search(text));
+    },
+    100,
+    { leading: true, trailing: true },
+  );
+
+  const onPromptSelect = (prompt: Prompt) => {
+    setUserInput(prompt.content);
+    setPromptHints([]);
+    inputRef.current?.focus();
+  };
+
+  const scrollInput = () => {
+    const dom = inputRef.current;
+    if (!dom) return;
+    const paddingBottomNum: number = parseInt(
+      window.getComputedStyle(dom).paddingBottom,
+      10,
+    );
+    dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
+  };
+
+  // only search prompts when user input is short
+  const SEARCH_TEXT_LIMIT = 30;
+  const onInput = (text: string) => {
+    scrollInput();
+    setUserInput(text);
+    const n = text.trim().length;
+
+    // clear search results
+    if (n === 0) {
+      setPromptHints([]);
+    } else if (!chatStore.config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
+      // check if need to trigger auto completion
+      if (text.startsWith("/") && text.length > 1) {
+        onSearch(text.slice(1));
+      }
+    }
+  };
 
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
     setIsLoading(true);
-    onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
+    setPromptHints([]);
+    inputRef.current?.focus();
   };
 
   // stop response
@@ -172,7 +256,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   };
 
   // check if should send message
-  const onInputKeyDown = (e: KeyboardEvent) => {
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (shouldSubmit(e)) {
       onUserSubmit();
       e.preventDefault();
@@ -195,7 +279,10 @@ export function Chat(props: { showSideBar?: () => void }) {
     for (let i = botIndex; i >= 0; i -= 1) {
       if (messages[i].role === "user") {
         setIsLoading(true);
-        onUserInput(messages[i].content).then(() => setIsLoading(false));
+        chatStore
+          .onUserInput(messages[i].content)
+          .then(() => setIsLoading(false));
+        inputRef.current?.focus();
         return;
       }
     }
@@ -203,9 +290,7 @@ export function Chat(props: { showSideBar?: () => void }) {
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
-
-  // wont scroll while hovering messages
-  const [autoScroll, setAutoScroll] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(true);
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -219,7 +304,7 @@ export function Chat(props: { showSideBar?: () => void }) {
               preview: true,
             },
           ]
-        : []
+        : [],
     )
     .concat(
       userInput.length > 0
@@ -231,16 +316,25 @@ export function Chat(props: { showSideBar?: () => void }) {
               preview: true,
             },
           ]
-        : []
+        : [],
     );
 
   // auto scroll
   useLayoutEffect(() => {
     setTimeout(() => {
       const dom = latestMessageRef.current;
-      if (dom && !isIOS() && autoScroll) {
+      const inputDom = inputRef.current;
+
+      // only scroll when input overlaped message body
+      let shouldScroll = true;
+      if (dom && inputDom) {
+        const domRect = dom.getBoundingClientRect();
+        const inputRect = inputDom.getBoundingClientRect();
+        shouldScroll = domRect.top > inputRect.top;
+      }
+
+      if (dom && autoScroll && shouldScroll) {
         dom.scrollIntoView({
-          behavior: "smooth",
           block: "end",
         });
       }
@@ -254,7 +348,17 @@ export function Chat(props: { showSideBar?: () => void }) {
           className={styles["window-header-title"]}
           onClick={props?.showSideBar}
         >
-          <div className={styles["window-header-main-title"]}>
+          <div
+            className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
+            onClick={() => {
+              const newTopic = prompt(Locale.Chat.Rename, session.topic);
+              if (newTopic && newTopic !== session.topic) {
+                chatStore.updateCurrentSession(
+                  (session) => (session.topic = newTopic!),
+                );
+              }
+            }}
+          >
             {session.topic}
           </div>
           <div className={styles["window-header-sub-title"]}>
@@ -314,39 +418,45 @@ export function Chat(props: { showSideBar?: () => void }) {
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {!isUser && (
-                    <div className={styles["chat-message-top-actions"]}>
-                      {message.streaming ? (
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => onUserStop(i)}
-                        >
-                          {Locale.Chat.Actions.Stop}
-                        </div>
-                      ) : (
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => onResend(i)}
-                        >
-                          {Locale.Chat.Actions.Retry}
-                        </div>
-                      )}
+                  {!isUser &&
+                    !(message.preview || message.content.length === 0) && (
+                      <div className={styles["chat-message-top-actions"]}>
+                        {message.streaming ? (
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onUserStop(i)}
+                          >
+                            {Locale.Chat.Actions.Stop}
+                          </div>
+                        ) : (
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onResend(i)}
+                          >
+                            {Locale.Chat.Actions.Retry}
+                          </div>
+                        )}
 
-                      <div
-                        className={styles["chat-message-top-action"]}
-                        onClick={() => copyToClipboard(message.content)}
-                      >
-                        {Locale.Chat.Actions.Copy}
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => copyToClipboard(message.content)}
+                        >
+                          {Locale.Chat.Actions.Copy}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />
                   ) : (
                     <div
                       className="markdown-body"
+                      style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen()) return;
+                        setUserInput(message.content);
+                      }}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -363,23 +473,28 @@ export function Chat(props: { showSideBar?: () => void }) {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "1px" }}>
           -
         </div>
       </div>
 
       <div className={styles["chat-input-panel"]}>
+        <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
+            ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
-            rows={3}
-            onInput={(e) => setUserInput(e.currentTarget.value)}
+            rows={4}
+            onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
-            onKeyDown={(e) => onInputKeyDown(e as any)}
+            onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
-            onBlur={() => setAutoScroll(false)}
-            autoFocus
+            onBlur={() => {
+              setAutoScroll(false);
+              setTimeout(() => setPromptHints([]), 500);
+            }}
+            autoFocus={!props?.sideBarShowing}
           />
           <IconButton
             icon={<SendWhiteIcon />}
@@ -406,9 +521,11 @@ function useSwitchTheme() {
       document.body.classList.add("light");
     }
 
-    const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
+    const themeColor = getComputedStyle(document.body)
+      .getPropertyValue("--theme-color")
+      .trim();
     const metaDescription = document.querySelector('meta[name="theme-color"]');
-    metaDescription?.setAttribute('content', themeColor);
+    metaDescription?.setAttribute("content", themeColor);
   }, [config.theme]);
 }
 
@@ -486,7 +603,7 @@ export function Home() {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
@@ -504,7 +621,9 @@ export function Home() {
   return (
     <div
       className={`${
-        config.tightBorder ? styles["tight-container"] : styles.container
+        config.tightBorder && !isMobileScreen()
+          ? styles["tight-container"]
+          : styles.container
       }`}
     >
       <div
@@ -561,7 +680,10 @@ export function Home() {
             <IconButton
               icon={<AddIcon />}
               text={Locale.Home.NewChat}
-              onClick={createNewSession}
+              onClick={() => {
+                createNewSession();
+                setShowSideBar(false);
+              }}
             />
           </div>
         </div>
@@ -576,7 +698,11 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+          <Chat
+            key="chat"
+            showSideBar={() => setShowSideBar(true)}
+            sideBarShowing={showSideBar}
+          />
         )}
       </div>
     </div>
