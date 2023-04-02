@@ -105,8 +105,8 @@ const es: LocaleType = {
     },
     Usage: {
       Title: "Saldo de la cuenta",
-      SubTitle(granted: any, used: any) {
-        return `Total $${granted}, Usado $${used}`;
+      SubTitle(used: any) {
+        return `Usado $${used}`;
       },
       IsChecking: "Comprobando...",
       Check: "Comprobar de nuevo",
@@ -142,7 +142,7 @@ const es: LocaleType = {
       Topic:
         "Por favor, genera un título de cuatro a cinco palabras que resuma nuestra conversación sin ningún inicio, puntuación, comillas, puntos, símbolos o texto adicional. Elimina las comillas que lo envuelven.",
       Summarize:
-        "Resuma nuestra discusión brevemente en 50 caracteres o menos para usarlo como un recordatorio para futuros contextos.",
+        "Resuma nuestra discusión brevemente en 200 caracteres o menos para usarlo como un recordatorio para futuros contextos.",
     },
     ConfirmClearAll:
       "¿Confirmar para borrar todos los datos de chat y configuración?",
@@ -151,6 +151,11 @@ const es: LocaleType = {
     Success: "Copiado al portapapeles",
     Failed:
       "La copia falló, por favor concede permiso para acceder al portapapeles",
+  },
+  Context: {
+    Toast: (x: any) => `With ${x} contextual prompts`,
+    Edit: "Contextual and Memory Prompts",
+    Add: "Add One",
   },
 };
 
