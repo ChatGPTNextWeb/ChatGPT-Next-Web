@@ -188,7 +188,7 @@ input[type="text"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
-  height: 36px;
+  min-height: 36px;
   box-sizing: border-box;
   background: var(--white);
   color: var(--black);
