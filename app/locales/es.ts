@@ -78,7 +78,7 @@ const es: LocaleType = {
     SendKey: "Tecla de envío",
     Theme: "Tema",
     TightBorder: "Borde ajustado",
-    SendPreviewBubble: "Send preview bubble",
+    SendPreviewBubble: "Enviar burbuja de vista previa",
     Prompt: {
       Disable: {
         Title: "Desactivar autocompletado",
