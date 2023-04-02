@@ -286,6 +286,7 @@ function useScrollToBottom() {
     const dom = scrollRef.current;
     if (dom && autoScroll) {
       setTimeout(() => (dom.scrollTop = dom.scrollHeight), 1);
+      setAutoScroll(false);
     }
   });
 
