@@ -278,6 +278,18 @@ export function Settings(props: { closeSettings: () => void }) {
               }
             ></input>
           </SettingItem>
+
+          <SettingItem title={Locale.Settings.SendPreviewBubble}>
+            <input
+              type="checkbox"
+              checked={config.sendPreviewBubble}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.sendPreviewBubble = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </SettingItem>
         </List>
         <List>
           <SettingItem
