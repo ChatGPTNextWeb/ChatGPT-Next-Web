@@ -164,6 +164,27 @@ export function PromptHints(props: {
   );
 }
 
+function useScrollToBottom() {
+  // for auto-scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  // auto scroll
+  useLayoutEffect(() => {
+    const dom = scrollRef.current;
+
+    if (dom && autoScroll) {
+      dom.scrollTop = dom.scrollHeight;
+    }
+  });
+
+  return {
+    scrollRef,
+    autoScroll,
+    setAutoScroll,
+  };
+}
+
 export function Chat(props: {
   showSideBar?: () => void;
   sideBarShowing?: boolean;
@@ -181,6 +202,7 @@ export function Chat(props: {
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
+  const { scrollRef, setAutoScroll } = useScrollToBottom();
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -239,7 +261,6 @@ export function Chat(props: {
 
   // stop response
   const onUserStop = (messageIndex: number) => {
-    console.log(ControllerPool, sessionIndex, messageIndex);
     ControllerPool.stop(sessionIndex, messageIndex);
   };
 
@@ -276,10 +297,6 @@ export function Chat(props: {
     }
   };
 
-  // for auto-scroll
-  const latestMessageRef = useRef<HTMLDivElement>(null);
-  const [autoScroll, setAutoScroll] = useState(true);
-
   const config = useChatStore((state) => state.config);
 
   // preview messages
@@ -308,28 +325,6 @@ export function Chat(props: {
           ]
         : [],
     );
-
-  // auto scroll
-  useLayoutEffect(() => {
-    setTimeout(() => {
-      const dom = latestMessageRef.current;
-      const inputDom = inputRef.current;
-
-      // only scroll when input overlaped message body
-      let shouldScroll = true;
-      if (dom && inputDom) {
-        const domRect = dom.getBoundingClientRect();
-        const inputRect = inputDom.getBoundingClientRect();
-        shouldScroll = domRect.top > inputRect.top;
-      }
-
-      if (dom && autoScroll && shouldScroll) {
-        dom.scrollIntoView({
-          block: "end",
-        });
-      }
-    }, 500);
-  });
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -387,7 +382,7 @@ export function Chat(props: {
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div className={styles["chat-body"]} ref={scrollRef}>
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -463,9 +458,6 @@ export function Chat(props: {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "1px" }}>
-          -
-        </div>
       </div>
 
       <div className={styles["chat-input-panel"]}>
