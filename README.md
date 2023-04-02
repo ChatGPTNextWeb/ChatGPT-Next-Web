@@ -182,13 +182,6 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 ![更多展示 More](./static/more.png)
 
-## 捐赠 Donate USDT
-
-> BNB Smart Chain (BEP 20)
-
-```
-0x67cD02c7EB62641De576a1fA3EdB32eA0c3ffD89
-```
 
 ## 鸣谢 Special Thanks
 
