@@ -451,7 +451,7 @@ export function Chat(props: {
               role: "user",
               content: userInput,
               date: new Date().toLocaleString(),
-              preview: false,
+              preview: true,
             },
           ]
         : [],
