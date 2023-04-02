@@ -104,8 +104,8 @@ const cn = {
     },
     Usage: {
       Title: "账户余额",
-      SubTitle(granted: any, used: any) {
-        return `总共 $${granted}，已使用 $${used}`;
+      SubTitle(used: any) {
+        return `本月已使用 $${used}`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
@@ -139,13 +139,18 @@ const cn = {
       Topic:
         "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊”",
       Summarize:
-        "简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 50 字以内",
+        "简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 200 字以内",
     },
     ConfirmClearAll: "确认清除所有聊天、设置数据？",
   },
   Copy: {
     Success: "已写入剪切板",
     Failed: "复制失败，请赋予剪切板权限",
+  },
+  Context: {
+    Toast: (x: any) => `已设置 ${x} 条前置上下文`,
+    Edit: "前置上下文和历史记忆",
+    Add: "新增一条",
   },
 };
 
