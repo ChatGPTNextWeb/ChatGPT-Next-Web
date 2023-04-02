@@ -103,8 +103,8 @@ const cn = {
     },
     Usage: {
       Title: "账户余额",
-      SubTitle(granted: any, used: any) {
-        return `总共 $${granted}，已使用 $${used}`;
+      SubTitle(used: any) {
+        return `本月已使用 $${used}`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
