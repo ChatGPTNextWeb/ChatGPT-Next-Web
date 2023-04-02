@@ -128,6 +128,8 @@
   justify-content: center;
 
   .toast-content {
+    max-width: 80vw;
+    word-break: break-all;
     font-size: 14px;
     background-color: var(--white);
     box-shadow: var(--card-shadow);
