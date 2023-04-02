@@ -152,6 +152,11 @@ const es: LocaleType = {
     Failed:
       "La copia falló, por favor concede permiso para acceder al portapapeles",
   },
+  Context: {
+    Toast: (x: any) => `With ${x} contextual prompts`,
+    Edit: "Contextual and Memory Prompts",
+    Add: "Add One",
+  },
 };
 
 export default es;
