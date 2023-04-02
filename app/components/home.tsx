@@ -91,7 +91,10 @@ export function ChatItem(props: {
       onClick={props.onClick}
     >
       <div className={styles["chat-item-info-collapse"]}>
-        {Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")}
+        {Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
+          .length <= 3
+          ? Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
+          : ":)"}
       </div>
       <div
         className={
