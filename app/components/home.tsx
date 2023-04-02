@@ -149,11 +149,12 @@ export function Home() {
                   setOpenSettings(true);
                   setShowSideBar(false);
                 }}
+                shadow
               />
             </div>
             <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} />
+                <IconButton icon={<GithubIcon />} shadow />
               </a>
             </div>
           </div>
@@ -165,6 +166,7 @@ export function Home() {
                 createNewSession();
                 setShowSideBar(false);
               }}
+              shadow
             />
           </div>
         </div>
