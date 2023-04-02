@@ -138,6 +138,32 @@ OpenAI 接口协议。
 
 Override openai api request protocol.
 
+## Azure 支持 Azure Support
+
+> 如果你使用 Azure OpenAI 则上述 `OPENAI_API_KEY` 环境变量可以不填写。如果同时填写了 `OPENAI_API_KEY` 和 Azure 相关的环境变量会优先使用 OpenAI 而不是 Azure OpenAI.
+>
+> If you use Azure OpenAI, the environment `OPENAI_API_KEY` mentioned above can be ignored. If you set both `OPENAI_API_KEY` and Azure related environment variables, OpenAI will be applied instead of Azure OpenAI.
+
+设置如下环境变量 Set below environment variables
+
+### `AZURE_API_KEY` (required)
+
+Azure OpenAI 密钥
+
+Your Azure OpenAI key
+
+### `AZURE_ACCOUNT` (required)
+
+Azure OpenAI 用户名，即资源名。你可以在终结点中找到它：`https://<your-azure-openai-account>.openai.azure.com/`
+
+Your Azure OpenAI account name, also the resource name. You may find it in the endpoint: `https://<your-azure-openai-account>.openai.azure.com/`
+
+### `AZURE_MODEL` (required)
+
+Azure OpenAI 模型部署名称。
+
+Your Azure OpenAI model deployment name.
+
 ## 开发 Development
 
 点击下方按钮，开始二次开发：
