@@ -1,4 +1,5 @@
 @import "./window.scss";
+@import "../styles/animation.scss";
 
 @mixin container {
   background-color: var(--white);
@@ -73,7 +74,7 @@
   .sidebar {
     position: absolute;
     left: -100%;
-    z-index: 999;
+    z-index: 1000;
     height: var(--full-height);
     transition: all ease 0.3s;
     box-shadow: none;
@@ -130,18 +131,6 @@
   border: 2px solid transparent;
   position: relative;
   overflow: hidden;
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0px);
-  }
 }
 
 .chat-item:hover {
