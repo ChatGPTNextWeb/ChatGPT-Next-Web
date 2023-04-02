@@ -51,7 +51,7 @@ const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
 export function Avatar(props: { role: Message["role"] }) {
   const config = useChatStore((state) => state.config);
 
-  if (props.role === "assistant") {
+  if (props.role !== "user") {
     return <BotIcon className={styles["user-avtar"]} />;
   }
 
@@ -99,7 +99,8 @@ function exportMessages(messages: Message[], topic: string) {
 }
 
 function PromptToast(props: {
-  showModal: boolean;
+  showToast?: boolean;
+  showModal?: boolean;
   setShowModal: (_: boolean) => void;
 }) {
   const chatStore = useChatStore();
@@ -126,16 +127,18 @@ function PromptToast(props: {
 
   return (
     <div className={chatStyle["prompt-toast"]} key="prompt-toast">
-      <div
-        className={chatStyle["prompt-toast-inner"] + " clickable"}
-        role="button"
-        onClick={() => props.setShowModal(true)}
-      >
-        <BrainIcon />
-        <span className={chatStyle["prompt-toast-content"]}>
-          {Locale.Context.Toast(context.length)}
-        </span>
-      </div>
+      {props.showToast && (
+        <div
+          className={chatStyle["prompt-toast-inner"] + " clickable"}
+          role="button"
+          onClick={() => props.setShowModal(true)}
+        >
+          <BrainIcon />
+          <span className={chatStyle["prompt-toast-content"]}>
+            {Locale.Context.Toast(context.length)}
+          </span>
+        </div>
+      )}
       {props.showModal && (
         <div className="modal-mask">
           <Modal
@@ -187,6 +190,7 @@ function PromptToast(props: {
                       icon={<DeleteIcon />}
                       className={chatStyle["context-delete-button"]}
                       onClick={() => removeContextPrompt(i)}
+                      bordered
                     />
                   </div>
                 ))}
@@ -281,7 +285,7 @@ function useScrollToBottom() {
   useLayoutEffect(() => {
     const dom = scrollRef.current;
     if (dom && autoScroll) {
-      setTimeout(() => (dom.scrollTop = dom.scrollHeight), 500);
+      setTimeout(() => (dom.scrollTop = dom.scrollHeight), 1);
     }
   });
 
@@ -310,6 +314,12 @@ export function Chat(props: {
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll } = useScrollToBottom();
+  const [hitBottom, setHitBottom] = useState(false);
+
+  const onChatBodyScroll = (e: HTMLElement) => {
+    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
+    setHitBottom(isTouchBottom);
+  };
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -441,7 +451,7 @@ export function Chat(props: {
               role: "user",
               content: userInput,
               date: new Date().toLocaleString(),
-              preview: false,
+              preview: true,
             },
           ]
         : [],
@@ -505,12 +515,17 @@ export function Chat(props: {
         </div>
 
         <PromptToast
+          showToast={!hitBottom}
           showModal={showPromptModal}
           setShowModal={setShowPromptModal}
         />
       </div>
 
-      <div className={styles["chat-body"]} ref={scrollRef}>
+      <div
+        className={styles["chat-body"]}
+        ref={scrollRef}
+        onScroll={(e) => onChatBodyScroll(e.currentTarget)}
+      >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
 
@@ -533,6 +548,7 @@ export function Chat(props: {
                 <div
                   className={styles["chat-message-item"]}
                   onMouseOver={() => inputRef.current?.blur()}
+                  onTouchStart={() => inputRef.current?.blur()}
                 >
                   {!isUser &&
                     !(message.preview || message.content.length === 0) && (
@@ -612,7 +628,8 @@ export function Chat(props: {
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
-            className={styles["chat-input-send"] + " no-dark"}
+            className={styles["chat-input-send"]}
+            noDark
             onClick={onUserSubmit}
           />
         </div>

@@ -8,6 +8,7 @@ export function IconButton(props: {
   text?: string;
   bordered?: boolean;
   shadow?: boolean;
+  noDark?: boolean;
   className?: string;
   title?: string;
 }) {
@@ -23,7 +24,11 @@ export function IconButton(props: {
       title={props.title}
       role="button"
     >
-      <div className={styles["icon-button-icon"]}>{props.icon}</div>
+      <div
+        className={styles["icon-button-icon"] + ` ${props.noDark && "no-dark"}`}
+      >
+        {props.icon}
+      </div>
       {props.text && (
         <div className={styles["icon-button-text"]}>{props.text}</div>
       )}
