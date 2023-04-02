@@ -51,10 +51,15 @@
   --window-width: 90vw;
   --window-height: 90vh;
   --sidebar-width: 300px;
+<<<<<<< HEAD
   --sidebar-collapse-width: 75px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --window-content-width-collapse: calc(100% - var(--sidebar-collapse-width));
   --message-max-width: 90%;
+=======
+  --window-content-width: calc(100% - var(--sidebar-width));
+  --message-max-width: 80%;
+>>>>>>> a6c598c0172ee0121b92e7a114c7145846614006
   --full-height: 100%;
 }
 

@@ -11,6 +11,10 @@ import { trimTopic } from "../utils";
 
 import Locale from "../locales";
 
+if (!Array.prototype.at) {
+  require("array.prototype.at/auto");
+}
+
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
@@ -39,6 +43,7 @@ export interface ChatConfig {
   fontSize: number;
   theme: Theme;
   tightBorder: boolean;
+  sendPreviewBubble: boolean;
 
   disablePromptHint: boolean;
 
@@ -128,6 +133,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   fontSize: 14,
   theme: Theme.Auto as Theme,
   tightBorder: false,
+  sendPreviewBubble: true,
 
   disablePromptHint: false,
 
@@ -185,6 +191,7 @@ interface ChatStore {
   config: ChatConfig;
   sessions: ChatSession[];
   currentSessionIndex: number;
+  clearSessions: () => void;
   removeSession: (index: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
@@ -225,6 +232,12 @@ export const useChatStore = create<ChatStore>()(
         ...DEFAULT_CONFIG,
       },
 
+      clearSessions() {
+        set(() => ({
+          sessions: [createEmptySession()],
+          currentSessionIndex: 0,
+        }));
+      },
       resetConfig() {
         set(() => ({ config: { ...DEFAULT_CONFIG } }));
       },
@@ -374,7 +387,7 @@ export const useChatStore = create<ChatStore>()(
         const config = get().config;
         const n = session.messages.length;
         const recentMessages = session.messages.slice(
-          n - config.historyMessageCount,
+          Math.max(0, n - config.historyMessageCount),
         );
 
         const memoryPrompt = get().getMemoryPrompt();

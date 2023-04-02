@@ -3,8 +3,10 @@ import { requestOpenai } from "../common";
 
 async function makeRequest(req: NextRequest) {
   try {
-    const res = await requestOpenai(req);
-    return new Response(res.body);
+    const api = await requestOpenai(req);
+    const res = new NextResponse(api.body);
+    res.headers.set("Content-Type", "application/json");
+    return res;
   } catch (e) {
     console.error("[OpenAI] ", req.body, e);
     return NextResponse.json(
