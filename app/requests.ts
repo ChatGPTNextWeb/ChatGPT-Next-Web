@@ -88,7 +88,11 @@ export async function requestUsage() {
     const response = (await res.json()) as {
       total_usage: number;
     };
-    return Math.round(response.total_usage) / 100;
+
+    if (response.total_usage) {
+      response.total_usage = Math.round(response.total_usage) / 100;
+    }
+    return response.total_usage;
   } catch (error) {
     console.error("[Request usage] ", error, res.body);
   }
