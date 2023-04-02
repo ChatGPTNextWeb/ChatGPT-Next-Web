@@ -2,6 +2,10 @@ import type { ChatRequest, ChatReponse } from "./api/openai/typing";
 import { filterConfig, Message, ModelConfig, useAccessStore } from "./store";
 import Locale from "./locales";
 
+if (!Array.prototype.at) {
+  require('array.prototype.at/auto');
+}
+
 const TIME_OUT_MS = 30000;
 
 const makeRequestParam = (
@@ -9,7 +13,7 @@ const makeRequestParam = (
   options?: {
     filterBot?: boolean;
     stream?: boolean;
-  },
+  }
 ): ChatRequest => {
   let sendMessages = messages.map((v) => ({
     role: v.role,
@@ -69,10 +73,9 @@ export async function requestChat(messages: Message[]) {
 }
 
 export async function requestUsage() {
-  const res = await requestOpenaiClient("dashboard/billing/credit_grants")(
-    null,
-    "GET",
-  );
+  const res = await requestOpenaiClient(
+    "dashboard/billing/credit_grants?_vercel_no_cache=1"
+  )(null, "GET");
 
   try {
     const response = (await res.json()) as {
@@ -94,7 +97,7 @@ export async function requestChatStream(
     onMessage: (message: string, done: boolean) => void;
     onError: (error: Error) => void;
     onController?: (controller: AbortController) => void;
-  },
+  }
 ) {
   const req = makeRequestParam(messages, {
     stream: true,
@@ -189,7 +192,7 @@ export const ControllerPool = {
   addController(
     sessionIndex: number,
     messageIndex: number,
-    controller: AbortController,
+    controller: AbortController
   ) {
     const key = this.key(sessionIndex, messageIndex);
     this.controllers[key] = controller;
