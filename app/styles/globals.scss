@@ -117,7 +117,7 @@ body {
 
 select {
   border: var(--border-in-light);
-  padding: 8px 10px;
+  padding: 10px;
   border-radius: 10px;
   appearance: none;
   cursor: pointer;
@@ -188,7 +188,7 @@ input[type="text"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
-  height: 32px;
+  height: 36px;
   box-sizing: border-box;
   background: var(--white);
   color: var(--black);
@@ -254,5 +254,17 @@ pre {
     &:hover {
       opacity: 1;
     }
+  }
+}
+
+.clickable {
+  cursor: pointer;
+
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
+
+  &:hover {
+    filter: brightness(0.9);
   }
 }

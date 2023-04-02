@@ -142,7 +142,7 @@ const en: LocaleType = {
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
-        "Summarize our discussion briefly in 50 characters or less to use as a prompt for future context.",
+        "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
     },
     ConfirmClearAll: "Confirm to clear all chat and setting data?",
   },
