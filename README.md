@@ -35,14 +35,17 @@ One-Click to deploy your own ChatGPT web UI.
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
+- I18n supported
 
 ## 开发计划 Roadmap
+
 - System Prompt: pin a user defined prompt as system prompt 为每个对话设置系统 Prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
 - User Prompt: user can edit and save custom prompts to prompt list 允许用户自行编辑内置 Prompt 列表
 - Self-host Model: support llama, alpaca, ChatGLM, BELLE etc. 支持自部署的大语言模型
 - Plugins: support network search, caculator, any other apis etc. 插件机制，支持联网搜索、计算器、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
 
 ### 不会开发的功能 Not in Plan
+
 - User login, accounts, cloud sync 用户登录、账号管理、消息云同步
 - UI text customize 界面文字自定义
 
@@ -179,9 +182,10 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 ![更多展示 More](./static/more.png)
 
-
 ## 捐赠 Donate USDT
+
 > BNB Smart Chain (BEP 20)
+
 ```
 0x67cD02c7EB62641De576a1fA3EdB32eA0c3ffD89
 ```
