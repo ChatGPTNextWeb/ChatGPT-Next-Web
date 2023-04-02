@@ -49,14 +49,14 @@ function SettingItem(props: {
 
 export function Settings(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [config, updateConfig, resetConfig, clearAllData] = useChatStore(
-    (state) => [
+  const [config, updateConfig, resetConfig, clearAllData, clearSessions] =
+    useChatStore((state) => [
       state.config,
       state.updateConfig,
       state.resetConfig,
       state.clearAllData,
-    ],
-  );
+      state.clearSessions,
+    ]);
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -120,7 +120,7 @@ export function Settings(props: { closeSettings: () => void }) {
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ClearIcon />}
-              onClick={clearAllData}
+              onClick={clearSessions}
               bordered
               title={Locale.Settings.Actions.ClearAll}
             />
