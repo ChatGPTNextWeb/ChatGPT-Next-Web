@@ -384,7 +384,7 @@ export const useChatStore = create<ChatStore>()(
         const config = get().config;
         const n = session.messages.length;
         const recentMessages = session.messages.slice(
-          - config.historyMessageCount,
+          Math.max(0, n - config.historyMessageCount),
         );
 
         const memoryPrompt = get().getMemoryPrompt();
