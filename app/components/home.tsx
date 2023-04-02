@@ -679,7 +679,6 @@ const isWorkWechat = () => {
     >
       {!isWorkWechat() ? (
         <h2 className="not-wx-work">请在企业微信里使用ChatGPT</h2>
-        <h2 className="not-wx-work">工作台-->ChatGPT</h2>
       ) : typeof isAllow === "boolean" && !isAllow ? (
         <h2 className="not-allow">
           <span className="text">您不在白名单内，请走工单审批使用Gpt~</span>
