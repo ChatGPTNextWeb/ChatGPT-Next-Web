@@ -608,7 +608,7 @@ export function Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
-  const [isAllow, setIsAllow] = useState(undefined);
+  const [isAllow, setIsAllow] = useState(true);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
