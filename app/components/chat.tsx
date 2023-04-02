@@ -286,7 +286,6 @@ function useScrollToBottom() {
     const dom = scrollRef.current;
     if (dom && autoScroll) {
       setTimeout(() => (dom.scrollTop = dom.scrollHeight), 1);
-      setAutoScroll(false);
     }
   });
 
@@ -459,6 +458,11 @@ export function Chat(props: {
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+
+  // Auto focus
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   return (
     <div className={styles.chat} key={session.id}>
