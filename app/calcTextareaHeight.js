@@ -1,5 +1,6 @@
 /**
  * fork from element-ui
+ * https://github.com/ElemeFE/element/blob/master/packages/input/src/calcTextareaHeight.js
  */
 
 let hiddenTextarea;
