@@ -11,10 +11,6 @@ import { trimTopic } from "../utils";
 
 import Locale from "../locales";
 
-if (!Array.prototype.at) {
-  require("array.prototype.at/auto");
-}
-
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
@@ -162,6 +158,11 @@ export interface ChatSession {
 }
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
+export const BOT_HELLO = {
+  role: "assistant",
+  content: Locale.Store.BotHello,
+  date: "",
+};
 
 function createEmptySession(): ChatSession {
   const createDate = new Date().toLocaleString();
@@ -170,13 +171,7 @@ function createEmptySession(): ChatSession {
     id: Date.now(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
-    messages: [
-      {
-        role: "assistant",
-        content: Locale.Store.BotHello,
-        date: createDate,
-      },
-    ],
+    messages: [],
     stat: {
       tokenCount: 0,
       wordCount: 0,
