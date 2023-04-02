@@ -650,8 +650,8 @@ const isWorkWechat = () => {
 
   // 判断ua和微信浏览器的标识头是否匹配
   if (
-    ua.match(/micromessenger/i) == "micromessenger" &&
-    ua.match(/wxwork/i) == "wxwork"
+    /micromessenger/i.test(ua) &&
+    /wxwork/i.test(ua)
   ) {
     return true;
   } else {
