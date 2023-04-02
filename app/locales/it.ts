@@ -107,8 +107,8 @@ const it: LocaleType = {
     },
     Usage: {
       Title: "Bilancio Account",
-      SubTitle(granted: any, used: any) {
-        return `Totale $${granted}, Usato $${used}`;
+      SubTitle(used: any) {
+        return `Usato in questo mese $${used}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
@@ -144,7 +144,7 @@ const it: LocaleType = {
       Topic:
         "Si prega di generare un titolo di quattro o cinque parole che riassuma la nostra conversazione senza alcuna traccia, punteggiatura, virgolette, punti, simboli o testo aggiuntivo. Rimuovere le virgolette",
       Summarize:
-        "Riassumi brevemente la nostra discussione in 50 caratteri o meno per usarla come spunto per una futura conversazione.",
+        "Riassumi brevemente la nostra discussione in 200 caratteri o meno per usarla come spunto per una futura conversazione.",
     },
     ConfirmClearAll:
       "Confermi la cancellazione di tutti i dati della chat e delle impostazioni?",
@@ -153,6 +153,11 @@ const it: LocaleType = {
     Success: "Copiato sugli appunti",
     Failed:
       "Copia fallita, concedere l'autorizzazione all'accesso agli appunti",
+  },
+  Context: {
+    Toast: (x: any) => `Con ${x} prompts contestuali`,
+    Edit: "Prompt contestuali e di memoria",
+    Add: "Aggiungi altro",
   },
 };
 
