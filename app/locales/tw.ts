@@ -77,6 +77,7 @@ const tw: LocaleType = {
     SendKey: "發送鍵",
     Theme: "主題",
     TightBorder: "緊湊邊框",
+    SendPreviewBubble: "發送預覽氣泡",
     Prompt: {
       Disable: {
         Title: "停用提示詞自動補全",
