@@ -67,7 +67,7 @@ const cn = {
     },
 
     Update: {
-      Version: (x: string) => `免梯子版ChatGPT`,
+      Version: (x: string) => `免魔法版ChatGPT`,
       IsLatest: "已是最新版本",
       CheckUpdate: "检查更新",
       IsChecking: "正在检查更新...",
