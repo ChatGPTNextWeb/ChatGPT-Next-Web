@@ -132,9 +132,9 @@ function useSubmitHandler() {
   const config = useChatStore((state) => state.config);
   const submitKey = config.submitKey;
 
-  const shouldSubmit = (e: KeyboardEvent) => {
+  const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key !== "Enter") return false;
-
+    if(e.key==='Enter' && e.nativeEvent.isComposing) return false
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
@@ -256,7 +256,7 @@ export function Chat(props: {
   };
 
   // check if should send message
-  const onInputKeyDown = (e: KeyboardEvent) => {
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (shouldSubmit(e)) {
       onUserSubmit();
       e.preventDefault();
@@ -488,7 +488,7 @@ export function Chat(props: {
             rows={4}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
-            onKeyDown={(e) => onInputKeyDown(e as any)}
+            onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
             onBlur={() => {
               setAutoScroll(false);
