@@ -50,8 +50,8 @@
 
   --window-width: 90vw;
   --window-height: 90vh;
-  --sidebar-width: 380px;
-  --sidebar-collapse-width: 8vh;
+  --sidebar-width: 300px;
+  --sidebar-collapse-width: 75px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --window-content-width-collapse: calc(100% - var(--sidebar-collapse-width));
   --message-max-width: 90%;

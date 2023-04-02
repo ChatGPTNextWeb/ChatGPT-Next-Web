@@ -815,7 +815,7 @@ export function Home() {
         className={
           sidebarCollapse
             ? styles["window-content-collapse"]
-            : styles["window-content-collapse"]
+            : styles["window-content"]
         }
       >
         {openSettings ? (

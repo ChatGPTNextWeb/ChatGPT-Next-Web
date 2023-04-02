@@ -168,7 +168,14 @@
 .chat-list {
 }
 .chat-item-collapse {
-  padding: 4px 11px;
+  //make content center
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  padding-top: 4px;
+  padding-bottom: 4px;
   background-color: var(--white);
   border-radius: 10px;
   margin-bottom: 10px;
