@@ -35,7 +35,7 @@ const cn = {
     Download: "下载文件",
   },
   Memory: {
-    Title: "上下文记忆 Prompt",
+    Title: "历史记忆",
     EmptyContent: "尚未记忆",
     Copy: "全部复制",
   },
