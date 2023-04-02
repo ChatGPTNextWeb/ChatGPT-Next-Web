@@ -20,7 +20,7 @@ import {
   useUpdateStore,
   useAccessStore,
 } from "../store";
-import { Avatar, PromptHints } from "./home";
+import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { getCurrentVersion } from "../utils";
@@ -72,7 +72,6 @@ export function Settings(props: { closeSettings: () => void }) {
   }
 
   const [usage, setUsage] = useState<{
-    granted?: number;
     used?: number;
   }>();
   const [loadingUsage, setLoadingUsage] = useState(false);
@@ -81,8 +80,7 @@ export function Settings(props: { closeSettings: () => void }) {
     requestUsage()
       .then((res) =>
         setUsage({
-          granted: res?.total_granted,
-          used: res?.total_used,
+          used: res,
         }),
       )
       .finally(() => {
@@ -285,7 +283,8 @@ export function Settings(props: { closeSettings: () => void }) {
               checked={config.sendPreviewBubble}
               onChange={(e) =>
                 updateConfig(
-                  (config) => (config.sendPreviewBubble = e.currentTarget.checked),
+                  (config) =>
+                    (config.sendPreviewBubble = e.currentTarget.checked),
                 )
               }
             ></input>
@@ -360,10 +359,7 @@ export function Settings(props: { closeSettings: () => void }) {
             subTitle={
               loadingUsage
                 ? Locale.Settings.Usage.IsChecking
-                : Locale.Settings.Usage.SubTitle(
-                    usage?.granted ?? "[?]",
-                    usage?.used ?? "[?]",
-                  )
+                : Locale.Settings.Usage.SubTitle(usage?.used ?? "[?]")
             }
           >
             {loadingUsage ? (
