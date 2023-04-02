@@ -1,6 +1,7 @@
 import type { ChatRequest, ChatReponse } from "./api/openai/typing";
 import { filterConfig, Message, ModelConfig, useAccessStore } from "./store";
 import Locale from "./locales";
+import { showToast } from "./components/ui-lib";
 
 const TIME_OUT_MS = 30000;
 
@@ -87,7 +88,16 @@ export async function requestUsage() {
   try {
     const response = (await res.json()) as {
       total_usage: number;
+      error?: {
+        type: string;
+        message: string;
+      };
     };
+
+    if (response.error && response.error.type) {
+      showToast(response.error.message);
+      return;
+    }
 
     if (response.total_usage) {
       response.total_usage = Math.round(response.total_usage) / 100;
