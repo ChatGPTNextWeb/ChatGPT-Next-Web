@@ -7,6 +7,7 @@ export function IconButton(props: {
   icon: JSX.Element;
   text?: string;
   bordered?: boolean;
+  shadow?: boolean;
   className?: string;
   title?: string;
 }) {
@@ -14,10 +15,13 @@ export function IconButton(props: {
     <div
       className={
         styles["icon-button"] +
-        ` ${props.bordered && styles.border} ${props.className ?? ""}`
+        ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
+          props.className ?? ""
+        } clickable`
       }
       onClick={props.onClick}
       title={props.title}
+      role="button"
     >
       <div className={styles["icon-button-icon"]}>{props.icon}</div>
       {props.text && (
