@@ -7,9 +7,9 @@
 
 One-Click to deploy your own ChatGPT web UI.
 
-[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [微信群](https://user-images.githubusercontent.com/16968934/227772522-b3ba3713-9206-4c8d-a81f-22300b7c313a.jpg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
+[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Donate](#捐赠-donate-usdt)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
@@ -22,6 +22,7 @@ One-Click to deploy your own ChatGPT web UI.
 - 在 1 分钟内使用 Vercel **免费一键部署**
 - 精心设计的 UI，响应式设计，支持深色模式
 - 极快的首屏加载速度（~85kb）
+- 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
 - 一键导出聊天记录，完整的 Markdown 支持
 - 拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
@@ -31,14 +32,25 @@ One-Click to deploy your own ChatGPT web UI.
 - **Deploy for free with one-click** on Vercel in under 1 minute
 - Responsive design, and dark mode
 - Fast first screen loading speed (~85kb)
+- Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
 
-## 使用
+## 开发计划 Roadmap
+- System Prompt: pin a user defined prompt as system prompt 为每个对话设置系统 Prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
+- User Prompt: user can edit and save custom prompts to prompt list 允许用户自行编辑内置 Prompt 列表
+- Self-host Model: support llama, alpaca, ChatGLM, BELLE etc. 支持自部署的大语言模型
+- Plugins: support network search, caculator, any other apis etc. 插件机制，支持联网搜索、计算器、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
+
+### 不会开发的功能 Not in Plan
+- User login, accounts, cloud sync 用户登陆、账号管理、消息云同步
+- UI text customize 界面文字自定义
+
+## 开始使用
 
 1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys);
 2. 点击右侧按钮开始部署：
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)，直接使用 Github 账号登陆即可，记得在环境变量页填入 API Key；
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)，直接使用 Github 账号登陆即可，记得在环境变量页填入 API Key；
 3. 部署完毕后，即可开始使用；
 4. （可选）[绑定自定义域名](https://vercel.com/docs/concepts/projects/domains/add-a-domain)：Vercel 分配的域名 DNS 在某些区域被污染了，绑定自定义域名即可直连。
 
@@ -46,7 +58,7 @@ One-Click to deploy your own ChatGPT web UI.
 
 1. Get [OpenAI API Key](https://platform.openai.com/account/api-keys);
 2. Click
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web);
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web);
 3. Enjoy :)
 
 ## 保持更新 Keep Updated
@@ -76,9 +88,9 @@ This project will be continuously maintained. If you want to keep the code repos
 
 You can star or watch this project or follow author to get release notifictions in time.
 
-## 访问控制 Access Control
+## 配置密码 Password
 
-本项目提供有限的权限控制功能，请在环境变量页增加名为 `CODE` 的环境变量，值为用英文逗号分隔的自定义控制码：
+本项目提供有限的权限控制功能，请在 Vercel 项目控制面板的环境变量页增加名为 `CODE` 的环境变量，值为用英文逗号分隔的自定义密码：
 
 ```
 code1,code2,code3
@@ -86,13 +98,45 @@ code1,code2,code3
 
 增加或修改该环境变量后，请**重新部署**项目使改动生效。
 
-This project provides limited access control. Please add an environment variable named `CODE` on the environment variables page. The value should be a custom control code separated by comma like this:
+This project provides limited access control. Please add an environment variable named `CODE` on the vercel environment variables page. The value should be passwords separated by comma like this:
 
 ```
 code1,code2,code3
 ```
 
 After adding or modifying this environment variable, please redeploy the project for the changes to take effect.
+
+## 环境变量 Environment Variables
+
+### `OPENAI_API_KEY` (required)
+
+OpanAI 密钥。
+
+Your openai api key.
+
+### `CODE` (optional)
+
+访问密码，可选，可以使用逗号隔开多个密码。
+
+Access passsword, separated by comma.
+
+### `BASE_URL` (optional)
+
+> Default: `api.openai.com`
+
+OpenAI 接口代理 URL。
+
+Override openai api request base url.
+
+### `PROTOCOL` (optional)
+
+> Default: `https`
+
+> Values: `http` | `https`
+
+OpenAI 接口协议。
+
+Override openai api request protocol.
 
 ## 开发 Development
 
@@ -117,16 +161,8 @@ OPENAI_API_KEY=<your api key here>
 
 ### 本地部署 Local Deployment
 
-请直接询问 ChatGPT，使用下列 Prompt：
-
-```
-如何使用 pm2 和 yarn 部署 nextjs 项目到 ubuntu 服务器上，项目编译命令为 yarn build，启动命令为 yarn start，启动时需要设置环境变量为 OPENAI_API_KEY，端口为 3000，使用 ngnix 做反向代理
-```
-
-Please ask ChatGPT with prompt:
-
-```
-how to deploy nextjs project with pm2 and yarn on my ubuntu server, the build command is `yarn build`, the start command is `yarn start`, the project must start with env var named `OPENAI_API_KEY`, the port is 3000, use ngnix
+```shell
+bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
 ### 容器部署 Docker Deployment
@@ -143,15 +179,12 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 ![更多展示 More](./static/more.png)
 
-## 说明 Attention
 
-本项目的演示地址所用的 OpenAI 账户的免费额度将于 2023-04-01 过期，届时将无法通过演示地址在线体验。
-
-如果你想贡献出自己的 API Key，可以通过作者主页的邮箱发送给作者，并标注过期时间。
-
-The free trial of the OpenAI account used by the demo will expire on April 1, 2023, and the demo will not be available at that time.
-
-If you would like to contribute your API key, you can email it to the author and indicate the expiration date of the API key.
+## 捐赠 Donate USDT
+> BNB Smart Chain (BEP 20)
+```
+0x67cD02c7EB62641De576a1fA3EdB32eA0c3ffD89
+```
 
 ## 鸣谢 Special Thanks
 
@@ -159,13 +192,13 @@ If you would like to contribute your API key, you can email it to the author and
 
 [@mushan0x0](https://github.com/mushan0x0)
 [@ClarenceDan](https://github.com/ClarenceDan)
+[@zhangjia](https://github.com/zhangjia)
+[@hoochanlon](https://github.com/hoochanlon)
 
 ### 贡献者 Contributor
 
-[@AprilNEA](https://github.com/AprilNEA)
-[@iSource](https://github.com/iSource)
-[@iFwu](https://github.com/iFwu)
+[Contributors](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ## LICENSE
 
-- [Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)
+[Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)

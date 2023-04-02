@@ -839,21 +839,20 @@
 
 .markdown-body .highlight pre,
 .markdown-body pre {
-  padding: 16px;
+  padding: 16px 16px 8px 16px;
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: var(--color-canvas-subtle);
   border-radius: 6px;
 }
 
 .markdown-body pre code,
 .markdown-body pre tt {
-  display: inline;
-  max-width: auto;
+  display: inline-block;
+  max-width: 100%;
   padding: 0;
   margin: 0;
-  overflow: visible;
+  overflow-x: scroll;
   line-height: inherit;
   word-wrap: normal;
   background-color: transparent;
