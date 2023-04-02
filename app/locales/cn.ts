@@ -67,12 +67,12 @@ const cn = {
     },
 
     Update: {
-      Version: (x: string) => `当前版本：${x}`,
+      Version: (x: string) => `免梯子版ChatGPT`,
       IsLatest: "已是最新版本",
       CheckUpdate: "检查更新",
       IsChecking: "正在检查更新...",
-      FoundUpdate: (x: string) => `发现新版本：${x}`,
-      GoToUpdate: "前往更新",
+      FoundUpdate: (x: string) => `采用官方ChatGPT数据接口`,
+      GoToUpdate: "点我购买授权码",
     },
     SendKey: "发送键",
     Theme: "主题",
