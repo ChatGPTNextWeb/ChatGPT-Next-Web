@@ -35,6 +35,7 @@ One-Click to deploy your own ChatGPT web UI.
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
+- I18n supported
 
 ## 开发计划 Roadmap
 
