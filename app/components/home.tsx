@@ -307,18 +307,19 @@ export function Chat(props: {
             },
           ]
         : [],
-    ).concat(
-        userInput.length > 0 && config.sendPreviewBubble
-          ? [
-              {
-                role: "user",
-                content: userInput,
-                date: new Date().toLocaleString(),
-                preview: false,
-              },
-            ]
-          : [],
-    ); 
+    )
+    .concat(
+      userInput.length > 0 && config.sendPreviewBubble
+        ? [
+            {
+              role: "user",
+              content: userInput,
+              date: new Date().toLocaleString(),
+              preview: false,
+            },
+          ]
+        : [],
+    );
 
   // auto scroll
   useLayoutEffect(() => {
@@ -631,10 +632,10 @@ export function Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-          <div className={styles["sidebar-sub-title"]}>
+          <div className={styles["sidebar-title"]}>聊天机器人</div>
+          {/* <div className={styles["sidebar-sub-title"]}>
             Build your own AI assistant.
-          </div>
+          </div> */}
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
@@ -671,11 +672,11 @@ export function Home() {
                 }}
               />
             </div>
-            <div className={styles["sidebar-action"]}>
+            {/* <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} />
               </a>
-            </div>
+            </div> */}
           </div>
           <div>
             <IconButton
