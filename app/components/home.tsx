@@ -21,7 +21,13 @@ import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 
-import { Message, SubmitKey, useChatStore, ChatSession } from "../store";
+import {
+  Message,
+  SubmitKey,
+  useChatStore,
+  ChatSession,
+  BOT_HELLO,
+} from "../store";
 import { showModal, showToast } from "./ui-lib";
 import {
   copyToClipboard,
@@ -307,18 +313,19 @@ export function Chat(props: {
             },
           ]
         : [],
-    ).concat(
-        userInput.length > 0 && config.sendPreviewBubble
-          ? [
-              {
-                role: "user",
-                content: userInput,
-                date: new Date().toLocaleString(),
-                preview: false,
-              },
-            ]
-          : [],
-    ); 
+    )
+    .concat(
+      userInput.length > 0 && config.sendPreviewBubble
+        ? [
+            {
+              role: "user",
+              content: userInput,
+              date: new Date().toLocaleString(),
+              preview: false,
+            },
+          ]
+        : [],
+    );
 
   // auto scroll
   useLayoutEffect(() => {
