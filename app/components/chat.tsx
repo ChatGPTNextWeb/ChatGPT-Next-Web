@@ -133,13 +133,13 @@ function PromptToast(props: {
       >
         <BrainIcon />
         <span className={chatStyle["prompt-toast-content"]}>
-          已设置 {context.length} 条前置上下文
+          {Locale.Context.Toast(context.length)}
         </span>
       </div>
       {props.showModal && (
         <div className="modal-mask">
           <Modal
-            title="编辑前置上下文"
+            title={Locale.Context.Edit}
             onClose={() => props.setShowModal(false)}
             actions={[
               <IconButton
@@ -194,7 +194,7 @@ function PromptToast(props: {
                 <div className={chatStyle["context-prompt-row"]}>
                   <IconButton
                     icon={<AddIcon />}
-                    text="新增"
+                    text={Locale.Context.Add}
                     bordered
                     className={chatStyle["context-prompt-button"]}
                     onClick={() =>

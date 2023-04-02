@@ -146,6 +146,11 @@ const cn = {
     Success: "已写入剪切板",
     Failed: "复制失败，请赋予剪切板权限",
   },
+  Context: {
+    Toast: (x: any) => `已设置 ${x} 条前置上下文`,
+    Edit: "前置上下文和历史记忆",
+    Add: "新增一条",
+  },
 };
 
 export type LocaleType = typeof cn;

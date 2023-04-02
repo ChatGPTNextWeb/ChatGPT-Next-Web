@@ -54,7 +54,7 @@ const en: LocaleType = {
       Close: "Close",
     },
     Lang: {
-      Name: "Language",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       Options: {
         cn: "简体中文",
         en: "English",
@@ -149,6 +149,11 @@ const en: LocaleType = {
   Copy: {
     Success: "Copied to clipboard",
     Failed: "Copy failed, please grant permission to access clipboard",
+  },
+  Context: {
+    Toast: (x: any) => `With ${x} contextual prompts`,
+    Edit: "Contextual and Memory Prompts",
+    Add: "Add One",
   },
 };
 

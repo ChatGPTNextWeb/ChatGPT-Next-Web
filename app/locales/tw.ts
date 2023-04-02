@@ -145,6 +145,11 @@ const tw: LocaleType = {
     Success: "已複製到剪貼簿中",
     Failed: "複製失敗，請賦予剪貼簿權限",
   },
+  Context: {
+    Toast: (x: any) => `已設置 ${x} 條前置上下文`,
+    Edit: "前置上下文和歷史記憶",
+    Add: "新增壹條",
+  },
 };
 
 export default tw;
