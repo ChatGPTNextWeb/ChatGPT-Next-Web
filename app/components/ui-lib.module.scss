@@ -1,0 +1,160 @@
+.card {
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  padding: 10px;
+}
+
+.popover {
+  position: relative;
+}
+
+.popover-content {
+  position: absolute;
+  animation: slide-in 0.3s ease;
+  right: 0;
+  top: calc(100% + 10px);
+}
+
+.popover-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px;
+  border-bottom: var(--border-in-light);
+  padding: 10px 20px;
+  animation: slide-in ease 0.6s;
+}
+
+.list {
+  border: var(--border-in-light);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+  animation: slide-in ease 0.3s;
+}
+
+.list .list-item:last-child {
+  border: 0;
+}
+
+.modal-container {
+  box-shadow: var(--card-shadow);
+  background-color: var(--white);
+  border-radius: 12px;
+  width: 50vw;
+  animation: slide-in ease 0.3s;
+
+  --modal-padding: 20px;
+
+  .modal-header {
+    padding: var(--modal-padding);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--border-in-light);
+
+    .modal-title {
+      font-weight: bolder;
+      font-size: 16px;
+    }
+
+    .modal-close-btn {
+      cursor: pointer;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
+
+  .modal-content {
+    max-height: 40vh;
+    padding: var(--modal-padding);
+    overflow: auto;
+  }
+
+  .modal-footer {
+    padding: var(--modal-padding);
+    display: flex;
+    justify-content: flex-end;
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+
+      .modal-action {
+        &:not(:last-child) {
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+}
+
+.show {
+  opacity: 1;
+  transition: all ease 0.3s;
+  transform: translateY(0);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  animation: slide-in ease 0.6s;
+  z-index: 99999;
+}
+
+.hide {
+  opacity: 0;
+  transition: all ease 0.3s;
+  transform: translateY(20px);
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+
+  .toast-content {
+    font-size: 14px;
+    background-color: var(--white);
+    box-shadow: var(--card-shadow);
+    border: var(--border-in-light);
+    color: var(--black);
+    padding: 10px 30px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .modal-container {
+    width: 90vw;
+
+    .modal-content {
+      max-height: 50vh;
+    }
+  }
+}
