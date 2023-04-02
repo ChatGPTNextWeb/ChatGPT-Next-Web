@@ -623,19 +623,41 @@ export function Home() {
       .catch((error) => console.error(error));
   }, []);
 
-  const isWorkWechat = () => {
+  //const isWorkWechat = () => {
     //获取user-agaent标识头
-    const ua = window.navigator.userAgent.toLowerCase();
+   // const ua = window.navigator.userAgent.toLowerCase();
     //判断ua和微信浏览器的标识头是否匹配
-    if (
-      ua.match(/micromessenger/i) == "micromessenger" &&
-      ua.match(/wxwork/i) == "wxwork"
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  //  if (
+  //    ua.match(/micromessenger/i) == "micromessenger" &&
+   //   ua.match(/wxwork/i) == "wxwork"
+    //) {
+     // return true;
+    //} else {
+     // return false;
+    //}
+  //};
+const isWorkWechat = () => {
+  // 获取user-agent标识头
+  const userAgent = window.navigator.userAgent;
+
+  // 检查userAgent是否为null或undefined
+  if (!userAgent) {
+    return false;
+  }
+
+  // 转换为小写
+  const ua = userAgent.toLowerCase();
+
+  // 判断ua和微信浏览器的标识头是否匹配
+  if (
+    ua.match(/micromessenger/i) == "micromessenger" &&
+    ua.match(/wxwork/i) == "wxwork"
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
   useSwitchTheme();
 
