@@ -19,7 +19,29 @@
   height: var(--window-height);
 }
 
+.not-wx-work {
+  width: 95%;
+  text-align: left;
+  margin: 0 auto;
+  display: flex;
+}
+
+.button-2 {
+  cursor: pointer;
+  position: relative;
+  color: lightsalmon;
+  display: flex;
+  justify-content: center;
+}
+
+.not-allow {
+  width: 95%;
+  text-align: left;
+  margin: 0 auto;
+}
+
 .button {
+  margin: 0 auto;
   cursor: pointer;
   position: relative;
   display: inline-block;

@@ -694,12 +694,12 @@ export function Home() {
           <h2>服务出了点问题~</h2>
         ) : // 不在企业微信
         !isWorkWechat() ? (
-          <h2 className="not-wx-work">请在企业微信里使用ChatGPT,路径：企业微信--工作台--ChatGPT</h2>
+          <h2 className={styles['not-wx-work']}>请在企业微信里使用ChatGPT,路径：企业微信--工作台--ChatGPT</h2>
         ) : // 不在白名单
         !isAllow ? (
-          <h2 className="not-allow">
+          <h2 className={styles['not-allow']}>
             <span className="text">抱歉，您还没有申请使用权限。请无线连接到ZKT-Office或VPN连接正常</span>
-            <span onClick={goApply} className={styles["button"]}>
+            <span onClick={goApply} className={styles["button-2"]}>
               去申请
             </span>
           </h2>
