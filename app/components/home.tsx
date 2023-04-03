@@ -694,7 +694,7 @@ export function Home() {
           <h2>服务出了点问题~</h2>
         ) : // 不在企业微信
         !isWorkWechat() ? (
-          <h2 className="not-wx-work">请在企业微信里使用ChatGPT,路径：企业微信-->工作台-->ChatGPT</h2>
+          <h2 className="not-wx-work">请在企业微信里使用ChatGPT,路径：企业微信--工作台--ChatGPT</h2>
         ) : // 不在白名单
         !isAllow ? (
           <h2 className="not-allow">
