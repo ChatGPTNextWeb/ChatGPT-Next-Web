@@ -461,9 +461,9 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
-    if (props.sideBarShowing) return;
+    if (props.sideBarShowing && isMobileScreen()) return;
     inputRef.current?.focus();
-  }, [props.sideBarShowing]);
+  }, []);
 
   return (
     <div className={styles.chat} key={session.id}>
