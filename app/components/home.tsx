@@ -8,7 +8,7 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
+// import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 
 import BotIcon from "../icons/bot.svg";
@@ -23,7 +23,7 @@ import { ChatList } from "./chat-list";
 import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
-import { REPO_URL } from "../constant";
+// import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -46,9 +46,9 @@ function useSwitchTheme() {
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
 
-    if (config.theme === "dark") {
+    if (config.theme === "Dark") {
       document.body.classList.add("dark");
-    } else if (config.theme === "light") {
+    } else if (config.theme === "Light") {
       document.body.classList.add("light");
     }
 
