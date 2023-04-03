@@ -21,14 +21,39 @@ export function ChatItem(props: {
   time: string;
   selected: boolean;
 }) {
-  return (
+  const [sidebarCollapse] = useChatStore((state) => [state.sidebarCollapse]);
+  return sidebarCollapse ? (
+    <div
+      className={`${styles["chat-item-collapse"]} ${
+        props.selected && styles["chat-item-selected"]
+      }`}
+      onClick={props.onClick}
+    >
+      <div className={styles["chat-item-info-collapse"]}>
+        {Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
+          .length <= 3
+          ? Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
+          : ":)"}
+      </div>
+      <div
+        className={
+          sidebarCollapse
+            ? styles["chat-item-delete-collapse"]
+            : styles["chat-item-delete"]
+        }
+        onClick={props.onDelete}
+      >
+        <DeleteIcon />
+      </div>
+    </div>
+  ) : (
     <div
       className={`${styles["chat-item"]} ${
         props.selected && styles["chat-item-selected"]
       }`}
       onClick={props.onClick}
     >
-      <div className={styles["chat-item-title"]}>{props.title}</div>
+      <div>{props.title}</div>
       <div className={styles["chat-item-info"]}>
         <div className={styles["chat-item-count"]}>
           {Locale.ChatItem.ChatItemCount(props.count)}

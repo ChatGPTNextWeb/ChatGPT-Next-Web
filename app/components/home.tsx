@@ -58,60 +58,6 @@ export function Avatar(props: { role: Message["role"] }) {
   );
 }
 
-export function ChatItem(props: {
-  onClick?: () => void;
-  onDelete?: () => void;
-  title: string;
-  count: number;
-  time: string;
-  selected: boolean;
-}) {
-  const [sidebarCollapse] = useChatStore((state) => [state.sidebarCollapse]);
-  return sidebarCollapse ? (
-    <div
-      className={`${styles["chat-item-collapse"]} ${
-        props.selected && styles["chat-item-selected"]
-      }`}
-      onClick={props.onClick}
-    >
-      <div className={styles["chat-item-info-collapse"]}>
-        {Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
-          .length <= 3
-          ? Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
-          : ":)"}
-      </div>
-      <div
-        className={
-          sidebarCollapse
-            ? styles["chat-item-delete-collapse"]
-            : styles["chat-item-delete"]
-        }
-        onClick={props.onDelete}
-      >
-        <DeleteIcon />
-      </div>
-    </div>
-  ) : (
-    <div
-      className={`${styles["chat-item"]} ${
-        props.selected && styles["chat-item-selected"]
-      }`}
-      onClick={props.onClick}
-    >
-      <div>{props.title}</div>
-      <div className={styles["chat-item-info"]}>
-        <div className={styles["chat-item-count"]}>
-          {Locale.ChatItem.ChatItemCount(props.count)}
-        </div>
-        <div className={styles["chat-item-date"]}>{props.time}</div>
-      </div>
-      <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
-        <DeleteIcon />
-      </div>
-    </div>
-  );
-}
-
 function useSubmitHandler() {
   const config = useChatStore((state) => state.config);
   const submitKey = config.submitKey;
