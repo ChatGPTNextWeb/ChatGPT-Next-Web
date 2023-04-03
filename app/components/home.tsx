@@ -608,7 +608,8 @@ export function Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
-  const [isAllow, setIsAllow] = useState(true);
+  const [isAllow, setIsAllow] = useState(true); // 白名单状态
+  const [isRequestErr, setIsRequestErr] = useState(false); // 接口报错状态
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -620,44 +621,46 @@ export function Home() {
         const { code, msg } = data;
         setIsAllow(code === 0);
       })
-      .catch((error) => console.error(error));
+      // 接口错误处理
+      .catch((error) => {
+        setIsAllow(false);
+        setIsRequestErr(true);
+        console.error(error);
+      });
   }, []);
 
   //const isWorkWechat = () => {
-    //获取user-agaent标识头
-   // const ua = window.navigator.userAgent.toLowerCase();
-    //判断ua和微信浏览器的标识头是否匹配
+  //获取user-agaent标识头
+  // const ua = window.navigator.userAgent.toLowerCase();
+  //判断ua和微信浏览器的标识头是否匹配
   //  if (
   //    ua.match(/micromessenger/i) == "micromessenger" &&
-   //   ua.match(/wxwork/i) == "wxwork"
-    //) {
-     // return true;
-    //} else {
-     // return false;
-    //}
+  //   ua.match(/wxwork/i) == "wxwork"
+  //) {
+  // return true;
+  //} else {
+  // return false;
+  //}
   //};
-const isWorkWechat = () => {
-  // 获取user-agent标识头
-  const userAgent = window.navigator.userAgent;
+  const isWorkWechat = () => {
+    // 获取user-agent标识头
+    const userAgent = window.navigator.userAgent;
 
-  // 检查userAgent是否为null或undefined
-  if (!userAgent) {
-    return false;
-  }
+    // 检查userAgent是否为null或undefined
+    if (!userAgent) {
+      return false;
+    }
 
-  // 转换为小写
-  const ua = userAgent.toLowerCase();
+    // 转换为小写
+    const ua = userAgent.toLowerCase();
 
-  // 判断ua和微信浏览器的标识头是否匹配
-  if (
-    /micromessenger/i.test(ua) &&
-    /wxwork/i.test(ua)
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
+    // 判断ua和微信浏览器的标识头是否匹配
+    if (/micromessenger/i.test(ua) && /wxwork/i.test(ua)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   useSwitchTheme();
 
@@ -677,100 +680,109 @@ const isWorkWechat = () => {
           : styles.container
       }`}
     >
-      {!isWorkWechat() ? (
-        <h2 className="not-wx-work">请在企业微信里使用ChatGPT</h2>
-      ) : typeof isAllow === "boolean" && !isAllow ? (
-        <h2 className="not-allow">
-          <span className="text">您不在白名单内，请走工单审批使用Gpt~</span>
-          <span onClick={goApply} className={styles["button"]}>
-            去申请
-          </span>
-        </h2>
-      ) : (
-        <>
-          <div
-            className={
-              styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`
-            }
-          >
-            <div className={styles["sidebar-header"]}>
-              <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-              <div className={styles["sidebar-sub-title"]}>
-                Build your own AI assistant.
-              </div>
-              <div className={styles["sidebar-logo"]}>
-                <ChatGptIcon />
-              </div>
-            </div>
-
+      {
+        // 接口报错
+        isRequestErr ? (
+          <h2>服务出了点问题~</h2>
+        ) : // 不在企业微信
+        !isWorkWechat() ? (
+          <h2 className="not-wx-work">请在企业微信里使用ChatGPT</h2>
+        ) : // 不在白名单
+        !isAllow ? (
+          <h2 className="not-allow">
+            <span className="text">您不在白名单内，请走工单审批使用Gpt~</span>
+            <span onClick={goApply} className={styles["button"]}>
+              去申请
+            </span>
+          </h2>
+        ) : (
+          <>
             <div
-              className={styles["sidebar-body"]}
-              onClick={() => {
-                setOpenSettings(false);
-                setShowSideBar(false);
-              }}
+              className={
+                styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`
+              }
             >
-              <ChatList />
-            </div>
-
-            <div className={styles["sidebar-tail"]}>
-              <div className={styles["sidebar-actions"]}>
-                <div className={styles["sidebar-action"] + " " + styles.mobile}>
-                  <IconButton
-                    icon={<CloseIcon />}
-                    onClick={() => {
-                      if (confirm(Locale.Home.DeleteChat)) {
-                        removeSession(currentIndex);
-                      }
-                    }}
-                  />
+              <div className={styles["sidebar-header"]}>
+                <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+                <div className={styles["sidebar-sub-title"]}>
+                  Build your own AI assistant.
                 </div>
-                <div className={styles["sidebar-action"]}>
+                <div className={styles["sidebar-logo"]}>
+                  <ChatGptIcon />
+                </div>
+              </div>
+
+              <div
+                className={styles["sidebar-body"]}
+                onClick={() => {
+                  setOpenSettings(false);
+                  setShowSideBar(false);
+                }}
+              >
+                <ChatList />
+              </div>
+
+              <div className={styles["sidebar-tail"]}>
+                <div className={styles["sidebar-actions"]}>
+                  <div
+                    className={styles["sidebar-action"] + " " + styles.mobile}
+                  >
+                    <IconButton
+                      icon={<CloseIcon />}
+                      onClick={() => {
+                        if (confirm(Locale.Home.DeleteChat)) {
+                          removeSession(currentIndex);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className={styles["sidebar-action"]}>
+                    <IconButton
+                      icon={<SettingsIcon />}
+                      onClick={() => {
+                        setOpenSettings(true);
+                        setShowSideBar(false);
+                      }}
+                    />
+                  </div>
+                  <div className={styles["sidebar-action"]}>
+                    <a href={REPO_URL} target="_blank">
+                      <IconButton icon={<GithubIcon />} />
+                    </a>
+                  </div>
+                </div>
+                <div>
                   <IconButton
-                    icon={<SettingsIcon />}
+                    icon={<AddIcon />}
+                    text={Locale.Home.NewChat}
                     onClick={() => {
-                      setOpenSettings(true);
+                      createNewSession();
                       setShowSideBar(false);
                     }}
                   />
                 </div>
-                <div className={styles["sidebar-action"]}>
-                  <a href={REPO_URL} target="_blank">
-                    <IconButton icon={<GithubIcon />} />
-                  </a>
-                </div>
-              </div>
-              <div>
-                <IconButton
-                  icon={<AddIcon />}
-                  text={Locale.Home.NewChat}
-                  onClick={() => {
-                    createNewSession();
-                    setShowSideBar(false);
-                  }}
-                />
               </div>
             </div>
-          </div>
 
-          <div className={styles["window-content"]}>
-            {openSettings ? (
-              <Settings
-                closeSettings={() => {
-                  setOpenSettings(false);
-                  setShowSideBar(true);
-                }}
-              />
-            ) : (
-              <Chat
-                key="chat"
-                showSideBar={() => setShowSideBar(true)}
-                sideBarShowing={showSideBar}
-              />
-            )}
-          </div>
-        </>
-      )}
+            <div className={styles["window-content"]}>
+              {openSettings ? (
+                <Settings
+                  closeSettings={() => {
+                    setOpenSettings(false);
+                    setShowSideBar(true);
+                  }}
+                />
+              ) : (
+                <Chat
+                  key="chat"
+                  showSideBar={() => setShowSideBar(true)}
+                  sideBarShowing={showSideBar}
+                />
+              )}
+            </div>
+          </>
+        )
+      }
     </div>
   );
 }
