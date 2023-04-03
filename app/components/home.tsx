@@ -633,7 +633,7 @@ export function Home() {
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>Lei-ChatGPT</div>
           <div className={styles["sidebar-sub-title"]}>
-            测试版本，仅供内部使用.
+            点击左下角购物车购买授权码.
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
