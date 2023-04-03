@@ -43,7 +43,7 @@ function getHeaders() {
 }
 
 export function validUser(signature: String) {
-  return fetch(`${process.env.API_URL}check_user_white/?signature=${signature}`)
+  return fetch(`//uc.zhiketong.net/api/check_user_white/?signature=${signature}`)
     .then((response) => response.json())
     .then((data) => {
       return {

@@ -57,10 +57,8 @@ yarn install
 
 # Prompt user for environment variables
 read -p "Enter OPENAI_API_KEY: " OPENAI_API_KEY
-read -p "Enter APPLY_URL: " APPLY_URL
-read -p "Enter API_URL: " API_URL
 read -p "Enter CODE: " CODE
 read -p "Enter PORT: " PORT
 
 # Build and run the project using the environment variables
-OPENAI_API_KEY=$OPENAI_API_KEY APPLY_URL=$APPLY_URL API_URL=$API_URL CODE=$CODE PORT=$PORT yarn build && APPLY_URL=$APPLY_URL OPENAI_API_KEY=$OPENAI_API_KEY API_URL=$API_URL CODE=$CODE PORT=$PORT yarn start
+OPENAI_API_KEY=$OPENAI_API_KEY CODE=$CODE PORT=$PORT yarn build && OPENAI_API_KEY=$OPENAI_API_KEY CODE=$CODE PORT=$PORT yarn start

@@ -675,7 +675,7 @@ export function Home() {
   }
 
   const goApply = () => {
-    location.href = `${process.env.APPLY_URL}#/process/create-ticket?processId=117`;
+    location.href = `//work-order.zhiketong.net/#/process/create-ticket?processId=117`;
   };
 
   console.log('render', { isAllow, isRequestErr, isW:isWorkWechat()});
