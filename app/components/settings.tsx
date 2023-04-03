@@ -27,7 +27,8 @@ import { Avatar } from "./chat";
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { getCurrentVersion } from "../utils";
 import Link from "next/link";
-import { UPDATE_URL } from "../constant";
+// import { UPDATE_URL } from "../constant";
+const UPDATE_URL = "http://www.afunc.cn/";
 import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 
