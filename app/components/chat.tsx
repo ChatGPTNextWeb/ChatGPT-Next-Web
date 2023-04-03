@@ -593,7 +593,6 @@ export function Chat(props: {
                         if (!isMobileScreen()) return;
                         setUserInput(message.content);
                       }}
-                      onMouseOver={() => inputRef.current?.blur()}
                     >
                       <Markdown content={message.content} />
                     </div>
