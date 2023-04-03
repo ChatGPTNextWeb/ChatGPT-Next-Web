@@ -184,7 +184,6 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 
 ## 鸣谢 Special Thanks
-
 ### 捐赠者 Sponsor
 
 [@mushan0x0](https://github.com/mushan0x0)
