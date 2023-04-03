@@ -452,13 +452,19 @@ export function Chat(props: {}) {
               role: "user",
               content: userInput,
               date: new Date().toLocaleString(),
-              preview: false,
+              preview: true,
             },
           ]
         : [],
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+
+  // Auto focus
+  useEffect(() => {
+    if (sidebarCollapse && isMobileScreen()) return;
+    inputRef.current?.focus();
+  }, [sidebarCollapse]);
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -525,6 +531,7 @@ export function Chat(props: {}) {
         className={styles["chat-body"]}
         ref={scrollRef}
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}
+        onTouchStart={() => inputRef.current?.blur()}
       >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
@@ -545,10 +552,7 @@ export function Chat(props: {}) {
                     {Locale.Chat.Typing}
                   </div>
                 )}
-                <div
-                  className={styles["chat-message-item"]}
-                  onMouseOver={() => inputRef.current?.blur()}
-                >
+                <div className={styles["chat-message-item"]}>
                   {!isUser &&
                     !(message.preview || message.content.length === 0) && (
                       <div className={styles["chat-message-top-actions"]}>
@@ -588,6 +592,7 @@ export function Chat(props: {}) {
                         if (!isMobileScreen()) return;
                         setUserInput(message.content);
                       }}
+                      onMouseOver={() => inputRef.current?.blur()}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -621,6 +626,9 @@ export function Chat(props: {}) {
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
+            }}
+            onMouseOver={() => {
+              inputRef.current?.focus();
             }}
             autoFocus={sidebarCollapse}
           />

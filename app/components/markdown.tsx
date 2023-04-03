@@ -59,7 +59,7 @@ export function Markdown(props: { content: string }) {
         [
           RehypeHighlight,
           {
-            detect: true,
+            detect: false,
             ignoreMissing: true,
           },
         ],
