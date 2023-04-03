@@ -5,15 +5,19 @@ export function trimTopic(topic: string) {
   return topic.replace(/[，。！？、,.!?]*$/, "");
 }
 
-export function copyToClipboard(text: string) {
-  navigator.clipboard
-    .writeText(text)
-    .then((res) => {
-      showToast(Locale.Copy.Success);
-    })
-    .catch((err) => {
-      showToast(Locale.Copy.Failed);
-    });
+export async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (error) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  } finally {
+    showToast(Locale.Copy.Success);
+  }
 }
 
 export function downloadAs(text: string, filename: string) {
