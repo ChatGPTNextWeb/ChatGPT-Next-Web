@@ -12,14 +12,7 @@ import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 
-import {
-  Message,
-  SubmitKey,
-  useChatStore,
-  ChatSession,
-  BOT_HELLO,
-  ROLES,
-} from "../store";
+import { Message, SubmitKey, useChatStore, BOT_HELLO, ROLES } from "../store";
 
 import {
   copyToClipboard,
