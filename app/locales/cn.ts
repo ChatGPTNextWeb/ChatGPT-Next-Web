@@ -110,9 +110,9 @@ const cn = {
       Check: "重新检查",
     },
     AccessCode: {
-      Title: "访问码",
+      Title: "授权码",
       SubTitle: "现在是受控访问状态",
-      Placeholder: "请输入访问码",
+      Placeholder: "请输入授权码",
     },
     Model: "模型 (model)",
     Temperature: {
