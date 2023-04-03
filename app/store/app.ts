@@ -103,7 +103,7 @@ export function filterConfig(oldConfig: ModelConfig): Partial<ModelConfig> {
       return isValidModel(x as string);
     },
     max_tokens(x) {
-      return isValidNumber(x as number, 100, 4000);
+      return isValidNumber(x as number, 100, 32000);
     },
     presence_penalty(x) {
       return isValidNumber(x as number, -2, 2);
