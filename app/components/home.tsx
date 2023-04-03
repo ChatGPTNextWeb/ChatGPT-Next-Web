@@ -107,7 +107,7 @@ function _Home() {
 
 </div>
           <div className={styles["sidebar-sub-title"]}>
-            AI health assistant.
+            Ai health assistant.
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
@@ -145,11 +145,6 @@ function _Home() {
                 }}
                 shadow
               />
-            </div>
-            <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} shadow />
-              </a>
             </div>
           </div>
           <div>
