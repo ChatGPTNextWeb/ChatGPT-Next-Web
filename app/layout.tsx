@@ -41,7 +41,11 @@ function Meta() {
   );
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
@@ -58,13 +62,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-
-        {/* 在这里添加51la站长统计代码 */}
-        <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-        <script>{'LA.init({id:"你的id",ck:"你的id",hashMode:true})'}</script>
       </head>
       <body>{children}</body>
     </html>
   );
 }
-
