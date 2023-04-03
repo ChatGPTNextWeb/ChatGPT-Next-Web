@@ -57,6 +57,8 @@ yarn install
 
 # Prompt user for environment variables
 read -p "Enter OPENAI_API_KEY: " OPENAI_API_KEY
+read -p "Enter APPLY_URL: " APPLY_URL
+read -p "Enter API_URL: " API_URL
 read -p "Enter CODE: " CODE
 read -p "Enter PORT: " PORT
 
