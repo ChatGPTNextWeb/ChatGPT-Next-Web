@@ -34,6 +34,8 @@ const tw: LocaleType = {
     Title: "匯出聊天記錄為 Markdown",
     Copy: "複製全部",
     Download: "下載檔案",
+    MessageFromYou: "來自你的訊息",
+    MessageFromChatGPT: "來自 ChatGPT 的訊息",
   },
   Memory: {
     Title: "上下文記憶 Prompt",
