@@ -35,14 +35,17 @@ One-Click to deploy your own ChatGPT web UI.
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
+- I18n supported
 
 ## 开发计划 Roadmap
+
 - System Prompt: pin a user defined prompt as system prompt 为每个对话设置系统 Prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
 - User Prompt: user can edit and save custom prompts to prompt list 允许用户自行编辑内置 Prompt 列表
 - Self-host Model: support llama, alpaca, ChatGLM, BELLE etc. 支持自部署的大语言模型
 - Plugins: support network search, caculator, any other apis etc. 插件机制，支持联网搜索、计算器、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
 
 ### 不会开发的功能 Not in Plan
+
 - User login, accounts, cloud sync 用户登录、账号管理、消息云同步
 - UI text customize 界面文字自定义
 
@@ -71,7 +74,9 @@ One-Click to deploy your own ChatGPT web UI.
 - 前往 vercel 控制台，删除掉原先的 project，然后新建 project，选择你刚刚 fork 出来的项目重新进行部署即可；
 - 在重新部署的过程中，请手动添加名为 `OPENAI_API_KEY` 的环境变量，并填入你的 api key 作为值。
 
-本项目会持续更新，如果你想让代码库总是保持更新，可以查看 [Github 的文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) 了解如何让 fork 的项目与上游代码同步，建议定期进行同步操作以获得新功能。
+本项目会持续更新，当你 Fork 项目之后，默认会每天自动同步上游代码，无需额外操作。
+
+如果你想让手动立即更新，可以查看 [Github 的文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) 了解如何让 fork 的项目与上游代码同步。
 
 你可以 star/watch 本项目或者 follow 作者来及时获得新功能更新通知。
 
@@ -84,7 +89,9 @@ We recommend that you follow the steps below to re-deploy:
 - Go to the Vercel dashboard, delete the original project, then create a new project and select the project you just forked to redeploy;
 - Please manually add an environment variable named `OPENAI_API_KEY` and enter your API key as the value during the redeploy process.
 
-This project will be continuously maintained. If you want to keep the code repository up to date, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code. It is recommended to perform synchronization operations regularly.
+This project will be continuously updated, and after forking the project, the upstream code will be automatically synchronized every day without additional operations.
+
+If you want to update instantly, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code. 
 
 You can star or watch this project or follow author to get release notifictions in time.
 
@@ -180,14 +187,7 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 ![更多展示 More](./static/more.png)
 
 
-## 捐赠 Donate USDT
-> BNB Smart Chain (BEP 20)
-```
-0x67cD02c7EB62641De576a1fA3EdB32eA0c3ffD89
-```
-
 ## 鸣谢 Special Thanks
-
 ### 捐赠者 Sponsor
 
 [@mushan0x0](https://github.com/mushan0x0)
