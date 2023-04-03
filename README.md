@@ -74,7 +74,9 @@ One-Click to deploy your own ChatGPT web UI.
 - 前往 vercel 控制台，删除掉原先的 project，然后新建 project，选择你刚刚 fork 出来的项目重新进行部署即可；
 - 在重新部署的过程中，请手动添加名为 `OPENAI_API_KEY` 的环境变量，并填入你的 api key 作为值。
 
-本项目会持续更新，如果你想让代码库总是保持更新，可以查看 [Github 的文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) 了解如何让 fork 的项目与上游代码同步，建议定期进行同步操作以获得新功能。
+本项目会持续更新，当你 Fork 项目之后，默认会每天自动同步上游代码，无需额外操作。
+
+如果你想让手动立即更新，可以查看 [Github 的文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) 了解如何让 fork 的项目与上游代码同步。
 
 你可以 star/watch 本项目或者 follow 作者来及时获得新功能更新通知。
 
@@ -87,7 +89,9 @@ We recommend that you follow the steps below to re-deploy:
 - Go to the Vercel dashboard, delete the original project, then create a new project and select the project you just forked to redeploy;
 - Please manually add an environment variable named `OPENAI_API_KEY` and enter your API key as the value during the redeploy process.
 
-This project will be continuously maintained. If you want to keep the code repository up to date, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code. It is recommended to perform synchronization operations regularly.
+This project will be continuously updated, and after forking the project, the upstream code will be automatically synchronized every day without additional operations.
+
+If you want to update instantly, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code. 
 
 You can star or watch this project or follow author to get release notifictions in time.
 
@@ -184,7 +188,6 @@ docker run -d -p 3000:3000 -e OPENAI_API_KEY="" -e CODE="" yidadaa/chatgpt-next-
 
 
 ## 鸣谢 Special Thanks
-
 ### 捐赠者 Sponsor
 
 [@mushan0x0](https://github.com/mushan0x0)

@@ -14,6 +14,7 @@ import Locale from "../locales";
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
+  isError?: boolean;
   model?: string;
 };
 
@@ -103,7 +104,7 @@ export function filterConfig(oldConfig: ModelConfig): Partial<ModelConfig> {
       return isValidModel(x as string);
     },
     max_tokens(x) {
-      return isValidNumber(x as number, 100, 4000);
+      return isValidNumber(x as number, 100, 32000);
     },
     presence_penalty(x) {
       return isValidNumber(x as number, -2, 2);
@@ -353,9 +354,15 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             }
           },
-          onError(error) {
-            botMessage.content += "\n\n" + Locale.Store.Error;
+          onError(error, statusCode) {
+            if (statusCode === 401) {
+              botMessage.content = Locale.Error.Unauthorized;
+            } else {
+              botMessage.content += "\n\n" + Locale.Store.Error;
+            }
             botMessage.streaming = false;
+            userMessage.isError = true;
+            botMessage.isError = true;
             set(() => ({}));
             ControllerPool.remove(sessionIndex, messageIndex);
           },
@@ -385,7 +392,8 @@ export const useChatStore = create<ChatStore>()(
       getMessagesWithMemory() {
         const session = get().currentSession();
         const config = get().config;
-        const n = session.messages.length;
+        const messages = session.messages.filter((msg) => !msg.isError);
+        const n = messages.length;
 
         const context = session.context.slice();
 
@@ -395,7 +403,7 @@ export const useChatStore = create<ChatStore>()(
         }
 
         const recentMessages = context.concat(
-          session.messages.slice(Math.max(0, n - config.historyMessageCount)),
+          messages.slice(Math.max(0, n - config.historyMessageCount)),
         );
 
         return recentMessages;
