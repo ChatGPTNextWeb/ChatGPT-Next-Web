@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+require("../polyfill");
+
+import { useState, useEffect } from "react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -14,25 +16,15 @@ import AddIcon from "../icons/add.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
-import {
-  Message,
-  SubmitKey,
-  useChatStore,
-  ChatSession,
-  BOT_HELLO,
-} from "../store";
-import {
-  copyToClipboard,
-  downloadAs,
-  isMobileScreen,
-  selectOrCopy,
-} from "../utils";
+import { useChatStore } from "../store";
+import { isMobileScreen } from "../utils";
 import Locale from "../locales";
 import { ChatList } from "./chat-list";
 import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
+import { ErrorBoundary } from "./error";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -78,7 +70,7 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
-export function Home() {
+function _Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
       state.newSession,
@@ -189,5 +181,13 @@ export function Home() {
         )}
       </div>
     </div>
+  );
+}
+
+export function Home() {
+  return (
+    <ErrorBoundary>
+      <_Home></_Home>
+    </ErrorBoundary>
   );
 }
