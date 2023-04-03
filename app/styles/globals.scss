@@ -53,7 +53,7 @@
   --sidebar-width: 300px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 80%;
-  --full-height: 100vh;
+  --full-height: 100%;
 }
 
 @media only screen and (max-width: 600px) {
@@ -74,6 +74,9 @@
   :root {
     @include dark;
   }
+}
+html {
+  height: var(--full-height);
 }
 
 body {
@@ -114,7 +117,7 @@ body {
 
 select {
   border: var(--border-in-light);
-  padding: 8px 10px;
+  padding: 10px;
   border-radius: 10px;
   appearance: none;
   cursor: pointer;
@@ -185,7 +188,7 @@ input[type="text"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
-  height: 32px;
+  min-height: 36px;
   box-sizing: border-box;
   background: var(--white);
   color: var(--black);
@@ -232,6 +235,7 @@ pre {
   .copy-code-button {
     position: absolute;
     right: 10px;
+    top: 1em;
     cursor: pointer;
     padding: 0px 5px;
     background-color: var(--black);
@@ -250,5 +254,17 @@ pre {
     &:hover {
       opacity: 1;
     }
+  }
+}
+
+.clickable {
+  cursor: pointer;
+
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
+
+  &:hover {
+    filter: brightness(0.9);
   }
 }

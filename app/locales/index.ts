@@ -5,7 +5,7 @@ import ES from "./es";
 
 export type { LocaleType } from "./cn";
 
-export const AllLangs = ["en", "cn", "tw", "es"] as const;
+export const AllLangs = ["cn", "tw", "en", "es"] as const;
 type Lang = (typeof AllLangs)[number];
 
 const LANG_KEY = "lang";

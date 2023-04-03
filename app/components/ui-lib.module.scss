@@ -1,3 +1,5 @@
+@import "../styles/animation.scss";
+
 .card {
   background-color: var(--white);
   border-radius: 10px;
@@ -22,18 +24,6 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-}
-
-@keyframes slide-in {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .list-item {
@@ -138,6 +128,8 @@
   justify-content: center;
 
   .toast-content {
+    max-width: 80vw;
+    word-break: break-all;
     font-size: 14px;
     background-color: var(--white);
     box-shadow: var(--card-shadow);
