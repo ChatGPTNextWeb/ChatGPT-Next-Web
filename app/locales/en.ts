@@ -60,6 +60,7 @@ const en: LocaleType = {
         en: "English",
         tw: "繁體中文",
         es: "Español",
+        it: "Italiano",
       },
     },
     Avatar: "Avatar",
@@ -110,6 +111,7 @@ const en: LocaleType = {
       },
       IsChecking: "Checking...",
       Check: "Check Again",
+      NoAccess: "Enter API Key to check balance",
     },
     AccessCode: {
       Title: "Access Code",

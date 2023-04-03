@@ -14,7 +14,6 @@
   "dependencies": {
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
-    "array.prototype.at": "^1.1.1",
     "emoji-picker-react": "^4.4.7",
     "eventsource-parser": "^0.1.0",
     "fuse.js": "^6.6.2",

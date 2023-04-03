@@ -59,6 +59,7 @@ const tw: LocaleType = {
         en: "English",
         tw: "繁體中文",
         es: "Español",
+        it: "Italiano",
       },
     },
     Avatar: "大頭貼",
@@ -108,6 +109,7 @@ const tw: LocaleType = {
       },
       IsChecking: "正在檢查…",
       Check: "重新檢查",
+      NoAccess: "輸入API Key查看餘額",
     },
     AccessCode: {
       Title: "訪問碼",

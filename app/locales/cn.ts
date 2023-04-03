@@ -58,6 +58,7 @@ const cn = {
         en: "English",
         tw: "繁體中文",
         es: "Español",
+        it: "Italiano",
       },
     },
     Avatar: "头像",
@@ -108,6 +109,7 @@ const cn = {
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
+      NoAccess: "输入API Key查看余额",
     },
     AccessCode: {
       Title: "访问码",
