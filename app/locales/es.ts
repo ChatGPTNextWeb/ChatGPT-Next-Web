@@ -111,6 +111,7 @@ const es: LocaleType = {
       },
       IsChecking: "Comprobando...",
       Check: "Comprobar de nuevo",
+      NoAccess: "Introduzca la clave API para comprobar el saldo",
     },
     AccessCode: {
       Title: "Código de acceso",

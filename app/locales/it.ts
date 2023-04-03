@@ -112,6 +112,7 @@ const it: LocaleType = {
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
+      NoAccess: "Inserire la chiave API per controllare il saldo",
     },
     AccessCode: {
       Title: "Codice d'accesso",

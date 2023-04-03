@@ -109,6 +109,7 @@ const cn = {
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
+      NoAccess: "输入API Key查看余额",
     },
     AccessCode: {
       Title: "访问码",

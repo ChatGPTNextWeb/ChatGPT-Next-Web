@@ -111,6 +111,7 @@ const en: LocaleType = {
       },
       IsChecking: "Checking...",
       Check: "Check Again",
+      NoAccess: "Enter API Key to check balance",
     },
     AccessCode: {
       Title: "Access Code",
