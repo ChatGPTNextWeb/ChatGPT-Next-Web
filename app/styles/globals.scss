@@ -268,3 +268,18 @@ pre {
     filter: brightness(0.9);
   }
 }
+
+.error {
+  width: 80%;
+  border-radius: 20px;
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  overflow: auto;
+  background-color: var(--white);
+  color: var(--black);
+
+  pre {
+    overflow: auto;
+  }
+}

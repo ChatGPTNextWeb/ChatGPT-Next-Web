@@ -58,6 +58,7 @@ const cn = {
         en: "English",
         tw: "繁體中文",
         es: "Español",
+        it: "Italiano",
       },
     },
     Avatar: "头像",

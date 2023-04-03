@@ -12,14 +12,7 @@ import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 
-import {
-  Message,
-  SubmitKey,
-  useChatStore,
-  ChatSession,
-  BOT_HELLO,
-  ROLES,
-} from "../store";
+import { Message, SubmitKey, useChatStore, BOT_HELLO, ROLES } from "../store";
 
 import {
   copyToClipboard,
@@ -462,6 +455,7 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
+    if (props.sideBarShowing && isMobileScreen()) return;
     inputRef.current?.focus();
   }, []);
 
@@ -599,6 +593,7 @@ export function Chat(props: {
                         if (!isMobileScreen()) return;
                         setUserInput(message.content);
                       }}
+                      onMouseOver={() => inputRef.current?.blur()}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -632,6 +627,9 @@ export function Chat(props: {
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
+            }}
+            onMouseOver={() => {
+              inputRef.current?.focus();
             }}
             autoFocus={!props?.sideBarShowing}
           />
