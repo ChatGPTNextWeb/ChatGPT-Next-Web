@@ -10,7 +10,7 @@ const tw: LocaleType = {
     ChatItemCount: (count: number) => `${count} 條對話`,
   },
   Chat: {
-    SubTitle: (count: number) => `您已經與 ChatGPT 進行了 ${count} 條對話`,
+    SubTitle: (count: number) => `進行了 ${count} 條對話`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看壓縮後的歷史 Prompt",
