@@ -2,26 +2,22 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
 export function trimTopic(topic: string) {
-  const s = topic.split("");
-  let lastChar = s.at(-1); // 获取 s 的最后一个字符
-  let pattern = /[，。！？、,.!?]/; // 定义匹配中文和英文标点符号的正则表达式
-  while (lastChar && pattern.test(lastChar!)) {
-    s.pop();
-    lastChar = s.at(-1);
-  }
-
-  return s.join("");
+  return topic.replace(/[，。！？、,.!?]*$/, "");
 }
 
-export function copyToClipboard(text: string) {
-  navigator.clipboard
-    .writeText(text)
-    .then((res) => {
-      showToast(Locale.Copy.Success);
-    })
-    .catch((err) => {
-      showToast(Locale.Copy.Failed);
-    });
+export async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (error) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  } finally {
+    showToast(Locale.Copy.Success);
+  }
 }
 
 export function downloadAs(text: string, filename: string) {
