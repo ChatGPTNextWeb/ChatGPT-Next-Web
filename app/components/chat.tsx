@@ -461,8 +461,9 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
+    if (props.sideBarShowing) return;
     inputRef.current?.focus();
-  }, []);
+  }, [props.sideBarShowing]);
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -530,7 +531,6 @@ export function Chat(props: {
         className={styles["chat-body"]}
         ref={scrollRef}
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}
-        onMouseOver={() => inputRef.current?.blur()}
         onTouchStart={() => inputRef.current?.blur()}
       >
         {messages.map((message, i) => {
@@ -592,6 +592,7 @@ export function Chat(props: {
                         if (!isMobileScreen()) return;
                         setUserInput(message.content);
                       }}
+                      onMouseOver={() => inputRef.current?.blur()}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -625,6 +626,9 @@ export function Chat(props: {
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
+            }}
+            onMouseOver={() => {
+              inputRef.current?.focus();
             }}
             autoFocus={!props?.sideBarShowing}
           />
