@@ -2,10 +2,11 @@ import CN from "./cn";
 import EN from "./en";
 import TW from "./tw";
 import ES from "./es";
+import IT from "./it";
 
 export type { LocaleType } from "./cn";
 
-export const AllLangs = ["cn", "tw", "en", "es"] as const;
+export const AllLangs = ["en", "cn", "tw", "es", "it"] as const;
 type Lang = (typeof AllLangs)[number];
 
 const LANG_KEY = "lang";
@@ -47,6 +48,8 @@ export function getLang(): Lang {
     return "tw";
   } else if (lang.includes("es")) {
     return "es";
+  } else if (lang.includes("it")) {
+    return "it";
   } else {
     return "en";
   }
@@ -57,4 +60,4 @@ export function changeLang(lang: Lang) {
   location.reload();
 }
 
-export default { en: EN, cn: CN, tw: TW, es: ES }[getLang()];
+export default { en: EN, cn: CN, tw: TW, es: ES, it: IT }[getLang()];
