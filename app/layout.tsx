@@ -54,8 +54,6 @@ export default function RootLayout({
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         />
         <Meta />
-        <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-        <script>LA.init({id:"K1QltizcK5DKviun",ck:"K1QltizcK5DKviun",hashMode:true})</script>
         <link rel="manifest" href="/site.webmanifest"></link>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
@@ -64,6 +62,8 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
+        <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+        <script>LA.init({id:"K1QltizcK5DKviun",ck:"K1QltizcK5DKviun",hashMode:true})</script>
       </head>
       <body>{children}</body>
     </html>
