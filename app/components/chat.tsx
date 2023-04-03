@@ -627,9 +627,6 @@ export function Chat(props: {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
             }}
-            onMouseOver={() => {
-              inputRef.current?.focus();
-            }}
             autoFocus={!props?.sideBarShowing}
           />
           <IconButton
