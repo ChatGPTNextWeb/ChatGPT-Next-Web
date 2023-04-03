@@ -1,5 +1,8 @@
 name: Upstream Sync
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 */6 * * *" # every 6 hours
@@ -12,7 +15,7 @@ jobs:
     if: ${{ github.event.repository.fork }}
 
     steps:
-      # Step 1: run a standard checkout action, provided by github
+      # Step 1: run a standard checkout action
       - name: Checkout target repo
         uses: actions/checkout@v3
 
