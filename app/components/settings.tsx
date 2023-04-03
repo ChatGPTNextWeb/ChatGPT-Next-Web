@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo, HTMLProps } from "react";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
@@ -8,6 +8,8 @@ import ResetIcon from "../icons/reload.svg";
 import CloseIcon from "../icons/close.svg";
 import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
+import EyeIcon from "../icons/eye.svg";
+import EyeOffIcon from "../icons/eye-off.svg";
 
 import { List, ListItem, Popover, showToast } from "./ui-lib";
 
@@ -20,7 +22,7 @@ import {
   useUpdateStore,
   useAccessStore,
 } from "../store";
-import { Avatar, PromptHints } from "./home";
+import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { getCurrentVersion } from "../utils";
@@ -44,6 +46,28 @@ function SettingItem(props: {
       </div>
       {props.children}
     </ListItem>
+  );
+}
+
+function PasswordInput(props: HTMLProps<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+
+  function changeVisibility() {
+    setVisible(!visible);
+  }
+
+  return (
+    <span style={{ display: "flex", justifyContent: "end" }}>
+      <input
+        {...props}
+        style={{ minWidth: "150px" }}
+        type={visible ? "text" : "password"}
+      />
+      <IconButton
+        icon={visible ? <EyeIcon /> : <EyeOffIcon />}
+        onClick={changeVisibility}
+      />
+    </span>
   );
 }
 
@@ -72,7 +96,6 @@ export function Settings(props: { closeSettings: () => void }) {
   }
 
   const [usage, setUsage] = useState<{
-    granted?: number;
     used?: number;
   }>();
   const [loadingUsage, setLoadingUsage] = useState(false);
@@ -81,8 +104,7 @@ export function Settings(props: { closeSettings: () => void }) {
     requestUsage()
       .then((res) =>
         setUsage({
-          granted: res?.total_granted,
-          used: res?.total_used,
+          used: res,
         }),
       )
       .finally(() => {
@@ -104,6 +126,13 @@ export function Settings(props: { closeSettings: () => void }) {
   const promptStore = usePromptStore();
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.prompts.size ?? 0;
+
+  const showUsage = accessStore.token !== "";
+  useEffect(() => {
+    if (showUsage) {
+      checkUsage();
+    }
+  }, [showUsage]);
 
   return (
     <>
@@ -182,7 +211,7 @@ export function Settings(props: { closeSettings: () => void }) {
             {checkingUpdate ? (
               <div />
             ) : hasNewVersion ? (
-              <Link href="http://leichat.top/" target="_blank" className="link">
+              <Link href={UPDATE_URL} target="_blank" className="link">
                 {Locale.Settings.Update.GoToUpdate}
               </Link>
             ) : (
@@ -285,7 +314,8 @@ export function Settings(props: { closeSettings: () => void }) {
               checked={config.sendPreviewBubble}
               onChange={(e) =>
                 updateConfig(
-                  (config) => (config.sendPreviewBubble = e.currentTarget.checked),
+                  (config) =>
+                    (config.sendPreviewBubble = e.currentTarget.checked),
                 )
               }
             ></input>
@@ -328,14 +358,14 @@ export function Settings(props: { closeSettings: () => void }) {
               title={Locale.Settings.AccessCode.Title}
               subTitle={Locale.Settings.AccessCode.SubTitle}
             >
-              <input
+              <PasswordInput
                 value={accessStore.accessCode}
                 type="text"
                 placeholder={Locale.Settings.AccessCode.Placeholder}
                 onChange={(e) => {
                   accessStore.updateCode(e.currentTarget.value);
                 }}
-              ></input>
+              />
             </SettingItem>
           ) : (
             <></>
@@ -345,28 +375,27 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.Token.Title}
             subTitle={Locale.Settings.Token.SubTitle}
           >
-            <input
+            <PasswordInput
               value={accessStore.token}
               type="text"
               placeholder={Locale.Settings.Token.Placeholder}
               onChange={(e) => {
                 accessStore.updateToken(e.currentTarget.value);
               }}
-            ></input>
+            />
           </SettingItem>
 
           <SettingItem
             title={Locale.Settings.Usage.Title}
             subTitle={
-              loadingUsage
-                ? Locale.Settings.Usage.IsChecking
-                : Locale.Settings.Usage.SubTitle(
-                    usage?.granted ?? "[?]",
-                    usage?.used ?? "[?]",
-                  )
+              showUsage
+                ? loadingUsage
+                  ? Locale.Settings.Usage.IsChecking
+                  : Locale.Settings.Usage.SubTitle(usage?.used ?? "[?]")
+                : Locale.Settings.Usage.NoAccess
             }
           >
-            {loadingUsage ? (
+            {!showUsage || loadingUsage ? (
               <div />
             ) : (
               <IconButton
