@@ -623,6 +623,7 @@ export function Chat(props: {
             value={userInput}
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
+            onClick={() => setAutoScroll(true)}
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
