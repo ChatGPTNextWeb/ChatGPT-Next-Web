@@ -686,11 +686,11 @@ export function Home() {
           <h2>服务出了点问题~</h2>
         ) : // 不在企业微信
         !isWorkWechat() ? (
-          <h2 className="not-wx-work">请在企业微信里使用ChatGPT</h2>
+          <h2 className="not-wx-work">请在企业微信里使用ChatGPT,路径：企业微信-->工作台-->ChatGPT</h2>
         ) : // 不在白名单
         !isAllow ? (
           <h2 className="not-allow">
-            <span className="text">您不在白名单内，请走工单审批使用Gpt~</span>
+            <span className="text">抱歉，您还没有申请使用权限。请无线连接到ZKT-Office或VPN连接正常</span>
             <span onClick={goApply} className={styles["button"]}>
               去申请
             </span>
