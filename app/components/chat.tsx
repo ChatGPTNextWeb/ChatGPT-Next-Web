@@ -377,7 +377,8 @@ export function Chat(props: {
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
     setPromptHints([]);
-    inputRef.current?.focus();
+    if (!isMobileScreen()) inputRef.current?.focus();
+    setAutoScroll(true);
   };
 
   // stop response
@@ -533,8 +534,11 @@ export function Chat(props: {
         className={styles["chat-body"]}
         ref={scrollRef}
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}
-        onMouseOver={() => inputRef.current?.blur()}
-        onTouchStart={() => inputRef.current?.blur()}
+        onWheel={() => setAutoScroll(false)}
+        onTouchStart={() => {
+          inputRef.current?.blur();
+          setAutoScroll(false);
+        }}
       >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
