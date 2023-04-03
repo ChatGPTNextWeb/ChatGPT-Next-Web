@@ -111,9 +111,9 @@ export function Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          <div className={styles["sidebar-title"]}>ChatGPT Next Clandoom</div>
           <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
+            May TKs wisdom be with you.
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
