@@ -18,3 +18,12 @@
 .avatar {
   cursor: pointer;
 }
+
+.password-input {
+  display: flex;
+  justify-content: flex-end;
+
+  .password-eye {
+    margin-right: 4px;
+  }
+}

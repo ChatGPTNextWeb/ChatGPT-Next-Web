@@ -21,6 +21,7 @@ import {
   ALL_MODELS,
   useUpdateStore,
   useAccessStore,
+  ModalConfigValidator,
 } from "../store";
 import { Avatar } from "./chat";
 
@@ -30,6 +31,7 @@ import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
+import { ErrorBoundary } from "./error";
 
 function SettingItem(props: {
   title: string;
@@ -57,17 +59,14 @@ function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   }
 
   return (
-    <span style={{ display: "flex", justifyContent: "end" }}>
-      <input
-        {...props}
-        style={{ minWidth: "150px" }}
-        type={visible ? "text" : "password"}
-      />
+    <div className={styles["password-input"]}>
       <IconButton
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
+        className={styles["password-eye"]}
       />
-    </span>
+      <input {...props} type={visible ? "text" : "password"} />
+    </div>
   );
 }
 
@@ -115,11 +114,13 @@ export function Settings(props: { closeSettings: () => void }) {
   useEffect(() => {
     checkUpdate();
     checkUsage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const accessStore = useAccessStore();
   const enabledAccessControl = useMemo(
     () => accessStore.enabledAccessControl(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -135,7 +136,7 @@ export function Settings(props: { closeSettings: () => void }) {
   }, [showUsage]);
 
   return (
-    <>
+    <ErrorBoundary>
       <div className={styles["window-header"]}>
         <div className={styles["window-header-title"]}>
           <div className={styles["window-header-main-title"]}>
@@ -453,7 +454,9 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.model = e.currentTarget.value),
+                    (config.modelConfig.model = ModalConfigValidator.model(
+                      e.currentTarget.value,
+                    )),
                 );
               }}
             >
@@ -470,7 +473,7 @@ export function Settings(props: { closeSettings: () => void }) {
           >
             <input
               type="range"
-              value={config.modelConfig.temperature.toFixed(1)}
+              value={config.modelConfig.temperature?.toFixed(1)}
               min="0"
               max="2"
               step="0.1"
@@ -478,7 +481,9 @@ export function Settings(props: { closeSettings: () => void }) {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.temperature =
-                      e.currentTarget.valueAsNumber),
+                      ModalConfigValidator.temperature(
+                        e.currentTarget.valueAsNumber,
+                      )),
                 );
               }}
             ></input>
@@ -490,13 +495,15 @@ export function Settings(props: { closeSettings: () => void }) {
             <input
               type="number"
               min={100}
-              max={4096}
+              max={32000}
               value={config.modelConfig.max_tokens}
               onChange={(e) =>
                 updateConfig(
                   (config) =>
                     (config.modelConfig.max_tokens =
-                      e.currentTarget.valueAsNumber),
+                      ModalConfigValidator.max_tokens(
+                        e.currentTarget.valueAsNumber,
+                      )),
                 )
               }
             ></input>
@@ -507,7 +514,7 @@ export function Settings(props: { closeSettings: () => void }) {
           >
             <input
               type="range"
-              value={config.modelConfig.presence_penalty.toFixed(1)}
+              value={config.modelConfig.presence_penalty?.toFixed(1)}
               min="-2"
               max="2"
               step="0.5"
@@ -515,13 +522,15 @@ export function Settings(props: { closeSettings: () => void }) {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.presence_penalty =
-                      e.currentTarget.valueAsNumber),
+                      ModalConfigValidator.presence_penalty(
+                        e.currentTarget.valueAsNumber,
+                      )),
                 );
               }}
             ></input>
           </SettingItem>
         </List>
       </div>
-    </>
+    </ErrorBoundary>
   );
 }
