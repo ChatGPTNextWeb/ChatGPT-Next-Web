@@ -34,8 +34,9 @@ import Locale from "../locales";
 
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
-import { ControllerPool } from "../requests";
+import { ControllerPool, validUser } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
+import VConsole from 'vconsole';
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -608,26 +609,33 @@ export function Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
-  const [isAllow, setIsAllow] = useState(true); // 白名单状态
+  const [isAllow, setIsAllow] = useState(false); // 白名单状态
   const [isRequestErr, setIsRequestErr] = useState(false); // 接口报错状态
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const signature = urlParams.get("signature");
-    // 是否在白名单
-    fetch(`${process.env.API_URL}/api/check_user_white/?signature=${signature}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const { code, msg } = data;
-        setIsAllow(code === 0);
-      })
-      // 接口错误处理
-      .catch((error) => {
-        setIsAllow(false);
-        setIsRequestErr(true);
-        console.error(error);
-      });
+   new VConsole();
+   getBaseInfo()
   }, []);
+
+  const getBaseInfo = async () => {
+    setIsLoading(true)
+    const urlParams = new URLSearchParams(window.location.search);
+    const signature = urlParams.get("signature") || '';
+    // 是否在白名单
+    const response = await validUser(signature)
+    const {data, error} = response
+    console.log({data,error});
+    if (error) {
+      setIsAllow(false);
+      setIsRequestErr(true);
+      console.error(error);
+    } else {
+      const { code, msg } = data;
+      setIsAllow(code === 0);
+    }
+    setIsLoading(false)
+  }
 
   //const isWorkWechat = () => {
   //获取user-agaent标识头
@@ -669,10 +677,12 @@ export function Home() {
   }
 
   const goApply = () => {
-    location.href = `${process.env.APPLY_URL}/#/process/create-ticket?processId=117`;
+    location.href = `${process.env.APPLY_URL}#/process/create-ticket?processId=117`;
   };
 
-  return (
+  console.log('render', { isAllow, isRequestErr, isW:isWorkWechat()});
+
+  return !isLoading ? (
     <div
       className={`${
         config.tightBorder && !isMobileScreen()
@@ -784,5 +794,5 @@ export function Home() {
         )
       }
     </div>
-  );
+  ) : null
 }

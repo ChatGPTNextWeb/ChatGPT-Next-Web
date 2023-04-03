@@ -42,6 +42,24 @@ function getHeaders() {
   return headers;
 }
 
+export function validUser(signature: String) {
+  return fetch(`${process.env.API_URL}check_user_white/?signature=${signature}`)
+    .then((response) => response.json())
+    .then((data) => {
+      return {
+        data,
+        error: null,
+      }
+    })
+    // 接口错误处理
+    .catch((error) => {
+      return {
+        data: null,
+        error
+      }
+    });
+}
+
 export function requestOpenaiClient(path: string) {
   return (body: any, method = "POST") =>
     fetch("/api/openai", {
