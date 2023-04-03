@@ -114,7 +114,7 @@ export async function requestChatStream(
     filterBot?: boolean;
     modelConfig?: ModelConfig;
     onMessage: (message: string, done: boolean) => void;
-    onError: (error: Error) => void;
+    onError: (error: Error, statusCode?: number) => void;
     onController?: (controller: AbortController) => void;
   },
 ) {
@@ -178,11 +178,10 @@ export async function requestChatStream(
       finish();
     } else if (res.status === 401) {
       console.error("Anauthorized");
-      responseText = Locale.Error.Unauthorized;
-      finish();
+      options?.onError(new Error("Anauthorized"), res.status);
     } else {
       console.error("Stream Error", res.body);
-      options?.onError(new Error("Stream Error"));
+      options?.onError(new Error("Stream Error"), res.status);
     }
   } catch (err) {
     console.error("NetWork Error", err);

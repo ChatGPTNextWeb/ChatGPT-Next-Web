@@ -513,7 +513,10 @@ export function Chat(props: {
               bordered
               title={Locale.Chat.Actions.Export}
               onClick={() => {
-                exportMessages(session.messages, session.topic);
+                exportMessages(
+                  session.messages.filter((msg) => !msg.isError),
+                  session.topic,
+                );
               }}
             />
           </div>
