@@ -31,7 +31,6 @@
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.3",
-    "vconsole": "^3.15.0",
     "zustand": "^4.3.6"
   },
   "devDependencies": {

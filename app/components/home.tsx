@@ -36,7 +36,6 @@ import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ControllerPool, validUser } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
-import VConsole from 'vconsole';
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -614,7 +613,6 @@ export function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-   new VConsole();
    getBaseInfo()
   }, []);
 
