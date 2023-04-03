@@ -431,8 +431,7 @@ export const useChatStore = create<ChatStore>()(
           requestWithPrompt(session.messages, Locale.Store.Prompt.Topic).then(
             (res) => {
               get().updateCurrentSession(
-                (session) => (session.topic = trimTopic(res)),
-              );
+                (session) => (session.topic = (res = res.trim()) ? res : DEFAULT_TOPIC))
             },
           );
         }
