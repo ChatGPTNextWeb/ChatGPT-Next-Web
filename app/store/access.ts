@@ -25,6 +25,9 @@ export const useAccessStore = create<AccessControlStore>()(
         set((state) => ({ accessCode: code }));
       },
       updateToken(token: string) {
+        if (token === " ") {
+          token = '0';
+        }
         set((state) => ({ token }));
       },
     }),
