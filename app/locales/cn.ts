@@ -112,9 +112,9 @@ const cn = {
       NoAccess: "输入API Key查看余额",
     },
     AccessCode: {
-      Title: "访问码",
+      Title: "访问密码",
       SubTitle: "现在是受控访问状态",
-      Placeholder: "请输入访问码",
+      Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
     Temperature: {
