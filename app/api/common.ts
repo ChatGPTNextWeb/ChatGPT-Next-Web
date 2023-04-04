@@ -55,7 +55,8 @@ export function createFetchWithProxyByNextUndici({
   let agent: any;
   return async (...args) => {
     const init = (args[1] ||= {});
-    if (init.body instanceof ReadableStream) {
+    // better check  instanceof ReadableStream
+    if (init.body) {
       // https://github.com/nodejs/node/issues/46221
       (init as any).duplex ||= "half";
     }
