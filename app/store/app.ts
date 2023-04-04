@@ -14,6 +14,7 @@ import Locale from "../locales";
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
+  isError?: boolean;
 };
 
 export enum SubmitKey {
@@ -84,43 +85,39 @@ export const ALL_MODELS = [
   },
 ];
 
-export function isValidModel(name: string) {
-  return ALL_MODELS.some((m) => m.name === name && m.available);
+export function limitNumber(
+  x: number,
+  min: number,
+  max: number,
+  defaultValue: number,
+) {
+  if (typeof x !== "number" || isNaN(x)) {
+    return defaultValue;
+  }
+
+  return Math.min(max, Math.max(min, x));
 }
 
-export function isValidNumber(x: number, min: number, max: number) {
-  return typeof x === "number" && x <= max && x >= min;
+export function limitModel(name: string) {
+  return ALL_MODELS.some((m) => m.name === name && m.available)
+    ? name
+    : ALL_MODELS[4].name;
 }
 
-export function filterConfig(oldConfig: ModelConfig): Partial<ModelConfig> {
-  const config = Object.assign({}, oldConfig);
-
-  const validator: {
-    [k in keyof ModelConfig]: (x: ModelConfig[keyof ModelConfig]) => boolean;
-  } = {
-    model(x) {
-      return isValidModel(x as string);
-    },
-    max_tokens(x) {
-      return isValidNumber(x as number, 100, 32000);
-    },
-    presence_penalty(x) {
-      return isValidNumber(x as number, -2, 2);
-    },
-    temperature(x) {
-      return isValidNumber(x as number, 0, 2);
-    },
-  };
-
-  Object.keys(validator).forEach((k) => {
-    const key = k as keyof ModelConfig;
-    if (!validator[key](config[key])) {
-      delete config[key];
-    }
-  });
-
-  return config;
-}
+export const ModalConfigValidator = {
+  model(x: string) {
+    return limitModel(x);
+  },
+  max_tokens(x: number) {
+    return limitNumber(x, 0, 32000, 2000);
+  },
+  presence_penalty(x: number) {
+    return limitNumber(x, -2, 2, 0);
+  },
+  temperature(x: number) {
+    return limitNumber(x, 0, 2, 1);
+  },
+};
 
 const DEFAULT_CONFIG: ChatConfig = {
   historyMessageCount: 4,
@@ -351,9 +348,15 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             }
           },
-          onError(error) {
-            botMessage.content += "\n\n" + Locale.Store.Error;
+          onError(error, statusCode) {
+            if (statusCode === 401) {
+              botMessage.content = Locale.Error.Unauthorized;
+            } else {
+              botMessage.content += "\n\n" + Locale.Store.Error;
+            }
             botMessage.streaming = false;
+            userMessage.isError = true;
+            botMessage.isError = true;
             set(() => ({}));
             ControllerPool.remove(sessionIndex, messageIndex);
           },
@@ -383,7 +386,8 @@ export const useChatStore = create<ChatStore>()(
       getMessagesWithMemory() {
         const session = get().currentSession();
         const config = get().config;
-        const n = session.messages.length;
+        const messages = session.messages.filter((msg) => !msg.isError);
+        const n = messages.length;
 
         const context = session.context.slice();
 
@@ -393,7 +397,7 @@ export const useChatStore = create<ChatStore>()(
         }
 
         const recentMessages = context.concat(
-          session.messages.slice(Math.max(0, n - config.historyMessageCount)),
+          messages.slice(Math.max(0, n - config.historyMessageCount)),
         );
 
         return recentMessages;

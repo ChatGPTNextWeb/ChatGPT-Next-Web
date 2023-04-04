@@ -1,5 +1,5 @@
 import type { ChatRequest, ChatReponse } from "./api/openai/typing";
-import { filterConfig, Message, ModelConfig, useAccessStore } from "./store";
+import { Message, ModelConfig, useAccessStore } from "./store";
 import Locale from "./locales";
 import { showToast } from "./components/ui-lib";
 
@@ -114,7 +114,7 @@ export async function requestChatStream(
     filterBot?: boolean;
     modelConfig?: ModelConfig;
     onMessage: (message: string, done: boolean) => void;
-    onError: (error: Error) => void;
+    onError: (error: Error, statusCode?: number) => void;
     onController?: (controller: AbortController) => void;
   },
 ) {
@@ -122,11 +122,6 @@ export async function requestChatStream(
     stream: true,
     filterBot: options?.filterBot,
   });
-
-  // valid and assign model config
-  if (options?.modelConfig) {
-    Object.assign(req, filterConfig(options.modelConfig));
-  }
 
   console.log("[Request] ", req);
 
@@ -178,11 +173,10 @@ export async function requestChatStream(
       finish();
     } else if (res.status === 401) {
       console.error("Anauthorized");
-      responseText = Locale.Error.Unauthorized;
-      finish();
+      options?.onError(new Error("Anauthorized"), res.status);
     } else {
       console.error("Stream Error", res.body);
-      options?.onError(new Error("Stream Error"));
+      options?.onError(new Error("Stream Error"), res.status);
     }
   } catch (err) {
     console.error("NetWork Error", err);
