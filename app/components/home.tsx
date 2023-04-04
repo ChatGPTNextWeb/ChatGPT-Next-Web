@@ -611,6 +611,7 @@ export function Home() {
   const [isAllow, setIsAllow] = useState(false); // 白名单状态
   const [isRequestErr, setIsRequestErr] = useState(false); // 接口报错状态
   const [isLoading, setIsLoading] = useState(false);
+  const [isNotInLan, setIsNotInLan] = useState(false); // 不在内网
 
   useEffect(() => {
    getBaseInfo()
@@ -631,6 +632,7 @@ export function Home() {
     } else {
       const { code, msg } = data;
       setIsAllow(code === 0);
+      setIsNotInLan(code === 403);
     }
     setIsLoading(false)
   }
@@ -692,7 +694,11 @@ export function Home() {
         // 接口报错
         isRequestErr ? (
           <h2>服务出了点问题~</h2>
-        ) : // 不在企业微信
+        ) :
+        // 不在内网
+        isNotInLan ?
+        <h2>请在公司内网使用，无线连接到ZKT-Office或VPN连接</h2> :
+        // 不在企业微信
         !isWorkWechat() ? (
           <h2 className={styles['not-wx-work']}>请在企业微信里使用ChatGPT,路径：企业微信--工作台--ChatGPT</h2>
         ) : // 不在白名单
