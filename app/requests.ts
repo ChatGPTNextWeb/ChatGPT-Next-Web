@@ -48,9 +48,7 @@ export function validUser(signature: String) {
       // 检查请求的status
       if (response.status !== 200) {
         return {
-          data: {
-            code: response.status
-          },
+          code: response.status,
           error: null
         }
       }

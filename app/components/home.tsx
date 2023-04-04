@@ -680,7 +680,7 @@ export function Home() {
     location.href = `//work-order.zhiketong.net/#/process/create-ticket?processId=117`;
   };
 
-  console.log('render', { isAllow, isRequestErr, isW:isWorkWechat()});
+  console.log('render', { isAllow, isNotInLan, isRequestErr, isW:isWorkWechat()});
 
   return !isLoading ? (
     <div
