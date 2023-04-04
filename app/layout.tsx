@@ -62,8 +62,7 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-        <script async charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-        <script>LA.init({id:"K1QltizcK5DKviun",ck:"K1QltizcK5DKviun",hashMode:true})</script>
+        <script src="/51.js" async></script>
       </head>
       <body>{children}</body>
     </html>
