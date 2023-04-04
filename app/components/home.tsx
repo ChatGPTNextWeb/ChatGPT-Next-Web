@@ -52,11 +52,23 @@ function useSwitchTheme() {
       document.body.classList.add("light");
     }
 
-    const themeColor = getComputedStyle(document.body)
-      .getPropertyValue("--theme-color")
-      .trim();
-    const metaDescription = document.querySelector('meta[name="theme-color"]');
-    metaDescription?.setAttribute("content", themeColor);
+    const metaDescriptionDark = document.querySelector(
+      'meta[name="theme-color"][media]',
+    );
+    const metaDescriptionLight = document.querySelector(
+      'meta[name="theme-color"]:not([media])',
+    );
+
+    if (config.theme === "auto") {
+      metaDescriptionDark?.setAttribute("content", "#151515");
+      metaDescriptionLight?.setAttribute("content", "#fafafa");
+    } else {
+      const themeColor = getComputedStyle(document.body)
+        .getPropertyValue("--theme-color")
+        .trim();
+      metaDescriptionDark?.setAttribute("content", themeColor);
+      metaDescriptionLight?.setAttribute("content", themeColor);
+    }
   }, [config.theme]);
 }
 
