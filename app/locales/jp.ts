@@ -106,7 +106,7 @@ Token: {
 Usage: {
   Title: "アカウント残高",
     SubTitle(used: any) {
-    return 今月はすでに $${ used } を使用しています;
+    return `今月はすでに $${used}を使用しています`;
   },
   IsChecking: "確認中...",
     Check: "再確認",
