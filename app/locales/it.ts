@@ -35,6 +35,8 @@ const it: LocaleType = {
     Title: "Tutti i messaggi",
     Copy: "Copia tutto",
     Download: "Scarica",
+    MessageFromYou: "Messaggio da te",
+    MessageFromChatGPT: "Messaggio da ChatGPT",
   },
   Memory: {
     Title: "Prompt di memoria",
