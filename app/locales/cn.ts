@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/app";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请在设置页填写授权码。",
+    Unauthorized: "现在是未授权状态，请在设置页输入授权码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -99,7 +99,7 @@ const cn = {
     },
     Token: {
       Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过受控访问限制",
+      SubTitle: "使用自己的 Key 可绕过授权访问限制",
       Placeholder: "OpenAI API Key",
     },
     Usage: {
@@ -112,9 +112,9 @@ const cn = {
       NoAccess: "输入API Key查看余额",
     },
     AccessCode: {
-      Title: "访问码",
-      SubTitle: "现在是受控访问状态",
-      Placeholder: "请输入访问码",
+      Title: "授权码",
+      SubTitle: "现在是未授权访问状态",
+      Placeholder: "请输入授权码",
     },
     Model: "模型 (model)",
     Temperature: {
