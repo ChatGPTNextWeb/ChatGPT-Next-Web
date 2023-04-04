@@ -700,7 +700,7 @@ export function Home() {
         <h2>请在公司内网使用，无线连接到ZKT-Office或VPN连接</h2> :
         // 不在企业微信
         !isWorkWechat() ? (
-          <h2 className={styles['not-wx-work']}>请在企业微信里使用ChatGPT,路径：企业微信--工作台--ChatGPT</h2>
+          <h2 className={styles['not-wx-work']}>请在企业微信里使用ChatGPT。路径：企业微信--工作台--ChatGPT</h2>
         ) : // 不在白名单
         !isAllow ? (
           <h2 className={styles['not-allow']}>
