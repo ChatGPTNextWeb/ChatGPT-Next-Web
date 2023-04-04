@@ -60,7 +60,9 @@ function exportMessages(messages: Message[], topic: string) {
     `# ${topic}\n\n` +
     messages
       .map((m) => {
-        return m.role === "user" ? `## ${m.content}` : m.content.trim();
+        return m.role === "user"
+          ? `## ${Locale.Export.MessageFromYou}:\n${m.content}`
+          : `## ${Locale.Export.MessageFromChatGPT}:\n${m.content.trim()}`;
       })
       .join("\n\n");
   const filename = `${topic}.md`;
