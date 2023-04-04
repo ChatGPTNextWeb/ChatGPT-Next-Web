@@ -33,6 +33,8 @@ import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 import { ErrorBoundary } from "./error";
 
+import { getEmojiUrl } from "@/config";
+
 function SettingItem(props: {
   title: string;
   subTitle?: string;
@@ -180,6 +182,9 @@ export function Settings(props: { closeSettings: () => void }) {
               onClose={() => setShowEmojiPicker(false)}
               content={
                 <EmojiPicker
+                  getEmojiUrl={(unified = config.avatar) =>
+                    `${getEmojiUrl}${unified}.png`
+                  }
                   lazyLoadEmojis
                   theme={EmojiTheme.AUTO}
                   onEmojiClick={(e) => {

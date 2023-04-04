@@ -33,6 +33,8 @@ import chatStyle from "./chat.module.scss";
 
 import { Modal, showModal, showToast } from "./ui-lib";
 
+import { getEmojiUrl } from "@/config";
+
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -50,7 +52,13 @@ export function Avatar(props: { role: Message["role"] }) {
 
   return (
     <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} />
+      <Emoji
+        unified={config.avatar}
+        size={18}
+        getEmojiUrl={(unified = config.avatar) =>
+          `${getEmojiUrl}${unified}.png`
+        }
+      />
     </div>
   );
 }
