@@ -62,7 +62,7 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-        <script src="/51.js" defer></script>
+        <<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
       </head>
       <body>{children}</body>
     </html>
