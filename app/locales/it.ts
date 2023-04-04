@@ -61,6 +61,7 @@ const it: LocaleType = {
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
+        jp: "日本語",
       },
     },
     Avatar: "Avatar",
