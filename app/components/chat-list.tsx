@@ -35,9 +35,11 @@ export function ChatItem(props: {
         </div>
         <div className={styles["chat-item-date"]}>{props.time}</div>
       </div>
-      <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
-        <DeleteIcon />
-      </div>
+      {!isMobileScreen() ? (
+        <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
+          <DeleteIcon />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -63,7 +65,8 @@ export function ChatList() {
           selected={i === selectedIndex}
           onClick={() => selectSession(i)}
           onDelete={() =>
-            (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) &&
+            !isMobileScreen() &&
+            confirm(Locale.Home.DeleteChat) &&
             removeSession(i)
           }
         />
