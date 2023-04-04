@@ -5,7 +5,9 @@ import { queryMeta } from "../utils";
 export interface AccessControlStore {
   accessCode: string;
   token: string;
+  host: string;
 
+  updateHost: (_: string) => void;
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
@@ -18,6 +20,7 @@ export const useAccessStore = create<AccessControlStore>()(
     (set, get) => ({
       token: "",
       accessCode: "",
+      host: "",
       enabledAccessControl() {
         return queryMeta("access") === "enabled";
       },
@@ -27,10 +30,13 @@ export const useAccessStore = create<AccessControlStore>()(
       updateToken(token: string) {
         set((state) => ({ token }));
       },
+      updateHost(host: string) {
+        set((state) => ({ host }));
+      },
     }),
     {
       name: ACCESS_KEY,
       version: 1,
-    }
-  )
+    },
+  ),
 );

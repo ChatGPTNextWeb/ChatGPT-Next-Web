@@ -97,6 +97,11 @@ const tw: LocaleType = {
       Title: "歷史訊息長度壓縮閾值",
       SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
     },
+    Host: {
+      Title: "Personal Host",
+      SubTitle: "使用自己的 Host 可規避受控訪問限制",
+      Placeholder: "api.openai.com",
+    },
     Token: {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可規避受控訪問限制",

@@ -99,6 +99,11 @@ const en: LocaleType = {
       SubTitle:
         "Will compress if uncompressed messages length exceeds the value",
     },
+    Host: {
+      Title: "Personal Host",
+      SubTitle: "Use your host to ignore access code limit",
+      Placeholder: "api.openai.com",
+    },
     Token: {
       Title: "API Key",
       SubTitle: "Use your key to ignore access code limit",

@@ -99,6 +99,12 @@ const it: LocaleType = {
       SubTitle:
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
+    Host: {
+      Title: "Chiave Host",
+      SubTitle:
+        "Utilizzare la chiave per ignorare il limite del codice di accesso",
+      Placeholder: "api.openai.com",
+    },
     Token: {
       Title: "Chiave API",
       SubTitle:

@@ -373,6 +373,20 @@ export function Settings(props: { closeSettings: () => void }) {
           )}
 
           <SettingItem
+            title={Locale.Settings.Host.Title}
+            subTitle={Locale.Settings.Host.SubTitle}
+          >
+            <input
+              value={accessStore.host}
+              type="text"
+              placeholder={Locale.Settings.Host.Placeholder}
+              onChange={(e) => {
+                accessStore.updateHost(e.currentTarget.value);
+              }}
+            ></input>
+          </SettingItem>
+
+          <SettingItem
             title={Locale.Settings.Token.Title}
             subTitle={Locale.Settings.Token.SubTitle}
           >

@@ -97,6 +97,11 @@ const cn = {
       Title: "历史消息长度压缩阈值",
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
+    Host: {
+      Title: "Personal Host",
+      SubTitle: "使用自己的 Host 可绕过受控访问限制",
+      Placeholder: "api.openai.com",
+    },
     Token: {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可绕过受控访问限制",

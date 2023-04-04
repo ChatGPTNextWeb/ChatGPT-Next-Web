@@ -38,6 +38,7 @@ function getHeaders() {
 
   if (accessStore.token && accessStore.token.length > 0) {
     headers["token"] = accessStore.token;
+    headers["userhost"] = accessStore.host;
   }
 
   return headers;
