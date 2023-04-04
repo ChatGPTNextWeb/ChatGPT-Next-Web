@@ -87,8 +87,8 @@ const jp = {
       },
       List: "カスタムプロンプトワードリスト",
       ListCount: (builtin: number, custom: number) =>
-        組み込み ${ builtin } 件、ユーザー定義 ${ custom } 件,
-  Edit: "編集",
+      `組み込み ${builtin} 件、ユーザー定義 ${custom} 件`,
+    Edit: "編集",
     },
 HistoryCount: {
   Title: "履歴メッセージ数を添付",
