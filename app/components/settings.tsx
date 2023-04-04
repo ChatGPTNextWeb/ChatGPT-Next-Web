@@ -417,7 +417,7 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.historyMessageCount}
               min="0"
               max="25"
-              step="2"
+              step="1"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
