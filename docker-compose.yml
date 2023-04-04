@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  chatgpt-next-web:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: chatgpt_next_web
+    image: yidadaa/chatgpt-next-web:latest
+    ports:
+      - 0.0.0.0:3000:3000
+    env_file:
+      - docker-compose.env
+    restart: unless-stopped
