@@ -35,6 +35,8 @@ const es: LocaleType = {
     Title: "Todos los mensajes",
     Copy: "Copiar todo",
     Download: "Descargar",
+    MessageFromYou: "Mensaje de ti",
+    MessageFromChatGPT: "Mensaje de ChatGPT",
   },
   Memory: {
     Title: "Historial de memoria",
