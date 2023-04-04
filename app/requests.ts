@@ -44,7 +44,18 @@ function getHeaders() {
 
 export function validUser(signature: String) {
   return fetch(`//uc.zhiketong.net/api/check_user_white/?signature=${window.encodeURIComponent(`${signature}`)}`)
-    .then((response) => response.json())
+    .then((response) => {
+      // 检查请求的status
+      if (response.status !== 200) {
+        return {
+          data: {
+            code: response.status
+          },
+          error: null
+        }
+      }
+      return response.json()
+    })
     .then((data) => {
       return {
         data,
