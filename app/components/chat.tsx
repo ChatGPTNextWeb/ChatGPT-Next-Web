@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -33,7 +33,7 @@ import chatStyle from "./chat.module.scss";
 
 import { Modal, showModal, showToast } from "./ui-lib";
 
-const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+const Markdown = dynamic(async () => memo((await import("./markdown")).Markdown), {
   loading: () => <LoadingIcon />,
 });
 
