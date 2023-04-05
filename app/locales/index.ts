@@ -42,17 +42,19 @@ export function getLang(): Lang {
 
   const lang = getLanguage();
 
-  if (lang.includes("zh") || lang.includes("cn")) {
-    return "cn";
-  } else if (lang.includes("tw")) {
-    return "tw";
-  } else if (lang.includes("es")) {
-    return "es";
-  } else if (lang.includes("it")) {
-    return "it";
-  } else {
-    return "en";
-  }
+  // if (lang.includes("zh") || lang.includes("cn")) {
+  //   return "cn";
+  // } else if (lang.includes("tw")) {
+  //   return "tw";
+  // } else if (lang.includes("es")) {
+  //   return "es";
+  // } else if (lang.includes("it")) {
+  //   return "it";
+  // } else {
+  //   return "en";
+  // }
+
+  return "en";
 }
 
 export function changeLang(lang: Lang) {
