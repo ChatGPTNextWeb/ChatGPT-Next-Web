@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, HTMLProps } from "react";
 
-import EmojiPicker, { Theme as EmojiTheme, EmojiStyle } from "emoji-picker-react";
+import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import styles from "./settings.module.scss";
 
@@ -26,7 +26,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion } from "../utils";
+import { getCurrentVersion, getEmojiUrl } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
@@ -181,9 +181,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 <EmojiPicker
                   lazyLoadEmojis
                   theme={EmojiTheme.AUTO}
-                  getEmojiUrl={(unified: string, style: EmojiStyle) => {
-                    return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
-                  }}
+                  getEmojiUrl={getEmojiUrl}
                   onEmojiClick={(e) => {
                     updateConfig((config) => (config.avatar = e.unified));
                     setShowEmojiPicker(false);

@@ -1,3 +1,4 @@
+import { EmojiStyle } from "emoji-picker-react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
@@ -80,4 +81,8 @@ export function getCurrentVersion() {
   currentId = queryMeta("version");
 
   return currentId;
+}
+
+export function getEmojiUrl(unified: string, style: EmojiStyle) {
+  return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
 }
