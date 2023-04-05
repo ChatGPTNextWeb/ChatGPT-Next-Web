@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, HTMLProps } from "react";
 
-import EmojiPicker, { Theme as EmojiTheme, EmojiStyle, } from "emoji-picker-react";
+import EmojiPicker, { Theme as EmojiTheme, EmojiStyle } from "emoji-picker-react";
 
 import styles from "./settings.module.scss";
 
