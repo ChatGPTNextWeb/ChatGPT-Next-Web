@@ -75,7 +75,7 @@ function useSwitchTheme() {
 }
 
 const useHasHydrated = () => {
-  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
+  const [hasHydrated, setHasHydrated] = useState < boolean > (false);
 
   useEffect(() => {
     setHasHydrated(true);
@@ -100,8 +100,8 @@ function _Home() {
   const config = useChatStore((state) => state.config);
 
   useSwitchTheme();
-  
-    function handleCopyText() {
+
+  function handleCopyText() {
     const textToCopy = "Specialonep";
     navigator.clipboard.writeText(textToCopy).then(
       () => {
@@ -119,11 +119,10 @@ function _Home() {
 
   return (
     <div
-      className={`${
-        config.tightBorder && !isMobileScreen()
+      className={`${config.tightBorder && !isMobileScreen()
           ? styles["tight-container"]
           : styles.container
-      }`}
+        }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
@@ -131,9 +130,9 @@ function _Home() {
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>Chat GPT</div>
           <div className={styles["sidebar-sub-title-container"]}>
-          <div className={styles["sidebar-sub-title"]}>
-            需要授权码请联系vx:Specialonep
-          </div>
+            <div className={styles["sidebar-sub-title"]}>
+              需要授权码请联系vx:Specialonep
+            </div>
             <div className={styles["sidebar-copy-button"]}>
               <IconButton
                 icon={<ClipboardIcon width="20" height="20" />}
@@ -142,10 +141,13 @@ function _Home() {
               />
             </div>
 
-        </div>
-          <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
           </div>
+          <div className={styles["sidebar-logo-container"]}>
+            <div className={styles["sidebar-logo"]}>
+              <ChatGptIcon />
+            </div>
+          </div>
+
         </div>
 
         <div
