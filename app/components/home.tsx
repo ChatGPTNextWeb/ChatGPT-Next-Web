@@ -136,7 +136,7 @@ function _Home() {
           </div>
           <div className={styles["sidebar-copy-button"]}>
             <IconButton
-              icon={<ClipboardIcon />}
+              icon={<ClipboardIcon width="24" height="24" />}
               onClick={handleCopyText}
               shadow
             />
