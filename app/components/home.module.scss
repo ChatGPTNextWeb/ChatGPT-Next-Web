@@ -101,6 +101,15 @@
   bottom: 18px;
 }
 
+.sidebar-sub-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-copy-button {
+  margin-left: 8px;
+}
+
 .sidebar-title {
   font-size: 30px;
   font-weight: bold;
