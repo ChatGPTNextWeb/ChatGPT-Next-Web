@@ -17,6 +17,7 @@ import { Message, SubmitKey, useChatStore, BOT_HELLO, ROLES } from "../store";
 import {
   copyToClipboard,
   downloadAs,
+  getEmojiUrl,
   isMobileScreen,
   selectOrCopy,
 } from "../utils";
@@ -50,7 +51,7 @@ export function Avatar(props: { role: Message["role"] }) {
 
   return (
     <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} />
+      <Emoji unified={config.avatar} size={18} getEmojiUrl={getEmojiUrl} />
     </div>
   );
 }
