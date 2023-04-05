@@ -1,3 +1,7 @@
+# attention please
+
+This project is forked from [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web), and changed somewhere as personal like, thanks to [Yidadaa](https://github.com/Yidadaa) and some other developers' hard working and finally I have my own ChatGPT assistant now. Also, I should thank [Vercel](https://vercel.com/), Vercel is the platform for frontend developers, providing the speed and reliability innovators need to create at the moment of inspiration. Thanks again.
+
 <div align="center">
 <img src="./static/icon.svg" alt="预览"/>
 
