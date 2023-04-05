@@ -26,7 +26,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion } from "../utils";
+import { getCurrentVersion, getEmojiUrl } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
@@ -113,7 +113,6 @@ export function Settings(props: { closeSettings: () => void }) {
 
   useEffect(() => {
     checkUpdate();
-    checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -182,6 +181,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 <EmojiPicker
                   lazyLoadEmojis
                   theme={EmojiTheme.AUTO}
+                  getEmojiUrl={getEmojiUrl}
                   onEmojiClick={(e) => {
                     updateConfig((config) => (config.avatar = e.unified));
                     setShowEmojiPicker(false);
@@ -417,7 +417,7 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.historyMessageCount}
               min="0"
               max="25"
-              step="2"
+              step="1"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
