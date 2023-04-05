@@ -115,7 +115,7 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT</div>
+          <div className={styles["sidebar-title"]}>Chat GPT</div>
           <div className={styles["sidebar-sub-title"]}>
             需要授权码请联系vx:Specialonep
           </div>
