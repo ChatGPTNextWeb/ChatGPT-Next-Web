@@ -107,27 +107,9 @@
 }
 
 .sidebar-copy-button {
-  position: relative;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 24px;
-  height: 24px;
   margin-left: 8px;
+  transform: scale(0.8); /*缩放按钮大小*/
 }
-
-.sidebar-copy-icon {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4px;
-  width: 24px;
-  height: 24px;
-  background-color: var(--theme-color);
-  border-radius: 50%;
-}
-
-
 
 .sidebar-title {
   font-size: 30px;
