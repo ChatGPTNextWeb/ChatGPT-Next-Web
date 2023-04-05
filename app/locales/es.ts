@@ -42,6 +42,10 @@ const es: LocaleType = {
     Title: "Historial de memoria",
     EmptyContent: "Aún no hay nada.",
     Copy: "Copiar todo",
+    Send: "Send Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
     NewChat: "Nuevo chat",

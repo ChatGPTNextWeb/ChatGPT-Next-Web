@@ -149,6 +149,7 @@ export interface ChatStat {
 export interface ChatSession {
   id: number;
   topic: string;
+  sendMemory: boolean;
   memoryPrompt: string;
   context: Message[];
   messages: Message[];
@@ -170,6 +171,7 @@ function createEmptySession(): ChatSession {
   return {
     id: Date.now(),
     topic: DEFAULT_TOPIC,
+    sendMemory: true,
     memoryPrompt: "",
     context: [],
     messages: [],
@@ -202,6 +204,7 @@ interface ChatStore {
     messageIndex: number,
     updater: (message?: Message) => void,
   ) => void;
+  resetSession: () => void;
   getMessagesWithMemory: () => Message[];
   getMemoryPrompt: () => Message;
 
@@ -391,7 +394,11 @@ export const useChatStore = create<ChatStore>()(
 
         const context = session.context.slice();
 
-        if (session.memoryPrompt && session.memoryPrompt.length > 0) {
+        if (
+          session.sendMemory &&
+          session.memoryPrompt &&
+          session.memoryPrompt.length > 0
+        ) {
           const memoryPrompt = get().getMemoryPrompt();
           context.push(memoryPrompt);
         }
@@ -413,6 +420,13 @@ export const useChatStore = create<ChatStore>()(
         const messages = session?.messages;
         updater(messages?.at(messageIndex));
         set(() => ({ sessions }));
+      },
+
+      resetSession() {
+        get().updateCurrentSession((session) => {
+          session.messages = [];
+          session.memoryPrompt = "";
+        });
       },
 
       summarizeSession() {
@@ -506,12 +520,16 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: LOCAL_KEY,
-      version: 1.1,
+      version: 1.2,
       migrate(persistedState, version) {
         const state = persistedState as ChatStore;
 
         if (version === 1) {
           state.sessions.forEach((s) => (s.context = []));
+        }
+
+        if (version < 1.2) {
+          state.sessions.forEach((s) => (s.sendMemory = true));
         }
 
         return state;
