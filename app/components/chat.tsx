@@ -12,7 +12,14 @@ import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 
-import { Message, SubmitKey, useChatStore, BOT_HELLO, ROLES } from "../store";
+import {
+  Message,
+  SubmitKey,
+  useChatStore,
+  BOT_HELLO,
+  ROLES,
+  createMessage,
+} from "../store";
 
 import {
   copyToClipboard,
@@ -32,11 +39,14 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { Modal, showModal, showToast } from "./ui-lib";
+import { Input, Modal, showModal, showToast } from "./ui-lib";
 
-const Markdown = dynamic(async () => memo((await import("./markdown")).Markdown), {
-  loading: () => <LoadingIcon />,
-});
+const Markdown = dynamic(
+  async () => memo((await import("./markdown")).Markdown),
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
 
 const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,
@@ -142,6 +152,16 @@ function PromptToast(props: {
             onClose={() => props.setShowModal(false)}
             actions={[
               <IconButton
+                key="reset"
+                icon={<CopyIcon />}
+                bordered
+                text={Locale.Memory.Reset}
+                onClick={() =>
+                  confirm(Locale.Memory.ResetConfirm) &&
+                  chatStore.resetSession()
+                }
+              />,
+              <IconButton
                 key="copy"
                 icon={<CopyIcon />}
                 bordered
@@ -151,7 +171,6 @@ function PromptToast(props: {
             ]}
           >
             <>
-              {" "}
               <div className={chatStyle["context-prompt"]}>
                 {context.map((c, i) => (
                   <div className={chatStyle["context-prompt-row"]} key={i}>
@@ -171,17 +190,18 @@ function PromptToast(props: {
                         </option>
                       ))}
                     </select>
-                    <input
+                    <Input
                       value={c.content}
                       type="text"
                       className={chatStyle["context-content"]}
-                      onChange={(e) =>
+                      rows={1}
+                      onInput={(e) =>
                         updateContextPrompt(i, {
                           ...c,
-                          content: e.target.value as any,
+                          content: e.currentTarget.value as any,
                         })
                       }
-                    ></input>
+                    />
                     <IconButton
                       icon={<DeleteIcon />}
                       className={chatStyle["context-delete-button"]}
@@ -209,8 +229,24 @@ function PromptToast(props: {
               </div>
               <div className={chatStyle["memory-prompt"]}>
                 <div className={chatStyle["memory-prompt-title"]}>
-                  {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
-                  {session.messages.length})
+                  <span>
+                    {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
+                    {session.messages.length})
+                  </span>
+
+                  <label className={chatStyle["memory-prompt-action"]}>
+                    {Locale.Memory.Send}
+                    <input
+                      type="checkbox"
+                      checked={session.sendMemory}
+                      onChange={() =>
+                        chatStore.updateCurrentSession(
+                          (session) =>
+                            (session.sendMemory = !session.sendMemory),
+                        )
+                      }
+                    ></input>
+                  </label>
                 </div>
                 <div className={chatStyle["memory-prompt-content"]}>
                   {session.memoryPrompt || Locale.Memory.EmptyContent}
@@ -378,8 +414,8 @@ export function Chat(props: {
   };
 
   // stop response
-  const onUserStop = (messageIndex: number) => {
-    ControllerPool.stop(sessionIndex, messageIndex);
+  const onUserStop = (messageId: number) => {
+    ControllerPool.stop(sessionIndex, messageId);
   };
 
   // check if should send message
@@ -409,6 +445,9 @@ export function Chat(props: {
         chatStore
           .onUserInput(messages[i].content)
           .then(() => setIsLoading(false));
+        chatStore.updateCurrentSession((session) =>
+          session.messages.splice(i, 2),
+        );
         inputRef.current?.focus();
         return;
       }
@@ -433,9 +472,10 @@ export function Chat(props: {
       isLoading
         ? [
             {
-              role: "assistant",
-              content: "……",
-              date: new Date().toLocaleString(),
+              ...createMessage({
+                role: "assistant",
+                content: "……",
+              }),
               preview: true,
             },
           ]
@@ -445,9 +485,10 @@ export function Chat(props: {
       userInput.length > 0 && config.sendPreviewBubble
         ? [
             {
-              role: "user",
-              content: userInput,
-              date: new Date().toLocaleString(),
+              ...createMessage({
+                role: "user",
+                content: userInput,
+              }),
               preview: true,
             },
           ]
@@ -460,6 +501,7 @@ export function Chat(props: {
   useEffect(() => {
     if (props.sideBarShowing && isMobileScreen()) return;
     inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -563,7 +605,7 @@ export function Chat(props: {
                         {message.streaming ? (
                           <div
                             className={styles["chat-message-top-action"]}
-                            onClick={() => onUserStop(i)}
+                            onClick={() => onUserStop(message.id ?? i)}
                           >
                             {Locale.Chat.Actions.Stop}
                           </div>
