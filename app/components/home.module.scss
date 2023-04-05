@@ -101,6 +101,14 @@
   bottom: 18px;
 }
 
+.sidebar-logo-container {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+}
+
+
 .sidebar-sub-title-container {
   display: flex;
   align-items: center;
