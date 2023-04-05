@@ -142,14 +142,6 @@ function _Home() {
             />
           </div>
         </div>
-          <div className={styles["sidebar-copy-button"]}>
-            <IconButton
-              icon={<ClipboardIcon />}
-              onClick={handleCopyText}
-              shadow
-            />
-          </div>
-
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
