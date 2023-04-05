@@ -134,15 +134,13 @@ function _Home() {
           <div className={styles["sidebar-sub-title"]}>
             需要授权码请联系vx:Specialonep
           </div>
-          <div className={styles["sidebar-copy-button"]}>
-          <div className={styles["sidebar-copy-icon"]}>
-            <IconButton
-              icon={<ClipboardIcon />}
-              onClick={handleCopyText}
-              shadow
-            />
-          </div>
-        </div>
+            <div className={styles["sidebar-copy-button"]}>
+              <IconButton
+                icon={<ClipboardIcon width="24" height="24" />}
+                onClick={handleCopyText}
+                shadow
+              />
+            </div>
 
         </div>
           <div className={styles["sidebar-logo"]}>
