@@ -113,7 +113,6 @@ export function Settings(props: { closeSettings: () => void }) {
 
   useEffect(() => {
     checkUpdate();
-    checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
