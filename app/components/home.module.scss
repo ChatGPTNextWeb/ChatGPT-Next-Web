@@ -112,12 +112,11 @@
   justify-content: center;
   align-items: center;
   padding: 4px;
-  width: 24px;
-  height: 24px;
+  width: 24px; // 调整宽度
+  height: 24px; // 调整高度
   background-color: var(--theme-color);
   border-radius: 50%;
   margin-left: 8px;
-  transform: scale(0.8); // 缩放按钮大小
 }
 
 
