@@ -201,6 +201,7 @@ interface ChatStore {
   currentSessionIndex: number;
   clearSessions: () => void;
   removeSession: (index: number) => void;
+  moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
   currentSession: () => ChatSession;
@@ -287,6 +288,31 @@ export const useChatStore = create<ChatStore>()(
           return {
             currentSessionIndex: nextIndex,
             sessions,
+          };
+        });
+      },
+
+      moveSession(from: number, to: number) {
+        set((state) => {
+          const { sessions, currentSessionIndex: oldIndex } = state;
+
+          // move the session
+          const newSessions = [...sessions];
+          const session = newSessions[from];
+          newSessions.splice(from, 1);
+          newSessions.splice(to, 0, session);
+
+          // modify current session id
+          let newIndex = oldIndex === from ? to : oldIndex;
+          if (oldIndex > from && oldIndex <= to) {
+            newIndex -= 1;
+          } else if (oldIndex < from && oldIndex >= to) {
+            newIndex += 1;
+          }
+
+          return {
+            currentSessionIndex: newIndex,
+            sessions: newSessions,
           };
         });
       },
