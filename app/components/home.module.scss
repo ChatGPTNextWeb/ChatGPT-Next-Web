@@ -104,6 +104,7 @@
 .sidebar-title {
   font-size: 20px;
   font-weight: bold;
+  margin-top: -20px; /* 使用负数值将标题向上移动，例如：-10px */
 }
 
 .sidebar-sub-title {
