@@ -125,13 +125,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ```
 
 
-## 截图 Screenshots
-
-![设置](./static/settings.png)
-
-![更多展示](./static/more.png)
-
-
 ## 鸣谢
 ### 捐赠者
 > 仅列出了部分大额打赏，小额打赏（< 100RMB）人数太多，在此不再列出，敬请谅解。
