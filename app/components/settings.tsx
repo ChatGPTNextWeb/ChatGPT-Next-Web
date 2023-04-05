@@ -26,7 +26,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion } from "../utils";
+import { getCurrentVersion, getEmojiUrl } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
@@ -181,6 +181,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 <EmojiPicker
                   lazyLoadEmojis
                   theme={EmojiTheme.AUTO}
+                  getEmojiUrl={getEmojiUrl}
                   onEmojiClick={(e) => {
                     updateConfig((config) => (config.avatar = e.unified));
                     setShowEmojiPicker(false);
