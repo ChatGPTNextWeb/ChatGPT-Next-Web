@@ -135,12 +135,15 @@ function _Home() {
             需要授权码请联系vx:Specialonep
           </div>
           <div className={styles["sidebar-copy-button"]}>
+          <div className={styles["sidebar-copy-icon"]}>
             <IconButton
-              icon={<ClipboardIcon width="24" height="24" />}
+              icon={<ClipboardIcon />}
               onClick={handleCopyText}
               shadow
             />
           </div>
+        </div>
+
         </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
