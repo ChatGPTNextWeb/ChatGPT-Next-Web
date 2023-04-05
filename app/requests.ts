@@ -1,5 +1,5 @@
 import type { ChatRequest, ChatReponse } from "./api/openai/typing";
-import { Message, ModelConfig, useAccessStore } from "./store";
+import { Message, ModelConfig, useAccessStore, useChatStore } from "./store";
 import Locale from "./locales";
 import { showToast } from "./components/ui-lib";
 
@@ -21,10 +21,12 @@ const makeRequestParam = (
     sendMessages = sendMessages.filter((m) => m.role !== "assistant");
   }
 
+  const modelConfig = useChatStore.getState().config.modelConfig;
+
   return {
-    model: "gpt-3.5-turbo",
     messages: sendMessages,
     stream: options?.stream,
+    ...modelConfig,
   };
 };
 
