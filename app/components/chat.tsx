@@ -32,11 +32,14 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { Modal, showModal, showToast } from "./ui-lib";
+import { Input, Modal, showModal, showToast } from "./ui-lib";
 
-const Markdown = dynamic(async () => memo((await import("./markdown")).Markdown), {
-  loading: () => <LoadingIcon />,
-});
+const Markdown = dynamic(
+  async () => memo((await import("./markdown")).Markdown),
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
 
 const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,
@@ -151,7 +154,6 @@ function PromptToast(props: {
             ]}
           >
             <>
-              {" "}
               <div className={chatStyle["context-prompt"]}>
                 {context.map((c, i) => (
                   <div className={chatStyle["context-prompt-row"]} key={i}>
@@ -171,17 +173,18 @@ function PromptToast(props: {
                         </option>
                       ))}
                     </select>
-                    <input
+                    <Input
                       value={c.content}
                       type="text"
                       className={chatStyle["context-content"]}
-                      onChange={(e) =>
+                      rows={1}
+                      onInput={(e) =>
                         updateContextPrompt(i, {
                           ...c,
-                          content: e.target.value as any,
+                          content: e.currentTarget.value as any,
                         })
                       }
-                    ></input>
+                    />
                     <IconButton
                       icon={<DeleteIcon />}
                       className={chatStyle["context-delete-button"]}
