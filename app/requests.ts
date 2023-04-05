@@ -9,6 +9,7 @@ const makeRequestParam = (
   messages: Message[],
   options?: {
     filterBot?: boolean;
+    model?: string;
     stream?: boolean;
   },
 ): ChatRequest => {
@@ -22,7 +23,7 @@ const makeRequestParam = (
   }
 
   return {
-    model: "gpt-3.5-turbo",
+    model: options?.model || "gpt-3.5-turbo",
     messages: sendMessages,
     stream: options?.stream,
   };
@@ -57,8 +58,11 @@ export function requestOpenaiClient(path: string) {
     });
 }
 
-export async function requestChat(messages: Message[]) {
-  const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
+export async function requestChat(messages: Message[], model: string) {
+  const req: ChatRequest = makeRequestParam(messages, {
+    filterBot: true,
+    model,
+  });
 
   const res = await requestOpenaiClient("v1/chat/completions")(req);
 
@@ -121,6 +125,7 @@ export async function requestChatStream(
   const req = makeRequestParam(messages, {
     stream: true,
     filterBot: options?.filterBot,
+    model: options?.modelConfig?.model,
   });
 
   console.log("[Request] ", req);
@@ -184,7 +189,11 @@ export async function requestChatStream(
   }
 }
 
-export async function requestWithPrompt(messages: Message[], prompt: string) {
+export async function requestWithPrompt(
+  messages: Message[],
+  prompt: string,
+  model: string,
+) {
   messages = messages.concat([
     {
       role: "user",
@@ -193,7 +202,7 @@ export async function requestWithPrompt(messages: Message[], prompt: string) {
     },
   ]);
 
-  const res = await requestChat(messages);
+  const res = await requestChat(messages, model);
 
   return res?.choices?.at(0)?.message?.content ?? "";
 }

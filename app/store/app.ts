@@ -417,6 +417,7 @@ export const useChatStore = create<ChatStore>()(
 
       summarizeSession() {
         const session = get().currentSession();
+        const config = get().config;
 
         // should summarize topic after chating more than 50 words
         const SUMMARIZE_MIN_LEN = 50;
@@ -424,16 +425,17 @@ export const useChatStore = create<ChatStore>()(
           session.topic === DEFAULT_TOPIC &&
           countMessages(session.messages) >= SUMMARIZE_MIN_LEN
         ) {
-          requestWithPrompt(session.messages, Locale.Store.Prompt.Topic).then(
-            (res) => {
-              get().updateCurrentSession(
-                (session) => (session.topic = trimTopic(res)),
-              );
-            },
-          );
+          requestWithPrompt(
+            session.messages,
+            Locale.Store.Prompt.Topic,
+            config.modelConfig.model,
+          ).then((res) => {
+            get().updateCurrentSession(
+              (session) => (session.topic = trimTopic(res)),
+            );
+          });
         }
 
-        const config = get().config;
         let toBeSummarizedMsgs = session.messages.slice(
           session.lastSummarizeIndex,
         );
