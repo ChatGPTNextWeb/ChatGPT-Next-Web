@@ -42,6 +42,10 @@ const it: LocaleType = {
     Title: "Prompt di memoria",
     EmptyContent: "Vuoto.",
     Copy: "Copia tutto",
+    Send: "Send Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
     NewChat: "Nuova Chat",

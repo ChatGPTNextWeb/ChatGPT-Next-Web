@@ -62,7 +62,6 @@ One-Click to deploy your own ChatGPT web UI.
 - 用户登录、账号管理、消息云同步
 
 
-
 ## Get Started
 > [简体中文 > 如何开始使用](./README_CN.md#开始使用)
 

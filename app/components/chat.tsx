@@ -145,6 +145,16 @@ function PromptToast(props: {
             onClose={() => props.setShowModal(false)}
             actions={[
               <IconButton
+                key="reset"
+                icon={<CopyIcon />}
+                bordered
+                text={Locale.Memory.Reset}
+                onClick={() =>
+                  confirm(Locale.Memory.ResetConfirm) &&
+                  chatStore.resetSession()
+                }
+              />,
+              <IconButton
                 key="copy"
                 icon={<CopyIcon />}
                 bordered
@@ -212,8 +222,24 @@ function PromptToast(props: {
               </div>
               <div className={chatStyle["memory-prompt"]}>
                 <div className={chatStyle["memory-prompt-title"]}>
-                  {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
-                  {session.messages.length})
+                  <span>
+                    {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
+                    {session.messages.length})
+                  </span>
+
+                  <label className={chatStyle["memory-prompt-action"]}>
+                    {Locale.Memory.Send}
+                    <input
+                      type="checkbox"
+                      checked={session.sendMemory}
+                      onChange={() =>
+                        chatStore.updateCurrentSession(
+                          (session) =>
+                            (session.sendMemory = !session.sendMemory),
+                        )
+                      }
+                    ></input>
+                  </label>
                 </div>
                 <div className={chatStyle["memory-prompt-content"]}>
                   {session.memoryPrompt || Locale.Memory.EmptyContent}

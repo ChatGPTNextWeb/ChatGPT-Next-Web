@@ -39,7 +39,10 @@ const cn = {
   Memory: {
     Title: "历史记忆",
     EmptyContent: "尚未记忆",
-    Copy: "全部复制",
+    Send: "发送记忆",
+    Copy: "复制记忆",
+    Reset: "重置对话",
+    ResetConfirm: "重置后将清空当前对话记录以及历史记忆，确认重置？",
   },
   Home: {
     NewChat: "新的聊天",

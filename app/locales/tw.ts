@@ -41,6 +41,9 @@ const tw: LocaleType = {
     Title: "上下文記憶 Prompt",
     EmptyContent: "尚未記憶",
     Copy: "複製全部",
+    Send: "發送記憶",
+    Reset: "重置對話",
+    ResetConfirm: "重置後將清空當前對話記錄以及歷史記憶，確認重置？",
   },
   Home: {
     NewChat: "新的對話",
