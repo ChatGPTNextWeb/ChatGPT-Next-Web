@@ -445,8 +445,10 @@ export function Chat(props: {
         chatStore
           .onUserInput(messages[i].content)
           .then(() => setIsLoading(false));
+        chatStore.updateCurrentSession((session) =>
+          session.messages.splice(i, 2),
+        );
         inputRef.current?.focus();
-        messages.splice(i, 2);
         return;
       }
     }
