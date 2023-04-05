@@ -151,12 +151,12 @@ export function Home() {
                 }}
                 shadow
               />
-            </div>
+            {/* GIT按钮的跳转</div>
             <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} shadow />
               </a>
-            </div>
+            </div> */}
           </div>
           <div>
             <IconButton
