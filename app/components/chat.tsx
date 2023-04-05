@@ -12,7 +12,14 @@ import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 
-import { Message, SubmitKey, useChatStore, BOT_HELLO, ROLES } from "../store";
+import {
+  Message,
+  SubmitKey,
+  useChatStore,
+  BOT_HELLO,
+  ROLES,
+  createMessage,
+} from "../store";
 
 import {
   copyToClipboard,
@@ -407,8 +414,8 @@ export function Chat(props: {
   };
 
   // stop response
-  const onUserStop = (messageIndex: number) => {
-    ControllerPool.stop(sessionIndex, messageIndex);
+  const onUserStop = (messageId: number) => {
+    ControllerPool.stop(sessionIndex, messageId);
   };
 
   // check if should send message
@@ -439,6 +446,7 @@ export function Chat(props: {
           .onUserInput(messages[i].content)
           .then(() => setIsLoading(false));
         inputRef.current?.focus();
+        messages.splice(i, 2);
         return;
       }
     }
@@ -462,9 +470,10 @@ export function Chat(props: {
       isLoading
         ? [
             {
-              role: "assistant",
-              content: "……",
-              date: new Date().toLocaleString(),
+              ...createMessage({
+                role: "assistant",
+                content: "……",
+              }),
               preview: true,
             },
           ]
@@ -474,9 +483,10 @@ export function Chat(props: {
       userInput.length > 0 && config.sendPreviewBubble
         ? [
             {
-              role: "user",
-              content: userInput,
-              date: new Date().toLocaleString(),
+              ...createMessage({
+                role: "user",
+                content: userInput,
+              }),
               preview: true,
             },
           ]
@@ -489,6 +499,7 @@ export function Chat(props: {
   useEffect(() => {
     if (props.sideBarShowing && isMobileScreen()) return;
     inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -592,7 +603,7 @@ export function Chat(props: {
                         {message.streaming ? (
                           <div
                             className={styles["chat-message-top-action"]}
-                            onClick={() => onUserStop(i)}
+                            onClick={() => onUserStop(message.id ?? i)}
                           >
                             {Locale.Chat.Actions.Stop}
                           </div>

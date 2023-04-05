@@ -204,23 +204,22 @@ export const ControllerPool = {
 
   addController(
     sessionIndex: number,
-    messageIndex: number,
+    messageId: number,
     controller: AbortController,
   ) {
-    const key = this.key(sessionIndex, messageIndex);
+    const key = this.key(sessionIndex, messageId);
     this.controllers[key] = controller;
     return key;
   },
 
-  stop(sessionIndex: number, messageIndex: number) {
-    const key = this.key(sessionIndex, messageIndex);
+  stop(sessionIndex: number, messageId: number) {
+    const key = this.key(sessionIndex, messageId);
     const controller = this.controllers[key];
-    console.log(controller);
     controller?.abort();
   },
 
-  remove(sessionIndex: number, messageIndex: number) {
-    const key = this.key(sessionIndex, messageIndex);
+  remove(sessionIndex: number, messageId: number) {
+    const key = this.key(sessionIndex, messageId);
     delete this.controllers[key];
   },
 
