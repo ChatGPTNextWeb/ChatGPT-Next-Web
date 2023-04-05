@@ -41,7 +41,11 @@ const en: LocaleType = {
   Memory: {
     Title: "Memory Prompt",
     EmptyContent: "Nothing yet.",
-    Copy: "Copy All",
+    Send: "Send Memory",
+    Copy: "Copy Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
     NewChat: "New Chat",
@@ -108,8 +112,8 @@ const en: LocaleType = {
     },
     Usage: {
       Title: "Account Balance",
-      SubTitle(used: any) {
-        return `Used this month $${used}`;
+      SubTitle(used: any, total: any) {
+        return `Used this month $${used}, subscription $${total}`;
       },
       IsChecking: "Checking...",
       Check: "Check Again",

@@ -63,6 +63,14 @@
     font-size: 12px;
     font-weight: bold;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .memory-prompt-action {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .memory-prompt-content {

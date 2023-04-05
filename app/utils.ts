@@ -3,7 +3,7 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
 export function trimTopic(topic: string) {
-  return topic.replace(/[，。！？、,.!?]*$/, "");
+  return topic.replace(/[，。！？”“"、,.!?]*$/, "");
 }
 
 export async function copyToClipboard(text: string) {
