@@ -159,19 +159,11 @@ input[type="checkbox"]:checked::after {
 
 input[type="range"] {
   appearance: none;
-  border: var(--border-in-light);
-  border-radius: 10px;
-  padding: 5px 15px 5px 10px;
   background-color: var(--white);
   color: var(--black);
-
-  &::before {
-    content: attr(value);
-    font-size: 12px;
-  }
 }
 
-input[type="range"]::-webkit-slider-thumb {
+@mixin thumb() {
   appearance: none;
   height: 8px;
   width: 20px;
@@ -180,11 +172,36 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   transition: all ease 0.3s;
   margin-left: 5px;
+  border: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @include thumb();
+}
+
+input[type="range"]::-moz-range-thumb {
+  @include thumb();
+}
+
+input[type="range"]::-ms-thumb {
+  @include thumb();
+}
+
+@mixin thumbHover() {
+  transform: scaleY(1.2);
+  width: 24px;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scaleY(1.2);
-  width: 24px;
+  @include thumbHover();
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  @include thumbHover();
+}
+
+input[type="range"]::-ms-thumb:hover {
+  @include thumbHover();
 }
 
 input[type="number"],
