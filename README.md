@@ -71,9 +71,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 3. Enjoy :)
 
 ## FAQ
-> [简体中文 > 常见问题](./docs/faq-cn.md)
-
-We are sorry that there is currently no English version of the FAQ. English users can use translation tools to access the document. We look forward to receiving your PR for an English version of the documentation.
+[简体中文 > 常见问题](./docs/faq-cn.md) | [English > FAQ](./docs/faq.en.md)
 
 ## Keep Updated
 > [简体中文 > 如何保持代码更新](./README_CN.md#保持更新)
