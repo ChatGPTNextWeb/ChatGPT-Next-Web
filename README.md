@@ -3,7 +3,7 @@
 
 <h1 align="center">ChatGPT Next Web</h1>
 
-One-Click to deploy your own ChatGPT web UI.
+Build well-designed ChatGPT web UI on Vercel with One-Click. 
 
 一键免费部署你的私人 ChatGPT 网页应用。
 
