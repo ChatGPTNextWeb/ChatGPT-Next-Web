@@ -404,7 +404,6 @@ export function Chat(props: {
 
   // submit user input
   const onUserSubmit = () => {
-    if (userInput.length <= 0) return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
@@ -680,6 +679,7 @@ export function Chat(props: {
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             noDark
+            disabled={!userInput}
             onClick={onUserSubmit}
           />
         </div>
