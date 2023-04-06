@@ -10,6 +10,13 @@
   transition: all 0.3s ease;
   overflow: hidden;
   user-select: none;
+  outline: none;
+  border: none;
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .shadow {

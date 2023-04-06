@@ -679,6 +679,7 @@ export function Chat(props: {
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             noDark
+            disabled={!userInput}
             onClick={onUserSubmit}
           />
         </div>
