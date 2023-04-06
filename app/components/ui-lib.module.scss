@@ -141,6 +141,16 @@
   }
 }
 
+.input {
+  border: var(--border-in-light);
+  border-radius: 10px;
+  padding: 10px;
+  font-family: inherit;
+  background-color: var(--white);
+  color: var(--black);
+  resize: none;
+}
+
 @media only screen and (max-width: 600px) {
   .modal-container {
     width: 90vw;
