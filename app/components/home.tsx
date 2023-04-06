@@ -22,7 +22,8 @@ import Locale from "../locales";
 import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
-import { REPO_URL } from "../constant";
+// import { REPO_URL } from "../constant";
+const REPO_URL = "http://www.afunc.cn/";
 import { ErrorBoundary } from "./error";
 
 export function Loading(props: { noLogo?: boolean }) {
