@@ -17,7 +17,8 @@ import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
 import { useChatStore } from "../store";
-import { isMobileScreen } from "../utils";
+import { useScreen } from "../store/screen";
+
 import Locale from "../locales";
 import { Chat } from "./chat";
 
@@ -99,6 +100,7 @@ function _Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
+  const isMobile = useScreen(screen => screen.isMobile);
 
   useSwitchTheme();
 
@@ -109,7 +111,7 @@ function _Home() {
   return (
     <div
       className={`${
-        config.tightBorder && !isMobileScreen()
+        config.tightBorder && !isMobile
           ? styles["tight-container"]
           : styles.container
       }`}

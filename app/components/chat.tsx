@@ -20,6 +20,7 @@ import {
   ROLES,
   createMessage,
 } from "../store";
+import { useScreen } from "../store/screen";
 
 import {
   copyToClipboard,
@@ -348,6 +349,8 @@ export function Chat(props: {
   const { scrollRef, setAutoScroll } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(false);
 
+  const isMobile = useScreen(screen => screen.isMobile);
+
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
     setHitBottom(isTouchBottom);
@@ -409,7 +412,7 @@ export function Chat(props: {
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
     setPromptHints([]);
-    if (!isMobileScreen()) inputRef.current?.focus();
+    if (!isMobile) inputRef.current?.focus();
     setAutoScroll(true);
   };
 
@@ -499,7 +502,7 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
-    if (props.sideBarShowing && isMobileScreen()) return;
+    if (props.sideBarShowing && isMobile) return;
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -635,7 +638,7 @@ export function Chat(props: {
                       style={{ fontSize: `${fontSize}px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
                       onDoubleClickCapture={() => {
-                        if (!isMobileScreen()) return;
+                        if (!isMobile) return;
                         setUserInput(message.content);
                       }}
                     >
