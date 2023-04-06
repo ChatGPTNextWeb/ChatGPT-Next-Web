@@ -34,6 +34,14 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
+COPY --from=builder /app/next.config.js ./
+
+COPY entrypoint.sh .
+COPY .env.production .
+# Execute script
+RUN apk add --no-cache --upgrade bash
+RUN ["chmod", "+x", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 3000
 

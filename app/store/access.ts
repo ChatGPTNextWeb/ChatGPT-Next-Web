@@ -16,8 +16,8 @@ export const ACCESS_KEY = "access-control";
 export const useAccessStore = create<AccessControlStore>()(
   persist(
     (set, get) => ({
-      token: "",
-      accessCode: "",
+      token: process.env.NEXT_PUBLIC_OPENAI_API_KEY ?? "",
+      accessCode: process.env.NEXT_PUBLIC_CODE ?? "",
       enabledAccessControl() {
         return queryMeta("access") === "enabled";
       },
@@ -31,6 +31,6 @@ export const useAccessStore = create<AccessControlStore>()(
     {
       name: ACCESS_KEY,
       version: 1,
-    }
-  )
+    },
+  ),
 );
