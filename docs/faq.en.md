@@ -12,12 +12,12 @@ The Docker version is equivalent to the stable version, and the latest Docker is
 ## How to deploy on Vercel
 1. Register a Github account and fork this project.
 2. Register Vercel (mobile phone verification required, Chinese number can be used), and connect your Github account.
-3. Create a new project on Vercel, select the project you forked on Github, fill in the required environment variables, and start deploying. After deployment, you can access your project through the domain provided by Vercel under conditions with a ladder (VPN).
-4. If you need to access it without a wall in China: In your domain management website, add a CNAME record for the domain name, pointing to cname.vercel-dns.com. Then set up your domain access on Vercel.
+3. Create a new project on Vercel, select the project you forked on Github, fill in the required environment variables, and start deploying. After deployment, you can access your project through the domain provided by Vercel. (Requires proxy in mainland China)
+* If you need to access it directly in China: At your DNS provider, add a CNAME record for the domain name, pointing to cname.vercel-dns.com. Then set up your domain access on Vercel.
 
 ## How to modify Vercel environment variables
 - Enter the Vercel console page;
-- Select your chatgpt next web project;
+- Select your chatgpt-next-web project;
 - Click on the Settings option at the top of the page;
 - Find the Environment Variables option in the sidebar;
 - Modify the corresponding values as needed.
@@ -25,7 +25,7 @@ The Docker version is equivalent to the stable version, and the latest Docker is
 ## What is the environment variable CODE? Is it necessary to set it?
 This is your custom access password, you can choose:
 1. Do not set it, delete the environment variable. Be cautious: anyone can access your project at this time.
-2. When deploying the project, set the environment variable CODE (supports multiple passwords separated by commas). After setting the access password, users need to enter the access password in the settings page to use it. See [related instructions](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
+2. When deploying the project, set the environment variable CODE (supports multiple passwords, separated by commas). After setting the access password, users need to enter the access password in the settings page to use it. See [related instructions](https://github.com/Yidadaa/ChatGPT-Next-Web#access-password)
 
 ## Why doesn't the version I deployed have streaming response
 > Related discussion: [#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
@@ -101,7 +101,7 @@ Vercel is a global cloud platform designed to help developers build and deploy m
 # OpenAI-related Questions
 ## How to register an OpenAI account?
 Go to chat.openai.com to register. You will need:
-- A good VPN (OpenAI supports native IP addresses of supported regions)
+- A good VPN (OpenAI only allows native IP addresses of supported regions)
 - A supported email (e.g., Gmail or a company/school email, not Outlook or QQ email)
 - A way to receive SMS verification (e.g., SMS-activate website)
 
@@ -113,7 +113,7 @@ Some users have set up a proxy to check the balance without a VPN; ask online fr
 (Updated April 6th) Newly registered accounts usually display API balance within 24 hours. New accounts are currently given a $5 balance.
 
 ## How to recharge OpenAI API?
-OpenAI only accepts credit cards from designated regions (Chinese credit cards cannot be used). Some options include:
+OpenAI only accepts credit cards from designated regions (Chinese credit cards cannot be used). If the credit cards from your region is not supported, some options include:
 1. Depay virtual credit card
 2. Apply for a foreign credit card
 3. Find someone online to top up
