@@ -117,13 +117,17 @@ body {
 
 select {
   border: var(--border-in-light);
-  padding: 8px 10px;
+  padding: 10px;
   border-radius: 10px;
   appearance: none;
   cursor: pointer;
   background-color: var(--white);
   color: var(--black);
   text-align: center;
+}
+
+label {
+  cursor: pointer;
 }
 
 input {
@@ -155,19 +159,11 @@ input[type="checkbox"]:checked::after {
 
 input[type="range"] {
   appearance: none;
-  border: var(--border-in-light);
-  border-radius: 10px;
-  padding: 5px 15px 5px 10px;
   background-color: var(--white);
   color: var(--black);
-
-  &::before {
-    content: attr(value);
-    font-size: 12px;
-  }
 }
 
-input[type="range"]::-webkit-slider-thumb {
+@mixin thumb() {
   appearance: none;
   height: 8px;
   width: 20px;
@@ -176,19 +172,45 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   transition: all ease 0.3s;
   margin-left: 5px;
+  border: none;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
+input[type="range"]::-webkit-slider-thumb {
+  @include thumb();
+}
+
+input[type="range"]::-moz-range-thumb {
+  @include thumb();
+}
+
+input[type="range"]::-ms-thumb {
+  @include thumb();
+}
+
+@mixin thumbHover() {
   transform: scaleY(1.2);
   width: 24px;
 }
 
+input[type="range"]::-webkit-slider-thumb:hover {
+  @include thumbHover();
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  @include thumbHover();
+}
+
+input[type="range"]::-ms-thumb:hover {
+  @include thumbHover();
+}
+
 input[type="number"],
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
-  height: 32px;
+  min-height: 36px;
   box-sizing: border-box;
   background: var(--white);
   color: var(--black);
@@ -235,6 +257,7 @@ pre {
   .copy-code-button {
     position: absolute;
     right: 10px;
+    top: 1em;
     cursor: pointer;
     padding: 0px 5px;
     background-color: var(--black);
@@ -253,5 +276,32 @@ pre {
     &:hover {
       opacity: 1;
     }
+  }
+}
+
+.clickable {
+  cursor: pointer;
+
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+.error {
+  width: 80%;
+  border-radius: 20px;
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  overflow: auto;
+  background-color: var(--white);
+  color: var(--black);
+
+  pre {
+    overflow: auto;
   }
 }
