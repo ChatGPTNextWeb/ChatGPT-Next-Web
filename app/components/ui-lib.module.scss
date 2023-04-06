@@ -135,9 +135,25 @@
     box-shadow: var(--card-shadow);
     border: var(--border-in-light);
     color: var(--black);
-    padding: 10px 30px;
+    padding: 10px 20px;
     border-radius: 50px;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+
+    .toast-action {
+      padding-left: 20px;
+      color: var(--primary);
+      opacity: 0.8;
+      border: 0;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -149,6 +165,7 @@
   background-color: var(--white);
   color: var(--black);
   resize: none;
+  min-width: 50px;
 }
 
 @media only screen and (max-width: 600px) {

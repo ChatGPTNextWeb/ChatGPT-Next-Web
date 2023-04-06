@@ -6,6 +6,7 @@ async function makeRequest(req: NextRequest) {
     const api = await requestOpenai(req);
     const res = new NextResponse(api.body);
     res.headers.set("Content-Type", "application/json");
+    res.headers.set("Cache-Control", "no-cache");
     return res;
   } catch (e) {
     console.error("[OpenAI] ", req.body, e);
