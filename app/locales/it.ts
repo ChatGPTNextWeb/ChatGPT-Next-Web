@@ -2,7 +2,7 @@ import { SubmitKey } from "../store/app";
 import type { LocaleType } from "./index";
 
 const it: LocaleType = {
-  WIP: "Work in progress...",
+  WIP: "Work in progress....",
   Error: {
     Unauthorized:
       "Accesso non autorizzato, inserire il codice di accesso nella pagina delle impostazioni.",
