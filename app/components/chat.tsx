@@ -421,6 +421,7 @@ export function Chat(props: {
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (shouldSubmit(e)) {
+      setAutoScroll(true);
       onUserSubmit();
       e.preventDefault();
     }
@@ -667,7 +668,7 @@ export function Chat(props: {
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
-            onFocus={() => setAutoScroll(true)}
+            onFocus={() => setAutoScroll(isMobileScreen())}
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
