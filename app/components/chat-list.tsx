@@ -67,6 +67,7 @@ export function ChatList() {
       state.removeSession,
       state.moveSession,
     ]);
+  const chatStore = useChatStore();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -103,10 +104,7 @@ export function ChatList() {
                 index={i}
                 selected={i === selectedIndex}
                 onClick={() => selectSession(i)}
-                onDelete={() =>
-                  (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) &&
-                  removeSession(i)
-                }
+                onDelete={chatStore.deleteSession}
               />
             ))}
             {provided.placeholder}

@@ -50,6 +50,8 @@ const es: LocaleType = {
   Home: {
     NewChat: "Nuevo chat",
     DeleteChat: "¿Confirmar eliminación de la conversación seleccionada?",
+    DeleteToast: "Chat Deleted",
+    Revert: "Revert",
   },
   Settings: {
     Title: "Configuración",

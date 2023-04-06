@@ -7,23 +7,21 @@ export function trimTopic(topic: string) {
 }
 
 export async function copyToClipboard(text: string) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).catch(err => {
-      console.error('Failed to copy: ', err);
-    });
-  } else {
-    const textArea = document.createElement('textarea');
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (error) {
+    const textArea = document.createElement("textarea");
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
     try {
-      document.execCommand('copy');
-      console.log('Text copied to clipboard');
-    } catch (err) {
-      console.error('Failed to copy: ', err);
+      document.execCommand("copy");
+    } catch (error) {
+      showToast(Locale.Copy.Failed);
     }
-    document.body.removeChild(textArea);
+  } finally {
+    showToast(Locale.Copy.Success);
   }
 }
 
