@@ -46,11 +46,10 @@ function getHeaders() {
 
 export function requestOpenaiClient(path: string) {
   return (body: any, method = "POST") =>
-    fetch("/api/openai", {
+    fetch("/api/openai?_vercel_no_cache=1", {
       method,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
         path,
         ...getHeaders(),
       },
