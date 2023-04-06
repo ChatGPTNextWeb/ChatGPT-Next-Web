@@ -35,11 +35,17 @@ const en: LocaleType = {
     Title: "All Messages",
     Copy: "Copy All",
     Download: "Download",
+    MessageFromYou: "Message From You",
+    MessageFromChatGPT: "Message From ChatGPT",
   },
   Memory: {
     Title: "Memory Prompt",
     EmptyContent: "Nothing yet.",
-    Copy: "Copy All",
+    Send: "Send Memory",
+    Copy: "Copy Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
     NewChat: "New Chat",
@@ -54,12 +60,13 @@ const en: LocaleType = {
       Close: "Close",
     },
     Lang: {
-      Name: "Language",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       Options: {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
         es: "Español",
+        it: "Italiano",
       },
     },
     Avatar: "Avatar",
@@ -78,6 +85,7 @@ const en: LocaleType = {
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
+    SendPreviewBubble: "Send Preview Bubble",
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
@@ -104,11 +112,12 @@ const en: LocaleType = {
     },
     Usage: {
       Title: "Account Balance",
-      SubTitle(granted: any, used: any) {
-        return `Total $${granted}, Used $${used}`;
+      SubTitle(used: any, total: any) {
+        return `Used this month $${used}, subscription $${total}`;
       },
       IsChecking: "Checking...",
       Check: "Check Again",
+      NoAccess: "Enter API Key to check balance",
     },
     AccessCode: {
       Title: "Access Code",
@@ -141,13 +150,18 @@ const en: LocaleType = {
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
-        "Summarize our discussion briefly in 50 characters or less to use as a prompt for future context.",
+        "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
     },
     ConfirmClearAll: "Confirm to clear all chat and setting data?",
   },
   Copy: {
     Success: "Copied to clipboard",
     Failed: "Copy failed, please grant permission to access clipboard",
+  },
+  Context: {
+    Toast: (x: any) => `With ${x} contextual prompts`,
+    Edit: "Contextual and Memory Prompts",
+    Add: "Add One",
   },
 };
 

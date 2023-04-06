@@ -6,11 +6,22 @@
   justify-content: center;
   padding: 10px;
 
-  box-shadow: var(--card-shadow);
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   user-select: none;
+  outline: none;
+  border: none;
+  color: rgb(51, 51, 51);
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.shadow {
+  box-shadow: var(--card-shadow);
 }
 
 .border {
@@ -18,7 +29,6 @@
 }
 
 .icon-button:hover {
-  filter: brightness(0.9);
   border-color: var(--primary);
 }
 
@@ -34,24 +44,6 @@
   .icon-button {
     padding: 16px;
   }
-}
-
-@mixin dark-button {
-  div:not(:global(.no-dark))>.icon-button-icon {
-    filter: invert(0.5);
-  }
-
-  .icon-button:hover {
-    filter: brightness(1.2);
-  }
-}
-
-:global(.dark) {
-  @include dark-button;
-}
-
-@media (prefers-color-scheme: dark) {
-  @include dark-button;
 }
 
 .icon-button-text {

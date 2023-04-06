@@ -1,6 +1,6 @@
 import type { ChatRequest, ChatReponse } from "./api/openai/typing";
-import { filterConfig, Message, ModelConfig, useAccessStore } from "./store";
-import Locale from "./locales";
+import { Message, ModelConfig, useAccessStore, useChatStore } from "./store";
+import { showToast } from "./components/ui-lib";
 
 const TIME_OUT_MS = 30000;
 
@@ -9,7 +9,7 @@ const makeRequestParam = (
   options?: {
     filterBot?: boolean;
     stream?: boolean;
-  }
+  },
 ): ChatRequest => {
   let sendMessages = messages.map((v) => ({
     role: v.role,
@@ -20,10 +20,12 @@ const makeRequestParam = (
     sendMessages = sendMessages.filter((m) => m.role !== "assistant");
   }
 
+  const modelConfig = useChatStore.getState().config.modelConfig;
+
   return {
-    model: "gpt-3.5-turbo",
     messages: sendMessages,
     stream: options?.stream,
+    ...modelConfig,
   };
 };
 
@@ -44,7 +46,7 @@ function getHeaders() {
 
 export function requestOpenaiClient(path: string) {
   return (body: any, method = "POST") =>
-    fetch("/api/openai", {
+    fetch("/api/openai?_vercel_no_cache=1", {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -69,20 +71,49 @@ export async function requestChat(messages: Message[]) {
 }
 
 export async function requestUsage() {
-  const res = await requestOpenaiClient(
-    "dashboard/billing/credit_grants?_vercel_no_cache=1"
-  )(null, "GET");
+  const formatDate = (d: Date) =>
+    `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
+      .getDate()
+      .toString()
+      .padStart(2, "0")}`;
+  const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
+  const now = new Date(Date.now() + ONE_DAY);
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startDate = formatDate(startOfMonth);
+  const endDate = formatDate(now);
 
-  try {
-    const response = (await res.json()) as {
-      total_available: number;
-      total_granted: number;
-      total_used: number;
+  const [used, subs] = await Promise.all([
+    requestOpenaiClient(
+      `dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`,
+    )(null, "GET"),
+    requestOpenaiClient("dashboard/billing/subscription")(null, "GET"),
+  ]);
+
+  const response = (await used.json()) as {
+    total_usage?: number;
+    error?: {
+      type: string;
+      message: string;
     };
-    return response;
-  } catch (error) {
-    console.error("[Request usage] ", error, res.body);
+  };
+
+  const total = (await subs.json()) as {
+    hard_limit_usd?: number;
+  };
+
+  if (response.error && response.error.type) {
+    showToast(response.error.message);
+    return;
   }
+
+  if (response.total_usage) {
+    response.total_usage = Math.round(response.total_usage) / 100;
+  }
+
+  return {
+    used: response.total_usage,
+    subscription: total.hard_limit_usd,
+  };
 }
 
 export async function requestChatStream(
@@ -91,19 +122,14 @@ export async function requestChatStream(
     filterBot?: boolean;
     modelConfig?: ModelConfig;
     onMessage: (message: string, done: boolean) => void;
-    onError: (error: Error) => void;
+    onError: (error: Error, statusCode?: number) => void;
     onController?: (controller: AbortController) => void;
-  }
+  },
 ) {
   const req = makeRequestParam(messages, {
     stream: true,
     filterBot: options?.filterBot,
   });
-
-  // valid and assign model config
-  if (options?.modelConfig) {
-    Object.assign(req, filterConfig(options.modelConfig));
-  }
 
   console.log("[Request] ", req);
 
@@ -155,11 +181,10 @@ export async function requestChatStream(
       finish();
     } else if (res.status === 401) {
       console.error("Anauthorized");
-      responseText = Locale.Error.Unauthorized;
-      finish();
+      options?.onError(new Error("Anauthorized"), res.status);
     } else {
       console.error("Stream Error", res.body);
-      options?.onError(new Error("Stream Error"));
+      options?.onError(new Error("Stream Error"), res.status);
     }
   } catch (err) {
     console.error("NetWork Error", err);
@@ -187,23 +212,22 @@ export const ControllerPool = {
 
   addController(
     sessionIndex: number,
-    messageIndex: number,
-    controller: AbortController
+    messageId: number,
+    controller: AbortController,
   ) {
-    const key = this.key(sessionIndex, messageIndex);
+    const key = this.key(sessionIndex, messageId);
     this.controllers[key] = controller;
     return key;
   },
 
-  stop(sessionIndex: number, messageIndex: number) {
-    const key = this.key(sessionIndex, messageIndex);
+  stop(sessionIndex: number, messageId: number) {
+    const key = this.key(sessionIndex, messageId);
     const controller = this.controllers[key];
-    console.log(controller);
     controller?.abort();
   },
 
-  remove(sessionIndex: number, messageIndex: number) {
-    const key = this.key(sessionIndex, messageIndex);
+  remove(sessionIndex: number, messageId: number) {
+    const key = this.key(sessionIndex, messageId);
     delete this.controllers[key];
   },
 
