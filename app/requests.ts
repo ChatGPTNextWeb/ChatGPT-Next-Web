@@ -159,7 +159,10 @@ export async function requestChatStream(
 
     if (res.ok) {
       const reader = res.body?.getReader();
-      const decoder = new TextDecoder();
+      const decoder = new TextDecoder("utf-8", {
+        fatal: true,
+        ignoreBOM: true,
+      });
 
       options?.onController?.(controller);
 
@@ -168,13 +171,12 @@ export async function requestChatStream(
         const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
-        const text = decoder.decode(content?.value);
+        const text = decoder.decode(content?.value, { stream: !content?.done });
         responseText += text;
 
-        const done = !content || content.done;
         options?.onMessage(responseText, false);
 
-        if (done) {
+        if (content?.done) {
           break;
         }
       }
