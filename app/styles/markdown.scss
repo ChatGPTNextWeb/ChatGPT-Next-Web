@@ -76,7 +76,7 @@
   --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
   --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
   --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
-  --color-fg-default: #c9d1d9;
+  --color-fg-default: #ffffff;
   --color-fg-muted: #8b949e;
   --color-fg-subtle: #6e7681;
   --color-canvas-default: transparent;
@@ -317,7 +317,7 @@
   cursor: pointer;
 }
 
-.markdown-body details:not([open]) > *:not(summary) {
+.markdown-body details:not([open])>*:not(summary) {
   display: none !important;
 }
 
@@ -487,11 +487,11 @@
   content: "";
 }
 
-.markdown-body > *:first-child {
+.markdown-body>*:first-child {
   margin-top: 0 !important;
 }
 
-.markdown-body > *:last-child {
+.markdown-body>*:last-child {
   margin-bottom: 0 !important;
 }
 
@@ -527,11 +527,11 @@
   margin-bottom: 16px;
 }
 
-.markdown-body blockquote > :first-child {
+.markdown-body blockquote> :first-child {
   margin-top: 0;
 }
 
-.markdown-body blockquote > :last-child {
+.markdown-body blockquote> :last-child {
   margin-bottom: 0;
 }
 
@@ -630,7 +630,7 @@
   list-style-type: decimal;
 }
 
-.markdown-body div > ol:not([type]) {
+.markdown-body div>ol:not([type]) {
   list-style-type: decimal;
 }
 
@@ -642,11 +642,11 @@
   margin-bottom: 0;
 }
 
-.markdown-body li > p {
+.markdown-body li>p {
   margin-top: 16px;
 }
 
-.markdown-body li + li {
+.markdown-body li+li {
   margin-top: 0.25em;
 }
 
@@ -709,7 +709,7 @@
   overflow: hidden;
 }
 
-.markdown-body span.frame > span {
+.markdown-body span.frame>span {
   display: block;
   float: left;
   width: auto;
@@ -737,7 +737,7 @@
   clear: both;
 }
 
-.markdown-body span.align-center > span {
+.markdown-body span.align-center>span {
   display: block;
   margin: 13px auto 0;
   overflow: hidden;
@@ -755,7 +755,7 @@
   clear: both;
 }
 
-.markdown-body span.align-right > span {
+.markdown-body span.align-right>span {
   display: block;
   margin: 13px 0 0;
   overflow: hidden;
@@ -785,7 +785,7 @@
   overflow: hidden;
 }
 
-.markdown-body span.float-right > span {
+.markdown-body span.float-right>span {
   display: block;
   margin: 13px auto 0;
   overflow: hidden;
@@ -819,7 +819,7 @@
   font-size: 100%;
 }
 
-.markdown-body pre > code {
+.markdown-body pre>code {
   padding: 0;
   margin: 0;
   word-break: normal;
@@ -1082,7 +1082,7 @@
   cursor: pointer;
 }
 
-.markdown-body .task-list-item + .task-list-item {
+.markdown-body .task-list-item+.task-list-item {
   margin-top: 4px;
 }
 
@@ -1104,9 +1104,7 @@
 }
 
 .markdown-body .contains-task-list:hover .task-list-item-convert-container,
-.markdown-body
-  .contains-task-list:focus-within
-  .task-list-item-convert-container {
+.markdown-body .contains-task-list:focus-within .task-list-item-convert-container {
   display: block;
   width: auto;
   height: 24px;

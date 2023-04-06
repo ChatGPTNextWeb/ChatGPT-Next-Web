@@ -1,5 +1,6 @@
 import { useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -131,133 +132,133 @@ function PromptToast(props: {
     });
   };
 
-  return (
-    <div className={chatStyle["prompt-toast"]} key="prompt-toast">
-      {props.showToast && (
-        <div
-          className={chatStyle["prompt-toast-inner"] + " clickable"}
-          role="button"
-          onClick={() => props.setShowModal(true)}
-        >
-          <BrainIcon />
-          <span className={chatStyle["prompt-toast-content"]}>
-            {Locale.Context.Toast(context.length)}
-          </span>
-        </div>
-      )}
-      {props.showModal && (
-        <div className="modal-mask">
-          <Modal
-            title={Locale.Context.Edit}
-            onClose={() => props.setShowModal(false)}
-            actions={[
-              <IconButton
-                key="reset"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Memory.Reset}
-                onClick={() =>
-                  confirm(Locale.Memory.ResetConfirm) &&
-                  chatStore.resetSession()
-                }
-              />,
-              <IconButton
-                key="copy"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Memory.Copy}
-                onClick={() => copyToClipboard(session.memoryPrompt)}
-              />,
-            ]}
-          >
-            <>
-              <div className={chatStyle["context-prompt"]}>
-                {context.map((c, i) => (
-                  <div className={chatStyle["context-prompt-row"]} key={i}>
-                    <select
-                      value={c.role}
-                      className={chatStyle["context-role"]}
-                      onChange={(e) =>
-                        updateContextPrompt(i, {
-                          ...c,
-                          role: e.target.value as any,
-                        })
-                      }
-                    >
-                      {ROLES.map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
-                      ))}
-                    </select>
-                    <Input
-                      value={c.content}
-                      type="text"
-                      className={chatStyle["context-content"]}
-                      rows={1}
-                      onInput={(e) =>
-                        updateContextPrompt(i, {
-                          ...c,
-                          content: e.currentTarget.value as any,
-                        })
-                      }
-                    />
-                    <IconButton
-                      icon={<DeleteIcon />}
-                      className={chatStyle["context-delete-button"]}
-                      onClick={() => removeContextPrompt(i)}
-                      bordered
-                    />
-                  </div>
-                ))}
+  // return (
+  //   <div className={chatStyle["prompt-toast"]} key="prompt-toast">
+  //     {props.showToast && (
+  //       <div
+  //         className={chatStyle["prompt-toast-inner"] + " clickable"}
+  //         role="button"
+  //         onClick={() => props.setShowModal(true)}
+  //       >
+  //         <BrainIcon />
+  //         <span className={chatStyle["prompt-toast-content"]}>
+  //           {Locale.Context.Toast(context.length)}
+  //         </span>
+  //       </div>
+  //     )}
+  //     {props.showModal && (
+  //       <div className="modal-mask">
+  //         <Modal
+  //           title={Locale.Context.Edit}
+  //           onClose={() => props.setShowModal(false)}
+  //           actions={[
+  //             <IconButton
+  //               key="reset"
+  //               icon={<CopyIcon />}
+  //               bordered
+  //               text={Locale.Memory.Reset}
+  //               onClick={() =>
+  //                 confirm(Locale.Memory.ResetConfirm) &&
+  //                 chatStore.resetSession()
+  //               }
+  //             />,
+  //             <IconButton
+  //               key="copy"
+  //               icon={<CopyIcon />}
+  //               bordered
+  //               text={Locale.Memory.Copy}
+  //               onClick={() => copyToClipboard(session.memoryPrompt)}
+  //             />,
+  //           ]}
+  //         >
+  //           <>
+  //             <div className={chatStyle["context-prompt"]}>
+  //               {context.map((c, i) => (
+  //                 <div className={chatStyle["context-prompt-row"]} key={i}>
+  //                   <select
+  //                     value={c.role}
+  //                     className={chatStyle["context-role"]}
+  //                     onChange={(e) =>
+  //                       updateContextPrompt(i, {
+  //                         ...c,
+  //                         role: e.target.value as any,
+  //                       })
+  //                     }
+  //                   >
+  //                     {ROLES.map((r) => (
+  //                       <option key={r} value={r}>
+  //                         {r}
+  //                       </option>
+  //                     ))}
+  //                   </select>
+  //                   <Input
+  //                     value={c.content}
+  //                     type="text"
+  //                     className={chatStyle["context-content"]}
+  //                     rows={1}
+  //                     onInput={(e) =>
+  //                       updateContextPrompt(i, {
+  //                         ...c,
+  //                         content: e.currentTarget.value as any,
+  //                       })
+  //                     }
+  //                   />
+  //                   <IconButton
+  //                     icon={<DeleteIcon />}
+  //                     className={chatStyle["context-delete-button"]}
+  //                     onClick={() => removeContextPrompt(i)}
+  //                     bordered
+  //                   />
+  //                 </div>
+  //               ))}
 
-                <div className={chatStyle["context-prompt-row"]}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    text={Locale.Context.Add}
-                    bordered
-                    className={chatStyle["context-prompt-button"]}
-                    onClick={() =>
-                      addContextPrompt({
-                        role: "system",
-                        content: "",
-                        date: "",
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className={chatStyle["memory-prompt"]}>
-                <div className={chatStyle["memory-prompt-title"]}>
-                  <span>
-                    {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
-                    {session.messages.length})
-                  </span>
+  //               <div className={chatStyle["context-prompt-row"]}>
+  //                 <IconButton
+  //                   icon={<AddIcon />}
+  //                   text={Locale.Context.Add}
+  //                   bordered
+  //                   className={chatStyle["context-prompt-button"]}
+  //                   onClick={() =>
+  //                     addContextPrompt({
+  //                       role: "system",
+  //                       content: "",
+  //                       date: "",
+  //                     })
+  //                   }
+  //                 />
+  //               </div>
+  //             </div>
+  //             <div className={chatStyle["memory-prompt"]}>
+  //               <div className={chatStyle["memory-prompt-title"]}>
+  //                 <span>
+  //                   {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
+  //                   {session.messages.length})
+  //                 </span>
 
-                  <label className={chatStyle["memory-prompt-action"]}>
-                    {Locale.Memory.Send}
-                    <input
-                      type="checkbox"
-                      checked={session.sendMemory}
-                      onChange={() =>
-                        chatStore.updateCurrentSession(
-                          (session) =>
-                            (session.sendMemory = !session.sendMemory),
-                        )
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className={chatStyle["memory-prompt-content"]}>
-                  {session.memoryPrompt || Locale.Memory.EmptyContent}
-                </div>
-              </div>
-            </>
-          </Modal>
-        </div>
-      )}
-    </div>
-  );
+  //                 <label className={chatStyle["memory-prompt-action"]}>
+  //                   {Locale.Memory.Send}
+  //                   <input
+  //                     type="checkbox"
+  //                     checked={session.sendMemory}
+  //                     onChange={() =>
+  //                       chatStore.updateCurrentSession(
+  //                         (session) =>
+  //                           (session.sendMemory = !session.sendMemory),
+  //                       )
+  //                     }
+  //                   ></input>
+  //                 </label>
+  //               </div>
+  //               <div className={chatStyle["memory-prompt-content"]}>
+  //                 {session.memoryPrompt || Locale.Memory.EmptyContent}
+  //               </div>
+  //             </div>
+  //           </>
+  //         </Modal>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 }
 
 function useSubmitHandler() {
@@ -590,9 +591,9 @@ export function Chat(props: {
               }
             >
               <div className={styles["chat-message-container"]}>
-                <div className={styles["chat-message-avatar"]}>
+                {/* <div className={styles["chat-message-avatar"]}>
                   <Avatar role={message.role} />
-                </div>
+                </div> */}
                 {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>
                     {Locale.Chat.Typing}
@@ -659,11 +660,11 @@ export function Chat(props: {
       <div className={styles["chat-input-panel"]}>
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
         <div className={styles["chat-input-panel-inner"]}>
-          <textarea
+          <TextareaAutosize
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
-            rows={2}
+            rows={1}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}

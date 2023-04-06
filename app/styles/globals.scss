@@ -3,7 +3,7 @@
   --white: white;
   --black: rgb(48, 48, 48);
   --gray: rgb(250, 250, 250);
-  --primary: rgb(29, 147, 171);
+  --primary: rgba(78, 91, 246, 0.88);
   --second: rgb(231, 248, 255);
   --hover-color: #f3f3f3;
   --bar-color: rgba(0, 0, 0, 0.1);
@@ -19,13 +19,13 @@
 
 @mixin dark {
   /* color */
-  --white: rgb(30, 30, 30);
-  --black: rgb(187, 187, 187);
+  --white: #040415;
+  --black: rgb(255, 255, 255);
   --gray: rgb(21, 21, 21);
-  --primary: rgb(29, 147, 171);
-  --second: rgb(27 38 42);
-  --hover-color: #323232;
-
+  --primary: rgba(78, 91, 246, 0.88);
+  --second: #1D1D2C;
+  --hover-color: #040415;
+  --text: #AEB9CA;
   --bar-color: rgba(255, 255, 255, 0.1);
 
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
@@ -52,14 +52,13 @@
   --window-height: 90vh;
   --sidebar-width: 300px;
   --window-content-width: calc(100% - var(--sidebar-width));
-  --message-max-width: 80%;
-  --full-height: 100%;
+  --message-max-width: 100%;
 }
 
 @media only screen and (max-width: 600px) {
   :root {
     --window-width: 100vw;
-    --window-height: var(--full-height);
+    --window-height: 100vh;
     --sidebar-width: 100vw;
     --window-content-width: var(--window-width);
     --message-max-width: 100%;
@@ -75,22 +74,19 @@
     @include dark;
   }
 }
-html {
-  height: var(--full-height);
-}
 
 body {
   background-color: var(--gray);
   color: var(--black);
   margin: 0;
   padding: 0;
-  height: var(--full-height);
+  height: 100vh;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
   user-select: none;
-  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+  font-family: sans-serif, "SF Pro SC", "SF Pro Text", "SF Pro Icons",
     "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
   @media only screen and (max-width: 600px) {
@@ -99,7 +95,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  --bar-width: 5px;
+  --bar-width: 4px;
   width: var(--bar-width);
   height: var(--bar-width);
 }
@@ -117,21 +113,12 @@ body {
 
 select {
   border: var(--border-in-light);
-  padding: 10px;
+  padding: 8px 10px;
   border-radius: 10px;
   appearance: none;
   cursor: pointer;
   background-color: var(--white);
   color: var(--black);
-  text-align: center;
-}
-
-label {
-  cursor: pointer;
-}
-
-input {
-  text-align: center;
 }
 
 input[type="checkbox"] {
@@ -188,12 +175,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 input[type="number"],
-input[type="text"],
-input[type="password"] {
+input[type="text"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
-  min-height: 36px;
+  height: 32px;
   box-sizing: border-box;
   background: var(--white);
   color: var(--black);
@@ -210,7 +196,7 @@ div.math {
   position: fixed;
   top: 0;
   left: 0;
-  height: var(--full-height);
+  height: 100vh;
   width: 100vw;
   background-color: rgba($color: #000000, $alpha: 0.5);
   display: flex;
@@ -240,7 +226,6 @@ pre {
   .copy-code-button {
     position: absolute;
     right: 10px;
-    top: 1em;
     cursor: pointer;
     padding: 0px 5px;
     background-color: var(--black);
@@ -259,32 +244,5 @@ pre {
     &:hover {
       opacity: 1;
     }
-  }
-}
-
-.clickable {
-  cursor: pointer;
-
-  div:not(.no-dark) > svg {
-    filter: invert(0.5);
-  }
-
-  &:hover {
-    filter: brightness(0.9);
-  }
-}
-
-.error {
-  width: 80%;
-  border-radius: 20px;
-  border: var(--border-in-light);
-  box-shadow: var(--card-shadow);
-  padding: 20px;
-  overflow: auto;
-  background-color: var(--white);
-  color: var(--black);
-
-  pre {
-    overflow: auto;
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 require("../polyfill");
@@ -9,7 +10,7 @@ import styles from "./home.module.scss";
 
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/chatgpt.svg";
+import ChatGptIcon from "../icons/chatgpt1.svg";
 
 import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
@@ -118,10 +119,10 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          {/* <div className={styles["sidebar-title"]}>ChatBox</div>
           <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
-          </div>
+            IMPROVE WITH AI.
+          </div> */}
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
@@ -134,6 +135,15 @@ function _Home() {
             setShowSideBar(false);
           }}
         >
+          <button
+            className={styles["addConversation"]}
+            onClick={() => {
+              createNewSession();
+              setShowSideBar(false);
+            }}
+          >
+            + 创建新聊天
+          </button>
           <ChatList />
         </div>
 
@@ -165,7 +175,7 @@ function _Home() {
               </a>
             </div>
           </div>
-          <div>
+          {/* <div>
             <IconButton
               icon={<AddIcon />}
               text={Locale.Home.NewChat}
@@ -175,7 +185,7 @@ function _Home() {
               }}
               shadow
             />
-          </div>
+          </div> */}
         </div>
       </div>
 
