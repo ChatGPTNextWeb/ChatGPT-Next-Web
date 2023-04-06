@@ -19,7 +19,18 @@ export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
   isError?: boolean;
+  id?: number;
 };
+
+export function createMessage(override: Partial<Message>): Message {
+  return {
+    id: Date.now(),
+    date: new Date().toLocaleString(),
+    role: "user",
+    content: "",
+    ...override,
+  };
+}
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -153,6 +164,7 @@ export interface ChatStat {
 export interface ChatSession {
   id: number;
   topic: string;
+  sendMemory: boolean;
   memoryPrompt: string;
   context: Message[];
   messages: Message[];
@@ -162,11 +174,10 @@ export interface ChatSession {
 }
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
-export const BOT_HELLO: Message = {
+export const BOT_HELLO: Message = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
-  date: "",
-};
+});
 
 function createEmptySession(): ChatSession {
   const createDate = new Date().toLocaleString();
@@ -174,6 +185,7 @@ function createEmptySession(): ChatSession {
   return {
     id: Date.now(),
     topic: DEFAULT_TOPIC,
+    sendMemory: true,
     memoryPrompt: "",
     context: [],
     messages: [],
@@ -193,6 +205,7 @@ interface ChatStore {
   currentSessionIndex: number;
   clearSessions: () => void;
   removeSession: (index: number) => void;
+  moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
   currentSession: () => ChatSession;
@@ -206,6 +219,7 @@ interface ChatStore {
     messageIndex: number,
     updater: (message?: Message) => void,
   ) => void;
+  resetSession: () => void;
   getMessagesWithMemory: () => Message[];
   getMemoryPrompt: () => Message;
 
@@ -283,6 +297,31 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
+      moveSession(from: number, to: number) {
+        set((state) => {
+          const { sessions, currentSessionIndex: oldIndex } = state;
+
+          // move the session
+          const newSessions = [...sessions];
+          const session = newSessions[from];
+          newSessions.splice(from, 1);
+          newSessions.splice(to, 0, session);
+
+          // modify current session id
+          let newIndex = oldIndex === from ? to : oldIndex;
+          if (oldIndex > from && oldIndex <= to) {
+            newIndex -= 1;
+          } else if (oldIndex < from && oldIndex >= to) {
+            newIndex += 1;
+          }
+
+          return {
+            currentSessionIndex: newIndex,
+            sessions: newSessions,
+          };
+        });
+      },
+
       newSession() {
         set((state) => ({
           currentSessionIndex: 0,
@@ -313,18 +352,15 @@ export const useChatStore = create<ChatStore>()(
       },
 
       async onUserInput(content) {
-        const userMessage: Message = {
+        const userMessage: Message = createMessage({
           role: "user",
           content,
-          date: new Date().toLocaleString(),
-        };
+        });
 
-        const botMessage: Message = {
-          content: "",
+        const botMessage: Message = createMessage({
           role: "assistant",
-          date: new Date().toLocaleString(),
           streaming: true,
-        };
+        });
 
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
@@ -347,7 +383,10 @@ export const useChatStore = create<ChatStore>()(
               botMessage.streaming = false;
               botMessage.content = content;
               get().onNewMessage(botMessage);
-              ControllerPool.remove(sessionIndex, messageIndex);
+              ControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
             } else {
               botMessage.content = content;
               set(() => ({}));
@@ -363,13 +402,13 @@ export const useChatStore = create<ChatStore>()(
             userMessage.isError = true;
             botMessage.isError = true;
             set(() => ({}));
-            ControllerPool.remove(sessionIndex, messageIndex);
+            ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
           },
           onController(controller) {
             // collect controller for stop/retry
             ControllerPool.addController(
               sessionIndex,
-              messageIndex,
+              botMessage.id ?? messageIndex,
               controller,
             );
           },
@@ -396,7 +435,11 @@ export const useChatStore = create<ChatStore>()(
 
         const context = session.context.slice();
 
-        if (session.memoryPrompt && session.memoryPrompt.length > 0) {
+        if (
+          session.sendMemory &&
+          session.memoryPrompt &&
+          session.memoryPrompt.length > 0
+        ) {
           const memoryPrompt = get().getMemoryPrompt();
           context.push(memoryPrompt);
         }
@@ -420,6 +463,13 @@ export const useChatStore = create<ChatStore>()(
         set(() => ({ sessions }));
       },
 
+      resetSession() {
+        get().updateCurrentSession((session) => {
+          session.messages = [];
+          session.memoryPrompt = "";
+        });
+      },
+
       summarizeSession() {
         const session = get().currentSession();
 
@@ -432,7 +482,8 @@ export const useChatStore = create<ChatStore>()(
           requestWithPrompt(session.messages, Locale.Store.Prompt.Topic).then(
             (res) => {
               get().updateCurrentSession(
-                (session) => (session.topic = trimTopic(res)),
+                (session) =>
+                  (session.topic = res ? trimTopic(res) : DEFAULT_TOPIC),
               );
             },
           );
@@ -517,12 +568,16 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: LOCAL_KEY,
-      version: 1.1,
+      version: 1.2,
       migrate(persistedState, version) {
         const state = persistedState as ChatStore;
 
         if (version === 1) {
           state.sessions.forEach((s) => (s.context = []));
+        }
+
+        if (version < 1.2) {
+          state.sessions.forEach((s) => (s.sendMemory = true));
         }
 
         return state;

@@ -1,22 +1,29 @@
+import { EmojiStyle } from "emoji-picker-react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
 export function trimTopic(topic: string) {
-  return topic.replace(/[，。！？、,.!?]*$/, "");
+  return topic.replace(/[，。！？”“"、,.!?]*$/, "");
 }
 
 export async function copyToClipboard(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (error) {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-  } finally {
-    showToast(Locale.Copy.Success);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error("Failed to copy: ", err);
+    });
+  } else {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand("copy");
+      console.log("Text copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+    document.body.removeChild(textArea);
   }
 }
 
@@ -80,4 +87,8 @@ export function getCurrentVersion() {
   currentId = queryMeta("version");
 
   return currentId;
+}
+
+export function getEmojiUrl(unified: string, style: EmojiStyle) {
+  return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
 }

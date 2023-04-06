@@ -19,7 +19,6 @@ import RightIcon from "../icons/right.svg";
 import { Message, SubmitKey, useChatStore } from "../store";
 import { isMobileScreen } from "../utils";
 import Locale from "../locales";
-import { ChatList } from "./chat-list";
 import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
@@ -41,71 +40,9 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
 });
 
-const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
-  loading: () => <LoadingIcon />,
+const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
+  loading: () => <Loading noLogo />,
 });
-
-export function Avatar(props: { role: Message["role"] }) {
-  const config = useChatStore((state) => state.config);
-
-  if (props.role === "assistant") {
-    return <BotIcon className={styles["user-avtar"]} />;
-  }
-
-  return (
-    <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} />
-    </div>
-  );
-}
-
-function useSubmitHandler() {
-  const config = useChatStore((state) => state.config);
-  const submitKey = config.submitKey;
-
-  const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key !== "Enter") return false;
-    if (e.key === "Enter" && e.nativeEvent.isComposing) return false;
-    return (
-      (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
-      (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
-      (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
-      (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
-      (config.submitKey === SubmitKey.Enter &&
-        !e.altKey &&
-        !e.ctrlKey &&
-        !e.shiftKey &&
-        !e.metaKey)
-    );
-  };
-
-  return {
-    submitKey,
-    shouldSubmit,
-  };
-}
-
-export function PromptHints(props: {
-  prompts: Prompt[];
-  onPromptSelect: (prompt: Prompt) => void;
-}) {
-  if (props.prompts.length === 0) return null;
-
-  return (
-    <div className={styles["prompt-hints"]}>
-      {props.prompts.map((prompt, i) => (
-        <div
-          className={styles["prompt-hint"]}
-          key={prompt.title + i.toString()}
-          onClick={() => props.onPromptSelect(prompt)}
-        >
-          <div className={styles["hint-title"]}>{prompt.title}</div>
-          <div className={styles["hint-content"]}>{prompt.content}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function useSwitchTheme() {
   const config = useChatStore((state) => state.config);
