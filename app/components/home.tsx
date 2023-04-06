@@ -158,6 +158,9 @@ function _Home() {
               setSideBarCollapse(true);
             }
           }}
+          onDoubleClick={() => {
+            createNewSession();
+          }}
         >
           <ChatList />
         </div>
