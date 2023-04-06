@@ -537,7 +537,7 @@ export function Chat(props: {
               onClick={props?.showSideBar}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          {/* <div className={styles["window-action-button"]}>
             <IconButton
               icon={<BrainIcon />}
               bordered
@@ -546,7 +546,7 @@ export function Chat(props: {
                 setShowPromptModal(true);
               }}
             />
-          </div>
+          </div> */}
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ExportIcon />}

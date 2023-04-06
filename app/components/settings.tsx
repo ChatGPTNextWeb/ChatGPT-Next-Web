@@ -139,14 +139,14 @@ export function Settings(props: { closeSettings: () => void }) {
           </div>
         </div>
         <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"]}>
+          {/* <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ClearIcon />}
               onClick={clearSessions}
               bordered
               title={Locale.Settings.Actions.ClearAll}
             />
-          </div>
+          </div> */}
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ResetIcon />}
