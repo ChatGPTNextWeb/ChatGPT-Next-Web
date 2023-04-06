@@ -11,9 +11,10 @@ export function IconButton(props: {
   noDark?: boolean;
   className?: string;
   title?: string;
+  disabled?: boolean;
 }) {
   return (
-    <div
+    <button
       className={
         styles["icon-button"] +
         ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
@@ -22,6 +23,7 @@ export function IconButton(props: {
       }
       onClick={props.onClick}
       title={props.title}
+      disabled={props.disabled}
       role="button"
     >
       <div
@@ -32,6 +34,6 @@ export function IconButton(props: {
       {props.text && (
         <div className={styles["icon-button-text"]}>{props.text}</div>
       )}
-    </div>
+    </button>
   );
 }
