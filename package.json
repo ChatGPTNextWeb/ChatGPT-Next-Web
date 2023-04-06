@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-next-web",
-  "version": "1.1",
+  "version": "1.9.3",
   "private": false,
   "license": "Anti 996",
   "scripts": {
@@ -12,6 +12,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^16.2.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.4.7",
