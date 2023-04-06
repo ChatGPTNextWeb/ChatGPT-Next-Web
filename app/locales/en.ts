@@ -105,6 +105,11 @@ const en: LocaleType = {
       SubTitle:
         "Will compress if uncompressed messages length exceeds the value",
     },
+    RequestTimeOut: {
+      Title: "Request Response Timeout(unit/seconds)",
+      SubTitle:
+        "If no response is received within the set time, the request will be stopped",
+    },
     Token: {
       Title: "API Key",
       SubTitle: "Use your key to ignore access code limit",

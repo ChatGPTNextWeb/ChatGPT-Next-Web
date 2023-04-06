@@ -102,6 +102,10 @@ const tw: LocaleType = {
       Title: "歷史訊息長度壓縮閾值",
       SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
     },
+    RequestTimeOut: {
+      Title: "請求響應超時時間(單位/秒)",
+      SubTitle: "若在設定時間內未取得響應，將停止該請求",
+    },
     Token: {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可規避授權訪問限制",

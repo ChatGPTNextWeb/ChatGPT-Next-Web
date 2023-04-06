@@ -102,6 +102,10 @@ const cn = {
       Title: "历史消息长度压缩阈值",
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
+    RequestTimeOut: {
+      Title: "请求响应超时时间(单位/秒)",
+      SubTitle: "在设置时间内未获取响应将停止请求",
+    },
     Token: {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可绕过密码访问限制",

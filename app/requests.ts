@@ -2,8 +2,6 @@ import type { ChatRequest, ChatReponse } from "./api/openai/typing";
 import { Message, ModelConfig, useAccessStore, useChatStore } from "./store";
 import { showToast } from "./components/ui-lib";
 
-const TIME_OUT_MS = 30000;
-
 const makeRequestParam = (
   messages: Message[],
   options?: {
@@ -135,8 +133,10 @@ export async function requestChatStream(
   console.log("[Request] ", req);
 
   const controller = new AbortController();
-  const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
-
+  const reqTimeoutId = setTimeout(
+    () => controller.abort(),
+    useChatStore.getState().config.requestTimeOut * 1000,
+  );
   try {
     const res = await fetch("/api/chat-stream", {
       method: "POST",
@@ -165,7 +165,10 @@ export async function requestChatStream(
 
       while (true) {
         // handle time out, will stop if no response in 10 secs
-        const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
+        const resTimeoutId = setTimeout(
+          () => finish(),
+          useChatStore.getState().config.requestTimeOut * 1000,
+        );
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
         const text = decoder.decode(content?.value);

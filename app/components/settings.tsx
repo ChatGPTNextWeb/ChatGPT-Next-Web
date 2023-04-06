@@ -424,6 +424,24 @@ export function Settings(props: { closeSettings: () => void }) {
           </SettingItem>
 
           <SettingItem
+            title={Locale.Settings.RequestTimeOut.Title}
+            subTitle={Locale.Settings.RequestTimeOut.SubTitle}
+          >
+            <input
+              type="number"
+              min={1}
+              max={600}
+              value={config.requestTimeOut}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.requestTimeOut = e.currentTarget.valueAsNumber),
+                )
+              }
+            ></input>
+          </SettingItem>
+
+          <SettingItem
             title={Locale.Settings.CompressThreshold.Title}
             subTitle={Locale.Settings.CompressThreshold.SubTitle}
           >

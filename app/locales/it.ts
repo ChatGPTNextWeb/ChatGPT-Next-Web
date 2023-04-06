@@ -105,6 +105,11 @@ const it: LocaleType = {
       SubTitle:
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
+    RequestTimeOut: {
+      Title: "Tempo limite di risposta della richiesta(unità/secondi)",
+      SubTitle:
+        "La richiesta si interromperà se non viene ricevuta risposta entro il tempo stabilito",
+    },
     Token: {
       Title: "Chiave API",
       SubTitle:
