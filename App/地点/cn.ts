@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/app";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请在设置页输入访问密码。",
+    Unauthorized: "现在是未授权状态，请在设置页输入访问密码。在设置中使用自己的OPEN AI KEY将不限制任何功能，如需低价批量购买KEY请邮件admin@mracat.com",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
