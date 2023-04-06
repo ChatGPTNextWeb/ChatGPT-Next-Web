@@ -37,6 +37,13 @@
 
     border-radius: 0;
   }
+
+  .adjusted-container {
+    --window-width: 90vw;
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 20px;
+  }
 }
 
 .sidebar {

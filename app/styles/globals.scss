@@ -9,6 +9,8 @@
   --bar-color: rgba(0, 0, 0, 0.1);
   --theme-color: var(--gray);
 
+  --gray-disabled: rgb(230, 230, 230);
+
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
   --card-shadow: 0px 2px 4px 0px rgb(0, 0, 0, 0.05);
@@ -25,6 +27,8 @@
   --primary: rgb(29, 147, 171);
   --second: rgb(27 38 42);
   --hover-color: #323232;
+
+  --gray-disabled: rgba(59, 59, 59, 0.62);
 
   --bar-color: rgba(255, 255, 255, 0.1);
 
@@ -287,4 +291,9 @@ pre {
   pre {
     overflow: auto;
   }
+}
+
+.disabled {
+  background-color: var(--gray-disabled) !important;
+  cursor: not-allowed !important;
 }

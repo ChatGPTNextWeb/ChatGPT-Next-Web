@@ -110,7 +110,8 @@ function _Home() {
     <div
       className={`${
         config.tightBorder && !isMobileScreen()
-          ? styles["tight-container"]
+          ? styles["tight-container"] +
+            (config.adjustedContainer ? " " + styles["adjusted-container"] : "")
           : styles.container
       }`}
     >

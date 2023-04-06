@@ -293,10 +293,27 @@ export function Settings(props: { closeSettings: () => void }) {
           <SettingItem title={Locale.Settings.TightBorder}>
             <input
               type="checkbox"
+              title={Locale.Settings.TightBorderExplanation}
               checked={config.tightBorder}
               onChange={(e) =>
                 updateConfig(
                   (config) => (config.tightBorder = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </SettingItem>
+
+          <SettingItem title={Locale.Settings.AdjustedContainer}>
+            <input
+              type="checkbox"
+              title={Locale.Settings.AdjustedContainerExplanation}
+              checked={config.adjustedContainer}
+              disabled={!config.tightBorder}
+              className={!config.tightBorder ? "disabled" : ""}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.adjustedContainer = e.currentTarget.checked),
                 )
               }
             ></input>

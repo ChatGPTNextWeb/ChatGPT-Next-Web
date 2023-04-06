@@ -85,6 +85,11 @@ const en: LocaleType = {
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
+    TightBorderExplanation:
+      "This option adjusts the border of the window to fit 100% of the screen size",
+    AdjustedContainer: "Adjusted container",
+    AdjustedContainerExplanation:
+      "This option adjusts the window to occupy 90% of the screen size, leaving some margins around it",
     SendPreviewBubble: "Send Preview Bubble",
     Prompt: {
       Disable: {

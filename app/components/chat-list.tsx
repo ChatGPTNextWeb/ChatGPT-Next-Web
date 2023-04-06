@@ -1,3 +1,4 @@
+import React, { MouseEvent as ReactMouseEvent } from "react";
 import DeleteIcon from "../icons/delete.svg";
 import styles from "./home.module.scss";
 import {
@@ -22,6 +23,12 @@ export function ChatItem(props: {
   id: number;
   index: number;
 }) {
+  const handleMiddleClick = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (event.button === 1 && props.onDelete) {
+      props.onDelete();
+    }
+  };
+
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
@@ -30,6 +37,7 @@ export function ChatItem(props: {
             props.selected && styles["chat-item-selected"]
           }`}
           onClick={props.onClick}
+          onAuxClick={handleMiddleClick}
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}

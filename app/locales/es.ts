@@ -85,6 +85,11 @@ const es: LocaleType = {
     SendKey: "Tecla de envío",
     Theme: "Tema",
     TightBorder: "Borde ajustado",
+    TightBorderExplanation:
+      "Esta opción ajusta el borde de la ventana para que ocupe el 100% del tamaño de la pantalla",
+    AdjustedContainer: "Contenedor ajustado",
+    AdjustedContainerExplanation:
+      "Esta opción ajusta la ventana para que ocupe el 90% del tamaño de la pantalla, dejando márgenes alrededor",
     SendPreviewBubble: "Enviar burbuja de vista previa",
     Prompt: {
       Disable: {

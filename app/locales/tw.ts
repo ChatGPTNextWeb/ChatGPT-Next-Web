@@ -83,6 +83,10 @@ const tw: LocaleType = {
     SendKey: "發送鍵",
     Theme: "主題",
     TightBorder: "緊湊邊框",
+    TightBorderExplanation: "此選項將視窗邊框調整為適應屏幕尺寸的100％",
+    AdjustedContainer: "調整容器",
+    AdjustedContainerExplanation:
+      "此選項將視窗調整為占据屏幕尺寸的90％，在其周圍留下一定邊距",
     SendPreviewBubble: "發送預覽氣泡",
     Prompt: {
       Disable: {

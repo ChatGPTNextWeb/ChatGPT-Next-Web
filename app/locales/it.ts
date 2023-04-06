@@ -60,7 +60,7 @@ const it: LocaleType = {
       Close: "Chiudi",
     },
     Lang: {
-      Name: "Lingue",
+      Name: "Language",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -85,6 +85,11 @@ const it: LocaleType = {
     SendKey: "Tasto invia",
     Theme: "tema",
     TightBorder: "Bordi stretti",
+    TightBorderExplanation:
+      "Questa opzione adatta il bordo della finestra per adattarlo al 100% della dimensione dello schermo",
+    AdjustedContainer: "Contenitore regolabile",
+    AdjustedContainerExplanation:
+      "Questa opzione adatta la finestra per occupare il 90% della dimensione dello schermo, lasciando dei margini intorno",
     SendPreviewBubble: "Invia l'anteprima della bolla",
     Prompt: {
       Disable: {

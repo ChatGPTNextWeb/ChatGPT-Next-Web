@@ -83,6 +83,10 @@ const cn = {
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "紧凑边框",
+    TightBorderExplanation: "此选项将窗口边框调整为适应屏幕尺寸的100%",
+    AdjustedContainer: "调整容器",
+    AdjustedContainerExplanation:
+      "此选项将窗口调整为占据屏幕尺寸的90%，在其周围留下一定边距",
     SendPreviewBubble: "发送预览气泡",
     Prompt: {
       Disable: {
