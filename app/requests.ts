@@ -9,7 +9,7 @@ const makeRequestParam = (
   options?: {
     filterBot?: boolean;
     stream?: boolean;
-  },
+  }
 ): ChatRequest => {
   let sendMessages = messages.map((v) => ({
     role: v.role,
@@ -46,11 +46,10 @@ function getHeaders() {
 
 export function requestOpenaiClient(path: string) {
   return (body: any, method = "POST") =>
-    fetch("/api/openai", {
+    fetch("/api/openai?_vercel_no_cache=1", {
       method,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
         path,
         ...getHeaders(),
       },
@@ -77,7 +76,7 @@ export async function requestUsage() {
       .getDate()
       .toString()
       .padStart(2, "0")}`;
-  const ONE_DAY = 24 * 60 * 60 * 1000;
+  const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
   const now = new Date(Date.now() + ONE_DAY);
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startDate = formatDate(startOfMonth);
@@ -85,7 +84,7 @@ export async function requestUsage() {
 
   const [used, subs] = await Promise.all([
     requestOpenaiClient(
-      `dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`,
+      `dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`
     )(null, "GET"),
     requestOpenaiClient("dashboard/billing/subscription")(null, "GET"),
   ]);
@@ -125,7 +124,7 @@ export async function requestChatStream(
     onMessage: (message: string, done: boolean) => void;
     onError: (error: Error, statusCode?: number) => void;
     onController?: (controller: AbortController) => void;
-  },
+  }
 ) {
   const req = makeRequestParam(messages, {
     stream: true,
@@ -214,7 +213,7 @@ export const ControllerPool = {
   addController(
     sessionIndex: number,
     messageId: number,
-    controller: AbortController,
+    controller: AbortController
   ) {
     const key = this.key(sessionIndex, messageId);
     this.controllers[key] = controller;

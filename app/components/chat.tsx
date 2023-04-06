@@ -404,7 +404,6 @@ export function Chat(props: {
 
   // submit user input
   const onUserSubmit = () => {
-    if (userInput.length <= 0) return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");
@@ -421,6 +420,7 @@ export function Chat(props: {
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (shouldSubmit(e)) {
+      setAutoScroll(true);
       onUserSubmit();
       e.preventDefault();
     }
@@ -667,7 +667,7 @@ export function Chat(props: {
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
-            onFocus={() => setAutoScroll(true)}
+            onFocus={() => setAutoScroll(isMobileScreen())}
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
@@ -679,6 +679,7 @@ export function Chat(props: {
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             noDark
+            disabled={!userInput}
             onClick={onUserSubmit}
           />
         </div>
