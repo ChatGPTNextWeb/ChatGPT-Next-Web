@@ -408,6 +408,10 @@
   padding: 10px 14px 50px;
   resize: none;
   outline: none;
+
+  &:focus {
+    height: 100px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
