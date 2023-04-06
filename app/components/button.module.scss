@@ -12,7 +12,7 @@
   user-select: none;
   outline: none;
   border: none;
-  color: rgb(51, 51, 51);
+  color: var(--black);
 
   &[disabled] {
     cursor: not-allowed;
