@@ -149,6 +149,7 @@
   background-color: var(--white);
   color: var(--black);
   resize: none;
+  min-width: 50px;
 }
 
 @media only screen and (max-width: 600px) {
