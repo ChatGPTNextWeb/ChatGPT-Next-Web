@@ -7,9 +7,10 @@ import {
   requestChatStream,
   requestWithPrompt,
 } from "../requests";
-import { trimTopic } from "../utils";
+import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
+import { showToast } from "../components/ui-lib";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -204,6 +205,7 @@ interface ChatStore {
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
+  deleteSession: () => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
@@ -322,6 +324,26 @@ export const useChatStore = create<ChatStore>()(
           currentSessionIndex: 0,
           sessions: [createEmptySession()].concat(state.sessions),
         }));
+      },
+
+      deleteSession() {
+        const deletedSession = get().currentSession();
+        const index = get().currentSessionIndex;
+        const isLastSession = get().sessions.length === 1;
+        if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
+          get().removeSession(index);
+        }
+        showToast(Locale.Home.DeleteToast, {
+          text: Locale.Home.Revert,
+          onClick() {
+            set((state) => ({
+              sessions: state.sessions
+                .slice(0, index)
+                .concat([deletedSession])
+                .concat(state.sessions.slice(index + Number(isLastSession))),
+            }));
+          },
+        });
       },
 
       currentSession() {
