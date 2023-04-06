@@ -94,6 +94,7 @@ function _Home() {
       state.removeSession,
     ],
   );
+  const chatStore = useChatStore();
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
@@ -152,11 +153,7 @@ function _Home() {
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
                 icon={<CloseIcon />}
-                onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat)) {
-                    removeSession(currentIndex);
-                  }
-                }}
+                onClick={chatStore.deleteSession}
               />
             </div>
             <div className={styles["sidebar-action"]}>
