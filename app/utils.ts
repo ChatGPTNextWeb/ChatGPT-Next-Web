@@ -51,6 +51,12 @@ export function isMobileScreen() {
   return window.innerWidth <= 600;
 }
 
+export function isFirefox() {
+  return (
+    typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent)
+  );
+}
+
 export function selectOrCopy(el: HTMLElement, content: string) {
   const currentSelection = window.getSelection();
 
