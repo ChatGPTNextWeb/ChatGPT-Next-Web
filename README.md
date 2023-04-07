@@ -7,7 +7,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 一键免费部署你的私人 ChatGPT 网页应用。
 
-[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
+[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -71,9 +71,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 3. Enjoy :)
 
 ## FAQ
-> [简体中文 > 常见问题](./docs/faq-cn.md)
-
-We are sorry that there is currently no English version of the FAQ. English users can use translation tools to access the document. We look forward to receiving your PR for an English version of the documentation.
+[简体中文 > 常见问题](./docs/faq-cn.md) | [English > FAQ](./docs/faq.en.md)
 
 ## Keep Updated
 > [简体中文 > 如何保持代码更新](./README_CN.md#保持更新)
@@ -171,6 +169,8 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ![More](./docs/images/more.png)
 
+## Donation
+[Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
 ## Special Thanks
 ### Sponsor
@@ -179,6 +179,11 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@ClarenceDan](https://github.com/ClarenceDan)
 [@zhangjia](https://github.com/zhangjia)
 [@hoochanlon](https://github.com/hoochanlon)
+[@relativequantum](https://github.com/relativequantum)
+[@desenmeng](https://github.com/desenmeng)
+[@webees](https://github.com/webees)
+[@chazzhou](https://github.com/chazzhou)
+[@hauy](https://github.com/hauy)
 
 ### Contributor
 
