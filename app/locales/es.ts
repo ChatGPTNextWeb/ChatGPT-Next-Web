@@ -42,10 +42,16 @@ const es: LocaleType = {
     Title: "Historial de memoria",
     EmptyContent: "Aún no hay nada.",
     Copy: "Copiar todo",
+    Send: "Send Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
     NewChat: "Nuevo chat",
     DeleteChat: "¿Confirmar eliminación de la conversación seleccionada?",
+    DeleteToast: "Chat Deleted",
+    Revert: "Revert",
   },
   Settings: {
     Title: "Configuración",
@@ -108,8 +114,8 @@ const es: LocaleType = {
     },
     Usage: {
       Title: "Saldo de la cuenta",
-      SubTitle(used: any) {
-        return `Usado $${used}`;
+      SubTitle(used: any, total: any) {
+        return `Usado $${used}, subscription $${total}`;
       },
       IsChecking: "Comprobando...",
       Check: "Comprobar de nuevo",

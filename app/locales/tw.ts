@@ -41,10 +41,15 @@ const tw: LocaleType = {
     Title: "上下文記憶 Prompt",
     EmptyContent: "尚未記憶",
     Copy: "複製全部",
+    Send: "發送記憶",
+    Reset: "重置對話",
+    ResetConfirm: "重置後將清空當前對話記錄以及歷史記憶，確認重置？",
   },
   Home: {
     NewChat: "新的對話",
     DeleteChat: "確定要刪除選取的對話嗎？",
+    DeleteToast: "已刪除對話",
+    Revert: "撤銷",
   },
   Settings: {
     Title: "設定",
@@ -106,8 +111,8 @@ const tw: LocaleType = {
     },
     Usage: {
       Title: "帳戶餘額",
-      SubTitle(used: any) {
-        return `本月已使用 $${used}`;
+      SubTitle(used: any, total: any) {
+        return `本月已使用 $${used}，订阅总额 $${total}`;
       },
       IsChecking: "正在檢查…",
       Check: "重新檢查",

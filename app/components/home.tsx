@@ -19,7 +19,6 @@ import CloseIcon from "../icons/close.svg";
 import { useChatStore } from "../store";
 import { isMobileScreen } from "../utils";
 import Locale from "../locales";
-import { ChatList } from "./chat-list";
 import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
@@ -36,6 +35,10 @@ export function Loading(props: { noLogo?: boolean }) {
 }
 
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
+  loading: () => <Loading noLogo />,
+});
+
+const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => <Loading noLogo />,
 });
 
@@ -90,6 +93,7 @@ function _Home() {
       state.removeSession,
     ],
   );
+  const chatStore = useChatStore();
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
@@ -139,11 +143,7 @@ function _Home() {
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
                 icon={<CloseIcon />}
-                onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat)) {
-                    removeSession(currentIndex);
-                  }
-                }}
+                onClick={chatStore.deleteSession}
               />
             </div>
             <div className={styles["sidebar-action"]}>
