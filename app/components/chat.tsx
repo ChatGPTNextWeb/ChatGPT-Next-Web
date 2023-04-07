@@ -667,7 +667,7 @@ export function Chat(props: {
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
         <div className={styles["chat-input-panel-inner"]}>
           <TextareaAutosize
-            enterkeyhint="send"
+            enterKeyHint="send"
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
