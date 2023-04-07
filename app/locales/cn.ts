@@ -126,7 +126,7 @@ const cn = {
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
-      SubTitle: "值越大，回复越随机",
+      SubTitle: "值越大，回复越随机，大于 1 的值可能会导致乱码",
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
