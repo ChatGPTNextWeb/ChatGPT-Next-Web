@@ -105,8 +105,8 @@ const cn = {
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
     Host: {
-      Title: "Personal Host",
-      SubTitle: "使用自己的 Host 可绕过受控访问限制",
+      Title: "API地址",
+      SubTitle: "使用自定义的OpenAI API地址",
       Placeholder: "api.openai.com",
     },
     Token: {

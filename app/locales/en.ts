@@ -108,8 +108,8 @@ const en: LocaleType = {
         "Will compress if uncompressed messages length exceeds the value",
     },
     Host: {
-      Title: "Personal Host",
-      SubTitle: "Use your host to ignore access code limit",
+      Title: "Custom API Host",
+      SubTitle: "Use custom API Host",
       Placeholder: "api.openai.com",
     },
     Token: {

@@ -108,8 +108,8 @@ const es: LocaleType = {
         "Se comprimirán los mensajes si la longitud de los mensajes no comprimidos supera el valor",
     },
     Host: {
-      Title: "Clave de Host",
-      SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
+      Title: "Host API personalizzato",
+      SubTitle: "Utilizzare un host API personalizzato",
       Placeholder: "api.openai.com",
     },
     Token: {
