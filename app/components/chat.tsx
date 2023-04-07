@@ -2,7 +2,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
-import SendWhiteIcon from "../icons/send-white.svg";
+import SendWhiteIcon from "../icons/send-white-fill.svg";
 import BrainIcon from "../icons/brain.svg";
 import ExportIcon from "../icons/export.svg";
 import MenuIcon from "../icons/menu.svg";
@@ -41,6 +41,7 @@ import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
 import { Input, Modal, showModal, showToast } from "./ui-lib";
+import { text } from "stream/consumers";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -525,9 +526,9 @@ export function Chat(props: {
           >
             {session.topic}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          {/* <div className={styles["window-header-sub-title"]}>
             {Locale.Chat.SubTitle(session.messages.length)}
-          </div>
+          </div> */}
         </div>
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"] + " " + styles.mobile}>
@@ -633,7 +634,7 @@ export function Chat(props: {
                   ) : (
                     <div
                       className="markdown-body"
-                      style={{ fontSize: `${fontSize}px` }}
+                      // style={{ fontSize: `15px` }}
                       onContextMenu={(e) => onRightClick(e, message)}
                       onDoubleClickCapture={() => {
                         if (!isMobileScreen()) return;
@@ -646,9 +647,9 @@ export function Chat(props: {
                 </div>
                 {!isUser && !message.preview && (
                   <div className={styles["chat-message-actions"]}>
-                    <div className={styles["chat-message-action-date"]}>
+                    {/* <div className={styles["chat-message-action-date"]}>
                       {message.date.toLocaleString()}
-                    </div>
+                    </div> */}
                   </div>
                 )}
               </div>
@@ -661,6 +662,7 @@ export function Chat(props: {
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
         <div className={styles["chat-input-panel-inner"]}>
           <TextareaAutosize
+            enterkeyhint="send"
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
@@ -669,6 +671,7 @@ export function Chat(props: {
             value={userInput}
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
+            onSubmit={onUserSubmit}
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
@@ -677,7 +680,7 @@ export function Chat(props: {
           />
           <IconButton
             icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
+            // text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             noDark
             onClick={onUserSubmit}

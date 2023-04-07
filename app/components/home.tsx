@@ -10,7 +10,8 @@ import styles from "./home.module.scss";
 
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/chatgpt1.svg";
+import ChatGptIconLight from "../icons/chatgpt2.svg";
+import ChatGptIconDark from "../icons/chatgpt1.svg";
 
 import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
@@ -124,7 +125,11 @@ function _Home() {
             IMPROVE WITH AI.
           </div> */}
           <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
+            {config.theme === "light" ? (
+              <ChatGptIconLight />
+            ) : (
+              <ChatGptIconDark />
+            )}
           </div>
         </div>
 
@@ -169,11 +174,11 @@ function _Home() {
                 shadow
               />
             </div>
-            <div className={styles["sidebar-action"]}>
+            {/* <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} shadow />
               </a>
-            </div>
+            </div> */}
           </div>
           {/* <div>
             <IconButton

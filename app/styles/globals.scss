@@ -3,9 +3,9 @@
   --white: white;
   --black: rgb(48, 48, 48);
   --gray: rgb(250, 250, 250);
-  --primary: rgba(78, 91, 246, 0.88);
-  --second: rgb(231, 248, 255);
-  --hover-color: #f3f3f3;
+  --primary: rgba(78, 91, 246, 0.8);
+  --second: #dadefd83;
+  --hover-color: rgba(78, 91, 246, 0.1);
   --bar-color: rgba(0, 0, 0, 0.1);
   --theme-color: var(--gray);
 
@@ -20,17 +20,15 @@
 @mixin dark {
   /* color */
   --white: #040415;
-  --black: rgb(255, 255, 255);
+  --black: #d1d5db;
   --gray: rgb(21, 21, 21);
-  --primary: rgba(78, 91, 246, 0.88);
-  --second: #1D1D2C;
+  --primary: rgba(78, 91, 246);
+  --second: #171724;
   --hover-color: #040415;
   --text: #AEB9CA;
   --bar-color: rgba(255, 255, 255, 0.1);
-
-  --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
-
-  --theme-color: var(--gray);
+  --border-in-light: 1px solid #dadefd36;
+  --theme-color: var(--white);
 }
 
 .light {
@@ -50,18 +48,22 @@
 
   --window-width: 90vw;
   --window-height: 90vh;
-  --sidebar-width: 300px;
+  --sidebar-width: 260px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 100%;
+    --full-height: 100%;
 }
 
 @media only screen and (max-width: 600px) {
   :root {
     --window-width: 100vw;
-    --window-height: 100vh;
+    --window-height: var(--full-height);
     --sidebar-width: 100vw;
     --window-content-width: var(--window-width);
     --message-max-width: 100%;
+    body{
+      overflow-y: hidden; 
+    }
   }
 
   .no-mobile {
@@ -74,13 +76,15 @@
     @include dark;
   }
 }
-
+html {
+  height: var(--full-height);
+}
 body {
   background-color: var(--gray);
   color: var(--black);
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: var(--full-height);
   width: 100vw;
   display: flex;
   justify-content: center;

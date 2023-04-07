@@ -1,10 +1,20 @@
 @import "./window.scss";
+@import "../styles/animation.scss";
 
 @mixin container {
 
+  background-clip: padding-box,
+    border-box;
+  background-origin: padding-box,
+    border-box;
+  background-image: linear-gradient(to right, var(--white), var(--white)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.8) 73.67%, rgba(255, 255, 255, 0) 99.95%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+  box-shadow: 0px 16px 32px -16px rgba(0, 0, 0, 0.5),
+    0px 0px 0px 0.9375px rgba(0, 0, 0, 0.5);
   background-color: var(--white);
-  border: 3px solid hsla(0, 0%, 100%, .2);
-  border-radius: 20px;
+  border: 2px solid hsla(0, 0%, 100%, .1);
+  border-radius: 10px;
   box-shadow: var(--shadow);
   color: var(--black);
   background-color: var(--white);
@@ -22,28 +32,31 @@
 
 .container {
   @include container();
+
 }
 
 @media only screen and (min-width: 600px) {
   .tight-container {
     --window-width: 100vw;
-    --window-height: 100vh;
-    --window-content-width: calc(100% - var(--sidebar-width));
+    --window-height: var(--full-height);
+    --window-content-width: 768px;
+
 
     @include container();
 
     max-width: 100vw;
-    max-height: 100vh;
+    max-height: var(--full-height);
 
     border-radius: 0;
   }
 }
 
+
 .sidebar {
   top: 0;
   width: var(--sidebar-width);
   box-sizing: border-box;
-  padding: 20px;
+  padding: 14px;
   background-color: var(--second);
   display: flex;
   flex-direction: column;
@@ -55,6 +68,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
 }
 
 .mobile {
@@ -74,10 +88,11 @@
   .sidebar {
     position: absolute;
     left: -100%;
-    z-index: 999;
-    height: 100vh;
+    z-index: 1000;
+    height: var(--full-height);
     transition: all ease 0.3s;
     box-shadow: none;
+    background-color: var(--white);
   }
 
   .sidebar-show {
@@ -122,23 +137,30 @@
 .chat-list {}
 
 .chat-item {
+  box-sizing: border-box;
   padding: 12px 10px;
+  color: var(--black);
   background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0px 16px 32px -16px rgba(0, 0, 0, 0.5),
-    0px 0px 0px 0.9375px rgba(0, 0, 0, 0.5);
+
   border-radius: 10px;
+  margin: 0 1px;
   margin-bottom: 14px;
-  transition: all 0.5s ease;
+  // transition: all 0.5s ease;
   cursor: pointer;
   user-select: none;
-  border: 2px;
   position: relative;
   overflow: hidden;
   border: var(--border-in-light);
 
-
-
-
+  background-clip: padding-box,
+    border-box;
+  background-origin: padding-box,
+    border-box;
+  background-image: linear-gradient(to right, var(--second), var(--second)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.8) 73.67%, rgba(255, 255, 255, 0) 99.95%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+  box-shadow: 0px 16px 32px -16px rgba(0, 0, 0, 0.5),
+    0px 0px 0px 0.9375px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes slide-in {
@@ -159,13 +181,15 @@
 
 
 .chat-item-selected {
-  border: 2px solid transparent;
+  color: var(--black);
+  border: 1px solid transparent;
   background-clip: padding-box,
     border-box;
   background-origin: padding-box,
     border-box;
-  background-image: linear-gradient(to right, #292937, #292937),
+  background-image: linear-gradient(to right, var(--white), var(--white)),
     linear-gradient(90deg, rgba(255, 99, 99, 0.8), rgba(155, 77, 255, 0.8));
+  transition: all 0.5s ease;
 }
 
 .chat-item-title {
@@ -231,9 +255,9 @@
 .chat-body {
   flex: 1;
   overflow: auto;
-  padding: 20px;
-  padding-bottom: 120px;
-  transition: all ease 0.3s;
+  padding: 18px;
+  position: relative;
+  // padding-bottom: 120px;
 }
 
 .chat-body-title {
@@ -299,16 +323,17 @@
 .chat-message-item {
   box-sizing: border-box;
   max-width: 100%;
-  margin-top: 28px;
+  margin-top: 26px;
   border-radius: 4px 10px 10px 10px;
   padding: 10px;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 2;
   user-select: text;
   word-break: break-word;
   position: relative;
   background: linear-gradient(90.13deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%),
     rgba(255, 255, 255, 0.05);
+  border: var(--border-in-light);
 
 }
 
@@ -342,7 +367,7 @@
 }
 
 .chat-message-user>.chat-message-container>.chat-message-item {
-  background: rgba(78, 91, 246, 0.55);
+  background: rgba(78, 91, 246, 0.60);
   border-radius: 10px 4px 10px 10px;
   border: none;
 }
@@ -361,15 +386,28 @@
 }
 
 .chat-input-panel {
-  position: absolute;
-  bottom: 0px;
-  display: flex;
+
   width: 100%;
-  padding: 20px;
+  padding: 18px;
   box-sizing: border-box;
   flex-direction: column;
-  background: rgba(4, 4, 21, 0.70);
-  backdrop-filter: blur(6px);
+  // background: rgba(4, 4, 21, 0.18);
+  backdrop-filter: blur(1px);
+  vertical-align: middle;
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-input-panel {
+
+    width: 100%;
+    padding: 18px 18px 32px 18px;
+    box-sizing: border-box;
+    flex-direction: column;
+    background: var(--second);
+    backdrop-filter: blur(1px);
+    vertical-align: middle;
+  }
+
 }
 
 @mixin single-line {
@@ -434,38 +472,38 @@
 }
 
 .chat-input {
-  box-sizing: border-box;
-  max-height: 222px;
-  overflow-y: auto;
+  height: 100%;
   width: 100%;
-  border-radius: 8px;
+  max-height: 222px;
+  width: 100%;
+  border-radius: 10px;
   border: var(--border-in-light);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
   background-color: var(--white);
-  color: var(--black) ;
-  padding: 16px 12px;
+  color: var(--black);
+  padding: 12px 62px 12px 12px;
   resize: none;
   outline: none;
-  transition: all 0.5s ease;
-  word-break: break-all;
-  line-height: 1.5;
-
+  background-color: var(--white);
+  font-family: inherit;
+  font-size: 15px;
+  transition: all 0.8s ease;
 
 }
 
 .chat-input::placeholder {
   color: var(--text);
-  font-size: 14px;
-  vertical-align: middle
-  a;
+  font-size: 15px;
+  vertical-align: middle;
+  line-height: normal;
 }
 
 
-// @media only screen and (max-width: 600px) {
-//   .chat-input {
-//     font-size: 14px;
-//   }
-// }
+@media only screen and (max-width: 600px) {
+  .chat-input {
+    font-size: 16px;
+  }
+}
 
 .chat-input:focus {
   background-clip: padding-box,
@@ -474,21 +512,41 @@
     border-box;
   background-image: linear-gradient(to right, var(--white), var(--white)),
     linear-gradient(90deg, rgba(255, 99, 99, 0.8), rgba(155, 77, 255, 0.8));
-  box-shadow: 0 4px 0 2px rgba(var(--primary), .2);
+  box-shadow: 1px 0px 14px 0px rgb(69 80 219 / 55%);
   //  padding: inherit;
   transition: all 0.5s ease;
 }
 
 .chat-input-send {
-  background-color: var(--primary);
+  // background-color: var(--primary);
   color: white;
-  width: 78px;
-  height: 33px;
+  width: 48px;
+  height: 34px;
   box-sizing: border-box;
-  border-radius: 8px;
+  border-radius: 6px;
   position: absolute;
-  right: 30px;
-  bottom: 30px;
+  bottom: 24px;
+  right: 26px;
+}
+
+.chat-input-send:hover {
+  background-color: var(--primary);
+
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-input-send {
+    // background-color: var(--primary);
+    color: white;
+    // width: 72px;
+    // height: 32px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    position: absolute;
+    right: 30px;
+    bottom: 228px;
+    display: none;
+  }
 }
 
 .export-content {
@@ -506,7 +564,8 @@
 
 .addConversation {
   box-sizing: border-box;
-
+  color: var(--black);
+  font-weight: bold;
   height: 52px;
   width: 100%;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.42));
