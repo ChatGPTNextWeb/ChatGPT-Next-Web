@@ -23,11 +23,11 @@ const en: LocaleType = {
     Rename: "Rename Chat",
     Typing: "Typing…",
     Input: (submitKey: string) => {
-      var inputHints = `Type something and press ${submitKey} to send`;
+      var inputHints = `${submitKey} to send`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", press Shift + Enter to newline";
+        inputHints += ", Shift + Enter to wrap";
       }
-      return inputHints;
+      return inputHints + ", / to search prompts";
     },
     Send: "Send",
   },
