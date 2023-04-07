@@ -349,6 +349,7 @@ export function Chat(props: {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [beforeInput, setBeforeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll } = useScrollToBottom();
@@ -422,6 +423,7 @@ export function Chat(props: {
     if (userInput.length <= 0) return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    setBeforeInput(userInput);
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen()) inputRef.current?.focus();
@@ -435,6 +437,12 @@ export function Chat(props: {
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // if ArrowUp and no userInput
+    if (e.key === "ArrowUp" && userInput.length <= 0) {
+      setUserInput(beforeInput);
+      e.preventDefault();
+      return;
+    }
     if (shouldSubmit(e)) {
       onUserSubmit();
       e.preventDefault();
