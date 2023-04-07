@@ -522,7 +522,8 @@ export function Chat(props: {
   // Textarea Adaptive height
   useEffect(() => {
     resizeTextarea();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInput]);
 
   return (
     <div className={styles.chat} key={session.id}>
