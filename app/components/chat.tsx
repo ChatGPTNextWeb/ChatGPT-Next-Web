@@ -4,7 +4,7 @@ import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import ExportIcon from "../icons/export.svg";
-import MenuIcon from "../icons/menu.svg";
+import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -343,6 +343,7 @@ export function Chat(props: {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [beforeInput, setBeforeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll } = useScrollToBottom();
@@ -404,8 +405,10 @@ export function Chat(props: {
 
   // submit user input
   const onUserSubmit = () => {
+    if (userInput.length <= 0) return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    setBeforeInput(userInput);
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen()) inputRef.current?.focus();
@@ -419,8 +422,13 @@ export function Chat(props: {
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // if ArrowUp and no userInput
+    if (e.key === "ArrowUp" && userInput.length <= 0) {
+      setUserInput(beforeInput);
+      e.preventDefault();
+      return;
+    }
     if (shouldSubmit(e)) {
-      setAutoScroll(true);
       onUserSubmit();
       e.preventDefault();
     }
@@ -507,13 +515,10 @@ export function Chat(props: {
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
-        <div
-          className={styles["window-header-title"]}
-          onClick={props?.showSideBar}
-        >
+        <div className={styles["window-header-title"]}>
           <div
             className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
-            onClick={() => {
+            onClickCapture={() => {
               const newTopic = prompt(Locale.Chat.Rename, session.topic);
               if (newTopic && newTopic !== session.topic) {
                 chatStore.updateCurrentSession(
@@ -531,7 +536,7 @@ export function Chat(props: {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"] + " " + styles.mobile}>
             <IconButton
-              icon={<MenuIcon />}
+              icon={<ReturnIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
               onClick={props?.showSideBar}
@@ -667,7 +672,7 @@ export function Chat(props: {
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
-            onFocus={() => setAutoScroll(isMobileScreen())}
+            onFocus={() => setAutoScroll(true)}
             onBlur={() => {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
@@ -679,7 +684,6 @@ export function Chat(props: {
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             noDark
-            disabled={!userInput}
             onClick={onUserSubmit}
           />
         </div>
