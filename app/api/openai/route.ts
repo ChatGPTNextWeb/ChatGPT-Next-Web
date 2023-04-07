@@ -17,7 +17,7 @@ async function makeRequest(req: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
