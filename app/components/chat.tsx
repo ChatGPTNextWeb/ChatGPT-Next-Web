@@ -41,6 +41,8 @@ import chatStyle from "./chat.module.scss";
 
 import { Input, Modal, showModal, showToast } from "./ui-lib";
 
+import calcTextareaHeight from "../calcTextareaHeight";
+
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
   {
@@ -331,6 +333,10 @@ function useScrollToBottom() {
 export function Chat(props: {
   showSideBar?: () => void;
   sideBarShowing?: boolean;
+  autoSize: {
+    minRows: number;
+    maxRows?: number;
+  };
 }) {
   type RenderMessage = Message & { preview?: boolean };
 
@@ -348,6 +354,7 @@ export function Chat(props: {
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(false);
+  const [textareaStyle, setTextareaStyle] = useState({});
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
@@ -379,6 +386,14 @@ export function Chat(props: {
       10,
     );
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
+  };
+
+  // textarea has an adaptive height
+  const resizeTextarea = () => {
+    const dom = inputRef.current;
+    if (!dom) return;
+    const { minRows, maxRows } = props.autoSize;
+    setTextareaStyle(calcTextareaHeight(dom, minRows, maxRows));
   };
 
   // only search prompts when user input is short
@@ -511,6 +526,12 @@ export function Chat(props: {
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Textarea Adaptive height
+  useEffect(() => {
+    resizeTextarea();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInput]);
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -667,8 +688,8 @@ export function Chat(props: {
           <textarea
             ref={inputRef}
             className={styles["chat-input"]}
+            style={textareaStyle}
             placeholder={Locale.Chat.Input(submitKey)}
-            rows={2}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
