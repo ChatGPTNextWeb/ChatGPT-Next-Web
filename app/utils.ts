@@ -52,7 +52,9 @@ export function isMobileScreen() {
 }
 
 export function isFirefox() {
-  return /firefox/i.test(navigator.userAgent);
+  return (
+    typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent)
+  );
 }
 
 export function selectOrCopy(el: HTMLElement, content: string) {
