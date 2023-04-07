@@ -3,12 +3,13 @@
 
 @mixin container {
   background-color: var(--white);
-  border: var(--border-in-light);
+  border: rgb(63 206 146);
   border-radius: 20px;
   box-shadow: var(--shadow);
   color: var(--black);
   background-color: var(--white);
-  min-width: 600px;
+  //min-width: 600px;
+  min-width: 95%;
   min-height: 480px;
   max-width: 900px;
 
@@ -44,7 +45,7 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: var(--second);
+  background-color: rgb(230, 96, 152);
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
@@ -121,7 +122,7 @@
 
 .chat-item {
   padding: 10px 14px;
-  background-color: var(--white);
+  background-color: #0808084f;
   border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: var(--card-shadow);
@@ -134,11 +135,11 @@
 }
 
 .chat-item:hover {
-  background-color: var(--hover-color);
+  background-color: #ba2de2;
 }
 
 .chat-item-selected {
-  border-color: var(--primary);
+  border-color: rgba(234, 236, 236, 0);
 }
 
 .chat-item-title {
@@ -171,7 +172,7 @@
 .chat-item-info {
   display: flex;
   justify-content: space-between;
-  color: rgb(166, 166, 166);
+  color: rgb(255, 255, 255);
   font-size: 12px;
   margin-top: 8px;
 }
@@ -254,7 +255,7 @@
 
 .chat-message-status {
   font-size: 12px;
-  color: #aaa;
+  color: #aaaaaa;
   line-height: 1.5;
   margin-top: 5px;
 }
@@ -275,12 +276,12 @@
   max-width: 100%;
   margin-top: 10px;
   border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgb(230, 96, 152);
   padding: 10px;
   font-size: 14px;
   user-select: text;
   word-break: break-word;
-  border: var(--border-in-light);
+  border: rgb(63 206 146);
   position: relative;
 }
 
@@ -314,7 +315,7 @@
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
-  background-color: var(--second);
+  background-color: rgba(63, 206, 146);
 }
 
 .chat-message-actions {
@@ -327,7 +328,7 @@
 }
 
 .chat-message-action-date {
-  color: #aaa;
+  color: #b218cb;
 }
 
 .chat-input-panel {

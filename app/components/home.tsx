@@ -119,12 +119,15 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-          <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
-          </div>
+          <div className={styles["sidebar-title"]}>小贴心❤</div>
+          <div className={styles["sidebar-sub-title"]}>终牵绊,憔思花容颜.</div>
           <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
+            <img
+              src="https://vip.chargpt.cn/_astro/logo2.af566f9d.gif"
+              alt="图片描述"
+              width="90"
+              height="70"
+            ></img>
           </div>
         </div>
 

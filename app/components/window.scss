@@ -1,11 +1,12 @@
 .window-header {
   padding: 14px 20px;
-  border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
+  border-bottom: rgba(202, 10, 10, 0.1) 1px solid;
   position: relative;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color:#0bc398;
 }
 
 .window-header-title {

@@ -588,7 +588,10 @@ export function Chat(props: {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role} />
+                  <img
+                    src="https://vip.chargpt.cn/_astro/assistant-avatar.55eb2217.gif"
+                    height="50px"
+                  ></img>
                 </div>
                 {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>

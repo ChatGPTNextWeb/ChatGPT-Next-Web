@@ -9,7 +9,7 @@ const cn = {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `与 小贴心♡ 的 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -138,12 +138,12 @@ const cn = {
     },
   },
   Store: {
-    DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    DefaultTopic: "新的聊天窗口",
+    BotHello: "你好呀，有什么想向我提问的吗？",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) =>
-        "这是 ai 和用户的历史聊天总结作为前情提要：" + content,
+        "这是 小贴心❥ 和用户的历史聊天总结作为前情提要：" + content,
       Topic:
         "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊”",
       Summarize:
