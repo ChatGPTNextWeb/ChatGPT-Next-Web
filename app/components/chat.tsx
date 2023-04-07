@@ -569,11 +569,11 @@ export function Chat(props: {
           </div>
         </div>
 
-        <PromptToast
+        {/* <PromptToast
           showToast={!hitBottom}
           showModal={showPromptModal}
           setShowModal={setShowPromptModal}
-        />
+        /> */}
       </div>
 
       <div

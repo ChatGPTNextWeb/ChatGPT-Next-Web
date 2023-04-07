@@ -31,7 +31,8 @@ export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={styles["loading-content"]}>
       {!props.noLogo && <BotIcon />}
-      <LoadingIcon />
+      {/* <LoadingIcon /> */}
+      <p>IMPROVE WITH AI.</p>
     </div>
   );
 }
