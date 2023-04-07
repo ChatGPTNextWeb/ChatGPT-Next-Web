@@ -58,6 +58,12 @@ const tw: LocaleType = {
       ClearAll: "清除所有數據",
       ResetAll: "重置所有設定",
       Close: "關閉",
+      ConfirmResetAll: {
+        Confirm: "Are you sure you want to reset all configurations?",
+      },
+      ConfirmClearAll: {
+        Confirm: "Are you sure you want to reset all chat?",
+      },
     },
     Lang: {
       Name: "Language",

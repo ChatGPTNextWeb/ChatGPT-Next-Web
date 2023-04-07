@@ -60,6 +60,12 @@ const es: LocaleType = {
       ClearAll: "Borrar todos los datos",
       ResetAll: "Restablecer todas las configuraciones",
       Close: "Cerrar",
+      ConfirmResetAll: {
+        Confirm: "Are you sure you want to reset all configurations?",
+      },
+      ConfirmClearAll: {
+        Confirm: "Are you sure you want to reset all chat?",
+      },
     },
     Lang: {
       Name: "Language",
