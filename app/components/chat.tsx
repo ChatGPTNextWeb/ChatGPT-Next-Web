@@ -1,6 +1,9 @@
 import { useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
-import TextareaAutosize from "react-textarea-autosize";
+// import TextareaAutosize from "react-textarea-autosize";
+import TextareaAutosize, {
+  TextareaAutosizeProps,
+} from "react-textarea-autosize";
 
 import SendWhiteIcon from "../icons/send-white-fill.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -42,6 +45,14 @@ import chatStyle from "./chat.module.scss";
 
 import { Input, Modal, showModal, showToast } from "./ui-lib";
 import { text } from "stream/consumers";
+
+interface CustomTextAreaProps extends TextareaAutosizeProps {
+  enterKeyHint: string;
+}
+
+function CustomTextArea(props: CustomTextAreaProps) {
+  return <TextareaAutosize {...props} />;
+}
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -668,6 +679,7 @@ export function Chat(props: {
         <div className={styles["chat-input-panel-inner"]}>
           <TextareaAutosize
             enterKeyHint="send"
+            autoComplete="on"
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}

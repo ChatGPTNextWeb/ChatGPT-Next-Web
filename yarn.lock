@@ -1345,6 +1345,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-textarea-autosize@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.npmmirror.com/@types/react-textarea-autosize/-/react-textarea-autosize-8.0.0.tgz"
+  integrity sha512-KVqk+/+RMQB3ZDpk7ZTpYHauU3Ue+Y0f09POvGaEpaGb+izzbpoM47tkDGlbF37iT7JYZ8QFwLzqiOPYbQaztA==
+  dependencies:
+    react-textarea-autosize "*"
+
 "@types/react@*", "@types/react@^16.8 || ^17.0 || ^18.0", "@types/react@^18.0.28", "@types/react@>=16":
   version "18.0.31"
   resolved "https://registry.npmmirror.com/@types/react/-/react-18.0.31.tgz"
@@ -4244,7 +4251,7 @@ react-redux@^8.0.4:
     react-is "^18.0.0"
     use-sync-external-store "^1.0.0"
 
-react-textarea-autosize@^8.4.1:
+react-textarea-autosize@*, react-textarea-autosize@^8.4.1:
   version "8.4.1"
   resolved "https://registry.npmmirror.com/react-textarea-autosize/-/react-textarea-autosize-8.4.1.tgz"
   integrity sha512-aD2C+qK6QypknC+lCMzteOdIjoMbNlgSFmJjCV+DrfTPwp59i/it9mMNf2HDzvRjQgKAyBDPyLJhcrzElf2U4Q==
