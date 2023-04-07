@@ -2,22 +2,23 @@
 @import "../styles/animation.scss";
 
 @mixin container {
-  background-color: var(--white);
   border: var(--border-in-light);
-  border-radius: 20px;
+  border-radius: 4px;
   box-shadow: var(--shadow);
   color: var(--black);
-  background-color: var(--white);
-  min-width: 600px;
-  min-height: 480px;
-  max-width: 900px;
-
+  background: #c7edcc; //rgb(199,237,204);//#7c9d42;// var(--white);
+  min-width: 800px;
+  min-height: 600px;
+  //max-width: 90%;
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
-
   width: var(--window-width);
   height: var(--window-height);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
 }
 
 .container {
@@ -44,7 +45,7 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: var(--second);
+  background: var(--second);
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
@@ -227,6 +228,7 @@
 .chat-message-user {
   display: flex;
   flex-direction: row-reverse;
+  position: relative;
 }
 
 .chat-message-container {
@@ -247,6 +249,39 @@
 
 .chat-message-user > .chat-message-container {
   align-items: flex-end;
+  .chat-message-top-actions-user {
+    display: flex;
+    position: absolute;
+    right: 0px;
+    bottom: -26px;
+    transition: all ease 0.3s;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    flex-direction: row-reverse;
+    .chat-message-top-actions {
+      opacity: 0.5;
+      color: var(--black);
+      white-space: nowrap;
+      left: unset;
+      right: 10px;
+      cursor: pointer;
+      &:hover {
+        opacity: 1;
+      }
+      &:not(:first-child) {
+        margin-right: 10px;
+      }
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &:hover {
+    .chat-message-top-actions-user{
+      opacity: 1;
+    }
+  }
 }
 
 .chat-message-avatar {
