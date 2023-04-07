@@ -32,6 +32,7 @@ import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 import { ErrorBoundary } from "./error";
+import { InputRange } from "./input-range";
 
 function SettingItem(props: {
   title: string;
@@ -124,6 +125,19 @@ export function Settings(props: { closeSettings: () => void }) {
   useEffect(() => {
     checkUpdate();
     showUsage && checkUsage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const keydownEvent = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        props.closeSettings();
+      }
+    };
+    document.addEventListener("keydown", keydownEvent);
+    return () => {
+      document.removeEventListener("keydown", keydownEvent);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -274,8 +288,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.FontSize.Title}
             subTitle={Locale.Settings.FontSize.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               title={`${config.fontSize ?? 14}px`}
               value={config.fontSize}
               min="12"
@@ -287,7 +300,7 @@ export function Settings(props: { closeSettings: () => void }) {
                     (config.fontSize = Number.parseInt(e.currentTarget.value)),
                 )
               }
-            ></input>
+            ></InputRange>
           </SettingItem>
 
           <SettingItem title={Locale.Settings.TightBorder}>
@@ -407,8 +420,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
               min="0"
@@ -420,7 +432,7 @@ export function Settings(props: { closeSettings: () => void }) {
                     (config.historyMessageCount = e.target.valueAsNumber),
                 )
               }
-            ></input>
+            ></InputRange>
           </SettingItem>
 
           <SettingItem
@@ -467,8 +479,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.Temperature.Title}
             subTitle={Locale.Settings.Temperature.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               value={config.modelConfig.temperature?.toFixed(1)}
               min="0"
               max="2"
@@ -482,7 +493,7 @@ export function Settings(props: { closeSettings: () => void }) {
                       )),
                 );
               }}
-            ></input>
+            ></InputRange>
           </SettingItem>
           <SettingItem
             title={Locale.Settings.MaxTokens.Title}
@@ -508,8 +519,7 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.PresencePenlty.Title}
             subTitle={Locale.Settings.PresencePenlty.SubTitle}
           >
-            <input
-              type="range"
+            <InputRange
               value={config.modelConfig.presence_penalty?.toFixed(1)}
               min="-2"
               max="2"
@@ -523,7 +533,7 @@ export function Settings(props: { closeSettings: () => void }) {
                       )),
                 );
               }}
-            ></input>
+            ></InputRange>
           </SettingItem>
         </List>
       </div>
