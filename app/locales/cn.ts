@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/app";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请在设置页填写授权码。",
+    Unauthorized: "现在是未授权状态，请在设置页输入访问密码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -33,15 +33,22 @@ const cn = {
     Title: "导出聊天记录为 Markdown",
     Copy: "全部复制",
     Download: "下载文件",
+    MessageFromYou: "来自你的消息",
+    MessageFromChatGPT: "来自 ChatGPT 的消息",
   },
   Memory: {
     Title: "历史记忆",
     EmptyContent: "尚未记忆",
-    Copy: "全部复制",
+    Send: "发送记忆",
+    Copy: "复制记忆",
+    Reset: "重置对话",
+    ResetConfirm: "重置后将清空当前对话记录以及历史记忆，确认重置？",
   },
   Home: {
     NewChat: "新的聊天",
     DeleteChat: "确认删除选中的对话？",
+    DeleteToast: "已删除会话",
+    Revert: "撤销",
   },
   Settings: {
     Title: "设置",
@@ -104,22 +111,22 @@ const cn = {
     },
     Token: {
       Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过受控访问限制",
+      SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
     },
     Usage: {
-      Title: "账户余额",
-      SubTitle(used: any) {
-        return `本月已使用 $${used}`;
+      Title: "余额查询",
+      SubTitle(used: any, total: any) {
+        return `本月已使用 $${used}，订阅总额 $${total}`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
-      NoAccess: "输入API Key查看余额",
+      NoAccess: "输入 API Key 或访问密码查看余额",
     },
     AccessCode: {
-      Title: "访问码",
-      SubTitle: "现在是受控访问状态",
-      Placeholder: "请输入访问码",
+      Title: "访问密码",
+      SubTitle: "现在是未授权访问状态",
+      Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
     Temperature: {

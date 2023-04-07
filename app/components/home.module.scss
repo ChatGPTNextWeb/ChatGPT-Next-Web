@@ -125,7 +125,7 @@
   border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
   border: 2px solid transparent;
@@ -157,6 +157,7 @@
   right: -20px;
   transition: all ease 0.3s;
   opacity: 0;
+  cursor: pointer;
 }
 
 .chat-item:hover > .chat-item-delete {

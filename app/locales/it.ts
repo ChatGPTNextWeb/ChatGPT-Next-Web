@@ -35,15 +35,23 @@ const it: LocaleType = {
     Title: "Tutti i messaggi",
     Copy: "Copia tutto",
     Download: "Scarica",
+    MessageFromYou: "Messaggio da te",
+    MessageFromChatGPT: "Messaggio da ChatGPT",
   },
   Memory: {
     Title: "Prompt di memoria",
     EmptyContent: "Vuoto.",
     Copy: "Copia tutto",
+    Send: "Send Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
     NewChat: "Nuova Chat",
     DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
+    DeleteToast: "Chat Deleted",
+    Revert: "Revert",
   },
   Settings: {
     Title: "Impostazioni",
@@ -113,8 +121,8 @@ const it: LocaleType = {
     },
     Usage: {
       Title: "Bilancio Account",
-      SubTitle(used: any) {
-        return `Usato in questo mese $${used}`;
+      SubTitle(used: any, total: any) {
+        return `Usato in questo mese $${used}, subscription $${total}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
