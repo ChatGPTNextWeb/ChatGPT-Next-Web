@@ -417,9 +417,6 @@ export function Chat(props: {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
         let searchText = text.slice(1);
-        if (searchText.length === 0) {
-          searchText = " ";
-        }
         onSearch(searchText);
       }
     }
