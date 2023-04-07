@@ -1,4 +1,4 @@
-import { useDebouncedCallback } from "use-debounce";
+import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -27,6 +27,7 @@ import {
   getEmojiUrl,
   isMobileScreen,
   selectOrCopy,
+  autoGrowTextArea,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -39,9 +40,7 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { Input, Modal, showModal, showToast } from "./ui-lib";
-
-import calcTextareaHeight from "../calcTextareaHeight";
+import { Input, Modal, showModal } from "./ui-lib";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -333,10 +332,6 @@ function useScrollToBottom() {
 export function Chat(props: {
   showSideBar?: () => void;
   sideBarShowing?: boolean;
-  autoSize: {
-    minRows: number;
-    maxRows?: number;
-  };
 }) {
   type RenderMessage = Message & { preview?: boolean };
 
@@ -354,7 +349,6 @@ export function Chat(props: {
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(false);
-  const [textareaStyle, setTextareaStyle] = useState({});
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
@@ -388,13 +382,26 @@ export function Chat(props: {
     dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
   };
 
-  // textarea has an adaptive height
-  const resizeTextarea = () => {
-    const dom = inputRef.current;
-    if (!dom) return;
-    const { minRows, maxRows } = props.autoSize;
-    setTextareaStyle(calcTextareaHeight(dom, minRows, maxRows));
-  };
+  // auto grow input
+  const [inputRows, setInputRows] = useState(2);
+  const measure = useDebouncedCallback(
+    () => {
+      const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
+      const inputRows = Math.min(
+        5,
+        Math.max(2 + Number(!isMobileScreen()), rows),
+      );
+      setInputRows(inputRows);
+    },
+    100,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(measure, [userInput]);
 
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
@@ -410,9 +417,6 @@ export function Chat(props: {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
         let searchText = text.slice(1);
-        if (searchText.length === 0) {
-          searchText = " ";
-        }
         onSearch(searchText);
       }
     }
@@ -526,12 +530,6 @@ export function Chat(props: {
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Textarea Adaptive height
-  useEffect(() => {
-    resizeTextarea();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInput]);
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -688,7 +686,6 @@ export function Chat(props: {
           <textarea
             ref={inputRef}
             className={styles["chat-input"]}
-            style={textareaStyle}
             placeholder={Locale.Chat.Input(submitKey)}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
@@ -699,6 +696,7 @@ export function Chat(props: {
               setTimeout(() => setPromptHints([]), 500);
             }}
             autoFocus={!props?.sideBarShowing}
+            rows={inputRows}
           />
           <IconButton
             icon={<SendWhiteIcon />}
