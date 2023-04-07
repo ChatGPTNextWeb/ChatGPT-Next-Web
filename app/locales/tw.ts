@@ -1,5 +1,6 @@
 import { SubmitKey } from "../store/app";
 import type { LocaleType } from "./index";
+import { isMobileScreen } from "../utils";
 
 const tw: LocaleType = {
   WIP: "該功能仍在開發中……",
@@ -22,9 +23,13 @@ const tw: LocaleType = {
     Rename: "重命名對話",
     Typing: "正在輸入…",
     Input: (submitKey: string) => {
-      var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
-      if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += "，Shift + Enter 鍵換行";
+      if (!isMobileScreen()) {
+        var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
+        if (submitKey === String(SubmitKey.Enter)) {
+          inputHints += "，Shift + Enter 鍵換行";
+        }
+      } else {
+        var inputHints = "輸入訊息";
       }
       return inputHints;
     },

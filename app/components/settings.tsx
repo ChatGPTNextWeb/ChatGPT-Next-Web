@@ -26,7 +26,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion, getEmojiUrl } from "../utils";
+import { getCurrentVersion, getEmojiUrl, isMobileScreen } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
@@ -231,23 +231,25 @@ export function Settings(props: { closeSettings: () => void }) {
             )}
           </SettingItem>
 
-          <SettingItem title={Locale.Settings.SendKey}>
-            <select
-              value={config.submitKey}
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.submitKey = e.target.value as any as SubmitKey),
-                );
-              }}
-            >
-              {Object.values(SubmitKey).map((v) => (
-                <option value={v} key={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </SettingItem>
+          {isMobileScreen() ? null : (
+            <SettingItem title={Locale.Settings.SendKey}>
+              <select
+                value={config.submitKey}
+                onChange={(e) => {
+                  updateConfig(
+                    (config) =>
+                      (config.submitKey = e.target.value as any as SubmitKey),
+                  );
+                }}
+              >
+                {Object.values(SubmitKey).map((v) => (
+                  <option value={v} key={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </SettingItem>
+          )}
 
           <ListItem>
             <div className={styles["settings-title"]}>

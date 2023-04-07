@@ -1,5 +1,6 @@
 import { SubmitKey } from "../store/app";
 import type { LocaleType } from "./index";
+import { isMobileScreen } from "../utils";
 
 const en: LocaleType = {
   WIP: "WIP...",
@@ -23,9 +24,13 @@ const en: LocaleType = {
     Rename: "Rename Chat",
     Typing: "Typing…",
     Input: (submitKey: string) => {
-      var inputHints = `Type something and press ${submitKey} to send`;
-      if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", press Shift + Enter to newline";
+      if (!isMobileScreen()) {
+        var inputHints = `Type something and press ${submitKey} to send`;
+        if (submitKey === String(SubmitKey.Enter)) {
+          inputHints += ", press Shift + Enter to newline";
+        }
+      } else {
+        var inputHints = "Type something";
       }
       return inputHints;
     },
