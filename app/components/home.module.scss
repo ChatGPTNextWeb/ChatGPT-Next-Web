@@ -411,12 +411,6 @@
   outline: none;
 }
 
-@media only screen and (max-width: 600px) {
-  .chat-input {
-    font-size: 16px;
-  }
-}
-
 .chat-input:focus {
   border: 1px solid var(--primary);
 }
@@ -427,7 +421,17 @@
 
   position: absolute;
   right: 30px;
-  bottom: 30px;
+  bottom: 32px;
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-input {
+    font-size: 16px;
+  }
+
+  .chat-input-send {
+    bottom: 30px;
+  }
 }
 
 .export-content {
