@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
+import { getLang } from "../locales";
 
 export interface Prompt {
   id?: number;
@@ -25,11 +26,13 @@ export const SearchService = {
   count: {
     builtin: 0,
   },
+  allBuiltInPrompts: [] as Prompt[],
 
   init(prompts: Prompt[]) {
     if (this.ready) {
       return;
     }
+    this.allBuiltInPrompts = prompts;
     this.engine.setCollection(prompts);
     this.ready = true;
   },
@@ -78,6 +81,11 @@ export const usePromptStore = create<PromptStore>()(
       },
 
       search(text) {
+        if (text.length === 0) {
+          // return all prompts
+          const userPrompts = get().prompts?.values?.() ?? [];
+          return SearchService.allBuiltInPrompts.concat([...userPrompts]);
+        }
         return SearchService.search(text) as Prompt[];
       },
     }),
@@ -92,7 +100,11 @@ export const usePromptStore = create<PromptStore>()(
         fetch(PROMPT_URL)
           .then((res) => res.json())
           .then((res) => {
-            const builtinPrompts = [res.en, res.cn]
+            let fetchPrompts = [res.en, res.cn];
+            if (getLang() === "cn") {
+              fetchPrompts = fetchPrompts.reverse();
+            }
+            const builtinPrompts = fetchPrompts
               .map((promptList: PromptList) => {
                 return promptList.map(
                   ([title, content]) =>

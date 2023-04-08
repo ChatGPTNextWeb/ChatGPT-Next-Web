@@ -21,11 +21,11 @@ const cn = {
     Rename: "重命名对话",
     Typing: "正在输入…",
     Input: (submitKey: string) => {
-      var inputHints = `输入消息，${submitKey} 发送`;
+      var inputHints = `${submitKey} 发送`;
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints;
+      return inputHints + "，/ 触发补全";
     },
     Send: "发送",
   },
@@ -57,6 +57,12 @@ const cn = {
       ClearAll: "清除所有数据",
       ResetAll: "重置所有选项",
       Close: "关闭",
+      ConfirmResetAll: {
+        Confirm: "Are you sure you want to reset all configurations?",
+      },
+      ConfirmClearAll: {
+        Confirm: "Are you sure you want to reset all chat?",
+      },
     },
     Lang: {
       Name: "Language",
@@ -126,7 +132,7 @@ const cn = {
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
-      SubTitle: "值越大，回复越随机",
+      SubTitle: "值越大，回复越随机，大于 1 的值可能会导致乱码",
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
