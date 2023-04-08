@@ -20,7 +20,11 @@ const makeRequestParam = (
     sendMessages = sendMessages.filter((m) => m.role !== "assistant");
   }
 
-  const modelConfig = useChatStore.getState().config.modelConfig;
+  const modelConfig = { ...useChatStore.getState().config.modelConfig };
+
+  // @yidadaa: wont send max_tokens, because it is nonsense for Muggles
+  // @ts-expect-error
+  delete modelConfig.max_tokens;
 
   return {
     messages: sendMessages,
