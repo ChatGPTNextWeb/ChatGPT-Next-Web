@@ -128,19 +128,6 @@ export function Settings(props: { closeSettings: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const keydownEvent = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        props.closeSettings();
-      }
-    };
-    document.addEventListener("keydown", keydownEvent);
-    return () => {
-      document.removeEventListener("keydown", keydownEvent);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <ErrorBoundary>
       <div className={styles["window-header"]}>

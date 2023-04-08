@@ -21,11 +21,11 @@ const cn = {
     Rename: "重命名对话",
     Typing: "正在输入…",
     Input: (submitKey: string) => {
-      var inputHints = `${submitKey} 发送`;
+      var inputHints = `输入消息，${submitKey} 发送`;
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全";
+      return inputHints;
     },
     Send: "发送",
   },
@@ -126,7 +126,7 @@ const cn = {
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
-      SubTitle: "值越大，回复越随机，大于 1 的值可能会导致乱码",
+      SubTitle: "值越大，回复越随机",
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
