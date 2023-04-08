@@ -119,7 +119,7 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          <div className={styles["sidebar-title"]}>Sam Altman</div>
           <div className={styles["sidebar-sub-title"]}>
             Build your own AI assistant.
           </div>
