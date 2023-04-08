@@ -67,7 +67,7 @@ export function Markdown(props: { content: string }) {
       components={{
         pre: PreCode,
       }}
-      linkTarget={'_blank'}
+      linkTarget={"_blank"}
     >
       {props.content}
     </ReactMarkdown>
