@@ -406,15 +406,9 @@
   background-color: var(--white);
   color: var(--black);
   font-family: inherit;
-  padding: 10px 14px 50px;
+  padding: 10px 90px 10px 14px;
   resize: none;
   outline: none;
-}
-
-@media only screen and (max-width: 600px) {
-  .chat-input {
-    font-size: 16px;
-  }
 }
 
 .chat-input:focus {
@@ -427,7 +421,17 @@
 
   position: absolute;
   right: 30px;
-  bottom: 30px;
+  bottom: 32px;
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-input {
+    font-size: 16px;
+  }
+
+  .chat-input-send {
+    bottom: 30px;
+  }
 }
 
 .export-content {
