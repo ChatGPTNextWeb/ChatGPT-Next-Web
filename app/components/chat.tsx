@@ -622,7 +622,12 @@ export function Chat(props: {
                     {Locale.Chat.Typing}
                   </div>
                 )}
-                <div className={styles["chat-message-item"]}>
+                <div
+                  className={`${styles["chat-message-item"]} ${
+                    (message.preview || message.streaming) &&
+                    styles["chat-message-typing"]
+                  }`}
+                >
                   {!isUser &&
                     !(message.preview || message.content.length === 0) && (
                       <div className={styles["chat-message-top-actions"]}>
