@@ -3,7 +3,7 @@ import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
-import ExportIcon from "../icons/export.svg";
+import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
@@ -11,6 +11,8 @@ import LoadingIcon from "../icons/three-dots.svg";
 import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
+import MaxIcon from "../icons/max.svg";
+import MinIcon from "../icons/min.svg";
 
 import {
   Message,
@@ -19,6 +21,7 @@ import {
   BOT_HELLO,
   ROLES,
   createMessage,
+  useAccessStore,
 } from "../store";
 
 import {
@@ -485,11 +488,17 @@ export function Chat(props: {
 
   const context: RenderMessage[] = session.context.slice();
 
+  const accessStore = useAccessStore();
+
   if (
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
-    context.push(BOT_HELLO);
+    const copiedHello = Object.assign({}, BOT_HELLO);
+    if (!accessStore.isAuthorized()) {
+      copiedHello.content = Locale.Error.Unauthorized;
+    }
+    context.push(copiedHello);
   }
 
   // preview messages
@@ -580,6 +589,17 @@ export function Chat(props: {
                 exportMessages(
                   session.messages.filter((msg) => !msg.isError),
                   session.topic,
+                );
+              }}
+            />
+          </div>
+          <div className={styles["window-action-button"]}>
+            <IconButton
+              icon={chatStore.config.tightBorder ? <MinIcon /> : <MaxIcon />}
+              bordered
+              onClick={() => {
+                chatStore.updateConfig(
+                  (config) => (config.tightBorder = !config.tightBorder),
                 );
               }}
             />

@@ -53,6 +53,7 @@ export interface ChatConfig {
   theme: Theme;
   tightBorder: boolean;
   sendPreviewBubble: boolean;
+  sidebarWidth: number;
 
   disablePromptHint: boolean;
 
@@ -141,6 +142,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   theme: Theme.Auto as Theme,
   tightBorder: false,
   sendPreviewBubble: true,
+  sidebarWidth: 300,
 
   disablePromptHint: false,
 
@@ -205,7 +207,7 @@ interface ChatStore {
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
-  deleteSession: () => void;
+  deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
@@ -326,24 +328,30 @@ export const useChatStore = create<ChatStore>()(
         }));
       },
 
-      deleteSession() {
+      deleteSession(i?: number) {
         const deletedSession = get().currentSession();
-        const index = get().currentSessionIndex;
+        const index = i ?? get().currentSessionIndex;
         const isLastSession = get().sessions.length === 1;
         if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
           get().removeSession(index);
-          
-          showToast(Locale.Home.DeleteToast, {
-            text: Locale.Home.Revert,
-            onClick() {
-              set((state) => ({
-                sessions: state.sessions
-                  .slice(0, index)
-                  .concat([deletedSession])
-                  .concat(state.sessions.slice(index + Number(isLastSession))),
-              }));
+
+          showToast(
+            Locale.Home.DeleteToast,
+            {
+              text: Locale.Home.Revert,
+              onClick() {
+                set((state) => ({
+                  sessions: state.sessions
+                    .slice(0, index)
+                    .concat([deletedSession])
+                    .concat(
+                      state.sessions.slice(index + Number(isLastSession)),
+                    ),
+                }));
+              },
             },
-          });
+            5000,
+          );
         }
       },
 
