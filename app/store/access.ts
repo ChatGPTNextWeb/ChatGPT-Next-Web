@@ -9,6 +9,7 @@ export interface AccessControlStore {
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
+  isAuthorized: () => boolean;
 }
 
 export const ACCESS_KEY = "access-control";
@@ -27,10 +28,13 @@ export const useAccessStore = create<AccessControlStore>()(
       updateToken(token: string) {
         set((state) => ({ token }));
       },
+      isAuthorized() {
+        return !!get().token || !!get().accessCode;
+      },
     }),
     {
       name: ACCESS_KEY,
       version: 1,
-    }
-  )
+    },
+  ),
 );
