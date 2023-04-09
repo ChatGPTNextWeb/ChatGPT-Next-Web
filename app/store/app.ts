@@ -53,6 +53,7 @@ export interface ChatConfig {
   theme: Theme;
   tightBorder: boolean;
   sendPreviewBubble: boolean;
+  sidebarWidth: number;
 
   disablePromptHint: boolean;
 
@@ -141,6 +142,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   theme: Theme.Auto as Theme,
   tightBorder: false,
   sendPreviewBubble: true,
+  sidebarWidth: 300,
 
   disablePromptHint: false,
 
