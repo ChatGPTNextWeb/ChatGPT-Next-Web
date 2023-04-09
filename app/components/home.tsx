@@ -114,6 +114,10 @@ function useDragSideBar() {
   };
 
   useEffect(() => {
+    if (isMobileScreen()) {
+      return;
+    }
+
     document.documentElement.style.setProperty(
       "--sidebar-width",
       `${limit(chatStore.config.sidebarWidth ?? 300)}px`,

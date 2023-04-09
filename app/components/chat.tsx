@@ -593,17 +593,19 @@ export function Chat(props: {
               }}
             />
           </div>
-          <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={chatStore.config.tightBorder ? <MinIcon /> : <MaxIcon />}
-              bordered
-              onClick={() => {
-                chatStore.updateConfig(
-                  (config) => (config.tightBorder = !config.tightBorder),
-                );
-              }}
-            />
-          </div>
+          {!isMobileScreen() && (
+            <div className={styles["window-action-button"]}>
+              <IconButton
+                icon={chatStore.config.tightBorder ? <MinIcon /> : <MaxIcon />}
+                bordered
+                onClick={() => {
+                  chatStore.updateConfig(
+                    (config) => (config.tightBorder = !config.tightBorder),
+                  );
+                }}
+              />
+            </div>
+          )}
         </div>
 
         <PromptToast
