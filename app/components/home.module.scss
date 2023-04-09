@@ -10,7 +10,7 @@
   background-color: var(--white);
   min-width: 600px;
   min-height: 480px;
-  max-width: 900px;
+  max-width: 1200px;
 
   display: flex;
   overflow: hidden;
@@ -48,6 +48,27 @@
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
+  position: relative;
+  transition: width ease 0.1s;
+}
+
+.sidebar-drag {
+  $width: 10px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: $width;
+  background-color: var(--black);
+  cursor: ew-resize;
+  opacity: 0;
+  transition: all ease 0.3s;
+
+  &:hover,
+  &:active {
+    opacity: 0.2;
+  }
 }
 
 .window-content {
@@ -177,10 +198,11 @@
   margin-top: 8px;
 }
 
-.chat-item-count {
-}
-
+.chat-item-count,
 .chat-item-date {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-tail {
@@ -436,6 +458,7 @@
 
 .export-content {
   white-space: break-spaces;
+  padding: 10px !important;
 }
 
 .loading-content {
