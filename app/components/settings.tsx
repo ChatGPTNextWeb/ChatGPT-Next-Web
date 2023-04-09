@@ -60,13 +60,17 @@ function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   }
 
   return (
-    <div className={styles["password-input"]}>
+    <div className={styles["password-input-container"]}>
       <IconButton
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
         className={styles["password-eye"]}
       />
-      <input {...props} type={visible ? "text" : "password"} />
+      <input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={styles["password-input"]}
+      />
     </div>
   );
 }
