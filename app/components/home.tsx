@@ -95,7 +95,7 @@ function _Home() {
   );
   const chatStore = useChatStore();
   const loading = !useHasHydrated();
-  const [showSideBar, setShowSideBar] = useState(true);
+  const [showSideBar, setShowSideBar] = useState(false); //移动端隐藏侧边栏
 
   // setting
   const [openSettings, setOpenSettings] = useState(false);
