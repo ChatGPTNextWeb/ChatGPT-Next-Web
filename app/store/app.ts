@@ -333,17 +333,23 @@ export const useChatStore = create<ChatStore>()(
         if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
           get().removeSession(index);
 
-          showToast(Locale.Home.DeleteToast, {
-            text: Locale.Home.Revert,
-            onClick() {
-              set((state) => ({
-                sessions: state.sessions
-                  .slice(0, index)
-                  .concat([deletedSession])
-                  .concat(state.sessions.slice(index + Number(isLastSession))),
-              }));
+          showToast(
+            Locale.Home.DeleteToast,
+            {
+              text: Locale.Home.Revert,
+              onClick() {
+                set((state) => ({
+                  sessions: state.sessions
+                    .slice(0, index)
+                    .concat([deletedSession])
+                    .concat(
+                      state.sessions.slice(index + Number(isLastSession)),
+                    ),
+                }));
+              },
             },
-          });
+            5000,
+          );
         }
       },
 
