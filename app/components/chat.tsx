@@ -19,6 +19,7 @@ import {
   BOT_HELLO,
   ROLES,
   createMessage,
+  useAccessStore,
 } from "../store";
 
 import {
@@ -485,11 +486,17 @@ export function Chat(props: {
 
   const context: RenderMessage[] = session.context.slice();
 
+  const accessStore = useAccessStore();
+
   if (
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
-    context.push(BOT_HELLO);
+    const copiedHello = Object.assign({}, BOT_HELLO);
+    if (!accessStore.isAuthorized()) {
+      copiedHello.content = Locale.Error.Unauthorized;
+    }
+    context.push(copiedHello);
   }
 
   // preview messages
