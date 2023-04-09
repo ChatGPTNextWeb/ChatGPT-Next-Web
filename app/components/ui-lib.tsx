@@ -156,7 +156,7 @@ export function showToast(
   };
 
   setTimeout(() => {
-    close();
+    // close();
   }, delay);
 
   root.render(<Toast content={content} action={action} />);
