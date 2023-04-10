@@ -26,7 +26,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion, getEmojiUrl } from "../utils";
+import { getEmojiUrl } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
@@ -88,13 +88,13 @@ export function Settings(props: { closeSettings: () => void }) {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentId = getCurrentVersion();
-  const remoteId = updateStore.remoteId;
-  const hasNewVersion = currentId !== remoteId;
+  const currentVersion = updateStore.version;
+  const remoteId = updateStore.remoteVersion;
+  const hasNewVersion = currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
-    updateStore.getLatestCommitId(force).then(() => {
+    updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
     });
   }
@@ -224,7 +224,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </SettingItem>
 
           <SettingItem
-            title={Locale.Settings.Update.Version(currentId)}
+            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
                 ? Locale.Settings.Update.IsChecking
