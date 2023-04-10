@@ -60,6 +60,12 @@ const it: LocaleType = {
       ClearAll: "Cancella tutti i dati",
       ResetAll: "Resetta tutte le impostazioni",
       Close: "Chiudi",
+      ConfirmResetAll: {
+        Confirm: "Sei sicuro vuoi cancellare tutte le impostazioni?",
+      },
+      ConfirmClearAll: {
+        Confirm: "Sei sicuro vuoi cancellare tutte le chat?",
+      },
     },
     Lang: {
       Name: "Lingue",
@@ -69,6 +75,7 @@ const it: LocaleType = {
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
+        tr: "Türkçe",
       },
     },
     Avatar: "Avatar",

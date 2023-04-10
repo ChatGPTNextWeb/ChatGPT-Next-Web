@@ -69,31 +69,6 @@ export function selectOrCopy(el: HTMLElement, content: string) {
   return true;
 }
 
-export function queryMeta(key: string, defaultValue?: string): string {
-  let ret: string;
-  if (document) {
-    const meta = document.head.querySelector(
-      `meta[name='${key}']`,
-    ) as HTMLMetaElement;
-    ret = meta?.content ?? "";
-  } else {
-    ret = defaultValue ?? "";
-  }
-
-  return ret;
-}
-
-let currentId: string;
-export function getCurrentVersion() {
-  if (currentId) {
-    return currentId;
-  }
-
-  currentId = queryMeta("version");
-
-  return currentId;
-}
-
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
   return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
 }

@@ -96,7 +96,7 @@ export function ChatList() {
                 index={i}
                 selected={i === selectedIndex}
                 onClick={() => selectSession(i)}
-                onDelete={chatStore.deleteSession}
+                onDelete={() => chatStore.deleteSession(i)}
               />
             ))}
             {provided.placeholder}
