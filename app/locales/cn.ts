@@ -1,5 +1,5 @@
 import { SubmitKey } from "../store/app";
-
+import { isMobileScreen } from "../utils";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
@@ -24,6 +24,9 @@ const cn = {
       var inputHints = `${submitKey} 发送`;
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
+      }
+      if (isMobileScreen()) {
+        return "与ta对话吧";
       }
       return inputHints + "，/ 触发补全提示词咒语";
     },
