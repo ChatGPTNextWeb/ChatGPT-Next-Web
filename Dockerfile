@@ -46,7 +46,7 @@ CMD if [ -n "$PROXY_URL" ]; then \
         host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
         port=$(echo $PROXY_URL | cut -d: -f3); \
         conf=/etc/proxychains.conf; \
-        echo "strict_chain" >> $conf; \
+        echo "strict_chain" > $conf; \
         echo "proxy_dns" >> $conf; \
         echo "remote_dns_subnet 224" >> $conf; \
         echo "tcp_read_time_out 15000" >> $conf; \
