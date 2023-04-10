@@ -85,6 +85,8 @@ function useSwitchTheme() {
   }, [config.theme]);
 }
 
+// const isDarkTheme = config.theme === "dark";
+
 function useDragSideBar() {
   const limit = (x: number) => Math.min(500, Math.max(220, x));
 
@@ -200,7 +202,9 @@ function _Home() {
           }}
         >
           <button
-            className={styles["addConversation"]}
+            className={`${styles.addConversation} ${
+              config.theme === "dark" ? styles.addConversationDark : ""
+            }`}
             onClick={() => {
               createNewSession();
               setShowSideBar(false);
