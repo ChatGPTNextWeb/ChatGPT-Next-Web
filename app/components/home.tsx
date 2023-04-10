@@ -158,100 +158,96 @@ function _Home() {
   }
 
   return (
-    <>
+    <div
+      className={`${
+        config.tightBorder && !isMobileScreen()
+          ? styles["tight-container"]
+          : styles.container
+      }`}
+    >
       <div
-        className={`${
-          config.tightBorder && !isMobileScreen()
-            ? styles["tight-container"]
-            : styles.container
-        }`}
+        className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
+        <div className={styles["sidebar-header"]}>
+          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          <div className={styles["sidebar-sub-title"]}>
+            Build your own AI assistant.
+          </div>
+          <div className={styles["sidebar-logo"]}>
+            <ChatGptIcon />
+          </div>
+        </div>
+
         <div
-          className={
-            styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`
-          }
+          className={styles["sidebar-body"]}
+          onClick={() => {
+            setOpenSettings(false);
+            setShowSideBar(false);
+          }}
         >
-          <div className={styles["sidebar-header"]}>
-            <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-            <div className={styles["sidebar-sub-title"]}>
-              Build your own AI assistant.
-            </div>
-            <div className={styles["sidebar-logo"]}>
-              <ChatGptIcon />
-            </div>
-          </div>
+          <ChatList />
+        </div>
 
-          <div
-            className={styles["sidebar-body"]}
-            onClick={() => {
-              setOpenSettings(false);
-              setShowSideBar(false);
-            }}
-          >
-            <ChatList />
-          </div>
-
-          <div className={styles["sidebar-tail"]}>
-            <div className={styles["sidebar-actions"]}>
-              <div className={styles["sidebar-action"] + " " + styles.mobile}>
-                <IconButton
-                  icon={<CloseIcon />}
-                  onClick={chatStore.deleteSession}
-                />
-              </div>
-              <div className={styles["sidebar-action"]}>
-                <IconButton
-                  icon={<SettingsIcon />}
-                  onClick={() => {
-                    setOpenSettings(true);
-                    setShowSideBar(false);
-                  }}
-                  shadow
-                />
-              </div>
-              <div className={styles["sidebar-action"]}>
-                <a href={REPO_URL} target="_blank">
-                  <IconButton icon={<GithubIcon />} shadow />
-                </a>
-              </div>
-            </div>
-            <div>
+        <div className={styles["sidebar-tail"]}>
+          <div className={styles["sidebar-actions"]}>
+            <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
-                icon={<AddIcon />}
-                text={Locale.Home.NewChat}
+                icon={<CloseIcon />}
+                onClick={chatStore.deleteSession}
+              />
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <IconButton
+                icon={<SettingsIcon />}
                 onClick={() => {
-                  createNewSession();
+                  setOpenSettings(true);
                   setShowSideBar(false);
                 }}
                 shadow
               />
             </div>
+            <div className={styles["sidebar-action"]}>
+              <a href={REPO_URL} target="_blank">
+                <IconButton icon={<GithubIcon />} shadow />
+              </a>
+            </div>
           </div>
-
-          <div
-            className={styles["sidebar-drag"]}
-            onMouseDown={(e) => onDragMouseDown(e as any)}
-          ></div>
-        </div>
-
-        <div className={styles["window-content"]}>
-          {openSettings ? (
-            <Settings
-              closeSettings={() => {
-                setOpenSettings(false);
-                setShowSideBar(true);
+          <div>
+            <IconButton
+              icon={<AddIcon />}
+              text={Locale.Home.NewChat}
+              onClick={() => {
+                createNewSession();
+                setShowSideBar(false);
               }}
+              shadow
             />
-          ) : (
-            <Chat
-              key="chat"
-              showSideBar={() => setShowSideBar(true)}
-              sideBarShowing={showSideBar}
-            />
-          )}
+          </div>
         </div>
+
+        <div
+          className={styles["sidebar-drag"]}
+          onMouseDown={(e) => onDragMouseDown(e as any)}
+        ></div>
       </div>
-    </>
+
+      <div className={styles["window-content"]}>
+        {openSettings ? (
+          <Settings
+            closeSettings={() => {
+              setOpenSettings(false);
+              setShowSideBar(true);
+            }}
+          />
+        ) : (
+          <Chat
+            key="chat"
+            showSideBar={() => setShowSideBar(true)}
+            sideBarShowing={showSideBar}
+          />
+        )}
+      </div>
+    </div>
   );
 }
 
