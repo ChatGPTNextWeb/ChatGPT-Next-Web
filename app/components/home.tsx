@@ -1,7 +1,14 @@
 "use client";
 
 require("../polyfill");
-import { useState, useEffect } from "react";
+
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  MouseEventHandler,
+} from "react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -24,6 +31,7 @@ import { Chat } from "./chat";
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
+import { useDebounce } from "use-debounce";
 
 import type { Prompt } from "../store/prompt";
 
@@ -77,6 +85,53 @@ function useSwitchTheme() {
   }, [config.theme]);
 }
 
+function useDragSideBar() {
+  const limit = (x: number) => Math.min(500, Math.max(220, x));
+
+  const chatStore = useChatStore();
+  const startX = useRef(0);
+  const startDragWidth = useRef(chatStore.config.sidebarWidth ?? 300);
+  const lastUpdateTime = useRef(Date.now());
+
+  const handleMouseMove = useRef((e: MouseEvent) => {
+    if (Date.now() < lastUpdateTime.current + 100) {
+      return;
+    }
+    lastUpdateTime.current = Date.now();
+    const d = e.clientX - startX.current;
+    const nextWidth = limit(startDragWidth.current + d);
+    chatStore.updateConfig((config) => (config.sidebarWidth = nextWidth));
+  });
+
+  const handleMouseUp = useRef(() => {
+    startDragWidth.current = chatStore.config.sidebarWidth ?? 300;
+    window.removeEventListener("mousemove", handleMouseMove.current);
+    window.removeEventListener("mouseup", handleMouseUp.current);
+  });
+
+  const onDragMouseDown = (e: MouseEvent) => {
+    startX.current = e.clientX;
+
+    window.addEventListener("mousemove", handleMouseMove.current);
+    window.addEventListener("mouseup", handleMouseUp.current);
+  };
+
+  useEffect(() => {
+    if (isMobileScreen()) {
+      return;
+    }
+
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      `${limit(chatStore.config.sidebarWidth ?? 300)}px`,
+    );
+  }, [chatStore.config.sidebarWidth]);
+
+  return {
+    onDragMouseDown,
+  };
+}
+
 const useHasHydrated = () => {
   const [hasHydrated, setHasHydrated] = useState<boolean>(false);
 
@@ -105,6 +160,9 @@ function _Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
+
+  // drag side bar
+  const { onDragMouseDown } = useDragSideBar();
 
   useSwitchTheme();
 
@@ -260,6 +318,11 @@ function _Home() {
             />
           </div>
         </div>
+
+        <div
+          className={styles["sidebar-drag"]}
+          onMouseDown={(e) => onDragMouseDown(e as any)}
+        ></div>
       </div>
 
       <div
