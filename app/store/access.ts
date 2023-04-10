@@ -29,7 +29,8 @@ export const useAccessStore = create<AccessControlStore>()(
         set((state) => ({ token }));
       },
       isAuthorized() {
-        return !!get().token || !!get().accessCode;
+        // has token or has code or disabled access control
+        return !!get().token || !!get().accessCode || !get().enabledAccessControl();
       },
     }),
     {
