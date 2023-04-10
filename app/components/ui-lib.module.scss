@@ -9,6 +9,7 @@
 
 .popover {
   position: relative;
+  z-index: 2;
 }
 
 .popover-content {
@@ -126,6 +127,7 @@
   width: 100vw;
   display: flex;
   justify-content: center;
+  pointer-events: none;
 
   .toast-content {
     max-width: 80vw;
@@ -140,6 +142,7 @@
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    pointer-events: all;
 
     .toast-action {
       padding-left: 20px;
