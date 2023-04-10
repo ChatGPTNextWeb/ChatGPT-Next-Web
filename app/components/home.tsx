@@ -176,9 +176,9 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          <div className={styles["sidebar-title"]}>ChatGPT阿龙超级Ai</div>
           <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
+            欢迎大家体验使用阿龙超级AiChatGPT，购买key请加微信:xiaohan9532授权.原版普号和4.0plus成品都有的，以及mj代充业务~有需要随时联系~
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
