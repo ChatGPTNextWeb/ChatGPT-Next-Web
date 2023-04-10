@@ -33,7 +33,6 @@ import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
-import { getClientSideConfig } from "../config/client";
 
 function SettingItem(props: {
   title: string;
@@ -89,13 +88,13 @@ export function Settings(props: { closeSettings: () => void }) {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = getClientSideConfig()?.version;
-  const remoteId = updateStore.remoteId;
+  const currentVersion = updateStore.version;
+  const remoteId = updateStore.remoteVersion;
   const hasNewVersion = currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
-    updateStore.getLatestCommitId(force).then(() => {
+    updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
     });
   }
