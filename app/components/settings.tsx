@@ -26,13 +26,14 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion, getEmojiUrl } from "../utils";
+import { getEmojiUrl } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
+import { getClientSideConfig } from "../config/client";
 
 function SettingItem(props: {
   title: string;
@@ -88,9 +89,9 @@ export function Settings(props: { closeSettings: () => void }) {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentId = getCurrentVersion();
+  const currentVersion = getClientSideConfig()?.version;
   const remoteId = updateStore.remoteId;
-  const hasNewVersion = currentId !== remoteId;
+  const hasNewVersion = currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
@@ -224,7 +225,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </SettingItem>
 
           <SettingItem
-            title={Locale.Settings.Update.Version(currentId)}
+            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
                 ? Locale.Settings.Update.IsChecking

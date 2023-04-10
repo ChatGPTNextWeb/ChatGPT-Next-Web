@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getClientSideConfig } from "../config/client";
 import { FETCH_COMMIT_URL, FETCH_TAG_URL } from "../constant";
-import { getCurrentVersion } from "../utils";
 
 export interface UpdateStore {
   lastUpdate: number;
@@ -22,7 +22,7 @@ export const useUpdateStore = create<UpdateStore>()(
         const overTenMins = Date.now() - get().lastUpdate > 10 * 60 * 1000;
         const shouldFetch = force || overTenMins;
         if (!shouldFetch) {
-          return getCurrentVersion();
+          return getClientSideConfig()?.version ?? "";
         }
 
         try {
@@ -38,7 +38,7 @@ export const useUpdateStore = create<UpdateStore>()(
           return remoteId;
         } catch (error) {
           console.error("[Fetch Upstream Commit Id]", error);
-          return getCurrentVersion();
+          return getClientSideConfig()?.version ?? "";
         }
       },
     }),
