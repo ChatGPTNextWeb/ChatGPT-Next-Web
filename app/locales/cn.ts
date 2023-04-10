@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/app";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请在设置页输入访问密码。",
+    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -90,7 +90,7 @@ const cn = {
     },
     SendKey: "发送键",
     Theme: "主题",
-    TightBorder: "紧凑边框",
+    TightBorder: "无边框模式",
     SendPreviewBubble: "发送预览气泡",
     Prompt: {
       Disable: {
@@ -126,7 +126,7 @@ const cn = {
     },
     AccessCode: {
       Title: "访问密码",
-      SubTitle: "现在是未授权访问状态",
+      SubTitle: "已开启加密访问",
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
