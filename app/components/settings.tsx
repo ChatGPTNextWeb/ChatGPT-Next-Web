@@ -60,13 +60,17 @@ function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   }
 
   return (
-    <div className={styles["password-input"]}>
+    <div className={styles["password-input-container"]}>
       <IconButton
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
         className={styles["password-eye"]}
       />
-      <input {...props} type={visible ? "text" : "password"} />
+      <input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={styles["password-input"]}
+      />
     </div>
   );
 }
@@ -120,8 +124,7 @@ export function Settings(props: { closeSettings: () => void }) {
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.prompts.size ?? 0;
 
-  const showUsage = !!accessStore.token || !!accessStore.accessCode;
-
+  const showUsage = accessStore.isAuthorized();
   useEffect(() => {
     checkUpdate();
     showUsage && checkUsage();
@@ -342,37 +345,7 @@ export function Settings(props: { closeSettings: () => void }) {
             ></input>
           </SettingItem>
         </List>
-        <List>
-          <SettingItem
-            title={Locale.Settings.Prompt.Disable.Title}
-            subTitle={Locale.Settings.Prompt.Disable.SubTitle}
-          >
-            <input
-              type="checkbox"
-              checked={config.disablePromptHint}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.disablePromptHint = e.currentTarget.checked),
-                )
-              }
-            ></input>
-          </SettingItem>
 
-          <SettingItem
-            title={Locale.Settings.Prompt.List}
-            subTitle={Locale.Settings.Prompt.ListCount(
-              builtinCount,
-              customCount,
-            )}
-          >
-            <IconButton
-              icon={<EditIcon />}
-              text={Locale.Settings.Prompt.Edit}
-              onClick={() => showToast(Locale.WIP)}
-            />
-          </SettingItem>
-        </List>
         <List>
           {enabledAccessControl ? (
             <SettingItem
@@ -466,6 +439,38 @@ export function Settings(props: { closeSettings: () => void }) {
                 )
               }
             ></input>
+          </SettingItem>
+        </List>
+
+        <List>
+          <SettingItem
+            title={Locale.Settings.Prompt.Disable.Title}
+            subTitle={Locale.Settings.Prompt.Disable.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.disablePromptHint}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.disablePromptHint = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </SettingItem>
+
+          <SettingItem
+            title={Locale.Settings.Prompt.List}
+            subTitle={Locale.Settings.Prompt.ListCount(
+              builtinCount,
+              customCount,
+            )}
+          >
+            <IconButton
+              icon={<EditIcon />}
+              text={Locale.Settings.Prompt.Edit}
+              onClick={() => showToast(Locale.WIP)}
+            />
           </SettingItem>
         </List>
 
