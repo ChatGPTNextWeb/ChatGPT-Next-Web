@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { queryMeta } from "../utils";
+import { getClientSideConfig } from "../config/client";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -20,7 +20,7 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       enabledAccessControl() {
-        return queryMeta("access") === "enabled";
+        return !!getClientSideConfig()?.needCode;
       },
       updateCode(code: string) {
         set((state) => ({ accessCode: code }));
@@ -30,7 +30,9 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       isAuthorized() {
         // has token or has code or disabled access control
-        return !!get().token || !!get().accessCode || !get().enabledAccessControl();
+        return (
+          !!get().token || !!get().accessCode || !get().enabledAccessControl()
+        );
       },
     }),
     {
