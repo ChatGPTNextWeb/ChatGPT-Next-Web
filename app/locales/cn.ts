@@ -72,6 +72,7 @@ const cn = {
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
+        tr: "Türkçe",
       },
     },
     Avatar: "头像",
