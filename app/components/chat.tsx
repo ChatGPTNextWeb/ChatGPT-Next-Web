@@ -535,10 +535,11 @@ export function Chat(props: {}) {
   const [showPromptModal, setShowPromptModal] = useState(false);
 
   // Auto focus
-  useEffect(() => {
-    if (sidebarCollapse && isMobileScreen()) return;
-    inputRef.current?.focus();
-  }, [sidebarCollapse]);
+  //useEffect(() => {
+  //  if (isMobileScreen() && !sidebarCollapse) return;
+  //  inputRef.current?.focus();
+  //}, [sidebarCollapse]);
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>

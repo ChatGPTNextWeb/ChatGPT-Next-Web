@@ -309,7 +309,13 @@ function _Home() {
           >
             <IconButton
               icon={<AddIcon />}
-              text={sidebarCollapse ? undefined : Locale.Home.NewChat}
+              text={
+                isMobileScreen()
+                  ? undefined
+                  : sidebarCollapse
+                  ? undefined
+                  : Locale.Home.NewChat
+              }
               onClick={() => {
                 createNewSession();
                 setSideBarCollapse(true);
