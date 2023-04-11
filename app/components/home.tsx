@@ -2,13 +2,7 @@
 
 require("../polyfill");
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  MouseEventHandler,
-} from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -31,7 +25,6 @@ import { Chat } from "./chat";
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
-import { useDebounce } from "use-debounce";
 
 import type { Prompt } from "../store/prompt";
 
