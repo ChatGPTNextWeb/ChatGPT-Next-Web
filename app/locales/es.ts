@@ -76,6 +76,7 @@ const es: LocaleType = {
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
+        jp: "日本語",
       },
     },
     Avatar: "Avatar",
