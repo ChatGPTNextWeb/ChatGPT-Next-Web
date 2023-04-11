@@ -171,10 +171,15 @@ export async function requestChatStream(
         const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
-        const text = decoder.decode(content?.value, { stream: true });
+      
+        if (!content || !content.value) {
+          break;
+        }
+      
+        const text = decoder.decode(content.value, { stream: true });
         responseText += text;
 
-        const done = !content || content.done;
+        const done = content.done;
         options?.onMessage(responseText, false);
 
         if (done) {
