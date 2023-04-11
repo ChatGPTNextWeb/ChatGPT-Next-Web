@@ -18,6 +18,7 @@ const tw: LocaleType = {
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
+      Speak: "朗讀",
     },
     Rename: "重命名對話",
     Typing: "正在輸入…",

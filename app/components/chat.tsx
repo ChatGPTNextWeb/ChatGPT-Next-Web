@@ -44,6 +44,7 @@ import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
 import { Input, Modal, showModal } from "./ui-lib";
+import { speak } from "../api/tts";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -490,6 +491,13 @@ export function Chat(props: {
 
   const accessStore = useAccessStore();
 
+  const callback = (result: any) => {
+    const audio = new Audio();
+    audio.src = URL.createObjectURL(result.audioData);
+    audio.volume = 0.5;
+    audio.play();
+  };
+
   if (
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
@@ -669,6 +677,17 @@ export function Chat(props: {
                           onClick={() => copyToClipboard(message.content)}
                         >
                           {Locale.Chat.Actions.Copy}
+                        </div>
+
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() =>
+                            accessStore.isAuthorized()
+                              ? speak(message.content, callback)
+                              : () => {}
+                          }
+                        >
+                          {Locale.Chat.Actions.Speak}
                         </div>
                       </div>
                     )}

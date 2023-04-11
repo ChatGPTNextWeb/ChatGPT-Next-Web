@@ -7,6 +7,8 @@ declare global {
       CODE?: string;
       PROXY_URL?: string;
       VERCEL?: string;
+      SPEECH_SUB_KEY?: string;
+      SPEECH_REGION?: string;
     }
   }
 }
