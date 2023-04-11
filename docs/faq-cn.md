@@ -1,7 +1,5 @@
 # 常见问题
 
-> We are sorry that there is currently no English version of the FAQ. English users can use translation tools to access this document. We look forward to receiving your PR for an English version of the documentation.
-
 ## 如何快速获得帮助？
 1. 询问ChatGPT / Bing / 百度 / Google等。
 2. 询问网友。请提供问题的背景信息和碰到问题的详细描述。高质量的提问容易获得有用的答案。
@@ -121,8 +119,9 @@ OpenAI只接受指定地区的信用卡（中国信用卡无法使用）。一�
 3. 网上找人代充
 
 ## 如何使用GPT-4的API访问？
-（4月6日更新）GPT-4的API访问需要单独申请。到以下地址填写你的信息进入申请队列waitlist（准备好你的OpenAI组织ID）：https://openai.com/waitlist/gpt-4-api
+- GPT-4的API访问需要单独申请。到以下地址填写你的信息进入申请队列waitlist（准备好你的OpenAI组织ID）：https://openai.com/waitlist/gpt-4-api
 之后等待邮件消息。
+- 开通 ChatGPT Plus 不代表有 GPT-4 权限，两者毫无关系。
 
 ## 如何使用 Azure OpenAI 接口
 请参考：[#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
