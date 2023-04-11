@@ -6,7 +6,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  //background-color:#0bc398; 
+  //background-color:#0bc398;
   //下面新加的
   background-image: var(--accent-gradient);
  //-webkit-background-clip: text;
@@ -14,7 +14,7 @@
  background-size: 113%;
  background-position: 0%;
  --accent-gradient: var(--theme-purple);
- --accent-gradient: linear-gradient( 45deg, rgba(34, 165, 226, 0.8), rgba(45, 218, 174, 0.8) 30%, rgb(238, 168, 237) 60% );
+ --accent-gradient: linear-gradient( 45deg, rgba(221, 190, 221,0.8) 15%, rgba(45, 218, 174, 0.8) 30%,rgba(34, 165, 226, 0.8) 60% );
   //border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: var(--card-shadow);
