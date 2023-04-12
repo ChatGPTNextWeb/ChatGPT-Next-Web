@@ -3,11 +3,15 @@
 
 <h1 align="center">ChatGPT Next Web</h1>
 
+English / [简体中文](./README_CN.md)
+
 One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 一键免费部署你的私人 ChatGPT 网页应用。
 
-[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/231095592-330adc52-0337-4c13-8452-938ec169e367.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+[Demo](https://chat-gpt-next-web.vercel.app/) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+
+[演示](https://chat-gpt-next-web.vercel.app/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/231095592-330adc52-0337-4c13-8452-938ec169e367.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -76,7 +80,9 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 ## FAQ
 
-[简体中文 > 常见问题](./docs/faq-cn.md) | [English > FAQ](./docs/faq.en.md)
+[简体中文 > 常见问题](./docs/faq-cn.md)
+
+[English > FAQ](./docs/faq-en.md)
 
 ## Keep Updated
 
@@ -86,13 +92,18 @@ If you have deployed your own project with just one click following the steps ab
 
 We recommend that you follow the steps below to re-deploy:
 
-- Delete the original repo;
-- Fork this project;
-- Go to the Vercel dashboard, delete the original project, then create a new project and select the project you just forked to redeploy;
-- Please manually add an environment variable named `OPENAI_API_KEY` and enter your API key as the value during the redeploy process.
+- Delete the original repository;
+- Use the fork button in the upper right corner of the page to fork this project;
+- Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-cn.md).
 
-This project will be continuously updated, and after forking the project, the upstream code will be automatically synchronized every day without additional operations.
+### Enable Automatic Updates
+After forking the project, due to the limitations imposed by Github, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
 
+![Automatic Updates](./docs/images/enable-actions.jpg)
+
+![Enable Automatic Updates](./docs/images/enable-actions-sync.jpg)
+
+### Manually Updating Code
 If you want to update instantly, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
 
 You can star or watch this project or follow author to get release notifictions in time.
