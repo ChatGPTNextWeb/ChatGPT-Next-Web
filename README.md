@@ -90,7 +90,7 @@ We recommend that you follow the steps below to re-deploy:
 
 - Delete the original repository;
 - Use the fork button in the upper right corner of the page to fork this project;
-- Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-en.md#how-to-create-a-new-project).
+- Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-cn.md).
 
 ## Enable Automatic Updates
 After forking the project, due to the limitations imposed by Github, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
