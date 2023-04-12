@@ -21,6 +21,7 @@ import {
   ALL_MODELS,
   useUpdateStore,
   useAccessStore,
+  useUsageStore,
   ModalConfigValidator,
 } from "../store";
 import { Avatar } from "./chat";
@@ -92,25 +93,33 @@ export function Settings(props: { closeSettings: () => void }) {
   const remoteId = updateStore.remoteVersion;
   const hasNewVersion = currentVersion !== remoteId;
 
-  function checkUpdate(force = false) {
+  function checkUpdate(force: boolean = false) {
     setCheckingUpdate(true);
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
     });
   }
 
-  const [usage, setUsage] = useState<{
-    used?: number;
-    subscription?: number;
-  }>();
+  // const [usage, setUsage] = useState<{
+  //   used?: number;
+  //   subscription?: number;
+  // }>();
+  const { used, subscription, updateUsage, hasUsageData } = useUsageStore();
   const [loadingUsage, setLoadingUsage] = useState(false);
-  function checkUsage() {
-    setLoadingUsage(true);
-    requestUsage()
-      .then((res) => setUsage(res))
-      .finally(() => {
-        setLoadingUsage(false);
-      });
+  function checkUsage(forceUpdate: boolean = false) {
+    if (!hasUsageData() || forceUpdate) {
+      setLoadingUsage(true);
+      requestUsage()
+        .then((res) => {
+          if (res) {
+            const { used, subscription } = res;
+            updateUsage(used?.toString(), subscription?.toString());
+          }
+        })
+        .finally(() => {
+          setLoadingUsage(false);
+        });
+    }
   }
 
   const accessStore = useAccessStore();
@@ -385,10 +394,7 @@ export function Settings(props: { closeSettings: () => void }) {
               showUsage
                 ? loadingUsage
                   ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
+                  : Locale.Settings.Usage.SubTitle(used, subscription)
                 : Locale.Settings.Usage.NoAccess
             }
           >
@@ -398,7 +404,9 @@ export function Settings(props: { closeSettings: () => void }) {
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
                 text={Locale.Settings.Usage.Check}
-                onClick={checkUsage}
+                onClick={() => {
+                  checkUsage(true);
+                }}
               />
             )}
           </SettingItem>
