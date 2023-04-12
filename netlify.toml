@@ -1,3 +1,0 @@
-[[edge_functions]]
-function = "chat-stream"
-path = "/api/chat-stream"
