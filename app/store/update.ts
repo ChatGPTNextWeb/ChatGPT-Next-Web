@@ -68,7 +68,7 @@ export const useUpdateStore = create<UpdateStore>()(
         }
       },
 
-      async updateUsage(force = false) {
+      async updateUsage(force: boolean = false) {
         const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
         if (!overOneMinute && !force) return;
 

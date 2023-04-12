@@ -49,15 +49,17 @@ function getHeaders() {
 }
 
 export function requestOpenaiClient(path: string) {
-  return (body: any, method = "POST") =>
+  return (body: any, method: string = "POST", fetchCache: boolean = true) =>
     fetch("/api/openai?_vercel_no_cache=1", {
       method,
       headers: {
         "Content-Type": "application/json",
         path,
         ...getHeaders(),
+        "fetch-cache": fetchCache ? "enable" : "disable",
       },
       body: body && JSON.stringify(body),
+      cache: fetchCache ? "default" : "no-store", //https://beta.nextjs.org/docs/data-fetching/fetching#dynamic-data-fetching
     });
 }
 
@@ -75,6 +77,7 @@ export async function requestChat(messages: Message[]) {
 }
 
 export async function requestUsage() {
+  const useFetchCache = false;
   const formatDate = (d: Date) =>
     `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
       .getDate()
@@ -89,8 +92,12 @@ export async function requestUsage() {
   const [used, subs] = await Promise.all([
     requestOpenaiClient(
       `dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`,
-    )(null, "GET"),
-    requestOpenaiClient("dashboard/billing/subscription")(null, "GET"),
+    )(null, "GET", useFetchCache),
+    requestOpenaiClient("dashboard/billing/subscription")(
+      null,
+      "GET",
+      useFetchCache,
+    ),
   ]);
 
   const response = (await used.json()) as {

@@ -193,7 +193,7 @@ export function Settings(props: { closeSettings: () => void }) {
   const remoteId = updateStore.remoteVersion;
   const hasNewVersion = currentVersion !== remoteId;
 
-  function checkUpdate(force = false) {
+  function checkUpdate(force: boolean = false) {
     setCheckingUpdate(true);
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
@@ -205,9 +205,9 @@ export function Settings(props: { closeSettings: () => void }) {
     subscription: updateStore.subscription,
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
-  function checkUsage() {
+  function checkUsage(force: boolean = false) {
     setLoadingUsage(true);
-    updateStore.updateUsage().finally(() => {
+    updateStore.updateUsage(true).finally(() => {
       setLoadingUsage(false);
     });
   }
@@ -499,7 +499,9 @@ export function Settings(props: { closeSettings: () => void }) {
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
                 text={Locale.Settings.Usage.Check}
-                onClick={checkUsage}
+                onClick={() => {
+                  checkUsage(true);
+                }}
               />
             )}
           </SettingItem>
