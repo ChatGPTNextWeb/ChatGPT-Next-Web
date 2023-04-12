@@ -1,2 +1,3 @@
 [[edge_functions]]
-function = "sse"
+function = "chat-stream"
+path = "/api/chat-stream"
