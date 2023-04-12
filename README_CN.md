@@ -38,12 +38,18 @@
 如果你按照上述步骤一键部署了自己的项目，可能会发现总是提示“存在更新”的问题，这是由于 Vercel 会默认为你创建一个新项目而不是 fork 本项目，这会导致无法正确地检测更新。
 推荐你按照下列步骤重新部署：
 
-- 删除掉原先的 repo；
-- fork 本项目；
-- 前往 vercel 控制台，删除掉原先的 project，然后新建 project，选择你刚刚 fork 出来的项目重新进行部署即可；
-- 在重新部署的过程中，请手动添加名为 `OPENAI_API_KEY` 的环境变量，并填入你的 api key 作为值。
+- 删除掉原先的仓库；
+- 使用页面右上角的 fork 按钮，fork 本项目；
+- 在 Vercel 重新选择并部署，[请查看详细教程](./docs/vercel-cn.md#如何新建项目)。
 
-本项目会持续更新，当你 Fork 项目之后，默认会每天自动同步上游代码，无需额外操作。
+### 打开自动更新
+当你 fork 项目之后，由于 Github 的限制，需要手动去你 fork 后的项目的 Actions 页面启用 Workflows，并启用 Upstream Sync Action，启用之后即可开启每小时定时自动更新：
+
+![自动更新](./docs/images/enable-actions.jpg)
+
+![启用自动更新](./docs/images/enable-actions-sync.jpg)
+
+### 手动更新代码
 
 如果你想让手动立即更新，可以查看 [Github 的文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) 了解如何让 fork 的项目与上游代码同步。
 
