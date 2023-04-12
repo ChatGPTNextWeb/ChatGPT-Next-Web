@@ -3,7 +3,7 @@
 
 <h1 align="center">ChatGPT Next Web</h1>
 
-一键免费部署你的私人 ChatGPT 网页应用。
+一键免费部署你的私人 ChatGPT 网页应用，Updated By flyinvscode。
 
 One-Click to deploy your own ChatGPT web UI.
 
