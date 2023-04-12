@@ -8,6 +8,8 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
 
+import LoadingIcon from "../icons/three-dots.svg";
+
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
 
@@ -50,26 +52,47 @@ const useLazyLoad = (ref: RefObject<Element>): boolean => {
   return isIntersecting;
 };
 
-export function Markdown(props: { content: string }) {
+export function Markdown(
+  props: {
+    content: string;
+    loading?: boolean;
+    fontSize?: number;
+  } & React.DOMAttributes<HTMLDivElement>,
+) {
+  const mdRef = useRef(null);
+  const shouldRender = useLazyLoad(mdRef);
+  const shouldLoading = props.loading || !shouldRender;
+
   return (
-    <ReactMarkdown
-      remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
-      rehypePlugins={[
-        RehypeKatex,
-        [
-          RehypeHighlight,
-          {
-            detect: false,
-            ignoreMissing: true,
-          },
-        ],
-      ]}
-      components={{
-        pre: PreCode,
-      }}
-      linkTarget={"_blank"}
+    <div
+      className="markdown-body"
+      style={{ fontSize: `${props.fontSize ?? 14}px` }}
+      {...props}
+      ref={mdRef}
     >
-      {props.content}
-    </ReactMarkdown>
+      {shouldLoading ? (
+        <LoadingIcon />
+      ) : (
+        <ReactMarkdown
+          remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
+          rehypePlugins={[
+            RehypeKatex,
+            [
+              RehypeHighlight,
+              {
+                detect: false,
+                ignoreMissing: true,
+              },
+            ],
+          ]}
+          components={{
+            pre: PreCode,
+          }}
+          linkTarget={"_blank"}
+        >
+          {props.content}
+        </ReactMarkdown>
+      )}
+    </div>
   );
 }
