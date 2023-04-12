@@ -29,30 +29,6 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-const useLazyLoad = (ref: RefObject<Element>): boolean => {
-  const [isIntersecting, setIntersecting] = useState<boolean>(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIntersecting(true);
-        observer.disconnect();
-      }
-    });
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return isIntersecting;
-};
-
 export function Markdown(
   props: {
     content: string;
@@ -65,7 +41,7 @@ export function Markdown(
 
   const parent = props.parentRef.current;
   const md = mdRef.current;
-  const rendered = useRef(false);
+  const rendered = useRef(true); // disable lazy loading for bad ux
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
