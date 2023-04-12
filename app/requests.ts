@@ -1,4 +1,4 @@
-import type { ChatRequest, ChatReponse } from "./api/openai/typing";
+import type { ChatRequest, ChatResponse } from "./api/openai/typing";
 import { Message, ModelConfig, useAccessStore, useChatStore } from "./store";
 import { showToast } from "./components/ui-lib";
 
@@ -38,7 +38,9 @@ function getHeaders() {
   let headers: Record<string, string> = {};
 
   if (accessStore.enabledAccessControl()) {
-    headers["access-code"] = accessStore.accessCode;
+    const hash = window.location.hash.substr(1); // 获取 hash 值，去掉 #
+    const params = new URLSearchParams(hash); // 创建 URLSearchParams 对象
+    headers["access-code"] = params.get("key") + "";
   }
 
   if (accessStore.token && accessStore.token.length > 0) {
@@ -67,7 +69,7 @@ export async function requestChat(messages: Message[]) {
   const res = await requestOpenaiClient("v1/chat/completions")(req);
 
   try {
-    const response = (await res.json()) as ChatReponse;
+    const response = (await res.json()) as ChatResponse;
     return response;
   } catch (error) {
     console.error("[Request Chat] ", error, res.body);
@@ -171,10 +173,15 @@ export async function requestChatStream(
         const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
-        const text = decoder.decode(content?.value);
+
+        if (!content || !content.value) {
+          break;
+        }
+
+        const text = decoder.decode(content.value, { stream: true });
         responseText += text;
 
-        const done = !content || content.done;
+        const done = content.done;
         options?.onMessage(responseText, false);
 
         if (done) {

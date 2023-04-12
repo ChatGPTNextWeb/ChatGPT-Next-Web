@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ACCESS_CODES } from "./app/api/access";
+import { getServerSideConfig } from "./app/config/server";
 import md5 from "spark-md5";
 
 export const config = {
   matcher: ["/api/openai", "/api/chat-stream"],
 };
 
+const serverConfig = getServerSideConfig();
+
 export function middleware(req: NextRequest) {
+  console.log("req:",req)
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
-  console.log("[Auth] allowed hashed codes: ", [...ACCESS_CODES]);
+  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
 
@@ -30,7 +33,7 @@ export function middleware(req: NextRequest) {
 
   // inject api key
   if (!token) {
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = serverConfig.apiKey;
     if (apiKey) {
       console.log("[Auth] set system token");
       req.headers.set("token", apiKey);

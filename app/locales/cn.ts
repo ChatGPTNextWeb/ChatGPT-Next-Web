@@ -76,6 +76,8 @@ const cn = {
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
+        tr: "Türkçe",
+        jp: "日本語",
       },
     },
     Avatar: "头像",
@@ -94,7 +96,7 @@ const cn = {
     },
     SendKey: "发送键",
     Theme: "主题",
-    TightBorder: "紧凑边框",
+    TightBorder: "无边框模式",
     SendPreviewBubble: "发送预览气泡",
     Prompt: {
       Disable: {
