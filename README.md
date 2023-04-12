@@ -26,7 +26,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - **Deploy for free with one-click** on Vercel in under 1 minute
 - Privacy first, all data stored locally in the browser
 - Responsive design, dark mode and PWA
-- Fast first screen loading speed (~100kb)
+- Fast first screen loading speed (~100kb), support streaming response
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
@@ -49,7 +49,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 - 在 1 分钟内使用 Vercel **免费一键部署**
 - 精心设计的 UI，响应式设计，支持深色模式，支持 PWA
-- 极快的首屏加载速度（~100kb）
+- 极快的首屏加载速度（~100kb），支持流式响应
 - 隐私安全，所有数据保存在用户浏览器本地
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
