@@ -4,9 +4,7 @@ import { persist } from "zustand/middleware";
 export interface AccessControlStore {
   accessCode: string;
   token: string;
-
   needCode: boolean;
-
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;

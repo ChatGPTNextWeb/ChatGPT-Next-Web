@@ -1,5 +1,5 @@
 {
-    "name": "ChatGPT Next Web",
+    "name": "ChatGPT UranPlus",
     "short_name": "ChatGPT",
     "icons": [
       {
@@ -18,4 +18,3 @@
     "background_color": "#ffffff",
     "display": "standalone"
   }
-  
