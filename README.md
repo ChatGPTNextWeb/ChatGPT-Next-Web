@@ -3,11 +3,15 @@
 
 <h1 align="center">ChatGPT Next Web</h1>
 
+English / [简体中文](./README_CN.md)
+
 One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 一键免费部署你的私人 ChatGPT 网页应用。
 
-[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/231095592-330adc52-0337-4c13-8452-938ec169e367.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+[Demo](https://chat-gpt-next-web.vercel.app/) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+
+[演示](https://chat-gpt-next-web.vercel.app/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/231095592-330adc52-0337-4c13-8452-938ec169e367.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -22,7 +26,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - **Deploy for free with one-click** on Vercel in under 1 minute
 - Privacy first, all data stored locally in the browser
 - Responsive design, dark mode and PWA
-- Fast first screen loading speed (~100kb)
+- Fast first screen loading speed (~100kb), support streaming response
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
@@ -45,7 +49,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 - 在 1 分钟内使用 Vercel **免费一键部署**
 - 精心设计的 UI，响应式设计，支持深色模式，支持 PWA
-- 极快的首屏加载速度（~100kb）
+- 极快的首屏加载速度（~100kb），支持流式响应
 - 隐私安全，所有数据保存在用户浏览器本地
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
@@ -76,7 +80,9 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 ## FAQ
 
-[简体中文 > 常见问题](./docs/faq-cn.md) | [English > FAQ](./docs/faq.en.md)
+[简体中文 > 常见问题](./docs/faq-cn.md)
+
+[English > FAQ](./docs/faq-en.md)
 
 ## Keep Updated
 
@@ -86,13 +92,18 @@ If you have deployed your own project with just one click following the steps ab
 
 We recommend that you follow the steps below to re-deploy:
 
-- Delete the original repo;
-- Fork this project;
-- Go to the Vercel dashboard, delete the original project, then create a new project and select the project you just forked to redeploy;
-- Please manually add an environment variable named `OPENAI_API_KEY` and enter your API key as the value during the redeploy process.
+- Delete the original repository;
+- Use the fork button in the upper right corner of the page to fork this project;
+- Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-cn.md).
 
-This project will be continuously updated, and after forking the project, the upstream code will be automatically synchronized every day without additional operations.
+### Enable Automatic Updates
+After forking the project, due to the limitations imposed by Github, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
 
+![Automatic Updates](./docs/images/enable-actions.jpg)
+
+![Enable Automatic Updates](./docs/images/enable-actions-sync.jpg)
+
+### Manually Updating Code
 If you want to update instantly, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
 
 You can star or watch this project or follow author to get release notifictions in time.
