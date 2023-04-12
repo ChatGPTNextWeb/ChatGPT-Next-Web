@@ -120,3 +120,7 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
   return rows;
 }
+
+export function getCSSVar(varName: string) {
+  return getComputedStyle(document.body).getPropertyValue(varName).trim();
+}

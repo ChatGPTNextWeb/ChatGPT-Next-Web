@@ -47,7 +47,8 @@ const useLazyLoad = (ref: RefObject<Element>): boolean => {
     return () => {
       observer.disconnect();
     };
-  }, [ref]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return isIntersecting;
 };
@@ -57,18 +58,49 @@ export function Markdown(
     content: string;
     loading?: boolean;
     fontSize?: number;
+    parentRef: RefObject<HTMLDivElement>;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
-  const mdRef = useRef(null);
-  const shouldRender = useLazyLoad(mdRef);
-  const shouldLoading = props.loading || !shouldRender;
+  const mdRef = useRef<HTMLDivElement>(null);
+
+  const parent = props.parentRef.current;
+  const md = mdRef.current;
+  const rendered = useRef(false);
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    // to triggr rerender
+    setCounter(counter + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.loading]);
+
+  const inView =
+    rendered.current ||
+    (() => {
+      if (parent && md) {
+        const parentBounds = parent.getBoundingClientRect();
+        const mdBounds = md.getBoundingClientRect();
+        const isInRange = (x: number) =>
+          x <= parentBounds.bottom && x >= parentBounds.top;
+        const inView = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
+
+        if (inView) {
+          rendered.current = true;
+        }
+
+        return inView;
+      }
+    })();
+
+  const shouldLoading = props.loading || !inView;
 
   return (
     <div
       className="markdown-body"
       style={{ fontSize: `${props.fontSize ?? 14}px` }}
-      {...props}
       ref={mdRef}
+      onContextMenu={props.onContextMenu}
+      onDoubleClickCapture={props.onDoubleClickCapture}
     >
       {shouldLoading ? (
         <LoadingIcon />
