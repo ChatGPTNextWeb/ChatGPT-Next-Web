@@ -153,12 +153,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ### 捐赠者
 
-> 仅列出了部分大额打赏，小额打赏（< 100RMB）人数太多，在此不再列出，敬请谅解。
-
-[@mushan0x0](https://github.com/mushan0x0)
-[@ClarenceDan](https://github.com/ClarenceDan)
-[@zhangjia](https://github.com/zhangjia)
-[@hoochanlon](https://github.com/hoochanlon)
+> 见英文版。
 
 ### 贡献者
 
