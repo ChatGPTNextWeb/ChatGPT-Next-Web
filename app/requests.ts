@@ -171,10 +171,15 @@ export async function requestChatStream(
         const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
-        const text = decoder.decode(content?.value, { stream: true });
+      
+        if (!content || !content.value) {
+          break;
+        }
+      
+        const text = decoder.decode(content.value, { stream: true });
         responseText += text;
 
-        const done = !content || content.done;
+        const done = content.done;
         options?.onMessage(responseText, false);
 
         if (done) {
@@ -184,8 +189,8 @@ export async function requestChatStream(
 
       finish();
     } else if (res.status === 401) {
-      console.error("Anauthorized");
-      options?.onError(new Error("Anauthorized"), res.status);
+      console.error("Unauthorized");
+      options?.onError(new Error("Unauthorized"), res.status);
     } else {
       console.error("Stream Error", res.body);
       options?.onError(new Error("Stream Error"), res.status);
