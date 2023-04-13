@@ -49,4 +49,7 @@
 .icon-button-text {
   margin-left: 5px;
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
