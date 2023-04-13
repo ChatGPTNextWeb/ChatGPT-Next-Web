@@ -182,10 +182,10 @@
   flex: 1;
   overflow: auto;
 }
-.chat-list-collapse {
-}
 
 .chat-list {
+  display: flex;
+  flex-direction: column-reverse;
 }
 .chat-item-collapse {
   //make content center
