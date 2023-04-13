@@ -87,21 +87,14 @@ export function ChatItem(props: {
 }
 
 export function ChatList() {
-  const [
-    sidebarCollapse,
-    sessions,
-    selectedIndex,
-    selectSession,
-    removeSession,
-    moveSession,
-  ] = useChatStore((state) => [
-    state.sidebarCollapse,
-    state.sessions,
-    state.currentSessionIndex,
-    state.selectSession,
-    state.removeSession,
-    state.moveSession,
-  ]);
+  const [sidebarCollapse, sessions, selectedIndex, selectSession, moveSession] =
+    useChatStore((state) => [
+      state.sidebarCollapse,
+      state.sessions,
+      state.currentSessionIndex,
+      state.selectSession,
+      state.moveSession,
+    ]);
   const chatStore = useChatStore();
   const onDragEnd: OnDragEndResponder = (result: any) => {
     const { destination, source } = result;

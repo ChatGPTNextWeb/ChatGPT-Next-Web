@@ -174,6 +174,7 @@ export interface ChatSession {
   stat: ChatStat;
   lastUpdate: string;
   lastSummarizeIndex: number;
+  userInput: string;
 }
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -199,6 +200,7 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: createDate,
     lastSummarizeIndex: 0,
+    userInput: "",
   };
 }
 
