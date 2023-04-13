@@ -17,16 +17,14 @@ import CloseIcon from "../icons/close.svg";
 import LeftIcon from "../icons/left.svg";
 import RightIcon from "../icons/right.svg";
 
-import { Message, SubmitKey, useChatStore } from "../store";
-import { isMobileScreen } from "../utils";
+import { useChatStore } from "../store";
+import { getCSSVar, isMobileScreen } from "../utils";
 import Locale from "../locales";
 import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
-
-import type { Prompt } from "../store/prompt";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -69,9 +67,7 @@ function useSwitchTheme() {
       metaDescriptionDark?.setAttribute("content", "#151515");
       metaDescriptionLight?.setAttribute("content", "#fafafa");
     } else {
-      const themeColor = getComputedStyle(document.body)
-        .getPropertyValue("--theme-color")
-        .trim();
+      const themeColor = getCSSVar("--themeColor");
       metaDescriptionDark?.setAttribute("content", themeColor);
       metaDescriptionLight?.setAttribute("content", themeColor);
     }

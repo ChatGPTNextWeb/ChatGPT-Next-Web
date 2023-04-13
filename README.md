@@ -213,6 +213,8 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ### Sponsor
 
+> 仅列出捐赠金额 >= 100RMB 的用户。
+
 [@mushan0x0](https://github.com/mushan0x0)
 [@ClarenceDan](https://github.com/ClarenceDan)
 [@zhangjia](https://github.com/zhangjia)
@@ -222,6 +224,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@webees](https://github.com/webees)
 [@chazzhou](https://github.com/chazzhou)
 [@hauy](https://github.com/hauy)
+[@Corwin006](https://github.com/Corwin006)
 
 ### Contributor
 
