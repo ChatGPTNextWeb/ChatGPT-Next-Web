@@ -36,6 +36,7 @@
     max-height: var(--full-height);
 
     border-radius: 0;
+    border: 0;
   }
 }
 
@@ -230,6 +231,7 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
+  padding-bottom: 40px;
   position: relative;
 }
 
@@ -354,11 +356,16 @@
 }
 
 .chat-input-panel {
+  position: relative;
   width: 100%;
   padding: 20px;
-  padding-top: 5px;
+  padding-top: 10px;
   box-sizing: border-box;
   flex-direction: column;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top: var(--border-in-light);
+  box-shadow: var(--card-shadow);
 }
 
 @mixin single-line {
