@@ -236,9 +236,9 @@ export function Settings(props: { closeSettings: () => void }) {
             {checkingUpdate ? (
               <div />
             ) : hasNewVersion ? (
-              /*<Link href={UPDATE_URL} target="_blank" className="link">
+              <Link  target="_blank" className="link">
                 {Locale.Settings.Update.GoToUpdate}
-              </Link>*/
+              </Link>
             ) : (
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
