@@ -137,7 +137,8 @@ docker run -d -p 3000:3000 \
 docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="sk-xxxx" \
    -e CODE="页面访问密码" \
-   -e PROXY_URL="http://localhost:7890" \
+   --net=host \
+   -e PROXY_URL="http://127.0.0.1:7890" \
    yidadaa/chatgpt-next-web
 ```
 
