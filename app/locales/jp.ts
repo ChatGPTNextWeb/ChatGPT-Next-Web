@@ -18,6 +18,7 @@ const jp = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      stopResponding: "応答を停止する",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",

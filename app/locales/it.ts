@@ -19,6 +19,7 @@ const it: LocaleType = {
       Copy: "Copia",
       Stop: "Stop",
       Retry: "Riprova",
+      stopResponding: "cessa di rispondere",
     },
     Rename: "Rinomina Chat",
     Typing: "Typing…",

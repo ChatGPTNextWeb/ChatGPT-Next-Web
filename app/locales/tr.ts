@@ -19,6 +19,7 @@ const tr: LocaleType = {
       Copy: "Kopyala",
       Stop: "Durdur",
       Retry: "Tekrar Dene",
+      stopResponding: "yanıt vermemeyi durdur",
     },
     Rename: "Sohbeti Yeniden Adlandır",
     Typing: "Yazıyor…",

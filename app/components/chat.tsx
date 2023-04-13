@@ -3,6 +3,7 @@ import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
+import StopIcon from "../icons/stop.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
@@ -765,6 +766,28 @@ export function Chat(props: {
             </div>
           );
         })}
+      </div>
+
+      <div style={{ bottom: "103px" }} className={chatStyle["prompt-toast"]}>
+        {session.messages.length > 0 &&
+          session.messages[session.messages.length - 1].streaming && (
+            <div
+              className={chatStyle["prompt-toast-inner"] + " clickable"}
+              role="button"
+              onClick={() => {
+                const lastMessage =
+                  session.messages[session.messages.length - 1];
+                if (lastMessage?.id) {
+                  onUserStop(lastMessage.id);
+                }
+              }}
+            >
+              <StopIcon />
+              <span className={chatStyle["prompt-toast-content"]}>
+                {Locale.Chat.Actions.stopResponding}
+              </span>
+            </div>
+          )}
       </div>
 
       <div className={styles["chat-input-panel"]}>
