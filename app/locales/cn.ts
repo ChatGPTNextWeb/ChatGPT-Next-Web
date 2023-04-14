@@ -1,9 +1,10 @@
 import { SubmitKey } from "../store/app";
-
+import { isMobileScreen } from "../utils";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。",
+    Unauthorized:
+      "现在是未授权状态，为了避免恶意盗刷：，\n 关注微信公众号【coder思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -25,7 +26,10 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全";
+      if (isMobileScreen()) {
+        return "与ta对话吧";
+      }
+      return inputHints + "，/ 触发补全提示词咒语";
     },
     Send: "发送",
   },

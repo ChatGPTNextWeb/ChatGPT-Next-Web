@@ -34,9 +34,9 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
-const Settings = dynamic(async () => (await import("./settings")).Settings, {
-  loading: () => <Loading noLogo />,
-});
+// const Settings = dynamic(async () => (await import("./settings")).Settings, {
+//   loading: () => <Loading noLogo />,
+// });
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => <Loading noLogo />,
@@ -142,7 +142,7 @@ function _Home() {
   );
   const chatStore = useChatStore();
   const loading = !useHasHydrated();
-  const [showSideBar, setShowSideBar] = useState(true);
+  const [showSideBar, setShowSideBar] = useState(false); //移动端隐藏侧边栏
 
   // setting
   const [openSettings, setOpenSettings] = useState(false);
@@ -169,7 +169,7 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          <div className={styles["sidebar-title"]}>ai大师助手</div>
           <div className={styles["sidebar-sub-title"]}>
             Build your own AI assistant.
           </div>
@@ -196,7 +196,7 @@ function _Home() {
                 onClick={chatStore.deleteSession}
               />
             </div>
-            <div className={styles["sidebar-action"]}>
+            {/* <div className={styles["sidebar-action"]}>
               <IconButton
                 icon={<SettingsIcon />}
                 onClick={() => {
@@ -205,7 +205,7 @@ function _Home() {
                 }}
                 shadow
               />
-            </div>
+            </div> */}
             <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} shadow />
@@ -232,20 +232,11 @@ function _Home() {
       </div>
 
       <div className={styles["window-content"]}>
-        {openSettings ? (
-          <Settings
-            closeSettings={() => {
-              setOpenSettings(false);
-              setShowSideBar(true);
-            }}
-          />
-        ) : (
-          <Chat
-            key="chat"
-            showSideBar={() => setShowSideBar(true)}
-            sideBarShowing={showSideBar}
-          />
-        )}
+        <Chat
+          key="chat"
+          showSideBar={() => setShowSideBar(true)}
+          sideBarShowing={showSideBar}
+        />
       </div>
     </div>
   );

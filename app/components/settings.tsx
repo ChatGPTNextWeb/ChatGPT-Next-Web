@@ -223,8 +223,9 @@ export function Settings(props: { closeSettings: () => void }) {
             </Popover>
           </SettingItem>
 
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
+
             subTitle={
               checkingUpdate
                 ? Locale.Settings.Update.IsChecking
@@ -246,7 +247,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select

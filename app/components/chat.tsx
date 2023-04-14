@@ -4,7 +4,7 @@ import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import ExportIcon from "../icons/share.svg";
-import ReturnIcon from "../icons/return.svg";
+import MenuIcon from "../icons/menu.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -565,7 +565,7 @@ export function Chat(props: {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"] + " " + styles.mobile}>
             <IconButton
-              icon={<ReturnIcon />}
+              icon={<MenuIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
               onClick={props?.showSideBar}

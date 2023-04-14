@@ -9,6 +9,7 @@ export const config = {
 const serverConfig = getServerSideConfig();
 
 export function middleware(req: NextRequest) {
+  console.log("req:",req)
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
   const hashedCode = md5.hash(accessCode ?? "").trim();
@@ -17,7 +18,7 @@ export function middleware(req: NextRequest) {
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
 
-  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
+  if (!accessCode) {
     return NextResponse.json(
       {
         error: true,
