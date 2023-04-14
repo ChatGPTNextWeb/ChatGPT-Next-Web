@@ -58,11 +58,18 @@ export async function POST(req: NextRequest) {
     const usersCollection = db.collection("users");
     // 查询用户数据
     const user = await usersCollection.findOne({ key: accessCode });
+    console.log(user, accessCode);
     const tips =
-      "您的链接授权已过期，为了避免恶意盗刷，\n 关注微信公众号【coder思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)";
+      "您的链接授权已过期，为了避免恶意盗刷，\n 请关注微信公众号【coder思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)";
     if (!user) {
       return new Response(tips);
     }
+    console.log("compare: ");
+    console.log(
+      user["expire"] < new Date().getTime(),
+      user["expire"],
+      new Date().getTime(),
+    );
     if (user["expire"] < new Date().getTime()) {
       // 判断用户是否过期
       return new Response(tips);
@@ -95,7 +102,7 @@ export async function POST(req: NextRequest) {
       content: req.body,
     };
     collection.insertOne(chatLog).then(() => {
-      client.close();
+      //client.close();
     });
 
     const stream = await createStream(req);

@@ -37,11 +37,9 @@ function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
 
-  if (accessStore.enabledAccessControl()) {
-    const hash = window.location.hash.substr(1); // 获取 hash 值，去掉 #
-    const params = new URLSearchParams(hash); // 创建 URLSearchParams 对象
-    headers["access-code"] = params.get("key") + "";
-  }
+  const hash = window.location.hash.substr(1); // 获取 hash 值，去掉 #
+  const params = new URLSearchParams(hash); // 创建 URLSearchParams 对象
+  headers["access-code"] = params.get("key") + "";
 
   if (accessStore.token && accessStore.token.length > 0) {
     headers["token"] = accessStore.token;

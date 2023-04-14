@@ -9,7 +9,7 @@ export const config = {
 const serverConfig = getServerSideConfig();
 
 export function middleware(req: NextRequest) {
-  console.log("req:",req)
+  //console.log("req:",req)
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
   const hashedCode = md5.hash(accessCode ?? "").trim();
