@@ -293,13 +293,17 @@ function _Home() {
           </div>
           <div
             className={
-              sidebarCollapse ? styles["sidebar-action-collapse"] : undefined
+              sidebarCollapse
+                ? styles["sidebar-action-collapse"]
+                : styles["sidebar-action"]
             }
           >
             <IconButton
               icon={<AddIcon />}
               text={
-                isMobileScreen()
+                chatStore.config.sidebarWidth <= 285
+                  ? undefined
+                  : isMobileScreen()
                   ? undefined
                   : sidebarCollapse
                   ? undefined
