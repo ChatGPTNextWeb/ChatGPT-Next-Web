@@ -442,16 +442,6 @@ export function Chat(props: {
     inputRef.current?.focus();
   };
 
-  const scrollInput = () => {
-    const dom = inputRef.current;
-    if (!dom) return;
-    const paddingBottomNum: number = parseInt(
-      window.getComputedStyle(dom).paddingBottom,
-      10,
-    );
-    dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
-  };
-
   // auto grow input
   const [inputRows, setInputRows] = useState(2);
   const measure = useDebouncedCallback(
@@ -476,7 +466,6 @@ export function Chat(props: {
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
-    scrollInput();
     setUserInput(text);
     const n = text.trim().length;
 
