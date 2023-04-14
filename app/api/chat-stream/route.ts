@@ -51,59 +51,59 @@ async function createStream(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const accessCode = req.headers.get("access-code");
   try {
-    // 使用 clientPromise 连接到 MongoDB 数据库
-    const client = await clientPromise;
-    // 选择数据库和集合
-    const db = client.db("chat_db");
-    const usersCollection = db.collection("users");
-    // 查询用户数据
-    const user = await usersCollection.findOne({ key: accessCode });
-    console.log(user, accessCode);
-    const tips =
-      "您的链接授权已过期，为了避免恶意盗刷，\n 请关注微信公众号【coder思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)";
-    if (!user) {
-      return new Response(tips);
-    }
-    console.log("compare: ");
-    console.log(
-      user["expire"] < new Date().getTime(),
-      user["expire"],
-      new Date().getTime(),
-    );
-    if (user["expire"] < new Date().getTime()) {
-      // 判断用户是否过期
-      return new Response(tips);
-    }
+    // // 使用 clientPromise 连接到 MongoDB 数据库
+    // const client = await clientPromise;
+    // // 选择数据库和集合
+    // const db = client.db("chat_db");
+    // const usersCollection = db.collection("users");
+    // // 查询用户数据
+    // const user = await usersCollection.findOne({ key: accessCode });
+    // console.log(user, accessCode);
+    // const tips =
+    //   "您的链接授权已过期，为了避免恶意盗刷，\n 请关注微信公众号【coder思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)";
+    // if (!user) {
+    //   return new Response(tips);
+    // }
+    // console.log("compare: ");
+    // console.log(
+    //   user["expire"] < new Date().getTime(),
+    //   user["expire"],
+    //   new Date().getTime(),
+    // );
+    // if (user["expire"] < new Date().getTime()) {
+    //   // 判断用户是否过期
+    //   return new Response(tips);
+    // }
 
-    // 创建查询条件
-    // 计算24小时前的时间戳
-    const currentTime = new Date();
-    const startTime = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
+    // // 创建查询条件
+    // // 计算24小时前的时间戳
+    // const currentTime = new Date();
+    // const startTime = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
 
-    // 创建查询条件
-    const query = {
-      username: user["username"],
-      create_time: { $gte: startTime },
-    };
+    // // 创建查询条件
+    // const query = {
+    //   username: user["username"],
+    //   create_time: { $gte: startTime },
+    // };
 
-    const collection = db.collection("chat_logs");
-    // 根据查询条件查询记录数
-    const recordCount = await collection.countDocuments(query);
-    if (recordCount > 1000) {
-      // 判断用户是否超过1000条记录
-      return new Response(
-        "您的聊天提问已超过1000条，为了避免恶意盗刷，请过稍后再试，24小时内只能提问1000条",
-      );
-    }
-    // 创建聊天记录
-    const chatLog = {
-      username: user["username"],
-      create_time: new Date().getTime(),
-      content: req.body,
-    };
-    collection.insertOne(chatLog).then(() => {
-      //client.close();
-    });
+    // const collection = db.collection("chat_logs");
+    // // 根据查询条件查询记录数
+    // const recordCount = await collection.countDocuments(query);
+    // if (recordCount > 1000) {
+    //   // 判断用户是否超过1000条记录
+    //   return new Response(
+    //     "您的聊天提问已超过1000条，为了避免恶意盗刷，请过稍后再试，24小时内只能提问1000条",
+    //   );
+    // }
+    // // 创建聊天记录
+    // const chatLog = {
+    //   username: user["username"],
+    //   create_time: new Date().getTime(),
+    //   content: req.body,
+    // };
+    // collection.insertOne(chatLog).then(() => {
+    //   //client.close();
+    // });
 
     const stream = await createStream(req);
     return new Response(stream);
@@ -115,6 +115,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// export const config = {
-//   runtime: "edge",
-// };
+export const config = {
+  runtime: "edge",
+};
