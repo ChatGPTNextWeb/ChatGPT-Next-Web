@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -17,7 +17,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
 import { useChatStore } from "../store";
-import { isMobileScreen } from "../utils";
+import { getCSSVar, isMobileScreen } from "../utils";
 import Locale from "../locales";
 import { Chat } from "./chat";
 
@@ -66,13 +66,58 @@ function useSwitchTheme() {
       metaDescriptionDark?.setAttribute("content", "#151515");
       metaDescriptionLight?.setAttribute("content", "#fafafa");
     } else {
-      const themeColor = getComputedStyle(document.body)
-        .getPropertyValue("--theme-color")
-        .trim();
+      const themeColor = getCSSVar("--themeColor");
       metaDescriptionDark?.setAttribute("content", themeColor);
       metaDescriptionLight?.setAttribute("content", themeColor);
     }
   }, [config.theme]);
+}
+
+function useDragSideBar() {
+  const limit = (x: number) => Math.min(500, Math.max(220, x));
+
+  const chatStore = useChatStore();
+  const startX = useRef(0);
+  const startDragWidth = useRef(chatStore.config.sidebarWidth ?? 300);
+  const lastUpdateTime = useRef(Date.now());
+
+  const handleMouseMove = useRef((e: MouseEvent) => {
+    if (Date.now() < lastUpdateTime.current + 100) {
+      return;
+    }
+    lastUpdateTime.current = Date.now();
+    const d = e.clientX - startX.current;
+    const nextWidth = limit(startDragWidth.current + d);
+    chatStore.updateConfig((config) => (config.sidebarWidth = nextWidth));
+  });
+
+  const handleMouseUp = useRef(() => {
+    startDragWidth.current = chatStore.config.sidebarWidth ?? 300;
+    window.removeEventListener("mousemove", handleMouseMove.current);
+    window.removeEventListener("mouseup", handleMouseUp.current);
+  });
+
+  const onDragMouseDown = (e: MouseEvent) => {
+    startX.current = e.clientX;
+
+    window.addEventListener("mousemove", handleMouseMove.current);
+    window.addEventListener("mouseup", handleMouseUp.current);
+  };
+
+  useEffect(() => {
+    if (isMobileScreen()) {
+      return;
+    }
+
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      `${limit(chatStore.config.sidebarWidth ?? 300)}px`,
+    );
+  }, [chatStore.config.sidebarWidth]);
+
+  return {
+    onDragMouseDown,
+  };
 }
 
 const useHasHydrated = () => {
@@ -100,6 +145,9 @@ function _Home() {
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
+
+  // drag side bar
+  const { onDragMouseDown } = useDragSideBar();
 
   useSwitchTheme();
 
@@ -174,6 +222,11 @@ function _Home() {
             />
           </div>
         </div>
+
+        <div
+          className={styles["sidebar-drag"]}
+          onMouseDown={(e) => onDragMouseDown(e as any)}
+        ></div>
       </div>
 
       <div className={styles["window-content"]}>

@@ -8,6 +8,8 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
 
+import LoadingIcon from "../icons/three-dots.svg";
+
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
 
@@ -27,49 +29,78 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-const useLazyLoad = (ref: RefObject<Element>): boolean => {
-  const [isIntersecting, setIntersecting] = useState<boolean>(false);
+export function Markdown(
+  props: {
+    content: string;
+    loading?: boolean;
+    fontSize?: number;
+    parentRef: RefObject<HTMLDivElement>;
+  } & React.DOMAttributes<HTMLDivElement>,
+) {
+  const mdRef = useRef<HTMLDivElement>(null);
+
+  const parent = props.parentRef.current;
+  const md = mdRef.current;
+  const rendered = useRef(true); // disable lazy loading for bad ux
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIntersecting(true);
-        observer.disconnect();
+    // to triggr rerender
+    setCounter(counter + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.loading]);
+
+  const inView =
+    rendered.current ||
+    (() => {
+      if (parent && md) {
+        const parentBounds = parent.getBoundingClientRect();
+        const mdBounds = md.getBoundingClientRect();
+        const isInRange = (x: number) =>
+          x <= parentBounds.bottom && x >= parentBounds.top;
+        const inView = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
+
+        if (inView) {
+          rendered.current = true;
+        }
+
+        return inView;
       }
-    });
+    })();
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+  const shouldLoading = props.loading || !inView;
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [ref]);
-
-  return isIntersecting;
-};
-
-export function Markdown(props: { content: string }) {
   return (
-    <ReactMarkdown
-      remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
-      rehypePlugins={[
-        RehypeKatex,
-        [
-          RehypeHighlight,
-          {
-            detect: false,
-            ignoreMissing: true,
-          },
-        ],
-      ]}
-      components={{
-        pre: PreCode,
-      }}
-      linkTarget={"_blank"}
+    <div
+      className="markdown-body"
+      style={{ fontSize: `${props.fontSize ?? 14}px` }}
+      ref={mdRef}
+      onContextMenu={props.onContextMenu}
+      onDoubleClickCapture={props.onDoubleClickCapture}
     >
-      {props.content}
-    </ReactMarkdown>
+      {shouldLoading ? (
+        <LoadingIcon />
+      ) : (
+        <ReactMarkdown
+          remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
+          rehypePlugins={[
+            RehypeKatex,
+            [
+              RehypeHighlight,
+              {
+                detect: false,
+                ignoreMissing: true,
+              },
+            ],
+          ]}
+          components={{
+            pre: PreCode,
+          }}
+          linkTarget={"_blank"}
+        >
+          {props.content}
+        </ReactMarkdown>
+      )}
+    </div>
   );
 }
