@@ -152,9 +152,9 @@ const tw: LocaleType = {
     Prompt: {
       History: (content: string) =>
         "這是 AI 與用戶的歷史聊天總結，作為前情提要：" + content,
-      Topic: "直接返回這句話的簡要主題，無須解釋，若無主題，請直接返回「閒聊」",
+      Topic: "Summarise the conversation in a short and concise eye-catching title that instantly conveys the main topic. Use as few words as possible. Use the language used in the enquiry, e.g. use English for English enquiry, use zh-hant for traditional chinese enquiry. Don't use quotation marks at the beginning and the end.",
       Summarize:
-        "簡要總結一下你和用戶的對話，作為後續的上下文提示 prompt，且字數控制在 200 字以內",
+        "Summarise the conversation in at most 250 tokens for continuing the conversation in future. Use the language used in the conversation, e.g. use English for English conversation, use zh-hant for traditional chinese conversation.",
     },
     ConfirmClearAll: "確認清除所有對話、設定數據？",
   },
