@@ -1,4 +1,12 @@
-export const OWNER = "Yidadaa";
+/*
+ * @Author: wangyonggang 135274859@qq.com
+ * @Date: 2023-04-14 11:35:04
+ * @LastEditors: wangyonggang 135274859@qq.com
+ * @LastEditTime: 2023-04-14 17:22:25
+ * @FilePath: \ChatGPT-Next-Web\app\constant.ts
+ * @Description:
+ */
+export const OWNER = "WANGYONGGANG";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;

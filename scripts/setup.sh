@@ -1,4 +1,12 @@
 #!/bin/bash
+###
+ # @Author: wangyonggang 135274859@qq.com
+ # @Date: 2023-04-14 11:35:04
+ # @LastEditors: wangyonggang 135274859@qq.com
+ # @LastEditTime: 2023-04-14 17:15:10
+ # @FilePath: \ChatGPT-Next-Web\scripts\setup.sh
+ # @Description: 
+### 
 
 # Check if running on a supported system
 case "$(uname -s)" in
@@ -51,7 +59,7 @@ if ! command -v node >/dev/null || ! command -v git >/dev/null || ! command -v y
 fi
 
 # Clone the repository and install dependencies
-git clone https://github.com/Yidadaa/ChatGPT-Next-Web
+git clone https://github.com/WANGYONGGANG/ChatGPT-Next-Web
 cd ChatGPT-Next-Web
 yarn install
 
