@@ -3,6 +3,7 @@ import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
+import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
@@ -442,16 +443,6 @@ export function Chat(props: {
     inputRef.current?.focus();
   };
 
-  const scrollInput = () => {
-    const dom = inputRef.current;
-    if (!dom) return;
-    const paddingBottomNum: number = parseInt(
-      window.getComputedStyle(dom).paddingBottom,
-      10,
-    );
-    dom.scrollTop = dom.scrollHeight - dom.offsetHeight + paddingBottomNum;
-  };
-
   // auto grow input
   const [inputRows, setInputRows] = useState(2);
   const measure = useDebouncedCallback(
@@ -476,7 +467,6 @@ export function Chat(props: {
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
-    scrollInput();
     setUserInput(text);
     const n = text.trim().length;
 
@@ -600,6 +590,13 @@ export function Chat(props: {
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
+  const renameSession = () => {
+    const newTopic = prompt(Locale.Chat.Rename, session.topic);
+    if (newTopic && newTopic !== session.topic) {
+      chatStore.updateCurrentSession((session) => (session.topic = newTopic!));
+    }
+  };
+
   // Auto focus
   useEffect(() => {
     if (props.sideBarShowing && isMobileScreen()) return;
@@ -613,14 +610,7 @@ export function Chat(props: {
         <div className={styles["window-header-title"]}>
           <div
             className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
-            onClickCapture={() => {
-              const newTopic = prompt(Locale.Chat.Rename, session.topic);
-              if (newTopic && newTopic !== session.topic) {
-                chatStore.updateCurrentSession(
-                  (session) => (session.topic = newTopic!),
-                );
-              }
-            }}
+            onClickCapture={renameSession}
           >
             {session.topic}
           </div>
@@ -639,12 +629,9 @@ export function Chat(props: {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<BrainIcon />}
+              icon={<RenameIcon />}
               bordered
-              title={Locale.Chat.Actions.CompressedHistory}
-              onClick={() => {
-                setShowPromptModal(true);
-              }}
+              onClick={renameSession}
             />
           </div>
           <div className={styles["window-action-button"]}>
