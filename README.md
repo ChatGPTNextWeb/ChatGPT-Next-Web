@@ -97,6 +97,7 @@ We recommend that you follow the steps below to re-deploy:
 - Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-cn.md).
 
 ### Enable Automatic Updates
+
 After forking the project, due to the limitations imposed by Github, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
 
 ![Automatic Updates](./docs/images/enable-actions.jpg)
@@ -104,6 +105,7 @@ After forking the project, due to the limitations imposed by Github, you need to
 ![Enable Automatic Updates](./docs/images/enable-actions-sync.jpg)
 
 ### Manually Updating Code
+
 If you want to update instantly, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
 
 You can star or watch this project or follow author to get release notifictions in time.
@@ -134,17 +136,11 @@ Access passsword, separated by comma.
 
 ### `BASE_URL` (optional)
 
-> Default: `api.openai.com`
+> Default: `https://api.openai.com`
+
+> Examples: `http://your-openai-proxy.com`
 
 Override openai api request base url.
-
-### `PROTOCOL` (optional)
-
-> Default: `https`
-
-> Values: `http` | `https`
-
-Override openai api request protocol.
 
 ## Development
 
