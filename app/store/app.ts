@@ -138,19 +138,19 @@ const DEFAULT_CONFIG: ChatConfig = {
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
-  fontSize: 14,
+  fontSize: 16,
   theme: Theme.Auto as Theme,
   tightBorder: false,
-  sendPreviewBubble: true,
+  sendPreviewBubble: false,
   sidebarWidth: 300,
 
   disablePromptHint: false,
 
   modelConfig: {
-    model: "gpt-3.5-turbo",
-    temperature: 1,
-    max_tokens: 2000,
-    presence_penalty: 0,
+    model: "gpt-4",
+    temperature: 0.7,
+    max_tokens: 8000,
+    presence_penalty: 0.5,
   },
 };
 
