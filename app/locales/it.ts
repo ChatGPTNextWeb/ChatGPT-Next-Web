@@ -45,12 +45,12 @@ const it: LocaleType = {
     Send: "Send Memory",
     Reset: "Reset Session",
     ResetConfirm:
-      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
+      "Ripristinare cancellerà la conversazione corrente e la cronologia di memoria. Sei sicuro che vuoi riavviare?",
   },
   Home: {
     NewChat: "Nuova Chat",
     DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
-    DeleteToast: "Chat Deleted",
+    DeleteToast: "Chat Cancellata",
     Revert: "Revert",
   },
   Settings: {
@@ -93,9 +93,9 @@ const it: LocaleType = {
       GoToUpdate: "Aggiorna",
     },
     SendKey: "Tasto invia",
-    Theme: "tema",
-    TightBorder: "Bordi stretti",
-    SendPreviewBubble: "Invia l'anteprima della bolla",
+    Theme: "Tema",
+    TightBorder: "Schermo intero",
+    SendPreviewBubble: "Anteprima di digitazione",
     Prompt: {
       Disable: {
         Title: "Disabilita l'auto completamento",
@@ -116,7 +116,7 @@ const it: LocaleType = {
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
     Token: {
-      Title: "Chiave API",
+      Title: "API Key",
       SubTitle:
         "Utilizzare la chiave per ignorare il limite del codice di accesso",
       Placeholder: "OpenAI API Key",
@@ -124,7 +124,7 @@ const it: LocaleType = {
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
-        return `Usato in questo mese $${used}, subscription $${total}`;
+        return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
