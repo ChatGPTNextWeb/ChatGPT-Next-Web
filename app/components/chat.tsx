@@ -336,6 +336,13 @@ export function Chat(props: {
   showSideBar?: () => void;
   sideBarShowing?: boolean;
 }) {
+  const [createNewSession, currentIndex, removeSession] = useChatStore(
+    (state) => [
+      state.newSession,
+      state.currentSessionIndex,
+      state.removeSession,
+    ],
+  );
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -571,16 +578,18 @@ export function Chat(props: {
               onClick={props?.showSideBar}
             />
           </div>
-          <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={<BrainIcon />}
-              bordered
-              title={Locale.Chat.Actions.CompressedHistory}
-              onClick={() => {
-                setShowPromptModal(true);
-              }}
-            />
-          </div>
+          {!isMobileScreen() && (
+            <div className={styles["window-action-button"]}>
+              <IconButton
+                icon={<BrainIcon />}
+                bordered
+                title={Locale.Chat.Actions.CompressedHistory}
+                onClick={() => {
+                  setShowPromptModal(true);
+                }}
+              />
+            </div>
+          )}
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ExportIcon />}
@@ -594,6 +603,18 @@ export function Chat(props: {
               }}
             />
           </div>
+          {isMobileScreen() && ( // mobile only 显示新增聊天
+            <div className={styles["window-action-button"]}>
+              <IconButton
+                icon={<AddIcon />}
+                text={Locale.Home.NewChat}
+                onClick={() => {
+                  createNewSession();
+                }}
+                bordered
+              />
+            </div>
+          )}
           {!isMobileScreen() && (
             <div className={styles["window-action-button"]}>
               <IconButton

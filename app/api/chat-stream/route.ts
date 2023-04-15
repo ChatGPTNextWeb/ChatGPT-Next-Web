@@ -1,7 +1,7 @@
 import { createParser } from "eventsource-parser";
 import { NextRequest } from "next/server";
 import { requestOpenai } from "../common";
-import clientPromise from "../../db/mongdb";
+import Atlas from "atlas-fetch-data-api";
 
 async function createStream(req: NextRequest) {
   const encoder = new TextEncoder();
@@ -51,31 +51,39 @@ async function createStream(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const accessCode = req.headers.get("access-code");
   try {
-    // // 使用 clientPromise 连接到 MongoDB 数据库
-    // const client = await clientPromise;
-    // // 选择数据库和集合
-    // const db = client.db("chat_db");
-    // const usersCollection = db.collection("users");
-    // // 查询用户数据
-    // const user = await usersCollection.findOne({ key: accessCode });
-    // console.log(user, accessCode);
-    // const tips =
-    //   "您的链接授权已过期，为了避免恶意盗刷，\n 请关注微信公众号【coder思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)";
-    // if (!user) {
-    //   return new Response(tips);
-    // }
-    // console.log("compare: ");
-    // console.log(
-    //   user["expire"] < new Date().getTime(),
-    //   user["expire"],
-    //   new Date().getTime(),
-    // );
-    // if (user["expire"] < new Date().getTime()) {
-    //   // 判断用户是否过期
-    //   return new Response(tips);
-    // }
+    // MongoDB init by URL Endpoint
+    const atlasAPI = new Atlas({
+      dataSource: "Cluster0",
+      database: "chat_db",
+      apiKey:
+        "8uOObGDRUqxdzfFzk91CHMq1UcUbqwQvnE6XjPQZe2Nv1xEXRBUi3vakKBWg7nbH",
+      apiUrl: "https://data.mongodb-api.com/app/data-ffyyc/endpoint/data/v1",
+    });
 
-    // // 创建查询条件
+    let userRes = await atlasAPI.findOne({
+      collection: "users",
+      filter: { key: accessCode },
+    });
+    const tips =
+      "您的链接授权已过期，为了避免恶意盗刷，\n 请关注微信公众号【code思维】\n回复关键词：`ai`  获取授权链接 \n ![](/wx.png)";
+
+    if (!userRes || !userRes.document) {
+      return new Response(tips);
+    }
+
+    const user = userRes.document;
+
+    console.log(
+      new Date(user["expire"]).getTime() < new Date().getTime(),
+      user["expire"],
+      new Date().getTime(),
+    );
+    if (new Date(user["expire"]).getTime() < new Date().getTime()) {
+      // 判断用户是否过期
+      return new Response(tips);
+    }
+
+    // 创建查询条件
     // // 计算24小时前的时间戳
     // const currentTime = new Date();
     // const startTime = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
