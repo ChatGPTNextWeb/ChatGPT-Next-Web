@@ -31,3 +31,10 @@ jobs:
 
           # Set test_mode true to run tests instead of the true action!!
           test_mode: false
+
+      - name: Sync check
+        if: failure()
+        run: |
+          echo "::error::由于权限不足，导致同步失败（这是预期的行为），请前往仓库首页手动执行[Sync fork]。"
+          echo "::error::Due to insufficient permissions, synchronization failed (as expected). Please go to the repository homepage and manually perform [Sync fork]."
+          exit 1

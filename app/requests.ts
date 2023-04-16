@@ -2,7 +2,7 @@ import type { ChatRequest, ChatResponse } from "./api/openai/typing";
 import { Message, ModelConfig, useAccessStore, useChatStore } from "./store";
 import { showToast } from "./components/ui-lib";
 
-const TIME_OUT_MS = 30000;
+const TIME_OUT_MS = 60000;
 
 const makeRequestParam = (
   messages: Message[],
@@ -167,15 +167,14 @@ export async function requestChatStream(
       options?.onController?.(controller);
 
       while (true) {
-        // handle time out, will stop if no response in 10 secs
         const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
-      
+
         if (!content || !content.value) {
           break;
         }
-      
+
         const text = decoder.decode(content.value, { stream: true });
         responseText += text;
 
@@ -189,8 +188,8 @@ export async function requestChatStream(
 
       finish();
     } else if (res.status === 401) {
-      console.error("Anauthorized");
-      options?.onError(new Error("Anauthorized"), res.status);
+      console.error("Unauthorized");
+      options?.onError(new Error("Unauthorized"), res.status);
     } else {
       console.error("Stream Error", res.body);
       options?.onError(new Error("Stream Error"), res.status);
@@ -233,6 +232,14 @@ export const ControllerPool = {
     const key = this.key(sessionIndex, messageId);
     const controller = this.controllers[key];
     controller?.abort();
+  },
+
+  stopAll() {
+    Object.values(this.controllers).forEach((v) => v.abort());
+  },
+
+  hasPending() {
+    return Object.values(this.controllers).length > 0;
   },
 
   remove(sessionIndex: number, messageId: number) {
