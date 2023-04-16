@@ -386,6 +386,7 @@ export const useChatStore = create<ChatStore>()(
         const botMessage: Message = createMessage({
           role: "assistant",
           streaming: true,
+          id: userMessage.id! + 1,
         });
 
         // get recent messages
