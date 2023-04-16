@@ -14,7 +14,7 @@ const de: LocaleType = {
     SubTitle: (count: number) => `${count} Nachrichten mit ChatGPT`,
     Actions: {
       ChatList: "Zur Chat-Liste gehen",
-      CompressedHistory: "Komprimierter VerlaufsGedächtnis-Prompt",
+      CompressedHistory: "Komprimierter Gedächtnis-Prompt",
       Export: "Alle Nachrichten als Markdown exportieren",
       Copy: "Kopieren",
       Stop: "Stop",
@@ -23,9 +23,9 @@ const de: LocaleType = {
     Rename: "Chat umbenennen",
     Typing: "Tippen...",
     Input: (submitKey: string) => {
-      var inputHints = `${submitKey} zum Senden`;
+      var inputHints = `${submitKey} um zu Senden`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", Umschalt + Eingabe zum Zeilenumbruch";
+        inputHints += ", Umschalt + Eingabe für Zeilenumbruch";
       }
       return inputHints + ", / zum Durchsuchen von Prompts";
     },
@@ -93,9 +93,9 @@ const de: LocaleType = {
       FoundUpdate: (x: string) => `Neue Version gefunden: ${x}`,
       GoToUpdate: "Aktualisieren",
     },
-    SendKey: "Sendetaste",
-    Theme: "Thema",
-    TightBorder: "Enge Grenze",
+    SendKey: "Senden-Taste",
+    Theme: "Erscheinungsbild",
+    TightBorder: "Enger Rahmen",
     SendPreviewBubble: "Vorschau-Bubble senden",
     Prompt: {
       Disable: {
@@ -114,18 +114,18 @@ const de: LocaleType = {
     CompressThreshold: {
       Title: "Schwellenwert für Verlaufskomprimierung",
       SubTitle:
-        "Wird komprimiert, wenn die Länge der unkomprimierten Nachrichten den Wert überschreitet",
+        "Komprimierung, wenn die Länge der unkomprimierten Nachrichten den Wert überschreitet",
     },
     Token: {
       Title: "API-Schlüssel",
       SubTitle:
-        "Verwenden Sie Ihren Schlüssel, um das Zugangscodelimit zu ignorieren",
+        "Verwenden Sie Ihren Schlüssel, um das Zugangscode-Limit zu ignorieren",
       Placeholder: "OpenAI API-Schlüssel",
     },
     Usage: {
       Title: "Kontostand",
       SubTitle(used: any, total: any) {
-        return `Diesen Monat verwendet $${used}, Abonnement $${total}`;
+        return `Diesen Monat ausgegeben $${used}, Abonnement $${total}`;
       },
       IsChecking: "Wird überprüft...",
       Check: "Erneut prüfen",
@@ -174,8 +174,8 @@ const de: LocaleType = {
       "Kopieren fehlgeschlagen, bitte geben Sie die Berechtigung zum Zugriff auf die Zwischenablage frei",
   },
   Context: {
-    Toast: (x: any) => `Mit ${x} kontextbezogene Prompts`,
-    Edit: "Kontextbezogene und Gedächtnis-Prompts",
+    Toast: (x: any) => `Mit ${x} Kontext-Prompts`,
+    Edit: "Kontext- und Gedächtnis-Prompts",
     Add: "Hinzufügen",
   },
 };
