@@ -536,21 +536,45 @@ export function Chat(props: {
     }
   };
 
-  const onResend = (botIndex: number) => {
+  const findLastUesrIndex = (messageId: number) => {
     // find last user input message and resend
-    for (let i = botIndex; i >= 0; i -= 1) {
-      if (messages[i].role === "user") {
-        setIsLoading(true);
-        chatStore
-          .onUserInput(messages[i].content)
-          .then(() => setIsLoading(false));
-        chatStore.updateCurrentSession((session) =>
-          session.messages.splice(i, 2),
-        );
-        inputRef.current?.focus();
-        return;
+    let lastUserMessageIndex: number | null = null;
+    for (let i = 0; i < session.messages.length; i += 1) {
+      const message = session.messages[i];
+      if (message.id === messageId) {
+        break;
+      }
+      if (message.role === "user") {
+        lastUserMessageIndex = i;
       }
     }
+
+    return lastUserMessageIndex;
+  };
+
+  const deleteMessage = (userIndex: number) => {
+    chatStore.updateCurrentSession((session) =>
+      session.messages.splice(userIndex, 2),
+    );
+  };
+
+  const onDelete = (botMessageId: number) => {
+    const userIndex = findLastUesrIndex(botMessageId);
+    if (userIndex === null) return;
+    deleteMessage(userIndex);
+  };
+
+  const onResend = (botMessageId: number) => {
+    // find last user input message and resend
+    const userIndex = findLastUesrIndex(botMessageId);
+    if (userIndex === null) return;
+
+    setIsLoading(true);
+    chatStore
+      .onUserInput(session.messages[userIndex].content)
+      .then(() => setIsLoading(false));
+    deleteMessage(userIndex);
+    inputRef.current?.focus();
   };
 
   const config = useChatStore((state) => state.config);
@@ -722,12 +746,20 @@ export function Chat(props: {
                             {Locale.Chat.Actions.Stop}
                           </div>
                         ) : (
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onResend(i)}
-                          >
-                            {Locale.Chat.Actions.Retry}
-                          </div>
+                          <>
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onDelete(message.id ?? i)}
+                            >
+                              {Locale.Chat.Actions.Delete}
+                            </div>
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onResend(message.id ?? i)}
+                            >
+                              {Locale.Chat.Actions.Retry}
+                            </div>
+                          </>
                         )}
 
                         <div
