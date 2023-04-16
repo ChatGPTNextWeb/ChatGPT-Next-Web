@@ -30,7 +30,7 @@ jobs:
           target_repo_token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set
 
           # Set test_mode true to run tests instead of the true action!!
-          test_mode: false
+          test_mode: true
 
       - name: Sync check
         if: failure()
