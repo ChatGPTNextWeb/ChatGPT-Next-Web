@@ -116,10 +116,9 @@ export const usePromptStore = create<PromptStore>()(
               })
               .concat([...(state?.prompts?.values() ?? [])]);
 
-            const allPromptsForSearch = builtinPrompts.reduce(
-              (pre, cur) => pre.concat(cur),
-              [],
-            );
+            const allPromptsForSearch = builtinPrompts
+              .reduce((pre, cur) => pre.concat(cur), [])
+              .filter((v) => !!v.title && !!v.content);
             SearchService.count.builtin = res.en.length + res.cn.length;
             SearchService.init(allPromptsForSearch);
           });
