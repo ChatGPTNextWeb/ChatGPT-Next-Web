@@ -18,6 +18,7 @@ const jp = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Delete: "Delete",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -177,7 +178,5 @@ const jp = {
     Add: "新規追加",
   },
 };
-
-export type LocaleType = typeof jp;
 
 export default jp;
