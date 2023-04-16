@@ -8,5 +8,5 @@ export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
 
-export const APP_NAME = "追求进步";
-export const APP_SUB_NAME = "Keeping pace with the AI era.";
+export const APP_TITLE = "追求进步";
+export const APP_SUB_TITLE = "Keeping pace with the AI era.";

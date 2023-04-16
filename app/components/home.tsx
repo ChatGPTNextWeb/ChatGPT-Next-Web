@@ -25,7 +25,7 @@ import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
 
-import { APP_NAME, APP_SUB_NAME } from "../constant";
+import { APP_TITLE, APP_SUB_TITLE } from "../constant";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -170,10 +170,10 @@ function _Home() {
       >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>
-            { APP_NAME }
+            { APP_TITLE }
           </div>
           <div className={styles["sidebar-sub-title"]}>
-            { APP_SUB_NAME }
+            { APP_SUB_TITLE }
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
