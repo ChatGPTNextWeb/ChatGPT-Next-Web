@@ -158,6 +158,38 @@ function _Home() {
 
   useSwitchTheme();
 
+  // the two useEffects are for enable animation of the sidebar collapse in mobile screen
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const [sidebarStyle, setSidebarStyles] = useState({});
+  useEffect(() => {
+    if (sidebarCollapse && isMobileScreen()) {
+      setTimeout(() => {
+        setSidebarStyles({
+          display: "none",
+        });
+      }, 100);
+    } else {
+      setTimeout(() => {
+        setSidebarStyles({
+          display: "flex",
+        });
+      }, 100);
+    }
+  }, [sidebarCollapse, width]);
+
   if (loading) {
     return <Loading />;
   }
@@ -171,6 +203,7 @@ function _Home() {
       }`}
     >
       <div
+        style={{ ...sidebarStyle }}
         className={
           sidebarCollapse ? styles["sidebar-collapse"] : styles["sidebar"]
         }
@@ -248,21 +281,23 @@ function _Home() {
           <div className={styles["sidebar-tail"]}>
             <div className={styles["sidebar-actions"]}>
               <div className={styles["sidebar-action"]}>
-                {sidebarCollapse ? (
-                  <IconButton
-                    icon={<RightIcon />}
-                    onClick={() => {
-                      setSideBarCollapse(false);
-                    }}
-                  />
-                ) : (
-                  <IconButton
-                    icon={<LeftIcon />}
-                    onClick={() => {
-                      setSideBarCollapse(true);
-                    }}
-                  />
-                )}
+                {!isMobileScreen() ? (
+                  sidebarCollapse ? (
+                    <IconButton
+                      icon={<RightIcon />}
+                      onClick={() => {
+                        setSideBarCollapse(false);
+                      }}
+                    />
+                  ) : (
+                    <IconButton
+                      icon={<LeftIcon />}
+                      onClick={() => {
+                        setSideBarCollapse(true);
+                      }}
+                    />
+                  )
+                ) : null}
               </div>
               <div className={styles["sidebar-action"]}>
                 <IconButton

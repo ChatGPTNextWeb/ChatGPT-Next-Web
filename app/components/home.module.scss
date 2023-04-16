@@ -48,6 +48,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
+  transition: width ease 0.1s;
 }
 .sidebar {
   top: 0;
@@ -108,16 +109,26 @@
     border-radius: 0;
   }
 
+  @keyframes slideRight {
+    from {
+      left: -100%;
+    }
+    to {
+      left: 0%;
+    }
+  }
+
   .sidebar {
     position: absolute;
-    //left: -100%;
     z-index: 1000;
     height: var(--full-height);
-    transition: all ease 0.3s;
+    transition: all ease 0.1s;
     box-shadow: none;
+    animation: slideRight 0.1s forwards;
   }
   .sidebar-collapse {
-    display: none;
+    animation: slideRight 0.1s backwards;
+    //display: none;
   }
 
   .window-content-collapse {
