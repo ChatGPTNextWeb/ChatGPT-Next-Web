@@ -14,7 +14,7 @@ const de: LocaleType = {
     SubTitle: (count: number) => `${count} Nachrichten mit ChatGPT`,
     Actions: {
       ChatList: "Zur Chat-Liste gehen",
-      CompressedHistory: "Komprimierter VerlaufsGedächtnis-Prompt",
+      CompressedHistory: "Komprimierter Gedächtnis-Prompt",
       Export: "Alle Nachrichten als Markdown exportieren",
       Copy: "Kopieren",
       Stop: "Stop",
