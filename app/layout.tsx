@@ -44,7 +44,7 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-        <!-- Google tag (gtag.js) -->
+        {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-1FKGPYXXMT"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
