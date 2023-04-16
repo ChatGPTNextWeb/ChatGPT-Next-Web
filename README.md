@@ -3,7 +3,7 @@
 
 <h1 align="center">ChatGPT Next Web</h1>
 
-[简体中文] / English(./README_English.md)
+简体中文 / [English](./README_English.md)
 
 一键免费部署你的私人 ChatGPT 网页应用。
 
