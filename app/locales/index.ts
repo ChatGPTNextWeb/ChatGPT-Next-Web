@@ -5,10 +5,20 @@ import ES from "./es";
 import IT from "./it";
 import TR from "./tr";
 import JP from "./jp";
+import DE from "./de";
 
 export type { LocaleType } from "./cn";
 
-export const AllLangs = ["en", "cn", "tw", "es", "it", "tr", "jp"] as const;
+export const AllLangs = [
+  "en",
+  "cn",
+  "tw",
+  "es",
+  "it",
+  "tr",
+  "jp",
+  "de",
+] as const;
 type Lang = (typeof AllLangs)[number];
 
 const LANG_KEY = "lang";
@@ -44,21 +54,13 @@ export function getLang(): Lang {
 
   const lang = getLanguage();
 
-  if (lang.includes("zh") || lang.includes("cn")) {
-    return "cn";
-  } else if (lang.includes("tw")) {
-    return "tw";
-  } else if (lang.includes("es")) {
-    return "es";
-  } else if (lang.includes("it")) {
-    return "it";
-  } else if (lang.includes("tr")) {
-    return "tr";
-  } else if (lang.includes("jp")) {
-    return "jp";
-  } else {
-    return "en";
+  for (const option of AllLangs) {
+    if (lang.includes(option)) {
+      return option;
+    }
   }
+
+  return "en";
 }
 
 export function changeLang(lang: Lang) {
@@ -66,6 +68,13 @@ export function changeLang(lang: Lang) {
   location.reload();
 }
 
-export default { en: EN, cn: CN, tw: TW, es: ES, it: IT, tr: TR, jp: JP }[
-  getLang()
-];
+export default {
+  en: EN,
+  cn: CN,
+  tw: TW,
+  es: ES,
+  it: IT,
+  tr: TR,
+  jp: JP,
+  de: DE,
+}[getLang()] as typeof CN;
