@@ -1,5 +1,6 @@
 import DeleteIcon from "../icons/delete.svg";
 import styles from "./home.module.scss";
+import BotIcon from "../icons/bot.svg";
 import {
   DragDropContext,
   Droppable,
@@ -22,7 +23,38 @@ export function ChatItem(props: {
   id: number;
   index: number;
 }) {
-  return (
+  const [sidebarCollapse] = useChatStore((state) => [state.sidebarCollapse]);
+  return sidebarCollapse ? (
+    <Draggable draggableId={`${props.id}`} index={props.index}>
+      {(provided) => (
+        <div
+          className={`${styles["chat-item-collapse"]} ${
+            props.selected && styles["chat-item-selected"]
+          }`}
+          onClick={props.onClick}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <div className={styles["chat-item-info-collapse"]}>
+            {Locale.ChatItem.ChatItemCount(props.count).replace(/[^0-9]/g, "")
+              .length <= 3
+              ? Locale.ChatItem.ChatItemCount(props.count).replace(
+                  /[^0-9]/g,
+                  "",
+                )
+              : ":)"}
+          </div>
+          <div
+            className={styles["chat-item-delete-collapse"]}
+            onClick={props.onDelete}
+          >
+            <DeleteIcon />
+          </div>
+        </div>
+      )}
+    </Draggable>
+  ) : (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
@@ -51,14 +83,21 @@ export function ChatItem(props: {
 }
 
 export function ChatList() {
-  const [sessions, selectedIndex, selectSession, removeSession, moveSession] =
-    useChatStore((state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.removeSession,
-      state.moveSession,
-    ]);
+  const [
+    sidebarCollapse,
+    sessions,
+    selectedIndex,
+    selectSession,
+    removeSession,
+    moveSession,
+  ] = useChatStore((state) => [
+    state.sidebarCollapse,
+    state.sessions,
+    state.currentSessionIndex,
+    state.selectSession,
+    state.removeSession,
+    state.moveSession,
+  ]);
   const chatStore = useChatStore();
 
   const onDragEnd: OnDragEndResponder = (result) => {
@@ -78,31 +117,39 @@ export function ChatList() {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="chat-list">
-        {(provided) => (
-          <div
-            className={styles["chat-list"]}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {sessions.map((item, i) => (
-              <ChatItem
-                title={item.topic}
-                time={item.lastUpdate}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
-                index={i}
-                selected={i === selectedIndex}
-                onClick={() => selectSession(i)}
-                onDelete={() => chatStore.deleteSession(i)}
-              />
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <>
+      {sidebarCollapse && (
+        <div className={styles["gpt-logo-collapse"]}>
+          <BotIcon />
+        </div>
+      )}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="chat-list">
+          {(provided: any) => (
+            <div
+              className={styles["chat-list"]}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {sessions.map((item, i) => (
+                <ChatItem
+                  title={item.topic}
+                  time={item.lastUpdate}
+                  count={item.messages.length}
+                  key={item.id}
+                  id={item.id}
+                  index={i}
+                  selected={i === selectedIndex}
+                  onClick={() => selectSession(i)}
+                  onDelete={chatStore.deleteSession}
+                />
+              ))}
+
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </>
   );
 }

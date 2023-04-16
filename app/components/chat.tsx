@@ -400,17 +400,17 @@ export function ChatActions(props: {
   );
 }
 
-export function Chat(props: {
-  showSideBar?: () => void;
-  sideBarShowing?: boolean;
-}) {
+export function Chat() {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
-  const [session, sessionIndex] = useChatStore((state) => [
-    state.currentSession(),
-    state.currentSessionIndex,
-  ]);
+  const [sidebarCollapse, setSideBarCollapse, session, sessionIndex] =
+    useChatStore((state) => [
+      state.sidebarCollapse,
+      state.setSidebarCollapse,
+      state.currentSession(),
+      state.currentSessionIndex,
+    ]);
   const fontSize = useChatStore((state) => state.config.fontSize);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -599,7 +599,7 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
-    if (props.sideBarShowing && isMobileScreen()) return;
+    if (isMobileScreen() && sidebarCollapse) return;
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -624,7 +624,9 @@ export function Chat(props: {
               icon={<ReturnIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
-              onClick={props?.showSideBar}
+              onClick={() => {
+                setSideBarCollapse(!sidebarCollapse);
+              }}
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -775,7 +777,7 @@ export function Chat(props: {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
             }}
-            autoFocus={!props?.sideBarShowing}
+            autoFocus={sidebarCollapse}
             rows={inputRows}
           />
           <IconButton

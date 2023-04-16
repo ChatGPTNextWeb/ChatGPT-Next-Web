@@ -227,6 +227,8 @@ interface ChatStore {
   resetConfig: () => void;
   updateConfig: (updater: (config: ChatConfig) => void) => void;
   clearAllData: () => void;
+  sidebarCollapse: boolean;
+  setSidebarCollapse: (value: boolean) => void;
 }
 
 function countMessages(msgs: Message[]) {
@@ -584,6 +586,13 @@ export const useChatStore = create<ChatStore>()(
           localStorage.clear();
           location.reload();
         }
+      },
+
+      sidebarCollapse: false,
+      setSidebarCollapse(value) {
+        set({
+          sidebarCollapse: value,
+        });
       },
     }),
     {

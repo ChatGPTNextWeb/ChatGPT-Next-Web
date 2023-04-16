@@ -16,6 +16,9 @@ import AddIcon from "../icons/add.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
+import LeftIcon from "../icons/left.svg";
+import RightIcon from "../icons/right.svg";
+
 import { useChatStore } from "../store";
 import { getCSSVar, isMobileScreen } from "../utils";
 import Locale from "../locales";
@@ -131,17 +134,21 @@ const useHasHydrated = () => {
 };
 
 function _Home() {
-  const [createNewSession, currentIndex, removeSession] = useChatStore(
-    (state) => [
-      state.newSession,
-      state.currentSessionIndex,
-      state.removeSession,
-    ],
-  );
+  const [
+    sidebarCollapse,
+    setSideBarCollapse,
+    createNewSession,
+    currentIndex,
+    removeSession,
+  ] = useChatStore((state) => [
+    state.sidebarCollapse,
+    state.setSidebarCollapse,
+    state.newSession,
+    state.currentSessionIndex,
+    state.removeSession,
+  ]);
   const chatStore = useChatStore();
   const loading = !useHasHydrated();
-  const [showSideBar, setShowSideBar] = useState(true);
-
   // setting
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
@@ -164,85 +171,163 @@ function _Home() {
       }`}
     >
       <div
-        className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
+        className={
+          sidebarCollapse ? styles["sidebar-collapse"] : styles["sidebar"]
+        }
       >
-        <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-          <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
+        {!sidebarCollapse && (
+          <div className={styles["sidebar-header"]}>
+            <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+            <div className={styles["sidebar-sub-title"]}>
+              Build your own AI assistant.
+            </div>
+            <div className={styles["sidebar-logo"]}>
+              <ChatGptIcon />
+            </div>
           </div>
-          <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
-          </div>
-        </div>
+        )}
 
         <div
           className={styles["sidebar-body"]}
           onClick={() => {
             setOpenSettings(false);
-            setShowSideBar(false);
+            if (window.innerWidth < 768) {
+              setSideBarCollapse(true);
+            }
           }}
         >
           <ChatList />
         </div>
-
-        <div className={styles["sidebar-tail"]}>
-          <div className={styles["sidebar-actions"]}>
-            <div className={styles["sidebar-action"] + " " + styles.mobile}>
-              <IconButton
-                icon={<CloseIcon />}
-                onClick={chatStore.deleteSession}
-              />
+        {sidebarCollapse ? (
+          <div className={styles["sidebar-tail-collapse"]}>
+            <div className={styles["sidebar-actions-collapse"]}>
+              <div className={styles["sidebar-action-collapse"]}>
+                <IconButton
+                  icon={<RightIcon />}
+                  onClick={() => {
+                    setSideBarCollapse(false);
+                  }}
+                />
+              </div>
+              <div className={styles["sidebar-action-collapse"]}>
+                <IconButton
+                  icon={<CloseIcon />}
+                  onClick={chatStore.deleteSession}
+                />
+              </div>
+              <div className={styles["sidebar-action-collapse"]}>
+                <IconButton
+                  icon={<SettingsIcon />}
+                  onClick={() => {
+                    setOpenSettings(true);
+                    setSideBarCollapse(true);
+                  }}
+                  shadow
+                />
+              </div>
+              <div className={styles["sidebar-action-collapse"]}>
+                <a href={REPO_URL} target="_blank">
+                  <IconButton icon={<GithubIcon />} shadow />
+                </a>
+              </div>
             </div>
-            <div className={styles["sidebar-action"]}>
+            <div>
               <IconButton
-                icon={<SettingsIcon />}
+                className={styles["sidebar-addIcon-collapse"]}
+                icon={<AddIcon />}
+                text={""}
                 onClick={() => {
-                  setOpenSettings(true);
-                  setShowSideBar(false);
+                  createNewSession();
+                  setSideBarCollapse(true);
                 }}
                 shadow
               />
             </div>
-            <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} shadow />
-              </a>
+          </div>
+        ) : (
+          <div className={styles["sidebar-tail"]}>
+            <div className={styles["sidebar-actions"]}>
+              <div className={styles["sidebar-action"]}>
+                {sidebarCollapse ? (
+                  <IconButton
+                    icon={<RightIcon />}
+                    onClick={() => {
+                      setSideBarCollapse(false);
+                    }}
+                  />
+                ) : (
+                  <IconButton
+                    icon={<LeftIcon />}
+                    onClick={() => {
+                      setSideBarCollapse(true);
+                    }}
+                  />
+                )}
+              </div>
+              <div className={styles["sidebar-action"]}>
+                <IconButton
+                  icon={<CloseIcon />}
+                  onClick={chatStore.deleteSession}
+                />
+              </div>
+              <div className={styles["sidebar-action"]}>
+                <IconButton
+                  icon={<SettingsIcon />}
+                  onClick={() => {
+                    setOpenSettings(true);
+                    setSideBarCollapse(true);
+                  }}
+                  shadow
+                />
+              </div>
+              <div className={styles["sidebar-action"]}>
+                <a href={REPO_URL} target="_blank">
+                  <IconButton icon={<GithubIcon />} shadow />
+                </a>
+              </div>
+            </div>
+            <div>
+              <IconButton
+                icon={<AddIcon />}
+                // Auto hide Text 'Next Chat' when sidebar width shrinks
+                text={
+                  !isMobileScreen()
+                    ? chatStore.config.sidebarWidth <= 340
+                      ? ""
+                      : Locale.Home.NewChat
+                    : Locale.Home.NewChat
+                }
+                onClick={() => {
+                  createNewSession();
+                  setSideBarCollapse(true);
+                }}
+                shadow
+              />
             </div>
           </div>
-          <div>
-            <IconButton
-              icon={<AddIcon />}
-              text={Locale.Home.NewChat}
-              onClick={() => {
-                createNewSession();
-                setShowSideBar(false);
-              }}
-              shadow
-            />
-          </div>
-        </div>
+        )}
 
         <div
           className={styles["sidebar-drag"]}
           onMouseDown={(e) => onDragMouseDown(e as any)}
         ></div>
       </div>
-
-      <div className={styles["window-content"]}>
+      <div
+        className={
+          sidebarCollapse
+            ? styles["window-content-collapse"]
+            : styles["window-content"]
+        }
+      >
         {openSettings ? (
           <Settings
             closeSettings={() => {
               setOpenSettings(false);
-              setShowSideBar(true);
+              setSideBarCollapse(false);
             }}
           />
         ) : (
-          <Chat
-            key="chat"
-            showSideBar={() => setShowSideBar(true)}
-            sideBarShowing={showSideBar}
-          />
+          <Chat key="chat" />
         )}
       </div>
     </div>
