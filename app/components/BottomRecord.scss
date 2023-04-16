@@ -1,0 +1,25 @@
+.bottom-record {
+    display: none; /* 默认情况下不显示 */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f5f5f5;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+
+@media (min-width: 768px) {
+    display: block; /* 在宽度大于等于768px时显示 */
+}
+}
+a {
+    text-decoration: none;
+    color: #303030;
+
+    &:hover {
+        text-decoration: none; // 鼠标悬停时也取消下划线
+    }
+}
+
