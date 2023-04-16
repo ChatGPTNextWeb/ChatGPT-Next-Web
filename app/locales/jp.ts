@@ -76,6 +76,7 @@ const jp = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "アバター",
