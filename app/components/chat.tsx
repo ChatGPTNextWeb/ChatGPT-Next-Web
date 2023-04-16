@@ -19,6 +19,7 @@ import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
+import StopIcon from "../icons/pause.svg";
 
 import {
   Message,
@@ -38,7 +39,6 @@ import {
   isMobileScreen,
   selectOrCopy,
   autoGrowTextArea,
-  getCSSVar,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -355,8 +355,8 @@ export function ChatActions(props: {
 }) {
   const chatStore = useChatStore();
 
+  // switch themes
   const theme = chatStore.config.theme;
-
   function nextTheme() {
     const themes = [Theme.Auto, Theme.Light, Theme.Dark];
     const themeIndex = themes.indexOf(theme);
@@ -365,8 +365,20 @@ export function ChatActions(props: {
     chatStore.updateConfig((config) => (config.theme = nextTheme));
   }
 
+  // stop all responses
+  const couldStop = ControllerPool.hasPending();
+  const stopAll = () => ControllerPool.stopAll();
+
   return (
     <div className={chatStyle["chat-input-actions"]}>
+      {couldStop && (
+        <div
+          className={`${chatStyle["chat-input-action"]} clickable`}
+          onClick={stopAll}
+        >
+          <StopIcon />
+        </div>
+      )}
       {!props.hitBottom && (
         <div
           className={`${chatStyle["chat-input-action"]} clickable`}
