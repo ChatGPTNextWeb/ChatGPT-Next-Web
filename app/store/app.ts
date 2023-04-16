@@ -560,7 +560,6 @@ export const useChatStore = create<ChatStore>()(
               onError(error) {
                 console.error("[Summarize] ", error);
               },
-              enen,
             },
           );
         }
