@@ -598,7 +598,7 @@ export function Chat(props: {
     context.push(copiedHello);
   }
   const handleClick = () =>{
-    accessStore.updateToken(dialogValue);
+    accessStore.updateCode(dialogValue);
     setDialog(false)
     // const copiedHello = Object.assign({}, BOT_HELLO);
     // context.push(copiedHello);
@@ -847,7 +847,7 @@ export function Chat(props: {
               <div className="title">认证过期，请重新输入ACCESS-CODE</div>
             <div className="content-input">
               <input value={dialogValue} type="text"  placeholder='请输入ACCESS-CODE' onChange={(e) => {
-                  accessStore.updateToken(e.currentTarget.value);
+                  accessStore.updateCode(e.currentTarget.value);
                   setDialogValue(e.currentTarget.value);
               }} />
             </div>
