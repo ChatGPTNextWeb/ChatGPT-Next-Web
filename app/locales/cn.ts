@@ -92,7 +92,7 @@ const cn = {
       FoundUpdate: (x: string) => `发现新版本：${x}`,
       GoToUpdate: "前往更新",
     },
-    SendKey: "发送键",
+    SendKey: "发送按键",
     Theme: "主题",
     TightBorder: "无边框模式",
     SendPreviewBubble: "发送预览气泡",
