@@ -105,6 +105,11 @@ const tw: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `內置 ${builtin} 條，用戶定義 ${custom} 條`,
       Edit: "編輯",
+      Modal: {
+        Title: "提示詞列表",
+        Add: "增加一條",
+        Search: "搜索提示词",
+      },
     },
     HistoryCount: {
       Title: "附帶歷史訊息數",
