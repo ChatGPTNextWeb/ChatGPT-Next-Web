@@ -55,9 +55,8 @@ export async function POST(req: NextRequest) {
     const atlasAPI = new Atlas({
       dataSource: "Cluster0",
       database: "chat_db",
-      apiKey:
-        "8uOObGDRUqxdzfFzk91CHMq1UcUbqwQvnE6XjPQZe2Nv1xEXRBUi3vakKBWg7nbH",
-      apiUrl: "https://data.mongodb-api.com/app/data-ffyyc/endpoint/data/v1",
+      apiKey: process.env.MONGODB_KEY + "",
+      apiUrl: process.env.MONGODB_URI + "",
     });
 
     let userRes = await atlasAPI.findOne({
