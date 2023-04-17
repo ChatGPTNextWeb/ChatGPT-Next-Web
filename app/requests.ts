@@ -113,6 +113,10 @@ export async function requestUsage() {
   if (response.total_usage) {
     response.total_usage = Math.round(response.total_usage) / 100;
   }
+  
+  if (total.hard_limit_usd) {
+    total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
+  }
 
   return {
     used: response.total_usage,
