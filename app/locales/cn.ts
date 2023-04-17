@@ -17,6 +17,7 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
+      Delete: "删除",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -58,10 +59,10 @@ const cn = {
       ResetAll: "重置所有选项",
       Close: "关闭",
       ConfirmResetAll: {
-        Confirm: "Are you sure you want to reset all configurations?",
+        Confirm: "确认清除所有配置？",
       },
       ConfirmClearAll: {
-        Confirm: "Are you sure you want to reset all chat?",
+        Confirm: "确认清除所有聊天记录？",
       },
     },
     Lang: {
@@ -74,6 +75,7 @@ const cn = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "头像",
@@ -103,6 +105,11 @@ const cn = {
       ListCount: (builtin: number, custom: number) =>
         `内置 ${builtin} 条，用户定义 ${custom} 条`,
       Edit: "编辑",
+      Modal: {
+        Title: "提示词列表",
+        Add: "增加一条",
+        Search: "搜尋提示詞",
+      },
     },
     HistoryCount: {
       Title: "附带历史消息数",
