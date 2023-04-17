@@ -589,7 +589,12 @@ export function Chat(props: {
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
+      var code = prompt("请输入授权码");
+      if(code != null) {
+        accessStore.updateCode(code);
+      } else {
+        copiedHello.content = Locale.Error.Unauthorized;
+      }
     }
     context.push(copiedHello);
   }
