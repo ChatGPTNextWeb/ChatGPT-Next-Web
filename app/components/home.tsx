@@ -163,6 +163,7 @@ function _Home() {
           : styles.container
       }`}
     >
+      <div className={styles["photo-left"]}></div>
       <div
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
@@ -204,7 +205,6 @@ function _Home() {
                 shadow
               />
             </div>
-
           </div>
           <div>
             <IconButton
