@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
-<h1 align="center">ChatGPT Next Web111</h1>
+<h1 align="center">ChatGPT Next fuck</h1>
 
 English / [简体中文](./README_CN.md)
 
