@@ -10,6 +10,7 @@ import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import BotIcon from "../icons/bot.svg";
+import Bot4Icon from "../icons/bot-4.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaxIcon from "../icons/max.svg";
@@ -64,10 +65,20 @@ const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,
 });
 
-export function Avatar(props: { role: Message["role"] }) {
+export function Avatar(props: {
+  role: Message["role"];
+  model: Message["model"];
+}) {
   const config = useChatStore((state) => state.config);
 
   if (props.role !== "user") {
+    if (props.model?.startsWith("gpt-4")) {
+      return (
+        <div className="no-dark">
+          <Bot4Icon className={styles["user-avtar"]} />
+        </div>
+      );
+    }
     return (
       <div className="no-dark">
         <BotIcon className={styles["user-avtar"]} />
@@ -727,7 +738,7 @@ export function Chat(props: {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role} />
+                  <Avatar role={message.role} model={message.model} />
                 </div>
                 {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>
