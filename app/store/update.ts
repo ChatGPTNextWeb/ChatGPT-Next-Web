@@ -50,13 +50,16 @@ export const useUpdateStore = create<UpdateStore>()(
         const overTenMins = Date.now() - get().lastUpdate > 10 * ONE_MINUTE;
         if (!force && !overTenMins) return;
 
+        set(() => ({
+          lastUpdate: Date.now(),
+        }));
+
         try {
           // const data = await (await fetch(FETCH_TAG_URL)).json();
           // const remoteId = data[0].name as string;
           const data = await (await fetch(FETCH_COMMIT_URL)).json();
           const remoteId = (data[0].sha as string).substring(0, 7);
           set(() => ({
-            lastUpdate: Date.now(),
             remoteVersion: remoteId,
           }));
           console.log("[Got Upstream] ", remoteId);
@@ -68,6 +71,10 @@ export const useUpdateStore = create<UpdateStore>()(
       async updateUsage(force = false) {
         const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
         if (!overOneMinute && !force) return;
+
+        set(() => ({
+          lastUpdateUsage: Date.now(),
+        }));
 
         const usage = await requestUsage();
 

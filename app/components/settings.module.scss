@@ -34,10 +34,59 @@
 }
 
 .user-prompt-modal {
+  min-height: 40vh;
+
   .user-prompt-search {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 10px;
+    background-color: var(--gray);
   }
 
   .user-prompt-list {
+    padding: 10px 0;
+
+    .user-prompt-item {
+      margin-bottom: 10px;
+      widows: 100%;
+
+      .user-prompt-header {
+        display: flex;
+        widows: 100%;
+        margin-bottom: 5px;
+
+        .user-prompt-title {
+          flex-grow: 1;
+          max-width: 100%;
+          margin-right: 5px;
+          padding: 5px;
+          font-size: 12px;
+          text-align: left;
+        }
+
+        .user-prompt-buttons {
+          display: flex;
+          align-items: center;
+
+          .user-prompt-button {
+            height: 100%;
+
+            &:not(:last-child) {
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+
+      .user-prompt-content {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px;
+        margin-right: 10px;
+        font-size: 12px;
+        flex-grow: 1;
+      }
+    }
   }
 
   .user-prompt-actions {
