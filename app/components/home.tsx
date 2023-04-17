@@ -25,6 +25,8 @@ import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
 
+import React, { useState } from "react";
+
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={styles["loading-content"]}>
@@ -41,6 +43,36 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => <Loading noLogo />,
 });
+
+function PopUp({ onClose }) {
+  return (
+    <div className="popup">
+      <div className="popup-content">
+        <h1>这是一个可以关闭的弹框</h1>
+        <button onClick={onClose}>关闭</button>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [showPopUp, setShowPopUp] = useState(false);
+
+  function handleOpen() {
+    setShowPopUp(true);
+  }
+
+  function handleClose() {
+    setShowPopUp(false);
+  }
+
+  return (
+    <div className="app">
+      {showPopUp && <PopUp onClose={handleClose} />}
+      <button onClick={handleOpen}>打开弹窗</button>
+    </div>
+  );
+}
 
 function useSwitchTheme() {
   const config = useChatStore((state) => state.config);
@@ -204,7 +236,6 @@ function _Home() {
                 shadow
               />
             </div>
-
           </div>
           <div>
             <IconButton
