@@ -2,6 +2,7 @@ import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 import { createRoot } from "react-dom/client";
+import React from "react";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -109,17 +110,37 @@ export function showModal(props: ModalProps) {
   root.render(<Modal {...props} onClose={closeModal}></Modal>);
 }
 
-export type ToastProps = { content: string };
+export type ToastProps = {
+  content: string;
+  action?: {
+    text: string;
+    onClick: () => void;
+  };
+};
 
 export function Toast(props: ToastProps) {
   return (
     <div className={styles["toast-container"]}>
-      <div className={styles["toast-content"]}>{props.content}</div>
+      <div className={styles["toast-content"]}>
+        <span>{props.content}</span>
+        {props.action && (
+          <button
+            onClick={props.action.onClick}
+            className={styles["toast-action"]}
+          >
+            {props.action.text}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
-export function showToast(content: string, delay = 3000) {
+export function showToast(
+  content: string,
+  action?: ToastProps["action"],
+  delay = 3000,
+) {
   const div = document.createElement("div");
   div.className = styles.show;
   document.body.appendChild(div);
@@ -138,5 +159,19 @@ export function showToast(content: string, delay = 3000) {
     close();
   }, delay);
 
-  root.render(<Toast content={content} />);
+  root.render(<Toast content={content} action={action} />);
+}
+
+export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
+  autoHeight?: boolean;
+  rows?: number;
+};
+
+export function Input(props: InputProps) {
+  return (
+    <textarea
+      {...props}
+      className={`${styles["input"]} ${props.className}`}
+    ></textarea>
+  );
 }

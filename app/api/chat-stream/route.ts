@@ -40,7 +40,7 @@ async function createStream(req: NextRequest) {
 
       const parser = createParser(onParse);
       for await (const chunk of res.body as any) {
-        parser.feed(decoder.decode(chunk));
+        parser.feed(decoder.decode(chunk, { stream: true }));
       }
     },
   });
@@ -53,6 +53,9 @@ export async function POST(req: NextRequest) {
     return new Response(stream);
   } catch (error) {
     console.error("[Chat Stream]", error);
+    return new Response(
+      ["```json\n", JSON.stringify(error, null, "  "), "\n```"].join(""),
+    );
   }
 }
 

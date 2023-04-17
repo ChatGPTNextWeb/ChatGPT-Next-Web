@@ -19,6 +19,7 @@ const it: LocaleType = {
       Copy: "Copia",
       Stop: "Stop",
       Retry: "Riprova",
+      Delete: "Delete",
     },
     Rename: "Rinomina Chat",
     Typing: "Typing…",
@@ -35,15 +36,23 @@ const it: LocaleType = {
     Title: "Tutti i messaggi",
     Copy: "Copia tutto",
     Download: "Scarica",
+    MessageFromYou: "Messaggio da te",
+    MessageFromChatGPT: "Messaggio da ChatGPT",
   },
   Memory: {
     Title: "Prompt di memoria",
     EmptyContent: "Vuoto.",
     Copy: "Copia tutto",
+    Send: "Send Memory",
+    Reset: "Reset Session",
+    ResetConfirm:
+      "Ripristinare cancellerà la conversazione corrente e la cronologia di memoria. Sei sicuro che vuoi riavviare?",
   },
   Home: {
     NewChat: "Nuova Chat",
     DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
+    DeleteToast: "Chat Cancellata",
+    Revert: "Revert",
   },
   Settings: {
     Title: "Impostazioni",
@@ -52,6 +61,12 @@ const it: LocaleType = {
       ClearAll: "Cancella tutti i dati",
       ResetAll: "Resetta tutte le impostazioni",
       Close: "Chiudi",
+      ConfirmResetAll: {
+        Confirm: "Sei sicuro vuoi cancellare tutte le impostazioni?",
+      },
+      ConfirmClearAll: {
+        Confirm: "Sei sicuro vuoi cancellare tutte le chat?",
+      },
     },
     Lang: {
       Name: "Lingue",
@@ -61,6 +76,9 @@ const it: LocaleType = {
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
+        tr: "Türkçe",
+        jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "Avatar",
@@ -77,9 +95,9 @@ const it: LocaleType = {
       GoToUpdate: "Aggiorna",
     },
     SendKey: "Tasto invia",
-    Theme: "tema",
-    TightBorder: "Bordi stretti",
-    SendPreviewBubble: "Invia l'anteprima della bolla",
+    Theme: "Tema",
+    TightBorder: "Schermo intero",
+    SendPreviewBubble: "Anteprima di digitazione",
     Prompt: {
       Disable: {
         Title: "Disabilita l'auto completamento",
@@ -89,6 +107,11 @@ const it: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} built-in, ${custom} user-defined`,
       Edit: "Modifica",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Conteggio dei messaggi allegati",
@@ -100,18 +123,19 @@ const it: LocaleType = {
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
     Token: {
-      Title: "Chiave API",
+      Title: "API Key",
       SubTitle:
         "Utilizzare la chiave per ignorare il limite del codice di accesso",
       Placeholder: "OpenAI API Key",
     },
     Usage: {
       Title: "Bilancio Account",
-      SubTitle(used: any) {
-        return `Usato in questo mese $${used}`;
+      SubTitle(used: any, total: any) {
+        return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
+      NoAccess: "Inserire la chiave API per controllare il saldo",
     },
     AccessCode: {
       Title: "Codice d'accesso",

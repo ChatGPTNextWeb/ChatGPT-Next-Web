@@ -10,7 +10,7 @@
   background-color: var(--white);
   min-width: 600px;
   min-height: 480px;
-  max-width: 900px;
+  max-width: 1200px;
 
   display: flex;
   overflow: hidden;
@@ -36,6 +36,7 @@
     max-height: var(--full-height);
 
     border-radius: 0;
+    border: 0;
   }
 }
 
@@ -48,6 +49,27 @@
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
+  position: relative;
+  transition: width ease 0.1s;
+}
+
+.sidebar-drag {
+  $width: 10px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: $width;
+  background-color: var(--black);
+  cursor: ew-resize;
+  opacity: 0;
+  transition: all ease 0.3s;
+
+  &:hover,
+  &:active {
+    opacity: 0.2;
+  }
 }
 
 .window-content {
@@ -125,7 +147,7 @@
   border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
   border: 2px solid transparent;
@@ -157,6 +179,7 @@
   right: -20px;
   transition: all ease 0.3s;
   opacity: 0;
+  cursor: pointer;
 }
 
 .chat-item:hover > .chat-item-delete {
@@ -176,10 +199,11 @@
   margin-top: 8px;
 }
 
-.chat-item-count {
-}
-
+.chat-item-count,
 .chat-item-date {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-tail {
@@ -207,6 +231,7 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
+  padding-bottom: 40px;
   position: relative;
 }
 
@@ -333,11 +358,16 @@
 }
 
 .chat-input-panel {
+  position: relative;
   width: 100%;
   padding: 20px;
-  padding-top: 5px;
+  padding-top: 10px;
   box-sizing: border-box;
   flex-direction: column;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top: var(--border-in-light);
+  box-shadow: var(--card-shadow);
 }
 
 @mixin single-line {
@@ -407,15 +437,9 @@
   background-color: var(--white);
   color: var(--black);
   font-family: inherit;
-  padding: 10px 14px 50px;
+  padding: 10px 90px 10px 14px;
   resize: none;
   outline: none;
-}
-
-@media only screen and (max-width: 600px) {
-  .chat-input {
-    font-size: 16px;
-  }
 }
 
 .chat-input:focus {
@@ -428,11 +452,22 @@
 
   position: absolute;
   right: 30px;
-  bottom: 30px;
+  bottom: 32px;
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-input {
+    font-size: 16px;
+  }
+
+  .chat-input-send {
+    bottom: 30px;
+  }
 }
 
 .export-content {
   white-space: break-spaces;
+  padding: 10px !important;
 }
 
 .loading-content {
