@@ -582,8 +582,6 @@ export function Chat(props: {
   const context: RenderMessage[] = session.context.slice();
 
   const accessStore = useAccessStore();
-  const [dialog, setDialog] = useState(false)
-  const [dialogValue, setDialogValue] = useState('')
 
   if (
     context.length === 0 &&
@@ -591,17 +589,9 @@ export function Chat(props: {
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
-      // copiedHello.content = Locale.Error.Unauthorized;
-      setDialog(true)
+      copiedHello.content = Locale.Error.Unauthorized;
     }
     context.push(copiedHello);
-  }
-
-  const handleClick = () =>{
-    accessStore.updateCode(dialogValue);
-    setDialog(false)
-    // const copiedHello = Object.assign({}, BOT_HELLO);
-    // context.push(copiedHello);
   }
 
   // preview messages
@@ -841,19 +831,6 @@ export function Chat(props: {
           />
         </div>
       </div>
-      {dialog ? 
-       <div className="dialog">
-        <div className="dialog-modal">
-              <div className="title">认证过期，请重新输入ACCESS-CODE</div>
-            <div className="content-input">
-              <input value={dialogValue} type="text"  placeholder='请输入ACCESS-CODE' onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                  setDialogValue(e.currentTarget.value);
-              }} />
-            </div>
-            <button  onClick={handleClick}>确定</button>
-          </div>
-      </div> : ''}
     </div>
   );
 }
