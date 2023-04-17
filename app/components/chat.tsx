@@ -324,7 +324,6 @@ export function PromptHints(props: {
   );
 }
 
-
 function useScrollToBottom() {
   // for auto-scroll
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -592,11 +591,12 @@ export function Chat(props: {
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
-      setDialog(true)
       // copiedHello.content = Locale.Error.Unauthorized;
+      setDialog(true)
     }
     context.push(copiedHello);
   }
+
   const handleClick = () =>{
     accessStore.updateCode(dialogValue);
     setDialog(false)
@@ -851,10 +851,9 @@ export function Chat(props: {
                   setDialogValue(e.currentTarget.value);
               }} />
             </div>
-            <button style="margin-top: 30px" onClick={handleClick}>确定</button>
+            <button  onClick={handleClick}>确定</button>
           </div>
       </div> : ''}
-     
     </div>
   );
 }
