@@ -17,7 +17,6 @@ RUN apk update && apk add --no-cache git
 
 ENV OPENAI_API_KEY=""
 ENV CODE=""
-ARG DOCKER=true
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -46,7 +45,7 @@ CMD if [ -n "$PROXY_URL" ]; then \
         host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
         port=$(echo $PROXY_URL | cut -d: -f3); \
         conf=/etc/proxychains.conf; \
-        echo "strict_chain" >> $conf; \
+        echo "strict_chain" > $conf; \
         echo "proxy_dns" >> $conf; \
         echo "remote_dns_subnet 224" >> $conf; \
         echo "tcp_read_time_out 15000" >> $conf; \
