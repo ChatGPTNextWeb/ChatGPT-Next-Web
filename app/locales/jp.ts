@@ -18,6 +18,7 @@ const jp = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Delete: "Delete",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -76,6 +77,7 @@ const jp = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "アバター",
@@ -176,7 +178,5 @@ const jp = {
     Add: "新規追加",
   },
 };
-
-export type LocaleType = typeof jp;
 
 export default jp;
