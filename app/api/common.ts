@@ -25,6 +25,6 @@ export async function requestOpenai(req: NextRequest) {
     },
     method: req.method,
     body: req.body,
-    duplex: !!req.body,
+    duplex: !!req.body ? "half" : "",
   });
 }
