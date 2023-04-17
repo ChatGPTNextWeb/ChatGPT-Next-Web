@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, HTMLProps } from "react";
+import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
@@ -33,6 +33,15 @@ import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
+
+function UserPromptModal() {
+  const promptStore = usePromptStore();
+  const prompts = Array.from(promptStore.prompts.values()).sort(
+    (a, b) => a.id ?? 0 - (b.id ?? 0),
+  );
+
+  return <></>;
+}
 
 function SettingItem(props: {
   title: string;
@@ -99,18 +108,16 @@ export function Settings(props: { closeSettings: () => void }) {
     });
   }
 
-  const [usage, setUsage] = useState<{
-    used?: number;
-    subscription?: number;
-  }>();
+  const usage = {
+    used: updateStore.used,
+    subscription: updateStore.subscription,
+  };
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage() {
     setLoadingUsage(true);
-    requestUsage()
-      .then((res) => setUsage(res))
-      .finally(() => {
-        setLoadingUsage(false);
-      });
+    updateStore.updateUsage().finally(() => {
+      setLoadingUsage(false);
+    });
   }
 
   const accessStore = useAccessStore();
@@ -126,6 +133,7 @@ export function Settings(props: { closeSettings: () => void }) {
 
   const showUsage = accessStore.isAuthorized();
   useEffect(() => {
+    // checks per minutes
     checkUpdate();
     showUsage && checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
