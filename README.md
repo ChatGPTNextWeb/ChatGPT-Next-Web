@@ -40,7 +40,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - [ ] Share as image, share to ShareGPT
 - [ ] Desktop App with tauri
 - [ ] Self-host Model: support llama, alpaca, ChatGLM, BELLE etc.
-- [ ] Plugins: support network search, caculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
+- [ ] Plugins: support network search, calculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
 
 ### Not in Plan
 
