@@ -19,6 +19,7 @@ const es: LocaleType = {
       Copy: "Copiar",
       Stop: "Detener",
       Retry: "Reintentar",
+      Delete: "Delete",
     },
     Rename: "Renombrar chat",
     Typing: "Escribiendo...",
@@ -77,6 +78,7 @@ const es: LocaleType = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "Avatar",
@@ -105,6 +107,11 @@ const es: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} incorporado, ${custom} definido por el usuario`,
       Edit: "Editar",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Cantidad de mensajes adjuntos",
