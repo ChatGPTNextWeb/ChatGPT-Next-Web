@@ -108,6 +108,11 @@ const jp = {
       ListCount: (builtin: number, custom: number) =>
         `組み込み ${builtin} 件、ユーザー定義 ${custom} 件`,
       Edit: "編集",
+      Modal: {
+        Title: "提示词列表",
+        Add: "增加一条",
+        Search: "搜尋提示詞",
+      },
     },
     HistoryCount: {
       Title: "履歴メッセージ数を添付",
