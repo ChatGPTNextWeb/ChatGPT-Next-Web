@@ -570,10 +570,9 @@ export function Chat(props: {
     if (userIndex === null) return;
 
     setIsLoading(true);
-    chatStore
-      .onUserInput(session.messages[userIndex].content)
-      .then(() => setIsLoading(false));
+    const content = session.messages[userIndex].content;
     deleteMessage(userIndex);
+    chatStore.onUserInput(content).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
