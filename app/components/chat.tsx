@@ -434,7 +434,7 @@ export function Chat(props: {
   const [hitBottom, setHitBottom] = useState(false);
 
   const onChatBodyScroll = (e: HTMLElement) => {
-    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
+    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight;
     setHitBottom(isTouchBottom);
   };
 
