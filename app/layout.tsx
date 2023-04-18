@@ -41,6 +41,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap"
           rel="stylesheet"
         ></link>
+        <script src="https://cdn.polyfill.io/v2/polyfill.min.js" defer></script>
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>{children}</body>

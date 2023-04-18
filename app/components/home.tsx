@@ -1,7 +1,6 @@
 "use client";
 
-import "core-js/modules/es.array.at.js";
-import "core-js/modules/web.structured-clone.js";
+// import '@babel/polyfill/dist/polyfill.min';
 
 import { useState, useEffect, useRef } from "react";
 
