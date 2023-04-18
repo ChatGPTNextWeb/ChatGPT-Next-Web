@@ -42,3 +42,5 @@ public/prompts.json
 .idea
 
 pnpm-lock.yaml
+# Local Netlify folder
+.netlify
