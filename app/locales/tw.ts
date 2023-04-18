@@ -108,7 +108,7 @@ const tw: LocaleType = {
       Modal: {
         Title: "提示詞列表",
         Add: "增加一條",
-        Search: "搜索提示词",
+        Search: "搜尋提示詞",
       },
     },
     HistoryCount: {
