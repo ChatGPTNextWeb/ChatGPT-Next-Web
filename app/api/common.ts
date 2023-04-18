@@ -9,10 +9,17 @@ export async function requestOpenai(req: NextRequest) {
   const apiKey = req.headers.get("token");
   const openaiPath = req.headers.get("path");
 
+  let baseUrl = BASE_URL;
+
+  if (!baseUrl.startsWith("http")) {
+    baseUrl = `${PROTOCOL}://${baseUrl}`;
+  }
+
   console.log("[Proxy] ", openaiPath);
   console.log("[apiKey] ", apiKey);
+  console.log("[Base Url]", baseUrl);
 
-  return fetch(`${PROTOCOL}://${BASE_URL}/${openaiPath}`, {
+  return fetch(`${baseUrl}/${openaiPath}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,

@@ -8,6 +8,17 @@ export const config = {
 
 const serverConfig = getServerSideConfig();
 
+function getIP(req: NextRequest) {
+  let ip = req.ip ?? req.headers.get("x-real-ip");
+  const forwardedFor = req.headers.get("x-forwarded-for");
+
+  if (!ip && forwardedFor) {
+    ip = forwardedFor.split(",").at(0) ?? "";
+  }
+
+  return ip;
+}
+
 export function middleware(req: NextRequest) {
   //console.log("req:",req)
   const accessCode = req.headers.get("access-code");
@@ -17,6 +28,8 @@ export function middleware(req: NextRequest) {
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
+  console.log("[User IP] ", getIP(req));
+  console.log("[Time] ", new Date().toLocaleString());
 
   if (!accessCode) {
     return NextResponse.json(
