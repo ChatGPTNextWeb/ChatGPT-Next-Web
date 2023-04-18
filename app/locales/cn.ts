@@ -108,7 +108,7 @@ const cn = {
       Modal: {
         Title: "提示词列表",
         Add: "增加一条",
-        Search: "搜尋提示詞",
+        Search: "搜索提示词",
       },
     },
     HistoryCount: {
