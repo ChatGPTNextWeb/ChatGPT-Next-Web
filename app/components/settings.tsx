@@ -207,7 +207,7 @@ export function Settings(props: { closeSettings: () => void }) {
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage(force: boolean = false) {
     setLoadingUsage(true);
-    updateStore.updateUsage(true).finally(() => {
+    updateStore.updateUsage(force).finally(() => {
       setLoadingUsage(false);
     });
   }
