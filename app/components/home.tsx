@@ -159,7 +159,7 @@ function _Home() {
   useSwitchTheme();
 
   // the two useEffects are for enable animation of the sidebar collapse in mobile screen
-  const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
