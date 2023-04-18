@@ -107,6 +107,11 @@ const tr: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} yerleşik, ${custom} kullanıcı tanımlı`,
       Edit: "Düzenle",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Ekli Mesaj Sayısı",
