@@ -1,6 +1,7 @@
 "use client";
 
-import "../polyfill.ts";
+import "core-js/modules/es.array.at.js";
+import "core-js/modules/web.structured-clone.js";
 
 import { useState, useEffect, useRef } from "react";
 
