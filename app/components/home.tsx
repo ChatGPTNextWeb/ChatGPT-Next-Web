@@ -71,6 +71,96 @@ function useSwitchTheme() {
   }, [config.theme]);
 }
 
+function leftDivFun() {
+  /**
+   * 左边广告位
+   */
+  //声明div
+  const leftDiv = document.createElement("div");
+  //设置元素class或者id
+  //设置id为leftDiv
+  leftDiv.setAttribute("id", "leftDiv");
+  //设置宽
+  leftDiv.style.width = "18%";
+  //设置高
+  leftDiv.style.height = "89%";
+  //背景色用于调试用
+  // leftDiv.style.backgroundColor = "rgba(255,0,0,0.1)";
+  //居左
+  document.body.style.textAlign = "left";
+  //固定
+  leftDiv.style.position = "fixed";
+  //距离左边距
+  leftDiv.style.left = "0.3%";
+  //叠加
+  leftDiv.style.zIndex = "999";
+
+  //用于关闭广告的
+  const closeDiv = document.createElement("div");
+
+  closeDiv.style.width = "15%";
+  closeDiv.style.height = "3%";
+  //居右
+  closeDiv.style.float = "right";
+  // closeDiv.style.backgroundColor = 'rgba(255,0,0,0.1)';
+
+  //显示关闭按钮
+  const span = document.createElement("span");
+  span.innerText = "关闭 ×";
+
+  //把span加入div
+  closeDiv.appendChild(span);
+
+  //把关闭div放入最大的div内
+  leftDiv.appendChild(closeDiv);
+
+  //广告位主体的div
+  const internalDiv = document.createElement("div");
+
+  internalDiv.style.width = "100%";
+  // internalDiv.style.backgroundColor = 'rgba(0, 255, 0, 0.1)';
+  internalDiv.style.paddingTop = "6%";
+
+  //广告图片
+  const leftImg = document.createElement("img");
+
+  leftImg.src = "/gaobaipingtai.jpg";
+  leftImg.style.width = "100%";
+  leftImg.style.height = "100%";
+
+  internalDiv.appendChild(leftImg);
+
+  leftDiv.appendChild(internalDiv);
+
+  //把左边广告位div放入body中
+  document.body.appendChild(leftDiv);
+
+  // 添加鼠标移入事件
+  leftImg.addEventListener("mouseover", function () {
+    // leftImg.style.display = 'none';
+    leftImg.src = "/gaobaiguanzhu.png";
+    // internalDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+  });
+
+  // 添加鼠标移出事件
+  leftImg.addEventListener("mouseout", function () {
+    leftImg.src = "/gaobaipingtai.jpg";
+    // internalDiv.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+  });
+
+  // 添加点击事件监听器
+  closeDiv.addEventListener("click", function () {
+    // leftDiv.style.display =  'none';
+    // 移除内部所有子元素
+    while (leftDiv.firstChild) {
+      leftDiv.removeChild(leftDiv.firstChild);
+    }
+
+    // 移除自身
+    leftDiv.remove();
+  });
+}
+
 function useDragSideBar() {
   const limit = (x: number) => Math.min(500, Math.max(220, x));
 
@@ -249,94 +339,4 @@ export function Home() {
       <_Home></_Home>
     </ErrorBoundary>
   );
-}
-
-function leftDivFun() {
-  /**
-   * 左边广告位
-   */
-  //声明div
-  const leftDiv = document.createElement("div");
-  //设置元素class或者id
-  //设置id为leftDiv
-  leftDiv.setAttribute("id", "leftDiv");
-  //设置宽
-  leftDiv.style.width = "18%";
-  //设置高
-  leftDiv.style.height = "89%";
-  //背景色用于调试用
-  // leftDiv.style.backgroundColor = "rgba(255,0,0,0.1)";
-  //居左
-  document.body.style.textAlign = "left";
-  //固定
-  leftDiv.style.position = "fixed";
-  //距离左边距
-  leftDiv.style.left = "0.3%";
-  //叠加
-  leftDiv.style.zIndex = "999";
-
-  //用于关闭广告的
-  const closeDiv = document.createElement("div");
-
-  closeDiv.style.width = "15%";
-  closeDiv.style.height = "3%";
-  //居右
-  closeDiv.style.float = "right";
-  // closeDiv.style.backgroundColor = 'rgba(255,0,0,0.1)';
-
-  //显示关闭按钮
-  const span = document.createElement("span");
-  span.innerText = "关闭 ×";
-
-  //把span加入div
-  closeDiv.appendChild(span);
-
-  //把关闭div放入最大的div内
-  leftDiv.appendChild(closeDiv);
-
-  //广告位主体的div
-  const internalDiv = document.createElement("div");
-
-  internalDiv.style.width = "100%";
-  // internalDiv.style.backgroundColor = 'rgba(0, 255, 0, 0.1)';
-  internalDiv.style.paddingTop = "6%";
-
-  //广告图片
-  const leftImg = document.createElement("img");
-
-  leftImg.src = "/gaobaipingtai.jpg";
-  leftImg.style.width = "100%";
-  leftImg.style.height = "100%";
-
-  internalDiv.appendChild(leftImg);
-
-  leftDiv.appendChild(internalDiv);
-
-  //把左边广告位div放入body中
-  document.body.appendChild(leftDiv);
-
-  // 添加鼠标移入事件
-  leftImg.addEventListener("mouseover", function () {
-    // leftImg.style.display = 'none';
-    leftImg.src = "/gaobaiguanzhu.png";
-    // internalDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-  });
-
-  // 添加鼠标移出事件
-  leftImg.addEventListener("mouseout", function () {
-    leftImg.src = "/gaobaipingtai.jpg";
-    // internalDiv.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-  });
-
-  // 添加点击事件监听器
-  closeDiv.addEventListener("click", function () {
-    // leftDiv.style.display =  'none';
-    // 移除内部所有子元素
-    while (leftDiv.firstChild) {
-      leftDiv.removeChild(leftDiv.firstChild);
-    }
-
-    // 移除自身
-    leftDiv.remove();
-  });
 }
