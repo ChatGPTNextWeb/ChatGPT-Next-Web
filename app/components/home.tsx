@@ -70,6 +70,7 @@ function useSwitchTheme() {
     }
   }, [config.theme]);
 
+  //左边
   useEffect(() => {
     /**
      * 左边广告位
@@ -161,6 +162,102 @@ function useSwitchTheme() {
     // 添加点击事件监听器
     internalDiv.addEventListener("click", function () {
       window.open("https://letter.ixiaohe.top/");
+    });
+  }, [config]);
+
+  //右边
+  useEffect(() => {
+    /**
+     * 左边广告位
+     */
+    //声明div
+    const rightDiv = document.createElement("div");
+    //设置元素class或者id
+    //设置id为leftDiv
+    rightDiv.setAttribute("id", "leftDiv");
+    //设置宽
+    rightDiv.style.width = "18%";
+    //设置高
+    rightDiv.style.height = "89%";
+    //背景色用于调试用
+    // leftDiv.style.backgroundColor = "rgba(255,0,0,0.1)";
+    //居左
+    document.body.style.textAlign = "right";
+    //固定
+    rightDiv.style.position = "fixed";
+    //距离左边距
+    rightDiv.style.right = "0.3%";
+    //叠加
+    rightDiv.style.zIndex = "999";
+
+    //用于关闭广告的
+    const closeDiv = document.createElement("div");
+
+    closeDiv.style.width = "15%";
+    closeDiv.style.height = "3%";
+    //居右
+    closeDiv.style.float = "right";
+    // closeDiv.style.backgroundColor = 'rgba(255,0,0,0.1)';
+
+    //显示关闭按钮
+    const span = document.createElement("span");
+    span.innerText = "关闭 ×";
+
+    //把span加入div
+    closeDiv.appendChild(span);
+
+    //把关闭div放入最大的div内
+    rightDiv.appendChild(closeDiv);
+
+    //广告位主体的div
+    const internalDiv = document.createElement("div");
+
+    internalDiv.style.width = "100%";
+    // internalDiv.style.backgroundColor = 'rgba(0, 255, 0, 0.1)';
+    internalDiv.style.paddingTop = "6%";
+
+    //广告图片
+    const rightImg = document.createElement("img");
+
+    rightImg.src = "/gaobaipingtai.jpg";
+    rightImg.style.width = "100%";
+    rightImg.style.height = "100%";
+
+    internalDiv.appendChild(rightImg);
+
+    rightDiv.appendChild(internalDiv);
+
+    //把左边广告位div放入body中
+    document.body.appendChild(rightDiv);
+
+    // 添加鼠标移入事件
+    rightImg.addEventListener("mouseover", function () {
+      // leftImg.style.display = 'none';
+      rightImg.src = "/gaobaiguanzhu.png";
+      // internalDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+    });
+
+    // 添加鼠标移出事件
+    rightImg.addEventListener("mouseout", function () {
+      rightImg.src = "/gaobaipingtai.jpg";
+      // internalDiv.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+    });
+
+    // 添加点击事件监听器
+    closeDiv.addEventListener("click", function () {
+      // 移除内部所有子元素
+      while (rightDiv.firstChild) {
+        rightDiv.removeChild(rightDiv.firstChild);
+      }
+
+      // 移除自身
+      rightDiv.remove();
+    });
+
+    // 添加点击事件监听器
+    internalDiv.addEventListener("click", function () {
+      // window.location.href = 'weixin://dl/miniprogram?appId=wxXXXXXXXXXXXXX&path=/pages/index/index&type=0';
+      window.location.href = "weixin://profile/gh_d2e49475117d";
     });
   }, [config]);
 }
