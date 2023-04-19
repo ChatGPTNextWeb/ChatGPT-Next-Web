@@ -128,6 +128,13 @@ const de: LocaleType = {
         "Verwenden Sie Ihren Schlüssel, um das Zugangscode-Limit zu ignorieren",
       Placeholder: "OpenAI API-Schlüssel",
     },
+    EnableAOAI: "Verwenden von Azure OpenAI",
+    AzureDeploymentName: {
+      Title: "Name der Azure OpenAI-Bereitstellungsinstanz",
+      SubTitle:
+        "Geben Sie nach dem Aktivieren von Azure OpenAI den Namen der bereitgestellten Instanz ein",
+      Placeholder: "Instanzname",
+    },
     Usage: {
       Title: "Kontostand",
       SubTitle(used: any, total: any) {

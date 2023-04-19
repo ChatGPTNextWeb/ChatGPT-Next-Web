@@ -127,6 +127,13 @@ const es: LocaleType = {
       SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
       Placeholder: "Clave de la API de OpenAI",
     },
+    EnableAOAI: "Uso de Azure Open AI",
+    AzureDeploymentName: {
+      Title: "Nombre de la instancia de implementación de Azure OpenAI",
+      SubTitle:
+        "Después de habilitar Azure OpenAI, ingrese el nombre de la instancia implementada",
+      Placeholder: "nombre de instancia",
+    },
     Usage: {
       Title: "Saldo de la cuenta",
       SubTitle(used: any, total: any) {

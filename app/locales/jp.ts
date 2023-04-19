@@ -128,6 +128,13 @@ const jp = {
       SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
       Placeholder: "OpenAI APIキー",
     },
+    EnableAOAI: "Azure OpenAI を使用する",
+    AzureDeploymentName: {
+      タイトル: "Azure OpenAI 展開インスタンス名",
+      SubTitle:
+        "Azure OpenAI を有効にした後、デプロイされたインスタンス名を入力してください",
+      プレースホルダー: "インスタンス名",
+    },
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
