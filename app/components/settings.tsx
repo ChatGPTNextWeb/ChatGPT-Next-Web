@@ -316,7 +316,7 @@ export function Settings(props: { closeSettings: () => void }) {
               open={showEmojiPicker}
             >
               <div
-                className={styles.avatar}a
+                className={styles.avatar}
                 onClick={() => setShowEmojiPicker(true)}
               >
                 <Avatar role="user" />
@@ -324,6 +324,11 @@ export function Settings(props: { closeSettings: () => void }) {
             </Popover>
           </SettingItem>
 
+          {enabledAccessControl ? (
+            <></>
+          ) : (
+            <></>
+          )}
 
           <SettingItem
             title={Locale.Settings.Token.Title}
