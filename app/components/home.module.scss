@@ -166,13 +166,14 @@
 }
 
 .gpt-logo-collapse {
-  margin-left: 2px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   margin-bottom: 25px;
   margin-top: 10px;
 }
 .gpt-logo-collapse svg {
-  transform: scale(1.3);
-  opacity: 0.2;
+  transform: scale(0.7);
 }
 
 .sidebar-title {

@@ -1,6 +1,7 @@
 import DeleteIcon from "../icons/delete.svg";
 import styles from "./home.module.scss";
 import BotIcon from "../icons/bot.svg";
+import ChatGptIcon from "../icons/chatgpt.svg";
 import {
   DragDropContext,
   Droppable,
@@ -120,7 +121,7 @@ export function ChatList() {
     <>
       {sidebarCollapse && (
         <div className={styles["gpt-logo-collapse"]}>
-          <BotIcon />
+          <ChatGptIcon />
         </div>
       )}
       <DragDropContext onDragEnd={onDragEnd}>
