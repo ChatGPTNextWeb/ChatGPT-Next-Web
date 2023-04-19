@@ -52,10 +52,9 @@ function getRequestPath() {
   const OPENAI_REQUEST_PATH = "v1/chat/completions";
 
   const { enableAOAI, azureDeployName } = useAccessStore.getState();
-  const { modelConfig } = useChatStore.getState().config;
   if (!enableAOAI) return OPENAI_REQUEST_PATH;
 
-  const AZURE_REQUEST_PATH = `openai/deployments/${azureDeployName}/chat/completions?api-version=${modelConfig.model}`;
+  const AZURE_REQUEST_PATH = `openai/deployments/${azureDeployName}/chat/completions?api-version=2023-03-15-preview`;
   return AZURE_REQUEST_PATH;
 }
 

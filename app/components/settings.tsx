@@ -23,7 +23,6 @@ import {
   useUpdateStore,
   useAccessStore,
   ModalConfigValidator,
-  AZURE_API_VERSION,
 } from "../store";
 import { Avatar } from "./chat";
 
@@ -617,13 +616,11 @@ export function Settings(props: { closeSettings: () => void }) {
                 );
               }}
             >
-              {(accessStore.enableAOAI ? AZURE_API_VERSION : ALL_MODELS).map(
-                (v) => (
-                  <option value={v.name} key={v.name} disabled={!v.available}>
-                    {v.name}
-                  </option>
-                ),
-              )}
+              {ALL_MODELS.map((v) => (
+                <option value={v.name} key={v.name} disabled={!v.available}>
+                  {v.name}
+                </option>
+              ))}
             </select>
           </SettingItem>
           <SettingItem
