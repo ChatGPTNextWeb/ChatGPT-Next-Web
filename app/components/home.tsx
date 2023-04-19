@@ -98,7 +98,7 @@ function useSwitchTheme() {
     //用于关闭广告的
     const closeDiv = document.createElement("div");
 
-    closeDiv.style.width = "6%";
+    // closeDiv.style.width = "6%";
     closeDiv.style.height = "3%";
     //居右
     closeDiv.style.float = "right";
@@ -193,7 +193,7 @@ function useSwitchTheme() {
     //用于关闭广告的
     const closeDiv = document.createElement("div");
 
-    closeDiv.style.width = "6%";
+    // closeDiv.style.width = "6%";
     closeDiv.style.height = "3%";
     //居右
     closeDiv.style.float = "right";
