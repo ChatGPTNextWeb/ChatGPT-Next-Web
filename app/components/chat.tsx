@@ -559,8 +559,8 @@ export function Chat(props: {
     );
   };
 
-  const exportToImage = () => {
-    if (divRef.current) {
+  const exportToImage = (i: number) => {
+    if (divRefs.current[i]) {
       //get the color style from a div by classname 'markdown-body'
       const divElement = document.querySelector(
         ".markdown-body",
@@ -570,11 +570,11 @@ export function Chat(props: {
         .getPropertyValue("color");
       console.log(color);
       if (color !== "rgb(36, 41, 47)") {
-        divRef.current.style.backgroundColor = "#1e1e1e";
+        divRefs.current[i].style.backgroundColor = "#1e1e1e";
       }
 
-      divRef.current.style.padding = "10px 10px 0px 10px";
-      html2canvas(divRef.current).then((canvas) => {
+      divRefs.current[i].style.padding = "10px 10px 0px 10px";
+      html2canvas(divRefs.current[i]).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const img = new Image();
         img.src = imgData;
@@ -583,8 +583,8 @@ export function Chat(props: {
         link.download = "chat.png";
         link.click();
       });
-      divRef.current.style.padding = "0px";
-      divRef.current.style.backgroundColor = "";
+      divRefs.current[i].style.padding = "0px";
+      divRefs.current[i].style.backgroundColor = "";
     }
   };
 
@@ -669,7 +669,7 @@ export function Chat(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const divRef = useRef<HTMLDivElement>(null);
+  const divRefs = useRef<Array<HTMLDivElement>>([]);
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
@@ -800,13 +800,17 @@ export function Chat(props: {
                         </div>
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => exportToImage()}
+                          onClick={() => exportToImage(i)}
                         >
                           {"Image"}
                         </div>
                       </div>
                     )}
-                  <div ref={divRef}>
+                  <div
+                    ref={(el) => {
+                      el ? (divRefs.current[i] = el) : null;
+                    }}
+                  >
                     <Markdown
                       content={message.content}
                       loading={
