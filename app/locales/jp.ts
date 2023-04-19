@@ -1,6 +1,7 @@
 import { SubmitKey } from "../store/app";
+import type { LocaleType } from "./index";
 
-const jp = {
+const jp: LocaleType = {
   WIP: "この機能は開発中です……",
   Error: {
     Unauthorized:
@@ -19,6 +20,7 @@ const jp = {
       Stop: "停止",
       Retry: "リトライ",
       Delete: "Delete",
+      ExportAsImage: "画像として生成する",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
