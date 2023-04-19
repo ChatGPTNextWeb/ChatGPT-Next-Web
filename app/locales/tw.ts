@@ -18,6 +18,7 @@ const tw: LocaleType = {
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
+      Delete: "刪除",
     },
     Rename: "重命名對話",
     Typing: "正在輸入…",
@@ -75,6 +76,7 @@ const tw: LocaleType = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "大頭貼",
@@ -103,6 +105,11 @@ const tw: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `內置 ${builtin} 條，用戶定義 ${custom} 條`,
       Edit: "編輯",
+      Modal: {
+        Title: "提示詞列表",
+        Add: "增加一條",
+        Search: "搜尋提示詞",
+      },
     },
     HistoryCount: {
       Title: "附帶歷史訊息數",
@@ -152,9 +159,10 @@ const tw: LocaleType = {
     Prompt: {
       History: (content: string) =>
         "這是 AI 與用戶的歷史聊天總結，作為前情提要：" + content,
-      Topic: "直接返回這句話的簡要主題，無須解釋，若無主題，請直接返回「閒聊」",
+      Topic:
+        "Use the language used by the user (e.g. en for english conversation, zh-hant for chinese conversation, etc.) to generate a title (at most 6 words) summarizing our conversation without any lead-in, quotation marks, preamble like 'Title:', direct text copies, single-word replies, quotation marks, translations, or brackets. Remove enclosing quotation marks. The title should make third-party grasp the essence of the conversation in first sight.",
       Summarize:
-        "簡要總結一下你和用戶的對話，作為後續的上下文提示 prompt，且字數控制在 200 字以內",
+        "Use the language used by the user (e.g. en-us for english conversation, zh-hant for chinese conversation, etc.) to summarise the conversation in at most 200 words. The summary will be used as prompt for you to continue the conversation in the future.",
     },
     ConfirmClearAll: "確認清除所有對話、設定數據？",
   },

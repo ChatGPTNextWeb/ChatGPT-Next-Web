@@ -18,6 +18,7 @@ const jp = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Delete: "Delete",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -76,6 +77,7 @@ const jp = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "アバター",
@@ -106,6 +108,11 @@ const jp = {
       ListCount: (builtin: number, custom: number) =>
         `組み込み ${builtin} 件、ユーザー定義 ${custom} 件`,
       Edit: "編集",
+      Modal: {
+        Title: "プロンプトリスト",
+        Add: "新規追加",
+        Search: "プロンプトワード検索",
+      },
     },
     HistoryCount: {
       Title: "履歴メッセージ数を添付",
@@ -176,7 +183,5 @@ const jp = {
     Add: "新規追加",
   },
 };
-
-export type LocaleType = typeof jp;
 
 export default jp;
