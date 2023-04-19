@@ -168,7 +168,8 @@ function _Home() {
       >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>FyGPT</div>
-          <div className={styles["sidebar-sub-title"]}>你的GPT助手</div>
+          <div className={styles["sidebar-sub-title"]}>联系站长获取密码，左下角设置填写即可使用.<br></br>
+          QQ:1160196247 微信:a1160196247</div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
