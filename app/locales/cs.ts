@@ -1,0 +1,185 @@
+import { SubmitKey } from "../store/app";
+import type { LocaleType } from "./index";
+
+const cs: LocaleType = {
+  WIP: "V přípravě...",
+  Error: {
+    Unauthorized:
+      "Neoprávněný přístup, zadejte přístupový kód na stránce nastavení.",
+  },
+  ChatItem: {
+    ChatItemCount: (count: number) => `${count} zpráv`,
+  },
+  Chat: {
+    SubTitle: (count: number) => `${count} zpráv s ChatGPT`,
+    Actions: {
+      ChatList: "Přejít na seznam chatů",
+      CompressedHistory: "Pokyn z komprimované paměti historie",
+      Export: "Exportovat všechny zprávy jako Markdown",
+      Copy: "Kopírovat",
+      Stop: "Zastavit",
+      Retry: "Zopakovat",
+      Delete: "Smazat",
+    },
+    Rename: "Přejmenovat chat",
+    Typing: "Píše...",
+    Input: (submitKey: string) => {
+      var inputHints = `${submitKey} pro odeslání`;
+      if (submitKey === String(SubmitKey.Enter)) {
+        inputHints += ", Shift + Enter pro řádkování";
+      }
+      return inputHints + ", / pro vyhledávání pokynů";
+    },
+    Send: "Odeslat",
+  },
+  Export: {
+    Title: "Všechny zprávy",
+    Copy: "Kopírovat vše",
+    Download: "Stáhnout",
+    MessageFromYou: "Zpráva od vás",
+    MessageFromChatGPT: "Zpráva z ChatGPT",
+  },
+  Memory: {
+    Title: "Pokyn z paměti",
+    EmptyContent: "Zatím nic.",
+    Send: "Odeslat paměť",
+    Copy: "Kopírovat paměť",
+    Reset: "Obnovit relaci",
+    ResetConfirm:
+      "Resetováním se vymaže historie aktuálních konverzací i paměť historie pokynů. Opravdu chcete provést obnovu?",
+  },
+  Home: {
+    NewChat: "Nový chat",
+    DeleteChat: "Potvrzujete smazání vybrané konverzace?",
+    DeleteToast: "Chat smazán",
+    Revert: "Zvrátit",
+  },
+  Settings: {
+    Title: "Nastavení",
+    SubTitle: "Všechna nastavení",
+    Actions: {
+      ClearAll: "Vymazat všechna data",
+      ResetAll: "Obnovení všech nastavení",
+      Close: "Zavřít",
+      ConfirmResetAll: {
+        Confirm: "Jste si jisti, že chcete obnovit veškerou konfiguraci?",
+      },
+      ConfirmClearAll: {
+        Confirm: "Jste si jisti, že chcete obnovit celý chat?",
+      },
+    },
+    Lang: {
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Options: {
+        cn: "简体中文",
+        en: "English",
+        tw: "繁體中文",
+        es: "Español",
+        it: "Italiano",
+        tr: "Türkçe",
+        jp: "日本語",
+        de: "Deutsch",
+      },
+    },
+    Avatar: "Avatar",
+    FontSize: {
+      Title: "Velikost písma",
+      SubTitle: "Nastavení velikosti písma obsahu chatu",
+    },
+    Update: {
+      Version: (x: string) => `Verze: ${x}`,
+      IsLatest: "Aktuální verze",
+      CheckUpdate: "Zkontrolovat aktualizace",
+      IsChecking: "Kontrola aktualizace...",
+      FoundUpdate: (x: string) => `Nalezena nová verze: ${x}`,
+      GoToUpdate: "Aktualizovat",
+    },
+    SendKey: "Odeslat klíč",
+    Theme: "Téma",
+    TightBorder: "Těsné ohraničení",
+    SendPreviewBubble: "Náhled v chatovací bublině",
+    Prompt: {
+      Disable: {
+        Title: "Deaktivovat automatické dokončování",
+        SubTitle: "Zadejte / pro spuštění automatického dokončování",
+      },
+      List: "Seznam pokynů",
+      ListCount: (builtin: number, custom: number) =>
+        `${builtin} vestavěných, ${custom} uživatelských`,
+      Edit: "Upravit",
+      Modal: {
+        Title: "Seznam pokynů",
+        Add: "Přidat pokyn",
+        Search: "Hledat pokyny",
+      },
+    },
+    HistoryCount: {
+      Title: "Počet připojených zpráv",
+      SubTitle: "Počet odeslaných připojených zpráv na žádost",
+    },
+    CompressThreshold: {
+      Title: "Práh pro kompresi historie",
+      SubTitle:
+        "Komprese proběhne, pokud délka nekomprimovaných zpráv přesáhne tuto hodnotu",
+    },
+    Token: {
+      Title: "API klíč",
+      SubTitle: "Použitím klíče ignorujete omezení přístupového kódu",
+      Placeholder: "Klíč API OpenAI",
+    },
+    Usage: {
+      Title: "Stav účtu",
+      SubTitle(used: any, total: any) {
+        return `Použito tento měsíc $${used}, předplatné $${total}`;
+      },
+      IsChecking: "Kontroluje se...",
+      Check: "Zkontrolovat",
+      NoAccess: "Pro kontrolu zůstatku zadejte klíč API",
+    },
+    AccessCode: {
+      Title: "Přístupový kód",
+      SubTitle: "Kontrola přístupu povolena",
+      Placeholder: "Potřebujete přístupový kód",
+    },
+    Model: "Model",
+    Temperature: {
+      Title: "Teplota",
+      SubTitle: "Větší hodnota činí výstup náhodnějším",
+    },
+    MaxTokens: {
+      Title: "Max. počet tokenů",
+      SubTitle: "Maximální délka vstupního tokenu a generovaných tokenů",
+    },
+    PresencePenlty: {
+      Title: "Přítomnostní korekce",
+      SubTitle:
+        "Větší hodnota zvyšuje pravděpodobnost nových témat.",
+    },
+  },
+  Store: {
+    DefaultTopic: "Nová konverzace",
+    BotHello: "Ahoj! Jak mohu dnes pomoci?",
+    Error: "Něco se pokazilo, zkuste to prosím později.",
+    Prompt: {
+      History: (content: string) =>
+        "Toto je shrnutí historie chatu mezi umělou inteligencí a uživatelem v podobě rekapitulace: " +
+        content,
+      Topic:
+        "Vytvořte prosím název o čtyřech až pěti slovech vystihující průběh našeho rozhovoru bez jakýchkoli úvodních slov, interpunkčních znamének, uvozovek, teček, symbolů nebo dalšího textu. Odstraňte uvozovky.",
+      Summarize:
+        "Krátce shrň naši diskusi v rozsahu do 200 slov a použij ji jako podnět pro budoucí kontext.",
+    },
+    ConfirmClearAll: "Potvrďte pro vymazání všech dat chatu a nastavení?",
+  },
+  Copy: {
+    Success: "Zkopírováno do schránky",
+    Failed: "Kopírování selhalo, prosím, povolte přístup ke schránce",
+  },
+  Context: {
+    Toast: (x: any) => `Použití ${x} kontextových pokynů`,
+    Edit: "Kontextové a paměťové pokyny",
+    Add: "Přidat",
+  },
+};
+
+export default cs;
