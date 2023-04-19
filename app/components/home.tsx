@@ -149,7 +149,6 @@ function useSwitchTheme() {
 
     // 添加点击事件监听器
     closeDiv.addEventListener("click", function () {
-      // leftDiv.style.display =  'none';
       // 移除内部所有子元素
       while (leftDiv.firstChild) {
         leftDiv.removeChild(leftDiv.firstChild);
@@ -157,6 +156,11 @@ function useSwitchTheme() {
 
       // 移除自身
       leftDiv.remove();
+    });
+
+    // 添加点击事件监听器
+    internalDiv.addEventListener("click", function () {
+      window.open("https://letter.ixiaohe.top/");
     });
   }, [config]);
 }
