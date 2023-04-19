@@ -299,23 +299,31 @@ export function Settings(props: { closeSettings: () => void }) {
       </div>
       <div className={styles["settings"]}>
         <List>
-          {enabledAccessControl ? (
-            <SettingItem
-              title={Locale.Settings.AccessCode.Title}
-              subTitle={Locale.Settings.AccessCode.SubTitle}
+          <SettingItem title={Locale.Settings.Avatar}>
+            <Popover
+              onClose={() => setShowEmojiPicker(false)}
+              content={
+                <EmojiPicker
+                  lazyLoadEmojis
+                  theme={EmojiTheme.AUTO}
+                  getEmojiUrl={getEmojiUrl}
+                  onEmojiClick={(e) => {
+                    updateConfig((config) => (config.avatar = e.unified));
+                    setShowEmojiPicker(false);
+                  }}
+                />
+              }
+              open={showEmojiPicker}
             >
-              <PasswordInput
-                value={accessStore.accessCode}
-                type="text"
-                placeholder={Locale.Settings.AccessCode.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                }}
-              />
-            </SettingItem>
-          ) : (
-            <></>
-          )}
+              <div
+                className={styles.avatar}a
+                onClick={() => setShowEmojiPicker(true)}
+              >
+                <Avatar role="user" />
+              </div>
+            </Popover>
+          </SettingItem>
+
 
           <SettingItem
             title={Locale.Settings.Token.Title}
@@ -330,6 +338,7 @@ export function Settings(props: { closeSettings: () => void }) {
               }}
             />
           </SettingItem>
+
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -430,6 +439,7 @@ export function Settings(props: { closeSettings: () => void }) {
         </List>
 
         <List>
+
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
@@ -502,6 +512,7 @@ export function Settings(props: { closeSettings: () => void }) {
         </List>
 
         <List>
+
           <SettingItem
             title={Locale.Settings.Temperature.Title}
             subTitle={Locale.Settings.Temperature.SubTitle}
