@@ -5,10 +5,15 @@ export interface AccessControlStore {
   accessCode: string;
   token: string;
 
+  enableAOAI: boolean;
+  azureDeployName: string;
+
   needCode: boolean;
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
+  updateDeployName: (_: string) => void;
+  switchAOAI: (_: boolean) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
   fetch: () => void;
@@ -23,6 +28,8 @@ export const useAccessStore = create<AccessControlStore>()(
     (set, get) => ({
       token: "",
       accessCode: "",
+      azureDeployName: "",
+      enableAOAI: false,
       needCode: true,
       enabledAccessControl() {
         get().fetch();
@@ -35,8 +42,18 @@ export const useAccessStore = create<AccessControlStore>()(
       updateToken(token: string) {
         set((state) => ({ token }));
       },
+      updateDeployName(azureDeployName: string) {
+        set((state) => ({ azureDeployName }));
+      },
+      switchAOAI(switchStatus: boolean) {
+        set((state) => ({ enableAOAI: switchStatus }));
+      },
       isAuthorized() {
         // has token or has code or disabled access control
+        if (get().enableAOAI) {
+          return !!get().azureDeployName && !!get().token;
+        }
+
         return (
           !!get().token || !!get().accessCode || !get().enabledAccessControl()
         );

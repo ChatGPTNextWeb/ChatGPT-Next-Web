@@ -48,6 +48,17 @@ function getHeaders() {
   return headers;
 }
 
+function getRequestPath() {
+  const OPENAI_REQUEST_PATH = "v1/chat/completions";
+
+  const { enableAOAI, azureDeployName } = useAccessStore.getState();
+  const { modelConfig } = useChatStore.getState().config;
+  if (!enableAOAI) return OPENAI_REQUEST_PATH;
+
+  const AZURE_REQUEST_PATH = `openai/deployments/${azureDeployName}/chat/completions?api-version=${modelConfig.model}`;
+  return AZURE_REQUEST_PATH;
+}
+
 export function requestOpenaiClient(path: string) {
   return (body: any, method = "POST") =>
     fetch("/api/openai?_vercel_no_cache=1", {
@@ -64,7 +75,7 @@ export function requestOpenaiClient(path: string) {
 export async function requestChat(messages: Message[]) {
   const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
 
-  const res = await requestOpenaiClient("v1/chat/completions")(req);
+  const res = await requestOpenaiClient(getRequestPath())(req);
 
   try {
     const response = (await res.json()) as ChatResponse;
@@ -149,7 +160,7 @@ export async function requestChatStream(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        path: "v1/chat/completions",
+        path: getRequestPath(),
         ...getHeaders(),
       },
       body: JSON.stringify(req),

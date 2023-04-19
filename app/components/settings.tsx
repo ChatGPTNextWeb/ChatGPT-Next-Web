@@ -23,6 +23,7 @@ import {
   useUpdateStore,
   useAccessStore,
   ModalConfigValidator,
+  AZURE_API_VERSION,
 } from "../store";
 import { Avatar } from "./chat";
 
@@ -466,6 +467,34 @@ export function Settings(props: { closeSettings: () => void }) {
             <></>
           )}
 
+          <SettingItem title={Locale.Settings.EnableAOAI}>
+            <input
+              type="checkbox"
+              checked={accessStore.enableAOAI}
+              onChange={(e) => {
+                accessStore.switchAOAI(e.currentTarget.checked);
+              }}
+            ></input>
+          </SettingItem>
+
+          {accessStore.enableAOAI ? (
+            <SettingItem
+              title={Locale.Settings.AzureDeploymentName.Title}
+              subTitle={Locale.Settings.AzureDeploymentName.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.azureDeployName}
+                type="text"
+                placeholder={Locale.Settings.AzureDeploymentName.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateDeployName(e.currentTarget.value);
+                }}
+              />
+            </SettingItem>
+          ) : (
+            <></>
+          )}
+
           <SettingItem
             title={Locale.Settings.Token.Title}
             subTitle={Locale.Settings.Token.SubTitle}
@@ -588,11 +617,13 @@ export function Settings(props: { closeSettings: () => void }) {
                 );
               }}
             >
-              {ALL_MODELS.map((v) => (
-                <option value={v.name} key={v.name} disabled={!v.available}>
-                  {v.name}
-                </option>
-              ))}
+              {(accessStore.enableAOAI ? AZURE_API_VERSION : ALL_MODELS).map(
+                (v) => (
+                  <option value={v.name} key={v.name} disabled={!v.available}>
+                    {v.name}
+                  </option>
+                ),
+              )}
             </select>
           </SettingItem>
           <SettingItem
