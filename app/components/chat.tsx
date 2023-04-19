@@ -1,5 +1,6 @@
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import html2canvas from "html2canvas";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -558,6 +559,35 @@ export function Chat(props: {
     );
   };
 
+  const exportToImage = () => {
+    if (divRef.current) {
+      //get the color style from a div by classname 'markdown-body'
+      const divElement = document.querySelector(
+        ".markdown-body",
+      ) as HTMLDivElement;
+      const color = window
+        .getComputedStyle(divElement)
+        .getPropertyValue("color");
+      console.log(color);
+      if (color !== "rgb(36, 41, 47)") {
+        divRef.current.style.backgroundColor = "#1e1e1e";
+      }
+
+      divRef.current.style.padding = "10px 10px 0px 10px";
+      html2canvas(divRef.current).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const img = new Image();
+        img.src = imgData;
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = "chat.png";
+        link.click();
+      });
+      divRef.current.style.padding = "0px";
+      divRef.current.style.backgroundColor = "";
+    }
+  };
+
   const onDelete = (botMessageId: number) => {
     const userIndex = findLastUesrIndex(botMessageId);
     if (userIndex === null) return;
@@ -639,6 +669,7 @@ export function Chat(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const divRef = useRef<HTMLDivElement>(null);
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
@@ -752,13 +783,6 @@ export function Chat(props: {
                             >
                               {Locale.Chat.Actions.Delete}
                             </div>
-
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onDelete(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Delete}
-                            </div>
                             <div
                               className={styles["chat-message-top-action"]}
                               onClick={() => onResend(message.id ?? i)}
@@ -774,22 +798,30 @@ export function Chat(props: {
                         >
                           {Locale.Chat.Actions.Copy}
                         </div>
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => exportToImage()}
+                        >
+                          {"Image"}
+                        </div>
                       </div>
                     )}
-                  <Markdown
-                    content={message.content}
-                    loading={
-                      (message.preview || message.content.length === 0) &&
-                      !isUser
-                    }
-                    onContextMenu={(e) => onRightClick(e, message)}
-                    onDoubleClickCapture={() => {
-                      if (!isMobileScreen()) return;
-                      setUserInput(message.content);
-                    }}
-                    fontSize={fontSize}
-                    parentRef={scrollRef}
-                  />
+                  <div ref={divRef}>
+                    <Markdown
+                      content={message.content}
+                      loading={
+                        (message.preview || message.content.length === 0) &&
+                        !isUser
+                      }
+                      onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen()) return;
+                        setUserInput(message.content);
+                      }}
+                      fontSize={fontSize}
+                      parentRef={scrollRef}
+                    />
+                  </div>
                 </div>
                 {!isUser && !message.preview && (
                   <div className={styles["chat-message-actions"]}>
