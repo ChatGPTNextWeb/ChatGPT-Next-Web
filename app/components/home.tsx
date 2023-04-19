@@ -182,7 +182,7 @@ function useSwitchTheme() {
     //背景色用于调试用
     // leftDiv.style.backgroundColor = "rgba(255,0,0,0.1)";
     //居左
-    document.body.style.textAlign = "right";
+    // document.body.style.textAlign = "right";
     //固定
     rightDiv.style.position = "fixed";
     //距离左边距
@@ -256,7 +256,7 @@ function useSwitchTheme() {
 
     // 添加点击事件监听器
     internalDiv.addEventListener("click", function () {
-      // window.location.href = 'weixin://dl/miniprogram?appId=wxXXXXXXXXXXXXX&path=/pages/index/index&type=0';
+      // window.location.href = 'weixin://dl/miniprogram?appId=wx28e3b98396801326&path=/pages/home/index&type=0';
       window.location.href = "weixin://profile/gh_d2e49475117d";
     });
   }, [config]);
