@@ -478,7 +478,7 @@ export const useChatStore = create<ChatStore>()(
           n - config.historyMessageCount,
         );
         const longTermMemoryMessageIndex = session.lastSummarizeIndex;
-        const oldestIndex = Math.min(
+        const oldestIndex = Math.max(
           shortTermMemoryMessageIndex,
           longTermMemoryMessageIndex,
         );
