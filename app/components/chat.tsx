@@ -54,6 +54,8 @@ import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
 import { Input, Modal, showModal } from "./ui-lib";
+import { useNavigate } from "react-router-dom";
+import { Path } from "../constant";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -418,10 +420,7 @@ export function ChatActions(props: {
   );
 }
 
-export function Chat(props: {
-  showSideBar?: () => void;
-  sideBarShowing?: boolean;
-}) {
+export function Chat() {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -439,6 +438,7 @@ export function Chat(props: {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(false);
   const isMobileScreen = useMobileScreen();
+  const navigate = useNavigate();
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
@@ -641,7 +641,7 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
-    if (props.sideBarShowing && isMobileScreen) return;
+    if (isMobileScreen) return;
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -666,7 +666,7 @@ export function Chat(props: {
               icon={<ReturnIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
-              onClick={props?.showSideBar}
+              onClick={() => navigate(Path.Home)}
             />
           </div>
           <div className={styles["window-action-button"]}>
@@ -830,7 +830,7 @@ export function Chat(props: {
               setAutoScroll(false);
               setTimeout(() => setPromptHints([]), 500);
             }}
-            autoFocus={!props?.sideBarShowing}
+            autoFocus
             rows={inputRows}
           />
           <IconButton
