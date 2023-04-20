@@ -21,7 +21,6 @@ import {
   HashRouter as Router,
   Routes,
   Route,
-  useNavigation,
   useLocation,
 } from "react-router-dom";
 
@@ -131,7 +130,6 @@ function MobileScreen() {
 
 export function Home() {
   useSwitchTheme();
-
   const isMobileScreen = useMobileScreen();
 
   if (!useHasHydrated()) {
