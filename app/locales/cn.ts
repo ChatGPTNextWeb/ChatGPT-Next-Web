@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/app";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。",
+    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。\n需要密码请联系QQ: 1960813545或邮箱: mu-jie@qq.com，￥5包月畅用。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
