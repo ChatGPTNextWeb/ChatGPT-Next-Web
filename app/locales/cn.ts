@@ -76,6 +76,7 @@ const cn = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
+        cs: "Čeština",
       },
     },
     Avatar: "头像",
