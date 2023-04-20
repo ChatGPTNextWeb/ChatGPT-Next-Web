@@ -16,7 +16,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
 import { useChatStore } from "../store";
-import { getCSSVar, isMobileScreen } from "../utils";
+import { getCSSVar, useMobileScreen } from "../utils";
 import Locale from "../locales";
 import { Chat } from "./chat";
 
@@ -294,17 +294,14 @@ function useDragSideBar() {
     window.addEventListener("mousemove", handleMouseMove.current);
     window.addEventListener("mouseup", handleMouseUp.current);
   };
+  const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
-    if (isMobileScreen()) {
-      return;
-    }
-
-    document.documentElement.style.setProperty(
-      "--sidebar-width",
-      `${limit(chatStore.config.sidebarWidth ?? 300)}px`,
-    );
-  }, [chatStore.config.sidebarWidth]);
+    const sideBarWidth = isMobileScreen
+      ? "100vw"
+      : `${limit(chatStore.config.sidebarWidth ?? 300)}px`;
+    document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
+  }, [chatStore.config.sidebarWidth, isMobileScreen]);
 
   return {
     onDragMouseDown,
@@ -339,6 +336,7 @@ function _Home() {
 
   // drag side bar
   const { onDragMouseDown } = useDragSideBar();
+  const isMobileScreen = useMobileScreen();
 
   useSwitchTheme();
   leftDivFun();
@@ -350,7 +348,7 @@ function _Home() {
   return (
     <div
       className={`${
-        config.tightBorder && !isMobileScreen()
+        config.tightBorder && !isMobileScreen
           ? styles["tight-container"]
           : styles.container
       }`}
