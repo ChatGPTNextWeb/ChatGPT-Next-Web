@@ -22,6 +22,7 @@ export function ChatItem(props: {
   selected: boolean;
   id: number;
   index: number;
+  narrow?: boolean;
 }) {
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
@@ -35,13 +36,20 @@ export function ChatItem(props: {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <div className={styles["chat-item-title"]}>{props.title}</div>
-          <div className={styles["chat-item-info"]}>
-            <div className={styles["chat-item-count"]}>
-              {Locale.ChatItem.ChatItemCount(props.count)}
-            </div>
-            <div className={styles["chat-item-date"]}>{props.time}</div>
-          </div>
+          {props.narrow ? (
+            <div className={styles["chat-item-narrow"]}>{props.count}</div>
+          ) : (
+            <>
+              <div className={styles["chat-item-title"]}>{props.title}</div>
+              <div className={styles["chat-item-info"]}>
+                <div className={styles["chat-item-count"]}>
+                  {Locale.ChatItem.ChatItemCount(props.count)}
+                </div>
+                <div className={styles["chat-item-date"]}>{props.time}</div>
+              </div>
+            </>
+          )}
+
           <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
             <DeleteIcon />
           </div>
@@ -51,7 +59,7 @@ export function ChatItem(props: {
   );
 }
 
-export function ChatList() {
+export function ChatList(props: { narrow?: boolean }) {
   const [sessions, selectedIndex, selectSession, removeSession, moveSession] =
     useChatStore((state) => [
       state.sessions,
@@ -101,7 +109,12 @@ export function ChatList() {
                   navigate(Path.Chat);
                   selectSession(i);
                 }}
-                onDelete={() => chatStore.deleteSession(i)}
+                onDelete={() => {
+                  if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
+                    chatStore.deleteSession(i);
+                  }
+                }}
+                narrow={props.narrow}
               />
             ))}
             {provided.placeholder}

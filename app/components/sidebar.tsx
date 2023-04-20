@@ -12,14 +12,20 @@ import Locale from "../locales";
 
 import { useChatStore } from "../store";
 
-import { Path, REPO_URL } from "../constant";
+import {
+  MAX_SIDEBAR_WIDTH,
+  MIN_SIDEBAR_WIDTH,
+  NARROW_SIDEBAR_WIDTH,
+  Path,
+  REPO_URL,
+} from "../constant";
 
 import { HashRouter as Router, Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import { ChatList } from "./chat-list";
 
 function useDragSideBar() {
-  const limit = (x: number) => Math.min(500, Math.max(220, x));
+  const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
   const chatStore = useChatStore();
   const startX = useRef(0);
@@ -27,7 +33,7 @@ function useDragSideBar() {
   const lastUpdateTime = useRef(Date.now());
 
   const handleMouseMove = useRef((e: MouseEvent) => {
-    if (Date.now() < lastUpdateTime.current + 100) {
+    if (Date.now() < lastUpdateTime.current + 50) {
       return;
     }
     lastUpdateTime.current = Date.now();
@@ -49,29 +55,36 @@ function useDragSideBar() {
     window.addEventListener("mouseup", handleMouseUp.current);
   };
   const isMobileScreen = useMobileScreen();
+  const shouldNarrow =
+    !isMobileScreen && chatStore.config.sidebarWidth < MIN_SIDEBAR_WIDTH;
 
   useEffect(() => {
-    const sideBarWidth = isMobileScreen
-      ? "100vw"
-      : `${limit(chatStore.config.sidebarWidth ?? 300)}px`;
+    const barWidth = shouldNarrow
+      ? NARROW_SIDEBAR_WIDTH
+      : limit(chatStore.config.sidebarWidth ?? 300);
+    const sideBarWidth = isMobileScreen ? "100vw" : `${barWidth}px`;
     document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
-  }, [chatStore.config.sidebarWidth, isMobileScreen]);
+  }, [chatStore.config.sidebarWidth, isMobileScreen, shouldNarrow]);
 
   return {
     onDragMouseDown,
+    shouldNarrow,
   };
 }
 
-export function SideBar(props: { setShowSideBar?: (_: boolean) => void }) {
+export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
   // drag side bar
-  const { onDragMouseDown } = useDragSideBar();
+  const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
-  const isMobileScreen = useMobileScreen();
 
   return (
-    <>
+    <div
+      className={`${styles.sidebar} ${props.className} ${
+        shouldNarrow && styles["narrow-sidebar"]
+      }`}
+    >
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>ChatGPT Next</div>
         <div className={styles["sidebar-sub-title"]}>
@@ -88,10 +101,9 @@ export function SideBar(props: { setShowSideBar?: (_: boolean) => void }) {
           if (e.target === e.currentTarget) {
             navigate(Path.Home);
           }
-          props.setShowSideBar?.(false);
         }}
       >
-        <ChatList />
+        <ChatList narrow={shouldNarrow} />
       </div>
 
       <div className={styles["sidebar-tail"]}>
@@ -116,10 +128,9 @@ export function SideBar(props: { setShowSideBar?: (_: boolean) => void }) {
         <div>
           <IconButton
             icon={<AddIcon />}
-            text={Locale.Home.NewChat}
+            text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
               chatStore.newSession();
-              props.setShowSideBar?.(false);
             }}
             shadow
           />
@@ -130,6 +141,6 @@ export function SideBar(props: { setShowSideBar?: (_: boolean) => void }) {
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}
       ></div>
-    </>
+    </div>
   );
 }

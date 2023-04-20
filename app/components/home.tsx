@@ -41,7 +41,7 @@ const SideBar = dynamic(async () => (await import("./sidebar")).SideBar, {
   loading: () => <Loading noLogo />,
 });
 
-function useSwitchTheme() {
+export function useSwitchTheme() {
   const config = useChatStore((state) => state.config);
 
   useEffect(() => {
@@ -83,7 +83,6 @@ const useHasHydrated = () => {
 };
 
 function WideScreen() {
-  // setting
   const config = useChatStore((state) => state.config);
 
   return (
@@ -92,9 +91,7 @@ function WideScreen() {
         config.tightBorder ? styles["tight-container"] : styles.container
       }`}
     >
-      <div className={styles.sidebar}>
-        <SideBar></SideBar>
-      </div>
+      <SideBar />
 
       <div className={styles["window-content"]}>
         <Routes>
@@ -113,9 +110,7 @@ function MobileScreen() {
 
   return (
     <div className={styles.container}>
-      <div className={`${styles.sidebar} ${isHome && styles["sidebar-show"]}`}>
-        <SideBar />
-      </div>
+      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
       <div className={styles["window-content"]}>
         <Routes>
@@ -129,8 +124,8 @@ function MobileScreen() {
 }
 
 export function Home() {
-  useSwitchTheme();
   const isMobileScreen = useMobileScreen();
+  useSwitchTheme();
 
   if (!useHasHydrated()) {
     return <Loading />;
