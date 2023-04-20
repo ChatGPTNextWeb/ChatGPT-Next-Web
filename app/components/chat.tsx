@@ -723,6 +723,11 @@ export function Chat(props: {
       >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
+          const showActions =
+            !isUser &&
+            i > 0 &&
+            !(message.preview || message.content.length === 0);
+          const showTyping = message.preview || message.streaming;
 
           return (
             <div
@@ -735,47 +740,46 @@ export function Chat(props: {
                 <div className={styles["chat-message-avatar"]}>
                   <Avatar role={message.role} model={message.model} />
                 </div>
-                {(message.preview || message.streaming) && (
+                {showTyping && (
                   <div className={styles["chat-message-status"]}>
                     {Locale.Chat.Typing}
                   </div>
                 )}
                 <div className={styles["chat-message-item"]}>
-                  {!isUser &&
-                    !(message.preview || message.content.length === 0) && (
-                      <div className={styles["chat-message-top-actions"]}>
-                        {message.streaming ? (
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onUserStop(message.id ?? i)}
-                          >
-                            {Locale.Chat.Actions.Stop}
-                          </div>
-                        ) : (
-                          <>
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onDelete(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Delete}
-                            </div>
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onResend(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Retry}
-                            </div>
-                          </>
-                        )}
-
+                  {showActions && (
+                    <div className={styles["chat-message-top-actions"]}>
+                      {message.streaming ? (
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => copyToClipboard(message.content)}
+                          onClick={() => onUserStop(message.id ?? i)}
                         >
-                          {Locale.Chat.Actions.Copy}
+                          {Locale.Chat.Actions.Stop}
                         </div>
+                      ) : (
+                        <>
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onDelete(message.id ?? i)}
+                          >
+                            {Locale.Chat.Actions.Delete}
+                          </div>
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onResend(message.id ?? i)}
+                          >
+                            {Locale.Chat.Actions.Retry}
+                          </div>
+                        </>
+                      )}
+
+                      <div
+                        className={styles["chat-message-top-action"]}
+                        onClick={() => copyToClipboard(message.content)}
+                      >
+                        {Locale.Chat.Actions.Copy}
                       </div>
-                    )}
+                    </div>
+                  )}
                   <Markdown
                     content={message.content}
                     loading={
