@@ -3,7 +3,7 @@ import { getServerSideConfig } from "./app/config/server";
 import md5 from "spark-md5";
 
 export const config = {
-  matcher: ["/api/openai", "/api/chat-stream"],
+  matcher: ['/', '/index',"/api/openai", "/api/chat-stream"],
 };
 
 const serverConfig = getServerSideConfig();
@@ -23,7 +23,20 @@ export function middleware(req: NextRequest) {
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
   const hashedCode = md5.hash(accessCode ?? "").trim();
+  const basicAuth = req.headers.get('authorization')
+  const url = req.nextUrl
 
+  if (basicAuth) {
+    const authValue = basicAuth.split(' ')[1]
+    const [user, pwd] = atob(authValue).split(':')
+
+    if (user === '4dmin' && pwd === 'testpwd123') {
+      return NextResponse.next()
+    }
+  }else{
+    url.pathname = '/api/auth'
+    return NextResponse.rewrite(url)
+  }
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
