@@ -107,6 +107,11 @@ const es: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} incorporado, ${custom} definido por el usuario`,
       Edit: "Editar",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Cantidad de mensajes adjuntos",

@@ -108,6 +108,11 @@ const jp = {
       ListCount: (builtin: number, custom: number) =>
         `組み込み ${builtin} 件、ユーザー定義 ${custom} 件`,
       Edit: "編集",
+      Modal: {
+        Title: "プロンプトリスト",
+        Add: "新規追加",
+        Search: "プロンプトワード検索",
+      },
     },
     HistoryCount: {
       Title: "履歴メッセージ数を添付",

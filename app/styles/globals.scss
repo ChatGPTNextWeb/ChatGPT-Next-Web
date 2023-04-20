@@ -140,6 +140,7 @@ label {
 
 input {
   text-align: center;
+  font-family: inherit;
 }
 
 input[type="checkbox"] {
@@ -224,6 +225,7 @@ input[type="password"] {
   color: var(--black);
   padding: 0 10px;
   max-width: 50%;
+  font-family: inherit;
 }
 
 div.math {

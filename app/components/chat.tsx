@@ -570,10 +570,9 @@ export function Chat(props: {
     if (userIndex === null) return;
 
     setIsLoading(true);
-    chatStore
-      .onUserInput(session.messages[userIndex].content)
-      .then(() => setIsLoading(false));
+    const content = session.messages[userIndex].content;
     deleteMessage(userIndex);
+    chatStore.onUserInput(content).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -709,6 +708,7 @@ export function Chat(props: {
         className={styles["chat-body"]}
         ref={scrollRef}
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}
+        onMouseDown={() => inputRef.current?.blur()}
         onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
         onTouchStart={() => {
           inputRef.current?.blur();
