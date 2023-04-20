@@ -49,7 +49,7 @@ export function isIOS() {
 }
 
 export function useMobileScreen() {
-  const [isMobileScreen_, setIsMobileScreen] = useState(false);
+  const [isMobileScreen_, setIsMobileScreen] = useState(isMobileScreen());
   useEffect(() => {
     const onResize = () => {
       setIsMobileScreen(isMobileScreen());
@@ -66,6 +66,9 @@ export function useMobileScreen() {
 }
 
 export function isMobileScreen() {
+  if (typeof window === "undefined") {
+    return false;
+  }
   return window.innerWidth <= 600;
 }
 
