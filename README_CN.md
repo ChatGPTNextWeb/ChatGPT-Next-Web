@@ -94,6 +94,10 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 > 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
 
+### `OPENAI_ORG_ID` （可选）
+
+指定 OpenAI 中的组织 ID。
+
 ## 开发
 
 > 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
