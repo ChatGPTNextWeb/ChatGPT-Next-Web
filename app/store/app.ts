@@ -122,7 +122,7 @@ export function limitModel(name: string) {
 
 export const ModalConfigValidator = {
   model(x: string) {
-    return limitModel(x);
+    return limitModel(x) as ModelType;
   },
   max_tokens(x: number) {
     return limitNumber(x, 0, 32000, 2000);
