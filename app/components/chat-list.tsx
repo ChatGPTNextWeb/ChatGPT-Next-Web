@@ -10,7 +10,6 @@ import {
 import { useChatStore } from "../store";
 
 import Locale from "../locales";
-import { isMobileScreen } from "../utils";
 
 export function ChatItem(props: {
   onClick?: () => void;
