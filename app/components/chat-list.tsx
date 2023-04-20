@@ -10,6 +10,8 @@ import {
 import { useChatStore } from "../store";
 
 import Locale from "../locales";
+import { Link, useNavigate } from "react-router-dom";
+import { Path } from "../constant";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -59,6 +61,7 @@ export function ChatList() {
       state.moveSession,
     ]);
   const chatStore = useChatStore();
+  const navigate = useNavigate();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -94,7 +97,10 @@ export function ChatList() {
                 id={item.id}
                 index={i}
                 selected={i === selectedIndex}
-                onClick={() => selectSession(i)}
+                onClick={() => {
+                  navigate(Path.Chat);
+                  selectSession(i);
+                }}
                 onDelete={() => chatStore.deleteSession(i)}
               />
             ))}
