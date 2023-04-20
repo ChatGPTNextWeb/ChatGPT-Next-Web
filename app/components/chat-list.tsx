@@ -10,6 +10,8 @@ import {
 import { useChatStore } from "../store";
 
 import Locale from "../locales";
+import { Link, useNavigate } from "react-router-dom";
+import { Path } from "../constant";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -20,6 +22,7 @@ export function ChatItem(props: {
   selected: boolean;
   id: number;
   index: number;
+  narrow?: boolean;
 }) {
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
@@ -33,13 +36,20 @@ export function ChatItem(props: {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <div className={styles["chat-item-title"]}>{props.title}</div>
-          <div className={styles["chat-item-info"]}>
-            <div className={styles["chat-item-count"]}>
-              {Locale.ChatItem.ChatItemCount(props.count)}
-            </div>
-            <div className={styles["chat-item-date"]}>{props.time}</div>
-          </div>
+          {props.narrow ? (
+            <div className={styles["chat-item-narrow"]}>{props.count}</div>
+          ) : (
+            <>
+              <div className={styles["chat-item-title"]}>{props.title}</div>
+              <div className={styles["chat-item-info"]}>
+                <div className={styles["chat-item-count"]}>
+                  {Locale.ChatItem.ChatItemCount(props.count)}
+                </div>
+                <div className={styles["chat-item-date"]}>{props.time}</div>
+              </div>
+            </>
+          )}
+
           <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
             <DeleteIcon />
           </div>
@@ -49,7 +59,7 @@ export function ChatItem(props: {
   );
 }
 
-export function ChatList() {
+export function ChatList(props: { narrow?: boolean }) {
   const [sessions, selectedIndex, selectSession, removeSession, moveSession] =
     useChatStore((state) => [
       state.sessions,
@@ -59,6 +69,7 @@ export function ChatList() {
       state.moveSession,
     ]);
   const chatStore = useChatStore();
+  const navigate = useNavigate();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -94,8 +105,16 @@ export function ChatList() {
                 id={item.id}
                 index={i}
                 selected={i === selectedIndex}
-                onClick={() => selectSession(i)}
-                onDelete={() => chatStore.deleteSession(i)}
+                onClick={() => {
+                  navigate(Path.Chat);
+                  selectSession(i);
+                }}
+                onDelete={() => {
+                  if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
+                    chatStore.deleteSession(i);
+                  }
+                }}
+                narrow={props.narrow}
               />
             ))}
             {provided.placeholder}
