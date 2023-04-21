@@ -25,10 +25,10 @@ The Docker version is equivalent to the stable version, and the latest Docker is
 ## What is the environment variable CODE? Is it necessary to set it?
 This is your custom access password, you can choose:
 1. Do not set it, delete the environment variable. Be cautious: anyone can access your project at this time.
-2. When deploying the project, set the environment variable CODE (supports multiple passwords, separated by commas). After setting the access password, users need to enter the access password in the settings page to use it. See [related instructions](https://github.com/Yidadaa/ChatGPT-Next-Web#access-password)
+2. When deploying the project, set the environment variable CODE (supports multiple passwords, separated by commas). After setting the access password, users need to enter the access password in the settings page to use it. See [related instructions](https://github.com/Chenm4/ChatGPTForMyselfWeb#access-password)
 
 ## Why doesn't the version I deployed have streaming response
-> Related discussion: [#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
+> Related discussion: [#386](https://github.com/Chenm4/ChatGPTForMyselfWeb/issues/386)
 
 If you use nginx reverse proxy, you need to add the following code to the configuration file:
 ```
@@ -123,10 +123,10 @@ OpenAI only accepts credit cards from designated regions (Chinese credit cards c
 Wait for email updates afterwards.
 
 ## How to use the Azure OpenAI interface
-Please refer to: [#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
+Please refer to: [#371](https://github.com/Chenm4/ChatGPTForMyselfWeb/issues/371)
 
 ## Why is my Token consumed so fast?
-> Related discussion: [#518](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/518)
+> Related discussion: [#518](https://github.com/Chenm4/ChatGPTForMyselfWeb/issues/518)
 - If you have GPT-4 access and use GPT-4 API regularly, your bill will increase rapidly since GPT-4 pricing is about 15 times higher than GPT-3.5;
 - If you are using GPT-3.5 and not using it frequently, but still find your bill increasing fast, please troubleshoot immediately using these steps:
   - Check your API key consumption record on the OpenAI website; if your token is consumed every hour and each time consumes tens of thousands of tokens, your key must have been leaked. Please delete it and regenerate it immediately. **Do not check your balance on random websites.**
