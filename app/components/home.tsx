@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect, StyleHTMLAttributes } from "react";
+import { useState, useEffect } from "react";
 
 import styles from "./home.module.scss";
 
@@ -10,7 +10,6 @@ import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
 import { getCSSVar, useMobileScreen } from "../utils";
-import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
 import { Path } from "../constant";
@@ -35,6 +34,10 @@ export function Loading(props: { noLogo?: boolean }) {
 }
 
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
+  loading: () => <Loading noLogo />,
+});
+
+const Chat = dynamic(async () => (await import("./chat")).Chat, {
   loading: () => <Loading noLogo />,
 });
 

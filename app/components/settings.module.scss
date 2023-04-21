@@ -19,20 +19,6 @@
   cursor: pointer;
 }
 
-.password-input-container {
-  max-width: 50%;
-  display: flex;
-  justify-content: flex-end;
-
-  .password-eye {
-    margin-right: 4px;
-  }
-
-  .password-input {
-    min-width: 80%;
-  }
-}
-
 .user-prompt-modal {
   min-height: 40vh;
 
