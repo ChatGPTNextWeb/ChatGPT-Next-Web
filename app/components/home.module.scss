@@ -313,6 +313,10 @@
 .chat-message {
   display: flex;
   flex-direction: row;
+
+  &:last-child {
+    animation: slide-in ease 0.3s;
+  }
 }
 
 .chat-message-user {
@@ -325,7 +329,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  animation: slide-in ease 0.3s;
 
   &:hover {
     .chat-message-top-actions {
