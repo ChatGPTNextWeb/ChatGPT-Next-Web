@@ -11,6 +11,7 @@ import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
+import { url } from "inspector";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -378,6 +379,18 @@ export const useChatStore = create<ChatStore>()(
       },
 
       async onUserInput(content) {
+        // Shopper
+        if (content.startsWith("page:")) {
+          const url = content.replace("page:", "");
+          const response = await fetch("http://localhost:5000/page", {
+            method: "post",
+            body: JSON.stringify({ url: url }),
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await response.json();
+          const prompt = data["result"];
+          content = prompt;
+        }
         const userMessage: Message = createMessage({
           role: "user",
           content,

@@ -150,6 +150,13 @@ export const usePromptStore = create<PromptStore>()(
               },
             );
 
+            // shopper
+            builtinPrompts[0].push({
+              id: Math.random(),
+              title: "Shopper",
+              content: "page:https://item.jd.com/6039832.html",
+            } as Prompt);
+
             const userPrompts =
               usePromptStore.getState().getUserPrompts() ?? [];
 
