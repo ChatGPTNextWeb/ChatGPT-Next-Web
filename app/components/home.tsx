@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, StyleHTMLAttributes } from "react";
 
 import styles from "./home.module.scss";
 
@@ -23,6 +23,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -34,10 +35,6 @@ export function Loading(props: { noLogo?: boolean }) {
 }
 
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
-  loading: () => <Loading noLogo />,
-});
-
-const SideBar = dynamic(async () => (await import("./sidebar")).SideBar, {
   loading: () => <Loading noLogo />,
 });
 
