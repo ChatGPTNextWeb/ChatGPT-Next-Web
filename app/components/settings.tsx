@@ -645,7 +645,7 @@ export function Settings() {
               value={config.modelConfig.presence_penalty?.toFixed(1)}
               min="-2"
               max="2"
-              step="0.5"
+              step="0.1"
               onChange={(e) => {
                 updateConfig(
                   (config) =>
