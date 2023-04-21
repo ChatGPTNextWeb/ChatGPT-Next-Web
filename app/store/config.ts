@@ -16,8 +16,6 @@ export enum Theme {
 }
 
 const DEFAULT_CONFIG = {
-  historyMessageCount: 4,
-  compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
@@ -34,6 +32,8 @@ const DEFAULT_CONFIG = {
     temperature: 1,
     max_tokens: 2000,
     presence_penalty: 0,
+    historyMessageCount: 4,
+    compressMessageLengthThreshold: 1000,
   },
 };
 

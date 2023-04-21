@@ -334,14 +334,14 @@ export const useChatStore = create<ChatStore>()(
         // get short term and unmemoried long term memory
         const shortTermMemoryMessageIndex = Math.max(
           0,
-          n - config.historyMessageCount,
+          n - config.modelConfig.historyMessageCount,
         );
         const longTermMemoryMessageIndex = session.lastSummarizeIndex;
         const oldestIndex = Math.max(
           shortTermMemoryMessageIndex,
           longTermMemoryMessageIndex,
         );
-        const threshold = config.compressMessageLengthThreshold;
+        const threshold = config.modelConfig.compressMessageLengthThreshold;
 
         // get recent messages as many as possible
         const reversedRecentMessages = [];
@@ -410,7 +410,7 @@ export const useChatStore = create<ChatStore>()(
         if (historyMsgLength > config?.modelConfig?.max_tokens ?? 4000) {
           const n = toBeSummarizedMsgs.length;
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
-            Math.max(0, n - config.historyMessageCount),
+            Math.max(0, n - config.modelConfig.historyMessageCount),
           );
         }
 
@@ -423,11 +423,12 @@ export const useChatStore = create<ChatStore>()(
           "[Chat History] ",
           toBeSummarizedMsgs,
           historyMsgLength,
-          config.compressMessageLengthThreshold,
+          config.modelConfig.compressMessageLengthThreshold,
         );
 
         if (
-          historyMsgLength > config.compressMessageLengthThreshold &&
+          historyMsgLength >
+            config.modelConfig.compressMessageLengthThreshold &&
           session.sendMemory
         ) {
           requestChatStream(

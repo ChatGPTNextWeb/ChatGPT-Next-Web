@@ -138,9 +138,7 @@
 .sidebar-body {
   flex: 1;
   overflow: auto;
-}
-
-.chat-list {
+  overflow-x: hidden;
 }
 
 .chat-item {

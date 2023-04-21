@@ -9,10 +9,7 @@ import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
-import EyeIcon from "../icons/eye.svg";
-import EyeOffIcon from "../icons/eye-off.svg";
-
-import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
+import { Input, List, ListItem, Modal, PasswordInput, Popover } from "./ui-lib";
 
 import { IconButton } from "./button";
 import {
@@ -24,6 +21,8 @@ import {
   useAccessStore,
   ModalConfigValidator,
   useAppConfig,
+  ChatConfig,
+  ModelConfig,
 } from "../store";
 import { Avatar } from "./chat";
 
@@ -155,26 +154,127 @@ function SettingItem(props: {
   );
 }
 
-function PasswordInput(props: HTMLProps<HTMLInputElement>) {
-  const [visible, setVisible] = useState(false);
-
-  function changeVisibility() {
-    setVisible(!visible);
-  }
-
+export function ModelConfigList(props: {
+  modelConfig: ModelConfig;
+  updateConfig: (updater: (config: ModelConfig) => void) => void;
+}) {
   return (
-    <div className={styles["password-input-container"]}>
-      <IconButton
-        icon={visible ? <EyeIcon /> : <EyeOffIcon />}
-        onClick={changeVisibility}
-        className={styles["password-eye"]}
-      />
-      <input
-        {...props}
-        type={visible ? "text" : "password"}
-        className={styles["password-input"]}
-      />
-    </div>
+    <>
+      <SettingItem title={Locale.Settings.Model}>
+        <select
+          value={props.modelConfig.model}
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.model = ModalConfigValidator.model(
+                  e.currentTarget.value,
+                )),
+            );
+          }}
+        >
+          {ALL_MODELS.map((v) => (
+            <option value={v.name} key={v.name} disabled={!v.available}>
+              {v.name}
+            </option>
+          ))}
+        </select>
+      </SettingItem>
+      <SettingItem
+        title={Locale.Settings.Temperature.Title}
+        subTitle={Locale.Settings.Temperature.SubTitle}
+      >
+        <InputRange
+          value={props.modelConfig.temperature?.toFixed(1)}
+          min="0"
+          max="2"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.temperature = ModalConfigValidator.temperature(
+                  e.currentTarget.valueAsNumber,
+                )),
+            );
+          }}
+        ></InputRange>
+      </SettingItem>
+      <SettingItem
+        title={Locale.Settings.MaxTokens.Title}
+        subTitle={Locale.Settings.MaxTokens.SubTitle}
+      >
+        <input
+          type="number"
+          min={100}
+          max={32000}
+          value={props.modelConfig.max_tokens}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) =>
+                (config.max_tokens = ModalConfigValidator.max_tokens(
+                  e.currentTarget.valueAsNumber,
+                )),
+            )
+          }
+        ></input>
+      </SettingItem>
+      <SettingItem
+        title={Locale.Settings.PresencePenlty.Title}
+        subTitle={Locale.Settings.PresencePenlty.SubTitle}
+      >
+        <InputRange
+          value={props.modelConfig.presence_penalty?.toFixed(1)}
+          min="-2"
+          max="2"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.presence_penalty =
+                  ModalConfigValidator.presence_penalty(
+                    e.currentTarget.valueAsNumber,
+                  )),
+            );
+          }}
+        ></InputRange>
+      </SettingItem>
+
+      <SettingItem
+        title={Locale.Settings.HistoryCount.Title}
+        subTitle={Locale.Settings.HistoryCount.SubTitle}
+      >
+        <InputRange
+          title={props.modelConfig.historyMessageCount.toString()}
+          value={props.modelConfig.historyMessageCount}
+          min="0"
+          max="25"
+          step="1"
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.historyMessageCount = e.target.valueAsNumber),
+            )
+          }
+        ></InputRange>
+      </SettingItem>
+
+      <SettingItem
+        title={Locale.Settings.CompressThreshold.Title}
+        subTitle={Locale.Settings.CompressThreshold.SubTitle}
+      >
+        <input
+          type="number"
+          min={500}
+          max={4000}
+          value={props.modelConfig.compressMessageLengthThreshold}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) =>
+                (config.compressMessageLengthThreshold =
+                  e.currentTarget.valueAsNumber),
+            )
+          }
+        ></input>
+      </SettingItem>
+    </>
   );
 }
 
@@ -505,44 +605,6 @@ export function Settings() {
               />
             )}
           </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.HistoryCount.Title}
-            subTitle={Locale.Settings.HistoryCount.SubTitle}
-          >
-            <InputRange
-              title={config.historyMessageCount.toString()}
-              value={config.historyMessageCount}
-              min="0"
-              max="25"
-              step="1"
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.historyMessageCount = e.target.valueAsNumber),
-                )
-              }
-            ></InputRange>
-          </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.CompressThreshold.Title}
-            subTitle={Locale.Settings.CompressThreshold.SubTitle}
-          >
-            <input
-              type="number"
-              min={500}
-              max={4000}
-              value={config.compressMessageLengthThreshold}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber),
-                )
-              }
-            ></input>
-          </SettingItem>
         </List>
 
         <List>
@@ -578,85 +640,14 @@ export function Settings() {
         </List>
 
         <List>
-          <SettingItem title={Locale.Settings.Model}>
-            <select
-              value={config.modelConfig.model}
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.model = ModalConfigValidator.model(
-                      e.currentTarget.value,
-                    )),
-                );
-              }}
-            >
-              {ALL_MODELS.map((v) => (
-                <option value={v.name} key={v.name} disabled={!v.available}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.Temperature.Title}
-            subTitle={Locale.Settings.Temperature.SubTitle}
-          >
-            <InputRange
-              value={config.modelConfig.temperature?.toFixed(1)}
-              min="0"
-              max="2"
-              step="0.1"
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.temperature =
-                      ModalConfigValidator.temperature(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                );
-              }}
-            ></InputRange>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.MaxTokens.Title}
-            subTitle={Locale.Settings.MaxTokens.SubTitle}
-          >
-            <input
-              type="number"
-              min={100}
-              max={32000}
-              value={config.modelConfig.max_tokens}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.max_tokens =
-                      ModalConfigValidator.max_tokens(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                )
-              }
-            ></input>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.PresencePenlty.Title}
-            subTitle={Locale.Settings.PresencePenlty.SubTitle}
-          >
-            <InputRange
-              value={config.modelConfig.presence_penalty?.toFixed(1)}
-              min="-2"
-              max="2"
-              step="0.5"
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.presence_penalty =
-                      ModalConfigValidator.presence_penalty(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                );
-              }}
-            ></InputRange>
-          </SettingItem>
+          <ModelConfigList
+            modelConfig={config.modelConfig}
+            updateConfig={(upater) => {
+              const modelConfig = { ...config.modelConfig };
+              upater(modelConfig);
+              config.update((config) => (config.modelConfig = modelConfig));
+            }}
+          />
         </List>
 
         {shouldShowPromptModal && (
