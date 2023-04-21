@@ -4,6 +4,7 @@ import {
   ModelConfig,
   ModelType,
   useAccessStore,
+  useAppConfig,
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
@@ -27,7 +28,7 @@ const makeRequestParam = (
     sendMessages = sendMessages.filter((m) => m.role !== "assistant");
   }
 
-  const modelConfig = { ...useChatStore.getState().config.modelConfig };
+  const modelConfig = { ...useAppConfig.getState().modelConfig };
 
   // @yidadaa: wont send max_tokens, because it is nonsense for Muggles
   // @ts-expect-error
