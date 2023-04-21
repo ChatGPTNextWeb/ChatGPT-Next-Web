@@ -9,7 +9,6 @@ import styles from "./home.module.scss";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
-import { useChatStore } from "../store";
 import { getCSSVar, useMobileScreen } from "../utils";
 import { Chat } from "./chat";
 
@@ -24,6 +23,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
+import { useAppConfig } from "../store/config";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -39,7 +39,7 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
 });
 
 export function useSwitchTheme() {
-  const config = useChatStore((state) => state.config);
+  const config = useAppConfig();
 
   useEffect(() => {
     document.body.classList.remove("light");
@@ -80,7 +80,7 @@ const useHasHydrated = () => {
 };
 
 function WideScreen() {
-  const config = useChatStore((state) => state.config);
+  const config = useAppConfig();
 
   return (
     <div
