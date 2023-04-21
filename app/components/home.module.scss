@@ -154,7 +154,6 @@
   user-select: none;
   border: 2px solid transparent;
   position: relative;
-  overflow: hidden;
 }
 
 .chat-item:hover {
@@ -228,6 +227,7 @@
     justify-content: center;
     align-items: center;
     transition: all ease 0.3s;
+    overflow: hidden;
 
     &:hover {
       .chat-item-narrow {
@@ -237,15 +237,31 @@
   }
 
   .chat-item-narrow {
-    font-weight: bolder;
-    font-size: 24px;
     line-height: 0;
     font-weight: lighter;
     color: var(--black);
     transform: translateX(0);
     transition: all ease 0.3s;
-    opacity: 0.1;
     padding: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .chat-item-avatar {
+      display: flex;
+      justify-content: center;
+      opacity: 0.1;
+      position: absolute;
+      transform: scale(4);
+    }
+
+    .chat-item-narrow-count {
+      font-size: 24px;
+      font-weight: bolder;
+      text-align: center;
+      color: var(--primary);
+      opacity: 0.6;
+    }
   }
 
   .chat-item-delete {
