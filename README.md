@@ -146,6 +146,10 @@ Access passsword, separated by comma.
 
 Override openai api request base url.
 
+### `OPENAI_ORG_ID` (optional)
+
+Specify OpenAI organization ID.
+
 ## Development
 
 > [简体中文 > 如何进行二次开发](./README_CN.md#开发)
