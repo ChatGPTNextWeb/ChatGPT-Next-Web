@@ -1,4 +1,4 @@
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -9,8 +9,6 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import BotIcon from "../icons/bot.svg";
-import BlackBotIcon from "../icons/black-bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaxIcon from "../icons/max.svg";
@@ -33,12 +31,13 @@ import {
   Theme,
   ModelType,
   useAppConfig,
+  ModelConfig,
+  DEFAULT_TOPIC,
 } from "../store";
 
 import {
   copyToClipboard,
   downloadAs,
-  getEmojiUrl,
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
@@ -54,10 +53,11 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { Input, Modal, showModal } from "./ui-lib";
+import { Input, List, ListItem, Modal, Popover, showModal } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-
+import { ModelConfigList } from "./model-config";
+import { AvatarPicker } from "./emoji";
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
   {
@@ -65,31 +65,9 @@ const Markdown = dynamic(
   },
 );
 
-const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
+const Avatar = dynamic(async () => (await import("./emoji")).Avatar, {
   loading: () => <LoadingIcon />,
 });
-
-export function Avatar(props: { role: Message["role"]; model?: ModelType }) {
-  const config = useAppConfig();
-
-  if (props.role !== "user") {
-    return (
-      <div className="no-dark">
-        {props.model?.startsWith("gpt-4") ? (
-          <BlackBotIcon className={styles["user-avtar"]} />
-        ) : (
-          <BotIcon className={styles["user-avtar"]} />
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} getEmojiUrl={getEmojiUrl} />
-    </div>
-  );
-}
 
 function exportMessages(messages: Message[], topic: string) {
   const mdText =
@@ -129,14 +107,12 @@ function exportMessages(messages: Message[], topic: string) {
   });
 }
 
-function PromptToast(props: {
-  showToast?: boolean;
-  showModal?: boolean;
-  setShowModal: (_: boolean) => void;
-}) {
+function ContextPrompts() {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const context = session.context;
+
+  const [showPicker, setShowPicker] = useState(false);
 
   const addContextPrompt = (prompt: Message) => {
     chatStore.updateCurrentSession((session) => {
@@ -157,6 +133,165 @@ function PromptToast(props: {
   };
 
   return (
+    <>
+      <div className={chatStyle["context-prompt"]} style={{ marginBottom: 20 }}>
+        {context.map((c, i) => (
+          <div className={chatStyle["context-prompt-row"]} key={i}>
+            <select
+              value={c.role}
+              className={chatStyle["context-role"]}
+              onChange={(e) =>
+                updateContextPrompt(i, {
+                  ...c,
+                  role: e.target.value as any,
+                })
+              }
+            >
+              {ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            <Input
+              value={c.content}
+              type="text"
+              className={chatStyle["context-content"]}
+              rows={1}
+              onInput={(e) =>
+                updateContextPrompt(i, {
+                  ...c,
+                  content: e.currentTarget.value as any,
+                })
+              }
+            />
+            <IconButton
+              icon={<DeleteIcon />}
+              className={chatStyle["context-delete-button"]}
+              onClick={() => removeContextPrompt(i)}
+              bordered
+            />
+          </div>
+        ))}
+
+        <div className={chatStyle["context-prompt-row"]}>
+          <IconButton
+            icon={<AddIcon />}
+            text={Locale.Context.Add}
+            bordered
+            className={chatStyle["context-prompt-button"]}
+            onClick={() =>
+              addContextPrompt({
+                role: "system",
+                content: "",
+                date: "",
+              })
+            }
+          />
+        </div>
+      </div>
+      <List>
+        <ListItem title={"角色头像"}>
+          <Popover
+            content={
+              <AvatarPicker
+                onEmojiClick={(emoji) =>
+                  chatStore.updateCurrentSession(
+                    (session) => (session.avatar = emoji),
+                  )
+                }
+              ></AvatarPicker>
+            }
+            open={showPicker}
+            onClose={() => setShowPicker(false)}
+          >
+            <div onClick={() => setShowPicker(true)}>
+              {session.avatar ? (
+                <Avatar avatar={session.avatar} />
+              ) : (
+                <Avatar model={session.modelConfig.model} />
+              )}
+            </div>
+          </Popover>
+        </ListItem>
+        <ListItem title={"对话标题"}>
+          <input
+            type="text"
+            value={session.topic}
+            onInput={(e) =>
+              chatStore.updateCurrentSession(
+                (session) => (session.topic = e.currentTarget.value),
+              )
+            }
+          ></input>
+        </ListItem>
+        <ListItem
+          title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of 
+          ${session.messages.length})`}
+          subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
+        ></ListItem>
+      </List>
+    </>
+  );
+}
+
+export function SessionConfigModel(props: { onClose: () => void }) {
+  const chatStore = useChatStore();
+  const config = useAppConfig();
+  const session = chatStore.currentSession();
+  const context = session.context;
+
+  const updateConfig = (updater: (config: ModelConfig) => void) => {
+    const config = { ...session.modelConfig };
+    updater(config);
+    chatStore.updateCurrentSession((session) => (session.modelConfig = config));
+  };
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Context.Edit}
+        onClose={() => props.onClose()}
+        actions={[
+          <IconButton
+            key="reset"
+            icon={<CopyIcon />}
+            bordered
+            text="重置预设"
+            onClick={() =>
+              confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
+            }
+          />,
+          <IconButton
+            key="copy"
+            icon={<CopyIcon />}
+            bordered
+            text="保存预设"
+            onClick={() => copyToClipboard(session.memoryPrompt)}
+          />,
+        ]}
+      >
+        <ContextPrompts />
+
+        <ModelConfigList
+          modelConfig={session.modelConfig}
+          updateConfig={updateConfig}
+        />
+      </Modal>
+    </div>
+  );
+}
+
+function PromptToast(props: {
+  showToast?: boolean;
+  showModal?: boolean;
+  setShowModal: (_: boolean) => void;
+}) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const context = session.context;
+
+  return (
     <div className={chatStyle["prompt-toast"]} key="prompt-toast">
       {props.showToast && (
         <div
@@ -171,115 +306,7 @@ function PromptToast(props: {
         </div>
       )}
       {props.showModal && (
-        <div className="modal-mask">
-          <Modal
-            title={Locale.Context.Edit}
-            onClose={() => props.setShowModal(false)}
-            actions={[
-              <IconButton
-                key="reset"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Memory.Reset}
-                onClick={() =>
-                  confirm(Locale.Memory.ResetConfirm) &&
-                  chatStore.resetSession()
-                }
-              />,
-              <IconButton
-                key="copy"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Memory.Copy}
-                onClick={() => copyToClipboard(session.memoryPrompt)}
-              />,
-            ]}
-          >
-            <>
-              <div className={chatStyle["context-prompt"]}>
-                {context.map((c, i) => (
-                  <div className={chatStyle["context-prompt-row"]} key={i}>
-                    <select
-                      value={c.role}
-                      className={chatStyle["context-role"]}
-                      onChange={(e) =>
-                        updateContextPrompt(i, {
-                          ...c,
-                          role: e.target.value as any,
-                        })
-                      }
-                    >
-                      {ROLES.map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
-                      ))}
-                    </select>
-                    <Input
-                      value={c.content}
-                      type="text"
-                      className={chatStyle["context-content"]}
-                      rows={1}
-                      onInput={(e) =>
-                        updateContextPrompt(i, {
-                          ...c,
-                          content: e.currentTarget.value as any,
-                        })
-                      }
-                    />
-                    <IconButton
-                      icon={<DeleteIcon />}
-                      className={chatStyle["context-delete-button"]}
-                      onClick={() => removeContextPrompt(i)}
-                      bordered
-                    />
-                  </div>
-                ))}
-
-                <div className={chatStyle["context-prompt-row"]}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    text={Locale.Context.Add}
-                    bordered
-                    className={chatStyle["context-prompt-button"]}
-                    onClick={() =>
-                      addContextPrompt({
-                        role: "system",
-                        content: "",
-                        date: "",
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className={chatStyle["memory-prompt"]}>
-                <div className={chatStyle["memory-prompt-title"]}>
-                  <span>
-                    {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
-                    {session.messages.length})
-                  </span>
-
-                  <label className={chatStyle["memory-prompt-action"]}>
-                    {Locale.Memory.Send}
-                    <input
-                      type="checkbox"
-                      checked={session.sendMemory}
-                      onChange={() =>
-                        chatStore.updateCurrentSession(
-                          (session) =>
-                            (session.sendMemory = !session.sendMemory),
-                        )
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className={chatStyle["memory-prompt-content"]}>
-                  {session.memoryPrompt || Locale.Memory.EmptyContent}
-                </div>
-              </div>
-            </>
-          </Modal>
-        </div>
+        <SessionConfigModel onClose={() => props.setShowModal(false)} />
       )}
     </div>
   );
@@ -654,7 +681,7 @@ export function Chat() {
             className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
             onClickCapture={renameSession}
           >
-            {session.topic}
+            {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
           <div className={styles["window-header-sub-title"]}>
             {Locale.Chat.SubTitle(session.messages.length)}
@@ -739,7 +766,13 @@ export function Chat() {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role} model={message.model} />
+                  {message.role === "user" ? (
+                    <Avatar avatar={config.avatar} />
+                  ) : session.avatar ? (
+                    <Avatar avatar={session.avatar} />
+                  ) : (
+                    <Avatar model={message.model ?? "gpt-3.5-turbo"} />
+                  )}
                 </div>
                 {showTyping && (
                   <div className={styles["chat-message-status"]}>

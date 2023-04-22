@@ -11,7 +11,7 @@ import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelType, useAppConfig } from "./config";
+import { ModelConfig, ModelType, useAppConfig } from "./config";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -42,16 +42,18 @@ export interface ChatStat {
 export interface ChatSession {
   id: number;
   topic: string;
-  sendMemory: boolean;
+  avatar?: string;
   memoryPrompt: string;
   context: Message[];
   messages: Message[];
   stat: ChatStat;
   lastUpdate: string;
   lastSummarizeIndex: number;
+
+  modelConfig: ModelConfig;
 }
 
-const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
+export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 export const BOT_HELLO: Message = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
@@ -63,7 +65,6 @@ function createEmptySession(): ChatSession {
   return {
     id: Date.now(),
     topic: DEFAULT_TOPIC,
-    sendMemory: true,
     memoryPrompt: "",
     context: [],
     messages: [],
@@ -74,6 +75,8 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: createDate,
     lastSummarizeIndex: 0,
+
+    modelConfig: useAppConfig.getState().modelConfig,
   };
 }
 

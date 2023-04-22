@@ -33,12 +33,22 @@ export function Card(props: { children: JSX.Element[]; className?: string }) {
   );
 }
 
-export function ListItem(props: { children: JSX.Element[] }) {
-  if (props.children.length > 2) {
-    throw Error("Only Support Two Children");
-  }
-
-  return <div className={styles["list-item"]}>{props.children}</div>;
+export function ListItem(props: {
+  title: string;
+  subTitle?: string;
+  children?: JSX.Element | JSX.Element[];
+}) {
+  return (
+    <div className={styles["list-item"]}>
+      <div className={styles["list-item-title"]}>
+        <div>{props.title}</div>
+        {props.subTitle && (
+          <div className={styles["list-item-sub-title"]}>{props.subTitle}</div>
+        )}
+      </div>
+      {props.children}
+    </div>
+  );
 }
 
 export function List(props: { children: JSX.Element[] | JSX.Element }) {
@@ -63,7 +73,7 @@ export function Loading() {
 
 interface ModalProps {
   title: string;
-  children?: JSX.Element;
+  children?: JSX.Element | JSX.Element[];
   actions?: JSX.Element[];
   onClose?: () => void;
 }
