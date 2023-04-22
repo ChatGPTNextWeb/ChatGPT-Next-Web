@@ -30,7 +30,7 @@ async function fetchEN() {
       .slice(1)
       .map((v) => v.split('","').map((v) => v.replace('"', "")));
   } catch (error) {
-    console.error("[Fetch] failed to fetch cn prompts", error);
+    console.error("[Fetch] failed to fetch en prompts", error);
     return [];
   }
 }
