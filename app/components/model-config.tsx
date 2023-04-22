@@ -10,7 +10,7 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   return (
-    <List>
+    <>
       <ListItem title={Locale.Settings.Model}>
         <select
           value={props.modelConfig.model}
@@ -136,6 +136,6 @@ export function ModelConfigList(props: {
           }
         ></input>
       </ListItem>
-    </List>
+    </>
   );
 }
