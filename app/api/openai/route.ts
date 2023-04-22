@@ -30,6 +30,4 @@ export async function GET(req: NextRequest) {
   return makeRequest(req);
 }
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "experimental-edge";

@@ -2,7 +2,7 @@ import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 import { createRoot } from "react-dom/client";
-import React from "react";
+import React, { useEffect } from "react";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -64,6 +64,21 @@ interface ModalProps {
   onClose?: () => void;
 }
 export function Modal(props: ModalProps) {
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        props.onClose?.();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={styles["modal-container"]}>
       <div className={styles["modal-header"]}>
