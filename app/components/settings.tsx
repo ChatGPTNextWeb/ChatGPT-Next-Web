@@ -486,14 +486,16 @@ export function Settings() {
           </ListItem>
         </List>
 
-        <ModelConfigList
-          modelConfig={config.modelConfig}
-          updateConfig={(upater) => {
-            const modelConfig = { ...config.modelConfig };
-            upater(modelConfig);
-            config.update((config) => (config.modelConfig = modelConfig));
-          }}
-        />
+        <List>
+          <ModelConfigList
+            modelConfig={config.modelConfig}
+            updateConfig={(upater) => {
+              const modelConfig = { ...config.modelConfig };
+              upater(modelConfig);
+              config.update((config) => (config.modelConfig = modelConfig));
+            }}
+          />
+        </List>
 
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />

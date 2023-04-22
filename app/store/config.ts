@@ -15,7 +15,7 @@ export enum Theme {
   Light = "light",
 }
 
-const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG = {
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",

@@ -11,7 +11,7 @@ import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelConfig, ModelType, useAppConfig } from "./config";
+import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -326,7 +326,7 @@ export const useChatStore = create<ChatStore>()(
 
         // long term memory
         if (
-          session.sendMemory &&
+          session.modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0
         ) {
@@ -432,7 +432,7 @@ export const useChatStore = create<ChatStore>()(
         if (
           historyMsgLength >
             config.modelConfig.compressMessageLengthThreshold &&
-          session.sendMemory
+          session.modelConfig.sendMemory
         ) {
           requestChatStream(
             toBeSummarizedMsgs.concat({
@@ -481,7 +481,7 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: LOCAL_KEY,
-      version: 1.2,
+      version: 2,
       migrate(persistedState, version) {
         const state = persistedState as ChatStore;
 
@@ -489,8 +489,10 @@ export const useChatStore = create<ChatStore>()(
           state.sessions.forEach((s) => (s.context = []));
         }
 
-        if (version < 1.2) {
-          state.sessions.forEach((s) => (s.sendMemory = true));
+        if (version < 2) {
+          state.sessions.forEach(
+            (s) => (s.modelConfig = { ...DEFAULT_CONFIG.modelConfig }),
+          );
         }
 
         return state;

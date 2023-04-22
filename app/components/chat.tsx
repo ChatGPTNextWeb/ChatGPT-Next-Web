@@ -29,7 +29,6 @@ import {
   createMessage,
   useAccessStore,
   Theme,
-  ModelType,
   useAppConfig,
   ModelConfig,
   DEFAULT_TOPIC,
@@ -57,17 +56,14 @@ import { Input, List, ListItem, Modal, Popover, showModal } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { ModelConfigList } from "./model-config";
-import { AvatarPicker } from "./emoji";
+import { Avatar, AvatarPicker } from "./emoji";
+
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
   {
     loading: () => <LoadingIcon />,
   },
 );
-
-const Avatar = dynamic(async () => (await import("./emoji")).Avatar, {
-  loading: () => <LoadingIcon />,
-});
 
 function exportMessages(messages: Message[], topic: string) {
   const mdText =
@@ -111,8 +107,6 @@ function ContextPrompts() {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const context = session.context;
-
-  const [showPicker, setShowPicker] = useState(false);
 
   const addContextPrompt = (prompt: Message) => {
     chatStore.updateCurrentSession((session) => {
@@ -190,56 +184,15 @@ function ContextPrompts() {
           />
         </div>
       </div>
-      <List>
-        <ListItem title={"角色头像"}>
-          <Popover
-            content={
-              <AvatarPicker
-                onEmojiClick={(emoji) =>
-                  chatStore.updateCurrentSession(
-                    (session) => (session.avatar = emoji),
-                  )
-                }
-              ></AvatarPicker>
-            }
-            open={showPicker}
-            onClose={() => setShowPicker(false)}
-          >
-            <div onClick={() => setShowPicker(true)}>
-              {session.avatar ? (
-                <Avatar avatar={session.avatar} />
-              ) : (
-                <Avatar model={session.modelConfig.model} />
-              )}
-            </div>
-          </Popover>
-        </ListItem>
-        <ListItem title={"对话标题"}>
-          <input
-            type="text"
-            value={session.topic}
-            onInput={(e) =>
-              chatStore.updateCurrentSession(
-                (session) => (session.topic = e.currentTarget.value),
-              )
-            }
-          ></input>
-        </ListItem>
-        <ListItem
-          title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of 
-          ${session.messages.length})`}
-          subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
-        ></ListItem>
-      </List>
     </>
   );
 }
 
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
-  const config = useAppConfig();
   const session = chatStore.currentSession();
-  const context = session.context;
+
+  const [showPicker, setShowPicker] = useState(false);
 
   const updateConfig = (updater: (config: ModelConfig) => void) => {
     const config = { ...session.modelConfig };
@@ -273,10 +226,59 @@ export function SessionConfigModel(props: { onClose: () => void }) {
       >
         <ContextPrompts />
 
-        <ModelConfigList
-          modelConfig={session.modelConfig}
-          updateConfig={updateConfig}
-        />
+        <List>
+          <ListItem title={"角色头像"}>
+            <Popover
+              content={
+                <AvatarPicker
+                  onEmojiClick={(emoji) =>
+                    chatStore.updateCurrentSession(
+                      (session) => (session.avatar = emoji),
+                    )
+                  }
+                ></AvatarPicker>
+              }
+              open={showPicker}
+              onClose={() => setShowPicker(false)}
+            >
+              <div onClick={() => setShowPicker(true)}>
+                {session.avatar ? (
+                  <Avatar avatar={session.avatar} />
+                ) : (
+                  <Avatar model={session.modelConfig.model} />
+                )}
+              </div>
+            </Popover>
+          </ListItem>
+          <ListItem title={"对话标题"}>
+            <input
+              type="text"
+              value={session.topic}
+              onInput={(e) =>
+                chatStore.updateCurrentSession(
+                  (session) => (session.topic = e.currentTarget.value),
+                )
+              }
+            ></input>
+          </ListItem>
+        </List>
+
+        <List>
+          <ModelConfigList
+            modelConfig={session.modelConfig}
+            updateConfig={updateConfig}
+          />
+
+          {session.modelConfig.sendMemory ? (
+            <ListItem
+              title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of 
+          ${session.messages.length})`}
+              subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
+            ></ListItem>
+          ) : (
+            <></>
+          )}
+        </List>
       </Modal>
     </div>
   );
