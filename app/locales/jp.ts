@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 
 const jp = {
   WIP: "この機能は開発中です……",
