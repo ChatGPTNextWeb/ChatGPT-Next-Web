@@ -141,10 +141,7 @@ export function SideBar(props: { className?: string }) {
         </div>
       </div>
 
-      <div
-        className={styles["sidebar-drag"]}
-        onMouseDown={(e) => onDragMouseDown(e as any)}
-      ></div>
+    
     </div>
   );
 }
