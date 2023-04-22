@@ -32,6 +32,7 @@ const DEFAULT_CONFIG = {
     temperature: 1,
     max_tokens: 2000,
     presence_penalty: 0,
+    sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
   },

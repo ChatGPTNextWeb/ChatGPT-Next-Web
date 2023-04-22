@@ -325,3 +325,14 @@ pre {
     min-width: 80%;
   }
 }
+
+.user-avtar {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  border-radius: 10px;
+}

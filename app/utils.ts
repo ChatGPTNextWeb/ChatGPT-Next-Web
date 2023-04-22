@@ -1,4 +1,3 @@
-import { EmojiStyle } from "emoji-picker-react";
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
@@ -88,10 +87,6 @@ export function selectOrCopy(el: HTMLElement, content: string) {
   copyToClipboard(content);
 
   return true;
-}
-
-export function getEmojiUrl(unified: string, style: EmojiStyle) {
-  return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
 }
 
 function getDomContentWidth(dom: HTMLElement) {

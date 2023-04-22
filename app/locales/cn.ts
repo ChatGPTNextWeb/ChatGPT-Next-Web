@@ -39,7 +39,7 @@ const cn = {
   },
   Memory: {
     Title: "历史摘要",
-    EmptyContent: "尚未总结",
+    EmptyContent: "对话内容过短，无需总结",
     Send: "启用总结并发送摘要",
     Copy: "复制摘要",
     Reset: "重置对话",
@@ -172,8 +172,8 @@ const cn = {
   },
   Context: {
     Toast: (x: any) => `已设置 ${x} 条前置上下文`,
-    Edit: "前置上下文和历史记忆",
-    Add: "新增一条",
+    Edit: "当前对话设置",
+    Add: "新增预设对话",
   },
 };
 
