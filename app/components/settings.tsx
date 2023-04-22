@@ -336,7 +336,19 @@ export function Settings() {
                 : Locale.Settings.Update.IsLatest
             }
           >
-           
+            {checkingUpdate ? (
+              <div />
+            ) : hasNewVersion ? (
+              <Link href={null} target="_blank" className="link">
+                {Locale.Settings.Update.GoToUpdate}
+              </Link>
+            ) : (
+              <IconButton
+                icon={<ResetIcon></ResetIcon>}
+                text={Locale.Settings.Update.CheckUpdate}
+                onClick={() => checkUpdate(true)}
+              />
+            )}
           </SettingItem>
 
           <SettingItem title={Locale.Settings.SendKey}>
