@@ -3,7 +3,8 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。",
+    Unauthorized:
+      "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -141,7 +142,7 @@ const cn = {
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
-      SubTitle: "值越大，回复越随机，大于 1 的值可能会导致乱码",
+      SubTitle: "值越大，回复越随机",
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",

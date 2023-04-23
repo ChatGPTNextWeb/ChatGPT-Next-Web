@@ -272,16 +272,16 @@
   }
 
   .sidebar-tail {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
 
     .sidebar-actions {
-      flex-direction: column;
+      flex-direction: column-reverse;
       align-items: center;
 
       .sidebar-action {
         margin-right: 0;
-        margin-bottom: 15px;
+        margin-top: 15px;
       }
     }
   }
