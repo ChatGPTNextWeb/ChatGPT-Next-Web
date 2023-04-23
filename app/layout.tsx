@@ -42,6 +42,8 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6958939463396237"
+     crossorigin="anonymous"></script>
       </head>
       <body>{children}</body>
     </html>
