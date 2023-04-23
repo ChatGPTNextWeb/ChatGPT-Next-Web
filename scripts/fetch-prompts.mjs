@@ -36,7 +36,7 @@ async function fetchEN() {
   try {
     // const raw = await (await fetch(EN_URL)).text();
     const response = await Promise.race([fetch(EN_URL), timeoutPromise(5000)]);
-    const raw = response.text();
+    const raw = await response.text();
     return raw
       .split("\n")
       .slice(1)
