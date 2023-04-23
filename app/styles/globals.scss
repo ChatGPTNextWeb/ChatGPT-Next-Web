@@ -336,3 +336,9 @@ pre {
   box-shadow: var(--card-shadow);
   border-radius: 10px;
 }
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

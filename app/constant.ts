@@ -11,6 +11,11 @@ export enum Path {
   Home = "/",
   Chat = "/chat",
   Settings = "/settings",
+  NewChat = "/new-chat",
+}
+
+export enum SlotID {
+  AppBody = "app-body",
 }
 
 export const MAX_SIDEBAR_WIDTH = 500;
