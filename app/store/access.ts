@@ -6,10 +6,14 @@ export interface AccessControlStore {
   token: string;
 
   needCode: boolean;
+  disableUserToken: boolean;
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
-  enabledAccessControl: () => boolean;
+  accessControl: () => {
+    needCode: boolean;
+    disableUserToken: boolean;
+  };
   isAuthorized: () => boolean;
   fetch: () => void;
 }
@@ -24,10 +28,14 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       needCode: true,
-      enabledAccessControl() {
+      disableUserToken: false,
+      accessControl() {
         get().fetch();
 
-        return get().needCode;
+        return {
+          needCode: get().needCode,
+          disableUserToken: get().disableUserToken,
+        };
       },
       updateCode(code: string) {
         set((state) => ({ accessCode: code }));
@@ -37,8 +45,11 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       isAuthorized() {
         // has token or has code or disabled access control
+        const accessControl = get().accessControl();
         return (
-          !!get().token || !!get().accessCode || !get().enabledAccessControl()
+          !accessControl.needCode ||
+          !!get().accessCode ||
+          (!!get().token && !accessControl.disableUserToken)
         );
       },
       fetch() {

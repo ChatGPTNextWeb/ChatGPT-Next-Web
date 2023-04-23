@@ -50,11 +50,16 @@ function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
 
-  if (accessStore.enabledAccessControl()) {
+  const accessControl = accessStore.accessControl();
+  if (accessControl.needCode) {
     headers["access-code"] = accessStore.accessCode;
   }
 
-  if (accessStore.token && accessStore.token.length > 0) {
+  if (
+    !accessControl.disableUserToken &&
+    accessStore.token &&
+    accessStore.token.length > 0
+  ) {
     headers["token"] = accessStore.token;
   }
 

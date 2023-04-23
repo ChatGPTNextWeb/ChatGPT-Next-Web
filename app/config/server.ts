@@ -36,6 +36,7 @@ export const getServerSideConfig = () => {
     code: process.env.CODE,
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
+    disableUserToken: process.env.DISABLE_USER_TOKEN === "true",
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
   };

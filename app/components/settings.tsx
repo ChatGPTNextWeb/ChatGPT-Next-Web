@@ -215,8 +215,8 @@ export function Settings() {
   }
 
   const accessStore = useAccessStore();
-  const enabledAccessControl = useMemo(
-    () => accessStore.enabledAccessControl(),
+  const accessControl = useMemo(
+    () => accessStore.accessControl(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -450,7 +450,7 @@ export function Settings() {
         </List>
 
         <List>
-          {enabledAccessControl ? (
+          {accessControl.needCode ? (
             <SettingItem
               title={Locale.Settings.AccessCode.Title}
               subTitle={Locale.Settings.AccessCode.SubTitle}
@@ -468,19 +468,23 @@ export function Settings() {
             <></>
           )}
 
-          <SettingItem
-            title={Locale.Settings.Token.Title}
-            subTitle={Locale.Settings.Token.SubTitle}
-          >
-            <PasswordInput
-              value={accessStore.token}
-              type="text"
-              placeholder={Locale.Settings.Token.Placeholder}
-              onChange={(e) => {
-                accessStore.updateToken(e.currentTarget.value);
-              }}
-            />
-          </SettingItem>
+          {!accessControl.disableUserToken ? (
+            <SettingItem
+              title={Locale.Settings.Token.Title}
+              subTitle={Locale.Settings.Token.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.token}
+                type="text"
+                placeholder={Locale.Settings.Token.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateToken(e.currentTarget.value);
+                }}
+              />
+            </SettingItem>
+          ) : (
+            <></>
+          )}
 
           <SettingItem
             title={Locale.Settings.Usage.Title}

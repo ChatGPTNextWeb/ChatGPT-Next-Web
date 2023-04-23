@@ -30,7 +30,7 @@ export function middleware(req: NextRequest) {
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
 
-  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
+  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && (!token || serverConfig.disableUserToken)) {
     return NextResponse.json(
       {
         error: true,
@@ -44,7 +44,7 @@ export function middleware(req: NextRequest) {
   }
 
   // inject api key
-  if (!token) {
+  if (!token || serverConfig.disableUserToken) {
     const apiKey = serverConfig.apiKey;
     if (apiKey) {
       console.log("[Auth] set system token");

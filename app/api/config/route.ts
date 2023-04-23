@@ -8,6 +8,7 @@ const serverConfig = getServerSideConfig();
 // 警告！不要在这里写入任何敏感信息！
 const DANGER_CONFIG = {
   needCode: serverConfig.needCode,
+  disableUserToken: serverConfig.disableUserToken,
 };
 
 declare global {
@@ -17,5 +18,6 @@ declare global {
 export async function POST(req: NextRequest) {
   return NextResponse.json({
     needCode: serverConfig.needCode,
+    disableUserToken: serverConfig.disableUserToken,
   });
 }
