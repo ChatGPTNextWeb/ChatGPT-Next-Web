@@ -241,7 +241,10 @@ export function SessionConfigModel(props: { onClose: () => void }) {
               open={showPicker}
               onClose={() => setShowPicker(false)}
             >
-              <div onClick={() => setShowPicker(true)}>
+              <div
+                onClick={() => setShowPicker(true)}
+                style={{ cursor: "pointer" }}
+              >
                 {session.avatar ? (
                   <Avatar avatar={session.avatar} />
                 ) : (

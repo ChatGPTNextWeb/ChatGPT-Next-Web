@@ -28,11 +28,10 @@ const makeRequestParam = (
     sendMessages = sendMessages.filter((m) => m.role !== "assistant");
   }
 
-  const modelConfig = { ...useAppConfig.getState().modelConfig };
-
-  // @yidadaa: wont send max_tokens, because it is nonsense for Muggles
-  // @ts-expect-error
-  delete modelConfig.max_tokens;
+  const modelConfig = {
+    ...useAppConfig.getState().modelConfig,
+    ...useChatStore.getState().currentSession().modelConfig,
+  };
 
   // override model config
   if (options?.model) {
@@ -42,7 +41,9 @@ const makeRequestParam = (
   return {
     messages: sendMessages,
     stream: options?.stream,
-    ...modelConfig,
+    model: modelConfig.model,
+    temperature: modelConfig.temperature,
+    presence_penalty: modelConfig.presence_penalty,
   };
 };
 
