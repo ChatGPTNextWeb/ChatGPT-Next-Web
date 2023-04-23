@@ -23,7 +23,6 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-import { NewChat } from "./new-chat";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -39,6 +38,10 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
 });
 
 const Chat = dynamic(async () => (await import("./chat")).Chat, {
+  loading: () => <Loading noLogo />,
+});
+
+const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
 
