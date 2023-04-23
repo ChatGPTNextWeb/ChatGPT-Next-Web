@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import styles from "./home.module.scss";
 
@@ -10,7 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import Locale from "../locales";
 
-import { useChatStore } from "../store";
+import { useAppConfig, useChatStore } from "../store";
 
 import {
   MAX_SIDEBAR_WIDTH,
@@ -20,16 +20,20 @@ import {
   REPO_URL,
 } from "../constant";
 
-import { HashRouter as Router, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
-import { ChatList } from "./chat-list";
+import dynamic from "next/dynamic";
+
+const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
+  loading: () => null,
+});
 
 function useDragSideBar() {
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
-  const chatStore = useChatStore();
+  const config = useAppConfig();
   const startX = useRef(0);
-  const startDragWidth = useRef(chatStore.config.sidebarWidth ?? 300);
+  const startDragWidth = useRef(config.sidebarWidth ?? 300);
   const lastUpdateTime = useRef(Date.now());
 
   const handleMouseMove = useRef((e: MouseEvent) => {
@@ -39,11 +43,11 @@ function useDragSideBar() {
     lastUpdateTime.current = Date.now();
     const d = e.clientX - startX.current;
     const nextWidth = limit(startDragWidth.current + d);
-    chatStore.updateConfig((config) => (config.sidebarWidth = nextWidth));
+    config.update((config) => (config.sidebarWidth = nextWidth));
   });
 
   const handleMouseUp = useRef(() => {
-    startDragWidth.current = chatStore.config.sidebarWidth ?? 300;
+    startDragWidth.current = config.sidebarWidth ?? 300;
     window.removeEventListener("mousemove", handleMouseMove.current);
     window.removeEventListener("mouseup", handleMouseUp.current);
   });
@@ -56,15 +60,15 @@ function useDragSideBar() {
   };
   const isMobileScreen = useMobileScreen();
   const shouldNarrow =
-    !isMobileScreen && chatStore.config.sidebarWidth < MIN_SIDEBAR_WIDTH;
+    !isMobileScreen && config.sidebarWidth < MIN_SIDEBAR_WIDTH;
 
   useEffect(() => {
     const barWidth = shouldNarrow
       ? NARROW_SIDEBAR_WIDTH
-      : limit(chatStore.config.sidebarWidth ?? 300);
+      : limit(config.sidebarWidth ?? 300);
     const sideBarWidth = isMobileScreen ? "100vw" : `${barWidth}px`;
     document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
-  }, [chatStore.config.sidebarWidth, isMobileScreen, shouldNarrow]);
+  }, [config.sidebarWidth, isMobileScreen, shouldNarrow]);
 
   return {
     onDragMouseDown,
