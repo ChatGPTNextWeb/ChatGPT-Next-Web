@@ -8,6 +8,7 @@ import JP from "./jp";
 import DE from "./de";
 import VI from "./vi";
 import RU from "./ru";
+import NO from "./no";
 
 export type { LocaleType } from "./cn";
 
@@ -22,6 +23,7 @@ export const AllLangs = [
   "de",
   "vi",
   "ru",
+  "no",
 ] as const;
 export type Lang = (typeof AllLangs)[number];
 
@@ -85,4 +87,5 @@ export default {
   de: DE,
   vi: VI,
   ru: RU,
+  no: NO,
 }[getLang()] as typeof CN;

@@ -82,6 +82,7 @@ const jp: LocaleType = {
         de: "Deutsch",
         vi: "Vietnamese",
         ru: "Русский",
+        no: "Norsk",
       },
     },
     Avatar: "アバター",
