@@ -91,6 +91,10 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>HEBE CHAT</div>
+         <div className={styles["sidebar-title"]}>
+              <img src="logo.png" alt="smiley" />
+            </div>
+        
         <div className={styles["sidebar-sub-title"]}>
             <p>
               这里提供国内可访问的CHATGPT对话服务，希望你能好好利用资源，勿将此页面公开分享
