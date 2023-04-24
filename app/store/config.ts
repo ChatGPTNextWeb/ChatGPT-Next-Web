@@ -73,6 +73,10 @@ export const ALL_MODELS = [
     name: "gpt-3.5-turbo-0301",
     available: true,
   },
+  {
+    name: "text-davinci-003",
+    available: true,
+  },
 ] as const;
 
 export type ModelType = (typeof ALL_MODELS)[number]["name"];
