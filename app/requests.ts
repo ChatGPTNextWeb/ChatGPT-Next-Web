@@ -30,7 +30,7 @@ const makeRequestParam = (
 
   const modelConfig = {
     ...useAppConfig.getState().modelConfig,
-    ...useChatStore.getState().currentSession().modelConfig,
+    ...useChatStore.getState().currentSession().mask.modelConfig,
   };
 
   // override model config

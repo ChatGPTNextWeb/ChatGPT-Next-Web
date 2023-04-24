@@ -202,17 +202,17 @@ export function Settings() {
 
   return (
     <ErrorBoundary>
-      <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]}>
-          <div className={styles["window-header-main-title"]}>
+      <div className="window-header">
+        <div className="window-header-title">
+          <div className="window-header-main-title">
             {Locale.Settings.Title}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          <div className="window-header-sub-title">
             {Locale.Settings.SubTitle}
           </div>
         </div>
-        <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"]}>
+        <div className="window-actions">
+          <div className="window-action-button">
             <IconButton
               icon={<ClearIcon />}
               onClick={() => {
@@ -227,7 +227,7 @@ export function Settings() {
               title={Locale.Settings.Actions.ClearAll}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<ResetIcon />}
               onClick={() => {
@@ -242,7 +242,7 @@ export function Settings() {
               title={Locale.Settings.Actions.ResetAll}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<CloseIcon />}
               onClick={() => navigate(Path.Home)}

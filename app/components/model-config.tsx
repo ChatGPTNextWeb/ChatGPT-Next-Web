@@ -97,7 +97,7 @@ export function ModelConfigList(props: {
           title={props.modelConfig.historyMessageCount.toString()}
           value={props.modelConfig.historyMessageCount}
           min="0"
-          max="25"
+          max="32"
           step="1"
           onChange={(e) =>
             props.updateConfig(

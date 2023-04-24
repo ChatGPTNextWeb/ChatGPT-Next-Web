@@ -1,0 +1,33 @@
+.mask-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .mask-page-body {
+    padding: 20px;
+    overflow-y: auto;
+
+    .search-bar {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .mask-item {
+      .mask-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: var(--border-in-light);
+        border-radius: 10px;
+        padding: 6px;
+      }
+
+      .mask-actions {
+        display: flex;
+        flex-wrap: nowrap;
+        transition: all ease 0.3s;
+      }
+    }
+  }
+}

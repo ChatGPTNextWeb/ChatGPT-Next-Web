@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import { SlotID } from "../constant";
+import { IconButton } from "./button";
 import { EmojiAvatar } from "./emoji";
 import styles from "./new-chat.module.scss";
+import LeftIcon from "../icons/left.svg";
+import { useNavigate } from "react-router-dom";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -59,8 +62,18 @@ export function NewChat() {
     })),
   );
 
+  const navigate = useNavigate();
+
   return (
     <div className={styles["new-chat"]}>
+      <div className={styles["mask-header"]}>
+        <IconButton
+          icon={<LeftIcon />}
+          text="返回"
+          onClick={() => navigate(-1)}
+        ></IconButton>
+        <IconButton text="跳过"></IconButton>
+      </div>
       <div className={styles["mask-cards"]}>
         <div className={styles["mask-card"]}>
           <EmojiAvatar avatar="1f606" size={24} />
@@ -74,7 +87,9 @@ export function NewChat() {
       </div>
 
       <div className={styles["title"]}>挑选一个面具</div>
-      <div className={styles["sub-title"]}>现在开始，与面具背后的思维碰撞</div>
+      <div className={styles["sub-title"]}>
+        现在开始，与面具背后的灵魂思维碰撞
+      </div>
 
       <input className={styles["search-bar"]} placeholder="搜索" type="text" />
 

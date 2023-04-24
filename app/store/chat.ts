@@ -12,6 +12,7 @@ import { isMobileScreen, trimTopic } from "../utils";
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
 import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
+import { createEmptyMask, Mask } from "./mask";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -41,16 +42,16 @@ export interface ChatStat {
 
 export interface ChatSession {
   id: number;
+
   topic: string;
-  avatar?: string;
+
   memoryPrompt: string;
-  context: Message[];
   messages: Message[];
   stat: ChatStat;
   lastUpdate: string;
   lastSummarizeIndex: number;
 
-  modelConfig: ModelConfig;
+  mask: Mask;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -66,7 +67,6 @@ function createEmptySession(): ChatSession {
     id: Date.now(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
-    context: [],
     messages: [],
     stat: {
       tokenCount: 0,
@@ -75,8 +75,7 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: createDate,
     lastSummarizeIndex: 0,
-
-    modelConfig: useAppConfig.getState().modelConfig,
+    mask: createEmptyMask(),
   };
 }
 
@@ -322,11 +321,11 @@ export const useChatStore = create<ChatStore>()(
         const messages = session.messages.filter((msg) => !msg.isError);
         const n = messages.length;
 
-        const context = session.context.slice();
+        const context = session.mask.context.slice();
 
         // long term memory
         if (
-          session.modelConfig.sendMemory &&
+          session.mask.modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0
         ) {
@@ -432,7 +431,7 @@ export const useChatStore = create<ChatStore>()(
         if (
           historyMsgLength >
             config.modelConfig.compressMessageLengthThreshold &&
-          session.modelConfig.sendMemory
+          session.mask.modelConfig.sendMemory
         ) {
           requestChatStream(
             toBeSummarizedMsgs.concat({
@@ -485,14 +484,8 @@ export const useChatStore = create<ChatStore>()(
       migrate(persistedState, version) {
         const state = persistedState as ChatStore;
 
-        if (version === 1) {
-          state.sessions.forEach((s) => (s.context = []));
-        }
-
         if (version < 2) {
-          state.sessions.forEach(
-            (s) => (s.modelConfig = { ...DEFAULT_CONFIG.modelConfig }),
-          );
+          state.sessions.forEach((s) => (s.mask = createEmptyMask()));
         }
 
         return state;
