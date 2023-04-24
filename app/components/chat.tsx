@@ -86,7 +86,7 @@ export function Avatar(props: { role: Message["role"]; model?: ModelType }) {
 
   return (
     <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} getEmojiUrl={getEmojiUrl} />
+      <img src="hebe.png" alt="smiley" />
     </div>
   );
 }
