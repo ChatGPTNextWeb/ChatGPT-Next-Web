@@ -92,8 +92,29 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>ChatGPT Next</div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
-        </div>
+            <p>
+              这里提供国内可访问的CHATGPT对话服务，希望你能好好利用资源，勿将此页面公开分享
+            </p>
+            <p>点击右下角《开始对话》直接使用</p>
+            <p>
+              This project is based on{" "}
+              <a
+                href="https://github.com/Yidadaa/ChatGPT-Next-Web"
+                target="_blank"
+              >
+                Yidadaa
+              </a>
+              ,Thx.
+            </p>
+            <p>
+              <a
+                href="https://learningprompt.wiki/docs/chatgpt-learning-path"
+                target="_blank"
+              >
+                使用指南
+              </a>
+            </p>
+          </div>
         <div className={styles["sidebar-logo"]}>
           <ChatGptIcon />
         </div>
