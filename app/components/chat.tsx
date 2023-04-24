@@ -57,6 +57,8 @@ import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { ModelConfigList } from "./model-config";
 import { Avatar, AvatarPicker } from "./emoji";
+import { MaskConfig } from "./mask";
+import { DEFAULT_MASK_ID } from "../store/mask";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -103,102 +105,9 @@ function exportMessages(messages: Message[], topic: string) {
   });
 }
 
-function ContextPrompts() {
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
-  const context = session.context;
-
-  const addContextPrompt = (prompt: Message) => {
-    chatStore.updateCurrentSession((session) => {
-      session.context.push(prompt);
-    });
-  };
-
-  const removeContextPrompt = (i: number) => {
-    chatStore.updateCurrentSession((session) => {
-      session.context.splice(i, 1);
-    });
-  };
-
-  const updateContextPrompt = (i: number, prompt: Message) => {
-    chatStore.updateCurrentSession((session) => {
-      session.context[i] = prompt;
-    });
-  };
-
-  return (
-    <>
-      <div className={chatStyle["context-prompt"]} style={{ marginBottom: 20 }}>
-        {context.map((c, i) => (
-          <div className={chatStyle["context-prompt-row"]} key={i}>
-            <select
-              value={c.role}
-              className={chatStyle["context-role"]}
-              onChange={(e) =>
-                updateContextPrompt(i, {
-                  ...c,
-                  role: e.target.value as any,
-                })
-              }
-            >
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-            <Input
-              value={c.content}
-              type="text"
-              className={chatStyle["context-content"]}
-              rows={1}
-              onInput={(e) =>
-                updateContextPrompt(i, {
-                  ...c,
-                  content: e.currentTarget.value as any,
-                })
-              }
-            />
-            <IconButton
-              icon={<DeleteIcon />}
-              className={chatStyle["context-delete-button"]}
-              onClick={() => removeContextPrompt(i)}
-              bordered
-            />
-          </div>
-        ))}
-
-        <div className={chatStyle["context-prompt-row"]}>
-          <IconButton
-            icon={<AddIcon />}
-            text={Locale.Context.Add}
-            bordered
-            className={chatStyle["context-prompt-button"]}
-            onClick={() =>
-              addContextPrompt({
-                role: "system",
-                content: "",
-                date: "",
-              })
-            }
-          />
-        </div>
-      </div>
-    </>
-  );
-}
-
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-
-  const [showPicker, setShowPicker] = useState(false);
-
-  const updateConfig = (updater: (config: ModelConfig) => void) => {
-    const config = { ...session.modelConfig };
-    updater(config);
-    chatStore.updateCurrentSession((session) => (session.modelConfig = config));
-  };
 
   return (
     <div className="modal-mask">
@@ -210,7 +119,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             key="reset"
             icon={<CopyIcon />}
             bordered
-            text="重置预设"
+            text="重置"
             onClick={() =>
               confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
             }
@@ -219,69 +128,29 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             key="copy"
             icon={<CopyIcon />}
             bordered
-            text="保存预设"
+            text="保存为面具"
             onClick={() => copyToClipboard(session.memoryPrompt)}
           />,
         ]}
       >
-        <ContextPrompts />
-
-        <List>
-          <ListItem title={"角色头像"}>
-            <Popover
-              content={
-                <AvatarPicker
-                  onEmojiClick={(emoji) =>
-                    chatStore.updateCurrentSession(
-                      (session) => (session.avatar = emoji),
-                    )
-                  }
-                ></AvatarPicker>
-              }
-              open={showPicker}
-              onClose={() => setShowPicker(false)}
-            >
-              <div
-                onClick={() => setShowPicker(true)}
-                style={{ cursor: "pointer" }}
-              >
-                {session.avatar ? (
-                  <Avatar avatar={session.avatar} />
-                ) : (
-                  <Avatar model={session.modelConfig.model} />
-                )}
-              </div>
-            </Popover>
-          </ListItem>
-          <ListItem title={"对话标题"}>
-            <input
-              type="text"
-              value={session.topic}
-              onInput={(e) =>
-                chatStore.updateCurrentSession(
-                  (session) => (session.topic = e.currentTarget.value),
-                )
-              }
-            ></input>
-          </ListItem>
-        </List>
-
-        <List>
-          <ModelConfigList
-            modelConfig={session.modelConfig}
-            updateConfig={updateConfig}
-          />
-
-          {session.modelConfig.sendMemory ? (
-            <ListItem
-              title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of 
-          ${session.messages.length})`}
-              subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
-            ></ListItem>
-          ) : (
-            <></>
-          )}
-        </List>
+        <MaskConfig
+          mask={session.mask}
+          updateMask={(updater) => {
+            const mask = { ...session.mask };
+            updater(mask);
+            chatStore.updateCurrentSession((session) => (session.mask = mask));
+          }}
+          extraListItems={
+            session.mask.modelConfig.sendMemory ? (
+              <ListItem
+                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
+                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
+              ></ListItem>
+            ) : (
+              <></>
+            )
+          }
+        ></MaskConfig>
       </Modal>
     </div>
   );
@@ -294,7 +163,7 @@ function PromptToast(props: {
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const context = session.context;
+  const context = session.mask.context;
 
   return (
     <div className={chatStyle["prompt-toast"]} key="prompt-toast">
@@ -617,7 +486,7 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
-  const context: RenderMessage[] = session.context.slice();
+  const context: RenderMessage[] = session.mask.context.slice();
 
   const accessStore = useAccessStore();
 
@@ -680,20 +549,20 @@ export function Chat() {
 
   return (
     <div className={styles.chat} key={session.id}>
-      <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]}>
+      <div className="window-header">
+        <div className="window-header-title">
           <div
-            className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
+            className={`window-header-main-title " ${styles["chat-body-title"]}`}
             onClickCapture={renameSession}
           >
             {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          <div className="window-header-sub-title">
             {Locale.Chat.SubTitle(session.messages.length)}
           </div>
         </div>
-        <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"] + " " + styles.mobile}>
+        <div className="window-actions">
+          <div className={"window-action-button" + " " + styles.mobile}>
             <IconButton
               icon={<ReturnIcon />}
               bordered
@@ -701,14 +570,14 @@ export function Chat() {
               onClick={() => navigate(Path.Home)}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<RenameIcon />}
               bordered
               onClick={renameSession}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<ExportIcon />}
               bordered
@@ -722,7 +591,7 @@ export function Chat() {
             />
           </div>
           {!isMobileScreen && (
-            <div className={styles["window-action-button"]}>
+            <div className="window-action-button">
               <IconButton
                 icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
                 bordered
@@ -773,10 +642,10 @@ export function Chat() {
                 <div className={styles["chat-message-avatar"]}>
                   {message.role === "user" ? (
                     <Avatar avatar={config.avatar} />
-                  ) : session.avatar ? (
-                    <Avatar avatar={session.avatar} />
-                  ) : (
+                  ) : session.mask.id === DEFAULT_MASK_ID ? (
                     <Avatar model={message.model ?? "gpt-3.5-turbo"} />
+                  ) : (
+                    <Avatar avatar={session.mask.avatar} />
                   )}
                 </div>
                 {showTyping && (

@@ -36,14 +36,23 @@
   padding: 10px 20px;
   animation: slide-in ease 0.6s;
 
-  .list-item-title {
-    font-size: 14px;
-    font-weight: bolder;
-  }
+  .list-header {
+    display: flex;
+    align-items: center;
 
-  .list-item-sub-title {
-    font-size: 12px;
-    font-weight: normal;
+    .list-icon {
+      margin-right: 10px;
+    }
+
+    .list-item-title {
+      font-size: 14px;
+      font-weight: bolder;
+    }
+
+    .list-item-sub-title {
+      font-size: 12px;
+      font-weight: normal;
+    }
   }
 }
 

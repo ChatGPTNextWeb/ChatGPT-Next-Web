@@ -1,3 +1,5 @@
+@import "../styles/animation.scss";
+
 .new-chat {
   height: 100%;
   width: 100%;
@@ -5,11 +7,21 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding-top: 80px;
+
+  .mask-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    animation: slide-in-from-top ease 0.3s;
+  }
 
   .mask-cards {
     display: flex;
+    margin-top: 5vh;
     margin-bottom: 20px;
+    animation: slide-in ease 0.3s;
 
     .mask-card {
       padding: 20px 10px;
@@ -32,15 +44,18 @@
   .title {
     font-size: 32px;
     font-weight: bolder;
-    animation: slide-in ease 0.3s;
+    margin-bottom: 1vh;
+    animation: slide-in ease 0.35s;
   }
 
   .sub-title {
-    animation: slide-in ease 0.3s;
+    animation: slide-in ease 0.4s;
   }
 
   .search-bar {
-    margin-top: 20px;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    animation: slide-in ease 0.45s;
   }
 
   .masks {
@@ -50,7 +65,7 @@
     align-items: center;
     padding-top: 20px;
 
-    animation: slide-in ease 0.3s;
+    animation: slide-in ease 0.5s;
 
     .mask-row {
       margin-bottom: 10px;

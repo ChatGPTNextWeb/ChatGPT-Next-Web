@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getLang, Lang } from "../locales";
-import { Message } from "./chat";
-import { ModelConfig, useAppConfig } from "./config";
+import { DEFAULT_TOPIC, Message } from "./chat";
+import { ModelConfig, ModelType, useAppConfig } from "./config";
 
 export const MASK_KEY = "mask-store";
 
@@ -11,7 +11,7 @@ export type Mask = {
   avatar: string;
   name: string;
   context: Message[];
-  config: ModelConfig;
+  modelConfig: ModelConfig;
   lang: Lang;
 };
 
@@ -29,6 +29,18 @@ type MaskStore = MaskState & {
   getAll: () => Mask[];
 };
 
+export const DEFAULT_MASK_ID = 1145141919810;
+export const DEFAULT_MASK_AVATAR = "gpt-bot";
+export const createEmptyMask = () =>
+  ({
+    id: DEFAULT_MASK_ID,
+    avatar: DEFAULT_MASK_AVATAR,
+    name: DEFAULT_TOPIC,
+    context: [],
+    modelConfig: useAppConfig.getState().modelConfig,
+    lang: getLang(),
+  } as Mask);
+
 export const useMaskStore = create<MaskStore>()(
   persist(
     (set, get) => ({
@@ -39,12 +51,8 @@ export const useMaskStore = create<MaskStore>()(
         const id = get().globalMaskId;
         const masks = get().masks;
         masks[id] = {
+          ...createEmptyMask(),
           id,
-          avatar: "1f916",
-          name: "",
-          config: useAppConfig.getState().modelConfig,
-          context: [],
-          lang: getLang(),
           ...mask,
         };
 
