@@ -80,6 +80,7 @@ const tw: LocaleType = {
         de: "Deutsch",
         vi: "Vietnamese",
         ru: "Русский",
+        no: "Norsk",
       },
     },
     Avatar: "大頭貼",

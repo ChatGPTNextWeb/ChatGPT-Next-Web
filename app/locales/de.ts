@@ -83,6 +83,7 @@ const de: LocaleType = {
         de: "Deutsch",
         vi: "Vietnamese",
         ru: "Русский",
+        no: "Norsk",
       },
     },
     Avatar: "Avatar",
