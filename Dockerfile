@@ -43,6 +43,7 @@ EXPOSE 3000
 CMD if [ -n "$PROXY_URL" ]; then \
         protocol=$(echo $PROXY_URL | cut -d: -f1); \
         host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
+        host=$(nslookup $host | grep -A1 'Name:' | tail -1 | awk '{print $2}') \
         port=$(echo $PROXY_URL | cut -d: -f3); \
         conf=/etc/proxychains.conf; \
         echo "strict_chain" > $conf; \
