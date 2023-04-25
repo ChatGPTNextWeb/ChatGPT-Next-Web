@@ -9,8 +9,8 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import AddIcon from "../icons/add.svg";
-import DeleteIcon from "../icons/delete.svg";
+import PromptIcon from "../icons/prompt.svg";
+import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 
@@ -261,9 +261,11 @@ function useScrollToBottom() {
 export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
+  showPromptHints: () => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
+  const navigate = useNavigate();
 
   // switch themes
   const theme = config.theme;
@@ -318,6 +320,22 @@ export function ChatActions(props: {
           <DarkIcon />
         ) : null}
       </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={props.showPromptHints}
+      >
+        <PromptIcon />
+      </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {
+          navigate(Path.Masks);
+        }}
+      >
+        <MaskIcon />
+      </div>
     </div>
   );
 }
@@ -360,9 +378,9 @@ export function Chat() {
   );
 
   const onPromptSelect = (prompt: Prompt) => {
-    setUserInput(prompt.content);
     setPromptHints([]);
     inputRef.current?.focus();
+    setUserInput(prompt.content);
   };
 
   // auto grow input
@@ -723,6 +741,10 @@ export function Chat() {
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
+          showPromptHints={() => {
+            inputRef.current?.focus();
+            onSearch("");
+          }}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
@@ -734,8 +756,12 @@ export function Chat() {
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
             onBlur={() => {
-              setAutoScroll(false);
-              setTimeout(() => setPromptHints([]), 500);
+              setTimeout(() => {
+                if (document.activeElement !== inputRef.current) {
+                  setAutoScroll(false);
+                  setPromptHints([]);
+                }
+              }, 100);
             }}
             autoFocus
             rows={inputRows}

@@ -81,13 +81,13 @@
       .mask {
         display: flex;
         align-items: center;
-        padding: 10px 16px;
+        padding: 10px 14px;
         border: var(--border-in-light);
         box-shadow: var(--card-shadow);
         background-color: var(--white);
         border-radius: 10px;
         margin-right: 10px;
-        width: 100px;
+        max-width: 8em;
         transform: scale(1);
         cursor: pointer;
         transition: all ease 0.3s;
@@ -98,16 +98,9 @@
           border-color: var(--primary);
         }
 
-        .mask-avatar {
-          display: flex;
-          min-width: 18px;
-          min-height: 18px;
-          background-color: #eee;
-          border-radius: 20px;
-        }
-
         .mask-name {
           margin-left: 10px;
+          font-size: 14px;
         }
       }
     }

@@ -1,3 +1,16 @@
+@import "../styles/animation.scss";
+
+@keyframes search-in {
+  from {
+    opacity: 0;
+    transform: translateY(5vh) scaleX(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleX(1);
+  }
+}
+
 .mask-page {
   height: 100%;
   display: flex;
@@ -11,22 +24,75 @@
       width: 100%;
       max-width: 100%;
       margin-bottom: 20px;
+      animation: search-in ease 0.3s;
     }
 
     .mask-item {
-      .mask-icon {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      border: var(--border-in-light);
+      animation: slide-in ease 0.3s;
+
+      &:not(:last-child) {
+        border-bottom: 0;
+      }
+
+      &:first-child {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      .mask-header {
         display: flex;
         align-items: center;
-        justify-content: center;
-        border: var(--border-in-light);
-        border-radius: 10px;
-        padding: 6px;
+
+        .mask-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 10px;
+        }
+
+        .mask-title {
+          .mask-name {
+            font-size: 14px;
+            font-weight: bold;
+          }
+          .mask-info {
+            font-size: 12px;
+          }
+        }
       }
 
       .mask-actions {
         display: flex;
         flex-wrap: nowrap;
         transition: all ease 0.3s;
+      }
+
+      @media screen and (max-width: 600px) {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: var(--card-shadow);
+
+        &:not(:last-child) {
+          border-bottom: var(--border-in-light);
+        }
+
+        .mask-actions {
+          width: 100%;
+          justify-content: space-between;
+          padding-top: 10px;
+        }
       }
     }
   }

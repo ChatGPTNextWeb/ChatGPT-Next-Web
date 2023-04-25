@@ -57,7 +57,9 @@ export function ChatItem(props: {
                 <div className={styles["chat-item-count"]}>
                   {Locale.ChatItem.ChatItemCount(props.count)}
                 </div>
-                <div className={styles["chat-item-date"]}>{props.time}</div>
+                <div className={styles["chat-item-date"]}>
+                  {new Date(props.time).toLocaleString()}
+                </div>
               </div>
             </>
           )}
