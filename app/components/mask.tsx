@@ -8,9 +8,15 @@ import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
+import BotIcon from "../icons/bot.svg";
 import CopyIcon from "../icons/copy.svg";
 
-import { DEFAULT_MASK_AVATAR, DEFAULT_MASK_ID, Mask } from "../store/mask";
+import {
+  DEFAULT_MASK_AVATAR,
+  DEFAULT_MASK_ID,
+  Mask,
+  useMaskStore,
+} from "../store/mask";
 import {
   Message,
   ModelConfig,
@@ -18,7 +24,7 @@ import {
   useAppConfig,
   useChatStore,
 } from "../store";
-import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
+import { Input, List, ListItem, Modal, Popover, showToast } from "./ui-lib";
 import { Avatar, AvatarPicker, EmojiAvatar } from "./emoji";
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +34,15 @@ import { useState } from "react";
 import { copyToClipboard } from "../utils";
 import { Updater } from "../api/openai/typing";
 import { ModelConfigList } from "./model-config";
+import { Path } from "../constant";
+
+export function MaskAvatar(props: { mask: Mask }) {
+  return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
+    <Avatar avatar={props.mask.avatar} />
+  ) : (
+    <Avatar model={props.mask.modelConfig.model} />
+  );
+}
 
 export function MaskConfig(props: {
   mask: Mask;
@@ -71,11 +86,7 @@ export function MaskConfig(props: {
               onClick={() => setShowPicker(true)}
               style={{ cursor: "pointer" }}
             >
-              {props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
-                <Avatar avatar={props.mask.avatar} />
-              ) : (
-                <Avatar model={props.mask.modelConfig.model} />
-              )}
+              <MaskAvatar mask={props.mask} />
             </div>
           </Popover>
         </ListItem>
@@ -182,18 +193,15 @@ export function ContextPrompts(props: {
 }
 
 export function MaskPage() {
-  const config = useAppConfig();
   const navigate = useNavigate();
-  const masks: Mask[] = new Array(10).fill(0).map((m, i) => ({
-    id: i,
-    avatar: "1f606",
-    name: "预设角色 " + i.toString(),
-    context: [
-      { role: "assistant", content: "你好，有什么可以帮忙的吗", date: "" },
-    ],
-    modelConfig: config.modelConfig,
-    lang: "cn",
-  }));
+
+  const maskStore = useMaskStore();
+  const chatStore = useChatStore();
+  const masks = maskStore.getAll();
+
+  const [editingMaskId, setEditingMaskId] = useState<number | undefined>();
+  const editingMask = maskStore.get(editingMaskId);
+  const closeMaskModal = () => setEditingMaskId(undefined);
 
   return (
     <ErrorBoundary>
@@ -201,12 +209,18 @@ export function MaskPage() {
         <div className="window-header">
           <div className="window-header-title">
             <div className="window-header-main-title">预设角色面具</div>
-            <div className="window-header-submai-title">编辑预设角色定义</div>
+            <div className="window-header-submai-title">
+              共有{masks.length} 个预设角色定义
+            </div>
           </div>
 
           <div className="window-actions">
             <div className="window-action-button">
-              <IconButton icon={<AddIcon />} bordered />
+              <IconButton
+                icon={<AddIcon />}
+                bordered
+                onClick={() => maskStore.create()}
+              />
             </div>
             <div className="window-action-button">
               <IconButton icon={<DownloadIcon />} bordered />
@@ -225,34 +239,68 @@ export function MaskPage() {
           <input
             type="text"
             className={styles["search-bar"]}
-            placeholder="搜索面具"
+            placeholder="搜索"
+            autoFocus
           />
 
-          <List>
+          <div>
             {masks.map((m) => (
-              <ListItem
-                title={m.name}
-                key={m.id}
-                subTitle={`包含 ${m.context.length} 条预设对话 / ${
-                  Locale.Settings.Lang.Options[m.lang]
-                } / ${m.modelConfig.model}`}
-                icon={
+              <div className={styles["mask-item"]} key={m.id}>
+                <div className={styles["mask-header"]}>
                   <div className={styles["mask-icon"]}>
-                    <EmojiAvatar avatar={m.avatar} size={20} />
+                    <MaskAvatar mask={m} />
                   </div>
-                }
-                className={styles["mask-item"]}
-              >
-                <div className={styles["mask-actions"]}>
-                  <IconButton icon={<AddIcon />} text="对话" />
-                  <IconButton icon={<EditIcon />} text="编辑" />
-                  <IconButton icon={<DeleteIcon />} text="删除" />
+                  <div className={styles["mask-title"]}>
+                    <div className={styles["mask-name"]}>{m.name}</div>
+                    <div className={styles["mask-info"] + " one-line"}>
+                      {`包含 ${m.context.length} 条预设对话 / ${
+                        Locale.Settings.Lang.Options[m.lang]
+                      } / ${m.modelConfig.model}`}
+                    </div>
+                  </div>
                 </div>
-              </ListItem>
+                <div className={styles["mask-actions"]}>
+                  <IconButton
+                    icon={<AddIcon />}
+                    text="对话"
+                    onClick={() => {
+                      chatStore.newSession(m);
+                      navigate(Path.Chat);
+                    }}
+                  />
+                  <IconButton
+                    icon={<EditIcon />}
+                    text="编辑"
+                    onClick={() => setEditingMaskId(m.id)}
+                  />
+                  <IconButton
+                    icon={<DeleteIcon />}
+                    text="删除"
+                    onClick={() => {
+                      if (confirm("确认删除？")) {
+                        maskStore.delete(m.id);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
             ))}
-          </List>
+          </div>
         </div>
       </div>
+
+      {editingMask && (
+        <div className="modal-mask">
+          <Modal title="编辑预设面具" onClose={closeMaskModal}>
+            <MaskConfig
+              mask={editingMask!}
+              updateMask={(updater) =>
+                maskStore.update(editingMaskId!, updater)
+              }
+            />
+          </Modal>
+        </div>
+      )}
     </ErrorBoundary>
   );
 }

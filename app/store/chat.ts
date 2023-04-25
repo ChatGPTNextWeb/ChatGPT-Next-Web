@@ -48,7 +48,7 @@ export interface ChatSession {
   memoryPrompt: string;
   messages: Message[];
   stat: ChatStat;
-  lastUpdate: string;
+  lastUpdate: number;
   lastSummarizeIndex: number;
 
   mask: Mask;
@@ -61,8 +61,6 @@ export const BOT_HELLO: Message = createMessage({
 });
 
 function createEmptySession(): ChatSession {
-  const createDate = new Date().toLocaleString();
-
   return {
     id: Date.now(),
     topic: DEFAULT_TOPIC,
@@ -73,7 +71,7 @@ function createEmptySession(): ChatSession {
       wordCount: 0,
       charCount: 0,
     },
-    lastUpdate: createDate,
+    lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
     mask: createEmptyMask(),
   };
@@ -82,11 +80,12 @@ function createEmptySession(): ChatSession {
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
+  globalId: number;
   clearSessions: () => void;
   removeSession: (index: number) => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
-  newSession: () => void;
+  newSession: (mask?: Mask) => void;
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
@@ -117,6 +116,7 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
+      globalId: 0,
 
       clearSessions() {
         set(() => ({
@@ -181,10 +181,20 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
-      newSession() {
+      newSession(mask) {
+        const session = createEmptySession();
+
+        set(() => ({ globalId: get().globalId + 1 }));
+        session.id = get().globalId;
+
+        if (mask) {
+          session.mask = { ...mask };
+          session.topic = mask.name;
+        }
+
         set((state) => ({
           currentSessionIndex: 0,
-          sessions: [createEmptySession()].concat(state.sessions),
+          sessions: [session].concat(state.sessions),
         }));
       },
 
@@ -231,7 +241,7 @@ export const useChatStore = create<ChatStore>()(
 
       onNewMessage(message) {
         get().updateCurrentSession((session) => {
-          session.lastUpdate = new Date().toLocaleString();
+          session.lastUpdate = Date.now();
         });
         get().updateStat(message);
         get().summarizeSession();

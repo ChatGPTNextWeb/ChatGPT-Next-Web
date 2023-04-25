@@ -22,10 +22,11 @@ export const DEFAULT_MASK_STATE = {
 
 export type MaskState = typeof DEFAULT_MASK_STATE;
 type MaskStore = MaskState & {
-  create: (mask: Partial<Mask>) => Mask;
+  create: (mask?: Partial<Mask>) => Mask;
   update: (id: number, updater: (mask: Mask) => void) => void;
   delete: (id: number) => void;
   search: (text: string) => Mask[];
+  get: (id?: number) => Mask | null;
   getAll: () => Mask[];
 };
 
@@ -37,7 +38,7 @@ export const createEmptyMask = () =>
     avatar: DEFAULT_MASK_AVATAR,
     name: DEFAULT_TOPIC,
     context: [],
-    modelConfig: useAppConfig.getState().modelConfig,
+    modelConfig: { ...useAppConfig.getState().modelConfig },
     lang: getLang(),
   } as Mask);
 
@@ -73,6 +74,10 @@ export const useMaskStore = create<MaskStore>()(
         const masks = get().masks;
         delete masks[id];
         set(() => ({ masks }));
+      },
+
+      get(id) {
+        return get().masks[id ?? 1145141919810];
       },
       getAll() {
         return Object.values(get().masks).sort((a, b) => a.id - b.id);

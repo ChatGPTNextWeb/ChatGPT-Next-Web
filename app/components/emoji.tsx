@@ -33,16 +33,16 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
     return (
       <div className="no-dark">
         {props.model?.startsWith("gpt-4") ? (
-          <BlackBotIcon className="user-avtar" />
+          <BlackBotIcon className="user-avatar" />
         ) : (
-          <BotIcon className="user-avtar" />
+          <BotIcon className="user-avatar" />
         )}
       </div>
     );
   }
 
   return (
-    <div className="user-avtar">
+    <div className="user-avatar">
       {props.avatar && <EmojiAvatar avatar={props.avatar} />}
     </div>
   );
