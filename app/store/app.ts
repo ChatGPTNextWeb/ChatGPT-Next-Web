@@ -11,12 +11,14 @@ import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
+import { ModelType, useAppConfig } from "./config";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
   isError?: boolean;
   id?: number;
+  model?: ModelType;
 };
 
 export function createMessage(override: Partial<Message>): Message {
@@ -29,130 +31,7 @@ export function createMessage(override: Partial<Message>): Message {
   };
 }
 
-export enum SubmitKey {
-  Enter = "Enter",
-  CtrlEnter = "Ctrl + Enter",
-  ShiftEnter = "Shift + Enter",
-  AltEnter = "Alt + Enter",
-  MetaEnter = "Meta + Enter",
-}
-
-export enum Theme {
-  Auto = "auto",
-  Dark = "dark",
-  Light = "light",
-}
-
-export interface ChatConfig {
-  historyMessageCount: number; // -1 means all
-  compressMessageLengthThreshold: number;
-  sendBotMessages: boolean; // send bot's message or not
-  submitKey: SubmitKey;
-  avatar: string;
-  fontSize: number;
-  theme: Theme;
-  tightBorder: boolean;
-  sendPreviewBubble: boolean;
-  sidebarWidth: number;
-
-  disablePromptHint: boolean;
-
-  modelConfig: {
-    model: string;
-    temperature: number;
-    max_tokens: number;
-    presence_penalty: number;
-  };
-}
-
-export type ModelConfig = ChatConfig["modelConfig"];
-
 export const ROLES: Message["role"][] = ["system", "user", "assistant"];
-
-const ENABLE_GPT4 = true;
-
-export const ALL_MODELS = [
-  {
-    name: "gpt-4",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-  },
-];
-
-export function limitNumber(
-  x: number,
-  min: number,
-  max: number,
-  defaultValue: number,
-) {
-  if (typeof x !== "number" || isNaN(x)) {
-    return defaultValue;
-  }
-
-  return Math.min(max, Math.max(min, x));
-}
-
-export function limitModel(name: string) {
-  return ALL_MODELS.some((m) => m.name === name && m.available)
-    ? name
-    : ALL_MODELS[4].name;
-}
-
-export const ModalConfigValidator = {
-  model(x: string) {
-    return limitModel(x);
-  },
-  max_tokens(x: number) {
-    return limitNumber(x, 0, 32000, 2000);
-  },
-  presence_penalty(x: number) {
-    return limitNumber(x, -2, 2, 0);
-  },
-  temperature(x: number) {
-    return limitNumber(x, 0, 2, 1);
-  },
-};
-
-const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 4,
-  compressMessageLengthThreshold: 1000,
-  sendBotMessages: true as boolean,
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
-  avatar: "1f603",
-  fontSize: 14,
-  theme: Theme.Auto as Theme,
-  tightBorder: false,
-  sendPreviewBubble: true,
-  sidebarWidth: 300,
-
-  disablePromptHint: false,
-
-  modelConfig: {
-    model: "gpt-3.5-turbo",
-    temperature: 1,
-    max_tokens: 2000,
-    presence_penalty: 0,
-  },
-};
 
 export interface ChatStat {
   tokenCount: number;
@@ -199,7 +78,6 @@ function createEmptySession(): ChatSession {
 }
 
 interface ChatStore {
-  config: ChatConfig;
   sessions: ChatSession[];
   currentSessionIndex: number;
   clearSessions: () => void;
@@ -223,9 +101,6 @@ interface ChatStore {
   getMessagesWithMemory: () => Message[];
   getMemoryPrompt: () => Message;
 
-  getConfig: () => ChatConfig;
-  resetConfig: () => void;
-  updateConfig: (updater: (config: ChatConfig) => void) => void;
   clearAllData: () => void;
 }
 
@@ -240,29 +115,12 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
-      config: {
-        ...DEFAULT_CONFIG,
-      },
 
       clearSessions() {
         set(() => ({
           sessions: [createEmptySession()],
           currentSessionIndex: 0,
         }));
-      },
-
-      resetConfig() {
-        set(() => ({ config: { ...DEFAULT_CONFIG } }));
-      },
-
-      getConfig() {
-        return get().config;
-      },
-
-      updateConfig(updater) {
-        const config = get().config;
-        updater(config);
-        set(() => ({ config }));
       },
 
       selectSession(index: number) {
@@ -386,6 +244,8 @@ export const useChatStore = create<ChatStore>()(
         const botMessage: Message = createMessage({
           role: "assistant",
           streaming: true,
+          id: userMessage.id! + 1,
+          model: useAppConfig.getState().modelConfig.model,
         });
 
         // get recent messages
@@ -421,7 +281,7 @@ export const useChatStore = create<ChatStore>()(
           onError(error, statusCode) {
             if (statusCode === 401) {
               botMessage.content = Locale.Error.Unauthorized;
-            } else {
+            } else if (!error.message.includes("aborted")) {
               botMessage.content += "\n\n" + Locale.Store.Error;
             }
             botMessage.streaming = false;
@@ -438,8 +298,8 @@ export const useChatStore = create<ChatStore>()(
               controller,
             );
           },
-          filterBot: !get().config.sendBotMessages,
-          modelConfig: get().config.modelConfig,
+          filterBot: !useAppConfig.getState().sendBotMessages,
+          modelConfig: useAppConfig.getState().modelConfig,
         });
       },
 
@@ -455,12 +315,13 @@ export const useChatStore = create<ChatStore>()(
 
       getMessagesWithMemory() {
         const session = get().currentSession();
-        const config = get().config;
+        const config = useAppConfig.getState();
         const messages = session.messages.filter((msg) => !msg.isError);
         const n = messages.length;
 
         const context = session.context.slice();
 
+        // long term memory
         if (
           session.sendMemory &&
           session.memoryPrompt &&
@@ -470,9 +331,33 @@ export const useChatStore = create<ChatStore>()(
           context.push(memoryPrompt);
         }
 
-        const recentMessages = context.concat(
-          messages.slice(Math.max(0, n - config.historyMessageCount)),
+        // get short term and unmemoried long term memory
+        const shortTermMemoryMessageIndex = Math.max(
+          0,
+          n - config.historyMessageCount,
         );
+        const longTermMemoryMessageIndex = session.lastSummarizeIndex;
+        const oldestIndex = Math.max(
+          shortTermMemoryMessageIndex,
+          longTermMemoryMessageIndex,
+        );
+        const threshold = config.compressMessageLengthThreshold;
+
+        // get recent messages as many as possible
+        const reversedRecentMessages = [];
+        for (
+          let i = n - 1, count = 0;
+          i >= oldestIndex && count < threshold;
+          i -= 1
+        ) {
+          const msg = messages[i];
+          if (!msg || msg.isError) continue;
+          count += msg.content.length;
+          reversedRecentMessages.push(msg);
+        }
+
+        // concat
+        const recentMessages = context.concat(reversedRecentMessages.reverse());
 
         return recentMessages;
       },
@@ -505,24 +390,24 @@ export const useChatStore = create<ChatStore>()(
           session.topic === DEFAULT_TOPIC &&
           countMessages(session.messages) >= SUMMARIZE_MIN_LEN
         ) {
-          requestWithPrompt(session.messages, Locale.Store.Prompt.Topic).then(
-            (res) => {
-              get().updateCurrentSession(
-                (session) =>
-                  (session.topic = res ? trimTopic(res) : DEFAULT_TOPIC),
-              );
-            },
-          );
+          requestWithPrompt(session.messages, Locale.Store.Prompt.Topic, {
+            model: "gpt-3.5-turbo",
+          }).then((res) => {
+            get().updateCurrentSession(
+              (session) =>
+                (session.topic = res ? trimTopic(res) : DEFAULT_TOPIC),
+            );
+          });
         }
 
-        const config = get().config;
+        const config = useAppConfig.getState();
         let toBeSummarizedMsgs = session.messages.slice(
           session.lastSummarizeIndex,
         );
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
-        if (historyMsgLength > get().config?.modelConfig?.max_tokens ?? 4000) {
+        if (historyMsgLength > config?.modelConfig?.max_tokens ?? 4000) {
           const n = toBeSummarizedMsgs.length;
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
             Math.max(0, n - config.historyMessageCount),
@@ -541,7 +426,10 @@ export const useChatStore = create<ChatStore>()(
           config.compressMessageLengthThreshold,
         );
 
-        if (historyMsgLength > config.compressMessageLengthThreshold) {
+        if (
+          historyMsgLength > config.compressMessageLengthThreshold &&
+          session.sendMemory
+        ) {
           requestChatStream(
             toBeSummarizedMsgs.concat({
               role: "system",
@@ -550,6 +438,7 @@ export const useChatStore = create<ChatStore>()(
             }),
             {
               filterBot: false,
+              model: "gpt-3.5-turbo",
               onMessage(message, done) {
                 session.memoryPrompt = message;
                 if (done) {

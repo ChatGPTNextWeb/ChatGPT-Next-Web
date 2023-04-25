@@ -11,7 +11,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 [Demo](https://chat-gpt-next-web.vercel.app/) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
-[演示](https://chat-gpt-next-web.vercel.app/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/231789746-41f34d05-6ef9-43f3-a1d1-ff109d4c3c14.jpg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
+[演示](https://chat-gpt-next-web.vercel.app/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/233002565-139daa1a-eb3a-4a12-ac37-6418e7a15d36.png) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
@@ -35,10 +35,12 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 ## Roadmap
 
 - [x] System Prompt: pin a user defined prompt as system prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
-- [ ] User Prompt: user can edit and save custom prompts to prompt list
+- [x] User Prompt: user can edit and save custom prompts to prompt list
+- [ ] Prompt Template: create a new chat with pre-defined in-context prompts
+- [ ] Share as image, share to ShareGPT
 - [ ] Desktop App with tauri
 - [ ] Self-host Model: support llama, alpaca, ChatGLM, BELLE etc.
-- [ ] Plugins: support network search, caculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
+- [ ] Plugins: support network search, calculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
 
 ### Not in Plan
 
@@ -59,7 +61,9 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 ## 开发计划
 
 - [x] 为每个对话设置系统 Prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
-- [ ] 允许用户自行编辑内置 Prompt 列表
+- [x] 允许用户自行编辑内置 Prompt 列表
+- [ ] 提示词模板：使用预制上下文快速定制新对话
+- [ ] 分享为图片，分享到 ShareGPT
 - [ ] 使用 tauri 打包桌面应用
 - [ ] 支持自部署的大语言模型
 - [ ] 插件机制，支持联网搜索、计算器、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
@@ -98,7 +102,7 @@ We recommend that you follow the steps below to re-deploy:
 
 ### Enable Automatic Updates
 
-After forking the project, due to the limitations imposed by Github, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
+After forking the project, due to the limitations imposed by GitHub, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
 
 ![Automatic Updates](./docs/images/enable-actions.jpg)
 
@@ -106,7 +110,7 @@ After forking the project, due to the limitations imposed by Github, you need to
 
 ### Manually Updating Code
 
-If you want to update instantly, you can check out the [Github documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
+If you want to update instantly, you can check out the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
 
 You can star or watch this project or follow author to get release notifictions in time.
 
@@ -141,6 +145,10 @@ Access passsword, separated by comma.
 > Examples: `http://your-openai-proxy.com`
 
 Override openai api request base url.
+
+### `OPENAI_ORG_ID` (optional)
+
+Specify OpenAI organization ID.
 
 ## Development
 
@@ -221,6 +229,9 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@chazzhou](https://github.com/chazzhou)
 [@hauy](https://github.com/hauy)
 [@Corwin006](https://github.com/Corwin006)
+[@yankunsong](https://github.com/yankunsong)
+[@ypwhs](https://github.com/ypwhs)
+[@fxxxchao](https://github.com/fxxxchao)
 
 ### Contributor
 

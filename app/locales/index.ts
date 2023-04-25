@@ -54,23 +54,13 @@ export function getLang(): Lang {
 
   const lang = getLanguage();
 
-  if (lang.includes("zh") || lang.includes("cn")) {
-    return "cn";
-  } else if (lang.includes("tw")) {
-    return "tw";
-  } else if (lang.includes("es")) {
-    return "es";
-  } else if (lang.includes("it")) {
-    return "it";
-  } else if (lang.includes("tr")) {
-    return "tr";
-  } else if (lang.includes("jp")) {
-    return "jp";
-  } else if (lang.includes("de")) {
-    return "de";
-  } else {
-    return "en";
+  for (const option of AllLangs) {
+    if (lang.includes(option)) {
+      return option;
+    }
   }
+
+  return "en";
 }
 
 export function changeLang(lang: Lang) {
@@ -87,4 +77,4 @@ export default {
   tr: TR,
   jp: JP,
   de: DE,
-}[getLang()];
+}[getLang()] as typeof CN;
