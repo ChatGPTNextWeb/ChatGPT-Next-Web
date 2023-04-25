@@ -23,16 +23,18 @@ import {
   useUpdateStore,
   useAccessStore,
   ModalConfigValidator,
+  useAppConfig,
 } from "../store";
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { copyToClipboard, getEmojiUrl } from "../utils";
 import Link from "next/link";
-import { UPDATE_URL } from "../constant";
+import { Path, UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
+import { useNavigate } from "react-router-dom";
 
 function UserPromptModal(props: { onClose?: () => void }) {
   const promptStore = usePromptStore();
@@ -176,16 +178,16 @@ function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   );
 }
 
-export function Settings(props: { closeSettings: () => void }) {
+export function Settings() {
+  const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [config, updateConfig, resetConfig, clearAllData, clearSessions] =
-    useChatStore((state) => [
-      state.config,
-      state.updateConfig,
-      state.resetConfig,
-      state.clearAllData,
-      state.clearSessions,
-    ]);
+  const config = useAppConfig();
+  const updateConfig = config.update;
+  const resetConfig = config.reset;
+  const [clearAllData, clearSessions] = useChatStore((state) => [
+    state.clearAllData,
+    state.clearSessions,
+  ]);
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -235,7 +237,7 @@ export function Settings(props: { closeSettings: () => void }) {
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        props.closeSettings();
+        navigate(Path.Home);
       }
     };
     document.addEventListener("keydown", keydownEvent);
@@ -290,7 +292,7 @@ export function Settings(props: { closeSettings: () => void }) {
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={props.closeSettings}
+              onClick={() => navigate(Path.Home)}
               bordered
               title={Locale.Settings.Actions.Close}
             />
@@ -671,7 +673,7 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.modelConfig.presence_penalty?.toFixed(1)}
               min="-2"
               max="2"
-              step="0.5"
+              step="0.1"
               onChange={(e) => {
                 updateConfig(
                   (config) =>

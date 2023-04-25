@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 
 const cn = {
   WIP: "该功能仍在开发中……",

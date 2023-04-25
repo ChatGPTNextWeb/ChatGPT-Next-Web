@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const it: LocaleType = {
