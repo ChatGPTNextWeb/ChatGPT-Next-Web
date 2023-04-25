@@ -133,6 +133,11 @@ const cn = {
       Check: "重新检查",
       NoAccess: "输入 API Key 或访问密码查看余额",
     },
+    ReCharge: {
+      Title: "用量充值",
+      SubTitle: "用量不够了？点击右方跳转进行充值",
+      Text: "点击充值",
+    },
     AccessCode: {
       Title: "访问密码",
       SubTitle: "已开启加密访问",

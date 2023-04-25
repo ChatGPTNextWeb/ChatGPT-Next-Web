@@ -94,6 +94,12 @@ const tr: LocaleType = {
       FoundUpdate: (x: string) => `Yeni sürüm bulundu: ${x}`,
       GoToUpdate: "Güncelle",
     },
+    ReCharge: {
+      Title: "Kullanım Yükleme",
+      SubTitle:
+        "Kullanım miktarınız yeterli değil mi? Şarj etmek için sağdaki yönlendirmeyi tıklayın",
+      Text: "Şarj etmek için tıklayın",
+    },
     SendKey: "Gönder Tuşu",
     Theme: "Tema",
     TightBorder: "Tam Ekran",

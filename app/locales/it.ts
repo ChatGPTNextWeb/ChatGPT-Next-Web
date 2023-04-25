@@ -137,6 +137,11 @@ const it: LocaleType = {
       Check: "Controlla ancora",
       NoAccess: "Inserire la chiave API per controllare il saldo",
     },
+    ReCharge: {
+      Title: "Ricarica uso",
+      SubTitle: "Non hai abbastanza uso? Clicca a destra per ricaricare",
+      Text: "Clicca qui per ricaricare",
+    },
     AccessCode: {
       Title: "Codice d'accesso",
       SubTitle: "Controllo d'accesso abilitato",

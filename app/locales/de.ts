@@ -137,6 +137,11 @@ const de: LocaleType = {
       Check: "Erneut prüfen",
       NoAccess: "API-Schlüssel eingeben, um den Kontostand zu überprüfen",
     },
+    ReCharge: {
+      Title: "Verbrauch aufladen",
+      SubTitle: "Nicht genug Verbrauch? Klicken Sie rechts, um aufzuladen",
+      Text: "Hier klicken zum Aufladen",
+    },
     AccessCode: {
       Title: "Zugangscode",
       SubTitle: "Zugangskontrolle aktiviert",

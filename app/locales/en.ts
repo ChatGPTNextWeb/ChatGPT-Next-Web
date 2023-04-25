@@ -136,6 +136,11 @@ const en: LocaleType = {
       Check: "Check",
       NoAccess: "Enter API Key to check balance",
     },
+    ReCharge: {
+      Title: "Usage recharge",
+      SubTitle: "Insufficient usage? Click on the right to recharge",
+      Text: "Click here to recharge",
+    },
     AccessCode: {
       Title: "Access Code",
       SubTitle: "Access control enabled",

@@ -133,6 +133,11 @@ const tw: LocaleType = {
       Check: "重新檢查",
       NoAccess: "輸入API Key查看餘額",
     },
+    ReCharge: {
+      Title: "用量充值",
+      SubTitle: "用量不足？點擊右方連結進行充值",
+      Text: "點擊充值",
+    },
     AccessCode: {
       Title: "授權碼",
       SubTitle: "目前是未授權存取狀態",

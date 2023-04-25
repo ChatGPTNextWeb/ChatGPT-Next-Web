@@ -11,6 +11,7 @@ import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
+import AddIcon from "../icons/add.svg";
 
 import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
 
@@ -212,6 +213,10 @@ export function Settings() {
     updateStore.updateUsage().finally(() => {
       setLoadingUsage(false);
     });
+  }
+
+  function reCharge() {
+    window.open("https://api2d.com/r/186624");
   }
 
   const accessStore = useAccessStore();
@@ -504,6 +509,36 @@ export function Settings() {
                 onClick={checkUsage}
               />
             )}
+          </SettingItem>
+
+          <SettingItem
+            title={Locale.Settings.ReCharge.Title}
+            // subTitle={
+            //   showUsage
+            //     ? loadingUsage
+            //       ? Locale.Settings.Usage.IsChecking
+            //       : Locale.Settings.Usage.SubTitle(
+            //           usage?.used ?? "[?]",
+            //           usage?.subscription ?? "[?]",
+            //         )
+            //     : Locale.Settings.Usage.NoAccess
+            // }
+            subTitle={Locale.Settings.ReCharge.SubTitle}
+          >
+            {/* {!showUsage || loadingUsage ? (
+              <div />
+            ) : (
+              <IconButton
+                icon={<ResetIcon></ResetIcon>}
+                text={Locale.Settings.Usage.Check}
+                onClick={checkUsage}
+              />
+            )} */}
+            <IconButton
+              icon={<AddIcon></AddIcon>}
+              text={Locale.Settings.ReCharge.Text}
+              onClick={reCharge}
+            />
           </SettingItem>
 
           <SettingItem
