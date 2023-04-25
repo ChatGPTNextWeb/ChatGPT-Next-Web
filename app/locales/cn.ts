@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/app";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。",
+    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -74,7 +74,6 @@ const cn = {
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
-        de: "Deutsch",
       },
     },
     Avatar: "头像",
@@ -121,7 +120,7 @@ const cn = {
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，订阅总额 $${total}`;
+       return `本月已使用 ${(used / total * 100).toFixed(2)}%，订阅总额 100%`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
