@@ -683,7 +683,7 @@ export function Chat() {
               onClick={renameSession}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          {/* <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ExportIcon />}
               bordered
@@ -695,7 +695,7 @@ export function Chat() {
                 );
               }}
             />
-          </div>
+          </div> */}
           {!isMobileScreen && (
             <div className={styles["window-action-button"]}>
               <IconButton
