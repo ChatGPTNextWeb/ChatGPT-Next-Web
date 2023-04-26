@@ -150,6 +150,10 @@ Override openai api request base url.
 
 Specify OpenAI organization ID.
 
+### `VERCEL` (optional)
+
+Whether to enable website visitor analysis on the Vercel platform, if left blank by default, it means false.
+
 ## Development
 
 > [简体中文 > 如何进行二次开发](./README_CN.md#开发)
