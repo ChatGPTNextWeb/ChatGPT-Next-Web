@@ -16,10 +16,10 @@ export enum Theme {
 }
 
 const DEFAULT_CONFIG = {
-  historyMessageCount: 4,
+  historyMessageCount: 5,
   compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
@@ -31,7 +31,7 @@ const DEFAULT_CONFIG = {
 
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
-    temperature: 1,
+    temperature: 0.8,
     max_tokens: 2000,
     presence_penalty: 0,
   },
