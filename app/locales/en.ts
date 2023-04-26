@@ -2,7 +2,7 @@ import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
-  WIP: "WIP...",
+  WIP: "Coming Soon...",
   Error: {
     Unauthorized:
       "Unauthorized access, please enter access code in settings page.",
