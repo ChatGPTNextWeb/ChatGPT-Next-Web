@@ -3,7 +3,8 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "现在是未授权状态，请点击左下角设置按钮输入访问密码。",
+    Unauthorized:
+      "现在是未授权状态，扫码关注获取免费授权码，请点击左下角设置按钮输入访问密码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
