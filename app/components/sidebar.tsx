@@ -8,6 +8,9 @@ import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
+import MaskIcon from "../icons/mask.svg";
+import PluginIcon from "../icons/plugin.svg";
+
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
@@ -23,6 +26,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
+import { showToast } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -97,6 +101,23 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
+      </div>
+
+      <div className={styles["sidebar-header-bar"]}>
+        <IconButton
+          icon={<MaskIcon />}
+          text="Mask"
+          className={styles["sidebar-bar-button"]}
+          onClick={() => navigate(Path.Masks)}
+          shadow
+        />
+        <IconButton
+          icon={<PluginIcon />}
+          text="Plugins"
+          className={styles["sidebar-bar-button"]}
+          onClick={() => showToast(Locale.WIP)}
+          shadow
+        />
       </div>
 
       <div
