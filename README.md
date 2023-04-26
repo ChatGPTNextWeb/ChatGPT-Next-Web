@@ -235,6 +235,8 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@fxxxchao](https://github.com/fxxxchao)
 [@hotic](https://github.com/hotic)
 [@WingCH](https://github.com/WingCH)
+[@jtung4](https://github.com/jtung4)
+
 
 ### Contributor
 
