@@ -129,7 +129,7 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
   const width = getDomContentWidth(dom);
   measureDom.style.width = width + "px";
-  measureDom.innerHTML = dom.value.trim().length > 0 ? dom.value : "1";
+  measureDom.innerText = dom.value.trim().length > 0 ? dom.value : "1";
 
   const lineWrapCount = Math.max(0, dom.value.split("\n").length - 1);
   const height = parseFloat(window.getComputedStyle(measureDom).height);
