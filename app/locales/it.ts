@@ -31,6 +31,10 @@ const it: LocaleType = {
       return inputHints;
     },
     Send: "Invia",
+    Config: {
+      Reset: "Reset to Default",
+      SaveAs: "Save as Mask",
+    },
   },
   Export: {
     Title: "Tutti i messaggi",
@@ -70,6 +74,7 @@ const it: LocaleType = {
     },
     Lang: {
       Name: "Lingue",
+      All: "All Languages",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -182,6 +187,39 @@ const it: LocaleType = {
     Toast: (x: any) => `Con ${x} prompts contestuali`,
     Edit: "Prompt contestuali e di memoria",
     Add: "Aggiungi altro",
+  },
+  Mask: {
+    Page: {
+      Title: "Prompt Template",
+      SubTitle: (count: number) => `${count} prompt templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} prompts`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+    },
+  },
+  NewChat: {
+    Return: "Return",
+    Skip: "Skip",
+    Title: "Pick a Mask",
+    SubTitle: "Chat with the Soul behind the Mask",
+    More: "Find More",
   },
 };
 

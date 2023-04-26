@@ -31,6 +31,10 @@ const tr: LocaleType = {
       return inputHints + ", komutları aramak için / (eğik çizgi)";
     },
     Send: "Gönder",
+    Config: {
+      Reset: "Reset to Default",
+      SaveAs: "Save as Mask",
+    },
   },
   Export: {
     Title: "Tüm Mesajlar",
@@ -70,6 +74,7 @@ const tr: LocaleType = {
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "All Languages",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -182,6 +187,39 @@ const tr: LocaleType = {
     Toast: (x: any) => `${x} bağlamsal bellek komutu`,
     Edit: "Bağlamsal ve Bellek Komutları",
     Add: "Yeni Ekle",
+  },
+  Mask: {
+    Page: {
+      Title: "Prompt Template",
+      SubTitle: (count: number) => `${count} prompt templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} prompts`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+    },
+  },
+  NewChat: {
+    Return: "Return",
+    Skip: "Skip",
+    Title: "Pick a Mask",
+    SubTitle: "Chat with the Soul behind the Mask",
+    More: "Find More",
   },
 };
 

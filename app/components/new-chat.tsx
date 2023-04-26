@@ -6,7 +6,7 @@ import styles from "./new-chat.module.scss";
 import LeftIcon from "../icons/left.svg";
 import { useNavigate } from "react-router-dom";
 import { createEmptyMask, Mask, useMaskStore } from "../store/mask";
-import { useWindowSize } from "../utils";
+import Locale from "../locales";
 import { useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
 
@@ -59,7 +59,7 @@ function useMaskGroup(masks: Mask[]) {
 
   useEffect(() => {
     const appBody = document.getElementById(SlotID.AppBody);
-    if (!appBody) return;
+    if (!appBody || masks.length === 0) return;
 
     const rect = appBody.getBoundingClientRect();
     const maxWidth = rect.width;
@@ -108,10 +108,13 @@ export function NewChat() {
       <div className={styles["mask-header"]}>
         <IconButton
           icon={<LeftIcon />}
-          text="返回"
-          onClick={() => navigate(-1)}
+          text={Locale.NewChat.Return}
+          onClick={() => navigate(Path.Home)}
         ></IconButton>
-        <IconButton text="跳过" onClick={() => startChat()}></IconButton>
+        <IconButton
+          text={Locale.NewChat.Skip}
+          onClick={() => startChat()}
+        ></IconButton>
       </div>
       <div className={styles["mask-cards"]}>
         <div className={styles["mask-card"]}>
@@ -125,14 +128,12 @@ export function NewChat() {
         </div>
       </div>
 
-      <div className={styles["title"]}>挑选一个面具</div>
-      <div className={styles["sub-title"]}>
-        现在开始，与面具背后的灵魂思维碰撞
-      </div>
+      <div className={styles["title"]}>{Locale.NewChat.Title}</div>
+      <div className={styles["sub-title"]}>{Locale.NewChat.SubTitle}</div>
 
       <input
         className={styles["search-bar"]}
-        placeholder="搜索"
+        placeholder={Locale.NewChat.More}
         type="text"
         onClick={() => navigate(Path.Masks)}
       />
@@ -141,7 +142,11 @@ export function NewChat() {
         {groups.map((masks, i) => (
           <div key={i} className={styles["mask-row"]}>
             {masks.map((mask, index) => (
-              <MaskItem key={index} mask={mask} onClick={startChat} />
+              <MaskItem
+                key={index}
+                mask={mask}
+                onClick={() => startChat(mask)}
+              />
             ))}
           </div>
         ))}

@@ -30,6 +30,10 @@ const cn = {
       return inputHints + "，/ 触发补全";
     },
     Send: "发送",
+    Config: {
+      Reset: "重置默认",
+      SaveAs: "另存为面具",
+    },
   },
   Export: {
     Title: "导出聊天记录为 Markdown",
@@ -68,6 +72,7 @@ const cn = {
     },
     Lang: {
       Name: "Language",
+      All: "所有语言",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -175,6 +180,39 @@ const cn = {
     Toast: (x: any) => `已设置 ${x} 条前置上下文`,
     Edit: "当前对话设置",
     Add: "新增预设对话",
+  },
+  Mask: {
+    Page: {
+      Title: "预设角色面具",
+      SubTitle: (count: number) => `${count} 个预设角色定义`,
+      Search: "搜索角色面具",
+      Create: "新建",
+    },
+    Item: {
+      Info: (count: number) => `包含 ${count} 条预设对话`,
+      Chat: "对话",
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `编辑预设面具 ${readonly ? "（只读）" : ""}`,
+      Download: "下载预设",
+      Clone: "克隆预设",
+    },
+    Config: {
+      Avatar: "角色头像",
+      Name: "角色名称",
+    },
+  },
+  NewChat: {
+    Return: "返回",
+    Skip: "跳过",
+    Title: "挑选一个面具",
+    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
+    More: "搜索更多",
   },
 };
 
