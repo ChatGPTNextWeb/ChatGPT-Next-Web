@@ -13,6 +13,7 @@ import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
 import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
+import { StoreKey } from "../constant";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -108,8 +109,6 @@ interface ChatStore {
 function countMessages(msgs: Message[]) {
   return msgs.reduce((pre, cur) => pre + cur.content.length, 0);
 }
-
-const LOCAL_KEY = "chat-next-web-store";
 
 export const useChatStore = create<ChatStore>()(
   persist(
@@ -489,16 +488,29 @@ export const useChatStore = create<ChatStore>()(
       },
     }),
     {
-      name: LOCAL_KEY,
+      name: StoreKey.Chat,
       version: 2,
       migrate(persistedState, version) {
-        const state = persistedState as ChatStore;
+        const state = persistedState as any;
+        const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
 
         if (version < 2) {
-          state.sessions.forEach((s) => (s.mask = createEmptyMask()));
+          newState.globalId = 0;
+          newState.sessions = [];
+
+          const oldSessions = state.sessions;
+          for (const oldSession of oldSessions) {
+            const newSession = createEmptySession();
+            newSession.topic = oldSession.topic;
+            newSession.messages = [...oldSession.messages];
+            newSession.mask.modelConfig.sendMemory = true;
+            newSession.mask.modelConfig.historyMessageCount = 4;
+            newSession.mask.modelConfig.compressMessageLengthThreshold = 1000;
+            newState.sessions.push(newSession);
+          }
         }
 
-        return state;
+        return newState;
       },
     },
   ),
