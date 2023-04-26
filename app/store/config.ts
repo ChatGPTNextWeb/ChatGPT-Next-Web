@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
   compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.Enter as SubmitKey,
-  avatar: "1f603",
+  avatar: "1f437",
   fontSize: 14,
   theme: Theme.Auto as Theme,
   tightBorder: false,
