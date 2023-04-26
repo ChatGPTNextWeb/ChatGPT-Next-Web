@@ -4,8 +4,7 @@ import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, Message } from "./chat";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
-
-export const MASK_KEY = "mask-store";
+import { StoreKey } from "../constant";
 
 export type Mask = {
   id: number;
@@ -93,7 +92,7 @@ export const useMaskStore = create<MaskStore>()(
       },
     }),
     {
-      name: MASK_KEY,
+      name: StoreKey.Mask,
       version: 2,
     },
   ),

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { StoreKey } from "../constant";
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -112,8 +113,6 @@ export const ModalConfigValidator = {
   },
 };
 
-const CONFIG_KEY = "app-config";
-
 export const useAppConfig = create<ChatConfigStore>()(
   persist(
     (set, get) => ({
@@ -130,7 +129,18 @@ export const useAppConfig = create<ChatConfigStore>()(
       },
     }),
     {
-      name: CONFIG_KEY,
+      name: StoreKey.Config,
+      version: 2,
+      migrate(persistedState, version) {
+        if (version === 2) return persistedState as any;
+
+        const state = persistedState as ChatConfig;
+        state.modelConfig.sendMemory = true;
+        state.modelConfig.historyMessageCount = 4;
+        state.modelConfig.compressMessageLengthThreshold = 1000;
+
+        return state;
+      },
     },
   ),
 );
