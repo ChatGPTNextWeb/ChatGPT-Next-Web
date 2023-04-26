@@ -13,6 +13,7 @@ import PromptIcon from "../icons/prompt.svg";
 import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
+import ResetIcon from "../icons/reload.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -58,7 +59,7 @@ import { Path } from "../constant";
 import { ModelConfigList } from "./model-config";
 import { Avatar, AvatarPicker } from "./emoji";
 import { MaskConfig } from "./mask";
-import { DEFAULT_MASK_ID } from "../store/mask";
+import { DEFAULT_MASK_ID, useMaskStore } from "../store/mask";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -108,6 +109,8 @@ function exportMessages(messages: Message[], topic: string) {
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
+  const maskStore = useMaskStore();
+  const navigate = useNavigate();
 
   return (
     <div className="modal-mask">
@@ -117,9 +120,9 @@ export function SessionConfigModel(props: { onClose: () => void }) {
         actions={[
           <IconButton
             key="reset"
-            icon={<CopyIcon />}
+            icon={<ResetIcon />}
             bordered
-            text="重置"
+            text={Locale.Chat.Config.Reset}
             onClick={() =>
               confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
             }
@@ -128,8 +131,13 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             key="copy"
             icon={<CopyIcon />}
             bordered
-            text="保存为面具"
-            onClick={() => copyToClipboard(session.memoryPrompt)}
+            text={Locale.Chat.Config.SaveAs}
+            onClick={() => {
+              navigate(Path.Masks);
+              setTimeout(() => {
+                maskStore.create(session.mask);
+              }, 500);
+            }}
           />,
         ]}
       >

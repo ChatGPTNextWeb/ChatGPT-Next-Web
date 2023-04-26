@@ -20,11 +20,36 @@
     padding: 20px;
     overflow-y: auto;
 
-    .search-bar {
+    .mask-filter {
       width: 100%;
       max-width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       animation: search-in ease 0.3s;
+
+      display: flex;
+
+      .search-bar {
+        flex-grow: 1;
+        max-width: 100%;
+        min-width: 0;
+        margin-bottom: 20px;
+        animation: search-in ease 0.3s;
+      }
+
+      .mask-filter-lang {
+        height: 100%;
+        margin-left: 10px;
+      }
+
+      .mask-create {
+        height: 100%;
+        margin-left: 10px;
+        box-sizing: border-box;
+
+        button {
+          padding: 10px;
+        }
+      }
     }
 
     .mask-item {
