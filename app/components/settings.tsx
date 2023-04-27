@@ -216,7 +216,7 @@ export function Settings() {
   }
 
   function getAccessToken() {
-    window.open("https://fakeopen.talk-qys.top/auth");
+    window.open("https://ai.fakeopen.com/auth");
   }
 
   const accessStore = useAccessStore();
