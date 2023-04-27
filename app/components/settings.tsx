@@ -511,21 +511,21 @@ export function Settings() {
             )}
           </SettingItem>
 
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.ReCharge.Title}
-            // subTitle={
-            //   showUsage
-            //     ? loadingUsage
-            //       ? Locale.Settings.Usage.IsChecking
-            //       : Locale.Settings.Usage.SubTitle(
-            //           usage?.used ?? "[?]",
-            //           usage?.subscription ?? "[?]",
-            //         )
-            //     : Locale.Settings.Usage.NoAccess
-            // }
+            subTitle={
+              showUsage
+                ? loadingUsage
+                  ? Locale.Settings.Usage.IsChecking
+                  : Locale.Settings.Usage.SubTitle(
+                      usage?.used ?? "[?]",
+                      usage?.subscription ?? "[?]",
+                    )
+                : Locale.Settings.Usage.NoAccess
+            }
             subTitle={Locale.Settings.ReCharge.SubTitle}
           >
-            {/* {!showUsage || loadingUsage ? (
+            {!showUsage || loadingUsage ? (
               <div />
             ) : (
               <IconButton
@@ -533,13 +533,13 @@ export function Settings() {
                 text={Locale.Settings.Usage.Check}
                 onClick={checkUsage}
               />
-            )} */}
+            )}
             <IconButton
               icon={<AddIcon></AddIcon>}
               text={Locale.Settings.ReCharge.Text}
               onClick={reCharge}
             />
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
