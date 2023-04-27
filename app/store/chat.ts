@@ -63,7 +63,7 @@ export const BOT_HELLO: Message = createMessage({
 
 function createEmptySession(): ChatSession {
   return {
-    id: Date.now(),
+    id: Date.now() + Math.random(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
     messages: [],
