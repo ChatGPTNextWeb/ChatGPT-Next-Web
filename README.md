@@ -14,7 +14,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 [演示](https://chat-gpt-next-web.vercel.app/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/234462588-e8eff256-f5ca-46ef-8f5f-d7db6d28735a.jpg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/dgqyushen/ChatGPT-Next-Web)
 
@@ -81,9 +81,9 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 1. Get [OpenAI AccessToken str](https://chat.openai.com/api/auth/session);
 
 2. Click
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), remember that `CODE` is your page password;
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), remember that `CODE` is your page password;
 3. Or Click
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), For public access using;
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), For public access using;
 
 4. Open the website you deployed, then fill in the accessToken in the website settings, and enjoy it :)
 

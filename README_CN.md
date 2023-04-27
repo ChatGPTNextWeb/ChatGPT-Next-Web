@@ -7,7 +7,7 @@
 
 [演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Donate](#捐赠-donate-usdt)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/dgqyushen/ChatGPT-Next-Web)
 
@@ -29,9 +29,9 @@
 
 1. 准备好你的 [OpenAI AccessToken str](https://chat.openai.com/api/auth/session);
 2. 点击右侧按钮开始部署：
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)，直接使用 Github 账号登录即可，记得在环境变量页[页面访问密码](#配置页面访问密码) CODE；
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)，直接使用 Github 账号登录即可，记得在环境变量页[页面访问密码](#配置页面访问密码) CODE；
 3. 或者点击右侧按钮开始部署:
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web),供公共访问，不设置访问密码;
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web),供公共访问，不设置访问密码;
 
 4. 部署完毕后，即可开始使用；
 5. （可选）[绑定自定义域名](https://vercel.com/docs/concepts/projects/domains/add-a-domain)：Vercel 分配的域名 DNS 在某些区域被污染了，绑定自定义域名即可直连。
