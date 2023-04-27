@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
 
-import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
-
 import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
@@ -9,32 +7,28 @@ import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
-import EyeIcon from "../icons/eye.svg";
-import EyeOffIcon from "../icons/eye-off.svg";
-
-import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
+import { Input, List, ListItem, Modal, PasswordInput, Popover } from "./ui-lib";
+import { ModelConfigList } from "./model-config";
 
 import { IconButton } from "./button";
 import {
   SubmitKey,
   useChatStore,
   Theme,
-  ALL_MODELS,
   useUpdateStore,
   useAccessStore,
-  ModalConfigValidator,
   useAppConfig,
 } from "../store";
-import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { copyToClipboard, getEmojiUrl } from "../utils";
+import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import { Path, UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarPicker } from "./emoji";
 
 function UserPromptModal(props: { onClose?: () => void }) {
   const promptStore = usePromptStore();
@@ -137,57 +131,13 @@ function UserPromptModal(props: { onClose?: () => void }) {
   );
 }
 
-function SettingItem(props: {
-  title: string;
-  subTitle?: string;
-  children: JSX.Element;
-}) {
-  return (
-    <ListItem>
-      <div className={styles["settings-title"]}>
-        <div>{props.title}</div>
-        {props.subTitle && (
-          <div className={styles["settings-sub-title"]}>{props.subTitle}</div>
-        )}
-      </div>
-      {props.children}
-    </ListItem>
-  );
-}
-
-function PasswordInput(props: HTMLProps<HTMLInputElement>) {
-  const [visible, setVisible] = useState(false);
-
-  function changeVisibility() {
-    setVisible(!visible);
-  }
-
-  return (
-    <div className={styles["password-input-container"]}>
-      <IconButton
-        icon={visible ? <EyeIcon /> : <EyeOffIcon />}
-        onClick={changeVisibility}
-        className={styles["password-eye"]}
-      />
-      <input
-        {...props}
-        type={visible ? "text" : "password"}
-        className={styles["password-input"]}
-      />
-    </div>
-  );
-}
-
 export function Settings() {
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
   const resetConfig = config.reset;
-  const [clearAllData, clearSessions] = useChatStore((state) => [
-    state.clearAllData,
-    state.clearSessions,
-  ]);
+  const chatStore = useChatStore();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -207,9 +157,9 @@ export function Settings() {
     subscription: updateStore.subscription,
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
-  function checkUsage() {
+  function checkUsage(force = false) {
     setLoadingUsage(true);
-    updateStore.updateUsage().finally(() => {
+    updateStore.updateUsage(force).finally(() => {
       setLoadingUsage(false);
     });
   }
@@ -249,39 +199,33 @@ export function Settings() {
 
   return (
     <ErrorBoundary>
-      <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]}>
-          <div className={styles["window-header-main-title"]}>
+      <div className="window-header">
+        <div className="window-header-title">
+          <div className="window-header-main-title">
             {Locale.Settings.Title}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          <div className="window-header-sub-title">
             {Locale.Settings.SubTitle}
           </div>
         </div>
-        <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"]}>
+        <div className="window-actions">
+          <div className="window-action-button">
             <IconButton
               icon={<ClearIcon />}
               onClick={() => {
-                const confirmed = window.confirm(
-                  `${Locale.Settings.Actions.ConfirmClearAll.Confirm}`,
-                );
-                if (confirmed) {
-                  clearSessions();
+                if (confirm(Locale.Settings.Actions.ConfirmClearAll)) {
+                  chatStore.clearAllData();
                 }
               }}
               bordered
               title={Locale.Settings.Actions.ClearAll}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<ResetIcon />}
               onClick={() => {
-                const confirmed = window.confirm(
-                  `${Locale.Settings.Actions.ConfirmResetAll.Confirm}`,
-                );
-                if (confirmed) {
+                if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {
                   resetConfig();
                 }
               }}
@@ -289,7 +233,7 @@ export function Settings() {
               title={Locale.Settings.Actions.ResetAll}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<CloseIcon />}
               onClick={() => navigate(Path.Home)}
@@ -301,16 +245,13 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
-          <SettingItem title={Locale.Settings.Avatar}>
+          <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
               content={
-                <EmojiPicker
-                  lazyLoadEmojis
-                  theme={EmojiTheme.AUTO}
-                  getEmojiUrl={getEmojiUrl}
-                  onEmojiClick={(e) => {
-                    updateConfig((config) => (config.avatar = e.unified));
+                <AvatarPicker
+                  onEmojiClick={(avatar: string) => {
+                    updateConfig((config) => (config.avatar = avatar));
                     setShowEmojiPicker(false);
                   }}
                 />
@@ -321,12 +262,12 @@ export function Settings() {
                 className={styles.avatar}
                 onClick={() => setShowEmojiPicker(true)}
               >
-                <Avatar role="user" />
+                <Avatar avatar={config.avatar} />
               </div>
             </Popover>
-          </SettingItem>
+          </ListItem>
 
-          <SettingItem
+          <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
@@ -349,9 +290,9 @@ export function Settings() {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </SettingItem>
+          </ListItem>
 
-          <SettingItem title={Locale.Settings.SendKey}>
+          <ListItem title={Locale.Settings.SendKey}>
             <select
               value={config.submitKey}
               onChange={(e) => {
@@ -367,12 +308,9 @@ export function Settings() {
                 </option>
               ))}
             </select>
-          </SettingItem>
+          </ListItem>
 
-          <ListItem>
-            <div className={styles["settings-title"]}>
-              {Locale.Settings.Theme}
-            </div>
+          <ListItem title={Locale.Settings.Theme}>
             <select
               value={config.theme}
               onChange={(e) => {
@@ -389,7 +327,7 @@ export function Settings() {
             </select>
           </ListItem>
 
-          <SettingItem title={Locale.Settings.Lang.Name}>
+          <ListItem title={Locale.Settings.Lang.Name}>
             <select
               value={getLang()}
               onChange={(e) => {
@@ -402,9 +340,9 @@ export function Settings() {
                 </option>
               ))}
             </select>
-          </SettingItem>
+          </ListItem>
 
-          <SettingItem
+          <ListItem
             title={Locale.Settings.FontSize.Title}
             subTitle={Locale.Settings.FontSize.SubTitle}
           >
@@ -421,21 +359,12 @@ export function Settings() {
                 )
               }
             ></InputRange>
-          </SettingItem>
+          </ListItem>
 
-          <SettingItem title={Locale.Settings.TightBorder}>
-            <input
-              type="checkbox"
-              checked={config.tightBorder}
-              onChange={(e) =>
-                updateConfig(
-                  (config) => (config.tightBorder = e.currentTarget.checked),
-                )
-              }
-            ></input>
-          </SettingItem>
-
-          <SettingItem title={Locale.Settings.SendPreviewBubble}>
+          <ListItem
+            title={Locale.Settings.SendPreviewBubble.Title}
+            subTitle={Locale.Settings.SendPreviewBubble.SubTitle}
+          >
             <input
               type="checkbox"
               checked={config.sendPreviewBubble}
@@ -446,12 +375,29 @@ export function Settings() {
                 )
               }
             ></input>
-          </SettingItem>
+          </ListItem>
+
+          <ListItem
+            title={Locale.Settings.Mask.Title}
+            subTitle={Locale.Settings.Mask.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={!config.dontShowMaskSplashScreen}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.dontShowMaskSplashScreen =
+                      !e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <List>
           {enabledAccessControl ? (
-            <SettingItem
+            <ListItem
               title={Locale.Settings.AccessCode.Title}
               subTitle={Locale.Settings.AccessCode.SubTitle}
             >
@@ -463,12 +409,12 @@ export function Settings() {
                   accessStore.updateCode(e.currentTarget.value);
                 }}
               />
-            </SettingItem>
+            </ListItem>
           ) : (
             <></>
           )}
 
-          <SettingItem
+          <ListItem
             title={Locale.Settings.Token.Title}
             subTitle={Locale.Settings.Token.SubTitle}
           >
@@ -480,9 +426,9 @@ export function Settings() {
                 accessStore.updateToken(e.currentTarget.value);
               }}
             />
-          </SettingItem>
+          </ListItem>
 
-          <SettingItem
+          <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
               showUsage
@@ -501,52 +447,14 @@ export function Settings() {
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
                 text={Locale.Settings.Usage.Check}
-                onClick={checkUsage}
+                onClick={() => checkUsage(true)}
               />
             )}
-          </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.HistoryCount.Title}
-            subTitle={Locale.Settings.HistoryCount.SubTitle}
-          >
-            <InputRange
-              title={config.historyMessageCount.toString()}
-              value={config.historyMessageCount}
-              min="0"
-              max="25"
-              step="1"
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.historyMessageCount = e.target.valueAsNumber),
-                )
-              }
-            ></InputRange>
-          </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.CompressThreshold.Title}
-            subTitle={Locale.Settings.CompressThreshold.SubTitle}
-          >
-            <input
-              type="number"
-              min={500}
-              max={4000}
-              value={config.compressMessageLengthThreshold}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber),
-                )
-              }
-            ></input>
-          </SettingItem>
+          </ListItem>
         </List>
 
         <List>
-          <SettingItem
+          <ListItem
             title={Locale.Settings.Prompt.Disable.Title}
             subTitle={Locale.Settings.Prompt.Disable.SubTitle}
           >
@@ -560,9 +468,9 @@ export function Settings() {
                 )
               }
             ></input>
-          </SettingItem>
+          </ListItem>
 
-          <SettingItem
+          <ListItem
             title={Locale.Settings.Prompt.List}
             subTitle={Locale.Settings.Prompt.ListCount(
               builtinCount,
@@ -574,89 +482,18 @@ export function Settings() {
               text={Locale.Settings.Prompt.Edit}
               onClick={() => setShowPromptModal(true)}
             />
-          </SettingItem>
+          </ListItem>
         </List>
 
         <List>
-          <SettingItem title={Locale.Settings.Model}>
-            <select
-              value={config.modelConfig.model}
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.model = ModalConfigValidator.model(
-                      e.currentTarget.value,
-                    )),
-                );
-              }}
-            >
-              {ALL_MODELS.map((v) => (
-                <option value={v.name} key={v.name} disabled={!v.available}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.Temperature.Title}
-            subTitle={Locale.Settings.Temperature.SubTitle}
-          >
-            <InputRange
-              value={config.modelConfig.temperature?.toFixed(1)}
-              min="0"
-              max="2"
-              step="0.1"
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.temperature =
-                      ModalConfigValidator.temperature(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                );
-              }}
-            ></InputRange>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.MaxTokens.Title}
-            subTitle={Locale.Settings.MaxTokens.SubTitle}
-          >
-            <input
-              type="number"
-              min={100}
-              max={32000}
-              value={config.modelConfig.max_tokens}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.max_tokens =
-                      ModalConfigValidator.max_tokens(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                )
-              }
-            ></input>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.PresencePenlty.Title}
-            subTitle={Locale.Settings.PresencePenlty.SubTitle}
-          >
-            <InputRange
-              value={config.modelConfig.presence_penalty?.toFixed(1)}
-              min="-2"
-              max="2"
-              step="0.1"
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.presence_penalty =
-                      ModalConfigValidator.presence_penalty(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                );
-              }}
-            ></InputRange>
-          </SettingItem>
+          <ModelConfigList
+            modelConfig={config.modelConfig}
+            updateConfig={(upater) => {
+              const modelConfig = { ...config.modelConfig };
+              upater(modelConfig);
+              config.update((config) => (config.modelConfig = modelConfig));
+            }}
+          />
         </List>
 
         {shouldShowPromptModal && (
