@@ -28,6 +28,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - Privacy first, all data stored locally in the browser
 - Responsive design, dark mode and PWA
 - Fast first screen loading speed (~100kb), support streaming response
+- New in v2: create, share and debug your chat tools with prompt templates (mask)
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - One-click export all chat history with full Markdown support
@@ -37,7 +38,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 - [x] System Prompt: pin a user defined prompt as system prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
 - [x] User Prompt: user can edit and save custom prompts to prompt list
-- [ ] Prompt Template: create a new chat with pre-defined in-context prompts
+- [x] Prompt Template: create a new chat with pre-defined in-context prompts [#993](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/993)
 - [ ] Share as image, share to ShareGPT
 - [ ] Desktop App with tauri
 - [ ] Self-host Model: support llama, alpaca, ChatGLM, BELLE etc.
@@ -48,12 +49,16 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - User login, accounts, cloud sync
 - UI text customize
 
+## What's New
+- 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
+
 ## 主要功能
 
 - 在 1 分钟内使用 Vercel **免费一键部署**
 - 精心设计的 UI，响应式设计，支持深色模式，支持 PWA
 - 极快的首屏加载速度（~100kb），支持流式响应
 - 隐私安全，所有数据保存在用户浏览器本地
+- 预制角色功能（面具），方便地创建、分享和调试你的个性化对话
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
 - 一键导出聊天记录，完整的 Markdown 支持
@@ -63,7 +68,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 - [x] 为每个对话设置系统 Prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
 - [x] 允许用户自行编辑内置 Prompt 列表
-- [ ] 提示词模板：使用预制上下文快速定制新对话
+- [x] 预制角色：使用预制角色快速定制新对话 [#993](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/993)
 - [ ] 分享为图片，分享到 ShareGPT
 - [ ] 使用 tauri 打包桌面应用
 - [ ] 支持自部署的大语言模型
@@ -73,6 +78,11 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 - 界面文字自定义
 - 用户登录、账号管理、消息云同步
+
+## 最新动态
+- 🚀 v2.0 已经发布，现在你可以使用面具功能快速创建预制对话了！ 了解更多： [ChatGPT 提示词高阶技能：零次、一次和少样本提示](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)。
+
+
 
 ## Get Started
 
@@ -102,6 +112,8 @@ We recommend that you follow the steps below to re-deploy:
 - Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-cn.md).
 
 ### Enable Automatic Updates
+
+> If you encounter a failure of Upstream Sync execution, please manually sync fork once.
 
 After forking the project, due to the limitations imposed by GitHub, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
 
