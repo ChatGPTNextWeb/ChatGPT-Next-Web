@@ -85,9 +85,8 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 3. Or Click
    [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgqyushen%2FChatGPT-Next-Web%2Ftree%2Faccess-token&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), For public access using;
 
-4. Open the size you deployed,and set the accessToken the the site.
+4. Open the website you deployed, then fill in the accessToken in the website settings, and enjoy it :)
 
-4. Enjoy :)
 
 
 ## FAQ
