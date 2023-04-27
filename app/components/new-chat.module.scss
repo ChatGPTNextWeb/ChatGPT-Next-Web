@@ -52,10 +52,18 @@
     animation: slide-in ease 0.4s;
   }
 
-  .search-bar {
+  .actions {
     margin-top: 5vh;
     margin-bottom: 5vh;
     animation: slide-in ease 0.45s;
+    display: flex;
+    justify-content: center;
+
+    .search-bar {
+      font-size: 12px;
+      margin-right: 10px;
+      width: 40vw;
+    }
   }
 
   .masks {

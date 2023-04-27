@@ -3,11 +3,14 @@ import { Path, SlotID } from "../constant";
 import { IconButton } from "./button";
 import { EmojiAvatar } from "./emoji";
 import styles from "./new-chat.module.scss";
+
 import LeftIcon from "../icons/left.svg";
-import { useNavigate } from "react-router-dom";
+import AddIcon from "../icons/lightning.svg";
+
+import { useLocation, useNavigate } from "react-router-dom";
 import { createEmptyMask, Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
-import { useChatStore } from "../store";
+import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
@@ -93,10 +96,14 @@ function useMaskGroup(masks: Mask[]) {
 export function NewChat() {
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
+
   const masks = maskStore.getAll();
   const groups = useMaskGroup(masks);
 
   const navigate = useNavigate();
+  const config = useAppConfig();
+
+  const { state } = useLocation();
 
   const startChat = (mask?: Mask) => {
     chatStore.newSession(mask);
@@ -111,10 +118,19 @@ export function NewChat() {
           text={Locale.NewChat.Return}
           onClick={() => navigate(Path.Home)}
         ></IconButton>
-        <IconButton
-          text={Locale.NewChat.Skip}
-          onClick={() => startChat()}
-        ></IconButton>
+        {!state?.fromHome && (
+          <IconButton
+            text={Locale.NewChat.NotShow}
+            onClick={() => {
+              if (confirm(Locale.NewChat.ConfirmNoShow)) {
+                startChat();
+                config.update(
+                  (config) => (config.dontShowMaskSplashScreen = true),
+                );
+              }
+            }}
+          ></IconButton>
+        )}
       </div>
       <div className={styles["mask-cards"]}>
         <div className={styles["mask-card"]}>
@@ -131,12 +147,22 @@ export function NewChat() {
       <div className={styles["title"]}>{Locale.NewChat.Title}</div>
       <div className={styles["sub-title"]}>{Locale.NewChat.SubTitle}</div>
 
-      <input
-        className={styles["search-bar"]}
-        placeholder={Locale.NewChat.More}
-        type="text"
-        onClick={() => navigate(Path.Masks)}
-      />
+      <div className={styles["actions"]}>
+        <input
+          className={styles["search-bar"]}
+          placeholder={Locale.NewChat.More}
+          type="text"
+          onClick={() => navigate(Path.Masks)}
+        />
+
+        <IconButton
+          text={Locale.NewChat.Skip}
+          onClick={() => startChat()}
+          icon={<AddIcon />}
+          type="primary"
+          shadow
+        />
+      </div>
 
       <div className={styles["masks"]}>
         {groups.map((masks, i) => (

@@ -65,12 +65,8 @@ const jp: LocaleType = {
       ClearAll: "すべてのデータをクリア",
       ResetAll: "すべてのオプションをリセット",
       Close: "閉じる",
-      ConfirmResetAll: {
-        Confirm: "すべての設定をリセットしてもよろしいですか？",
-      },
-      ConfirmClearAll: {
-        Confirm: "すべてのチャットをリセットしてもよろしいですか？",
-      },
+      ConfirmResetAll: "すべての設定をリセットしてもよろしいですか？",
+      ConfirmClearAll: "すべてのチャットをリセットしてもよろしいですか？",
     },
     Lang: {
       Name: "Language",
@@ -103,7 +99,14 @@ const jp: LocaleType = {
     SendKey: "送信キー",
     Theme: "テーマ",
     TightBorder: "ボーダーレスモード",
-    SendPreviewBubble: "プレビューバブルの送信",
+    SendPreviewBubble: {
+      Title: "プレビューバブルの送信",
+      SubTitle: "在预览气泡中预览 Markdown 内容",
+    },
+    Mask: {
+      Title: "面具启动页",
+      SubTitle: "新建聊天时，展示面具启动页",
+    },
     Prompt: {
       Disable: {
         Title: "プロンプトの自動補完を無効にする",
@@ -176,8 +179,6 @@ const jp: LocaleType = {
       Summarize:
         "あなたとユーザの会話を簡潔にまとめて、後続のコンテキストプロンプトとして使ってください。200字以内に抑えてください。",
     },
-    ConfirmClearAll:
-      "すべてのチャット、設定データをクリアしてもよろしいですか？",
   },
   Copy: {
     Success: "クリップボードに書き込みました",
@@ -188,7 +189,9 @@ const jp: LocaleType = {
     Edit: "前置コンテキストと履歴メモリ",
     Add: "新規追加",
   },
+  Plugin: { Name: "插件" },
   Mask: {
+    Name: "面具",
     Page: {
       Title: "预设角色面具",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
@@ -220,6 +223,8 @@ const jp: LocaleType = {
     Title: "挑选一个面具",
     SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
     More: "搜索更多",
+    NotShow: "不再展示",
+    ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
   },
 };
 

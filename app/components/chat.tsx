@@ -53,13 +53,16 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { Input, List, ListItem, Modal, Popover, showModal } from "./ui-lib";
+import { ListItem, Modal, showModal } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-import { ModelConfigList } from "./model-config";
-import { Avatar, AvatarPicker } from "./emoji";
-import { MaskConfig } from "./mask";
-import { DEFAULT_MASK_ID, useMaskStore } from "../store/mask";
+import { Avatar } from "./emoji";
+import { MaskAvatar, MaskConfig } from "./mask";
+import {
+  DEFAULT_MASK_AVATAR,
+  DEFAULT_MASK_ID,
+  useMaskStore,
+} from "../store/mask";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -668,10 +671,8 @@ export function Chat() {
                 <div className={styles["chat-message-avatar"]}>
                   {message.role === "user" ? (
                     <Avatar avatar={config.avatar} />
-                  ) : session.mask.id === DEFAULT_MASK_ID ? (
-                    <Avatar model={message.model ?? "gpt-3.5-turbo"} />
                   ) : (
-                    <Avatar avatar={session.mask.avatar} />
+                    <MaskAvatar mask={session.mask} />
                   )}
                 </div>
                 {showTyping && (
@@ -778,7 +779,7 @@ export function Chat() {
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
-            noDark
+            type="primary"
             onClick={onUserSubmit}
           />
         </div>

@@ -14,6 +14,8 @@ import { useChatStore } from "../store";
 import Locale from "../locales";
 import { Link, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
+import { MaskAvatar } from "./mask";
+import { Mask } from "../store/mask";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -25,6 +27,7 @@ export function ChatItem(props: {
   id: number;
   index: number;
   narrow?: boolean;
+  mask: Mask;
 }) {
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
@@ -44,7 +47,7 @@ export function ChatItem(props: {
           {props.narrow ? (
             <div className={styles["chat-item-narrow"]}>
               <div className={styles["chat-item-avatar"] + " no-dark"}>
-                <BotIcon></BotIcon>
+                <MaskAvatar mask={props.mask} />
               </div>
               <div className={styles["chat-item-narrow-count"]}>
                 {props.count}
@@ -129,6 +132,7 @@ export function ChatList(props: { narrow?: boolean }) {
                   }
                 }}
                 narrow={props.narrow}
+                mask={item.mask}
               />
             ))}
             {provided.placeholder}

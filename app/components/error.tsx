@@ -2,7 +2,7 @@ import React from "react";
 import { IconButton } from "./button";
 import GithubIcon from "../icons/github.svg";
 import ResetIcon from "../icons/reload.svg";
-import { ISSUE_URL, StoreKey } from "../constant";
+import { ISSUE_URL } from "../constant";
 import Locale from "../locales";
 import { downloadAs } from "../utils";
 
@@ -24,22 +24,15 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
   }
 
   clearAndSaveData() {
-    const snapshot: Record<string, any> = {};
-    Object.values(StoreKey).forEach((key) => {
-      snapshot[key] = localStorage.getItem(key);
-
-      if (snapshot[key]) {
-        try {
-          snapshot[key] = JSON.parse(snapshot[key]);
-        } catch {}
-      }
-    });
-
     try {
-      downloadAs(JSON.stringify(snapshot), "chatgpt-next-web-snapshot.json");
-    } catch {}
-
-    localStorage.clear();
+      downloadAs(
+        JSON.stringify(localStorage),
+        "chatgpt-next-web-snapshot.json",
+      );
+    } finally {
+      localStorage.clear();
+      location.reload();
+    }
   }
 
   render() {
@@ -65,7 +58,8 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
               icon={<ResetIcon />}
               text="Clear All Data"
               onClick={() =>
-                confirm(Locale.Store.ConfirmClearAll) && this.clearAndSaveData()
+                confirm(Locale.Settings.Actions.ConfirmClearAll) &&
+                this.clearAndSaveData()
               }
               bordered
             />
