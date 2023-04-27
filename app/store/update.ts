@@ -78,9 +78,9 @@ export const useUpdateStore = create<UpdateStore>()(
 
         const usage = await requestUsage();
 
-        if (usage) {
-          set(() => usage);
-        }
+        // if (usage) {
+        //   set(() => usage);
+        // }
       },
     }),
     {
