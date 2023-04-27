@@ -123,9 +123,16 @@ const es: LocaleType = {
         "Se comprimirán los mensajes si la longitud de los mensajes no comprimidos supera el valor",
     },
     Token: {
-      Title: "Clave de API",
-      SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
-      Placeholder: "Clave de la API de OpenAI",
+      Title: "Token de acceso",
+      SubTitle:
+        "Conéctate directamente a ChatGPT usando tu propio token de acceso",
+      Placeholder: "Token de acceso",
+    },
+    GetAccessToken: {
+      Title: "Obtener token de acceso",
+      SubTitle:
+        "Obtener un token de acceso requiere una dirección IP de un país compatible con OpenAI",
+      Text: "Haz clic para saltar",
     },
     Usage: {
       Title: "Saldo de la cuenta",

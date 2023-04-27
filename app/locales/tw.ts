@@ -120,9 +120,14 @@ const tw: LocaleType = {
       SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
     },
     Token: {
-      Title: "API Key",
-      SubTitle: "使用自己的 Key 可規避授權存取限制",
-      Placeholder: "OpenAI API Key",
+      Title: "存取令牌",
+      SubTitle: "使用您自己的存取令牌直接連接到ChatGPT",
+      Placeholder: "存取令牌",
+    },
+    GetAccessToken: {
+      Title: "獲取存取權杖",
+      SubTitle: "獲取存取權杖需要OpenAI支援的國家IP",
+      Text: "點擊跳轉",
     },
     Usage: {
       Title: "帳戶餘額",

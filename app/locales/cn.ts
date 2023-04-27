@@ -120,9 +120,14 @@ const cn = {
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
     Token: {
-      Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过密码访问限制",
-      Placeholder: "OpenAI API Key",
+      Title: "Access Token",
+      SubTitle: "使用自己的 Accesstoken 直接对接ChatGPT",
+      Placeholder: "AccessToken",
+    },
+    GetAccessToken: {
+      Title: "获取AccessToken",
+      SubTitle: "获取AccessToken 需要OpenAI 支持的国家IP",
+      Text: "点击跳转",
     },
     Usage: {
       Title: "余额查询",

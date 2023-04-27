@@ -124,9 +124,15 @@ const jp = {
         "圧縮されていない履歴メッセージがこの値を超えた場合、圧縮が行われます。",
     },
     Token: {
-      Title: "APIキー",
-      SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
-      Placeholder: "OpenAI APIキー",
+      Title: "アクセストークン",
+      SubTitle: "独自のアクセストークンを使用してChatGPTに直接接続します",
+      Placeholder: "アクセストークン",
+    },
+    GetAccessToken: {
+      Title: "アクセストークンの取得",
+      SubTitle:
+        "アクセストークンを取得するには、OpenAI がサポートする国のIPアドレスが必要です",
+      Text: "クリックしてジャンプ",
     },
     Usage: {
       Title: "残高照会",

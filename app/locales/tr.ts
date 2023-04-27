@@ -129,9 +129,16 @@ const tr: LocaleType = {
         "Sıkıştırılmamış mesajların uzunluğu bu değeri aşarsa sıkıştırılır",
     },
     Token: {
-      Title: "API Anahtarı",
-      SubTitle: "Erişim kodu sınırını yoksaymak için anahtarınızı kullanın",
-      Placeholder: "OpenAI API Anahtarı",
+      Title: "Erişim Jetonu",
+      SubTitle:
+        "Kendi Erişim Jetonunuzu kullanarak ChatGPT'ye doğrudan bağlanın",
+      Placeholder: "Erişim Jetonu",
+    },
+    GetAccessToken: {
+      Title: "Erişim Jetonu Al",
+      SubTitle:
+        "Erişim Jetonu almak için OpenAI tarafından desteklenen bir ülkenin IP adresine ihtiyaç duyulur",
+      Text: "Tıklamak için atla",
     },
     Usage: {
       Title: "Hesap Bakiyesi",

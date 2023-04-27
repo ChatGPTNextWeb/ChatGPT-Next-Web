@@ -114,35 +114,35 @@ export async function requestUsage() {
     requestOpenaiClient("dashboard/billing/subscription")(null, "GET"),
   ]);
 
-  const response = (await used.json()) as {
-    total_usage?: number;
-    error?: {
-      type: string;
-      message: string;
-    };
-  };
+  // const response = (await used.json()) as {
+  //   total_usage?: number;
+  //   error?: {
+  //     type: string;
+  //     message: string;
+  //   };
+  // };
 
   const total = (await subs.json()) as {
     hard_limit_usd?: number;
   };
 
-  if (response.error && response.error.type) {
-    showToast(response.error.message);
-    return;
-  }
+  // if (response.error && response.error.type) {
+  //   showToast(response.error.message);
+  //   return;
+  // }
 
-  if (response.total_usage) {
-    response.total_usage = Math.round(response.total_usage) / 100;
-  }
+  // if (response.total_usage) {
+  //   response.total_usage = Math.round(response.total_usage) / 100;
+  // }
 
-  if (total.hard_limit_usd) {
-    total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
-  }
+  // if (total.hard_limit_usd) {
+  //   total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
+  // }
 
-  return {
-    used: response.total_usage,
-    subscription: total.hard_limit_usd,
-  };
+  // return {
+  //   used: response.total_usage,
+  //   subscription: total.hard_limit_usd,
+  // };
 }
 
 export async function requestChatStream(

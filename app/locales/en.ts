@@ -123,9 +123,15 @@ const en: LocaleType = {
         "Will compress if uncompressed messages length exceeds the value",
     },
     Token: {
-      Title: "API Key",
-      SubTitle: "Use your key to ignore access code limit",
-      Placeholder: "OpenAI API Key",
+      Title: "Access Token",
+      SubTitle: "Connect directly to ChatGPT using your own Access Token",
+      Placeholder: "Access Token",
+    },
+    GetAccessToken: {
+      Title: "Get Access Token",
+      SubTitle:
+        "Getting an Access Token requires an IP address from a country supported by OpenAI",
+      Text: "Click to jump",
     },
     Usage: {
       Title: "Account Balance",

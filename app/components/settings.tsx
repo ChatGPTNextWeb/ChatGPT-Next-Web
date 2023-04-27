@@ -11,7 +11,7 @@ import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
-import AddIcon from "../icons/add.svg";
+import ShareIcon from "../icons/share.svg";
 
 import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
 
@@ -215,8 +215,8 @@ export function Settings() {
     });
   }
 
-  function reCharge() {
-    window.open("https://api2d.com/r/186624");
+  function getAccessToken() {
+    window.open("https://fakeopen.talk-qys.top/auth");
   }
 
   const accessStore = useAccessStore();
@@ -330,31 +330,6 @@ export function Settings() {
               </div>
             </Popover>
           </SettingItem>
-
-          {/* <SettingItem
-            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
-            subTitle={
-              checkingUpdate
-                ? Locale.Settings.Update.IsChecking
-                : hasNewVersion
-                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
-                : Locale.Settings.Update.IsLatest
-            }
-          >
-            {checkingUpdate ? (
-              <div />
-            ) : hasNewVersion ? (
-              <Link href={UPDATE_URL} target="_blank" className="link">
-                {Locale.Settings.Update.GoToUpdate}
-              </Link>
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Update.CheckUpdate}
-                onClick={() => checkUpdate(true)}
-              />
-            )}
-          </SettingItem> */}
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -488,56 +463,13 @@ export function Settings() {
           </SettingItem>
 
           <SettingItem
-            title={Locale.Settings.Usage.Title}
-            subTitle={
-              showUsage
-                ? loadingUsage
-                  ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
-                : Locale.Settings.Usage.NoAccess
-            }
+            title={Locale.Settings.GetAccessToken.Title}
+            subTitle={Locale.Settings.GetAccessToken.SubTitle}
           >
-            {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={checkUsage}
-              />
-            )}
-          </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.ReCharge.Title}
-            // subTitle={
-            //   showUsage
-            //     ? loadingUsage
-            //       ? Locale.Settings.Usage.IsChecking
-            //       : Locale.Settings.Usage.SubTitle(
-            //           usage?.used ?? "[?]",
-            //           usage?.subscription ?? "[?]",
-            //         )
-            //     : Locale.Settings.Usage.NoAccess
-            // }
-            subTitle={Locale.Settings.ReCharge.SubTitle}
-          >
-            {/* {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={checkUsage}
-              />
-            )} */}
             <IconButton
-              icon={<AddIcon></AddIcon>}
-              text={Locale.Settings.ReCharge.Text}
-              onClick={reCharge}
+              icon={<ShareIcon></ShareIcon>}
+              text={Locale.Settings.GetAccessToken.Text}
+              onClick={getAccessToken}
             />
           </SettingItem>
 
