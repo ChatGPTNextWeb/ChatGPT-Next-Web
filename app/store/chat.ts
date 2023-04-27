@@ -319,7 +319,10 @@ export const useChatStore = create<ChatStore>()(
 
         return {
           role: "system",
-          content: Locale.Store.Prompt.History(session.memoryPrompt),
+          content:
+            session.memoryPrompt.length > 0
+              ? Locale.Store.Prompt.History(session.memoryPrompt)
+              : "",
           date: "",
         } as Message;
       },
@@ -481,10 +484,8 @@ export const useChatStore = create<ChatStore>()(
       },
 
       clearAllData() {
-        if (confirm(Locale.Store.ConfirmClearAll)) {
-          localStorage.clear();
-          location.reload();
-        }
+        localStorage.clear();
+        location.reload();
       },
     }),
     {

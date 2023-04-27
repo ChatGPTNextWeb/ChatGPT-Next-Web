@@ -45,7 +45,7 @@ const cn = {
   Memory: {
     Title: "历史摘要",
     EmptyContent: "对话内容过短，无需总结",
-    Send: "启用总结并发送摘要",
+    Send: "自动压缩聊天记录并作为上下文发送",
     Copy: "复制摘要",
     Reset: "重置对话",
     ResetConfirm: "重置后将清空当前对话记录以及历史摘要，确认重置？",
@@ -63,12 +63,8 @@ const cn = {
       ClearAll: "清除所有数据",
       ResetAll: "重置所有选项",
       Close: "关闭",
-      ConfirmResetAll: {
-        Confirm: "确认清除所有配置？",
-      },
-      ConfirmClearAll: {
-        Confirm: "确认清除所有聊天记录？",
-      },
+      ConfirmResetAll: "确认重置所有配置？",
+      ConfirmClearAll: "确认清除所有数据？",
     },
     Lang: {
       Name: "Language",
@@ -101,7 +97,14 @@ const cn = {
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "无边框模式",
-    SendPreviewBubble: "发送预览气泡",
+    SendPreviewBubble: {
+      Title: "预览气泡",
+      SubTitle: "在预览气泡中预览 Markdown 内容",
+    },
+    Mask: {
+      Title: "面具启动页",
+      SubTitle: "新建聊天时，展示面具启动页",
+    },
     Prompt: {
       Disable: {
         Title: "禁用提示词自动补全",
@@ -130,6 +133,7 @@ const cn = {
       SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
     },
+
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
@@ -170,7 +174,6 @@ const cn = {
       Summarize:
         "简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 200 字以内",
     },
-    ConfirmClearAll: "确认清除所有聊天、设置数据？",
   },
   Copy: {
     Success: "已写入剪切板",
@@ -181,7 +184,11 @@ const cn = {
     Edit: "当前对话设置",
     Add: "新增预设对话",
   },
+  Plugin: {
+    Name: "插件",
+  },
   Mask: {
+    Name: "面具",
     Page: {
       Title: "预设角色面具",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
@@ -209,7 +216,9 @@ const cn = {
   },
   NewChat: {
     Return: "返回",
-    Skip: "跳过",
+    Skip: "直接开始",
+    NotShow: "不再展示",
+    ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
     Title: "挑选一个面具",
     SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
     More: "搜索更多",

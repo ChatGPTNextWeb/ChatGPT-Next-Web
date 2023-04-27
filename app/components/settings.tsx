@@ -137,10 +137,7 @@ export function Settings() {
   const config = useAppConfig();
   const updateConfig = config.update;
   const resetConfig = config.reset;
-  const [clearAllData, clearSessions] = useChatStore((state) => [
-    state.clearAllData,
-    state.clearSessions,
-  ]);
+  const chatStore = useChatStore();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -160,9 +157,9 @@ export function Settings() {
     subscription: updateStore.subscription,
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
-  function checkUsage() {
+  function checkUsage(force = false) {
     setLoadingUsage(true);
-    updateStore.updateUsage().finally(() => {
+    updateStore.updateUsage(force).finally(() => {
       setLoadingUsage(false);
     });
   }
@@ -216,11 +213,8 @@ export function Settings() {
             <IconButton
               icon={<ClearIcon />}
               onClick={() => {
-                const confirmed = window.confirm(
-                  `${Locale.Settings.Actions.ConfirmClearAll.Confirm}`,
-                );
-                if (confirmed) {
-                  clearSessions();
+                if (confirm(Locale.Settings.Actions.ConfirmClearAll)) {
+                  chatStore.clearAllData();
                 }
               }}
               bordered
@@ -231,10 +225,7 @@ export function Settings() {
             <IconButton
               icon={<ResetIcon />}
               onClick={() => {
-                const confirmed = window.confirm(
-                  `${Locale.Settings.Actions.ConfirmResetAll.Confirm}`,
-                );
-                if (confirmed) {
+                if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {
                   resetConfig();
                 }
               }}
@@ -370,19 +361,10 @@ export function Settings() {
             ></InputRange>
           </ListItem>
 
-          <ListItem title={Locale.Settings.TightBorder}>
-            <input
-              type="checkbox"
-              checked={config.tightBorder}
-              onChange={(e) =>
-                updateConfig(
-                  (config) => (config.tightBorder = e.currentTarget.checked),
-                )
-              }
-            ></input>
-          </ListItem>
-
-          <ListItem title={Locale.Settings.SendPreviewBubble}>
+          <ListItem
+            title={Locale.Settings.SendPreviewBubble.Title}
+            subTitle={Locale.Settings.SendPreviewBubble.SubTitle}
+          >
             <input
               type="checkbox"
               checked={config.sendPreviewBubble}
@@ -390,6 +372,23 @@ export function Settings() {
                 updateConfig(
                   (config) =>
                     (config.sendPreviewBubble = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+
+          <ListItem
+            title={Locale.Settings.Mask.Title}
+            subTitle={Locale.Settings.Mask.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={!config.dontShowMaskSplashScreen}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.dontShowMaskSplashScreen =
+                      !e.currentTarget.checked),
                 )
               }
             ></input>
@@ -448,7 +447,7 @@ export function Settings() {
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
                 text={Locale.Settings.Usage.Check}
-                onClick={checkUsage}
+                onClick={() => checkUsage(true)}
               />
             )}
           </ListItem>

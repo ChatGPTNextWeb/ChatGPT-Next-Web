@@ -65,12 +65,8 @@ const en: LocaleType = {
       ClearAll: "Clear All Data",
       ResetAll: "Reset All Settings",
       Close: "Close",
-      ConfirmResetAll: {
-        Confirm: "Are you sure you want to reset all configurations?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Are you sure you want to reset all chat?",
-      },
+      ConfirmResetAll: "Are you sure you want to reset all configurations?",
+      ConfirmClearAll: "Are you sure you want to reset all data?",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -102,7 +98,14 @@ const en: LocaleType = {
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
-    SendPreviewBubble: "Send Preview Bubble",
+    SendPreviewBubble: {
+      Title: "Send Preview Bubble",
+      SubTitle: "Preview markdown in bubble",
+    },
+    Mask: {
+      Title: "Mask Splash Screen",
+      SubTitle: "Show a mask splash screen before starting new chat",
+    },
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
@@ -174,7 +177,6 @@ const en: LocaleType = {
       Summarize:
         "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
     },
-    ConfirmClearAll: "Confirm to clear all chat and setting data?",
   },
   Copy: {
     Success: "Copied to clipboard",
@@ -185,7 +187,11 @@ const en: LocaleType = {
     Edit: "Contextual and Memory Prompts",
     Add: "Add a Prompt",
   },
+  Plugin: {
+    Name: "Plugin",
+  },
   Mask: {
+    Name: "Mask",
     Page: {
       Title: "Prompt Template",
       SubTitle: (count: number) => `${count} prompt templates`,
@@ -217,6 +223,8 @@ const en: LocaleType = {
     Title: "Pick a Mask",
     SubTitle: "Chat with the Soul behind the Mask",
     More: "Find More",
+    NotShow: "Not Show Again",
+    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
   },
 };
 
