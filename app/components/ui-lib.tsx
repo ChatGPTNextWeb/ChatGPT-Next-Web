@@ -197,11 +197,19 @@ export function showToast(
     }, 300);
   };
 
+  const newAction = {
+    text: action?.text || "",
+    onClick: () => {
+      action?.onClick();
+      close();
+    },
+  };
+
   setTimeout(() => {
     close();
   }, delay);
 
-  root.render(<Toast content={content} action={action} />);
+  root.render(<Toast content={content} action={newAction} />);
 }
 
 export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
