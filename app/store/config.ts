@@ -16,7 +16,7 @@ export enum Theme {
 }
 
 const DEFAULT_CONFIG = {
-  historyMessageCount: 4,
+  historyMessageCount: 5,
   compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,

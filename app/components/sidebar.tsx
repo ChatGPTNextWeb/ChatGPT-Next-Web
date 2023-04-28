@@ -90,9 +90,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>Gu GPT</div>
+        <div className={styles["sidebar-title"]}>Gu&apos;s GPT</div>
         <div className={styles["sidebar-sub-title"]}>
-          Just try your any Question!
+          智能聊天机器人，随便问、随便聊！
         </div>
         <div className={styles["sidebar-logo"]}>
           <ChatGptIcon />
@@ -123,8 +123,11 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}  style={{ visibility: 'hidden' }}>
-            <a href={REPO_URL} target="_blank" >
+          <div
+            className={styles["sidebar-action"]}
+            style={{ visibility: "hidden" }}
+          >
+            <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
           </div>
