@@ -212,7 +212,7 @@ export const useChatStore = create<ChatStore>()(
         // On the desktop, the deleted session index may not be the current session index
         const seletedSessionIndex = get().currentSessionIndex;
 
-        const isLastSession = get().sessions.length === 1;
+        const isLastSession = get().sessions.length === 1 ? 1 : 0;
         if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
           get().removeSession(index);
 
@@ -221,13 +221,12 @@ export const useChatStore = create<ChatStore>()(
             {
               text: Locale.Home.Revert,
               onClick() {
+                const sessions = get().sessions;
+                // if the deleted session is the only session in sessions array,
+                // we should delete the empty session first before inserting the deleted session
+                sessions.splice(index, isLastSession, deletedSession);
                 set(() => ({
-                  sessions: get()
-                    .sessions.slice(0, index)
-                    .concat([deletedSession])
-                    .concat(
-                      get().sessions.slice(index + Number(isLastSession)),
-                    ),
+                  sessions: sessions,
                   currentSessionIndex: seletedSessionIndex,
                 }));
               },
