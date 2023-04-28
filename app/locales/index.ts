@@ -19,7 +19,7 @@ export const AllLangs = [
   "jp",
   "de",
 ] as const;
-type Lang = (typeof AllLangs)[number];
+export type Lang = (typeof AllLangs)[number];
 
 const LANG_KEY = "lang";
 

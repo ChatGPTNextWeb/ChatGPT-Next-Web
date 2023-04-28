@@ -19,3 +19,5 @@ export async function POST(req: NextRequest) {
     needCode: serverConfig.needCode,
   });
 }
+
+export const runtime = "edge";

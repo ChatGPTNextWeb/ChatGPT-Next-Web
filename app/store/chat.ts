@@ -11,7 +11,9 @@ import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelType, useAppConfig } from "./config";
+import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
+import { createEmptyMask, Mask } from "./mask";
+import { StoreKey } from "../constant";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -41,50 +43,50 @@ export interface ChatStat {
 
 export interface ChatSession {
   id: number;
+
   topic: string;
-  sendMemory: boolean;
+
   memoryPrompt: string;
-  context: Message[];
   messages: Message[];
   stat: ChatStat;
-  lastUpdate: string;
+  lastUpdate: number;
   lastSummarizeIndex: number;
+
+  mask: Mask;
 }
 
-const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
+export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 export const BOT_HELLO: Message = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
 });
 
 function createEmptySession(): ChatSession {
-  const createDate = new Date().toLocaleString();
-
   return {
-    id: Date.now(),
+    id: Date.now() + Math.random(),
     topic: DEFAULT_TOPIC,
-    sendMemory: true,
     memoryPrompt: "",
-    context: [],
     messages: [],
     stat: {
       tokenCount: 0,
       wordCount: 0,
       charCount: 0,
     },
-    lastUpdate: createDate,
+    lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
+    mask: createEmptyMask(),
   };
 }
 
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
+  globalId: number;
   clearSessions: () => void;
   removeSession: (index: number) => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
-  newSession: () => void;
+  newSession: (mask?: Mask) => void;
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
@@ -108,13 +110,12 @@ function countMessages(msgs: Message[]) {
   return msgs.reduce((pre, cur) => pre + cur.content.length, 0);
 }
 
-const LOCAL_KEY = "chat-next-web-store";
-
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
+      globalId: 0,
 
       clearSessions() {
         set(() => ({
@@ -179,10 +180,20 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
-      newSession() {
+      newSession(mask) {
+        const session = createEmptySession();
+
+        set(() => ({ globalId: get().globalId + 1 }));
+        session.id = get().globalId;
+
+        if (mask) {
+          session.mask = { ...mask };
+          session.topic = mask.name;
+        }
+
         set((state) => ({
           currentSessionIndex: 0,
-          sessions: [createEmptySession()].concat(state.sessions),
+          sessions: [session].concat(state.sessions),
         }));
       },
 
@@ -229,7 +240,7 @@ export const useChatStore = create<ChatStore>()(
 
       onNewMessage(message) {
         get().updateCurrentSession((session) => {
-          session.lastUpdate = new Date().toLocaleString();
+          session.lastUpdate = Date.now();
         });
         get().updateStat(message);
         get().summarizeSession();
@@ -308,7 +319,10 @@ export const useChatStore = create<ChatStore>()(
 
         return {
           role: "system",
-          content: Locale.Store.Prompt.History(session.memoryPrompt),
+          content:
+            session.memoryPrompt.length > 0
+              ? Locale.Store.Prompt.History(session.memoryPrompt)
+              : "",
           date: "",
         } as Message;
       },
@@ -319,11 +333,11 @@ export const useChatStore = create<ChatStore>()(
         const messages = session.messages.filter((msg) => !msg.isError);
         const n = messages.length;
 
-        const context = session.context.slice();
+        const context = session.mask.context.slice();
 
         // long term memory
         if (
-          session.sendMemory &&
+          session.mask.modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0
         ) {
@@ -334,14 +348,14 @@ export const useChatStore = create<ChatStore>()(
         // get short term and unmemoried long term memory
         const shortTermMemoryMessageIndex = Math.max(
           0,
-          n - config.historyMessageCount,
+          n - config.modelConfig.historyMessageCount,
         );
         const longTermMemoryMessageIndex = session.lastSummarizeIndex;
         const oldestIndex = Math.max(
           shortTermMemoryMessageIndex,
           longTermMemoryMessageIndex,
         );
-        const threshold = config.compressMessageLengthThreshold;
+        const threshold = config.modelConfig.compressMessageLengthThreshold;
 
         // get recent messages as many as possible
         const reversedRecentMessages = [];
@@ -410,7 +424,7 @@ export const useChatStore = create<ChatStore>()(
         if (historyMsgLength > config?.modelConfig?.max_tokens ?? 4000) {
           const n = toBeSummarizedMsgs.length;
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
-            Math.max(0, n - config.historyMessageCount),
+            Math.max(0, n - config.modelConfig.historyMessageCount),
           );
         }
 
@@ -423,12 +437,13 @@ export const useChatStore = create<ChatStore>()(
           "[Chat History] ",
           toBeSummarizedMsgs,
           historyMsgLength,
-          config.compressMessageLengthThreshold,
+          config.modelConfig.compressMessageLengthThreshold,
         );
 
         if (
-          historyMsgLength > config.compressMessageLengthThreshold &&
-          session.sendMemory
+          historyMsgLength >
+            config.modelConfig.compressMessageLengthThreshold &&
+          session.mask.modelConfig.sendMemory
         ) {
           requestChatStream(
             toBeSummarizedMsgs.concat({
@@ -469,27 +484,34 @@ export const useChatStore = create<ChatStore>()(
       },
 
       clearAllData() {
-        if (confirm(Locale.Store.ConfirmClearAll)) {
-          localStorage.clear();
-          location.reload();
-        }
+        localStorage.clear();
+        location.reload();
       },
     }),
     {
-      name: LOCAL_KEY,
-      version: 1.2,
+      name: StoreKey.Chat,
+      version: 2,
       migrate(persistedState, version) {
-        const state = persistedState as ChatStore;
+        const state = persistedState as any;
+        const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
 
-        if (version === 1) {
-          state.sessions.forEach((s) => (s.context = []));
+        if (version < 2) {
+          newState.globalId = 0;
+          newState.sessions = [];
+
+          const oldSessions = state.sessions;
+          for (const oldSession of oldSessions) {
+            const newSession = createEmptySession();
+            newSession.topic = oldSession.topic;
+            newSession.messages = [...oldSession.messages];
+            newSession.mask.modelConfig.sendMemory = true;
+            newSession.mask.modelConfig.historyMessageCount = 4;
+            newSession.mask.modelConfig.compressMessageLengthThreshold = 1000;
+            newState.sessions.push(newSession);
+          }
         }
 
-        if (version < 1.2) {
-          state.sessions.forEach((s) => (s.sendMemory = true));
-        }
-
-        return state;
+        return newState;
       },
     },
   ),
