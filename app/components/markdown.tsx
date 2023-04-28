@@ -95,13 +95,11 @@ export function Markdown(
           ]}
           components={{
             pre: PreCode,
-          }}
-            renderers={{
-              link: (props) => {
-                const isInternal = /^\/(?!\/)/.test(props.href);
-                const target = isInternal ? "_self" : "_blank";
-                return <a {...props} target={target} />;
-              },
+          a: (aProps) => {
+            const isInternal = /^\/#/i.test(aProps.href);
+            const target = isInternal ? "_self" : aProps.target ?? "_blank";
+            return <a {...aProps} target={target} />;
+          },
             }}
         >
           {props.content}
