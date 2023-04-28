@@ -35,10 +35,10 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.Temperature.SubTitle}
       >
         <InputRange
-          value={props.modelConfig.temperature?.toFixed(1)}
+          value={props.modelConfig.temperature?.toFixed(2)}
           min="0"
           max="1" // lets limit it to 0-1
-          step="0.1"
+          step="0.01"
           onChange={(e) => {
             props.updateConfig(
               (config) =>
@@ -73,10 +73,10 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.PresencePenlty.SubTitle}
       >
         <InputRange
-          value={props.modelConfig.presence_penalty?.toFixed(1)}
+          value={props.modelConfig.presence_penalty?.toFixed(2)}
           min="-2"
           max="2"
-          step="0.1"
+          step="0.01"
           onChange={(e) => {
             props.updateConfig(
               (config) =>
