@@ -1,6 +1,3 @@
-@import "./window.scss";
-@import "../styles/animation.scss";
-
 @mixin container {
   background-color: var(--white);
   border: var(--border-in-light);
@@ -51,6 +48,19 @@
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
   position: relative;
   transition: width ease 0.05s;
+
+  .sidebar-header-bar {
+    display: flex;
+    margin-bottom: 20px;
+
+    .sidebar-bar-button {
+      flex-grow: 1;
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+  }
 }
 
 .sidebar-drag {
@@ -138,9 +148,7 @@
 .sidebar-body {
   flex: 1;
   overflow: auto;
-}
-
-.chat-list {
+  overflow-x: hidden;
 }
 
 .chat-item {
@@ -154,7 +162,6 @@
   user-select: none;
   border: 2px solid transparent;
   position: relative;
-  overflow: hidden;
 }
 
 .chat-item:hover {
@@ -221,6 +228,17 @@
     justify-content: center;
   }
 
+  .sidebar-header-bar {
+    flex-direction: column;
+
+    .sidebar-bar-button {
+      &:not(:last-child) {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    }
+  }
+
   .chat-item {
     padding: 0;
     min-height: 50px;
@@ -228,6 +246,7 @@
     justify-content: center;
     align-items: center;
     transition: all ease 0.3s;
+    overflow: hidden;
 
     &:hover {
       .chat-item-narrow {
@@ -237,15 +256,31 @@
   }
 
   .chat-item-narrow {
-    font-weight: bolder;
-    font-size: 24px;
     line-height: 0;
     font-weight: lighter;
     color: var(--black);
     transform: translateX(0);
     transition: all ease 0.3s;
-    opacity: 0.1;
     padding: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .chat-item-avatar {
+      display: flex;
+      justify-content: center;
+      opacity: 0.2;
+      position: absolute;
+      transform: scale(4);
+    }
+
+    .chat-item-narrow-count {
+      font-size: 24px;
+      font-weight: bolder;
+      text-align: center;
+      color: var(--primary);
+      opacity: 0.6;
+    }
   }
 
   .chat-item-delete {
@@ -258,16 +293,16 @@
   }
 
   .sidebar-tail {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
 
     .sidebar-actions {
-      flex-direction: column;
+      flex-direction: column-reverse;
       align-items: center;
 
       .sidebar-action {
         margin-right: 0;
-        margin-bottom: 15px;
+        margin-top: 15px;
       }
     }
   }
@@ -352,17 +387,6 @@
   color: #aaa;
   line-height: 1.5;
   margin-top: 5px;
-}
-
-.user-avtar {
-  height: 30px;
-  width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: var(--border-in-light);
-  box-shadow: var(--card-shadow);
-  border-radius: 10px;
 }
 
 .chat-message-item {

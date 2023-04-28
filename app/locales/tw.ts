@@ -30,6 +30,10 @@ const tw: LocaleType = {
       return inputHints;
     },
     Send: "發送",
+    Config: {
+      Reset: "重置默认",
+      SaveAs: "另存为面具",
+    },
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",
@@ -59,15 +63,12 @@ const tw: LocaleType = {
       ClearAll: "清除所有資料",
       ResetAll: "重設所有設定",
       Close: "關閉",
-      ConfirmResetAll: {
-        Confirm: "您確定要重設所有設定嗎？",
-      },
-      ConfirmClearAll: {
-        Confirm: "您確定要清除所有聊天嗎？",
-      },
+      ConfirmResetAll: "您確定要重設所有設定嗎？",
+      ConfirmClearAll: "您確定要清除所有数据嗎？",
     },
     Lang: {
-      Name: "語言",
+      Name: "Language",
+      All: "所有语言",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -95,7 +96,14 @@ const tw: LocaleType = {
     SendKey: "發送鍵",
     Theme: "主題",
     TightBorder: "緊湊邊框",
-    SendPreviewBubble: "發送預覽氣泡",
+    SendPreviewBubble: {
+      Title: "預覽氣泡",
+      SubTitle: "在预览气泡中预览 Markdown 内容",
+    },
+    Mask: {
+      Title: "面具启动页",
+      SubTitle: "新建聊天时，展示面具启动页",
+    },
     Prompt: {
       Disable: {
         Title: "停用提示詞自動補齊",
@@ -164,7 +172,6 @@ const tw: LocaleType = {
       Summarize:
         "Use the language used by the user (e.g. en-us for english conversation, zh-hant for chinese conversation, etc.) to summarise the conversation in at most 200 words. The summary will be used as prompt for you to continue the conversation in the future.",
     },
-    ConfirmClearAll: "確認清除所有對話、設定？",
   },
   Copy: {
     Success: "已複製到剪貼簿中",
@@ -174,6 +181,43 @@ const tw: LocaleType = {
     Toast: (x: any) => `已設定 ${x} 條前置上下文`,
     Edit: "前置上下文和歷史記憶",
     Add: "新增一條",
+  },
+  Plugin: { Name: "插件" },
+  Mask: {
+    Name: "面具",
+    Page: {
+      Title: "预设角色面具",
+      SubTitle: (count: number) => `${count} 个预设角色定义`,
+      Search: "搜索角色面具",
+      Create: "新建",
+    },
+    Item: {
+      Info: (count: number) => `包含 ${count} 条预设对话`,
+      Chat: "对话",
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `编辑预设面具 ${readonly ? "（只读）" : ""}`,
+      Download: "下载预设",
+      Clone: "克隆预设",
+    },
+    Config: {
+      Avatar: "角色头像",
+      Name: "角色名称",
+    },
+  },
+  NewChat: {
+    Return: "返回",
+    Skip: "跳过",
+    Title: "挑选一个面具",
+    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
+    More: "搜索更多",
+    NotShow: "不再展示",
+    ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
   },
 };
 
