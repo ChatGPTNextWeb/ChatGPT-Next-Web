@@ -142,8 +142,7 @@ export const useChatStore = create<ChatStore>()(
           }
 
           if (nextIndex === index) {
-            nextIndex =
-              nextIndex === sessions.length - 1 ? nextIndex - 1 : nextIndex;
+            nextIndex === sessions.length - 1 ? nextIndex - 1 : nextIndex;
           } else {
             nextIndex = nextIndex > index ? nextIndex - 1 : nextIndex;
           }
