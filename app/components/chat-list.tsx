@@ -67,7 +67,13 @@ export function ChatItem(props: {
             </>
           )}
 
-          <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
+          <div
+            className={styles["chat-item-delete"]}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onDelete?.();
+            }}
+          >
             <DeleteIcon />
           </div>
         </div>

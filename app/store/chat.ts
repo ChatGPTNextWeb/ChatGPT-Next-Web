@@ -134,7 +134,6 @@ export const useChatStore = create<ChatStore>()(
         set((state) => {
           let nextIndex = state.currentSessionIndex;
           const sessions = state.sessions;
-
           if (sessions.length === 1) {
             return {
               currentSessionIndex: 0,
@@ -142,11 +141,13 @@ export const useChatStore = create<ChatStore>()(
             };
           }
 
-          sessions.splice(index, 1);
-
           if (nextIndex === index) {
-            nextIndex -= 1;
+            nextIndex =
+              nextIndex === sessions.length - 1 ? nextIndex - 1 : nextIndex;
+          } else {
+            nextIndex = nextIndex > index ? nextIndex - 1 : nextIndex;
           }
+          sessions.splice(index, 1);
 
           return {
             currentSessionIndex: nextIndex,
