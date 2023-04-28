@@ -368,6 +368,9 @@ export function MaskPage() {
                 text={Locale.Mask.EditModal.Download}
                 key="export"
                 bordered
+                onClick={() =>
+                  downloadAs(JSON.stringify(editingMask), "mask.json")
+                }
               />,
               <IconButton
                 key="copy"
