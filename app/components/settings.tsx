@@ -421,7 +421,7 @@ export function Settings() {
             />
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
           >
@@ -438,9 +438,9 @@ export function Settings() {
                 )
               }
             ></InputRange>
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.CompressThreshold.Title}
             subTitle={Locale.Settings.CompressThreshold.SubTitle}
           >
@@ -457,7 +457,7 @@ export function Settings() {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
         </List>
 
         <List>
