@@ -96,7 +96,17 @@ export function Markdown(
           components={{
             pre: PreCode,
           }}
-          linkTarget={"_blank"}
+            renderers={{
+              link: (props) => {
+                // 判断链接是否为内部地址
+                const isInternal = /^\/(?!\/)/.test(props.href);
+
+                // 如果是内部地址，使用_self，否则使用_blank
+                const target = isInternal ? "_self" : "_blank";
+
+                return <a {...props} target={target} />;
+              },
+            }}
         >
           {props.content}
         </ReactMarkdown>
