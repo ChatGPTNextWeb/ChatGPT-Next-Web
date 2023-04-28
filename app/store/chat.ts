@@ -87,7 +87,7 @@ interface ChatStore {
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: (mask?: Mask) => void;
-  deleteSession: (index?: number) => void;
+  deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
@@ -131,9 +131,9 @@ export const useChatStore = create<ChatStore>()(
       },
 
       removeSession(index: number) {
-        set((state) => {
-          let nextIndex = state.currentSessionIndex;
-          const sessions = state.sessions;
+        set(() => {
+          let selectedIndex = get().currentSessionIndex;
+          const sessions = get().sessions;
 
           if (sessions.length === 1) {
             return {
@@ -142,14 +142,23 @@ export const useChatStore = create<ChatStore>()(
             };
           }
 
-          sessions.splice(index, 1);
-
-          if (nextIndex === index) {
-            nextIndex -= 1;
+          // When one of the following conditions are met, the selected Index is reduced by one:
+          //
+          // 1. The selected Index is greater than the current deleted Index
+          // 2. The selected Index is equal with the current deleted index, and the current deleted index is the last one
+          //
+          // In other cases, the selected Index remains unchanged
+          if (
+            selectedIndex > index ||
+            (selectedIndex === index && selectedIndex === sessions.length - 1)
+          ) {
+            selectedIndex -= 1;
           }
 
+          sessions.splice(index, 1);
+
           return {
-            currentSessionIndex: nextIndex,
+            currentSessionIndex: selectedIndex,
             sessions,
           };
         });
@@ -197,9 +206,12 @@ export const useChatStore = create<ChatStore>()(
         }));
       },
 
-      deleteSession(i?: number) {
-        const deletedSession = get().currentSession();
-        const index = i ?? get().currentSessionIndex;
+      deleteSession(index: number) {
+        const deletedSession = get().sessions[index];
+
+        // On the desktop, the deleted session index may not be the current session index
+        const seletedSessionIndex = get().currentSessionIndex;
+
         const isLastSession = get().sessions.length === 1;
         if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
           get().removeSession(index);
@@ -209,13 +221,14 @@ export const useChatStore = create<ChatStore>()(
             {
               text: Locale.Home.Revert,
               onClick() {
-                set((state) => ({
-                  sessions: state.sessions
-                    .slice(0, index)
+                set(() => ({
+                  sessions: get()
+                    .sessions.slice(0, index)
                     .concat([deletedSession])
                     .concat(
-                      state.sessions.slice(index + Number(isLastSession)),
+                      get().sessions.slice(index + Number(isLastSession)),
                     ),
+                  currentSessionIndex: seletedSessionIndex,
                 }));
               },
             },
