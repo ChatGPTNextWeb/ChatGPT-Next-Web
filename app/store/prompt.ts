@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
 import { getLang } from "../locales";
+import { StoreKey } from "../constant";
 
 export interface Prompt {
   id?: number;
@@ -22,8 +23,6 @@ export interface PromptStore {
   getUserPrompts: () => Prompt[];
   updateUserPrompts: (id: number, updater: (prompt: Prompt) => void) => void;
 }
-
-export const PROMPT_KEY = "prompt-store";
 
 export const SearchService = {
   ready: false,
@@ -123,7 +122,7 @@ export const usePromptStore = create<PromptStore>()(
       },
     }),
     {
-      name: PROMPT_KEY,
+      name: StoreKey.Prompt,
       version: 1,
       onRehydrateStorage(state) {
         const PROMPT_URL = "./prompts.json";

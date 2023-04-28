@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FETCH_COMMIT_URL, FETCH_TAG_URL } from "../constant";
+import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
 import { requestUsage } from "../requests";
 
 export interface UpdateStore {
@@ -15,8 +15,6 @@ export interface UpdateStore {
   getLatestVersion: (force?: boolean) => Promise<void>;
   updateUsage: (force?: boolean) => Promise<void>;
 }
-
-export const UPDATE_KEY = "chat-update";
 
 function queryMeta(key: string, defaultValue?: string): string {
   let ret: string;
@@ -84,7 +82,7 @@ export const useUpdateStore = create<UpdateStore>()(
       },
     }),
     {
-      name: UPDATE_KEY,
+      name: StoreKey.Update,
       version: 1,
     },
   ),

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { StoreKey } from "../constant";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -13,8 +14,6 @@ export interface AccessControlStore {
   isAuthorized: () => boolean;
   fetch: () => void;
 }
-
-export const ACCESS_KEY = "access-control";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -62,7 +61,7 @@ export const useAccessStore = create<AccessControlStore>()(
       },
     }),
     {
-      name: ACCESS_KEY,
+      name: StoreKey.Access,
       version: 1,
     },
   ),

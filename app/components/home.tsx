@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect, StyleHTMLAttributes } from "react";
+import { useState, useEffect } from "react";
 
 import styles from "./home.module.scss";
 
@@ -10,10 +10,9 @@ import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
 import { getCSSVar, useMobileScreen } from "../utils";
-import { Chat } from "./chat";
 
 import dynamic from "next/dynamic";
-import { Path } from "../constant";
+import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import {
@@ -35,6 +34,18 @@ export function Loading(props: { noLogo?: boolean }) {
 }
 
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
+  loading: () => <Loading noLogo />,
+});
+
+const Chat = dynamic(async () => (await import("./chat")).Chat, {
+  loading: () => <Loading noLogo />,
+});
+
+const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
+  loading: () => <Loading noLogo />,
+});
+
+const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
@@ -79,39 +90,30 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
-function WideScreen() {
+function Screen() {
   const config = useAppConfig();
+  const location = useLocation();
+  const isHome = location.pathname === Path.Home;
+  const isMobileScreen = useMobileScreen();
 
   return (
     <div
-      className={`${
-        config.tightBorder ? styles["tight-container"] : styles.container
-      }`}
+      className={
+        styles.container +
+        ` ${
+          config.tightBorder && !isMobileScreen
+            ? styles["tight-container"]
+            : styles.container
+        }`
+      }
     >
-      <SideBar />
-
-      <div className={styles["window-content"]}>
-        <Routes>
-          <Route path={Path.Home} element={<Chat />} />
-          <Route path={Path.Chat} element={<Chat />} />
-          <Route path={Path.Settings} element={<Settings />} />
-        </Routes>
-      </div>
-    </div>
-  );
-}
-
-function MobileScreen() {
-  const location = useLocation();
-  const isHome = location.pathname === Path.Home;
-
-  return (
-    <div className={styles.container}>
       <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
-      <div className={styles["window-content"]}>
+      <div className={styles["window-content"]} id={SlotID.AppBody}>
         <Routes>
-          <Route path={Path.Home} element={null} />
+          <Route path={Path.Home} element={<Chat />} />
+          <Route path={Path.NewChat} element={<NewChat />} />
+          <Route path={Path.Masks} element={<MaskPage />} />
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
         </Routes>
@@ -121,7 +123,6 @@ function MobileScreen() {
 }
 
 export function Home() {
-  const isMobileScreen = useMobileScreen();
   useSwitchTheme();
 
   if (!useHasHydrated()) {
@@ -130,7 +131,9 @@ export function Home() {
 
   return (
     <ErrorBoundary>
-      <Router>{isMobileScreen ? <MobileScreen /> : <WideScreen />}</Router>
+      <Router>
+        <Screen />
+      </Router>
     </ErrorBoundary>
   );
 }
