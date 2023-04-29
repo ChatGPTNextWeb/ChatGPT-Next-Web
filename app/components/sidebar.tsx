@@ -81,13 +81,8 @@ function useDragSideBar() {
 }
 
 export function SideBar(props: { className?: string }) {
-  const [newSession, deleteSession, currentSessionIndex] = useChatStore(
-    (state) => [
-      state.newSession,
-      state.deleteSession,
-      state.currentSessionIndex,
-    ],
-  );
+  const chatStore = useChatStore();
+
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -144,7 +139,7 @@ export function SideBar(props: { className?: string }) {
             <IconButton
               icon={<CloseIcon />}
               onClick={() => {
-                deleteSession(currentSessionIndex);
+                chatStore.deleteSession(chatStore.currentSessionIndex);
               }}
             />
           </div>
@@ -165,7 +160,7 @@ export function SideBar(props: { className?: string }) {
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
-                newSession();
+                chatStore.newSession();
               } else {
                 navigate(Path.NewChat);
               }
