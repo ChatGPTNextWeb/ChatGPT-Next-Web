@@ -16,7 +16,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
-import { MouseEvent } from "react";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -30,14 +29,6 @@ export function ChatItem(props: {
   narrow?: boolean;
   mask: Mask;
 }) {
-  const handleDeleteClick = (event: MouseEvent) => {
-    // Avoid triggering the onClick event of the parent component.
-    event.stopPropagation();
-    if (props.onDelete) {
-      props.onDelete();
-    }
-  };
-
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
@@ -78,7 +69,11 @@ export function ChatItem(props: {
 
           <div
             className={styles["chat-item-delete"]}
-            onClick={handleDeleteClick}
+            onClick={(e) => {
+              // Avoid triggering the onClick event of the parent component
+              e.stopPropagation();
+              props.onDelete?.();
+            }}
           >
             <DeleteIcon />
           </div>
