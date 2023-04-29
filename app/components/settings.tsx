@@ -191,9 +191,9 @@ export function Settings() {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = updateStore.version;
+  const currentVersion = "2.1.1"; //updateStore.version;
   const remoteId = updateStore.remoteVersion;
-  const hasNewVersion = currentVersion !== remoteId;
+  const hasNewVersion = false; //currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
@@ -485,7 +485,7 @@ export function Settings() {
           <SettingItem
             title={Locale.Settings.Usage.Title}
             subTitle={
-              showUsage
+              showUsage && accessStore.token !== ""
                 ? loadingUsage
                   ? Locale.Settings.Usage.IsChecking
                   : Locale.Settings.Usage.SubTitle(
@@ -617,7 +617,7 @@ export function Settings() {
               }}
             ></InputRange>
           </SettingItem>
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.MaxTokens.Title}
             subTitle={Locale.Settings.MaxTokens.SubTitle}
           >
@@ -636,7 +636,7 @@ export function Settings() {
                 )
               }
             ></input>
-          </SettingItem>
+          </SettingItem> */}
           <SettingItem
             title={Locale.Settings.PresencePenlty.Title}
             subTitle={Locale.Settings.PresencePenlty.SubTitle}
