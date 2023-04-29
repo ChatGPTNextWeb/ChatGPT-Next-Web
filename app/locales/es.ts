@@ -31,6 +31,10 @@ const es: LocaleType = {
       return inputHints;
     },
     Send: "Enviar",
+    Config: {
+      Reset: "Reset to Default",
+      SaveAs: "Save as Mask",
+    },
   },
   Export: {
     Title: "Todos los mensajes",
@@ -61,15 +65,12 @@ const es: LocaleType = {
       ClearAll: "Borrar todos los datos",
       ResetAll: "Restablecer todas las configuraciones",
       Close: "Cerrar",
-      ConfirmResetAll: {
-        Confirm: "Are you sure you want to reset all configurations?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Are you sure you want to reset all chat?",
-      },
+      ConfirmResetAll: "Are you sure you want to reset all configurations?",
+      ConfirmClearAll: "Are you sure you want to reset all chat?",
     },
     Lang: {
       Name: "Language",
+      All: "All Languages",
       Options: {
         cn: "简体中文",
         en: "Inglés",
@@ -97,7 +98,14 @@ const es: LocaleType = {
     SendKey: "Tecla de envío",
     Theme: "Tema",
     TightBorder: "Borde ajustado",
-    SendPreviewBubble: "Enviar burbuja de vista previa",
+    SendPreviewBubble: {
+      Title: "Enviar burbuja de vista previa",
+      SubTitle: "Preview markdown in bubble",
+    },
+    Mask: {
+      Title: "Mask Splash Screen",
+      SubTitle: "Show a mask splash screen before starting new chat",
+    },
     Prompt: {
       Disable: {
         Title: "Desactivar autocompletado",
@@ -169,8 +177,6 @@ const es: LocaleType = {
       Summarize:
         "Resuma nuestra discusión brevemente en 200 caracteres o menos para usarlo como un recordatorio para futuros contextos.",
     },
-    ConfirmClearAll:
-      "¿Confirmar para borrar todos los datos de chat y configuración?",
   },
   Copy: {
     Success: "Copiado al portapapeles",
@@ -181,6 +187,45 @@ const es: LocaleType = {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
     Add: "Add One",
+  },
+  Plugin: {
+    Name: "Plugin",
+  },
+  Mask: {
+    Name: "Mask",
+    Page: {
+      Title: "Prompt Template",
+      SubTitle: (count: number) => `${count} prompt templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} prompts`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+    },
+  },
+  NewChat: {
+    Return: "Return",
+    Skip: "Skip",
+    Title: "Pick a Mask",
+    SubTitle: "Chat with the Soul behind the Mask",
+    More: "Find More",
+    NotShow: "Not Show Again",
+    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
   },
 };
 
