@@ -89,6 +89,7 @@ interface ChatStore {
   newSession: (mask?: Mask) => void;
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
+  deletedSession: ChatSession | undefined;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
   summarizeSession: () => void;
@@ -142,7 +143,7 @@ export const useChatStore = create<ChatStore>()(
             };
           }
 
-          sessions.splice(index, 1);
+          const deletedSession = sessions.splice(index, 1)[0]; // Save the deleted session object
 
           if (nextIndex === index) {
             nextIndex -= 1;
@@ -151,6 +152,7 @@ export const useChatStore = create<ChatStore>()(
           return {
             currentSessionIndex: nextIndex,
             sessions,
+            deletedSession,
           };
         });
       },
@@ -198,7 +200,6 @@ export const useChatStore = create<ChatStore>()(
       },
 
       deleteSession(i?: number) {
-        const deletedSession = get().currentSession();
         const index = i ?? get().currentSessionIndex;
         const isLastSession = get().sessions.length === 1;
         if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
@@ -209,21 +210,26 @@ export const useChatStore = create<ChatStore>()(
             {
               text: Locale.Home.Revert,
               onClick() {
-                set((state) => ({
-                  sessions: state.sessions
-                    .slice(0, index)
-                    .concat([deletedSession])
-                    .concat(
-                      state.sessions.slice(index + Number(isLastSession)),
-                    ),
-                }));
+                const deletedSession = get().deletedSession as ChatSession;
+                if (deletedSession) {
+                  set((state) => ({
+                    sessions: state.sessions
+                      .slice(0, index)
+                      .concat([deletedSession])
+                      .concat(
+                        state.sessions.slice(index + Number(isLastSession)),
+                      ),
+                    //Reset the deletedSession variable to undefined, it will not be revoked infinitely
+                    deletedSession: undefined,
+                  }));
+                }
               },
             },
             5000,
           );
         }
       },
-
+      deletedSession: undefined,
       currentSession() {
         let index = get().currentSessionIndex;
         const sessions = get().sessions;
