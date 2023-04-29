@@ -131,9 +131,9 @@ export const useChatStore = create<ChatStore>()(
       },
 
       removeSession(index: number) {
-        set(() => {
-          let selectedIndex = get().currentSessionIndex;
-          const sessions = get().sessions;
+        set((state) => {
+          let selectedIndex = state.currentSessionIndex;
+          const sessions = state.sessions;
 
           if (sessions.length === 1) {
             return {
