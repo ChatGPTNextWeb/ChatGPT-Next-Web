@@ -221,14 +221,16 @@ export const useChatStore = create<ChatStore>()(
             {
               text: Locale.Home.Revert,
               onClick() {
-                const sessions = get().sessions;
-                // if the deleted session is the only session in sessions array,
-                // we should delete the empty session first before inserting the deleted session
-                sessions.splice(index, isLastSession, deletedSession);
-                set(() => ({
-                  sessions: sessions,
-                  currentSessionIndex: seletedSessionIndex,
-                }));
+                set((state) => {
+                  const newSessions = [...state.sessions];
+                  // if the deleted session is the only session in sessions array,
+                  // we should delete the empty session first before inserting the deleted session
+                  newSessions.splice(index, isLastSession, deletedSession);
+                  return {
+                    sessions: newSessions,
+                    currentSessionIndex: seletedSessionIndex,
+                  };
+                });
               },
             },
             5000,
