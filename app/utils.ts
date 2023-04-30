@@ -1,34 +1,36 @@
+import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
 export function trimTopic(topic: string) {
-  const s = topic.split("");
-  let lastChar = s.at(-1); // 获取 s 的最后一个字符
-  let pattern = /[，。！？、]/; // 定义匹配中文标点符号的正则表达式
-  while (lastChar && pattern.test(lastChar!)) {
-    s.pop();
-    lastChar = s.at(-1);
-  }
-
-  return s.join("");
+  return topic.replace(/[，。！？”“"、,.!?]*$/, "");
 }
 
-export function copyToClipboard(text: string) {
-  navigator.clipboard
-    .writeText(text)
-    .then((res) => {
+export async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(Locale.Copy.Success);
+  } catch (error) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand("copy");
       showToast(Locale.Copy.Success);
-    })
-    .catch((err) => {
+    } catch (error) {
       showToast(Locale.Copy.Failed);
-    });
+    }
+    document.body.removeChild(textArea);
+  }
 }
 
 export function downloadAs(text: string, filename: string) {
   const element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
   );
   element.setAttribute("download", filename);
 
@@ -45,6 +47,50 @@ export function isIOS() {
   return /iphone|ipad|ipod/.test(userAgent);
 }
 
+export function useWindowSize() {
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const onResize = () => {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  return size;
+}
+
+export const MOBILE_MAX_WIDTH = 600;
+export function useMobileScreen() {
+  const { width } = useWindowSize();
+
+  return width <= MOBILE_MAX_WIDTH;
+}
+
+export function isMobileScreen() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  return window.innerWidth <= MOBILE_MAX_WIDTH;
+}
+
+export function isFirefox() {
+  return (
+    typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent)
+  );
+}
+
 export function selectOrCopy(el: HTMLElement, content: string) {
   const currentSelection = window.getSelection();
 
@@ -57,27 +103,54 @@ export function selectOrCopy(el: HTMLElement, content: string) {
   return true;
 }
 
-export function queryMeta(key: string, defaultValue?: string): string {
-  let ret: string;
-  if (document) {
-    const meta = document.head.querySelector(
-      `meta[name='${key}']`
-    ) as HTMLMetaElement;
-    ret = meta?.content ?? "";
-  } else {
-    ret = defaultValue ?? "";
-  }
-
-  return ret;
+function getDomContentWidth(dom: HTMLElement) {
+  const style = window.getComputedStyle(dom);
+  const paddingWidth =
+    parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  const width = dom.clientWidth - paddingWidth;
+  return width;
 }
 
-let currentId: string;
-export function getCurrentCommitId() {
-  if (currentId) {
-    return currentId;
+function getOrCreateMeasureDom(id: string, init?: (dom: HTMLElement) => void) {
+  let dom = document.getElementById(id);
+
+  if (!dom) {
+    dom = document.createElement("span");
+    dom.style.position = "absolute";
+    dom.style.wordBreak = "break-word";
+    dom.style.fontSize = "14px";
+    dom.style.transform = "translateY(-200vh)";
+    dom.style.pointerEvents = "none";
+    dom.style.opacity = "0";
+    dom.id = id;
+    document.body.appendChild(dom);
+    init?.(dom);
   }
 
-  currentId = queryMeta("version");
+  return dom!;
+}
 
-  return currentId;
+export function autoGrowTextArea(dom: HTMLTextAreaElement) {
+  const measureDom = getOrCreateMeasureDom("__measure");
+  const singleLineDom = getOrCreateMeasureDom("__single_measure", (dom) => {
+    dom.innerText = "TEXT_FOR_MEASURE";
+  });
+
+  const width = getDomContentWidth(dom);
+  measureDom.style.width = width + "px";
+  measureDom.innerText = dom.value.trim().length > 0 ? dom.value : "1";
+
+  const lineWrapCount = Math.max(0, dom.value.split("\n").length - 1);
+  const height = parseFloat(window.getComputedStyle(measureDom).height);
+  const singleLineHeight = parseFloat(
+    window.getComputedStyle(singleLineDom).height,
+  );
+
+  const rows = Math.round(height / singleLineHeight) + lineWrapCount;
+
+  return rows;
+}
+
+export function getCSSVar(varName: string) {
+  return getComputedStyle(document.body).getPropertyValue(varName).trim();
 }

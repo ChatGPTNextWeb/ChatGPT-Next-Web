@@ -1,26 +1,21 @@
 import { createParser } from "eventsource-parser";
 import { NextRequest } from "next/server";
+import { requestOpenai } from "../common";
 
 async function createStream(req: NextRequest) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  let apiKey = process.env.OPENAI_API_KEY;
+  const res = await requestOpenai(req);
 
-  const userApiKey = req.headers.get("token");
-  if (userApiKey) {
-    apiKey = userApiKey;
-    console.log("[Stream] using user api key");
+  const contentType = res.headers.get("Content-Type") ?? "";
+  if (!contentType.includes("stream")) {
+    const content = await (
+      await res.text()
+    ).replace(/provided:.*. You/, "provided: ***. You");
+    console.log("[Stream] error ", content);
+    return "```json\n" + content + "```";
   }
-
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    method: "POST",
-    body: req.body,
-  });
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -45,7 +40,7 @@ async function createStream(req: NextRequest) {
 
       const parser = createParser(onParse);
       for await (const chunk of res.body as any) {
-        parser.feed(decoder.decode(chunk));
+        parser.feed(decoder.decode(chunk, { stream: true }));
       }
     },
   });
@@ -58,9 +53,10 @@ export async function POST(req: NextRequest) {
     return new Response(stream);
   } catch (error) {
     console.error("[Chat Stream]", error);
+    return new Response(
+      ["```json\n", JSON.stringify(error, null, "  "), "\n```"].join(""),
+    );
   }
 }
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge";
