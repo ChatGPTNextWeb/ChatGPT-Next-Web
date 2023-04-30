@@ -34,10 +34,10 @@ export async function POST(req: NextRequest) {
             },
             plain_text: topic,
           },
-        ],
+        ] as any,
       },
     },
-    children: blocks,
+    children: blocks as any,
   });
   return NextResponse.json(res);
 }
