@@ -14,6 +14,7 @@ import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
+import NotionIcon from "../icons/notion.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -104,6 +105,97 @@ function exportMessages(messages: Message[], topic: string) {
         bordered
         text={Locale.Export.Download}
         onClick={() => downloadAs(mdText, filename)}
+      />,
+    ],
+  });
+}
+
+const SaveToNotionFC = ({
+  mdText,
+  topic,
+}: Record<"mdText" | "topic", string>) => {
+  const [topicValue, setTopicValue] = useState(topic),
+    mdTextRef = useRef(mdText);
+
+  const handleTopicValueChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+      setTopicValue(e.currentTarget.value),
+    handleMdTextChange = (e: React.FormEvent<HTMLPreElement>) => {
+      mdTextRef.current = e.currentTarget.innerText;
+    };
+
+  return (
+    <>
+      <ListItem title="Title:">
+        <input
+          className={styles["chat-input"]}
+          style={{
+            marginLeft: "1rem",
+          }}
+          value={topicValue}
+          onChange={handleTopicValueChange}
+        />
+      </ListItem>
+      <div className="markdown-body">
+        <pre
+          contentEditable
+          className={styles["export-content"]}
+          onInput={handleMdTextChange}
+        >
+          {mdText}
+        </pre>
+      </div>
+    </>
+  );
+};
+
+function saveMessagesToNotion(
+  messages: Message[],
+  topic: string,
+  notionIntegrate: string,
+  database_id: string,
+) {
+  const mdText =
+    `# ${topic}\n\n` +
+    messages
+      .map((m) => {
+        return m.role === "user"
+          ? `## ${Locale.SaveToNotion.MessageFromYou}:\n${m.content}`
+          : `## ${
+              Locale.SaveToNotion.MessageFromChatGPT
+            }:\n${m.content.trim()}`;
+      })
+      .join("\n\n");
+
+  const handleSaveToNotion = async () => {
+    // TODO: editable topic, mdText and tags
+    fetch("/api/notion", {
+      method: "post",
+      body: JSON.stringify({
+        notionIntegrate,
+        database_id,
+        topic,
+        mdText,
+      }),
+    }).then((res) => res.json());
+  };
+
+  showModal({
+    title: Locale.SaveToNotion.Title,
+    children: <SaveToNotionFC mdText={mdText} topic={topic} />,
+    actions: [
+      <IconButton
+        key="copy"
+        icon={<CopyIcon />}
+        bordered
+        text={Locale.SaveToNotion.Copy}
+        onClick={() => copyToClipboard(mdText)}
+      />,
+      <IconButton
+        key="download"
+        icon={<NotionIcon />}
+        bordered
+        text={Locale.SaveToNotion.Save}
+        onClick={handleSaveToNotion}
       />,
     ],
   });
@@ -615,6 +707,21 @@ export function Chat() {
                 exportMessages(
                   session.messages.filter((msg) => !msg.isError),
                   session.topic,
+                );
+              }}
+            />
+          </div>
+          <div className="window-action-button">
+            <IconButton
+              icon={<NotionIcon />}
+              bordered
+              title={Locale.Chat.Actions.SaveToNotion}
+              onClick={() => {
+                saveMessagesToNotion(
+                  session.messages.filter((msg) => !msg.isError),
+                  session.topic,
+                  config.notionInegration,
+                  config.notionDatabaseID,
                 );
               }}
             />

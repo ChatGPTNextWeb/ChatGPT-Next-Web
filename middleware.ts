@@ -29,7 +29,6 @@ export function middleware(req: NextRequest) {
   console.log("[Auth] hashed access code:", hashedCode);
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
-
   if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
     return NextResponse.json(
       {
