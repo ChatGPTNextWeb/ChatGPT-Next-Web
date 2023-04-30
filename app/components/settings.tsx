@@ -451,6 +451,35 @@ export function Settings() {
               />
             )}
           </ListItem>
+
+          <ListItem
+            title="Save To Notion"
+            subTitle="Your notion integration token"
+          >
+            <PasswordInput
+              value={config.notionInegration}
+              type="text"
+              placeholder="Integration Token"
+              onChange={(e) => {
+                updateConfig(
+                  (config) => (config.notionInegration = e.currentTarget.value),
+                );
+              }}
+            />
+          </ListItem>
+
+          <ListItem title="Save To Notion" subTitle="Your notion database id">
+            <PasswordInput
+              value={config.notionDatabaseID}
+              type="text"
+              placeholder="Notion Database ID"
+              onChange={(e) => {
+                updateConfig(
+                  (config) => (config.notionDatabaseID = e.currentTarget.value),
+                );
+              }}
+            />
+          </ListItem>
         </List>
 
         <List>

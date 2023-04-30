@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^16.2.0",
+    "@notionhq/client": "^2.2.4",
     "@svgr/webpack": "^6.5.1",
+    "@tryfabric/martian": "^1.2.4",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.4.7",
     "eventsource-parser": "^0.1.0",
