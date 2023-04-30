@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { StoreKey } from "../constant";
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -15,9 +16,7 @@ export enum Theme {
   Light = "light",
 }
 
-const DEFAULT_CONFIG = {
-  historyMessageCount: 4,
-  compressMessageLengthThreshold: 1000,
+export const DEFAULT_CONFIG = {
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
@@ -29,11 +28,16 @@ const DEFAULT_CONFIG = {
 
   disablePromptHint: false,
 
+  dontShowMaskSplashScreen: false, // dont show splash screen when create chat
+
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 1,
     max_tokens: 2000,
     presence_penalty: 0,
+    sendMemory: true,
+    historyMessageCount: 4,
+    compressMessageLengthThreshold: 1000,
   },
 };
 
@@ -107,11 +111,9 @@ export const ModalConfigValidator = {
     return limitNumber(x, -2, 2, 0);
   },
   temperature(x: number) {
-    return limitNumber(x, 0, 2, 1);
+    return limitNumber(x, 0, 1, 1);
   },
 };
-
-const CONFIG_KEY = "app-config";
 
 export const useAppConfig = create<ChatConfigStore>()(
   persist(
@@ -129,7 +131,19 @@ export const useAppConfig = create<ChatConfigStore>()(
       },
     }),
     {
-      name: CONFIG_KEY,
+      name: StoreKey.Config,
+      version: 2,
+      migrate(persistedState, version) {
+        if (version === 2) return persistedState as any;
+
+        const state = persistedState as ChatConfig;
+        state.modelConfig.sendMemory = true;
+        state.modelConfig.historyMessageCount = 4;
+        state.modelConfig.compressMessageLengthThreshold = 1000;
+        state.dontShowMaskSplashScreen = false;
+
+        return state;
+      },
     },
   ),
 );
