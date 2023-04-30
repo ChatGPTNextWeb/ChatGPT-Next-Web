@@ -22,7 +22,7 @@ async function createStream(req: NextRequest) {
       function onParse(event: any) {
         if (event.type === "event") {
           const data = event.data;
-          // https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
+          // https://platform.openai.com/docs/api-reference/chat/create#chat/create-stream
           if (data === "[DONE]") {
             controller.close();
             return;
