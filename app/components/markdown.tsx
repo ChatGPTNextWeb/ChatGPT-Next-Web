@@ -96,7 +96,8 @@ export function Markdown(
           components={{
             pre: PreCode,
           a: (aProps) => {
-            const isInternal = /^\/#/i.test(aProps.href);
+            const href = aProps.href || "";
+            const isInternal = /^\/#/i.test(href); 
             const target = isInternal ? "_self" : aProps.target ?? "_blank";
             return <a {...aProps} target={target} />;
           },
