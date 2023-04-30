@@ -98,24 +98,34 @@ export async function requestChat(
 
 export async function requestUsage() {
   const formatDate = (d: Date) =>
-    `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
-      .getDate()
+    `${d.getUTCFullYear()}-${(d.getUTCMonth() + 1).toString().padStart(2, "0")}-${d
+      .getUTCDate()
       .toString()
       .padStart(2, "0")}`;
-  const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
-  const now = new Date(Date.now() + ONE_DAY);
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+  const now = new Date(Date.now());
+  const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
   const startDate = formatDate(startOfMonth);
   const endDate = formatDate(now);
+  const startOf90Days = new Date(now.getTime() - 90 * ONE_DAY);
+  const startOf90DaysDate = formatDate(startOf90Days);
 
-  const [used, subs] = await Promise.all([
-    requestOpenaiClient(
+  const subs = await requestOpenaiClient("dashboard/billing/subscription")(null, "GET");
+  const subscriptionResponse = await subs.json();
+  const isSubscribed = subscriptionResponse.hard_limit_usd > 20;
+
+  let usedResponse;
+  if (isSubscribed) {
+    usedResponse = await requestOpenaiClient(
       `dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`,
-    )(null, "GET"),
-    requestOpenaiClient("dashboard/billing/subscription")(null, "GET"),
-  ]);
+    )(null, "GET");
+  } else {
+    usedResponse = await requestOpenaiClient(
+      `dashboard/billing/usage?start_date=${startOf90DaysDate}&end_date=${endDate}`,
+    )(null, "GET");
+  }
 
-  const response = (await used.json()) as {
+  const response = (await usedResponse.json()) as {
     total_usage?: number;
     error?: {
       type: string;
@@ -123,7 +133,7 @@ export async function requestUsage() {
     };
   };
 
-  const total = (await subs.json()) as {
+  const total = subscriptionResponse as {
     hard_limit_usd?: number;
   };
 
@@ -144,6 +154,7 @@ export async function requestUsage() {
     used: response.total_usage,
     subscription: total.hard_limit_usd,
   };
+
 }
 
 export async function requestChatStream(
