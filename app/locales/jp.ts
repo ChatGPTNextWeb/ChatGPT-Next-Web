@@ -122,6 +122,9 @@ const jp: LocaleType = {
         Add: "新規追加",
         Search: "プロンプトワード検索",
       },
+      EditModal: {
+        Title: "编辑提示词",
+      },
     },
     HistoryCount: {
       Title: "履歴メッセージ数を添付",
@@ -225,6 +228,14 @@ const jp: LocaleType = {
     More: "搜索更多",
     NotShow: "不再展示",
     ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
+  },
+
+  UI: {
+    Confirm: "确认",
+    Cancel: "取消",
+    Close: "关闭",
+    Create: "新建",
+    Edit: "编辑",
   },
 };
 
