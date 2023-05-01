@@ -120,6 +120,9 @@ const tr: LocaleType = {
         Add: "Add One",
         Search: "Search Prompts",
       },
+      EditModal: {
+        Title: "Edit Prompt",
+      },
     },
     HistoryCount: {
       Title: "Ekli Mesaj Sayısı",
@@ -227,6 +230,14 @@ const tr: LocaleType = {
     More: "Find More",
     NotShow: "Not Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+  },
+
+  UI: {
+    Confirm: "Confirm",
+    Cancel: "Cancel",
+    Close: "Close",
+    Create: "Create",
+    Edit: "Edit",
   },
 };
 
