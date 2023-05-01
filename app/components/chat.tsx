@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -64,12 +64,9 @@ import {
   useMaskStore,
 } from "../store/mask";
 
-const Markdown = dynamic(
-  async () => memo((await import("./markdown")).Markdown),
-  {
-    loading: () => <LoadingIcon />,
-  },
-);
+const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+  loading: () => <LoadingIcon />,
+});
 
 function exportMessages(messages: Message[], topic: string) {
   const mdText =
