@@ -1,5 +1,4 @@
 @mixin container {
-  background-color: var(--white);
   border: var(--border-in-light);
   border-radius: 20px;
   box-shadow: var(--shadow);
@@ -98,7 +97,7 @@
     min-height: unset;
     min-width: unset;
     max-height: unset;
-    min-width: unset;
+    max-width: unset;
     border: 0;
     border-radius: 0;
   }
