@@ -20,6 +20,8 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import MicrophoneIcon from "../icons/microphone.svg";
+import SoundOnIcon from "../icons/sound-on.svg";
 
 import {
   Message,
@@ -273,6 +275,7 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  toggleSound: () => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
@@ -347,6 +350,24 @@ export function ChatActions(props: {
       >
         <MaskIcon />
       </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {
+          navigate(Path.Masks);
+        }}
+      >
+        <MicrophoneIcon />
+      </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {
+          props.toggleSound();
+        }}
+      >
+        <SoundOnIcon />
+      </div>
     </div>
   );
 }
@@ -369,6 +390,7 @@ export function Chat() {
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
+  const [soundOn, setSoundOn] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
@@ -437,7 +459,10 @@ export function Chat() {
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore.onUserInput(userInput).then(() => {
+      console.log("setIsLoading");
+      setIsLoading(false);
+    });
     setBeforeInput(userInput);
     setUserInput("");
     setPromptHints([]);
@@ -530,6 +555,28 @@ export function Chat() {
     context.push(copiedHello);
   }
 
+  const toggleSound = () => {
+    setSoundOn(!soundOn);
+  };
+
+  useEffect(() => {
+    const latestMessage = session.messages[session.messages.length - 1];
+    // If the message is from the chatbot and is done
+    console.log("isLoading", isLoading);
+    if (
+      latestMessage.role === "assistant" &&
+      latestMessage.content &&
+      !latestMessage.isError &&
+      !latestMessage.streaming
+    ) {
+      speak(messages[messages.length - 1].content);
+    }
+  }, [
+    isLoading,
+    session.messages[session.messages.length - 1].content,
+    session.messages[session.messages.length - 1].streaming,
+  ]);
+
   // preview messages
   const messages = context
     .concat(session.messages as RenderMessage[])
@@ -575,6 +622,29 @@ export function Chat() {
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // use the Web Speech API to speak out a text
+  const speak = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      // Customize the voice and pitch here, if desired
+      const voices = window.speechSynthesis.getVoices();
+      console.log("voices", voices);
+      const enUSFemaleVoice = voices.find(
+        (voice) =>
+          voice.lang === "en-US" && voice.name.includes("Microsoft Zira"),
+      );
+      if (enUSFemaleVoice) {
+        utterance.voice = enUSFemaleVoice;
+      }
+      utterance.rate = 0.9; // Lower rate for a more natural sound
+      utterance.pitch = 1; // Default pitch
+      utterance.volume = 1; // Default volume
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error("Web Speech API not supported in this browser.");
+    }
+  };
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -754,6 +824,7 @@ export function Chat() {
             inputRef.current?.focus();
             onSearch("");
           }}
+          toggleSound={toggleSound}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
