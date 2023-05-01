@@ -90,6 +90,15 @@ export function Markdown(
     }
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (!inView.current) {
+        checkInView();
+      }
+    }, 30);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   checkInView();
 
   return (
