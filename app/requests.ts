@@ -102,11 +102,11 @@ export async function requestUsage() {
       .getDate()
       .toString()
       .padStart(2, "0")}`;
-  const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
-  const now = new Date(Date.now() + ONE_DAY);
+  const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+  const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startDate = formatDate(startOfMonth);
-  const endDate = formatDate(now);
+  const endDate = formatDate(new Date(Date.now() + ONE_DAY));
 
   const [used, subs] = await Promise.all([
     requestOpenaiClient(
