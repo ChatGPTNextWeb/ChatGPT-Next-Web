@@ -23,8 +23,9 @@
     .mask-filter {
       width: 100%;
       max-width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       animation: search-in ease 0.3s;
+      height: 40px;
 
       display: flex;
 
@@ -32,7 +33,6 @@
         flex-grow: 1;
         max-width: 100%;
         min-width: 0;
-        margin-bottom: 20px;
         animation: search-in ease 0.3s;
       }
 
@@ -45,10 +45,7 @@
         height: 100%;
         margin-left: 10px;
         box-sizing: border-box;
-
-        button {
-          padding: 10px;
-        }
+        min-width: 80px;
       }
     }
 
