@@ -83,11 +83,10 @@ interface ChatStore {
   currentSessionIndex: number;
   globalId: number;
   clearSessions: () => void;
-  removeSession: (index: number) => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: (mask?: Mask) => void;
-  deleteSession: (index?: number) => void;
+  deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
   onUserInput: (content: string) => Promise<void>;
@@ -127,31 +126,6 @@ export const useChatStore = create<ChatStore>()(
       selectSession(index: number) {
         set({
           currentSessionIndex: index,
-        });
-      },
-
-      removeSession(index: number) {
-        set((state) => {
-          let nextIndex = state.currentSessionIndex;
-          const sessions = state.sessions;
-
-          if (sessions.length === 1) {
-            return {
-              currentSessionIndex: 0,
-              sessions: [createEmptySession()],
-            };
-          }
-
-          sessions.splice(index, 1);
-
-          if (nextIndex === index) {
-            nextIndex -= 1;
-          }
-
-          return {
-            currentSessionIndex: nextIndex,
-            sessions,
-          };
         });
       },
 
@@ -197,31 +171,46 @@ export const useChatStore = create<ChatStore>()(
         }));
       },
 
-      deleteSession(i?: number) {
-        const deletedSession = get().currentSession();
-        const index = i ?? get().currentSessionIndex;
-        const isLastSession = get().sessions.length === 1;
-        if (!isMobileScreen() || confirm(Locale.Home.DeleteChat)) {
-          get().removeSession(index);
+      deleteSession(index) {
+        const deletingLastSession = get().sessions.length === 1;
+        const deletedSession = get().sessions.at(index);
 
-          showToast(
-            Locale.Home.DeleteToast,
-            {
-              text: Locale.Home.Revert,
-              onClick() {
-                set((state) => ({
-                  sessions: state.sessions
-                    .slice(0, index)
-                    .concat([deletedSession])
-                    .concat(
-                      state.sessions.slice(index + Number(isLastSession)),
-                    ),
-                }));
-              },
-            },
-            5000,
-          );
+        if (!deletedSession) return;
+
+        const sessions = get().sessions.slice();
+        sessions.splice(index, 1);
+
+        let nextIndex = Math.min(
+          get().currentSessionIndex,
+          sessions.length - 1,
+        );
+
+        if (deletingLastSession) {
+          nextIndex = 0;
+          sessions.push(createEmptySession());
         }
+
+        // for undo delete action
+        const restoreState = {
+          currentSessionIndex: get().currentSessionIndex,
+          sessions: get().sessions.slice(),
+        };
+
+        set(() => ({
+          currentSessionIndex: nextIndex,
+          sessions,
+        }));
+
+        showToast(
+          Locale.Home.DeleteToast,
+          {
+            text: Locale.Home.Revert,
+            onClick() {
+              set(() => restoreState);
+            },
+          },
+          5000,
+        );
       },
 
       currentSession() {

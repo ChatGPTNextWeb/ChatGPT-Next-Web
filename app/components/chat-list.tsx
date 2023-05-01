@@ -67,7 +67,10 @@ export function ChatItem(props: {
             </>
           )}
 
-          <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
+          <div
+            className={styles["chat-item-delete"]}
+            onClickCapture={props.onDelete}
+          >
             <DeleteIcon />
           </div>
         </div>
@@ -77,14 +80,14 @@ export function ChatItem(props: {
 }
 
 export function ChatList(props: { narrow?: boolean }) {
-  const [sessions, selectedIndex, selectSession, removeSession, moveSession] =
-    useChatStore((state) => [
+  const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
+    (state) => [
       state.sessions,
       state.currentSessionIndex,
       state.selectSession,
-      state.removeSession,
       state.moveSession,
-    ]);
+    ],
+  );
   const chatStore = useChatStore();
   const navigate = useNavigate();
 
