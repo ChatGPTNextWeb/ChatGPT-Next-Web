@@ -62,11 +62,12 @@ export function Markdown(
     loading?: boolean;
     fontSize?: number;
     parentRef: RefObject<HTMLDivElement>;
+    defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
   const renderedHeight = useRef(0);
-  const inView = useRef(false);
+  const inView = useRef(!!props.defaultShow);
 
   const parent = props.parentRef.current;
   const md = mdRef.current;
@@ -89,15 +90,6 @@ export function Markdown(
       );
     }
   };
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (!inView.current) {
-        checkInView();
-      }
-    }, 30);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   checkInView();
 
