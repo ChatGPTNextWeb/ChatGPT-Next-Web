@@ -5,7 +5,7 @@ const tr: LocaleType = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
-      "Yetkisiz erişim, lütfen erişim kodunu ayarlar sayfasından giriniz.",
+      "Yetkisiz erişim, lütfen erişim kodunu [ayarlar sayfasından](/#/settings) giriniz.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mesaj`,

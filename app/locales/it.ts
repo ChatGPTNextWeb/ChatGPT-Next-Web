@@ -5,7 +5,7 @@ const it: LocaleType = {
   WIP: "Work in progress...",
   Error: {
     Unauthorized:
-      "Accesso non autorizzato, inserire il codice di accesso nella pagina delle impostazioni.",
+      "Accesso non autorizzato, inserire il codice di accesso nella [pagina delle impostazioni](/#/settings).",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messaggi`,

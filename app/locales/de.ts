@@ -5,7 +5,7 @@ const de: LocaleType = {
   WIP: "In Bearbeitung...",
   Error: {
     Unauthorized:
-      "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der Einstellungsseite ein.",
+      "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der [Einstellungsseite](/#/settings) ein.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} Nachrichten`,
