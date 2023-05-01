@@ -832,6 +832,7 @@ export function Chat() {
                     }}
                     fontSize={fontSize}
                     parentRef={scrollRef}
+                    defaultShow={i >= messages.length - 10}
                   />
                 </div>
                 {!isUser && !message.preview && (
