@@ -296,7 +296,10 @@ export function MaskPage() {
                 icon={<AddIcon />}
                 text={Locale.Mask.Page.Create}
                 bordered
-                onClick={() => maskStore.create()}
+                onClick={() => {
+                  const createdMask = maskStore.create();
+                  setEditingMaskId(createdMask.id);
+                }}
               />
             </div>
           </div>
