@@ -71,22 +71,35 @@ export function Markdown(
   const parent = props.parentRef.current;
   const md = mdRef.current;
 
-  if (parent && md) {
-    const parentBounds = parent.getBoundingClientRect();
-    const twoScreenHeight = Math.max(500, parentBounds.height * 2);
-    const mdBounds = md.getBoundingClientRect();
-    const isInRange = (x: number) =>
-      x <= parentBounds.bottom + twoScreenHeight &&
-      x >= parentBounds.top - twoScreenHeight;
-    inView.current = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
-  }
+  const checkInView = () => {
+    if (parent && md) {
+      const parentBounds = parent.getBoundingClientRect();
+      const twoScreenHeight = Math.max(500, parentBounds.height * 2);
+      const mdBounds = md.getBoundingClientRect();
+      const isInRange = (x: number) =>
+        x <= parentBounds.bottom + twoScreenHeight &&
+        x >= parentBounds.top - twoScreenHeight;
+      inView.current = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
+    }
 
-  if (inView.current && md) {
-    renderedHeight.current = Math.max(
-      renderedHeight.current,
-      md.getBoundingClientRect().height,
-    );
-  }
+    if (inView.current && md) {
+      renderedHeight.current = Math.max(
+        renderedHeight.current,
+        md.getBoundingClientRect().height,
+      );
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (!inView.current) {
+        checkInView();
+      }
+    }, 10);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  checkInView();
 
   return (
     <div
