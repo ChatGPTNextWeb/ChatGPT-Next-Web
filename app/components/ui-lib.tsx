@@ -158,6 +158,7 @@ export type ToastProps = {
     text: string;
     onClick: () => void;
   };
+  onClose?: () => void;
 };
 
 export function Toast(props: ToastProps) {
@@ -167,7 +168,10 @@ export function Toast(props: ToastProps) {
         <span>{props.content}</span>
         {props.action && (
           <button
-            onClick={props.action.onClick}
+            onClick={() => {
+              props.action?.onClick?.();
+              props.onClose?.();
+            }}
             className={styles["toast-action"]}
           >
             {props.action.text}
@@ -201,7 +205,7 @@ export function showToast(
     close();
   }, delay);
 
-  root.render(<Toast content={content} action={action} />);
+  root.render(<Toast content={content} action={action} onClose={close} />);
 }
 
 export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
