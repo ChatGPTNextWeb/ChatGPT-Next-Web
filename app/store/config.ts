@@ -17,7 +17,6 @@ export enum Theme {
 }
 
 export const DEFAULT_CONFIG = {
-  sendBotMessages: true as boolean,
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
