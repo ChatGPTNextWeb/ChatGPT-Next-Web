@@ -4,7 +4,7 @@
   "private": false,
   "license": "Anti 996",
   "scripts": {
-    "dev": "yarn fetch && next dev",
+    "dev": "yarn fetch && cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "yarn fetch && next build",
     "start": "next start",
     "lint": "next lint",
