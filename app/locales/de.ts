@@ -165,6 +165,7 @@ const de: LocaleType = {
       SubTitle:
         "Ein größerer Wert erhöht die Wahrscheinlichkeit, dass über neue Themen gesprochen wird",
     },
+    Voice: "Stimme",
   },
   Store: {
     DefaultTopic: "Neues Gespräch",

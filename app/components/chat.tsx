@@ -49,13 +49,14 @@ import dynamic from "next/dynamic";
 
 import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
+import { VoiceConfig } from "../store/config";
 import Locale from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { ListItem, Modal, showModal } from "./ui-lib";
+import { List, ListItem, Modal, showModal } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { Avatar } from "./emoji";
@@ -169,10 +170,84 @@ export function SessionConfigModel(props: { onClose: () => void }) {
   );
 }
 
+export function TTSConfigModel(props: {
+  ttsConfig: VoiceConfig;
+  onClose: () => void;
+}) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Voice.Edit}
+        onClose={() => props.onClose()}
+        actions={[
+          <IconButton
+            key="reset"
+            icon={<ResetIcon />}
+            bordered
+            text={Locale.Chat.Config.Reset}
+            onClick={() =>
+              confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
+            }
+          />,
+        ]}
+      >
+        <TTSConfig
+          ttsConfig={{ ...props.ttsConfig }}
+          updateConfig={(voice: string) => {
+            chatStore.updateCurrentSession(
+              (session) => (session.ttsConfig.voice = voice),
+            );
+          }}
+        />
+      </Modal>
+    </div>
+  );
+}
+
+export type Voice = {
+  name: string;
+  lang: string;
+  localService: boolean;
+  default: boolean;
+  voiceURI: string;
+};
+
+const TTSConfig = (props: {
+  ttsConfig: VoiceConfig;
+  updateConfig: (_: string) => void;
+}) => {
+  const ALL_VOICES: Voice[] = window.speechSynthesis.getVoices();
+  return (
+    <>
+      <List>
+        <ListItem title={Locale.Settings.Voice}>
+          <select
+            value={props.ttsConfig.voice}
+            onChange={(e) => {
+              props.updateConfig(e.currentTarget.value);
+            }}
+          >
+            {ALL_VOICES.map((v) => (
+              <option value={v.name} key={v.name} disabled={!v.localService}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+        </ListItem>
+      </List>
+    </>
+  );
+};
+
 function PromptToast(props: {
   showToast?: boolean;
   showModal?: boolean;
+  showTTSModal?: boolean;
   setShowModal: (_: boolean) => void;
+  setShowTTSModal: (_: boolean) => void;
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -194,6 +269,12 @@ function PromptToast(props: {
       )}
       {props.showModal && (
         <SessionConfigModel onClose={() => props.setShowModal(false)} />
+      )}
+      {props.showTTSModal && (
+        <TTSConfigModel
+          onClose={() => props.setShowTTSModal(false)}
+          ttsConfig={session.ttsConfig}
+        />
       )}
     </div>
   );
@@ -273,6 +354,7 @@ function useScrollToBottom() {
 
 export function ChatActions(props: {
   showPromptModal: () => void;
+  showTTSModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
   toggleSound: () => void;
@@ -362,9 +444,7 @@ export function ChatActions(props: {
 
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={() => {
-          props.toggleSound();
-        }}
+        onClick={props.showTTSModal}
       >
         <SoundOnIcon />
       </div>
@@ -459,10 +539,7 @@ export function Chat() {
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => {
-      console.log("setIsLoading");
-      setIsLoading(false);
-    });
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setBeforeInput(userInput);
     setUserInput("");
     setPromptHints([]);
@@ -559,22 +636,30 @@ export function Chat() {
     setSoundOn(!soundOn);
   };
 
+  const initialRender = useRef(true);
+
   useEffect(() => {
+    if (initialRender.current) {
+      // Skip the initial render
+      initialRender.current = false;
+      return;
+    }
+
     const latestMessage = session.messages[session.messages.length - 1];
     // If the message is from the chatbot and is done
-    console.log("isLoading", isLoading);
     if (
+      latestMessage &&
       latestMessage.role === "assistant" &&
       latestMessage.content &&
       !latestMessage.isError &&
       !latestMessage.streaming
     ) {
-      speak(messages[messages.length - 1].content);
+      speak(messages[messages.length - 1].content, session.ttsConfig.voice);
     }
   }, [
     isLoading,
-    session.messages[session.messages.length - 1].content,
-    session.messages[session.messages.length - 1].streaming,
+    session.messages[session.messages.length - 1]?.content,
+    session.messages[session.messages.length - 1]?.streaming,
   ]);
 
   // preview messages
@@ -608,6 +693,7 @@ export function Chat() {
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+  const [showTTSModal, setShowTTSModal] = useState(false);
 
   const renameSession = () => {
     const newTopic = prompt(Locale.Chat.Rename, session.topic);
@@ -623,24 +709,40 @@ export function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // use the Web Speech API to speak out a text
-  const speak = (text: string) => {
+  const getVoices = (): Promise<SpeechSynthesisVoice[]> => {
+    return new Promise((resolve) => {
+      let voices = speechSynthesis.getVoices();
+      if (voices.length) {
+        resolve(voices);
+        return;
+      }
+      speechSynthesis.onvoiceschanged = () => {
+        voices = speechSynthesis.getVoices();
+        resolve(voices);
+      };
+    });
+  };
+
+  const speak = async (text: string, voiceName: string) => {
     if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      // Customize the voice and pitch here, if desired
-      const voices = window.speechSynthesis.getVoices();
-      console.log("voices", voices);
-      const enUSFemaleVoice = voices.find(
-        (voice) =>
-          voice.lang === "en-US" && voice.name.includes("Microsoft Zira"),
-      );
-      if (enUSFemaleVoice) {
-        utterance.voice = enUSFemaleVoice;
-      }
-      utterance.rate = 0.9; // Lower rate for a more natural sound
-      utterance.pitch = 1; // Default pitch
-      utterance.volume = 1; // Default volume
-      window.speechSynthesis.speak(utterance);
+
+      const setVoiceAndSpeak = (voices: SpeechSynthesisVoice[]) => {
+        const selectedVoice = voices.find((voice) => voice.name === voiceName);
+
+        if (selectedVoice?.name && utterance) {
+          utterance.voice = selectedVoice;
+          utterance.rate = 0.9; // Lower rate for a more natural sound
+          utterance.pitch = 1; // Default pitch
+          utterance.volume = 1; // Default volume
+          window.speechSynthesis.speak(utterance);
+        } else {
+          console.error("Selected voice is not found in this browser.");
+        }
+      };
+
+      const voices = await getVoices();
+      setVoiceAndSpeak(voices);
     } else {
       console.error("Web Speech API not supported in this browser.");
     }
@@ -707,7 +809,9 @@ export function Chat() {
         <PromptToast
           showToast={!hitBottom}
           showModal={showPromptModal}
+          showTTSModal={showTTSModal}
           setShowModal={setShowPromptModal}
+          setShowTTSModal={setShowTTSModal}
         />
       </div>
 
@@ -818,6 +922,7 @@ export function Chat() {
 
         <ChatActions
           showPromptModal={() => setShowPromptModal(true)}
+          showTTSModal={() => setShowTTSModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           showPromptHints={() => {

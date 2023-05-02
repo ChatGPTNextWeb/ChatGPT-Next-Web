@@ -163,6 +163,7 @@ const en: LocaleType = {
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
     },
+    Voice: "Voice",
   },
   Store: {
     DefaultTopic: "New Conversation",
@@ -186,6 +187,9 @@ const en: LocaleType = {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
     Add: "Add a Prompt",
+  },
+  Voice: {
+    Edit: "Voice Preference",
   },
   Plugin: {
     Name: "Plugin",
