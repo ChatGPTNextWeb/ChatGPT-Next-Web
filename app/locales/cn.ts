@@ -116,8 +116,11 @@ const cn = {
       Edit: "编辑",
       Modal: {
         Title: "提示词列表",
-        Add: "增加一条",
+        Add: "新建",
         Search: "搜索提示词",
+      },
+      EditModal: {
+        Title: "编辑提示词",
       },
     },
     HistoryCount: {
@@ -221,7 +224,15 @@ const cn = {
     ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
     Title: "挑选一个面具",
     SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
-    More: "搜索更多",
+    More: "查看全部",
+  },
+
+  UI: {
+    Confirm: "确认",
+    Cancel: "取消",
+    Close: "关闭",
+    Create: "新建",
+    Edit: "编辑",
   },
 };
 
