@@ -1,16 +1,4 @@
 @import "../styles/animation.scss";
-
-@keyframes search-in {
-  from {
-    opacity: 0;
-    transform: translateY(5vh) scaleX(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scaleX(1);
-  }
-}
-
 .mask-page {
   height: 100%;
   display: flex;
@@ -23,8 +11,9 @@
     .mask-filter {
       width: 100%;
       max-width: 100%;
-      margin-bottom: 10px;
-      animation: search-in ease 0.3s;
+      margin-bottom: 20px;
+      animation: slide-in ease 0.3s;
+      height: 40px;
 
       display: flex;
 
@@ -32,8 +21,6 @@
         flex-grow: 1;
         max-width: 100%;
         min-width: 0;
-        margin-bottom: 20px;
-        animation: search-in ease 0.3s;
       }
 
       .mask-filter-lang {
@@ -45,10 +32,7 @@
         height: 100%;
         margin-left: 10px;
         box-sizing: border-box;
-
-        button {
-          padding: 10px;
-        }
+        min-width: 80px;
       }
     }
 
