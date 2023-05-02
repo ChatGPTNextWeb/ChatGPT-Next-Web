@@ -46,8 +46,13 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        a: (aProps) => {
+          const href = aProps.href || "";
+          const isInternal = /^\/#/i.test(href);
+          const target = isInternal ? "_self" : aProps.target ?? "_blank";
+          return <a {...aProps} target={target} />;
+        },
       }}
-      linkTarget={"_blank"}
     >
       {props.content}
     </ReactMarkdown>
