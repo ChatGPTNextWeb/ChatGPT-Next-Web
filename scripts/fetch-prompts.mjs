@@ -1,5 +1,7 @@
 import fetch from "node-fetch";
 import fs from "fs/promises";
+import local_prompts from "../app/prompts/prompts.json" assert { type: 'json' };
+
 
 const RAW_FILE_URL = "https://raw.githubusercontent.com/";
 const MIRRORF_FILE_URL = "https://raw.fgit.ml/";
@@ -7,7 +9,7 @@ const MIRRORF_FILE_URL = "https://raw.fgit.ml/";
 const RAW_CN_URL = "PlexPt/awesome-chatgpt-prompts-zh/main/prompts-zh.json";
 const CN_URL = MIRRORF_FILE_URL + RAW_CN_URL;
 const RAW_EN_URL = "f/awesome-chatgpt-prompts/main/prompts.csv";
-const EN_URL = MIRRORF_FILE_URL + RAW_EN_URL;
+const EN_URL = MIRRORF_FILE_URL + RAW_EN_URL; 
 const FILE = "./public/prompts.json";
 
 const timeoutPromise = (timeout) => {
@@ -47,14 +49,24 @@ async function fetchEN() {
   }
 }
 
+async function importfromLOCAL() {
+  console.log("[Fetch] geting local prompts...");
+  try {
+    return local_prompts.map((v) => [v.act, v.prompt]);
+  } catch (error) {
+    console.error("[Fetch] failed to get local prompts", error);
+    return [];
+  }
+}
+
 async function main() {
-  Promise.all([fetchCN(), fetchEN()])
-    .then(([cn, en]) => {
-      fs.writeFile(FILE, JSON.stringify({ cn, en }));
+  Promise.all([fetchCN(), fetchEN(), importfromLOCAL()])
+    .then(([cn, en, local]) => {
+      fs.writeFile(FILE, JSON.stringify({ cn, en, local }));
     })
     .catch((e) => {
       console.error("[Fetch] failed to fetch prompts");
-      fs.writeFile(FILE, JSON.stringify({ cn: [], en: [] }));
+      fs.writeFile(FILE, JSON.stringify({ cn: [], en: [], local: [] }));
     })
     .finally(() => {
       console.log("[Fetch] saved to " + FILE);
