@@ -10,14 +10,15 @@ async function createStream(req: NextRequest) {
 
   const contentType = res.headers.get("Content-Type") ?? "";
   if (!contentType.includes("stream")) {
-    const content = await (
-      await res.text()
-    ).replace(/provided:.*. You/, "provided: ***. You");
+    const content = (await res.text()).replace(
+      /provided:.*. You/,
+      "provided: ***. You",
+    );
     console.log("[Stream] error ", content);
     return "```json\n" + content + "```";
   }
 
-  const stream = new ReadableStream({
+  return new ReadableStream({
     async start(controller) {
       function onParse(event: any) {
         if (event.type === "event") {
@@ -44,7 +45,6 @@ async function createStream(req: NextRequest) {
       }
     },
   });
-  return stream;
 }
 
 export async function POST(req: NextRequest) {
