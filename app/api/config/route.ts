@@ -8,16 +8,15 @@ const serverConfig = getServerSideConfig();
 // 警告！不要在这里写入任何敏感信息！
 const DANGER_CONFIG = {
   needCode: serverConfig.needCode,
+  hideUserApiKey: serverConfig.hideUserApiKey,
 };
 
 declare global {
   type DangerConfig = typeof DANGER_CONFIG;
 }
 
-export async function POST(req: NextRequest) {
-  return NextResponse.json({
-    needCode: serverConfig.needCode,
-  });
+export async function POST() {
+  return NextResponse.json(DANGER_CONFIG);
 }
 
 export const runtime = "edge";
