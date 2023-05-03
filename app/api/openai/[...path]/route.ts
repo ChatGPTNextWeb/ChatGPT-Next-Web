@@ -1,6 +1,7 @@
 import { createParser } from "eventsource-parser";
 import { NextRequest, NextResponse } from "next/server";
-import { requestOpenai } from "../common";
+import { auth } from "../../auth";
+import { requestOpenai } from "../../common";
 
 async function createStream(res: Response) {
   const encoder = new TextEncoder();
@@ -43,7 +44,19 @@ function formatResponse(msg: any) {
   return new Response(jsonMsg);
 }
 
-async function makeRequest(req: NextRequest) {
+async function handle(
+  req: NextRequest,
+  { params }: { params: { path: string[] } },
+) {
+  console.log("[OpenAI Route] params ", params);
+
+  const authResult = auth(req);
+  if (authResult.error) {
+    return NextResponse.json(authResult, {
+      status: 401,
+    });
+  }
+
   try {
     const api = await requestOpenai(req);
 
@@ -52,7 +65,9 @@ async function makeRequest(req: NextRequest) {
     // streaming response
     if (contentType.includes("stream")) {
       const stream = await createStream(api);
-      return new Response(stream);
+      const res = new Response(stream);
+      res.headers.set("Content-Type", contentType);
+      return res;
     }
 
     // try to parse error msg
@@ -80,12 +95,7 @@ async function makeRequest(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
-  return makeRequest(req);
-}
-
-export async function GET(req: NextRequest) {
-  return makeRequest(req);
-}
+export const GET = handle;
+export const POST = handle;
 
 export const runtime = "edge";

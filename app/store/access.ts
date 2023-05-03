@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
+import { BOT_HELLO } from "./chat";
 
 export interface AccessControlStore {
   accessCode: string;
