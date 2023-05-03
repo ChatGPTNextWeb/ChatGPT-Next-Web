@@ -9,6 +9,7 @@ import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
 
 import LoadingIcon from "../icons/three-dots.svg";
+import React from "react";
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
@@ -29,78 +30,94 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+function _MarkDownContent(props: { content: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
+      rehypePlugins={[
+        RehypeKatex,
+        [
+          RehypeHighlight,
+          {
+            detect: false,
+            ignoreMissing: true,
+          },
+        ],
+      ]}
+      components={{
+        pre: PreCode,
+        a: (aProps) => {
+          const href = aProps.href || "";
+          const isInternal = /^\/#/i.test(href);
+          const target = isInternal ? "_self" : aProps.target ?? "_blank";
+          return <a {...aProps} target={target} />;
+        },
+      }}
+    >
+      {props.content}
+    </ReactMarkdown>
+  );
+}
+
+export const MarkdownContent = React.memo(_MarkDownContent);
+
 export function Markdown(
   props: {
     content: string;
     loading?: boolean;
     fontSize?: number;
     parentRef: RefObject<HTMLDivElement>;
+    defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
+  const renderedHeight = useRef(0);
+  const inView = useRef(!!props.defaultShow);
 
   const parent = props.parentRef.current;
   const md = mdRef.current;
-  const rendered = useRef(true); // disable lazy loading for bad ux
-  const [counter, setCounter] = useState(0);
 
-  useEffect(() => {
-    // to triggr rerender
-    setCounter(counter + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.loading]);
+  const checkInView = () => {
+    if (parent && md) {
+      const parentBounds = parent.getBoundingClientRect();
+      const twoScreenHeight = Math.max(500, parentBounds.height * 2);
+      const mdBounds = md.getBoundingClientRect();
+      const isInRange = (x: number) =>
+        x <= parentBounds.bottom + twoScreenHeight &&
+        x >= parentBounds.top - twoScreenHeight;
+      inView.current = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
+    }
 
-  const inView =
-    rendered.current ||
-    (() => {
-      if (parent && md) {
-        const parentBounds = parent.getBoundingClientRect();
-        const mdBounds = md.getBoundingClientRect();
-        const isInRange = (x: number) =>
-          x <= parentBounds.bottom && x >= parentBounds.top;
-        const inView = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
+    if (inView.current && md) {
+      renderedHeight.current = Math.max(
+        renderedHeight.current,
+        md.getBoundingClientRect().height,
+      );
+    }
+  };
 
-        if (inView) {
-          rendered.current = true;
-        }
-
-        return inView;
-      }
-    })();
-
-  const shouldLoading = props.loading || !inView;
+  checkInView();
 
   return (
     <div
       className="markdown-body"
-      style={{ fontSize: `${props.fontSize ?? 14}px` }}
+      style={{
+        fontSize: `${props.fontSize ?? 14}px`,
+        height:
+          !inView.current && renderedHeight.current > 0
+            ? renderedHeight.current
+            : "auto",
+      }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
       onDoubleClickCapture={props.onDoubleClickCapture}
     >
-      {shouldLoading ? (
-        <LoadingIcon />
-      ) : (
-        <ReactMarkdown
-          remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
-          rehypePlugins={[
-            RehypeKatex,
-            [
-              RehypeHighlight,
-              {
-                detect: false,
-                ignoreMissing: true,
-              },
-            ],
-          ]}
-          components={{
-            pre: PreCode,
-          }}
-          linkTarget={"_blank"}
-        >
-          {props.content}
-        </ReactMarkdown>
-      )}
+      {inView.current &&
+        (props.loading ? (
+          <LoadingIcon />
+        ) : (
+          <MarkdownContent content={props.content} />
+        ))}
     </div>
   );
 }

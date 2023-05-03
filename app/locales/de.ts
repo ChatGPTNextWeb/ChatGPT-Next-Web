@@ -121,6 +121,9 @@ const de: LocaleType = {
         Add: "Add One",
         Search: "Search Prompts",
       },
+      EditModal: {
+        Title: "Edit Prompt",
+      },
     },
     HistoryCount: {
       Title: "Anzahl der angehängten Nachrichten",
@@ -229,6 +232,14 @@ const de: LocaleType = {
     More: "Find More",
     NotShow: "Not Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+  },
+
+  UI: {
+    Confirm: "Confirm",
+    Cancel: "Cancel",
+    Close: "Close",
+    Create: "Create",
+    Edit: "Edit",
   },
 };
 
