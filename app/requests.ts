@@ -8,6 +8,7 @@ import {
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
+import { User } from "@/app/api/user/user";
 
 const TIME_OUT_MS = 60000;
 
@@ -46,14 +47,8 @@ function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
 
-  if (accessStore.enabledAccessControl()) {
-    headers["access-code"] = accessStore.accessCode;
-  }
-
-  if (accessStore.token && accessStore.token.length > 0) {
-    headers["token"] = accessStore.token;
-  }
-
+  headers["access-code"] = accessStore.token;
+  headers["token"] = process.env.OPENAI_API_KEY || "";
   return headers;
 }
 
@@ -88,6 +83,23 @@ export async function requestChat(
   } catch (error) {
     console.error("[Request Chat] ", error, res.body);
   }
+}
+
+export async function requestUserBalance() {
+  const res = await fetch("/api/user/balance", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...getHeaders(),
+    },
+  });
+  const body: string = await res.text();
+  console.log("Danny Debug requestUserBalance", body);
+  const user: User = JSON.parse(body).user;
+  return {
+    balance: user.balance,
+    days: Math.round((user.seconds / 86400) * 100) / 100,
+  };
 }
 
 export async function requestUsage() {
@@ -161,6 +173,32 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
+    const verify = await fetch("/api/verify", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...getHeaders(),
+      },
+      signal: controller.signal,
+    });
+    if (!verify.ok) {
+      options?.onError(new Error("Verify failed"), verify.status);
+      return;
+    }
+
+    const balance = await fetch("/api/user/balance/deduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...getHeaders(),
+      },
+      signal: controller.signal,
+    });
+    if (!balance.ok) {
+      options?.onError(new Error("Insufficient balance"), balance.status);
+      return;
+    }
+
     const res = await fetch("/api/chat-stream", {
       method: "POST",
       headers: {

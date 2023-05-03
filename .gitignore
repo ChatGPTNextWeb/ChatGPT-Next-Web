@@ -40,3 +40,4 @@ public/prompts.json
 
 .vscode
 .idea
+redis_data

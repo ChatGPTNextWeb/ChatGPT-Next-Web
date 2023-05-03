@@ -1,0 +1,29 @@
+version: '3'
+services:
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis_data:/data
+    networks:
+      - my-net
+  chatgpt:
+    container_name: chatgpt
+    build: .
+    restart: always
+    ports:
+      - 80:3000
+    environment:
+      - OPENAI_API_KEY=
+      - ADMIN_PASSWORD=
+      - PROXY_URL=
+      - REDIS_HOST=redis
+    networks:
+      - my-net
+volumes:
+  redis_data:
+networks:
+  my-net:
+    driver: bridge

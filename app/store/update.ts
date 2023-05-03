@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
-import { requestUsage } from "../requests";
+import {requestUsage, requestUserBalance} from "../requests";
 
 export interface UpdateStore {
   lastUpdate: number;
@@ -10,6 +10,9 @@ export interface UpdateStore {
   used?: number;
   subscription?: number;
   lastUpdateUsage: number;
+
+  balance?: number;
+  days?: number;
 
   version: string;
   getLatestVersion: (force?: boolean) => Promise<void>;
@@ -67,14 +70,17 @@ export const useUpdateStore = create<UpdateStore>()(
       },
 
       async updateUsage(force = false) {
-        const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
-        if (!overOneMinute && !force) return;
+        // const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
+        // if (!overOneMinute && !force) return;
 
         set(() => ({
           lastUpdateUsage: Date.now(),
         }));
 
-        const usage = await requestUsage();
+        const usage = await requestUserBalance();
+        console.log("[Danny Debug] ", usage);
+
+        // const usage = await requestUsage();
 
         if (usage) {
           set(() => usage);

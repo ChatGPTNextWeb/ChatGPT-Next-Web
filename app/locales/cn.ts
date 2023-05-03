@@ -133,18 +133,18 @@ const cn = {
     },
     Token: {
       Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过密码访问限制",
+      SubTitle: "请输入 API Key 解锁",
       Placeholder: "OpenAI API Key",
     },
 
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，订阅总额 $${total}`;
+        return `剩余条数:${used}，将在${total}天后过期`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
-      NoAccess: "输入 API Key 或访问密码查看余额",
+      NoAccess: "输入 API Key 查看余额",
     },
     AccessCode: {
       Title: "访问密码",

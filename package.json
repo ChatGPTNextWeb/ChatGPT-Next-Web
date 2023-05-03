@@ -26,6 +26,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "react-router-dom": "^6.10.0",
+    "redis": "^4.6.6",
     "rehype-highlight": "^6.0.0",
     "rehype-katex": "^6.0.2",
     "remark-breaks": "^3.0.2",

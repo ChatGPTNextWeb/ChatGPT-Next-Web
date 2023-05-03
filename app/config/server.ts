@@ -7,6 +7,8 @@ declare global {
       CODE?: string;
       PROXY_URL?: string;
       VERCEL?: string;
+      ADMIN_PASSWORD?: string;
+      REDIS_HOST?: string;
     }
   }
 }
