@@ -232,7 +232,10 @@ export function PromptHints(props: {
         <div
           className={styles["prompt-hint"]}
           key={prompt.title + i.toString()}
-          onClick={() => props.onPromptSelect(prompt)}
+          onClick={(e) => {
+            e.stopPropagation();
+            props.onPromptSelect(prompt);
+          }}
         >
           <div className={styles["hint-title"]}>{prompt.title}</div>
           <div className={styles["hint-content"]}>{prompt.content}</div>
@@ -386,9 +389,9 @@ export function Chat() {
   );
 
   const onPromptSelect = (prompt: Prompt) => {
+    setUserInput(prompt.content);
     setPromptHints([]);
     inputRef.current?.focus();
-    setTimeout(() => setUserInput(prompt.content), 60);
   };
 
   // auto grow input
@@ -574,7 +577,16 @@ export function Chat() {
   }, []);
 
   return (
-    <div className={styles.chat} key={session.id}>
+    <div
+      className={styles.chat}
+      key={session.id}
+      onClick={(e) => {
+        if (e.target !== inputRef.current) {
+          setAutoScroll(false);
+          setPromptHints([]);
+        }
+      }}
+    >
       <div className="window-header">
         <div className="window-header-title">
           <div
@@ -762,14 +774,6 @@ export function Chat() {
             value={userInput}
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
-            onBlur={() => {
-              setTimeout(() => {
-                if (document.activeElement !== inputRef.current) {
-                  setAutoScroll(false);
-                  setPromptHints([]);
-                }
-              }, 100);
-            }}
             autoFocus
             rows={inputRows}
           />
