@@ -83,7 +83,7 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
     mask: createEmptyMask(),
     ttsConfig: {
-      voice: "Microsoft Zira - English (United States)",
+      voice: "Google US English",
       lang: "en-US",
     },
   };
@@ -245,7 +245,12 @@ export const useChatStore = create<ChatStore>()(
         }
 
         const session = sessions[index];
-
+        if (!session.ttsConfig) {
+          session.ttsConfig = {
+            voice: "",
+            lang: "en-US",
+          };
+        }
         return session;
       },
 
@@ -409,7 +414,7 @@ export const useChatStore = create<ChatStore>()(
       resetTTSConfig() {
         get().updateCurrentSession((session) => {
           session.ttsConfig = {
-            voice: "Microsoft Zira - English (United States)",
+            voice: "Google US English",
             lang: "en-US",
           };
         });

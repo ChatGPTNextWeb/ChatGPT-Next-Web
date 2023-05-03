@@ -660,7 +660,7 @@ export function Chat() {
       !latestMessage.streaming
     ) {
       const ttsConfig = session.ttsConfig || {
-        voice: "Microsoft Zira - English (United States)",
+        voice: "Google US English",
         lang: "en-US",
       };
       soundOn &&
