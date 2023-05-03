@@ -232,7 +232,7 @@ const TTSConfig = (props: {
             }}
           >
             {ALL_VOICES.map((v) => (
-              <option value={v.name} key={v.name} disabled={!v.localService}>
+              <option value={v.name} key={v.name}>
                 {v.name}
               </option>
             ))}
