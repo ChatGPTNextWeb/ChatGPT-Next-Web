@@ -65,10 +65,12 @@ function getHeaders() {
 }
 
 export function requestOpenaiClient(path: string) {
+  const openaiUrl = useAccessStore.getState().openaiUrl;
   return (body: any, method = "POST") =>
-    fetch("/api/openai/" + path, {
+    fetch(openaiUrl + path, {
       method,
       body: body && JSON.stringify(body),
+      headers: getHeaders(),
     });
 }
 
@@ -163,7 +165,8 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/openai/v1/chat/completions", {
+    const openaiUrl = useAccessStore.getState().openaiUrl;
+    const res = await fetch(openaiUrl + "v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
