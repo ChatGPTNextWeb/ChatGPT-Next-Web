@@ -163,6 +163,7 @@ export function SideBar(props: { className?: string }) {
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
                 chatStore.newSession();
+                navigate(Path.Chat);
               } else {
                 navigate(Path.NewChat);
               }
