@@ -14,7 +14,7 @@ declare global {
   type DangerConfig = typeof DANGER_CONFIG;
 }
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   return NextResponse.json({
     needCode: serverConfig.needCode,
   });
