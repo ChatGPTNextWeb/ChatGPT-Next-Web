@@ -183,6 +183,19 @@ function UserPromptModal(props: { onClose?: () => void }) {
   );
 }
 
+function formatVersionDate(t: string) {
+  const d = new Date(+t);
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+
+  return [
+    year.toString(),
+    month.toString().padStart(2, "0"),
+    day.toString().padStart(2, "0"),
+  ].join("");
+}
+
 export function Settings() {
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -193,8 +206,8 @@ export function Settings() {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = updateStore.version;
-  const remoteId = updateStore.remoteVersion;
+  const currentVersion = formatVersionDate(updateStore.version);
+  const remoteId = formatVersionDate(updateStore.remoteVersion);
   const hasNewVersion = currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
@@ -202,6 +215,15 @@ export function Settings() {
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
     });
+
+    console.log(
+      "[Update] local version ",
+      new Date(+updateStore.version).toLocaleString(),
+    );
+    console.log(
+      "[Update] remote version ",
+      new Date(+updateStore.remoteVersion).toLocaleString(),
+    );
   }
 
   const usage = {
@@ -466,19 +488,21 @@ export function Settings() {
             <></>
           )}
 
-          <ListItem
-            title={Locale.Settings.Token.Title}
-            subTitle={Locale.Settings.Token.SubTitle}
-          >
-            <PasswordInput
-              value={accessStore.token}
-              type="text"
-              placeholder={Locale.Settings.Token.Placeholder}
-              onChange={(e) => {
-                accessStore.updateToken(e.currentTarget.value);
-              }}
-            />
-          </ListItem>
+          {!accessStore.hideUserApiKey ? (
+            <ListItem
+              title={Locale.Settings.Token.Title}
+              subTitle={Locale.Settings.Token.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.token}
+                type="text"
+                placeholder={Locale.Settings.Token.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateToken(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : null}
 
           <ListItem
             title={Locale.Settings.Usage.Title}

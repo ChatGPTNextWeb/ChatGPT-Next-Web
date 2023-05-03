@@ -33,6 +33,7 @@
 - 在 Vercel 重新选择并部署，[请查看详细教程](./docs/vercel-cn.md#如何新建项目)。
 
 ### 打开自动更新
+
 > 如果你遇到了 Upstream Sync 执行错误，请手动 Sync Fork 一次！
 
 当你 fork 项目之后，由于 Github 的限制，需要手动去你 fork 后的项目的 Actions 页面启用 Workflows，并启用 Upstream Sync Action，启用之后即可开启每小时定时自动更新：
@@ -89,6 +90,10 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 指定 OpenAI 中的组织 ID。
 
+### `HIDE_USER_API_KEY` （可选）
+
+如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
+
 ## 开发
 
 > 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
@@ -106,15 +111,16 @@ OPENAI_API_KEY=<your api key here>
 ### 本地开发
 
 1. 安装 nodejs 18 和 yarn，具体细节请询问 ChatGPT；
-2. 执行 `yarn install && yarn dev` 即可。⚠️注意：此命令仅用于本地开发，不要用于部署！
+2. 执行 `yarn install && yarn dev` 即可。⚠️ 注意：此命令仅用于本地开发，不要用于部署！
 3. 如果你想本地部署，请使用 `yarn install && yarn start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
 
 ## 部署
 
 ### 容器部署 （推荐）
+
 > Docker 版本需要在 20 及其以上，否则会提示找不到镜像。
 
-> ⚠️注意：docker 版本在大多数时间都会落后最新的版本 1 到 2 天，所以部署后会持续出现“存在更新”的提示，属于正常现象。
+> ⚠️ 注意：docker 版本在大多数时间都会落后最新的版本 1 到 2 天，所以部署后会持续出现“存在更新”的提示，属于正常现象。
 
 ```shell
 docker pull yidadaa/chatgpt-next-web
@@ -146,7 +152,7 @@ docker run -d -p 3000:3000 \
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
-⚠️注意：如果你安装过程中遇到了问题，请使用 docker 部署。
+⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
 
 ## 鸣谢
 
