@@ -44,29 +44,33 @@ const makeRequestParam = (
 
 function getHeaders() {
   const accessStore = useAccessStore.getState();
-  let headers: Record<string, string> = {};
+  const headers = {
+    Authorization: "",
+  };
 
-  if (accessStore.enabledAccessControl()) {
-    headers["access-code"] = accessStore.accessCode;
-  }
+  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
 
-  if (accessStore.token && accessStore.token.length > 0) {
-    headers["token"] = accessStore.token;
+  // use user's api key first
+  if (validString(accessStore.token)) {
+    headers.Authorization = makeBearer(accessStore.token);
+  } else if (
+    accessStore.enabledAccessControl() &&
+    validString(accessStore.accessCode)
+  ) {
+    headers.Authorization = makeBearer(accessStore.accessCode);
   }
 
   return headers;
 }
 
 export function requestOpenaiClient(path: string) {
+  const openaiUrl = useAccessStore.getState().openaiUrl;
   return (body: any, method = "POST") =>
-    fetch("/api/openai", {
+    fetch(openaiUrl + path, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        path,
-        ...getHeaders(),
-      },
       body: body && JSON.stringify(body),
+      headers: getHeaders(),
     });
 }
 
@@ -161,16 +165,17 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/chat-stream", {
+    const openaiUrl = useAccessStore.getState().openaiUrl;
+    const res = await fetch(openaiUrl + "v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        path: "v1/chat/completions",
         ...getHeaders(),
       },
       body: JSON.stringify(req),
       signal: controller.signal,
     });
+
     clearTimeout(reqTimeoutId);
 
     let responseText = "";

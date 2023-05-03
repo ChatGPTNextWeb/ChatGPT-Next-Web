@@ -13,7 +13,6 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 [演示](https://chat-gpt-next-web.vercel.app/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/234462588-e8eff256-f5ca-46ef-8f5f-d7db6d28735a.jpg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
-
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
@@ -50,6 +49,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - UI text customize
 
 ## What's New
+
 - 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
 
 ## 主要功能
@@ -80,9 +80,8 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - 用户登录、账号管理、消息云同步
 
 ## 最新动态
+
 - 🚀 v2.0 已经发布，现在你可以使用面具功能快速创建预制对话了！ 了解更多： [ChatGPT 提示词高阶技能：零次、一次和少样本提示](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)。
-
-
 
 ## Get Started
 
@@ -162,6 +161,12 @@ Override openai api request base url.
 ### `OPENAI_ORG_ID` (optional)
 
 Specify OpenAI organization ID.
+
+### `HIDE_USER_API_KEY` (optional)
+
+> Default: Empty
+
+If you do not want users to input their own API key, set this environment variable to 1.
 
 ## Development
 
@@ -248,7 +253,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@hotic](https://github.com/hotic)
 [@WingCH](https://github.com/WingCH)
 [@jtung4](https://github.com/jtung4)
-
 
 ### Contributor
 
