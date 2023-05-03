@@ -8,6 +8,7 @@ export interface AccessControlStore {
   token: string;
 
   needCode: boolean;
+  openaiUrl: string;
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
@@ -24,16 +25,18 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       needCode: true,
+      openaiUrl: "/api/openai/",
+
       enabledAccessControl() {
         get().fetch();
 
         return get().needCode;
       },
       updateCode(code: string) {
-        set((state) => ({ accessCode: code }));
+        set(() => ({ accessCode: code }));
       },
       updateToken(token: string) {
-        set((state) => ({ token }));
+        set(() => ({ token }));
       },
       isAuthorized() {
         // has token or has code or disabled access control
