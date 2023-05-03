@@ -5,10 +5,11 @@ import { EmojiAvatar } from "./emoji";
 import styles from "./new-chat.module.scss";
 
 import LeftIcon from "../icons/left.svg";
-import AddIcon from "../icons/lightning.svg";
+import LightningIcon from "../icons/lightning.svg";
+import EyeIcon from "../icons/eye.svg";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { createEmptyMask, Mask, useMaskStore } from "../store/mask";
+import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
@@ -148,18 +149,20 @@ export function NewChat() {
       <div className={styles["sub-title"]}>{Locale.NewChat.SubTitle}</div>
 
       <div className={styles["actions"]}>
-        <input
-          className={styles["search-bar"]}
-          placeholder={Locale.NewChat.More}
-          type="text"
-          onClick={() => navigate(Path.Masks)}
-        />
-
         <IconButton
           text={Locale.NewChat.Skip}
           onClick={() => startChat()}
-          icon={<AddIcon />}
+          icon={<LightningIcon />}
           type="primary"
+          shadow
+        />
+
+        <IconButton
+          className={styles["more"]}
+          text={Locale.NewChat.More}
+          onClick={() => navigate(Path.Masks)}
+          icon={<EyeIcon />}
+          bordered
           shadow
         />
       </div>
