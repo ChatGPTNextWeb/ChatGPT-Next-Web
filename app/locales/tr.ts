@@ -165,6 +165,7 @@ const tr: LocaleType = {
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",
     },
+    Voice: "Ses",
   },
   Store: {
     DefaultTopic: "Yeni Konuşma",
@@ -188,6 +189,9 @@ const tr: LocaleType = {
     Toast: (x: any) => `${x} bağlamsal bellek komutu`,
     Edit: "Bağlamsal ve Bellek Komutları",
     Add: "Yeni Ekle",
+  },
+  Voice: {
+    Edit: "Ses Tercihi",
   },
   Plugin: {
     Name: "Plugin",

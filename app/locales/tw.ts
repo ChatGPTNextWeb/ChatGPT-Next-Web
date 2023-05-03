@@ -160,6 +160,7 @@ const tw: LocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    Voice: "語音",
   },
   Store: {
     DefaultTopic: "新的對話",
@@ -182,6 +183,9 @@ const tw: LocaleType = {
     Toast: (x: any) => `已設定 ${x} 條前置上下文`,
     Edit: "前置上下文和歷史記憶",
     Add: "新增一條",
+  },
+  Voice: {
+    Edit: "語音偏好",
   },
   Plugin: { Name: "插件" },
   Mask: {

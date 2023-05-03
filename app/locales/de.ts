@@ -192,6 +192,9 @@ const de: LocaleType = {
     Edit: "Kontext- und Gedächtnis-Prompts",
     Add: "Hinzufügen",
   },
+  Voice: {
+    Edit: "Stimmeinstellungen",
+  },
   Plugin: {
     Name: "Plugin",
   },
