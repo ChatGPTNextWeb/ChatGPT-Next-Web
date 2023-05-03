@@ -8,6 +8,7 @@ export interface AccessControlStore {
   token: string;
 
   needCode: boolean;
+  hideUserApiKey: boolean;
   openaiUrl: string;
 
   updateToken: (_: string) => void;
@@ -25,6 +26,7 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       needCode: true,
+      hideUserApiKey: false,
       openaiUrl: "/api/openai/",
 
       enabledAccessControl() {
@@ -55,6 +57,10 @@ export const useAccessStore = create<AccessControlStore>()(
           .then((res: DangerConfig) => {
             console.log("[Config] got config from server", res);
             set(() => ({ ...res }));
+
+            if ((res as any).botHello) {
+              BOT_HELLO.content = (res as any).botHello;
+            }
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");
