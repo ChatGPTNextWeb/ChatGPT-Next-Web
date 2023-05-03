@@ -22,6 +22,7 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import MicrophoneIcon from "../icons/microphone.svg";
 import SoundOnIcon from "../icons/sound-on.svg";
+import SoundOffIcon from "../icons/sound-off.svg";
 
 import {
   Message,
@@ -359,6 +360,7 @@ export function ChatActions(props: {
   showPromptHints: () => void;
   toggleSound: () => void;
   hitBottom: boolean;
+  soundOn: boolean;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -376,6 +378,11 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ControllerPool.hasPending();
   const stopAll = () => ControllerPool.stopAll();
+
+  const toggleAssistantVoice = () => {
+    if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+    props.toggleSound();
+  };
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -435,18 +442,16 @@ export function ChatActions(props: {
 
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
+        onClick={props.showTTSModal}
       >
         <MicrophoneIcon />
       </div>
 
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={props.showTTSModal}
+        onClick={toggleAssistantVoice}
       >
-        <SoundOnIcon />
+        {props.soundOn ? <SoundOnIcon /> : <SoundOffIcon />}
       </div>
     </div>
   );
@@ -654,12 +659,14 @@ export function Chat() {
       !latestMessage.isError &&
       !latestMessage.streaming
     ) {
-      speak(messages[messages.length - 1].content, session.ttsConfig.voice);
+      soundOn &&
+        speak(messages[messages.length - 1].content, session.ttsConfig.voice);
     }
   }, [
     isLoading,
     session.messages[session.messages.length - 1]?.content,
     session.messages[session.messages.length - 1]?.streaming,
+    // soundOn
   ]);
 
   // preview messages
@@ -930,6 +937,7 @@ export function Chat() {
             onSearch("");
           }}
           toggleSound={toggleSound}
+          soundOn={soundOn}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
