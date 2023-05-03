@@ -616,7 +616,7 @@ export function Chat() {
 
   const location = useLocation();
   const isChat = location.pathname === Path.Chat;
-  const autoFocus = isChat; // only focus in chat page
+  const autoFocus = !isMobileScreen || isChat; // only focus in chat page
 
   return (
     <div className={styles.chat} key={session.id}>
