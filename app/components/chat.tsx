@@ -54,7 +54,7 @@ import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
 import { ListItem, Modal, showModal } from "./ui-lib";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
@@ -235,7 +235,10 @@ export function PromptHints(props: {
         <div
           className={styles["prompt-hint"]}
           key={prompt.title + i.toString()}
-          onClick={() => props.onPromptSelect(prompt)}
+          onClick={() => {
+            console.log("click hint");
+            props.onPromptSelect(prompt);
+          }}
         >
           <div className={styles["hint-title"]}>{prompt.title}</div>
           <div className={styles["hint-content"]}>{prompt.content}</div>
@@ -373,7 +376,7 @@ export function Chat() {
   const navigate = useNavigate();
 
   const onChatBodyScroll = (e: HTMLElement) => {
-    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
+    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
   };
 
@@ -400,7 +403,7 @@ export function Chat() {
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
-        5,
+        20,
         Math.max(2 + Number(!isMobileScreen), rows),
       );
       setInputRows(inputRows);
@@ -569,12 +572,9 @@ export function Chat() {
     }
   };
 
-  // Auto focus
-  useEffect(() => {
-    if (isMobileScreen) return;
-    inputRef.current?.focus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const location = useLocation();
+  const isChat = location.pathname === Path.Chat;
+  const autoFocus = isChat; // only focus in chat page
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -764,16 +764,9 @@ export function Chat() {
             value={userInput}
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
-            onBlur={() => {
-              setTimeout(() => {
-                if (document.activeElement !== inputRef.current) {
-                  setAutoScroll(false);
-                  setPromptHints([]);
-                }
-              }, 100);
-            }}
-            autoFocus
+            onBlur={() => setAutoScroll(false)}
             rows={inputRows}
+            autoFocus={autoFocus}
           />
           <IconButton
             icon={<SendWhiteIcon />}
