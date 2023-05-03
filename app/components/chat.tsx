@@ -659,14 +659,17 @@ export function Chat() {
       !latestMessage.isError &&
       !latestMessage.streaming
     ) {
+      const ttsConfig = session.ttsConfig || {
+        voice: "Microsoft Zira - English (United States)",
+        lang: "en-US",
+      };
       soundOn &&
-        speak(messages[messages.length - 1].content, session.ttsConfig.voice);
+        speak(messages[messages.length - 1].content, session.ttsConfig?.voice);
     }
   }, [
     isLoading,
     session.messages[session.messages.length - 1]?.content,
     session.messages[session.messages.length - 1]?.streaming,
-    // soundOn
   ]);
 
   // preview messages
