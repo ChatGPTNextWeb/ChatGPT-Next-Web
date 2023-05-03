@@ -733,18 +733,73 @@ export function Chat() {
     });
   };
 
+  const isChinese = (text: string): boolean => {
+    const chineseRegex = /[\u4e00-\u9fff]/;
+    return chineseRegex.test(text);
+  };
+
   const speak = async (text: string, voiceName: string) => {
     if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      const maxWordsPerChunk = 20; // Adjust this value based on your testing
+      const maxCharsPerChunk = 40; // Adjust this value based on your testing
+      const textChunks: string[] = [];
 
-      const setVoiceAndSpeak = (voices: SpeechSynthesisVoice[]) => {
+      if (isChinese(text)) {
+        const splitByPunctuation = text.split(/(?:[，。！？；]|[\r\n]+)/);
+        splitByPunctuation.forEach((sentence: string) => {
+          if (sentence.length > maxCharsPerChunk) {
+            for (let i = 0; i < sentence.length; i += maxCharsPerChunk) {
+              textChunks.push(sentence.slice(i, i + maxCharsPerChunk).trim());
+            }
+          } else {
+            textChunks.push(sentence.trim());
+          }
+        });
+      } else {
+        const sentences = text.split(/(?:[.!?]+|[,;:]|[\r\n]+)/);
+
+        sentences.forEach((sentence: string) => {
+          const words = sentence.split(/\s+/);
+          let currentChunk = "";
+
+          words.forEach((word: string) => {
+            if (
+              (currentChunk + " " + word).trim().split(/\s+/).length <=
+              maxWordsPerChunk
+            ) {
+              currentChunk += " " + word;
+            } else {
+              textChunks.push(currentChunk.trim());
+              currentChunk = word;
+            }
+          });
+
+          if (currentChunk) {
+            textChunks.push(currentChunk.trim());
+          }
+        });
+      }
+
+      const filteredTextChunks = textChunks.filter((chunk) => chunk.length > 0);
+
+      const setVoiceAndSpeak = (voices: SpeechSynthesisVoice[], index = 0) => {
+        if (index >= filteredTextChunks.length) return;
+
         const selectedVoice = voices.find((voice) => voice.name === voiceName);
 
-        if (selectedVoice?.name && utterance) {
+        if (selectedVoice?.name) {
+          const utterance = new SpeechSynthesisUtterance(
+            filteredTextChunks[index],
+          );
           utterance.voice = selectedVoice;
           utterance.rate = 0.9; // Lower rate for a more natural sound
           utterance.pitch = 1; // Default pitch
           utterance.volume = 1; // Default volume
+
+          utterance.onend = () => {
+            setVoiceAndSpeak(voices, index + 1);
+          };
+
           window.speechSynthesis.speak(utterance);
         } else {
           console.error("Selected voice is not found in this browser.");
