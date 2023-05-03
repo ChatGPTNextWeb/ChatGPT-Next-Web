@@ -245,9 +245,9 @@ export const useChatStore = create<ChatStore>()(
         }
 
         const session = sessions[index];
-        if (!session.ttsConfig) {
+        if (!session.ttsConfig || session.ttsConfig.voice === "") {
           session.ttsConfig = {
-            voice: "",
+            voice: "Google US English",
             lang: "en-US",
           };
         }
