@@ -16,7 +16,9 @@ const nextConfig = {
       });
     }
 
-    return ret;
+    return {
+      afterFiles: ret,
+    };
   },
   webpack(config) {
     config.module.rules.push({

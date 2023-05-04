@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
 import { useEffect, useState } from "react";
-import { downloadAs } from "../utils";
+import { downloadAs, readFromFile } from "../utils";
 import { Updater } from "../api/openai/typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
@@ -222,6 +222,21 @@ export function MaskPage() {
     downloadAs(JSON.stringify(masks), FileName.Masks);
   };
 
+  const importFromFile = () => {
+    readFromFile().then((content) => {
+      try {
+        const importMasks = JSON.parse(content);
+        if (Array.isArray(importMasks)) {
+          for (const mask of importMasks) {
+            if (mask.name) {
+              maskStore.create(mask);
+            }
+          }
+        }
+      } catch {}
+    });
+  };
+
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -247,7 +262,7 @@ export function MaskPage() {
               <IconButton
                 icon={<UploadIcon />}
                 bordered
-                onClick={() => showToast(Locale.WIP)}
+                onClick={() => importFromFile()}
               />
             </div>
             <div className="window-action-button">
@@ -371,7 +386,10 @@ export function MaskPage() {
                 key="export"
                 bordered
                 onClick={() =>
-                  downloadAs(JSON.stringify(editingMask), "mask.json")
+                  downloadAs(
+                    JSON.stringify(editingMask),
+                    `${editingMask.name}.json`,
+                  )
                 }
               />,
               <IconButton
