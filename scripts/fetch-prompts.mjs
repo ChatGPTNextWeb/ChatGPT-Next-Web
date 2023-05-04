@@ -40,7 +40,7 @@ async function fetchEN() {
     return raw
       .split("\n")
       .slice(1)
-      .map((v) => v.split('","').map((v) => v.replace('"', "")));
+      .map((v) => v.split('","').map((v) => v.replace(/^"|"$/g, '').replaceAll('""','"')));
   } catch (error) {
     console.error("[Fetch] failed to fetch en prompts", error);
     return [];
