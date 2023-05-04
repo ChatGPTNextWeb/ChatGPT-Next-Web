@@ -15,8 +15,11 @@ declare global {
   type DangerConfig = typeof DANGER_CONFIG;
 }
 
-export async function POST() {
+async function handle() {
   return NextResponse.json(DANGER_CONFIG);
 }
+
+export const GET = handle;
+export const POST = handle;
 
 export const runtime = "edge";
