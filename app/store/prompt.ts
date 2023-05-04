@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
 import { getLang } from "../locales";
+import { StoreKey } from "../constant";
 
 export interface Prompt {
   id?: number;
@@ -16,14 +17,13 @@ export interface PromptStore {
   prompts: Record<number, Prompt>;
 
   add: (prompt: Prompt) => number;
+  get: (id: number) => Prompt | undefined;
   remove: (id: number) => void;
   search: (text: string) => Prompt[];
+  update: (id: number, updater: (prompt: Prompt) => void) => void;
 
   getUserPrompts: () => Prompt[];
-  updateUserPrompts: (id: number, updater: (prompt: Prompt) => void) => void;
 }
-
-export const PROMPT_KEY = "prompt-store";
 
 export const SearchService = {
   ready: false,
@@ -82,6 +82,16 @@ export const usePromptStore = create<PromptStore>()(
         return prompt.id!;
       },
 
+      get(id) {
+        const targetPrompt = get().prompts[id];
+
+        if (!targetPrompt) {
+          return SearchService.builtinPrompts.find((v) => v.id === id);
+        }
+
+        return targetPrompt;
+      },
+
       remove(id) {
         const prompts = get().prompts;
         delete prompts[id];
@@ -99,7 +109,7 @@ export const usePromptStore = create<PromptStore>()(
         return userPrompts;
       },
 
-      updateUserPrompts(id: number, updater) {
+      update(id: number, updater) {
         const prompt = get().prompts[id] ?? {
           title: "",
           content: "",
@@ -123,7 +133,7 @@ export const usePromptStore = create<PromptStore>()(
       },
     }),
     {
-      name: PROMPT_KEY,
+      name: StoreKey.Prompt,
       version: 1,
       onRehydrateStorage(state) {
         const PROMPT_URL = "./prompts.json";

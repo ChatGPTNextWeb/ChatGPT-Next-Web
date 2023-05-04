@@ -1,5 +1,5 @@
-import { useDebounce, useDebouncedCallback } from "use-debounce";
-import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -9,12 +9,11 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import BotIcon from "../icons/bot.svg";
-import BlackBotIcon from "../icons/black-bot.svg";
-import AddIcon from "../icons/add.svg";
-import DeleteIcon from "../icons/delete.svg";
+import PromptIcon from "../icons/prompt.svg";
+import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
+import ResetIcon from "../icons/reload.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -31,14 +30,14 @@ import {
   createMessage,
   useAccessStore,
   Theme,
-  ModelType,
   useAppConfig,
+  ModelConfig,
+  DEFAULT_TOPIC,
 } from "../store";
 
 import {
   copyToClipboard,
   downloadAs,
-  getEmojiUrl,
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
@@ -54,42 +53,20 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { Input, Modal, showModal } from "./ui-lib";
-import { useNavigate } from "react-router-dom";
+import { ListItem, Modal, showModal } from "./ui-lib";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
+import { Avatar } from "./emoji";
+import { MaskAvatar, MaskConfig } from "./mask";
+import {
+  DEFAULT_MASK_AVATAR,
+  DEFAULT_MASK_ID,
+  useMaskStore,
+} from "../store/mask";
 
-const Markdown = dynamic(
-  async () => memo((await import("./markdown")).Markdown),
-  {
-    loading: () => <LoadingIcon />,
-  },
-);
-
-const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
+const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
-
-export function Avatar(props: { role: Message["role"]; model?: ModelType }) {
-  const config = useAppConfig();
-
-  if (props.role !== "user") {
-    return (
-      <div className="no-dark">
-        {props.model?.startsWith("gpt-4") ? (
-          <BlackBotIcon className={styles["user-avtar"]} />
-        ) : (
-          <BotIcon className={styles["user-avtar"]} />
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} getEmojiUrl={getEmojiUrl} />
-    </div>
-  );
-}
 
 function exportMessages(messages: Message[], topic: string) {
   const mdText =
@@ -129,6 +106,64 @@ function exportMessages(messages: Message[], topic: string) {
   });
 }
 
+export function SessionConfigModel(props: { onClose: () => void }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const maskStore = useMaskStore();
+  const navigate = useNavigate();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Context.Edit}
+        onClose={() => props.onClose()}
+        actions={[
+          <IconButton
+            key="reset"
+            icon={<ResetIcon />}
+            bordered
+            text={Locale.Chat.Config.Reset}
+            onClick={() =>
+              confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
+            }
+          />,
+          <IconButton
+            key="copy"
+            icon={<CopyIcon />}
+            bordered
+            text={Locale.Chat.Config.SaveAs}
+            onClick={() => {
+              navigate(Path.Masks);
+              setTimeout(() => {
+                maskStore.create(session.mask);
+              }, 500);
+            }}
+          />,
+        ]}
+      >
+        <MaskConfig
+          mask={session.mask}
+          updateMask={(updater) => {
+            const mask = { ...session.mask };
+            updater(mask);
+            chatStore.updateCurrentSession((session) => (session.mask = mask));
+          }}
+          extraListItems={
+            session.mask.modelConfig.sendMemory ? (
+              <ListItem
+                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
+                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
+              ></ListItem>
+            ) : (
+              <></>
+            )
+          }
+        ></MaskConfig>
+      </Modal>
+    </div>
+  );
+}
+
 function PromptToast(props: {
   showToast?: boolean;
   showModal?: boolean;
@@ -136,25 +171,7 @@ function PromptToast(props: {
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const context = session.context;
-
-  const addContextPrompt = (prompt: Message) => {
-    chatStore.updateCurrentSession((session) => {
-      session.context.push(prompt);
-    });
-  };
-
-  const removeContextPrompt = (i: number) => {
-    chatStore.updateCurrentSession((session) => {
-      session.context.splice(i, 1);
-    });
-  };
-
-  const updateContextPrompt = (i: number, prompt: Message) => {
-    chatStore.updateCurrentSession((session) => {
-      session.context[i] = prompt;
-    });
-  };
+  const context = session.mask.context;
 
   return (
     <div className={chatStyle["prompt-toast"]} key="prompt-toast">
@@ -171,115 +188,7 @@ function PromptToast(props: {
         </div>
       )}
       {props.showModal && (
-        <div className="modal-mask">
-          <Modal
-            title={Locale.Context.Edit}
-            onClose={() => props.setShowModal(false)}
-            actions={[
-              <IconButton
-                key="reset"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Memory.Reset}
-                onClick={() =>
-                  confirm(Locale.Memory.ResetConfirm) &&
-                  chatStore.resetSession()
-                }
-              />,
-              <IconButton
-                key="copy"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Memory.Copy}
-                onClick={() => copyToClipboard(session.memoryPrompt)}
-              />,
-            ]}
-          >
-            <>
-              <div className={chatStyle["context-prompt"]}>
-                {context.map((c, i) => (
-                  <div className={chatStyle["context-prompt-row"]} key={i}>
-                    <select
-                      value={c.role}
-                      className={chatStyle["context-role"]}
-                      onChange={(e) =>
-                        updateContextPrompt(i, {
-                          ...c,
-                          role: e.target.value as any,
-                        })
-                      }
-                    >
-                      {ROLES.map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
-                      ))}
-                    </select>
-                    <Input
-                      value={c.content}
-                      type="text"
-                      className={chatStyle["context-content"]}
-                      rows={1}
-                      onInput={(e) =>
-                        updateContextPrompt(i, {
-                          ...c,
-                          content: e.currentTarget.value as any,
-                        })
-                      }
-                    />
-                    <IconButton
-                      icon={<DeleteIcon />}
-                      className={chatStyle["context-delete-button"]}
-                      onClick={() => removeContextPrompt(i)}
-                      bordered
-                    />
-                  </div>
-                ))}
-
-                <div className={chatStyle["context-prompt-row"]}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    text={Locale.Context.Add}
-                    bordered
-                    className={chatStyle["context-prompt-button"]}
-                    onClick={() =>
-                      addContextPrompt({
-                        role: "system",
-                        content: "",
-                        date: "",
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className={chatStyle["memory-prompt"]}>
-                <div className={chatStyle["memory-prompt-title"]}>
-                  <span>
-                    {Locale.Memory.Title} ({session.lastSummarizeIndex} of{" "}
-                    {session.messages.length})
-                  </span>
-
-                  <label className={chatStyle["memory-prompt-action"]}>
-                    {Locale.Memory.Send}
-                    <input
-                      type="checkbox"
-                      checked={session.sendMemory}
-                      onChange={() =>
-                        chatStore.updateCurrentSession(
-                          (session) =>
-                            (session.sendMemory = !session.sendMemory),
-                        )
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className={chatStyle["memory-prompt-content"]}>
-                  {session.memoryPrompt || Locale.Memory.EmptyContent}
-                </div>
-              </div>
-            </>
-          </Modal>
-        </div>
+        <SessionConfigModel onClose={() => props.setShowModal(false)} />
       )}
     </div>
   );
@@ -315,15 +224,63 @@ export function PromptHints(props: {
   prompts: Prompt[];
   onPromptSelect: (prompt: Prompt) => void;
 }) {
-  if (props.prompts.length === 0) return null;
+  const noPrompts = props.prompts.length === 0;
+  const [selectIndex, setSelectIndex] = useState(0);
+  const selectedRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setSelectIndex(0);
+  }, [props.prompts.length]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (noPrompts) return;
+
+      // arrow up / down to select prompt
+      const changeIndex = (delta: number) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const nextIndex = Math.max(
+          0,
+          Math.min(props.prompts.length - 1, selectIndex + delta),
+        );
+        setSelectIndex(nextIndex);
+        selectedRef.current?.scrollIntoView({
+          block: "center",
+        });
+      };
+
+      if (e.key === "ArrowUp") {
+        changeIndex(1);
+      } else if (e.key === "ArrowDown") {
+        changeIndex(-1);
+      } else if (e.key === "Enter") {
+        const selectedPrompt = props.prompts.at(selectIndex);
+        if (selectedPrompt) {
+          props.onPromptSelect(selectedPrompt);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noPrompts, selectIndex]);
+
+  if (noPrompts) return null;
   return (
     <div className={styles["prompt-hints"]}>
       {props.prompts.map((prompt, i) => (
         <div
-          className={styles["prompt-hint"]}
+          ref={i === selectIndex ? selectedRef : null}
+          className={
+            styles["prompt-hint"] +
+            ` ${i === selectIndex ? styles["prompt-hint-selected"] : ""}`
+          }
           key={prompt.title + i.toString()}
           onClick={() => props.onPromptSelect(prompt)}
+          onMouseEnter={() => setSelectIndex(i)}
         >
           <div className={styles["hint-title"]}>{prompt.title}</div>
           <div className={styles["hint-content"]}>{prompt.content}</div>
@@ -360,9 +317,11 @@ function useScrollToBottom() {
 export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
+  showPromptHints: () => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
+  const navigate = useNavigate();
 
   // switch themes
   const theme = config.theme;
@@ -417,6 +376,22 @@ export function ChatActions(props: {
           <DarkIcon />
         ) : null}
       </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={props.showPromptHints}
+      >
+        <PromptIcon />
+      </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {
+          navigate(Path.Masks);
+        }}
+      >
+        <MaskIcon />
+      </div>
     </div>
   );
 }
@@ -443,7 +418,7 @@ export function Chat() {
   const navigate = useNavigate();
 
   const onChatBodyScroll = (e: HTMLElement) => {
-    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
+    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
   };
 
@@ -459,9 +434,9 @@ export function Chat() {
   );
 
   const onPromptSelect = (prompt: Prompt) => {
-    setUserInput(prompt.content);
     setPromptHints([]);
     inputRef.current?.focus();
+    setTimeout(() => setUserInput(prompt.content), 60);
   };
 
   // auto grow input
@@ -470,7 +445,7 @@ export function Chat() {
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
-        5,
+        20,
         Math.max(2 + Number(!isMobileScreen), rows),
       );
       setInputRows(inputRows);
@@ -585,7 +560,7 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
-  const context: RenderMessage[] = session.context.slice();
+  const context: RenderMessage[] = session.mask.context.slice();
 
   const accessStore = useAccessStore();
 
@@ -639,29 +614,26 @@ export function Chat() {
     }
   };
 
-  // Auto focus
-  useEffect(() => {
-    if (isMobileScreen) return;
-    inputRef.current?.focus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const location = useLocation();
+  const isChat = location.pathname === Path.Chat;
+  const autoFocus = !isMobileScreen || isChat; // only focus in chat page
 
   return (
     <div className={styles.chat} key={session.id}>
-      <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]}>
+      <div className="window-header">
+        <div className="window-header-title">
           <div
-            className={`${styles["window-header-main-title"]} ${styles["chat-body-title"]}`}
+            className={`window-header-main-title " ${styles["chat-body-title"]}`}
             onClickCapture={renameSession}
           >
-            {session.topic}
+            {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          <div className="window-header-sub-title">
             {Locale.Chat.SubTitle(session.messages.length)}
           </div>
         </div>
-        <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"] + " " + styles.mobile}>
+        <div className="window-actions">
+          <div className={"window-action-button" + " " + styles.mobile}>
             <IconButton
               icon={<ReturnIcon />}
               bordered
@@ -669,14 +641,14 @@ export function Chat() {
               onClick={() => navigate(Path.Home)}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<RenameIcon />}
               bordered
               onClick={renameSession}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className="window-action-button">
             <IconButton
               icon={<ExportIcon />}
               bordered
@@ -690,7 +662,7 @@ export function Chat() {
             />
           </div>
           {!isMobileScreen && (
-            <div className={styles["window-action-button"]}>
+            <div className="window-action-button">
               <IconButton
                 icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
                 bordered
@@ -739,7 +711,11 @@ export function Chat() {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role} model={message.model} />
+                  {message.role === "user" ? (
+                    <Avatar avatar={config.avatar} />
+                  ) : (
+                    <MaskAvatar mask={session.mask} />
+                  )}
                 </div>
                 {showTyping && (
                   <div className={styles["chat-message-status"]}>
@@ -794,6 +770,7 @@ export function Chat() {
                     }}
                     fontSize={fontSize}
                     parentRef={scrollRef}
+                    defaultShow={i >= messages.length - 10}
                   />
                 </div>
                 {!isUser && !message.preview && (
@@ -816,6 +793,10 @@ export function Chat() {
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
+          showPromptHints={() => {
+            inputRef.current?.focus();
+            onSearch("");
+          }}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
@@ -826,18 +807,15 @@ export function Chat() {
             value={userInput}
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
-            onBlur={() => {
-              setAutoScroll(false);
-              setTimeout(() => setPromptHints([]), 500);
-            }}
-            autoFocus
+            onBlur={() => setAutoScroll(false)}
             rows={inputRows}
+            autoFocus={autoFocus}
           />
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
-            noDark
+            type="primary"
             onClick={onUserSubmit}
           />
         </div>
