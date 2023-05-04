@@ -95,7 +95,7 @@ export const CN_MASKS: BuiltinMask[] = [
   },
   {
     avatar: "1f468-200d-1f3eb",
-    name: "论文生成助手(英文)",
+    name: "论文生成助手(中文)",
     context: [
       {
         role: "system",
