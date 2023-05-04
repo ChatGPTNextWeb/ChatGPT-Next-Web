@@ -952,6 +952,15 @@ export function Chat() {
                       >
                         {Locale.Chat.Actions.Copy}
                       </div>
+                      <div
+                        className={styles["chat-message-top-action"]}
+                        onClick={() =>
+                          soundOn &&
+                          speak(message.content, session.ttsConfig?.voice)
+                        }
+                      >
+                        {Locale.Chat.Actions.Speak}
+                      </div>
                     </div>
                   )}
                   <Markdown

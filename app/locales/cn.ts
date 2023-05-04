@@ -19,6 +19,7 @@ const cn = {
       Stop: "停止",
       Retry: "重试",
       Delete: "删除",
+      Speak: "AI语音",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
