@@ -45,9 +45,7 @@ const makeRequestParam = (
 
 function getHeaders() {
   const accessStore = useAccessStore.getState();
-  const headers = {
-    Authorization: "",
-  };
+  let headers: Record<string, string> = {};
 
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;
   const validString = (x: string) => x && x.length > 0;
