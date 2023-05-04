@@ -8,6 +8,7 @@ import {
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
+import { ACCESS_CODE_PREFIX } from "./constant";
 
 const TIME_OUT_MS = 60000;
 
@@ -58,7 +59,9 @@ function getHeaders() {
     accessStore.enabledAccessControl() &&
     validString(accessStore.accessCode)
   ) {
-    headers.Authorization = makeBearer(accessStore.accessCode);
+    headers.Authorization = makeBearer(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
+    );
   }
 
   return headers;
