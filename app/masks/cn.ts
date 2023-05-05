@@ -1,31 +1,6 @@
 import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
-  {
-    avatar: "gpt-bot",
-    name: "儿童故事机器人",
-    context: [
-      {
-        role: "user",
-        content:
-          "使用方式：先发送第一段提示词给gpt，gpt生成一段后再次发送第2章，依次重复\n输出字数请根据模型限制来修改，默认为3.5的\n\n```\n你是一位拥有超过20年经验的著名儿童图书作者。你的任务是写一本关于[输入你的内容]童话儿童绘画的中文书籍。这本书有很强的奇幻色彩。主人公是一个名叫[]的亚洲男孩。请生成一个有趣的书名，然后用中文撰写4个书籍章节。书中需要有一些重复的单词或者句子来增加趣味性。请不要重复我的提示。不要提醒我您需要什么。不要道歉。不要自我引用。不要使用通用的填充短语。请使用关键词丰富的有用子标题。精确准确地说明要点。不要解释什么和为什么，只需给我您最好的文章。章节标题不能采用同样的句式，章节标题必须有趣并且吸引人。\n请以正式风格撰写输出内容。章节贴文应在开头用{正文开始}标签包围，在结尾用{结束}标签包围。\n```\n\n```\n请以详细信息撰写第1章，200字。\n```\n\n```\n请以详细信息撰写第2章，200字。\n```\n\n```\n请以详细信息撰写第3章，200字。\n```\n\n```\n请以详细信息撰写第4章，200字。\n```"",
-        date: "",
-		
-      },
-    ],
-	
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 1,
-      max_tokens: 4000,
-      presence_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 0,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "cn",
-    builtin: true,
-  },
 
   {
     avatar: "270d-fe0f",
