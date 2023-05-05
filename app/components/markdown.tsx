@@ -7,12 +7,61 @@ import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
+import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 
+export function Mermaid(props: { code: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (props.code && ref.current) {
+      mermaid.run({
+        nodes: [ref.current],
+      });
+    }
+  }, [props.code]);
+
+  function viewSvgInNewWindow() {
+    const svg = ref.current?.querySelector("svg");
+    if (!svg) return;
+    const text = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([text], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url);
+    if (win) {
+      win.onload = () => URL.revokeObjectURL(url);
+    }
+  }
+
+  return (
+    <div
+      className="no-dark"
+      style={{ cursor: "pointer" }}
+      ref={ref}
+      onClick={() => viewSvgInNewWindow()}
+    >
+      {props.code}
+    </div>
+  );
+}
+
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const [mermaidCode, setMermaidCode] = useState("");
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const mermaidDom = ref.current.querySelector("code.language-mermaid");
+    if (mermaidDom) {
+      setMermaidCode((mermaidDom as HTMLElement).innerText);
+    }
+  }, [props.children]);
+
+  if (mermaidCode) {
+    return <Mermaid code={mermaidCode} />;
+  }
 
   return (
     <pre ref={ref}>
