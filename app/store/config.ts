@@ -46,7 +46,7 @@ export type ChatConfigStore = ChatConfig & {
 
 export type ModelConfig = ChatConfig["modelConfig"];
 
-const ENABLE_GPT4 = false;
+const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
   // {
