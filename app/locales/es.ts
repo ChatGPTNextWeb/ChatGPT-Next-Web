@@ -87,14 +87,14 @@ const es: LocaleType = {
       Title: "Tamaño de fuente",
       SubTitle: "Ajustar el tamaño de fuente del contenido del chat",
     },
-    Update: {
-      Version: (x: string) => `Versión: ${x}`,
-      IsLatest: "Última versión",
-      CheckUpdate: "Buscar actualizaciones",
-      IsChecking: "Buscando actualizaciones...",
-      FoundUpdate: (x: string) => `Se encontró una nueva versión: ${x}`,
-      GoToUpdate: "Actualizar",
-    },
+    // Update: {
+    //   Version: (x: string) => `Versión: ${x}`,
+    //   IsLatest: "Última versión",
+    //   CheckUpdate: "Buscar actualizaciones",
+    //   IsChecking: "Buscando actualizaciones...",
+    //   FoundUpdate: (x: string) => `Se encontró una nueva versión: ${x}`,
+    //   GoToUpdate: "Actualizar",
+    // },
     SendKey: "Tecla de envío",
     Theme: "Tema",
     TightBorder: "Borde ajustado",
@@ -133,20 +133,20 @@ const es: LocaleType = {
       SubTitle:
         "Se comprimirán los mensajes si la longitud de los mensajes no comprimidos supera el valor",
     },
-    Token: {
-      Title: "Clave de API",
-      SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
-      Placeholder: "Clave de la API de OpenAI",
-    },
-    Usage: {
-      Title: "Saldo de la cuenta",
-      SubTitle(used: any, total: any) {
-        return `Usado $${used}, subscription $${total}`;
-      },
-      IsChecking: "Comprobando...",
-      Check: "Comprobar de nuevo",
-      NoAccess: "Introduzca la clave API para comprobar el saldo",
-    },
+    // Token: {
+    //   Title: "Clave de API",
+    //   SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
+    //   Placeholder: "Clave de la API de OpenAI",
+    // },
+    // Usage: {
+    //   Title: "Saldo de la cuenta",
+    //   SubTitle(used: any, total: any) {
+    //     return `Usado $${used}, subscription $${total}`;
+    //   },
+    //   IsChecking: "Comprobando...",
+    //   Check: "Comprobar de nuevo",
+    //   NoAccess: "Introduzca la clave API para comprobar el saldo",
+    // },
     AccessCode: {
       Title: "Código de acceso",
       SubTitle: "Control de acceso habilitado",

@@ -85,14 +85,14 @@ const tw: LocaleType = {
       Title: "字型大小",
       SubTitle: "聊天內容的字型大小",
     },
-    Update: {
-      Version: (x: string) => `當前版本：${x}`,
-      IsLatest: "已是最新版本",
-      CheckUpdate: "檢查更新",
-      IsChecking: "正在檢查更新...",
-      FoundUpdate: (x: string) => `發現新版本：${x}`,
-      GoToUpdate: "前往更新",
-    },
+    // Update: {
+    //   Version: (x: string) => `當前版本：${x}`,
+    //   IsLatest: "已是最新版本",
+    //   CheckUpdate: "檢查更新",
+    //   IsChecking: "正在檢查更新...",
+    //   FoundUpdate: (x: string) => `發現新版本：${x}`,
+    //   GoToUpdate: "前往更新",
+    // },
     SendKey: "發送鍵",
     Theme: "主題",
     TightBorder: "緊湊邊框",
@@ -130,20 +130,20 @@ const tw: LocaleType = {
       Title: "歷史訊息長度壓縮閾值",
       SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle: "使用自己的 Key 可規避授權存取限制",
-      Placeholder: "OpenAI API Key",
-    },
-    Usage: {
-      Title: "帳戶餘額",
-      SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，訂閱總額 $${total}`;
-      },
-      IsChecking: "正在檢查…",
-      Check: "重新檢查",
-      NoAccess: "輸入API Key查看餘額",
-    },
+    // Token: {
+    //   Title: "API Key",
+    //   SubTitle: "使用自己的 Key 可規避授權存取限制",
+    //   Placeholder: "OpenAI API Key",
+    // },
+    // Usage: {
+    //   Title: "帳戶餘額",
+    //   SubTitle(used: any, total: any) {
+    //     return `本月已使用 $${used}，訂閱總額 $${total}`;
+    //   },
+    //   IsChecking: "正在檢查…",
+    //   Check: "重新檢查",
+    //   NoAccess: "輸入API Key查看餘額",
+    // },
     AccessCode: {
       Title: "授權碼",
       SubTitle: "目前是未授權存取狀態",

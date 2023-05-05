@@ -3,8 +3,7 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized:
-      "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。",
+    Unauthorized: "现在是未授权状态，请点击[这里](/#/settings)获取访问密码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -86,14 +85,14 @@ const cn = {
       SubTitle: "聊天内容的字体大小",
     },
 
-    Update: {
-      Version: (x: string) => `当前版本：${x}`,
-      IsLatest: "已是最新版本",
-      CheckUpdate: "检查更新",
-      IsChecking: "正在检查更新...",
-      FoundUpdate: (x: string) => `发现新版本：${x}`,
-      GoToUpdate: "前往更新",
-    },
+    // Update: {
+    //   Version: (x: string) => `当前版本：${x}`,
+    //   IsLatest: "已是最新版本",
+    //   CheckUpdate: "检查更新",
+    //   IsChecking: "正在检查更新...",
+    //   FoundUpdate: (x: string) => `发现新版本：${x}`,
+    //   GoToUpdate: "前往更新",
+    // },
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "无边框模式",
@@ -131,21 +130,21 @@ const cn = {
       Title: "历史消息长度压缩阈值",
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过密码访问限制",
-      Placeholder: "OpenAI API Key",
-    },
+    // Token: {
+    //   Title: "API Key",
+    //   SubTitle: "使用自己的 Key 可绕过密码访问限制",
+    //   Placeholder: "OpenAI API Key",
+    // },
 
-    Usage: {
-      Title: "余额查询",
-      SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，订阅总额 $${total}`;
-      },
-      IsChecking: "正在检查…",
-      Check: "重新检查",
-      NoAccess: "输入 API Key 或访问密码查看余额",
-    },
+    // Usage: {
+    //   Title: "余额查询",
+    //   SubTitle(used: any, total: any) {
+    //     return `本月已使用 $${used}，订阅总额 $${total}`;
+    //   },
+    //   IsChecking: "正在检查…",
+    //   Check: "重新检查",
+    //   NoAccess: "输入 API Key 或访问密码查看余额",
+    // },
     AccessCode: {
       Title: "访问密码",
       SubTitle: "已开启加密访问",

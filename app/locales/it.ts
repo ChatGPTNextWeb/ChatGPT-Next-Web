@@ -87,14 +87,14 @@ const it: LocaleType = {
       Title: "Dimensione carattere",
       SubTitle: "Regolare la dimensione dei caratteri del contenuto della chat",
     },
-    Update: {
-      Version: (x: string) => `Versione: ${x}`,
-      IsLatest: "Ultima versione",
-      CheckUpdate: "Controlla aggiornamenti",
-      IsChecking: "Sto controllando gli aggiornamenti...",
-      FoundUpdate: (x: string) => `Trovata nuova versione: ${x}`,
-      GoToUpdate: "Aggiorna",
-    },
+    // Update: {
+    //   Version: (x: string) => `Versione: ${x}`,
+    //   IsLatest: "Ultima versione",
+    //   CheckUpdate: "Controlla aggiornamenti",
+    //   IsChecking: "Sto controllando gli aggiornamenti...",
+    //   FoundUpdate: (x: string) => `Trovata nuova versione: ${x}`,
+    //   GoToUpdate: "Aggiorna",
+    // },
     SendKey: "Tasto invia",
     Theme: "Tema",
     TightBorder: "Schermo intero",
@@ -133,21 +133,21 @@ const it: LocaleType = {
       SubTitle:
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle:
-        "Utilizzare la chiave per ignorare il limite del codice di accesso",
-      Placeholder: "OpenAI API Key",
-    },
-    Usage: {
-      Title: "Bilancio Account",
-      SubTitle(used: any, total: any) {
-        return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
-      },
-      IsChecking: "Controllando...",
-      Check: "Controlla ancora",
-      NoAccess: "Inserire la chiave API per controllare il saldo",
-    },
+    // Token: {
+    //   Title: "API Key",
+    //   SubTitle:
+    //     "Utilizzare la chiave per ignorare il limite del codice di accesso",
+    //   Placeholder: "OpenAI API Key",
+    // },
+    // Usage: {
+    //   Title: "Bilancio Account",
+    //   SubTitle(used: any, total: any) {
+    //     return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
+    //   },
+    //   IsChecking: "Controllando...",
+    //   Check: "Controlla ancora",
+    //   NoAccess: "Inserire la chiave API per controllare il saldo",
+    // },
     AccessCode: {
       Title: "Codice d'accesso",
       SubTitle: "Controllo d'accesso abilitato",

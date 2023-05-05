@@ -87,14 +87,14 @@ const en: LocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
-    Update: {
-      Version: (x: string) => `Version: ${x}`,
-      IsLatest: "Latest version",
-      CheckUpdate: "Check Update",
-      IsChecking: "Checking update...",
-      FoundUpdate: (x: string) => `Found new version: ${x}`,
-      GoToUpdate: "Update",
-    },
+    // Update: {
+    //   Version: (x: string) => `Version: ${x}`,
+    //   IsLatest: "Latest version",
+    //   CheckUpdate: "Check Update",
+    //   IsChecking: "Checking update...",
+    //   FoundUpdate: (x: string) => `Found new version: ${x}`,
+    //   GoToUpdate: "Update",
+    // },
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
@@ -133,20 +133,20 @@ const en: LocaleType = {
       SubTitle:
         "Will compress if uncompressed messages length exceeds the value",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle: "Use your key to ignore access code limit",
-      Placeholder: "OpenAI API Key",
-    },
-    Usage: {
-      Title: "Account Balance",
-      SubTitle(used: any, total: any) {
-        return `Used this month $${used}, subscription $${total}`;
-      },
-      IsChecking: "Checking...",
-      Check: "Check",
-      NoAccess: "Enter API Key to check balance",
-    },
+    // Token: {
+    //   Title: "API Key",
+    //   SubTitle: "Use your key to ignore access code limit",
+    //   Placeholder: "OpenAI API Key",
+    // },
+    // Usage: {
+    //   Title: "Account Balance",
+    //   SubTitle(used: any, total: any) {
+    //     return `Used this month $${used}, subscription $${total}`;
+    //   },
+    //   IsChecking: "Checking...",
+    //   Check: "Check",
+    //   NoAccess: "Enter API Key to check balance",
+    // },
     AccessCode: {
       Title: "Access Code",
       SubTitle: "Access control enabled",
