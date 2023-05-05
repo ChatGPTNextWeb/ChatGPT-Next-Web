@@ -17,7 +17,7 @@ const nextConfig = {
     }
 
     return {
-      afterFiles: ret,
+      beforeFiles: ret,
     };
   },
   webpack(config) {
