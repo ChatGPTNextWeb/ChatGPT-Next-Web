@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
-const en: LocaleType = {
+const no: LocaleType = {
   WIP: "Arbeid pågår ...",
   Error: {
     Unauthorized:
