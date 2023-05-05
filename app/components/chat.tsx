@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useMemo } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -483,7 +483,7 @@ export function Chat() {
     if (userInput.trim() === "") return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-    setBeforeInput(userInput);
+    setBeforeInputIndex(userMessageList.length + 1);
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
@@ -497,12 +497,26 @@ export function Chat() {
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // if ArrowUp and no userInput
-    if (e.key === "ArrowUp" && userInput.length <= 0) {
-      setUserInput(beforeInput);
-      e.preventDefault();
-      return;
-    }
+    const getInputByKey = (key: string) => {
+      if (key === "ArrowUp" || key === "ArrowDown") {
+        setBeforeInputIndex((index) => {
+          let newIndex = 0;
+          if (key === "ArrowUp") {
+            newIndex = +index ? index - 1 : index;
+          }
+          if (e.key === "ArrowDown") {
+            newIndex = index < userMessageList.length - 1 ? index + 1 : index;
+          }
+          setUserInput(userMessageList[newIndex]?.content || "");
+          return newIndex;
+        });
+        e.preventDefault();
+        return;
+      }
+    };
+
+    getInputByKey(e.key);
+
     if (shouldSubmit(e)) {
       onUserSubmit();
       e.preventDefault();
@@ -604,6 +618,26 @@ export function Chat() {
           ]
         : [],
     );
+  const userMessageList = useMemo(() => {
+    return messages
+      .filter((m) => m.role === "user")
+      .filter((m) => !m.preview)
+      .map((m, i) => {
+        return {
+          ...m,
+          uid: `${m?.id ? m?.id : Date.now() + Math.random()}_${i}`,
+        };
+      });
+  }, [messages]);
+  const [beforeInputIndex, setBeforeInputIndex] = useState(
+    userMessageList.length,
+  );
+  // Update beforeInputIndex when sessionIndex changes
+  useEffect(() => {
+    if (sessionIndex >= 0) {
+      setBeforeInputIndex(userMessageList.length);
+    }
+  }, [sessionIndex, userMessageList.length]);
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
