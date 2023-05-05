@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
+import { ACCESS_CODE_PREFIX } from "../constant";
 
 const serverConfig = getServerSideConfig();
 
@@ -17,10 +18,10 @@ function getIP(req: NextRequest) {
 
 function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const isOpenAiKey = token.startsWith("sk-");
+  const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 
   return {
-    accessCode: isOpenAiKey ? "" : token,
+    accessCode: isOpenAiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
     apiKey: isOpenAiKey ? token : "",
   };
 }

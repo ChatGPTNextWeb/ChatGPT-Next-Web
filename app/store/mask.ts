@@ -57,6 +57,7 @@ export const useMaskStore = create<MaskStore>()(
           ...createEmptyMask(),
           ...mask,
           id,
+          builtin: false,
         };
 
         set(() => ({ masks }));
