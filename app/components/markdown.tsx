@@ -82,10 +82,12 @@ export function Markdown(
       const parentBounds = parent.getBoundingClientRect();
       const twoScreenHeight = Math.max(500, parentBounds.height * 2);
       const mdBounds = md.getBoundingClientRect();
-      const isInRange = (x: number) =>
-        x <= parentBounds.bottom + twoScreenHeight &&
-        x >= parentBounds.top - twoScreenHeight;
-      inView.current = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
+      const parentTop = parentBounds.top - twoScreenHeight;
+      const parentBottom = parentBounds.bottom + twoScreenHeight;
+      const isOverlap =
+        Math.max(parentTop, mdBounds.top) <=
+        Math.min(parentBottom, mdBounds.bottom);
+      inView.current = isOverlap;
     }
 
     if (inView.current && md) {
