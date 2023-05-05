@@ -1,22 +1,5 @@
 {
     "github": {
         "silent": true
-    }
-	 "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/$1",
-      "status": 403,
-      "headers": {
-        "Content-Type": "text/plain"
-      },
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "weixin110.qq.com"
-        }
-      ]
-    }
-  ]
+    }	 
 }
