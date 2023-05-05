@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，也可以用你自己的api-key。",
+      "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，也可以用你自己的api-key。请注意本站不收费，请勿上当受骗！密码不定期更新",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -133,7 +133,7 @@ const cn = {
     },
     Token: {
       Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过密码访问限制",
+      SubTitle: "使用自己的 Key 可绕过密码访问限制，如果你觉得回答缓慢说明使用人数太多，可以用自己的key解决，也可以等待",
       Placeholder: "OpenAI API Key",
     },
 
@@ -147,8 +147,8 @@ const cn = {
       NoAccess: "输入 API Key 或访问密码查看余额",
     },
     AccessCode: {
-      Title: "访问密码",
-      SubTitle: "已开启加密访问",
+      Title: "访问密码-密码在Q群：125800040，本站不收费，请勿被骗！",
+      SubTitle: "已开启加密访问，",
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
