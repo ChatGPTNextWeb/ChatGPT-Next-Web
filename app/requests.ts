@@ -8,15 +8,15 @@ import {
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
+import { ACCESS_CODE_PREFIX } from "./constant";
 
 const TIME_OUT_MS = 60000;
 
 const makeRequestParam = (
   messages: Message[],
   options?: {
-    filterBot?: boolean;
     stream?: boolean;
-    model?: ModelType;
+    overrideModel?: ModelType;
   },
 ): ChatRequest => {
   let sendMessages = messages.map((v) => ({
@@ -24,25 +24,22 @@ const makeRequestParam = (
     content: v.content,
   }));
 
-  if (options?.filterBot) {
-    sendMessages = sendMessages.filter((m) => m.role !== "assistant");
-  }
-
-  const modelConfig = { ...useAppConfig.getState().modelConfig };
-
-  // @yidadaa: wont send max_tokens, because it is nonsense for Muggles
-  // @ts-expect-error
-  delete modelConfig.max_tokens;
+  const modelConfig = {
+    ...useAppConfig.getState().modelConfig,
+    ...useChatStore.getState().currentSession().mask.modelConfig,
+  };
 
   // override model config
-  if (options?.model) {
-    modelConfig.model = options.model;
+  if (options?.overrideModel) {
+    modelConfig.model = options.overrideModel;
   }
 
   return {
     messages: sendMessages,
     stream: options?.stream,
-    ...modelConfig,
+    model: modelConfig.model,
+    temperature: modelConfig.temperature,
+    presence_penalty: modelConfig.presence_penalty,
   };
 };
 
@@ -50,27 +47,31 @@ function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
 
-  if (accessStore.enabledAccessControl()) {
-    headers["access-code"] = accessStore.accessCode;
-  }
+  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
 
-  if (accessStore.token && accessStore.token.length > 0) {
-    headers["token"] = accessStore.token;
+  // use user's api key first
+  if (validString(accessStore.token)) {
+    headers.Authorization = makeBearer(accessStore.token);
+  } else if (
+    accessStore.enabledAccessControl() &&
+    validString(accessStore.accessCode)
+  ) {
+    headers.Authorization = makeBearer(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
+    );
   }
 
   return headers;
 }
 
 export function requestOpenaiClient(path: string) {
+  const openaiUrl = useAccessStore.getState().openaiUrl;
   return (body: any, method = "POST") =>
-    fetch("/api/openai", {
+    fetch(openaiUrl + path, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        path,
-        ...getHeaders(),
-      },
       body: body && JSON.stringify(body),
+      headers: getHeaders(),
     });
 }
 
@@ -81,8 +82,7 @@ export async function requestChat(
   },
 ) {
   const req: ChatRequest = makeRequestParam(messages, {
-    filterBot: true,
-    model: options?.model,
+    overrideModel: options?.model,
   });
 
   const res = await requestOpenaiClient("v1/chat/completions")(req);
@@ -101,11 +101,11 @@ export async function requestUsage() {
       .getDate()
       .toString()
       .padStart(2, "0")}`;
-  const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
-  const now = new Date(Date.now() + ONE_DAY);
+  const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+  const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startDate = formatDate(startOfMonth);
-  const endDate = formatDate(now);
+  const endDate = formatDate(new Date(Date.now() + ONE_DAY));
 
   const [used, subs] = await Promise.all([
     requestOpenaiClient(
@@ -148,9 +148,8 @@ export async function requestUsage() {
 export async function requestChatStream(
   messages: Message[],
   options?: {
-    filterBot?: boolean;
     modelConfig?: ModelConfig;
-    model?: ModelType;
+    overrideModel?: ModelType;
     onMessage: (message: string, done: boolean) => void;
     onError: (error: Error, statusCode?: number) => void;
     onController?: (controller: AbortController) => void;
@@ -158,8 +157,7 @@ export async function requestChatStream(
 ) {
   const req = makeRequestParam(messages, {
     stream: true,
-    filterBot: options?.filterBot,
-    model: options?.model,
+    overrideModel: options?.overrideModel,
   });
 
   console.log("[Request] ", req);
@@ -168,16 +166,17 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/chat-stream", {
+    const openaiUrl = useAccessStore.getState().openaiUrl;
+    const res = await fetch(openaiUrl + "v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        path: "v1/chat/completions",
         ...getHeaders(),
       },
       body: JSON.stringify(req),
       signal: controller.signal,
     });
+
     clearTimeout(reqTimeoutId);
 
     let responseText = "";
