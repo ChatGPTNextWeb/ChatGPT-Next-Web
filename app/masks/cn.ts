@@ -28,7 +28,7 @@ export const CN_MASKS: BuiltinMask[] = [
   },
 
   {
-    avatar: "1f469-200d-2696-fe0f",
+    avatar: "270d-fe0f",
     name: "AutoGPT YAML 机器人",
     context: [
       {
