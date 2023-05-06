@@ -60,7 +60,6 @@ export const CN_MASKS: BuiltinMask[] = [
   },
 
 {
-	
 	avatar: "gpt-bot",
 	name: "算命先生",
 	context: [{
