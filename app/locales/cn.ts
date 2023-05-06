@@ -133,7 +133,7 @@ const cn = {
     },
     Token: {
       Title: "API Key",
-      SubTitle: "使用自己的 Key 可绕过密码访问限制，如果你觉得回答缓慢说明使用人数太多，可以用自己的key解决，也可以等待",
+      SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
     },
 
