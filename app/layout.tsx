@@ -7,7 +7,7 @@ import { getBuildConfig } from "./config/build";
 const buildConfig = getBuildConfig();
 
 export const metadata = {
-  title: "ChatGPT aiprm.top",
+  title: "ChatGPT Next Web",
   description: "Your personal ChatGPT Chat Bot.",
   appleWebApp: {
     title: "ChatGPT Next Web",
@@ -22,15 +22,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <><html lang="en">
+    <html lang="en">
       <head>
         <meta
           name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        />
         <meta
           name="theme-color"
           content="#151515"
-          media="(prefers-color-scheme: dark)" />
+          media="(prefers-color-scheme: dark)"
+        />
         <meta name="version" content={buildConfig.commitId} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <link rel="preconnect" href="https://fonts.proxy.ustclug.org"></link>
@@ -39,9 +41,8 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-    </Head>
-    
-    <body>{children}</body></>
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
