@@ -24,8 +24,7 @@ import {
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { copyToClipboard } from "../utils";
-import Link from "next/link";
-import { Path, UPDATE_URL } from "../constant";
+import { Path } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
@@ -319,6 +318,107 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
+          {/* {enabledAccessControl ? (
+            <ListItem
+              title={Locale.Settings.AccessCode.Title}
+              subTitle={Locale.Settings.AccessCode.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.accessCode}
+                type="text"
+                placeholder={Locale.Settings.AccessCode.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateCode(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : (
+            <></>
+          )}
+
+          {!accessStore.hideUserApiKey ? (
+            <ListItem
+              title={Locale.Settings.Token.Title}
+              subTitle={Locale.Settings.Token.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.token}
+                type="text"
+                placeholder={Locale.Settings.Token.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateToken(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : null} */}
+
+          {/* <ListItem
+            title={Locale.Settings.Usage.Title}
+            subTitle={
+              showUsage
+                ? loadingUsage
+                  ? Locale.Settings.Usage.IsChecking
+                  : Locale.Settings.Usage.SubTitle(
+                      usage?.used ?? "[?]",
+                      usage?.subscription ?? "[?]",
+                    )
+                : Locale.Settings.Usage.NoAccess
+            }
+          >
+            {!showUsage || loadingUsage ? (
+              <div />
+            ) : (
+              <IconButton
+                icon={<ResetIcon></ResetIcon>}
+                text={Locale.Settings.Usage.Check}
+                onClick={() => checkUsage(true)}
+              />
+            )}
+          </ListItem> */}
+
+          <ListItem title={"绑定手机号"}>
+            <IconButton
+              text={"去绑定"}
+              onClick={() => {
+                if (config.dontShowMaskSplashScreen) {
+                  chatStore.newSession();
+                  navigate(Path.Chat);
+                } else {
+                  navigate(Path.NewChat);
+                }
+              }}
+              bordered
+              shadow
+            />
+          </ListItem>
+          <ListItem title={"充值积分"}>
+            <IconButton
+              text={"去充值"}
+              onClick={() => {
+                if (config.dontShowMaskSplashScreen) {
+                  chatStore.newSession();
+                  navigate(Path.Chat);
+                } else {
+                  navigate(Path.NewChat);
+                }
+              }}
+              bordered
+              shadow
+            />
+          </ListItem>
+          <ListItem title={"80积分"} subTitle={"1积分=￥1"}>
+            <IconButton
+              text={"积分明细"}
+              onClick={() => {
+                navigate(Path.Records);
+              }}
+              bordered
+              shadow
+            />
+          </ListItem>
+        </List>
+
+        <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
@@ -341,7 +441,7 @@ export function Settings() {
             </Popover>
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
@@ -364,7 +464,7 @@ export function Settings() {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </ListItem>
+          </ListItem> */}
 
           <ListItem title={Locale.Settings.SendKey}>
             <select
@@ -468,67 +568,6 @@ export function Settings() {
             ></input>
           </ListItem>
         </List>
-
-        <List>
-          {enabledAccessControl ? (
-            <ListItem
-              title={Locale.Settings.AccessCode.Title}
-              subTitle={Locale.Settings.AccessCode.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.accessCode}
-                type="text"
-                placeholder={Locale.Settings.AccessCode.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
-          ) : (
-            <></>
-          )}
-
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Token.Title}
-              subTitle={Locale.Settings.Token.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.token}
-                type="text"
-                placeholder={Locale.Settings.Token.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateToken(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
-          ) : null}
-
-          <ListItem
-            title={Locale.Settings.Usage.Title}
-            subTitle={
-              showUsage
-                ? loadingUsage
-                  ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
-                : Locale.Settings.Usage.NoAccess
-            }
-          >
-            {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={() => checkUsage(true)}
-              />
-            )}
-          </ListItem>
-        </List>
-
         <List>
           <ListItem
             title={Locale.Settings.Prompt.Disable.Title}

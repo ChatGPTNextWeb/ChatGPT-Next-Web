@@ -88,14 +88,14 @@ const jp: LocaleType = {
       SubTitle: "チャット内容のフォントサイズ",
     },
 
-    Update: {
-      Version: (x: string) => `現在のバージョン：${x}`,
-      IsLatest: "最新バージョンです",
-      CheckUpdate: "アップデートを確認",
-      IsChecking: "アップデートを確認しています...",
-      FoundUpdate: (x: string) => `新しいバージョンが見つかりました：${x}`,
-      GoToUpdate: "更新する",
-    },
+    // Update: {
+    //   Version: (x: string) => `現在のバージョン：${x}`,
+    //   IsLatest: "最新バージョンです",
+    //   CheckUpdate: "アップデートを確認",
+    //   IsChecking: "アップデートを確認しています...",
+    //   FoundUpdate: (x: string) => `新しいバージョンが見つかりました：${x}`,
+    //   GoToUpdate: "更新する",
+    // },
     SendKey: "送信キー",
     Theme: "テーマ",
     TightBorder: "ボーダーレスモード",

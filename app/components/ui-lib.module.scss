@@ -28,14 +28,14 @@
 }
 
 .list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   min-height: 40px;
   border-bottom: var(--border-in-light);
   padding: 10px 20px;
   animation: slide-in ease 0.6s;
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   .list-header {
     display: flex;
     align-items: center;

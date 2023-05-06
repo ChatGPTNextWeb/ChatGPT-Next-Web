@@ -20,6 +20,7 @@
 
   /* stroke */
   --border-in-light: 1px solid rgb(222, 222, 222);
+  --border-in-primary:1px solid rgb(29, 147, 171);
 }
 
 @mixin dark {
@@ -36,7 +37,7 @@
   --bar-color: rgba(255, 255, 255, 0.1);
 
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
-
+  --border-in-primary: 1px solid rgb(222, 222, 222);
   --theme-color: var(--gray);
 
   div:not(.no-dark) > svg {

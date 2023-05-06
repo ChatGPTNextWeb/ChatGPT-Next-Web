@@ -1,0 +1,34 @@
+.list {
+  padding: 20px;
+  overflow: auto;
+}
+
+.list-type-container {
+  padding: 34px 40px 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .list-type{
+    background-color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: var(--border-in-light); 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    user-select: none;
+    outline: none;
+    color: var(--black);
+  }
+  
+  .list-type-select{
+    background-color: var(--white);
+    border: var(--border-in-primary);
+  }
+}
+
+
+
