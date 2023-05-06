@@ -1,6 +1,6 @@
 import { BuiltinMask } from "./typing";
 
-export const CN_MASKS: BuiltinMask[] = [.
+export const CN_MASKS: BuiltinMask[] = [
   {
     avatar: "2692-fe0f",
     name: "Notion帮助机器人",
