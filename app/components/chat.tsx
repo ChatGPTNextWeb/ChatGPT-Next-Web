@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -68,12 +68,9 @@ import {
   useMaskStore,
 } from "../store/mask";
 
-const Markdown = dynamic(
-  async () => memo((await import("./markdown")).Markdown),
-  {
-    loading: () => <LoadingIcon />,
-  },
-);
+const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+  loading: () => <LoadingIcon />,
+});
 
 function exportMessages(messages: Message[], topic: string) {
   const mdText =
@@ -312,15 +309,63 @@ export function PromptHints(props: {
   prompts: Prompt[];
   onPromptSelect: (prompt: Prompt) => void;
 }) {
-  if (props.prompts.length === 0) return null;
+  const noPrompts = props.prompts.length === 0;
+  const [selectIndex, setSelectIndex] = useState(0);
+  const selectedRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setSelectIndex(0);
+  }, [props.prompts.length]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (noPrompts) return;
+
+      // arrow up / down to select prompt
+      const changeIndex = (delta: number) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const nextIndex = Math.max(
+          0,
+          Math.min(props.prompts.length - 1, selectIndex + delta),
+        );
+        setSelectIndex(nextIndex);
+        selectedRef.current?.scrollIntoView({
+          block: "center",
+        });
+      };
+
+      if (e.key === "ArrowUp") {
+        changeIndex(1);
+      } else if (e.key === "ArrowDown") {
+        changeIndex(-1);
+      } else if (e.key === "Enter") {
+        const selectedPrompt = props.prompts.at(selectIndex);
+        if (selectedPrompt) {
+          props.onPromptSelect(selectedPrompt);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noPrompts, selectIndex]);
+
+  if (noPrompts) return null;
   return (
     <div className={styles["prompt-hints"]}>
       {props.prompts.map((prompt, i) => (
         <div
-          className={styles["prompt-hint"]}
+          ref={i === selectIndex ? selectedRef : null}
+          className={
+            styles["prompt-hint"] +
+            ` ${i === selectIndex ? styles["prompt-hint-selected"] : ""}`
+          }
           key={prompt.title + i.toString()}
           onClick={() => props.onPromptSelect(prompt)}
+          onMouseEnter={() => setSelectIndex(i)}
         >
           <div className={styles["hint-title"]}>{prompt.title}</div>
           <div className={styles["hint-content"]}>{prompt.content}</div>
@@ -481,7 +526,7 @@ export function Chat() {
   const navigate = useNavigate();
 
   const onChatBodyScroll = (e: HTMLElement) => {
-    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
+    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
   };
 
@@ -499,7 +544,7 @@ export function Chat() {
   const onPromptSelect = (prompt: Prompt) => {
     setPromptHints([]);
     inputRef.current?.focus();
-    setUserInput(prompt.content);
+    setTimeout(() => setUserInput(prompt.content), 60);
   };
 
   // auto grow input
@@ -508,7 +553,7 @@ export function Chat() {
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
-        5,
+        20,
         Math.max(2 + Number(!isMobileScreen), rows),
       );
       setInputRows(inputRows);
@@ -543,7 +588,7 @@ export function Chat() {
 
   // submit user input
   const onUserSubmit = () => {
-    if (userInput.length <= 0) return;
+    if (userInput.trim() === "") return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     setBeforeInput(userInput);
@@ -713,12 +758,9 @@ export function Chat() {
     }
   };
 
-  // Auto focus
-  useEffect(() => {
-    if (isMobileScreen) return;
-    inputRef.current?.focus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const location = useLocation();
+  const isChat = location.pathname === Path.Chat;
+  const autoFocus = !isMobileScreen || isChat; // only focus in chat page
 
   const getVoices = (): Promise<SpeechSynthesisVoice[]> => {
     return new Promise((resolve) => {
@@ -977,6 +1019,7 @@ export function Chat() {
                     }}
                     fontSize={fontSize}
                     parentRef={scrollRef}
+                    defaultShow={i >= messages.length - 10}
                   />
                 </div>
                 {!isUser && !message.preview && (
@@ -1016,16 +1059,9 @@ export function Chat() {
             value={userInput}
             onKeyDown={onInputKeyDown}
             onFocus={() => setAutoScroll(true)}
-            onBlur={() => {
-              setTimeout(() => {
-                if (document.activeElement !== inputRef.current) {
-                  setAutoScroll(false);
-                  setPromptHints([]);
-                }
-              }, 100);
-            }}
-            autoFocus
+            onBlur={() => setAutoScroll(false)}
             rows={inputRows}
+            autoFocus={autoFocus}
           />
           <IconButton
             icon={<SendWhiteIcon />}

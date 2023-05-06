@@ -3,10 +3,12 @@ import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
 import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
+import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
+import EyeIcon from "../icons/eye.svg";
 import { Input, List, ListItem, Modal, PasswordInput, Popover } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -30,6 +32,55 @@ import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 
+function EditPromptModal(props: { id: number; onClose: () => void }) {
+  const promptStore = usePromptStore();
+  const prompt = promptStore.get(props.id);
+
+  return prompt ? (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Prompt.EditModal.Title}
+        onClose={props.onClose}
+        actions={[
+          <IconButton
+            key=""
+            onClick={props.onClose}
+            text={Locale.UI.Confirm}
+            bordered
+          />,
+        ]}
+      >
+        <div className={styles["edit-prompt-modal"]}>
+          <input
+            type="text"
+            value={prompt.title}
+            readOnly={!prompt.isUser}
+            className={styles["edit-prompt-title"]}
+            onInput={(e) =>
+              promptStore.update(
+                props.id,
+                (prompt) => (prompt.title = e.currentTarget.value),
+              )
+            }
+          ></input>
+          <Input
+            value={prompt.content}
+            readOnly={!prompt.isUser}
+            className={styles["edit-prompt-content"]}
+            rows={10}
+            onInput={(e) =>
+              promptStore.update(
+                props.id,
+                (prompt) => (prompt.content = e.currentTarget.value),
+              )
+            }
+          ></Input>
+        </div>
+      </Modal>
+    </div>
+  ) : null;
+}
+
 function UserPromptModal(props: { onClose?: () => void }) {
   const promptStore = usePromptStore();
   const userPrompts = promptStore.getUserPrompts();
@@ -38,6 +89,8 @@ function UserPromptModal(props: { onClose?: () => void }) {
   const [searchInput, setSearchInput] = useState("");
   const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
   const prompts = searchInput.length > 0 ? searchPrompts : allPrompts;
+
+  const [editingPromptId, setEditingPromptId] = useState<number>();
 
   useEffect(() => {
     if (searchInput.length > 0) {
@@ -56,8 +109,13 @@ function UserPromptModal(props: { onClose?: () => void }) {
         actions={[
           <IconButton
             key="add"
-            onClick={() => promptStore.add({ title: "", content: "" })}
-            icon={<ClearIcon />}
+            onClick={() =>
+              promptStore.add({
+                title: "Empty Prompt",
+                content: "Empty Prompt Content",
+              })
+            }
+            icon={<AddIcon />}
             bordered
             text={Locale.Settings.Prompt.Modal.Add}
           />,
@@ -76,59 +134,66 @@ function UserPromptModal(props: { onClose?: () => void }) {
             {prompts.map((v, _) => (
               <div className={styles["user-prompt-item"]} key={v.id ?? v.title}>
                 <div className={styles["user-prompt-header"]}>
-                  <input
-                    type="text"
-                    className={styles["user-prompt-title"]}
-                    value={v.title}
-                    readOnly={!v.isUser}
-                    onChange={(e) => {
-                      if (v.isUser) {
-                        promptStore.updateUserPrompts(
-                          v.id!,
-                          (prompt) => (prompt.title = e.currentTarget.value),
-                        );
-                      }
-                    }}
-                  ></input>
-
-                  <div className={styles["user-prompt-buttons"]}>
-                    {v.isUser && (
-                      <IconButton
-                        icon={<ClearIcon />}
-                        bordered
-                        className={styles["user-prompt-button"]}
-                        onClick={() => promptStore.remove(v.id!)}
-                      />
-                    )}
-                    <IconButton
-                      icon={<CopyIcon />}
-                      bordered
-                      className={styles["user-prompt-button"]}
-                      onClick={() => copyToClipboard(v.content)}
-                    />
+                  <div className={styles["user-prompt-title"]}>{v.title}</div>
+                  <div className={styles["user-prompt-content"] + " one-line"}>
+                    {v.content}
                   </div>
                 </div>
-                <Input
-                  rows={2}
-                  value={v.content}
-                  className={styles["user-prompt-content"]}
-                  readOnly={!v.isUser}
-                  onChange={(e) => {
-                    if (v.isUser) {
-                      promptStore.updateUserPrompts(
-                        v.id!,
-                        (prompt) => (prompt.content = e.currentTarget.value),
-                      );
-                    }
-                  }}
-                />
+
+                <div className={styles["user-prompt-buttons"]}>
+                  {v.isUser && (
+                    <IconButton
+                      icon={<ClearIcon />}
+                      className={styles["user-prompt-button"]}
+                      onClick={() => promptStore.remove(v.id!)}
+                    />
+                  )}
+                  {v.isUser ? (
+                    <IconButton
+                      icon={<EditIcon />}
+                      className={styles["user-prompt-button"]}
+                      onClick={() => setEditingPromptId(v.id)}
+                    />
+                  ) : (
+                    <IconButton
+                      icon={<EyeIcon />}
+                      className={styles["user-prompt-button"]}
+                      onClick={() => setEditingPromptId(v.id)}
+                    />
+                  )}
+                  <IconButton
+                    icon={<CopyIcon />}
+                    className={styles["user-prompt-button"]}
+                    onClick={() => copyToClipboard(v.content)}
+                  />
+                </div>
               </div>
             ))}
           </div>
         </div>
       </Modal>
+
+      {editingPromptId !== undefined && (
+        <EditPromptModal
+          id={editingPromptId!}
+          onClose={() => setEditingPromptId(undefined)}
+        />
+      )}
     </div>
   );
+}
+
+function formatVersionDate(t: string) {
+  const d = new Date(+t);
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+
+  return [
+    year.toString(),
+    month.toString().padStart(2, "0"),
+    day.toString().padStart(2, "0"),
+  ].join("");
 }
 
 export function Settings() {
@@ -141,8 +206,8 @@ export function Settings() {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = updateStore.version;
-  const remoteId = updateStore.remoteVersion;
+  const currentVersion = formatVersionDate(updateStore.version);
+  const remoteId = formatVersionDate(updateStore.remoteVersion);
   const hasNewVersion = currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
@@ -150,6 +215,15 @@ export function Settings() {
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
     });
+
+    console.log(
+      "[Update] local version ",
+      new Date(+updateStore.version).toLocaleString(),
+    );
+    console.log(
+      "[Update] remote version ",
+      new Date(+updateStore.remoteVersion).toLocaleString(),
+    );
   }
 
   const usage = {
@@ -414,19 +488,21 @@ export function Settings() {
             <></>
           )}
 
-          <ListItem
-            title={Locale.Settings.Token.Title}
-            subTitle={Locale.Settings.Token.SubTitle}
-          >
-            <PasswordInput
-              value={accessStore.token}
-              type="text"
-              placeholder={Locale.Settings.Token.Placeholder}
-              onChange={(e) => {
-                accessStore.updateToken(e.currentTarget.value);
-              }}
-            />
-          </ListItem>
+          {!accessStore.hideUserApiKey ? (
+            <ListItem
+              title={Locale.Settings.Token.Title}
+              subTitle={Locale.Settings.Token.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.token}
+                type="text"
+                placeholder={Locale.Settings.Token.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateToken(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : null}
 
           <ListItem
             title={Locale.Settings.Usage.Title}
