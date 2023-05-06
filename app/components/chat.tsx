@@ -228,12 +228,13 @@ const TTSConfig = (props: {
           <select
             value={props.ttsConfig.voice}
             onChange={(e) => {
-              props.updateConfig(e.currentTarget.value);
+              const val = e.currentTarget.value;
+              if (val) props.updateConfig(val);
             }}
           >
             {ALL_VOICES.map((v) => (
               <option value={v.name} key={v.name}>
-                {v.name}
+                {`(${v.lang})${v.name}`}
               </option>
             ))}
           </select>
