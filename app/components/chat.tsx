@@ -515,7 +515,9 @@ export function Chat() {
       }
     };
 
-    getInputByKey(e.key);
+    if (!promptHints.length) {
+      getInputByKey(e.key);
+    }
 
     if (shouldSubmit(e)) {
       onUserSubmit();
