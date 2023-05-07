@@ -660,7 +660,7 @@ export function Chat() {
                 );
               }}
             />
-          </div>
+          {/* </div>
           {!isMobileScreen && (
             <div className="window-action-button">
               <IconButton
@@ -674,7 +674,7 @@ export function Chat() {
               />
             </div>
           )}
-        </div>
+        </div> */}
 
         <PromptToast
           showToast={!hitBottom}
