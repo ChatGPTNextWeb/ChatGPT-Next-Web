@@ -216,6 +216,25 @@ docker run -d -p 3000:3000 \
    yidadaa/chatgpt-next-web
 ```
 
+### Docker Compose
+
+First, copy `.env.example` to `.env`:
+
+```shell
+cp .env.example .env
+```
+
+Then, edit `.env` and fill in your Environment Variables.
+
+Finally, run the following command to start the service:
+
+```shell
+docker-compose up
+
+# or use docker compose plugin
+# docker compose up
+```
+
 ### Shell
 
 ```shell

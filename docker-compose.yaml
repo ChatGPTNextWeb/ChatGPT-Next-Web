@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  app:
+    image: yidadaa/chatgpt-next-web
+    # restart: unless-stopped
+    ports:
+      - 3000:3000

@@ -40,3 +40,5 @@ public/prompts.json
 
 .vscode
 .idea
+
+.env
