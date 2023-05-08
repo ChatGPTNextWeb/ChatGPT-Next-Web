@@ -1,7 +1,8 @@
 import { SubmitKey } from "../store/config";
 
 const cn = {
-  WIP: "该功能仍在开发中……",
+  WIP: '<a href="https://prm.aiprm.top">点击跳转</a>',
+,
   Error: {
     Unauthorized:
       "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，也可以用你自己的api-key。请注意本站不收费，请勿上当受骗！密码不定期更新",
@@ -189,7 +190,7 @@ const cn = {
     Add: "新增预设对话",
   },
   Plugin: {
-    Name: "插件",
+    Name: "外置提示库",
   },
   Mask: {
     Name: "面具",
