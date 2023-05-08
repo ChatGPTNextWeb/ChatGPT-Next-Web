@@ -106,6 +106,59 @@ export function MaskConfig(props: {
   );
 }
 
+function ContextPromptItem(props: {
+  prompt: Message;
+  update: (prompt: Message) => void;
+  remove: () => void;
+}) {
+  const [focusingInput, setFocusingInput] = useState(false);
+
+  return (
+    <div className={chatStyle["context-prompt-row"]}>
+      {!focusingInput && (
+        <select
+          value={props.prompt.role}
+          className={chatStyle["context-role"]}
+          onChange={(e) =>
+            props.update({
+              ...props.prompt,
+              role: e.target.value as any,
+            })
+          }
+        >
+          {ROLES.map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
+      )}
+      <Input
+        value={props.prompt.content}
+        type="text"
+        className={chatStyle["context-content"]}
+        rows={focusingInput ? 5 : 1}
+        onFocus={() => setFocusingInput(true)}
+        onBlur={() => setFocusingInput(false)}
+        onInput={(e) =>
+          props.update({
+            ...props.prompt,
+            content: e.currentTarget.value as any,
+          })
+        }
+      />
+      {!focusingInput && (
+        <IconButton
+          icon={<DeleteIcon />}
+          className={chatStyle["context-delete-button"]}
+          onClick={() => props.remove()}
+          bordered
+        />
+      )}
+    </div>
+  );
+}
+
 export function ContextPrompts(props: {
   context: Message[];
   updateContext: (updater: (context: Message[]) => void) => void;
@@ -128,42 +181,12 @@ export function ContextPrompts(props: {
     <>
       <div className={chatStyle["context-prompt"]} style={{ marginBottom: 20 }}>
         {context.map((c, i) => (
-          <div className={chatStyle["context-prompt-row"]} key={i}>
-            <select
-              value={c.role}
-              className={chatStyle["context-role"]}
-              onChange={(e) =>
-                updateContextPrompt(i, {
-                  ...c,
-                  role: e.target.value as any,
-                })
-              }
-            >
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-            <Input
-              value={c.content}
-              type="text"
-              className={chatStyle["context-content"]}
-              rows={1}
-              onInput={(e) =>
-                updateContextPrompt(i, {
-                  ...c,
-                  content: e.currentTarget.value as any,
-                })
-              }
-            />
-            <IconButton
-              icon={<DeleteIcon />}
-              className={chatStyle["context-delete-button"]}
-              onClick={() => removeContextPrompt(i)}
-              bordered
-            />
-          </div>
+          <ContextPromptItem
+            key={i}
+            prompt={c}
+            update={(prompt) => updateContextPrompt(i, prompt)}
+            remove={() => removeContextPrompt(i)}
+          />
         ))}
 
         <div className={chatStyle["context-prompt-row"]}>
