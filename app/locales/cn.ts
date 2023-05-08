@@ -5,7 +5,7 @@ const cn = {
 
   Error: {
     Unauthorized:
-      "未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，本站存在的目的是为了测试prompt。如果你不是研究prompt提示工程的，请到- [aiprm.top](https://aiprm.top)- 找公益站.[外置prompt库](https://prm.aiprm.top)",     
+      "未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，本站存在的目的是为了测试prompt。如果你不是研究prompt提示工程的，请到[aiprm.top](https://aiprm.top)找公益站,[外置prompt库](https://prm.aiprm.top)",     
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
