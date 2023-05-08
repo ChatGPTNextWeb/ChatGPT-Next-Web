@@ -2,7 +2,7 @@ import { SubmitKey } from "../store/config";
 
 const cn = {
   WIP: "yda在摸鱼……",
-,
+
   Error: {
     Unauthorized:
       "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，也可以用你自己的api-key。请注意本站不收费，请勿上当受骗！密码不定期更新",
