@@ -7,11 +7,11 @@ import {
   requestChatStream,
   requestWithPrompt,
 } from "../requests";
-import { isMobileScreen, trimTopic } from "../utils";
+import { trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
+import { ModelType } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
 
@@ -33,7 +33,7 @@ export function createMessage(override: Partial<Message>): Message {
   };
 }
 
-export const ROLES: Message["role"][] = ["user", "system", "assistant"];
+export const ROLES: Message["role"][] = ["system", "user", "assistant"];
 
 export interface ChatStat {
   tokenCount: number;
