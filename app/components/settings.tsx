@@ -380,12 +380,12 @@ export function Settings() {
             <IconButton
               text={"去绑定"}
               onClick={() => {
-                if (config.dontShowMaskSplashScreen) {
-                  chatStore.newSession();
-                  navigate(Path.Chat);
-                } else {
-                  navigate(Path.NewChat);
-                }
+                // if (config.dontShowMaskSplashScreen) {
+                //   chatStore.newSession();
+                //   navigate(Path.Chat);
+                // } else {
+                //   navigate(Path.NewChat);
+                // }
               }}
               bordered
               shadow
@@ -395,12 +395,12 @@ export function Settings() {
             <IconButton
               text={"去充值"}
               onClick={() => {
-                if (config.dontShowMaskSplashScreen) {
-                  chatStore.newSession();
-                  navigate(Path.Chat);
-                } else {
-                  navigate(Path.NewChat);
-                }
+                // if (config.dontShowMaskSplashScreen) {
+                //   chatStore.newSession();
+                //   navigate(Path.Chat);
+                // } else {
+                //   navigate(Path.NewChat);
+                // }
               }}
               bordered
               shadow

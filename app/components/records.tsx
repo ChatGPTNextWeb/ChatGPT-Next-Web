@@ -11,32 +11,41 @@ import { Path } from "../constant";
 
 import { ErrorBoundary } from "./error";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-function formatVersionDate(t: string) {
-  const d = new Date(+t);
-  const year = d.getUTCFullYear();
-  const month = d.getUTCMonth() + 1;
-  const day = d.getUTCDate();
-
-  return [
-    year.toString(),
-    month.toString().padStart(2, "0"),
-    day.toString().padStart(2, "0"),
-  ].join("");
-}
-
-function ListType(props: { onTabClick: (isPay: boolean) => void }) {
+function ListType(props: {
+  onTabClick: (isPay: boolean) => void;
+  isPay: boolean;
+}) {
+  const { onTabClick, isPay } = props;
   return (
     <div className={styles["list-type-container"]}>
-      <div className={`${styles["list-type"]} ${styles["list-type-select"]}`}>
+      <div
+        className={
+          isPay
+            ? `${styles["list-type"]} ${styles["list-type-select"]}`
+            : styles["list-type"]
+        }
+        onClick={() => onTabClick(true)}
+      >
         充值记录
       </div>
-      <div className={styles["list-type"]}>消耗记录</div>
+      <div
+        className={
+          !isPay
+            ? `${styles["list-type"]} ${styles["list-type-select"]}`
+            : styles["list-type"]
+        }
+        onClick={() => onTabClick(false)}
+      >
+        消耗记录
+      </div>
     </div>
   );
 }
 
 export function Records() {
+  const [isPay, setIsPay] = useState<boolean>(true);
   const navigate = useNavigate();
 
   return (
@@ -69,9 +78,10 @@ export function Records() {
         </div>
       </div>
       <ListType
-        onTabClick={() => {
-          console.log(1111);
+        onTabClick={(state) => {
+          setIsPay(state);
         }}
+        isPay={isPay}
       />
       <div className={styles["list"]}>
         <List>
