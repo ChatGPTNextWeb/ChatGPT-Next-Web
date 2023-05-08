@@ -5,13 +5,26 @@ import ES from "./es";
 import IT from "./it";
 import TR from "./tr";
 import JP from "./jp";
+import DE from "./de";
+import VI from "./vi";
 
 export type { LocaleType } from "./cn";
 
-export const AllLangs = ["en", "cn", "tw", "es", "it", "tr", "jp"] as const;
-type Lang = (typeof AllLangs)[number];
+export const AllLangs = [
+  "en",
+  "cn",
+  "tw",
+  "es",
+  "it",
+  "tr",
+  "jp",
+  "de",
+  "vi",
+] as const;
+export type Lang = (typeof AllLangs)[number];
 
 const LANG_KEY = "lang";
+const DEFAULT_LANG = "en";
 
 function getItem(key: string) {
   try {
@@ -31,7 +44,8 @@ function getLanguage() {
   try {
     return navigator.language.toLowerCase();
   } catch {
-    return "cn";
+    console.log("[Lang] failed to detect user lang.");
+    return DEFAULT_LANG;
   }
 }
 
@@ -44,21 +58,13 @@ export function getLang(): Lang {
 
   const lang = getLanguage();
 
-  if (lang.includes("zh") || lang.includes("cn")) {
-    return "cn";
-  } else if (lang.includes("tw")) {
-    return "tw";
-  } else if (lang.includes("es")) {
-    return "es";
-  } else if (lang.includes("it")) {
-    return "it";
-  } else if (lang.includes("tr")) {
-    return "tr";
-  } else if (lang.includes("jp")) {
-    return "jp";
-  } else {
-    return "en";
+  for (const option of AllLangs) {
+    if (lang.includes(option)) {
+      return option;
+    }
   }
+
+  return DEFAULT_LANG;
 }
 
 export function changeLang(lang: Lang) {
@@ -66,6 +72,14 @@ export function changeLang(lang: Lang) {
   location.reload();
 }
 
-export default { en: EN, cn: CN, tw: TW, es: ES, it: IT, tr: TR, jp: JP }[
-  getLang()
-];
+export default {
+  en: EN,
+  cn: CN,
+  tw: TW,
+  es: ES,
+  it: IT,
+  tr: TR,
+  jp: JP,
+  de: DE,
+  vi: VI,
+}[getLang()] as typeof CN;

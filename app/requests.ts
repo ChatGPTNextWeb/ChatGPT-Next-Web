@@ -1,14 +1,22 @@
 import type { ChatRequest, ChatResponse } from "./api/openai/typing";
-import { Message, ModelConfig, useAccessStore, useChatStore } from "./store";
+import {
+  Message,
+  ModelConfig,
+  ModelType,
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+} from "./store";
 import { showToast } from "./components/ui-lib";
+import { ACCESS_CODE_PREFIX } from "./constant";
 
-const TIME_OUT_MS = 30000;
+const TIME_OUT_MS = 60000;
 
 const makeRequestParam = (
   messages: Message[],
   options?: {
-    filterBot?: boolean;
     stream?: boolean;
+    overrideModel?: ModelType;
   },
 ): ChatRequest => {
   let sendMessages = messages.map((v) => ({
@@ -16,20 +24,22 @@ const makeRequestParam = (
     content: v.content,
   }));
 
-  if (options?.filterBot) {
-    sendMessages = sendMessages.filter((m) => m.role !== "assistant");
+  const modelConfig = {
+    ...useAppConfig.getState().modelConfig,
+    ...useChatStore.getState().currentSession().mask.modelConfig,
+  };
+
+  // override model config
+  if (options?.overrideModel) {
+    modelConfig.model = options.overrideModel;
   }
-
-  const modelConfig = { ...useChatStore.getState().config.modelConfig };
-
-  // @yidadaa: wont send max_tokens, because it is nonsense for Muggles
-  // @ts-expect-error
-  delete modelConfig.max_tokens;
 
   return {
     messages: sendMessages,
     stream: options?.stream,
-    ...modelConfig,
+    model: modelConfig.model,
+    temperature: modelConfig.temperature,
+    presence_penalty: modelConfig.presence_penalty,
   };
 };
 
@@ -37,32 +47,43 @@ function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
 
-  if (accessStore.enabledAccessControl()) {
-    headers["access-code"] = accessStore.accessCode;
-  }
+  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
 
-  if (accessStore.token && accessStore.token.length > 0) {
-    headers["token"] = accessStore.token;
+  // use user's api key first
+  if (validString(accessStore.token)) {
+    headers.Authorization = makeBearer(accessStore.token);
+  } else if (
+    accessStore.enabledAccessControl() &&
+    validString(accessStore.accessCode)
+  ) {
+    headers.Authorization = makeBearer(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
+    );
   }
 
   return headers;
 }
 
 export function requestOpenaiClient(path: string) {
+  const openaiUrl = useAccessStore.getState().openaiUrl;
   return (body: any, method = "POST") =>
-    fetch("/api/openai?_vercel_no_cache=1", {
+    fetch(openaiUrl + path, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        path,
-        ...getHeaders(),
-      },
       body: body && JSON.stringify(body),
+      headers: getHeaders(),
     });
 }
 
-export async function requestChat(messages: Message[]) {
-  const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
+export async function requestChat(
+  messages: Message[],
+  options?: {
+    model?: ModelType;
+  },
+) {
+  const req: ChatRequest = makeRequestParam(messages, {
+    overrideModel: options?.model,
+  });
 
   const res = await requestOpenaiClient("v1/chat/completions")(req);
 
@@ -80,11 +101,11 @@ export async function requestUsage() {
       .getDate()
       .toString()
       .padStart(2, "0")}`;
-  const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
-  const now = new Date(Date.now() + ONE_DAY);
+  const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+  const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startDate = formatDate(startOfMonth);
-  const endDate = formatDate(now);
+  const endDate = formatDate(new Date(Date.now() + ONE_DAY));
 
   const [used, subs] = await Promise.all([
     requestOpenaiClient(
@@ -114,6 +135,10 @@ export async function requestUsage() {
     response.total_usage = Math.round(response.total_usage) / 100;
   }
 
+  if (total.hard_limit_usd) {
+    total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
+  }
+
   return {
     used: response.total_usage,
     subscription: total.hard_limit_usd,
@@ -123,8 +148,8 @@ export async function requestUsage() {
 export async function requestChatStream(
   messages: Message[],
   options?: {
-    filterBot?: boolean;
     modelConfig?: ModelConfig;
+    overrideModel?: ModelType;
     onMessage: (message: string, done: boolean) => void;
     onError: (error: Error, statusCode?: number) => void;
     onController?: (controller: AbortController) => void;
@@ -132,7 +157,7 @@ export async function requestChatStream(
 ) {
   const req = makeRequestParam(messages, {
     stream: true,
-    filterBot: options?.filterBot,
+    overrideModel: options?.overrideModel,
   });
 
   console.log("[Request] ", req);
@@ -141,16 +166,17 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/chat-stream", {
+    const openaiUrl = useAccessStore.getState().openaiUrl;
+    const res = await fetch(openaiUrl + "v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        path: "v1/chat/completions",
         ...getHeaders(),
       },
       body: JSON.stringify(req),
       signal: controller.signal,
     });
+
     clearTimeout(reqTimeoutId);
 
     let responseText = "";
@@ -167,15 +193,14 @@ export async function requestChatStream(
       options?.onController?.(controller);
 
       while (true) {
-        // handle time out, will stop if no response in 10 secs
         const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
         const content = await reader?.read();
         clearTimeout(resTimeoutId);
-      
+
         if (!content || !content.value) {
           break;
         }
-      
+
         const text = decoder.decode(content.value, { stream: true });
         responseText += text;
 
@@ -189,8 +214,8 @@ export async function requestChatStream(
 
       finish();
     } else if (res.status === 401) {
-      console.error("Anauthorized");
-      options?.onError(new Error("Anauthorized"), res.status);
+      console.error("Unauthorized");
+      options?.onError(new Error("Unauthorized"), res.status);
     } else {
       console.error("Stream Error", res.body);
       options?.onError(new Error("Stream Error"), res.status);
@@ -201,7 +226,13 @@ export async function requestChatStream(
   }
 }
 
-export async function requestWithPrompt(messages: Message[], prompt: string) {
+export async function requestWithPrompt(
+  messages: Message[],
+  prompt: string,
+  options?: {
+    model?: ModelType;
+  },
+) {
   messages = messages.concat([
     {
       role: "user",
@@ -210,7 +241,7 @@ export async function requestWithPrompt(messages: Message[], prompt: string) {
     },
   ]);
 
-  const res = await requestChat(messages);
+  const res = await requestChat(messages, options);
 
   return res?.choices?.at(0)?.message?.content ?? "";
 }
@@ -233,6 +264,14 @@ export const ControllerPool = {
     const key = this.key(sessionIndex, messageId);
     const controller = this.controllers[key];
     controller?.abort();
+  },
+
+  stopAll() {
+    Object.values(this.controllers).forEach((v) => v.abort());
+  },
+
+  hasPending() {
+    return Object.values(this.controllers).length > 0;
   },
 
   remove(sessionIndex: number, messageId: number) {

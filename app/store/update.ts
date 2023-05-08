@@ -1,16 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FETCH_COMMIT_URL, FETCH_TAG_URL } from "../constant";
+import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
+import { requestUsage } from "../requests";
 
 export interface UpdateStore {
   lastUpdate: number;
   remoteVersion: string;
 
-  version: string;
-  getLatestVersion: (force: boolean) => Promise<string>;
-}
+  used?: number;
+  subscription?: number;
+  lastUpdateUsage: number;
 
-export const UPDATE_KEY = "chat-update";
+  version: string;
+  getLatestVersion: (force?: boolean) => Promise<void>;
+  updateUsage: (force?: boolean) => Promise<void>;
+}
 
 function queryMeta(key: string, defaultValue?: string): string {
   let ret: string;
@@ -26,42 +30,58 @@ function queryMeta(key: string, defaultValue?: string): string {
   return ret;
 }
 
+const ONE_MINUTE = 60 * 1000;
+
 export const useUpdateStore = create<UpdateStore>()(
   persist(
     (set, get) => ({
       lastUpdate: 0,
       remoteVersion: "",
 
+      lastUpdateUsage: 0,
+
       version: "unknown",
 
       async getLatestVersion(force = false) {
-        set(() => ({ version: queryMeta("version") }));
+        set(() => ({ version: queryMeta("version") ?? "unknown" }));
 
-        const overTenMins = Date.now() - get().lastUpdate > 10 * 60 * 1000;
-        const shouldFetch = force || overTenMins;
-        if (!shouldFetch) {
-          return get().version ?? "unknown";
-        }
+        const overTenMins = Date.now() - get().lastUpdate > 10 * ONE_MINUTE;
+        if (!force && !overTenMins) return;
+
+        set(() => ({
+          lastUpdate: Date.now(),
+        }));
 
         try {
-          // const data = await (await fetch(FETCH_TAG_URL)).json();
-          // const remoteId = data[0].name as string;
           const data = await (await fetch(FETCH_COMMIT_URL)).json();
-          const remoteId = (data[0].sha as string).substring(0, 7);
+          const remoteCommitTime = data[0].commit.committer.date;
+          const remoteId = new Date(remoteCommitTime).getTime().toString();
           set(() => ({
-            lastUpdate: Date.now(),
             remoteVersion: remoteId,
           }));
           console.log("[Got Upstream] ", remoteId);
-          return remoteId;
         } catch (error) {
           console.error("[Fetch Upstream Commit Id]", error);
-          return get().version ?? "";
+        }
+      },
+
+      async updateUsage(force = false) {
+        const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
+        if (!overOneMinute && !force) return;
+
+        set(() => ({
+          lastUpdateUsage: Date.now(),
+        }));
+
+        const usage = await requestUsage();
+
+        if (usage) {
+          set(() => usage);
         }
       },
     }),
     {
-      name: UPDATE_KEY,
+      name: StoreKey.Update,
       version: 1,
     },
   ),
