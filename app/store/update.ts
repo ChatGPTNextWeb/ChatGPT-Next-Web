@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FETCH_COMMIT_URL, FETCH_TAG_URL } from "../constant";
+import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
 import { requestUsage } from "../requests";
 
 export interface UpdateStore {
@@ -15,8 +15,6 @@ export interface UpdateStore {
   getLatestVersion: (force?: boolean) => Promise<void>;
   updateUsage: (force?: boolean) => Promise<void>;
 }
-
-export const UPDATE_KEY = "chat-update";
 
 function queryMeta(key: string, defaultValue?: string): string {
   let ret: string;
@@ -55,10 +53,9 @@ export const useUpdateStore = create<UpdateStore>()(
         }));
 
         try {
-          // const data = await (await fetch(FETCH_TAG_URL)).json();
-          // const remoteId = data[0].name as string;
           const data = await (await fetch(FETCH_COMMIT_URL)).json();
-          const remoteId = (data[0].sha as string).substring(0, 7);
+          const remoteCommitTime = data[0].commit.committer.date;
+          const remoteId = new Date(remoteCommitTime).getTime().toString();
           set(() => ({
             remoteVersion: remoteId,
           }));
@@ -84,7 +81,7 @@ export const useUpdateStore = create<UpdateStore>()(
       },
     }),
     {
-      name: UPDATE_KEY,
+      name: StoreKey.Update,
       version: 1,
     },
   ),
