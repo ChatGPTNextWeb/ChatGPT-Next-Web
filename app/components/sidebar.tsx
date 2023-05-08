@@ -96,9 +96,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+        <div className={styles["sidebar-title"]}>闻声合音</div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          故音不和则不悲，不是以声散、伤、丑、害者，言必逆于耳也
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
