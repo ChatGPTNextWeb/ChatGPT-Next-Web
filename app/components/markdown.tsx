@@ -12,15 +12,21 @@ import mermaid from "mermaid";
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 
-export function Mermaid(props: { code: string }) {
+export function Mermaid(props: { code: string; onError: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (props.code && ref.current) {
-      mermaid.run({
-        nodes: [ref.current],
-      });
+      mermaid
+        .run({
+          nodes: [ref.current],
+        })
+        .catch((e) => {
+          props.onError();
+          console.error("[Mermaid] ", e.message);
+        });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.code]);
 
   function viewSvgInNewWindow() {
@@ -38,7 +44,7 @@ export function Mermaid(props: { code: string }) {
   return (
     <div
       className="no-dark"
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", overflow: "auto" }}
       ref={ref}
       onClick={() => viewSvgInNewWindow()}
     >
@@ -60,7 +66,7 @@ export function PreCode(props: { children: any }) {
   }, [props.children]);
 
   if (mermaidCode) {
-    return <Mermaid code={mermaidCode} />;
+    return <Mermaid code={mermaidCode} onError={() => setMermaidCode("")} />;
   }
 
   return (
@@ -147,7 +153,7 @@ export function Markdown(
     }
   };
 
-  checkInView();
+  setTimeout(() => checkInView(), 1);
 
   return (
     <div
