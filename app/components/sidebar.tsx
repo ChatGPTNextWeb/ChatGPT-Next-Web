@@ -138,7 +138,11 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={chatStore.deleteSession}
+              onClick={() => {
+                if (confirm(Locale.Home.DeleteChat)) {
+                  chatStore.deleteSession(chatStore.currentSessionIndex);
+                }
+              }}
             />
           </div>
           <div className={styles["sidebar-action"]}>
@@ -159,6 +163,7 @@ export function SideBar(props: { className?: string }) {
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
                 chatStore.newSession();
+                navigate(Path.Chat);
               } else {
                 navigate(Path.NewChat);
               }
