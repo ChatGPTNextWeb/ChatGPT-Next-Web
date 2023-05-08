@@ -1,13 +1,12 @@
-
-
-.authing-box{
+.authing-box {
   width: 100%;
 }
+
 .authing-ant-row {
   display: flex;
   width: 100%;
   flex-flow: row wrap;
-  max-width:400px;
+  max-width: 400px;
   flex: 1;
   position: relative;
 }
@@ -15,7 +14,7 @@
 .authing-ant-form-item {
   padding: 0;
   font-size: 14px;
-  margin:0 auto 24px;
+  margin: 0 auto 24px;
   vertical-align: top;
   width: 100%;
   border: var(--border-in-light);
@@ -27,10 +26,10 @@
 .authing-ant-form-item-control-input {
   height: 38px;
   padding-left: 18px;
-  border-radius: 14px;
+  border-radius: 10px;
   width: 100%;
   background-color: var(--gray);
-  border:none;
+  border: none;
   text-align: left;
   color: var(--black);
   resize: none;
@@ -48,7 +47,7 @@
   height: 40px;
 }
 
-.authing-guard-form-submit-btn{
+.authing-guard-form-submit-btn {
   width: 80px;
   background-color: var(--primary);
   color: white;

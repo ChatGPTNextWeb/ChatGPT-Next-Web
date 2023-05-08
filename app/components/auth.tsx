@@ -1,6 +1,6 @@
 import { Button } from "./button";
 import styles from "./auth.module.scss";
-import { Modal } from "./ui-lib";
+import { Modal, showToast } from "./ui-lib";
 import { useEffect, useState } from "react";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { AuthenticationClient } from "authing-js-sdk";
@@ -27,8 +27,9 @@ export function AuthModal() {
   };
 
   const requestVerificationCode = async () => {
+    console.log(1111111, phone, time);
     if (!validatePhoneFormat(phone)) {
-      //   toastFail("请输入正确的手机号");
+      showToast("请输入正确的手机号");
       return;
     }
     if (time !== 0) {
@@ -38,10 +39,10 @@ export function AuthModal() {
       //   setIsLoading(true);
       await authenticationClient.sendSmsCode(phone);
       //   setIsLoading(false);
-      //   toastSuccess("我们已将验证码发送到您的手机，请留意短信");
+      showToast("我们已将验证码发送到您的手机，请留意短信");
       setTime(60);
     } catch (e) {
-      //   toastFail("发送验证码失败，请稍后重试");
+      showToast("发送验证码失败，请稍后重试");
     }
   };
 

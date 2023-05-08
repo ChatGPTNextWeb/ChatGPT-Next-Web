@@ -722,57 +722,59 @@ export function Chat() {
                     {Locale.Chat.Typing}
                   </div>
                 )}
-                <div className={styles["chat-message-item"]}>
-                  {showActions && (
-                    <div className={styles["chat-message-top-actions"]}>
-                      {message.streaming ? (
+                {!(showTyping && i === messages.length - 1 && isUser) && (
+                  <div className={styles["chat-message-item"]}>
+                    {showActions && (
+                      <div className={styles["chat-message-top-actions"]}>
+                        {message.streaming ? (
+                          <div
+                            className={styles["chat-message-top-action"]}
+                            onClick={() => onUserStop(message.id ?? i)}
+                          >
+                            {Locale.Chat.Actions.Stop}
+                          </div>
+                        ) : (
+                          <>
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onDelete(message.id ?? i)}
+                            >
+                              {Locale.Chat.Actions.Delete}
+                            </div>
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => onResend(message.id ?? i)}
+                            >
+                              {Locale.Chat.Actions.Retry}
+                            </div>
+                          </>
+                        )}
+
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => onUserStop(message.id ?? i)}
+                          onClick={() => copyToClipboard(message.content)}
                         >
-                          {Locale.Chat.Actions.Stop}
+                          {Locale.Chat.Actions.Copy}
                         </div>
-                      ) : (
-                        <>
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onDelete(message.id ?? i)}
-                          >
-                            {Locale.Chat.Actions.Delete}
-                          </div>
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onResend(message.id ?? i)}
-                          >
-                            {Locale.Chat.Actions.Retry}
-                          </div>
-                        </>
-                      )}
-
-                      <div
-                        className={styles["chat-message-top-action"]}
-                        onClick={() => copyToClipboard(message.content)}
-                      >
-                        {Locale.Chat.Actions.Copy}
                       </div>
-                    </div>
-                  )}
-                  <Markdown
-                    content={message.content}
-                    loading={
-                      (message.preview || message.content.length === 0) &&
-                      !isUser
-                    }
-                    onContextMenu={(e) => onRightClick(e, message)}
-                    onDoubleClickCapture={() => {
-                      if (!isMobileScreen) return;
-                      setUserInput(message.content);
-                    }}
-                    fontSize={fontSize}
-                    parentRef={scrollRef}
-                    defaultShow={i >= messages.length - 10}
-                  />
-                </div>
+                    )}
+                    <Markdown
+                      content={message.content}
+                      loading={
+                        (message.preview || message.content.length === 0) &&
+                        !isUser
+                      }
+                      onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen) return;
+                        setUserInput(message.content);
+                      }}
+                      fontSize={fontSize}
+                      parentRef={scrollRef}
+                      defaultShow={i >= messages.length - 10}
+                    />
+                  </div>
+                )}
                 {!isUser && !message.preview && (
                   <div className={styles["chat-message-actions"]}>
                     <div className={styles["chat-message-action-date"]}>
