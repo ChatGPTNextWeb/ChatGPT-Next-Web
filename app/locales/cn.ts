@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
 
 const cn = {
-  WIP: "yda在摸鱼……[外置prompt库](https://prm.aiprm.top)",
+  WIP: "yda在摸鱼……",
 
   Error: {
     Unauthorized:
