@@ -5,7 +5,7 @@ const cn = {
 
   Error: {
     Unauthorized:
-      "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，也可以用你自己的api-key。请注意本站不收费，请勿上当受骗！密码不定期更新",
+      "未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。密码在群里：125800040，本站存在的目的是为了测试prompt。如果你不是研究prompt提示工程的，请到aiprm.top找公益站.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -149,7 +149,7 @@ const cn = {
       NoAccess: "输入 API Key 或访问密码查看余额",
     },
     AccessCode: {
-      Title: "访问密码-密码在Q群：125800040，本站不收费，请勿被骗！",
+      Title: "访问密码-体验可以请勿长期白嫖，tmp每分钟数量有限！",
       SubTitle: "已开启加密访问，",
       Placeholder: "请输入访问密码",
     },
