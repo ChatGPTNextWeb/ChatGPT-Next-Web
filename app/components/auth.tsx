@@ -5,18 +5,14 @@ import { useEffect, useState } from "react";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { AuthenticationClient } from "authing-js-sdk";
 import { trimPhoneNumberOrText, validatePhoneFormat } from "../utils";
+import { AuthStore, authStore } from "../store/auth";
 const authenticationClient = new AuthenticationClient({
   appId: "64488f3c269681acaa583a71",
   appHost: "https://haogpt.authing.cn",
 });
 let timer: any;
 export function AuthModal() {
-  const promptStore = usePromptStore();
-  const userPrompts = promptStore.getUserPrompts();
-  const builtinPrompts = SearchService.builtinPrompts;
-  const allPrompts = userPrompts.concat(builtinPrompts);
-  const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
-  const [editingPromptId, setEditingPromptId] = useState<number>();
+  const authStoreInfo: any = authStore();
   const [time, setTime] = useState<number>(0);
   const [phone, setPhone] = useState<string>("");
   const [code, setCode] = useState<string>("");
@@ -60,12 +56,15 @@ export function AuthModal() {
   useEffect(() => {
     return () => timer && clearInterval(timer);
   }, []);
+  if (!authStoreInfo.isAuthModalVisible) {
+    return <div />;
+  }
 
   return (
     <div className="modal-mask">
       <Modal
         title={"登录"}
-        //   onClose={() => props.onClose?.()}
+        onClose={() => authStoreInfo.updateAuthModalVisible(false)}
         actions={[
           <Button
             key="submit"

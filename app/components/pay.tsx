@@ -6,6 +6,7 @@ import WeixinIcon from "../icons/weixin.svg";
 import { ListType } from "./records";
 import QRCode from "qrcode.react";
 import { isMobileScreen } from "../utils";
+import { authStore } from "../store/auth";
 let verificationTimer: any;
 export function PayModal() {
   const [prices, setPrices] = useState<number[]>([]);
@@ -13,6 +14,7 @@ export function PayModal() {
   const [isMode4, setIsMode4] = useState<boolean>(true);
   const [verification, setVerification] = useState<string>();
   const isMobile = isMobileScreen();
+  const authStoreInfo: any = authStore();
   useEffect(() => {
     setPrices(isMode4 ? [5, 6, 7] : [1, 2, 3]);
     setSelectValue(isMode4 ? 5 : 1);
@@ -37,24 +39,18 @@ export function PayModal() {
   useEffect(() => {
     return verificationTimer && clearTimeout(verificationTimer);
   }, []);
+  if (!authStoreInfo.isPayModalVisible) {
+    return <div />;
+  }
 
   return (
     <div className="modal-mask">
       <Modal
         title={"充值"}
-        //   onClose={() => props.onClose?.()}
+        onClose={() => authStoreInfo.updatePayModalVisible(false)}
         actions={
           isMobile
             ? [
-                // <Button
-                //   key="submit"
-                //   className={styles["authing-guard-form-submit-btn"]}
-                //   onClick={() => {
-                //     //
-                //   }}
-                //   bordered
-                //   text={"去支付"}
-                // />,
                 <IconButton
                   key={"pay"}
                   icon={<WeixinIcon />}

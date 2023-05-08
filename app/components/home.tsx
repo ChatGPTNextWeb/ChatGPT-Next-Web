@@ -53,6 +53,14 @@ const Records = dynamic(async () => (await import("./records")).Records, {
   loading: () => <Loading noLogo />,
 });
 
+const PayModal = dynamic(async () => (await import("./pay")).PayModal, {
+  loading: () => <Loading noLogo />,
+});
+
+const AuthModal = dynamic(async () => (await import("./auth")).AuthModal, {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -111,6 +119,8 @@ function Screen() {
         }`
       }
     >
+      <AuthModal />
+      <PayModal />
       <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
       <div className={styles["window-content"]} id={SlotID.AppBody}>

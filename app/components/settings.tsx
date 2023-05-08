@@ -29,8 +29,7 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
-import { AuthModal } from "./auth";
-import { PayModal } from "./pay";
+import { authStore } from "../store/auth";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -249,7 +248,7 @@ export function Settings() {
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
-
+  const authStoreInfo: any = authStore();
   const showUsage = accessStore.isAuthorized();
   useEffect(() => {
     // checks per minutes
@@ -377,10 +376,11 @@ export function Settings() {
             )}
           </ListItem> */}
 
-          <ListItem title={"绑定手机号"}>
+          <ListItem title={"手机号登录"}>
             <IconButton
-              text={"去绑定"}
+              text={"去登录"}
               onClick={() => {
+                authStoreInfo.updateAuthModalVisible(true);
                 // if (config.dontShowMaskSplashScreen) {
                 //   chatStore.newSession();
                 //   navigate(Path.Chat);
@@ -396,6 +396,7 @@ export function Settings() {
             <IconButton
               text={"去充值"}
               onClick={() => {
+                authStoreInfo.updatePayModalVisible(true);
                 // if (config.dontShowMaskSplashScreen) {
                 //   chatStore.newSession();
                 //   navigate(Path.Chat);
@@ -612,8 +613,6 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
-        {/* <AuthModal /> */}
-        <PayModal />
       </div>
     </ErrorBoundary>
   );
