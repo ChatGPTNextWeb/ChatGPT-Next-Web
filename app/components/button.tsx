@@ -38,8 +38,40 @@ export function IconButton(props: {
       )}
 
       {props.text && (
-        <div className={styles["icon-button-text"]}>{props.text}</div>
+        <div
+          className={`${styles["icon-button-text"]} ${styles["button-text "]}`}
+        >
+          {props.text}
+        </div>
       )}
+    </button>
+  );
+}
+
+export function Button(props: {
+  onClick?: () => void;
+  type?: "primary" | "danger";
+  text?: string;
+  bordered?: boolean;
+  shadow?: boolean;
+  className?: string;
+  title?: string;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      className={
+        styles["icon-button"] +
+        ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
+          props.className ?? ""
+        } clickable ${styles[props.type ?? ""]}`
+      }
+      onClick={props.onClick}
+      title={props.title}
+      disabled={props.disabled}
+      role="button"
+    >
+      {props.text && <div className={styles["button-text"]}>{props.text}</div>}
     </button>
   );
 }

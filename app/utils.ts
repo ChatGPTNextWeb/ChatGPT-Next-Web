@@ -174,3 +174,13 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 export function getCSSVar(varName: string) {
   return getComputedStyle(document.body).getPropertyValue(varName).trim();
 }
+
+export function trimPhoneNumberOrText(phoneNumber = "") {
+  return phoneNumber.replace(/\s/g, "");
+}
+
+export function validatePhoneFormat(phoneNumber: string) {
+  const trimmedPhoneNumber = trimPhoneNumberOrText(phoneNumber);
+  const phoneReg = /^1\d{10}$/;
+  return phoneReg.test(trimmedPhoneNumber);
+}

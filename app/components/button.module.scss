@@ -49,10 +49,13 @@
   align-items: center;
 }
 
-.icon-button-text {
-  margin-left: 5px;
+.button-text {
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.icon-button-text {
+  margin-left: 5px;
 }
