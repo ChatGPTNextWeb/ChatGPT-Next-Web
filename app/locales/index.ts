@@ -6,6 +6,7 @@ import IT from "./it";
 import TR from "./tr";
 import JP from "./jp";
 import DE from "./de";
+import VI from "./vi";
 
 export type { LocaleType } from "./cn";
 
@@ -18,6 +19,7 @@ export const AllLangs = [
   "tr",
   "jp",
   "de",
+  "vi",
 ] as const;
 export type Lang = (typeof AllLangs)[number];
 
@@ -79,4 +81,5 @@ export default {
   tr: TR,
   jp: JP,
   de: DE,
+  vi: VI,
 }[getLang()] as typeof CN;
