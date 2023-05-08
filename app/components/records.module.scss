@@ -3,32 +3,34 @@
   overflow: auto;
 }
 
-.list-type-container {
-  padding: 34px 40px 14px;
+.list-type-box {
+  margin: 34px auto 14px;
+}
+
+.list-type-content {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  .list-type{
+  .list-type {
     background-color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    border: var(--border-in-light); 
+    padding: 0 10px;
+    border: var(--border-in-light);
     cursor: pointer;
     transition: all 0.3s ease;
     overflow: hidden;
     user-select: none;
     outline: none;
     color: var(--black);
+    height: 34px;
   }
-  
-  .list-type-select{
-    background-color: var(--white);
+
+  .list-type-select {
+    color: var(--white);
+    background-color: var(--primary);
     border: var(--border-in-primary);
   }
 }
-
-
-

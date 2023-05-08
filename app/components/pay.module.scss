@@ -1,0 +1,119 @@
+.pay-box {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  .desc {
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .price-list {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+  }
+
+  .price-box {
+    border-radius: 6px;
+    margin-bottom: 12px;
+    padding: 16px;
+    width: 41%;
+    cursor: pointer;
+    min-height: 70px;
+    margin-top: 12px;
+    border: var(--border-in-light);
+  }
+
+  .price-box-selected {
+    border: var(--border-in-primary);
+  }
+
+
+  @media only screen and (max-width: 600px) {
+    .price-list {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+    }
+
+    .price-box {
+      width: 90%;
+    }
+  }
+
+  .price {
+    margin-bottom: 4px;
+  }
+
+  .text {
+    color: var(--primary);
+  }
+}
+
+.pay-submit-btn {
+  background-color: var(--primary);
+  color: var(--white);
+
+  path {
+    fill: white;
+  }
+}
+
+.qrcode-box {
+  width: 150px;
+  height: 180px;
+  background: #fff;
+  border-radius: 10px;
+  border: var(--border-in-light);
+}
+
+.pay-weixin {
+  width: 150px;
+  height: 32px;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #FFF;
+  background-color: var(--primary);
+}
+
+.pay-weixin-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+
+  path {
+    fill: white;
+  }
+}
+
+.qrcode-invalid {
+  text-align: center;
+  margin: 10px;
+  width: 126px;
+  padding: 40px 0;
+  height: 50px;
+  background: #1C1C1C;
+  opacity: 0.4;
+  font-size: 14px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #FFF;
+  cursor: pointer;
+  border-radius: 10px;
+}

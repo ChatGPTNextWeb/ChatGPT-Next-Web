@@ -13,33 +13,29 @@ import { ErrorBoundary } from "./error";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function ListType(props: {
-  onTabClick: (isPay: boolean) => void;
-  isPay: boolean;
+export function ListType(props: {
+  texts: { name: string; value: boolean }[];
+  onTabClick: (status: boolean) => void;
+  status: boolean;
 }) {
-  const { onTabClick, isPay } = props;
+  const { onTabClick, texts, status } = props;
   return (
-    <div className={styles["list-type-container"]}>
-      <div
-        className={
-          isPay
-            ? `${styles["list-type"]} ${styles["list-type-select"]}`
-            : styles["list-type"]
-        }
-        onClick={() => onTabClick(true)}
-      >
-        充值记录
-      </div>
-      <div
-        className={
-          !isPay
-            ? `${styles["list-type"]} ${styles["list-type-select"]}`
-            : styles["list-type"]
-        }
-        onClick={() => onTabClick(false)}
-      >
-        消耗记录
-      </div>
+    <div className={styles["list-type-content"]}>
+      {texts.map((text) => {
+        return (
+          <div
+            key={text.name}
+            className={
+              status === text.value
+                ? `${styles["list-type"]} ${styles["list-type-select"]}`
+                : styles["list-type"]
+            }
+            onClick={() => onTabClick(text.value)}
+          >
+            {text.name}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -77,12 +73,19 @@ export function Records() {
           </div>
         </div>
       </div>
-      <ListType
-        onTabClick={(state) => {
-          setIsPay(state);
-        }}
-        isPay={isPay}
-      />
+      <div className={styles["list-type-box"]}>
+        <ListType
+          onTabClick={(state) => {
+            setIsPay(state);
+          }}
+          status={isPay}
+          texts={[
+            { name: "充值记录", value: true },
+            { name: "消耗记录", value: false },
+          ]}
+        />
+      </div>
+
       <div className={styles["list"]}>
         <List>
           <ListItem title={"充值"} subTitle={"2023-05-06"}>

@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
-
 import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
@@ -31,6 +30,7 @@ import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { AuthModal } from "./auth";
+import { PayModal } from "./pay";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -418,7 +418,6 @@ export function Settings() {
             />
           </ListItem>
         </List>
-
         <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
@@ -600,7 +599,6 @@ export function Settings() {
             />
           </ListItem>
         </List>
-
         <List>
           <ModelConfigList
             modelConfig={config.modelConfig}
@@ -611,11 +609,11 @@ export function Settings() {
             }}
           />
         </List>
-
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
-        <AuthModal />
+        {/* <AuthModal /> */}
+        <PayModal />
       </div>
     </ErrorBoundary>
   );
