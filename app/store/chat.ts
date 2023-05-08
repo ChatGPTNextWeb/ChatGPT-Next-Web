@@ -33,7 +33,7 @@ export function createMessage(override: Partial<Message>): Message {
   };
 }
 
-export const ROLES: Message["role"][] = ["system", "user", "assistant"];
+export const ROLES: Message["role"][] = ["user", "system", "assistant"];
 
 export interface ChatStat {
   tokenCount: number;
