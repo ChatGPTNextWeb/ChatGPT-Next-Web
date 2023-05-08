@@ -153,7 +153,7 @@ export function Markdown(
     }
   };
 
-  checkInView();
+  setTimeout(() => checkInView(), 1);
 
   return (
     <div
