@@ -20,7 +20,7 @@ import Locale, { AllLangs, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { downloadAs, readFromFile } from "../utils";
 import { Updater } from "../api/openai/typing";
 import { ModelConfigList } from "./model-config";
@@ -197,7 +197,7 @@ export function ContextPrompts(props: {
             className={chatStyle["context-prompt-button"]}
             onClick={() =>
               addContextPrompt({
-                role: "system",
+                role: "user",
                 content: "",
                 date: "",
               })
