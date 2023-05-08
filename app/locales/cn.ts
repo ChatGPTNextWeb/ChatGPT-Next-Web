@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
 
 const cn = {
-  WIP: '<a href="https://prm.aiprm.top">点击跳转</a>',
+  WIP: "<a href="https://prm.aiprm.top">点击跳转</a>",
 ,
   Error: {
     Unauthorized:
