@@ -32,7 +32,6 @@ import {
   Theme,
   useAppConfig,
   ModelConfig,
-  DEFAULT_TOPIC,
 } from "../store";
 
 import {
@@ -626,7 +625,7 @@ export function Chat() {
             className={`window-header-main-title " ${styles["chat-body-title"]}`}
             onClickCapture={renameSession}
           >
-            {!session.topic ? DEFAULT_TOPIC : session.topic}
+            {!session.topic ? Locale.Store.DefaultTopic : session.topic}
           </div>
           <div className="window-header-sub-title">
             {Locale.Chat.SubTitle(session.messages.length)}
