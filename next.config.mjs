@@ -5,7 +5,12 @@ const nextConfig = {
     appDir: true,
   },
   async rewrites() {
-    const ret = [];
+    const ret = [
+      {
+        source: "/api/proxy/:path*",
+        destination: "https://api.openai.com/:path*",
+      },
+    ];
 
     const apiUrl = process.env.API_URL;
     if (apiUrl) {
