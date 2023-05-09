@@ -136,7 +136,11 @@ const tw: LocaleType = {
       SubTitle: "使用自己的 Key 可規避授權存取限制",
       Placeholder: "OpenAI API Key",
     },
-    EnableAOAI: "使用 Azure OpenAI",
+    EnableAOAI: "啟用 Azure OpenAI",
+    AzureDomainName: {
+      Title: "Azure OpenAI 自定義子域名",
+      Placeholder: "自定義子域名",
+    },
     AzureDeploymentName: {
       Title: "Azure OpenAI 部署實例名稱",
       SubTitle: "啟用Azure OpenAI後, 輸入部署的實例名稱",

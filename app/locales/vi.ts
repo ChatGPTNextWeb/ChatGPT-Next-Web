@@ -140,6 +140,10 @@ const vi: LocaleType = {
     },
 
     EnableAOAI: "Sử dụng Azure OpenAI",
+    AzureDomainName: {
+      Title: "Tên miền phụ tùy chỉnh Azure OpenAI",
+      Placeholder: "tên miền phụ tùy chỉnh",
+    },
     AzureDeploymentName: {
       Title: "Tên phiên bản triển khai Azure OpenAI",
       SubTitle:

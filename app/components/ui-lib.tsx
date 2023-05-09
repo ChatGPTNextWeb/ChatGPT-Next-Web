@@ -244,3 +244,11 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
     </div>
   );
 }
+
+export function TextInput(props: HTMLProps<HTMLInputElement>) {
+  return (
+    <div className={"password-input-container"}>
+      <input {...props} type={"text"} className={"password-input"} />
+    </div>
+  );
+}

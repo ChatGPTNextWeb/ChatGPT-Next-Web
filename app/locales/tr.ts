@@ -140,6 +140,10 @@ const tr: LocaleType = {
       Placeholder: "OpenAI API Anahtarı",
     },
     EnableAOAI: "Azure OpenAI Kullanın",
+    AzureDomainName: {
+      Title: "Azure OpenAI özel alt etki alanı",
+      Placeholder: "özel alt etki alanı",
+    },
     AzureDeploymentName: {
       Title: "Azure OpenAI dağıtım örneği adı",
       SubTitle:

@@ -141,6 +141,10 @@ const it: LocaleType = {
       Placeholder: "OpenAI API Key",
     },
     EnableAOAI: "Usa Azure OpenAI",
+    AzureDomainName: {
+      Title: "Sottodominio personalizzato di Azure OpenAI",
+      Placeholder: "Sottodominio personalizzato",
+    },
     AzureDeploymentName: {
       Title: "Nome dell'istanza di distribuzione di Azure OpenAI",
       SubTitle:

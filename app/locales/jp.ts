@@ -142,6 +142,10 @@ const jp: LocaleType = {
       Placeholder: "OpenAI APIキー",
     },
     EnableAOAI: "Azure OpenAI を使用する",
+    AzureDomainName: {
+      Title: "Azure OpenAI カスタム サブドメイン",
+      Placeholder: "カスタム サブドメイン",
+    },
     AzureDeploymentName: {
       Title: "Azure OpenAI 展開インスタンス名",
       SubTitle:

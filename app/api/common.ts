@@ -1,13 +1,14 @@
 import { NextRequest } from "next/server";
 
 const OPENAI_URL = "api.openai.com";
-const AZURE_OPENAI_URL = "azure-openai-gpt.openai.azure.com";
 const DEFAULT_PROTOCOL = "https";
 const PROTOCOL = process.env.PROTOCOL ?? DEFAULT_PROTOCOL;
 
 export async function requestOpenai(req: NextRequest) {
   const authValue = req.headers.get("Authorization") ?? "";
-  const aoaiAuthValue = req.headers.get("api-key") ?? "";
+  const azureApiKey = req.headers.get("azure-api-key") ?? "";
+  const azureDomainName = req.headers.get("azure-domain-name") ?? "";
+  const AZURE_OPENAI_URL = `${azureDomainName}.openai.azure.com`;
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
@@ -32,7 +33,7 @@ export async function requestOpenai(req: NextRequest) {
     console.log("[Org ID]", process.env.OPENAI_ORG_ID);
   }
 
-  if (!aoaiAuthValue && (!authValue || !authValue.startsWith("Bearer sk-"))) {
+  if (!azureApiKey && (!authValue || !authValue.startsWith("Bearer sk-"))) {
     console.error("[OpenAI Request] invalid api key provided", authValue);
   }
 
@@ -40,7 +41,7 @@ export async function requestOpenai(req: NextRequest) {
     headers: {
       "Content-Type": "application/json",
       Authorization: authValue,
-      "api-key": aoaiAuthValue,
+      "api-key": azureApiKey,
       ...(process.env.OPENAI_ORG_ID && {
         "OpenAI-Organization": process.env.OPENAI_ORG_ID,
       }),

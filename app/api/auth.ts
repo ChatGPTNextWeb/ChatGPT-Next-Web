@@ -28,7 +28,7 @@ function parseApiKey(bearToken: string) {
 
 export function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
-  const aoaiApiKey = req.headers.get("api-key") ?? "";
+  const aoaiApiKey = req.headers.get("azure-api-key") ?? "";
 
   if (!!aoaiApiKey) {
     return {

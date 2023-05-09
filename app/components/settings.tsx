@@ -10,7 +10,15 @@ import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
-import { Input, List, ListItem, Modal, PasswordInput, Popover } from "./ui-lib";
+import {
+  Input,
+  List,
+  ListItem,
+  Modal,
+  PasswordInput,
+  Popover,
+  TextInput,
+} from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
 import { IconButton } from "./button";
@@ -501,11 +509,21 @@ export function Settings() {
 
           {accessStore.enableAOAI ? (
             <>
+              <ListItem title={Locale.Settings.AzureDomainName.Title}>
+                <TextInput
+                  value={accessStore.azureDomainName}
+                  type="text"
+                  placeholder={Locale.Settings.AzureDomainName.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateDomainName(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
               <ListItem
                 title={Locale.Settings.AzureDeploymentName.Title}
                 subTitle={Locale.Settings.AzureDeploymentName.SubTitle}
               >
-                <PasswordInput
+                <TextInput
                   value={accessStore.azureDeployName}
                   type="text"
                   placeholder={Locale.Settings.AzureDeploymentName.Placeholder}
