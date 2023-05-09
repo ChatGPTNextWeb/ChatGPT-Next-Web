@@ -62,13 +62,27 @@ function getHeaders() {
     );
   }
 
+  if (accessStore.enableAOAI && validString(accessStore.aoaiToken)) {
+    headers["api-key"] = accessStore.aoaiToken;
+  }
+
   return headers;
 }
 
-export function requestOpenaiClient(path: string) {
+function getRequestPath() {
   const openaiUrl = useAccessStore.getState().openaiUrl;
+  const OPENAI_REQUEST_PATH = openaiUrl + "v1/chat/completions";
+
+  const { enableAOAI, azureDeployName } = useAccessStore.getState();
+  if (!enableAOAI) return OPENAI_REQUEST_PATH;
+
+  const AZURE_REQUEST_PATH = `${openaiUrl}openai/deployments/${azureDeployName}/chat/completions?api-version=2023-03-15-preview`;
+  return AZURE_REQUEST_PATH;
+}
+
+export function requestOpenaiClient(path: string) {
   return (body: any, method = "POST") =>
-    fetch(openaiUrl + path, {
+    fetch(path, {
       method,
       body: body && JSON.stringify(body),
       headers: getHeaders(),
@@ -85,7 +99,7 @@ export async function requestChat(
     overrideModel: options?.model,
   });
 
-  const res = await requestOpenaiClient("v1/chat/completions")(req);
+  const res = await requestOpenaiClient(getRequestPath())(req);
 
   try {
     const response = (await res.json()) as ChatResponse;
@@ -96,6 +110,9 @@ export async function requestChat(
 }
 
 export async function requestUsage() {
+  const { enableAOAI } = useAccessStore.getState();
+  if (enableAOAI) return;
+
   const formatDate = (d: Date) =>
     `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
       .getDate()
@@ -107,11 +124,15 @@ export async function requestUsage() {
   const startDate = formatDate(startOfMonth);
   const endDate = formatDate(new Date(Date.now() + ONE_DAY));
 
+  const openaiUrl = useAccessStore.getState().openaiUrl;
   const [used, subs] = await Promise.all([
     requestOpenaiClient(
-      `dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`,
+      `${openaiUrl}dashboard/billing/usage?start_date=${startDate}&end_date=${endDate}`,
     )(null, "GET"),
-    requestOpenaiClient("dashboard/billing/subscription")(null, "GET"),
+    requestOpenaiClient(`${openaiUrl}dashboard/billing/subscription`)(
+      null,
+      "GET",
+    ),
   ]);
 
   const response = (await used.json()) as {
@@ -166,11 +187,12 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const openaiUrl = useAccessStore.getState().openaiUrl;
-    const res = await fetch(openaiUrl + "v1/chat/completions", {
+    const requestPath = getRequestPath();
+    const res = await fetch(requestPath, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        // path: getRequestPath(),
         ...getHeaders(),
       },
       body: JSON.stringify(req),

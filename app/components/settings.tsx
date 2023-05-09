@@ -489,45 +489,87 @@ export function Settings() {
             <></>
           )}
 
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Token.Title}
-              subTitle={Locale.Settings.Token.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.token}
-                type="text"
-                placeholder={Locale.Settings.Token.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateToken(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
+          <ListItem title={Locale.Settings.EnableAOAI}>
+            <input
+              type="checkbox"
+              checked={accessStore.enableAOAI}
+              onChange={(e) => {
+                accessStore.switchAOAI(e.currentTarget.checked);
+              }}
+            ></input>
+          </ListItem>
+
+          {accessStore.enableAOAI ? (
+            <>
+              <ListItem
+                title={Locale.Settings.AzureDeploymentName.Title}
+                subTitle={Locale.Settings.AzureDeploymentName.SubTitle}
+              >
+                <PasswordInput
+                  value={accessStore.azureDeployName}
+                  type="text"
+                  placeholder={Locale.Settings.AzureDeploymentName.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateDeployName(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+              <ListItem title={Locale.Settings.AOAIToken.Title}>
+                <PasswordInput
+                  value={accessStore.aoaiToken}
+                  type="text"
+                  placeholder={Locale.Settings.AOAIToken.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateAOAIToken(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+            </>
           ) : null}
 
-          <ListItem
-            title={Locale.Settings.Usage.Title}
-            subTitle={
-              showUsage
-                ? loadingUsage
-                  ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
-                : Locale.Settings.Usage.NoAccess
-            }
-          >
-            {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={() => checkUsage(true)}
-              />
-            )}
-          </ListItem>
+          {!accessStore.enableAOAI ? (
+            <>
+              {!accessStore.hideUserApiKey ? (
+                <ListItem
+                  title={Locale.Settings.Token.Title}
+                  subTitle={Locale.Settings.Token.SubTitle}
+                >
+                  <PasswordInput
+                    value={accessStore.token}
+                    type="text"
+                    placeholder={Locale.Settings.Token.Placeholder}
+                    onChange={(e) => {
+                      accessStore.updateToken(e.currentTarget.value);
+                    }}
+                  />
+                </ListItem>
+              ) : null}
+
+              <ListItem
+                title={Locale.Settings.Usage.Title}
+                subTitle={
+                  showUsage
+                    ? loadingUsage
+                      ? Locale.Settings.Usage.IsChecking
+                      : Locale.Settings.Usage.SubTitle(
+                          usage?.used ?? "[?]",
+                          usage?.subscription ?? "[?]",
+                        )
+                    : Locale.Settings.Usage.NoAccess
+                }
+              >
+                {!showUsage || loadingUsage ? (
+                  <div />
+                ) : (
+                  <IconButton
+                    icon={<ResetIcon></ResetIcon>}
+                    text={Locale.Settings.Usage.Check}
+                    onClick={() => checkUsage(true)}
+                  />
+                )}
+              </ListItem>
+            </>
+          ) : null}
         </List>
 
         <List>

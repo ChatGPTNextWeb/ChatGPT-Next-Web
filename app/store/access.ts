@@ -7,12 +7,19 @@ export interface AccessControlStore {
   accessCode: string;
   token: string;
 
+  enableAOAI: boolean;
+  azureDeployName: string;
+  aoaiToken: string;
+
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
+  switchAOAI: (_: boolean) => void;
+  updateDeployName: (_: string) => void;
+  updateAOAIToken: (_: string) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
   fetch: () => void;
@@ -25,6 +32,11 @@ export const useAccessStore = create<AccessControlStore>()(
     (set, get) => ({
       token: "",
       accessCode: "",
+
+      enableAOAI: false,
+      azureDeployName: "",
+      aoaiToken: "",
+
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: "/api/openai/",
@@ -40,14 +52,30 @@ export const useAccessStore = create<AccessControlStore>()(
       updateToken(token: string) {
         set(() => ({ token }));
       },
+
+      switchAOAI(switchStatus: boolean) {
+        set((state) => ({ enableAOAI: switchStatus }));
+      },
+      updateDeployName(azureDeployName: string) {
+        set((state) => ({ azureDeployName }));
+      },
+      updateAOAIToken(aoaiToken: string) {
+        set(() => ({ aoaiToken }));
+      },
+
       isAuthorized() {
         get().fetch();
 
         // has token or has code or disabled access control
+        if (get().enableAOAI) {
+          return !!get().azureDeployName && !!get().aoaiToken;
+        }
+
         return (
           !!get().token || !!get().accessCode || !get().enabledAccessControl()
         );
       },
+
       fetch() {
         if (fetchState > 0) return;
         fetchState = 1;

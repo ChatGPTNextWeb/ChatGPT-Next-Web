@@ -106,6 +106,7 @@ const cn = {
       Title: "面具启动页",
       SubTitle: "新建聊天时，展示面具启动页",
     },
+
     Prompt: {
       Disable: {
         Title: "禁用提示词自动补全",
@@ -138,6 +139,16 @@ const cn = {
       Placeholder: "OpenAI API Key",
     },
 
+    EnableAOAI: "使用 Azure OpenAI",
+    AzureDeploymentName: {
+      Title: "Azure OpenAI 部署实例名称",
+      SubTitle: "启用Azure OpenAI后, 输入部署的实例名称",
+      Placeholder: "实例名称",
+    },
+    AOAIToken: {
+      Title: "Azure OpenAI API Key",
+      Placeholder: "Azure OpenAI API Key",
+    },
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
