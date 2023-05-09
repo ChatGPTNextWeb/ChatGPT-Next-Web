@@ -13,6 +13,7 @@ import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
+import { useCommand } from "../command";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -108,8 +109,19 @@ export function NewChat() {
 
   const startChat = (mask?: Mask) => {
     chatStore.newSession(mask);
-    navigate(Path.Chat);
+    setTimeout(() => navigate(Path.Chat), 1);
   };
+
+  useCommand({
+    mask: (id) => {
+      try {
+        const mask = maskStore.get(parseInt(id));
+        startChat(mask ?? undefined);
+      } catch {
+        console.error("[New Chat] failed to create chat from mask id=", id);
+      }
+    },
+  });
 
   return (
     <div className={styles["new-chat"]}>
