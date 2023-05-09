@@ -455,6 +455,10 @@ export function Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
+  useEffect(() => {
+    config.update((config) => (config.tightBorder = true));
+  }, []);
+
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
@@ -662,7 +666,7 @@ export function Chat() {
               }}
             />
           </div>
-          {!isMobileScreen && (
+          {/* {!isMobileScreen && (
             <div className="window-action-button">
               <IconButton
                 icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
@@ -674,7 +678,7 @@ export function Chat() {
                 }}
               />
             </div>
-          )}
+          )} */}
         </div>
 
         <PromptToast
