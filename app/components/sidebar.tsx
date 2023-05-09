@@ -96,9 +96,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+        <div className={styles["sidebar-title"]}><a href="https://prm.aiprm.top" target="_blank">Aiprm.top</a></div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+        密码在公众号：cn2ltd <a href="https://prm.aiprm.top" target="_blank">外置提示库</a>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
