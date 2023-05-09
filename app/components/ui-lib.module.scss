@@ -124,6 +124,18 @@
   }
 }
 
+@media screen and (max-width: 600px) {
+  .modal-container {
+    width: 100vw;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    .modal-content {
+      max-height: 50vh;
+    }
+  }
+}
+
 .show {
   opacity: 1;
   transition: all ease 0.3s;
@@ -190,14 +202,4 @@
   color: var(--black);
   resize: none;
   min-width: 50px;
-}
-
-@media only screen and (max-width: 600px) {
-  .modal-container {
-    width: 90vw;
-
-    .modal-content {
-      max-height: 50vh;
-    }
-  }
 }
