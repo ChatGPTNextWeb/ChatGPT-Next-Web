@@ -92,6 +92,7 @@ export function useWindowSize() {
 }
 
 export const MOBILE_MAX_WIDTH = 600;
+
 export function useMobileScreen() {
   const { width } = useWindowSize();
 
@@ -160,15 +161,13 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
   measureDom.style.width = width + "px";
   measureDom.innerText = dom.value.trim().length > 0 ? dom.value : "1";
 
-  const lineWrapCount = Math.max(0, dom.value.split("\n").length - 1);
   const height = parseFloat(window.getComputedStyle(measureDom).height);
   const singleLineHeight = parseFloat(
     window.getComputedStyle(singleLineDom).height,
   );
 
-  const rows = Math.round(height / singleLineHeight) + lineWrapCount;
-
-  return rows;
+  const endWithLineBreaker = dom.value.endsWith("\n");
+  return Math.round(height / singleLineHeight) + (endWithLineBreaker ? 1 : 0);
 }
 
 export function getCSSVar(varName: string) {
