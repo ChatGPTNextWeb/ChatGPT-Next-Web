@@ -252,9 +252,20 @@ export const useChatStore = create<ChatStore>()(
           model: modelConfig.model,
         });
 
+        const systemInfo = createMessage({
+          role: "system",
+          content: `IMPRTANT: You are a virtual assistant powered by the ${
+            modelConfig.model
+          } model, now time is ${new Date().toLocaleString()}}`,
+          id: botMessage.id! + 1,
+        });
+
         // get recent messages
+        const systemMessages = [systemInfo];
         const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
+        const sendMessages = systemMessages.concat(
+          recentMessages.concat(userMessage),
+        );
         const sessionIndex = get().currentSessionIndex;
         const messageIndex = get().currentSession().messages.length + 1;
 
