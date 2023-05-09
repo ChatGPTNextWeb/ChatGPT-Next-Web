@@ -1,4 +1,3 @@
-import styles from "./settings.module.scss";
 import { ALL_MODELS, ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
