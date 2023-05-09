@@ -16,7 +16,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Path, SlotID } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -91,6 +91,7 @@ export function ChatList(props: { narrow?: boolean }) {
   );
   const chatStore = useChatStore();
   const navigate = useNavigate();
+  const selectedRef = useRef<HTMLDivElement>(null);
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -130,6 +131,10 @@ export function ChatList(props: { narrow?: boolean }) {
       if (ctrlArrowDown && selectedIndex !== sessions.length - 1) {
         selectSession(selectedIndex + 1);
       }
+
+      selectedRef.current?.scrollIntoView({
+        block: "center",
+      });
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -146,27 +151,29 @@ export function ChatList(props: { narrow?: boolean }) {
             {...provided.droppableProps}
           >
             {sessions.map((item, i) => (
-              <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
-                index={i}
-                selected={i === selectedIndex}
-                onClick={() => {
-                  navigate(Path.Chat);
-                  selectSession(i);
-                }}
-                onDelete={() => {
-                  if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
-                    chatStore.deleteSession(i);
-                  }
-                }}
-                narrow={props.narrow}
-                mask={item.mask}
-              />
+              <div key={item.id} ref={i === selectedIndex ? selectedRef : null}>
+                <ChatItem
+                  title={item.topic}
+                  time={new Date(item.lastUpdate).toLocaleString()}
+                  count={item.messages.length}
+                  id={item.id}
+                  index={i}
+                  selected={i === selectedIndex}
+                  onClick={() => {
+                    navigate(Path.Chat);
+                    selectSession(i);
+                  }}
+                  onDelete={() => {
+                    if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
+                      chatStore.deleteSession(i);
+                    }
+                  }}
+                  narrow={props.narrow}
+                  mask={item.mask}
+                />
+              </div>
             ))}
+
             {provided.placeholder}
           </div>
         )}
