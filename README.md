@@ -255,6 +255,9 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@WingCH](https://github.com/WingCH)
 [@jtung4](https://github.com/jtung4)
 [@micozhu](https://github.com/micozhu)
+[@jhansion](https://github.com/jhansion)
+[@Sha1rholder](https://github.com/Sha1rholder)
+[@AnsonHyq](https://github.com/AnsonHyq)
 
 ### Contributor
 
