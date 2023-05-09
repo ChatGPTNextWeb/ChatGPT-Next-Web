@@ -14,7 +14,7 @@ import CopyIcon from "../icons/copy.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { Message, ModelConfig, ROLES, useChatStore } from "../store";
-import { Input, List, ListItem, Modal, Popover, showToast } from "./ui-lib";
+import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
