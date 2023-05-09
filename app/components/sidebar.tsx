@@ -96,9 +96,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}><a href="https://prm.aiprm.top" target="_blank">Aiprm.top</a></div>
+        <div className={styles["sidebar-title"]}><a href="https://aiprm.top" target="_blank">Aiprm.top</a></div>
         <div className={styles["sidebar-sub-title"]}>
-        密码在公众号：cn2ltd 我就免费有本事一直cc我啊
+        密码在公众号：cn2ltd  就不收费有本事一直cc我啊
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -116,13 +116,10 @@ export function SideBar(props: { className?: string }) {
         <IconButton
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
-          href="https://prm.aiprm.top"
-          target="_blank"
           className={styles["sidebar-bar-button"]}
+          onClick={() => window.open("https://prm.aiprm.top", "_blank")}
           shadow
         />
-
-
       </div>
 
       <div
