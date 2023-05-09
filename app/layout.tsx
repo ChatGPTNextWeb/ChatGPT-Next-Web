@@ -10,7 +10,7 @@ export const metadata = {
   title: "樊氏ChatGPT",
   description: "樊氏ChatGPT Chat Bot.",
   appleWebApp: {
-    title: "ChatGPT",
+    title: "樊氏ChatGPT",
     statusBarStyle: "default",
   },
   themeColor: "#fafafa",
