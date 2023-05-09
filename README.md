@@ -83,6 +83,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 ## 最新动态
 
 - 🚀 v2.0 已经发布，现在你可以使用面具功能快速创建预制对话了！ 了解更多： [ChatGPT 提示词高阶技能：零次、一次和少样本提示](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)。
+- 💡 想要更方便地随时随地使用本项目？可以试下这款桌面插件：https://github.com/mushan0x0/AI0x0.com
 
 ## Get Started
 
