@@ -123,18 +123,12 @@ export function ChatList(props: { narrow?: boolean }) {
         return;
       }
 
-      if (ctrlArrowUp) {
-        console.log("向上", selectedIndex);
-        if (selectedIndex !== 0) {
-          selectSession(selectedIndex - 1);
-        }
+      if (ctrlArrowUp && selectedIndex !== 0) {
+        selectSession(selectedIndex - 1);
       }
 
-      if (ctrlArrowDown) {
-        console.log("向下", selectedIndex);
-        if (selectedIndex !== sessions.length - 1) {
-          selectSession(selectedIndex + 1);
-        }
+      if (ctrlArrowDown && selectedIndex !== sessions.length - 1) {
+        selectSession(selectedIndex + 1);
       }
     };
     window.addEventListener("keydown", onKeyDown);
