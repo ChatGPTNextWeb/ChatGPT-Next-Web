@@ -180,8 +180,9 @@ export const useChatStore = create<ChatStore>()(
         const sessions = get().sessions.slice();
         sessions.splice(index, 1);
 
+        const currentIndex = get().currentSessionIndex;
         let nextIndex = Math.min(
-          get().currentSessionIndex,
+          currentIndex - Number(index < currentIndex),
           sessions.length - 1,
         );
 
