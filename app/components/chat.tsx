@@ -53,7 +53,7 @@ import chatStyle from "./chat.module.scss";
 
 import { ListItem, Modal, showModal } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Path } from "../constant";
+import { Path, SlotID } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -492,7 +492,11 @@ export function Chat() {
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // if ArrowUp and no userInput
-    if (e.key === "ArrowUp" && userInput.length <= 0) {
+    if (
+      !(e.metaKey || e.ctrlKey) &&
+      e.key === "ArrowUp" &&
+      userInput.length <= 0
+    ) {
       setUserInput(beforeInput);
       e.preventDefault();
       return;
@@ -801,6 +805,7 @@ export function Chat() {
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
+            id={SlotID.chatInput}
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}

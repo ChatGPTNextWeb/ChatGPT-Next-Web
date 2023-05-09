@@ -17,6 +17,7 @@ export enum Path {
 
 export enum SlotID {
   AppBody = "app-body",
+  chatInput = "chat-textArea-input",
 }
 
 export enum FileName {

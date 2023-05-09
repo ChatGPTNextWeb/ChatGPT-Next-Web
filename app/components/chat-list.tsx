@@ -13,9 +13,10 @@ import { useChatStore } from "../store";
 
 import Locale from "../locales";
 import { Link, useNavigate } from "react-router-dom";
-import { Path } from "../constant";
+import { Path, SlotID } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
+import { useEffect } from "react";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -106,6 +107,40 @@ export function ChatList(props: { narrow?: boolean }) {
 
     moveSession(source.index, destination.index);
   };
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      e.stopPropagation();
+      const ctrlArrowUp = (e.metaKey || e.ctrlKey) && e.key === "ArrowUp";
+      const ctrlArrowDown = (e.metaKey || e.ctrlKey) && e.key === "ArrowDown";
+      const activeElement = document.activeElement;
+
+      if (
+        activeElement instanceof HTMLTextAreaElement &&
+        activeElement.id === SlotID.chatInput &&
+        activeElement?.value !== ""
+      ) {
+        return;
+      }
+
+      if (ctrlArrowUp) {
+        console.log("向上", selectedIndex);
+        if (selectedIndex !== 0) {
+          selectSession(selectedIndex - 1);
+        }
+      }
+
+      if (ctrlArrowDown) {
+        console.log("向下", selectedIndex);
+        if (selectedIndex !== sessions.length - 1) {
+          selectSession(selectedIndex + 1);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIndex, sessions]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
