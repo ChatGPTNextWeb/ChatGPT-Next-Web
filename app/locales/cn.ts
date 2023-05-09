@@ -150,7 +150,7 @@ const cn = {
     },
     AccessCode: {
       Title: "访问密码",
-      SubTitle: "密码在公众号里： cn2ltd ",
+      SubTitle: "密码在公众号里： cn2ltd",
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
