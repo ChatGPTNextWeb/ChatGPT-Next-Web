@@ -11,10 +11,11 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
+import ShareIcon from "../icons/share.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { Message, ModelConfig, ROLES, useChatStore } from "../store";
-import { Input, List, ListItem, Modal, Popover, showToast } from "./ui-lib";
+import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
@@ -358,6 +359,14 @@ export function MaskPage() {
                   </div>
                 </div>
                 <div className={styles["mask-actions"]}>
+                  <IconButton
+                    icon={<ShareIcon />}
+                    text={Locale.Mask.Item.Chat}
+                    onClick={() => {
+                      chatStore.newSession(m);
+                      navigate(Path.Chat);
+                    }}
+                  />
                   <IconButton
                     icon={<AddIcon />}
                     text={Locale.Mask.Item.Chat}
