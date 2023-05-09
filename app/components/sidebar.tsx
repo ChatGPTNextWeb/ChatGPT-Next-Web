@@ -115,10 +115,13 @@ export function SideBar(props: { className?: string }) {
         />
         <IconButton
           icon={<PluginIcon />}
-          text={<a href="https://prm.aiprm.top" target="_blank">{shouldNarrow ? undefined : Locale.Plugin.Name}</a>}
+          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          href="https://prm.aiprm.top"
+          target="_blank"
           className={styles["sidebar-bar-button"]}
           shadow
         />
+
 
       </div>
 
