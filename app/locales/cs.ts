@@ -199,7 +199,7 @@ const cs: LocaleType = {
   Mask: {
     Name: "Maska",
     Page: {
-      Title: "Šablona pokynu"",
+      Title: "Šablona pokynu",
       SubTitle: (count: number) => `${count} šablon pokynů`,
       Search: "Hledat v šablonách",
       Create: "Vytvořit",
@@ -239,7 +239,7 @@ const cs: LocaleType = {
     Close: "Zavřít",
     Create: "Vytvořit",
     Edit: "Upravit",
-  },
+  }
 };
 
 export default cs;
