@@ -7,10 +7,10 @@ import { getBuildConfig } from "./config/build";
 const buildConfig = getBuildConfig();
 
 export const metadata = {
-  title: "易聊 Eazy-Chat",
+  title: "Eazy-Chat",
   description: "Your personal ChatGPT Chat Bot.",
   appleWebApp: {
-    title: "易聊 Eazy-Chat",
+    title: "Eazy-Chat",
     statusBarStyle: "default",
   },
   themeColor: "#fafafa",
