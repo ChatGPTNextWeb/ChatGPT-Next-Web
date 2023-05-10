@@ -29,7 +29,7 @@ export const getServerSideConfig = () => {
     throw Error(
       "[Server Config] you are importing a nodejs-only module outside of nodejs",
     );
-  }
+  } else console.log("is vercel");
 
   return {
     apiKey: process.env.OPENAI_API_KEY,
