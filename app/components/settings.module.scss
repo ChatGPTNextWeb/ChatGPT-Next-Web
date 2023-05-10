@@ -1,35 +1,23 @@
-@import "./window.scss";
-
 .settings {
   padding: 20px;
   overflow: auto;
-}
-
-.settings-title {
-  font-size: 14px;
-  font-weight: bolder;
-}
-
-.settings-sub-title {
-  font-size: 12px;
-  font-weight: normal;
 }
 
 .avatar {
   cursor: pointer;
 }
 
-.password-input-container {
-  max-width: 50%;
+.edit-prompt-modal {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
 
-  .password-eye {
-    margin-right: 4px;
+  .edit-prompt-title {
+    max-width: unset;
+    margin-bottom: 20px;
+    text-align: left;
   }
-
-  .password-input {
-    min-width: 80%;
+  .edit-prompt-content {
+    max-width: unset;
   }
 }
 
@@ -44,51 +32,41 @@
   }
 
   .user-prompt-list {
-    padding: 10px 0;
+    border: var(--border-in-light);
+    border-radius: 10px;
 
     .user-prompt-item {
-      margin-bottom: 10px;
-      widows: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+
+      &:not(:last-child) {
+        border-bottom: var(--border-in-light);
+      }
 
       .user-prompt-header {
-        display: flex;
-        widows: 100%;
-        margin-bottom: 5px;
+        max-width: calc(100% - 100px);
 
         .user-prompt-title {
-          flex-grow: 1;
-          max-width: 100%;
-          margin-right: 5px;
-          padding: 5px;
-          font-size: 12px;
-          text-align: left;
+          font-size: 14px;
+          line-height: 2;
+          font-weight: bold;
         }
-
-        .user-prompt-buttons {
-          display: flex;
-          align-items: center;
-
-          .user-prompt-button {
-            height: 100%;
-
-            &:not(:last-child) {
-              margin-right: 5px;
-            }
-          }
+        .user-prompt-content {
+          font-size: 12px;
         }
       }
 
-      .user-prompt-content {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 5px;
-        margin-right: 10px;
-        font-size: 12px;
-        flex-grow: 1;
+      .user-prompt-buttons {
+        display: flex;
+        align-items: center;
+        column-gap: 2px;
+
+        .user-prompt-button {
+          //height: 100%;
+          padding: 7px;
+        }
       }
     }
-  }
-
-  .user-prompt-actions {
   }
 }

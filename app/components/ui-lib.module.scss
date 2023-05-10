@@ -35,6 +35,25 @@
   border-bottom: var(--border-in-light);
   padding: 10px 20px;
   animation: slide-in ease 0.6s;
+
+  .list-header {
+    display: flex;
+    align-items: center;
+
+    .list-icon {
+      margin-right: 10px;
+    }
+
+    .list-item-title {
+      font-size: 14px;
+      font-weight: bolder;
+    }
+
+    .list-item-sub-title {
+      font-size: 12px;
+      font-weight: normal;
+    }
+  }
 }
 
 .list {
@@ -89,6 +108,8 @@
     padding: var(--modal-padding);
     display: flex;
     justify-content: flex-end;
+    border-top: var(--border-in-light);
+    box-shadow: var(--shadow);
 
     .modal-actions {
       display: flex;
@@ -99,6 +120,18 @@
           margin-right: 20px;
         }
       }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .modal-container {
+    width: 100vw;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    .modal-content {
+      max-height: 50vh;
     }
   }
 }
@@ -122,7 +155,7 @@
 
 .toast-container {
   position: fixed;
-  bottom: 0;
+  bottom: 5vh;
   left: 0;
   width: 100vw;
   display: flex;
@@ -169,14 +202,4 @@
   color: var(--black);
   resize: none;
   min-width: 50px;
-}
-
-@media only screen and (max-width: 600px) {
-  .modal-container {
-    width: 90vw;
-
-    .modal-content {
-      max-height: 50vh;
-    }
-  }
 }
