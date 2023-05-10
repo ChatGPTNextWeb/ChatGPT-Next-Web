@@ -6,7 +6,7 @@ import IT from "./it";
 import TR from "./tr";
 import JP from "./jp";
 import DE from "./de";
-import DE from "./cs";
+import CS from "./cs";
 
 export type { LocaleType } from "./cn";
 
