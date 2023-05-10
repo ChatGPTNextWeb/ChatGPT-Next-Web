@@ -168,7 +168,13 @@ Specify OpenAI organization ID.
 
 > Default: Empty
 
-If you do not want users to input their own API key, set this environment variable to 1.
+If you do not want users to input their own API key, set this value to 1.
+
+### `DISABLE_GPT4` (optional)
+
+> Default: Empty
+
+If you do not want users to use GPT-4, set this value to 1.
 
 ## Development
 
