@@ -75,7 +75,7 @@
   border-radius: 12px;
   width: 60vw;
   animation: slide-in ease 0.3s;
-
+  position: fixed;
   --modal-padding: 20px;
 
   .modal-header {

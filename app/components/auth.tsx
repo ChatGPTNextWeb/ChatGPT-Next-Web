@@ -1,19 +1,17 @@
 import { Button } from "./button";
 import styles from "./auth.module.scss";
-import { Modal, showToast } from "./ui-lib";
+import { Loading, Modal, showToast } from "./ui-lib";
 import { useEffect, useState } from "react";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
-import { AuthenticationClient } from "authing-js-sdk";
 import { trimPhoneNumberOrText, validatePhoneFormat } from "../utils";
 import { AuthStore, authStore } from "../store/auth";
-const authenticationClient = new AuthenticationClient({
-  appId: "64488f3c269681acaa583a71",
-  appHost: "https://haogpt.authing.cn",
-});
+import { sentSms, userLogin } from "../api/account";
+import authManager from "../utils/auth";
 let timer: any;
 export function AuthModal() {
   const authStoreInfo: any = authStore();
   const [time, setTime] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [phone, setPhone] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const onPhoneChange = (e: { target: { value: string } }) => {
@@ -27,7 +25,6 @@ export function AuthModal() {
   };
 
   const requestVerificationCode = async () => {
-    console.log(1111111, phone, time);
     if (!validatePhoneFormat(phone)) {
       showToast("请输入正确的手机号");
       return;
@@ -36,12 +33,13 @@ export function AuthModal() {
       return;
     }
     try {
-      //   setIsLoading(true);
-      await authenticationClient.sendSmsCode(phone);
-      //   setIsLoading(false);
+      setIsLoading(true);
+      await sentSms(phone);
+      setIsLoading(false);
       showToast("我们已将验证码发送到您的手机，请留意短信");
       setTime(60);
     } catch (e) {
+      setIsLoading(false);
       showToast("发送验证码失败，请稍后重试");
     }
   };
@@ -63,6 +61,7 @@ export function AuthModal() {
 
   return (
     <div className="modal-mask">
+      {isLoading && <Loading />}
       <Modal
         title={"登录"}
         onClose={() => authStoreInfo.updateAuthModalVisible(false)}
@@ -70,7 +69,19 @@ export function AuthModal() {
           <Button
             key="submit"
             className={styles["authing-guard-form-submit-btn"]}
-            onClick={() => authenticationClient.loginByPhoneCode(phone, code)}
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                const data = { phoneNumber: phone, smsCode: code };
+                const authToken = await userLogin(data);
+                authManager.setToken(authToken.token);
+                setIsLoading(false);
+                showToast("登录成功");
+              } catch {
+                setIsLoading(false);
+                showToast("登录失败，请稍后重试");
+              }
+            }}
             bordered
             text={"确定"}
           />,
