@@ -1,6 +1,7 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
+import type { LocaleType } from "./index";
 
-const jp = {
+const jp: LocaleType = {
   WIP: "この機能は開発中です……",
   Error: {
     Unauthorized:
@@ -30,6 +31,10 @@ const jp = {
       return inputHints + "，/ で自動補完をトリガー";
     },
     Send: "送信",
+    Config: {
+      Reset: "重置默认",
+      SaveAs: "另存为面具",
+    },
   },
   Export: {
     Title: "チャット履歴をMarkdown形式でエクスポート",
@@ -60,15 +65,12 @@ const jp = {
       ClearAll: "すべてのデータをクリア",
       ResetAll: "すべてのオプションをリセット",
       Close: "閉じる",
-      ConfirmResetAll: {
-        Confirm: "すべての設定をリセットしてもよろしいですか？",
-      },
-      ConfirmClearAll: {
-        Confirm: "すべてのチャットをリセットしてもよろしいですか？",
-      },
+      ConfirmResetAll: "すべての設定をリセットしてもよろしいですか？",
+      ConfirmClearAll: "すべてのチャットをリセットしてもよろしいですか？",
     },
     Lang: {
-      Name: "Language",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "所有语言",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -78,7 +80,8 @@ const jp = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        cs: "Čeština",
+        vi: "Vietnamese",
+        ru: "Русский",
       },
     },
     Avatar: "アバター",
@@ -98,7 +101,14 @@ const jp = {
     SendKey: "送信キー",
     Theme: "テーマ",
     TightBorder: "ボーダーレスモード",
-    SendPreviewBubble: "プレビューバブルの送信",
+    SendPreviewBubble: {
+      Title: "プレビューバブルの送信",
+      SubTitle: "在预览气泡中预览 Markdown 内容",
+    },
+    Mask: {
+      Title: "面具启动页",
+      SubTitle: "新建聊天时，展示面具启动页",
+    },
     Prompt: {
       Disable: {
         Title: "プロンプトの自動補完を無効にする",
@@ -113,6 +123,9 @@ const jp = {
         Title: "プロンプトリスト",
         Add: "新規追加",
         Search: "プロンプトワード検索",
+      },
+      EditModal: {
+        Title: "编辑提示词",
       },
     },
     HistoryCount: {
@@ -171,8 +184,6 @@ const jp = {
       Summarize:
         "あなたとユーザの会話を簡潔にまとめて、後続のコンテキストプロンプトとして使ってください。200字以内に抑えてください。",
     },
-    ConfirmClearAll:
-      "すべてのチャット、設定データをクリアしてもよろしいですか？",
   },
   Copy: {
     Success: "クリップボードに書き込みました",
@@ -182,6 +193,51 @@ const jp = {
     Toast: (x: any) => `前置コンテキストが ${x} 件設定されました`,
     Edit: "前置コンテキストと履歴メモリ",
     Add: "新規追加",
+  },
+  Plugin: { Name: "插件" },
+  Mask: {
+    Name: "面具",
+    Page: {
+      Title: "预设角色面具",
+      SubTitle: (count: number) => `${count} 个预设角色定义`,
+      Search: "搜索角色面具",
+      Create: "新建",
+    },
+    Item: {
+      Info: (count: number) => `包含 ${count} 条预设对话`,
+      Chat: "对话",
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `编辑预设面具 ${readonly ? "（只读）" : ""}`,
+      Download: "下载预设",
+      Clone: "克隆预设",
+    },
+    Config: {
+      Avatar: "角色头像",
+      Name: "角色名称",
+    },
+  },
+  NewChat: {
+    Return: "返回",
+    Skip: "跳过",
+    Title: "挑选一个面具",
+    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
+    More: "搜索更多",
+    NotShow: "不再展示",
+    ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
+  },
+
+  UI: {
+    Confirm: "确认",
+    Cancel: "取消",
+    Close: "关闭",
+    Create: "新建",
+    Edit: "编辑",
   },
 };
 

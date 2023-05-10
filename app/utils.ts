@@ -1,4 +1,4 @@
-import { EmojiStyle } from "emoji-picker-react";
+import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
@@ -42,13 +42,67 @@ export function downloadAs(text: string, filename: string) {
   document.body.removeChild(element);
 }
 
+export function readFromFile() {
+  return new Promise<string>((res, rej) => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "application/json";
+
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = (e: any) => {
+        res(e.target.result);
+      };
+      fileReader.onerror = (e) => rej(e);
+      fileReader.readAsText(file);
+    };
+
+    fileInput.click();
+  });
+}
+
 export function isIOS() {
   const userAgent = navigator.userAgent.toLowerCase();
   return /iphone|ipad|ipod/.test(userAgent);
 }
 
+export function useWindowSize() {
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const onResize = () => {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  return size;
+}
+
+export const MOBILE_MAX_WIDTH = 600;
+export function useMobileScreen() {
+  const { width } = useWindowSize();
+
+  return width <= MOBILE_MAX_WIDTH;
+}
+
 export function isMobileScreen() {
-  return window.innerWidth <= 600;
+  if (typeof window === "undefined") {
+    return false;
+  }
+  return window.innerWidth <= MOBILE_MAX_WIDTH;
 }
 
 export function isFirefox() {
@@ -67,10 +121,6 @@ export function selectOrCopy(el: HTMLElement, content: string) {
   copyToClipboard(content);
 
   return true;
-}
-
-export function getEmojiUrl(unified: string, style: EmojiStyle) {
-  return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
 }
 
 function getDomContentWidth(dom: HTMLElement) {
@@ -108,15 +158,15 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
   const width = getDomContentWidth(dom);
   measureDom.style.width = width + "px";
-  measureDom.innerHTML = dom.value.trim().length > 0 ? dom.value : "1";
-
-  const lineWrapCount = Math.max(0, dom.value.split("\n").length - 1);
+  measureDom.innerText = dom.value !== "" ? dom.value : "1";
+  const endWithEmptyLine = dom.value.endsWith("\n");
   const height = parseFloat(window.getComputedStyle(measureDom).height);
   const singleLineHeight = parseFloat(
     window.getComputedStyle(singleLineDom).height,
   );
 
-  const rows = Math.round(height / singleLineHeight) + lineWrapCount;
+  const rows =
+    Math.round(height / singleLineHeight) + (endWithEmptyLine ? 1 : 0);
 
   return rows;
 }

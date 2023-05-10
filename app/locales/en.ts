@@ -1,8 +1,8 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
-  WIP: "WIP...",
+  WIP: "Coming Soon...",
   Error: {
     Unauthorized:
       "Unauthorized access, please enter access code in settings page.",
@@ -31,6 +31,10 @@ const en: LocaleType = {
       return inputHints + ", / to search prompts";
     },
     Send: "Send",
+    Config: {
+      Reset: "Reset to Default",
+      SaveAs: "Save as Mask",
+    },
   },
   Export: {
     Title: "All Messages",
@@ -61,15 +65,12 @@ const en: LocaleType = {
       ClearAll: "Clear All Data",
       ResetAll: "Reset All Settings",
       Close: "Close",
-      ConfirmResetAll: {
-        Confirm: "Are you sure you want to reset all configurations?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Are you sure you want to reset all chat?",
-      },
+      ConfirmResetAll: "Are you sure you want to reset all configurations?",
+      ConfirmClearAll: "Are you sure you want to reset all data?",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "All Languages",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -79,7 +80,8 @@ const en: LocaleType = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        cs: "Čeština",
+        vi: "Vietnamese",
+        ru: "Русский",
       },
     },
     Avatar: "Avatar",
@@ -98,7 +100,14 @@ const en: LocaleType = {
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
-    SendPreviewBubble: "Send Preview Bubble",
+    SendPreviewBubble: {
+      Title: "Send Preview Bubble",
+      SubTitle: "Preview markdown in bubble",
+    },
+    Mask: {
+      Title: "Mask Splash Screen",
+      SubTitle: "Show a mask splash screen before starting new chat",
+    },
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
@@ -112,6 +121,9 @@ const en: LocaleType = {
         Title: "Prompt List",
         Add: "Add One",
         Search: "Search Prompts",
+      },
+      EditModal: {
+        Title: "Edit Prompt",
       },
     },
     HistoryCount: {
@@ -170,7 +182,6 @@ const en: LocaleType = {
       Summarize:
         "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
     },
-    ConfirmClearAll: "Confirm to clear all chat and setting data?",
   },
   Copy: {
     Success: "Copied to clipboard",
@@ -179,7 +190,54 @@ const en: LocaleType = {
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
-    Add: "Add One",
+    Add: "Add a Prompt",
+  },
+  Plugin: {
+    Name: "Plugin",
+  },
+  Mask: {
+    Name: "Mask",
+    Page: {
+      Title: "Prompt Template",
+      SubTitle: (count: number) => `${count} prompt templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} prompts`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+    },
+  },
+  NewChat: {
+    Return: "Return",
+    Skip: "Skip",
+    Title: "Pick a Mask",
+    SubTitle: "Chat with the Soul behind the Mask",
+    More: "Find More",
+    NotShow: "Not Show Again",
+    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+  },
+
+  UI: {
+    Confirm: "Confirm",
+    Cancel: "Cancel",
+    Close: "Close",
+    Create: "Create",
+    Edit: "Edit",
   },
 };
 
