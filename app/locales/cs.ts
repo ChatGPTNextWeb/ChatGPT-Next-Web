@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const cs: LocaleType = {
@@ -31,6 +31,10 @@ const cs: LocaleType = {
       return inputHints + ", / pro vyhledávání pokynů";
     },
     Send: "Odeslat",
+    Config: {
+      Reset: "Obnovit výchozí",
+      SaveAs: "Uložit jako Masku",
+    },
   },
   Export: {
     Title: "Všechny zprávy",
@@ -59,18 +63,15 @@ const cs: LocaleType = {
     SubTitle: "Všechna nastavení",
     Actions: {
       ClearAll: "Vymazat všechna data",
-      ResetAll: "Obnovení všech nastavení",
+      ResetAll: "Obnovit veškeré nastavení",
       Close: "Zavřít",
-      ConfirmResetAll: {
-        Confirm: "Jste si jisti, že chcete obnovit veškerou konfiguraci?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Jste si jisti, že chcete obnovit celý chat?",
-      },
+      ConfirmResetAll: "Jste si jisti, že chcete obnovit všechna nastavení?",
+      ConfirmClearAll: "Jste si jisti, že chcete smazat všechna data?",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      Options: {
+        All: "Všechny jazyky",
+        Options: {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
@@ -79,6 +80,8 @@ const cs: LocaleType = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
+        vi: "Vietnamese",
+        ru: "Русский",
         cs: "Čeština",
       },
     },
@@ -98,7 +101,14 @@ const cs: LocaleType = {
     SendKey: "Odeslat klíč",
     Theme: "Téma",
     TightBorder: "Těsné ohraničení",
-    SendPreviewBubble: "Náhled v chatovací bublině",
+    SendPreviewBubble: {
+      Title: "Odesílat chatovací bublinu s náhledem",
+      SubTitle: "Zobrazit v náhledu bubliny",
+    },
+    Mask: {
+      Title: "Úvodní obrazovka Masek",
+      SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
+    },
     Prompt: {
       Disable: {
         Title: "Deaktivovat automatické dokončování",
@@ -112,6 +122,9 @@ const cs: LocaleType = {
         Title: "Seznam pokynů",
         Add: "Přidat pokyn",
         Search: "Hledat pokyny",
+      },
+      EditModal: {
+        Title: "Editovat pokyn",
       },
     },
     HistoryCount: {
@@ -131,9 +144,9 @@ const cs: LocaleType = {
     Usage: {
       Title: "Stav účtu",
       SubTitle(used: any, total: any) {
-        return `Použito tento měsíc $${used}, předplatné $${total}`;
+        return `Použito tento měsíc $${used}, předplaceno $${total}`;
       },
-      IsChecking: "Kontroluje se...",
+      IsChecking: "Kontroluji...",
       Check: "Zkontrolovat",
       NoAccess: "Pro kontrolu zůstatku zadejte klíč API",
     },
@@ -169,8 +182,7 @@ const cs: LocaleType = {
         "Vytvořte prosím název o čtyřech až pěti slovech vystihující průběh našeho rozhovoru bez jakýchkoli úvodních slov, interpunkčních znamének, uvozovek, teček, symbolů nebo dalšího textu. Odstraňte uvozovky.",
       Summarize:
         "Krátce shrň naši diskusi v rozsahu do 200 slov a použij ji jako podnět pro budoucí kontext.",
-    },
-    ConfirmClearAll: "Potvrďte pro vymazání všech dat chatu a nastavení?",
+      },
   },
   Copy: {
     Success: "Zkopírováno do schránky",
@@ -179,7 +191,54 @@ const cs: LocaleType = {
   Context: {
     Toast: (x: any) => `Použití ${x} kontextových pokynů`,
     Edit: "Kontextové a paměťové pokyny",
-    Add: "Přidat",
+    Add: "Přidat pokyn",
+  },
+  Plugin: {
+    Name: "Plugin",
+  },
+  Mask: {
+    Name: "Maska",
+    Page: {
+      Title: "Šablona pokynu"",
+      SubTitle: (count: number) => `${count} šablon pokynů`,
+      Search: "Hledat v šablonách",
+      Create: "Vytvořit",
+    },
+    Item: {
+      Info: (count: number) => `${count} pokynů`,
+      Chat: "Chat",
+      View: "Zobrazit",
+      Edit: "Upravit",
+      Delete: "Smazat",
+      DeleteConfirm: "Potvrdit smazání?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Editovat šablonu pokynu ${readonly ? "(pouze ke čtení)" : ""}`,
+      Download: "Stáhnout",
+      Clone: "Duplikovat",
+    },
+    Config: {
+      Avatar: "Avatar Bota",
+      Name: "Jméno Bota",
+    },
+  },
+  NewChat: {
+    Return: "Zpět",
+    Skip: "Přeskočit",
+    Title: "Vyberte Masku",
+    SubTitle: "Chatovat s duší za Maskou",
+    More: "Najít více",
+    NotShow: "Nezobrazovat znovu",
+    ConfirmNoShow: "Potvrdit zakázání？Můžete jej povolit později v nastavení.",
+},
+
+  UI: {
+    Confirm: "Potvrdit",
+    Cancel: "Zrušit",
+    Close: "Zavřít",
+    Create: "Vytvořit",
+    Edit: "Upravit",
   },
 };
 
