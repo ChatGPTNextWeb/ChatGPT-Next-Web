@@ -83,6 +83,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 ## 最新动态
 
 - 🚀 v2.0 已经发布，现在你可以使用面具功能快速创建预制对话了！ 了解更多： [ChatGPT 提示词高阶技能：零次、一次和少样本提示](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)。
+- 💡 想要更方便地随时随地使用本项目？可以试下这款桌面插件：https://github.com/mushan0x0/AI0x0.com
 
 ## Get Started
 
@@ -167,7 +168,13 @@ Specify OpenAI organization ID.
 
 > Default: Empty
 
-If you do not want users to input their own API key, set this environment variable to 1.
+If you do not want users to input their own API key, set this value to 1.
+
+### `DISABLE_GPT4` (optional)
+
+> Default: Empty
+
+If you do not want users to use GPT-4, set this value to 1.
 
 ## Development
 
@@ -255,6 +262,9 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [@WingCH](https://github.com/WingCH)
 [@jtung4](https://github.com/jtung4)
 [@micozhu](https://github.com/micozhu)
+[@jhansion](https://github.com/jhansion)
+[@Sha1rholder](https://github.com/Sha1rholder)
+[@AnsonHyq](https://github.com/AnsonHyq)
 
 ### Contributor
 
