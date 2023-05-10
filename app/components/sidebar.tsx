@@ -143,7 +143,11 @@ export function SideBar(props: { className?: string }) {
           shadow
         />
         {location.search && location.search.indexOf("w") > -1 ? (
-          <Link target="_blank" to={"/"} style={{ textDecoration: "none" }}>
+          <Link
+            target="_blank"
+            to={"https://now.eazy-chat.top/"}
+            style={{ textDecoration: "none" }}
+          >
             <IconButton
               icon={<CopyIcon />}
               text={"全屏展示"}
