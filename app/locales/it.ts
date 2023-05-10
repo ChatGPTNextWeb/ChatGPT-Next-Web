@@ -69,8 +69,8 @@ const it: LocaleType = {
       ConfirmClearAll: "Sei sicuro vuoi cancellare tutte le chat?",
     },
     Lang: {
-      Name: "Lingue",
-      All: "All Languages",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "Tutte le lingue",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -81,6 +81,7 @@ const it: LocaleType = {
         jp: "日本語",
         de: "Deutsch",
         vi: "Vietnamese",
+        ru: "Русский",
       },
     },
     Avatar: "Avatar",
