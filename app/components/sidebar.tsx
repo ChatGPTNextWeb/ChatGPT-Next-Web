@@ -96,9 +96,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}><a href="https://aiprm.top" target="_blank">Aiprm.top</a></div>
+        <div className={styles["sidebar-title"]}>ChatGPT Aiprm</div>
         <div className={styles["sidebar-sub-title"]}>
-        密码在公众号：cn2ltd  就不收费有本事一直cc我啊
+        密码在公众号：cn2ltd  本站免费，请勿被骗
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
