@@ -1,0 +1,89 @@
+.voice-box {
+  box-sizing: border-box;
+  position: relative;
+  width: 80px;
+}
+
+.voice-symbol {
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transform: rotate(135deg);
+}
+
+.voice-symbol-user {
+  transform-origin: center center;
+  transform: rotate(-45deg) translate(45px, 45px);
+}
+
+.voice-circle {
+  border: var(--voice-border-in-light);
+  position: absolute;
+  border-radius: 50%;
+}
+
+.first {
+  width: 0;
+  height: 0;
+  top: 12px;
+  left: 12px;
+}
+
+.second {
+  width: 25px;
+  height: 25px;
+  top: 6px;
+  left: 6px;
+}
+
+.second-animation {
+  animation: fadeInOut1 0.8s infinite 0.1s;
+}
+
+.third {
+  width: 32px;
+  height: 32px;
+  top: 1px;
+  left: 1px;
+}
+
+.third-animation {
+  animation: fadeInOut 0.8s infinite 0.1s;
+}
+
+@keyframes fadeInOut1 {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

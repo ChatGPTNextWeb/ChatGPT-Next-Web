@@ -23,6 +23,7 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { AudioChat } from "./test/audioChat";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -131,6 +132,7 @@ function Screen() {
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
           <Route path={Path.Records} element={<Records />} />
+          <Route path={"/test"} element={<AudioChat />} />
         </Routes>
       </div>
     </div>

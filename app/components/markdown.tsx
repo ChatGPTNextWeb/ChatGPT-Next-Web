@@ -8,7 +8,7 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
-
+import styles from "./markdown.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 
@@ -117,6 +117,8 @@ export function Markdown(
     fontSize?: number;
     parentRef: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
+    isVoice?: boolean;
+    isUser?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
@@ -166,6 +168,26 @@ export function Markdown(
       {inView.current &&
         (props.loading ? (
           <LoadingIcon />
+        ) : props.isVoice ? (
+          <div className={styles["voice-box"]}>
+            <div
+              className={
+                props.isUser
+                  ? `${styles["voice-symbol"]} ${styles["voice-symbol-user"]}`
+                  : styles["voice-symbol"]
+              }
+            >
+              <div
+                className={`${styles["voice-circle"]} ${styles["first"]}`}
+              ></div>
+              <div
+                className={`${styles["voice-circle"]} ${styles["second"]}`}
+              ></div>
+              <div
+                className={`${styles["voice-circle"]} ${styles["third"]}`}
+              ></div>
+            </div>
+          </div>
         ) : (
           <MarkdownContent content={props.content} />
         ))}

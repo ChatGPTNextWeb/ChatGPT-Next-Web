@@ -17,9 +17,11 @@
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "authing-js-sdk": "^4.23.44",
+    "crypto-js": "^4.1.1",
     "emoji-picker-react": "^4.4.7",
     "eventsource-parser": "^0.1.0",
     "fuse.js": "^6.6.2",
+    "js-base64": "^3.7.5",
     "mermaid": "^10.1.0",
     "next": "^13.3.1-canary.8",
     "node-fetch": "^3.3.1",
@@ -53,6 +55,6 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
-    "typescript": "4.9.5"
+    "typescript": "^5.1.0-dev.20230509"
   }
 }

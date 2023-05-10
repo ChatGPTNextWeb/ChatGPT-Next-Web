@@ -1,25 +1,25 @@
 import { useDebouncedCallback } from "use-debounce";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
-import SendWhiteIcon from "../icons/send-white.svg";
-import BrainIcon from "../icons/brain.svg";
-import RenameIcon from "../icons/rename.svg";
-import ExportIcon from "../icons/share.svg";
-import ReturnIcon from "../icons/return.svg";
-import CopyIcon from "../icons/copy.svg";
-import DownloadIcon from "../icons/download.svg";
-import LoadingIcon from "../icons/three-dots.svg";
-import PromptIcon from "../icons/prompt.svg";
-import MaskIcon from "../icons/mask.svg";
-import MaxIcon from "../icons/max.svg";
-import MinIcon from "../icons/min.svg";
-import ResetIcon from "../icons/reload.svg";
+import SendWhiteIcon from "../../icons/send-white.svg";
+import BrainIcon from "../../icons/brain.svg";
+import RenameIcon from "../../icons/rename.svg";
+import ExportIcon from "../../icons/share.svg";
+import ReturnIcon from "../../icons/return.svg";
+import CopyIcon from "../../icons/copy.svg";
+import DownloadIcon from "../../icons/download.svg";
+import LoadingIcon from "../../icons/three-dots.svg";
+import PromptIcon from "../../icons/prompt.svg";
+import MaskIcon from "../../icons/mask.svg";
+import MaxIcon from "../../icons/max.svg";
+import MinIcon from "../../icons/min.svg";
+import ResetIcon from "../../icons/reload.svg";
 
-import LightIcon from "../icons/light.svg";
-import DarkIcon from "../icons/dark.svg";
-import AutoIcon from "../icons/auto.svg";
-import BottomIcon from "../icons/bottom.svg";
-import StopIcon from "../icons/pause.svg";
+import LightIcon from "../../icons/light.svg";
+import DarkIcon from "../../icons/dark.svg";
+import AutoIcon from "../../icons/auto.svg";
+import BottomIcon from "../../icons/bottom.svg";
+import StopIcon from "../../icons/pause.svg";
 
 import {
   Message,
@@ -33,7 +33,7 @@ import {
   useAppConfig,
   ModelConfig,
   DEFAULT_TOPIC,
-} from "../store";
+} from "../../store";
 
 import {
   copyToClipboard,
@@ -41,30 +41,31 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
-} from "../utils";
+} from "../../utils";
 
 import dynamic from "next/dynamic";
 
-import { ControllerPool } from "../requests";
-import { Prompt, usePromptStore } from "../store/prompt";
-import Locale from "../locales";
+import { ControllerPool } from "../../requests";
+import { Prompt, usePromptStore } from "../../store/prompt";
+import Locale from "../../locales";
 
-import { IconButton } from "./button";
-import styles from "./home.module.scss";
-import chatStyle from "./chat.module.scss";
+import { IconButton } from "./../button";
+import styles from "./audioChat.module.scss";
+import chatStyle from "../chat.module.scss";
 
-import { ListItem, Modal, showModal } from "./ui-lib";
+import { ListItem, Modal, showModal } from "../ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Path } from "../constant";
-import { Avatar } from "./emoji";
-import { MaskAvatar, MaskConfig } from "./mask";
+import { Path } from "../../constant";
+import { Avatar } from "../emoji";
+import { MaskAvatar, MaskConfig } from "../mask";
 import {
   DEFAULT_MASK_AVATAR,
   DEFAULT_MASK_ID,
   useMaskStore,
-} from "../store/mask";
+} from "../../store/mask";
+import AudioRecord from "./audioRecord";
 
-const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+const Markdown = dynamic(async () => (await import("../markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
 
@@ -175,7 +176,7 @@ function PromptToast(props: {
 
   return (
     <div className={chatStyle["prompt-toast"]} key="prompt-toast">
-      {props.showToast && (
+      {/* {props.showToast && (
         <div
           className={chatStyle["prompt-toast-inner"] + " clickable"}
           role="button"
@@ -186,7 +187,7 @@ function PromptToast(props: {
             {Locale.Context.Toast(context.length)}
           </span>
         </div>
-      )}
+      )} */}
       {props.showModal && (
         <SessionConfigModel onClose={() => props.setShowModal(false)} />
       )}
@@ -396,7 +397,7 @@ export function ChatActions(props: {
   );
 }
 
-export function Chat() {
+export function AudioChat() {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -617,7 +618,7 @@ export function Chat() {
   const location = useLocation();
   const isChat = location.pathname === Path.Chat;
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
-
+  console.log(234, messages);
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header">
@@ -632,7 +633,7 @@ export function Chat() {
             {Locale.Chat.SubTitle(session.messages.length)}
           </div>
         </div>
-        <div className="window-actions">
+        {/* <div className="window-actions">
           <div className={"window-action-button" + " " + styles.mobile}>
             <IconButton
               icon={<ReturnIcon />}
@@ -674,7 +675,7 @@ export function Chat() {
               />
             </div>
           )}
-        </div>
+        </div> */}
 
         <PromptToast
           showToast={!hitBottom}
@@ -771,6 +772,8 @@ export function Chat() {
                     fontSize={fontSize}
                     parentRef={scrollRef}
                     defaultShow={i >= messages.length - 10}
+                    isVoice={true}
+                    isUser={isUser}
                   />
                 </div>
                 {!isUser && !message.preview && (
@@ -786,40 +789,7 @@ export function Chat() {
         })}
       </div>
 
-      <div className={styles["chat-input-panel"]}>
-        <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
-
-        <ChatActions
-          showPromptModal={() => setShowPromptModal(true)}
-          scrollToBottom={scrollToBottom}
-          hitBottom={hitBottom}
-          showPromptHints={() => {
-            inputRef.current?.focus();
-            onSearch("");
-          }}
-        />
-        <div className={styles["chat-input-panel-inner"]}>
-          <textarea
-            ref={inputRef}
-            className={styles["chat-input"]}
-            placeholder={Locale.Chat.Input(submitKey)}
-            onInput={(e) => onInput(e.currentTarget.value)}
-            value={userInput}
-            onKeyDown={onInputKeyDown}
-            onFocus={() => setAutoScroll(true)}
-            onBlur={() => setAutoScroll(false)}
-            rows={inputRows}
-            autoFocus={autoFocus}
-          />
-          <IconButton
-            icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
-            className={styles["chat-input-send"]}
-            type="primary"
-            onClick={onUserSubmit}
-          />
-        </div>
-      </div>
+      <AudioRecord />
     </div>
   );
 }
