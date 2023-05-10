@@ -3,6 +3,7 @@ import { initUser } from "@/app/util/redis_util";
 import { User } from "@/app/api/user/user";
 const crypto = require("crypto");
 
+// api url: /api/user?password=xxx&days=7&balance=300
 export async function GET(req: NextRequest) {
   const password = req.nextUrl.searchParams.get("password");
   if (password != process.env.ADMIN_PASSWORD) {
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
     api_key: api_key,
     balance: balance,
     seconds: days * 24 * 60 * 60,
+    createdAt: Date.now(),
   };
   const result = await initUser(api_key, JSON.stringify(user), user.seconds);
   return NextResponse.json(result);

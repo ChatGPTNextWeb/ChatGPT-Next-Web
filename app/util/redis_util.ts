@@ -64,3 +64,17 @@ export async function redisGet(key: string | null) {
   await client.disconnect();
   return value;
 }
+
+export async function redisKeys() {
+  await client.connect();
+  const keys = await client.keys("*");
+  await client.disconnect();
+  return keys;
+}
+
+export async function getTTL(key: string) {
+  await client.connect();
+  const ttl = await client.ttl(key);
+  await client.disconnect();
+  return ttl;
+}
