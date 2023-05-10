@@ -41,6 +41,11 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
         <script src="/serviceWorkerRegister.js" defer></script>
+        <script
+          src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"
+          defer
+        ></script>
+        <script>var vConsole = new window.VConsole();</script>
       </head>
       <body>{children}</body>
     </html>

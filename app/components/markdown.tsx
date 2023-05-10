@@ -8,7 +8,7 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
-import styles from "./markdown.module.scss";
+import styles from "./voice.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 

@@ -79,10 +79,10 @@ class TTSRecorder {
     this.rawAudioData = [];
     this.audioDataOffset = 0;
     this.status = "init";
-    transWorker.onmessage = (e: any) => {
-      this.audioData.push(...e.data.data);
-      this.rawAudioData.push(...e.data.rawAudioData);
-    };
+    // transWorker.onmessage = (e: any) => {
+    //   this.audioData.push(...e.data.data);
+    //   this.rawAudioData.push(...e.data.rawAudioData);
+    // };
   }
   // 修改录音听写状态
   setStatus(status: any) {
@@ -199,7 +199,7 @@ class TTSRecorder {
       this.resetAudio();
       return;
     }
-    transWorker.postMessage(jsonData.data.audio);
+    // transWorker.postMessage(jsonData.data.audio);
 
     if (jsonData.code === 0 && jsonData.data.status === 2) {
       this.ttsWS.close();

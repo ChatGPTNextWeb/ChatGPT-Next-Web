@@ -8,9 +8,11 @@ import React, { useState } from "react";
 import { IconButton } from "../button";
 import styles from "./audioChat.module.scss";
 import { ttsRecorder } from "./index";
+import stylesVoice from "../voice.module.scss";
 function AudioRecord() {
   const [url, setUrl] = useState<string>();
-
+  const [isRecordModalVisible, setIsRecordModalVisible] =
+    useState<boolean>(false);
   const leftDataList: any[] = [];
   const rightDataList: any[] = [];
   let mediaNode: any;
@@ -38,12 +40,15 @@ function AudioRecord() {
     mediaNode.connect(jsNode);
   };
 
-  const stopRecord = () => {
-    // 停止录音
+  const cancleRecord = () => {
     mediaStream.getAudioTracks()[0].stop();
     mediaNode.disconnect();
     jsNode.disconnect();
+  };
 
+  const stopRecord = () => {
+    // 停止录音
+    cancleRecord();
     const leftData = mergeArray(leftDataList);
     const rightData = mergeArray(rightDataList);
     const allData = interleaveLeftAndRight(leftData, rightData);
@@ -54,6 +59,7 @@ function AudioRecord() {
   };
 
   const startRecord = () => {
+    console.log(909999);
     window.navigator.mediaDevices
       .getUserMedia({
         audio: {
@@ -67,7 +73,7 @@ function AudioRecord() {
         beginRecord(stream);
       })
       .catch((err) => {
-        console.log(1111111, err);
+        console.log(88888, err);
         // 如果用户电脑没有麦克风设备或者用户拒绝了，或者连接出问题了等
         // 这里都会抛异常，并且通过err.name可以知道是哪种类型的错误
       });
@@ -86,23 +92,70 @@ function AudioRecord() {
         onSearch("");
       }}
     /> */}
+      {url && <audio controls src={url} />}
+      <div
+        onClick={() => {
+          stopRecord();
+          // console.log(1111111);
+          // setIsRecordModalVisible(true);
+        }}
+      >
+        停止
+      </div>
       <div
         className={styles["chat-input-panel-inner"]}
         onClick={() => {
-          console.log(222222222);
-          // ttsRecorder.start();
+          startRecord();
+          console.log(1111111);
+          setIsRecordModalVisible(true);
         }}
-        // onTouchStart={() => {
-        //   startRecord();
-        //   console.log(222);
-        // }}
-        // onTouchEnd={() => {
-        //   stopRecord();
-        //   console.log(222);
-        // }}
       >
-        {url && <audio src={url} controls></audio>}
+        按住说话
       </div>
+      {isRecordModalVisible && (
+        <div
+          className={styles["record-modal-box"]}
+          onTouchStart={() => {
+            console.log(222222);
+            startRecord();
+            // setIsRecordModalVisible(true);
+          }}
+          // onTouchMove={() => {
+          //   console.log(333333);
+          //   cancleRecord();
+          //   setIsRecordModalVisible(false);
+          // }}
+          onTouchEnd={() => {
+            console.log(444444);
+            stopRecord();
+            setIsRecordModalVisible(false);
+          }}
+        >
+          <div className={styles["record-icon-box"]}>
+            <div className={styles["record-icon-info"]}>
+              <div className={styles["record-icon-info-text"]}>
+                <div> 松开发送</div>
+                <div> 滑动取消</div>
+              </div>
+              <div className={styles["record-voice-box"]}>
+                <div className={stylesVoice["voice-box"]}>
+                  <div className={stylesVoice["voice-symbol"]}>
+                    <div
+                      className={`${stylesVoice["voice-circle"]} ${stylesVoice["first"]}`}
+                    ></div>
+                    <div
+                      className={`${stylesVoice["voice-circle"]} ${stylesVoice["second"]} ${stylesVoice["second-animation"]}`}
+                    ></div>
+                    <div
+                      className={`${stylesVoice["voice-circle"]} ${stylesVoice["third"]} ${stylesVoice["third-animation"]}`}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
