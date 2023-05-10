@@ -76,6 +76,26 @@ export const ALL_MODELS = [
     name: "gpt-3.5-turbo-0301",
     available: true,
   },
+  {
+    name: "qwen-v1", // 通义千问
+    available: false,
+  },
+  {
+    name: "ernie", // 文心一言
+    available: false,
+  },
+  {
+    name: "spark", // 讯飞星火
+    available: false,
+  },
+  {
+    name: "llama", // llama
+    available: false,
+  },
+  {
+    name: "chatglm", // chatglm-6b
+    available: false,
+  },
 ] as const;
 
 export type ModelType = (typeof ALL_MODELS)[number]["name"];
