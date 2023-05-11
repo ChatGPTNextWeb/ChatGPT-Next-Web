@@ -13,7 +13,7 @@ export const metadata = {
     title: "ChatGPT Next Web",
     statusBarStyle: "default",
   },
-  themeColor: "#fafafa",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({
@@ -25,8 +25,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta
-          name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="theme-color"
+          content="#fafafa"
+          media="(prefers-color-scheme: light)"
         />
         <meta
           name="theme-color"
