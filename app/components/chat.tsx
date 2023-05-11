@@ -790,6 +790,7 @@ export function Chat() {
           hitBottom={hitBottom}
           showPromptHints={() => {
             inputRef.current?.focus();
+            setUserInput("/");
             onSearch("");
           }}
         />
