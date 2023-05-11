@@ -200,7 +200,7 @@ function useSubmitHandler() {
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
       (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
-      (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
+      (config.submitKey === SubmitKey.CommandEnter && e.metaKey) ||
       (config.submitKey === SubmitKey.Enter &&
         !e.altKey &&
         !e.ctrlKey &&
