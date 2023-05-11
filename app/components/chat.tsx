@@ -314,7 +314,7 @@ function useScrollToBottom() {
 export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
-  showPromptHints: () => void;
+  changeShowPromptHints: () => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
@@ -376,7 +376,7 @@ export function ChatActions(props: {
 
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={props.showPromptHints}
+        onClick={props.changeShowPromptHints}
       >
         <PromptIcon />
       </div>
@@ -465,11 +465,13 @@ export function Chat() {
     // clear search results
     if (n === 0) {
       setPromptHints([]);
+      setShowPromptHints(false);
     } else if (!config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
         let searchText = text.slice(1);
         onSearch(searchText);
+        setShowPromptHints(true);
       }
     }
   };
@@ -600,6 +602,8 @@ export function Chat() {
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+
+  const [showPromptHints, setShowPromptHints] = useState(false);
 
   const renameSession = () => {
     const newTopic = prompt(Locale.Chat.Rename, session.topic);
@@ -794,16 +798,16 @@ export function Chat() {
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
-          showPromptHints={() => {
-            // Click again to close
-            if (promptHints.length > 0) {
+          changeShowPromptHints={() => {
+            if (showPromptHints) {
+              inputRef.current?.focus();
               setPromptHints([]);
-              return;
+              setShowPromptHints(false);
+            } else {
+              inputRef.current?.focus();
+              onSearch("");
+              setShowPromptHints(true);
             }
-
-            inputRef.current?.focus();
-            setUserInput("/");
-            onSearch("");
           }}
         />
         <div className={styles["chat-input-panel-inner"]}>
