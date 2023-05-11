@@ -8,8 +8,14 @@ import {
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
-import { ACCESS_CODE_PREFIX } from "./constant";
-
+import { ACCESS_CODE_PREFIX, IMAGE_ERROR, IMAGE_PLACEHOLDER } from "./constant";
+import {
+  CreateImageRequest,
+  CreateImageRequestResponseFormatEnum,
+  CreateImageRequestSizeEnum,
+  ImagesResponse,
+  ImagesResponseDataInner,
+} from "openai";
 const TIME_OUT_MS = 60000;
 
 const makeRequestParam = (
@@ -143,6 +149,93 @@ export async function requestUsage() {
     used: response.total_usage,
     subscription: total.hard_limit_usd,
   };
+}
+const makeImageRequestParam = (
+  prompt: string,
+  options?: Omit<CreateImageRequest, "prompt">,
+): CreateImageRequest => {
+  // Set default values
+  const defaultOptions: Omit<CreateImageRequest, "prompt"> = {
+    n: 4,
+    size: CreateImageRequestSizeEnum._512x512,
+    response_format: CreateImageRequestResponseFormatEnum.Url,
+    user: "default_user",
+  };
+
+  // Override default values with provided options
+  const finalOptions = { ...defaultOptions, ...options };
+
+  const request: CreateImageRequest = {
+    prompt,
+    ...finalOptions,
+  };
+
+  return request;
+};
+export async function requestImage(
+  keyword: string,
+  options?: {
+    onMessage: (
+      message: string | null,
+      image: ImagesResponseDataInner[] | null,
+      image_alt: string | null,
+      done: boolean,
+    ) => void;
+    onError: (error: Error, statusCode?: number) => void;
+    onController?: (controller: AbortController) => void;
+  },
+) {
+  if (keyword.length < 1) {
+    options?.onMessage(
+      "Please enter a keyword after `/image`",
+      null,
+      null,
+      true,
+    );
+  } else {
+    const controller = new AbortController();
+    const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
+    options?.onController?.(controller);
+
+    async function fetchImageAndUpdateMessage() {
+      try {
+        options?.onMessage(null, null, IMAGE_PLACEHOLDER, false);
+
+        const sanitizedMessage = keyword.replace(/[\n\r]+/g, " ");
+        const req = makeImageRequestParam(sanitizedMessage);
+
+        const res = await requestOpenaiClient("v1/images/generations")(req);
+
+        clearTimeout(reqTimeoutId);
+
+        const finish = (images: ImagesResponseDataInner[]) => {
+          options?.onMessage("Here is your images", images, null, true);
+          controller.abort();
+        };
+
+        if (res.ok) {
+          const responseData = (await res.json()) as ImagesResponse;
+          finish(responseData.data);
+        } else if (res.status === 401) {
+          console.error("Unauthorized");
+          options?.onError(new Error("Unauthorized"), res.status);
+        } else {
+          console.error("Stream Error", res.body);
+          options?.onError(new Error("Stream Error"), res.status);
+        }
+      } catch (err) {
+        console.error("NetWork Error", err);
+        options?.onError(err as Error);
+        options?.onMessage(
+          "Image generation has been cancelled.",
+          null,
+          IMAGE_ERROR,
+          true,
+        );
+      }
+    }
+    fetchImageAndUpdateMessage();
+  }
 }
 
 export async function requestChatStream(

@@ -1,3 +1,5 @@
+import styles from "./markdown.tsx.module.scss";
+
 import ReactMarkdown from "react-markdown";
 import "katex/dist/katex.min.css";
 import RemarkMath from "remark-math";
@@ -11,7 +13,11 @@ import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
-
+import ImagePlaceHolder from "../icons/image-placeholder.svg";
+import ImageError from "../icons/image-error.svg";
+import { IMAGE_PLACEHOLDER } from "../constant";
+import { ImagesResponseDataInner } from "openai";
+import ImageList from "./ImageList";
 export function Mermaid(props: { code: string; onError: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -119,6 +125,8 @@ export const MarkdownContent = React.memo(_MarkDownContent);
 export function Markdown(
   props: {
     content: string;
+    images?: ImagesResponseDataInner[];
+    image_alt?: string;
     loading?: boolean;
     fontSize?: number;
     parentRef: RefObject<HTMLDivElement>;
@@ -171,9 +179,24 @@ export function Markdown(
     >
       {inView.current &&
         (props.loading ? (
-          <LoadingIcon />
+          <div className={styles.loader}>
+            {props.image_alt && <MarkdownContent content={props.image_alt} />}
+            {props.image_alt &&
+              (props.image_alt === IMAGE_PLACEHOLDER ? (
+                <ImagePlaceHolder width="100px" height="100px" />
+              ) : (
+                <ImageError width="100px" height="100px" />
+              ))}
+            <LoadingIcon />
+          </div>
         ) : (
-          <MarkdownContent content={props.content} />
+          <div>
+            <MarkdownContent content={props.content} />
+            <div className={styles.content_image}>
+              {props.images && <ImageList images={props.images} />}
+              {props.image_alt && <ImageError width="100px" height="100px" />}
+            </div>
+          </div>
         ))}
     </div>
   );

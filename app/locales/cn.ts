@@ -170,7 +170,8 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello:
+      "您好！今天我能为您做些什么呢？\n 要生成图片，请使用 `/Image {关键词}。`",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) =>
