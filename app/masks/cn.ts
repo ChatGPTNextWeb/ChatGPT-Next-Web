@@ -72,18 +72,18 @@ export const CN_MASKS: BuiltinMask[] = [
   },
   {
     avatar: "1f469-200d-1f4bc",
-    name: "职业顾问",
+    name: "PPT设计(markdown)",
     context: [
       {
         role: "user",
         content:
-          "我想让你担任职业顾问。我将为您提供一个在职业生涯中寻求指导的人，您的任务是帮助他们根据自己的技能、兴趣和经验确定最适合的职业。您还应该对可用的各种选项进行研究，解释不同行业的就业市场趋势，并就哪些资格对追求特定领域有益提出建议。我的第一个请求是",
+          "你是一名{初中地理}老师，你的能力是提供PPT内容框架，请生成{中国气候分布}主题的PPT内容框架，需包含每一页标题和关键要点，用markdown格式输出",
         date: "",
       },
     ],
     modelConfig: {
       model: "gpt-3.5-turbo",
-      temperature: 1,
+      temperature: 0.8,
       max_tokens: 2000,
       presence_penalty: 0,
       sendMemory: true,
