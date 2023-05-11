@@ -168,19 +168,19 @@ export function About() {
 
       <div className={styles["actions"]}>
         <div style={{ width: 460, height: 560, alignItems: "center" }}>
-          <div style={{ marginLeft: 180 }}>AI交流群</div>
+          <div style={{ marginLeft: 150 }}>AI交流群</div>
           <img
-            style={{ width: 460, height: 560, alignItems: "center" }}
+            style={{ width: 360, height: 460, alignItems: "center" }}
             src="https://liuluyanglly.github.io/imgly/wxqun1.jpg"
             alt="微信:javaxiaogui125"
           />
         </div>
         <div style={{ width: 460, height: 560, alignItems: "center" }}>
-          <div style={{ marginLeft: 180 }}>公众号</div>
+          <div style={{ marginLeft: 150 }}>公众号</div>
           <img
             style={{
-              width: 460,
-              height: 460,
+              width: 360,
+              height: 360,
               marginTop: 50,
               alignItems: "center",
             }}
