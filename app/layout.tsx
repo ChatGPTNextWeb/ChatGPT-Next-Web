@@ -43,6 +43,7 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>{children}</body>
+      <script src="/baidu.hm.js" async={true}></script>
     </html>
   );
 }
