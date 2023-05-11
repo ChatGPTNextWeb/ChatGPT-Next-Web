@@ -795,6 +795,12 @@ export function Chat() {
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           showPromptHints={() => {
+            // Click again to close
+            if (promptHints.length > 0) {
+              setPromptHints([]);
+              return;
+            }
+
             inputRef.current?.focus();
             setUserInput("/");
             onSearch("");
