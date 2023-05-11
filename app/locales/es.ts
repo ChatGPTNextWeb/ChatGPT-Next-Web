@@ -69,11 +69,11 @@ const es: LocaleType = {
       ConfirmClearAll: "Are you sure you want to reset all chat?",
     },
     Lang: {
-      Name: "Language",
-      All: "All Languages",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "Todos los idiomas",
       Options: {
         cn: "简体中文",
-        en: "Inglés",
+        en: "English",
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
@@ -81,6 +81,7 @@ const es: LocaleType = {
         jp: "日本語",
         de: "Deutsch",
         vi: "Vietnamese",
+        ru: "Русский",
       },
     },
     Avatar: "Avatar",
