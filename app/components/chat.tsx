@@ -230,7 +230,9 @@ export function PromptHints(props: {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (noPrompts) return;
-
+      if (e.metaKey || e.altKey || e.ctrlKey) {
+        return;
+      }
       // arrow up / down to select prompt
       const changeIndex = (delta: number) => {
         e.stopPropagation();
@@ -491,7 +493,11 @@ export function Chat() {
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // if ArrowUp and no userInput, fill with last input
-    if (e.key === "ArrowUp" && userInput.length <= 0) {
+    if (
+      e.key === "ArrowUp" &&
+      userInput.length <= 0 &&
+      !(e.metaKey || e.altKey || e.ctrlKey)
+    ) {
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
       e.preventDefault();
       return;
@@ -790,6 +796,7 @@ export function Chat() {
           hitBottom={hitBottom}
           showPromptHints={() => {
             inputRef.current?.focus();
+            setUserInput("/");
             onSearch("");
           }}
         />
