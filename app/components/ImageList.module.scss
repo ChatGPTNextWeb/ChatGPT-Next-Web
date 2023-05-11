@@ -1,0 +1,16 @@
+.imageGrid,
+.imageGridSingle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.imageGrid img {
+  max-width: calc(50% - 10px);
+  margin: 5px;
+}
+
+.imageGridSingle img {
+  max-width: 100%;
+  margin: 5px;
+}
