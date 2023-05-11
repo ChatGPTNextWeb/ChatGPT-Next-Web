@@ -198,10 +198,10 @@ function useSubmitHandler() {
     if (e.key === "Enter" && e.nativeEvent.isComposing) return false;
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
-      (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
+      (config.submitKey === SubmitKey.Enter && e.ctrlKey) ||
       (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
       (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
-      (config.submitKey === SubmitKey.Enter &&
+      (config.submitKey === SubmitKey.CtrlEnter &&
         !e.altKey &&
         !e.ctrlKey &&
         !e.shiftKey &&
@@ -705,11 +705,33 @@ export function Chat() {
               }
             >
               <div className={styles["chat-message-container"]}>
-                <div className={styles["chat-message-avatar"]}>
+                <div
+                  className={styles["chat-message-avatar"]}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
                   {message.role === "user" ? (
-                    <Avatar avatar={config.avatar} />
+                    <>
+                      <div className={styles["chat-message-actions"]}>
+                        <div className={styles["chat-message-action-date"]}>
+                          {message.date.toLocaleString()}
+                        </div>
+                      </div>
+                      <span style={{ width: 90, marginLeft: 20 }}>章鱼哥 </span>
+                      <Avatar avatar={config.avatar} />
+                    </>
                   ) : (
-                    <MaskAvatar mask={session.mask} />
+                    <>
+                      <MaskAvatar mask={session.mask} />
+                      <span>ChatGPT</span>
+                      <div
+                        className={styles["chat-message-actions"]}
+                        style={{ marginLeft: 20 }}
+                      >
+                        <div className={styles["chat-message-action-date"]}>
+                          {message.date.toLocaleString()}
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
                 {showTyping && (
@@ -768,13 +790,13 @@ export function Chat() {
                     defaultShow={i >= messages.length - 10}
                   />
                 </div>
-                {!isUser && !message.preview && (
-                  <div className={styles["chat-message-actions"]}>
-                    <div className={styles["chat-message-action-date"]}>
-                      {message.date.toLocaleString()}
-                    </div>
-                  </div>
-                )}
+                {/*{!isUser && !message.preview && (*/}
+                {/*  <div className={styles["chat-message-actions"]}>*/}
+                {/*    <div className={styles["chat-message-action-date"]}>*/}
+                {/*      {message.date.toLocaleString()}*/}
+                {/*    </div>*/}
+                {/*  </div>*/}
+                {/*)}*/}
               </div>
             </div>
           );

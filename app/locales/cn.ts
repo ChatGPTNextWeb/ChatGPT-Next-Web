@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，关注公众号【编程章鱼哥】获取密码。",
+      "请前往[设置](/#/settings)页输入正确的访问密码，关注公众号【编程章鱼哥】获取密码。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -27,7 +27,8 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全";
+      // return inputHints + "，/ 触发补全";
+      return "/  触发补全";
     },
     Send: "发送",
     Config: {
