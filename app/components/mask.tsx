@@ -14,7 +14,7 @@ import CopyIcon from "../icons/copy.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { Message, ModelConfig, ROLES, useChatStore } from "../store";
-import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
+import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
@@ -116,7 +116,7 @@ function ContextPromptItem(props: {
   return (
     <div className={chatStyle["context-prompt-row"]}>
       {!focusingInput && (
-        <select
+        <Select
           value={props.prompt.role}
           className={chatStyle["context-role"]}
           onChange={(e) =>
@@ -131,7 +131,7 @@ function ContextPromptItem(props: {
               {r}
             </option>
           ))}
-        </select>
+        </Select>
       )}
       <Input
         value={props.prompt.content}
@@ -307,7 +307,7 @@ export function MaskPage() {
               autoFocus
               onInput={(e) => onSearch(e.currentTarget.value)}
             />
-            <select
+            <Select
               className={styles["mask-filter-lang"]}
               value={filterLang ?? Locale.Settings.Lang.All}
               onChange={(e) => {
@@ -327,7 +327,7 @@ export function MaskPage() {
                   {Locale.Settings.Lang.Options[lang]}
                 </option>
               ))}
-            </select>
+            </Select>
 
             <IconButton
               className={styles["mask-create"]}
