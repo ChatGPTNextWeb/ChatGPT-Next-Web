@@ -1,5 +1,29 @@
 @import "../styles/animation.scss";
 
+.chat-input-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  .chat-input-action {
+    display: inline-flex;
+    border-radius: 20px;
+    font-size: 12px;
+    background-color: var(--white);
+    color: var(--black);
+    border: var(--border-in-light);
+    padding: 4px 10px;
+    animation: slide-in ease 0.3s;
+    box-shadow: var(--card-shadow);
+    transition: all ease 0.3s;
+    margin-bottom: 10px;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+}
+
 .prompt-toast {
   position: absolute;
   bottom: -50px;
@@ -26,6 +50,20 @@
     .prompt-toast-content {
       margin-left: 10px;
     }
+  }
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .section-title-action {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -57,25 +95,13 @@
 }
 
 .memory-prompt {
-  margin-top: 20px;
-
-  .memory-prompt-title {
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .memory-prompt-action {
-      display: flex;
-      align-items: center;
-    }
-  }
+  margin: 20px 0;
 
   .memory-prompt-content {
-    background-color: var(--gray);
-    border-radius: 6px;
+    background-color: var(--white);
+    color: var(--black);
+    border: var(--border-in-light);
+    border-radius: 10px;
     padding: 10px;
     font-size: 12px;
     user-select: text;

@@ -1,4 +1,9 @@
+@import "./animation.scss";
+@import "./window.scss";
+
 @mixin light {
+  --theme: light;
+
   /* color */
   --white: white;
   --black: rgb(48, 48, 48);
@@ -18,6 +23,8 @@
 }
 
 @mixin dark {
+  --theme: dark;
+
   /* color */
   --white: rgb(30, 30, 30);
   --black: rgb(187, 187, 187);
@@ -31,6 +38,10 @@
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
 
   --theme-color: var(--gray);
+
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
 }
 
 .light {
@@ -77,6 +88,9 @@
 }
 html {
   height: var(--full-height);
+
+  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 body {
@@ -90,8 +104,7 @@ body {
   justify-content: center;
   align-items: center;
   user-select: none;
-  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
-    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  touch-action: pan-x pan-y;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
@@ -132,6 +145,7 @@ label {
 
 input {
   text-align: center;
+  font-family: inherit;
 }
 
 input[type="checkbox"] {
@@ -216,6 +230,7 @@ input[type="password"] {
   color: var(--black);
   padding: 0 10px;
   max-width: 50%;
+  font-family: inherit;
 }
 
 div.math {
@@ -233,6 +248,10 @@ div.math {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 600px) {
+    align-items: flex-end;
+  }
 }
 
 .link {
@@ -282,10 +301,6 @@ pre {
 .clickable {
   cursor: pointer;
 
-  div:not(.no-dark) > svg {
-    filter: invert(0.5);
-  }
-
   &:hover {
     filter: brightness(0.9);
   }
@@ -304,4 +319,37 @@ pre {
   pre {
     overflow: auto;
   }
+}
+
+.password-input-container {
+  max-width: 50%;
+  display: flex;
+  justify-content: flex-end;
+
+  .password-eye {
+    margin-right: 4px;
+  }
+
+  .password-input {
+    min-width: 80%;
+  }
+}
+
+.user-avatar {
+  height: 30px;
+  min-height: 30px;
+  width: 30px;
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  border-radius: 10px;
+}
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
