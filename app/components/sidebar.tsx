@@ -5,6 +5,7 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
+import About from "../icons/about.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
@@ -119,7 +120,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+        <div className={styles["sidebar-title"]}>AI ChatGPT</div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
         </div>
@@ -178,7 +179,7 @@ export function SideBar(props: { className?: string }) {
             {/*  <IconButton icon={<GithubIcon />} shadow />*/}
             {/*</a>*/}
             <Link to={Path.About}>
-              <IconButton icon={<GithubIcon />} shadow />
+              <IconButton icon={<About />} shadow />
             </Link>
           </div>
         </div>
