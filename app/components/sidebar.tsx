@@ -41,10 +41,22 @@ function useHotKey() {
         const n = chatStore.sessions.length;
         const limit = (x: number) => (x + n) % n;
         const i = chatStore.currentSessionIndex;
-        if (e.key === "ArrowUp") {
-          chatStore.selectSession(limit(i - 1));
-        } else if (e.key === "ArrowDown") {
-          chatStore.selectSession(limit(i + 1));
+
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+          const selectedIndex =
+            e.key === "ArrowUp" ? limit(i - 1) : limit(i + 1);
+          chatStore.selectSession(selectedIndex);
+
+          const id = chatStore.sessions[selectedIndex].id;
+          const selectedElement = document.querySelector(
+            `[data-rfd-draggable-id="${id}"]`,
+          );
+
+          if (selectedElement) {
+            selectedElement.scrollIntoView({
+              block: "center",
+            });
+          }
         }
       }
     };
