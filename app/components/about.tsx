@@ -157,12 +157,17 @@ export function About() {
       <div className={styles["title"]}>{"关于"}</div>
       <div className={styles["sub-title"]}>
         {
-          "AI并不是万能的，应该保持辩证思考的态度，既要充分认识到AI的优势和价值，又要清楚地"
+          "AI并不是万能的，应该保持辩证思考的态度，既要充分认识到AI的优势和价值，又要清楚地知道其局限性"
         }
       </div>
       <div className={styles["sub-title"]}>
         {
-          "知道其局限性。目前AI只能解决80% 左右的问题，还需要自己在认知上对其进行修正、采纳。"
+          "。目前AI只能解决80% 左右的问题，还需要自己在认知上对其进行修正、采纳。"
+        }
+      </div>
+      <div className={styles["sub-title"]}>
+        {
+          "在[设置](/#/settings)页输入自己的api-key可绕过密码，密码可以搜索公众号【编程章鱼哥】或者扫描下方二维码获取"
         }
       </div>
 
