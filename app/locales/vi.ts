@@ -81,6 +81,8 @@ const vi: LocaleType = {
         jp: "日本語",
         de: "Deutsch",
         vi: "Vietnamese",
+        ru: "Русский",
+        cs: "Čeština",
       },
     },
     Avatar: "Ảnh đại diện",
