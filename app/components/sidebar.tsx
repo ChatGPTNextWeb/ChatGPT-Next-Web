@@ -121,13 +121,13 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>元话数藏</div>
         <div className={styles["sidebar-sub-title"]}>
-          元话数藏SaaS<br/>
+          <a href="https://metakina.com">元话数藏SaaS</a><br/>
             价格低至三万;一天上线; 免上链费用; 免gas费，免支付接入费; 带二级市场，自定义UI: 阿里云waf防黑机制: 阿里云k8s分布
             式部署支持高并发;可对接到元数网盯链: 人工智能生成NFT (藏品) :ChatGPT编写藏品故事: 10多种营销套路玩法;版权认证接口;<br/>
-          区块链技术服务<br/>
+          <a href="https://dappweb.cn">区块链技术服务</a><br/>
             链游、元宇宙、DeFi、NFT、Swap、钱包、公链、DAPP、挖矿系统、小程序系统等各类定制开发，强大团队技术保障，高效有质量!<br/>
-            https://metakina.com <br/>
-            https://dappweb.cn <br/>
+             <br/>
+             <br/>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
