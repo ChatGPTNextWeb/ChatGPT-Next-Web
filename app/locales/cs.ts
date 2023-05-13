@@ -160,7 +160,7 @@ const cs: LocaleType = {
       Title: "Obrázkový model",
       Model: "Model DALL-E",
       Command: "Příkaz pro generování obrázků",
-      CountLimit: "Limit počtu generovaných obrázků",
+      NoOfImage: "Limit počtu generovaných obrázků",
       Size: "Velikost generovaného obrázku",
     },
     Temperature: {

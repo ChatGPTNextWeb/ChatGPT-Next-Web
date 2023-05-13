@@ -159,7 +159,7 @@ const cn = {
       Title: "图片模型",
       Model: "DALL-E模型",
       Command: "生成图片指令",
-      CountLimit: "图片生成次数限制",
+      NoOfImage: "图片生成次数限制",
       Size: "图片生成尺寸",
     },
     Temperature: {
