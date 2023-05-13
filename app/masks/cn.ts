@@ -21,6 +21,11 @@ export const CN_MASKS: BuiltinMask[] = [
       historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
     },
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     lang: "cn",
     builtin: true,
   },
@@ -43,6 +48,11 @@ export const CN_MASKS: BuiltinMask[] = [
       sendMemory: true,
       historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
+    },
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
     },
     lang: "cn",
     builtin: true,
@@ -67,6 +77,11 @@ export const CN_MASKS: BuiltinMask[] = [
       historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
     },
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     lang: "cn",
     builtin: true,
   },
@@ -81,6 +96,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -104,6 +124,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -127,6 +152,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -150,6 +180,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -173,6 +208,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -202,6 +242,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -231,6 +276,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -281,6 +331,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,

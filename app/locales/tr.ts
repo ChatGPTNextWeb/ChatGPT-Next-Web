@@ -160,7 +160,7 @@ const tr: LocaleType = {
       Title: "Resim Modeli",
       Model: "DALL-E Modeli",
       Command: "Resim Oluşturma Komutu",
-      CountLimit: "Resim Oluşturma Limiti",
+      NoOfImage: "Resim Oluşturma Limiti",
       Size: "Resim Oluşturma Boyutu",
     },
     Temperature: {

@@ -17,7 +17,7 @@ import ImagePlaceHolder from "../icons/image-placeholder.svg";
 import ImageError from "../icons/image-error.svg";
 import { IMAGE_PLACEHOLDER } from "../constant";
 import { ImagesResponseDataInner } from "openai";
-import ImageList from "./ImageList";
+import ImageList from "./imageList";
 export function Mermaid(props: { code: string; onError: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
 

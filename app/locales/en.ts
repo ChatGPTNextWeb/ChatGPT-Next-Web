@@ -160,7 +160,7 @@ const en: LocaleType = {
       Title: "Image Model",
       Model: "DALL-E Model",
       Command: "Generate Image Command",
-      CountLimit: "Image Generation Limit",
+      NoOfImage: "Image Generation Limit",
       Size: "Image Generation Size",
     },
     Temperature: {

@@ -32,14 +32,14 @@ export function ImageModelConfigList(props: {
           }}
         />
       </ListItem>
-      <ListItem title={Locale.Settings.ImageModel.CountLimit}>
+      <ListItem title={Locale.Settings.ImageModel.NoOfImage}>
         <InputRange
-          value={props.imageModelConfig.imageLimit.toString()} // Keep the value as a string
+          value={props.imageModelConfig.noOfImage.toString()} // Keep the value as a string
           onChange={(e) => {
             const newValue = parseInt(e.currentTarget.value, 10); // Parse the value as an integer
             if (!isNaN(newValue)) {
               props.updateConfig((config) => {
-                config.imageLimit = newValue; // Assign the parsed value
+                config.noOfImage = newValue; // Assign the parsed value
                 return config;
               });
             }

@@ -162,7 +162,7 @@ const jp: LocaleType = {
       Title: "画像モデル",
       Model: "DALL-Eモデル",
       Command: "画像生成コマンド",
-      CountLimit: "画像生成回数制限",
+      NoOfImage: "画像生成回数制限",
       Size: "画像生成サイズ",
     },
     Temperature: {
