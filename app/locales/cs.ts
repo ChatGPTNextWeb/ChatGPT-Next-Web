@@ -70,8 +70,8 @@ const cs: LocaleType = {
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-        All: "Všechny jazyky",
-        Options: {
+      All: "Všechny jazyky",
+      Options: {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
@@ -156,6 +156,13 @@ const cs: LocaleType = {
       Placeholder: "Potřebujete přístupový kód",
     },
     Model: "Model",
+    ImageModel: {
+      Title: "Obrázkový model",
+      Model: "Model DALL-E",
+      Command: "Příkaz pro generování obrázků",
+      CountLimit: "Limit počtu generovaných obrázků",
+      Size: "Velikost generovaného obrázku",
+    },
     Temperature: {
       Title: "Teplota",
       SubTitle: "Větší hodnota činí výstup náhodnějším",
@@ -166,13 +173,16 @@ const cs: LocaleType = {
     },
     PresencePenlty: {
       Title: "Přítomnostní korekce",
-      SubTitle:
-        "Větší hodnota zvyšuje pravděpodobnost nových témat.",
+      SubTitle: "Větší hodnota zvyšuje pravděpodobnost nových témat.",
     },
   },
   Store: {
     DefaultTopic: "Nová konverzace",
     BotHello: "Ahoj! Jak mohu dnes pomoci?",
+    BotHelloWithCommand: (command: string) =>
+      "Ahoj! Jak mohu dnes pomoci?\n Pro generování obrázků použijte `" +
+      command +
+      " {klíčové slovo}.`",
     Error: "Něco se pokazilo, zkuste to prosím později.",
     Prompt: {
       History: (content: string) =>
@@ -182,7 +192,7 @@ const cs: LocaleType = {
         "Vytvořte prosím název o čtyřech až pěti slovech vystihující průběh našeho rozhovoru bez jakýchkoli úvodních slov, interpunkčních znamének, uvozovek, teček, symbolů nebo dalšího textu. Odstraňte uvozovky.",
       Summarize:
         "Krátce shrň naši diskusi v rozsahu do 200 slov a použij ji jako podnět pro budoucí kontext.",
-      },
+    },
   },
   Copy: {
     Success: "Zkopírováno do schránky",
@@ -231,7 +241,7 @@ const cs: LocaleType = {
     More: "Najít více",
     NotShow: "Nezobrazovat znovu",
     ConfirmNoShow: "Potvrdit zakázání？Můžete jej povolit později v nastavení.",
-},
+  },
 
   UI: {
     Confirm: "Potvrdit",
@@ -239,7 +249,7 @@ const cs: LocaleType = {
     Close: "Zavřít",
     Create: "Vytvořit",
     Edit: "Upravit",
-  }
+  },
 };
 
 export default cs;

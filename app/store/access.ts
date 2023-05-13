@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
-import { BOT_HELLO } from "./chat";
 import { ALL_MODELS } from "./config";
 
 export interface AccessControlStore {
@@ -69,9 +68,9 @@ export const useAccessStore = create<AccessControlStore>()(
               });
             }
 
-            if ((res as any).botHello) {
-              BOT_HELLO.content = (res as any).botHello;
-            }
+            // if ((res as any).botHello) {
+            //   BOT_HELLO.content = (res as any).botHello;
+            // }
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");

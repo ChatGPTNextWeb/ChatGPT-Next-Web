@@ -158,6 +158,13 @@ const jp: LocaleType = {
       Placeholder: "アクセスパスワードを入力してください",
     },
     Model: "モデル (model)",
+    ImageModel: {
+      Title: "画像モデル",
+      Model: "DALL-Eモデル",
+      Command: "画像生成コマンド",
+      CountLimit: "画像生成回数制限",
+      Size: "画像生成サイズ",
+    },
     Temperature: {
       Title: "ランダム性 (temperature)",
       SubTitle:
@@ -175,6 +182,10 @@ const jp: LocaleType = {
   Store: {
     DefaultTopic: "新しいチャット",
     BotHello: "何かお手伝いできることはありますか",
+    BotHelloWithCommand: (command: string) =>
+      "何かお手伝いできることはありますか\n 画像を生成するには、`" +
+      command +
+      " {キーワード}.`を使用してください",
     Error: "エラーが発生しました。しばらくしてからやり直してください。",
     Prompt: {
       History: (content: string) =>

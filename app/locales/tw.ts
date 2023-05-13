@@ -153,6 +153,13 @@ const tw: LocaleType = {
       Placeholder: "請輸入授權碼",
     },
     Model: "模型 (model)",
+    ImageModel: {
+      Title: "圖片模型",
+      Model: "DALL-E模型",
+      Command: "生成圖片指令",
+      CountLimit: "圖片生成次數限制",
+      Size: "圖片生成尺寸",
+    },
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",
@@ -169,6 +176,8 @@ const tw: LocaleType = {
   Store: {
     DefaultTopic: "新的對話",
     BotHello: "請問需要我的協助嗎？",
+    BotHelloWithCommand: (command: string) =>
+      "請問需要我的協助嗎？\n 若要生成圖片，請使用 `" + command + " {關鍵字}.`",
     Error: "出錯了，請稍後再嘗試",
     Prompt: {
       History: (content: string) =>

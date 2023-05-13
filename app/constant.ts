@@ -42,3 +42,4 @@ export const ACCESS_CODE_PREFIX = "ak-";
 export const LAST_INPUT_KEY = "last-input";
 export const IMAGE_PLACEHOLDER = "Loading your image...";
 export const IMAGE_ERROR = "IMAGE_ERROR";
+export const COMMAND_IMAGE = "/image";

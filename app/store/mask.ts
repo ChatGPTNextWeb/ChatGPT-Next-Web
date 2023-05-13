@@ -3,15 +3,20 @@ import { persist } from "zustand/middleware";
 import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, Message } from "./chat";
-import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { StoreKey } from "../constant";
-
+import {
+  ImageModelConfig,
+  ModelConfig,
+  ModelType,
+  useAppConfig,
+} from "./config";
 export type Mask = {
   id: number;
   avatar: string;
   name: string;
   context: Message[];
   modelConfig: ModelConfig;
+  imageModelConfig: ImageModelConfig;
   lang: Lang;
   builtin: boolean;
 };
@@ -40,6 +45,7 @@ export const createEmptyMask = () =>
     name: DEFAULT_TOPIC,
     context: [],
     modelConfig: { ...useAppConfig.getState().modelConfig },
+    imageModelConfig: { ...useAppConfig.getState().imageModelConfig },
     lang: getLang(),
     builtin: false,
   } as Mask);

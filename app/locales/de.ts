@@ -158,6 +158,13 @@ const de: LocaleType = {
       Placeholder: "Zugangscode erforderlich",
     },
     Model: "Modell",
+    ImageModel: {
+      Title: "Bildmodell",
+      Model: "DALL-E Modell",
+      Command: "Bildgenerierungsbefehl",
+      CountLimit: "Bildgenerierungslimit",
+      Size: "Bildgenerierungsgröße",
+    },
     Temperature: {
       Title: "Temperature", //Temperatur
       SubTitle: "Ein größerer Wert führt zu zufälligeren Antworten",
@@ -175,6 +182,10 @@ const de: LocaleType = {
   Store: {
     DefaultTopic: "Neues Gespräch",
     BotHello: "Hallo! Wie kann ich Ihnen heute helfen?",
+    BotHelloWithCommand: (command: string) =>
+      "Hallo! Wie kann ich Ihnen heute helfen?\n Um Bilder zu generieren, verwenden Sie `" +
+      command +
+      " {Schlüsselwort}.`",
     Error:
       "Etwas ist schief gelaufen, bitte versuchen Sie es später noch einmal.",
     Prompt: {
