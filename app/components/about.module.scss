@@ -1,0 +1,100 @@
+@import "../styles/animation.scss";
+.about-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .about-page-body {
+    padding: 20px;
+    overflow-y: auto;
+
+    .about-filter {
+      width: 100%;
+      max-width: 100%;
+      margin: 20px 0 20px 20px;
+      animation: slide-in ease 0.3s;
+      height: 100px;
+      display: flex;
+
+      .about-filter-lang {
+        height: 100%;
+        margin-left: 10px;
+      }
+
+      .about-create {
+        height: 100%;
+        margin-left: 10px;
+        box-sizing: border-box;
+        min-width: 80px;
+      }
+    }
+
+    .about-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      border: var(--border-in-light);
+      animation: slide-in ease 0.3s;
+
+      &:not(:last-child) {
+        border-bottom: 0;
+      }
+
+      &:first-child {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      .about-header {
+        display: flex;
+        align-items: center;
+
+        .about-icon {
+          align-items: center;
+          justify-content: center;
+          margin-right: 10px;
+        }
+
+        .about-title {
+          .about-name {
+            font-size: 14px;
+            font-weight: bold;
+          }
+          .about-info {
+            font-size: 12px;
+          }
+        }
+      }
+
+      .about-actions {
+        display: flex;
+        flex-wrap: nowrap;
+        transition: all ease 0.3s;
+      }
+
+      @media screen and (max-width: 600px) {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: var(--card-shadow);
+
+        &:not(:last-child) {
+          border-bottom: var(--border-in-light);
+        }
+
+        .about-actions {
+          width: 100%;
+          justify-content: space-between;
+          padding-top: 10px;
+        }
+      }
+    }
+  }
+}
