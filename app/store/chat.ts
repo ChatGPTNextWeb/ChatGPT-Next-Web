@@ -423,7 +423,10 @@ export const useChatStore = create<ChatStore>()(
         let toBeSummarizedMsgs = session.messages.slice(
           session.lastSummarizeIndex,
         );
-
+        
+        // remove error messages if any
+        toBeSummarizedMsgs = toBeSummarizedMsgs.filter((msg) => !msg.isError);
+  
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
         if (historyMsgLength > modelConfig?.max_tokens ?? 4000) {
