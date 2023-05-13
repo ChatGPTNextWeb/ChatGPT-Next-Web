@@ -170,7 +170,10 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello:  '
+**提问：**为什么有时候对话不连续？
+**回答：**为了提高回复速度，网站使用的是KEY池，如果想要连续对话和保存对话可以联系管理获取独立KEY哦！
+卡顿或无响应？可能是用户量太大，[点击这里联系管理员获得独立账号KEY使用](https://www.lifebits.asia/apikey)',
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) =>
