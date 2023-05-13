@@ -40,6 +40,7 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
+import { ImageModelConfigList } from "./image-model-config";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -577,6 +578,18 @@ export function Settings() {
               const modelConfig = { ...config.modelConfig };
               updater(modelConfig);
               config.update((config) => (config.modelConfig = modelConfig));
+            }}
+          />
+        </List>
+        <List>
+          <ImageModelConfigList
+            imageModelConfig={config.imageModelConfig}
+            updateConfig={(upater) => {
+              const imageModelConfig = { ...config.imageModelConfig };
+              upater(imageModelConfig);
+              config.update(
+                (config) => (config.imageModelConfig = imageModelConfig),
+              );
             }}
           />
         </List>

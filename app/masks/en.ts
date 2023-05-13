@@ -29,6 +29,11 @@ export const EN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-4",
       temperature: 0.5,

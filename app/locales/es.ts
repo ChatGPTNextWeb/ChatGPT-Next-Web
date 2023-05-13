@@ -156,6 +156,13 @@ const es: LocaleType = {
       Placeholder: "Necesita código de acceso",
     },
     Model: "Modelo",
+    ImageModel: {
+      Title: "Modelo de imagen",
+      Model: "Modelo DALL-E",
+      Command: "Comando de generación de imágenes",
+      CountLimit: "Límite de generación de imágenes",
+      Size: "Tamaño de generación de imagen",
+    },
     Temperature: {
       Title: "Temperatura",
       SubTitle: "Un valor mayor genera una salida más aleatoria",
@@ -173,6 +180,10 @@ const es: LocaleType = {
   Store: {
     DefaultTopic: "Nueva conversación",
     BotHello: "¡Hola! ¿Cómo puedo ayudarte hoy?",
+    BotHelloWithCommand: (command: string) =>
+      "¡Hola! ¿Cómo puedo ayudarte hoy?\n Para generar imágenes, usa `" +
+      command +
+      " {palabra clave}.`",
     Error: "Algo salió mal, por favor intenta nuevamente más tarde.",
     Prompt: {
       History: (content: string) =>

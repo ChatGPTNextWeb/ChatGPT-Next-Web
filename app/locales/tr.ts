@@ -156,6 +156,13 @@ const tr: LocaleType = {
       Placeholder: "Erişim Kodu Gerekiyor",
     },
     Model: "Model",
+    ImageModel: {
+      Title: "Resim Modeli",
+      Model: "DALL-E Modeli",
+      Command: "Resim Oluşturma Komutu",
+      CountLimit: "Resim Oluşturma Limiti",
+      Size: "Resim Oluşturma Boyutu",
+    },
     Temperature: {
       Title: "Gerçeklik",
       SubTitle:
@@ -175,6 +182,10 @@ const tr: LocaleType = {
   Store: {
     DefaultTopic: "Yeni Konuşma",
     BotHello: "Merhaba! Size bugün nasıl yardımcı olabilirim?",
+    BotHelloWithCommand: (command: string) =>
+      "Merhaba! Size bugün nasıl yardımcı olabilirim?\n Resim oluşturmak için, `" +
+      command +
+      " {anahtar kelime}.` kullanın",
     Error: "Bir şeyler yanlış gitti. Lütfen daha sonra tekrar deneyiniz.",
     Prompt: {
       History: (content: string) =>

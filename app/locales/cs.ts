@@ -156,6 +156,13 @@ const cs: LocaleType = {
       Placeholder: "Potřebujete přístupový kód",
     },
     Model: "Model",
+    ImageModel: {
+      Title: "Obrázkový model",
+      Model: "Model DALL-E",
+      Command: "Příkaz pro generování obrázků",
+      CountLimit: "Limit počtu generovaných obrázků",
+      Size: "Velikost generovaného obrázku",
+    },
     Temperature: {
       Title: "Teplota",
       SubTitle: "Větší hodnota činí výstup náhodnějším",
@@ -172,6 +179,10 @@ const cs: LocaleType = {
   Store: {
     DefaultTopic: "Nová konverzace",
     BotHello: "Ahoj! Jak mohu dnes pomoci?",
+    BotHelloWithCommand: (command: string) =>
+      "Ahoj! Jak mohu dnes pomoci?\n Pro generování obrázků použijte `" +
+      command +
+      " {klíčové slovo}.`",
     Error: "Něco se pokazilo, zkuste to prosím později.",
     Prompt: {
       History: (content: string) =>

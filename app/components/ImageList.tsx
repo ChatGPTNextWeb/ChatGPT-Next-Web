@@ -1,6 +1,6 @@
 import { ImagesResponseDataInner } from "openai";
 import React, { FC } from "react";
-import styles from "./ImageList.module.scss";
+import styles from "./imageList.module.scss";
 
 interface ImageListProps {
   images?: ImagesResponseDataInner[];

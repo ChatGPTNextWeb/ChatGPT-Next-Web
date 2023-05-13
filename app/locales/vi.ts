@@ -155,6 +155,13 @@ const vi: LocaleType = {
       Placeholder: "Nhập mã truy cập",
     },
     Model: "Mô hình",
+    ImageModel: {
+      Title: "Mô hình hình ảnh",
+      Model: "Mô hình DALL-E",
+      Command: "Lệnh tạo hình ảnh",
+      CountLimit: "Giới hạn số lượng hình ảnh tạo ra",
+      Size: "Kích thước hình ảnh được tạo ra",
+    },
     Temperature: {
       Title: "Tính ngẫu nhiên (temperature)",
       SubTitle: "Giá trị càng lớn, câu trả lời càng ngẫu nhiên",
@@ -171,6 +178,10 @@ const vi: LocaleType = {
   Store: {
     DefaultTopic: "Cuộc trò chuyện mới",
     BotHello: "Xin chào! Mình có thể giúp gì cho bạn?",
+    BotHelloWithCommand: (command: string) =>
+      "Xin chào! Mình có thể giúp gì cho bạn?\n Để tạo hình ảnh, hãy sử dụng `" +
+      command +
+      " {từ khóa}.`",
     Error: "Có lỗi xảy ra, vui lòng thử lại sau.",
     Prompt: {
       History: (content: string) =>
