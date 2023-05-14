@@ -14,6 +14,7 @@ import { showToast } from "../components/ui-lib";
 import { ModelType } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
+import { api } from "../client/api";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
