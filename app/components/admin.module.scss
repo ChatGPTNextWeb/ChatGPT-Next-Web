@@ -1,0 +1,45 @@
+.admin-page {
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  td {
+    text-align: center;
+  }
+
+  .Pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .Pagination button {
+    border: none;
+    background-color: transparent;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+
+  .Pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+}

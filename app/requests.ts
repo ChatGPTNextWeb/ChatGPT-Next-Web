@@ -94,7 +94,6 @@ export async function requestUserBalance() {
     },
   });
   const body: string = await res.text();
-  console.log("Danny Debug requestUserBalance", body);
   const user: User = JSON.parse(body).user;
   return {
     balance: user.balance,

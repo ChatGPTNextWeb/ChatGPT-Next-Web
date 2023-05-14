@@ -9,6 +9,7 @@ import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
+import SettingsIcon from "../icons/settings.svg";
 import { Input, List, ListItem, Modal, PasswordInput, Popover } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -263,28 +264,26 @@ export function Settings() {
         <div className="window-actions">
           <div className="window-action-button">
             <IconButton
-              icon={<ClearIcon />}
+              icon={<SettingsIcon />}
               onClick={() => {
-                if (confirm(Locale.Settings.Actions.ConfirmClearAll)) {
-                  chatStore.clearAllData();
-                }
+                navigate(Path.Admin);
               }}
               bordered
-              title={Locale.Settings.Actions.ClearAll}
+              title={"Admin"}
             />
           </div>
-          <div className="window-action-button">
-            <IconButton
-              icon={<ResetIcon />}
-              onClick={() => {
-                if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {
-                  resetConfig();
-                }
-              }}
-              bordered
-              title={Locale.Settings.Actions.ResetAll}
-            />
-          </div>
+          {/*<div className="window-action-button">*/}
+          {/*  <IconButton*/}
+          {/*    icon={<ResetIcon />}*/}
+          {/*    onClick={() => {*/}
+          {/*      if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {*/}
+          {/*        resetConfig();*/}
+          {/*      }*/}
+          {/*    }}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Settings.Actions.ResetAll}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div className="window-action-button">
             <IconButton
               icon={<CloseIcon />}
