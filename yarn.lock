@@ -1111,6 +1111,11 @@
   dependencies:
     "@types/react" ">=16.0.0"
 
+"@microsoft/fetch-event-source@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/@microsoft/fetch-event-source/-/fetch-event-source-2.0.1.tgz#9ceecc94b49fbaa15666e38ae8587f64acce007d"
+  integrity sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==
+
 "@next/env@13.3.1-canary.8":
   version "13.3.1-canary.8"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.3.1-canary.8.tgz#9f5cf57999e4f4b59ef6407924803a247cc4e451"
