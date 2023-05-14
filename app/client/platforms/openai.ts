@@ -94,7 +94,7 @@ export class ChatGPTApi implements LLMApi {
             return finish();
           }
 
-          const chunk = decoder.decode(value);
+          const chunk = decoder.decode(value, { stream: true });
           const lines = chunk.split("data: ");
 
           for (const line of lines) {
