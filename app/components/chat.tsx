@@ -39,6 +39,7 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  getNextIndex,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -237,9 +238,10 @@ export function PromptHints(props: {
       const changeIndex = (delta: number) => {
         e.stopPropagation();
         e.preventDefault();
-        const nextIndex = Math.max(
-          0,
-          Math.min(props.prompts.length - 1, selectIndex + delta),
+        const nextIndex = getNextIndex(
+          props.prompts.length,
+          selectIndex,
+          delta,
         );
         setSelectIndex(nextIndex);
         selectedRef.current?.scrollIntoView({
