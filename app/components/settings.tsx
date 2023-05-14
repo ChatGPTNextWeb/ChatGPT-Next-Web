@@ -328,6 +328,7 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
+          {/* TODO: Adding user png as avatar */}
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
@@ -350,7 +351,8 @@ export function Settings() {
             </Popover>
           </ListItem>
 
-          <ListItem
+          {/* TODO: Sync our own latest version */}
+          {/* <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
@@ -373,7 +375,7 @@ export function Settings() {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </ListItem>
+          </ListItem> */}
 
           <ListItem title={Locale.Settings.SendKey}>
             <Select
@@ -497,7 +499,23 @@ export function Settings() {
             <></>
           )}
 
-          {!accessStore.hideUserApiKey ? (
+          {/* TODO: should set enabledAccessControl parameter  */}
+          {/* <ListItem
+            title={Locale.Settings.AccessCode.Title}
+            subTitle={Locale.Settings.AccessCode.SubTitle}
+          >
+            <PasswordInput
+              value={accessStore.accessCode}
+              type="text"
+              placeholder={Locale.Settings.AccessCode.Placeholder}
+              onChange={(e) => {
+                accessStore.updateCode(e.currentTarget.value);
+              }}
+            />
+          </ListItem> */}
+
+          {/* TODO: should set HIDE_USER_API_KEY="false" in config, but not success*/}
+          {/* {!accessStore.hideUserApiKey ? (
             <ListItem
               title={Locale.Settings.Token.Title}
               subTitle={Locale.Settings.Token.SubTitle}
@@ -511,9 +529,9 @@ export function Settings() {
                 }}
               />
             </ListItem>
-          ) : null}
+          ) : null} */}
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
               showUsage
@@ -535,7 +553,7 @@ export function Settings() {
                 onClick={() => checkUsage(true)}
               />
             )}
-          </ListItem>
+          </ListItem> */}
         </List>
 
         <List>

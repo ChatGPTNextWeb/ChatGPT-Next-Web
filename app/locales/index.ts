@@ -1,4 +1,5 @@
-import CN from "./cn";
+// import CN from "./cn";
+import CN from "./cn-zhixing";
 import EN from "./en";
 import TW from "./tw";
 import ES from "./es";
@@ -15,20 +16,20 @@ export type { LocaleType } from "./cn";
 export const AllLangs = [
   "en",
   "cn",
-  "tw",
-  "es",
-  "it",
-  "tr",
-  "jp",
-  "de",
-  "vi",
-  "ru",
-  "cs",
+  // "tw",
+  // "es",
+  // "it",
+  // "tr",
+  // "jp",
+  // "de",
+  // "vi",
+  // "ru",
+  // "cs",
 ] as const;
 export type Lang = (typeof AllLangs)[number];
 
 const LANG_KEY = "lang";
-const DEFAULT_LANG = "en";
+const DEFAULT_LANG = "cn";
 
 function getItem(key: string) {
   try {

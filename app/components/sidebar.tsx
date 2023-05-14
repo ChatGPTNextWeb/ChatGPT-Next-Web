@@ -10,6 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import AnnouncementIcon from "../icons/announcement.svg";
 
 import Locale from "../locales";
 
@@ -119,30 +120,30 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-        <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
-        </div>
+        <div className={styles["sidebar-title"]}>知行AI</div>
+        <div className={styles["sidebar-sub-title"]}></div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
-        <IconButton
+        {/* 新的聊天=面具, 重复了*/}
+        {/* <IconButton
           icon={<MaskIcon />}
           text={shouldNarrow ? undefined : Locale.Mask.Name}
           className={styles["sidebar-bar-button"]}
           onClick={() => navigate(Path.NewChat, { state: { fromHome: true } })}
           shadow
-        />
-        <IconButton
+        /> */}
+        {/* TODO: 该功能仍正在开发中 */}
+        {/* <IconButton
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}
           onClick={() => showToast(Locale.WIP)}
           shadow
-        />
+        /> */}
       </div>
 
       <div
@@ -173,11 +174,19 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
+          {/* <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
-          </div>
+          </div> */}
+
+          {/* TODO: Add description */}
+          {/* <div className={styles["sidebar-action"]}>
+              <IconButton
+                icon={<AnnouncementIcon />}
+                onClick={() => showAnnouncement(notice)}
+              />
+          </div> */}
         </div>
         <div>
           <IconButton
