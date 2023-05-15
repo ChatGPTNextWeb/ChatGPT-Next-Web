@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
-import { getHeaders } from "../requests";
+import { getHeaders } from "../client/api";
 import { BOT_HELLO } from "./chat";
 import { ALL_MODELS } from "./config";
 
