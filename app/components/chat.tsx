@@ -22,7 +22,7 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 
 import {
-  Message,
+  ChatMessage,
   SubmitKey,
   useChatStore,
   BOT_HELLO,
@@ -43,7 +43,7 @@ import {
 
 import dynamic from "next/dynamic";
 
-import { ControllerPool } from "../requests";
+import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
@@ -63,7 +63,7 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
 
-function exportMessages(messages: Message[], topic: string) {
+function exportMessages(messages: ChatMessage[], topic: string) {
   const mdText =
     `# ${topic}\n\n` +
     messages
@@ -230,7 +230,9 @@ export function PromptHints(props: {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (noPrompts) return;
-
+      if (e.metaKey || e.altKey || e.ctrlKey) {
+        return;
+      }
       // arrow up / down to select prompt
       const changeIndex = (delta: number) => {
         e.stopPropagation();
@@ -329,8 +331,8 @@ export function ChatActions(props: {
   }
 
   // stop all responses
-  const couldStop = ControllerPool.hasPending();
-  const stopAll = () => ControllerPool.stopAll();
+  const couldStop = ChatControllerPool.hasPending();
+  const stopAll = () => ChatControllerPool.stopAll();
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -392,7 +394,7 @@ export function ChatActions(props: {
 }
 
 export function Chat() {
-  type RenderMessage = Message & { preview?: boolean };
+  type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -485,13 +487,17 @@ export function Chat() {
 
   // stop response
   const onUserStop = (messageId: number) => {
-    ControllerPool.stop(sessionIndex, messageId);
+    ChatControllerPool.stop(sessionIndex, messageId);
   };
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // if ArrowUp and no userInput, fill with last input
-    if (e.key === "ArrowUp" && userInput.length <= 0) {
+    if (
+      e.key === "ArrowUp" &&
+      userInput.length <= 0 &&
+      !(e.metaKey || e.altKey || e.ctrlKey)
+    ) {
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
       e.preventDefault();
       return;
@@ -501,7 +507,7 @@ export function Chat() {
       e.preventDefault();
     }
   };
-  const onRightClick = (e: any, message: Message) => {
+  const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
     if (selectOrCopy(e.currentTarget, message.content)) {
       e.preventDefault();
@@ -789,7 +795,14 @@ export function Chat() {
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           showPromptHints={() => {
+            // Click again to close
+            if (promptHints.length > 0) {
+              setPromptHints([]);
+              return;
+            }
+
             inputRef.current?.focus();
+            setUserInput("/");
             onSearch("");
           }}
         />
