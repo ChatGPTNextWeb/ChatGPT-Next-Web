@@ -2,10 +2,25 @@ import { createParser } from "eventsource-parser";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
+import { recordTokenUsage } from "../../lib/redis";
+import { countToken, promptToken } from "../../lib/tokenlize";
 
-async function createStream(res: Response) {
+async function recordTokens(
+  accessCode: string,
+  requestMessage: any,
+  resonseContent: string,
+) {
+  const responseToken = countToken(resonseContent);
+  const requestToken = promptToken(requestMessage.messages);
+  if (responseToken > 0 || requestToken > 0) {
+    return recordTokenUsage(accessCode, requestToken, responseToken);
+  }
+}
+
+async function createStream(res: Response, onDone: (content: string) => void) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
+  var resonseContent: string = "";
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -15,11 +30,12 @@ async function createStream(res: Response) {
           // https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
           if (data === "[DONE]") {
             controller.close();
-            return;
+            onDone(resonseContent);
           }
           try {
             const json = JSON.parse(data);
             const text = json.choices[0].delta.content;
+            resonseContent = resonseContent + text;
             const queue = encoder.encode(text);
             controller.enqueue(queue);
           } catch (e) {
@@ -50,21 +66,27 @@ async function handle(
 ) {
   console.log("[OpenAI Route] params ", params);
 
-  const authResult = auth(req);
+  const authResult = await auth(req);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
     });
   }
+  const accessCode = authResult.accessCode;
 
   try {
-    const api = await requestOpenai(req);
+    const reuqestMessages = await req.json();
+
+    const api = await requestOpenai(req, reuqestMessages);
 
     const contentType = api.headers.get("Content-Type") ?? "";
 
     // streaming response
     if (contentType.includes("stream")) {
-      const stream = await createStream(api);
+      const stream = await createStream(api, (messageContent) => {
+        recordTokens(accessCode, reuqestMessages, messageContent);
+      });
+
       const res = new Response(stream);
       res.headers.set("Content-Type", contentType);
       return res;
@@ -78,6 +100,8 @@ async function handle(
         return formatResponse(mayBeErrorBody);
       } else {
         const res = new Response(JSON.stringify(mayBeErrorBody));
+        const messageContent = mayBeErrorBody.choices[0].message.content;
+        recordTokens(accessCode, reuqestMessages, messageContent);
         res.headers.set("Content-Type", "application/json");
         res.headers.set("Cache-Control", "no-cache");
         return res;
@@ -98,4 +122,4 @@ async function handle(
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+export const runtime = "nodejs";

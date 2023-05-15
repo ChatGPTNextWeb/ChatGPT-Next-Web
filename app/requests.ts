@@ -186,7 +186,7 @@ export async function requestChatStream(
       controller.abort();
     };
 
-    if (res.ok) {
+    if (res.ok && req.stream) {
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
 
@@ -212,6 +212,10 @@ export async function requestChatStream(
         }
       }
 
+      finish();
+    } else if (res.ok) {
+      const respone = await res.json();
+      responseText = respone.choices[0].message.content;
       finish();
     } else if (res.status === 401) {
       console.error("Unauthorized");

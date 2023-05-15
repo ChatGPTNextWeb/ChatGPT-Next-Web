@@ -8,6 +8,7 @@ declare global {
       PROXY_URL?: string;
       VERCEL?: string;
       HIDE_USER_API_KEY?: string; // disable user's api key input
+      REDIS_URL?: string;
     }
   }
 }
@@ -35,10 +36,10 @@ export const getServerSideConfig = () => {
   return {
     apiKey: process.env.OPENAI_API_KEY,
     code: process.env.CODE,
-    codes: ACCESS_CODES,
-    needCode: ACCESS_CODES.size > 0,
+    needCode: true,
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
-    hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
+    hideUserApiKey: true,
+    redisUrl: process.env.REDIS_URL ?? "redis://127.0.0.1:6379",
   };
 };

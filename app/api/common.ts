@@ -5,7 +5,9 @@ const DEFAULT_PROTOCOL = "https";
 const PROTOCOL = process.env.PROTOCOL ?? DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL ?? OPENAI_URL;
 
-export async function requestOpenai(req: NextRequest) {
+console.log("[Base Url]", BASE_URL);
+
+export async function requestOpenai(req: NextRequest, requestJson: any) {
   const authValue = req.headers.get("Authorization") ?? "";
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
@@ -17,9 +19,6 @@ export async function requestOpenai(req: NextRequest) {
   if (!baseUrl.startsWith("http")) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;
   }
-
-  console.log("[Proxy] ", openaiPath);
-  console.log("[Base Url]", baseUrl);
 
   if (process.env.OPENAI_ORG_ID) {
     console.log("[Org ID]", process.env.OPENAI_ORG_ID);
@@ -39,6 +38,7 @@ export async function requestOpenai(req: NextRequest) {
     },
     cache: "no-store",
     method: req.method,
-    body: req.body,
+    body: JSON.stringify(requestJson),
+    duplex: "half",
   });
 }

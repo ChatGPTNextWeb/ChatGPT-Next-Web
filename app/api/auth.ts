@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
+import { getTokenInfo } from "./lib/redis";
 
 const serverConfig = getServerSideConfig();
 
@@ -16,31 +17,21 @@ function getIP(req: NextRequest) {
   return ip;
 }
 
-function parseApiKey(bearToken: string) {
+function parseAccessCode(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
-
-  return {
-    accessCode: isOpenAiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
-    apiKey: isOpenAiKey ? token : "",
-  };
+  if (token.startsWith(ACCESS_CODE_PREFIX)) {
+    return token.slice(ACCESS_CODE_PREFIX.length);
+  }
 }
 
-export function auth(req: NextRequest) {
+type AuthRes =
+  | { error: true; needAccessCode?: boolean; msg: string }
+  | { error: false; accessCode: string };
+export async function auth(req: NextRequest): Promise<AuthRes> {
   const authToken = req.headers.get("Authorization") ?? "";
 
-  // check if it is openai api key or user token
-  const { accessCode, apiKey: token } = parseApiKey(authToken);
-
-  const hashedCode = md5.hash(accessCode ?? "").trim();
-
-  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
-  console.log("[Auth] got access code:", accessCode);
-  console.log("[Auth] hashed access code:", hashedCode);
-  console.log("[User IP] ", getIP(req));
-  console.log("[Time] ", new Date().toLocaleString());
-
-  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
+  const accessCode = parseAccessCode(authToken);
+  if (!accessCode) {
     return {
       error: true,
       needAccessCode: true,
@@ -48,24 +39,42 @@ export function auth(req: NextRequest) {
     };
   }
 
-  // if user does not provide an api key, inject system api key
-  if (!token) {
-    const apiKey = serverConfig.apiKey;
-    if (apiKey) {
-      console.log("[Auth] use system api key");
-      req.headers.set("Authorization", `Bearer ${apiKey}`);
-    } else {
-      console.log("[Auth] admin did not provide an api key");
-      return {
-        error: true,
-        msg: "Empty Api Key",
-      };
-    }
+  console.log("[Auth] got access code:", accessCode);
+  console.log("[User IP] ", getIP(req));
+  console.log("[Time] ", new Date().toLocaleString());
+
+  const tokenInfo = await getTokenInfo(accessCode);
+  const invalidMsg =
+    !tokenInfo || !(tokenInfo.total || tokenInfo.expire)
+      ? "invalid token"
+      : tokenInfo.total &&
+        tokenInfo.total <= tokenInfo.usage.completion + tokenInfo.usage.prompt
+      ? "token is not enough"
+      : tokenInfo.expire && tokenInfo.expire <= new Date().getMilliseconds()
+      ? "token is expire"
+      : null;
+
+  if (invalidMsg) {
+    return {
+      error: true,
+      msg: invalidMsg,
+    };
+  }
+
+  const apiKey = serverConfig.apiKey;
+  if (apiKey) {
+    console.log("[Auth] use system api key");
+    req.headers.set("Authorization", `Bearer ${apiKey}`);
   } else {
-    console.log("[Auth] use user api key");
+    console.log("[Auth] admin did not provide an api key");
+    return {
+      error: true,
+      msg: "Empty Api Key",
+    };
   }
 
   return {
     error: false,
+    accessCode,
   };
 }

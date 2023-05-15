@@ -19,6 +19,8 @@
     "emoji-picker-react": "^4.4.7",
     "eventsource-parser": "^0.1.0",
     "fuse.js": "^6.6.2",
+    "gpt-3-encoder": "^1.1.4",
+    "ioredis": "^5.3.2",
     "mermaid": "^10.1.0",
     "next": "^13.3.1-canary.8",
     "node-fetch": "^3.3.1",
@@ -43,6 +45,7 @@
     "@types/react-dom": "^18.0.11",
     "@types/react-katex": "^3.0.0",
     "@types/spark-md5": "^3.0.2",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.36.0",
     "eslint-config-next": "13.2.3",
@@ -51,6 +54,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "webpack-node-externals": "^3.0.0"
   }
 }
