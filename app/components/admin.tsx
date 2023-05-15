@@ -47,6 +47,11 @@ export function Admin(): JSX.Element {
       `api/overview?password=${adminPassword}&page=${page}`,
     );
     const result = await response.json();
+    if (result.error) {
+      message.error(result.error);
+      return;
+    }
+    console.log(result);
     setData(result);
     setTotal(result.length);
   };
@@ -109,7 +114,12 @@ export function Admin(): JSX.Element {
     const { adminPassword } = await adminPasswordFrom.validateFields();
     setAdminPassword(adminPassword);
     setAdminPasswordVisible(false);
-    message.success("set adminPassword successfully");
+    // message.success("set adminPassword successfully");
+  };
+
+  const handleAdminPasswordCancel = async () => {
+    setAdminPasswordVisible(false);
+    adminPasswordFrom.resetFields();
   };
 
   const handleOk = async () => {
@@ -207,6 +217,7 @@ export function Admin(): JSX.Element {
         title="adminPasswordVisible"
         visible={adminPasswordVisible}
         onOk={handleAdminPasswordOk}
+        onCancel={handleAdminPasswordCancel}
       >
         <Form form={adminPasswordFrom}>
           <Form.Item
@@ -214,7 +225,7 @@ export function Admin(): JSX.Element {
             label="Admin Password"
             rules={[{ required: false, message: "Please enter password" }]}
           >
-            <Input />
+            <Input type="password" />
           </Form.Item>
         </Form>
       </Modal>
