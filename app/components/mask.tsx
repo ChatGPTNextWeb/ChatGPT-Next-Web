@@ -13,7 +13,8 @@ import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
-import { Message, ModelConfig, ROLES, useChatStore } from "../store";
+import { ChatMessage, ModelConfig, useChatStore } from "../store";
+import { ROLES } from "../client/api";
 import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, Lang } from "../locales";
@@ -22,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import chatStyle from "./chat.module.scss";
 import { useState } from "react";
 import { downloadAs, readFromFile } from "../utils";
-import { Updater } from "../api/openai/typing";
+import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
@@ -107,8 +108,8 @@ export function MaskConfig(props: {
 }
 
 function ContextPromptItem(props: {
-  prompt: Message;
-  update: (prompt: Message) => void;
+  prompt: ChatMessage;
+  update: (prompt: ChatMessage) => void;
   remove: () => void;
 }) {
   const [focusingInput, setFocusingInput] = useState(false);
@@ -160,12 +161,12 @@ function ContextPromptItem(props: {
 }
 
 export function ContextPrompts(props: {
-  context: Message[];
-  updateContext: (updater: (context: Message[]) => void) => void;
+  context: ChatMessage[];
+  updateContext: (updater: (context: ChatMessage[]) => void) => void;
 }) {
   const context = props.context;
 
-  const addContextPrompt = (prompt: Message) => {
+  const addContextPrompt = (prompt: ChatMessage) => {
     props.updateContext((context) => context.push(prompt));
   };
 
@@ -173,7 +174,7 @@ export function ContextPrompts(props: {
     props.updateContext((context) => context.splice(i, 1));
   };
 
-  const updateContextPrompt = (i: number, prompt: Message) => {
+  const updateContextPrompt = (i: number, prompt: ChatMessage) => {
     props.updateContext((context) => (context[i] = prompt));
   };
 
