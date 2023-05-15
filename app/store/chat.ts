@@ -98,28 +98,6 @@ export const ModalConfigValidator = {
   },
 };
 
-const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 4,
-  compressMessageLengthThreshold: 1000,
-  sendBotMessages: true as boolean,
-  submitKey: SubmitKey.Enter as SubmitKey,
-  avatar: "1f92b",
-  fontSize: 14,
-  theme: Theme.Auto as Theme,
-  tightBorder: false,
-  sendPreviewBubble: true,
-  sidebarWidth: 300,
-
-  disablePromptHint: false,
-
-  modelConfig: {
-    model: "gpt-3.5-turbo",
-    temperature: 1,
-    max_tokens: 2000,
-    presence_penalty: 0,
-  },
-};
-
 export interface ChatStat {
   tokenCount: number;
   wordCount: number;
