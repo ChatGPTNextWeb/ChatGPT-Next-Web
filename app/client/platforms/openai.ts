@@ -4,6 +4,7 @@ import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
 import Locale from "../../locales";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
   public ChatPath = "v1/chat/completions";
@@ -72,12 +73,24 @@ export class ChatGPTApi implements LLMApi {
           options.onFinish(responseText);
         };
 
+        controller.signal.onabort = finish;
+
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(reqestTimeoutId);
             if (res.status === 401) {
+              let extraInfo = { error: undefined };
+              try {
+                extraInfo = await res.clone().json();
+              } catch {}
+
               responseText += "\n\n" + Locale.Error.Unauthorized;
+
+              if (extraInfo.error) {
+                responseText += "\n\n" + prettyObject(extraInfo);
+              }
+
               return finish();
             }
           },
