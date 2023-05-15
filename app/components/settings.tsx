@@ -229,10 +229,10 @@ export function Settings() {
       "[Update] local version ",
       new Date(+updateStore.version).toLocaleString(),
     );
-    console.log(
-      "[Update] remote version ",
-      new Date(+updateStore.remoteVersion).toLocaleString(),
-    );
+    // console.log(
+    //   "[Update] remote version ",
+    //   new Date(+updateStore.remoteVersion).toLocaleString(),
+    // );
   }
 
   const usage = {
@@ -288,7 +288,7 @@ export function Settings() {
             {Locale.Settings.Title}
           </div>
           <div className="window-header-sub-title">
-            {Locale.Settings.SubTitle}
+            {Locale.Settings.Update.Version(currentVersion ?? "unknown")}
           </div>
         </div>
         <div className="window-actions">
@@ -350,7 +350,7 @@ export function Settings() {
             </Popover>
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
@@ -373,7 +373,7 @@ export function Settings() {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </ListItem>
+          </ListItem> */}
 
           <ListItem title={Locale.Settings.SendKey}>
             <Select
