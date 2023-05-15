@@ -20,6 +20,7 @@
     "emoji-picker-react": "^4.4.7",
     "eventsource-parser": "^0.1.0",
     "fuse.js": "^6.6.2",
+    "lodash": "^4.17.21",
     "moment-timezone": "^0.5.43",
     "next": "^13.3.1-canary.8",
     "node-fetch": "^3.3.1",
@@ -40,6 +41,7 @@
     "zustand": "^4.3.6"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.194",
     "@types/node": "^18.14.6",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",

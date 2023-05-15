@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTTL, redisGet, redisKeys } from "@/app/util/redis_util";
 import { formatTimestamp } from "@/app/util/date_util";
+import { sortBy } from "lodash";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const password = req.nextUrl.searchParams.get("password");
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     users.push(record);
   }
   // sort users by createdAt desc
-  users.sort((a, b) => b.createdAt - a.createdAt);
+  const sort_users = sortBy(users, ["createdAt"]).reverse();
   // return csv
-  return NextResponse.json(users);
+  return NextResponse.json(sort_users);
 }

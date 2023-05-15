@@ -3,4 +3,7 @@ export interface User {
   seconds: number;
   balance: number;
   createdAt: number;
+  subscribe_type: string;
+  wechat: string;
+  remark: string;
 }
