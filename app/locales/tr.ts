@@ -81,7 +81,7 @@ const tr: LocaleType = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        vi: "Vietnamese",
+        vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
       },
