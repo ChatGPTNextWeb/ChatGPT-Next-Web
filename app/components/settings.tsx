@@ -18,6 +18,7 @@ import {
   PasswordInput,
   Popover,
   Select,
+  showToast,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -327,7 +328,18 @@ export function Settings() {
         </div>
       </div>
       <div className={styles["settings"]}>
+        {/* Account */}
         <List>
+          <ListItem title={"用户信息"}>
+            {
+              <IconButton
+                icon={<EditIcon />}
+                text={Locale.Settings.Prompt.Edit}
+                onClick={() => showToast("开发中...")}
+              />
+            }
+          </ListItem>
+
           {/* TODO: Adding user png as avatar */}
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
@@ -351,6 +363,15 @@ export function Settings() {
             </Popover>
           </ListItem>
 
+          <ListItem title={"昵称"}>
+            <text>游客</text>
+          </ListItem>
+          <ListItem title={"电话"}>
+            <text>0000</text>
+          </ListItem>
+        </List>
+
+        <List>
           {/* TODO: Sync our own latest version */}
           {/* <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}

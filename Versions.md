@@ -1,9 +1,17 @@
 # 1. Versions
 
+
+## v1.1.1
+publish time: 2023-05-16
+
+Features: 
+ - Add introduction
+ - Add User Info panel
+ - Test backend api
+
+
 ## v1.1.0
 publish time: 2023-05-15
-
-Description: Clone official code and deploy to Azure.
 
 Features: 
  - Update to 知行AI
@@ -12,5 +20,7 @@ Features:
 
 ## v1.0.0
 publish time: 2023-05-13
-Clone official code and deploy to Azure.
+
+Features: 
+ - Clone official code and deploy to Azure.
 

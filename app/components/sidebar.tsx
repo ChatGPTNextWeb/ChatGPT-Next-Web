@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import React, { useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -27,7 +28,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { showToast } from "./ui-lib";
+import { showToast, showModal } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -101,6 +102,28 @@ function useDragSideBar() {
     onDragMouseDown,
     shouldNarrow,
   };
+}
+
+function showIntroduction() {
+  const mdText = `
+    欢迎来到知行AI！
+
+    知行AI提供了与ChatGPT进行对话的能力。您可以随时随地与我们的AI助手展开对话。
+
+    我们非常重视用户隐私和数据安全。在使用知行AI时，我们不会后台存储或分析用户的聊天记录。所有的聊天记录都直接转发到OpenAI，这意味着您的对话数据将由OpenAI进行处理和存储。
+    作为一家技术领先的公司，OpenAI采取了严格的数据保护措施，以确保您的数据安全和隐私保护。
+
+    祝畅聊愉快。
+    `;
+
+  showModal({
+    title: "知行AI",
+    children: (
+      <div className="markdown-body">
+        <pre className={styles["export-content"]}>{mdText}</pre>
+      </div>
+    ),
+  });
 }
 
 export function SideBar(props: { className?: string }) {
@@ -181,13 +204,15 @@ export function SideBar(props: { className?: string }) {
           </div> */}
 
           {/* TODO: Add description */}
-          {/* <div className={styles["sidebar-action"]}>
-              <IconButton
-                icon={<AnnouncementIcon />}
-                onClick={() => showAnnouncement(notice)}
-              />
-          </div> */}
+          <div className={styles["sidebar-action"]}>
+            <IconButton
+              icon={<AnnouncementIcon />}
+              text="介绍"
+              onClick={() => showIntroduction()}
+            />
+          </div>
         </div>
+
         <div>
           <IconButton
             icon={<AddIcon />}
