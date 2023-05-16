@@ -28,6 +28,11 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
+  try {
+    auth(req);
+  } catch (e) {
+    return NextResponse.json(prettyObject(e));
+  }
   return await proxy(req);
   // console.log("[OpenAI Route] params ", params);
 
