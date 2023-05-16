@@ -4,7 +4,7 @@ import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
 
 const TELEGRAPH_URL = "https://api.openai.com";
-export const proxy = async (request: Request) => {
+const proxy = async (request: Request) => {
   const url = new URL(request.url);
   const headers_Origin =
     request.headers.get("Access-Control-Allow-Origin") || "*";
