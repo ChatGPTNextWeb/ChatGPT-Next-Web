@@ -23,6 +23,7 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { useAccessStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -100,6 +101,7 @@ const loadAsyncGoogleFont = () => {
 
 function Screen() {
   const config = useAppConfig();
+  const access = useAccessStore();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isMobileScreen = useMobileScreen();
@@ -109,7 +111,7 @@ function Screen() {
   }, []);
   // const [proxyLink, setproxyLink] = useState("");
   const [ipinfo, setIpinfo] = useState("测试中...");
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(access.accessCode !== "");
   useEffect(() => {
     // const { origin } = location;
     // setproxyLink(`${origin}/api`);
