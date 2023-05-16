@@ -571,3 +571,19 @@
   height: 100%;
   width: 100%;
 }
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  div {
+    text-align: center;
+  }
+  button {
+    background-color: rgb(39, 111, 234);
+    border: none;
+    color: white;
+    padding: .5rem 1rem;
+    border-radius: .5rem;
+  }
+}
