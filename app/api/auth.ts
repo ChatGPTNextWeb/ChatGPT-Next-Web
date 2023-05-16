@@ -43,8 +43,7 @@ export function auth(req: NextRequest) {
   if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
     return {
       error: true,
-      needAccessCode: true,
-      msg: "Please go settings page and fill your access code.",
+      msg: !accessCode ? "empty access code" : "wrong access code",
     };
   }
 
@@ -58,7 +57,7 @@ export function auth(req: NextRequest) {
       console.log("[Auth] admin did not provide an api key");
       return {
         error: true,
-        msg: "Empty Api Key",
+        msg: "admin did not provide an api key",
       };
     }
   } else {
