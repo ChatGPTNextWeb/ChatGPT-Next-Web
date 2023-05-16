@@ -110,9 +110,6 @@ export class ChatGPTApi implements LLMApi {
               console.error("[Request] parse error", text, msg);
             }
           },
-          onclose() {
-            finish();
-          },
           onerror(e) {
             options.onError?.(e);
           },
