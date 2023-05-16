@@ -20,6 +20,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import DeleteIcon from "../icons/delete.svg";
 
 import {
   ChatMessage,
@@ -436,14 +437,11 @@ export function Chat() {
   };
 
   // auto grow input
-  const [inputRows, setInputRows] = useState(2);
+  const [inputRows, setInputRows] = useState(3);
   const measure = useDebouncedCallback(
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
-      const inputRows = Math.min(
-        20,
-        Math.max(2 + Number(!isMobileScreen), rows),
-      );
+      const inputRows = Math.min(20, Math.max(3, rows));
       setInputRows(inputRows);
     },
     100,
@@ -826,6 +824,12 @@ export function Chat() {
             type="primary"
             onClick={() => doSubmit(userInput)}
           />
+          {userInput ? (
+            <DeleteIcon
+              className={styles["chat-input-delete"]}
+              onClickCapture={() => onInput("")}
+            />
+          ) : null}
         </div>
       </div>
     </div>
