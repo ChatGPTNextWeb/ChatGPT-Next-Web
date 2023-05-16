@@ -40,3 +40,6 @@ public/prompts.json
 
 .vscode
 .idea
+
+# Other Package Manager
+pnpm-lock.yaml
