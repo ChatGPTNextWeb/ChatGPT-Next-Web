@@ -166,7 +166,7 @@ const de: LocaleType = {
       Title: "Max Tokens", //Maximale Token
       SubTitle: "Maximale Anzahl der Anfrage- plus Antwort-Token",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Presence Penalty", //Anwesenheitsstrafe
       SubTitle:
         "Ein größerer Wert erhöht die Wahrscheinlichkeit, dass über neue Themen gesprochen wird",
