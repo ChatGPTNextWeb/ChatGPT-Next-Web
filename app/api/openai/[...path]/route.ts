@@ -28,7 +28,7 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  return proxy(req);
+  return await proxy(req);
   // console.log("[OpenAI Route] params ", params);
 
   // const authResult = auth(req);
