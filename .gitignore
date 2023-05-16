@@ -40,3 +40,6 @@ public/prompts.json
 
 .vscode
 .idea
+
+# docker-compose env files
+.env
