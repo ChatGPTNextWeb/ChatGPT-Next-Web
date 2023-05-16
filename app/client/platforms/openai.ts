@@ -60,7 +60,7 @@ export class ChatGPTApi implements LLMApi {
       };
 
       // make a fetch request
-      const reqestTimeoutId = setTimeout(
+      const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
@@ -75,7 +75,7 @@ export class ChatGPTApi implements LLMApi {
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
-            clearTimeout(reqestTimeoutId);
+            clearTimeout(requestTimeoutId);
             if (res.status === 401) {
               responseText += "\n\n" + Locale.Error.Unauthorized;
               return finish();
@@ -106,7 +106,7 @@ export class ChatGPTApi implements LLMApi {
         });
       } else {
         const res = await fetch(chatPath, chatPayload);
-        clearTimeout(reqestTimeoutId);
+        clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
