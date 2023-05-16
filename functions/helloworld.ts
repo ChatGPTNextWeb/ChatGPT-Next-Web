@@ -1,8 +1,3 @@
-interface Env {
-  KV: KVNamespace;
-}
-
-export const onRequest: PagesFunction<Env> = async (context) => {
-  const value = await context.env.KV.get("chatgpt");
-  return new Response(value);
+export const onRequest: PagesFunction<any> = async (context) => {
+  return new Response("hello world");
 };
