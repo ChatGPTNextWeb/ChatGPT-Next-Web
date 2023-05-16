@@ -78,7 +78,7 @@ const tw: LocaleType = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        vi: "Vietnamese",
+        vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
       },
@@ -161,7 +161,7 @@ const tw: LocaleType = {
       Title: "單次回應限制 (max_tokens)",
       SubTitle: "單次互動所用的最大 Token 數",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
