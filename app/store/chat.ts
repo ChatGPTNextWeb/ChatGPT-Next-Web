@@ -249,7 +249,7 @@ export const useChatStore = create<ChatStore>()(
 
         const systemInfo = createMessage({
           role: "system",
-          content: `IMPRTANT: You are a virtual assistant powered by the ${
+          content: `IMPORTANT: You are a virtual assistant powered by the ${
             modelConfig.model
           } model, now time is ${new Date().toLocaleString()}}`,
           id: botMessage.id! + 1,
@@ -296,9 +296,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.content !== Locale.Error.Unauthorized &&
               !isAborted
             ) {
-              botMessage.content += "\n\n" + Locale.Store.Error;
-            } else if (botMessage.content.length === 0) {
-              botMessage.content = prettyObject(error);
+              botMessage.content += "\n\n" + prettyObject(error);
             }
             botMessage.streaming = false;
             userMessage.isError = !isAborted;
