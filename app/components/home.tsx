@@ -105,7 +105,7 @@ function Screen() {
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isMobileScreen = useMobileScreen();
-
+  const [count, setCount] = useState(0);
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
@@ -129,7 +129,19 @@ function Screen() {
   if (!show) {
     return (
       <div className={styles.cover}>
-        <div onClick={() => setShow(true)}>{ipinfo}</div>
+        <div
+          onClick={() => {
+            if (count >= 4) {
+              setShow(true);
+            } else {
+              setCount(count + 1);
+            }
+            console.log(count);
+            // console.log(access.accessCode !== "" || count > 5);
+          }}
+        >
+          {ipinfo}
+        </div>
         <button>点击重试</button>
       </div>
     );
