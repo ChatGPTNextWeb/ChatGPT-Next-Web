@@ -107,6 +107,31 @@ function Screen() {
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+  // const [proxyLink, setproxyLink] = useState("");
+  const [ipinfo, setIpinfo] = useState("测试中...");
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    // const { origin } = location;
+    // setproxyLink(`${origin}/api`);
+    fetch("https://forge.speedtest.cn/api/location/info")
+      .then((res1) => res1.json())
+      .then((res1) => {
+        const info1 = `${res1.ip} (${res1.province} ${res1.city} ${res1.distinct} ${res1.isp})`;
+        setIpinfo(info1);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIpinfo("获取国内的IP信息失败");
+      });
+  }, []);
+  if (!show) {
+    return (
+      <div className={styles.cover}>
+        <div onClick={() => setShow(true)}>{ipinfo}</div>
+        <button>点击重试</button>
+      </div>
+    );
+  }
 
   return (
     <div
