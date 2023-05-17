@@ -1,7 +1,6 @@
 import CN from "./cn";
 import EN from "./en";
 import TW from "./tw";
-import FR from "./fr";
 import ES from "./es";
 import IT from "./it";
 import TR from "./tr";
@@ -17,7 +16,6 @@ export const AllLangs = [
   "en",
   "cn",
   "tw",
-  "fr",
   "es",
   "it",
   "tr",
@@ -82,7 +80,6 @@ export default {
   en: EN,
   cn: CN,
   tw: TW,
-  fr: FR,
   es: ES,
   it: IT,
   tr: TR,

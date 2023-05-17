@@ -76,7 +76,6 @@ const de: LocaleType = {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
-        fr: "Français",
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
