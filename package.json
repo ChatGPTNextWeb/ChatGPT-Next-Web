@@ -4,11 +4,13 @@
   "private": false,
   "license": "Anti 996",
   "scripts": {
-    "dev": "yarn fetch && next dev",
-    "build": "yarn fetch && next build",
+    "dev": "yarn pages && yarn fetch && next dev",
+    "build": "yarn pages && yarn fetch && next build",
+    "export": "yarn pages && yarn fetch && next build && next export",
     "start": "next start",
     "lint": "next lint",
     "fetch": "node ./scripts/fetch-prompts.mjs",
+    "pages": "bash scripts/pages.sh",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
