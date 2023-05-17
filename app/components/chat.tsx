@@ -316,7 +316,9 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  clearInput: () => void;
   hitBottom: boolean;
+  isEmpty: boolean;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -390,6 +392,15 @@ export function ChatActions(props: {
       >
         <MaskIcon />
       </div>
+
+      {!props.isEmpty ? (
+        <div
+          className={`${chatStyle["chat-input-action"]} clickable`}
+          onClick={props.clearInput}
+        >
+          <DeleteIcon />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -437,11 +448,14 @@ export function Chat() {
   };
 
   // auto grow input
-  const [inputRows, setInputRows] = useState(3);
+  const [inputRows, setInputRows] = useState(2);
   const measure = useDebouncedCallback(
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
-      const inputRows = Math.min(20, Math.max(3, rows));
+      const inputRows = Math.min(
+        20,
+        Math.max(2 + Number(!isMobileScreen), rows),
+      );
       setInputRows(inputRows);
     },
     100,
@@ -803,6 +817,14 @@ export function Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          isEmpty={userInput === ""}
+          clearInput={() => {
+            if (isMobileScreen) {
+              confirm(Locale.Chat.Delete) && onInput("");
+            } else {
+              onInput("");
+            }
+          }}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
@@ -824,18 +846,6 @@ export function Chat() {
             type="primary"
             onClick={() => doSubmit(userInput)}
           />
-          {userInput ? (
-            <DeleteIcon
-              className={styles["chat-input-delete"]}
-              onClick={() => {
-                if (isMobileScreen) {
-                  confirm(Locale.Chat.Delete) && onInput("");
-                } else {
-                  onInput("");
-                }
-              }}
-            />
-          ) : null}
         </div>
       </div>
     </div>
