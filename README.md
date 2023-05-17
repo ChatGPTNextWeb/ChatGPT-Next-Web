@@ -62,7 +62,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 - 预制角色功能（面具），方便地创建、分享和调试你的个性化对话
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
-- 多国语言支持：English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština
+- 多国语言支持：English, 简体中文, 繁体中文, 日本語, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština
 - 拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
 
 ## 开发计划
