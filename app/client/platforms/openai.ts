@@ -86,26 +86,38 @@ export class ChatGPTApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
+
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
+              return finish();
+            }
+
             if (
               !res.ok ||
               res.headers.get("content-type") !== EventStreamContentType ||
               res.status !== 200
             ) {
-              let extraInfo = { error: undefined };
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
               try {
-                extraInfo = await res.clone().json();
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
               } catch {}
 
               if (res.status === 401) {
-                if (responseText.length > 0) {
-                  responseText += "\n\n";
-                }
-                responseText += Locale.Error.Unauthorized;
+                responseTexts.push(Locale.Error.Unauthorized);
               }
 
-              if (extraInfo.error) {
-                responseText += "\n\n" + prettyObject(extraInfo);
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
               }
+
+              responseText = responseTexts.join("\n\n");
 
               return finish();
             }
