@@ -3,7 +3,10 @@ import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
 import Locale from "../../locales";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import {
+  EventStreamContentType,
+  fetchEventSource,
+} from "@microsoft/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
@@ -79,6 +82,13 @@ export class ChatGPTApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
+            if (
+              res.ok &&
+              res.headers.get("content-type") !== EventStreamContentType
+            ) {
+              responseText += await res.clone().json();
+              return finish();
+            }
             if (res.status === 401) {
               let extraInfo = { error: undefined };
               try {
