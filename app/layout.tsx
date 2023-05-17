@@ -19,7 +19,7 @@ export const metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "ChatGPT Next Web",
+    title: "ChatGPT Wind",
     statusBarStyle: "default",
   },
 };
