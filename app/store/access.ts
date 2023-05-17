@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
+import { getHeaders } from "../client/api";
 import { BOT_HELLO } from "./chat";
 import { ALL_MODELS } from "./config";
 
@@ -55,6 +56,9 @@ export const useAccessStore = create<AccessControlStore>()(
         fetch("/api/config", {
           method: "post",
           body: null,
+          headers: {
+            ...getHeaders(),
+          },
         })
           .then((res) => res.json())
           .then((res: DangerConfig) => {
