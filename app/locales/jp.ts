@@ -152,6 +152,15 @@ const jp: LocaleType = {
       Check: "再確認",
       NoAccess: "APIキーまたはアクセスパスワードを入力して残高を表示",
     },
+    ChatHistory: {
+      Title: "チャット履歴",
+      SubTitle: "クリア、チャット履歴のインポート/エクスポート（JSON形式）",
+      Clear: "クリア",
+      ClearConfirm: "すべてのチャット履歴を削除してもよろしいですか？",
+      Import: "インポート",
+      ImportToast: "チャット履歴のインポートに成功しました！",
+      Export: "エクスポート",
+    },
     AccessCode: {
       Title: "アクセスパスワード",
       SubTitle: "暗号化アクセスが有効になっています",

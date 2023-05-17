@@ -150,6 +150,15 @@ const tr: LocaleType = {
       Check: "Tekrar Kontrol Et",
       NoAccess: "Bakiyeyi kontrol etmek için API anahtarını girin",
     },
+    ChatHistory: {
+      Title: "Sohbet Geçmişi",
+      SubTitle: "Sohbet geçmişini temizle, içe aktar ve dışa aktar (JSON)",
+      Clear: "Temizle",
+      ClearConfirm: "Tüm sohbet geçmişini silmek istediğinizden emin misiniz?",
+      Import: "İçe Aktar",
+      ImportToast: "Sohbet geçmişi içe aktarıldı!",
+      Export: "Dışa Aktar",
+    },
     AccessCode: {
       Title: "Erişim Kodu",
       SubTitle: "Erişim kontrolü etkinleştirme",

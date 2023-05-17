@@ -147,6 +147,15 @@ const tw: LocaleType = {
       Check: "重新檢查",
       NoAccess: "輸入API Key查看餘額",
     },
+    ChatHistory: {
+      Title: "聊天紀錄",
+      SubTitle: "清空，匯入/匯出聊天紀錄（JSON 檔案）",
+      Clear: "清空",
+      ClearConfirm: "確認刪除所有聊天紀錄？",
+      Import: "匯入",
+      ImportToast: "聊天紀錄匯入成功！",
+      Export: "匯出",
+    },
     AccessCode: {
       Title: "授權碼",
       SubTitle: "目前是未授權存取狀態",

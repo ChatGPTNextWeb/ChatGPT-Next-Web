@@ -149,6 +149,15 @@ const vi: LocaleType = {
       Check: "Kiểm tra",
       NoAccess: "Nhập API Key để kiểm tra hạn mức",
     },
+    ChatHistory: {
+      Title: "Chat History",
+      SubTitle: "Clear, import & export chat history (JSON)",
+      Clear: "Clear",
+      ClearConfirm: "Are you sure to delete all chat history?",
+      Import: "Import",
+      ImportToast: "Chat history imported!",
+      Export: "Export",
+    },
     AccessCode: {
       Title: "Mã truy cập",
       SubTitle: "Đã bật kiểm soát truy cập",

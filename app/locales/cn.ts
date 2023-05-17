@@ -149,6 +149,15 @@ const cn = {
       Check: "重新检查",
       NoAccess: "输入 API Key 或访问密码查看余额",
     },
+    ChatHistory: {
+      Title: "聊天记录",
+      SubTitle: "清空，导入/导出聊天记录（JSON 格式）",
+      Clear: "清空",
+      ClearConfirm: "确认删除所有聊天记录？",
+      Import: "导入",
+      ImportToast: "聊天记录导入成功！",
+      Export: "导出",
+    },
     AccessCode: {
       Title: "访问密码",
       SubTitle: "管理员已开启加密访问",

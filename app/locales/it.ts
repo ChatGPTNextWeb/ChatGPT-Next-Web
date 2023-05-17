@@ -151,6 +151,15 @@ const it: LocaleType = {
       Check: "Controlla ancora",
       NoAccess: "Inserire la chiave API per controllare il saldo",
     },
+    ChatHistory: {
+      Title: "Chat History",
+      SubTitle: "Clear, import & export chat history (JSON)",
+      Clear: "Clear",
+      ClearConfirm: "Are you sure to delete all chat history?",
+      Import: "Import",
+      ImportToast: "Chat history imported!",
+      Export: "Export",
+    },
     AccessCode: {
       Title: "Codice d'accesso",
       SubTitle: "Controllo d'accesso abilitato",
