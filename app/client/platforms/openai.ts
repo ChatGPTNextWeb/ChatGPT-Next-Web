@@ -126,6 +126,7 @@ export class ChatGPTApi implements LLMApi {
           onerror(e) {
             options.onError?.(e);
           },
+          openWhenHidden: true,
         });
       } else {
         const res = await fetch(chatPath, chatPayload);
