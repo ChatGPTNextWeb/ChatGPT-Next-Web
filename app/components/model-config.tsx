@@ -68,8 +68,8 @@ export function ModelConfigList(props: {
         ></input>
       </ListItem>
       <ListItem
-        title={Locale.Settings.PresencePenlty.Title}
-        subTitle={Locale.Settings.PresencePenlty.SubTitle}
+        title={Locale.Settings.PresencePenalty.Title}
+        subTitle={Locale.Settings.PresencePenalty.SubTitle}
       >
         <InputRange
           value={props.modelConfig.presence_penalty?.toFixed(1)}
