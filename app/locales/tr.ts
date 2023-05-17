@@ -70,7 +70,7 @@ const tr: LocaleType = {
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      All: "All Languages",
+      All: "Tüm Diller",
       Options: {
         cn: "简体中文",
         en: "English",
@@ -80,7 +80,9 @@ const tr: LocaleType = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        vi: "Vietnamese",
+        vi: "Tiếng Việt",
+        ru: "Русский",
+        cs: "Čeština",
       },
     },
     Avatar: "Avatar",
@@ -164,7 +166,7 @@ const tr: LocaleType = {
       SubTitle:
         "Girdi belirteçlerinin ve oluşturulan belirteçlerin maksimum uzunluğu",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Varlık Cezası",
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",

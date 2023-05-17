@@ -69,18 +69,20 @@ const es: LocaleType = {
       ConfirmClearAll: "Are you sure you want to reset all chat?",
     },
     Lang: {
-      Name: "Language",
-      All: "All Languages",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "Todos los idiomas",
       Options: {
         cn: "简体中文",
-        en: "Inglés",
+        en: "English",
         tw: "繁體中文",
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        vi: "Vietnamese",
+        vi: "Tiếng Việt",
+        ru: "Русский",
+        cs: "Čeština",
       },
     },
     Avatar: "Avatar",
@@ -162,7 +164,7 @@ const es: LocaleType = {
       Title: "Máximo de tokens",
       SubTitle: "Longitud máxima de tokens de entrada y tokens generados",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Penalización de presencia",
       SubTitle:
         "Un valor mayor aumenta la probabilidad de hablar sobre nuevos temas",
