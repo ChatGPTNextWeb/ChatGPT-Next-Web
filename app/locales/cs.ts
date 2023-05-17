@@ -141,6 +141,22 @@ const cs: LocaleType = {
       SubTitle: "Použitím klíče ignorujete omezení přístupového kódu",
       Placeholder: "Klíč API OpenAI",
     },
+
+    EnableAOAI: "Use Azure OpenAI",
+    AzureDomainName: {
+      Title: "Azure OpenAI custom subdomain",
+      Placeholder: "custom subdomain",
+    },
+    AzureDeploymentName: {
+      Title: "Azure OpenAI deployment instance name",
+      SubTitle: "After enabling Azure OpenAI, enter the deployed instance name",
+      Placeholder: "instance name",
+    },
+    AOAIToken: {
+      Title: "Azure OpenAI API Key",
+      Placeholder: "Azure OpenAI API Key",
+    },
+
     Usage: {
       Title: "Stav účtu",
       SubTitle(used: any, total: any) {
