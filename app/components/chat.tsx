@@ -502,7 +502,7 @@ export function Chat() {
       e.preventDefault();
       return;
     }
-    if (shouldSubmit(e)) {
+    if (shouldSubmit(e) && promptHints.length === 0) {
       doSubmit(userInput);
       e.preventDefault();
     }
