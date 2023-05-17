@@ -164,7 +164,7 @@ const cs: LocaleType = {
       Title: "Max. počet tokenů",
       SubTitle: "Maximální délka vstupního tokenu a generovaných tokenů",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Přítomnostní korekce",
       SubTitle: "Větší hodnota zvyšuje pravděpodobnost nových témat.",
     },
