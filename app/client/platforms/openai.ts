@@ -71,9 +71,13 @@ export class ChatGPTApi implements LLMApi {
 
       if (shouldStream) {
         let responseText = "";
+        let finished = false;
 
         const finish = () => {
-          options.onFinish(responseText);
+          if (!finished) {
+            options.onFinish(responseText);
+            finished = true;
+          }
         };
 
         controller.signal.onabort = finish;
@@ -83,19 +87,21 @@ export class ChatGPTApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             if (
-              res.ok &&
-              res.headers.get("content-type") !== EventStreamContentType
+              !res.ok ||
+              res.headers.get("content-type") !== EventStreamContentType ||
+              res.status !== 200
             ) {
-              responseText += await res.clone().json();
-              return finish();
-            }
-            if (res.status === 401) {
               let extraInfo = { error: undefined };
               try {
                 extraInfo = await res.clone().json();
               } catch {}
 
-              responseText += "\n\n" + Locale.Error.Unauthorized;
+              if (res.status === 401) {
+                if (responseText.length > 0) {
+                  responseText += "\n\n";
+                }
+                responseText += Locale.Error.Unauthorized;
+              }
 
               if (extraInfo.error) {
                 responseText += "\n\n" + prettyObject(extraInfo);
