@@ -2,7 +2,7 @@ import { SubmitKey } from "../store/config";
 
 import type { LocaleType } from "./index";
 
-const ko = {
+const ko: LocaleType = {
   WIP: "곧 출시 예정...",
   Error: {
     Unauthorized: "권한이 없습니다. 설정 페이지에서 액세스 코드를 입력하세요.",
