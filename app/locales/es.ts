@@ -165,7 +165,7 @@ const es: LocaleType = {
       Title: "Máximo de tokens",
       SubTitle: "Longitud máxima de tokens de entrada y tokens generados",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Penalización de presencia",
       SubTitle:
         "Un valor mayor aumenta la probabilidad de hablar sobre nuevos temas",
