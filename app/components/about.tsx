@@ -44,6 +44,7 @@ export function About() {
             {
               "在[设置]页输入自己的api-key可绕过密码，密码可以搜索公众号【编程章鱼哥】或者扫描下方二维码获取."
             }
+            {"需要购买chatgpt 账号或者api-key的也可以从下方二维码联系我."}
           </div>
           <div className={styles["about-item"]}>
             <div className={styles["about-header"]}>
