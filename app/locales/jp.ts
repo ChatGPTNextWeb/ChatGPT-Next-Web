@@ -167,7 +167,7 @@ const jp: LocaleType = {
       Title: "シングルレスポンス制限 (max_tokens)",
       SubTitle: "1回のインタラクションで使用される最大トークン数",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "トピックの新鮮度 (presence_penalty)",
       SubTitle: "値が大きいほど、新しいトピックへの展開が可能になります。",
     },
