@@ -80,7 +80,7 @@ const it: LocaleType = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        vi: "Vietnamese",
+        vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
       },
@@ -165,7 +165,7 @@ const it: LocaleType = {
       Title: "Token massimi",
       SubTitle: "Lunghezza massima dei token in ingresso e dei token generati",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Penalità di presenza",
       SubTitle:
         "Un valore maggiore aumenta la probabilità di parlare di nuovi argomenti",

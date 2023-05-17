@@ -78,7 +78,7 @@ const cn = {
         tr: "Türkçe",
         jp: "日本語",
         de: "Deutsch",
-        vi: "Vietnamese",
+        vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
       },
@@ -163,7 +163,7 @@ const cn = {
       Title: "单次回复限制 (max_tokens)",
       SubTitle: "单次交互所用的最大 Token 数",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
     },
