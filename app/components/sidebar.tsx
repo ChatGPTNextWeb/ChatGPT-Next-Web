@@ -119,6 +119,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
+        <a href="https://imgse.com/i/p9W16vn"><img src="https://s1.ax1x.com/2023/05/17/p9W16vn.png" alt="p9W16vn.png" border="0" /></a>
         <div className={styles["sidebar-title"]}>ChatGPT Next</div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
