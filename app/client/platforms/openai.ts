@@ -10,9 +10,18 @@ import {
 import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
-  public ChatPath = "v1/chat/completions";
+  // public ChatPath = "v1/chat/completions";
   public UsagePath = "dashboard/billing/usage";
   public SubsPath = "dashboard/billing/subscription";
+
+  public get ChatPath() {
+    const OPENAI_REQUEST_PATH = "v1/chat/completions";
+    const { enableAOAI, azureDeployName } = useAccessStore.getState();
+    if (!enableAOAI) return OPENAI_REQUEST_PATH;
+
+    const AZURE_REQUEST_PATH = `openai/deployments/${azureDeployName}/chat/completions?api-version=2023-03-15-preview`;
+    return AZURE_REQUEST_PATH;
+  }
 
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
