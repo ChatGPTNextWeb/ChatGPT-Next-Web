@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreKey } from "../constant";
 import { getHeaders } from "../client/api";
+import { StoreKey } from "../constant";
 import { BOT_HELLO } from "./chat";
 import { ALL_MODELS } from "./config";
 
@@ -11,8 +11,9 @@ export interface AccessControlStore {
 
   needCode: boolean;
   hideUserApiKey: boolean;
-  openaiUrl: string;
 
+  openaiUrl: () => string;
+  configUrl: () => string;
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
@@ -29,8 +30,13 @@ export const useAccessStore = create<AccessControlStore>()(
       accessCode: "",
       needCode: true,
       hideUserApiKey: false,
-      openaiUrl: "/api/openai/",
 
+      openaiUrl() {
+        return window.location.pathname + "api/openai/";
+      },
+      configUrl() {
+        return window.location.pathname + "api/config"; // DO NOT add additional slash
+      },
       enabledAccessControl() {
         get().fetch();
 
@@ -53,7 +59,7 @@ export const useAccessStore = create<AccessControlStore>()(
       fetch() {
         if (fetchState > 0) return;
         fetchState = 1;
-        fetch("/api/config", {
+        fetch(this.configUrl(), {
           method: "post",
           body: null,
           headers: {

@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -16,13 +16,13 @@ import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import {
+  Route,
   HashRouter as Router,
   Routes,
-  Route,
   useLocation,
 } from "react-router-dom";
-import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -94,7 +94,7 @@ const loadAsyncGoogleFont = () => {
   const linkEl = document.createElement("link");
   linkEl.rel = "stylesheet";
   linkEl.href =
-    "/google-fonts/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
+    "./google-fonts/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
   document.head.appendChild(linkEl);
 };
 

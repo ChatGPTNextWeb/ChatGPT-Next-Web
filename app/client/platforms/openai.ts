@@ -1,13 +1,13 @@
 import { REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
-import Locale from "../../locales";
+import { prettyObject } from "@/app/utils/format";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
+import Locale from "../../locales";
+import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
 
 export class ChatGPTApi implements LLMApi {
   public ChatPath = "v1/chat/completions";
@@ -15,7 +15,7 @@ export class ChatGPTApi implements LLMApi {
   public SubsPath = "dashboard/billing/subscription";
 
   path(path: string): string {
-    let openaiUrl = useAccessStore.getState().openaiUrl;
+    let openaiUrl = useAccessStore.getState().openaiUrl();
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }

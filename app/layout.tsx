@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-page-custom-font */
-import "./styles/globals.scss";
-import "./styles/markdown.scss";
-import "./styles/highlight.scss";
 import { getBuildConfig } from "./config/build";
+import "./styles/globals.scss";
+import "./styles/highlight.scss";
+import "./styles/markdown.scss";
 
 const buildConfig = getBuildConfig();
 
@@ -33,8 +33,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="version" content={buildConfig.commitId} />
-        <link rel="manifest" href="/site.webmanifest"></link>
-        <script src="/serviceWorkerRegister.js" defer></script>
+        <link rel="manifest" href="./site.webmanifest"></link>
+        <script src="./serviceWorkerRegister.js" defer></script>
+        <link rel="icon" href="./favicon.ico" />
       </head>
       <body>{children}</body>
     </html>
