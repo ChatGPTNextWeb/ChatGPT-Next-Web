@@ -45,7 +45,8 @@ export const POST = async (req: NextRequest) => {
     return new Response("key is null", { status: 400 });
   }
   const { history } = process.env;
-  await history.put(key, JSON.stringify(req.body));
+  const body = await req.json();
+  await history.put(key, JSON.stringify(body));
   return new Response("ok", {
     headers: {
       "Content-Type": "application/json",
