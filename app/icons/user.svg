@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="38"
+  height="38" viewBox="0 0 38 38" fill="none">
+  <defs>
+    <filter id="filter_0" x="-4" y="-4" width="38" height="38" filterUnits="userSpaceOnUse"
+      color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feColorMatrix in="SourceAlpha" type="matrix"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dx="0" dy="2" />
+      <feGaussianBlur stdDeviation="2" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_Shadow" />
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_Shadow" result="shape" />
+    </filter>
+    <rect id="path_0" x="0" y="0" width="30" height="30" />
+  </defs>
+  <g opacity="1" transform="translate(4 2)  rotate(0 15 15)">
+    <g id="undefined" filter="url(#filter_0)">
+      <rect stroke="#000000" stroke-width="1" stroke-opacity="0.05" />
+      <rect x="0" y="0" width="30" height="30" rx="10" />
+    </g>
+    <mask id="bg-mask-0" fill="white">
+      <use xlink:href="#path_0"></use>
+    </mask>
+    <g mask="url(#bg-mask-0)">
+      <g opacity="1" transform="translate(6 4.5)  rotate(0 9 11)">
+        <text>
+          <tspan x="0" y="16.240000000000002" font-size="14" line-height="0" fill="#000000"
+            opacity="1" font-family="SourceHanSansCN-Regular" letter-spacing="0">🤣</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>
