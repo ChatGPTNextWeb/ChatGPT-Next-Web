@@ -53,7 +53,7 @@ import chatStyle from "./chat.module.scss";
 
 import { ListItem, Modal, showModal } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LAST_INPUT_KEY, Path } from "../constant";
+import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -487,6 +487,16 @@ export function Chat() {
 
   // stop response
   const onUserStop = (messageId: number) => {
+    chatStore.updateCurrentSession((session) => {
+      const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
+      session.messages.forEach((m) => {
+        // check if should stop all stale messages
+        if (m.streaming && new Date(m.date).getTime() < stopTiming) {
+          m.isError = false;
+          m.streaming = false;
+        }
+      });
+    });
     ChatControllerPool.stop(sessionIndex, messageId);
   };
 
