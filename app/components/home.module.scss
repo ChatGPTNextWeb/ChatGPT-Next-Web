@@ -381,6 +381,7 @@
 .chat-message-box {
   display: flex;
   width: 100%;
+  overflow: auto;
 }
 .chat-message-box .chat-message-avatar {
   margin: 0 10px 0 0;
@@ -413,6 +414,7 @@
   word-break: break-word;
   border: var(--border-in-light);
   position: relative;
+  overflow: auto;
 }
 
 .chat-message-top-actions {
