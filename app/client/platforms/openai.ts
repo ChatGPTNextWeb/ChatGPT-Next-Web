@@ -99,7 +99,9 @@ export class ChatGPTApi implements LLMApi {
 
             if (
               !res.ok ||
-              res.headers.get("content-type") !== EventStreamContentType ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
               res.status !== 200
             ) {
               const responseTexts = [responseText];
