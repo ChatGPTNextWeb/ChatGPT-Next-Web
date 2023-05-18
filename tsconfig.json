@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["@cloudflare/workers-types"],
     "target": "ES2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -24,5 +25,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/calcTextareaHeight.ts"],
-  "exclude": ["node_modules","functions/**/*"]
+  "exclude": ["node_modules"]
 }
