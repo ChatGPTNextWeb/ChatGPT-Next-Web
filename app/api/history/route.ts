@@ -46,12 +46,9 @@ export const POST = async (req: NextRequest) => {
   }
   const { history } = process.env;
   const body = await req.json();
+  console.log(body);
   await history.put(key, JSON.stringify(body));
-  return new Response("ok", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return new Response("ok");
 };
 
 export const runtime = "edge";
