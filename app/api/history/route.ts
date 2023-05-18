@@ -1,11 +1,12 @@
 import { NextApiHandler, NextApiRequest } from "next";
 import { NextRequest } from "next/server";
-import { KVNamespace } from "@cloudflare/workers-types";
+import { D1Database, KVNamespace } from "@cloudflare/workers-types";
 
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
       history: KVNamespace;
+      db: D1Database;
     }
   }
 }
@@ -44,8 +45,7 @@ export const POST = async (req: NextRequest) => {
   if (key === null) {
     return new Response("key is null", { status: 400 });
   }
-  const { history } = process.env;
-
+  const { history, db } = process.env;
   const body = await req.json();
   console.log(body);
   await history.put(key, JSON.stringify(body));

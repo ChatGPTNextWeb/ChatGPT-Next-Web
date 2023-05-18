@@ -17,7 +17,7 @@ const proxy = async (request: Request) => {
   const modifiedRequest = new Request(url.toString(), {
     headers: request.headers,
     method: request.method,
-    body: body,
+    body: JSON.stringify(body),
     redirect: "follow",
   });
   const response = await fetch(modifiedRequest);
@@ -36,6 +36,7 @@ async function handle(
   } catch (e) {
     return NextResponse.json(prettyObject(e));
   }
+
   return await proxy(req);
   // console.log("[OpenAI Route] params ", params);
 
