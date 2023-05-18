@@ -25,10 +25,6 @@ export async function requestOpenai(req: NextRequest) {
     console.log("[Org ID]", process.env.OPENAI_ORG_ID);
   }
 
-  if (!authValue || !authValue.startsWith("Bearer sk-")) {
-    console.error("[OpenAI Request] invalid api key provided", authValue);
-  }
-
   return fetch(`${baseUrl}/${openaiPath}`, {
     headers: {
       "Content-Type": "application/json",

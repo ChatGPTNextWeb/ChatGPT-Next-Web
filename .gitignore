@@ -36,8 +36,6 @@ yarn-error.log*
 next-env.d.ts
 dev
 
-public/prompts.json
-
 .vscode
 .idea
 
