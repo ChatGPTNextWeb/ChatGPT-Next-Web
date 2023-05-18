@@ -154,6 +154,7 @@
 .sidebar-sub-title {
   font-size: 12px;
   font-weight: 400;
+  margin-top: 0.5rem;
   animation: slide-in ease 0.3s;
 }
 
@@ -294,6 +295,15 @@
       color: var(--primary);
       opacity: 0.6;
     }
+  }
+
+  .chat-item-delete {
+    top: 15px;
+  }
+
+  .chat-item:hover > .chat-item-delete {
+    opacity: 0.5;
+    right: 5px;
   }
 
   .sidebar-tail {
