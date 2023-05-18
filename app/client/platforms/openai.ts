@@ -71,9 +71,13 @@ export class ChatGPTApi implements LLMApi {
 
       if (shouldStream) {
         let responseText = "";
+        let finished = false;
 
         const finish = () => {
-          options.onFinish(responseText);
+          if (!finished) {
+            options.onFinish(responseText);
+            finished = true;
+          }
         };
 
         controller.signal.onabort = finish;
@@ -82,30 +86,44 @@ export class ChatGPTApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
-            if (
-              res.ok &&
-              res.headers.get("content-type") !== EventStreamContentType
-            ) {
-              responseText += await res.clone().json();
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
+
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
               return finish();
             }
-            if (res.status === 401) {
-              let extraInfo = { error: undefined };
+
+            if (
+              !res.ok ||
+              res.headers.get("content-type") !== EventStreamContentType ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
               try {
-                extraInfo = await res.clone().json();
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
               } catch {}
 
-              responseText += "\n\n" + Locale.Error.Unauthorized;
-
-              if (extraInfo.error) {
-                responseText += "\n\n" + prettyObject(extraInfo);
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
               }
+
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
+
+              responseText = responseTexts.join("\n\n");
 
               return finish();
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]") {
+            if (msg.data === "[DONE]" || finished) {
               return finish();
             }
             const text = msg.data;
