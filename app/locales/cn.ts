@@ -1,10 +1,10 @@
 import { SubmitKey } from "../store/config";
 
 const cn = {
-  WIP: "该功能仍在开发中……",
+  WIP: "松子GPT",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+      "访问密码不正确或为空，请前往关注“松子说网”公众号获取访问密码",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -88,14 +88,6 @@ const cn = {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
     },
-
-    Update: {
-      Version: (x: string) => `当前版本：${x}`,
-      IsLatest: "已是最新版本",
-      CheckUpdate: "检查更新",
-      IsChecking: "正在检查更新...",
-      FoundUpdate: (x: string) => `发现新版本：${x}`,
-      GoToUpdate: "前往更新",
     },
     SendKey: "发送键",
     Theme: "主题",
@@ -151,7 +143,7 @@ const cn = {
     },
     AccessCode: {
       Title: "访问密码",
-      SubTitle: "管理员已开启加密访问",
+      SubTitle: "关注“松子说网”公众号获取密码",
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
