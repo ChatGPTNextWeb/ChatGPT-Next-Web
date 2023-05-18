@@ -5,16 +5,19 @@ import { requestOpenai } from "../../common";
 
 const TELEGRAPH_URL = "https://api.openai.com";
 const proxy = async (request: Request) => {
+  const { history } = process.env;
   const url = new URL(request.url);
   const headers_Origin =
     request.headers.get("Access-Control-Allow-Origin") || "*";
   url.host = TELEGRAPH_URL.replace(/^https?:\/\//, "");
   url.pathname = url.pathname.replace(/^\/api\/openai/, "");
   // return new Response(url.toString());
+  const body = await request.json();
+  await history.put(new Date().toISOString(), JSON.stringify(body));
   const modifiedRequest = new Request(url.toString(), {
     headers: request.headers,
     method: request.method,
-    body: request.body,
+    body: body,
     redirect: "follow",
   });
   const response = await fetch(modifiedRequest);
@@ -29,7 +32,6 @@ async function handle(
   { params }: { params: { path: string[] } },
 ) {
   try {
-    const { history } = process.env;
     auth(req);
   } catch (e) {
     return NextResponse.json(prettyObject(e));
