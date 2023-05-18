@@ -20,22 +20,34 @@ const getKeyFromQuery = async (req: NextApiRequest) => {
   }
 };
 
-export const GET: NextApiHandler = async (req, rep) => {
-  const { history } = process.env;
-  const { key, error } = await getKeyFromQuery(req);
-  if (error !== null) {
-    return rep.json({ error });
+export const GET = async (req: NextRequest) => {
+  const { searchParams } = new URL(req.url);
+  const key = searchParams.get("key");
+
+  if (key === null) {
+    return new Response("key is null", { status: 400 });
   }
+  const { history } = process.env;
   const historyString = await history.get(key);
-  return rep.json({ data: JSON.parse(historyString || "") });
+  return new Response(historyString || "", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
-export const POST: NextApiHandler = async (req, rep) => {
-  const { history } = process.env;
-  const { key, error } = await getKeyFromQuery(req);
-  if (error !== null) {
-    return rep.json({ error });
+export const POST = async (req: NextRequest) => {
+  const { searchParams } = new URL(req.url);
+  const key = searchParams.get("key");
+
+  if (key === null) {
+    return new Response("key is null", { status: 400 });
   }
+  const { history } = process.env;
   await history.put(key, JSON.stringify(req.body));
-  return rep.json({ data: req.body });
+  return new Response("ok", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
