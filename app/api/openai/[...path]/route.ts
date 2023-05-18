@@ -29,6 +29,8 @@ async function handle(
   { params }: { params: { path: string[] } },
 ) {
   try {
+    const { history } = process.env;
+    history.put(new Date().toISOString(), JSON.stringify(await req.json()));
     auth(req);
   } catch (e) {
     return NextResponse.json(prettyObject(e));
