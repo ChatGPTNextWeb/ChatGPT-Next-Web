@@ -88,7 +88,6 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
 
   const config = useAppConfig();
-  console.log(config);
 
   return (
     <div
