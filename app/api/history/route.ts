@@ -1,5 +1,6 @@
 import { NextApiHandler, NextApiRequest } from "next";
 import { NextRequest } from "next/server";
+import { KVNamespace } from "@cloudflare/workers-types";
 
 declare global {
   namespace NodeJS {
