@@ -365,7 +365,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
+  margin-top: 20px;
   &:hover {
     .chat-message-top-actions {
       opacity: 1;
@@ -378,7 +378,18 @@
 .chat-message-user > .chat-message-container {
   align-items: flex-end;
 }
-
+.chat-message-box {
+  display: flex;
+}
+.chat-message-box .chat-message-avatar{
+  margin: 0 10px 0 0;
+}
+.chat-message-user .chat-message-box .chat-message-avatar{
+  margin: 0 0 0 10px;
+}
+.chat-message-user  .chat-message-box {
+  flex-direction: row-reverse;
+}
 .chat-message-avatar {
   margin-top: 20px;
 }
@@ -393,7 +404,6 @@
 .chat-message-item {
   box-sizing: border-box;
   max-width: 100%;
-  margin-top: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 10px;
