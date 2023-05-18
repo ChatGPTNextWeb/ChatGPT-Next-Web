@@ -361,7 +361,7 @@
 }
 
 .chat-message-container {
-  max-width: var(--message-max-width);
+ width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -380,6 +380,7 @@
 }
 .chat-message-box {
   display: flex;
+  max-width: var(--message-max-width)
 }
 .chat-message-box .chat-message-avatar{
   margin: 0 10px 0 0;
