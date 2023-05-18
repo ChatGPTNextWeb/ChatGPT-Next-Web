@@ -75,6 +75,7 @@ const ru: LocaleType = {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
+        fr: "Français",
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
@@ -83,6 +84,7 @@ const ru: LocaleType = {
         vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
+        ko: "한국어",
       },
     },
     Avatar: "Аватар",
@@ -165,7 +167,7 @@ const ru: LocaleType = {
       Title: "Максимальное количество токенов",
       SubTitle: "Максимальная длина вводных и генерируемых токенов",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Штраф за повторения",
       SubTitle:
         "Чем выше значение, тем больше вероятность общения на новые темы",

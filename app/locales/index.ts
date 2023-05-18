@@ -1,6 +1,7 @@
 import CN from "./cn";
 import EN from "./en";
 import TW from "./tw";
+import FR from "./fr";
 import ES from "./es";
 import IT from "./it";
 import TR from "./tr";
@@ -9,6 +10,7 @@ import DE from "./de";
 import VI from "./vi";
 import RU from "./ru";
 import CS from "./cs";
+import KO from "./ko";
 
 export type { LocaleType } from "./cn";
 
@@ -16,6 +18,7 @@ export const AllLangs = [
   "en",
   "cn",
   "tw",
+  "fr",
   "es",
   "it",
   "tr",
@@ -24,6 +27,7 @@ export const AllLangs = [
   "vi",
   "ru",
   "cs",
+  "ko",
 ] as const;
 export type Lang = (typeof AllLangs)[number];
 
@@ -80,6 +84,7 @@ export default {
   en: EN,
   cn: CN,
   tw: TW,
+  fr: FR,
   es: ES,
   it: IT,
   tr: TR,
@@ -88,4 +93,5 @@ export default {
   vi: VI,
   ru: RU,
   cs: CS,
+  ko: KO,
 }[getLang()] as typeof CN;
