@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "types": ["@cloudflare/workers-types"],
     "target": "ES2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
