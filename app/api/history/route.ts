@@ -52,3 +52,5 @@ export const POST = async (req: NextRequest) => {
     },
   });
 };
+
+export const runtime = "edge";
