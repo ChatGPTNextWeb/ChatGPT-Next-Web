@@ -12,6 +12,10 @@
   max-width: calc(100% - 100px);
   overflow: hidden;
 
+  @media screen and (max-width: 600px) {
+      text-align: center;
+    }
+
   .window-header-main-title {
     font-size: 20px;
     font-weight: bolder;
@@ -32,6 +36,20 @@
   display: inline-flex;
 }
 
+// for settings, preset masks ...
 .window-action-button {
   margin-left: 10px;
+}
+
+// for chat
+.window-action-button-ml {
+  margin-left: 10px;
+}
+
+.window-action-button-mr {
+  margin-right: 10px;
+}
+
+.window-action-button-mb {
+  margin-bottom: 10px;
 }
