@@ -4,8 +4,8 @@ const cn = {
   WIP: "松子GPT",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往关注“松子说网”公众号获取访问密码",
-  },
+      "访问密码不正确或为空，请前往关注“松子说网”公众号获取访问密码 ",
+  }, 
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
