@@ -82,6 +82,7 @@ const cn = {
         vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
+        ko: "한국어",
       },
     },
     Avatar: "头像",
@@ -240,6 +241,11 @@ const cn = {
   },
 };
 
-export type LocaleType = typeof cn;
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+export type LocaleType = DeepPartial<typeof cn>;
 
 export default cn;
