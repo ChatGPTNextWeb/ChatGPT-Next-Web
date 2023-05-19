@@ -256,6 +256,11 @@ export function MaskPage() {
               maskStore.create(mask);
             }
           }
+          return;
+        }
+        //if the content is a single mask.
+        if (importMasks.name) {
+          maskStore.create(importMasks);
         }
       } catch {}
     });
