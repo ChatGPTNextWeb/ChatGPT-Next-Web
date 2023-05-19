@@ -75,6 +75,7 @@ const en: LocaleType = {
         cn: "简体中文",
         en: "English",
         tw: "繁體中文",
+        fr: "Français",
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
@@ -83,6 +84,7 @@ const en: LocaleType = {
         vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
+        ko: "한국어",
       },
     },
     Avatar: "Avatar",
@@ -164,7 +166,7 @@ const en: LocaleType = {
       Title: "Max Tokens",
       SubTitle: "Maximum length of input tokens and generated tokens",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Presence Penalty",
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
