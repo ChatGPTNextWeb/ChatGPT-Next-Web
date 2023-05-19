@@ -84,6 +84,7 @@ const tr: LocaleType = {
         vi: "Tiếng Việt",
         ru: "Русский",
         cs: "Čeština",
+        ko: "한국어",
       },
     },
     Avatar: "Avatar",
