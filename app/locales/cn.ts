@@ -172,7 +172,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "需要Api-key,在微信公众号【凡尘落微】回复【key】获取",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) =>
