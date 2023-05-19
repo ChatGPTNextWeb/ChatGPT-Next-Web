@@ -3,7 +3,10 @@ import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
 import Locale from "../../locales";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import {
+  EventStreamContentType,
+  fetchEventSource,
+} from "@microsoft/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
@@ -68,9 +71,13 @@ export class ChatGPTApi implements LLMApi {
 
       if (shouldStream) {
         let responseText = "";
+        let finished = false;
 
         const finish = () => {
-          options.onFinish(responseText);
+          if (!finished) {
+            options.onFinish(responseText);
+            finished = true;
+          }
         };
 
         controller.signal.onabort = finish;
@@ -79,23 +86,46 @@ export class ChatGPTApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
-            if (res.status === 401) {
-              let extraInfo = { error: undefined };
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
+
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
+              return finish();
+            }
+
+            if (
+              !res.ok ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
               try {
-                extraInfo = await res.clone().json();
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
               } catch {}
 
-              responseText += "\n\n" + Locale.Error.Unauthorized;
-
-              if (extraInfo.error) {
-                responseText += "\n\n" + prettyObject(extraInfo);
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
               }
+
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
+
+              responseText = responseTexts.join("\n\n");
 
               return finish();
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]") {
+            if (msg.data === "[DONE]" || finished) {
               return finish();
             }
             const text = msg.data;
@@ -116,6 +146,7 @@ export class ChatGPTApi implements LLMApi {
           onerror(e) {
             options.onError?.(e);
           },
+          openWhenHidden: true,
         });
       } else {
         const res = await fetch(chatPath, chatPayload);
@@ -158,8 +189,12 @@ export class ChatGPTApi implements LLMApi {
       }),
     ]);
 
-    if (!used.ok || !subs.ok || used.status === 401) {
+    if (used.status === 401) {
       throw new Error(Locale.Error.Unauthorized);
+    }
+
+    if (!used.ok || !subs.ok) {
+      throw new Error("Failed to query usage from openai");
     }
 
     const response = (await used.json()) as {
