@@ -189,8 +189,12 @@ export class ChatGPTApi implements LLMApi {
       }),
     ]);
 
-    if (!used.ok || !subs.ok || used.status === 401) {
+    if (used.status === 401) {
       throw new Error(Locale.Error.Unauthorized);
+    }
+
+    if (!used.ok || !subs.ok) {
+      throw new Error("Failed to query usage from openai");
     }
 
     const response = (await used.json()) as {
