@@ -3,8 +3,7 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+    Unauthorized: "请前往[设置](/#/settings)填入你自己的 OpenAI API Key。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -172,7 +171,8 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "需要Api-key,在微信公众号【凡尘落微】回复【key】获取",
+    BotHello:
+      "点击左下角设置按钮输入API Key即可开始使用ChatGPT，无API Key[点击链接获取](wzw.icu)！",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) =>
