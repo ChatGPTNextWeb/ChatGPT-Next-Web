@@ -120,13 +120,14 @@
   justify-content: center;
   align-items: center;
 
-  opacity: 0.5;
   color: var(--black);
   transition: all ease 0.3s;
   cursor: pointer;
   overflow: hidden;
   position: relative;
   font-size: 12px;
+
+  animation: slide-in ease 0.3s;
 
   $linear: linear-gradient(
     to right,
@@ -152,6 +153,7 @@
 
   &-tips {
     @include show;
+    opacity: 0.5;
   }
 
   &-revert-btn {

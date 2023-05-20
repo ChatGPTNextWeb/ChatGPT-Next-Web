@@ -303,8 +303,12 @@ function ClearContextDivider() {
         )
       }
     >
-      <div className={chatStyle["clear-context-tips"]}>上下文已清除</div>
-      <div className={chatStyle["clear-context-revert-btn"]}>取消清除</div>
+      <div className={chatStyle["clear-context-tips"]}>
+        {Locale.Context.Clear}
+      </div>
+      <div className={chatStyle["clear-context-revert-btn"]}>
+        {Locale.Context.Revert}
+      </div>
     </div>
   );
 }
@@ -417,7 +421,7 @@ export function ChatActions(props: {
         className={`${chatStyle["chat-input-action"]} clickable`}
         onClick={() => {
           chatStore.updateCurrentSession((session) => {
-            if ((session.clearContextIndex ?? -1) > 0) {
+            if (session.clearContextIndex === session.messages.length) {
               session.clearContextIndex = -1;
             } else {
               session.clearContextIndex = session.messages.length;
