@@ -14,7 +14,7 @@ import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
-
+import MenuIcon from "../icons/menu.svg";
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
@@ -51,7 +51,7 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { ListItem, Modal, showModal } from "./ui-lib";
+import { ListItem, Modal, Popover, showModal } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
@@ -652,9 +652,27 @@ export function Chat() {
     },
   });
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header">
+        {isMobileScreen && (
+          <div className="window-actions">
+            <div className={`window-action-button-mr ${styles["mobile"]}`}>
+              <IconButton
+                icon={<ReturnIcon />}
+                bordered
+                title={Locale.Chat.Actions.ChatList}
+                onClick={() => navigate(Path.Home)}
+              />
+            </div>
+          </div>
+        )}
         <div className="window-header-title">
           <div
             className={`window-header-main-title " ${styles["chat-body-title"]}`}
@@ -667,46 +685,77 @@ export function Chat() {
           </div>
         </div>
         <div className="window-actions">
-          <div className={"window-action-button" + " " + styles.mobile}>
-            <IconButton
-              icon={<ReturnIcon />}
-              bordered
-              title={Locale.Chat.Actions.ChatList}
-              onClick={() => navigate(Path.Home)}
-            />
-          </div>
-          <div className="window-action-button">
-            <IconButton
-              icon={<RenameIcon />}
-              bordered
-              onClick={renameSession}
-            />
-          </div>
-          <div className="window-action-button">
-            <IconButton
-              icon={<ExportIcon />}
-              bordered
-              title={Locale.Chat.Actions.Export}
-              onClick={() => {
-                exportMessages(
-                  session.messages.filter((msg) => !msg.isError),
-                  session.topic,
-                );
-              }}
-            />
-          </div>
-          {!isMobileScreen && (
-            <div className="window-action-button">
-              <IconButton
-                icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
-                bordered
-                onClick={() => {
-                  config.update(
-                    (config) => (config.tightBorder = !config.tightBorder),
-                  );
-                }}
-              />
-            </div>
+          {!isMobileScreen ? (
+            <>
+              <div className="window-action-button-ml">
+                <IconButton
+                  icon={<RenameIcon />}
+                  bordered
+                  onClick={renameSession}
+                />
+              </div>
+              <div className="window-action-button-ml">
+                <IconButton
+                  icon={<ExportIcon />}
+                  bordered
+                  title={Locale.Chat.Actions.Export}
+                  onClick={() => {
+                    exportMessages(
+                      session.messages.filter((msg) => !msg.isError),
+                      session.topic,
+                    );
+                  }}
+                />
+              </div>
+              <div className="window-action-button-ml">
+                <IconButton
+                  icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
+                  bordered
+                  onClick={() => {
+                    config.update(
+                      (config) => (config.tightBorder = !config.tightBorder),
+                    );
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <Popover
+              open={mobileMenuOpen}
+              onClose={toggleMobileMenu}
+              content={
+                <>
+                  <div className="window-action-button-mb">
+                    <IconButton
+                      icon={<RenameIcon />}
+                      bordered
+                      onClick={renameSession}
+                    />
+                  </div>
+                  <div className="window-action-button-mb">
+                    <IconButton
+                      icon={<ExportIcon />}
+                      bordered
+                      title={Locale.Chat.Actions.Export}
+                      onClick={() => {
+                        exportMessages(
+                          session.messages.filter((msg) => !msg.isError),
+                          session.topic,
+                        );
+                      }}
+                    />
+                  </div>
+                </>
+              }
+            >
+              <div className="window-action-button-ml">
+                <IconButton
+                  icon={<MenuIcon />}
+                  bordered
+                  onClick={toggleMobileMenu}
+                />
+              </div>
+            </Popover>
           )}
         </div>
 
