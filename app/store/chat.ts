@@ -5,7 +5,7 @@ import { trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelType, useAppConfig } from "./config";
+import { ModelType } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
@@ -277,13 +277,17 @@ export const useChatStore = create<ChatStore>()(
           config: { ...modelConfig, stream: true },
           onUpdate(message) {
             botMessage.streaming = true;
-            botMessage.content = message;
+            if (message) {
+              botMessage.content = message;
+            }
             set(() => ({}));
           },
           onFinish(message) {
             botMessage.streaming = false;
-            botMessage.content = message;
-            get().onNewMessage(botMessage);
+            if (message) {
+              botMessage.content = message;
+              get().onNewMessage(botMessage);
+            }
             ChatControllerPool.remove(
               sessionIndex,
               botMessage.id ?? messageIndex,
@@ -292,12 +296,12 @@ export const useChatStore = create<ChatStore>()(
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
-            if (
-              botMessage.content !== Locale.Error.Unauthorized &&
-              !isAborted
-            ) {
-              botMessage.content += "\n\n" + prettyObject(error);
-            }
+            botMessage.content =
+              "\n\n" +
+              prettyObject({
+                error: true,
+                message: error.message,
+              });
             botMessage.streaming = false;
             userMessage.isError = !isAborted;
             botMessage.isError = !isAborted;
@@ -308,7 +312,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.id ?? messageIndex,
             );
 
-            console.error("[Chat] error ", error);
+            console.error("[Chat] failed ", error);
           },
           onController(controller) {
             // collect controller for stop/retry

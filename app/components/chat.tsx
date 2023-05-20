@@ -58,6 +58,7 @@ import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
+import { prettyObject } from "../utils/format";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -496,13 +497,17 @@ export function Chat() {
       const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
       session.messages.forEach((m) => {
         // check if should stop all stale messages
-        if (new Date(m.date).getTime() < stopTiming) {
+        if (m.isError || new Date(m.date).getTime() < stopTiming) {
           if (m.streaming) {
             m.streaming = false;
           }
 
           if (m.content.length === 0) {
-            m.content = "No content in this message.";
+            m.isError = true;
+            m.content = prettyObject({
+              error: true,
+              message: "empty response",
+            });
           }
         }
       });
