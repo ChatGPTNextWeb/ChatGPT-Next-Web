@@ -213,6 +213,10 @@ const en: RequiredLocaleType = {
         SubTitle: "Use global config in this chat",
         Confirm: "Confirm to override custom config with global config?",
       },
+      HideContext: {
+        Title: "Hide Context Prompts",
+        SubTitle: "Do not show in-context prompts in chat",
+      },
     },
   },
   NewChat: {
@@ -221,7 +225,7 @@ const en: RequiredLocaleType = {
     Title: "Pick a Mask",
     SubTitle: "Chat with the Soul behind the Mask",
     More: "Find More",
-    NotShow: "Not Show Again",
+    NotShow: "Dont Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
   },
 
