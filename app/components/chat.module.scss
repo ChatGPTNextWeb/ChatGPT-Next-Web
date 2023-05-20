@@ -44,4 +44,113 @@
     background-color: var(--primary-color);
     color: var(--secondary-color);
     transform: translateY(-2px);
-    box-shadow: 0 6px 12
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.prompt-toast {
+  position: absolute;
+  bottom: -50px;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  width: calc(100% - 40px);
+
+.prompt-toast-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  background-color: var(--background);
+  color: var(--primary-color);
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  padding: 12px 25px;
+  border-radius: 50px;
+  animation: slide-up var(--animation-duration) ease;
+  transition: all 0.3s ease;
+
+  .prompt-toast-content {
+    margin-left: 10px;
+  }
+}
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .section-title-action {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.context-prompt {
+  .context-prompt-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .context-role {
+      margin-right: 10px;
+    }
+
+    .context-content {
+      flex: 1;
+      max-width: 100%;
+      text-align: left;
+    }
+
+    .context-delete-button {
+      margin-left: 10px;
+    }
+  }
+
+  .context-prompt-button {
+    flex: 1;
+  }
+}
+
+.memory-prompt {
+  margin: 20px 0;
+
+  .memory-prompt-content {
+    background-color: var(--background);
+    color: var(--primary-color);
+    border: var(--border-in-light);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    user-select: text;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
