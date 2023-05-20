@@ -5,14 +5,24 @@
   align-items: center;
   justify-content: center;
   padding: 10px;
-
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   user-select: none;
   outline: none;
-  border: none;
+  border: 2px solid var(--black);
   color: var(--black);
+  position: relative;
+
+  &:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 
   &[disabled] {
     cursor: not-allowed;
@@ -35,10 +45,6 @@
 
 .border {
   border: var(--border-in-light);
-}
-
-.icon-button:hover {
-  border-color: var(--primary);
 }
 
 .icon-button-icon {
