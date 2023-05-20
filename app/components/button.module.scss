@@ -1,69 +1,44 @@
 .icon-button {
-  background-color: #ffffff;
-  border-radius: 60px;
+  background-color: var(--white);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
+
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   user-select: none;
   outline: none;
-  border: 2px solid #000000;
-  color: #000000;
-  position: relative;
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  border: none;
+  color: var(--black);
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &.primary {
+    background-color: var(--primary);
+    color: white;
+
+    path {
+      fill: white !important;
+    }
+  }
 }
 
-.icon-button:before {
-  content: '';
-  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  background-size: 400%;
-  z-index: -1;
-  filter: blur(8px);
-  width: calc(100% + 10px);
-  height: calc(100% + 10px);
-  animation: glowing 20s linear infinite;
-  opacity: 0;
-  transition: opacity .3s ease-in-out;
-  border-radius: 60px;
+.shadow {
+  box-shadow: var(--card-shadow);
 }
 
-.icon-button:active {
-  color: #000;
-  transform: scale(0.95);
+.border {
+  border: var(--border-in-light);
 }
 
-.icon-button:active:after {
-  background: transparent;
-}
-
-.icon-button:hover:before {
-  opacity: 1;
-}
-
-.icon-button:after {
-  z-index: -1;
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: #3E4352;
-  left: 0;
-  top: 0;
-  border-radius: 60px;
-}
-
-.icon-button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.5;
+.icon-button:hover {
+  border-color: var(--primary);
 }
 
 .icon-button-icon {
@@ -86,10 +61,4 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-@keyframes glowing {
-  0% { background-position: 0 0; }
-  50% { background-position: 400% 0; }
-  100% { background-position: 0 0; }
 }
