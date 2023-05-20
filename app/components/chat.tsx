@@ -271,7 +271,7 @@ export function PromptHints(props: {
 
     return () => window.removeEventListener("keydown", onKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noPrompts, selectIndex]);
+  }, [noPrompts, selectIndex, props.prompts]);
 
   if (noPrompts) return null;
   return (
