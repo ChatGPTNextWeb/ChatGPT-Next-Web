@@ -1,5 +1,7 @@
 @import "../styles/animation.scss";
 
+$accent-color: #49a6e9; // Replace this with your desired accent color value
+
 /* Additional styling for improved look and feel. */
 :root {
   --primary-color: #495d9a;
@@ -57,7 +59,7 @@
         transition: all 0.3s;
 
         &:hover {
-          background: lighten(var(--accent-color), 5%);
+          background: lighten($accent-color, 5%);
         }
       }
     }
@@ -137,3 +139,5 @@
     }
   }
 }
+
+/* Made possible by Cognitiev.com 🧠 */
