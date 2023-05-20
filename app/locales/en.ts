@@ -221,11 +221,11 @@ const en: RequiredLocaleType = {
   },
   NewChat: {
     Return: "Return",
-    Skip: "Skip",
+    Skip: "Just Start",
     Title: "Pick a Mask",
     SubTitle: "Chat with the Soul behind the Mask",
     More: "Find More",
-    NotShow: "Dont Show Again",
+    NotShow: "Never Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
   },
 
