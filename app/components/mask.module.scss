@@ -1,12 +1,27 @@
 @import "../styles/animation.scss";
+
+/* Additional styling for improved look and feel. */
+:root {
+  --primary-color: #495d9a;
+  --secondary-color: #3b466a;
+  --accent-color: #49a6e9;
+  --border-in-light: 1px solid rgba(0, 0, 0, 0.1);
+  --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 .mask-page {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(155deg, var(--primary-color) 20%, var(--secondary-color) 80%);
+  padding: 20px;
 
   .mask-page-body {
     padding: 20px;
     overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    background-color: #fff;
 
     .mask-filter {
       width: 100%;
@@ -14,18 +29,21 @@
       margin-bottom: 20px;
       animation: slide-in ease 0.3s;
       height: 40px;
-
       display: flex;
 
       .search-bar {
         flex-grow: 1;
         max-width: 100%;
         min-width: 0;
+        border-radius: 6px;
+        border: var(--border-in-light);
       }
 
       .mask-filter-lang {
         height: 100%;
         margin-left: 10px;
+        border-radius: 6px;
+        border: var(--border-in-light);
       }
 
       .mask-create {
@@ -33,6 +51,14 @@
         margin-left: 10px;
         box-sizing: border-box;
         min-width: 80px;
+        background: var(--accent-color);
+        color: white;
+        border-radius: 6px;
+        transition: all 0.3s;
+
+        &:hover {
+          background: lighten(var(--accent-color), 5%);
+        }
       }
     }
 
@@ -42,19 +68,12 @@
       padding: 20px;
       border: var(--border-in-light);
       animation: slide-in ease 0.3s;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
 
       &:not(:last-child) {
-        border-bottom: 0;
-      }
-
-      &:first-child {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-      }
-
-      &:last-child {
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-bottom: var(--border-in-light);
       }
 
       .mask-header {
@@ -75,6 +94,7 @@
           }
           .mask-info {
             font-size: 12px;
+            color: rgba(0, 0, 0, 0.5);
           }
         }
       }
@@ -83,6 +103,21 @@
         display: flex;
         flex-wrap: nowrap;
         transition: all ease 0.3s;
+        align-items: center;
+
+        button {
+          background-color: transparent;
+          border: none;
+          color: rgba(0, 0, 0, 0.3);
+          font-size: 16px;
+          padding: 0 8px;
+          transition: all 0.3s;
+
+          &:hover,
+          &:focus {
+            color: var(--accent-color);
+          }
+        }
       }
 
       @media screen and (max-width: 600px) {
@@ -92,10 +127,6 @@
         border-radius: 10px;
         margin-bottom: 20px;
         box-shadow: var(--card-shadow);
-
-        &:not(:last-child) {
-          border-bottom: var(--border-in-light);
-        }
 
         .mask-actions {
           width: 100%;
