@@ -585,7 +585,9 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
-  const context: RenderMessage[] = session.mask.context.slice();
+  const context: RenderMessage[] = session.mask.hideContext
+    ? []
+    : session.mask.context.slice();
 
   const accessStore = useAccessStore();
 
