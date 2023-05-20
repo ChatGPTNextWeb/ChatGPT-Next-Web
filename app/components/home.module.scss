@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+// Variables
+$primary: #6200ee;
+$secondary: #03dac6;
+$background: #f5f5f5;
+$on-background: rgba(0, 0, 0, 0.87);
+$on-primary: #ffffff;
+
+// Mixins
+@mixin container {
+  background-color: $background;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: $on-background;
+  min-width: 600px;
+  min-height: 480px;
+  max-width: 1200px;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+// Reset
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: $background;
+  color: $on-background;
+}
+
+// Main container
+.container {
+  @include container();
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+// Header
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 500;
+  color: $primary;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  a {
+    text-decoration: none;
+    color: $on-background;
+    margin-right: 20px;
+    font-weight: 500;
+    transition: color 0.3s;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+// Content
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.card {
+  background-color: $background;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: $on-background;
+  width: calc(33% - 20px);
+  margin-bottom: 20px;
+  padding: 20px;
+  transition: box-shadow 0.3s;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .card-text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+}
+
+// Footer
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.footer-text {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .material-icons {
+    font-size: 24px;
+    color: $on-background;
+    margin-right: 10px;
+    transition: color 0.3s;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
