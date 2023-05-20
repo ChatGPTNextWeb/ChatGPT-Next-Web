@@ -31,8 +31,8 @@ const cn = {
     },
     Send: "发送",
     Config: {
-      Reset: "重置默认",
-      SaveAs: "另存为面具",
+      Reset: "清除记忆",
+      SaveAs: "存为面具",
     },
   },
   Export: {
@@ -47,8 +47,8 @@ const cn = {
     EmptyContent: "对话内容过短，无需总结",
     Send: "自动压缩聊天记录并作为上下文发送",
     Copy: "复制摘要",
-    Reset: "重置对话",
-    ResetConfirm: "重置后将清空当前对话记录以及历史摘要，确认重置？",
+    Reset: "[unused]",
+    ResetConfirm: "确认清空历史摘要？",
   },
   Home: {
     NewChat: "新的聊天",
