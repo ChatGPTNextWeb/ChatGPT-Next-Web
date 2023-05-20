@@ -163,12 +163,11 @@ const en: RequiredLocaleType = {
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
-        "This is a summary of the chat history between the AI and the user as a recap: " +
-        content,
+        "This is a summary of the chat history as a recap: " + content,
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
-        "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
+        "Summarize the discussion briefly in 200 words or less to use as a prompt for future context.",
     },
   },
   Copy: {
