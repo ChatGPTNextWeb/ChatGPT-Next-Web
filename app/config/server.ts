@@ -9,6 +9,7 @@ declare global {
       VERCEL?: string;
       HIDE_USER_API_KEY?: string; // disable user's api key input
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
+      ZBotServiceUrl?: string;
     }
   }
 }
@@ -42,5 +43,6 @@ export const getServerSideConfig = () => {
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
+    zBotServiceUrl: process.env.ZBotServiceUrl,
   };
 };

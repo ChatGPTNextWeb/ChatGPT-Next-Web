@@ -334,8 +334,9 @@ export function Settings() {
             {
               <IconButton
                 icon={<EditIcon />}
-                text={Locale.Settings.Prompt.Edit}
-                onClick={() => showToast("开发中...")}
+                // text={Locale.Settings.Prompt.Edit}
+                text="查看与编辑"
+                onClick={() => navigate(Path.UserLogin)}
               />
             }
           </ListItem>
@@ -361,13 +362,6 @@ export function Settings() {
                 <Avatar avatar={config.avatar} />
               </div>
             </Popover>
-          </ListItem>
-
-          <ListItem title={"昵称"}>
-            <text>游客</text>
-          </ListItem>
-          <ListItem title={"电话"}>
-            <text>0000</text>
           </ListItem>
         </List>
 

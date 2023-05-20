@@ -1,6 +1,22 @@
 # 1. Versions
 
 
+## v1.2.0
+publish time: 2023-05-20
+
+Features: 
+ - Add user login and register in portal
+ - Add backend service and deploy
+ - Enable db connect
+ - Co-debug finished
+
+
+## v1.1.2
+publish time: 2023-05-17
+
+Features: 
+ - set OPENAI_API_KEY in Web as env variables
+
 ## v1.1.1
 publish time: 2023-05-16
 
