@@ -1,109 +1,47 @@
 @import "../styles/animation.scss";
 
+:root {
+  --primary-color: #3c3c3c;
+  --secondary-color: #e0e0e0;
+  --background: #f5f5f5;
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --border-in-light: 1px solid #e0e0e0;
+  --animation-duration: 0.4s;
+}
+
+* {
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+}
+
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
-
-  .chat-input-action {
-    display: inline-flex;
-    border-radius: 20px;
-    font-size: 12px;
-    background-color: var(--white);
-    color: var(--black);
-    border: var(--border-in-light);
-    padding: 4px 10px;
-    animation: slide-in ease 0.3s;
-    box-shadow: var(--card-shadow);
-    transition: all ease 0.3s;
-    margin-bottom: 10px;
-    align-items: center;
-
-    &:not(:last-child) {
-      margin-right: 5px;
-    }
-  }
-}
-
-.prompt-toast {
-  position: absolute;
-  bottom: -50px;
-  z-index: 999;
-  display: flex;
+  gap: 5px;
   justify-content: center;
-  width: calc(100% - 40px);
-
-  .prompt-toast-inner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-    background-color: var(--white);
-    color: var(--black);
-
-    border: var(--border-in-light);
-    box-shadow: var(--card-shadow);
-    padding: 10px 20px;
-    border-radius: 100px;
-
-    animation: slide-in-from-top ease 0.3s;
-
-    .prompt-toast-content {
-      margin-left: 10px;
-    }
-  }
 }
 
-.section-title {
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+.chat-input-action {
+  display: inline-flex;
   align-items: center;
+  border-radius: 25px;
+  font-size: 12px;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: var(--border-in-light);
+  padding: 6px 15px;
+  animation: slide-in var(--animation-duration) ease;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+  cursor: pointer;
 
-  .section-title-action {
-    display: flex;
-    align-items: center;
-  }
-}
-
-.context-prompt {
-  .context-prompt-row {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 10px;
-
-    .context-role {
-      margin-right: 10px;
-    }
-
-    .context-content {
-      flex: 1;
-      max-width: 100%;
-      text-align: left;
-    }
-
-    .context-delete-button {
-      margin-left: 10px;
-    }
+  &:not(:last-child) {
+    margin-right: 5px;
   }
 
-  .context-prompt-button {
-    flex: 1;
-  }
-}
-
-.memory-prompt {
-  margin: 20px 0;
-
-  .memory-prompt-content {
-    background-color: var(--white);
-    color: var(--black);
-    border: var(--border-in-light);
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 12px;
-    user-select: text;
-  }
-}
+  &:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12
