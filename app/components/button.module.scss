@@ -1,11 +1,11 @@
 .icon-button {
+  position: relative;
   background-color: var(--white);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
-
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -13,6 +13,19 @@
   outline: none;
   border: none;
   color: var(--black);
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.25) 0%, transparent 50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
 
   &[disabled] {
     cursor: not-allowed;
@@ -39,6 +52,25 @@
 
 .icon-button:hover {
   border-color: var(--primary);
+
+  &:after {
+    opacity: 1;
+    animation: glowWave 2s infinite ease;
+  }
+}
+
+@keyframes glowWave {
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
 }
 
 .icon-button-icon {
