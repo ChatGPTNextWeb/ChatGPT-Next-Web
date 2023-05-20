@@ -1,5 +1,7 @@
 @import "../styles/animation.scss";
 
+$primary: #rebeccapurple; // Replace with your desired primary color value
+
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
@@ -132,14 +134,14 @@
   }
 
   .clear-context-revert-btn {
-    color: var(--primary);
+    color: $primary; // Using the Sass variable for primary color
     opacity: 0;
     transition: all ease 0.3s;
   }
 
   &:hover {
     opacity: 1;
-    border-color: var(--primary);
+    border-color: $primary; // Using the Sass variable for primary color
 
     .clear-context-text {
       opacity: 0;
