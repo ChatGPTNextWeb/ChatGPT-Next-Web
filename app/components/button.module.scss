@@ -1,96 +1,100 @@
 .icon-button {
-  position: relative;
-  background-color: var(--white);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  user-select: none;
-  outline: none;
-  border: none;
-  color: var(--black);
+position: relative;
+background-color: var(--white);
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 10px;
+cursor: pointer;
+transition: all 0.3s ease;
+overflow: visible; /* Overflow changed to visible for glow effect to be visible outside button /
+user-select: none;
+outline: none;
+border: none;
+color: var(--black);
+z-index: 0; / Added to ensure :before will stack properly */
+}
 
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.25) 0%, transparent 50%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
+.icon-button:before {
+content: "";
+position: absolute;
+top: -50%;
+left: -50%;
+right: -50%;
+bottom: -50%;
+background: radial-gradient(circle, rgba(57, 255, 20, 0.7), rgba(7, 206, 245, 0.7), rgba(254, 107, 139, 0.7) 50%);
+opacity: 0;
+pointer-events: none;
+mix-blend-mode: screen; /* Added to blend colors /
+z-index: -1; / Added to ensure :before will stack below button content */
+transition: opacity 0.3s ease, transform 0.3s ease;
+}
 
-  &[disabled] {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
+.icon-button[disabled] {
+cursor: not-allowed;
+opacity: 0.5;
+}
 
-  &.primary {
-    background-color: var(--primary);
-    color: white;
+.icon-button.primary {
+background-color: var(--primary);
+color: white;
 
-    path {
-      fill: white !important;
-    }
-  }
+path {
+fill: white !important;
+}
 }
 
 .shadow {
-  box-shadow: var(--card-shadow);
+box-shadow: var(--card-shadow);
 }
 
 .border {
-  border: var(--border-in-light);
+border: var(--border-in-light);
 }
 
 .icon-button:hover {
-  border-color: var(--primary);
+border-color: var(--primary);
+}
 
-  &:after {
-    opacity: 1;
-    animation: glowWave 2s infinite ease;
-  }
+.icon-button:hover:before {
+opacity: 1;
+transform: scale(1.5); /* Scale increased for better glow effect */
+animation: glowWave 2s infinite ease;
 }
 
 @keyframes glowWave {
-  0% {
-    transform: scale(0.5);
-  }
-  50% {
-    transform: scale(2);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
+0% {
+transform: scale(0.5);
+}
+50% {
+transform: scale(2);
+opacity: 0.5;
+}
+100% {
+transform: scale(0.5);
+opacity: 0;
+}
 }
 
 .icon-button-icon {
-  width: 16px;
-  height: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+width: 16px;
+height: 16px;
+display: flex;
+justify-content: center;
+align-items: center;
 }
 
 @media only screen and (max-width: 600px) {
-  .icon-button {
-    padding: 16px;
-  }
+.icon-button {
+padding: 16px;
+}
 }
 
 .icon-button-text {
-  margin-left: 5px;
-  font-size: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+margin-left: 5px;
+font-size: 12px;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
 }
