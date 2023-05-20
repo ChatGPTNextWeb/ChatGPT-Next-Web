@@ -1,6 +1,25 @@
 @import"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap";
 @import"https://fonts.googleapis.com/icon?family=Material+Icons";
 
+@mixin container {
+  background-color: var(--white);
+  border: var(--border-in-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  color: var(--black);
+  background-color: var(--white);
+  min-width: 600px;
+  min-height: 480px;
+  max-width: 1200px;
+
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  width: var(--window-width);
+  height: var(--window-height);
+}
+
 .container {
   background-color: var(--white);
   border: var(--border-in-light);
