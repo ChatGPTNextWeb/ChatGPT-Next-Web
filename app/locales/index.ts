@@ -66,6 +66,9 @@ function setItem(key: string, value: string) {
 }
 
 function getLanguage() {
+  if (typeof process === "object") {
+    return DEFAULT_LANG;
+  }
   try {
     return navigator.language.toLowerCase();
   } catch {
