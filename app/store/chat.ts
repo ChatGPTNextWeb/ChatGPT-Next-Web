@@ -251,7 +251,7 @@ export const useChatStore = create<ChatStore>()(
           role: "system",
           content: `IMPORTANT: You are a virtual assistant powered by the ${
             modelConfig.model
-          } model, now time is ${new Date().toLocaleString()}}`,
+          } model, now time is ${new Date().toLocaleString()}`,
           id: botMessage.id! + 1,
         });
 
