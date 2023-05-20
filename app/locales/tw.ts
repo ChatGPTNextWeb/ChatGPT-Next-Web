@@ -69,21 +69,6 @@ const tw: LocaleType = {
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        fr: "Français",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-        ko: "한국어",
-      },
     },
     Avatar: "大頭貼",
     FontSize: {
