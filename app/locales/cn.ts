@@ -69,19 +69,6 @@ const cn = {
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-      },
     },
     Avatar: "头像",
     FontSize: {
@@ -163,7 +150,7 @@ const cn = {
       Title: "单次回复限制 (max_tokens)",
       SubTitle: "单次交互所用的最大 Token 数",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
     },
@@ -218,6 +205,11 @@ const cn = {
     Config: {
       Avatar: "角色头像",
       Name: "角色名称",
+      Sync: {
+        Title: "使用全局设置",
+        SubTitle: "当前对话是否使用全局模型设置",
+        Confirm: "当前对话的自定义设置将会被自动覆盖，确认启用全局设置？",
+      },
     },
   },
   NewChat: {
@@ -239,6 +231,12 @@ const cn = {
   },
 };
 
-export type LocaleType = typeof cn;
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+export type LocaleType = DeepPartial<typeof cn>;
+export type RequiredLocaleType = typeof cn;
 
 export default cn;

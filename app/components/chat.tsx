@@ -22,7 +22,7 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 
 import {
-  Message,
+  ChatMessage,
   SubmitKey,
   useChatStore,
   BOT_HELLO,
@@ -43,7 +43,7 @@ import {
 
 import dynamic from "next/dynamic";
 
-import { ControllerPool } from "../requests";
+import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
@@ -53,7 +53,7 @@ import chatStyle from "./chat.module.scss";
 
 import { ListItem, Modal, showModal } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LAST_INPUT_KEY, Path } from "../constant";
+import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -63,7 +63,7 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
 
-function exportMessages(messages: Message[], topic: string) {
+function exportMessages(messages: ChatMessage[], topic: string) {
   const mdText =
     `# ${topic}\n\n` +
     messages
@@ -143,6 +143,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             updater(mask);
             chatStore.updateCurrentSession((session) => (session.mask = mask));
           }}
+          shouldSyncFromGlobal
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
               <ListItem
@@ -331,8 +332,8 @@ export function ChatActions(props: {
   }
 
   // stop all responses
-  const couldStop = ControllerPool.hasPending();
-  const stopAll = () => ControllerPool.stopAll();
+  const couldStop = ChatControllerPool.hasPending();
+  const stopAll = () => ChatControllerPool.stopAll();
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -394,7 +395,7 @@ export function ChatActions(props: {
 }
 
 export function Chat() {
-  type RenderMessage = Message & { preview?: boolean };
+  type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -487,8 +488,33 @@ export function Chat() {
 
   // stop response
   const onUserStop = (messageId: number) => {
-    ControllerPool.stop(sessionIndex, messageId);
+    ChatControllerPool.stop(sessionIndex, messageId);
   };
+
+  useEffect(() => {
+    chatStore.updateCurrentSession((session) => {
+      const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
+      session.messages.forEach((m) => {
+        // check if should stop all stale messages
+        if (new Date(m.date).getTime() < stopTiming) {
+          if (m.streaming) {
+            m.streaming = false;
+          }
+
+          if (m.content.length === 0) {
+            m.content = "No content in this message.";
+          }
+        }
+      });
+
+      // auto sync mask config from global config
+      if (session.mask.syncGlobalConfig) {
+        console.log("[Mask] syncing from global, name = ", session.mask.name);
+        session.mask.modelConfig = { ...config.modelConfig };
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -502,12 +528,12 @@ export function Chat() {
       e.preventDefault();
       return;
     }
-    if (shouldSubmit(e)) {
+    if (shouldSubmit(e) && promptHints.length === 0) {
       doSubmit(userInput);
       e.preventDefault();
     }
   };
-  const onRightClick = (e: any, message: Message) => {
+  const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
     if (selectOrCopy(e.currentTarget, message.content)) {
       e.preventDefault();
