@@ -3,7 +3,9 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: `访问密码不正确或为空，请前往 [设置](/#/settings) 页输入正确的访问密码。获取访问密码，请微信扫一扫：
+    Unauthorized: `访问密码不正确或为空，请前往 [设置](/#/settings) 页输入正确的访问密码。
+
+微信扫一扫，获取访问密码：
 
 ![alt 微信扫一扫](https://e.northviewer.cn/wp-content/uploads/2023/05/https___e.northviewer.cn_2023-05-chatgpt_chatgpt-tools-3189.html-1.png)`,
   },
