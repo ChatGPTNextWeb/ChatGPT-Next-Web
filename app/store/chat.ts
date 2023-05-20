@@ -5,9 +5,9 @@ import { trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelType, useAppConfig } from "./config";
+import { ModelType } from "./config";
 import { createEmptyMask, Mask } from "./mask";
-import { StoreKey } from "../constant";
+import { REQUEST_TIMEOUT_MS, StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
@@ -38,6 +38,7 @@ export interface ChatStat {
 
 export interface ChatSession {
   id: number;
+
   topic: string;
 
   memoryPrompt: string;
@@ -68,7 +69,6 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
-
     mask: createEmptyMask(),
   };
 }
@@ -463,7 +463,7 @@ export const useChatStore = create<ChatStore>()(
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
-          modelConfig.sendMemory
+          session.mask.modelConfig.sendMemory
         ) {
           api.llm.chat({
             messages: toBeSummarizedMsgs.concat({

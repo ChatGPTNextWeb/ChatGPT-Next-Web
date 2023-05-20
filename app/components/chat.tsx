@@ -143,7 +143,6 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             updater(mask);
             chatStore.updateCurrentSession((session) => (session.mask = mask));
           }}
-          shouldSyncFromGlobal
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
               <ListItem
@@ -506,14 +505,7 @@ export function Chat() {
           }
         }
       });
-
-      // auto sync mask config from global config
-      if (session.mask.syncGlobalConfig) {
-        console.log("[Mask] syncing from global, name = ", session.mask.name);
-        session.mask.modelConfig = { ...config.modelConfig };
-      }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // check if should send message
