@@ -3,25 +3,24 @@
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
 
   .chat-input-action {
     display: inline-flex;
-    border-radius: 24px;
-    font-size: 14px;
+    align-items: center;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    font-size: 12px;
     background-color: var(--white);
     color: var(--black);
     border: var(--border-in-light);
-    padding: 6px 12px;
-    animation: slide-in ease 0.3s;
+    border-radius: 20px;
     box-shadow: var(--card-shadow);
+    animation: slide-in ease 0.3s;
     transition: all ease 0.3s;
-    align-items: center;
-    cursor: pointer;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    &:last-child {
+      margin-right: 0;
     }
   }
 }
@@ -38,28 +37,28 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    padding: 10px 20px;
+    font-size: 12px;
     background-color: var(--white);
     color: var(--black);
     border: var(--border-in-light);
+    border-radius: 100px;
     box-shadow: var(--card-shadow);
-    padding: 12px 24px;
-    border-radius: 999px;
     animation: slide-in-from-top ease 0.3s;
 
     .prompt-toast-content {
-      margin-left: 12px;
+      margin-left: 10px;
     }
   }
 }
 
 .section-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
 
   .section-title-action {
     display: flex;
@@ -70,10 +69,24 @@
 .context-prompt {
   .context-prompt-row {
     display: flex;
-    gap: 12px;
-    width: 100%;
-    margin-bottom: 12px;
+    justify-content: center;
     align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .context-role {
+      margin-right: 10px;
+    }
+
+    .context-content {
+      flex: 1;
+      max-width: 100%;
+      text-align: left;
+    }
+
+    .context-delete-button {
+      margin-left: 10px;
+    }
   }
 
   .context-prompt-button {
@@ -82,77 +95,60 @@
 }
 
 .memory-prompt {
-  margin: 24px 0;
+  margin: 20px 0;
 
   .memory-prompt-content {
+    padding: 10px;
+    font-size: 12px;
     background-color: var(--white);
     color: var(--black);
     border: var(--border-in-light);
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 14px;
+    border-radius: 10px;
     user-select: text;
   }
 }
 
 .clear-context {
-  margin: 24px 0 0 0;
-  padding: 6px 0;
-  border-top: var(--border-in-light);
-  border-bottom: var(--border-in-light);
-  box-shadow: var(--card-shadow) inset;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px 0 0;
+  padding: 4px 0;
+  font-size: 12px;
   color: var(--black);
+  border-top: var(--border-in-light);
+  border-bottom: var(--border-in-light);
+  box-shadow: var(--card-shadow) inset;
   transition: all ease 0.3s;
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  font-size: 14px;
   animation: slide-in ease 0.3s;
-  $linear: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 1),
-    rgba(0, 0, 0, 0)
-  );
-  mask-image: $linear;
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
 
-  @mixin show {
-    transform: translateY(0);
-    position: relative;
-    transition: all ease 0.3s;
-    opacity: 1;
-  }
-
-  @mixin hide {
-    transform: translateY(-50%);
-    position: absolute;
-    transition: all ease 0.1s;
-    opacity: 0;
-  }
-
-  &-tips {
-    @include show;
+  .clear-context-text {
     opacity: 0.5;
+    transition: all ease 0.3s;
   }
 
-  &-revert-btn {
+  .clear-context-revert-btn {
     color: var(--primary);
-    @include hide;
+    opacity: 0;
+    transition: all ease 0.3s;
   }
 
   &:hover {
     opacity: 1;
     border-color: var(--primary);
 
-    .clear-context-tips {
-      @include hide;
+    .clear-context-text {
+      opacity: 0;
     }
 
     .clear-context-revert-btn {
-      @include show;
+      opacity: 1;
     }
   }
 }
+
+/* Made possible by Cognitiev.com 🧠 */
