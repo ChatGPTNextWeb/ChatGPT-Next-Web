@@ -73,7 +73,7 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
-    name: "ext-davinci-002-render-sha-mobile",
+    name: "text-davinci-002-render-sha-mobile",
     available: true,
   },
   {
