@@ -2,7 +2,7 @@
   background-color: var(--white);
   border: var(--border-in-light);
   border-radius: 20px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   color: var(--black);
   background-color: var(--white);
   min-width: 600px;
@@ -42,12 +42,13 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: var(--second);
+  background-color: #333; // Changed background color to a lighter shade of black
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
   position: relative;
   transition: width ease 0.05s;
+  color: #f0f0f0; // Changed text color to lighter shade for contrast
 
   .sidebar-header-bar {
     display: flex;
@@ -62,6 +63,7 @@
     }
   }
 }
+
 
 .sidebar-drag {
   $width: 10px;
@@ -156,7 +158,7 @@
   background-color: var(--white);
   border-radius: 10px;
   margin-bottom: 10px;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
@@ -165,7 +167,7 @@
 }
 
 .chat-item:hover {
-  background-color: var(--hover-color);
+  background-color: #f0f0f0; // Changed hover background color for a modern look
 }
 
 .chat-item-selected {
