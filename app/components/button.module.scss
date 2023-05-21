@@ -1,6 +1,6 @@
 .icon-button {
   position: relative;
-  background-color: var(--white);
+  background-color: #333; // Changed background color to a lighter shade of black
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -12,13 +12,14 @@
   user-select: none;
   outline: none;
   border: none;
-  color: var(--black);
+  color: #f0f0f0; // Changed text color to lighter shade for contrast
   z-index: 0; // Added to ensure :before will stack properly
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
+
 
 .icon-button:before {
   content: "";
@@ -59,6 +60,15 @@
   left: 0;
   top: 0;
   border-radius: 60px;
+}
+
+.icon-button.primary {
+  background-color: var(--primary);
+  color: white;
+
+  path {
+    fill: white !important;
+  }
 }
 
 @keyframes glowing {
