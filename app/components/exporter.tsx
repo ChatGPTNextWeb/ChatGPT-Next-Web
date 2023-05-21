@@ -3,7 +3,7 @@ import Locale from "../locales";
 import styles from "./exporter.module.scss";
 import { List, ListItem, Modal, showToast } from "./ui-lib";
 import { IconButton } from "./button";
-import { copyToClipboard, downloadAs } from "../utils";
+import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
 
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -222,16 +222,19 @@ export function MessageExporter() {
 export function PreviewActions(props: {
   download: () => void;
   copy: () => void;
+  showCopy?: boolean;
 }) {
   return (
     <div className={styles["preview-actions"]}>
-      <IconButton
-        text={Locale.Export.Copy}
-        bordered
-        shadow
-        icon={<CopyIcon />}
-        onClick={props.copy}
-      ></IconButton>
+      {props.showCopy && (
+        <IconButton
+          text={Locale.Export.Copy}
+          bordered
+          shadow
+          icon={<CopyIcon />}
+          onClick={props.copy}
+        ></IconButton>
+      )}
       <IconButton
         text={Locale.Export.Download}
         bordered
@@ -282,23 +285,34 @@ export function ImagePreviewer(props: {
       }
     });
   };
+
+  const isMobile = useMobileScreen();
+
   const download = () => {
     const dom = previewRef.current;
     if (!dom) return;
     toPng(dom)
       .then((blob) => {
         if (!blob) return;
-        const link = document.createElement("a");
-        link.download = `${props.topic}.png`;
-        link.href = blob;
-        link.click();
+
+        if (isMobile) {
+          const image = new Image();
+          image.src = blob;
+          const win = window.open("");
+          win?.document.write(image.outerHTML);
+        } else {
+          const link = document.createElement("a");
+          link.download = `${props.topic}.png`;
+          link.href = blob;
+          link.click();
+        }
       })
       .catch((e) => console.log("[Export Image] ", e));
   };
 
   return (
     <div className={styles["image-previewer"]}>
-      <PreviewActions copy={copy} download={download} />
+      <PreviewActions copy={copy} download={download} showCopy={!isMobile} />
       <div
         className={`${styles["preview-body"]} ${styles["default-theme"]}`}
         ref={previewRef}
