@@ -67,4 +67,4 @@ read -p "Enter BASE_URL: " BASE_URL
 
 # Build and run the project using the environment variables
 OPENAI_API_KEY=$OPENAI_API_KEY CODE=$CODE PORT=$PORT BASE_URL=$BASE_URL yarn build
-OPENAI_API_KEY=$OPENAI_API_KEY CODE=$CODE PORT=$PORT BASE_URL=$BASE_URL yarn start
+OPENAI_API_KEY=$OPENAI_API_KEY CODE=$CODE PORT=$PORT BASE_URL=$BASE_URL nohup yarn start &
