@@ -304,14 +304,39 @@
         margin-right: 0;
         margin-top: 15px;
       }
+
+
     }
   }
+
+
+}
+
+.hidden {
+  display:none
 }
 
 .sidebar-tail {
   display: flex;
   justify-content: space-between;
   padding-top: 20px;
+}
+
+.sidebar-tail-beian {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  font-size: 14px;
+  display: block;
+  width: calc(100% - 15px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 10px;
+}
+
+.sidebar-tail-beian  a {
+  text-decoration: none;
 }
 
 .sidebar-actions {
