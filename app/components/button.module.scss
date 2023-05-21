@@ -1,100 +1,116 @@
 .icon-button {
-position: relative;
-background-color: var(--white);
-border-radius: 10px;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 10px;
-cursor: pointer;
-transition: all 0.3s ease;
-overflow: visible; /* Overflow changed to visible for glow effect to be visible outside button /
-user-select: none;
-outline: none;
-border: none;
-color: var(--black);
-z-index: 0; / Added to ensure :before will stack properly */
+  position: relative;
+  background-color: var(--white);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: visible; // Overflow changed to visible for glow effect to be visible outside button
+  user-select: none;
+  outline: none;
+  border: none;
+  color: var(--black);
+  z-index: 0; // Added to ensure :before will stack properly
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .icon-button:before {
-content: "";
-position: absolute;
-top: -50%;
-left: -50%;
-right: -50%;
-bottom: -50%;
-background: radial-gradient(circle, rgba(57, 255, 20, 0.7), rgba(7, 206, 245, 0.7), rgba(254, 107, 139, 0.7) 50%);
-opacity: 0;
-pointer-events: none;
-mix-blend-mode: screen; /* Added to blend colors /
-z-index: -1; / Added to ensure :before will stack below button content */
-transition: opacity 0.3s ease, transform 0.3s ease;
+  content: "";
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(8px);
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+  border-radius: 60px;
 }
 
-.icon-button[disabled] {
-cursor: not-allowed;
-opacity: 0.5;
+.icon-button:active {
+  color: #000;
 }
 
-.icon-button.primary {
-background-color: var(--primary);
-color: white;
-
-path {
-fill: white !important;
-}
-}
-
-.shadow {
-box-shadow: var(--card-shadow);
-}
-
-.border {
-border: var(--border-in-light);
-}
-
-.icon-button:hover {
-border-color: var(--primary);
+.icon-button:active:after {
+  background: transparent;
 }
 
 .icon-button:hover:before {
-opacity: 1;
-transform: scale(1.5); /* Scale increased for better glow effect */
-animation: glowWave 2s infinite ease;
+  opacity: 1;
 }
 
-@keyframes glowWave {
-0% {
-transform: scale(0.5);
+.icon-button:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  left: 0;
+  top: 0;
+  border-radius: 60px;
 }
-50% {
-transform: scale(2);
-opacity: 0.5;
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
 }
-100% {
-transform: scale(0.5);
-opacity: 0;
+
+.icon-button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
+
+.icon-button.primary {
+  background-color: var(--primary);
+  color: white;
+
+  path {
+    fill: white !important;
+  }
+}
+
+.shadow {
+  box-shadow: var(--card-shadow);
+}
+
+.border {
+  border: var(--border-in-light);
+}
+
+.icon-button:hover {
+  border-color: var(--primary);
 }
 
 .icon-button-icon {
-width: 16px;
-height: 16px;
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media only screen and (max-width: 600px) {
-.icon-button {
-padding: 16px;
-}
+  .icon-button {
+    padding: 16px;
+  }
 }
 
 .icon-button-text {
-margin-left: 5px;
-font-size: 12px;
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
+  margin-left: 5px;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
