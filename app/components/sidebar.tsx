@@ -173,11 +173,11 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
+          {/* <div className={styles["sidebar-action"]+ " hidden"}>
             <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
-          </div>
+          </div> */}
         </div>
         <div>
           <IconButton
@@ -194,6 +194,12 @@ export function SideBar(props: { className?: string }) {
             shadow
           />
         </div>
+      </div>
+
+      <div className={styles["sidebar-tail-beian"]}>
+        <a href="https://beian.miit.gov.cn/" target="_blank">
+          沪ICP备2023012643号
+        </a>
       </div>
 
       <div
