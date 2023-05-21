@@ -64,6 +64,10 @@ export async function requestOpenai(req: NextRequest, mask: string) {
           cost: tokens * getRatio(body.model, false),
         });
       }
+      if (res.status === 401) {
+        // to prevent browser prompt for credentials
+        res.headers.delete("www-authenticate");
+      }
       return new Response(!body.stream ? JSON.stringify(bd) : res.body, {
         status: res.status,
         statusText: res.statusText,
