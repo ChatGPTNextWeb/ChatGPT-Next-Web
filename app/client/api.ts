@@ -62,6 +62,7 @@ export function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {
     "Content-Type": "application/json",
+    "x-requested-with": "XMLHttpRequest",
   };
 
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;
