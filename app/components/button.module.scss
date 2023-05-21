@@ -1,28 +1,28 @@
 .icon-button {
   position: relative;
-  background-color: var(--primary);
-  border-radius: 50px; // Changed the shape of the button
+  background-color: var(--white);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px; // Updated padding for a better look
+  padding: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  overflow: visible;
+  overflow: visible; // Overflow changed to visible for glow effect to be visible outside button
   user-select: none;
   outline: none;
   border: none;
-  color: var(--white);
-  z-index: 0;
+  color: var(--black);
+  z-index: 0; // Added to ensure :before will stack properly
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); // Updated box shadow for more depth
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .icon-button:before {
   content: "";
-  background: linear-gradient(45deg, rgba(255,0,0,0.75), rgba(255,115,0,0.75), rgba(255,251,0,0.75), rgba(72,255,0,0.75), rgba(0,255,213,0.75), rgba(0,43,255,0.75), rgba(122,0,255,0.75), rgba(255,0,200,0.75), rgba(255,0,0,0.75));
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
   position: absolute;
   top: -5px;
   left: -5px;
@@ -38,8 +38,7 @@
 }
 
 .icon-button:active {
-  color: var(--white);
-  transform: translateY(2px); // Slight shift downward on click
+  color: #000;
 }
 
 .icon-button:active:after {
@@ -56,7 +55,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: var(--primary-dark); // Darker background color on hover
+  background: #111;
   left: 0;
   top: 0;
   border-radius: 60px;
@@ -92,7 +91,6 @@
 
 .icon-button:hover {
   border-color: var(--primary);
-  background-color: var(--primary-dark); // Darker background color on hover
 }
 
 .icon-button-icon {
@@ -111,7 +109,8 @@
 
 .icon-button-text {
   margin-left: 5px;
-  font-size: 14px; // Increased font size for better readability
+  font-size: 14px;
+  font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
