@@ -1,5 +1,5 @@
 <div align="center">
-<img src="public/android-chrome-512x512.png" alt="icon"/>
+<img src="public/apple-touch-icon.png" alt="icon"/>
 
 <h1 align="center">Cognitiev PRO</h1>
 
