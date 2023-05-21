@@ -2,8 +2,7 @@ import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
-
-const serverConfig = getServerSideConfig();
+import { OPENAI_URL } from "./common";
 
 function getIP(req: NextRequest) {
   let ip = req.ip ?? req.headers.get("x-real-ip");
@@ -34,6 +33,7 @@ export function auth(req: NextRequest) {
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
+  const serverConfig = getServerSideConfig();
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
@@ -43,8 +43,7 @@ export function auth(req: NextRequest) {
   if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
     return {
       error: true,
-      needAccessCode: true,
-      msg: "Please go settings page and fill your access code.",
+      msg: !accessCode ? "empty access code" : "wrong access code",
     };
   }
 
@@ -56,10 +55,6 @@ export function auth(req: NextRequest) {
       req.headers.set("Authorization", `Bearer ${apiKey}`);
     } else {
       console.log("[Auth] admin did not provide an api key");
-      return {
-        error: true,
-        msg: "Empty Api Key",
-      };
     }
   } else {
     console.log("[Auth] use user api key");

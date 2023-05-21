@@ -10,7 +10,15 @@ import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
-import { Input, List, ListItem, Modal, PasswordInput, Popover } from "./ui-lib";
+import {
+  Input,
+  List,
+  ListItem,
+  Modal,
+  PasswordInput,
+  Popover,
+  Select,
+} from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
 import { IconButton } from "./button";
@@ -23,7 +31,12 @@ import {
   useAppConfig,
 } from "../store";
 
-import Locale, { AllLangs, changeLang, getLang } from "../locales";
+import Locale, {
+  AllLangs,
+  ALL_LANG_OPTIONS,
+  changeLang,
+  getLang,
+} from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import { Path, UPDATE_URL } from "../constant";
@@ -368,7 +381,7 @@ export function Settings() {
           </ListItem>
 
           <ListItem title={Locale.Settings.SendKey}>
-            <select
+            <Select
               value={config.submitKey}
               onChange={(e) => {
                 updateConfig(
@@ -382,11 +395,11 @@ export function Settings() {
                   {v}
                 </option>
               ))}
-            </select>
+            </Select>
           </ListItem>
 
           <ListItem title={Locale.Settings.Theme}>
-            <select
+            <Select
               value={config.theme}
               onChange={(e) => {
                 updateConfig(
@@ -399,11 +412,11 @@ export function Settings() {
                   {v}
                 </option>
               ))}
-            </select>
+            </Select>
           </ListItem>
 
           <ListItem title={Locale.Settings.Lang.Name}>
-            <select
+            <Select
               value={getLang()}
               onChange={(e) => {
                 changeLang(e.target.value as any);
@@ -411,10 +424,10 @@ export function Settings() {
             >
               {AllLangs.map((lang) => (
                 <option value={lang} key={lang}>
-                  {Locale.Settings.Lang.Options[lang]}
+                  {ALL_LANG_OPTIONS[lang]}
                 </option>
               ))}
-            </select>
+            </Select>
           </ListItem>
 
           <ListItem
@@ -565,9 +578,9 @@ export function Settings() {
         <List>
           <ModelConfigList
             modelConfig={config.modelConfig}
-            updateConfig={(upater) => {
+            updateConfig={(updater) => {
               const modelConfig = { ...config.modelConfig };
-              upater(modelConfig);
+              updater(modelConfig);
               config.update((config) => (config.modelConfig = modelConfig));
             }}
           />
