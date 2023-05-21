@@ -28,6 +28,7 @@ export const ChatControllerPool = {
 
   remove(sessionIndex: number, messageId: number) {
     const key = this.key(sessionIndex, messageId);
+    this.controllers[key]?.abort();
     delete this.controllers[key];
   },
 

@@ -104,25 +104,41 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
         <ListItem
-          title={Locale.Mask.Config.Sync.Title}
-          subTitle={Locale.Mask.Config.Sync.SubTitle}
+          title={Locale.Mask.Config.HideContext.Title}
+          subTitle={Locale.Mask.Config.HideContext.SubTitle}
         >
           <input
             type="checkbox"
-            checked={props.mask.syncGlobalConfig}
+            checked={props.mask.hideContext}
             onChange={(e) => {
-              if (
-                e.currentTarget.checked &&
-                confirm(Locale.Mask.Config.Sync.Confirm)
-              ) {
-                props.updateMask((mask) => {
-                  mask.syncGlobalConfig = e.currentTarget.checked;
-                  mask.modelConfig = { ...globalConfig.modelConfig };
-                });
-              }
+              props.updateMask((mask) => {
+                mask.hideContext = e.currentTarget.checked;
+              });
             }}
           ></input>
         </ListItem>
+        {props.shouldSyncFromGlobal ? (
+          <ListItem
+            title={Locale.Mask.Config.Sync.Title}
+            subTitle={Locale.Mask.Config.Sync.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={props.mask.syncGlobalConfig}
+              onChange={(e) => {
+                if (
+                  e.currentTarget.checked &&
+                  confirm(Locale.Mask.Config.Sync.Confirm)
+                ) {
+                  props.updateMask((mask) => {
+                    mask.syncGlobalConfig = e.currentTarget.checked;
+                    mask.modelConfig = { ...globalConfig.modelConfig };
+                  });
+                }
+              }}
+            ></input>
+          </ListItem>
+        ) : null}
       </List>
 
       <List>

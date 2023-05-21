@@ -163,12 +163,11 @@ const en: RequiredLocaleType = {
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
-        "This is a summary of the chat history between the AI and the user as a recap: " +
-        content,
+        "This is a summary of the chat history as a recap: " + content,
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
-        "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
+        "Summarize the discussion briefly in 200 words or less to use as a prompt for future context.",
     },
   },
   Copy: {
@@ -179,6 +178,8 @@ const en: RequiredLocaleType = {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
     Add: "Add a Prompt",
+    Clear: "Context Cleared",
+    Revert: "Revert",
   },
   Plugin: {
     Name: "Plugin",
@@ -213,15 +214,19 @@ const en: RequiredLocaleType = {
         SubTitle: "Use global config in this chat",
         Confirm: "Confirm to override custom config with global config?",
       },
+      HideContext: {
+        Title: "Hide Context Prompts",
+        SubTitle: "Do not show in-context prompts in chat",
+      },
     },
   },
   NewChat: {
     Return: "Return",
-    Skip: "Skip",
+    Skip: "Just Start",
     Title: "Pick a Mask",
     SubTitle: "Chat with the Soul behind the Mask",
     More: "Find More",
-    NotShow: "Not Show Again",
+    NotShow: "Never Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
   },
 
