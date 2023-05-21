@@ -31,8 +31,8 @@ const cn = {
     },
     Send: "发送",
     Config: {
-      Reset: "重置默认",
-      SaveAs: "另存为面具",
+      Reset: "清除记忆",
+      SaveAs: "存为面具",
     },
   },
   Export: {
@@ -47,8 +47,8 @@ const cn = {
     EmptyContent: "对话内容过短，无需总结",
     Send: "自动压缩聊天记录并作为上下文发送",
     Copy: "复制摘要",
-    Reset: "重置对话",
-    ResetConfirm: "重置后将清空当前对话记录以及历史摘要，确认重置？",
+    Reset: "[unused]",
+    ResetConfirm: "确认清空历史摘要？",
   },
   Home: {
     NewChat: "新的聊天",
@@ -160,12 +160,11 @@ const cn = {
     BotHello: "有什么可以帮你的吗",
     Error: "出错了，稍后重试吧",
     Prompt: {
-      History: (content: string) =>
-        "这是 ai 和用户的历史聊天总结作为前情提要：" + content,
+      History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
       Topic:
         "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊”",
       Summarize:
-        "简要总结一下你和用户的对话，用作后续的上下文提示 prompt，控制在 200 字以内",
+        "简要总结一下对话内容，用作后续的上下文提示 prompt，控制在 200 字以内",
     },
   },
   Copy: {
@@ -173,9 +172,11 @@ const cn = {
     Failed: "复制失败，请赋予剪切板权限",
   },
   Context: {
-    Toast: (x: any) => `已设置 ${x} 条前置上下文`,
+    Toast: (x: any) => `包含 ${x} 条预设提示词`,
     Edit: "当前对话设置",
     Add: "新增预设对话",
+    Clear: "上下文已清除",
+    Revert: "恢复上下文",
   },
   Plugin: {
     Name: "插件",
@@ -209,6 +210,10 @@ const cn = {
         Title: "使用全局设置",
         SubTitle: "当前对话是否使用全局模型设置",
         Confirm: "当前对话的自定义设置将会被自动覆盖，确认启用全局设置？",
+      },
+      HideContext: {
+        Title: "隐藏预设对话",
+        SubTitle: "隐藏后预设对话不会出现在聊天界面",
       },
     },
   },
