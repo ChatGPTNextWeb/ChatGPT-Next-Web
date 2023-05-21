@@ -140,33 +140,35 @@ export function MessageSelector(props: {
           }}
         ></input>
 
-        <IconButton
-          text={Locale.Select.All}
-          bordered
-          className={styles["filter-item"]}
-          onClick={selectAll}
-        />
-        <IconButton
-          text={Locale.Select.Latest}
-          bordered
-          className={styles["filter-item"]}
-          onClick={() =>
-            props.updateSelection((selection) => {
-              selection.clear();
-              messages
-                .slice(messageCount - 10)
-                .forEach((m) => selection.add(m.id!));
-            })
-          }
-        />
-        <IconButton
-          text={Locale.Select.Clear}
-          bordered
-          className={styles["filter-item"]}
-          onClick={() =>
-            props.updateSelection((selection) => selection.clear())
-          }
-        />
+        <div className={styles["actions"]}>
+          <IconButton
+            text={Locale.Select.All}
+            bordered
+            className={styles["filter-item"]}
+            onClick={selectAll}
+          />
+          <IconButton
+            text={Locale.Select.Latest}
+            bordered
+            className={styles["filter-item"]}
+            onClick={() =>
+              props.updateSelection((selection) => {
+                selection.clear();
+                messages
+                  .slice(messageCount - 10)
+                  .forEach((m) => selection.add(m.id!));
+              })
+            }
+          />
+          <IconButton
+            text={Locale.Select.Clear}
+            bordered
+            className={styles["filter-item"]}
+            onClick={() =>
+              props.updateSelection((selection) => selection.clear())
+            }
+          />
+        </div>
       </div>
 
       <div className={styles["messages"]}>
