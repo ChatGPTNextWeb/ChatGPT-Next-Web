@@ -17,7 +17,7 @@ async function handle(
   }
 
   try {
-    return await requestOpenai(req);
+    return await requestOpenai(req, authResult.mark!);
   } catch (e) {
     console.error("[OpenAI] ", e);
     return NextResponse.json(prettyObject(e));
