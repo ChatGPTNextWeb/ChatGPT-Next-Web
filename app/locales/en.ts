@@ -37,11 +37,30 @@ const en: RequiredLocaleType = {
     },
   },
   Export: {
-    Title: "All Messages",
+    Title: "Export Messages",
     Copy: "Copy All",
     Download: "Download",
     MessageFromYou: "Message From You",
     MessageFromChatGPT: "Message From ChatGPT",
+    Share: "Share to ShareGPT",
+    Format: {
+      Title: "Export Format",
+      SubTitle: "Markdown or PNG Image",
+    },
+    IncludeContext: {
+      Title: "Including Context",
+      SubTitle: "Export context prompts in mask or not",
+    },
+    Steps: {
+      Select: "Select",
+      Preview: "Preview",
+    },
+  },
+  Select: {
+    Search: "Search",
+    All: "Select All",
+    Latest: "Select Latest",
+    Clear: "Clear",
   },
   Memory: {
     Title: "Memory Prompt",
