@@ -1,51 +1,68 @@
 @import "../styles/animation.scss";
 
-$accent-color: #49a6e9; // Replace this with your desired accent color value
+$accent-color: #49a6e9;
+$primary-color: #495d9a;
+$secondary-color: #3b466a;
+$border-in-light: 1px solid rgba(0, 0, 0, 0.1);
+$card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+$transition-duration: 0.3s;
+$ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
 
 /* Additional styling for improved look and feel. */
-:root {
-  --primary-color: #495d9a;
-  --secondary-color: #3b466a;
-  --accent-color: #49a6e9;
-  --border-in-light: 1px solid rgba(0, 0, 0, 0.1);
-  --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
 .mask-page {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(155deg, var(--primary-color) 20%, var(--secondary-color) 80%);
+  background: linear-gradient(155deg, $primary-color 20%, $secondary-color 80%);
   padding: 20px;
 
   .mask-page-body {
     padding: 20px;
     overflow-y: auto;
     border-radius: 10px;
-    box-shadow: var(--card-shadow);
+    box-shadow: $card-shadow;
     background-color: #fff;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slide-in $ease-transition $transition-duration forwards;
 
     .mask-filter {
       width: 100%;
       max-width: 100%;
       margin-bottom: 20px;
-      animation: slide-in ease 0.3s;
       height: 40px;
       display: flex;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slide-in $ease-transition $transition-duration 0.1s forwards;
 
       .search-bar {
         flex-grow: 1;
         max-width: 100%;
         min-width: 0;
         border-radius: 6px;
-        border: var(--border-in-light);
+        border: $border-in-light;
+        padding: 8px;
+        font-size: 14px;
+        transition: border-color $ease-transition $transition-duration;
+
+        &:focus {
+          border-color: $accent-color;
+          outline: none;
+        }
       }
 
       .mask-filter-lang {
         height: 100%;
         margin-left: 10px;
         border-radius: 6px;
-        border: var(--border-in-light);
+        border: $border-in-light;
+        transition: border-color $ease-transition $transition-duration;
+
+        &:focus {
+          border-color: $accent-color;
+          outline: none;
+        }
       }
 
       .mask-create {
@@ -53,10 +70,10 @@ $accent-color: #49a6e9; // Replace this with your desired accent color value
         margin-left: 10px;
         box-sizing: border-box;
         min-width: 80px;
-        background: var(--accent-color);
+        background: $accent-color;
         color: white;
         border-radius: 6px;
-        transition: all 0.3s;
+        transition: background-color $ease-transition $transition-duration;
 
         &:hover {
           background: lighten($accent-color, 5%);
@@ -68,14 +85,16 @@ $accent-color: #49a6e9; // Replace this with your desired accent color value
       display: flex;
       justify-content: space-between;
       padding: 20px;
-      border: var(--border-in-light);
-      animation: slide-in ease 0.3s;
+      border: $border-in-light;
       border-radius: 10px;
-      box-shadow: var(--card-shadow);
+      box-shadow: $card-shadow;
       margin-bottom: 20px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slide-in $ease-transition $transition-duration 0.2s forwards;
 
       &:not(:last-child) {
-        border-bottom: var(--border-in-light);
+        border-bottom: $border-in-light;
       }
 
       .mask-header {
@@ -104,7 +123,7 @@ $accent-color: #49a6e9; // Replace this with your desired accent color value
       .mask-actions {
         display: flex;
         flex-wrap: nowrap;
-        transition: all ease 0.3s;
+        transition: all $ease-transition $transition-duration;
         align-items: center;
 
         button {
@@ -113,11 +132,11 @@ $accent-color: #49a6e9; // Replace this with your desired accent color value
           color: rgba(0, 0, 0, 0.3);
           font-size: 16px;
           padding: 0 8px;
-          transition: all 0.3s;
+          transition: color $ease-transition $transition-duration;
 
           &:hover,
           &:focus {
-            color: var(--accent-color);
+            color: $accent-color;
           }
         }
       }
@@ -128,8 +147,8 @@ $accent-color: #49a6e9; // Replace this with your desired accent color value
         padding-bottom: 10px;
         border-radius: 10px;
         margin-bottom: 20px;
-        box-shadow: var(--card-shadow);
-
+        box-shadow: $card-shadow;
+        
         .mask-actions {
           width: 100%;
           justify-content: space-between;
@@ -137,6 +156,19 @@ $accent-color: #49a6e9; // Replace this with your desired accent color value
         }
       }
     }
+  }
+}
+
+// Keyframes for slide-in animation
+@keyframes slide-in {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
