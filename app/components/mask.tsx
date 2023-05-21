@@ -13,15 +13,15 @@ import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
-import { ChatMessage, ModelConfig, useChatStore } from "../store";
+import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
 import { ROLES } from "../client/api";
 import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
-import Locale, { AllLangs, Lang } from "../locales";
+import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { downloadAs, readFromFile } from "../utils";
 import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
@@ -41,6 +41,7 @@ export function MaskConfig(props: {
   updateMask: Updater<Mask>;
   extraListItems?: JSX.Element;
   readonly?: boolean;
+  shouldSyncFromGlobal?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -49,8 +50,14 @@ export function MaskConfig(props: {
 
     const config = { ...props.mask.modelConfig };
     updater(config);
-    props.updateMask((mask) => (mask.modelConfig = config));
+    props.updateMask((mask) => {
+      mask.modelConfig = config;
+      // if user changed current session mask, it will disable auto sync
+      mask.syncGlobalConfig = false;
+    });
   };
+
+  const globalConfig = useAppConfig();
 
   return (
     <>
@@ -90,10 +97,48 @@ export function MaskConfig(props: {
             type="text"
             value={props.mask.name}
             onInput={(e) =>
-              props.updateMask((mask) => (mask.name = e.currentTarget.value))
+              props.updateMask((mask) => {
+                mask.name = e.currentTarget.value;
+              })
             }
           ></input>
         </ListItem>
+        <ListItem
+          title={Locale.Mask.Config.HideContext.Title}
+          subTitle={Locale.Mask.Config.HideContext.SubTitle}
+        >
+          <input
+            type="checkbox"
+            checked={props.mask.hideContext}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                mask.hideContext = e.currentTarget.checked;
+              });
+            }}
+          ></input>
+        </ListItem>
+        {props.shouldSyncFromGlobal ? (
+          <ListItem
+            title={Locale.Mask.Config.Sync.Title}
+            subTitle={Locale.Mask.Config.Sync.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={props.mask.syncGlobalConfig}
+              onChange={(e) => {
+                if (
+                  e.currentTarget.checked &&
+                  confirm(Locale.Mask.Config.Sync.Confirm)
+                ) {
+                  props.updateMask((mask) => {
+                    mask.syncGlobalConfig = e.currentTarget.checked;
+                    mask.modelConfig = { ...globalConfig.modelConfig };
+                  });
+                }
+              }}
+            ></input>
+          </ListItem>
+        ) : null}
       </List>
 
       <List>
@@ -330,7 +375,7 @@ export function MaskPage() {
               </option>
               {AllLangs.map((lang) => (
                 <option value={lang} key={lang}>
-                  {Locale.Settings.Lang.Options[lang]}
+                  {ALL_LANG_OPTIONS[lang]}
                 </option>
               ))}
             </Select>
@@ -358,7 +403,7 @@ export function MaskPage() {
                     <div className={styles["mask-name"]}>{m.name}</div>
                     <div className={styles["mask-info"] + " one-line"}>
                       {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        Locale.Settings.Lang.Options[m.lang]
+                        ALL_LANG_OPTIONS[m.lang]
                       } / ${m.modelConfig.model}`}
                     </div>
                   </div>
