@@ -1,5 +1,8 @@
 @import "../styles/animation.scss";
 
+$new-chat-bg-color: #f0f0f0; // Light background color
+$button-label-color: #333; // Contrast color for button label
+
 .new-chat {
   height: 100%;
   width: 100%;
@@ -7,6 +10,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  background-color: $new-chat-bg-color;
 
   .mask-header {
     display: flex;
@@ -108,6 +112,11 @@
         .mask-name {
           margin-left: 10px;
           font-size: 14px;
+          
+        .button-label {
+          margin-left: 10px;
+          font-size: 14px;
+          color: $button-label-color;
         }
       }
     }
