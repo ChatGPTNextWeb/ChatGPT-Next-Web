@@ -51,13 +51,18 @@ import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { ListItem, Modal, showModal } from "./ui-lib";
+import { ListItem, Modal, showModal, showToast } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
+
+import zBotServiceClient, {
+  UserCheckResultVO,
+  userLocalStorage,
+} from "../zbotservice/ZBotServiceClient";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -476,6 +481,16 @@ export function Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
+
+    // TODO: consider to give annymous user some trying time
+    let userEmail = userLocalStorage.get();
+    if (userEmail === null) {
+      showToast("您尚未登录, 请前往设置中心登录");
+      return;
+    }
+    // update db
+    zBotServiceClient.updateRequest(userEmail);
+
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);

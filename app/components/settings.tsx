@@ -41,6 +41,7 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
+import { userLocalStorage } from "../zbotservice/ZBotServiceClient";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -206,6 +207,26 @@ function formatVersionDate(t: string) {
   ].join("");
 }
 
+function getCurrentUser1() {
+  let userEmail = userLocalStorage.get();
+
+  if (userEmail !== null) {
+    return (
+      <div>
+        <ListItem title="当前已登录用户">
+          <label>{userEmail}</label>
+        </ListItem>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <ListItem title="当前未登录"></ListItem>
+    </div>
+  );
+}
+
 export function Settings() {
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -334,15 +355,17 @@ export function Settings() {
             {
               <IconButton
                 icon={<EditIcon />}
-                // text={Locale.Settings.Prompt.Edit}
-                text="查看与编辑"
+                text={Locale.Settings.Prompt.Edit}
+                // text="查看与编辑"
                 onClick={() => navigate(Path.UserLogin)}
               />
             }
           </ListItem>
 
+          <div> {getCurrentUser1()} </div>
+
           {/* TODO: Adding user png as avatar */}
-          <ListItem title={Locale.Settings.Avatar}>
+          {/* <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
               content={
@@ -362,7 +385,7 @@ export function Settings() {
                 <Avatar avatar={config.avatar} />
               </div>
             </Popover>
-          </ListItem>
+          </ListItem> */}
         </List>
 
         <List>

@@ -1,6 +1,13 @@
 # 1. Versions
 
 
+## v1.2.1
+publish time: 2023-05-22
+
+Features: 
+ - Finish user login and register module
+ - Finish debug in frontend and backend
+
 ## v1.2.0
 publish time: 2023-05-20
 

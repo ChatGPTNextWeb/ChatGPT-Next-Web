@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
 
 import styles from "../components/settings.module.scss";
 
@@ -28,67 +28,56 @@ import { useNavigate } from "react-router-dom";
 
 import zBotServiceClient, {
   UserCheckResultVO,
-  UserRegisterVO,
+  UserSecretVO,
+  userLocalStorage,
 } from "../zbotservice/ZBotServiceClient";
 import { sendVerifyCode } from "./user-verifyCode";
 
-const registerCheck = async (userRegisterVO: UserRegisterVO) => {
-  console.log("register checking: userRegisterVO= ", userRegisterVO);
+const passwordCheck = async (userSecretVO: UserSecretVO) => {
+  console.log("passwordCheck for user: ", userSecretVO.email);
 
-  if (userRegisterVO.email.trim().length === 0) {
+  if (userSecretVO.email.trim().length === 0) {
     showToast("邮箱不可为空");
     return;
-  } else if (userRegisterVO.nickName.trim().length === 0) {
-    showToast("昵称不可为空");
+  }
+  if (userSecretVO.verifyCode.toString().length === 6) {
+    // 6 digits
+    showToast("验证码不正确");
     return;
-  } else if (userRegisterVO.password.trim().length === 0) {
-    showToast("邮箱验证码不可为空");
-    return;
-  } else if (userRegisterVO.password.trim().length === 0) {
+  } else if (userSecretVO.password.trim().length === 0) {
     showToast("密码不可为空");
-    return;
-  } else if (userRegisterVO.occupation.trim().length === 0) {
-    showToast("职业不可为空");
     return;
   }
 
   // register to db
   try {
-    const result = await zBotServiceClient.register(userRegisterVO);
+    const result = await zBotServiceClient.updateSecret(userSecretVO);
     console.log(`register check result: `, result);
 
     if (result === UserCheckResultVO.success) {
-      showToast("注册成功, 请返回登录");
-    } else if (result === UserCheckResultVO.emailConflict) {
-      showToast("该邮箱已被注册, 请重新输入");
-    } else if (result === UserCheckResultVO.emailInvalid) {
-      showToast("该邮箱格式不正确, 请重新输入");
+      userLocalStorage.remove();
+      showToast("密码修改成功, 请返回重新登录");
     } else if (result === UserCheckResultVO.verifyCodeInvalid) {
       showToast("验证码不正确, 请重新输入");
     } else {
-      showToast("注册失败, 请重新输入");
+      showToast("密码修改失败, 请重新密码");
     }
   } catch (error) {
     console.log("db access failed:", error);
   }
 };
 
-export function UserRegister() {
+export function UserPasswordRest() {
   const navigate = useNavigate();
 
-  const [userEmail, setUserEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [nickName, setNickName] = useState("");
-  const [verifyCode, setVerifyCode] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [inviterEmail, setInviterEmail] = useState("");
+  let userEmail = userLocalStorage.get() as string;
 
-  var userRegisterVO: UserRegisterVO = {
+  const [password, setPassword] = useState("");
+  const [verifyCode, setVerifyCode] = useState("");
+
+  let userLoginVO: UserSecretVO = {
     email: userEmail,
     password: password,
-    nickName: nickName,
-    occupation: occupation,
-    inviterEmail: inviterEmail,
     verifyCode: Number(verifyCode),
   };
 
@@ -111,16 +100,8 @@ export function UserRegister() {
       </div>
       <div className={styles["settings"]}>
         <List>
-          <ListItem
-            title="邮箱*"
-            subTitle="-邮箱仅用来区分用户, 不会访问个人信息"
-          >
-            <input
-              type="text"
-              name="useremail"
-              placeholder="邮箱不可重复"
-              onChange={(e) => setUserEmail(e.target.value)}
-            ></input>
+          <ListItem title="邮箱*">
+            <label>{userEmail}</label>
           </ListItem>
           <ListItem title={"邮箱验证码*"}>
             <input
@@ -135,36 +116,12 @@ export function UserRegister() {
               onClick={() => sendVerifyCode(userEmail)}
             />
           </ListItem>
-          <ListItem title="昵称*">
-            <input
-              type="text"
-              name="username"
-              placeholder="昵称"
-              onChange={(e) => setNickName(e.target.value)}
-            ></input>
-          </ListItem>
-          <ListItem title="密码*" subTitle="-请尽量避免使用其他账号的密码">
+          <ListItem title="新密码*" subTitle="-请尽量避免使用其他账号的密码">
             <input
               type="password"
               name="password"
               placeholder="字母、数字或下划线组成"
               onChange={(e) => setPassword(e.target.value)}
-            />
-          </ListItem>
-          <ListItem title={"职业*"}>
-            <input
-              type="text"
-              name="occupation"
-              placeholder="职业"
-              onChange={(e) => setOccupation(e.target.value)}
-            />
-          </ListItem>
-          <ListItem title={"邀请人邮箱(可选)"}>
-            <input
-              type="text"
-              name="inviteremail"
-              placeholder="xxx@example.com"
-              onChange={(e) => setInviterEmail(e.target.value)}
             />
           </ListItem>
         </List>
@@ -173,16 +130,9 @@ export function UserRegister() {
           {
             <IconButton
               icon={<SendWhiteIcon />}
-              text={"登录"}
-              onClick={() => navigate(Path.UserLogin)}
-            />
-          }
-          {
-            <IconButton
-              icon={<SendWhiteIcon />}
-              text={"注册"}
+              text={"提交修改"}
               type="primary"
-              onClick={() => registerCheck(userRegisterVO)}
+              onClick={() => passwordCheck(userLoginVO)}
             />
           }
         </ListItem>

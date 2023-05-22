@@ -1,5 +1,8 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
+import { getServerSideConfig } from "../config/server";
+
+const serviceAddress = getServerSideConfig().zBotServiceUrl;
 
 class HttpClient {
   instance: AxiosInstance;
@@ -9,10 +12,9 @@ class HttpClient {
   }
 
   get<T>(url: string, params: any) {
-    console.log("HttpClient.get", url, params);
     return new Promise<T>((resolve, reject) => {
       this.instance
-        .get(url, { params })
+        .get(serviceAddress + url, { params })
         .then((response) => {
           resolve(response?.data);
         })
@@ -25,7 +27,7 @@ class HttpClient {
   post<T>(url: string, params: any) {
     return new Promise<T>((resolve, reject) => {
       this.instance
-        .post(url, params)
+        .post(serviceAddress + url, params)
         .then((response) => {
           resolve(response?.data);
         })
