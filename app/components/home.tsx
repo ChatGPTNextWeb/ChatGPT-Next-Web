@@ -81,7 +81,9 @@ export function useSwitchTheme() {
 }
 
 const useHasHydrated = () => {
-  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
+  const [hasHydrated, setHasHydrated] = useState<boolean>(
+    typeof window === "undefined",
+  );
 
   useEffect(() => {
     setHasHydrated(true);
