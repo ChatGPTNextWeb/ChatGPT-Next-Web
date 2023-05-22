@@ -13,12 +13,13 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
-    "@hello-pangea/dnd": "^16.2.0",
     "@fortaine/fetch-event-source": "^3.0.6",
+    "@hello-pangea/dnd": "^16.2.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
+    "html-to-image": "^1.11.11",
     "mermaid": "^10.1.0",
     "next": "^13.4.3",
     "node-fetch": "^3.3.1",
