@@ -4,13 +4,13 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者松子说网获取密码",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `与 松子GPT 的 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -41,7 +41,7 @@ const cn = {
     Download: "下载文件",
     Share: "分享到 ShareGPT",
     MessageFromYou: "来自你的消息",
-    MessageFromChatGPT: "来自 ChatGPT 的消息",
+    MessageFromChatGPT: "来自 松子GPT 的消息",
     Format: {
       Title: "导出格式",
       SubTitle: "可以导出 Markdown 文本或者 PNG 图片",
@@ -157,7 +157,7 @@ const cn = {
     },
     AccessCode: {
       Title: "访问密码",
-      SubTitle: "管理员已开启加密访问",
+      SubTitle: "到公众号：松子说网回复【密码】获取",
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
