@@ -386,7 +386,7 @@ export function ImagePreviewer(props: {
                 />
               </div>
 
-              <div className={`${styles["body"]} `}>
+              <div className={styles["body"]}>
                 <Markdown
                   content={m.content}
                   fontSize={config.fontSize}
