@@ -345,7 +345,7 @@ export const useChatStore = create<ChatStore>()(
 
         // wont send cleared context messages
         const clearedContextMessages = session.messages.slice(
-          (session.clearContextIndex ?? -1) + 1,
+          (session.clearContextIndex ?? 0),
         );
         const messages = clearedContextMessages.filter((msg) => !msg.isError);
         const n = messages.length;
