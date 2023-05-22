@@ -1,7 +1,13 @@
 import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
+import EyeIcon from "../icons/eye.svg";
+import EyeOffIcon from "../icons/eye-off.svg";
+import DownIcon from "../icons/down.svg";
+
 import { createRoot } from "react-dom/client";
+import React, { HTMLProps, useEffect, useState } from "react";
+import { IconButton } from "./button";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -28,15 +34,38 @@ export function Card(props: { children: JSX.Element[]; className?: string }) {
   );
 }
 
-export function ListItem(props: { children: JSX.Element[] }) {
-  if (props.children.length > 2) {
-    throw Error("Only Support Two Children");
-  }
-
-  return <div className={styles["list-item"]}>{props.children}</div>;
+export function ListItem(props: {
+  title: string;
+  subTitle?: string;
+  children?: JSX.Element | JSX.Element[];
+  icon?: JSX.Element;
+  className?: string;
+}) {
+  return (
+    <div className={styles["list-item"] + ` ${props.className}`}>
+      <div className={styles["list-header"]}>
+        {props.icon && <div className={styles["list-icon"]}>{props.icon}</div>}
+        <div className={styles["list-item-title"]}>
+          <div>{props.title}</div>
+          {props.subTitle && (
+            <div className={styles["list-item-sub-title"]}>
+              {props.subTitle}
+            </div>
+          )}
+        </div>
+      </div>
+      {props.children}
+    </div>
+  );
 }
 
-export function List(props: { children: JSX.Element[] | JSX.Element }) {
+export function List(props: {
+  children:
+    | Array<JSX.Element | null | undefined>
+    | JSX.Element
+    | null
+    | undefined;
+}) {
   return <div className={styles.list}>{props.children}</div>;
 }
 
@@ -58,11 +87,26 @@ export function Loading() {
 
 interface ModalProps {
   title: string;
-  children?: JSX.Element;
+  children?: JSX.Element | JSX.Element[];
   actions?: JSX.Element[];
   onClose?: () => void;
 }
 export function Modal(props: ModalProps) {
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        props.onClose?.();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={styles["modal-container"]}>
       <div className={styles["modal-header"]}>
@@ -109,17 +153,41 @@ export function showModal(props: ModalProps) {
   root.render(<Modal {...props} onClose={closeModal}></Modal>);
 }
 
-export type ToastProps = { content: string };
+export type ToastProps = {
+  content: string;
+  action?: {
+    text: string;
+    onClick: () => void;
+  };
+  onClose?: () => void;
+};
 
 export function Toast(props: ToastProps) {
   return (
     <div className={styles["toast-container"]}>
-      <div className={styles["toast-content"]}>{props.content}</div>
+      <div className={styles["toast-content"]}>
+        <span>{props.content}</span>
+        {props.action && (
+          <button
+            onClick={() => {
+              props.action?.onClick?.();
+              props.onClose?.();
+            }}
+            className={styles["toast-action"]}
+          >
+            {props.action.text}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
-export function showToast(content: string, delay = 3000) {
+export function showToast(
+  content: string,
+  action?: ToastProps["action"],
+  delay = 3000,
+) {
   const div = document.createElement("div");
   div.className = styles.show;
   document.body.appendChild(div);
@@ -138,5 +206,59 @@ export function showToast(content: string, delay = 3000) {
     close();
   }, delay);
 
-  root.render(<Toast content={content} />);
+  root.render(<Toast content={content} action={action} onClose={close} />);
+}
+
+export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
+  autoHeight?: boolean;
+  rows?: number;
+};
+
+export function Input(props: InputProps) {
+  return (
+    <textarea
+      {...props}
+      className={`${styles["input"]} ${props.className}`}
+    ></textarea>
+  );
+}
+
+export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+
+  function changeVisibility() {
+    setVisible(!visible);
+  }
+
+  return (
+    <div className={"password-input-container"}>
+      <IconButton
+        icon={visible ? <EyeIcon /> : <EyeOffIcon />}
+        onClick={changeVisibility}
+        className={"password-eye"}
+      />
+      <input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={"password-input"}
+      />
+    </div>
+  );
+}
+
+export function Select(
+  props: React.DetailedHTMLProps<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    HTMLSelectElement
+  >,
+) {
+  const { className, children, ...otherProps } = props;
+  return (
+    <div className={`${styles["select-with-icon"]} ${className}`}>
+      <select className={styles["select-with-icon-select"]} {...otherProps}>
+        {children}
+      </select>
+      <DownIcon className={styles["select-with-icon-icon"]} />
+    </div>
+  );
 }

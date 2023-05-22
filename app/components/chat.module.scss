@@ -1,0 +1,176 @@
+@import "../styles/animation.scss";
+
+.chat-input-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  .chat-input-action {
+    display: inline-flex;
+    border-radius: 20px;
+    font-size: 12px;
+    background-color: var(--white);
+    color: var(--black);
+    border: var(--border-in-light);
+    padding: 4px 10px;
+    animation: slide-in ease 0.3s;
+    box-shadow: var(--card-shadow);
+    transition: all ease 0.3s;
+    margin-bottom: 10px;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+}
+
+.prompt-toast {
+  position: absolute;
+  bottom: -50px;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  width: calc(100% - 40px);
+
+  .prompt-toast-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    background-color: var(--white);
+    color: var(--black);
+
+    border: var(--border-in-light);
+    box-shadow: var(--card-shadow);
+    padding: 10px 20px;
+    border-radius: 100px;
+
+    animation: slide-in-from-top ease 0.3s;
+
+    .prompt-toast-content {
+      margin-left: 10px;
+    }
+  }
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .section-title-action {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.context-prompt {
+  .context-prompt-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .context-role {
+      margin-right: 10px;
+    }
+
+    .context-content {
+      flex: 1;
+      max-width: 100%;
+      text-align: left;
+    }
+
+    .context-delete-button {
+      margin-left: 10px;
+    }
+  }
+
+  .context-prompt-button {
+    flex: 1;
+  }
+}
+
+.memory-prompt {
+  margin: 20px 0;
+
+  .memory-prompt-content {
+    background-color: var(--white);
+    color: var(--black);
+    border: var(--border-in-light);
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 12px;
+    user-select: text;
+  }
+}
+
+.clear-context {
+  margin: 20px 0 0 0;
+  padding: 4px 0;
+
+  border-top: var(--border-in-light);
+  border-bottom: var(--border-in-light);
+  box-shadow: var(--card-shadow) inset;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--black);
+  transition: all ease 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  font-size: 12px;
+
+  animation: slide-in ease 0.3s;
+
+  $linear: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0)
+  );
+  mask-image: $linear;
+
+  @mixin show {
+    transform: translateY(0);
+    position: relative;
+    transition: all ease 0.3s;
+    opacity: 1;
+  }
+
+  @mixin hide {
+    transform: translateY(-50%);
+    position: absolute;
+    transition: all ease 0.1s;
+    opacity: 0;
+  }
+
+  &-tips {
+    @include show;
+    opacity: 0.5;
+  }
+
+  &-revert-btn {
+    color: var(--primary);
+    @include hide;
+  }
+
+  &:hover {
+    opacity: 1;
+    border-color: var(--primary);
+
+    .clear-context-tips {
+      @include hide;
+    }
+
+    .clear-context-revert-btn {
+      @include show;
+    }
+  }
+}

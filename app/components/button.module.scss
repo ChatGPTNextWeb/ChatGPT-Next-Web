@@ -6,11 +6,31 @@
   justify-content: center;
   padding: 10px;
 
-  box-shadow: var(--card-shadow);
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   user-select: none;
+  outline: none;
+  border: none;
+  color: var(--black);
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &.primary {
+    background-color: var(--primary);
+    color: white;
+
+    path {
+      fill: white !important;
+    }
+  }
+}
+
+.shadow {
+  box-shadow: var(--card-shadow);
 }
 
 .border {
@@ -18,7 +38,6 @@
 }
 
 .icon-button:hover {
-  filter: brightness(0.9);
   border-color: var(--primary);
 }
 
@@ -36,25 +55,10 @@
   }
 }
 
-@mixin dark-button {
-  div:not(:global(.no-dark))>.icon-button-icon {
-    filter: invert(0.5);
-  }
-
-  .icon-button:hover {
-    filter: brightness(1.2);
-  }
-}
-
-:global(.dark) {
-  @include dark-button;
-}
-
-@media (prefers-color-scheme: dark) {
-  @include dark-button;
-}
-
 .icon-button-text {
   margin-left: 5px;
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
