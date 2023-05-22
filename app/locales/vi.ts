@@ -71,19 +71,6 @@ const vi: LocaleType = {
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Tất cả ngôn ngữ",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-      },
     },
     Avatar: "Ảnh đại diện",
     FontSize: {
@@ -163,7 +150,7 @@ const vi: LocaleType = {
       Title: "Giới hạn số lượng token (max_tokens)",
       SubTitle: "Số lượng token tối đa được sử dụng trong mỗi lần tương tác",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Chủ đề mới (presence_penalty)",
       SubTitle: "Giá trị càng lớn tăng khả năng mở rộng sang các chủ đề mới",
     },

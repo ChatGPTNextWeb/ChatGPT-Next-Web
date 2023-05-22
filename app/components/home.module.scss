@@ -176,7 +176,7 @@
   font-size: 14px;
   font-weight: bolder;
   display: block;
-  width: 200px;
+  width: calc(100% - 15px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -556,11 +556,6 @@
   .chat-input-send {
     bottom: 30px;
   }
-}
-
-.export-content {
-  white-space: break-spaces;
-  padding: 10px !important;
 }
 
 .loading-content {
