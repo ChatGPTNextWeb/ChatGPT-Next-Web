@@ -4,6 +4,7 @@ export type UserInfoVO = {
   email: string;
   nickName: string;
   occupation: string;
+  inviter: string;
 };
 
 export type UserLoginVO = {

@@ -302,6 +302,107 @@ export function Settings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function getUserInfo() {
+    let userEmail = userLocalStorage.get();
+
+    if (userEmail !== null) {
+      return (
+        <div>
+          <ListItem title="当前已登录">
+            <label> {userEmail}</label>
+            <IconButton
+              icon={<EditIcon />}
+              text="详情"
+              onClick={() => navigate(Path.UserLoginDetail)}
+            />
+          </ListItem>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <ListItem title="当前未登录">
+          {
+            <IconButton
+              icon={<EditIcon />}
+              text="去登录"
+              onClick={() => navigate(Path.UserLogin)}
+            />
+          }
+        </ListItem>
+      </div>
+    );
+  }
+
+  function getUserInfo2() {
+    let userEmail = userLocalStorage.get();
+
+    if (userEmail !== null) {
+      return (
+        <div>
+          <List>
+            <ListItem title="当前已登录">
+              <label> {userEmail}</label>
+              <IconButton
+                icon={<EditIcon />}
+                text="详情"
+                bordered
+                onClick={() => navigate(Path.UserLoginDetail)}
+              />
+            </ListItem>
+          </List>
+          <List>
+            <ListItem
+              title="签到领取AI币"
+              subTitle="每日签到领取+2AI币, 记入基础AI币"
+            >
+              <label> {"已累计签到 " + "x" + "天"}</label>
+              <IconButton
+                text="签到"
+                bordered
+                onClick={() => showToast("开发小哥加班加点中, 敬请期待")}
+              />
+            </ListItem>
+            <ListItem
+              title="基础AI币余额"
+              subTitle="不会清空, 注册+邀请+签到+购买 等获取"
+            >
+              <label> {"TODO"}</label>
+            </ListItem>
+            <ListItem
+              title="每日赠送AI币余额"
+              subTitle="每日赠送+5个AI币, 0点清空"
+            >
+              <label> {"TODO"}</label>
+            </ListItem>
+            <ListItem title="升级服务">
+              <IconButton
+                text="升级"
+                bordered
+                onClick={() => showToast("开发小哥加班加点中, 敬请期待")}
+              />
+            </ListItem>
+          </List>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <List>
+          <ListItem title="当前未登录">
+            {
+              <IconButton
+                icon={<EditIcon />}
+                text="去登录"
+                onClick={() => navigate(Path.UserLogin)}
+              />
+            }
+          </ListItem>
+        </List>
+      </div>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <div className="window-header">
@@ -350,43 +451,11 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         {/* Account */}
-        <List>
-          <ListItem title={"用户信息"}>
-            {
-              <IconButton
-                icon={<EditIcon />}
-                text={Locale.Settings.Prompt.Edit}
-                // text="查看与编辑"
-                onClick={() => navigate(Path.UserLogin)}
-              />
-            }
-          </ListItem>
+        {/* <List>
+          <div> {getUserInfo()} </div>
+        </List> */}
 
-          <div> {getCurrentUser1()} </div>
-
-          {/* TODO: Adding user png as avatar */}
-          {/* <ListItem title={Locale.Settings.Avatar}>
-            <Popover
-              onClose={() => setShowEmojiPicker(false)}
-              content={
-                <AvatarPicker
-                  onEmojiClick={(avatar: string) => {
-                    updateConfig((config) => (config.avatar = avatar));
-                    setShowEmojiPicker(false);
-                  }}
-                />
-              }
-              open={showEmojiPicker}
-            >
-              <div
-                className={styles.avatar}
-                onClick={() => setShowEmojiPicker(true)}
-              >
-                <Avatar avatar={config.avatar} />
-              </div>
-            </Popover>
-          </ListItem> */}
-        </List>
+        {getUserInfo2()}
 
         <List>
           {/* TODO: Sync our own latest version */}

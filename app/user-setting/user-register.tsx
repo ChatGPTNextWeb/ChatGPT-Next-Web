@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import styles from "../components/settings.module.scss";
 
-import CloseIcon from "../icons/close.svg";
 import EditIcon from "../icons/edit.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 
@@ -29,49 +28,9 @@ import { useNavigate } from "react-router-dom";
 import zBotServiceClient, {
   UserCheckResultVO,
   UserRegisterVO,
+  userLocalStorage,
 } from "../zbotservice/ZBotServiceClient";
-import { sendVerifyCode } from "./user-verifyCode";
-
-const registerCheck = async (userRegisterVO: UserRegisterVO) => {
-  console.log("register checking: userRegisterVO= ", userRegisterVO);
-
-  if (userRegisterVO.email.trim().length === 0) {
-    showToast("邮箱不可为空");
-    return;
-  } else if (userRegisterVO.nickName.trim().length === 0) {
-    showToast("昵称不可为空");
-    return;
-  } else if (userRegisterVO.password.trim().length === 0) {
-    showToast("邮箱验证码不可为空");
-    return;
-  } else if (userRegisterVO.password.trim().length === 0) {
-    showToast("密码不可为空");
-    return;
-  } else if (userRegisterVO.occupation.trim().length === 0) {
-    showToast("职业不可为空");
-    return;
-  }
-
-  // register to db
-  try {
-    const result = await zBotServiceClient.register(userRegisterVO);
-    console.log(`register check result: `, result);
-
-    if (result === UserCheckResultVO.success) {
-      showToast("注册成功, 请返回登录");
-    } else if (result === UserCheckResultVO.emailConflict) {
-      showToast("该邮箱已被注册, 请重新输入");
-    } else if (result === UserCheckResultVO.emailInvalid) {
-      showToast("该邮箱格式不正确, 请重新输入");
-    } else if (result === UserCheckResultVO.verifyCodeInvalid) {
-      showToast("验证码不正确, 请重新输入");
-    } else {
-      showToast("注册失败, 请重新输入");
-    }
-  } catch (error) {
-    console.log("db access failed:", error);
-  }
-};
+import { sendVerifyCode, UserInfoWindowHeader } from "./user-common";
 
 export function UserRegister() {
   const navigate = useNavigate();
@@ -92,23 +51,53 @@ export function UserRegister() {
     verifyCode: Number(verifyCode),
   };
 
+  const submit = async (userRegisterVO: UserRegisterVO) => {
+    console.log("register checking: userRegisterVO= ", userRegisterVO);
+
+    if (userRegisterVO.email.trim().length === 0) {
+      showToast("邮箱不可为空");
+      return;
+    } else if (userRegisterVO.nickName.trim().length === 0) {
+      showToast("昵称不可为空");
+      return;
+    } else if (userRegisterVO.password.trim().length === 0) {
+      showToast("邮箱验证码不可为空");
+      return;
+    } else if (userRegisterVO.password.trim().length === 0) {
+      showToast("密码不可为空");
+      return;
+    } else if (userRegisterVO.occupation.trim().length === 0) {
+      showToast("职业不可为空");
+      return;
+    }
+
+    // register to db
+    try {
+      const result = await zBotServiceClient.register(userRegisterVO);
+      console.log(`register check result: `, result);
+
+      if (result === UserCheckResultVO.success) {
+        showToast("注册成功, 已自动登录");
+        userLocalStorage.set(userRegisterVO.email);
+        navigate(Path.UserLoginDetail);
+      } else if (result === UserCheckResultVO.emailConflict) {
+        showToast("该邮箱已被注册, 请重新输入");
+      } else if (result === UserCheckResultVO.emailInvalid) {
+        showToast("该邮箱格式不正确, 请重新输入");
+      } else if (result === UserCheckResultVO.verifyCodeInvalid) {
+        showToast("验证码不正确, 请重新输入");
+      } else {
+        showToast("注册失败, 请再次尝试");
+      }
+    } catch (error) {
+      console.log("db access failed:", error);
+    }
+  };
+
   return (
     <ErrorBoundary>
-      <div className="window-header">
-        <div className="window-header-title">
-          <div className="window-header-main-title">{"用户信息"}</div>
-        </div>
-        <div className="window-actions">
-          <div className="window-action-button">
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={() => navigate(Path.Home)}
-              bordered
-              title={Locale.Settings.Actions.Close}
-            />
-          </div>
-        </div>
-      </div>
+      <div> {UserInfoWindowHeader({ navigate })} </div>
+
       <div className={styles["settings"]}>
         <List>
           <ListItem
@@ -125,7 +114,7 @@ export function UserRegister() {
           <ListItem title={"邮箱验证码*"}>
             <input
               type="text"
-              name="phonecode"
+              name="emailcode"
               placeholder="验证码"
               onChange={(e) => setVerifyCode(e.target.value)}
             ></input>
@@ -170,19 +159,19 @@ export function UserRegister() {
         </List>
 
         <ListItem title="">
-          {
+          {/* {
             <IconButton
               icon={<SendWhiteIcon />}
               text={"登录"}
               onClick={() => navigate(Path.UserLogin)}
             />
-          }
+          } */}
           {
             <IconButton
               icon={<SendWhiteIcon />}
               text={"注册"}
               type="primary"
-              onClick={() => registerCheck(userRegisterVO)}
+              onClick={() => submit(userRegisterVO)}
             />
           }
         </ListItem>

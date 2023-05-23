@@ -57,6 +57,14 @@ const UserLogin = dynamic(
   },
 );
 
+const UserLoginDetail = dynamic(
+  async () =>
+    (await import("../user-setting/user-login-detail")).UserLoginDetail,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 const UserRegister = dynamic(
   async () => (await import("../user-setting/user-register")).UserRegister,
   {
@@ -139,6 +147,7 @@ function Screen() {
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
           <Route path={Path.UserLogin} element={<UserLogin />} />
+          <Route path={Path.UserLoginDetail} element={<UserLoginDetail />} />
           <Route path={Path.UserRegister} element={<UserRegister />} />
           <Route
             path={Path.UserPasswordReset}
