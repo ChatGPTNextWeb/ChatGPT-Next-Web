@@ -2,9 +2,12 @@ import { SubmitKey } from "../store/config";
 
 const cn = {
   WIP: "该功能仍在开发中……",
-  Error: {
-    Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+    Error: {
+    Unauthorized: `访问密码不正确或为空，请前往 [设置](/#/settings) 页输入正确的访问密码。
+
+微信扫一扫，获取访问密码： 
+
+![alt 微信扫一扫](https://e.northviewer.cn/wp-content/uploads/2023/05/code.png)`,
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
