@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者松子说网获取密码",
+      "前往公众号：**[松子说网](https://picloud-1302482767.cos.ap-nanjing.myqcloud.com/2023/05/12/645e38958e1bb.jpg)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。\n\n **提问：** 能免费用 GPT-4 吗？\n 如果觉得好用，也可以适当打赏，帮助我们可持续发展![图片](https://aaaa-1257161492.cos.ap-beijing.myqcloud.com/IMG_5119%2820230523-095916%29.JPG)",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
