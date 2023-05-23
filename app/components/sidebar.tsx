@@ -125,7 +125,6 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
-          <img src={ChatGptIcon} alt="Cognitiev PRO Icon" />
 
         </div>
       </div>
