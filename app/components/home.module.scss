@@ -37,6 +37,22 @@
   }
 }
 
+.rainbow-text {
+  font-size: 12px;
+  background-image: linear-gradient(90deg, #e69797, orange, #c8c84f, #66d766, #00ceab, #d094a5, violet);
+  -webkit-background-clip: text;
+  color: rgb(56 114 224 / 35%);
+}
+
+.gpt-api-title {
+  font-size: 16px;
+  font-weight: 700;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(94.75deg, rgb(60, 172, 247), rgb(131, 101, 253) 43.66%, rgb(255, 141, 112) 64.23%, rgb(247, 201, 102) 83.76%, rgb(172, 143, 100));
+  -webkit-background-clip: text;
+  display: inline-block;
+}
+
 .sidebar {
   top: 0;
   width: var(--sidebar-width);
