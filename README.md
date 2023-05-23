@@ -15,7 +15,7 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Run on Cloud Studio](https://cs-res.codehub.cn/common/assets/icon-badge.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
 ![cover](./docs/images/cover.png)
 
@@ -180,7 +180,7 @@ If you do not want users to use GPT-4, set this value to 1.
 
 > [简体中文 > 如何进行二次开发](./README_CN.md#开发)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Run on Cloud Studio](https://cs-res.codehub.cn/common/assets/icon-badge.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
 Before starting development, you must create a new `.env.local` file at project root, and place your api key into it:
 
