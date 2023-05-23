@@ -71,19 +71,6 @@ const ru: LocaleType = {
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Все языки",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-      },
     },
     Avatar: "Аватар",
     FontSize: {
@@ -165,7 +152,7 @@ const ru: LocaleType = {
       Title: "Максимальное количество токенов",
       SubTitle: "Максимальная длина вводных и генерируемых токенов",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Штраф за повторения",
       SubTitle:
         "Чем выше значение, тем больше вероятность общения на новые темы",
