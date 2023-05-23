@@ -332,9 +332,9 @@
 
 .chat-body {
   flex: 1;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
   padding: 20px;
-  padding-bottom: 40px;
   position: relative;
   overscroll-behavior: none;
 }
