@@ -11,16 +11,16 @@ export enum SubmitKey {
 }
 
 export enum Theme {
-  Auto = "auto",
-  Dark = "dark",
   Light = "light",
+  Dark = "dark",
+  Auto = "auto",
 }
 
 export const DEFAULT_CONFIG = {
   submitKey: SubmitKey.CtrlEnter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
-  theme: Theme.Auto as Theme,
+  theme: Theme.Light as Theme,
   tightBorder: false,
   sendPreviewBubble: true,
   sidebarWidth: 300,
