@@ -31,7 +31,12 @@ import {
   useAppConfig,
 } from "../store";
 
-import Locale, { AllLangs, changeLang, getLang } from "../locales";
+import Locale, {
+  AllLangs,
+  ALL_LANG_OPTIONS,
+  changeLang,
+  getLang,
+} from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import { Path, UPDATE_URL } from "../constant";
@@ -214,6 +219,26 @@ export function Settings() {
   const chatStore = useChatStore();
 
   const updateStore = useUpdateStore();
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const currentVersion = formatVersionDate(updateStore.version);
+  const remoteId = formatVersionDate(updateStore.remoteVersion);
+  const hasNewVersion = currentVersion !== remoteId;
+
+  function checkUpdate(force = false) {
+    setCheckingUpdate(true);
+    updateStore.getLatestVersion(force).then(() => {
+      setCheckingUpdate(false);
+    });
+
+    console.log(
+      "[Update] local version ",
+      new Date(+updateStore.version).toLocaleString(),
+    );
+    console.log(
+      "[Update] remote version ",
+      new Date(+updateStore.remoteVersion).toLocaleString(),
+    );
+  }
 
   const usage = {
     used: updateStore.used,
@@ -240,6 +265,12 @@ export function Settings() {
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
   const showUsage = accessStore.isAuthorized();
+  useEffect(() => {
+    // checks per minutes
+    checkUpdate();
+    showUsage && checkUsage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
@@ -324,6 +355,30 @@ export function Settings() {
             </Popover>
           </ListItem>
 
+          <ListItem
+            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
+            subTitle={
+              checkingUpdate
+                ? Locale.Settings.Update.IsChecking
+                : hasNewVersion
+                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
+                : Locale.Settings.Update.IsLatest
+            }
+          >
+            {checkingUpdate ? (
+              <LoadingIcon />
+            ) : hasNewVersion ? (
+              <Link href={UPDATE_URL} target="_blank" className="link">
+                {Locale.Settings.Update.GoToUpdate}
+              </Link>
+            ) : (
+              <IconButton
+                icon={<ResetIcon></ResetIcon>}
+                text={Locale.Settings.Update.CheckUpdate}
+                onClick={() => checkUpdate(true)}
+              />
+            )}
+          </ListItem>
 
           <ListItem title={Locale.Settings.SendKey}>
             <Select
@@ -369,7 +424,7 @@ export function Settings() {
             >
               {AllLangs.map((lang) => (
                 <option value={lang} key={lang}>
-                  {Locale.Settings.Lang.Options[lang]}
+                  {ALL_LANG_OPTIONS[lang]}
                 </option>
               ))}
             </Select>
@@ -466,9 +521,7 @@ export function Settings() {
           <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
-              !accessStore.token
-                ? "使用自己的 Key 可查询余额"
-                : showUsage
+              showUsage
                 ? loadingUsage
                   ? Locale.Settings.Usage.IsChecking
                   : Locale.Settings.Usage.SubTitle(
@@ -478,7 +531,7 @@ export function Settings() {
                 : Locale.Settings.Usage.NoAccess
             }
           >
-            {!showUsage || loadingUsage || !accessStore.token || !accessStore.token.startsWith('sk-') ? (
+            {!showUsage || loadingUsage ? (
               <div />
             ) : (
               <IconButton
