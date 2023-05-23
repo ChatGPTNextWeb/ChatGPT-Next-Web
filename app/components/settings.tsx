@@ -31,12 +31,7 @@ import {
   useAppConfig,
 } from "../store";
 
-import Locale, {
-  AllLangs,
-  ALL_LANG_OPTIONS,
-  changeLang,
-  getLang,
-} from "../locales";
+import Locale, { AllLangs, changeLang, getLang } from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import { Path, UPDATE_URL } from "../constant";
@@ -328,6 +323,8 @@ export function Settings() {
               </div>
             </Popover>
           </ListItem>
+
+
           <ListItem title={Locale.Settings.SendKey}>
             <Select
               value={config.submitKey}
@@ -372,7 +369,7 @@ export function Settings() {
             >
               {AllLangs.map((lang) => (
                 <option value={lang} key={lang}>
-                  {ALL_LANG_OPTIONS[lang]}
+                  {Locale.Settings.Lang.Options[lang]}
                 </option>
               ))}
             </Select>
@@ -469,8 +466,7 @@ export function Settings() {
           <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
-              showUsage
-                !accessStore.token
+              !accessStore.token
                 ? "使用自己的 Key 可查询余额"
                 : showUsage
                 ? loadingUsage
