@@ -10,6 +10,8 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import BlogIcon from "../icons/blog.svg";
+import CoffeeIcon from "../icons/coffee.svg";
 
 import Locale from "../locales";
 
@@ -21,6 +23,7 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   REPO_URL,
+  BLOG_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -119,9 +122,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+        <div className={styles["sidebar-title"]}>开始聊天吧</div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          可以在设置页使用你自己的OpenAiKey(如果你有的话).
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -174,8 +177,17 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank">
-              <IconButton icon={<GithubIcon />} shadow />
+            <a href={BLOG_URL} target="_blank">
+              <IconButton title="关于我" icon={<BlogIcon />} shadow />
+            </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href="https://blog.goku.top/img/alipay.jpeg" target="_blank">
+              <IconButton
+                title="维护不易,打赏一下"
+                icon={<CoffeeIcon />}
+                shadow
+              />
             </a>
           </div>
         </div>
