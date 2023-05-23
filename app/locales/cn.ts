@@ -143,7 +143,7 @@ const cn = {
     Token: {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可绕过密码访问限制",
-      Placeholder: "OpenAI API Key",
+      Placeholder: "API Key",
     },
 
     Usage: {
@@ -157,7 +157,7 @@ const cn = {
     },
     AccessCode: {
       Title: "访问密码",
-      SubTitle: "到公众号：松子说网回复【密码】获取",
+      SubTitle: "到公众号：“松子说网”回复【密码】获取",
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
@@ -198,7 +198,7 @@ const cn = {
     Revert: "恢复上下文",
   },
   Plugin: {
-    Name: "插件",
+    Name: "AI",
   },
   Mask: {
     Name: "面具",
