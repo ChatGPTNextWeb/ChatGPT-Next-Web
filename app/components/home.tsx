@@ -90,13 +90,6 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
-const loadAsyncGoogleFont = () => {
-  const linkEl = document.createElement("link");
-  linkEl.rel = "stylesheet";
-  linkEl.href =
-    "/google-fonts/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
-  document.head.appendChild(linkEl);
-};
 
 function Screen() {
   const config = useAppConfig();
@@ -104,9 +97,6 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isMobileScreen = useMobileScreen();
 
-  useEffect(() => {
-    loadAsyncGoogleFont();
-  }, []);
 
   return (
     <div
