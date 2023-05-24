@@ -75,7 +75,7 @@ export function MessageSelector(props: {
   const isValid = (m: ChatMessage) => m.content && !m.isError && !m.streaming;
   const messages = session.messages.filter(
     (m, i) =>
-      m.id && // messsage must has id
+      m.id && // message must have id
       isValid(m) &&
       (i >= session.messages.length - 1 || isValid(session.messages[i + 1])),
   );
@@ -88,13 +88,13 @@ export function MessageSelector(props: {
     return searchInput.length === 0 || searchIds.has(id);
   };
   const doSearch = (text: string) => {
-    const searchResuts = new Set<number>();
+    const searchResults = new Set<number>();
     if (text.length > 0) {
       messages.forEach((m) =>
-        m.content.includes(text) ? searchResuts.add(m.id!) : null,
+        m.content.includes(text) ? searchResults.add(m.id!) : null,
       );
     }
-    setSearchIds(searchResuts);
+    setSearchIds(searchResults);
   };
 
   // for range selection
