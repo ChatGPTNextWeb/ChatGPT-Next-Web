@@ -6,7 +6,7 @@ import Locale from "../../locales";
 import {
   EventStreamContentType,
   fetchEventSource,
-} from "@microsoft/fetch-event-source";
+} from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
@@ -145,6 +145,7 @@ export class ChatGPTApi implements LLMApi {
           },
           onerror(e) {
             options.onError?.(e);
+            throw e;
           },
           openWhenHidden: true,
         });
@@ -189,8 +190,12 @@ export class ChatGPTApi implements LLMApi {
       }),
     ]);
 
-    if (!used.ok || !subs.ok || used.status === 401) {
+    if (used.status === 401) {
       throw new Error(Locale.Error.Unauthorized);
+    }
+
+    if (!used.ok || !subs.ok) {
+      throw new Error("Failed to query usage from openai");
     }
 
     const response = (await used.json()) as {
