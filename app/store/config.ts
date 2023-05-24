@@ -85,12 +85,12 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "qwen-v1", // 通义千问
-    available: false,
+    name: "claude+",
+    available: true,
   },
   {
-    name: "ernie", // 文心一言
-    available: false,
+    name: "claude-instant-100k",
+    available: true,
   },
   {
     name: "spark", // 讯飞星火
