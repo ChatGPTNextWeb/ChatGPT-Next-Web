@@ -45,7 +45,7 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
 export function Avatar(props: { model?: ModelType; avatar?: string }) {
   if (props.model) {
     return (
-      <div className="no-dark">
+      <div className="nondark">
         {props.model?.startsWith("claude") ? (
           <ClaudeIcon className="user-avatar" />
         ) : (
