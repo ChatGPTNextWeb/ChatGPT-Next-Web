@@ -69,10 +69,6 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "spark", // 讯飞星火
-    available: false,
-  },
-  {
     name: "llama", // llama
     available: false,
   },
