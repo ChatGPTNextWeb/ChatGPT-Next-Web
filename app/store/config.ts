@@ -69,10 +69,6 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "qwen-v1", // 通义千问
-    available: false,
-  },
-  {
     name: "ernie", // 文心一言
     available: false,
   },
