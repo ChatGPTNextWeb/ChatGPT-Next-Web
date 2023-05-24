@@ -1,5 +1,10 @@
 import { REQUEST_TIMEOUT_MS } from "@/app/constant";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
+import {
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  AZURE_API_VERSION,
+} from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
 import Locale from "../../locales";
@@ -10,9 +15,20 @@ import {
 import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
-  public ChatPath = "v1/chat/completions";
   public UsagePath = "dashboard/billing/usage";
   public SubsPath = "dashboard/billing/subscription";
+
+  public get ChatPath() {
+    const OPENAI_REQUEST_PATH = "v1/chat/completions";
+    const { enableAOAI, azureDeployName } = useAccessStore.getState();
+    if (!enableAOAI) return OPENAI_REQUEST_PATH;
+
+    // For now azure api only support one version
+    const azureApiVersion = AZURE_API_VERSION[0].name;
+
+    const AZURE_REQUEST_PATH = `openai/deployments/${azureDeployName}/chat/completions?api-version=${azureApiVersion}`;
+    return AZURE_REQUEST_PATH;
+  }
 
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
@@ -163,6 +179,7 @@ export class ChatGPTApi implements LLMApi {
     }
   }
   async usage() {
+    //
     const formatDate = (d: Date) =>
       `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
         .getDate()
