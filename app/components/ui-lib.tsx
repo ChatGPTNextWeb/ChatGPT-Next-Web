@@ -4,6 +4,7 @@ import CloseIcon from "../icons/close.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
 import DownIcon from "../icons/down.svg";
+import InfoIcon from "../icons/info-circle.svg";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
@@ -166,6 +167,7 @@ export function Toast(props: ToastProps) {
   return (
     <div className={styles["toast-container"]}>
       <div className={styles["toast-content"]}>
+        <InfoIcon />
         <span>{props.content}</span>
         {props.action && (
           <button
@@ -191,15 +193,16 @@ export function showToast(
   const div = document.createElement("div");
   div.className = styles.show;
   document.body.appendChild(div);
+  div.ontransitionend = () => {
+    if (div.classList.contains(styles.hide)) {
+      root.unmount();
+      div.remove();
+    }
+  };
 
   const root = createRoot(div);
   const close = () => {
     div.classList.add(styles.hide);
-
-    setTimeout(() => {
-      root.unmount();
-      div.remove();
-    }, 300);
   };
 
   setTimeout(() => {
