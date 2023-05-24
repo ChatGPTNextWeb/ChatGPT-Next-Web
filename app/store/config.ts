@@ -35,7 +35,7 @@ export const DEFAULT_CONFIG = {
     max_tokens: 2000,
     presence_penalty: 0,
     sendMemory: true,
-    historyMessageCount: 4,
+    historyMessageCount: 32,
     compressMessageLengthThreshold: 1000,
   },
 };
@@ -57,31 +57,7 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
-    name: "gpt-4-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-mobile",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "text-davinci-002-render-sha-mobile",
-    available: true,
-  },
-  {
     name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
     available: true,
   },
   {
@@ -91,18 +67,6 @@ export const ALL_MODELS = [
   {
     name: "claude-instant-100k",
     available: true,
-  },
-  {
-    name: "spark", // 讯飞星火
-    available: false,
-  },
-  {
-    name: "llama", // llama
-    available: false,
-  },
-  {
-    name: "chatglm", // chatglm-6b
-    available: false,
   },
 ] as const;
 
