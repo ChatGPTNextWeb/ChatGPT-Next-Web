@@ -57,16 +57,48 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
+    name: "claude+",
+    available: ENABLE_GPT4,
+  },
+  {
+    name: "claude-instant-100kp",
+    available: ENABLE_GPT4,
+  },
+  {
+    name: "gpt-4-32k-0314",
+    available: ENABLE_GPT4,
+  },
+  {
+    name: "gpt-4-mobile",
+    available: ENABLE_GPT4,
+  },
+  {
     name: "gpt-3.5-turbo",
     available: true,
   },
   {
-    name: "claude+",
+    name: "gpt-3.5-turbo-0301",
     available: true,
   },
   {
-    name: "claude-instant-100k",
-    available: true,
+    name: "qwen-v1", // 通义千问
+    available: false,
+  },
+  {
+    name: "ernie", // 文心一言
+    available: false,
+  },
+  {
+    name: "spark", // 讯飞星火
+    available: false,
+  },
+  {
+    name: "llama", // llama
+    available: false,
+  },
+  {
+    name: "chatglm", // chatglm-6b
+    available: false,
   },
 ] as const;
 
