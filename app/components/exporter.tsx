@@ -152,71 +152,64 @@ export function MessageExporter() {
         index={currentStepIndex}
         onStepChange={setCurrentStepIndex}
       />
-
-      <div className={styles["message-exporter-body"]}>
-        {currentStep.value === "select" && (
-          <>
-            <List>
-              <ListItem
-                title={Locale.Export.Format.Title}
-                subTitle={Locale.Export.Format.SubTitle}
-              >
-                <Select
-                  value={exportConfig.format}
-                  onChange={(e) =>
-                    updateExportConfig(
-                      (config) =>
-                        (config.format = e.currentTarget.value as ExportFormat),
-                    )
-                  }
-                >
-                  {formats.map((f) => (
-                    <option key={f} value={f}>
-                      {f}
-                    </option>
-                  ))}
-                </Select>
-              </ListItem>
-              <ListItem
-                title={Locale.Export.IncludeContext.Title}
-                subTitle={Locale.Export.IncludeContext.SubTitle}
-              >
-                <input
-                  type="checkbox"
-                  checked={exportConfig.includeContext}
-                  onChange={(e) => {
-                    updateExportConfig(
-                      (config) =>
-                        (config.includeContext = e.currentTarget.checked),
-                    );
-                  }}
-                ></input>
-              </ListItem>
-            </List>
-            <MessageSelector
-              selection={selection}
-              updateSelection={updateSelection}
-              defaultSelectAll
-            />
-          </>
-        )}
-
-        {currentStep.value === "preview" && (
-          <>
-            {exportConfig.format === "text" ? (
-              <MarkdownPreviewer
-                messages={selectedMessages}
-                topic={session.topic}
-              />
-            ) : (
-              <ImagePreviewer
-                messages={selectedMessages}
-                topic={session.topic}
-              />
-            )}
-          </>
-        )}
+      <div
+        className={styles["message-exporter-body"]}
+        style={currentStep.value !== "select" ? { display: "none" } : {}}
+      >
+        <List>
+          <ListItem
+            title={Locale.Export.Format.Title}
+            subTitle={Locale.Export.Format.SubTitle}
+          >
+            <Select
+              value={exportConfig.format}
+              onChange={(e) =>
+                updateExportConfig(
+                  (config) =>
+                    (config.format = e.currentTarget.value as ExportFormat),
+                )
+              }
+            >
+              {formats.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </Select>
+          </ListItem>
+          <ListItem
+            title={Locale.Export.IncludeContext.Title}
+            subTitle={Locale.Export.IncludeContext.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={exportConfig.includeContext}
+              onChange={(e) => {
+                updateExportConfig(
+                  (config) => (config.includeContext = e.currentTarget.checked),
+                );
+              }}
+            ></input>
+          </ListItem>
+        </List>
+        <MessageSelector
+          selection={selection}
+          updateSelection={updateSelection}
+          defaultSelectAll
+        />
       </div>
+      {currentStep.value === "preview" && (
+        <div className={styles["message-exporter-body"]}>
+          {exportConfig.format === "text" ? (
+            <MarkdownPreviewer
+              messages={selectedMessages}
+              topic={session.topic}
+            />
+          ) : (
+            <ImagePreviewer messages={selectedMessages} topic={session.topic} />
+          )}
+        </div>
+      )}
     </>
   );
 }
