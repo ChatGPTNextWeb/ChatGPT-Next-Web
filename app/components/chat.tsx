@@ -85,8 +85,8 @@ export function QrcodeModal(props: { onClose: () => void }) {
         ]}
       >
         <div className="qrcode-img">
-          <Image src="/alicode.png" alt="" width={500} height={350}/>
-          <Image src="/wechatcode.png" alt=""  width={500} height={350}/>
+          <Image src="/alicode.png" alt="" width={300} height={380}/>
+          <Image src="/wechatcode.png" alt=""  width={300} height={380}/>
         </div>
       </Modal>
     </div>

@@ -262,9 +262,7 @@ div.math {
     }
   }
   .qrcode-img{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
     img{
       width: calc(50% / 2 - 5px);
     }
