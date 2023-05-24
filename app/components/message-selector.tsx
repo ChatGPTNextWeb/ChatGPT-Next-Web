@@ -126,6 +126,8 @@ export function MessageSelector(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startIndex, endIndex]);
 
+  const LATEST_COUNT = 4;
+
   return (
     <div className={styles["message-selector"]}>
       <div className={styles["message-filter"]}>
@@ -155,7 +157,7 @@ export function MessageSelector(props: {
               props.updateSelection((selection) => {
                 selection.clear();
                 messages
-                  .slice(messageCount - 10)
+                  .slice(messageCount - LATEST_COUNT)
                   .forEach((m) => selection.add(m.id!));
               })
             }
