@@ -31,29 +31,25 @@ export function AvatarPicker(props: {
 
 export function Avatar(props: { model?: ModelType; avatar?: string }) {
   if (props.model) {
-    return (
-      <div className="no-dark">
-        {props.model?.startsWith("gpt-4") ? (
-          <BlackBotIcon className="user-avatar" />
-        ) : (
-          <BotIcon className="user-avatar" />
-        )}
-      </div>
-    );
+    let icon;
+    if (props.model.startsWith("gpt-4")) {
+      icon = <BlackBotIcon className="user-avatar" />;
+    } else if (props.model.startsWith("claude")) {
+      icon = <ClaudeIcon className="user-avatar" />;
+    } else {
+      icon = <BotIcon className="user-avatar" />;
+    }
+
+    return <div className="no-dark">{icon}</div>;
   }
 
-export function Avatar(props: { model?: ModelType; avatar?: string }) {
-  if (props.model) {
-    return (
-      <div className="nondark">
-        {props.model?.startsWith("claude") ? (
-          <ClaudeIcon className="user-avatar" />
-        ) : (
-          <BotIcon className="user-avatar" />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className="user-avatar">
+      {props.avatar && <EmojiAvatar avatar={props.avatar} />}
+    </div>
+  );
+}
+
 
   return (
     <div className="user-avatar">
