@@ -36,3 +36,9 @@ export enum StoreKey {
 export const MAX_SIDEBAR_WIDTH = 500;
 export const MIN_SIDEBAR_WIDTH = 230;
 export const NARROW_SIDEBAR_WIDTH = 100;
+
+export const ACCESS_CODE_PREFIX = "ak-";
+
+export const LAST_INPUT_KEY = "last-input";
+
+export const REQUEST_TIMEOUT_MS = 60000;

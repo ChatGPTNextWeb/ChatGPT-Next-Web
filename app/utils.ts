@@ -42,6 +42,26 @@ export function downloadAs(text: string, filename: string) {
   document.body.removeChild(element);
 }
 
+export function readFromFile() {
+  return new Promise<string>((res, rej) => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "application/json";
+
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = (e: any) => {
+        res(e.target.result);
+      };
+      fileReader.onerror = (e) => rej(e);
+      fileReader.readAsText(file);
+    };
+
+    fileInput.click();
+  });
+}
+
 export function isIOS() {
   const userAgent = navigator.userAgent.toLowerCase();
   return /iphone|ipad|ipod/.test(userAgent);
@@ -138,15 +158,15 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
   const width = getDomContentWidth(dom);
   measureDom.style.width = width + "px";
-  measureDom.innerText = dom.value.trim().length > 0 ? dom.value : "1";
-
-  const lineWrapCount = Math.max(0, dom.value.split("\n").length - 1);
+  measureDom.innerText = dom.value !== "" ? dom.value : "1";
+  const endWithEmptyLine = dom.value.endsWith("\n");
   const height = parseFloat(window.getComputedStyle(measureDom).height);
   const singleLineHeight = parseFloat(
     window.getComputedStyle(singleLineDom).height,
   );
 
-  const rows = Math.round(height / singleLineHeight) + lineWrapCount;
+  const rows =
+    Math.round(height / singleLineHeight) + (endWithEmptyLine ? 1 : 0);
 
   return rows;
 }

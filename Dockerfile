@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn config set registry 'https://registry.npm.taobao.org'
+RUN yarn config set registry 'https://registry.npmmirror.com/'
 RUN yarn install
 
 FROM base AS builder
@@ -50,6 +50,8 @@ CMD if [ -n "$PROXY_URL" ]; then \
         echo "remote_dns_subnet 224" >> $conf; \
         echo "tcp_read_time_out 15000" >> $conf; \
         echo "tcp_connect_time_out 8000" >> $conf; \
+        echo "localnet 127.0.0.0/255.0.0.0" >> $conf; \
+        echo "localnet ::1/128" >> $conf; \
         echo "[ProxyList]" >> $conf; \
         echo "$protocol $host $port" >> $conf; \
         cat /etc/proxychains.conf; \

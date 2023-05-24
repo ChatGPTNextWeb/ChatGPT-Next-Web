@@ -3,6 +3,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
+import DownIcon from "../icons/down.svg";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
@@ -158,6 +159,7 @@ export type ToastProps = {
     text: string;
     onClick: () => void;
   };
+  onClose?: () => void;
 };
 
 export function Toast(props: ToastProps) {
@@ -167,7 +169,10 @@ export function Toast(props: ToastProps) {
         <span>{props.content}</span>
         {props.action && (
           <button
-            onClick={props.action.onClick}
+            onClick={() => {
+              props.action?.onClick?.();
+              props.onClose?.();
+            }}
             className={styles["toast-action"]}
           >
             {props.action.text}
@@ -201,7 +206,7 @@ export function showToast(
     close();
   }, delay);
 
-  root.render(<Toast content={content} action={action} />);
+  root.render(<Toast content={content} action={action} onClose={close} />);
 }
 
 export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
@@ -237,6 +242,23 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
         type={visible ? "text" : "password"}
         className={"password-input"}
       />
+    </div>
+  );
+}
+
+export function Select(
+  props: React.DetailedHTMLProps<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    HTMLSelectElement
+  >,
+) {
+  const { className, children, ...otherProps } = props;
+  return (
+    <div className={`${styles["select-with-icon"]} ${className}`}>
+      <select className={styles["select-with-icon-select"]} {...otherProps}>
+        {children}
+      </select>
+      <DownIcon className={styles["select-with-icon-icon"]} />
     </div>
   );
 }
