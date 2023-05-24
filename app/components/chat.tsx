@@ -333,7 +333,7 @@ export function ChatActions(props: {
   const updateStore = useUpdateStore();
   const [loadingUsage, setLoadingUsage] = useState(false);
   const checkUsage = () => {
-    alert("查询费用");
+     alert("查询费用");
     setLoadingUsage(true);
     updateStore.updateUsage(true).finally(() => {
       setLoadingUsage(false);
@@ -424,9 +424,10 @@ export function ChatActions(props: {
         <span className={`${chatStyle["chat-input-action-balance"]}`}>1067P</span>
         </div>  
       <div  
-        className={`${chatStyle["chat-input-action"]}`}
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {onCheckUsage()}}
         >
-         <ResetIcon className={`clickable`} onClick={() => {onCheckUsage()}}/>
+         <ResetIcon/>
         </div>  
 
 
