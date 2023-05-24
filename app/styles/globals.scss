@@ -251,6 +251,26 @@ div.math {
 
   @media screen and (max-width: 600px) {
     align-items: flex-end;
+    .qrcode-img{
+      flex-direction: column;
+      img{
+        width:70% !important;
+      }
+      img:last-child{
+        margin-left: 0 !important;
+      }
+    }
+  }
+  .qrcode-img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img{
+      width: calc(50% / 2 - 5px);
+    }
+    img:last-child{
+      margin-left: 100px;
+    }
   }
 }
 
