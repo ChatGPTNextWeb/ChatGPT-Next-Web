@@ -42,6 +42,19 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
     );
   }
 
+export function Avatar(props: { model?: ModelType; avatar?: string }) {
+  if (props.model) {
+    return (
+      <div className="no-dark">
+        {props.model?.startsWith("claude") ? (
+          <ClaudeIcon className="user-avatar" />
+        ) : (
+          <BotIcon className="user-avatar" />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="user-avatar">
       {props.avatar && <EmojiAvatar avatar={props.avatar} />}
