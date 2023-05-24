@@ -69,10 +69,6 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "llama", // llama
-    available: false,
-  },
-  {
     name: "chatglm", // chatglm-6b
     available: false,
   },
