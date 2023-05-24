@@ -119,7 +119,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>Welcome to NACIDA ChatAi</div>
+        <div className={styles["sidebar-title"]}>NACIDA ChatAi</div>
         <div className={styles["sidebar-sub-title"]}>
           <p>Welcome to NACIDA ChatAi</p>
           <p>欢迎来到 NACIDA ChatAi</p>
