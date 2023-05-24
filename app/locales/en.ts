@@ -114,6 +114,7 @@ const en: RequiredLocaleType = {
     Mask: {
       Title: "Mask Splash Screen",
       SubTitle: "Show a mask splash screen before starting new chat",
+      CodeTitle:'If it helps you, please sponsor it',
     },
     Prompt: {
       Disable: {

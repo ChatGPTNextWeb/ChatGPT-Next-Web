@@ -95,6 +95,7 @@ const it: LocaleType = {
     Mask: {
       Title: "Mask Splash Screen",
       SubTitle: "Show a mask splash screen before starting new chat",
+      CodeTitle:'Se è utile per voi, sponsorizzatelo',
     },
     Prompt: {
       Disable: {

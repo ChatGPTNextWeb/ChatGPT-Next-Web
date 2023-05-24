@@ -346,9 +346,9 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>ChatGPT Next Web</div>
+            <div className={styles["main-title"]}>NACIDA ChatAI</div>
             <div className={styles["sub-title"]}>
-              github.com/Yidadaa/ChatGPT-Next-Web
+              Welcome to NACIDA ChatAi
             </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />

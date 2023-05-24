@@ -95,6 +95,7 @@ const ko: LocaleType = {
     Mask: {
       Title: "마스크 시작 화면",
       SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
+      CodeTitle:'도움이 된다면 찬조해 주십시오',
     },
     Prompt: {
       Disable: {

@@ -98,6 +98,7 @@ const fr: LocaleType = {
       Title: "Écran de masque",
       SubTitle:
         "Afficher un écran de masque avant de démarrer une nouvelle discussion",
+      CodeTitle:'S’il vous plaît parrainer si cela vous a aidé',
     },
     Prompt: {
       Disable: {

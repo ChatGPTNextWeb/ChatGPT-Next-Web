@@ -94,8 +94,9 @@ const jp: LocaleType = {
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Title: "マスク起動ページです",
+      SubTitle: "チャットを作成するとき、マスクのページを表示します",
+      CodeTitle:'もしお役に立てるようでしたら協賛をお願いします',
     },
     Prompt: {
       Disable: {

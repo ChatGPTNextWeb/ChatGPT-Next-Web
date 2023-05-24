@@ -93,6 +93,7 @@ const tw: LocaleType = {
     Mask: {
       Title: "面具启动页",
       SubTitle: "新建聊天时，展示面具启动页",
+      CodeTitle:'如果對你有幫助,請贊助一下',
     },
     Prompt: {
       Disable: {

@@ -113,6 +113,7 @@ const cn = {
     Mask: {
       Title: "面具启动页",
       SubTitle: "新建聊天时，展示面具启动页",
+      CodeTitle:'如果对你有帮助,请赞助一下',
     },
     Prompt: {
       Disable: {

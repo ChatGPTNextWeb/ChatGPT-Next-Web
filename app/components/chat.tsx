@@ -15,6 +15,8 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
+import CloseIcon from "../icons/close.svg";
+
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -43,6 +45,7 @@ import {
 } from "../utils";
 
 import dynamic from "next/dynamic";
+import Image from 'next/image'
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
@@ -65,7 +68,30 @@ import { ExportMessageModal } from "./exporter";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
-
+export function QrcodeModal(props: { onClose: () => void }) {
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Mask.CodeTitle}
+        onClose={() => props.onClose()}
+        actions={[
+          <IconButton
+            key="close"
+            icon={<CloseIcon />}
+            bordered
+            text={Locale.UI.Close}
+            onClick={() => props.onClose()}
+          />,
+        ]}
+      >
+        <div className="qrcode-img">
+          <Image src="/alicode.png" alt="" width={500} height={350}/>
+          <Image src="/wechatcode.png" alt=""  width={500} height={350}/>
+        </div>
+      </Modal>
+    </div>
+  );
+}
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -648,6 +674,7 @@ export function Chat() {
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+  const [showQrcodeModal, setShowQrcodeModal] = useState(true);
 
   const renameSession = () => {
     const newTopic = prompt(Locale.Chat.Rename, session.topic);
@@ -727,6 +754,9 @@ export function Chat() {
           showModal={showPromptModal}
           setShowModal={setShowPromptModal}
         />
+        {showQrcodeModal && (
+          <QrcodeModal onClose={() => setShowQrcodeModal(false)} />
+        )}
       </div>
 
       <div

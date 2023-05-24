@@ -95,6 +95,7 @@ const vi: LocaleType = {
     Mask: {
       Title: "Mask Splash Screen",
       SubTitle: "Chớp màn hình khi bắt đầu cuộc trò chuyện mới",
+      CodeTitle:'Nếu nó giúp anh, xin hãy tài trợ',
     },
     Prompt: {
       Disable: {

@@ -95,6 +95,7 @@ const tr: LocaleType = {
     Mask: {
       Title: "Mask Splash Screen",
       SubTitle: "Show a mask splash screen before starting new chat",
+      CodeTitle:'Size yardımcı olursa, lütfen sponsor olun',
     },
     Prompt: {
       Disable: {

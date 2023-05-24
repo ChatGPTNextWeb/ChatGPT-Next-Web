@@ -95,6 +95,7 @@ const cs: LocaleType = {
     Mask: {
       Title: "Úvodní obrazovka Masek",
       SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
+      CodeTitle:'Pokud vám to pomůže, prosím, sponzorujte to',
     },
     Prompt: {
       Disable: {
