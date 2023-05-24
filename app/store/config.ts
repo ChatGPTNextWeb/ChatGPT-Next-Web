@@ -69,10 +69,6 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "ernie", // 文心一言
-    available: false,
-  },
-  {
     name: "spark", // 讯飞星火
     available: false,
   },
