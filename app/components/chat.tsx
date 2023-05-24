@@ -32,6 +32,7 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
+  useUpdateStore,
 } from "../store";
 
 import {
@@ -41,6 +42,8 @@ import {
   autoGrowTextArea,
   useMobileScreen,
 } from "../utils";
+
+ 
 
 import dynamic from "next/dynamic";
 
@@ -327,6 +330,21 @@ export function ChatActions(props: {
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
+  const updateStore = useUpdateStore();
+  const [loadingUsage, setLoadingUsage] = useState(false);
+  const checkUsage = () => {
+    alert("查询费用");
+    setLoadingUsage(true);
+    updateStore.updateUsage(true).finally(() => {
+      setLoadingUsage(false);
+    });
+
+
+  };
+  const onCheckUsage = () => {
+    checkUsage();
+  };
+
   return (
     <div className={chatStyle["chat-input-actions"]}>
       {couldStop && (
@@ -398,9 +416,25 @@ export function ChatActions(props: {
       >
         <BreakIcon />
       </div>
+      
+    
+      <div  
+        className={`${chatStyle["chat-input-action"]}`}
+        >
+        <span className={`${chatStyle["chat-input-action-balance"]}`}>1067P</span>
+        </div>  
+      <div  
+        className={`${chatStyle["chat-input-action"]}`}
+        >
+         <ResetIcon className={`clickable`} onClick={() => {onCheckUsage()}}/>
+        </div>  
+
+
     </div>
   );
 }
+
+
 
 export function Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
@@ -428,6 +462,9 @@ export function Chat() {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
   };
+
+
+
 
   // prompt hints
   const promptStore = usePromptStore();
