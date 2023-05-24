@@ -50,14 +50,6 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
   );
 }
 
-
-  return (
-    <div className="user-avatar">
-      {props.avatar && <EmojiAvatar avatar={props.avatar} />}
-    </div>
-  );
-}
-
 export function EmojiAvatar(props: { avatar: string; size?: number }) {
   return (
     <Emoji
