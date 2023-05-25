@@ -122,7 +122,8 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-title"]}>AI ChatBOT</div>
         <div className={styles["sidebar-sub-title"]}>
           Powered by ChatGPT and Claude
-          Buy Token in <Text style={{color: 'blue'}}
+          Buy Token in 
+          <Text style={{color: 'blue'}}
       onPress={() => Linking.openURL('https://www.carousell.com.hk/p/1233150415/')}>
   Here
 </Text>
