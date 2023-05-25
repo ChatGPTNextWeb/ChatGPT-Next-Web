@@ -225,7 +225,7 @@ export function Settings() {
   const hasNewVersion = currentVersion !== remoteId;
 
   function checkUpdate(force = false) {
-    setCheckingUpdate(true);
+    setCheckingUpdate(false);
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
     });
