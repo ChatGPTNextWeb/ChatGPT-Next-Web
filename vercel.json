@@ -11,7 +11,7 @@
                     "value": "$remote_addr"
                 },
                 {
-                    "key": " X-Forwarded-For",
+                    "key": "X-Forwarded-For",
                     "value": "$proxy_add_x_forwarded_for"
                 },
                 {
