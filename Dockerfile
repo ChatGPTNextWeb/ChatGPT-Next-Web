@@ -41,9 +41,7 @@ COPY --from=builder /app/.next/server ./.next/server
 EXPOSE 3000
 
 CMD if [ -n "$PROXY_URL" ]; then \
-        if [ -z "$HOSTNAME" ]; then \
-          export HOSTNAME="127.0.0.1"; \
-        fi; \
+        export HOSTNAME="127.0.0.1"; \
         protocol=$(echo $PROXY_URL | cut -d: -f1); \
         host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
         port=$(echo $PROXY_URL | cut -d: -f3); \
