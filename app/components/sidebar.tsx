@@ -112,21 +112,30 @@ export function SideBar(props: { className?: string }) {
 
   useHotKey();
 
-  return (
-    <div
-      className={`${styles.sidebar} ${props.className} ${
-        shouldNarrow && styles["narrow-sidebar"]
-      }`}
-    >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>AI ChatBOT</div>
-        <div className={styles["sidebar-sub-title"]}>
-          Powered by ChatGPT and Claude
-          Buy Token in 
-          <Text style={{color: 'blue'}}
-      onPress={() => Linking.openURL('https://www.carousell.com.hk/p/1233150415/')}>
-  Here
-</Text>
+return (
+  <div
+    className={`${styles.sidebar} ${props.className} ${
+      shouldNarrow && styles["narrow-sidebar"]
+    }`}
+  >
+    <div className={styles["sidebar-header"]}>
+      <div className={styles["sidebar-title"]}>AI ChatBOT</div>
+      <div className={styles["sidebar-sub-title"]}>
+        Powered by ChatGPT and Claude
+        Buy Token in{" "}
+        <Text
+          style={{ color: "blue" }}
+          onPress={() => Linking.openURL("https://www.carousell.com.hk/p/1233150415/")}
+        >
+          Here
+        </Text>
+        {props.shouldNarrow && null}
+      </div>
+    </div>
+  </div>
+);
+
+
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
