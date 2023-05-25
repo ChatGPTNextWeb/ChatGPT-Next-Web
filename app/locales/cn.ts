@@ -58,7 +58,7 @@ const cn = {
   Select: {
     Search: "搜索消息",
     All: "选取全部",
-    Latest: "最近十条",
+    Latest: "最近几条",
     Clear: "清除选中",
   },
   Memory: {
