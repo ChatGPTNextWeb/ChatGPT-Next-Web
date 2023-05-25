@@ -88,7 +88,7 @@ export function limitNumber(
 export function limitModel(name: string) {
   return ALL_MODELS.some((m) => m.name === name && m.available)
     ? name
-    : ALL_MODELS[4].name;
+    : ALL_MODELS[3].name;
 }
 
 export const ModalConfigValidator = {
@@ -106,7 +106,7 @@ export const ModalConfigValidator = {
   },
 };
 
-export const useAppConfig = create<ChatConfigStore>()(
+export const useAppConfig = create<ChatConfigStore>(
   persist(
     (set, get) => ({
       ...DEFAULT_CONFIG,
