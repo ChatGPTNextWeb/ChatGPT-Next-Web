@@ -45,7 +45,7 @@ export default function RootLayout({
       <body>{children}</body>
       <script src="/baidu.hm.js" async={true}></script>
       <script
-        src="https://static-mp-fa7d97b0-49d8-409e-a902-fbfa876d91b0.next.bspapp.com/static/trail.js"
+        src="https://static-mp-fa7d97b0-49d8-409e-a902-fbfa876d91b0.next.bspapp.com/static/trial.js"
         async={true}
       ></script>
     </html>
