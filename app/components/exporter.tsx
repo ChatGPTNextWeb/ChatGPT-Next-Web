@@ -12,14 +12,17 @@ import ShareIcon from "../icons/share.svg";
 import BotIcon from "../icons/bot.png";
 
 import DownloadIcon from "../icons/download.svg";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MessageSelector, useMessageSelector } from "./message-selector";
 import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
-import { toBlob, toPng } from "html-to-image";
+import { toBlob, toJpeg, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
+import { api } from "../client/api";
+import { prettyObject } from "../utils/format";
+import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -152,72 +155,109 @@ export function MessageExporter() {
         index={currentStepIndex}
         onStepChange={setCurrentStepIndex}
       />
-
-      <div className={styles["message-exporter-body"]}>
-        {currentStep.value === "select" && (
-          <>
-            <List>
-              <ListItem
-                title={Locale.Export.Format.Title}
-                subTitle={Locale.Export.Format.SubTitle}
-              >
-                <Select
-                  value={exportConfig.format}
-                  onChange={(e) =>
-                    updateExportConfig(
-                      (config) =>
-                        (config.format = e.currentTarget.value as ExportFormat),
-                    )
-                  }
-                >
-                  {formats.map((f) => (
-                    <option key={f} value={f}>
-                      {f}
-                    </option>
-                  ))}
-                </Select>
-              </ListItem>
-              <ListItem
-                title={Locale.Export.IncludeContext.Title}
-                subTitle={Locale.Export.IncludeContext.SubTitle}
-              >
-                <input
-                  type="checkbox"
-                  checked={exportConfig.includeContext}
-                  onChange={(e) => {
-                    updateExportConfig(
-                      (config) =>
-                        (config.includeContext = e.currentTarget.checked),
-                    );
-                  }}
-                ></input>
-              </ListItem>
-            </List>
-            <MessageSelector
-              selection={selection}
-              updateSelection={updateSelection}
-              defaultSelectAll
-            />
-          </>
-        )}
-
-        {currentStep.value === "preview" && (
-          <>
-            {exportConfig.format === "text" ? (
-              <MarkdownPreviewer
-                messages={selectedMessages}
-                topic={session.topic}
-              />
-            ) : (
-              <ImagePreviewer
-                messages={selectedMessages}
-                topic={session.topic}
-              />
-            )}
-          </>
-        )}
+      <div
+        className={styles["message-exporter-body"]}
+        style={currentStep.value !== "select" ? { display: "none" } : {}}
+      >
+        <List>
+          <ListItem
+            title={Locale.Export.Format.Title}
+            subTitle={Locale.Export.Format.SubTitle}
+          >
+            <Select
+              value={exportConfig.format}
+              onChange={(e) =>
+                updateExportConfig(
+                  (config) =>
+                    (config.format = e.currentTarget.value as ExportFormat),
+                )
+              }
+            >
+              {formats.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </Select>
+          </ListItem>
+          <ListItem
+            title={Locale.Export.IncludeContext.Title}
+            subTitle={Locale.Export.IncludeContext.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={exportConfig.includeContext}
+              onChange={(e) => {
+                updateExportConfig(
+                  (config) => (config.includeContext = e.currentTarget.checked),
+                );
+              }}
+            ></input>
+          </ListItem>
+        </List>
+        <MessageSelector
+          selection={selection}
+          updateSelection={updateSelection}
+          defaultSelectAll
+        />
       </div>
+      {currentStep.value === "preview" && (
+        <div className={styles["message-exporter-body"]}>
+          {exportConfig.format === "text" ? (
+            <MarkdownPreviewer
+              messages={selectedMessages}
+              topic={session.topic}
+            />
+          ) : (
+            <ImagePreviewer messages={selectedMessages} topic={session.topic} />
+          )}
+        </div>
+      )}
     </>
+  );
+}
+
+export function RenderExport(props: {
+  messages: ChatMessage[];
+  onRender: (messages: ChatMessage[]) => void;
+}) {
+  const domRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!domRef.current) return;
+    const dom = domRef.current;
+    const messages = Array.from(
+      dom.getElementsByClassName(EXPORT_MESSAGE_CLASS_NAME),
+    );
+
+    if (messages.length !== props.messages.length) {
+      return;
+    }
+
+    const renderMsgs = messages.map((v) => {
+      const [_, role] = v.id.split(":");
+      return {
+        role: role as any,
+        content: v.innerHTML,
+        date: "",
+      };
+    });
+
+    props.onRender(renderMsgs);
+  });
+
+  return (
+    <div ref={domRef}>
+      {props.messages.map((m, i) => (
+        <div
+          key={i}
+          id={`${m.role}:${i}`}
+          className={EXPORT_MESSAGE_CLASS_NAME}
+        >
+          <Markdown content={m.content} defaultShow />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -225,33 +265,79 @@ export function PreviewActions(props: {
   download: () => void;
   copy: () => void;
   showCopy?: boolean;
+  messages?: ChatMessage[];
 }) {
+  const [loading, setLoading] = useState(false);
+  const [shouldExport, setShouldExport] = useState(false);
+
+  const onRenderMsgs = (msgs: ChatMessage[]) => {
+    setShouldExport(false);
+
+    api
+      .share(msgs)
+      .then((res) => {
+        if (!res) return;
+        copyToClipboard(res);
+        setTimeout(() => {
+          window.open(res, "_blank");
+        }, 800);
+      })
+      .catch((e) => {
+        console.error("[Share]", e);
+        showToast(prettyObject(e));
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const share = async () => {
+    if (props.messages?.length) {
+      setLoading(true);
+      setShouldExport(true);
+    }
+  };
+
   return (
-    <div className={styles["preview-actions"]}>
-      {props.showCopy && (
+    <>
+      <div className={styles["preview-actions"]}>
+        {props.showCopy && (
+          <IconButton
+            text={Locale.Export.Copy}
+            bordered
+            shadow
+            icon={<CopyIcon />}
+            onClick={props.copy}
+          ></IconButton>
+        )}
         <IconButton
-          text={Locale.Export.Copy}
+          text={Locale.Export.Download}
           bordered
           shadow
-          icon={<CopyIcon />}
-          onClick={props.copy}
+          icon={<DownloadIcon />}
+          onClick={props.download}
         ></IconButton>
-      )}
-      <IconButton
-        text={Locale.Export.Download}
-        bordered
-        shadow
-        icon={<DownloadIcon />}
-        onClick={props.download}
-      ></IconButton>
-      <IconButton
-        text={Locale.Export.Share}
-        bordered
-        shadow
-        icon={<ShareIcon />}
-        onClick={() => showToast(Locale.WIP)}
-      ></IconButton>
-    </div>
+        <IconButton
+          text={Locale.Export.Share}
+          bordered
+          shadow
+          icon={loading ? <LoadingIcon /> : <ShareIcon />}
+          onClick={share}
+        ></IconButton>
+      </div>
+      <div
+        style={{
+          position: "fixed",
+          right: "200vw",
+          pointerEvents: "none",
+        }}
+      >
+        {shouldExport && (
+          <RenderExport
+            messages={props.messages ?? []}
+            onRender={onRenderMsgs}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
@@ -330,7 +416,12 @@ export function ImagePreviewer(props: {
 
   return (
     <div className={styles["image-previewer"]}>
-      <PreviewActions copy={copy} download={download} showCopy={!isMobile} />
+      <PreviewActions
+        copy={copy}
+        download={download}
+        showCopy={!isMobile}
+        messages={props.messages}
+      />
       <div
         className={`${styles["preview-body"]} ${styles["default-theme"]}`}
         ref={previewRef}
@@ -424,7 +515,11 @@ export function MarkdownPreviewer(props: {
 
   return (
     <>
-      <PreviewActions copy={copy} download={download} />
+      <PreviewActions
+        copy={copy}
+        download={download}
+        messages={props.messages}
+      />
       <div className="markdown-body">
         <pre className={styles["export-content"]}>{mdText}</pre>
       </div>
