@@ -57,20 +57,20 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
-    name: "clade+",
+    name: "gpt-4-0314",
     available: ENABLE_GPT4,
   },
   {
-    name: "claude-instant-100k",
+    name: "gpt-4-32k",
     available: ENABLE_GPT4,
   },
   {
     name: "gpt-4-32k-0314",
-    available: false,
+    available: ENABLE_GPT4,
   },
   {
     name: "gpt-4-mobile",
-    available: false,
+    available: ENABLE_GPT4,
   },
   {
     name: "text-davinci-002-render-sha-mobile",
@@ -82,7 +82,7 @@ export const ALL_MODELS = [
   },
   {
     name: "gpt-3.5-turbo-0301",
-    available: false,
+    available: true,
   },
   {
     name: "qwen-v1", // 通义千问
