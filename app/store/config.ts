@@ -57,11 +57,11 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
-    name: "gpt-4-0314",
+    name: "claude+",
     available: ENABLE_GPT4,
   },
   {
-    name: "gpt-4-32k",
+    name: "claude-instant-100k",
     available: ENABLE_GPT4,
   },
   {
