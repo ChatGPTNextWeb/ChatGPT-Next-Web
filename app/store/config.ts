@@ -69,7 +69,7 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "neevaai",
+    name: "dragonfly",
     available: true,
   },
 ] as const;
