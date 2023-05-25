@@ -50,7 +50,13 @@ export async function requestOpenai(req: NextRequest) {
 
     if (res.status === 401) {
       // to prevent browser prompt for credentials
-      res.headers.delete("www-authenticate");
+      const newHeaders = new Headers(res.headers);
+      newHeaders.delete("www-authenticate");
+      return new Response(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: newHeaders,
+      });
     }
 
     return res;
