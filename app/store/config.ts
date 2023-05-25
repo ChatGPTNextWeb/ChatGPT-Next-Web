@@ -4,7 +4,7 @@ import { StoreKey } from "../constant";
 
 export enum SubmitKey {
   Enter = "Enter",
-  CtrlEnter = "Enter",
+  CtrlEnter = "Ctrl+Enter",
   ShiftEnter = "Shift + Enter",
   AltEnter = "Alt + Enter",
   MetaEnter = "Meta + Enter",
