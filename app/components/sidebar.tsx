@@ -132,15 +132,11 @@ return (
         {props.shouldNarrow && null}
       </div>
     </div>
+    <div className={styles["sidebar-logo"] + " no-dark"}>
+      <ChatGptIcon />
+    </div>
   </div>
 );
-
-
-        </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
-        </div>
-      </div>
 
       <div className={styles["sidebar-header-bar"]}>
         <IconButton
