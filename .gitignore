@@ -24,6 +24,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+pnpm-lock.yaml
 
 # local env files
 .env*.local
@@ -40,3 +41,4 @@ public/prompts.json
 
 .vscode
 .idea
+*.log
