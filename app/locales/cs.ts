@@ -143,6 +143,8 @@ const cs: LocaleType = {
       Clear: "Clear",
       ClearConfirm: "Are you sure to delete all chat history?",
       Import: "Import",
+      ImportConfirm:
+        "Confirm to import and overwrite the existing chat history?",
       ImportToast: "Chat history imported!",
       Export: "Export",
     },

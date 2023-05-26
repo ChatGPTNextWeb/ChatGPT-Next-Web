@@ -161,6 +161,7 @@ const cn = {
       Clear: "清空",
       ClearConfirm: "确认删除所有聊天记录？",
       Import: "导入",
+      ImportConfirm: "确认导入并覆盖现有的聊天记录吗？",
       ImportToast: "聊天记录导入成功！",
       Export: "导出",
     },

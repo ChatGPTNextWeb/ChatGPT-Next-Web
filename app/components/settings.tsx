@@ -532,7 +532,11 @@ export function Settings() {
               <IconButton
                 icon={<UploadIcon />}
                 text={Locale.Settings.ChatHistory.Import}
-                onClick={() => importHistory()}
+                onClick={() => {
+                  if (confirm(Locale.Settings.ChatHistory.ImportConfirm)) {
+                    importHistory();
+                  }
+                }}
               />
               <IconButton
                 icon={<DownloadIcon />}

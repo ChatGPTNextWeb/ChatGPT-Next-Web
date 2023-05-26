@@ -140,6 +140,7 @@ const tw: LocaleType = {
       Clear: "清空",
       ClearConfirm: "確認刪除所有聊天紀錄？",
       Import: "匯入",
+      ImportConfirm: "確認匯入並覆蓋現有的聊天記錄嗎？",
       ImportToast: "聊天紀錄匯入成功！",
       Export: "匯出",
     },
