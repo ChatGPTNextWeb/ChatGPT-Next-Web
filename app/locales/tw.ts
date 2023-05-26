@@ -67,18 +67,8 @@ const tw: LocaleType = {
       ConfirmClearAll: "您確定要清除所有数据嗎？",
     },
     Lang: {
-      Name: "Language",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-      },
     },
     Avatar: "大頭貼",
     FontSize: {
@@ -158,7 +148,7 @@ const tw: LocaleType = {
       Title: "單次回應限制 (max_tokens)",
       SubTitle: "單次互動所用的最大 Token 數",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },

@@ -69,18 +69,8 @@ const it: LocaleType = {
       ConfirmClearAll: "Sei sicuro vuoi cancellare tutte le chat?",
     },
     Lang: {
-      Name: "Lingue",
-      All: "All Languages",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-      },
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "Tutte le lingue",
     },
     Avatar: "Avatar",
     FontSize: {
@@ -162,7 +152,7 @@ const it: LocaleType = {
       Title: "Token massimi",
       SubTitle: "Lunghezza massima dei token in ingresso e dei token generati",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Penalità di presenza",
       SubTitle:
         "Un valore maggiore aumenta la probabilità di parlare di nuovi argomenti",

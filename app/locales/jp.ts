@@ -69,18 +69,8 @@ const jp: LocaleType = {
       ConfirmClearAll: "すべてのチャットをリセットしてもよろしいですか？",
     },
     Lang: {
-      Name: "Language",
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-      },
     },
     Avatar: "アバター",
     FontSize: {
@@ -164,7 +154,7 @@ const jp: LocaleType = {
       Title: "シングルレスポンス制限 (max_tokens)",
       SubTitle: "1回のインタラクションで使用される最大トークン数",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "トピックの新鮮度 (presence_penalty)",
       SubTitle: "値が大きいほど、新しいトピックへの展開が可能になります。",
     },

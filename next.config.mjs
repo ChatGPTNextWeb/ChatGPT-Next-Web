@@ -1,11 +1,21 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   async rewrites() {
-    const ret = [];
+    const ret = [
+      {
+        source: "/api/proxy/:path*",
+        destination: "https://api.openai.com/:path*",
+      },
+      {
+        source: "/google-fonts/:path*",
+        destination: "https://fonts.googleapis.com/:path*",
+      },
+      {
+        source: "/sharegpt",
+        destination: "https://sharegpt.com/api/conversations",
+      },
+    ];
 
     const apiUrl = process.env.API_URL;
     if (apiUrl) {
@@ -17,7 +27,7 @@ const nextConfig = {
     }
 
     return {
-      afterFiles: ret,
+      beforeFiles: ret,
     };
   },
   webpack(config) {

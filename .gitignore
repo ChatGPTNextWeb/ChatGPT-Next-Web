@@ -37,8 +37,9 @@ pnpm-lock.yaml
 next-env.d.ts
 dev
 
-public/prompts.json
-
 .vscode
 .idea
 *.log
+
+# docker-compose env files
+.env
