@@ -3,6 +3,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
+import DownIcon from "../icons/down.svg";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
@@ -41,7 +42,7 @@ export function ListItem(props: {
   className?: string;
 }) {
   return (
-    <div className={styles["list-item"] + ` ${props.className}`}>
+    <div className={styles["list-item"] + ` ${props.className || ""}`}>
       <div className={styles["list-header"]}>
         {props.icon && <div className={styles["list-icon"]}>{props.icon}</div>}
         <div className={styles["list-item-title"]}>
@@ -241,6 +242,23 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
         type={visible ? "text" : "password"}
         className={"password-input"}
       />
+    </div>
+  );
+}
+
+export function Select(
+  props: React.DetailedHTMLProps<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    HTMLSelectElement
+  >,
+) {
+  const { className, children, ...otherProps } = props;
+  return (
+    <div className={`${styles["select-with-icon"]} ${className}`}>
+      <select className={styles["select-with-icon-select"]} {...otherProps}>
+        {children}
+      </select>
+      <DownIcon className={styles["select-with-icon-icon"]} />
     </div>
   );
 }
