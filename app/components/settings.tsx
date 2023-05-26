@@ -34,7 +34,12 @@ import {
   useAppConfig,
 } from "../store";
 
-import Locale, { AllLangs, changeLang, getLang } from "../locales";
+import Locale, {
+  AllLangs,
+  ALL_LANG_OPTIONS,
+  changeLang,
+  getLang,
+} from "../locales";
 import { copyToClipboard, downloadAs, readFromFile } from "../utils";
 import Link from "next/link";
 import { Path, UPDATE_URL, StoreKey, FileName } from "../constant";
@@ -449,7 +454,7 @@ export function Settings() {
             >
               {AllLangs.map((lang) => (
                 <option value={lang} key={lang}>
-                  {Locale.Settings.Lang.Options[lang]}
+                  {ALL_LANG_OPTIONS[lang]}
                 </option>
               ))}
             </Select>
