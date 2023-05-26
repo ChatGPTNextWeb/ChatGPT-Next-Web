@@ -372,12 +372,12 @@ export function ChatActions(props: {
         ) : null}
       </div>
 
-      {/* <div
+      <div
         className={`${chatStyle["chat-input-action"]} clickable`}
         onClick={props.showPromptHints}
       >
         <PromptIcon />
-      </div> */}
+      </div>
 
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
@@ -799,7 +799,14 @@ export function Chat() {
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           showPromptHints={() => {
+            if (promptHints.length > 0) {
+              setUserInput("");
+              setPromptHints([]);
+              return;
+            }
+
             inputRef.current?.focus();
+            setUserInput("/");
             onSearch("");
           }}
         />
