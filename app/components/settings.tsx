@@ -40,6 +40,7 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
+import { changeTheme } from "../store/theme.server";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -397,9 +398,10 @@ export function Settings() {
             <Select
               value={config.theme}
               onChange={(e) => {
-                updateConfig(
-                  (config) => (config.theme = e.target.value as any as Theme),
-                );
+                updateConfig((config) => {
+                  config.theme = e.target.value as any as Theme;
+                  changeTheme(e.target.value);
+                });
               }}
             >
               {Object.values(Theme).map((v) => (
