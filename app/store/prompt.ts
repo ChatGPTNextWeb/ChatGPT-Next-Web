@@ -147,25 +147,34 @@ export const usePromptStore = create<PromptStore>()(
             if (getLang() === "cn") {
               fetchPrompts = fetchPrompts.reverse();
             }
-            const builtinPrompts = fetchPrompts.map(
-              (promptList: PromptList) => {
-                return promptList.map(
-                  ([title, content]) =>
-                    ({
-                      id: Math.random(),
-                      title,
-                      content,
-                    } as Prompt),
+
+            console.log(res);
+            const builtinPrompts: Array<Prompt> = fetchPrompts.reduce(
+              (acc: Array<Prompt>, promptList: PromptList) => {
+                if (!promptList || promptList.length === 0) {
+                  return acc;
+                }
+
+                promptList.forEach(([title, content]) =>
+                  acc.push({
+                    id: Math.random(),
+                    title,
+                    content,
+                  } as Prompt),
                 );
+
+                return acc;
               },
+              [],
             );
 
             const userPrompts =
               usePromptStore.getState().getUserPrompts() ?? [];
 
-            const allPromptsForSearch = builtinPrompts
-              .reduce((pre, cur) => pre.concat(cur), [])
-              .filter((v) => !!v.title && !!v.content);
+            const allPromptsForSearch = builtinPrompts.filter(
+              (v) => !!v.title && !!v.content,
+            );
+
             SearchService.count.builtin = res.en.length + res.cn.length;
             SearchService.init(allPromptsForSearch, userPrompts);
           });

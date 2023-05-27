@@ -27,6 +27,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
+import { UserButton } from "@clerk/nextjs";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -119,14 +120,16 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>CognitievPRO</div>
-        <div className={styles["sidebar-sub-title"]}>
-          Your Ultimate AI Sidekick!
+        <div className={styles["sidebar-text-container"]}>
+          <div className={styles["sidebar-title"]}>CognitievPRO</div>
+          <div className={styles["sidebar-sub-title"]}>
+            Your Ultimate AI Sidekick!
+          </div>
         </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
+        <UserButton signInUrl="/signin" afterSignOutUrl="/" />
+        {/* <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
-
-        </div>
+        </div> */}
       </div>
 
       <div className={styles["sidebar-header-bar"]}>

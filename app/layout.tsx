@@ -47,6 +47,7 @@ export default function RootLayout({
           ? {
               colorPrimary: "rgb(29, 147, 171)",
               colorText: "white",
+              colorBackground: "rgb(30, 30, 30)",
             }
           : {
               colorPrimary: "rgb(29, 147, 171)",
