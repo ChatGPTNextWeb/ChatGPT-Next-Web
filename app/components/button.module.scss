@@ -12,7 +12,7 @@
   user-select: none;
   outline: none;
   border: none;
-  color: #ffffff; // Changed text color to lighter shade for contrast
+  color: #f0f0f0; // Changed text color to lighter shade for contrast
   z-index: 0; // Added to ensure :before will stack properly
   font-size: 12px;
   font-weight: 500;
@@ -39,7 +39,7 @@
 }
 
 .icon-button:active {
-  color: #000;
+  color: #FF7A7A;
 }
 
 .icon-button:active:after {
@@ -118,9 +118,9 @@
 }
 
 .icon-button-text {
-  margin-left: 5px;
-  font-size: 12px;
-  font-weight: bold;
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
