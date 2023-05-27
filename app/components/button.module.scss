@@ -14,7 +14,7 @@
   border: none;
   color: #f0f0f0; // Changed text color to lighter shade for contrast
   z-index: 0; // Added to ensure :before will stack properly
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
@@ -113,13 +113,13 @@
 
 @media only screen and (max-width: 600px) {
   .icon-button {
-    padding: 16px;
+    padding: 20px;
   }
 }
 
 .icon-button-text {
   margin-left: 5px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
