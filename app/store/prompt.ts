@@ -148,7 +148,6 @@ export const usePromptStore = create<PromptStore>()(
               fetchPrompts = fetchPrompts.reverse();
             }
 
-            console.log(res);
             const builtinPrompts: Array<Prompt> = fetchPrompts.reduce(
               (acc: Array<Prompt>, promptList: PromptList) => {
                 if (!promptList || promptList.length === 0) {
