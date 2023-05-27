@@ -1,6 +1,6 @@
 .icon-button {
   position: relative;
-  background-color: #333; // Changed background color to a lighter shade of black
+  background-color: #FF7A7A; // Changed background color to a lighter shade of black
   border-radius: 0px;
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@
 }
 
 .icon-button:active {
-  color: #FF7A7A;
+  color: #000;
 }
 
 .icon-button:active:after {
