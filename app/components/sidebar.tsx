@@ -126,13 +126,18 @@ export function SideBar(props: { className?: string }) {
             Your Ultimate AI Sidekick!
           </div>
         </div>
-        <div className={styles["sidebar-profile-container"]}>
+         <div className={styles["sidebar-profile-container"]}>
           <UserButton
             signInUrl="/signin"
             userProfileMode="navigation"
             userProfileUrl="/account"
             afterSignOutUrl="/"
           />
+        </div>
+        <div className={styles["sidebar-profile-container"]}>
+          <div className={styles["sidebar-logo"] + " no-dark"}>
+          <ChatGptIcon />
+        </div>
         </div>
         {/* <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
