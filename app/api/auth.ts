@@ -53,6 +53,7 @@ export function auth(req: NextRequest) {
     if (apiKey) {
       console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${apiKey}`);
+      req.headers.delete("x-base-url");
     } else {
       console.log("[Auth] admin did not provide an api key");
     }

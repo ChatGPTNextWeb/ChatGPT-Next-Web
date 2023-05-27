@@ -518,6 +518,22 @@ export function Settings() {
             </ListItem>
           ) : null}
 
+          {!accessStore.hideUserApiKey ? (
+            <ListItem
+              title={Locale.Settings.BaseUrl.Title}
+              subTitle={Locale.Settings.BaseUrl.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.token}
+                type="text"
+                placeholder={Locale.Settings.BaseUrl.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateBaseUrl(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : null}
+
           <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={

@@ -13,7 +13,7 @@ export async function requestOpenai(req: NextRequest) {
     "",
   );
 
-  let baseUrl = BASE_URL;
+  let baseUrl = req.headers.get("x-base-url") ?? BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;

@@ -1,7 +1,7 @@
 import { REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
+import { ChatOptions, getHeaders, getBaseUrl, LLMApi, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -60,7 +60,7 @@ export class ChatGPTApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: Object.assign(getHeaders(), getBaseUrl()),
       };
 
       // make a fetch request
