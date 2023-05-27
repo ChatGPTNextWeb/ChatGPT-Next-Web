@@ -254,7 +254,7 @@ div.math {
     .qrcode-img{
       flex-direction: column;
       img{
-        width:80% !important;
+        width:95% !important;
       }
       img:last-child{
         margin-left: 0 !important;
@@ -265,6 +265,7 @@ div.math {
     text-align: center;
     img{
       width: calc(56% / 2 - 5px);
+      height: auto;
     }
     img:last-child{
       margin-left: 100px;
