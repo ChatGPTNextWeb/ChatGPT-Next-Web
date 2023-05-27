@@ -130,7 +130,7 @@ export function SideBar(props: { className?: string }) {
           <UserButton
             signInUrl="/signin"
             userProfileMode="navigation"
-            userProfileUrl="/profile"
+            userProfileUrl="/account"
             afterSignOutUrl="/"
           />
         </div>

@@ -4,7 +4,7 @@ import "./styles.scss";
 const UserProfilePage = () => {
   return (
     <div className={"container"}>
-      <UserProfile path="/profile" routing="path" />
+      <UserProfile path="/account" routing="path" />
     </div>
   );
 };
