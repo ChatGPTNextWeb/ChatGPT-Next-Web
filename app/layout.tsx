@@ -3,7 +3,9 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getBuildConfig } from "./config/build";
+import { getServerSideConfig } from "./config/server";
 
+const serverConfig = getServerSideConfig();
 const buildConfig = getBuildConfig();
 
 export const metadata = {
@@ -32,6 +34,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src=`https://www.googletagmanager.com/gtag/js?id={serverConfig.gaTag}`></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', {serverConfig.gaTag});
+        </script>
         <meta name="version" content={buildConfig.commitId} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
