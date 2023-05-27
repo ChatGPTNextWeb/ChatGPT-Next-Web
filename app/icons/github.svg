@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16"
   height="16" viewBox="0 0 16 16" fill="none">
   <defs>
-    <rect id="path_0" x="0" y="0" width="1" height="1" />
+    <rect id="path_0" x="0" y="0" width="16" height="16" />
   </defs>
   <g opacity="1" transform="translate(0 0)  rotate(0 8 8)">
     <mask id="bg-mask-0" fill="white">
