@@ -37,13 +37,13 @@ export default function RootLayout({
 
   const theme = cookieStore.get("theme");
 
-  const isDarkMode = theme?.value === Theme.Dark;
+  const isLightMode = theme?.value === Theme.Light;
 
   return (
     <ClerkProvider
       appearance={{
-        ...(isDarkMode && { baseTheme: dark }),
-        variables: isDarkMode
+        ...(!isLightMode && { baseTheme: dark }),
+        variables: !isLightMode
           ? {
               colorPrimary: "rgb(29, 147, 171)",
               colorText: "white",
