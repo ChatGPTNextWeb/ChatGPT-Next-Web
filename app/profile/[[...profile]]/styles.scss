@@ -1,0 +1,15 @@
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cl-rootBox {
+  height: 800px;
+
+  @media only screen and (max-width: 800px) {
+    height: 100%;
+  }
+}

@@ -3,6 +3,10 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getBuildConfig } from "./config/build";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
+import { cookies } from "next/headers";
+import { Theme } from "./store";
 
 const buildConfig = getBuildConfig();
 
@@ -29,14 +33,36 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+
+  const theme = cookieStore.get("theme");
+
+  const isDarkMode = theme?.value === Theme.Dark;
+
   return (
-    <html lang="en">
-      <head>
-        <meta name="version" content={buildConfig.commitId} />
-        <link rel="manifest" href="/site.webmanifest"></link>
-        <script src="/serviceWorkerRegister.js" defer></script>
-      </head>
-      <body>{children}</body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        ...(isDarkMode && { baseTheme: dark }),
+        variables: isDarkMode
+          ? {
+              colorPrimary: "rgb(29, 147, 171)",
+              colorText: "white",
+              colorBackground: "rgb(30, 30, 30)",
+            }
+          : {
+              colorPrimary: "rgb(29, 147, 171)",
+              colorText: "black",
+            },
+      }}
+    >
+      <html lang="en">
+        <head>
+          <meta name="version" content={buildConfig.commitId} />
+          <link rel="manifest" href="/site.webmanifest"></link>
+          <script src="/serviceWorkerRegister.js" defer></script>
+        </head>
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -39,7 +39,7 @@
 
   --theme-color: var(--gray);
 
-  div:not(.no-dark) > svg {
+  div:not(.no-dark, .cl-*) > svg {
     filter: invert(0.5);
   }
 }
@@ -148,7 +148,7 @@ input {
   font-family: inherit;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"]:not(.cl-*) {
   cursor: pointer;
   background-color: var(--white);
   color: var(--black);
@@ -162,7 +162,7 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
-input[type="checkbox"]:checked::after {
+input[type="checkbox"]:not(.cl-*):checked::after {
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -218,9 +218,9 @@ input[type="range"]::-ms-thumb:hover {
   @include thumbHover();
 }
 
-input[type="number"],
-input[type="text"],
-input[type="password"] {
+input[type="number"]:not(.cl-*),
+input[type="text"]:not(.cl-*),
+input[type="password"]:not(.cl-*) {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);

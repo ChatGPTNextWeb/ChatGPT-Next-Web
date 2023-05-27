@@ -13,6 +13,8 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.19.0",
+    "@clerk/themes": "^1.7.4",
     "@hello-pangea/dnd": "^16.2.0",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@svgr/webpack": "^6.5.1",
