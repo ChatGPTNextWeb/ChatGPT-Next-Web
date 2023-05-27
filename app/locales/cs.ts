@@ -128,6 +128,12 @@ const cs: LocaleType = {
       SubTitle: "Použitím klíče ignorujete omezení přístupového kódu",
       Placeholder: "Klíč API OpenAI",
     },
+    BaseUrl: {
+      Title: "Základní adresa URL",
+      SubTitle:
+        "Nastavte základní adresu URL API, výchozí hodnota je api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Stav účtu",
       SubTitle(used: any, total: any) {

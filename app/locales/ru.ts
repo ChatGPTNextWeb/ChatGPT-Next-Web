@@ -129,6 +129,12 @@ const ru: LocaleType = {
       SubTitle: "Используйте свой ключ, чтобы игнорировать лимит доступа",
       Placeholder: "API ключ OpenAI",
     },
+    BaseUrl: {
+      Title: "Базовый URL",
+      SubTitle:
+        "Настройте базовый URL API. По умолчанию используйте: api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Баланс аккаунта",
       SubTitle(used: any, total: any) {

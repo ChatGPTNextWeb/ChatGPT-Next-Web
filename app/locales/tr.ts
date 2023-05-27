@@ -128,6 +128,12 @@ const tr: LocaleType = {
       SubTitle: "Erişim kodu sınırını yoksaymak için anahtarınızı kullanın",
       Placeholder: "OpenAI API Anahtarı",
     },
+    BaseUrl: {
+      Title: "Taban URL",
+      SubTitle:
+        "API için taban URL'yi ayarlayın. Varsayılan olarak kullan: api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Hesap Bakiyesi",
       SubTitle(used: any, total: any) {

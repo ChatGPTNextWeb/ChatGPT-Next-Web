@@ -128,6 +128,12 @@ const es: LocaleType = {
       SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
       Placeholder: "Clave de la API de OpenAI",
     },
+    BaseUrl: {
+      Title: "URL base",
+      SubTitle:
+        "Establecer la URL base de la API, por defecto se utiliza: api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Saldo de la cuenta",
       SubTitle(used: any, total: any) {

@@ -147,6 +147,11 @@ const en: RequiredLocaleType = {
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
     },
+    BaseUrl: {
+      Title: "Base Url",
+      SubTitle: "Set the base url for the API, default to api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Account Balance",
       SubTitle(used: any, total: any) {

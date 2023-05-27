@@ -127,6 +127,11 @@ const ko: LocaleType = {
       SubTitle: "액세스 코드 제한을 무시하기 위해 키 사용",
       Placeholder: "OpenAI API 키",
     },
+    BaseUrl: {
+      Title: "기본 URL",
+      SubTitle: "API의 기본 URL을 설정하고 기본값은 api.openai.com입니다.",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "계정 잔액",
       SubTitle(used: any, total: any) {

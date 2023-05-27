@@ -127,6 +127,11 @@ const vi: LocaleType = {
       SubTitle: "Sử dụng khóa của bạn để bỏ qua giới hạn mã truy cập",
       Placeholder: "OpenAI API Key",
     },
+    BaseUrl: {
+      Title: "URL cơ sở",
+      SubTitle: "Cài đặt URL cơ sở API, mặc định sử dụng: api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Hạn mức tài khoản",
       SubTitle(used: any, total: any) {

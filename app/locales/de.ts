@@ -130,6 +130,12 @@ const de: LocaleType = {
         "Verwenden Sie Ihren Schlüssel, um das Zugangscode-Limit zu ignorieren",
       Placeholder: "OpenAI API-Schlüssel",
     },
+    BaseUrl: {
+      Title: "Basis-URL",
+      SubTitle:
+        "Setzen Sie die Basis-URL für die API fest. Standardmäßig wird api.openai.com verwendet.",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "Kontostand",
       SubTitle(used: any, total: any) {

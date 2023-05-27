@@ -130,6 +130,11 @@ const jp: LocaleType = {
       SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
       Placeholder: "OpenAI APIキー",
     },
+    BaseUrl: {
+      Title: "ベースURL",
+      SubTitle: "APIのベースURLを設定し、デフォルトで使用する：api.openai.com",
+      Placeholder: "api.openai.com",
+    },
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
