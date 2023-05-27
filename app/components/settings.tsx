@@ -524,7 +524,7 @@ export function Settings() {
               subTitle={Locale.Settings.BaseUrl.SubTitle}
             >
               <PasswordInput
-                value={accessStore.token}
+                value={accessStore.baseUrl}
                 type="text"
                 placeholder={Locale.Settings.BaseUrl.Placeholder}
                 onChange={(e) => {
