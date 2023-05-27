@@ -64,7 +64,6 @@
   }
 }
 
-
 .sidebar-drag {
   $width: 10px;
 
@@ -132,7 +131,6 @@
   justify-content: space-between;
 
   .sidebar-text-container {
-
   }
 }
 
@@ -158,6 +156,10 @@
   flex: 1;
   overflow: auto;
   overflow-x: hidden;
+}
+
+.sidebar-profile-container {
+  height: fit-content;
 }
 
 .chat-item {
