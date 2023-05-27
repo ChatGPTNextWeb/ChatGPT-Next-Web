@@ -2,7 +2,7 @@
   background-color: var(--white);
   border: var(--border-in-light);
   border-radius: 0px;
-  box-shadow: 0 2px 4px rgba(255, 122, 122, 1); // Updated box-shadow for a modern look
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   color: var(--black);
   background-color: var(--white);
   min-width: 600px;
@@ -45,7 +45,7 @@
   background-color: #333; // Changed background color to a lighter shade of black
   display: flex;
   flex-direction: column;
-  box-shadow: inset -2px 0px 2px 0px rgba(255, 122, 122, 1);
+  box-shadow: inset -2px 0px 2px 0px rgba(0, 0, 0, 0.05);
   position: relative;
   transition: width ease 0.05s;
   color: #f0f0f0; // Changed text color to lighter shade for contrast
@@ -167,7 +167,7 @@
   background-color: var(--white);
   border-radius: 0px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(255, 122, 122, 1); // Updated box-shadow for a modern look
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
@@ -537,7 +537,7 @@
   width: 100%;
   border-radius: 0px;
   border: var(--border-in-light);
-  box-shadow: 0 -2px 5px rgba(255, 122, 122, 1);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
   background-color: var(--white);
   color: var(--black);
   font-family: inherit;
