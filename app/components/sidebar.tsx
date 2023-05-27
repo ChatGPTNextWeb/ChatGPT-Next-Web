@@ -134,8 +134,7 @@ export function SideBar(props: { className?: string }) {
             afterSignOutUrl="/"
           />
         </div>
-        
-        </div>
+       
         {/* <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div> */}
