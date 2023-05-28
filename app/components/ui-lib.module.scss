@@ -2,7 +2,7 @@
 
 .card {
   background-color: var(--white);
-  border-radius: 10px;
+  border-radius: 0px;
   box-shadow: var(--card-shadow);
   padding: 10px;
 }
@@ -58,7 +58,7 @@
 
 .list {
   border: var(--border-in-light);
-  border-radius: 10px;
+  border-radius: 0px;
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
   animation: slide-in ease 0.3s;
@@ -71,7 +71,7 @@
 .modal-container {
   box-shadow: var(--card-shadow);
   background-color: var(--white);
-  border-radius: 12px;
+  border-radius: 0px;
   width: 60vw;
   animation: slide-in ease 0.3s;
 
@@ -171,7 +171,7 @@
     border: var(--border-in-light);
     color: var(--black);
     padding: 10px 20px;
-    border-radius: 50px;
+    border-radius: 0px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -195,7 +195,7 @@
 
 .input {
   border: var(--border-in-light);
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 10px;
   font-family: inherit;
   background-color: var(--white);
@@ -212,7 +212,7 @@
     height: 100%;
     border: var(--border-in-light);
     padding: 10px 25px 10px 10px;
-    border-radius: 10px;
+    border-radius: 0px;
     appearance: none;
     cursor: pointer;
     background-color: var(--white);
