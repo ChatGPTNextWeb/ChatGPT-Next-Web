@@ -1,15 +1,15 @@
 import HttpClient from "./HttpClient";
 
-export type UserInfoVO = {
-  email: string;
-  nickName: string;
-  occupation: string;
-  inviter: string;
-};
+export class UserInfoVO {
+  email!: string;
+  nickName!: string;
+  occupation!: string;
+  inviterEmail!: string;
+}
 
 export type UserLoginVO = {
   email: string;
-  password: string;
+  verifyCode: number;
 };
 
 export type UserSecretVO = {
@@ -20,27 +20,58 @@ export type UserSecretVO = {
 
 export type UserRegisterVO = {
   email: string;
-  password: string;
+  verifyCode: number;
   nickName: string;
   occupation: string;
   inviterEmail: string;
-  verifyCode: number;
 };
 
 export enum UserCheckResultVO {
-  success = 0,
-  notFound = 1,
-  passwordError = 2,
-  emailConflict = 3,
-  emailInvalid = 4,
-  emailSendFail = 5,
-  verifyCodeInvalid = 6,
+  success,
+  successNew,
+  notFound,
+  emailConflict,
+  emailInvalid,
+  emailSendFail,
+  verifyCodeInvalid,
+  coinOut,
+  Signined,
 }
 
-export interface UserResponseVO {
-  // TODO: 大写 会存在取不到属性值的情况...
-  result: UserCheckResultVO;
-  message: string;
+// 非空断言运算符 ! 来告诉 TypeScript，该属性会在其他地方被初始化，不需要在构造函数中赋值
+export class UserRequestInfoVO {
+  email!: string;
+  baseCoins!: number;
+  signinDayCoins!: number;
+  totalSigninDays!: number;
+  totalRequests!: number;
+  isThisDaySignin!: boolean;
+}
+
+export class UserConstantVO {
+  maxCodeValidMinutes!: number;
+  firstBaseCoins!: number;
+  dayBaseCoins!: number;
+  dayLimitCoins!: number;
+  inviteBaseCoins!: number;
+}
+
+export type UserRequestResponseVO = {
+  status: UserCheckResultVO;
+  userHasCoins: boolean;
+};
+
+export class UserFeedbackVO {
+  email: string = "";
+  title: string = "";
+  description: string = "";
+}
+
+// put here for use convenience
+export enum LocalStorageKeys {
+  userEmail = "userEmail",
+  userHasCoins = "userHasCoins",
+  zBotServiceUrl = "zBotServiceUrl",
 }
 
 class ZBotServiceClient {
@@ -62,6 +93,17 @@ class ZBotServiceClient {
     return this.client.get<UserInfoVO>(`/userInfo/${email}`, {});
   }
 
+  getRequestInfo(email: string) {
+    return this.client.get<UserRequestInfoVO>(
+      `/userInfo/${email}/requestInfo`,
+      {},
+    );
+  }
+
+  getConstant() {
+    return this.client.get<UserConstantVO>(`/userInfo/constant`, {});
+  }
+
   login(userLoginVO: UserLoginVO) {
     return this.client.post<UserCheckResultVO>(`/userInfo/login`, userLoginVO);
   }
@@ -80,50 +122,34 @@ class ZBotServiceClient {
     );
   }
 
-  updateSecret(userLoginVO: UserLoginVO) {
+  sendFeedback(feedbackVO: UserFeedbackVO) {
     return this.client.post<UserCheckResultVO>(
-      `/userInfo/updateSecret`,
-      userLoginVO,
+      `/userInfo/feedback`,
+      feedbackVO,
     );
   }
 
   updateRequest(email: string) {
-    return this.client.post<UserCheckResultVO>(
-      `/userInfo/updateRequest/${email}`,
+    return this.client.post<UserRequestResponseVO>(
+      `/userInfo/${email}/updateRequest`,
       {},
     );
   }
 
   sendVerifyCode(email: string) {
     return this.client.post<UserCheckResultVO>(
-      `/userInfo/verifyCode/${email}`,
+      `/userInfo/${email}/verifyCode`,
+      email,
+    );
+  }
+
+  signin(email: string) {
+    return this.client.post<UserCheckResultVO>(
+      `/userInfo/${email}/signin`,
       email,
     );
   }
 }
-
-// put here for use convenience
-export const userLocalStorage = (() => {
-  const UserEmailKey = "UserEmailKey";
-
-  const set = (userEmail: string) => {
-    localStorage.setItem(UserEmailKey, userEmail);
-  };
-
-  const get = () => {
-    return localStorage.getItem(UserEmailKey);
-  };
-
-  const remove = () => {
-    localStorage.removeItem(UserEmailKey);
-  };
-
-  return {
-    set,
-    get,
-    remove,
-  };
-})();
 
 const zBotServiceClient = new ZBotServiceClient();
 export default zBotServiceClient;

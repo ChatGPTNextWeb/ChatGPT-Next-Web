@@ -1,6 +1,10 @@
-import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
+import { useState } from "react";
 
 import styles from "../components/settings.module.scss";
+
+import LeftIcon from "../icons/left.svg";
+import CloseIcon from "../icons/close.svg";
+import { NavigateFunction } from "react-router";
 
 import EditIcon from "../icons/edit.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -25,13 +29,13 @@ import { Path } from "../constant";
 import { ErrorBoundary } from "../components/error";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "../components/emoji";
-import { UserInfoWindowHeader } from "./user-common";
 
 import zBotServiceClient, {
   UserCheckResultVO,
-  UserLoginVO,
-  userLocalStorage,
+  LocalStorageKeys,
+  UserRequestInfoVO,
   UserInfoVO,
+  UserConstantVO,
 } from "../zbotservice/ZBotServiceClient";
 
 const submitChange = async (userInfoVO: UserInfoVO) => {
@@ -57,8 +61,83 @@ const submitChange = async (userInfoVO: UserInfoVO) => {
   }
 };
 
+const toSignin = async (email: string) => {
+  try {
+    const result = await zBotServiceClient.signin(email);
+    if (result === UserCheckResultVO.success) {
+      showToast("签到成功");
+    } else if (result === UserCheckResultVO.notFound) {
+      showToast("邮箱尚未注册, 请先注册");
+    } else if (result === UserCheckResultVO.Signined) {
+      showToast("今日已签到, 无须多次签到");
+    } else {
+      showToast("签到失败, 请重新签到");
+    }
+  } catch (error) {
+    console.log("db access failed:"), error;
+  }
+};
+
+function UserbalanceInfo(userEmail: string) {
+  const [userRequestInfoVO, setuserRequestInfoVO] = useState(
+    new UserRequestInfoVO(),
+  );
+  zBotServiceClient.getRequestInfo(userEmail).then((item) => {
+    setuserRequestInfoVO(item);
+  });
+
+  const [userConstantVO, setUserConstantVO] = useState(new UserConstantVO());
+  zBotServiceClient.getConstant().then((item) => {
+    setUserConstantVO(item);
+  });
+
+  return (
+    <List>
+      <ListItem
+        title="签到领取AI币"
+        subTitle={`每日签到领取${userConstantVO.dayBaseCoins}个基础AI币,${userConstantVO.dayLimitCoins}个限时AI币`}
+      >
+        <label>
+          {" "}
+          {"已累计签到 " + `${userRequestInfoVO.totalSigninDays}` + "天"}
+        </label>
+
+        {userRequestInfoVO.isThisDaySignin === true ? (
+          <IconButton text={"今日已签到"} bordered disabled />
+        ) : (
+          <IconButton
+            text={"去签到"}
+            bordered
+            onClick={() => toSignin(userEmail)}
+          />
+        )}
+      </ListItem>
+      <ListItem title="基础AI币余额" subTitle="不会清空, 注册+邀请+签到 等获取">
+        <label> {userRequestInfoVO.baseCoins}</label>
+      </ListItem>
+      <ListItem title="限时AI币余额" subTitle={`限时1天, 0点清空`}>
+        <label> {userRequestInfoVO.signinDayCoins}</label>
+      </ListItem>
+      <ListItem title="每条消息消耗AI币" subTitle="先限时币, 再基础币">
+        <label> {1}</label>
+      </ListItem>
+
+      <ListItem title="总消息数">
+        <label> {userRequestInfoVO.totalRequests}</label>
+      </ListItem>
+      {/* <ListItem title="升级服务">
+        <IconButton
+          text="升级"
+          bordered
+          onClick={() => showToast("开发小哥加班加点中, 敬请期待")}
+        />
+      </ListItem> */}
+    </List>
+  );
+}
+
 export function UserLoginDetail() {
-  let userEmail = userLocalStorage.get() as string;
+  let userEmail = localStorage.getItem(LocalStorageKeys.userEmail) as string;
 
   const navigate = useNavigate();
 
@@ -70,24 +149,51 @@ export function UserLoginDetail() {
   const [occupation, setOccupation] = useState("");
   const [updateButton, setUpdateButton] = useState(false);
 
-  // the dault value should not be userNickName, otherwise, the modify will not work
-  const [userNickNameDault, setuserNickNameDault] = useState("");
-  const [occupationDefault, setOccupationDefault] = useState("");
-  const [userInviterDefault, setUserInviterDefault] = useState("");
-
-  let userInfo = zBotServiceClient.getUserInfo(userEmail);
-  userInfo.then((value) => {
-    setuserNickNameDault(value.nickName);
-    setOccupationDefault(value.occupation);
-    setUserInviterDefault(value.inviter);
+  // db UserInfo value
+  const [dbUserInfoVO, setDbUserInfoVO] = useState(new UserInfoVO());
+  zBotServiceClient.getUserInfo(userEmail).then((item) => {
+    setDbUserInfoVO(item);
   });
 
-  let userInfoVO: UserInfoVO = {
-    email: userEmail,
-    nickName: userNickName,
-    occupation: occupation,
-    inviter: userInviterDefault, // inviter can not be changed
-  };
+  // to update db
+  let userInfoVO = new UserInfoVO();
+  userInfoVO.email = userEmail;
+  userInfoVO.nickName = userNickName;
+  userInfoVO.occupation = occupation;
+
+  function UserInfoWindowHeader({ navigate }: { navigate: NavigateFunction }) {
+    return (
+      <div className="window-header">
+        <div className="window-header-title">
+          <div className="window-header-main-title">{"用户信息"}</div>
+        </div>
+        <div className="window-actions">
+          <div className="window-action-button">
+            <IconButton
+              icon={<LeftIcon />}
+              onClick={() => {
+                updateButton && submitChange(userInfoVO); // save change
+                navigate(Path.Settings);
+              }}
+              bordered
+              title="返回"
+            ></IconButton>
+          </div>
+          <div className="window-action-button">
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={() => {
+                updateButton && submitChange(userInfoVO); // save change
+                navigate(Path.Home);
+              }}
+              bordered
+              title={Locale.Settings.Actions.Close}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
@@ -103,7 +209,7 @@ export function UserLoginDetail() {
               type="text"
               name="username"
               placeholder="昵称"
-              defaultValue={userNickNameDault}
+              defaultValue={dbUserInfoVO.nickName}
               onChange={(e) => {
                 setUpdateButton(true);
                 setuserNickName(e.target.value);
@@ -113,15 +219,14 @@ export function UserLoginDetail() {
           <ListItem title="职业*">
             <input
               type="text"
-              name="username"
+              name="occupation"
               placeholder="职业"
-              defaultValue={occupationDefault}
+              defaultValue={dbUserInfoVO.occupation}
               onChange={(e) => {
                 setUpdateButton(true);
                 setOccupation(e.target.value);
               }}
             ></input>
-            {/* <text> occupation </text> */}
           </ListItem>
 
           {/* TODO: Adding user png as avatar */}
@@ -147,29 +252,14 @@ export function UserLoginDetail() {
             </Popover>
           </ListItem>
 
-          <ListItem title={"密码"}>
-            {
-              <IconButton
-                icon={<EditIcon />}
-                text={"修改"}
-                onClick={() => navigate(Path.UserPasswordReset)}
-              />
-            }
-          </ListItem>
           <ListItem title={"邀请人"}>
-            <label>{userInviterDefault}</label>
+            <label>{dbUserInfoVO.inviterEmail}</label>
           </ListItem>
         </List>
 
+        {UserbalanceInfo(userEmail)}
+
         <ListItem title="">
-          {
-            <IconButton
-              icon={<SendWhiteIcon />}
-              text={"提交修改"}
-              disabled={!updateButton}
-              onClick={() => submitChange(userInfoVO)}
-            />
-          }
           {
             <IconButton
               icon={<SendWhiteIcon />}
@@ -177,7 +267,9 @@ export function UserLoginDetail() {
               type="primary"
               onClick={() => {
                 showToast("退出登录成功");
-                userLocalStorage.remove();
+                // remove all local save
+                localStorage.removeItem(LocalStorageKeys.userEmail);
+                localStorage.removeItem(LocalStorageKeys.userHasCoins);
                 navigate(Path.Settings);
               }}
             />

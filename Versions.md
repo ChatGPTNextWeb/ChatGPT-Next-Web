@@ -1,5 +1,18 @@
 # 1. Versions
 
+## v1.0.0
+publish time: 2023-05-26
+
+Features: 
+ - Migrate to new azure account
+
+# --------
+
+## v1.2.2
+publish time: 2023-05-25
+
+Features: 
+ - Add AI coins and feedback record
 
 ## v1.2.1
 publish time: 2023-05-22

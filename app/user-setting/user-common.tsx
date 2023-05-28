@@ -12,6 +12,8 @@ import zBotServiceClient, {
 } from "../zbotservice/ZBotServiceClient";
 
 export async function sendVerifyCode(userEmail: string) {
+  console.log("userEmail: ", userEmail);
+
   if (userEmail.trim().length === 0) {
     showToast("邮箱不可为空, 请重新输入");
     return;

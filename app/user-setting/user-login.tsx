@@ -29,41 +29,42 @@ import { UserInfoWindowHeader } from "./user-common";
 import zBotServiceClient, {
   UserCheckResultVO,
   UserLoginVO,
-  userLocalStorage,
-  UserInfoVO,
+  LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import { sendVerifyCode } from "./user-common";
 
 export function UserLogin() {
   const navigate = useNavigate();
 
   const [userEmail, setUserEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [verifyCode, setVerifyCode] = useState(0);
 
-  let userLoginVO: UserLoginVO = { email: userEmail, password: password };
+  let userLoginVO: UserLoginVO = { email: userEmail, verifyCode: verifyCode };
 
   // put as within function, so that the hooks nvvigate can be used
   const submitLogin = async (userLoginVO: UserLoginVO) => {
     if (userLoginVO.email.trim().length === 0) {
       showToast("邮箱不可为空");
       return;
-    } else if (userLoginVO.password.trim().length === 0) {
-      showToast("密码不可为空");
+    } else if (userLoginVO.verifyCode === 0) {
+      showToast("验证码不可为空");
       return;
     }
 
     try {
       const result = await zBotServiceClient.login(userLoginVO);
-      if (result === UserCheckResultVO.success) {
+
+      if (result === UserCheckResultVO.emailInvalid) {
+        showToast("邮箱格式错误, 请重新输入");
+      } else if (result === UserCheckResultVO.verifyCodeInvalid) {
+        showToast("验证码错误, 请重新输入");
+      } else if (result === UserCheckResultVO.notFound) {
+        showToast("该邮箱尚未注册, 请先注册");
+      } else if (result === UserCheckResultVO.success) {
         // save to local storage, and load it when submit message
-        userLocalStorage.set(userLoginVO.email);
+        localStorage.setItem(LocalStorageKeys.userEmail, userLoginVO.email);
         showToast("登录成功，欢迎回来！");
         navigate(Path.Home); // go to home page
-      } else if (result === UserCheckResultVO.emailInvalid) {
-        showToast("邮箱格式不争取, 请重新输入");
-      } else if (result === UserCheckResultVO.notFound) {
-        showToast("邮箱尚未注册, 请先注册");
-      } else if (result === UserCheckResultVO.passwordError) {
-        showToast("密码错误, 请重新输入");
       } else {
         showToast("登录失败, 请重新输入");
       }
@@ -86,17 +87,25 @@ export function UserLogin() {
               onChange={(e) => setUserEmail(e.target.value)}
             ></input>
           </ListItem>
-          <ListItem title="密码*">
+          <ListItem title={"邮箱验证码*"}>
             <input
-              type="password"
-              name="password"
-              placeholder="字母、数字或下划线组成"
-              onChange={(e) => setPassword(e.target.value)}
+              type="number"
+              name="phonecode"
+              placeholder="验证码"
+              defaultValue={""}
+              onChange={(e) => setVerifyCode(Number(e.target.value))}
+            ></input>
+            <IconButton
+              text={"发送验证码"}
+              bordered
+              onClick={() => sendVerifyCode(userEmail)}
             />
           </ListItem>
         </List>
 
         <ListItem title="">
+          {/* an empty button for placeholder */}
+          {<IconButton />}
           {
             <IconButton
               icon={<SendWhiteIcon />}
@@ -107,19 +116,10 @@ export function UserLogin() {
               }}
             />
           }
-        </ListItem>
-
-        <ListItem title="更多选项">
           {
             <IconButton
-              icon={<SendWhiteIcon />}
-              text={"重置密码"}
-              onClick={() => navigate(Path.UserPasswordReset)}
-            />
-          }
-          {
-            <IconButton
-              icon={<SendWhiteIcon />}
+              // icon={<SendWhiteIcon />}
+              bordered
               text={"注册"}
               onClick={() => navigate(Path.UserRegister)}
             />

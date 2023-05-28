@@ -19,6 +19,7 @@ import {
   Popover,
   Select,
   showToast,
+  showModal,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -41,7 +42,11 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
-import { userLocalStorage } from "../zbotservice/ZBotServiceClient";
+import { LocalStorageKeys } from "../zbotservice/ZBotServiceClient";
+import { about, feedback } from "../user-setting/user-feedback";
+import zBotServiceClient, {
+  UserConstantVO,
+} from "../zbotservice/ZBotServiceClient";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -207,26 +212,6 @@ function formatVersionDate(t: string) {
   ].join("");
 }
 
-function getCurrentUser1() {
-  let userEmail = userLocalStorage.get();
-
-  if (userEmail !== null) {
-    return (
-      <div>
-        <ListItem title="当前已登录用户">
-          <label>{userEmail}</label>
-        </ListItem>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <ListItem title="当前未登录"></ListItem>
-    </div>
-  );
-}
-
 export function Settings() {
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -302,84 +287,24 @@ export function Settings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // get userConstant
+  const [userConstantVO, setUserConstantVO] = useState(new UserConstantVO());
+  zBotServiceClient.getConstant().then((item) => {
+    setUserConstantVO(item);
+  });
+
   function getUserInfo() {
-    let userEmail = userLocalStorage.get();
-
-    if (userEmail !== null) {
-      return (
-        <div>
-          <ListItem title="当前已登录">
-            <label> {userEmail}</label>
-            <IconButton
-              icon={<EditIcon />}
-              text="详情"
-              onClick={() => navigate(Path.UserLoginDetail)}
-            />
-          </ListItem>
-        </div>
-      );
-    }
-    return (
-      <div>
-        <ListItem title="当前未登录">
-          {
-            <IconButton
-              icon={<EditIcon />}
-              text="去登录"
-              onClick={() => navigate(Path.UserLogin)}
-            />
-          }
-        </ListItem>
-      </div>
-    );
-  }
-
-  function getUserInfo2() {
-    let userEmail = userLocalStorage.get();
+    let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
 
     if (userEmail !== null) {
       return (
         <div>
           <List>
-            <ListItem title="当前已登录">
-              <label> {userEmail}</label>
+            <ListItem title="当前已登录" subTitle={userEmail}>
               <IconButton
-                icon={<EditIcon />}
-                text="详情"
+                text="个人中心"
                 bordered
                 onClick={() => navigate(Path.UserLoginDetail)}
-              />
-            </ListItem>
-          </List>
-          <List>
-            <ListItem
-              title="签到领取AI币"
-              subTitle="每日签到领取+2AI币, 记入基础AI币"
-            >
-              <label> {"已累计签到 " + "x" + "天"}</label>
-              <IconButton
-                text="签到"
-                bordered
-                onClick={() => showToast("开发小哥加班加点中, 敬请期待")}
-              />
-            </ListItem>
-            <ListItem
-              title="基础AI币余额"
-              subTitle="不会清空, 注册+邀请+签到+购买 等获取"
-            >
-              <label> {"TODO"}</label>
-            </ListItem>
-            <ListItem
-              title="每日赠送AI币余额"
-              subTitle="每日赠送+5个AI币, 0点清空"
-            >
-              <label> {"TODO"}</label>
-            </ListItem>
-            <ListItem title="升级服务">
-              <IconButton
-                text="升级"
-                bordered
-                onClick={() => showToast("开发小哥加班加点中, 敬请期待")}
               />
             </ListItem>
           </List>
@@ -455,7 +380,7 @@ export function Settings() {
           <div> {getUserInfo()} </div>
         </List> */}
 
-        {getUserInfo2()}
+        {getUserInfo()}
 
         <List>
           {/* TODO: Sync our own latest version */}
@@ -705,6 +630,21 @@ export function Settings() {
             }}
           />
         </List>
+
+        <List>
+          <ListItem title="关于我们">
+            <IconButton
+              text="详情"
+              bordered
+              onClick={() => about(userConstantVO)}
+            />
+          </ListItem>
+          <ListItem title="反馈我们" subTitle="有价值的反馈会以AI币作为奖赏">
+            <IconButton text="反馈" bordered onClick={feedback} />
+          </ListItem>
+        </List>
+
+        {/* {about_feedback()} */}
 
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
