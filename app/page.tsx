@@ -38,7 +38,3 @@ export default function App() {
   );
 }
 
-      {serverConfig?.isVercel && <Analytics />}
-    </>
-  );
-}
