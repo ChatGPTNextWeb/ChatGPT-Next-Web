@@ -1,16 +1,14 @@
 # 1. Environment variables
-Update Dockerfile by editing OPENAI_API_KEY and CODE:
-- OPENAI_API_KEY: "xxx"
-- CODE: "xxx"  // Optional
+
 
 # 2. How to deploy
 
 ## 1). Create Azure Container Registry
 Open [Azure Portal](https://portal.azure.com/#home), create a Container registry.
 
-I have: [ChatMossContainerRegistry](https://portal.azure.com/#@xiaolinge360gmail.onmicrosoft.com/resource/subscriptions/900e34fe-4cd6-4fee-8583-080482d4d92f/resourceGroups/ResourceGroupXinglinYu/providers/Microsoft.ContainerRegistry/registries/ChatMossContainerRegistry/accessKey)
+I have: [ZCareersContainerRegistry](https://portal.azure.com/#@xinglinyuoutlook.onmicrosoft.com/resource/subscriptions/c58b3ecb-c919-4f67-a314-d9d69695de4d/resourceGroups/ZCareersResourceGroup/providers/Microsoft.ContainerRegistry/registries/ZCareersContainerRegistry/accessKey)
 
-In Access keys, Enable `Admin user` to get `Username` and `password`
+In `Access keys`, Enable `Admin user` to get `Username` and `password`
 
 ## 2). Build docker image
 Usage:
@@ -21,10 +19,17 @@ docker push <ACR>.azurecr.io/<IMAGE NAME>:<TAG>
 ``` 
 so that
 ```shell
-docker build -t ChatMossContainerRegistry.azurecr.io/next-web-image:v1.1.0 .
-docker login ChatMossContainerRegistry.azurecr.io --username ChatMossContainerRegistry --password $password
-docker push ChatMossContainerRegistry.azurecr.io/next-web-image:v1.1.0
+docker build -t ZCareersContainerRegistry.azurecr.io/zbotportal-image:v1.0.0 .
+docker push ZCareersContainerRegistry.azurecr.io/zbotportal-image:v1.0.0
 ``` 
+if need login, using
+```shell
+az login
+```
+or 
+```shell
+docker login ZCareersContainerRegistry.azurecr.io --username ZCareersContainerRegistry --password $password
+```
 
 ## 3). Deploy image to Azure Web App
 Open [Azure Portal](https://portal.azure.com/#home), Create an Azure Web App.
@@ -32,6 +37,10 @@ Open [Azure Portal](https://portal.azure.com/#home), Create an Azure Web App.
 I have [zcareers](https://portal.azure.com/#@xiaolinge360gmail.onmicrosoft.com/resource/subscriptions/900e34fe-4cd6-4fee-8583-080482d4d92f/resourceGroups/ResourceGroupXinglinYu/providers/Microsoft.Web/sites/zcareers/appServices)
 
 In `Deployment Center` tab, set `Azure Container Registry` as `Registry source`. 
+
+In `Configuration`, and these env variables:
+  - `OPENAI_API_KEY`
+  - `ZBotServiceUrl`: TBD
 
 
 # 3. Local Development

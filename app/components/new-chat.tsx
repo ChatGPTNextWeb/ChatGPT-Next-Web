@@ -9,7 +9,7 @@ import LightningIcon from "../icons/lightning.svg";
 import EyeIcon from "../icons/eye.svg";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { Mask, useMaskStore } from "../store/mask";
+import { Mask, useMaskStore, createEmptyMask } from "../store/mask";
 import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
@@ -60,6 +60,36 @@ function MaskItem(props: { mask: Mask; onClick?: () => void }) {
 }
 
 function useMaskGroup(masks: Mask[]) {
+  const [groups, setGroups] = useState<Mask[][]>([]);
+
+  useEffect(() => {
+    const appBody = document.getElementById(SlotID.AppBody);
+    if (!appBody || masks.length === 0) return;
+
+    const rect = appBody.getBoundingClientRect();
+    const maxWidth = rect.width;
+    const maskItemWidth = 120;
+
+    let maskIndex = 0;
+    const nextMask = () =>
+      maskIndex < masks.length ? masks[maskIndex++] : createEmptyMask();
+
+    const cols = Math.floor(maxWidth / maskItemWidth) - 1;
+    const rows = Math.ceil(masks.length / cols);
+
+    const newGroups = new Array(rows)
+      .fill(0)
+      .map((_, _i) => new Array(cols).fill(0).map((_, j) => nextMask()));
+
+    setGroups(newGroups);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return groups;
+}
+
+function useMaskGroupOrigin(masks: Mask[]) {
   const [groups, setGroups] = useState<Mask[][]>([]);
 
   useEffect(() => {

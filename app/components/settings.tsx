@@ -19,6 +19,7 @@ import {
   Popover,
   Select,
   showToast,
+  showModal,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -41,7 +42,11 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
-import { userLocalStorage } from "../zbotservice/ZBotServiceClient";
+import { LocalStorageKeys } from "../zbotservice/ZBotServiceClient";
+import { about, feedback } from "../user-setting/user-feedback";
+import zBotServiceClient, {
+  UserConstantVO,
+} from "../zbotservice/ZBotServiceClient";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -207,26 +212,6 @@ function formatVersionDate(t: string) {
   ].join("");
 }
 
-function getCurrentUser1() {
-  let userEmail = userLocalStorage.get();
-
-  if (userEmail !== null) {
-    return (
-      <div>
-        <ListItem title="当前已登录用户">
-          <label>{userEmail}</label>
-        </ListItem>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <ListItem title="当前未登录"></ListItem>
-    </div>
-  );
-}
-
 export function Settings() {
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -302,6 +287,47 @@ export function Settings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // get userConstant
+  const [userConstantVO, setUserConstantVO] = useState(new UserConstantVO());
+  zBotServiceClient.getConstant().then((item) => {
+    setUserConstantVO(item);
+  });
+
+  function getUserInfo() {
+    let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+
+    if (userEmail !== null) {
+      return (
+        <div>
+          <List>
+            <ListItem title="当前已登录" subTitle={userEmail}>
+              <IconButton
+                text="个人中心"
+                bordered
+                onClick={() => navigate(Path.UserLoginDetail)}
+              />
+            </ListItem>
+          </List>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <List>
+          <ListItem title="当前未登录">
+            {
+              <IconButton
+                icon={<EditIcon />}
+                text="去登录"
+                onClick={() => navigate(Path.UserLogin)}
+              />
+            }
+          </ListItem>
+        </List>
+      </div>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <div className="window-header">
@@ -350,43 +376,11 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         {/* Account */}
-        <List>
-          <ListItem title={"用户信息"}>
-            {
-              <IconButton
-                icon={<EditIcon />}
-                text={Locale.Settings.Prompt.Edit}
-                // text="查看与编辑"
-                onClick={() => navigate(Path.UserLogin)}
-              />
-            }
-          </ListItem>
+        {/* <List>
+          <div> {getUserInfo()} </div>
+        </List> */}
 
-          <div> {getCurrentUser1()} </div>
-
-          {/* TODO: Adding user png as avatar */}
-          {/* <ListItem title={Locale.Settings.Avatar}>
-            <Popover
-              onClose={() => setShowEmojiPicker(false)}
-              content={
-                <AvatarPicker
-                  onEmojiClick={(avatar: string) => {
-                    updateConfig((config) => (config.avatar = avatar));
-                    setShowEmojiPicker(false);
-                  }}
-                />
-              }
-              open={showEmojiPicker}
-            >
-              <div
-                className={styles.avatar}
-                onClick={() => setShowEmojiPicker(true)}
-              >
-                <Avatar avatar={config.avatar} />
-              </div>
-            </Popover>
-          </ListItem> */}
-        </List>
+        {getUserInfo()}
 
         <List>
           {/* TODO: Sync our own latest version */}
@@ -636,6 +630,21 @@ export function Settings() {
             }}
           />
         </List>
+
+        <List>
+          <ListItem title="关于我们">
+            <IconButton
+              text="详情"
+              bordered
+              onClick={() => about(userConstantVO)}
+            />
+          </ListItem>
+          <ListItem title="反馈我们" subTitle="有价值的反馈会以AI币作为奖赏">
+            <IconButton text="反馈" bordered onClick={feedback} />
+          </ListItem>
+        </List>
+
+        {/* {about_feedback()} */}
 
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
