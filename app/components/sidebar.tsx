@@ -110,8 +110,6 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
 
-  useHotKey();
-
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
