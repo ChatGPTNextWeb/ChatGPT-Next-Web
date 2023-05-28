@@ -1,4 +1,20 @@
 import { Analytics } from cel/analytics/react";
+
+import { Home } from "./components/home";
+
+import { getServerSideConfig } from "./config/server";
+
+const serverConfig = getServerSideConfig();
+
+export default async function App() {
+  return (
+    <>
+      <Home />
+      {serverConfig?.isVercel && <Analytics />}
+    </>
+  );
+}
+
 import Head from 'next/head'
 
 function MyApp({ Component, pageProps }) {
@@ -24,19 +40,3 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp
-
-
-import { Home } from "./components/home";
-
-import { getServerSideConfig } from "./config/server";
-
-const serverConfig = getServerSideConfig();
-
-export default async function App() {
-  return (
-    <>
-      <Home />
-      {serverConfig?.isVercel && <Analytics />}
-    </>
-  );
-}
