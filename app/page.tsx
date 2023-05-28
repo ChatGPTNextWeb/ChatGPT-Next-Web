@@ -1,6 +1,10 @@
 import Head from 'next/head'
+import { Home } from "./components/home";
+import { getServerSideConfig } from "./config/server";
 
-function MyApp({ Component, pageProps }) {
+const serverConfig = getServerSideConfig();
+
+export default function App() {
   return (
     <>
       <Head>
@@ -14,12 +18,12 @@ function MyApp({ Component, pageProps }) {
           gtag('config', 'G-3XG47CPH77');
         </script>
       </Head>
-      <Component {...pageProps} />
+      <Home />
+      {serverConfig?.isVercel && <Analytics />}
     </>
-  )
+  );
 }
 
-export default MyApp
 
 import { Analytics } from "@vercel/analytics/react";
 
