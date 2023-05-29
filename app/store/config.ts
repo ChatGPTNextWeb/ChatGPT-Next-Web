@@ -53,7 +53,7 @@ const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
   {
-    name: "gpt-4",
+    name: "gpt-4-poe",
     available: ENABLE_GPT4,
   },
   {
@@ -69,7 +69,7 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "gpt-3.5-turbo",
+    name: "gpt-3.5-turbo-poe",
     available: true,
   },
   {
