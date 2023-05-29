@@ -131,7 +131,8 @@
         position: absolute;
         top: 0px;
         left: 0px;
-        transform: scale(2);
+        height: 50%;
+        transform: scale(1.5);
       }
 
       .main-title {
@@ -184,6 +185,10 @@
         max-width: calc(100% - 104px);
         box-shadow: var(--card-shadow);
         border: var(--border-in-light);
+
+        * {
+          overflow: hidden;
+        }
       }
 
       &-assistant {
