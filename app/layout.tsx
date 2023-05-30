@@ -20,7 +20,7 @@ export const metadata = {
   },
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+    { media: "(prefers-color-scheme: dark)", color: "#1B1D24" },
   ],
   appleWebApp: {
     title: "Cognitiev PRO",
