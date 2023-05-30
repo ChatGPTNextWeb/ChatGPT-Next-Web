@@ -30,7 +30,7 @@ export const DEFAULT_CONFIG = {
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
 
   modelConfig: {
-    model: "gpt-4-poe" as ModelType,
+    model: "gpt-4" as ModelType,
     temperature: 0.5,
     max_tokens: 8000,
     presence_penalty: 0,
@@ -57,19 +57,11 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
-    name: "gpt-4-poe",
-    available: ENABLE_GPT4,
-  },
-  {
     name: "claude+",
     available: ENABLE_GPT4,
   },
   {
     name: "claude-instant-100k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-3.5-turbo-poe",
     available: ENABLE_GPT4,
   },
   {
