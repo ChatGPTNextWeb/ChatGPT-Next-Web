@@ -42,13 +42,13 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: #333; // Changed background color to a lighter shade of black
+  background-color: #1B1D24; // Changed background color to a lighter shade of black
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgba(0, 0, 0, 0.05);
   position: relative;
   transition: width ease 0.05s;
-  color: #f0f0f0; // Changed text color to lighter shade for contrast
+  color: #fafafa; // Changed text color to lighter shade for contrast
 
   .sidebar-header-bar {
     display: flex;
