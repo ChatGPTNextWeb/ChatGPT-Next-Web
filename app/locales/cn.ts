@@ -76,7 +76,7 @@ const cn = {
     Revert: "撤销",
   },
   Settings: {
-    Title: "设置45456465",
+    Title: "设置",
     SubTitle: "设置选项",
     Actions: {
       ClearAll: "清除所有数据",
