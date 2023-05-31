@@ -1,14 +1,19 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   async rewrites() {
     const ret = [
       {
         source: "/api/proxy/:path*",
         destination: "https://api.openai.com/:path*",
+      },
+      {
+        source: "/google-fonts/:path*",
+        destination: "https://fonts.googleapis.com/:path*",
+      },
+      {
+        source: "/sharegpt",
+        destination: "https://sharegpt.com/api/conversations",
       },
     ];
 

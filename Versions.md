@@ -1,5 +1,12 @@
 # 1. Versions
 
+## v1.0.1
+publish time: 2023-06-01
+
+Features: 
+ - Merge origin/main branch
+
+
 ## v1.0.0
 publish time: 2023-05-26
 
