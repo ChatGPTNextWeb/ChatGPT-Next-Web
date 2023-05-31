@@ -65,6 +65,8 @@ const toSignin = async (email: string) => {
   try {
     const result = await zBotServiceClient.signin(email);
     if (result === UserCheckResultVO.success) {
+      // if sign in, then user can directly use the bot
+      localStorage.setItem(LocalStorageKeys.userHasCoins, "true");
       showToast("签到成功");
     } else if (result === UserCheckResultVO.notFound) {
       showToast("邮箱尚未注册, 请先注册");
