@@ -34,6 +34,16 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
+    Inputactions: {
+      Setting: "设置",
+      Changetheme: "改变主题",
+      Lightthem: "白天模式",
+      Darkthem: "黑夜模式",
+      Autothem: "自动模式",
+      Changeprompt: "改变提示文本",
+      Pickmark: "选择面具",
+      Clearcontent: "清除上下文",
+    },
   },
   Export: {
     Title: "分享聊天记录",

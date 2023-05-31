@@ -349,6 +349,7 @@ export function ChatActions(props: {
         <div
           className={`${chatStyle["chat-input-action"]} clickable`}
           onClick={props.showPromptModal}
+          title={Locale.Chat.Inputactions.Setting}
         >
           <SettingsIcon />
         </div>
@@ -357,6 +358,7 @@ export function ChatActions(props: {
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
         onClick={nextTheme}
+        title={Locale.Chat.Inputactions.Changetheme}
       >
         {theme === Theme.Auto ? (
           <AutoIcon />
@@ -370,6 +372,7 @@ export function ChatActions(props: {
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
         onClick={props.showPromptHints}
+        title={Locale.Chat.Inputactions.Changeprompt}
       >
         <PromptIcon />
       </div>
@@ -379,6 +382,7 @@ export function ChatActions(props: {
         onClick={() => {
           navigate(Path.Masks);
         }}
+        title={Locale.Chat.Inputactions.Pickmark}
       >
         <MaskIcon />
       </div>
@@ -395,6 +399,7 @@ export function ChatActions(props: {
             }
           });
         }}
+        title={Locale.Chat.Inputactions.Clearcontent}
       >
         <BreakIcon />
       </div>
