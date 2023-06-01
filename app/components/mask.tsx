@@ -13,15 +13,29 @@ import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
-import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
+import {
+  ChatMessage,
+  ModelConfig,
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+} from "../store";
 import { ROLES } from "../client/api";
-import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
+import {
+  Input,
+  List,
+  ListItem,
+  Modal,
+  Popover,
+  Select,
+  TextInput,
+} from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { downloadAs, readFromFile } from "../utils";
 import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
@@ -58,6 +72,8 @@ export function MaskConfig(props: {
   };
 
   const globalConfig = useAppConfig();
+
+  const accessStore = useAccessStore();
 
   return (
     <>
@@ -140,6 +156,17 @@ export function MaskConfig(props: {
           </ListItem>
         ) : null}
       </List>
+
+      {accessStore.enableAOAI ? (
+        <List>
+          <ListItem
+            title={Locale.Settings.AzureDeploymentName.Title}
+            subTitle={Locale.Settings.AzureDeploymentName.SubTitle}
+          >
+            <TextInput value={accessStore.azureDeployName} />
+          </ListItem>
+        </List>
+      ) : null}
 
       <List>
         <ModelConfigList
