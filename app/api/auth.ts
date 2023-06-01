@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
@@ -26,6 +27,15 @@ function parseApiKey(bearToken: string) {
 
 export function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
+
+  const { userId } = getAuth(req);
+
+  if (!userId) {
+    return {
+      error: true,
+      msg: "User not logged in",
+    };
+  }
 
   // check if it is openai api key or user token
   const { accessCode, apiKey: token } = parseApiKey(authToken);
@@ -65,5 +75,6 @@ export function auth(req: NextRequest) {
 
   return {
     error: false,
+    userId,
   };
 }

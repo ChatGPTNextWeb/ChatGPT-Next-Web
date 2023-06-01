@@ -6,9 +6,6 @@ import { useState, useEffect } from "react";
 
 import styles from "./home.module.scss";
 
-import BotIcon from "../icons/bot.svg";
-import LoadingIcon from "../icons/three-dots.svg";
-
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -23,15 +20,7 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-
-export function Loading(props: { noLogo?: boolean }) {
-  return (
-    <div className={styles["loading-content"] + " no-dark"}>
-      {!props.noLogo && <BotIcon />}
-      <LoadingIcon />
-    </div>
-  );
-}
+import { Loading } from "./loading";
 
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
@@ -80,16 +69,6 @@ export function useSwitchTheme() {
   }, [config.theme]);
 }
 
-const useHasHydrated = () => {
-  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
-
-  return hasHydrated;
-};
-
 const loadAsyncGoogleFont = () => {
   const linkEl = document.createElement("link");
   linkEl.rel = "stylesheet";
@@ -136,10 +115,6 @@ function Screen() {
 
 export function Home() {
   useSwitchTheme();
-
-  if (!useHasHydrated()) {
-    return <Loading />;
-  }
 
   return (
     <ErrorBoundary>

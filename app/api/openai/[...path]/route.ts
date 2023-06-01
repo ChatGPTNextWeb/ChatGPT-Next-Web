@@ -1,12 +1,12 @@
 import { prettyObject } from "@/app/utils/format";
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
+import { NextRequest, NextResponse } from "next/server";
 
-async function handle(
+const handle = async (
   req: NextRequest,
   { params }: { params: { path: string[] } },
-) {
+) => {
   console.log("[OpenAI Route] params ", params);
 
   const authResult = auth(req);
@@ -22,7 +22,7 @@ async function handle(
     console.error("[OpenAI] ", e);
     return NextResponse.json(prettyObject(e));
   }
-}
+};
 
 export const GET = handle;
 export const POST = handle;
