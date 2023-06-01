@@ -1,0 +1,219 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 24px;
+
+  @media only screen and (max-width: 600px) {
+    padding: 24px 0 0;
+  }
+}
+
+.scrollContainer {
+  background-color: var(--white);
+  color: var(--black);
+
+  width: 100%;
+  height: 100%;
+
+  text-align: center;
+
+  display: grid;
+  place-items: center;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+
+}
+
+@media only screen and (min-width: 600px) {
+  .tight-container {
+    --window-width: 100vw;
+    --window-height: var(--full-height);
+    --window-content-width: calc(100% - var(--sidebar-width));
+
+    background-color: var(--white);
+    color: var(--black);
+
+    width: 100%;
+    height: 100%;
+
+    text-align: center;
+
+    border-radius: 0;
+    border: 0;
+  }
+}
+
+.planContainer {
+  max-width: 90%;
+  
+  padding: 40px 60px;
+
+  border: var(--border-in-light);
+  border-radius: 20px;
+  background-color: var(--light-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); // Updated box-shadow for a modern look
+
+
+  @media only screen and (max-width: 600px) {
+    padding: 18px !important;
+    width: 100%;
+    max-width: 100%;
+    background-color: unset;
+    box-shadow: unset;
+    border: none;
+  }
+}
+
+.plans {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.plan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px 24px;
+  background:rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+
+  .type {
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--black);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.25rem;
+    width: calc(100% + 0.25rem);
+    font-size: 0.75em;
+    line-height: 1.5;
+    font-weight: 400;
+    margin-bottom: 0.875rem !important;
+  }
+
+  .price {
+    color: #FF7A7A;
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.375em;
+    line-height: 1.25;
+    font-weight: 800;
+    margin: 4px;
+    background-image: linear-gradient(45deg, #695EE6 0%, #FF7A7A 85%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .description {
+    color: var(--black);
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    line-height: 1.875;
+    font-weight: 600;
+  }
+
+  .button {
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 60px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+
+    &::before {
+      content: '';
+      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      background-size: 400%;
+      z-index: -1;
+      filter: blur(8px);
+      width: calc(100% + 10px);
+      height: calc(100% + 10px);
+      animation: glowing 20s linear infinite;
+      opacity: 0;
+      transition: opacity .3s ease-in-out;
+      border-radius: 60px;
+    }
+    
+    &::after {
+      z-index: -1;
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      left: 0;
+      top: 0;
+      border-radius: 60px;
+    }
+
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+}
+
+.addonsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 48px;
+}
+
+.addons {
+  display: flex;
+  margin-top: 32px;
+  gap: 64px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .addon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 24px 24px;
+    background:rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+
+    .price {
+      color: #FF7A7A;
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.375em;
+      line-height: 1.25;
+      font-weight: 800;
+      margin: 4px;
+      background-image: linear-gradient(45deg, #695EE6 0%, #FF7A7A 85%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .description {
+      color: var(--black);
+      font-family: 'Inter', sans-serif;
+      font-size: 1em;
+      line-height: 1.875;
+      font-weight: 600;
+    }
+  }
+}
