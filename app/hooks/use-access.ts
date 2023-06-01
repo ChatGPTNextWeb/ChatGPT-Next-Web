@@ -25,7 +25,7 @@ const useAccessStore = create<AccessState>((set) => ({
   update: (values) =>
     set((state) => ({
       ...state,
-      values,
+      ...values,
     })),
 }));
 

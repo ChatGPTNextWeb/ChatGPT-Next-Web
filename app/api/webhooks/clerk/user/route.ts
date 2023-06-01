@@ -4,12 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { deleteCustomer } from "@/app/api/chargebee";
 import { updateCustomer } from "@/app/api/chargebee";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 const handle = async (req: NextRequest) => {
   const event = await verifyWebhook(req);
 
