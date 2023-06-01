@@ -228,6 +228,11 @@ const en: RequiredLocaleType = {
     Config: {
       Avatar: "Bot Avatar",
       Name: "Bot Name",
+      Delimiters: {
+        Title: "Input Delimiters",
+        SubTitle:
+          "User input will be wrapped by the left and right delimiters if provided",
+      },
       Sync: {
         Title: "Use Global Config",
         SubTitle: "Use global config in this chat",

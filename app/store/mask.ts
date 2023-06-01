@@ -16,6 +16,8 @@ export type Mask = {
   modelConfig: ModelConfig;
   lang: Lang;
   builtin: boolean;
+  leftDelimiter?: string;
+  rightDelimiter?: string;
 };
 
 export const DEFAULT_MASK_STATE = {

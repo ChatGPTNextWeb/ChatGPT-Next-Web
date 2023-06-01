@@ -225,6 +225,10 @@ const cn = {
     Config: {
       Avatar: "角色头像",
       Name: "角色名称",
+      Delimiters: {
+        Title: "输入分隔符",
+        SubTitle: "设置分隔符后，用户输入内容会被左右分隔符包裹",
+      },
       Sync: {
         Title: "使用全局设置",
         SubTitle: "当前对话是否使用全局模型设置",

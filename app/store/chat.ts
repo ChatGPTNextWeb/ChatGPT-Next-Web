@@ -238,7 +238,9 @@ export const useChatStore = create<ChatStore>()(
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
-          content,
+          content: `${session.mask.leftDelimiter ?? ""}${content}${
+            session.mask.rightDelimiter ?? ""
+          }`,
         });
 
         const botMessage: ChatMessage = createMessage({

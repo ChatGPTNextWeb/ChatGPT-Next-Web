@@ -104,6 +104,29 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
         <ListItem
+          title={Locale.Mask.Config.Delimiters.Title}
+          subTitle={Locale.Mask.Config.Delimiters.SubTitle}
+        >
+          <input
+            type="text"
+            value={props.mask.leftDelimiter}
+            onInput={(e) =>
+              props.updateMask((mask) => {
+                mask.leftDelimiter = e.currentTarget.value;
+              })
+            }
+          ></input>
+          <input
+            type="text"
+            value={props.mask.rightDelimiter}
+            onInput={(e) =>
+              props.updateMask((mask) => {
+                mask.rightDelimiter = e.currentTarget.value;
+              })
+            }
+          ></input>
+        </ListItem>
+        <ListItem
           title={Locale.Mask.Config.HideContext.Title}
           subTitle={Locale.Mask.Config.HideContext.SubTitle}
         >
