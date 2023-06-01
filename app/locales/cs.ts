@@ -71,19 +71,6 @@ const cs: LocaleType = {
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Všechny jazyky",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-      },
     },
     Avatar: "Avatar",
     FontSize: {
@@ -164,7 +151,7 @@ const cs: LocaleType = {
       Title: "Max. počet tokenů",
       SubTitle: "Maximální délka vstupního tokenu a generovaných tokenů",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Přítomnostní korekce",
       SubTitle: "Větší hodnota zvyšuje pravděpodobnost nových témat.",
     },
