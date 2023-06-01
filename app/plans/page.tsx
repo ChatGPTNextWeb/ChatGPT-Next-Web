@@ -1,10 +1,10 @@
 "use client";
 
+import { UserButton } from "@clerk/nextjs";
 import { IconButton } from "../components/button";
 import { useSwitchTheme } from "../components/home";
 import styles from "./styles.module.scss";
 
-const mainContainer = styles.scrollContainer + " " + styles["tight-container"];
 const Plans = () => {
   useSwitchTheme();
 
@@ -13,7 +13,15 @@ const Plans = () => {
   };
 
   return (
-    <div className={mainContainer}>
+    <div className={`${styles.scrollContainer} ${styles["tight-container"]}`}>
+      <div className={styles.profileContainer}>
+        <UserButton
+          signInUrl="/signin"
+          userProfileMode="navigation"
+          userProfileUrl="/account"
+          afterSignOutUrl="https://cognitiev.com"
+        />
+      </div>
       <div className={styles.container}>
         <h1 className={styles.heading}>Plans</h1>
         <div className={styles.planContainer}>

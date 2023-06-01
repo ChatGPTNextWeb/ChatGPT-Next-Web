@@ -164,14 +164,13 @@
 
 .chat-item {
   padding: 10px 14px;
-  background-color: var(--white);
   border-radius: 0px;
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
-  border: 2px solid transparent;
+  border: 2px solid var(--color-neutral-muted);
   position: relative;
 }
 

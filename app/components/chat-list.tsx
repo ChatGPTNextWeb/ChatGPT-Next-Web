@@ -129,26 +129,48 @@ export function ChatList(props: { narrow?: boolean }) {
             {...provided.droppableProps}
           >
             {sessions.map((item, i) => (
-              <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
-                index={i}
-                selected={i === selectedIndex}
-                onClick={() => {
-                  navigate(Path.Chat);
-                  selectSession(i);
-                }}
-                onDelete={() => {
-                  if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
-                    chatStore.deleteSession(i);
-                  }
-                }}
-                narrow={props.narrow}
-                mask={item.mask}
-              />
+              <>
+                <ChatItem
+                  title={item.topic}
+                  time={new Date(item.lastUpdate).toLocaleString()}
+                  count={item.messages.length}
+                  key={item.id}
+                  id={item.id}
+                  index={i}
+                  selected={i === selectedIndex}
+                  onClick={() => {
+                    navigate(Path.Chat);
+                    selectSession(i);
+                  }}
+                  onDelete={() => {
+                    if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
+                      chatStore.deleteSession(i);
+                    }
+                  }}
+                  narrow={props.narrow}
+                  mask={item.mask}
+                />
+                <ChatItem
+                  title={item.topic}
+                  time={new Date(item.lastUpdate).toLocaleString()}
+                  count={item.messages.length}
+                  key={item.id}
+                  id={item.id}
+                  index={i}
+                  selected={i !== selectedIndex}
+                  onClick={() => {
+                    navigate(Path.Chat);
+                    selectSession(i);
+                  }}
+                  onDelete={() => {
+                    if (!props.narrow || confirm(Locale.Home.DeleteChat)) {
+                      chatStore.deleteSession(i);
+                    }
+                  }}
+                  narrow={props.narrow}
+                  mask={item.mask}
+                />
+              </>
             ))}
             {provided.placeholder}
           </div>

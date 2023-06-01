@@ -13,6 +13,7 @@
 
 .scrollContainer {
   background-color: var(--white);
+  position: relative;
   color: var(--black);
 
   width: 100%;
@@ -25,8 +26,12 @@
 
   overflow-y: scroll;
   overflow-x: hidden;
+}
 
-
+.profileContainer {
+  position: absolute;
+  top: 24px;
+  right: 24px;
 }
 
 @media only screen and (min-width: 600px) {

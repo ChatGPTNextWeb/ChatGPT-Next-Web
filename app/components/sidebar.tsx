@@ -126,15 +126,15 @@ export function SideBar(props: { className?: string }) {
             Your Ultimate AI Sidekick!
           </div>
         </div>
-         <div className={styles["sidebar-profile-container"]}>
+        <div className={styles["sidebar-profile-container"]}>
           <UserButton
             signInUrl="/signin"
             userProfileMode="navigation"
             userProfileUrl="/account"
-            afterSignOutUrl="/"
+            afterSignOutUrl="https://cognitiev.com"
           />
         </div>
-       
+
         {/* <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div> */}
@@ -185,7 +185,7 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-        {/* <div className={styles["sidebar-action"]}>
+          {/* <div className={styles["sidebar-action"]}>
            // <a href={REPO_URL} target="_blank">
              // <IconButton icon={<GithubIcon />} shadow />
             //</a>

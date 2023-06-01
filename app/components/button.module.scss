@@ -109,6 +109,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  svg {
+    color: currentColor !important;
+    stroke: currentColor !important;
+
+    path {
+      // fill: currentColor !important;
+      stroke: currentColor !important;
+    }
+  }
 }
 
 @media only screen and (max-width: 600px) {
