@@ -1,4 +1,43 @@
-# 1. Environment variables
+# 1. How to local develop
+
+## 1). Clone code from github
+```
+git clone xxx
+git checkout -b user_name/branch_name origin/zhixing
+```
+
+## 2). Install nodejs and yarn
+```shell
+npm install --global yarn
+yarn --version
+node -v
+```
+
+## 3). Set up local develop environment
+Create a new `.env.local` file at project root, and place your api key into it:
+```shell
+OPENAI_API_KEY=<your api key here>
+```
+you can refer the `env.template` to set other env variables.
+
+## 4). Run
+From `Terminal -> New Terminal`, to open terminal window, 
+
+and click `+`, to add a `JavaScript Debug Terminal` window, run command: 
+```shell
+yarn install
+yarn dev
+```
+
+you should see portal in pop-up brower page.
+
+## 5). Update backend server address
+Open `app/config/server.ts`, update `zBotServiceUrl` value as
+```
+    zBotServiceUrl: "xxx",
+```
+where `xxx` can be online backend address or local debug address.
+
 
 
 # 2. How to deploy
@@ -43,34 +82,12 @@ In `Configuration`, and these env variables:
   - `ZBotServiceUrl`: TBD
 
 
-# 3. Local Development
-## 1). install nodejs and yarn first
-```shell
-npm install --global yarn
-yarn --version
-node -v
-```
+# 3. Projoct analysis
 
-## 2). create a new `.env.local` file at project root, and place your api key into it:
-```shell
-OPENAI_API_KEY=<your api key here>
-```
-
-## 3). run
-In `JavaScript Debug Terminal`, 
-```
-yarn install
-yarn dev
-```
-
-# 4. Projoct analysis
-
-## 1). main file
-main file is scripts/fetch-prompts.mjs
-
-## 2). mask role
-under app/masks/cn.ts
-
+- main file: `scripts/fetch-prompts.mjs`
+- mask role: `app/masks/cn.ts`
+- user-settings: `app/user-setting/`
+- backend client: `app/zbotservice/`
 
 # 4. Refrence
 [Deploy to Azure Web App for Containers](https://learn.microsoft.com/en-us/azure/devops/pipelines/apps/cd/deploy-docker-webapp?view=azure-devops&tabs=python%2Cclassic)
