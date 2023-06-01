@@ -2,6 +2,9 @@ name: Upstream Sync
 
 permissions:
   contents: write
+  
+env:
+  TZ: Asia/Shanghai
 
 on:
   schedule:
