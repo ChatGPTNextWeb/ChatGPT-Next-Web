@@ -33,7 +33,7 @@ const en: LocaleType = {
     Send: "Send",
     Config: {
       Reset: "Reset to Default",
-      SaveAs: "Save as Mask",
+      SaveAs: "Save as a Soul",
     },
   },
   Export: {
@@ -108,8 +108,8 @@ const en: LocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Title: "Soul Splash Screen",
+      SubTitle: "Show a Soul splash screen before starting new chat",
     },
     Prompt: {
       Disable: {
@@ -199,9 +199,9 @@ const en: LocaleType = {
     Name: "Plugin",
   },
   Mask: {
-    Name: "Mask",
+    Name: "Soul",
     Page: {
-      Title: "Prompt Template",
+      Title: "Soul Template",
       SubTitle: (count: number) => `${count} prompt templates`,
       Search: "Search Templates",
       Create: "Create",
@@ -228,11 +228,11 @@ const en: LocaleType = {
   NewChat: {
     Return: "Return",
     Skip: "Skip",
-    Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
+    Title: "Pick a Soul",
+    SubTitle: "Chat with the AI Soul you want the Bot has",
     More: "Find More",
-    NotShow: "Not Show Again",
-    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+    NotShow: "Don't Show Again",
+    ConfirmNoShow: "Confirm to disable! You can enable it in settings later.",
   },
 
   UI: {

@@ -1,7 +1,7 @@
 .icon-button {
   position: relative;
-  background-color: #333; // Changed background color to a lighter shade of black
-  border-radius: 10px;
+  background-color: #FF7A7A; // Changed background color to a lighter shade of black
+  border-radius: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,10 +12,10 @@
   user-select: none;
   outline: none;
   border: none;
-  color: #f0f0f0; // Changed text color to lighter shade for contrast
+  color: #fafafa; // Changed text color to lighter shade for contrast
   z-index: 0; // Added to ensure :before will stack properly
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
@@ -35,11 +35,11 @@
   animation: glowing 20s linear infinite;
   opacity: 0;
   transition: opacity .3s ease-in-out;
-  border-radius: 60px;
+  border-radius: 0px;
 }
 
 .icon-button:active {
-  color: #000;
+  color: #FF7A7A;
 }
 
 .icon-button:active:after {
@@ -59,7 +59,7 @@
   background: #111;
   left: 0;
   top: 0;
-  border-radius: 60px;
+  border-radius: 0px;
 }
 
 .icon-button.primary {
@@ -113,14 +113,14 @@
 
 @media only screen and (max-width: 600px) {
   .icon-button {
-    padding: 16px;
+    padding: 20px;
   }
 }
 
 .icon-button-text {
-  margin-left: 5px;
+  margin-left: 8px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

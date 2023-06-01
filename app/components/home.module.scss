@@ -1,7 +1,7 @@
 @mixin container {
   background-color: var(--white);
   border: var(--border-in-light);
-  border-radius: 20px;
+  border-radius: 0px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   color: var(--black);
   background-color: var(--white);
@@ -45,10 +45,10 @@
   background-color: #333; // Changed background color to a lighter shade of black
   display: flex;
   flex-direction: column;
-  box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
+  box-shadow: inset -2px 0px 2px 0px rgba(0, 0, 0, 0.05);
   position: relative;
   transition: width ease 0.05s;
-  color: #f0f0f0; // Changed text color to lighter shade for contrast
+  color: #fafafa; // Changed text color to lighter shade for contrast
 
   .sidebar-header-bar {
     display: flex;
@@ -165,7 +165,7 @@
 .chat-item {
   padding: 10px 14px;
   background-color: var(--white);
-  border-radius: 10px;
+  border-radius: 0px;
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
   transition: background-color 0.3s ease;
@@ -176,7 +176,7 @@
 }
 
 .chat-item:hover {
-  background-color: #f0f0f0; // Changed hover background color for a modern look
+  background-color: #22303C; // Changed hover background color for a modern look
 }
 
 .chat-item-selected {
@@ -396,7 +396,7 @@
 
 .chat-message-status {
   font-size: 12px;
-  color: #aaa;
+  color: #fafafa;
   line-height: 1.5;
   margin-top: 5px;
 }
@@ -405,7 +405,7 @@
   box-sizing: border-box;
   max-width: 100%;
   margin-top: 10px;
-  border-radius: 10px;
+  border-radius: 0px;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 10px;
   font-size: 14px;
@@ -468,8 +468,8 @@
   padding-top: 10px;
   box-sizing: border-box;
   flex-direction: column;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
   border-top: var(--border-in-light);
   box-shadow: var(--card-shadow);
 }
@@ -490,7 +490,7 @@
 
   background-color: var(--white);
   border: var(--border-in-light);
-  border-radius: 10px;
+  border-radius: 0px;
   margin-bottom: 10px;
   box-shadow: var(--shadow);
 
@@ -502,7 +502,7 @@
     transition: all ease 0.3s;
     border: transparent 1px solid;
     margin: 4px;
-    border-radius: 8px;
+    border-radius: 0px;
 
     &:not(:last-child) {
       margin-top: 0;
@@ -535,7 +535,7 @@
 .chat-input {
   height: 100%;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0px;
   border: var(--border-in-light);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
   background-color: var(--white);

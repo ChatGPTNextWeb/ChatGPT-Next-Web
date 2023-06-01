@@ -16,7 +16,7 @@ $primary: #rebeccapurple; // Replace with your desired primary color value
     background-color: var(--white);
     color: var(--black);
     border: var(--border-in-light);
-    border-radius: 20px;
+    border-radius: 0px;
     box-shadow: var(--card-shadow);
     animation: slide-in ease 0.3s;
     transition: all ease 0.3s;
@@ -44,7 +44,7 @@ $primary: #rebeccapurple; // Replace with your desired primary color value
     background-color: var(--white);
     color: var(--black);
     border: var(--border-in-light);
-    border-radius: 100px;
+    border-radius: 0px;
     box-shadow: var(--card-shadow);
     animation: slide-in-from-top ease 0.3s;
 
@@ -105,7 +105,7 @@ $primary: #rebeccapurple; // Replace with your desired primary color value
     background-color: var(--white);
     color: var(--black);
     border: var(--border-in-light);
-    border-radius: 10px;
+    border-radius: 0px;
     user-select: text;
   }
 }
