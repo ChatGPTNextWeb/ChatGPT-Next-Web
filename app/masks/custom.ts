@@ -334,7 +334,7 @@ export const CUSTOM_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
-    builtin: false,
+    builtin: true,
   },
   {
     avatar: "1f47e",
@@ -357,7 +357,7 @@ export const CUSTOM_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
-    builtin: false,
+    builtin: true,
   },
   {
     avatar: "gpt-bot",
@@ -380,7 +380,7 @@ export const CUSTOM_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
-    builtin: false,
+    builtin: true,
   },
   {
     avatar: "1f9d1-200d-1f3eb",
@@ -403,7 +403,7 @@ export const CUSTOM_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
-    builtin: false,
+    builtin: true,
   },
   {
     avatar: "1f9d1-200d-1f3eb",
@@ -426,6 +426,6 @@ export const CUSTOM_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
-    builtin: false,
+    builtin: true,
   },
 ];
