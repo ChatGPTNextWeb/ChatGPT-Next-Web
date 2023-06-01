@@ -369,7 +369,7 @@
   &:hover {
     .chat-message-top-actions {
       opacity: 1;
-      right: 10px;
+      transform: translateX(10px);
       pointer-events: all;
     }
   }
@@ -405,11 +405,12 @@
 }
 
 .chat-message-top-actions {
+  min-width: 120px;
   font-size: 12px;
   position: absolute;
   right: 20px;
   top: -26px;
-  left: 100px;
+  left: 30px;
   transition: all ease 0.3s;
   opacity: 0;
   pointer-events: none;
