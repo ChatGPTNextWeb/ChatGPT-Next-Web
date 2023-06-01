@@ -35,6 +35,16 @@ const es: LocaleType = {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+    Inputactions: {
+      Setting: "Configuración",
+      Changetheme: "Cambiar tema",
+      Lightthem: "Modo Día",
+      Darkthem: "Modo oscuro",
+      Autothem: "Modo automático",
+      Changeprompt: "Cambiar texto de aviso",
+      Pickmark: "Seleccionar máscara",
+      Clearcontent: "Contexto claro",
+    },
   },
   Export: {
     Title: "Todos los mensajes",
