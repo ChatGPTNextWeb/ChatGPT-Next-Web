@@ -1,10 +1,9 @@
 import { ChargeBee } from "chargebee-typescript";
-import { Customer } from "chargebee-typescript/lib/resources";
 
 const chargebee = new ChargeBee();
 
 chargebee.configure({
-  site: process.env.CHARGEBEE_SITE,
+  site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE,
   api_key: process.env.CHARGEBEE_API_KEY,
 });
 

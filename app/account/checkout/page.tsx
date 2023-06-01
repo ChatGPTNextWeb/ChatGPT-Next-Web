@@ -40,7 +40,7 @@ const Plans = () => {
   useEffect(() => {
     if (loaded && !init) {
       window.Chargebee.init({
-        site: "cognitiev-test",
+        site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE,
         publishableKey: process.env.NEXT_PUBLIC_CHARGEBEE_PUBLISHABLE_KEY,
       });
 

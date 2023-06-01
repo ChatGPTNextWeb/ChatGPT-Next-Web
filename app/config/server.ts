@@ -10,7 +10,7 @@ declare global {
       HIDE_USER_API_KEY?: 1; // disable user's api key input
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
       CHARGEBEE_API_KEY: string;
-      CHARGEBEE_SITE: string;
+      NEXT_PUBLIC_CHARGEBEE_SITE: string;
       CLERK_WEBHOOK_SECRET: string;
     }
   }
