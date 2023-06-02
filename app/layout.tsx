@@ -19,7 +19,7 @@ export const metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "AI迪升 ChatGPT",
+    title: "迪升 ChatGPT",
     statusBarStyle: "default",
   },
 };
