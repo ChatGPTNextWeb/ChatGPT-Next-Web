@@ -101,20 +101,13 @@ export const createCheckoutSession = async (data: {
   lastName: string;
   planId: string;
 }) => {
-  console.log({
-    email: data.email,
-    id: data.id,
-    first_name: data.firstName,
-    last_name: data.lastName,
-    planId: data.planId,
-  });
   const { hosted_page } = await chargebee.hosted_page
     .checkout_new_for_items({
       customer: {
-        email: "sauravkhdoolia@gmail.com",
+        email: data.email,
         id: data.id,
-        first_name: "Saurav",
-        last_name: "Kumar",
+        first_name: data.firstName,
+        last_name: data.lastName,
       },
       subscription_items: [
         {

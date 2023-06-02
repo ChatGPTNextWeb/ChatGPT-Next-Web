@@ -2,6 +2,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { createCheckoutSession } from "../../chargebee";
 import { getAuth } from "@clerk/nextjs/server";
+import { users } from "@clerk/clerk-sdk-node";
 
 const handle = async (req: NextRequest) => {
   const data = getAuth(req);
@@ -28,15 +29,27 @@ const handle = async (req: NextRequest) => {
   const { user: { firstName, lastName, emailAddresses = [] } = {}, userId } =
     data;
 
+  const user = await users.getUser(userId);
+
   const email =
-    emailAddresses.filter((e) => e.verification?.status === "verified")[0]
+    user.emailAddresses.filter((e) => e.verification?.status === "verified")[0]
       ?.emailAddress || "";
+
+  if (!email) {
+    return NextResponse.json(
+      { msg: "No verified email found" },
+      {
+        status: 401,
+      },
+    );
+  }
+
   try {
     const session = await createCheckoutSession({
       id: userId,
       email,
-      firstName: firstName || "",
-      lastName: lastName || "",
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
       planId: id,
     });
 
