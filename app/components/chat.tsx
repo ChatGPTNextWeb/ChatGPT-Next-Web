@@ -10,6 +10,7 @@ import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import PromptIcon from "../icons/prompt.svg";
 import MaskIcon from "../icons/mask.svg";
+import Hexo from "../icons/hexoBlog.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
@@ -716,6 +717,17 @@ export function Chat() {
                   config.update(
                     (config) => (config.tightBorder = !config.tightBorder),
                   );
+                }}
+              />
+            </div>
+          )}
+          {!isMobileScreen && (
+            <div className="window-action-button">
+              <IconButton
+                icon={<Hexo />}
+                bordered
+                onClick={() => {
+                  window.location.href = "https://www.zhaoshengmu.top";
                 }}
               />
             </div>
