@@ -727,7 +727,7 @@ export function Chat() {
                 icon={<Hexo />}
                 bordered
                 onClick={() => {
-                  window.open = "https://www.zhaoshengmu.top";
+                  window.open("https://www.zhaoshengmu.top", "_blank");
                 }}
               />
             </div>
