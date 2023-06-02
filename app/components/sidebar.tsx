@@ -119,9 +119,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>微信搜一搜视频号:ai迪升</div>
+        <div className={styles["sidebar-title"]}>微信搜一搜视频号:AI迪升</div>
         <div className={styles["sidebar-sub-title"]}>
-          领取&打造你的超强大且独享的AI助理./Build your own AI assistant.
+          领取&打造你的超强大且独享的AI助理./Build your own AI assistant.最新试用访问密码:disheng.org
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
