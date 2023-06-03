@@ -34,12 +34,12 @@ const Plans = () => {
               </p>
               <IconButton
                 onClick={() => {
-                  onOpen("portal");
-                }}
-                bordered
-                className={styles.button}
-                text="Manage ⚙️"
-              />
+                   window.location.href = "https://cognitiev.chargebeeportal.com/";
+                                }}
+                 bordered
+                 className={styles.button}
+                 text="Manage ⚙️"
+                />
             </div>
             
             <div className={styles.plan}>
@@ -54,7 +54,7 @@ const Plans = () => {
                 }}
                 bordered
                 className={styles.button}
-                text="Subsribe 😘"
+                text="Subscribe 😘"
               />
             </div>
             <div className={styles.plan}>
@@ -69,7 +69,7 @@ const Plans = () => {
                 }}
                 bordered
                 className={styles.button}
-                text="Subsribe 🥰"
+                text="Subscribe 🥰"
               />
             </div>
             <div className={styles.plan}>
@@ -84,7 +84,7 @@ const Plans = () => {
                 }}
                 bordered
                 className={styles.button}
-                text="Subsribe 😍"
+                text="Subscribe 😍"
               />
             </div>
           </div>
