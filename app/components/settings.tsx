@@ -517,7 +517,16 @@ export function Settings() {
               />
             </ListItem>
           ) : null}
+          <ListItem
+            title={"获取APIKEY"}
+            subTitle={"独享手工直登号，5美金，120美金，PLUS账号出售"}
+          >
 
+              <Link href={"https://dwz.cn/mqWT46YI"} target="_blank" className="link">
+                {"前往获取"}
+              </Link>
+         
+          </ListItem>
           <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
