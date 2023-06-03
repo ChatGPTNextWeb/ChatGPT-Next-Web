@@ -48,7 +48,7 @@ const Plans = () => {
               <p className={styles.description}>
                 Monthly Plan For Casual Users
                 This plan is perfect for those who want to test the waters and experience our top-notch AI solutions.
-                You'll get:
+                You will get:
                   + Unlimited access to our AI chatbot, Cognitiev PRO
                   + Regular updates and improvements
                   + Flexibility to cancel anytime
@@ -67,7 +67,7 @@ const Plans = () => {
               <h2 className={styles.price}>$149</h2>
               <p className={styles.description}>
                 Yearly Plan For PRO Users With Extra Savings
-                Upgrade to our annual plan and save big! You'll get everything in the Monthly Plan, plus:
+                Upgrade to our annual plan and save big! You will get everything in the Monthly Plan, plus:
                   + Save over 35% compared to the monthly plan
                   + Access to the Telegram and WhatsApp bots
                   + Exclusive offers and discounts on future products and services
@@ -86,8 +86,8 @@ const Plans = () => {
               <h2 className={styles.price}>$299</h2>
               <p className={styles.description}>
                 Ultimate Plan for Prime Users
-                Get the best value with our 5-Year Plan and enjoy Cognitiev PRO's AI capabilities for the long haul!
-                You'll get everything in the Annual Plan, plus:
+                Get the best value with our 5-Year Plan and enjoy Cognitiev PRO as your Ultimate AI Sidekick for a long haul!
+                You will get everything in the Annual Plan, plus:
                   + Save over 60% compared to the monthly plan
                   + Telegram and WhatsApp bots as a FREE add-on
                   + VIP access to new features and beta testing
