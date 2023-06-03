@@ -25,7 +25,8 @@ import {
   REPO_URL,
 } from "../constant";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Link from 'next/link'
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
@@ -188,7 +189,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <Link to="/account/plans">
+            <Link href='/account/plans'>
               <IconButton icon={<PayIcon />} shadow />
             </Link>
           </div>
