@@ -38,7 +38,7 @@ const Plans = () => {
                 }}
                 bordered
                 className={styles.button}
-                text="Manage"
+                text="Manage!"
               />
             </div>
             
