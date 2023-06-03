@@ -176,7 +176,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "我是您的强大且私人独享的AI助理,有什么可以帮你的嘛? 请点击👉[领取属于您的ai使用教程全集](https://bw54wz1lzj.feishu.cn/docx/DNofd1v9KoK9XLxs2pjciOpInUf) 👉[查看免责声明](https://bw54wz1lzj.feishu.cn/docx/KyYhdXEnuospwbxzhUPcixOSnS7)",
+    BotHello: "我是您的强大且私人独享的AI助理,有什么可以帮您的嘛? 请点击👉[领取属于您的ai使用教程全集](https://bw54wz1lzj.feishu.cn/docx/DNofd1v9KoK9XLxs2pjciOpInUf) 👉[查看免责声明](https://bw54wz1lzj.feishu.cn/docx/KyYhdXEnuospwbxzhUPcixOSnS7)👉[联系客服](https://bw54wz1lzj.feishu.cn/docx/IisZd35bwophDexgpjscMUgTnhe)",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
