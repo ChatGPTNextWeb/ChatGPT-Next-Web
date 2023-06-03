@@ -1,19 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="16px" height="16px" viewBox="0 -1 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-    <title>emoji_happy_simple [#458]</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-
-</defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Dribbble-Light-Preview" transform="translate(-64.000000, -6165.000000)" fill="#000000">
-            <g id="icons" transform="translate(56.000000, 160.000000)">
-                <path d="M16,6008.90244 L20,6008.90244 L20,6005 L16,6005 L16,6008.90244 Z M8,6008.90244 L12,6008.90244 L12,6005 L8,6005 L8,6008.90244 Z M9,6009.87805 L19,6009.87805 C19,6016.70732 9,6016.70732 9,6009.87805 L9,6009.87805 Z" id="emoji_happy_simple-[#458]">
-
-</path>
-            </g>
-        </g>
-    </g>
-</svg>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="SVGRepo_iconCarrier">
+<path d="M8 1a7 7 0 100 14A7 7 0 008 1zM2.22 5.031c3.913-.037 7.972 0 11.562 0 0 1.642-1.25 2.969-2.78 2.969-1.276 0-2.333-.93-2.657-2.188h-.688C7.333 7.07 6.276 8 5 8 3.47 8 2.22 6.673 2.22 5.031zM3 9.063C3.716 10.136 5.235 11 8 11c2.452 0 4.211-.75 5-1.938v.5c0 .681-.838 2.407-5 2.407-3.88 0-5-1.874-5-2.406z" fill="#fafafa"/>
+</g>
+</svg>
