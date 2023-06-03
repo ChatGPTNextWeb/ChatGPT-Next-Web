@@ -23,25 +23,9 @@ const Plans = () => {
         />
       </div>
       <div className={styles.container}>
-        <h1 className={styles.heading}>SUBSCRIBE NOW</h1>
+        <h1 className={styles.heading}>Subscribe</h1>
         <div className={styles.planContainer}>
           <div className={styles.plans}>
-            <div className={styles.plan}>
-              <p className={styles.type}>Manage Subscription</p>
-              <h2 className={styles.price}>Manage</h2>
-              <p className={styles.description}>
-                Manage everything regarding your subscription with a state of the art Self Serve Portal.
-              </p>
-              <IconButton
-                onClick={() => {
-                   window.location.href = "https://cognitiev.chargebeeportal.com/";
-                                }}
-                 bordered
-                 className={styles.button}
-                 text="Manage ⚙️"
-                />
-            </div>
-            
             <div className={styles.plan}>
               <p className={styles.type}>Monthly</p>
               <h2 className={styles.price}>$19</h2>
