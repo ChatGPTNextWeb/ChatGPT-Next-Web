@@ -182,7 +182,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
 
   {
-  avatar: "1F4BB",
+  avatar: "U+1F4BB",
   name: "Tech Guru",
   context: [
     {
