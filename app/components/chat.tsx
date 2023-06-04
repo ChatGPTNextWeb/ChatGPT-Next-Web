@@ -119,9 +119,13 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             icon={<ResetIcon />}
             bordered
             text={Locale.Chat.Config.Reset}
-            onClick={() =>
-              confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
-            }
+            onClick={() => {
+              if (confirm(Locale.Memory.ResetConfirm)) {
+                chatStore.updateCurrentSession(
+                  (session) => (session.memoryPrompt = ""),
+                );
+              }
+            }}
           />,
           <IconButton
             key="copy"
