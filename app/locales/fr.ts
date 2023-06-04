@@ -159,6 +159,11 @@ const fr: LocaleType = {
       SubTitle:
         "Une valeur plus élevée augmentera la probabilité d'introduire de nouveaux sujets",
     },
+    FrequencyPenalty: {
+      Title: "Pénalité de fréquence",
+      SubTitle:
+        "Une valeur plus élevée diminuant la probabilité de répéter la même ligne",
+    },
   },
   Store: {
     DefaultTopic: "Nouvelle conversation",

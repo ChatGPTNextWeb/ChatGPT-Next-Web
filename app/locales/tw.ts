@@ -152,6 +152,10 @@ const tw: LocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    FrequencyPenalty: {
+      Title: "頻率懲罰度 (frequency_penalty)",
+      SubTitle: "值越大，越有可能降低重複字詞",
+    },
   },
   Store: {
     DefaultTopic: "新的對話",

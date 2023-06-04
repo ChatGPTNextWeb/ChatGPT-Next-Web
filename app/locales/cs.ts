@@ -155,6 +155,11 @@ const cs: LocaleType = {
       Title: "Přítomnostní korekce",
       SubTitle: "Větší hodnota zvyšuje pravděpodobnost nových témat.",
     },
+    FrequencyPenalty: {
+      Title: "Frekvenční penalizace",
+      SubTitle:
+        "Větší hodnota snižující pravděpodobnost opakování stejného řádku",
+    },
   },
   Store: {
     DefaultTopic: "Nová konverzace",
