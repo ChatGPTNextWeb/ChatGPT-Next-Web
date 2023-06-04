@@ -176,7 +176,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "本AI使用openai接口，key由我们XMX网络提供，欢迎大家使用，有问题可以来我的[博客](https://www.xmxit.cn)来联系我",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
