@@ -42,7 +42,7 @@ const Plans = () => {
               />
             </div>
             
-            <div className={styles.ultimatevalueplan}>
+            <div className={styles.plan ultimate-value-plan}>
               <p className={styles.type}>5 YEARLY</p>
               <h2 className={styles.price}>$299</h2>
               <p className={styles.description}>
