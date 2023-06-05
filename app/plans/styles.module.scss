@@ -63,7 +63,6 @@
   background-color: var(--light-bg);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); // Updated box-shadow for a modern look
 
-
   @media only screen and (max-width: 600px) {
     padding: 18px !important;
     width: 100%;
@@ -140,6 +139,11 @@
     text-transform: uppercase;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 
+    &:hover {
+      transform: translateY(-2px);
+      transition: transform .3s ease-in-out;
+    }
+
     &::before {
       content: '';
       background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
@@ -155,6 +159,10 @@
       opacity: 0;
       transition: opacity .3s ease-in-out;
       border-radius: 60px;
+    }
+    
+    &:hover::before {
+      opacity: 1;
     }
     
     &::after {
