@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "魔法ChatGPT提示：点击网页左下角设置按钮，找到访问密码填：666888 即可免费使用，如果机器人回答卡顿，说明使用人数较多，可前往：ka.mofaxi.cn 购买自己的独立API Key，回答速度会极大提升",
+      "魔法ChatGPT提示您：点击首页左下角设置按钮，在访问密码框内填：666888 即可免费使用，如果机器人回答卡顿，说明使用人数较多，可点击首页左下角购物车按钮购买自己的独立API Key，回答速度会极大提升",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
