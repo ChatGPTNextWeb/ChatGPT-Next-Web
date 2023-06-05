@@ -10,6 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import CloudIcon from "../icons/cloud.svg";
 
 import Locale from "../locales";
 
@@ -178,6 +179,10 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<GithubIcon />} shadow />
             </a>
           </div>
+          <div className={styles["sidebar-action"]}>
+            <a href="https://cloud.mofaxi.cn" target="_blank">
+              <IconButton icon={<CloudIcon />} shadow />
+            </a>
         </div>
         <div>
           <IconButton
