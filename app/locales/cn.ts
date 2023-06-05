@@ -4,8 +4,10 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
+    <div>
       "点击网页左下角设置按钮，找到访问密码填：666888 即可免费使用",</br>
       "如果机器人回答卡顿，说明使用人数较多
+  </div>
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
