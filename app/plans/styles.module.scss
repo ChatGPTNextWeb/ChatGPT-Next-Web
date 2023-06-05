@@ -105,7 +105,7 @@ $glow-colors: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5
   justify-content: center;
   flex-direction: column;
   padding: 24px 24px;
-  background: $light-background; // Lighter background
+  background: #161616; // Darker Card design
   border-radius: 4px;
   
   &:hover {
