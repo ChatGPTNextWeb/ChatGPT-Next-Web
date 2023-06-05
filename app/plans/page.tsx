@@ -91,7 +91,8 @@ const Plans = () => {
             </div>
           </div>
           
-          <div className={styles.plan}>
+          <div className={styles.planContainer}>
+            <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
               <h2 className={styles.price}>$9</h2>
               <p className={styles.description}>
@@ -99,13 +100,14 @@ const Plans = () => {
               </p>
             </div>
           
-          <div className={styles.plan}>
+            <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
               <h2 className={styles.price}>$9</h2>
               <p className={styles.description}>
                 Telegram Bot
               </p>
-              </div>
+            </div>
+           </div>
       
         </div>
       </div>
