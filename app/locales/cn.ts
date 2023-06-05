@@ -5,7 +5,7 @@ const cn = {
   Error: {
     Unauthorized:
       "点击网页左下角设置按钮，找到访问密码填：666888 即可免费使用",</br>
-      "如果机器人回答卡顿，说明使用人数较多，请前往<div><a href="https://ka.mofaxi.cn" target="_blank">ka.mofaxi.cn</a></div>购买自己独立使用的API Key，访问速度会大大提升",
+      "如果机器人回答卡顿，说明使用人数较多
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
