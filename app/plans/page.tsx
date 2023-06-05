@@ -10,7 +10,7 @@ const Plans = () => {
 
   const onOpen = (id: string) => {
     window.open(`/account/checkout?id=${id}`, "_self");
-  };
+  }
 
   return (
     <div className={`${styles.scrollContainer} ${styles["tight-container"]}`}>
@@ -42,7 +42,7 @@ const Plans = () => {
               />
             </div>
             
-            <div className={styles.plan ultimate-value-plan}>
+            <div className={styles.ultimatevalueplan}>
               <p className={styles.type}>5 YEARLY</p>
               <h2 className={styles.price}>$299</h2>
               <p className={styles.description}>
