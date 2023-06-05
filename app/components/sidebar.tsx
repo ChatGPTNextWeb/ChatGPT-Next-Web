@@ -184,6 +184,7 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<CloudIcon />} shadow />
             </a>
         </div>
+        </div>
         <div>
           <IconButton
             icon={<AddIcon />}
