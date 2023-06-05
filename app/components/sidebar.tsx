@@ -187,11 +187,11 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          { /*<div className={styles["sidebar-action"]}>
+          <div className={styles["sidebar-action"]}>
             <Link href='https://cognitiev.com/'>
               <IconButton icon={<HomeIcon />} shadow />
             </Link>
-          </div>*/}
+          </div>
           <div className={styles["sidebar-action"]}>
             <Link href='/account/plans'>
               <IconButton icon={<PayIcon />} shadow />
