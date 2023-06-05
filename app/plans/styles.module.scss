@@ -1,3 +1,7 @@
+$primary-color: #FF7A7A;
+$light-background: rgba(0, 0, 0, 0.02);
+$glow-colors: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+
 .container {
   display: flex;
   align-items: center;
@@ -87,7 +91,7 @@
   justify-content: center;
   flex-direction: column;
   padding: 24px 24px;
-  background:rgba(0, 0, 0, 0.02);
+  background: $light-background; // Lighter background
   border-radius: 4px;
 
   .type {
@@ -124,66 +128,65 @@
   }
 
   .button {
-    width: 220px;
-    height: 50px;
-    border: none;
-    outline: none;
-    color: #fff;
-    background: #111;
-    cursor: pointer;
-    position: relative;
-    z-index: 0;
+  width: 220px;
+  height: 50px;
+  border: none;
+  outline: none;
+  color: #fff;
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 60px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    transform: translateY(-2px);
+    transition: transform .3s ease-in-out;
+  }
+
+  &::before {
+    content: '';
+    background: $glow-colors; // Glow colors
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(8px);
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
     border-radius: 60px;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  }
 
-    &:hover {
-      transform: translateY(-2px);
-      transition: transform .3s ease-in-out;
-    }
+  &:hover::before {
+    opacity: 1;
+  }
 
-    &::before {
-      content: '';
-      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      background-size: 400%;
-      z-index: -1;
-      filter: blur(8px);
-      width: calc(100% + 10px);
-      height: calc(100% + 10px);
-      animation: glowing 20s linear infinite;
-      opacity: 0;
-      transition: opacity .3s ease-in-out;
-      border-radius: 60px;
-    }
-    
-    &:hover::before {
-      opacity: 1;
-    }
-    
-    &::after {
-      z-index: -1;
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: #111;
-      left: 0;
-      top: 0;
-      border-radius: 60px;
-    }
+  &::after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 60px;
+  }
 
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 }
+
 
 .addonsContainer {
   display: flex;
@@ -200,14 +203,14 @@
   justify-content: center;
   flex-wrap: wrap;
 
-  .addon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 24px 24px;
-    background:rgba(0, 0, 0, 0.02);
-    border-radius: 8px;
+ .addon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px 24px;
+  background: $light-background; // Lighter background
+  border-radius: 8px;
 
     .price {
       color: #FF7A7A;
@@ -229,4 +232,11 @@
       font-weight: 600;
     }
   }
+}
+  // @keyframes glowing rule at the end of the file:
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
 }
