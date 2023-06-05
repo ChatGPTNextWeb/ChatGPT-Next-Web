@@ -41,6 +41,23 @@ const Plans = () => {
                 text="Subscribe 😘"
               />
             </div>
+            
+            <div className={styles.plan ultimate-value-plan}>
+              <p className={styles.type}>5 YEARLY</p>
+              <h2 className={styles.price}>$299</h2>
+              <p className={styles.description}>
+                Ultimate Plan for Prime Users
+              </p>
+              <IconButton
+                onClick={() => {
+                  onOpen("app-USD-Every-5-years");
+                }}
+                bordered
+                className={styles.button}
+                text="Subscribe 😍"
+              />
+            </div>
+            
             <div className={styles.plan}>
               <p className={styles.type}>Annual</p>
               <h2 className={styles.price}>$149</h2>
@@ -56,21 +73,7 @@ const Plans = () => {
                 text="Subscribe 🥰"
               />
             </div>
-            <div className={styles.plan}>
-              <p className={styles.type}>5 YEARLY</p>
-              <h2 className={styles.price}>$299</h2>
-              <p className={styles.description}>
-                Ultimate Plan for Prime Users
-              </p>
-              <IconButton
-                onClick={() => {
-                  onOpen("app-USD-Every-5-years");
-                }}
-                bordered
-                className={styles.button}
-                text="Subscribe 😍"
-              />
-            </div>
+            
             <div className={styles.plan}>
               <p className={styles.type}>WEEKLY</p>
               <h2 className={styles.price}>$5</h2>
