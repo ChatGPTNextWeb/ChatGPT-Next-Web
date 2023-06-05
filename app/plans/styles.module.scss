@@ -1,5 +1,5 @@
 $primary-color: #FF7A7A;
-$light-background: rgba(0, 0, 0, 0.02);
+$light-background: #333333;
 $glow-colors: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
 
 .container {
@@ -105,7 +105,7 @@ $glow-colors: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5
   justify-content: center;
   flex-direction: column;
   padding: 24px 24px;
-  background: #161616; // Darker Card design
+  background: $light-background; // Darker Card design
   border-radius: 4px;
   
   &:hover {
