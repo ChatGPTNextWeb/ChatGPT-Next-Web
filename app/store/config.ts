@@ -11,9 +11,9 @@ export enum SubmitKey {
 }
 
 export enum Theme {
-  自动 = "auto",
-  深色 = "dark",
-  浅色 = "light",
+  Auto = "auto",
+  Dark = "dark",
+  Light = "light",
 }
 
 export const DEFAULT_CONFIG = {
