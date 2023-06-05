@@ -91,7 +91,7 @@ const Plans = () => {
             </div>
           </div>
           
-          <div className={styles.planContainer}>
+          <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
               <h2 className={styles.price}>$9</h2>
