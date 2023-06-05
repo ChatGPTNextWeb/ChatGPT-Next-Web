@@ -28,21 +28,6 @@ const Plans = () => {
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>Monthly</p>
-              <h2 className={styles.price}>$5</h2>
-              <p className={styles.description}>
-                Weekly Plan For Students
-              </p>
-              <IconButton
-                onClick={() => {
-                  onOpen("app-USD-Weekly");
-                }}
-                bordered
-                className={styles.button}
-                text="Subscribe 💖"
-              />
-            </div>
-            <div className={styles.plan}>
-              <p className={styles.type}>Monthly</p>
               <h2 className={styles.price}>$19</h2>
               <p className={styles.description}>
                 Monthly Plan For Casual User
@@ -84,6 +69,21 @@ const Plans = () => {
                 bordered
                 className={styles.button}
                 text="Subscribe 😍"
+              />
+            </div>
+            <div className={styles.plan}>
+              <p className={styles.type}>WEEKLY</p>
+              <h2 className={styles.price}>$5</h2>
+              <p className={styles.description}>
+                Weekly Plan For Students
+              </p>
+              <IconButton
+                onClick={() => {
+                  onOpen("app-USD-Weekly");
+                }}
+                bordered
+                className={styles.button}
+                text="Subscribe 💖"
               />
             </div>
           </div>
