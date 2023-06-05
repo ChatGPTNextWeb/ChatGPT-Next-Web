@@ -183,7 +183,7 @@ export function SideBar(props: { className?: string }) {
             />
           </div> */}
           <div className={styles["sidebar-action"]}>
-            <Link href='/settings'>
+            <Link href='/Settings'>
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
