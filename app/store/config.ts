@@ -3,17 +3,17 @@ import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
 
 export enum SubmitKey {
-  Enter = "Enter",
-  CtrlEnter = "Ctrl + Enter",
-  ShiftEnter = "Shift + Enter",
-  AltEnter = "Alt + Enter",
-  MetaEnter = "Meta + Enter",
+  Enter = "回车",
+  CtrlEnter = "Ctrl + 回车",
+  ShiftEnter = "Shift + 回车",
+  AltEnter = "Alt + 回车",
+  MetaEnter = "Meta + 回车",
 }
 
 export enum Theme {
   Auto = "自动",
-  Dark = "黑夜",
-  Light = "白天",
+  Dark = "深色",
+  Light = "浅色",
 }
 
 export const DEFAULT_CONFIG = {
