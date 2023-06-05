@@ -173,7 +173,7 @@ export function SideBar(props: { className?: string }) {
 
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"] + " " + styles.mobile}>
+          {/*<div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
               icon={<CloseIcon />}
               onClick={() => {
@@ -182,7 +182,18 @@ export function SideBar(props: { className?: string }) {
                 }
               }}
             />
+          </div>*/}
+          
+          <div className={styles["sidebar-action"]}>
+            <IconButton
+             icon={<SettingsIcon />}
+             text={shouldNarrow ? undefined : Locale.Mask.Name}
+             className={styles["sidebar-bar-button"]}
+             onClick={() => navigate(Path.Settings, { state: { fromHome: true } })}
+             shadow
+            />
           </div>
+          
           <div className={styles["sidebar-action"]}>
             <Link href='/settings'>
               <IconButton icon={<SettingsIcon />} shadow />
