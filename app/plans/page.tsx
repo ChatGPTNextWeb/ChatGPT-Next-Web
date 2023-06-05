@@ -46,7 +46,7 @@ const Plans = () => {
               <p className={styles.type}>5 YEARLY</p>
               <h2 className={styles.price}>$299</h2>
               <p className={styles.description}>
-                Ultimate Plan for Prime Users
+                Ultimate Plan for Prime Users With Ultimate Savings
               </p>
               <IconButton
                 onClick={() => {
@@ -62,7 +62,7 @@ const Plans = () => {
               <p className={styles.type}>Annual</p>
               <h2 className={styles.price}>$149</h2>
               <p className={styles.description}>
-                Yearly Plan For PRO Users With Extra Savings
+                Yearly Plan For PRO Users
               </p>
               <IconButton
                 onClick={() => {
@@ -90,19 +90,23 @@ const Plans = () => {
               />
             </div>
           </div>
-          <div className={styles.addonsContainer}>
-            <h2>Available Add-Ons</h2>
-            <div className={styles.addons}>
-              <div className={styles.addon}>
-                <h2 className={styles.price}>$9</h2>
-                <p className={styles.description}>Whatsapp Bot</p>
-              </div>
-              <div className={styles.addon}>
-                <h2 className={styles.price}>$9</h2>
-                <p className={styles.description}>Telegram Bot</p>
-              </div>
+          
+          <div className={styles.plan}>
+              <p className={styles.type}>ADD-ON</p>
+              <h2 className={styles.price}>$9</h2>
+              <p className={styles.description}>
+                WhatsApp Bot
+              </p>
             </div>
-          </div>
+          
+          <div className={styles.plan}>
+              <p className={styles.type}>ADD-ON</p>
+              <h2 className={styles.price}>$9</h2>
+              <p className={styles.description}>
+                Telegram Bot
+              </p>
+              </div>
+      
         </div>
       </div>
     </div>
