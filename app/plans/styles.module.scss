@@ -232,11 +232,14 @@ $glow-colors: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5
       font-weight: 600;
     }
   }
-}
-  // @keyframes glowing rule at the end of the file:
+  
+   // @keyframes glowing rule at the end of the file:
 
-@keyframes glowing {
+  @keyframes glowing {
   0% { background-position: 0 0; }
   50% { background-position: 400% 0; }
   100% { background-position: 0 0; }
 }
+}
+ 
+
