@@ -124,8 +124,8 @@ export function SideBar(props: { className?: string }) {
           secure local UI for OpenAI API<br>
           <a href="https://adexpartners.sharepoint.com/sites/AdExGPT/SitePages/AdExGPT.aspx">FAQ & Support</a>
         </div>
-        <div class="home_sidebar-logo__FFdBS no-dark">
-           <img src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg" width="60">
+        <div className={styles["sidebar-logo"] + " no-dark"}>
+           <img src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg" width="60"></img>
         </div>
       </div>
 
