@@ -7,6 +7,7 @@ import { getServerSideConfig } from "./config/server";
 
 const serverConfig = getServerSideConfig();
 import { Home } from "./components/home";
+import { authOptions } from "./api/auth/auth-options";
 
 export default async function App() {
   const session = await getServerSession(authOptions);
