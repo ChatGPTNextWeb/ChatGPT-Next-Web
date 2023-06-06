@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextApiRequest } from "next";
 
 // const OPENAI_URL = "api.openai.com";
 const DEFAULT_PROTOCOL = "https";
@@ -11,7 +11,7 @@ const AZURE_OPENAI_DEPLOYMENT_NAME = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const AZURE_OPENAI_PATH = "chat/completions?api-version=2023-03-15-preview";
 
-export async function requestOpenai(req: NextRequest) {
+export async function requestOpenai(req: NextApiRequest) {
   //ONLY get API key from environemnt variable
   //const apiKey = req.headers.get("token");
 
