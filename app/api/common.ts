@@ -42,15 +42,19 @@ export async function requestOpenai(req: NextRequest) {
     },
     cache: "no-store",
     method: req.method,
-    body: req.clone().body,
+    body: req.body,
     signal: controller.signal,
   };
 
   // #1815 try to refuse gpt4 request
-  if (DISABLE_GPT4) {
+  if (DISABLE_GPT4 && req.body) {
     try {
-      const clonedBody = await req.clone().json();
-      if ((clonedBody?.model ?? "").includes("gpt-4")) {
+      const clonedBody = await req.text();
+      fetchOptions.body = clonedBody;
+
+      const jsonBody = JSON.parse(clonedBody);
+
+      if ((jsonBody?.model ?? "").includes("gpt-4")) {
         return NextResponse.json(
           {
             error: true,
