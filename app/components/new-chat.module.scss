@@ -27,7 +27,7 @@
       padding: 20px 10px;
       border: var(--border-in-light);
       box-shadow: var(--card-shadow);
-      border-radius: 14px;
+      border-radius: 0px;
       background-color: var(--white);
       transform: scale(1);
 
@@ -59,8 +59,10 @@
     display: flex;
     justify-content: center;
     font-size: 12px;
-
-    .skip {
+  .more {
+      font-size: 12px;
+    }
+  .skip {
       margin-left: 10px;
     }
   }
@@ -102,7 +104,7 @@
         border: var(--border-in-light);
         box-shadow: var(--card-shadow);
         background-color: var(--white);
-        border-radius: 10px;
+        border-radius: 0px;
         margin-right: 10px;
         max-width: 8em;
         transform: scale(1);
