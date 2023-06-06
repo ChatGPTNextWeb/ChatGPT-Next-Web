@@ -31,11 +31,13 @@ export async function requestOpenai(req: NextRequest) {
     {
       headers: {
         "Content-Type": "application/json",
+        // Authorization: `Bearer ${apiKey}`,
+        // A bit different here than the OpenAI API
         "api-key": `${OPENAI_API_KEY}`,
       },
       method: req.method,
       body: req.body,
-      duplex: "half",
-    } as RequestInit & { duplex: "half" },
+      duplex: true,
+    } as RequestInit & { duplex: boolean },
   );
 }
