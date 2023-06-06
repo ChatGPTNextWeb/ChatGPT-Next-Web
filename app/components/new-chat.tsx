@@ -67,6 +67,8 @@ function useMaskGroup(masks: Mask[]) {
       setGroups(newGroups);
     };
 
+    computeGroup();
+
     window.addEventListener("resize", computeGroup);
     return () => window.removeEventListener("resize", computeGroup);
     // eslint-disable-next-line react-hooks/exhaustive-deps
