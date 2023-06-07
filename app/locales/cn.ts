@@ -180,7 +180,6 @@ const cn = {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
     },
-  },
   Store: {
   DefaultTopic: "新的聊天",
   BotHello: "本AI使用openai接口,key由我们XMX网络提供，欢迎大家使用，有问题可以来我的[博客](https://www.xmxit.cn)来联系我。" +
