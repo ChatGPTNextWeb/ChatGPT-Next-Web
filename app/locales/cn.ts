@@ -188,7 +188,6 @@ const cn = {
     "提问:支持gpt4.0吗？\n" +
     "回答:暂不支持4.0接口，日常使用等等3.5已经足够了，足够强大",
   Error: "出错了，稍后重试吧",
-}
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
       Topic:
