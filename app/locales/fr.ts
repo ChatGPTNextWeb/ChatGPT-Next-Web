@@ -11,7 +11,7 @@ const fr: LocaleType = {
     ChatItemCount: (count: number) => `${count} messages en total`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} messages échangés avec ChatGPT`,
+    SubTitle: (count: number) => `${count} messages échangés avec AI`,
     Actions: {
       ChatList: "Aller à la liste de discussion",
       CompressedHistory: "Mémoire d'historique compressée Prompt",
@@ -41,7 +41,7 @@ const fr: LocaleType = {
     Copy: "Tout sélectionner",
     Download: "Télécharger",
     MessageFromYou: "Message de votre part",
-    MessageFromChatGPT: "Message de ChatGPT",
+    MessageFromChatGPT: "Message de AI",
   },
   Memory: {
     Title: "Prompt mémoire",

@@ -11,7 +11,7 @@ const ko: LocaleType = {
     ChatItemCount: (count: number) => `${count}개의 메시지`,
   },
   Chat: {
-    SubTitle: (count: number) => `ChatGPT와의 ${count}개의 메시지`,
+    SubTitle: (count: number) => `AI와의 ${count}개의 메시지`,
     Actions: {
       ChatList: "채팅 목록으로 이동",
       CompressedHistory: "압축된 기억력 메모리 프롬프트",
@@ -41,7 +41,7 @@ const ko: LocaleType = {
     Copy: "모두 복사",
     Download: "다운로드",
     MessageFromYou: "나의 메시지",
-    MessageFromChatGPT: "ChatGPT의 메시지",
+    MessageFromChatGPT: "AI의 메시지",
   },
   Memory: {
     Title: "기억 프롬프트",

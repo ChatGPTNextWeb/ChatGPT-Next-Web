@@ -11,7 +11,7 @@ const jp: LocaleType = {
     ChatItemCount: (count: number) => `${count} 通のチャット`,
   },
   Chat: {
-    SubTitle: (count: number) => `ChatGPTとの ${count} 通のチャット`,
+    SubTitle: (count: number) => `AIとの ${count} 通のチャット`,
     Actions: {
       ChatList: "メッセージリストを表示",
       CompressedHistory: "圧縮された履歴プロンプトを表示",
@@ -41,7 +41,7 @@ const jp: LocaleType = {
     Copy: "すべてコピー",
     Download: "ファイルをダウンロード",
     MessageFromYou: "あなたからのメッセージ",
-    MessageFromChatGPT: "ChatGPTからのメッセージ",
+    MessageFromChatGPT: "AIからのメッセージ",
   },
   Memory: {
     Title: "履歴メモリ",
