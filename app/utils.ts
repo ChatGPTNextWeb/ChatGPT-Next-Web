@@ -98,13 +98,6 @@ export function useMobileScreen() {
   return width <= MOBILE_MAX_WIDTH;
 }
 
-export function isMobileScreen() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-  return window.innerWidth <= MOBILE_MAX_WIDTH;
-}
-
 export function isFirefox() {
   return (
     typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent)

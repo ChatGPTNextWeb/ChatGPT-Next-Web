@@ -5,7 +5,14 @@ const en: RequiredLocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in settings page.",
+      "Unauthorized access, please enter access code in [auth](/#/auth) page.",
+  },
+  Auth: {
+    Title: "Need Access Code",
+    Tips: "Please enter access code below",
+    Input: "access code",
+    Confirm: "Confirm",
+    Later: "Later",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -37,11 +44,30 @@ const en: RequiredLocaleType = {
     },
   },
   Export: {
-    Title: "All Messages",
+    Title: "Export Messages",
     Copy: "Copy All",
     Download: "Download",
     MessageFromYou: "Message From You",
     MessageFromChatGPT: "Message From ChatGPT",
+    Share: "Share to ShareGPT",
+    Format: {
+      Title: "Export Format",
+      SubTitle: "Markdown or PNG Image",
+    },
+    IncludeContext: {
+      Title: "Including Context",
+      SubTitle: "Export context prompts in mask or not",
+    },
+    Steps: {
+      Select: "Select",
+      Preview: "Preview",
+    },
+  },
+  Select: {
+    Search: "Search",
+    All: "Select All",
+    Latest: "Select Latest",
+    Clear: "Clear",
   },
   Memory: {
     Title: "Memory Prompt",

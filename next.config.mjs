@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   async rewrites() {
     const ret = [
       {
@@ -13,6 +10,10 @@ const nextConfig = {
       {
         source: "/google-fonts/:path*",
         destination: "https://fonts.googleapis.com/:path*",
+      },
+      {
+        source: "/sharegpt",
+        destination: "https://sharegpt.com/api/conversations",
       },
     ];
 

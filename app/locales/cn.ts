@@ -4,7 +4,14 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+  },
+  Auth: {
+    Title: "需要密码",
+    Tips: "管理员开启了密码验证，请在下方填入访问码",
+    Input: "在此处填写访问码",
+    Confirm: "确认",
+    Later: "稍后再说",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -36,11 +43,30 @@ const cn = {
     },
   },
   Export: {
-    Title: "导出聊天记录为 Markdown",
+    Title: "分享聊天记录",
     Copy: "全部复制",
     Download: "下载文件",
+    Share: "分享到 ShareGPT",
     MessageFromYou: "来自你的消息",
     MessageFromChatGPT: "来自 ChatGPT 的消息",
+    Format: {
+      Title: "导出格式",
+      SubTitle: "可以导出 Markdown 文本或者 PNG 图片",
+    },
+    IncludeContext: {
+      Title: "包含面具上下文",
+      SubTitle: "是否在消息中展示面具上下文",
+    },
+    Steps: {
+      Select: "选取",
+      Preview: "预览",
+    },
+  },
+  Select: {
+    Search: "搜索消息",
+    All: "选取全部",
+    Latest: "最近几条",
+    Clear: "清除选中",
   },
   Memory: {
     Title: "历史摘要",
