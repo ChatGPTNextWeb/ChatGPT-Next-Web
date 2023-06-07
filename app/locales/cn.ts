@@ -183,7 +183,10 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "本AI使用openai接口，key由我们XMX网络提供，欢迎大家使用，有问题可以来我的[博客](https://www.xmxit.cn)来联系我",
+    BotHello: "本AI使用openai接口,key由我们XMX网络提供，欢迎大家使用，有问题可以来我的[博客](https://www.xmxit.cn)来联系我
+    你的支持是我更新的动力,点击[赞助](https://pay.xmxit.cn/paypage/?merchant=556e85Q0fzs2JGdE0uBug3GOjOMRCkgCku%2FGcYW3iaWS)
+  提问:支持gpt4.0吗？
+  回答:暂不支持4.0接口，日常使用等等3.5已经足够了，足够强大",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
