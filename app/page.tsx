@@ -7,7 +7,6 @@ import { Home } from "./components/home";
 
 export default async function App() {
   const session = await getServerSession(authOptions);
-  console.log(session);
   if (!session) {
     return redirect("/api/auth/signin");
   }
