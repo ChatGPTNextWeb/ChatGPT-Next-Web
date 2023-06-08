@@ -16,7 +16,7 @@ export class ChatGPTApi implements LLMApi {
 
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
-    console.log("[OPENAI URL", openaiUrl)
+    console.log("[OPENAI URL]", openaiUrl)
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }
@@ -82,7 +82,7 @@ export class ChatGPTApi implements LLMApi {
         };
 
         controller.signal.onabort = finish;
-
+        console.log("[chatPath]", chatPath)
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
