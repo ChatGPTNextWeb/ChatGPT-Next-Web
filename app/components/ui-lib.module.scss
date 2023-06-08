@@ -55,6 +55,12 @@
     }
   }
 }
+.list-item--column {
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+}
+
 
 .list {
   border: var(--border-in-light);
