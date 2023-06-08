@@ -153,7 +153,11 @@ export function Markdown(
     }
   };
 
-  setTimeout(() => checkInView(), 1);
+  const timeoutId = setTimeout(() => {
+    checkInView()
+
+    clearTimeout(timeoutId)
+  }, 1);
 
   return (
     <div

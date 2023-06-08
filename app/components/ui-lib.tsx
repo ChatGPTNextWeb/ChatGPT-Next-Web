@@ -196,14 +196,17 @@ export function showToast(
   const close = () => {
     div.classList.add(styles.hide);
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       root.unmount();
       div.remove();
+
+      clearTimeout(timeoutId)
     }, 300);
   };
 
-  setTimeout(() => {
+  const timeoutId = setTimeout(() => {
     close();
+    clearTimeout(timeoutId)
   }, delay);
 
   root.render(<Toast content={content} action={action} onClose={close} />);

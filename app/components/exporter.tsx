@@ -278,8 +278,9 @@ export function PreviewActions(props: {
       .then((res) => {
         if (!res) return;
         copyToClipboard(res);
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           window.open(res, "_blank");
+          clearTimeout(timeoutId)
         }, 800);
       })
       .catch((e) => {

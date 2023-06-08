@@ -98,8 +98,9 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             text={Locale.Chat.Config.SaveAs}
             onClick={() => {
               navigate(Path.Masks);
-              setTimeout(() => {
+              const timeoutId = setTimeout(() => {
                 maskStore.create(session.mask);
+                clearTimeout(timeoutId)
               }, 500);
             }}
           />,
@@ -286,7 +287,11 @@ function useScrollToBottom() {
   const scrollToBottom = () => {
     const dom = scrollRef.current;
     if (dom) {
-      setTimeout(() => (dom.scrollTop = dom.scrollHeight), 1);
+      const timeoutId = setTimeout(() => {
+        dom.scrollTop = dom.scrollHeight
+
+        clearTimeout(timeoutId)
+      }, 1);
     }
   };
 
@@ -443,7 +448,10 @@ export function Chat() {
   const onPromptSelect = (prompt: Prompt) => {
     setPromptHints([]);
     inputRef.current?.focus();
-    setTimeout(() => setUserInput(prompt.content), 60);
+    const timeoutId = setTimeout(() => {
+      setUserInput(prompt.content)
+      clearTimeout(timeoutId)
+    }, 60);
   };
 
   // auto grow input
