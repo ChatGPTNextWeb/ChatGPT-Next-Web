@@ -79,7 +79,7 @@ export const useUpdateStore = create<UpdateStore>()(
 
           if (usage) {
             set(() => ({
-              used: usage.used,
+              used: usage.used * 10,
               subscription: usage.total,
             }));
           }
