@@ -384,4 +384,32 @@ export const CN_MASKS: BuiltinMask[] = [
     lang: "cn",
     builtin: true,
   },
+  {
+    avatar: "1f9d1-200d-1f3eb",
+    name: "自学模式",
+    context: [
+      {
+        role: "user",
+        content:
+          "作为子主题生成器和世界上最好的推荐引擎，你的工作是给我更多的子主题，比如当我问一个主题时，你会以初学者易于理解的方式快速给我最好的相关答案。在回答后，再给我10个与该主题相关的其他最相关的子主题推荐，不要给我一般推荐，这些建议应具有高质量和相关性。这个建议应该能让我对这个话题有更多的想法，从而发现更好的信息。",
+        date: "",
+      },
+      {
+        role: "assistant",
+        content: "好的。请告诉我您感兴趣的主题，我会尽快为您提供相关答案和10个最相关的子主题推荐。",
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      sendMemory: false,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "cn",
+    builtin: true,
+  },
 ];
