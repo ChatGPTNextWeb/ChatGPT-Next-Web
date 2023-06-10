@@ -23,6 +23,7 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { AuthPage } from "./auth";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -63,17 +64,17 @@ export function useSwitchTheme() {
     }
 
     const metaDescriptionDark = document.querySelector(
-      'meta[name="theme-color"][media]',
+      'meta[name="theme-color"][media*="dark"]',
     );
     const metaDescriptionLight = document.querySelector(
-      'meta[name="theme-color"]:not([media])',
+      'meta[name="theme-color"][media*="light"]',
     );
 
     if (config.theme === "auto") {
       metaDescriptionDark?.setAttribute("content", "#151515");
       metaDescriptionLight?.setAttribute("content", "#fafafa");
     } else {
-      const themeColor = getCSSVar("--themeColor");
+      const themeColor = getCSSVar("--theme-color");
       metaDescriptionDark?.setAttribute("content", themeColor);
       metaDescriptionLight?.setAttribute("content", themeColor);
     }
@@ -90,11 +91,24 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
+const loadAsyncGoogleFont = () => {
+  const linkEl = document.createElement("link");
+  linkEl.rel = "stylesheet";
+  linkEl.href =
+    "/google-fonts/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
+  document.head.appendChild(linkEl);
+};
+
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
+  const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
+
+  useEffect(() => {
+    loadAsyncGoogleFont();
+  }, []);
 
   return (
     <div
@@ -107,17 +121,25 @@ function Screen() {
         }`
       }
     >
-      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+      {isAuth ? (
+        <>
+          <AuthPage />
+        </>
+      ) : (
+        <>
+          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
-      <div className={styles["window-content"]} id={SlotID.AppBody}>
-        <Routes>
-          <Route path={Path.Home} element={<Chat />} />
-          <Route path={Path.NewChat} element={<NewChat />} />
-          <Route path={Path.Masks} element={<MaskPage />} />
-          <Route path={Path.Chat} element={<Chat />} />
-          <Route path={Path.Settings} element={<Settings />} />
-        </Routes>
-      </div>
+          <div className={styles["window-content"]} id={SlotID.AppBody}>
+            <Routes>
+              <Route path={Path.Home} element={<Chat />} />
+              <Route path={Path.NewChat} element={<NewChat />} />
+              <Route path={Path.Masks} element={<MaskPage />} />
+              <Route path={Path.Chat} element={<Chat />} />
+              <Route path={Path.Settings} element={<Settings />} />
+            </Routes>
+          </div>
+        </>
+      )}
     </div>
   );
 }
