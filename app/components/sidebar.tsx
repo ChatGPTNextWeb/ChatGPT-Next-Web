@@ -119,7 +119,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+        <div className={styles["sidebar-title"]}>GMTC ChatGPT</div>
         <div className={styles["sidebar-sub-title"]}>
           兆驰数码ChatGPT，只限公司内部使用，请勿外转。技术支持请联系KangHui@szmtc.com.cn！
         </div>
