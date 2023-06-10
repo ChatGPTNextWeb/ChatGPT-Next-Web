@@ -33,11 +33,11 @@ La versión de Docker es equivalente a la versión estable, la última versión 
 Esta es su contraseña de acceso personalizada, puede elegir:
 
 1.  Si no es así, elimine la variable de entorno. Precaución: Cualquier persona puede acceder a tu proyecto en este momento.
-2.  Cuando implemente el proyecto, establezca la variable de entorno CODE (admite varias comas de contraseña separadas). Después de establecer la contraseña de acceso, debe ingresar la contraseña de acceso en la interfaz de configuración antes de poder usarla. Ver[Instrucciones relacionadas](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
+2.  Cuando implemente el proyecto, establezca la variable de entorno CODE (admite varias comas de contraseña separadas). Después de establecer la contraseña de acceso, debe ingresar la contraseña de acceso en la interfaz de configuración antes de poder usarla. Ver[Instrucciones relacionadas](https://github.com/RexZad/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
 
 ## ¿Por qué la versión que implementé no transmite respuestas?
 
-> Debates relacionados:[#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
+> Debates relacionados:[#386](https://github.com/RexZad/ChatGPT-Next-Web/issues/386)
 
 Si utiliza el proxy inverso ngnix, debe agregar el siguiente código al archivo de configuración:
 
@@ -78,7 +78,7 @@ Sí, pero hay que resolverlo:
 
 ## ¿Por qué recibo un error de red después de la implementación de Docker?
 
-Ver Discusión: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569 para más detalles
+Ver Discusión: https://github.com/RexZad/ChatGPT-Next-Web/issues/1569 para más detalles
 
 # Problemas relacionados con el uso
 
@@ -173,11 +173,11 @@ OpenAI solo acepta tarjetas de crédito en regiones seleccionadas (no se pueden 
 
 ## Uso de la interfaz de Azure OpenAI
 
-Por favor consulte:[#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
+Por favor consulte:[#371](https://github.com/RexZad/ChatGPT-Next-Web/issues/371)
 
 ## ¿Por qué mi token se agota tan rápido?
 
-> Debates relacionados:[#518](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/518)
+> Debates relacionados:[#518](https://github.com/RexZad/ChatGPT-Next-Web/issues/518)
 
 *   Si tiene permisos de GPT 4 y usa las API de GPT 4 a diario, el monto de su factura aumentará rápidamente porque el precio de GPT 4 es aproximadamente 15 veces mayor que el de GPT 3.5;
 *   Si está usando GPT 3.5 y no lo usa con mucha frecuencia y aún nota que su factura aumenta rápidamente, siga estos pasos para solucionar problemas ahora:

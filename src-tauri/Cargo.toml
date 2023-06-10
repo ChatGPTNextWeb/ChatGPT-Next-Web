@@ -2,7 +2,7 @@
 name = "chatgpt-next-web"
 version = "0.1.0"
 description = "A Tauri App"
-authors = ["Yidadaa"]
+authors = ["RexZad"]
 license = "anti-996"
 repository = ""
 default-run = "chatgpt-next-web"
