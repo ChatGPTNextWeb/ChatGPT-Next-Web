@@ -1,7 +1,21 @@
-/** @type {import('next').NextConfig} */
+const mode = process.env.BUILD_MODE ?? "standalone";
+console.log("[Next] build mode", mode);
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+
+    return config;
+  },
+  output: mode,
+};
+
+if (mode !== "export") {
+  nextConfig.rewrites = async () => {
     const ret = [
       {
         source: "/api/proxy/:path*",
@@ -29,16 +43,7 @@ const nextConfig = {
     return {
       beforeFiles: ret,
     };
-  },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack"],
-    });
-
-    return config;
-  },
-  output: "standalone",
-};
+  };
+}
 
 export default nextConfig;

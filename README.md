@@ -21,12 +21,6 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
 </div>
 
-## 重要通知
-## 本项目静默停更至 2023-06-03，不接受任何问题反馈，只接受社区 Pull Request，请在 PR 中详细描述解决的问题，否则会被立即关闭。
-
-## Attention
-## This project wont make any updates until June 3rd, 2023, and will not accept any issue feedback. Only community Pull Requests will be accepted, and please provide a detailed description of the problem being solved in the PR, otherwise it will be immediately closed.
-
 ## Features
 
 - **Deploy for free with one-click** on Vercel in under 1 minute
