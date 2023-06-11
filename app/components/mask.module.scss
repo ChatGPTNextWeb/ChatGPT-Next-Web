@@ -13,7 +13,7 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(155deg, $primary-color 70%, $secondary-color 30%);
+  background: linear-gradient(155deg, $primary-color 30%, $secondary-color 70%);
   padding: 20px;
 
   .mask-page-body {
