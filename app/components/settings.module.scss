@@ -1,3 +1,13 @@
+$accent-color: #ff7a7a;
+$primary-color: #333333;
+$secondary-color: #ff7a7a;
+$border-in-light: 1px solid rgba(0, 0, 0, 0.1);
+$card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+$transition-duration: 0.3s;
+$ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+background: linear-gradient(155deg, $primary-color 60%, $secondary-color 40%);
+
 .settings {
   padding: 20px;
   overflow: auto;
