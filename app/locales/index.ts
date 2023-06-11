@@ -117,4 +117,4 @@ const targetLang = {
 // if target lang missing some fields, it will use fallback lang string
 merge(fallbackLang, targetLang);
 
-export default fallbackLang as typeof CN;
+export default fallbackLang as typeof EN;
