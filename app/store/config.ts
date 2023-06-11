@@ -85,6 +85,14 @@ export const ALL_MODELS = [
     available: true,
   },
   {
+    name: "lang chain", //lang chain
+    available: true,
+  },
+  {
+    name: "chatPDF", //chatPDF
+    available: false,
+  },
+  {
     name: "qwen-v1", // 通义千问
     available: false,
   },

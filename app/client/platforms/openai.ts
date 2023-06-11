@@ -8,11 +8,41 @@ import {
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
+import { sendMessage } from "next/dist/client/dev/error-overlay/websocket";
 
 export class ChatGPTApi implements LLMApi {
   public ChatPath = "v1/chat/completions";
   public UsagePath = "dashboard/billing/usage";
   public SubsPath = "dashboard/billing/subscription";
+  getHistory(messages: any[]): any[] {
+    const history: any[] = [];
+    let systemContent: any = null;
+
+    for (let i = 0; i < messages.length; i++) {
+      const message = messages[i];
+      const { role, content } = message;
+
+      if (role === "system") {
+        if (systemContent !== null) {
+          history.push([systemContent, ""]);
+          systemContent = null;
+        }
+      } else if (role === "user") {
+        const nextMessage = messages[i + 1];
+        if (nextMessage && nextMessage.role === "user") {
+          history.push([content, nextMessage.content]);
+          i++; // 跳过下一个消息，因为已经处理了
+        } else {
+          history.push([content, ""]);
+        }
+      } else {
+        // 其他角色的消息处理逻辑
+        // 如果有需要，请根据需求进行修改或添加
+      }
+    }
+
+    return history;
+  }
 
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
@@ -24,6 +54,8 @@ export class ChatGPTApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
+    //  const text = res.text ?? ""; // 获取res对象中的text字段值，如果不存在则使用空字符串作为默认值
+    //  return text;
   }
 
   async chat(options: ChatOptions) {
@@ -32,6 +64,13 @@ export class ChatGPTApi implements LLMApi {
       content: v.content,
     }));
 
+    //
+    // messages.forEach((message) => {
+    //   const output = `Role: ${message.role}\nContent: ${message.content}`;
+    //   alert(output);
+    // });
+
+    //alert(messages[messages.length-1].content)
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -49,7 +88,6 @@ export class ChatGPTApi implements LLMApi {
     };
 
     console.log("[Request] openai payload: ", requestPayload);
-
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
@@ -62,13 +100,12 @@ export class ChatGPTApi implements LLMApi {
         signal: controller.signal,
         headers: getHeaders(),
       };
-
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-
+      const question = messages[messages.length - 1].content;
       if (shouldStream) {
         let responseText = "";
         let finished = false;
@@ -81,7 +118,6 @@ export class ChatGPTApi implements LLMApi {
         };
 
         controller.signal.onabort = finish;
-
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
@@ -92,11 +128,13 @@ export class ChatGPTApi implements LLMApi {
               contentType,
             );
 
+            //alert(question)
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
             }
-
+            alert("Streaming");
+            //alert(sendMessage);
             if (
               !res.ok ||
               !res.headers
@@ -132,6 +170,8 @@ export class ChatGPTApi implements LLMApi {
             try {
               const json = JSON.parse(text);
               const delta = json.choices[0].delta.content;
+              //const delta = json.text;
+
               if (delta) {
                 responseText += delta;
                 options.onUpdate?.(responseText, delta);
@@ -150,12 +190,62 @@ export class ChatGPTApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        const res = await fetch(chatPath, chatPayload);
-        clearTimeout(requestTimeoutId);
+        alert("No straming!!!");
+        if (modelConfig.model !== "lang chain") {
+          //console.log(JSON.stringify(testBody))
 
-        const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
+          try {
+            const res = await fetch(chatPath, chatPayload);
+            //const res = await fetch(testPath, testPayload);
+            clearTimeout(requestTimeoutId);
+
+            if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            const resJson = await res.json();
+            const message = this.extractMessage(resJson);
+            //const message = resJson.text;
+            //alert(message)
+            options.onFinish(message);
+          } catch (error) {
+            console.error("Request error:", error);
+          }
+        } else {
+          //console.log(JSON.stringify(testBody))
+
+          const history = this.getHistory(messages);
+
+          const testPath = "http://localhost:3001/api/chat/";
+          const testBody = {
+            question: question,
+            history: history,
+          };
+
+          const testPayload = {
+            method: "POST",
+            body: JSON.stringify(testBody),
+            signal: controller.signal,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+
+          try {
+            alert("hhhhhh");
+            const res = await fetch(testPath, testPayload);
+            clearTimeout(requestTimeoutId);
+
+            if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            const resJson = await res.json();
+            const message = resJson.text;
+            //alert(message)
+            options.onFinish(message);
+          } catch (error) {
+            console.error("Request error:", error);
+          }
+        }
       }
     } catch (e) {
       console.log("[Request] failed to make a chat reqeust", e);

@@ -20,6 +20,7 @@ const fr: LocaleType = {
       Stop: "Arrêter",
       Retry: "Réessayer",
       Delete: "Supprimer",
+      Edit: "Edit",
     },
     Rename: "Renommer la conversation",
     Typing: "En train d'écrire…",

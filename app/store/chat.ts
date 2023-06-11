@@ -235,7 +235,7 @@ export const useChatStore = create<ChatStore>()(
       async onUserInput(content) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
-
+        //alert(modelConfig.model)
         const userMessage: ChatMessage = createMessage({
           role: "user",
           content,
@@ -275,12 +275,17 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(userMessage);
           session.messages.push(botMessage);
         });
-
+        let isStreaming = true;
+        //alert(modelConfig.model);
+        if (modelConfig.model === "lang chain") {
+          isStreaming = false;
+        }
+        //alert(isStreaming)
         // make request
         console.log("[User Input] ", sendMessages);
         api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: true },
+          config: { ...modelConfig, stream: isStreaming },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {

@@ -1,3 +1,4 @@
+import { ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
@@ -15,7 +16,7 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
-
+import UploadFileIcon from "../icons/uploadfile.svg";
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
@@ -61,6 +62,10 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+import tr from "@/app/locales/tr";
+import { Property } from "csstype";
+import Height = Property.Height;
+import ResponseController from "@/app/api/controller/ResponseController";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -404,7 +409,6 @@ export function ChatActions(props: {
 
 export function Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
-
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
     state.currentSession(),
@@ -414,9 +418,14 @@ export function Chat() {
   const fontSize = config.fontSize;
 
   const [showExport, setShowExport] = useState(false);
-
+  const [editingHeight2, setEditingHeight2] = useState<number | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [isEditing, setisEditing] = useState(false);
+  const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
+    null,
+  );
+  const [editingContent, setEditingContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
@@ -659,13 +668,91 @@ export function Chat() {
   const location = useLocation();
   const isChat = location.pathname === Path.Chat;
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
-
   useCommand({
     fill: setUserInput,
     submit: (text) => {
       doSubmit(text);
     },
   });
+
+  useLayoutEffect(() => {
+    if (isEditing && selectedMessageId !== null && inputRef.current) {
+      const textarea = inputRef.current;
+      const paddingTop = parseInt(getComputedStyle(textarea).paddingTop);
+      const paddingBottom = parseInt(getComputedStyle(textarea).paddingBottom);
+      const contentHeight = textarea.scrollHeight - paddingTop - paddingBottom;
+
+      setEditingHeight2(contentHeight);
+    }
+  }, [isEditing, selectedMessageId]);
+  //Add for langchain
+  const [isLangchain, setisLangchain] = useState(false);
+  useEffect(() => {
+    const sessions = chatStore.currentSession();
+    const model = sessions.mask.modelConfig.model;
+    if (model === "lang chain") {
+      setisLangchain(true);
+    }
+  }, []);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     const formData = new FormData();
+  //     formData.append('file', file);
+  //
+  //     fetch('/Users/xuzhongwei/uiuc', {
+  //       method: 'POST',
+  //       body: formData,
+  //     })
+  //         .then(response => {
+  //           // 处理上传成功的响应
+  //           console.log('文件上传成功！');
+  //         })
+  //         .catch(error => {
+  //           // 处理上传失败的错误
+  //           console.error('文件上传失败:', error);
+  //         });
+  //   }
+  // };
+  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       const fileContent = reader.result as string;
+  //
+  //
+  //       // 创建一个虚拟的下载链接，并触发下载
+  //       const downloadLink = document.createElement('a');
+  //       downloadLink.href = URL.createObjectURL(new Blob([fileContent]));
+  //       downloadLink.setAttribute('download', file.name);
+  //       downloadLink.style.display = 'none';
+  //       document.body.appendChild(downloadLink);
+  //       downloadLink.click();
+  //       document.body.removeChild(downloadLink);
+  //
+  //       console.log('文件保存成功！');
+  //     };
+  //     reader.onerror = () => {
+  //       console.error('文件读取错误');
+  //     };
+  //     reader.readAsText(file);
+  //   }
+  // };
+  async function handlePostFile() {
+    let data = new FormData();
+    if (fileInputRef.current!.files)
+      data.append("files", fileInputRef.current!.files[0]);
+    const res = await ResponseController.postPDFprompt(data);
+    //setPrompts(res.content)
+  }
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -690,6 +777,29 @@ export function Chat() {
               onClick={() => navigate(Path.Home)}
             />
           </div>
+          {isLangchain && (
+            <div className="window-action-button">
+              <IconButton
+                icon={<UploadFileIcon />}
+                bordered
+                onClick={handleFileUpload}
+              />
+              {/*<input*/}
+              {/*    type="file"*/}
+              {/*    ref={fileInputRef}*/}
+              {/*    style={{ display: 'none' }}*/}
+              {/*    onChange={handlePostFile}*/}
+              {/*/>*/}
+              <input
+                ref={fileInputRef}
+                type="file"
+                id="prompt_file"
+                name="pdf_file"
+                style={{ display: "none" }}
+                onChange={handlePostFile}
+              />
+            </div>
+          )}
           <div className="window-action-button">
             <IconButton
               icon={<RenameIcon />}
@@ -750,6 +860,16 @@ export function Chat() {
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
 
+          const editContent = () => {
+            setEditingContent(message.content);
+            setisEditing(true);
+            setSelectedMessageId(message.id ?? null);
+          };
+          const saveContent = () => {
+            message.content = editingContent;
+            setisEditing(false);
+          };
+
           return (
             <>
               <div
@@ -795,32 +915,65 @@ export function Chat() {
                             >
                               {Locale.Chat.Actions.Retry}
                             </div>
+                            <div
+                              className={styles["chat-message-top-action"]}
+                              onClick={() => editContent()}
+                            >
+                              {Locale.Chat.Actions.Edit}
+                            </div>
+                            {isEditing ? (
+                              <div
+                                className={styles["chat-message-top-action"]}
+                                onClick={() => saveContent()}
+                              >
+                                {Locale.Chat.Actions.Save}
+                              </div>
+                            ) : (
+                              <div
+                                className={styles["chat-message-top-action"]}
+                                onClick={() => copyToClipboard(message.content)}
+                              >
+                                {Locale.Chat.Actions.Copy}
+                              </div>
+                            )}
                           </>
                         )}
-
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => copyToClipboard(message.content)}
-                        >
-                          {Locale.Chat.Actions.Copy}
-                        </div>
                       </div>
                     )}
-                    <Markdown
-                      content={message.content}
-                      loading={
-                        (message.preview || message.content.length === 0) &&
-                        !isUser
-                      }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
-                      fontSize={fontSize}
-                      parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 10}
-                    />
+                    {isEditing && selectedMessageId === message.id ? (
+                      <textarea
+                        ref={inputRef}
+                        className={styles["chat-input-edit"]}
+                        value={editingContent}
+                        onChange={(e) => setEditingContent(e.target.value)}
+                        // style={editingHeight !== null ? { height: editingHeight } : undefined}
+                        style={{
+                          height: editingHeight2 as
+                            | Height<string | number>
+                            | undefined,
+                          width: "400px", // 设置初始宽度
+                        }}
+                        autoFocus
+                      />
+                    ) : (
+                      <div>
+                        <Markdown
+                          content={message.content}
+                          loading={
+                            (message.preview || message.content.length === 0) &&
+                            !isUser
+                          }
+                          onContextMenu={(e) => onRightClick(e, message)}
+                          onDoubleClickCapture={() => {
+                            if (!isMobileScreen) return;
+                            setUserInput(message.content);
+                          }}
+                          fontSize={fontSize}
+                          parentRef={scrollRef}
+                          defaultShow={i >= messages.length - 10}
+                        />
+                      </div>
+                    )}
                   </div>
                   {!isUser && !message.preview && (
                     <div className={styles["chat-message-actions"]}>
