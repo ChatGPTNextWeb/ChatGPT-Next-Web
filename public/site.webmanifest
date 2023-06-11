@@ -1,6 +1,6 @@
 {
-    "name": "ChatGPT Next Web",
-    "short_name": "ChatGPT",
+    "name": "Atomic Assistant",
+    "short_name": "Atom",
     "icons": [
       {
         "src": "/android-chrome-192x192.png",
