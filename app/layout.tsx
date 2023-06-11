@@ -8,7 +8,7 @@ const buildConfig = getBuildConfig();
 
 export const metadata = {
   title: "AI迪升 ChatGPT会员plus服务体验版",
-  description: "AI迪升ChatGPT-你强大的GPT3.5/4.0plus私人独享人工智能助理聊天机器人.Your personal ChatGPT Chat Bot.提供服务:CHATGPT标准号充值代充plus4.0",
+  description: "AI迪升ChatGPT-你强大的GPT3.5//4.0plus私人独享人工智能助理聊天机器人.Your personal ChatGPT Chat Bot.提供服务:CHATGPT标准号充值代充plus4.0",
   viewport: {
     width: "device-width",
     initialScale: 1,
