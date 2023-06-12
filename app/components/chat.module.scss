@@ -18,6 +18,7 @@
     margin-bottom: 10px;
     align-items: center;
     height: 16px;
+    width: var(--icon-width);
 
     &:not(:last-child) {
       margin-right: 5px;
@@ -34,6 +35,8 @@
     }
 
     &:hover {
+      width: var(--full-width);
+
       .text {
         opacity: 1;
         transform: translate(0);
