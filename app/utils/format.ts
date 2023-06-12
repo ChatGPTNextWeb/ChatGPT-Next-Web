@@ -1,8 +1,13 @@
 export function prettyObject(msg: any) {
-  const prettyMsg = [
-    "```json\n",
-    JSON.stringify(msg, null, "  "),
-    "\n```",
-  ].join("");
-  return prettyMsg;
+  const obj = msg;
+  if (typeof msg !== "string") {
+    msg = JSON.stringify(msg, null, "  ");
+  }
+  if (msg === "{}") {
+    return obj.toString();
+  }
+  if (msg.startsWith("```json")) {
+    return msg;
+  }
+  return ["```json", msg, "```"].join("\n");
 }
