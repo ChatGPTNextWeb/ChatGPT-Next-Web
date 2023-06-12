@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -286,34 +286,39 @@ function ChatAction(props: {
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const [hovering, setHovering] = useState(false);
-  const [width, setWidth] = useState(20);
+  const [width, setWidth] = useState({
+    full: 20,
+    icon: 20,
+  });
 
-  const updateWidth = () => {
+  function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
     const textWidth = getWidth(textRef.current);
     const iconWidth = getWidth(iconRef.current);
-    setWidth(hovering ? textWidth + iconWidth : iconWidth);
-  };
+    setWidth({
+      full: textWidth + iconWidth,
+      icon: iconWidth,
+    });
+  }
 
   useEffect(() => {
     updateWidth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hovering]);
+  }, []);
 
   return (
     <div
       className={`${chatStyle["chat-input-action"]} clickable`}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      style={{
-        width,
-      }}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
       }}
+      style={
+        {
+          "--icon-width": `${width.icon}px`,
+          "--full-width": `${width.full}px`,
+        } as React.CSSProperties
+      }
     >
       <div ref={iconRef} className={chatStyle["icon"]}>
         {props.icon}
