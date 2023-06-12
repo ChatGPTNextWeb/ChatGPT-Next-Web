@@ -22,6 +22,7 @@
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.1.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.29.0",
     "next": "^13.4.3",
     "node-fetch": "^3.3.1",
     "react": "^18.2.0",

@@ -1,5 +1,9 @@
 # 1. Versions
 
+## v2.0.0
+publish time: 2023-06-11
+ - Add Voice conmunication
+
 ## v1.0.1
 publish time: 2023-06-01
 

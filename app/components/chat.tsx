@@ -21,6 +21,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import MicphoneIcon from "../icons/Micphone.svg";
 
 import {
   ChatMessage,
@@ -46,13 +47,13 @@ import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
-import Locale from "../locales";
+import Locale, { AllLangs, ALL_LANG_OPTIONS, DEFAULT_LANG } from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
-import { ListItem, Modal, showModal, showToast } from "./ui-lib";
+import { ListItem, Modal, Select, showModal, showToast } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
@@ -61,11 +62,13 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+import { SpeechConfig } from "../store/config";
 
 import zBotServiceClient, {
-  UserCheckResultVO,
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+
+import speechSdk from "../cognitive/speech-sdk";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -429,6 +432,11 @@ export function Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
+  // 使用 useEffect 钩子来监听 voiceButtonStarted 的变化。
+  // 当 voiceButtonStarted 发生变化时，可以在 useEffect 钩子中执行一些副作用，例如更新组件的样式
+  const [voiceButtonStarted, setVoiceButtonStarted] = useState(false);
+  useEffect(() => {}, [voiceButtonStarted]);
+
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
@@ -521,6 +529,59 @@ export function Chat() {
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
+
+    // voice
+    SpeechConfig.enablePlay &&
+      chatStore.getIsFinished().then((isFinished) => {
+        if (isFinished) {
+          var text = session.messages[session.messages.length - 1].content;
+          speechSdk.handleSynthesize(text);
+        }
+      });
+  };
+
+  const doSubmitVoice = () => {
+    // once conversation
+    if (SpeechConfig.autoEnd) {
+      setVoiceButtonStarted(true);
+      speechSdk
+        .recognizeOnceAsync()
+        .then((text) => {
+          if (text !== "" && text !== undefined && text.length !== 0) {
+            setUserInput(text);
+            doSubmit(text);
+          }
+        })
+        .catch((error) => {
+          console.error("speechSdk.recognizeOnceAsync failed: ", error);
+        })
+        .finally(() => {
+          setVoiceButtonStarted(false);
+        });
+      return;
+    }
+
+    // continues conversation
+    if (!voiceButtonStarted) {
+      speechSdk.startRecognition().then(() => {
+        setVoiceButtonStarted(true);
+      });
+    } else {
+      speechSdk
+        .stopRecognition()
+        .then((text) => {
+          if (text !== "" && text !== undefined && text.length !== 0) {
+            setUserInput(text);
+            doSubmit(text);
+          }
+        })
+        .catch((error) => {
+          console.error("speechSdk.stopRecognition failed: ", error);
+        })
+        .finally(() => {
+          setVoiceButtonStarted(false);
+        });
+    }
   };
 
   // stop response
@@ -775,7 +836,8 @@ export function Chat() {
             !(message.preview || message.content.length === 0);
           const showTyping = message.preview || message.streaming;
 
-          const shouldShowClearContextDivider = i === clearContextIndex - 1;
+          const shouldShowClearContextDivider: boolean =
+            i === clearContextIndex - 1;
 
           return (
             <>
@@ -830,6 +892,15 @@ export function Chat() {
                           onClick={() => copyToClipboard(message.content)}
                         >
                           {Locale.Chat.Actions.Copy}
+                        </div>
+
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() =>
+                            speechSdk.handleSynthesize(message.content)
+                          }
+                        >
+                          {"播放"}
                         </div>
                       </div>
                     )}
@@ -903,6 +974,60 @@ export function Chat() {
             type="primary"
             onClick={() => doSubmit(userInput)}
           />
+        </div>
+      </div>
+
+      <div>
+        <div>
+          <div className={styles["chat-voice-input"]}>
+            <IconButton
+              icon={<MicphoneIcon />}
+              text={voiceButtonStarted ? "语音采集中: " : "开始语音"}
+              className={
+                voiceButtonStarted
+                  ? styles["chat-voice-input-send-pressed"]
+                  : styles["chat-voice-input-send"]
+              }
+              type="primary"
+              onClick={doSubmitVoice}
+            />
+            <label>
+              <input
+                type="checkbox"
+                defaultChecked={SpeechConfig.autoEnd}
+                className={styles["chat-voice-input-autostop"]}
+                onChange={(e) =>
+                  (SpeechConfig.autoEnd = e.currentTarget.checked)
+                }
+              ></input>
+              自动结束
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                defaultChecked={SpeechConfig.enablePlay}
+                className={styles["chat-voice-input-setting"]}
+                onChange={(e) => {
+                  SpeechConfig.enablePlay = e.currentTarget.checked;
+                }}
+              ></input>
+              播放
+            </label>
+
+            {/* TODO: here language only for speech */}
+            <Select
+              defaultValue={DEFAULT_LANG}
+              onChange={(e) => {
+                speechSdk.resetSpeaker(e.target.value);
+              }}
+            >
+              {AllLangs.map((lang) => (
+                <option value={lang} key={lang}>
+                  {ALL_LANG_OPTIONS[lang]}
+                </option>
+              ))}
+            </Select>
+          </div>
         </div>
       </div>
 
