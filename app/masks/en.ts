@@ -66,7 +66,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-    avatar: "1F575",
+    avatar: "1f575-fe0f",
     name: "Ultimate Researcher",
     context: [
       {
@@ -90,7 +90,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F469",
+  avatar: "1f935-1f3fb-200d-2640-fe0f",
   name: "Personal Assistant",
   context: [
     {
@@ -113,7 +113,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
  {
-  avatar: "200D",
+  avatar: "1f469-1f3fb-200d-1f3eb",
   name: "Language Teacher",
   context: [
     {
@@ -136,7 +136,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
 {
-  avatar: "1F52C",
+  avatar: "1f469-1f3fb-200d-1f52c",
   name: "Science Explainer",
   context: [
     {
@@ -159,7 +159,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F3CB",
+  avatar: "1f4aa-1f3fc",
   name: "Fitness Guru",
   context: [
     {
@@ -182,7 +182,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
 
   {
-  avatar: "U+1F4BB",
+  avatar: "1f469-1f3fb-200d-1f4bb",
   name: "Tech Guru",
   context: [
     {
@@ -205,7 +205,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F9E0",
+  avatar: "1f469-1f3fb-200d-2695-fe0f",
   name: "Health Ambassador",
   context: [
     {
@@ -228,7 +228,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F3A8",
+  avatar: "1f469-1f3fb-200d-1f3a8",
   name: "Art Connoisseur",
   context: [
     {
@@ -252,7 +252,7 @@ export const EN_MASKS: BuiltinMask[] = [
   
   
   {
-  avatar: "1F4DD",
+  avatar: "270d-1f3fb",
   name: "Novel Writer",
   context: [
     {
@@ -276,7 +276,7 @@ export const EN_MASKS: BuiltinMask[] = [
   
   
   {
-  avatar: "270D",
+  avatar: "1f4fd-fe0f",
   name: "Screen Writer",
   context: [
     {
@@ -299,7 +299,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F680",
+  avatar: "1f680",
   name: "Startup Idea Generator",
   context: [
     {
@@ -322,7 +322,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F4DA",
+  avatar: "1f5d2-fe0f",
   name: "Text Improver",
   context: [
     {
@@ -345,7 +345,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F4B0",
+  avatar: "1f4b0",
   name: "Wealth Creator",
   context: [
     {
@@ -368,7 +368,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-  avatar: "1F5FA",
+  avatar: "2708-fe0f",
   name: "Travel Guide",
   context: [
     {
@@ -391,7 +391,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   
   {
-    avatar: "2328-fe0f",
+    avatar: "1f469-1f3fb-200d-1f4bb",
     name: "Ultimate Coder",
     context: [
       {
@@ -414,7 +414,7 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
   },
   {
-    avatar: "1f60e",
+    avatar: "1f977",
     name: "Expert",
     context: [
       {
