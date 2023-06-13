@@ -397,7 +397,6 @@ export function ChatActions(props: {
       {props.hitBottom && (
         <ChatAction
           onClick={props.showPromptModal}
-          title={Locale.Chat.Inputactions.Setting}
           text={Locale.Chat.InputActions.Settings}
           icon={<SettingsIcon />}
         />
