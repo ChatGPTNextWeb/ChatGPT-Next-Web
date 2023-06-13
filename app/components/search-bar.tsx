@@ -35,7 +35,7 @@ export interface SearchInputRef {
   inputElement: HTMLInputElement | null;
 }
 
-const highlightAndShorten = (str: string, search: string) => {
+function highlightAndShorten(str: string, search: string) {
   const index = str.toLowerCase().indexOf(search.toLowerCase());
   const head = Math.max(0, index - 10);
   const tail = Math.min(str.length, index + search.length + 40);
@@ -53,7 +53,7 @@ const highlightAndShorten = (str: string, search: string) => {
   }
 
   return result;
-};
+}
 
 function HighlightedMessage({
   message,
