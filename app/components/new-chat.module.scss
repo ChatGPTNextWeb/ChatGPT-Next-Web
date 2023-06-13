@@ -15,9 +15,8 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background: #0F2027;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #485461;
+  background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);
 
  // background: linear-gradient(155deg, $primary-color 31%, $secondary-color 69%);
   padding: 20px;
