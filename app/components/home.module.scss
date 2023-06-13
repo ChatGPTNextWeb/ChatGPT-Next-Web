@@ -42,7 +42,8 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: #333; // Changed background color to a lighter shade of black
+  background: #333333;
+  background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgba(0, 0, 0, 0.05);
