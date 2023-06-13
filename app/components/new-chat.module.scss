@@ -15,8 +15,8 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #4d4855;
-  background-image: linear-gradient(147deg, #4d4855 0%, #000000 74%);
+  background: rgb(51,51,51);
+  background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
 
 
  // background: linear-gradient(155deg, $primary-color 31%, $secondary-color 69%);
