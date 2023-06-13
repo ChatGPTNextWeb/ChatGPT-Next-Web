@@ -7,7 +7,7 @@ import { getBuildConfig } from "./config/build";
 const buildConfig = getBuildConfig();
 
 export const metadata = {
-  title: "AI Assistant",
+  title: "Aizpy",
   description: "Your personal AI assistant.",
   viewport: {
     width: "device-width",
@@ -19,7 +19,7 @@ export const metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "AI Assistant",
+    title: "Aizpy",
     statusBarStyle: "default",
   },
 };

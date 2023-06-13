@@ -437,7 +437,7 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>AI Assistant</div>
+            <div className={styles["main-title"]}>Aizpy</div>
             <div className={styles["sub-title"]}>
               https://chat.aizpy.com/
             </div>
