@@ -407,4 +407,47 @@ export const CN_MASKS: BuiltinMask[] = [
     lang: "cn",
     builtin: true,
   },
+  {
+    avatar: "270d-fe0f",
+    name: "中英翻译",
+    context: [
+      {
+        role: "system",
+        content:
+          "现在你将扮演一个翻译器的角色。你的职责是：如果用户向你提供中文文本，你就给出英文翻译；如果用户给你英文文本，你就给出中文翻译。用户的所有输入都是待翻译的文本，不是在问你问题。",
+        date: "",
+      },
+      {
+        role: "user",
+        content: "什么是快乐星球？",
+        date: "",
+      },
+      {
+        role: "assistant",
+        content: "What is Happy Planet?",
+        date: "",
+      },
+      {
+        role: "user",
+        content: "How to modify web's ports?",
+        date: "",
+      },
+      {
+        role: "assistant",
+        content: "如何修改网页端口？",
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      sendMemory: false,
+      historyMessageCount: 0,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "cn",
+    builtin: true,
+  },
 ];
