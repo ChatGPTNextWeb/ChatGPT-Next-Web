@@ -16,6 +16,8 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
+  background: #333333;
+  background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
 
   .chat-input-action {
     display: inline-flex;
@@ -24,7 +26,8 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
     margin-bottom: 10px;
     margin-right: 5px;
     font-size: 12px;
-    background-color: var(--white);
+    background: #333333;
+    background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
     color: var(--black);
     border: var(--border-in-light);
     border-radius: 0px;
