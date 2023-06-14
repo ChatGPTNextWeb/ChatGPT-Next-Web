@@ -2,16 +2,9 @@ import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
 import { List, ListItem, Modal, Select, showToast } from "./ui-lib";
-import { IconButton } from "./button";
+import { IconButton } from "./";
 import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
 
-import CopyIcon from "../icons/copy.svg";
-import LoadingIcon from "../icons/three-dots.svg";
-import ChatGptIcon from "../icons/chatgpt.png";
-import ShareIcon from "../icons/share.svg";
-import BotIcon from "../icons/bot.png";
-
-import DownloadIcon from "../icons/download.svg";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MessageSelector, useMessageSelector } from "./message-selector";
 import { Avatar } from "./emoji";
@@ -23,6 +16,14 @@ import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
+import {
+  LoadingIcon,
+  CopyIcon,
+  DownloadIcon,
+  ShareIcon,
+  BotIcon,
+  ChatGptIcon,
+} from "../icons";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,

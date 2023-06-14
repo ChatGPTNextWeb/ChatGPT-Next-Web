@@ -8,6 +8,7 @@ import { ModelType } from "../store";
 
 import BotIcon from "../icons/bot.svg";
 import BlackBotIcon from "../icons/black-bot.svg";
+import { DEFAULT_MASK_AVATAR, Mask } from "../store/mask";
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
   return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
@@ -55,5 +56,13 @@ export function EmojiAvatar(props: { avatar: string; size?: number }) {
       size={props.size ?? 18}
       getEmojiUrl={getEmojiUrl}
     />
+  );
+}
+
+export function MaskAvatar(props: { mask: Mask }) {
+  return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
+    <Avatar avatar={props.mask.avatar} />
+  ) : (
+    <Avatar model={props.mask.modelConfig.model} />
   );
 }

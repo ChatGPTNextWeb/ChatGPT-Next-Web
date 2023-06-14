@@ -1,7 +1,6 @@
 import React from "react";
-import { IconButton } from "./button";
-import GithubIcon from "../icons/github.svg";
-import ResetIcon from "../icons/reload.svg";
+import { IconButton } from "./";
+import { GithubIcon, ReloadIcon } from "../icons";
 import { ISSUE_URL } from "../constant";
 import Locale from "../locales";
 import { downloadAs } from "../utils";
@@ -55,7 +54,7 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
               />
             </a>
             <IconButton
-              icon={<ResetIcon />}
+              icon={<ReloadIcon />}
               text="Clear All Data"
               onClick={() =>
                 confirm(Locale.Settings.Actions.ConfirmClearAll) &&

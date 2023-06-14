@@ -1,15 +1,8 @@
 import { useEffect, useRef } from "react";
 
-import styles from "./home.module.scss";
+import styles from "../pages/home.module.scss";
 
-import { IconButton } from "./button";
-import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/chatgpt.svg";
-import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
-import MaskIcon from "../icons/mask.svg";
-import PluginIcon from "../icons/plugin.svg";
+import { IconButton } from "./";
 
 import Locale from "../locales";
 
@@ -27,6 +20,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
+import {
+  ChatGptSvgIcon,
+  MaskIcon,
+  PluginIcon,
+  CloseIcon,
+  SettingsIcon,
+  GithubIcon,
+  AddIcon,
+} from "../icons";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -124,7 +126,7 @@ export function SideBar(props: { className?: string }) {
           Build your own AI assistant.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          <ChatGptSvgIcon />
         </div>
       </div>
 
@@ -140,7 +142,7 @@ export function SideBar(props: { className?: string }) {
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => navigate(Path.Plugins, { state: { fromHome: true } })}
           shadow
         />
       </div>

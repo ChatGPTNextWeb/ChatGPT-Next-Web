@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
-import { IconButton } from "./button";
-import { EmojiAvatar } from "./emoji";
+import { IconButton, EmojiAvatar, MaskAvatar } from "../components";
 import styles from "./new-chat.module.scss";
 
 import LeftIcon from "../icons/left.svg";
@@ -12,7 +11,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
-import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {

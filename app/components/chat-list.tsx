@@ -1,7 +1,7 @@
 import DeleteIcon from "../icons/delete.svg";
 import BotIcon from "../icons/bot.svg";
 
-import styles from "./home.module.scss";
+import styles from "../pages/home.module.scss";
 import {
   DragDropContext,
   Droppable,
@@ -14,7 +14,7 @@ import { useChatStore } from "../store";
 import Locale from "../locales";
 import { Link, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-import { MaskAvatar } from "./mask";
+import { MaskAvatar } from "./";
 import { Mask } from "../store/mask";
 import { useRef, useEffect } from "react";
 

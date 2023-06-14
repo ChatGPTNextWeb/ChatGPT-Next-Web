@@ -9,7 +9,7 @@ import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
 
-import LoadingIcon from "../icons/three-dots.svg";
+import { LoadingIcon } from "../icons";
 import React from "react";
 
 export function Mermaid(props: { code: string; onError: () => void }) {

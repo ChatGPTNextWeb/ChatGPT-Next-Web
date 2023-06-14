@@ -2,26 +2,15 @@ import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
 
 import styles from "./settings.module.scss";
 
-import ResetIcon from "../icons/reload.svg";
-import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
-import CopyIcon from "../icons/copy.svg";
-import ClearIcon from "../icons/clear.svg";
-import LoadingIcon from "../icons/three-dots.svg";
-import EditIcon from "../icons/edit.svg";
-import EyeIcon from "../icons/eye.svg";
-import {
-  Input,
-  List,
-  ListItem,
-  Modal,
-  PasswordInput,
-  Popover,
-  Select,
-} from "./ui-lib";
-import { ModelConfigList } from "./model-config";
+// import ReloadIcon from "../icons/reload.svg";
+// import AddIcon from "../icons/add.svg";
+// import CloseIcon from "../icons/close.svg";
+// import CopyIcon from "../icons/copy.svg";
+// import ClearIcon from "../icons/clear.svg";
+// import LoadingIcon from "../icons/three-dots.svg";
+// import EditIcon from "../icons/edit.svg";
+// import EyeIcon from "../icons/eye.svg";
 
-import { IconButton } from "./button";
 import {
   SubmitKey,
   useChatStore,
@@ -41,10 +30,32 @@ import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import { Path, UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
-import { ErrorBoundary } from "./error";
-import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarPicker } from "./emoji";
+import {
+  Avatar,
+  AvatarPicker,
+  ErrorBoundary,
+  IconButton,
+  Input,
+  InputRange,
+  List,
+  ListItem,
+  Modal,
+  ModelConfigList,
+  PasswordInput,
+  Popover,
+  Select,
+} from "../components";
+import {
+  AddIcon,
+  ClearIcon,
+  EditIcon,
+  EyeIcon,
+  CopyIcon,
+  CloseIcon,
+  LoadingIcon,
+  ReloadIcon,
+} from "../icons";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -311,7 +322,7 @@ export function Settings() {
           </div>
           <div className="window-action-button">
             <IconButton
-              icon={<ResetIcon />}
+              icon={<ReloadIcon />}
               onClick={() => {
                 if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {
                   resetConfig();
@@ -373,7 +384,7 @@ export function Settings() {
               </Link>
             ) : (
               <IconButton
-                icon={<ResetIcon></ResetIcon>}
+                icon={<ReloadIcon />}
                 text={Locale.Settings.Update.CheckUpdate}
                 onClick={() => checkUpdate(true)}
               />
@@ -535,7 +546,7 @@ export function Settings() {
               <div />
             ) : (
               <IconButton
-                icon={<ResetIcon></ResetIcon>}
+                icon={<ReloadIcon />}
                 text={Locale.Settings.Usage.Check}
                 onClick={() => checkUsage(true)}
               />

@@ -1,13 +1,15 @@
 import styles from "./ui-lib.module.scss";
-import LoadingIcon from "../icons/three-dots.svg";
-import CloseIcon from "../icons/close.svg";
-import EyeIcon from "../icons/eye.svg";
-import EyeOffIcon from "../icons/eye-off.svg";
-import DownIcon from "../icons/down.svg";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
-import { IconButton } from "./button";
+import { IconButton } from "./";
+import {
+  LoadingIcon,
+  CloseIcon,
+  EyeIcon,
+  EyeOffIcon,
+  DownIcon,
+} from "../icons";
 
 export function Popover(props: {
   children: JSX.Element;
