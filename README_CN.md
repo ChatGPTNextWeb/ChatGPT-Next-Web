@@ -15,16 +15,6 @@
 
 </div>
 
-## 主要功能
-
-- 在 1 分钟内使用 Vercel **免费一键部署**
-- 精心设计的 UI，响应式设计，支持深色模式
-- 极快的首屏加载速度（~100kb）
-- 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
-- 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
-- 一键导出聊天记录，完整的 Markdown 支持
-- 拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
-
 ## 开始使用
 
 1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys);
@@ -43,6 +33,9 @@
 - 在 Vercel 重新选择并部署，[请查看详细教程](./docs/vercel-cn.md#如何新建项目)。
 
 ### 打开自动更新
+
+> 如果你遇到了 Upstream Sync 执行错误，请手动 Sync Fork 一次！
+
 当你 fork 项目之后，由于 Github 的限制，需要手动去你 fork 后的项目的 Actions 页面启用 Workflows，并启用 Upstream Sync Action，启用之后即可开启每小时定时自动更新：
 
 ![自动更新](./docs/images/enable-actions.jpg)
@@ -71,7 +64,7 @@ code1,code2,code3
 
 ## 环境变量
 
-> 本项目大多数配置项都通过环境变量来设置。
+> 本项目大多数配置项都通过环境变量来设置，教程：[如何修改 Vercel 环境变量](./docs/vercel-cn.md)。
 
 ### `OPENAI_API_KEY` （必填项）
 
@@ -85,17 +78,25 @@ OpanAI 密钥，你在 openai 账户页面申请的 api key。
 
 ### `BASE_URL` （可选）
 
-> Default: `api.openai.com`
+> Default: `https://api.openai.com`
+
+> Examples: `http://your-openai-proxy.com`
 
 OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。
 
-### `PROTOCOL` （可选）
+> 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
 
-> Default: `https`
+### `OPENAI_ORG_ID` （可选）
 
-> Values: `http` | `https`
+指定 OpenAI 中的组织 ID。
 
-OpenAI 代理接口协议，如果遇到 ssl 证书问题，请尝试通过此选项设置为 http。
+### `HIDE_USER_API_KEY` （可选）
+
+如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
+
+### `DISABLE_GPT4` （可选）
+
+如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
 ## 开发
 
@@ -113,14 +114,17 @@ OPENAI_API_KEY=<your api key here>
 
 ### 本地开发
 
-1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
-2. 执行 `yarn install && yarn dev` 即可。
+1. 安装 nodejs 18 和 yarn，具体细节请询问 ChatGPT；
+2. 执行 `yarn install && yarn dev` 即可。⚠️ 注意：此命令仅用于本地开发，不要用于部署！
+3. 如果你想本地部署，请使用 `yarn install && yarn start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
 
 ## 部署
 
 ### 容器部署 （推荐）
 
-> 注意：docker 版本在大多数时间都会落后最新的版本 1 到 2 天，所以部署后会持续出现“存在更新”的提示，属于正常现象。
+> Docker 版本需要在 20 及其以上，否则会提示找不到镜像。
+
+> ⚠️ 注意：docker 版本在大多数时间都会落后最新的版本 1 到 2 天，所以部署后会持续出现“存在更新”的提示，属于正常现象。
 
 ```shell
 docker pull yidadaa/chatgpt-next-web
@@ -137,9 +141,12 @@ docker run -d -p 3000:3000 \
 docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="sk-xxxx" \
    -e CODE="页面访问密码" \
-   -e PROXY_URL="http://localhost:7890" \
+   --net=host \
+   -e PROXY_URL="http://127.0.0.1:7890" \
    yidadaa/chatgpt-next-web
 ```
+
+如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
 
 ### 本地部署
 
@@ -149,16 +156,13 @@ docker run -d -p 3000:3000 \
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
+⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
+
 ## 鸣谢
 
 ### 捐赠者
 
-> 仅列出了部分大额打赏，小额打赏（< 100RMB）人数太多，在此不再列出，敬请谅解。
-
-[@mushan0x0](https://github.com/mushan0x0)
-[@ClarenceDan](https://github.com/ClarenceDan)
-[@zhangjia](https://github.com/zhangjia)
-[@hoochanlon](https://github.com/hoochanlon)
+> 见英文版。
 
 ### 贡献者
 

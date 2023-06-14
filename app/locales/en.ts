@@ -1,8 +1,8 @@
-import { SubmitKey } from "../store/app";
-import type { LocaleType } from "./index";
+import { SubmitKey } from "../store/config";
+import { RequiredLocaleType } from "./index";
 
-const en: LocaleType = {
-  WIP: "WIP...",
+const en: RequiredLocaleType = {
+  WIP: "Coming Soon...",
   Error: {
     Unauthorized:
       "Unauthorized access, please enter access code in settings page.",
@@ -19,6 +19,7 @@ const en: LocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      Delete: "Delete",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -30,13 +31,36 @@ const en: LocaleType = {
       return inputHints + ", / to search prompts";
     },
     Send: "Send",
+    Config: {
+      Reset: "Reset to Default",
+      SaveAs: "Save as Mask",
+    },
   },
   Export: {
-    Title: "All Messages",
+    Title: "Export Messages",
     Copy: "Copy All",
     Download: "Download",
     MessageFromYou: "Message From You",
     MessageFromChatGPT: "Message From ChatGPT",
+    Share: "Share to ShareGPT",
+    Format: {
+      Title: "Export Format",
+      SubTitle: "Markdown or PNG Image",
+    },
+    IncludeContext: {
+      Title: "Including Context",
+      SubTitle: "Export context prompts in mask or not",
+    },
+    Steps: {
+      Select: "Select",
+      Preview: "Preview",
+    },
+  },
+  Select: {
+    Search: "Search",
+    All: "Select All",
+    Latest: "Select Latest",
+    Clear: "Clear",
   },
   Memory: {
     Title: "Memory Prompt",
@@ -60,24 +84,12 @@ const en: LocaleType = {
       ClearAll: "Clear All Data",
       ResetAll: "Reset All Settings",
       Close: "Close",
-      ConfirmResetAll: {
-        Confirm: "Are you sure you want to reset all configurations?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Are you sure you want to reset all chat?",
-      },
+      ConfirmResetAll: "Are you sure you want to reset all configurations?",
+      ConfirmClearAll: "Are you sure you want to reset all data?",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-      },
+      All: "All Languages",
     },
     Avatar: "Avatar",
     FontSize: {
@@ -95,7 +107,14 @@ const en: LocaleType = {
     SendKey: "Send Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
-    SendPreviewBubble: "Send Preview Bubble",
+    SendPreviewBubble: {
+      Title: "Send Preview Bubble",
+      SubTitle: "Preview markdown in bubble",
+    },
+    Mask: {
+      Title: "Mask Splash Screen",
+      SubTitle: "Show a mask splash screen before starting new chat",
+    },
     Prompt: {
       Disable: {
         Title: "Disable auto-completion",
@@ -105,6 +124,14 @@ const en: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} built-in, ${custom} user-defined`,
       Edit: "Edit",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
+      EditModal: {
+        Title: "Edit Prompt",
+      },
     },
     HistoryCount: {
       Title: "Attached Messages Count",
@@ -126,7 +153,7 @@ const en: LocaleType = {
         return `Used this month $${used}, subscription $${total}`;
       },
       IsChecking: "Checking...",
-      Check: "Check Again",
+      Check: "Check",
       NoAccess: "Enter API Key to check balance",
     },
     AccessCode: {
@@ -143,7 +170,7 @@ const en: LocaleType = {
       Title: "Max Tokens",
       SubTitle: "Maximum length of input tokens and generated tokens",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Presence Penalty",
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
@@ -155,14 +182,12 @@ const en: LocaleType = {
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
-        "This is a summary of the chat history between the AI and the user as a recap: " +
-        content,
+        "This is a summary of the chat history as a recap: " + content,
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
-        "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
+        "Summarize the discussion briefly in 200 words or less to use as a prompt for future context.",
     },
-    ConfirmClearAll: "Confirm to clear all chat and setting data?",
   },
   Copy: {
     Success: "Copied to clipboard",
@@ -171,7 +196,65 @@ const en: LocaleType = {
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
-    Add: "Add One",
+    Add: "Add a Prompt",
+    Clear: "Context Cleared",
+    Revert: "Revert",
+  },
+  Plugin: {
+    Name: "Plugin",
+  },
+  Mask: {
+    Name: "Mask",
+    Page: {
+      Title: "Prompt Template",
+      SubTitle: (count: number) => `${count} prompt templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} prompts`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+      Sync: {
+        Title: "Use Global Config",
+        SubTitle: "Use global config in this chat",
+        Confirm: "Confirm to override custom config with global config?",
+      },
+      HideContext: {
+        Title: "Hide Context Prompts",
+        SubTitle: "Do not show in-context prompts in chat",
+      },
+    },
+  },
+  NewChat: {
+    Return: "Return",
+    Skip: "Just Start",
+    Title: "Pick a Mask",
+    SubTitle: "Chat with the Soul behind the Mask",
+    More: "Find More",
+    NotShow: "Never Show Again",
+    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+  },
+
+  UI: {
+    Confirm: "Confirm",
+    Cancel: "Cancel",
+    Close: "Close",
+    Create: "Create",
+    Edit: "Edit",
   },
 };
 
