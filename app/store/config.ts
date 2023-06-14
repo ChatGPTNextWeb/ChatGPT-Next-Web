@@ -93,6 +93,10 @@ export const ALL_MODELS = [
     available: true,
   },
   {
+    name: "gpt-3.5-turbo-16k-0613",
+    available: true,
+  },
+  {
     name: "qwen-v1", // 通义千问
     available: false,
   },
