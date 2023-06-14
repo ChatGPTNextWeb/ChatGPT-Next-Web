@@ -1002,6 +1002,4 @@ export const CN_MASKS: BuiltinMask[] = [
     "builtin": true,
     "id": 100036
   }
-]
-
 ];
