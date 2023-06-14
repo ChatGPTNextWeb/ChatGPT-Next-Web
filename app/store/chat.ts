@@ -11,7 +11,7 @@ import { REQUEST_TIMEOUT_MS, StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
-
+import { estimateTokenLength } from "../utils/token";
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
