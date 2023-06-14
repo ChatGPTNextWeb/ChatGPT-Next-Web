@@ -24,6 +24,7 @@ import {
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
+import { getClientConfig } from "../config/client";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -146,6 +147,10 @@ function Screen() {
 
 export function Home() {
   useSwitchTheme();
+
+  useEffect(() => {
+    console.log("[Config] got config from build time", getClientConfig());
+  }, []);
 
   if (!useHasHydrated()) {
     return <Loading />;
