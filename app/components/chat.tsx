@@ -878,17 +878,6 @@ export function Chat() {
                     </div>
                   )}
                 </div>
-                {isUser &&
-                  !(message.preview || message.content.length === 0) && (
-                    <div className={styles["chat-message-top-actions-user"]}>
-                      <div
-                        className={styles["chat-message-top-actions"]}
-                        onClick={() => copyToClipboard(message.content)}
-                      >
-                        {Locale.Chat.Actions.Copy}
-                      </div>
-                    </div>
-                  )}
                 {!isUser && !message.preview && (
                   <div className={styles["chat-message-actions"]}>
                     <div className={styles["chat-message-action-date"]}>
