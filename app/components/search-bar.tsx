@@ -39,9 +39,10 @@ function highlightAndShorten(str: string, search: string) {
   const index = str.toLowerCase().indexOf(search.toLowerCase());
   const head = Math.max(0, index - 10);
   const tail = Math.min(str.length, index + search.length + 40);
+  // Remove code block syntax
   let result = str.slice(head, tail);
 
-  // 使用 ** 包围搜索词，以实现 markdown 的 bold 格式
+  // Use ** to highlight the search result
   result = result.replace(new RegExp(`(${search})`), "**$1**");
 
   if (head > 0) {
@@ -183,7 +184,7 @@ function SearchBarComponent(
       const matchingMessages: ChatMessage[] = [];
 
       for (const message of session.messages) {
-        if (message.content.includes(input)) {
+        if (message.content.toLowerCase().includes(input.toLowerCase())) {
           matchingMessages.push(message!);
         }
       }
