@@ -185,7 +185,11 @@ function ContextPromptItem(props: {
         className={chatStyle["context-content"]}
         rows={focusingInput ? 5 : 1}
         onFocus={() => setFocusingInput(true)}
-        onBlur={() => setFocusingInput(false)}
+        onBlur={() => {
+          setFocusingInput(false);
+          // 如果在用户失去焦点时不清除选区，那么一些依赖类似「划词翻译」的扩展会始终显示浮动条
+          window?.getSelection()?.removeAllRanges();
+        }}
         onInput={(e) =>
           props.update({
             ...props.prompt,
