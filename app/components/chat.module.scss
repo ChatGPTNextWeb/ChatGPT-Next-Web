@@ -10,10 +10,10 @@ $card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 $transition-duration: 0.3s;
 $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
 
-{
-  background: #333333;
-  background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
-}
+
+  //background: #333333;
+  //background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
+
 
 .chat-input-actions {
   display: flex;
