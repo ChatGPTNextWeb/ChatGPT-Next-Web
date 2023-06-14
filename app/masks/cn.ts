@@ -83,7 +83,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100001
   },
   {
     "avatar": "1f17f-fe0f",
@@ -108,7 +107,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100002
   },
   {
     "avatar": "gpt-bot",
@@ -133,7 +131,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100003
   },
   {
     "avatar": "1f469-200d-1f4bb",
@@ -158,7 +155,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100004
   },
   {
     "avatar": "1f605",
@@ -188,7 +184,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100005
   },
   {
     "avatar": "1f468-200d-1f3eb",
@@ -211,7 +206,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100006
   },
   {
     "avatar": "1f468-200d-1f3eb",
@@ -234,7 +228,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100007
   },
   {
     "avatar": "1f468-200d-1f3eb",
@@ -257,7 +250,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100008
   },
   {
     "avatar": "1f468-200d-1f3eb",
@@ -280,7 +272,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100009
   },
   {
     "avatar": "gpt-bot",
@@ -308,7 +299,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100010
   },
   {
     "avatar": "1f5bc-fe0f",
@@ -332,7 +322,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100011
   },
   {
     "avatar": "gpt-bot",
@@ -355,7 +344,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100012
   },
   {
     "avatar": "2692-fe0f",
@@ -379,7 +367,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100013
   },
   {
     "avatar": "1f3e5",
@@ -403,7 +390,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100014
   },
   {
     "avatar": "gpt-bot",
@@ -436,7 +422,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100015
   },
   {
     "avatar": "270d-fe0f",
@@ -459,7 +444,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100016
   },
   {
     "avatar": "1f469-200d-2696-fe0f",
@@ -482,7 +466,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100017
   },
   {
     "avatar": "1f35a",
@@ -506,7 +489,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100018
   },
   {
     "avatar": "1f5bc-fe0f",
@@ -544,7 +526,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100019
   },
   {
     "avatar": "1f638",
@@ -567,7 +548,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100020
   },
   {
     "avatar": "1f978",
@@ -590,7 +570,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100021
   },
   {
     "avatar": "1f69b",
@@ -613,7 +592,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100022
   },
   {
     "avatar": "1f469-200d-1f4bc",
@@ -636,7 +614,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100023
   },
   {
     "avatar": "1f9d1-200d-1f3eb",
@@ -659,7 +636,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100024
   },
   {
     "avatar": "1f4da",
@@ -682,7 +658,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100025
   },
   {
     "avatar": "1f4d5",
@@ -705,7 +680,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100026
   },
   {
     "avatar": "1f4d1",
@@ -733,7 +707,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100027
   },
   {
     "avatar": "1f469-200d-2695-fe0f",
@@ -756,7 +729,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100028
   },
   {
     "avatar": "1f4b8",
@@ -784,7 +756,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100029
   },
   {
     "avatar": "270d-fe0f",
@@ -812,7 +783,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100030
   },
   {
     "avatar": "1f63e",
@@ -860,7 +830,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100031
   },
   {
     "avatar": "1f513",
@@ -888,7 +857,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "cn",
     "builtin": true,
-    "id": 100032
   },
   {
     "avatar": "1f47e",
@@ -911,7 +879,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "en",
     "builtin": true,
-    "id": 100033
   },
   {
     "avatar": "1f916",
@@ -949,7 +916,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "en",
     "builtin": true,
-    "id": 100034
   },
   {
     "avatar": "2328-fe0f",
@@ -972,7 +938,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "en",
     "builtin": true,
-    "id": 100035
   },
   {
     "avatar": "1f60e",
@@ -1000,6 +965,5 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     "lang": "en",
     "builtin": true,
-    "id": 100036
   }
 ];
