@@ -187,7 +187,8 @@ function ContextPromptItem(props: {
         onFocus={() => setFocusingInput(true)}
         onBlur={() => {
           setFocusingInput(false);
-          // 如果在用户失去焦点时不清除选区，那么一些依赖类似「划词翻译」的扩展会始终显示浮动条
+          // If the selection is not removed when the user loses focus, some
+          // extensions like "Translate" will always display a floating bar
           window?.getSelection()?.removeAllRanges();
         }}
         onInput={(e) =>
