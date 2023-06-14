@@ -5,7 +5,7 @@ import "./styles/highlight.scss";
 
 
 export const metadata = {
-  title: "松子GPT",
+  title: "ChatGPT PluS",
   description: "Your personal ChatGPT Chat Bot.",
   viewport: {
     width: "device-width",
@@ -17,7 +17,7 @@ export const metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "松子GPT",
+    title: "ChatGPT PluS",
     statusBarStyle: "default",
   },
 };
