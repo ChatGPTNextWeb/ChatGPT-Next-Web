@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "BUILD_MODE=export yarn build",
-    "export:dev": "BUILD_MODE=export yarn dev",
+    "export": "cross-env BUILD_MODE=export BUILD_APP=1 yarn build",
+    "export:dev": "cross-env BUILD_MODE=export BUILD_APP=1 yarn dev",
     "app:dev": "yarn tauri dev",
+    "app:build": "yarn tauri build",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"

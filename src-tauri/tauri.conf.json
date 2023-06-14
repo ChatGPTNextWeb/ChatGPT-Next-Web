@@ -29,8 +29,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yida.chatgpt.nextweb",
-      "longDescription": "",
+      "identifier": "com.yida.chatgpt.next.web",
+      "longDescription": "ChatGPT Next Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -39,7 +39,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "",
+      "shortDescription": "ChatGPT Next Web App",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -59,7 +59,7 @@
         "height": 600,
         "resizable": true,
         "title": "tauri-next",
-        "width": 800
+        "width": 960
       }
     ]
   }

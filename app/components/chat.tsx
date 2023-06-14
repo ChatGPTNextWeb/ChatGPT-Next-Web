@@ -1,5 +1,11 @@
 import { useDebouncedCallback } from "use-debounce";
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+} from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -61,6 +67,7 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+import { getClientConfig } from "../config/client";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -704,9 +711,13 @@ export function Chat() {
     }
   };
 
+  const clientConfig = useMemo(() => getClientConfig(), []);
+
   const location = useLocation();
   const isChat = location.pathname === Path.Chat;
+
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
+  const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
 
   useCommand({
     fill: setUserInput,
@@ -755,7 +766,7 @@ export function Chat() {
               }}
             />
           </div>
-          {!isMobileScreen && (
+          {showMaxIcon && (
             <div className="window-action-button">
               <IconButton
                 icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
