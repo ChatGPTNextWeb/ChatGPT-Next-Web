@@ -217,7 +217,7 @@ const cn = {
 
 欢迎扔出需求[黄柴柴客服](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`
    
-   "![图片](/wechaty.webp)", // 这里是第 172 行
+![图片](/wechaty.webp)", // 这里是第 172 行
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
