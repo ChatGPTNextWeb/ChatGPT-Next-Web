@@ -9,7 +9,7 @@ const cn = {
       "回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。",
       "**声明：** 本站点为免费站点，请合理合法使用",
       "**保证：** 不会收集任何信息",
-      { "image": "![图片](/wechaty.webp)" },
+      "![图片](/wechaty.webp)", // 直接放在一个字符串中
     ]
   },
   Auth: {
@@ -215,9 +215,9 @@ const cn = {
 
 卡顿或无响应？可能是用户量太大， [申请独立账号](chat.zhai-zhai.com)
 
-欢迎扔出需求[黄柴柴客服](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`
-   
-![图片](/wechaty.webp)", // 这里是第 172 行
+欢迎扔出需求[黄柴柴客服](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)
+
+![图片](/wechaty.webp)`, // 这里是第 172 行
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
