@@ -180,6 +180,10 @@ const cn = {
       SubTitle: "管理员已开启加密访问",
       Placeholder: "请输入访问密码",
     },
+    Endpoint: {
+      Title: "接口地址",
+      SubTitle: "除默认地址外，必须包含 http(s)://",
+    },
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
