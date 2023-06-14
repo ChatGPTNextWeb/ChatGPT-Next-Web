@@ -4,7 +4,13 @@ const cn = {
   WIP: "摘摘仍在爆肝开发……",
   Error: {
     Unauthorized:
-      "前往公众号：**[柴造CNET](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。",
+      "#**当前状态为未授权！**"
+      "**[前往公众号](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)**"
+      "回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。"
+      "**声明：** 本站点为免费站点，请合理合法使用"
+      "**保证：** 不会收集任何信息"
+      ![图片]( /wechaty.webp)
+    ,
   },
   Auth: {
     Title: "需要密码",
@@ -200,16 +206,16 @@ const cn = {
   },
  Store: {
     DefaultTopic: "新的聊天",
-    BotHello: `前往公众号：**[柴造CNET](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
+    BotHello: `前往公众号：**[微信公众号](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
 
- **提问：** 你可以在这里放一些常用问题吗？
- **回答：** 当然可以，还可以在这里放一些问题解答，太棒啦！
+ **声明：** 本站点为免费站点，请合理合法使用
+ **保证：** 不会收集任何信息
 
  常见问题与使用说明点击查看 **[腾讯文档链接](腾讯文档链接)** 
 
-卡顿或无响应？可能是用户量太大， [点这里获得独立账号使用](chat.zhai-zhaio.com)
+卡顿或无响应？可能是用户量太大， [申请独立账号](chat.zhai-zhai.com)
 
-欢迎扔出需求[公众号](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`, // 这里是第 172 行
+欢迎扔出需求[黄柴柴客服](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`, // 这里是第 172 行
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
