@@ -119,7 +119,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>DOGC NET</div>
+        <div className={styles["sidebar-title"]}>摘摘BETA</div>
         <div className={styles["sidebar-sub-title"]}>
           关注柴造CNET免费领取密码.
         </div>
