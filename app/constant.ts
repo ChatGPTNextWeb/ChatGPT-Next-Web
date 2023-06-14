@@ -1,10 +1,10 @@
-export const OWNER = "松子GPT";
- export const REPO = "松子GPT";
- export const REPO_URL = `https://ifrf.cn`;
- export const ISSUE_URL = `https://ifrf.cn`;
- export const UPDATE_URL = `https://ifrf.cn`;
- export const FETCH_COMMIT_URL = `https://ifrf.cn`;
- export const FETCH_TAG_URL = `https://ifrf.cn`;
+export const OWNER = "ChatGPT PluS";
+ export const REPO = "ChatGPT PluS";
+ export const REPO_URL = `https://dxli.cn`;
+ export const ISSUE_URL = `https://dxli.cn`;
+ export const UPDATE_URL = `https://dxli.cn`;
+ export const FETCH_COMMIT_URL = `https://dxli.cn`;
+ export const FETCH_TAG_URL = `https://dxli.cn`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
 export enum Path {
