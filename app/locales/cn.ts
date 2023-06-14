@@ -4,7 +4,7 @@ const cn = {
   WIP: "摘摘仍在爆肝开发……",
  Error: {
   Unauthorized: `#**当前状态为未授权！**
-> 前往公众号[**柴造DOGC**](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)回复 **密码** 免费获取密码
+> 前往公众号[**柴造CNET**](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)回复 **密码** 免费获取密码
 > 然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
 ---
 > **声明：** 免费站点，请合理合法使用
@@ -206,14 +206,14 @@ const cn = {
   },
  Store: {
     DefaultTopic: "新的聊天",
-    BotHello: `前往公众号：**[微信公众号](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
+    BotHello: `有疑问？：**[找黄柴柴](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)**
 
- **声明：** 本站点为免费站点，请合理合法使用
- **保证：** 不会收集任何信息
+ **声明：** 本站点为分享站点，请合理合法使用
+ **保证：** 不会收集任何信息，不会有奇怪广告
  
- 常见问题与使用说明点击查看 **[正在施工中](zhai-zhai.com)** 
+常见问题与使用说明点击查看 **[正在施工中](zhai-zhai.com)** 
 
-卡顿或无响应？可能是用户量太大 [申请独立账号](chat.zhai-zhai.com)
+卡顿或无响应？需要gpt4？ [申请独立账号](chat.zhai-zhai.com)
 
 欢迎扔出黄柴柴[需求](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`, // 这里是第 172 行
     Error: "出错了，稍后重试吧",
