@@ -1,10 +1,10 @@
 import { SubmitKey } from "../store/config";
 
 const cn = {
-  WIP: "该功能仍在开发中……",
+  WIP: "摘摘仍在爆肝开发……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      "前往公众号：**[柴造CNET](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。",
   },
   Auth: {
     Title: "需要密码",
@@ -52,7 +52,7 @@ const cn = {
     Send: "发送",
     Config: {
       Reset: "清除记忆",
-      SaveAs: "存为面具",
+      SaveAs: "存为预设",
     },
   },
   Export: {
@@ -68,7 +68,7 @@ const cn = {
     },
     IncludeContext: {
       Title: "包含面具上下文",
-      SubTitle: "是否在消息中展示面具上下文",
+      SubTitle: "是否在消息中展示预设上下文",
     },
     Steps: {
       Select: "选取",
@@ -90,7 +90,7 @@ const cn = {
     ResetConfirm: "确认清空历史摘要？",
   },
   Home: {
-    NewChat: "新的聊天",
+    NewChat: "新的摘摘",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
@@ -131,8 +131,8 @@ const cn = {
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Title: "预设应用页",
+      SubTitle: "新建聊天时，展示预设应用页",
     },
     Prompt: {
       Disable: {
@@ -167,7 +167,7 @@ const cn = {
     },
 
     Usage: {
-      Title: "余额查询",
+      Title: "确认密码",
       SubTitle(used: any, total: any) {
         return `本月已使用 $${used}，订阅总额 $${total}`;
       },
@@ -198,9 +198,18 @@ const cn = {
       SubTitle: "值越大，越有可能扩展到新话题",
     },
   },
-  Store: {
+ Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: `前往公众号：**[柴造CNET](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)** 回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
+
+ **提问：** 你可以在这里放一些常用问题吗？
+ **回答：** 当然可以，还可以在这里放一些问题解答，太棒啦！
+
+ 常见问题与使用说明点击查看 **[腾讯文档链接](腾讯文档链接)** 
+
+卡顿或无响应？可能是用户量太大， [点这里获得独立账号使用](chat.zhai-zhaio.com)
+
+欢迎扔出需求[公众号](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`, // 这里是第 172 行
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
@@ -225,11 +234,11 @@ const cn = {
     Name: "插件",
   },
   Mask: {
-    Name: "面具",
+    Name: "预设场景",
     Page: {
-      Title: "预设角色面具",
+      Title: "预设角色场景",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
-      Search: "搜索角色面具",
+      Search: "搜索角色场景",
       Create: "新建",
     },
     Item: {
@@ -265,7 +274,7 @@ const cn = {
     Skip: "直接开始",
     NotShow: "不再展示",
     ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
-    Title: "挑选一个面具",
+    Title: "挑选一个预设场景",
     SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
     More: "查看全部",
   },
