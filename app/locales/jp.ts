@@ -133,7 +133,7 @@ const jp: LocaleType = {
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
-        return `今月は ${used*10} を使用しました。総額は ${total*10} です。`;
+        return `今月は ${used*100} を使用しました。総額は ${total*100} です。`;
       },
       IsChecking: "確認中...",
       Check: "再確認",
