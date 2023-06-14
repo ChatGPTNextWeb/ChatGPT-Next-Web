@@ -28,6 +28,19 @@ const en: RequiredLocaleType = {
       Retry: "Retry",
       Delete: "Delete",
     },
+    InputActions: {
+      Stop: "Stop",
+      ToBottom: "To Latest",
+      Theme: {
+        auto: "Auto",
+        light: "Light Theme",
+        dark: "Dark Theme",
+      },
+      Prompt: "Prompts",
+      Masks: "Masks",
+      Clear: "Clear Context",
+      Settings: "Settings",
+    },
     Rename: "Rename Chat",
     Typing: "Typing…",
     Input: (submitKey: string) => {
@@ -167,6 +180,10 @@ const en: RequiredLocaleType = {
       Title: "Access Code",
       SubTitle: "Access control enabled",
       Placeholder: "Need Access Code",
+    },
+    Endpoint: {
+      Title: "Endpoint",
+      SubTitle: "Custom endpoint must start with http(s)://",
     },
     Model: "Model",
     Temperature: {
