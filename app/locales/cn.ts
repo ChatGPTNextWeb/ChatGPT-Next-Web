@@ -8,8 +8,8 @@ const cn = {
       "**[前往公众号](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)**",
       "回复 **密码** 免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。",
       "**声明：** 本站点为免费站点，请合理合法使用",
-      "**保证：** 不会收集任何信息"
-      "image": "![图片](/wechaty.webp)",
+      "**保证：** 不会收集任何信息",
+      "![图片](/wechaty.webp)",
     ]
   },
   Auth: {
