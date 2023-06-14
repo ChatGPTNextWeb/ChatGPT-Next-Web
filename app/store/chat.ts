@@ -101,7 +101,7 @@ interface ChatStore {
 }
 
 function countMessages(msgs: ChatMessage[]) {
-  return msgs.reduce((pre, cur) => pre + cur.content.length, 0);
+  return msgs.reduce((pre, cur) => pre + estimateTokenLength(cur.content), 0);
 }
 
 export const useChatStore = create<ChatStore>()(
