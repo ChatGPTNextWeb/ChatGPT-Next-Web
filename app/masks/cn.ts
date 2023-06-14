@@ -36,7 +36,6 @@ export const CN_MASKS: BuiltinMask[] = [
     lang: "cn",
     builtin: true,
   },
-  [
   {
     "avatar": "1f499",
     "name": "高冷女友-秦岚",
@@ -60,7 +59,6 @@ export const CN_MASKS: BuiltinMask[] = [
     "lang": "cn",
     "builtin": true,
     "hideContext": true,
-    "id": 100000
   },
   {
     "avatar": "1f970",
