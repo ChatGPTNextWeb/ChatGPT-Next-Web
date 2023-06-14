@@ -125,12 +125,12 @@ const vi: LocaleType = {
     Token: {
       Title: "API Key",
       SubTitle: "Sử dụng khóa của bạn để bỏ qua giới hạn mã truy cập",
-      Placeholder: "OpenAI API Key",
+      Placeholder: "API Key",
     },
     Usage: {
       Title: "Hạn mức tài khoản",
       SubTitle(used: any, total: any) {
-        return `Đã sử dụng ${used*10} trong tháng này, hạn mức ${total*10}`;
+        return `Đã sử dụng ${used*100} trong tháng này, hạn mức ${total*100}`;
       },
       IsChecking: "Đang kiểm tra...",
       Check: "Kiểm tra",

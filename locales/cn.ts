@@ -169,7 +169,7 @@ const cn = {
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
-        return `本月已使用 ${used*10}，总额 ${total*10}`;
+        return `本月已使用 ${used*100}，总额 ${total*100}`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",

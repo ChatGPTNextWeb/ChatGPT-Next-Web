@@ -132,7 +132,7 @@ const ru: LocaleType = {
     Usage: {
       Title: "Баланс аккаунта",
       SubTitle(used: any, total: any) {
-        return `Использовано в этом месяце ${used*10}, подписка ${total*10}`;
+        return `Использовано в этом месяце ${used*100}, подписка ${total*100}`;
       },
       IsChecking: "Проверка...",
       Check: "Проверить",
