@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "export": "BUILD_MODE=export yarn build",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
@@ -51,6 +52,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "@tauri-apps/cli": "^1.3.1"
   }
 }
