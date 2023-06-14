@@ -35,7 +35,7 @@ export const getServerSideConfig = () => {
     );
   }
 
-  return {
+  var config = {
     apiKey: process.env.OPENAI_API_KEY,
     code: process.env.CODE,
     codes: ACCESS_CODES,
@@ -46,5 +46,25 @@ export const getServerSideConfig = () => {
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
     zBotServiceUrl: process.env.ZBotServiceUrl,
+    speechSubscriptionKey: process.env.SpeechSubscriptionKey,
+    speechServiceRegion: "eastus",
   };
+
+  /*
+  TODO: 
+  In web development, the .env.local file is not loaded
+    I have tried dotenv and fs, but failed
+  In production env
+    I have tried to set the env variable in the Azure App Service Configuration, but failed
+  
+  Developmer should replace these env variables here, but not submit to repo
+  The env variables can get from the Azure Key Vault
+  */
+  config.zBotServiceUrl = "placeholder";
+  config.speechSubscriptionKey = "placeholder";
+
+  // production, development
+  console.log("Running env: ", process.env.NODE_ENV);
+
+  return config;
 };

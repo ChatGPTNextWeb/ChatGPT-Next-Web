@@ -78,6 +78,7 @@ interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
   globalId: number;
+  isFinished: boolean;
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
@@ -97,6 +98,7 @@ interface ChatStore {
   resetSession: () => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
+  getIsFinished: () => Promise<boolean>;
 
   clearAllData: () => void;
 }
@@ -111,6 +113,7 @@ export const useChatStore = create<ChatStore>()(
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
       globalId: 0,
+      isFinished: false,
 
       clearSessions() {
         set(() => ({
@@ -232,7 +235,16 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
+      async getIsFinished() {
+        while (!get().isFinished) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+        return get().isFinished;
+      },
+
       async onUserInput(content) {
+        set(() => ({ isFinished: false }));
+
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -298,7 +310,7 @@ export const useChatStore = create<ChatStore>()(
               sessionIndex,
               botMessage.id ?? messageIndex,
             );
-            set(() => ({}));
+            set(() => ({ isFinished: true }));
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");

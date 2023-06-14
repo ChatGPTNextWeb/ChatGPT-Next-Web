@@ -47,7 +47,7 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
 };
 
 const LANG_KEY = "lang";
-const DEFAULT_LANG = "cn";
+export const DEFAULT_LANG = "cn";
 
 function getItem(key: string) {
   try {

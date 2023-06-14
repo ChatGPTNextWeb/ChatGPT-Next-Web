@@ -13,7 +13,15 @@ yarn --version
 node -v
 ```
 
-## 3). Set up local develop environment
+## 3). Update backend server address
+Open `app/config/server.ts`, update `placeholder` value like
+```ts
+    config.zBotServiceUrl = "placeholder";
+    config.speechSubscriptionKey = "placeholder";
+```
+where `placeholder` can be replaced, you can get its value from Azure Key Vault
+
+## 3). Set up local develop environment -- TODO: not worked
 Create a new `.env.local` file at project root, and place your api key into it:
 ```shell
 OPENAI_API_KEY=<your api key here>
@@ -30,14 +38,6 @@ yarn dev
 ```
 
 you should see portal in pop-up brower page.
-
-## 5). Update backend server address
-Open `app/config/server.ts`, update `zBotServiceUrl` value as
-```
-    zBotServiceUrl: "xxx",
-```
-where `xxx` can be online backend address or local debug address.
-
 
 
 # 2. How to deploy
