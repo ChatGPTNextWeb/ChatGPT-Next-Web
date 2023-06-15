@@ -6,7 +6,7 @@ import { Path } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
 
-import BotIcon from "../icons/bot.svg";
+import BotIcon from "../icons/bot.png";
 
 export function AuthPage() {
   const navigate = useNavigate();
