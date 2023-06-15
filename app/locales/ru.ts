@@ -11,7 +11,7 @@ const ru: LocaleType = {
     ChatItemCount: (count: number) => `${count} сообщений`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} сообщений с AI`,
+    SubTitle: (count: number) => `${count} сообщений с Aizpy`,
     Actions: {
       ChatList: "Перейти к списку чатов",
       CompressedHistory: "Сжатая история памяти",
@@ -41,7 +41,7 @@ const ru: LocaleType = {
     Copy: "Копировать все",
     Download: "Скачать",
     MessageFromYou: "Сообщение от вас",
-    MessageFromChatGPT: "Сообщение от AI",
+    MessageFromChatGPT: "Сообщение от Aizpy",
   },
   Memory: {
     Title: "Память",

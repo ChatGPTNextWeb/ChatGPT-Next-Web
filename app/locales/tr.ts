@@ -11,7 +11,7 @@ const tr: LocaleType = {
     ChatItemCount: (count: number) => `${count} mesaj`,
   },
   Chat: {
-    SubTitle: (count: number) => `AI tarafından ${count} mesaj`,
+    SubTitle: (count: number) => `Aizpy tarafından ${count} mesaj`,
     Actions: {
       ChatList: "Sohbet Listesine Git",
       CompressedHistory: "Sıkıştırılmış Geçmiş Bellek Komutu",
@@ -41,7 +41,7 @@ const tr: LocaleType = {
     Copy: "Tümünü Kopyala",
     Download: "İndir",
     MessageFromYou: "Sizin Mesajınız",
-    MessageFromChatGPT: "AI'nin Mesajı",
+    MessageFromChatGPT: "Aizpy'nin Mesajı",
   },
   Memory: {
     Title: "Bellek Komutları",

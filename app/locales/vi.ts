@@ -11,7 +11,7 @@ const vi: LocaleType = {
     ChatItemCount: (count: number) => `${count} tin nhắn`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} tin nhắn với AI`,
+    SubTitle: (count: number) => `${count} tin nhắn với Aizpy`,
     Actions: {
       ChatList: "Xem danh sách chat",
       CompressedHistory: "Nén tin nhắn trong quá khứ",
@@ -41,7 +41,7 @@ const vi: LocaleType = {
     Copy: "Sao chép tất cả",
     Download: "Tải xuống",
     MessageFromYou: "Tin nhắn của bạn",
-    MessageFromChatGPT: "Tin nhắn từ AI",
+    MessageFromChatGPT: "Tin nhắn từ Aizpy",
   },
   Memory: {
     Title: "Lịch sử tin nhắn",

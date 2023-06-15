@@ -11,7 +11,7 @@ const cs: LocaleType = {
     ChatItemCount: (count: number) => `${count} zpráv`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} zpráv s AI`,
+    SubTitle: (count: number) => `${count} zpráv s Aizpy`,
     Actions: {
       ChatList: "Přejít na seznam chatů",
       CompressedHistory: "Pokyn z komprimované paměti historie",
@@ -41,7 +41,7 @@ const cs: LocaleType = {
     Copy: "Kopírovat vše",
     Download: "Stáhnout",
     MessageFromYou: "Zpráva od vás",
-    MessageFromChatGPT: "Zpráva z AI",
+    MessageFromChatGPT: "Zpráva z Aizpy",
   },
   Memory: {
     Title: "Pokyn z paměti",
