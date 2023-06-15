@@ -3,8 +3,13 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized:
-      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+    Unauthorized:`访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。
+    前往公众号:**[人工智能AI大模型](https://mp.weixin.qq.com/s?__biz=MzA5NTU1Mzg1NA==&mid=2247483662&idx=1&sn=e489750cf838dec460c9fe75ad70a5fc&chksm=90bcd15fa7cb58496b430994801a8eebd2cad83e97068e21bcd00637767ef4b4a0dfcff4e068&token=1029293174&lang=zh_CN#rd)**回复 **密码**可以免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
+        
+        **提问:** 你可以在这里放一些常用问题吗?
+        **回答:** 当然可以，还可以在这里放一些问题解答，太棒啦!
+        常见问题与使用说明点击查看，👉 **[文档教程链接](https://yx3gz9rifnt.feishu.cn/docx/RVucdZMoToDYe9xn3b1cc6MKnAd)** 
+        卡顿或无响应?可能是用户量太大，👉 [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,
   },
   Auth: {
     Title: "需要密码",
