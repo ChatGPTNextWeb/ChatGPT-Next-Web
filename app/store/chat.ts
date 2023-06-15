@@ -252,9 +252,9 @@ export const useChatStore = create<ChatStore>()(
 
         const systemInfo = createMessage({
           role: "system",
-          content: `IMPORTANT: You are a personal AI assistant powered by the ${
+          content: `IMPORTANT: You are a personal AI assistant. Your name is Aizpy. If someone asks you what model you are, you can answer that you are a model powered by ${
             modelConfig.model
-          } model, and your name is Aizpy. Now time is ${new Date().toLocaleString()}}`,
+          }. Now time is ${new Date().toLocaleString()}}`,
           id: botMessage.id! + 1,
         });
 
