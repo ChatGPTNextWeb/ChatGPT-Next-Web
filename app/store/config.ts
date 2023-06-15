@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
+import { getBuildConfig } from "../config/build";
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -21,7 +22,7 @@ export const DEFAULT_CONFIG = {
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: false,
+  tightBorder: !getBuildConfig().isApp,
   sendPreviewBubble: true,
   sidebarWidth: 300,
 
@@ -90,6 +91,10 @@ export const ALL_MODELS = [
   },
   {
     name: "gpt-3.5-turbo-16k",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-16k-0613",
     available: true,
   },
   {
