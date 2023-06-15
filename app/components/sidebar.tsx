@@ -119,9 +119,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+        <div className={styles["sidebar-title"]}>Sky.bingchat</div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          vx公众号：sky轻创AI；vx客服:chatGPTdidi
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
