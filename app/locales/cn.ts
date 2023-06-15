@@ -4,12 +4,13 @@ const cn = {
   WIP: "摘摘仍在爆肝开发……",
  Error: {
   Unauthorized: `#**当前状态为未授权！**
-> 前往公众号[**柴造CNET**](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)回复 **密码** 免费获取密码
+> 问摘摘[**获取权限**](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)回复 **密码** 获取密码
 > 然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
 ---
+> **许愿：** 上述流程仅为防止恶意爆破
 > **声明：** 免费站点，请合理合法使用
 > **保证：** 本地缓存不会收集任何信息
-
+> **诡计：** 摘摘让各位准点下班少内耗
 ![图片](/wechaty.webp)`
 },
   Auth: {
@@ -210,11 +211,11 @@ const cn = {
 
  **声明：** 本站点为分享站点，请合理合法使用
  **保证：** 不会收集任何信息，不会有奇怪广告
- 
+
+试试利用页面上的**预设场景**，开启真正的人工智障之力
 常见问题与使用说明点击查看 **[正在施工中](zhai-zhai.com)** 
 
 卡顿或无响应？需要gpt4？ [申请独立账号](chat.zhai-zhai.com)
-
 欢迎扔出黄柴柴[需求](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5Mzc4MTM1Nw==)`, // 这里是第 172 行
     Error: "出错了，稍后重试吧",
     Prompt: {
