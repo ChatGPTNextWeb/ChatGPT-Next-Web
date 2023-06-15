@@ -51,6 +51,7 @@ import {
   BreakIcon,
   CopyIcon,
   DarkIcon,
+  EditIcon,
   ExportIcon,
   LightIcon,
   LoadingIcon,
@@ -287,8 +288,9 @@ function ClearContextDivider() {
 }
 
 function ChatAction(props: {
-  text: string;
+  text: string | JSX.Element;
   icon: JSX.Element;
+  children?: React.ReactNode;
   onClick: () => void;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
@@ -332,6 +334,7 @@ function ChatAction(props: {
       </div>
       <div className={chatStyle["text"]} ref={textRef}>
         {props.text}
+        {props.children}
       </div>
     </div>
   );
@@ -387,21 +390,21 @@ export function ChatActions(props: {
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
-      {couldStop && (
+      {couldStop && ( // stop all
         <ChatAction
           onClick={stopAll}
           text={Locale.Chat.InputActions.Stop}
           icon={<PauseIcon />}
         />
       )}
-      {!props.hitBottom && (
+      {!props.hitBottom && ( // scroll to bottom
         <ChatAction
           onClick={props.scrollToBottom}
           text={Locale.Chat.InputActions.ToBottom}
           icon={<BottomIcon />}
         />
       )}
-      {props.hitBottom && (
+      {props.hitBottom && ( // settings
         <ChatAction
           onClick={props.showPromptModal}
           text={Locale.Chat.InputActions.Settings}
@@ -409,7 +412,7 @@ export function ChatActions(props: {
         />
       )}
 
-      <ChatAction
+      <ChatAction // theme
         onClick={nextTheme}
         text={Locale.Chat.InputActions.Theme[theme]}
         icon={
@@ -425,7 +428,7 @@ export function ChatActions(props: {
         }
       />
 
-      <ChatAction
+      <ChatAction // prompt hints
         onClick={props.showPromptHints}
         text={Locale.Chat.InputActions.Prompt}
         icon={<PromptIcon />}
@@ -453,6 +456,23 @@ export function ChatActions(props: {
           });
         }}
       />
+
+      <ChatAction
+        onClick={() => {}}
+        text={Locale.Chat.InputActions.Knowledge}
+        icon={<EditIcon />}
+      >
+        <input
+          type="checkbox"
+          checked={false}
+          onChange={
+            (e) => {}
+            // props.updateConfig(
+            //   (config) => (config.sendMemory = e.currentTarget.checked),
+            // )
+          }
+        />
+      </ChatAction>
     </div>
   );
 }
