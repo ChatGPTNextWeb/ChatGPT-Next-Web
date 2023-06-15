@@ -121,7 +121,7 @@ BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 
 ## 部署
 
-### 容器部署 （推荐）
+### 容器部署（推荐）
 
 > Docker 版本需要在 20 及其以上，否则会提示找不到镜像。
 
@@ -148,6 +148,32 @@ docker run -d -p 3000:3000 \
 ```
 
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
+
+### Sealos 部署
+
+ 1.免费注册 Sealos 账号
+[sealos cloud](https://cloud.sealos.io)
+
+2.点击 `App Launchpad`
+![App Launchpad](./docs/images/sealos/install-on-sealos-1.jpg)
+
+3.点击 `Create Application`
+![Create Application](./docs/images/sealos/install-on-sealos-2.jpg)
+
+4.按下图填写即可，填写完毕后点击 `Deploy Application`
+![Create Application](./docs/images/sealos/install-on-sealos-3.jpg)
+
+```shell
+App Name: chatgpt-next-web
+Image Name: yidadaa/chatgpt-next-web
+CPU: 0.5Core
+Memory: 1G
+Container Ports: 3000
+Accessible to the Public: On
+```
+
+5.获取访问 URL，直接点击即可访问，如果需要绑定自己的域名，也可以在`Custom domain`填写自己的域名，并按照提示去配置域名 CNAME
+![Create Application](./docs/images/sealos/install-on-sealos-4.jpg)
 
 ### 本地部署
 

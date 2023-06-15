@@ -50,7 +50,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - New in v2: create, share and debug your chat tools with prompt templates (mask)
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
-- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어
+- I18n: English, 简体中文，繁体中文，日本語，Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어
 
 ## Roadmap
 
@@ -79,7 +79,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - 预制角色功能（面具），方便地创建、分享和调试你的个性化对话
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 自动压缩上下文聊天记录，在节省 Token 的同时支持超长对话
-- 多国语言支持：English, 简体中文, 繁体中文, 日本語, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština
+- 多国语言支持：English, 简体中文，繁体中文，日本語，Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština
 - 拥有自己的域名？好上加好，绑定后即可在任何地方**无障碍**快速访问
 
 ## 开发计划
@@ -94,7 +94,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 ## 最新动态
 
-- 🚀 v2.0 已经发布，现在你可以使用面具功能快速创建预制对话了！ 了解更多： [ChatGPT 提示词高阶技能：零次、一次和少样本提示](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)。
+- 🚀 v2.0 已经发布，现在你可以使用面具功能快速创建预制对话了！了解更多： [ChatGPT 提示词高阶技能：零次、一次和少样本提示](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)。
 - 💡 想要更方便地随时随地使用本项目？可以试下这款桌面插件：https://github.com/mushan0x0/AI0x0.com
 - 🚀 v2.7 现在可以将会话分享为图片了，也可以分享到 ShareGPT 的在线链接。
 - 🚀 v2.8 发布了横跨 Linux/Windows/MacOS 的体积极小的客户端。
@@ -204,6 +204,32 @@ OPENAI_API_KEY=<your api key here>
 # if you are not able to access openai service, use this BASE_URL
 BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 ```
+
+### Sealos 部署
+
+ 1.Register a Sealos account for free
+[sealos cloud](https://cloud.sealos.io)
+
+2.Click  `App Launchpad` button
+![App Launchpad](./docs/images/sealos/install-on-sealos-1.jpg)
+
+3.Click `Create Application` button
+![Create Application](./docs/images/sealos/install-on-sealos-2.jpg)
+
+4.Just fill in according to the following figure, and click on it after filling out `Deploy Application` button
+![Create Application](./docs/images/sealos/install-on-sealos-3.jpg)
+
+```shell
+App Name: chatgpt-next-web
+Image Name: yidadaa/chatgpt-next-web
+CPU: 0.5Core
+Memory: 1G
+Container Ports: 3000
+Accessible to the Public: On
+```
+
+5.Obtain the access link and click directly to access it. If you need to bind your own domain name, you can also fill in your own domain name in `Custom domain` and follow the prompts to configure the domain name CNAME
+![Create Application](./docs/images/sealos/install-on-sealos-4.jpg)
 
 ### Local Development
 
