@@ -38,7 +38,7 @@ export const CN_MASKS: BuiltinMask[] = [
   },
   {
     "avatar": "1f499",
-    "name": "高冷女友-秦岚",
+    "name": "人格测试-冷",
     "context": [
       {
         "role": "user",
@@ -62,7 +62,7 @@ export const CN_MASKS: BuiltinMask[] = [
   },
   {
     "avatar": "1f970",
-    "name": "暖心女友-张小萌",
+    "name": "人格测试-暖",
     "context": [
       {
         "role": "user",
