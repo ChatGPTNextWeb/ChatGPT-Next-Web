@@ -22,7 +22,7 @@ export const DEFAULT_CONFIG = {
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: !getClientConfig().isApp,
+  tightBorder: !getClientConfig()?.isApp,
   sendPreviewBubble: true,
   sidebarWidth: 300,
 
@@ -125,7 +125,7 @@ export function limitNumber(
   x: number,
   min: number,
   max: number,
-  defaultValue: number,
+  defaultValue: number
 ) {
   if (typeof x !== "number" || isNaN(x)) {
     return defaultValue;
@@ -184,6 +184,6 @@ export const useAppConfig = create<ChatConfigStore>()(
 
         return state;
       },
-    },
-  ),
+    }
+  )
 );
