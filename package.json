@@ -36,7 +36,6 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.59.2",
-    "sharp": "^0.32.1",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.3",
     "zustand": "^4.3.6"
