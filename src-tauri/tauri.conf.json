@@ -8,16 +8,37 @@
   },
   "package": {
     "productName": "chatgpt-next-web",
-    "version": "2.8.1"
+    "version": "2.8.2"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "clipboard": {
+        "all": true
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "maximize": true,
+        "minimize": true,
+        "setIcon": true,
+        "setIgnoreCursorEvents": true,
+        "setResizable": true,
+        "show": true,
+        "startDragging": true,
+        "unmaximize": true,
+        "unminimize": true
+      }
     },
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "",
+      "copyright": "2023, Zhang Yifei All Rights Reserved.",
       "deb": {
         "depends": []
       },
@@ -59,7 +80,8 @@
         "height": 600,
         "resizable": true,
         "title": "ChatGPT Next Web",
-        "width": 960
+        "width": 960,
+        "titleBarStyle": "Overlay"
       }
     ]
   }
