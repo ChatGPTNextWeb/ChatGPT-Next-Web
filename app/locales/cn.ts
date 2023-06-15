@@ -204,8 +204,8 @@ const cn = {
         
         **提问:** 你可以在这里放一些常用问题吗?
         **回答:** 当然可以，还可以在这里放一些问题解答，太棒啦!
-        常见问题与使用说明点击查看，:point_right: **[文档教程链接](https://yx3gz9rifnt.feishu.cn/docx/RVucdZMoToDYe9xn3b1cc6MKnAd)** 
-        卡顿或无响应?可能是用户量太大，:point_right: [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,// 这里是第 172 行 
+        常见问题与使用说明点击查看，👉 **[文档教程链接](https://yx3gz9rifnt.feishu.cn/docx/RVucdZMoToDYe9xn3b1cc6MKnAd)** 
+        卡顿或无响应?可能是用户量太大，👉 [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,// 这里是第 172 行 
         Error: "出错了，稍后重试吧",
         Prompt: {
           History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
