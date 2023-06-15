@@ -4,9 +4,9 @@
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="180.000000pt" height="180.000000pt" viewBox="0 0 180.000000 180.000000"
  preserveAspectRatio="xMidYMid meet">
-
+<circle cx="90" cy="90" r="90" fill="rgb(244, 244, 244)" />
 <g transform="translate(0.000000,180.000000) scale(0.100000,-0.100000)"
-fill="#ffffff" stroke="none">
+fill="rgb(8, 55, 61)" stroke="none">
 <path d="M704 1516 c-77 -36 -134 -112 -192 -257 -8 -21 -24 -31 -68 -45 -62
 -19 -124 -62 -158 -107 -32 -44 -29 -144 6 -221 37 -77 152 -192 233 -232 56
 -27 68 -29 180 -29 109 0 125 2 177 27 32 15 80 50 108 77 28 28 53 51 55 51
