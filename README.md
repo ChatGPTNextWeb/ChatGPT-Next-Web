@@ -205,32 +205,6 @@ OPENAI_API_KEY=<your api key here>
 BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 ```
 
-### Sealos 部署
-
- 1.Register a Sealos account for free
-[sealos cloud](https://cloud.sealos.io)
-
-2.Click  `App Launchpad` button
-![App Launchpad](./docs/images/sealos/install-on-sealos-1.jpg)
-
-3.Click `Create Application` button
-![Create Application](./docs/images/sealos/install-on-sealos-2.jpg)
-
-4.Just fill in according to the following figure, and click on it after filling out `Deploy Application` button
-![Create Application](./docs/images/sealos/install-on-sealos-3.jpg)
-
-```shell
-App Name: chatgpt-next-web
-Image Name: yidadaa/chatgpt-next-web
-CPU: 0.5Core
-Memory: 1G
-Container Ports: 3000
-Accessible to the Public: On
-```
-
-5.Obtain the access link and click directly to access it. If you need to bind your own domain name, you can also fill in your own domain name in `Custom domain` and follow the prompts to configure the domain name CNAME
-![Create Application](./docs/images/sealos/install-on-sealos-4.jpg)
-
 ### Local Development
 
 ```shell
@@ -265,6 +239,32 @@ docker run -d -p 3000:3000 \
    -e PROXY_URL="http://localhost:7890" \
    yidadaa/chatgpt-next-web
 ```
+
+### Deploy With Sealos
+
+ 1.Register a Sealos account for free
+[sealos cloud](https://cloud.sealos.io)
+
+2.Click  `App Launchpad` button
+![App Launchpad](./docs/images/sealos/install-on-sealos-1.jpg)
+
+3.Click `Create Application` button
+![Create Application](./docs/images/sealos/install-on-sealos-2.jpg)
+
+4.Just fill in according to the following figure, and click on it after filling out `Deploy Application` button
+![Create Application](./docs/images/sealos/install-on-sealos-3.jpg)
+
+```shell
+App Name: chatgpt-next-web
+Image Name: yidadaa/chatgpt-next-web
+CPU: 0.5Core
+Memory: 1G
+Container Ports: 3000
+Accessible to the Public: On
+```
+
+5.Obtain the access link and click directly to access it. If you need to bind your own domain name, you can also fill in your own domain name in `Custom domain` and follow the prompts to configure the domain name CNAME
+![Create Application](./docs/images/sealos/install-on-sealos-4.jpg)
 
 ### Shell
 
