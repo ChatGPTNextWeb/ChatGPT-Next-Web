@@ -67,12 +67,13 @@ function setItem(key: string, value: string) {
 
 function getLanguage() {
   try {
-    return navigator.language.toLowerCase();
+    // return navigator.language.toLowerCase();
+    return "cn";
   } catch {
-    console.log("[Lang] failed to detect user lang.");
-    return DEFAULT_LANG;
+    return "cn";
   }
 }
+
 
 export function getLang(): Lang {
   const savedLang = getItem(LANG_KEY);
@@ -89,7 +90,8 @@ export function getLang(): Lang {
     }
   }
 
-  return DEFAULT_LANG;
+
+  return "en";
 }
 
 export function changeLang(lang: Lang) {
