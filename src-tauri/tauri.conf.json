@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "tauri-next",
+        "title": "ChatGPT Next Web",
         "width": 960
       }
     ]
