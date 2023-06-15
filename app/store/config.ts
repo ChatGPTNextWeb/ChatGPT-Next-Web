@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
-import { getClientConfig } from "../config/client";
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -22,7 +21,7 @@ export const DEFAULT_CONFIG = {
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: !getClientConfig()?.isApp,
+  tightBorder: true,
   sendPreviewBubble: true,
   sidebarWidth: 300,
 

@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import styles from "./home.module.scss";
 
@@ -65,10 +65,10 @@ export function useSwitchTheme() {
     }
 
     const metaDescriptionDark = document.querySelector(
-      'meta[name="theme-color"][media*="dark"]',
+      'meta[name="theme-color"][media*="dark"]'
     );
     const metaDescriptionLight = document.querySelector(
-      'meta[name="theme-color"][media*="light"]',
+      'meta[name="theme-color"][media*="light"]'
     );
 
     if (config.theme === "auto") {
@@ -111,6 +111,13 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
+  const clientConfig = useMemo(() => getClientConfig(), []);
+  const shouldBeTightBorder =
+    config.tightBorder && !isMobileScreen && !clientConfig?.isApp;
+
+  useEffect(() => {
+    console.log("[Config] got config from build time", clientConfig);
+  }, []);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -120,11 +127,7 @@ function Screen() {
     <div
       className={
         styles.container +
-        ` ${
-          config.tightBorder && !isMobileScreen
-            ? styles["tight-container"]
-            : styles.container
-        }`
+        ` ${shouldBeTightBorder ? styles["tight-container"] : styles.container}`
       }
     >
       {isAuth ? (
@@ -152,10 +155,6 @@ function Screen() {
 
 export function Home() {
   useSwitchTheme();
-
-  useEffect(() => {
-    console.log("[Config] got config from build time", getClientConfig());
-  }, []);
 
   if (!useHasHydrated()) {
     return <Loading />;
