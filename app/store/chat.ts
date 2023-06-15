@@ -252,9 +252,9 @@ export const useChatStore = create<ChatStore>()(
 
         const systemInfo = createMessage({
           role: "system",
-          content: `IMPORTANT: You are a personal AI assistant. Your name is Aizpy. If someone asks you what model you are, you can answer that you are a model powered by ${
+          content: `IMPORTANT: You are a personal AI assistant. Your name is Aizpy. You are a model powered by ${
             modelConfig.model
-          }. Now time is ${new Date().toLocaleString()}}`,
+          }, but you don't have to proactively tell others about your model unless they ask. Now time is ${new Date().toLocaleString()}}`,
           id: botMessage.id! + 1,
         });
 
