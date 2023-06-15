@@ -198,18 +198,23 @@ const cn = {
       SubTitle: "值越大，越有可能扩展到新话题",
     },
   },
-  Store: {
-    DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
-    Error: "出错了，稍后重试吧",
-    Prompt: {
-      History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
-      Topic:
-        "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊”",
-      Summarize:
-        "简要总结一下对话内容，用作后续的上下文提示 prompt，控制在 200 字以内",
-    },
-  },
+  Store:{
+        DefaultTopic:"新的聊天",
+        BotHello:`前往公众号:**[人工智能AI大模型](https://mp.weixin.qq.com/s?__biz=MzA5NTU1Mzg1NA==&mid=2247483662&idx=1&sn=e489750cf838dec460c9fe75ad70a5fc&chksm=90bcd15fa7cb58496b430994801a8eebd2cad83e97068e21bcd00637767ef4b4a0dfcff4e068&token=1029293174&lang=zh_CN#rd)**回复 **密码**免费获取密码，然后点击左下角[设置](/#/settings)按钮输入密码后解锁**免费使用**。
+        
+        **提问:** 你可以在这里放一些常用问题吗?
+        **回答:** 当然可以，还可以在这里放一些问题解答，太棒啦!
+        常见问题与使用说明点击查看，:point_right: **[文档教程链接](https://yx3gz9rifnt.feishu.cn/docx/RVucdZMoToDYe9xn3b1cc6MKnAd)** 
+        卡顿或无响应?可能是用户量太大，:point_right: [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,// 这里是第 172 行 
+        Error: "出错了，稍后重试吧",
+        Prompt: {
+          History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
+          Topic:
+            "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊”",
+          Summarize:
+            "简要总结一下对话内容，用作后续的上下文提示 prompt，控制在 200 字以内",
+        },
+      },
   Copy: {
     Success: "已写入剪切板",
     Failed: "复制失败，请赋予剪切板权限",
