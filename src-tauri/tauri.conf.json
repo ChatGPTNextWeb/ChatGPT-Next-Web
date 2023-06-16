@@ -50,8 +50,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "longDescription": "ChatGPT Next Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
       "identifier": "com.yeenbean.chatgpt-next-web",
+      "longDescription": "ChatGPT Next Web[y] is a cross-platform ChatGPT client.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -87,7 +87,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ChatGPT Next Web",
+        "title": "ChatGPT Next Web[y]",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
