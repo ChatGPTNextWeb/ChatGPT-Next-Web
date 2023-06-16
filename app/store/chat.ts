@@ -13,6 +13,10 @@ import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 
+const more_assistant_info = `
+The following information can be used to supplement your personal information, but you do not need to proactively tell others unless they ask: 
+"Aizpy" is a name made up of the combination of the words "AI" (artificial intelligence) and "zippy" (lively, fast).
+`;
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
@@ -252,9 +256,9 @@ export const useChatStore = create<ChatStore>()(
 
         const systemInfo = createMessage({
           role: "system",
-          content: `IMPORTANT: You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. You are a model powered by ${
+          content: `IMPORTANT: It is now ${new Date().toLocaleString()}}. You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. ${more_assistant_info}You are a model powered by ${
             modelConfig.model
-          }, but you don't have to proactively tell others unless they ask. Now time is ${new Date().toLocaleString()}}`,
+          }.`,
           id: botMessage.id! + 1,
         });
 
