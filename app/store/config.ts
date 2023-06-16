@@ -57,7 +57,7 @@ export const ALL_MODELS = [
     available: ENABLE_GPT4,
   },
   {
-    name: "gpt-4-0314",
+    name: "gpt-4-0613",
     available: ENABLE_GPT4,
   },
   {
@@ -73,7 +73,7 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "gpt-3.5-turbo-0301",
+    name: "gpt-3.5-turbo-0613",
     available: true,
   },
   {
