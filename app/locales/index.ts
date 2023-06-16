@@ -1,6 +1,7 @@
 import CN from "./cn";
 import EN from "./en";
 import TW from "./tw";
+import FR from "./fr";
 import ES from "./es";
 import IT from "./it";
 import TR from "./tr";
@@ -9,13 +10,17 @@ import DE from "./de";
 import VI from "./vi";
 import RU from "./ru";
 import NO from "./no";
+import CS from "./cs";
+import KO from "./ko";
+import { merge } from "../utils/merge";
 
-export type { LocaleType } from "./cn";
+export type { LocaleType, RequiredLocaleType } from "./cn";
 
 export const AllLangs = [
   "en",
   "cn",
   "tw",
+  "fr",
   "es",
   "it",
   "tr",
@@ -23,9 +28,26 @@ export const AllLangs = [
   "de",
   "vi",
   "ru",
-  "no",
+  "cs",
+  "ko",
 ] as const;
 export type Lang = (typeof AllLangs)[number];
+
+export const ALL_LANG_OPTIONS: Record<Lang, string> = {
+  cn: "简体中文",
+  en: "English",
+  tw: "繁體中文",
+  fr: "Français",
+  es: "Español",
+  it: "Italiano",
+  tr: "Türkçe",
+  jp: "日本語",
+  de: "Deutsch",
+  vi: "Tiếng Việt",
+  ru: "Русский",
+  cs: "Čeština",
+  ko: "한국어",
+};
 
 const LANG_KEY = "lang";
 const DEFAULT_LANG = "en";
@@ -48,7 +70,6 @@ function getLanguage() {
   try {
     return navigator.language.toLowerCase();
   } catch {
-    console.log("[Lang] failed to detect user lang.");
     return DEFAULT_LANG;
   }
 }
@@ -76,10 +97,12 @@ export function changeLang(lang: Lang) {
   location.reload();
 }
 
-export default {
+const fallbackLang = EN;
+const targetLang = {
   en: EN,
   cn: CN,
   tw: TW,
+  fr: FR,
   es: ES,
   it: IT,
   tr: TR,
@@ -88,4 +111,11 @@ export default {
   vi: VI,
   ru: RU,
   no: NO,
+  cs: CS,
+  ko: KO,
 }[getLang()] as typeof CN;
+
+// if target lang missing some fields, it will use fallback lang string
+merge(fallbackLang, targetLang);
+
+export default fallbackLang as typeof CN;
