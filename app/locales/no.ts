@@ -4,8 +4,7 @@ import type { LocaleType } from "./index";
 const no: LocaleType = {
   WIP: "Arbeid pågår ...",
   Error: {
-    Unauthorized:
-      "Du har ikke tilgang. Vennlig oppgi tildelt adgangskode.",
+    Unauthorized: "Du har ikke tilgang. Vennlig oppgi tildelt adgangskode.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,
@@ -125,7 +124,8 @@ const no: LocaleType = {
     },
     Token: {
       Title: "API Key",
-      SubTitle: "Bruk din egen API-nøkkel for å ignorere tilgangskoden begrensning",
+      SubTitle:
+        "Bruk din egen API-nøkkel for å ignorere tilgangskoden begrensning",
       Placeholder: "OpenAI API-nøkkel",
     },
     Usage: {
@@ -153,8 +153,7 @@ const no: LocaleType = {
     },
     PresencePenlty: {
       Title: "Straff for tilstedeværelse",
-      SubTitle:
-        "Høyere verdi øker sjansen for ny tematikk",
+      SubTitle: "Høyere verdi øker sjansen for ny tematikk",
     },
   },
   Store: {
