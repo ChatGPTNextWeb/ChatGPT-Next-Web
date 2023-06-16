@@ -37,7 +37,7 @@ const en: RequiredLocaleType = {
         dark: "Dark Theme",
       },
       Prompt: "Prompts",
-      Masks: "Masks",
+      Masks: "Personas",
       Clear: "Clear Context",
       Settings: "Settings",
     },
@@ -53,7 +53,7 @@ const en: RequiredLocaleType = {
     Send: "Send",
     Config: {
       Reset: "Reset to Default",
-      SaveAs: "Save as Mask",
+      SaveAs: "Save as a Persona",
     },
   },
   Export: {
@@ -68,8 +68,8 @@ const en: RequiredLocaleType = {
       SubTitle: "Markdown or PNG Image",
     },
     IncludeContext: {
-      Title: "Including Context",
-      SubTitle: "Export context prompts in mask or not",
+      Title: "Include Persona Context",
+      SubTitle: "Export context prompts from chosen Persona",
     },
     Steps: {
       Select: "Select",
@@ -132,8 +132,9 @@ const en: RequiredLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Title: "Personas Splash Screen",
+      SubTitle:
+        "Displays a selection screen of available Personas before initiating a new chat",
     },
     Prompt: {
       Disable: {
@@ -228,11 +229,11 @@ const en: RequiredLocaleType = {
     Name: "Plugin",
   },
   Mask: {
-    Name: "Mask",
+    Name: "Persona",
     Page: {
       Title: "Prompt Template",
       SubTitle: (count: number) => `${count} prompt templates`,
-      Search: "Search Templates",
+      Search: "Search Personas",
       Create: "Create",
     },
     Item: {
@@ -245,13 +246,13 @@ const en: RequiredLocaleType = {
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+        `Edit Persona Template ${readonly ? "(readonly)" : ""}`,
       Download: "Download",
       Clone: "Clone",
     },
     Config: {
-      Avatar: "Bot Avatar",
-      Name: "Bot Name",
+      Avatar: "Persona Avatar",
+      Name: "Persona Name",
       Sync: {
         Title: "Use Global Config",
         SubTitle: "Use global config in this chat",
@@ -266,8 +267,8 @@ const en: RequiredLocaleType = {
   NewChat: {
     Return: "Return",
     Skip: "Just Start",
-    Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
+    Title: "Pick a Persona",
+    SubTitle: "Choose your perfect alter-ego",
     More: "Find More",
     NotShow: "Never Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",

@@ -43,12 +43,10 @@ highlighting, and more.
 - Light and dark mode.
 - Progressive web-app.
 - Loads lightning fast!
-- Create, share and debug your chat tools with prompt templates (Masks)\*.
+- Create, share, and debug your chat tools with prompt templates (Personas).
 - Powerful prompt templates curated by [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts).
 - Automatically compresses chat history to support long conversations while also saving your tokens.
 - Multi-language support: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어.
-
-\*Masks will be renamed in this repository at a later date.
 
 ## Roadmap
 
