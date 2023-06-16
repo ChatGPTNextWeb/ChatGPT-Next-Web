@@ -69,7 +69,6 @@ function getLanguage() {
   try {
     return navigator.language.toLowerCase();
   } catch {
-    console.log("[Lang] failed to detect user lang.");
     return DEFAULT_LANG;
   }
 }
