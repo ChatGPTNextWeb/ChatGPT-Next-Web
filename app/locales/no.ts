@@ -60,26 +60,9 @@ const no: LocaleType = {
       ClearAll: "Fjern alle data",
       ResetAll: "Nullstill innstillinger",
       Close: "Lukk",
-      ConfirmResetAll: {
-        Confirm: "Er du sikker på at du vil nullstille alle konfigurasjoner?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Er du sikker på at du vil fjern alle samtaler?",
-      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        no: "Norsk",
-      },
     },
     Avatar: "Avatar",
     FontSize: {
@@ -97,7 +80,6 @@ const no: LocaleType = {
     SendKey: "Send nøkkel",
     Theme: "Tema",
     TightBorder: "Stram innramming",
-    SendPreviewBubble: "Vis forhåndsvisningsboble",
     Prompt: {
       Disable: {
         Title: "Skru av autofullfør",
@@ -151,10 +133,6 @@ const no: LocaleType = {
       Title: "Maks tokens",
       SubTitle: "Maksimum lengde på tokens for instrukser og svar",
     },
-    PresencePenlty: {
-      Title: "Straff for tilstedeværelse",
-      SubTitle: "Høyere verdi øker sjansen for ny tematikk",
-    },
   },
   Store: {
     DefaultTopic: "Ny samtale",
@@ -169,7 +147,6 @@ const no: LocaleType = {
       Summarize:
         "Oppsummer diskusjonen vår kort i 200 ord eller mindre for å bruke som en oppfordring til fremtidig sammenheng.",
     },
-    ConfirmClearAll: "Bekreft for å slette alle samtaler og innstillinger?",
   },
   Copy: {
     Success: "Kopiert til utklippstavle",
