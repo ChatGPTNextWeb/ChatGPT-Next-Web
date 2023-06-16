@@ -10,7 +10,7 @@ const cn = {
         **提问:** 你可以在这里放一些常用问题吗?
         **回答:** 当然可以，还可以在这里放一些问题解答，太棒啦!
         常见问题与使用说明点击查看，👉 **[文档教程链接](https://yx3gz9rifnt.feishu.cn/docx/RVucdZMoToDYe9xn3b1cc6MKnAd)** 
-        卡顿或无响应?可能是用户量太大，👉 [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,
+        卡顿或提示异常?可能是用户量太大或者公益接口已用尽可等管理员恢复(每天免费提供一个120刀公益接口)获取购买专属APIKey，👉 [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,
   },
   Auth: {
     Title: "需要密码",
@@ -212,7 +212,7 @@ const cn = {
         **提问:** 你可以在这里放一些常用问题吗?
         **回答:** 当然可以，还可以在这里放一些问题解答，太棒啦!
         常见问题与使用说明点击查看，👉 **[文档教程链接](https://yx3gz9rifnt.feishu.cn/docx/RVucdZMoToDYe9xn3b1cc6MKnAd)** 
-        卡顿或无响应?可能是用户量太大，👉 [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F) `,// 这里是第 172 行 
+        卡顿或提示异常?可能是用户量太大或者公益接口已用尽可等管理员恢复(每天免费提供一个120刀公益接口)获取购买专属APIKey，👉 [点这里获得独立账号KEY 使用](http://www.jishou6.cn/links/EF52D37F0F3F768F)  `,// 这里是第 172 行 
         Error: "出错了，稍后重试吧",
         Prompt: {
           History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
