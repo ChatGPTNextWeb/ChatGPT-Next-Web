@@ -8,16 +8,37 @@
   },
   "package": {
     "productName": "chatgpt-next-web",
-    "version": "2.8.1"
+    "version": "2.8.2"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "clipboard": {
+        "all": true
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "maximize": true,
+        "minimize": true,
+        "setIcon": true,
+        "setIgnoreCursorEvents": true,
+        "setResizable": true,
+        "show": true,
+        "startDragging": true,
+        "unmaximize": true,
+        "unminimize": true
+      }
     },
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "",
+      "copyright": "2023, Zhang Yifei All Rights Reserved.",
       "deb": {
         "depends": []
       },
@@ -51,7 +72,15 @@
       "csp": null
     },
     "updater": {
-      "active": false
+      "active": true,
+      "endpoints": [
+        "https://github.com/Yidadaa/ChatGPT-Next-Web/releases/download/{{current_version}}/latest.json"
+      ],
+      "dialog": false,
+      "windows": {
+        "installMode": "passive"
+      },
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERFNDE4MENFM0Y1RTZBOTQKUldTVWFsNC96b0JCM3RqM2NmMnlFTmxIaStRaEJrTHNOU2VqRVlIV1hwVURoWUdVdEc1eDcxVEYK"
     },
     "windows": [
       {
@@ -59,7 +88,9 @@
         "height": 600,
         "resizable": true,
         "title": "ChatGPT Next Web",
-        "width": 960
+        "width": 960,
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay"
       }
     ]
   }
