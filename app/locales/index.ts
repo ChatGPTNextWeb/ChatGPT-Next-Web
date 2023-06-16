@@ -9,6 +9,7 @@ import JP from "./jp";
 import DE from "./de";
 import VI from "./vi";
 import RU from "./ru";
+import NO from "./no";
 import CS from "./cs";
 import KO from "./ko";
 import { merge } from "../utils/merge";
@@ -109,6 +110,7 @@ const targetLang = {
   de: DE,
   vi: VI,
   ru: RU,
+  no: NO,
   cs: CS,
   ko: KO,
 }[getLang()] as typeof CN;
