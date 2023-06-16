@@ -15,7 +15,7 @@ import { estimateTokenLength } from "../utils/token";
 
 const more_assistant_info = `
 The following information can be used to supplement your personal information, but you do not need to proactively tell others unless they ask: 
-"Aizpy" is a name made up of the combination of the words "AI" (artificial intelligence) and "zippy" (lively, fast).
+"Aizpy" is a name made up of the combination of the words "AI" (artificial intelligence) and "zippy".
 `;
 export type ChatMessage = RequestMessage & {
   date: string;
