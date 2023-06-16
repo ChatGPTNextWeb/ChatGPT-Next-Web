@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。如何获取密码？试试关注公众号**星梦晓网络科技**",
   },
   Auth: {
     Title: "需要密码",
@@ -200,7 +200,11 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: `本AI为openai的官方chatgpt，我们只是作一个搬运工，欢迎大家使用，我们的[博客](https://www.xmxit.cn)。
+您的支持是我们更新的动力，点击[赞助](https://pay.xmxit.cn/paypage/?merchant=d932Z9S8i7MuFTay0NYoOKYsxghb1BeSdy3Z3KeWxmRt)
+**提问**:你们的gpt支持4.0吗？
+**回答:暂时**不支持，现阶段强大的3.5版本足以应对我们的所有需求，但后续会陆续开放
+如有侵权或疑问请联系我们`,
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
