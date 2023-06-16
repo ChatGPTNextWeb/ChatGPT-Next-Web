@@ -118,8 +118,10 @@ export function SideBar(props: { className?: string }) {
         shouldNarrow && styles["narrow-sidebar"]
       }`}
     >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>FreeGPT</div>
+      <div className={styles["sidebar-header"]} data-tauri-drag-region>
+        <div className={styles["sidebar-title"]} data-tauri-drag-region>
+          FreeGPT
+        </div>
         <div className={styles["sidebar-sub-title"]}>
         AI不会让你失去工作，能淘汰的只有没掌握AI的人.
         </div>
