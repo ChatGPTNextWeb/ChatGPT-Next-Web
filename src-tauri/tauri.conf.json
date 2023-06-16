@@ -7,7 +7,7 @@
     "distDir": "../out"
   },
   "package": {
-    "productName": "chatgpt-next-web",
+    "productName": "chatgpt-next-web-yeening",
     "version": "2.8.2"
   },
   "tauri": {
@@ -50,8 +50,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "ChatGPT Next Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "identifier": "com.yeenbean.chatgpt-next-web",
+      "longDescription": "ChatGPT Next Web[y] is a cross-platform ChatGPT client.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -74,20 +74,20 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://github.com/Yidadaa/ChatGPT-Next-Web/releases/download/{{current_version}}/latest.json"
+        "https://github.com/yeenbean/ChatGPT-Next-Web/releases/download/{{current_version}}/latest.json"
       ],
       "dialog": false,
       "windows": {
         "installMode": "passive"
       },
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERFNDE4MENFM0Y1RTZBOTQKUldTVWFsNC96b0JCM3RqM2NmMnlFTmxIaStRaEJrTHNOU2VqRVlIV1hwVURoWUdVdEc1eDcxVEYK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFBMTNBMzYxNDhERjVFNUQKUldSZFh0OUlZYU1UcWtHcGZ1OEd0b01JRlQ4cWRQUys3Y1lNSGZOUFdYS0hLaUdHeTY4NXVWYVoK"
     },
     "windows": [
       {
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ChatGPT Next Web",
+        "title": "ChatGPT Next Web[y]",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
