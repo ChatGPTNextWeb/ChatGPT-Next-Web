@@ -37,7 +37,7 @@
     "remark-math": "^5.1.1",
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
-    "use-debounce": "^9.0.3",
+    "use-debounce": "^9.0.4",
     "zustand": "^4.3.6"
   },
   "devDependencies": {
