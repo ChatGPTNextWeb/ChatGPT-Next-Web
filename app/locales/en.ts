@@ -33,7 +33,7 @@ const en: LocaleType = {
     Send: "Send",
     Config: {
       Reset: "Reset to Default",
-      SaveAs: "Save as a Soul",
+      SaveAs: "Save as a Mode",
     },
   },
   Export: {
@@ -108,8 +108,8 @@ const en: LocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Soul Splash Screen",
-      SubTitle: "Show a Soul splash screen before starting new chat",
+      Title: "Mode Splash Screen",
+      SubTitle: "Show a Mode splash screen before starting new chat",
     },
     Prompt: {
       Disable: {
@@ -199,9 +199,9 @@ const en: LocaleType = {
     Name: "Plugin",
   },
   Mask: {
-    Name: "Soul",
+    Name: "Mode",
     Page: {
-      Title: "Soul Template",
+      Title: "Mode Template",
       SubTitle: (count: number) => `${count} prompt templates`,
       Search: "Search Templates",
       Create: "Create",
