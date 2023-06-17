@@ -228,7 +228,7 @@ const en: LocaleType = {
   NewChat: {
     Return: "Return",
     Skip: "Skip",
-    Title: "Choose a Mode",
+    Title: "Select a Mode",
     SubTitle: "Chat with the AI Mode you want! You can add your own Modes too",
     More: "Find More",
     NotShow: "Don't Show Again",
