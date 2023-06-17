@@ -1,3 +1,8 @@
+# Execute then line below on a fresh, minimal install of Ubuntu Server 22.04 LTS
+# to set up the dependencies for the GitHub Runner.
+#
+# bash <(curl -s https://raw.githubusercontent.com/yeenbean/ChatGPT-Next-Web/main/scripts/setup-ubuntu-2204-ci.sh)
+
 # initial os update
 sudo apt update
 sudo apt upgrade -y
