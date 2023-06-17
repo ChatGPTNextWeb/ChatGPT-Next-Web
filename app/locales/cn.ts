@@ -176,7 +176,17 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: `欢迎使用魔法ChatGPT，点击左下角[设置](/#/settings)按钮输入访问密码666888即可**免费使用**。
+    
+**提问：** 网站是免费使用的吗？
+
+**回答：** 是的，本站一直是免费使用的！
+
+ 常见问题与使用说明点击查看 **[点我前往](https://www.mofaxi.cn/20.html)** 
+
+卡顿或无响应？可能是用户量太大， **[点这里获得独立账号 KEY 使用](https://www.mofaxi.cn/shop/17.html)**
+
+我的博客（获取最新版本）  **[点我前往](https://www.mofaxi.cn)**`, 
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
