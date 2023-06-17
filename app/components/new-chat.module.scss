@@ -113,8 +113,8 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 50px 0;
-  background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+  padding: 20px 0;
+  //background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
 }
 
 .mask {
@@ -122,7 +122,7 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   width: 200px;
   height: 200px;
   margin: 20px;
-  border-radius: 50%;
+  border-radius: 0%;
   overflow: hidden;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   cursor: pointer;
