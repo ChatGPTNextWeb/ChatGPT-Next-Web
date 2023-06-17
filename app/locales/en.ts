@@ -40,8 +40,8 @@ const en: LocaleType = {
     Title: "All Messages",
     Copy: "Copy All",
     Download: "Download",
-    MessageFromYou: "Message From You",
-    MessageFromChatGPT: "Message From CognitievPRO",
+    MessageFromYou: "User: ",
+    MessageFromChatGPT: "Cognitiev PRO: ",
   },
   Memory: {
     Title: "Memory Prompt",
@@ -181,14 +181,14 @@ const en: LocaleType = {
         "This is a summary of the chat history between the AI and the user as a recap: " +
         content,
       Topic:
-        "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
+        "Please generate a four to five-word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
         "Summarize our discussion briefly in 200 words or less to use as a prompt for future context.",
     },
   },
   Copy: {
     Success: "Copied to clipboard",
-    Failed: "Copy failed, please grant permission to access clipboard",
+    Failed: "Copy failed, please grant permission to access the clipboard",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
@@ -228,8 +228,8 @@ const en: LocaleType = {
   NewChat: {
     Return: "Return",
     Skip: "Skip",
-    Title: "Pick a Soul",
-    SubTitle: "Chat with the AI Soul you want the Bot has",
+    Title: "Choose a Mode",
+    SubTitle: "Chat with the AI Mode you want! You can add your own Modes too",
     More: "Find More",
     NotShow: "Don't Show Again",
     ConfirmNoShow: "Confirm to disable! You can enable it in settings later.",
