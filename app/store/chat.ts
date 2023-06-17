@@ -370,28 +370,30 @@ export const useChatStore = create<ChatStore>()(
           context.push(memoryPrompt);
         }
 
-        // get short term and unmemoried long term memory
+        // get short term and unmemorized long term memory
         const shortTermMemoryMessageIndex = Math.max(
           0,
           n - modelConfig.historyMessageCount,
         );
         const longTermMemoryMessageIndex = session.lastSummarizeIndex;
-        const mostRecentIndex = Math.max(
+
+        // try to concat history messages
+        const memoryStartIndex = Math.min(
           shortTermMemoryMessageIndex,
           longTermMemoryMessageIndex,
         );
-        const threshold = modelConfig.compressMessageLengthThreshold * 2;
+        const threshold = modelConfig.max_tokens;
 
         // get recent messages as many as possible
         const reversedRecentMessages = [];
         for (
           let i = n - 1, count = 0;
-          i >= mostRecentIndex && count < threshold;
+          i >= memoryStartIndex && count < threshold;
           i -= 1
         ) {
           const msg = messages[i];
           if (!msg || msg.isError) continue;
-          count += msg.content.length;
+          count += estimateTokenLength(msg.content);
           reversedRecentMessages.push(msg);
         }
 
