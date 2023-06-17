@@ -32,87 +32,29 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
 
-.mask-cards {
-  display: flex;
-  margin-top: 5vh;
-  margin-bottom: 20px;
-  animation: slide-in ease 0.3s;
+  .mask-cards {
+    display: flex;
+    margin-top: 5vh;
+    margin-bottom: 20px;
+    animation: slide-in ease 0.3s;
 
-  .mask-card {
-    padding: 40px 20px;
-    border: var(--border-in-light);
-    box-shadow: var(--card-shadow);
-    border-radius: 10px;
-    background-color: #fff;
-    transform: scale(1);
-
-    &:nth-child(1) {
-      transform: rotate(-15deg) translateY(10px);
-    }
-    
-    &:nth-child(2) {
-      transform: rotate(15deg) translateY(10px);
-    }
-
-    &:nth-child(3) {
-      transform: rotate(-30deg) translateY(20px);
-      background-color: #fafafa;
+    .mask-card {
+      padding: 40px 20px;
       border: var(--border-in-light);
       box-shadow: var(--card-shadow);
-    }
+      border-radius: 0px;
+      background-color: var(--white);
+      transform: scale(1);
 
-    &:nth-child(4) {
-      transform: rotate(30deg) translateY(20px);
-      background-color: #f0f0f0;
-      border: var(--border-in-light);
-      box-shadow: var(--card-shadow);
-    }
+      &:first-child {
+        transform: rotate(-15deg) translateY(5px);
+      }
 
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: var(--card-shadow-hover);
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #0077b6;
-    }
-
-    p {
-      font-size: 18px;
-      line-height: 1.5;
-      text-align: center;
-      color: #333;
-    }
-
-    button {
-      background-color: #0077b6;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 16px;
-      font-weight: bold;
-      margin-top: 20px;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-    }
-
-    button:hover {
-      background-color: #023e8a;
+      &:last-child {
+        transform: rotate(15deg) translateY(5px);
+      }
     }
   }
-}
-
-
 
   .title {
     font-size: 32px;
