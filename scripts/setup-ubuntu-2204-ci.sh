@@ -26,3 +26,5 @@ sudo apt install -y libwebkit2gtk-4.0-dev \
     libayatana-appindicator3-dev \
     librsvg2-dev
     
+# install AppImage dependencies
+sudo apt install -y file
