@@ -4,13 +4,13 @@ import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
+import ShopIcon from "../icons/shop.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
-import CloudIcon from "../icons/cloud.svg";
+import BlogIcon from "../icons/Blog.svg";
 
 import Locale from "../locales";
 
@@ -175,13 +175,13 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href="https://ka.mofaxi.cn" target="_blank">
-              <IconButton icon={<GithubIcon />} shadow />
+            <a href="https://www.mofaxi.cn/shop" target="_blank">
+              <IconButton icon={<ShopIcon />} shadow />
             </a>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href="https://cloud.mofaxi.cn" target="_blank">
-              <IconButton icon={<CloudIcon />} shadow />
+            <a href="https://www.mofaxi.cn" target="_blank">
+              <IconButton icon={<BlogIcon />} shadow />
             </a>
         </div>
         </div>
