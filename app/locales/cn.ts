@@ -4,15 +4,15 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-`欢迎使用魔法ChatGPT，点击左下角[设置](/#/settings)按钮输入访问密码666888即可免费使用。
+`欢迎使用魔法ChatGPT，点击左下角**[设置](/#/settings)**按钮输入访问密码666888即可免费使用。
     
 **提问：** 网站是免费使用的吗？
 
 **回答：** 是的，本站一直是免费使用的！
 
-常见问题与使用说明点击查看 **[点我前往](https://www.mofaxi.cn/20.html)** 
+常见问题与使用说明点击查看 [点我前往](https://www.mofaxi.cn/20.html) 
 
-卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY **](https://www.mofaxi.cn/shop/17.html)使用，速度会极大提升
+卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY ](https://www.mofaxi.cn/shop/17.html)**使用，速度会极大提升
 
 我的博客（分享更多有趣知识）  **[点我前往](https://www.mofaxi.cn)**`, 
   },
@@ -187,15 +187,15 @@ const cn = {
   Store: {
     DefaultTopic: "新的聊天",
     BotHello: 
-`欢迎使用魔法ChatGPT，点击左下角[设置](/#/settings)按钮输入访问密码666888即可免费使用。
+`欢迎使用魔法ChatGPT，点击左下角**[设置](/#/settings)**按钮输入访问密码666888即可免费使用。
     
 **提问：** 网站是免费使用的吗？
 
 **回答：** 是的，本站一直是免费使用的！
 
-常见问题与使用说明点击查看 **[点我前往](https://www.mofaxi.cn/20.html)** 
+常见问题与使用说明点击查看 [点我前往](https://www.mofaxi.cn/20.html) 
 
-卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY **](https://www.mofaxi.cn/shop/17.html)使用，速度会极大提升
+卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY ](https://www.mofaxi.cn/shop/17.html)**使用，速度会极大提升
 
 我的博客（分享更多有趣知识）  **[点我前往](https://www.mofaxi.cn)**`, 
     Error: "出错了，稍后重试吧",
