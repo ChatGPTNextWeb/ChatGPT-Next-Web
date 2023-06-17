@@ -12,7 +12,7 @@ const cn = {
 
 常见问题与使用说明点击查看 **[点我前往](https://www.mofaxi.cn/20.html)** 
 
-卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY 使用,速度会极大提升](https://www.mofaxi.cn/shop/17.html)**
+卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY **](https://www.mofaxi.cn/shop/17.html)使用，速度会极大提升
 
 我的博客（分享更多有趣知识）  **[点我前往](https://www.mofaxi.cn)**`, 
   },
@@ -195,7 +195,7 @@ const cn = {
 
 常见问题与使用说明点击查看 **[点我前往](https://www.mofaxi.cn/20.html)** 
 
-卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY 使用,速度会极大提升](https://www.mofaxi.cn/shop/17.html)**
+卡顿或无响应？可能是用户量太大， **[点这里获得独立 API KEY **](https://www.mofaxi.cn/shop/17.html)使用，速度会极大提升
 
 我的博客（分享更多有趣知识）  **[点我前往](https://www.mofaxi.cn)**`, 
     Error: "出错了，稍后重试吧",
