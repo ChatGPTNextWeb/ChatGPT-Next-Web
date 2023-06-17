@@ -10,7 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
-import BlogIcon from "../icons/Blog.svg";
+import BlogIcon from "../icons/blog.svg";
 
 import Locale from "../locales";
 
