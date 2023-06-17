@@ -39,7 +39,7 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
     animation: slide-in ease 0.3s;
 
     .mask-card {
-      padding: 30px 20px;
+      padding: 40px 20px;
       border: var(--border-in-light);
       box-shadow: var(--card-shadow);
       border-radius: 0px;
@@ -47,11 +47,19 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
       transform: scale(1);
 
       &:first-child {
-        transform: rotate( 0deg) translateY(5px);
+        transform: rotate( -30deg) translateY(10px);
+      }
+      
+      &:second-child {
+        transform: rotate( -15deg) translateY(5px);
+      }
+
+      &:secondlast-child {
+        transform: rotate( 15deg) translateY(5px);
       }
 
       &:last-child {
-        transform: rotate( 0deg) translateY(5px);
+        transform: rotate( 30deg) translateY(10px);
       }
     }
   }
