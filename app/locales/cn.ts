@@ -4,7 +4,17 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "魔法ChatGPT提示您：点击首页左下角[设置](/#/settings)按钮，在访问密码框内填：666888 即可免费使用，如果机器人回答卡顿，说明使用人数较多，可点击首页左下角购物车按钮购买自己的独立API Key，回答速度会极大提升",
+      `欢迎使用魔法ChatGPT，点击左下角[设置](/#/settings)按钮输入访问密码666888即可**免费使用**。
+    
+**提问：** 网站是免费使用的吗？
+
+**回答：** 是的，本站一直是免费使用的！
+
+ 常见问题与使用说明点击查看 **[点我前往](https://www.mofaxi.cn/20.html)** 
+
+卡顿或无响应？可能是用户量太大， **[点这里获得独立账号 KEY 使用](https://www.mofaxi.cn/shop/17.html)**
+
+我的博客（获取最新版本）  **[点我前往](https://www.mofaxi.cn)**`, 
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
