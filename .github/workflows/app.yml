@@ -9,7 +9,7 @@ jobs:
   create-release:
     permissions:
       contents: write
-    runs-on: ubuntu-20.04
+    runs-on: sh-ubuntu-22.04
     outputs:
       release_id: ${{ steps.create-release.outputs.result }}
 
@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        platform: [sh-ubuntu-22.04]
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -51,7 +51,7 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
       - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
+        if: matrix.platform == 'sh-ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
@@ -68,7 +68,7 @@ jobs:
   publish-release:
     permissions:
       contents: write
-    runs-on: ubuntu-20.04
+    runs-on: sh-ubuntu-22.04
     needs: [create-release, build-tauri]
 
     steps:
