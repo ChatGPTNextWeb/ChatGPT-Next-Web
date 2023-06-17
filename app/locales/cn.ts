@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/config";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized:
+    BotHello:
       `欢迎使用魔法ChatGPT，点击左下角[设置](/#/settings)按钮输入访问密码666888即可免费使用。
     
       **提问：** 网站是免费使用的吗？
