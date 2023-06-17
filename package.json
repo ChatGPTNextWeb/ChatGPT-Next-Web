@@ -23,6 +23,7 @@
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
+    "js-tiktoken": "^1.0.7",
     "mermaid": "^10.2.3",
     "next": "^13.4.3",
     "node-fetch": "^3.3.1",

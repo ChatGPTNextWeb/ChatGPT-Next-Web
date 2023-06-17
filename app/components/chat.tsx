@@ -888,6 +888,13 @@ export function Chat() {
                       </div>
                     </div>
                   )}
+                  {!isUser && message.tiktoken && !message.preview && (
+                    <div className={styles["chat-message-actions"]}>
+                      <div className={styles["chat-message-action-date"]}>
+                        {message.tiktoken}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}

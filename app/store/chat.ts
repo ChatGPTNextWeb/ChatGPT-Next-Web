@@ -11,7 +11,11 @@ import { StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
-import { estimateTokenLength } from "../utils/token";
+import {
+  estimateTokenLength,
+  tiktokenChatMessages,
+  tiktokenChatMessage,
+} from "../utils/token";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -19,6 +23,7 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  tiktoken?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -254,7 +259,7 @@ export const useChatStore = create<ChatStore>()(
           role: "system",
           content: `IMPORTANT: You are a virtual assistant powered by the ${
             modelConfig.model
-          } model, now time is ${new Date().toLocaleString()}}`,
+          } model, now time is ${new Date().toLocaleString()}`,
           id: botMessage.id! + 1,
         });
 
@@ -293,6 +298,22 @@ export const useChatStore = create<ChatStore>()(
           },
           onFinish(message) {
             botMessage.streaming = false;
+            let prompt_tokens = tiktokenChatMessages(
+              modelConfig.model,
+              sendMessages,
+            );
+            let completion_tokens = tiktokenChatMessage(
+              modelConfig.model,
+              botMessage.content,
+            );
+            let total_tokens = prompt_tokens + completion_tokens;
+            botMessage.tiktoken =
+              "prompt_tokens:" +
+              prompt_tokens +
+              " completion_tokens: " +
+              completion_tokens +
+              " total_tokens: " +
+              total_tokens;
             if (message) {
               botMessage.content = message;
               get().onNewMessage(botMessage);
