@@ -1,11 +1,11 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const jp: LocaleType = {
-  WIP: "この機能は開発中です……",
+const jp: PartialLocaleType = {
+  WIP: "この機能は開発中です",
   Error: {
     Unauthorized:
-      "現在は未承認状態です。左下の設定ボタンをクリックし、アクセスパスワードを入力してください。",
+      "現在は未承認状態です。左下の設定ボタンをクリックし、アクセスパスワードかOpenAIのAPIキーを入力してください。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 通のチャット`,
@@ -19,7 +19,7 @@ const jp: LocaleType = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
-      Delete: "Delete",
+      Delete: "削除",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -32,7 +32,7 @@ const jp: LocaleType = {
     },
     Send: "送信",
     Config: {
-      Reset: "重置默认",
+      Reset: "リセット",
       SaveAs: "另存为面具",
     },
   },
@@ -70,7 +70,7 @@ const jp: LocaleType = {
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      All: "所有语言",
+      All: "全ての言語",
     },
     Avatar: "アバター",
     FontSize: {
@@ -91,11 +91,11 @@ const jp: LocaleType = {
     TightBorder: "ボーダーレスモード",
     SendPreviewBubble: {
       Title: "プレビューバブルの送信",
-      SubTitle: "在预览气泡中预览 Markdown 内容",
+      SubTitle: "プレビューバブルでマークダウンコンテンツをプレビュー",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Title: "キャラクターページ",
+      SubTitle: "新規チャット作成時にキャラクターページを表示する",
     },
     Prompt: {
       Disable: {
@@ -113,7 +113,7 @@ const jp: LocaleType = {
         Search: "プロンプトワード検索",
       },
       EditModal: {
-        Title: "编辑提示词",
+        Title: "編集",
       },
     },
     HistoryCount: {
@@ -178,54 +178,64 @@ const jp: LocaleType = {
     Failed: "コピーに失敗しました。クリップボード許可を与えてください。",
   },
   Context: {
-    Toast: (x: any) => `前置コンテキストが ${x} 件設定されました`,
-    Edit: "前置コンテキストと履歴メモリ",
-    Add: "新規追加",
+    Toast: (x: any) => `キャラクターが ${x} 件設定されました`,
+    Edit: "キャラクタープリセットとモデル設定",
+    Add: "追加",
   },
-  Plugin: { Name: "插件" },
+  Plugin: { Name: "プラグイン" },
   Mask: {
-    Name: "面具",
+    Name: "キャラクタープリセット",
     Page: {
-      Title: "预设角色面具",
-      SubTitle: (count: number) => `${count} 个预设角色定义`,
-      Search: "搜索角色面具",
-      Create: "新建",
+      Title: "キャラクタープリセット",
+      SubTitle: (count: number) => `${count} 件見つかりました。`,
+      Search: "検索",
+      Create: "新規",
     },
     Item: {
       Info: (count: number) => `包含 ${count} 条预设对话`,
-      Chat: "对话",
-      View: "查看",
-      Edit: "编辑",
-      Delete: "删除",
-      DeleteConfirm: "确认删除？",
+      Chat: "会話",
+      View: "詳細",
+      Edit: "編集",
+      Delete: "削除",
+      DeleteConfirm: "本当に削除しますか？",
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `编辑预设面具 ${readonly ? "（只读）" : ""}`,
-      Download: "下载预设",
-      Clone: "克隆预设",
+        `キャラクタープリセットを編集 ${readonly ? "（読み取り専用）" : ""}`,
+      Download: "ダウンロード",
+      Clone: "複製",
     },
     Config: {
-      Avatar: "角色头像",
-      Name: "角色名称",
+      Avatar: "キャラクターのアイコン",
+      Name: "キャラクターの名前",
+      Sync: {
+        Title: "グローバル設定を利用する",
+        SubTitle: "このチャットでグローバル設定を利用します。",
+        Confirm:
+          "カスタム設定を上書きしてグローバル設定を使用します、よろしいですか？",
+      },
+      HideContext: {
+        Title: "キャラクター設定を表示しない",
+        SubTitle: "チャット画面でのキャラクター設定を非表示にします。",
+      },
     },
   },
   NewChat: {
-    Return: "返回",
-    Skip: "跳过",
-    Title: "挑选一个面具",
-    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
-    More: "搜索更多",
-    NotShow: "不再展示",
-    ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
+    Return: "戻る",
+    Skip: "スキップ",
+    Title: "キャラクター",
+    SubTitle: "さあ、AIにキャラクターを設定して会話を始めてみましょう",
+    More: "もっと探す",
+    NotShow: "今後は表示しない",
+    ConfirmNoShow: "いつでも設定から有効化できます。",
   },
 
   UI: {
-    Confirm: "确认",
-    Cancel: "取消",
-    Close: "关闭",
-    Create: "新建",
-    Edit: "编辑",
+    Confirm: "確認",
+    Cancel: "キャンセル",
+    Close: "閉じる",
+    Create: "新規",
+    Edit: "編集",
   },
 };
 
