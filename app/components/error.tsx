@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton } from "./button";
-import GithubIcon from "../icons/github.svg";
+import GithubIcon from "../icons/shop.svg";
 import ResetIcon from "../icons/reload.svg";
 import { ISSUE_URL } from "../constant";
 import Locale from "../locales";
