@@ -42,7 +42,7 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
       padding: 20px 10px;
       border: var(--border-in-light);
       box-shadow: var(--card-shadow);
-      border-radius: 14px;
+      border-radius: 0px;
       background-color: var(--white);
       transform: scale(1);
 
@@ -110,31 +110,63 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
         }
       }
 
-      .mask {
-        display: flex;
-        align-items: center;
-        padding: 10px 14px;
-        border: var(--border-in-light);
-        box-shadow: var(--card-shadow);
-        background-color: var(--white);
-        border-radius: 10px;
-        margin-right: 10px;
-        max-width: 8em;
-        transform: scale(1);
-        cursor: pointer;
-        transition: all ease 0.3s;
+      .masks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+  background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+}
 
-        &:hover {
-          transform: translateY(-5px) scale(1.1);
-          z-index: 999;
-          border-color: var(--primary);
-        }
+.mask {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 
-        .mask-name {
-          margin-left: 10px;
-          font-size: 14px;
-        }
-      }
-    }
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
   }
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0.8;
+    transition: all 0.3s ease-in-out;
+    transform: scale(0);
+    transform-origin: center center;
+  }
+
+  &:hover:before {
+    transform: scale(1);
+  }
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.2);
+    transform-origin: center center;
+  }
+
+  &:hover img {
+    transform: scale(1);
+  }
+}
 }
