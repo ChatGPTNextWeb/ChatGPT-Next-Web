@@ -1,6 +1,6 @@
 @import "../styles/animation.scss";
 
-$primary: #rebeccapurple; // Replace with your desired primary color value
+$primary: #333333; // Replace with your desired primary color value
 
 $accent-color: #ff7a7a;
 $primary-color: #333333;
@@ -21,7 +21,7 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
 
   .chat-input-action {
     display: inline-flex;
-    border-radius: 20px;
+    border-radius: 0px;
     font-size: 12px;
     background-color: var(--white);
     color: var(--black);
