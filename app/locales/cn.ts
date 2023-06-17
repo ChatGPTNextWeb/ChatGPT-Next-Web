@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-`欢迎使用魔法ChatGPT，点击左下角[**设置**](/#/settings)按钮输入访问密码666888即可免费使用。
+`欢迎使用魔法ChatGPT，点击左下角[**设置**](/#/settings)按钮输入访问密码 **mofaxi** 即可免费使用。
     
 **提问：** 网站是免费使用的吗？
 
@@ -187,7 +187,7 @@ const cn = {
   Store: {
     DefaultTopic: "新的聊天",
     BotHello: 
-`欢迎使用魔法ChatGPT，点击左下角[**设置**](/#/settings)按钮输入访问密码666888即可免费使用。
+`欢迎使用魔法ChatGPT，点击左下角[**设置**](/#/settings)按钮输入访问密码 **mofaxi** 即可免费使用。
     
 **提问：** 网站是免费使用的吗？
 
