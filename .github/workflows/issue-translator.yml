@@ -1,4 +1,4 @@
-name: 'issue-translator'
+name: Issue Translator
 on: 
   issue_comment: 
     types: [created]
