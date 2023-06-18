@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const vi: LocaleType = {
+const vi: PartialLocaleType = {
   WIP: "Sắp ra mắt...",
   Error: {
     Unauthorized:

@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const fr: LocaleType = {
+const fr: PartialLocaleType = {
   WIP: "Prochainement...",
   Error: {
     Unauthorized:
