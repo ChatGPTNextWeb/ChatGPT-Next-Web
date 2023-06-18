@@ -18,7 +18,7 @@ export function AvatarPicker(props: {
 }) {
   return (
     <EmojiPicker
-      lazyLoadEmojis
+      //lazyLoadEmojis
       theme={EmojiTheme.AUTO}
       getEmojiUrl={getEmojiUrl}
       onEmojiClick={(e) => {
