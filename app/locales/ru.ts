@@ -237,6 +237,12 @@ const ru: PartialLocaleType = {
     Create: "Создать",
     Edit: "Редактировать",
   },
+  Exporter: {
+    Model: "Модель",
+    Messages: "Сообщения",
+    Topic: "Тема",
+    Time: "Время",
+  },
 };
 
 export default ru;
