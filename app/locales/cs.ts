@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const cs: LocaleType = {
+const cs: PartialLocaleType = {
   WIP: "V přípravě...",
   Error: {
     Unauthorized:
@@ -154,6 +154,11 @@ const cs: LocaleType = {
     PresencePenalty: {
       Title: "Přítomnostní korekce",
       SubTitle: "Větší hodnota zvyšuje pravděpodobnost nových témat.",
+    },
+    FrequencyPenalty: {
+      Title: "Frekvenční penalizace",
+      SubTitle:
+        "Větší hodnota snižující pravděpodobnost opakování stejného řádku",
     },
   },
   Store: {
