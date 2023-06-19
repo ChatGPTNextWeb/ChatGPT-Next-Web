@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const de: LocaleType = {
+const de: PartialLocaleType = {
   WIP: "In Bearbeitung...",
   Error: {
     Unauthorized:
@@ -158,6 +158,11 @@ const de: LocaleType = {
       SubTitle:
         "Ein größerer Wert erhöht die Wahrscheinlichkeit, dass über neue Themen gesprochen wird",
     },
+    FrequencyPenalty: {
+      Title: "Frequency Penalty", // HäufigkeitStrafe
+      SubTitle:
+        "Ein größerer Wert, der die Wahrscheinlichkeit verringert, dass dieselbe Zeile wiederholt wird",
+    },
   },
   Store: {
     DefaultTopic: "Neues Gespräch",
@@ -230,6 +235,12 @@ const de: LocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Modell",
+    Messages: "Nachrichten",
+    Topic: "Thema",
+    Time: "Zeit",
   },
 };
 

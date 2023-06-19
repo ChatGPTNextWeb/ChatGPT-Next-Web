@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const tw: LocaleType = {
+const tw: PartialLocaleType = {
   WIP: "該功能仍在開發中……",
   Error: {
     Unauthorized: "目前您的狀態是未授權，請前往設定頁面輸入授權碼。",
@@ -152,6 +152,10 @@ const tw: LocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    FrequencyPenalty: {
+      Title: "頻率懲罰度 (frequency_penalty)",
+      SubTitle: "值越大，越有可能降低重複字詞",
+    },
   },
   Store: {
     DefaultTopic: "新的對話",
@@ -218,6 +222,12 @@ const tw: LocaleType = {
     Close: "关闭",
     Create: "新建",
     Edit: "编辑",
+  },
+  Exporter: {
+    Model: "模型",
+    Messages: "消息",
+    Topic: "主題",
+    Time: "時間",
   },
 };
 
