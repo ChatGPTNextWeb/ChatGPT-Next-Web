@@ -1,3 +1,5 @@
 import { type Mask } from "../store/mask";
 
-export type BuiltinMask = Omit<Mask, "id">;
+export type BuiltinMask = Omit<Mask, "id"> & {
+  builtin: true;
+};
