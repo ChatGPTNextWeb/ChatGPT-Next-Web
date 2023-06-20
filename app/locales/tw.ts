@@ -152,6 +152,10 @@ const tw: PartialLocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    FrequencyPenalty: {
+      Title: "頻率懲罰度 (frequency_penalty)",
+      SubTitle: "值越大，越有可能降低重複字詞",
+    },
   },
   Store: {
     DefaultTopic: "新的對話",
@@ -218,6 +222,12 @@ const tw: PartialLocaleType = {
     Close: "关闭",
     Create: "新建",
     Edit: "编辑",
+  },
+  Exporter: {
+    Model: "模型",
+    Messages: "消息",
+    Topic: "主題",
+    Time: "時間",
   },
 };
 

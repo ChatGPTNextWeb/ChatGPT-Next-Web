@@ -158,6 +158,10 @@ const jp: PartialLocaleType = {
       Title: "トピックの新鮮度 (presence_penalty)",
       SubTitle: "値が大きいほど、新しいトピックへの展開が可能になります。",
     },
+    FrequencyPenalty: {
+      Title: "話題の頻度 (frequency_penalty)",
+      SubTitle: "値が大きいほど、重複語を低減する可能性が高くなります",
+    },
   },
   Store: {
     DefaultTopic: "新しいチャット",
@@ -236,6 +240,12 @@ const jp: PartialLocaleType = {
     Close: "閉じる",
     Create: "新規",
     Edit: "編集",
+  },
+  Exporter: {
+    Model: "モデル",
+    Messages: "メッセージ",
+    Topic: "トピック",
+    Time: "時間",
   },
 };
 
