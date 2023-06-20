@@ -229,6 +229,12 @@ const ko: PartialLocaleType = {
     Create: "생성",
     Edit: "편집",
   },
+  Exporter: {
+    Model: "모델",
+    Messages: "메시지",
+    Topic: "주제",
+    Time: "시간",
+  },
 };
 
 export default ko;

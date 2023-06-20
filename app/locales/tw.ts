@@ -223,6 +223,12 @@ const tw: PartialLocaleType = {
     Create: "新建",
     Edit: "编辑",
   },
+  Exporter: {
+    Model: "模型",
+    Messages: "消息",
+    Topic: "主題",
+    Time: "時間",
+  },
 };
 
 export default tw;

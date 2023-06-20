@@ -236,6 +236,12 @@ const de: PartialLocaleType = {
     Create: "Create",
     Edit: "Edit",
   },
+  Exporter: {
+    Model: "Modell",
+    Messages: "Nachrichten",
+    Topic: "Thema",
+    Time: "Zeit",
+  },
 };
 
 export default de;
