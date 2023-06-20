@@ -157,6 +157,12 @@ const no: PartialLocaleType = {
     Edit: "Kontekstuelle -og minneinstrukser",
     Add: "Legg til",
   },
+  Exporter: {
+    Model: "Model",
+    Messages: "Meldingar",
+    Topic: "Emne",
+    Time: "Tid",
+  },
 };
 
 export default no;
