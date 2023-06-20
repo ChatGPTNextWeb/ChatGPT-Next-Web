@@ -12,9 +12,36 @@ const nextConfig = {
     return config;
   },
   output: mode,
+  images: {
+    unoptimized: mode === "export",
+  },
 };
 
 if (mode !== "export") {
+  nextConfig.headers = async () => {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "*",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "*",
+          },
+          {
+            key: "Access-Control-Max-Age",
+            value: "86400",
+          },
+        ],
+      },
+    ];
+  };
+
   nextConfig.rewrites = async () => {
     const ret = [
       {
