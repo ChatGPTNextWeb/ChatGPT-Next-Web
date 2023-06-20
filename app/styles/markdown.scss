@@ -1117,3 +1117,15 @@
 .markdown-body ::-webkit-calendar-picker-indicator {
   filter: invert(50%);
 }
+
+.markdown-body .mermaid {
+  border: var(--border-in-light);
+  margin-bottom: 10px;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: var(--white);
+}
+
+#dmermaid {
+  display: none;
+}
