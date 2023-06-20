@@ -526,7 +526,7 @@ export const useChatStore = create<ChatStore>()(
 
       clearAllData() {
         localStorage.clear();
-        location.reload();
+        location.assign("/");
       },
     }),
     {
