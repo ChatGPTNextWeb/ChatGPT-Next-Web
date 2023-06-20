@@ -154,6 +154,10 @@ const ko: PartialLocaleType = {
       Title: "존재 페널티 (presence_penalty)",
       SubTitle: "값이 클수록 새로운 주제에 대해 대화할 가능성이 높아집니다.",
     },
+    FrequencyPenalty: {
+      Title: "빈도 페널티(frequency penalty)",
+      SubTitle: "값이 클수록 같은 줄이 반복될 가능성이 줄어듭니다.",
+    },
   },
   Store: {
     DefaultTopic: "새 대화",
@@ -224,6 +228,12 @@ const ko: PartialLocaleType = {
     Close: "닫기",
     Create: "생성",
     Edit: "편집",
+  },
+  Exporter: {
+    Model: "모델",
+    Messages: "메시지",
+    Topic: "주제",
+    Time: "시간",
   },
 };
 

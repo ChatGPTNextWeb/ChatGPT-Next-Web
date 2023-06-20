@@ -157,6 +157,11 @@ const ru: PartialLocaleType = {
       SubTitle:
         "Чем выше значение, тем больше вероятность общения на новые темы",
     },
+    FrequencyPenalty: {
+      Title: "Штраф за частоту",
+      SubTitle:
+        "Большее значение снижает вероятность повторения одной и той же строки",
+    },
   },
   Store: {
     DefaultTopic: "Новый разговор",
@@ -231,6 +236,12 @@ const ru: PartialLocaleType = {
     Close: "Закрыть",
     Create: "Создать",
     Edit: "Редактировать",
+  },
+  Exporter: {
+    Model: "Модель",
+    Messages: "Сообщения",
+    Topic: "Тема",
+    Time: "Время",
   },
 };
 

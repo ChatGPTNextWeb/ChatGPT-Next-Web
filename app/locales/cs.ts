@@ -155,6 +155,11 @@ const cs: PartialLocaleType = {
       Title: "Přítomnostní korekce",
       SubTitle: "Větší hodnota zvyšuje pravděpodobnost nových témat.",
     },
+    FrequencyPenalty: {
+      Title: "Frekvenční penalizace",
+      SubTitle:
+        "Větší hodnota snižující pravděpodobnost opakování stejného řádku",
+    },
   },
   Store: {
     DefaultTopic: "Nová konverzace",
@@ -225,6 +230,12 @@ const cs: PartialLocaleType = {
     Close: "Zavřít",
     Create: "Vytvořit",
     Edit: "Upravit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Zprávy",
+    Topic: "Téma",
+    Time: "Čas",
   },
 };
 

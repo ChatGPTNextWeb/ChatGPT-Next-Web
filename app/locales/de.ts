@@ -158,6 +158,11 @@ const de: PartialLocaleType = {
       SubTitle:
         "Ein größerer Wert erhöht die Wahrscheinlichkeit, dass über neue Themen gesprochen wird",
     },
+    FrequencyPenalty: {
+      Title: "Frequency Penalty", // HäufigkeitStrafe
+      SubTitle:
+        "Ein größerer Wert, der die Wahrscheinlichkeit verringert, dass dieselbe Zeile wiederholt wird",
+    },
   },
   Store: {
     DefaultTopic: "Neues Gespräch",
@@ -230,6 +235,12 @@ const de: PartialLocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Modell",
+    Messages: "Nachrichten",
+    Topic: "Thema",
+    Time: "Zeit",
   },
 };
 
