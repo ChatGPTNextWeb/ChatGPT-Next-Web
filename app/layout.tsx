@@ -34,13 +34,6 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-        <script>
-          if (window.location.hostname === "adexgpt.vercel.app") {
-            var currentPath = window.location.pathname + window.location.search + window.location.hash;
-            var newUrl = "https://adexgpt.adexpartners.com" + currentPath;
-            window.location.href = newUrl;
-          }
-        </script>
       </head>
       <body>{children}</body>
     </html>
