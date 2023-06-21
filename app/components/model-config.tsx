@@ -68,8 +68,8 @@ export function ModelConfigList(props: {
         ></input>
       </ListItem>
       <ListItem
-        title={Locale.Settings.PresencePenlty.Title}
-        subTitle={Locale.Settings.PresencePenlty.SubTitle}
+        title={Locale.Settings.PresencePenalty.Title}
+        subTitle={Locale.Settings.PresencePenalty.SubTitle}
       >
         <InputRange
           value={props.modelConfig.presence_penalty?.toFixed(1)}
@@ -81,6 +81,27 @@ export function ModelConfigList(props: {
               (config) =>
                 (config.presence_penalty =
                   ModalConfigValidator.presence_penalty(
+                    e.currentTarget.valueAsNumber,
+                  )),
+            );
+          }}
+        ></InputRange>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.FrequencyPenalty.Title}
+        subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
+      >
+        <InputRange
+          value={props.modelConfig.frequency_penalty?.toFixed(1)}
+          min="-2"
+          max="2"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.frequency_penalty =
+                  ModalConfigValidator.frequency_penalty(
                     e.currentTarget.valueAsNumber,
                   )),
             );
