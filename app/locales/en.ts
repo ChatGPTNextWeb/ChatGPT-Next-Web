@@ -1,11 +1,18 @@
 import { SubmitKey } from "../store/config";
-import { RequiredLocaleType } from "./index";
+import { LocaleType } from "./index";
 
-const en: RequiredLocaleType = {
+const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in settings page.",
+      "Unauthorized access, please enter access code in [auth](/#/auth) page.",
+  },
+  Auth: {
+    Title: "Need Access Code",
+    Tips: "Please enter access code below",
+    Input: "access code",
+    Confirm: "Confirm",
+    Later: "Later",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -20,6 +27,19 @@ const en: RequiredLocaleType = {
       Stop: "Stop",
       Retry: "Retry",
       Delete: "Delete",
+    },
+    InputActions: {
+      Stop: "Stop",
+      ToBottom: "To Latest",
+      Theme: {
+        auto: "Auto",
+        light: "Light Theme",
+        dark: "Dark Theme",
+      },
+      Prompt: "Prompts",
+      Masks: "Masks",
+      Clear: "Clear Context",
+      Settings: "Settings",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -170,6 +190,10 @@ const en: RequiredLocaleType = {
       SubTitle: "Access control enabled",
       Placeholder: "Need Access Code",
     },
+    Endpoint: {
+      Title: "Endpoint",
+      SubTitle: "Custom endpoint must start with http(s)://",
+    },
     Model: "Model",
     Temperature: {
       Title: "Temperature",
@@ -183,6 +207,11 @@ const en: RequiredLocaleType = {
       Title: "Presence Penalty",
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
+    },
+    FrequencyPenalty: {
+      Title: "Frequency Penalty",
+      SubTitle:
+        "A larger value decreasing the likelihood to repeat the same line",
     },
   },
   Store: {
@@ -264,6 +293,12 @@ const en: RequiredLocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Messages",
+    Topic: "Topic",
+    Time: "Time",
   },
 };
 

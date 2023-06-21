@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const ru: LocaleType = {
+const ru: PartialLocaleType = {
   WIP: "Скоро...",
   Error: {
     Unauthorized:
@@ -166,6 +166,11 @@ const ru: LocaleType = {
       SubTitle:
         "Чем выше значение, тем больше вероятность общения на новые темы",
     },
+    FrequencyPenalty: {
+      Title: "Штраф за частоту",
+      SubTitle:
+        "Большее значение снижает вероятность повторения одной и той же строки",
+    },
   },
   Store: {
     DefaultTopic: "Новый разговор",
@@ -240,6 +245,12 @@ const ru: LocaleType = {
     Close: "Закрыть",
     Create: "Создать",
     Edit: "Редактировать",
+  },
+  Exporter: {
+    Model: "Модель",
+    Messages: "Сообщения",
+    Topic: "Тема",
+    Time: "Время",
   },
 };
 
