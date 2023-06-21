@@ -11,19 +11,21 @@ import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
-import { useThrottledCallback } from "use-debounce";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 
-export function Mermaid(props: { code: string; onError: () => void }) {
+export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (props.code && ref.current) {
       mermaid
         .run({
           nodes: [ref.current],
+          suppressErrors: true,
         })
         .catch((e) => {
-          props.onError();
+          setHasError(true);
           console.error("[Mermaid] ", e.message);
         });
     }
@@ -42,10 +44,17 @@ export function Mermaid(props: { code: string; onError: () => void }) {
     }
   }
 
+  if (hasError) {
+    return null;
+  }
+
   return (
     <div
-      className="no-dark"
-      style={{ cursor: "pointer", overflow: "auto" }}
+      className="no-dark mermaid"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
       ref={ref}
       onClick={() => viewSvgInNewWindow()}
     >
@@ -56,33 +65,40 @@ export function Mermaid(props: { code: string; onError: () => void }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const refText = ref.current?.innerText;
   const [mermaidCode, setMermaidCode] = useState("");
 
-  useEffect(() => {
+  const renderMermaid = useDebouncedCallback(() => {
     if (!ref.current) return;
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
     if (mermaidDom) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
-  }, [props.children]);
+  }, 600);
 
-  if (mermaidCode) {
-    return <Mermaid code={mermaidCode} onError={() => setMermaidCode("")} />;
-  }
+  useEffect(() => {
+    setTimeout(renderMermaid, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refText]);
 
   return (
-    <pre ref={ref}>
-      <span
-        className="copy-code-button"
-        onClick={() => {
-          if (ref.current) {
-            const code = ref.current.innerText;
-            copyToClipboard(code);
-          }
-        }}
-      ></span>
-      {props.children}
-    </pre>
+    <>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
+          }}
+        ></span>
+        {props.children}
+      </pre>
+    </>
   );
 }
 

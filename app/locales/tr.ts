@@ -234,6 +234,12 @@ const tr: PartialLocaleType = {
     Create: "Create",
     Edit: "Edit",
   },
+  Exporter: {
+    Model: "Model",
+    Messages: "Mesajlar",
+    Topic: "Konu",
+    Time: "Zaman",
+  },
 };
 
 export default tr;
