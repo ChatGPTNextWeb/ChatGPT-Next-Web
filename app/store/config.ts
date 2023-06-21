@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getClientConfig } from "../config/client";
 import { StoreKey } from "../constant";
 
 export enum SubmitKey {
@@ -21,7 +22,7 @@ export const DEFAULT_CONFIG = {
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: false,
+  tightBorder: !!getClientConfig()?.isApp,
   sendPreviewBubble: true,
   sidebarWidth: 300,
 
@@ -34,6 +35,7 @@ export const DEFAULT_CONFIG = {
     temperature: 0.5,
     max_tokens: 2000,
     presence_penalty: 0,
+    frequency_penalty: 0,
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -93,6 +95,10 @@ export const ALL_MODELS = [
     available: true,
   },
   {
+    name: "gpt-3.5-turbo-16k-0613",
+    available: true,
+  },
+  {
     name: "qwen-v1", // 通义千问
     available: false,
   },
@@ -143,6 +149,9 @@ export const ModalConfigValidator = {
     return limitNumber(x, 0, 32000, 2000);
   },
   presence_penalty(x: number) {
+    return limitNumber(x, -2, 2, 0);
+  },
+  frequency_penalty(x: number) {
     return limitNumber(x, -2, 2, 0);
   },
   temperature(x: number) {

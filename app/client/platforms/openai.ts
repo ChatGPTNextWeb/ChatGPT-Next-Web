@@ -42,6 +42,7 @@ export class ChatGPTApi implements LLMApi {
       model: modelConfig.model,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
+      frequency_penalty: modelConfig.frequency_penalty,
     };
 
     console.log("[Request] openai payload: ", requestPayload);
