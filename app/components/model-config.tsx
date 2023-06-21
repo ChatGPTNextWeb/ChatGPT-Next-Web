@@ -89,6 +89,27 @@ export function ModelConfigList(props: {
       </ListItem>
 
       <ListItem
+        title={Locale.Settings.FrequencyPenalty.Title}
+        subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
+      >
+        <InputRange
+          value={props.modelConfig.frequency_penalty?.toFixed(1)}
+          min="-2"
+          max="2"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.frequency_penalty =
+                  ModalConfigValidator.frequency_penalty(
+                    e.currentTarget.valueAsNumber,
+                  )),
+            );
+          }}
+        ></InputRange>
+      </ListItem>
+
+      <ListItem
         title={Locale.Settings.HistoryCount.Title}
         subTitle={Locale.Settings.HistoryCount.SubTitle}
       >

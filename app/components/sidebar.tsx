@@ -120,6 +120,7 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>Timo Chat</div>
+
         <div className={styles["sidebar-sub-title"]}>
           Chat with your AI assistant.
         </div>
