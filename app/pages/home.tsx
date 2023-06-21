@@ -23,6 +23,7 @@ import {
 import { SideBar } from "../components/sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "../components/auth";
+import { useAccessStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -107,6 +108,8 @@ function Screen() {
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
+  const access = useAccessStore();
+
   const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
@@ -124,7 +127,7 @@ function Screen() {
         }`
       }
     >
-      {isAuth ? (
+      {!access.isAuthorized() ? (
         <>
           <AuthPage />
         </>
