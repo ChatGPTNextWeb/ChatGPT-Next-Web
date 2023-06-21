@@ -60,7 +60,7 @@ export const useAccessStore = create<AccessControlStore>()(
         );
       },
       fetch() {
-        if (fetchState > 0) return;
+        if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
         fetchState = 1;
         fetch("/api/config", {
           method: "post",
