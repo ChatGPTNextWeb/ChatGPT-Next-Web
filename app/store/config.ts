@@ -176,14 +176,15 @@ export const useAppConfig = create<ChatConfigStore>()(
     }),
     {
       name: StoreKey.Config,
-      version: 2,
+      version: 3,
       migrate(persistedState, version) {
-        if (version === 2) return persistedState as any;
+        if (version === 3) return persistedState as any;
 
         const state = persistedState as ChatConfig;
         state.modelConfig.sendMemory = true;
         state.modelConfig.historyMessageCount = 4;
         state.modelConfig.compressMessageLengthThreshold = 1000;
+        state.modelConfig.frequency_penalty = 0;
         state.dontShowMaskSplashScreen = false;
 
         return state;
