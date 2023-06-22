@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   useState,
@@ -704,8 +705,23 @@ export function Chat() {
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
-  const renameSession = () => {
-    const newTopic = prompt(Locale.Chat.Rename, session.topic);
+  const renameSession = async () => {
+    const { value: newTopic } = await Swal.fire({
+      title: Locale.Chat.Rename,
+      input: "text",
+      inputValue: session.topic,
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off",
+        style: "max-width: 100%",
+      },
+      confirmButtonText: Locale.UI.Confirm,
+      cancelButtonText: Locale.UI.Cancel,
+      showCancelButton: true,
+      background: "var(--white)",
+      color: "var(--black)",
+    });
+
     if (newTopic && newTopic !== session.topic) {
       chatStore.updateCurrentSession((session) => (session.topic = newTopic!));
     }
