@@ -19,15 +19,10 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 [网页版](https://chatgpt.nextweb.fun/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [web-url]: https://chatgpt.nextweb.fun
-   
 [download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
-
 [Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=microsoftedge
-
 [Windows-image]: https://img.shields.io/badge/-Windows-blue?logo=windows
-
 [MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
-
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
@@ -191,6 +186,7 @@ If you do not want users to input their own API key, set this value to 1.
 If you do not want users to use GPT-4, set this value to 1.
 
 ## Requirements
+
 NodeJS >= 18, Docker >= 20
 
 ## Development
@@ -241,6 +237,12 @@ docker run -d -p 3000:3000 \
    -e CODE="your-password" \
    -e PROXY_URL="http://localhost:7890" \
    yidadaa/chatgpt-next-web
+```
+
+If your proxy needs password, use:
+
+```shell
+-e PROXY_URL="http://127.0.0.1:7890 user pass"
 ```
 
 ### Shell
