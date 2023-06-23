@@ -405,10 +405,9 @@ export const useChatStore = create<ChatStore>()(
         // 2. pre-defined in-context prompts
         // 3. short term memory: latest n messages
         // 4. newest input message
-        const memoryStartIndex = Math.min(
-          longTermMemoryStartIndex,
-          shortTermMemoryStartIndex,
-        );
+        const memoryStartIndex = shouldSendLongTermMemory
+          ? Math.min(longTermMemoryStartIndex, shortTermMemoryStartIndex)
+          : shortTermMemoryStartIndex;
         // and if user has cleared history messages, we should exclude the memory too.
         const contextStartIndex = Math.max(clearContextIndex, memoryStartIndex);
         const maxTokenThreshold = modelConfig.max_tokens;
