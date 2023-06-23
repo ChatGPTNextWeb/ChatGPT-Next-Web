@@ -2,7 +2,7 @@ import { ALL_MODELS, ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
-import { List, ListItem, Select } from "./ui-lib";
+import { ListItem, Select } from "./ui-lib";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -107,6 +107,21 @@ export function ModelConfigList(props: {
             );
           }}
         ></InputRange>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.InputTemplate.Title}
+        subTitle={Locale.Settings.InputTemplate.SubTitle}
+      >
+        <input
+          type="text"
+          value={props.modelConfig.template}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.template = e.currentTarget.value),
+            )
+          }
+        ></input>
       </ListItem>
 
       <ListItem
