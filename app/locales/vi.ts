@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const vi: LocaleType = {
+const vi: PartialLocaleType = {
   WIP: "Sắp ra mắt...",
   Error: {
     Unauthorized:
@@ -154,6 +154,10 @@ const vi: LocaleType = {
       Title: "Chủ đề mới (presence_penalty)",
       SubTitle: "Giá trị càng lớn tăng khả năng mở rộng sang các chủ đề mới",
     },
+    FrequencyPenalty: {
+      Title: "Hình phạt tần suất",
+      SubTitle: "Giá trị lớn hơn làm giảm khả năng lặp lại cùng một dòng",
+    },
   },
   Store: {
     DefaultTopic: "Cuộc trò chuyện mới",
@@ -224,6 +228,12 @@ const vi: LocaleType = {
     Close: "Đóng",
     Create: "Tạo",
     Edit: "Chỉnh sửa",
+  },
+  Exporter: {
+    Model: "Mô hình",
+    Messages: "Thông điệp",
+    Topic: "Chủ đề",
+    Time: "Thời gian",
   },
 };
 
