@@ -5,7 +5,7 @@ import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelConfig, ModelType } from "./config";
+import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
@@ -181,7 +181,16 @@ export const useChatStore = create<ChatStore>()(
         session.id = get().globalId;
 
         if (mask) {
-          session.mask = { ...mask };
+          const config = useAppConfig.getState();
+          const globalModelConfig = config.modelConfig;
+
+          session.mask = {
+            ...mask,
+            modelConfig: {
+              ...globalModelConfig,
+              ...mask.modelConfig,
+            },
+          };
           session.topic = mask.name;
         }
 
