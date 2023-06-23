@@ -190,6 +190,9 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
+## Requirements
+NodeJS >= 18, Docker >= 20
+
 ## Development
 
 > [简体中文 > 如何进行二次开发](./README_CN.md#开发)
