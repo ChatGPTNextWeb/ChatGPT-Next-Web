@@ -52,3 +52,10 @@ export const OpenaiPath = {
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
 };
+
+export const DEFAULT_INPUT_TEMPLATE = `
+Act as a virtual assistant powered by model: '{{model}}', my input is:
+'''
+{{input}}
+'''
+`;
