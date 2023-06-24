@@ -115,6 +115,11 @@ const cn = {
       SubTitle: "聊天内容的字体大小",
     },
 
+    InputTemplate: {
+      Title: "用户输入预处理",
+      SubTitle: "用户最新的一条消息会填充到此模板",
+    },
+
     Update: {
       Version: (x: string) => `当前版本：${x}`,
       IsLatest: "已是最新版本",
