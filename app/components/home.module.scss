@@ -10,7 +10,7 @@
   max-width: 1200px;
 
   display: flex;
-  overflow: auto;
+  overflow: hidden;
   box-sizing: border-box;
 
   width: var(--window-width);
@@ -155,7 +155,7 @@
 
 .sidebar-body {
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   overflow-x: hidden;
 }
 
