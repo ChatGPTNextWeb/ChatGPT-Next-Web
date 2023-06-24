@@ -27,14 +27,14 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
     color: var(--black);
     border: var(--border-in-light);
     padding: 4px 10px;
-    //animation: slide-in ease 0.3s;
+    animation: slide-in ease 0.3s;
     box-shadow: var(--card-shadow);
     transition: all ease 0.3s;
     margin-bottom: 10px;
     align-items: center;
     height: 16px;
-    //animation: slide-in ease 0.3s;
-    //transition: all ease 0.3s;
+    animation: slide-in ease 0.3s;
+    transition: all ease 0.3s;
 
     &:last-child {
       margin-right: 0;
