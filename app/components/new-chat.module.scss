@@ -39,7 +39,7 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   animation: slide-in ease 0.3s;
 
   .mask-card {
-    padding: 40px 20px;
+    padding: 20px 10px;
     border: var(--border-in-light);
     border-radius: 0px;
     background-color: var(--white);
@@ -47,11 +47,11 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
     transition: all 0.3s ease;
 
     &:first-child {
-      transform: rotate(0deg) translateY(8px);
+      transform: rotate(0deg) translateY(12px);
     }
 
     &:last-child {
-      transform: rotate(0deg) translateY(8px);
+      transform: rotate(0deg) translateY(12px);
     }
 
     &:hover {
