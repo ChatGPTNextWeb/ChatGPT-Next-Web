@@ -17,8 +17,14 @@
   height: var(--window-height);
 }
 
+:root {
+  --window-height: 100vh;
+  --full-height: 100vh;
+}
+
 .container {
   @include container();
+  height: var(--window-height);
 }
 
 @media only screen and (min-width: 600px) {
@@ -50,6 +56,7 @@
   position: relative;
   transition: width ease 0.05s;
   color: #fafafa; // Changed text color to lighter shade for contrast
+  height: var(--full-height);
 
   .sidebar-header-bar {
     display: flex;
