@@ -66,7 +66,7 @@ import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
-import { useCommand } from "../command";
+import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
@@ -208,8 +208,7 @@ export function PromptHints(props: {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (noPrompts) return;
-      if (e.metaKey || e.altKey || e.ctrlKey) {
+      if (noPrompts || e.metaKey || e.altKey || e.ctrlKey) {
         return;
       }
       // arrow up / down to select prompt
@@ -510,16 +509,19 @@ export function Chat() {
   const [promptHints, setPromptHints] = useState<Prompt[]>([]);
   const onSearch = useDebouncedCallback(
     (text: string) => {
-      setPromptHints(promptStore.search(text));
+      const matchedPrompts = promptStore.search(text);
+      setPromptHints(matchedPrompts);
     },
     100,
     { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
-    setPromptHints([]);
-    inputRef.current?.focus();
-    setTimeout(() => setUserInput(prompt.content), 60);
+    setTimeout(() => {
+      setPromptHints([]);
+      setUserInput(prompt.content);
+      inputRef.current?.focus();
+    }, 30);
   };
 
   // auto grow input
@@ -543,6 +545,19 @@ export function Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
+  // chat commands shortcuts
+  const chatCommands = useChatCommand({
+    new: () => chatStore.newSession(),
+    newm: () => navigate(Path.NewChat),
+    prev: () => chatStore.nextSession(-1),
+    next: () => chatStore.nextSession(1),
+    clear: () =>
+      chatStore.updateCurrentSession(
+        (session) => (session.clearContextIndex = session.messages.length),
+      ),
+    del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
+  });
+
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
@@ -552,6 +567,8 @@ export function Chat() {
     // clear search results
     if (n === 0) {
       setPromptHints([]);
+    } else if (text.startsWith(ChatCommandPrefix)) {
+      setPromptHints(chatCommands.search(text));
     } else if (!config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
@@ -563,6 +580,13 @@ export function Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
+    const matchCommand = chatCommands.match(userInput);
+    if (matchCommand.matched) {
+      setUserInput("");
+      setPromptHints([]);
+      matchCommand.invoke();
+      return;
+    }
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
