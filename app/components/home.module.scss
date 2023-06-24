@@ -10,7 +10,7 @@
   max-width: 1200px;
 
   display: flex;
-  overflow: hidden;
+  overflow: auto;
   box-sizing: border-box;
 
   width: var(--window-width);
@@ -155,7 +155,7 @@
 
 .sidebar-body {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -476,7 +476,7 @@
 
 @mixin single-line {
   white-space: nowrap;
-  overflow: hidden;
+  overflow: auto;
   text-overflow: ellipsis;
 }
 
