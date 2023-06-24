@@ -27,6 +27,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import RobotIcon from "../icons/robot.svg";
 
 import {
   ChatMessage,
@@ -38,6 +39,7 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
+  ALL_MODELS,
 } from "../store";
 
 import {
@@ -385,6 +387,19 @@ export function ChatActions(props: {
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
+  // switch model
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  function nextModel() {
+    const models = ALL_MODELS.filter((m) => m.available).map((m) => m.name);
+    const modelIndex = models.indexOf(currentModel);
+    const nextIndex = (modelIndex + 1) % models.length;
+    const nextModel = models[nextIndex];
+    chatStore.updateCurrentSession((session) => {
+      session.mask.modelConfig.model = nextModel;
+      session.mask.syncGlobalConfig = false;
+    });
+  }
+
   return (
     <div className={chatStyle["chat-input-actions"]}>
       {couldStop && (
@@ -452,6 +467,12 @@ export function ChatActions(props: {
             }
           });
         }}
+      />
+
+      <ChatAction
+        onClick={nextModel}
+        text={currentModel}
+        icon={<RobotIcon />}
       />
     </div>
   );
