@@ -76,7 +76,7 @@
   background-color: var(--black);
   cursor: ew-resize;
   opacity: 0;
-  transition: all ease 0.3s;
+  //transition: all ease 0.3s;
 
   &:hover,
   &:active {
@@ -294,7 +294,7 @@
     }
   }
 
-  .chat-item-delete {
+  {/*.chat-item-delete {
     top: 15px;
   }
 
@@ -302,7 +302,7 @@
     opacity: 0.5;
     right: 5px;
   }
-
+  */}
   .sidebar-tail {
     flex-direction: column-reverse;
     align-items: center;
