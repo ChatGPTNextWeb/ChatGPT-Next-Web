@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const ar: LocaleType = {
+const ar: PartialLocaleType = {
   WIP: "قريبًا...",
   Error: {
     Unauthorized:
