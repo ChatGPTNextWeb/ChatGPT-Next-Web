@@ -147,6 +147,12 @@ docker run -d -p 3000:3000 \
    yidadaa/chatgpt-next-web
 ```
 
+如果你的本地代理需要账号密码，可以使用：
+
+```shell
+-e PROXY_URL="http://127.0.0.1:7890 user password"
+```
+
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
 
 ### 本地部署
