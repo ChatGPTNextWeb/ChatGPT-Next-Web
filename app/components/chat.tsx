@@ -1,5 +1,7 @@
 import { useDebouncedCallback } from "use-debounce";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useUser } from '@clerk/nextjs';
+
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -20,6 +22,11 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+
+import {
+  encode,
+} from 'gpt-tokenizer'
+
 
 import {
   ChatMessage,
@@ -478,7 +485,27 @@ export function Chat() {
     }
   };
 
+  const updateMetadata = async (length : Number) => {
+    const { user } = useUser();
+
+    try {
+      const response = await user.update({
+        unsafeMetadata: { length }
+      });
+      if (response) {
+        console.log('res', response)
+      }
+    } catch (err) {
+      console.error('error', err)
+    }
+  };
+
   const doSubmit = (userInput: string) => {
+    const tokens = encode(userInput);
+    console.log(tokens);
+    updateMetadata(tokens.length);
+  
+
     if (userInput.trim() === "") return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));

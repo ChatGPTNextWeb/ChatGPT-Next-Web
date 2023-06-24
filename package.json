@@ -24,6 +24,7 @@
     "chargebee-typescript": "^2.20.1",
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
+    "gpt-tokenizer": "^2.1.1",
     "http": "^0.0.1-security",
     "mermaid": "^10.1.0",
     "micro": "^10.0.1",
