@@ -185,7 +185,7 @@
 
 .chat-item-delete {
   position: absolute;
-  top: 10px;
+  top: 0;
   right: 0;
   transition: all ease 0.3s;
   opacity: 0;
@@ -194,7 +194,7 @@
 
 .chat-item:hover > .chat-item-delete {
   opacity: 0.5;
-  transform: translateX(-10px);
+  transform: translateX(-4px);
 }
 
 .chat-item:hover > .chat-item-delete:hover {
@@ -281,15 +281,6 @@
       color: var(--primary);
       opacity: 0.6;
     }
-  }
-
-  .chat-item-delete {
-    top: 15px;
-  }
-
-  .chat-item:hover > .chat-item-delete {
-    opacity: 0.5;
-    right: 5px;
   }
 
   .sidebar-tail {
@@ -568,6 +559,6 @@
   width: 100%;
 }
 
-.rtl-screen{
+.rtl-screen {
   direction: rtl;
 }
