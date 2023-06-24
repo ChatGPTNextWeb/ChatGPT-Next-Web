@@ -1,69 +1,42 @@
 @import "../styles/animation.scss";
 
-$accent-color: #ff7a7a;
-$primary-color: #333333;
-$secondary-color: #ff7a7a;
-$border-in-light: 1px solid rgba(0, 0, 0, 0.1);
-$card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-$transition-duration: 0.3s;
-$ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
-
+		
+$accent-color: #ff7a7a;	
+$primary-color: #333333;	
+$secondary-color: #ff7a7a;	
+$border-in-light: 1px solid rgba(0, 0, 0, 0.1);	
+$card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);	
+$transition-duration: 0.3s;	
+$ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);	
 /* Additional styling for improved look and feel. */
+
 .mask-page {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #333333;
-  background: linear-gradient(135deg, rgba(51,51,51,1) 51%, rgba(2,2,2,1) 100%);
-  padding: 20px;
 
   .mask-page-body {
     padding: 20px;
     overflow-y: auto;
-    border-radius: 10px;
-    box-shadow: $card-shadow;
-    background-color: #fff;
-    transform: translateY(20px);
-    opacity: 0;
-    animation: slide-in $ease-transition $transition-duration forwards;
 
     .mask-filter {
       width: 100%;
       max-width: 100%;
       margin-bottom: 20px;
+      animation: slide-in ease 0.3s;
       height: 40px;
+
       display: flex;
-      transform: translateY(20px);
-      opacity: 0;
-      animation: slide-in $ease-transition $transition-duration 0.1s forwards;
 
       .search-bar {
         flex-grow: 1;
         max-width: 100%;
         min-width: 0;
-        border-radius: 6px;
-        border: $border-in-light;
-        padding: 8px;
-        font-size: 14px;
-        transition: border-color $ease-transition $transition-duration;
-
-        &:focus {
-          border-color: $accent-color;
-          outline: none;
-        }
       }
 
       .mask-filter-lang {
         height: 100%;
         margin-left: 10px;
-        border-radius: 6px;
-        border: $border-in-light;
-        transition: border-color $ease-transition $transition-duration;
-
-        &:focus {
-          border-color: $accent-color;
-          outline: none;
-        }
       }
 
       .mask-create {
@@ -71,14 +44,6 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
         margin-left: 10px;
         box-sizing: border-box;
         min-width: 80px;
-        background: $accent-color;
-        color: white;
-        border-radius: 6px;
-        transition: background-color $ease-transition $transition-duration;
-
-        &:hover {
-          background: lighten($accent-color, 5%);
-        }
       }
     }
 
@@ -86,16 +51,21 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
       display: flex;
       justify-content: space-between;
       padding: 20px;
-      border: $border-in-light;
-      border-radius: 10px;
-      box-shadow: $card-shadow;
-      margin-bottom: 20px;
-      transform: translateY(20px);
-      opacity: 0;
-      animation: slide-in $ease-transition $transition-duration 0.2s forwards;
+      border: var(--border-in-light);
+      animation: slide-in ease 0.3s;
 
       &:not(:last-child) {
-        border-bottom: $border-in-light;
+        border-bottom: 0;
+      }
+
+      &:first-child {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
       }
 
       .mask-header {
@@ -116,7 +86,6 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
           }
           .mask-info {
             font-size: 12px;
-            color: rgba(0, 0, 0, 0.5);
           }
         }
       }
@@ -124,32 +93,21 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
       .mask-actions {
         display: flex;
         flex-wrap: nowrap;
-        transition: all $ease-transition $transition-duration;
-        align-items: center;
-
-        button {
-          background-color: transparent;
-          border: none;
-          color: rgba(0, 0, 0, 0.3);
-          font-size: 16px;
-          padding: 0 8px;
-          transition: color $ease-transition $transition-duration;
-
-          &:hover,
-          &:focus {
-            color: $accent-color;
-          }
-        }
+        transition: all ease 0.3s;
       }
 
       @media screen and (max-width: 600px) {
         display: flex;
         flex-direction: column;
         padding-bottom: 10px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: $card-shadow;
-        
+        border-radius: 0px;
+        margin-bottom: 0px;
+        box-shadow: var(--card-shadow);
+
+        &:not(:last-child) {
+          border-bottom: var(--border-in-light);
+        }
+
         .mask-actions {
           width: 100%;
           justify-content: space-between;
@@ -159,18 +117,3 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
     }
   }
 }
-
-// Keyframes for slide-in animation
-@keyframes slide-in {
-  0% {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Made possible by Cognitiev.com 🧠 */
