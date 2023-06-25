@@ -96,6 +96,10 @@ Si no desea que los usuarios rellenen la clave de API ellos mismos, establezca e
 
 Si no desea que los usuarios utilicen GPT-4, establezca esta variable de entorno en 1.
 
+### `Hide_Balance_Query` (Opcional)
+
+Si no desea que los usuarios consulte el saldo, establezca esta variable de entorno en 1.
+
 ## explotación
 
 > No se recomienda encarecidamente desarrollar o implementar localmente, debido a algunas razones técnicas, es difícil configurar el agente API de OpenAI localmente, a menos que pueda asegurarse de que puede conectarse directamente al servidor OpenAI.
