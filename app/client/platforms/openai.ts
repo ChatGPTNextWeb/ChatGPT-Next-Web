@@ -90,7 +90,20 @@ export class ChatGPTApi implements LLMApi {
             );
 
             if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
+              const data = res.clone().body;
+              if (!data) throw new Error("No data");
+              const reader = data.getReader(),
+                decoder = new TextDecoder("utf-8");
+              do {
+                const { value, done } = await reader.read();
+                if (done) break;
+                if (value) {
+                  const delta = decoder.decode(value);
+                  if (delta === "\n" && responseText.endsWith("\n")) continue;
+                  responseText += delta;
+                  options.onUpdate?.(responseText, delta);
+                }
+              } while (true);
               return finish();
             }
 
