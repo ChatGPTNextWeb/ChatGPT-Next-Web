@@ -22,6 +22,7 @@ import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import DeleteIcon from "../icons/clear.svg";
+import PinIcon from "../icons/pin.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -60,7 +61,7 @@ import Locale from "../locales";
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
 
-import { ListItem, Modal } from "./ui-lib";
+import { ListItem, Modal, showToast } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
@@ -696,6 +697,24 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
+  const onPinMessage = (botMessage: ChatMessage) => {
+    if (!botMessage.id) return;
+    const userMessageIndex = findLastUserIndex(botMessage.id);
+    if (!userMessageIndex) return;
+
+    const userMessage = session.messages[userMessageIndex];
+    chatStore.updateCurrentSession((session) =>
+      session.mask.context.push(userMessage, botMessage),
+    );
+
+    showToast(Locale.Chat.Actions.PinToastContent, {
+      text: Locale.Chat.Actions.PinToastAction,
+      onClick: () => {
+        setShowPromptModal(true);
+      },
+    });
+  };
+
   const context: RenderMessage[] = session.mask.hideContext
     ? []
     : session.mask.context.slice();
@@ -921,6 +940,12 @@ export function Chat() {
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
                                 onClick={() => onResend(message.id ?? i)}
+                              />
+
+                              <ChatAction
+                                text={Locale.Chat.Actions.Pin}
+                                icon={<PinIcon />}
+                                onClick={() => onPinMessage(message)}
                               />
                             </>
                           )}

@@ -279,19 +279,22 @@
   min-width: 0;
 
   &:hover {
-    min-width: 300px;
+    min-width: 330px;
 
     .chat-message-actions {
       height: 40px;
       opacity: 1;
       transform: translateY(0px);
+
+      .chat-message-action-date {
+        opacity: 0.3;
+      }
     }
   }
 
   .chat-message-actions {
     display: flex;
     width: 100%;
-    padding-top: 5px;
     box-sizing: border-box;
     font-size: 12px;
     align-items: flex-end;
@@ -304,7 +307,7 @@
 
   .chat-message-action-date {
     color: var(--black);
-    opacity: 0.3;
+    opacity: 0;
   }
 }
 
@@ -323,8 +326,6 @@
   padding-top: 10px;
   box-sizing: border-box;
   flex-direction: column;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   border-top: var(--border-in-light);
   box-shadow: var(--card-shadow);
 }
