@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, ChatMessage } from "./chat";
-import { ModelConfig, ModelType, useAppConfig } from "./config";
+import { ModelConfig, useAppConfig } from "./config";
 import { StoreKey } from "../constant";
 
 export type Mask = {
@@ -89,7 +89,18 @@ export const useMaskStore = create<MaskStore>()(
         const userMasks = Object.values(get().masks).sort(
           (a, b) => b.id - a.id,
         );
-        return userMasks.concat(BUILTIN_MASKS);
+        const config = useAppConfig.getState();
+        const buildinMasks = BUILTIN_MASKS.map(
+          (m) =>
+            ({
+              ...m,
+              modelConfig: {
+                ...config.modelConfig,
+                ...m.modelConfig,
+              },
+            } as Mask),
+        );
+        return userMasks.concat(buildinMasks);
       },
       search(text) {
         return Object.values(get().masks);
