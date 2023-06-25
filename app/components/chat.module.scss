@@ -10,8 +10,35 @@ $card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 $transition-duration: 0.3s;
 $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
 
+@mixin container {
+  background-color: var(--white);
+  border: var(--border-in-light);
+  border-radius: 0px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); // Updated box-shadow for a modern look
+  color: var(--black);
+  background-color: var(--white);
+  min-width: 600px;
+  min-height: 480px;
+  max-width: 1200px;
 
-  //background: #333333;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  width: var(--window-width);
+  height: var(--window-height);
+}
+
+
+.container {
+  @include container();
+  height: 100vh; /* updated */
+  background: #333333;
+  background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
+
+}
+  
+//background: #333333;
   //background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
 
 
