@@ -185,7 +185,7 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
-### `Hide_Balance_Query` (optional)
+### `HIDE_BALANCE_QUERY` (optional)
 
 > Default: Empty
 
