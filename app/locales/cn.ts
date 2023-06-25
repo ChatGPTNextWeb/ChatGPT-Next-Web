@@ -281,6 +281,12 @@ const cn = {
     Create: "新建",
     Edit: "编辑",
   },
+  Exporter: {
+    Model: "模型",
+    Messages: "消息",
+    Topic: "主题",
+    Time: "时间",
+  },
 };
 
 type DeepPartial<T> = T extends object
