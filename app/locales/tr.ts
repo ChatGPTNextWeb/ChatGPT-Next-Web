@@ -128,6 +128,21 @@ const tr: PartialLocaleType = {
       SubTitle: "Erişim kodu sınırını yoksaymak için anahtarınızı kullanın",
       Placeholder: "OpenAI API Anahtarı",
     },
+    EnableAOAI: "Azure OpenAI Kullanın",
+    AzureDomainName: {
+      Title: "Azure OpenAI özel alt etki alanı",
+      Placeholder: "özel alt etki alanı",
+    },
+    AzureDeploymentName: {
+      Title: "Azure OpenAI dağıtım örneği adı",
+      SubTitle:
+        "Azure OpenAI'yi etkinleştirdikten sonra dağıtılan örnek adını girin",
+      Placeholder: "Örnek Adı",
+    },
+    AOAIToken: {
+      Title: "Azure OpenAI API Key",
+      Placeholder: "Azure OpenAI API Key",
+    },
     Usage: {
       Title: "Hesap Bakiyesi",
       SubTitle(used: any, total: any) {

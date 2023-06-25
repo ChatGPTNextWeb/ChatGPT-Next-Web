@@ -128,6 +128,21 @@ const es: PartialLocaleType = {
       SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
       Placeholder: "Clave de la API de OpenAI",
     },
+    EnableAOAI: "Uso de Azure Open AI",
+    AzureDomainName: {
+      Title: "Subdominio personalizado de Azure OpenAI",
+      Placeholder: "Subdominio personalizado",
+    },
+    AzureDeploymentName: {
+      Title: "Nombre de la instancia de implementación de Azure OpenAI",
+      SubTitle:
+        "Después de habilitar Azure OpenAI, ingrese el nombre de la instancia implementada",
+      Placeholder: "nombre de instancia",
+    },
+    AOAIToken: {
+      Title: "Azure OpenAI API Key",
+      Placeholder: "Azure OpenAI API Key",
+    },
     Usage: {
       Title: "Saldo de la cuenta",
       SubTitle(used: any, total: any) {

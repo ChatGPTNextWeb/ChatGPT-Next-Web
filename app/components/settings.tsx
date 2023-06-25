@@ -17,6 +17,7 @@ import {
   Modal,
   PasswordInput,
   Popover,
+  TextInput,
   Select,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
@@ -265,7 +266,8 @@ export function Settings() {
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  const showUsage = accessStore.isAuthorized();
+  // For now azure openai api do not expose usage api
+  const showUsage = accessStore.isAuthorized() && !accessStore.enableAOAI;
   useEffect(() => {
     // checks per minutes
     checkUpdate();
@@ -506,20 +508,52 @@ export function Settings() {
             <></>
           )}
 
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Token.Title}
-              subTitle={Locale.Settings.Token.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.token}
-                type="text"
-                placeholder={Locale.Settings.Token.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateToken(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
+          <ListItem title={Locale.Settings.EnableAOAI}>
+            <input
+              type="checkbox"
+              checked={accessStore.enableAOAI}
+              onChange={(e) => {
+                accessStore.switchAOAI(e.currentTarget.checked);
+              }}
+            ></input>
+          </ListItem>
+
+          {accessStore.enableAOAI ? (
+            <>
+              <ListItem title={Locale.Settings.AzureDomainName.Title}>
+                <TextInput
+                  value={accessStore.azureDomainName}
+                  type="text"
+                  placeholder={Locale.Settings.AzureDomainName.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateDomainName(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+              <ListItem
+                title={Locale.Settings.AzureDeploymentName.Title}
+                subTitle={Locale.Settings.AzureDeploymentName.SubTitle}
+              >
+                <TextInput
+                  value={accessStore.azureDeployName}
+                  type="text"
+                  placeholder={Locale.Settings.AzureDeploymentName.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateDeployName(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+              <ListItem title={Locale.Settings.AOAIToken.Title}>
+                <PasswordInput
+                  value={accessStore.aoaiToken}
+                  type="text"
+                  placeholder={Locale.Settings.AOAIToken.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateAOAIToken(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+            </>
           ) : null}
 
           <ListItem
@@ -559,6 +593,49 @@ export function Settings() {
                 }
               ></input>
             </ListItem>
+          ) : null}
+          {!accessStore.enableAOAI ? (
+            <>
+              {!accessStore.hideUserApiKey ? (
+                <ListItem
+                  title={Locale.Settings.Token.Title}
+                  subTitle={Locale.Settings.Token.SubTitle}
+                >
+                  <PasswordInput
+                    value={accessStore.token}
+                    type="text"
+                    placeholder={Locale.Settings.Token.Placeholder}
+                    onChange={(e) => {
+                      accessStore.updateToken(e.currentTarget.value);
+                    }}
+                  />
+                </ListItem>
+              ) : null}
+
+              <ListItem
+                title={Locale.Settings.Usage.Title}
+                subTitle={
+                  showUsage
+                    ? loadingUsage
+                      ? Locale.Settings.Usage.IsChecking
+                      : Locale.Settings.Usage.SubTitle(
+                          usage?.used ?? "[?]",
+                          usage?.subscription ?? "[?]",
+                        )
+                    : Locale.Settings.Usage.NoAccess
+                }
+              >
+                {!showUsage || loadingUsage ? (
+                  <div />
+                ) : (
+                  <IconButton
+                    icon={<ResetIcon></ResetIcon>}
+                    text={Locale.Settings.Usage.Check}
+                    onClick={() => checkUsage(true)}
+                  />
+                )}
+              </ListItem>
+            </>
           ) : null}
         </List>
 

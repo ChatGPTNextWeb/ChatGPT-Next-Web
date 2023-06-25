@@ -246,6 +246,14 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   );
 }
 
+export function TextInput(props: HTMLProps<HTMLInputElement>) {
+  return (
+    <div className={"password-input-container"}>
+      <input {...props} type={"text"} className={"password-input"} />
+    </div>
+  );
+}
+
 export function Select(
   props: React.DetailedHTMLProps<
     React.SelectHTMLAttributes<HTMLSelectElement>,

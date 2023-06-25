@@ -26,6 +26,13 @@ function parseApiKey(bearToken: string) {
 
 export function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
+  const aoaiApiKey = req.headers.get("azure-api-key") ?? "";
+
+  if (!!aoaiApiKey) {
+    return {
+      error: false,
+    };
+  }
 
   // check if it is openai api key or user token
   const { accessCode, apiKey: token } = parseApiKey(authToken);

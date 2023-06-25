@@ -54,6 +54,13 @@ export type ModelConfig = ChatConfig["modelConfig"];
 
 const ENABLE_GPT4 = true;
 
+export const AZURE_API_VERSION = [
+  {
+    name: "2023-03-15-preview",
+    available: true,
+  },
+];
+
 export const ALL_MODELS = [
   {
     name: "gpt-4",

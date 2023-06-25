@@ -129,6 +129,21 @@ const it: PartialLocaleType = {
         "Utilizzare la chiave per ignorare il limite del codice di accesso",
       Placeholder: "OpenAI API Key",
     },
+    EnableAOAI: "Usa Azure OpenAI",
+    AzureDomainName: {
+      Title: "Sottodominio personalizzato di Azure OpenAI",
+      Placeholder: "Sottodominio personalizzato",
+    },
+    AzureDeploymentName: {
+      Title: "Nome dell'istanza di distribuzione di Azure OpenAI",
+      SubTitle:
+        "Dopo aver abilitato Azure OpenAI, immettere il nome dell'istanza distribuita",
+      Placeholder: "Nome istanza",
+    },
+    AOAIToken: {
+      Title: "Azure OpenAI API Key",
+      Placeholder: "Azure OpenAI API Key",
+    },
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
