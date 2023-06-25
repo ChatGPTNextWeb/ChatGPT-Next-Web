@@ -26,6 +26,9 @@ const en: LocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      Pin: "Pin",
+      PinToastContent: "Pinned 2 messages to contextual prompts",
+      PinToastAction: "View",
       Delete: "Delete",
     },
     Commands: {
