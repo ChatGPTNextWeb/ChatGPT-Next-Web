@@ -3,7 +3,6 @@
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 10px;
 
   .chat-input-action {
     display: inline-flex;
@@ -328,6 +327,12 @@
   flex-direction: column;
   border-top: var(--border-in-light);
   box-shadow: var(--card-shadow);
+
+  .chat-input-actions {
+    .chat-input-action {
+      margin-bottom: 10px;
+    }
+  }
 }
 
 @mixin single-line {
@@ -400,6 +405,8 @@
   padding: 10px 90px 10px 14px;
   resize: none;
   outline: none;
+  box-sizing: border-box;
+  min-height: 68px;
 }
 
 .chat-input:focus {
