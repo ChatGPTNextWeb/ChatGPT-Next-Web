@@ -700,7 +700,7 @@ export function Chat() {
   const onPinMessage = (botMessage: ChatMessage) => {
     if (!botMessage.id) return;
     const userMessageIndex = findLastUserIndex(botMessage.id);
-    if (!userMessageIndex) return;
+    if (userMessageIndex === null) return;
 
     const userMessage = session.messages[userMessageIndex];
     chatStore.updateCurrentSession((session) =>
