@@ -26,12 +26,16 @@
     font-size: 14px;
     margin-top: 5px;
   }
+
+  @media screen and (max-width: 600px) {
+    text-align: center;
+  }
 }
 
 .window-actions {
   display: inline-flex;
 }
 
-.window-action-button {
+.window-action-button:not(:first-child) {
   margin-left: 10px;
 }
