@@ -98,7 +98,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
-### `Hide_Balance_Query` （可选）
+### `HIDE_BALANCE_QUERY` （可选）
 
 如果你不想让用户查询余额，将此环境变量设置为 1 即可。
 
