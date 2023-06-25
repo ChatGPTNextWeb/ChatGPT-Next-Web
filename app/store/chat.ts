@@ -85,6 +85,7 @@ interface ChatStore {
   newSession: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
+  nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   onUserInput: (content: string) => Promise<void>;
   summarizeSession: () => void;
@@ -198,6 +199,13 @@ export const useChatStore = create<ChatStore>()(
           currentSessionIndex: 0,
           sessions: [session].concat(state.sessions),
         }));
+      },
+
+      nextSession(delta) {
+        const n = get().sessions.length;
+        const limit = (x: number) => (x + n) % n;
+        const i = get().currentSessionIndex;
+        get().selectSession(limit(i + delta));
       },
 
       deleteSession(index) {
@@ -405,10 +413,9 @@ export const useChatStore = create<ChatStore>()(
         // 2. pre-defined in-context prompts
         // 3. short term memory: latest n messages
         // 4. newest input message
-        const memoryStartIndex = Math.min(
-          longTermMemoryStartIndex,
-          shortTermMemoryStartIndex,
-        );
+        const memoryStartIndex = shouldSendLongTermMemory
+          ? Math.min(longTermMemoryStartIndex, shortTermMemoryStartIndex)
+          : shortTermMemoryStartIndex;
         // and if user has cleared history messages, we should exclude the memory too.
         const contextStartIndex = Math.max(clearContextIndex, memoryStartIndex);
         const maxTokenThreshold = modelConfig.max_tokens;
