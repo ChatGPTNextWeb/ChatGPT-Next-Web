@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const tr: LocaleType = {
+const tr: PartialLocaleType = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
@@ -158,6 +158,11 @@ const tr: LocaleType = {
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",
     },
+    FrequencyPenalty: {
+      Title: "Frekans Cezası",
+      SubTitle:
+        "Aynı satırı tekrar etme olasılığını azaltan daha büyük bir değer",
+    },
   },
   Store: {
     DefaultTopic: "Yeni Konuşma",
@@ -228,6 +233,12 @@ const tr: LocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Mesajlar",
+    Topic: "Konu",
+    Time: "Zaman",
   },
 };
 

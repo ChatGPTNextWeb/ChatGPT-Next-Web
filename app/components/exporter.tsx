@@ -438,9 +438,7 @@ export function ImagePreviewer(props: {
 
           <div>
             <div className={styles["main-title"]}>Aizpy</div>
-            <div className={styles["sub-title"]}>
-              https://chat.aizpy.com/
-            </div>
+            <div className={styles["sub-title"]}>https://chat.aizpy.com/</div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
               <span className={styles["icon-space"]}>&</span>
@@ -449,16 +447,16 @@ export function ImagePreviewer(props: {
           </div>
           <div>
             <div className={styles["chat-info-item"]}>
-              Model: {mask.modelConfig.model}
+              {Locale.Exporter.Model}: {mask.modelConfig.model}
             </div>
             <div className={styles["chat-info-item"]}>
-              Messages: {props.messages.length}
+              {Locale.Exporter.Messages}: {props.messages.length}
             </div>
             <div className={styles["chat-info-item"]}>
-              Topic: {session.topic}
+              {Locale.Exporter.Topic}: {session.topic}
             </div>
             <div className={styles["chat-info-item"]}>
-              Time:{" "}
+              {Locale.Exporter.Time}:{" "}
               {new Date(
                 props.messages.at(-1)?.date ?? Date.now(),
               ).toLocaleString()}
