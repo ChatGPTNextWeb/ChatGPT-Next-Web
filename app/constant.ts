@@ -53,9 +53,4 @@ export const OpenaiPath = {
   SubsPath: "dashboard/billing/subscription",
 };
 
-export const DEFAULT_INPUT_TEMPLATE = `
-Act as a virtual assistant powered by model: '{{model}}', my input is:
-'''
-{{input}}
-'''
-`;
+export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
