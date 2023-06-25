@@ -59,6 +59,14 @@ export const AZURE_API_VERSION = [
     name: "2023-03-15-preview",
     available: true,
   },
+  {
+    name: "2023-05-15",
+    available: true,
+  },
+  {
+    name: "2023-06-01-preview",
+    available: true,
+  },
 ];
 
 export const ALL_MODELS = [

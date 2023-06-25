@@ -24,7 +24,7 @@ export class ChatGPTApi implements LLMApi {
     if (!enableAOAI) return OPENAI_REQUEST_PATH;
 
     // For now azure api only support one version
-    const azureApiVersion = AZURE_API_VERSION[0].name;
+    const azureApiVersion = AZURE_API_VERSION[1].name;
 
     const AZURE_REQUEST_PATH = `openai/deployments/${azureDeployName}/chat/completions?api-version=${azureApiVersion}`;
     return AZURE_REQUEST_PATH;
