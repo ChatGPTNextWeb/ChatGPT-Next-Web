@@ -297,14 +297,6 @@ export const useChatStore = create<ChatStore>()(
           model: modelConfig.model,
         });
 
-        // const systemInfo = createMessage({
-        //   role: "system",
-        //   content: `IMPORTANT: It is now ${new Date().toLocaleString()}}. You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. ${more_assistant_info}You are a model powered by ${
-        //     modelConfig.model
-        //   }.`,
-        //   id: botMessage.id! + 1,
-        // });
-
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
@@ -402,6 +394,15 @@ export const useChatStore = create<ChatStore>()(
 
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
+        if (contextPrompts.length === 0) {
+          const systemInfo = createMessage({
+            role: "system",
+            content: `IMPORTANT: It is now ${new Date().toLocaleString()}}. You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. ${more_assistant_info}You are a model powered by ${
+              modelConfig.model
+            }.`,
+          });
+          contextPrompts.push(systemInfo);
+        }
 
         // long term memory
         const shouldSendLongTermMemory =
