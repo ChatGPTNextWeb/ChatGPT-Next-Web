@@ -28,6 +28,14 @@ const en: LocaleType = {
       Retry: "Retry",
       Delete: "Delete",
     },
+    Commands: {
+      new: "Start a new chat",
+      newm: "Start a new chat with mask",
+      next: "Next Chat",
+      prev: "Previous Chat",
+      clear: "Clear Context",
+      del: "Delete Chat",
+    },
     InputActions: {
       Stop: "Stop",
       ToBottom: "To Latest",
@@ -48,7 +56,7 @@ const en: LocaleType = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += ", Shift + Enter to wrap";
       }
-      return inputHints + ", / to search prompts";
+      return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
     Config: {

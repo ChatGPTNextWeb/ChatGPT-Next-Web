@@ -3,8 +3,8 @@ import React, {
   useState,
   useRef,
   useEffect,
-  useLayoutEffect,
   useMemo,
+  useCallback,
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -29,6 +29,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import RobotIcon from "../icons/robot.svg";
 
 import {
   ChatMessage,
@@ -40,6 +41,7 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
+  ALL_MODELS,
 } from "../store";
 
 import {
@@ -67,7 +69,7 @@ import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
-import { useCommand } from "../command";
+import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
@@ -232,8 +234,7 @@ export function PromptHints(props: {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (noPrompts) return;
-      if (e.metaKey || e.altKey || e.ctrlKey) {
+      if (noPrompts || e.metaKey || e.altKey || e.ctrlKey) {
         return;
       }
       // arrow up / down to select prompt
@@ -367,15 +368,15 @@ function useScrollToBottom() {
   // for auto-scroll
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     const dom = scrollRef.current;
     if (dom) {
-      setTimeout(() => (dom.scrollTop = dom.scrollHeight), 1);
+      requestAnimationFrame(() => dom.scrollTo(0, dom.scrollHeight));
     }
-  };
+  }, []);
 
   // auto scroll
-  useLayoutEffect(() => {
+  useEffect(() => {
     autoScroll && scrollToBottom();
   });
 
@@ -410,6 +411,19 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
+
+  // switch model
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  function nextModel() {
+    const models = ALL_MODELS.filter((m) => m.available).map((m) => m.name);
+    const modelIndex = models.indexOf(currentModel);
+    const nextIndex = (modelIndex + 1) % models.length;
+    const nextModel = models[nextIndex];
+    chatStore.updateCurrentSession((session) => {
+      session.mask.modelConfig.model = nextModel;
+      session.mask.syncGlobalConfig = false;
+    });
+  }
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -479,6 +493,12 @@ export function ChatActions(props: {
           });
         }}
       />
+
+      <ChatAction
+        onClick={nextModel}
+        text={currentModel}
+        icon={<RobotIcon />}
+      />
     </div>
   );
 }
@@ -515,16 +535,19 @@ export function Chat() {
   const [promptHints, setPromptHints] = useState<Prompt[]>([]);
   const onSearch = useDebouncedCallback(
     (text: string) => {
-      setPromptHints(promptStore.search(text));
+      const matchedPrompts = promptStore.search(text);
+      setPromptHints(matchedPrompts);
     },
     100,
     { leading: true, trailing: true },
   );
 
   const onPromptSelect = (prompt: Prompt) => {
-    setPromptHints([]);
-    inputRef.current?.focus();
-    setTimeout(() => setUserInput(prompt.content), 60);
+    setTimeout(() => {
+      setPromptHints([]);
+      setUserInput(prompt.content);
+      inputRef.current?.focus();
+    }, 30);
   };
 
   // auto grow input
@@ -548,6 +571,19 @@ export function Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
+  // chat commands shortcuts
+  const chatCommands = useChatCommand({
+    new: () => chatStore.newSession(),
+    newm: () => navigate(Path.NewChat),
+    prev: () => chatStore.nextSession(-1),
+    next: () => chatStore.nextSession(1),
+    clear: () =>
+      chatStore.updateCurrentSession(
+        (session) => (session.clearContextIndex = session.messages.length),
+      ),
+    del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
+  });
+
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
@@ -557,6 +593,8 @@ export function Chat() {
     // clear search results
     if (n === 0) {
       setPromptHints([]);
+    } else if (text.startsWith(ChatCommandPrefix)) {
+      setPromptHints(chatCommands.search(text));
     } else if (!config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
@@ -568,6 +606,13 @@ export function Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
+    const matchCommand = chatCommands.match(userInput);
+    if (matchCommand.matched) {
+      setUserInput("");
+      setPromptHints([]);
+      matchCommand.invoke();
+      return;
+    }
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
@@ -631,6 +676,10 @@ export function Chat() {
   const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
     if (selectOrCopy(e.currentTarget, message.content)) {
+      if (userInput.length === 0) {
+        setUserInput(message.content);
+      }
+
       e.preventDefault();
     }
   };
