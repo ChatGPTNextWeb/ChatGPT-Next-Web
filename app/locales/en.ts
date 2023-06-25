@@ -28,6 +28,14 @@ const en: LocaleType = {
       Retry: "Retry",
       Delete: "Delete",
     },
+    Commands: {
+      new: "Start a new chat",
+      newm: "Start a new chat with mask",
+      next: "Next Chat",
+      prev: "Previous Chat",
+      clear: "Clear Context",
+      del: "Delete Chat",
+    },
     InputActions: {
       Stop: "Stop",
       ToBottom: "To Latest",
@@ -48,7 +56,7 @@ const en: LocaleType = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += ", Shift + Enter to wrap";
       }
-      return inputHints + ", / to search prompts";
+      return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
     Config: {
@@ -116,6 +124,12 @@ const en: LocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
+
+    InputTemplate: {
+      Title: "Input Template",
+      SubTitle: "Newest message will be filled to this template",
+    },
+
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Latest version",
@@ -199,6 +213,11 @@ const en: LocaleType = {
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
     },
+    FrequencyPenalty: {
+      Title: "Frequency Penalty",
+      SubTitle:
+        "A larger value decreasing the likelihood to repeat the same line",
+    },
   },
   Store: {
     DefaultTopic: "New Conversation",
@@ -279,6 +298,12 @@ const en: LocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Messages",
+    Topic: "Topic",
+    Time: "Time",
   },
 };
 
