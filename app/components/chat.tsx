@@ -21,6 +21,7 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
+import DeleteIcon from "../icons/clear.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -57,8 +58,7 @@ import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
 import { IconButton } from "./button";
-import styles from "./home.module.scss";
-import chatStyle from "./chat.module.scss";
+import styles from "./chat.module.scss";
 
 import { ListItem, Modal } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -148,15 +148,15 @@ function PromptToast(props: {
   const context = session.mask.context;
 
   return (
-    <div className={chatStyle["prompt-toast"]} key="prompt-toast">
+    <div className={styles["prompt-toast"]} key="prompt-toast">
       {props.showToast && (
         <div
-          className={chatStyle["prompt-toast-inner"] + " clickable"}
+          className={styles["prompt-toast-inner"] + " clickable"}
           role="button"
           onClick={() => props.setShowModal(true)}
         >
           <BrainIcon />
-          <span className={chatStyle["prompt-toast-content"]}>
+          <span className={styles["prompt-toast-content"]}>
             {Locale.Context.Toast(context.length)}
           </span>
         </div>
@@ -270,17 +270,15 @@ function ClearContextDivider() {
 
   return (
     <div
-      className={chatStyle["clear-context"]}
+      className={styles["clear-context"]}
       onClick={() =>
         chatStore.updateCurrentSession(
           (session) => (session.clearContextIndex = undefined),
         )
       }
     >
-      <div className={chatStyle["clear-context-tips"]}>
-        {Locale.Context.Clear}
-      </div>
-      <div className={chatStyle["clear-context-revert-btn"]}>
+      <div className={styles["clear-context-tips"]}>{Locale.Context.Clear}</div>
+      <div className={styles["clear-context-revert-btn"]}>
         {Locale.Context.Revert}
       </div>
     </div>
@@ -316,7 +314,7 @@ function ChatAction(props: {
 
   return (
     <div
-      className={`${chatStyle["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} clickable`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
@@ -328,10 +326,10 @@ function ChatAction(props: {
         } as React.CSSProperties
       }
     >
-      <div ref={iconRef} className={chatStyle["icon"]}>
+      <div ref={iconRef} className={styles["icon"]}>
         {props.icon}
       </div>
-      <div className={chatStyle["text"]} ref={textRef}>
+      <div className={styles["text"]} ref={textRef}>
         {props.text}
       </div>
     </div>
@@ -400,7 +398,7 @@ export function ChatActions(props: {
   }
 
   return (
-    <div className={chatStyle["chat-input-actions"]}>
+    <div className={styles["chat-input-actions"]}>
       {couldStop && (
         <ChatAction
           onClick={stopAll}
@@ -880,40 +878,6 @@ export function Chat() {
                     </div>
                   )}
                   <div className={styles["chat-message-item"]}>
-                    {showActions && (
-                      <div className={styles["chat-message-top-actions"]}>
-                        {message.streaming ? (
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onUserStop(message.id ?? i)}
-                          >
-                            {Locale.Chat.Actions.Stop}
-                          </div>
-                        ) : (
-                          <>
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onDelete(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Delete}
-                            </div>
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onResend(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Retry}
-                            </div>
-                          </>
-                        )}
-
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => copyToClipboard(message.content)}
-                        >
-                          {Locale.Chat.Actions.Copy}
-                        </div>
-                      </div>
-                    )}
                     <Markdown
                       content={message.content}
                       loading={
@@ -929,14 +893,50 @@ export function Chat() {
                       parentRef={scrollRef}
                       defaultShow={i >= messages.length - 10}
                     />
-                  </div>
-                  {!isUser && !message.preview && (
-                    <div className={styles["chat-message-actions"]}>
-                      <div className={styles["chat-message-action-date"]}>
-                        {message.date.toLocaleString()}
+
+                    {showActions && (
+                      <div className={styles["chat-message-actions"]}>
+                        <div
+                          className={styles["chat-input-actions"]}
+                          style={{
+                            marginTop: 10,
+                            marginBottom: 0,
+                          }}
+                        >
+                          {message.streaming ? (
+                            <ChatAction
+                              text={Locale.Chat.Actions.Stop}
+                              icon={<StopIcon />}
+                              onClick={() => onUserStop(message.id ?? i)}
+                            />
+                          ) : (
+                            <>
+                              <ChatAction
+                                text={Locale.Chat.Actions.Delete}
+                                icon={<DeleteIcon />}
+                                onClick={() => onDelete(message.id ?? i)}
+                              />
+
+                              <ChatAction
+                                text={Locale.Chat.Actions.Retry}
+                                icon={<ResetIcon />}
+                                onClick={() => onResend(message.id ?? i)}
+                              />
+                            </>
+                          )}
+                          <ChatAction
+                            text={Locale.Chat.Actions.Copy}
+                            icon={<CopyIcon />}
+                            onClick={() => copyToClipboard(message.content)}
+                          />
+                        </div>
+
+                        <div className={styles["chat-message-action-date"]}>
+                          {message.date.toLocaleString()}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
