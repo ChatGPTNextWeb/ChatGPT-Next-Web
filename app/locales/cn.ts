@@ -4,7 +4,7 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      "密码不正确或为空，请点击➣[登录](/#/auth)输入密码，或者向浩哥所要最新密码。大家对话结束后记得删除当前对话或清除记录，以免影响下次对话的效果。",
   },
   Auth: {
     Title: "需要密码",
@@ -242,10 +242,10 @@ const cn = {
     Revert: "恢复上下文",
   },
   Plugin: {
-    Name: "插件",
+    Name: "插件（开发中）",
   },
   Mask: {
-    Name: "面具",
+    Name: "角色",
     Page: {
       Title: "预设角色面具",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
@@ -285,8 +285,8 @@ const cn = {
     Skip: "直接开始",
     NotShow: "不再展示",
     ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
-    Title: "挑选一个面具",
-    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
+    Title: "选择一个角色",
+    SubTitle: "点击下面的【直接开始】按钮",
     More: "查看全部",
   },
 
