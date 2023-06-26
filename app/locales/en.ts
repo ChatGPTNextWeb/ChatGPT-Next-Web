@@ -114,9 +114,13 @@ const en: LocaleType = {
     Actions: {
       ClearAll: "Clear All Data",
       ResetAll: "Reset All Settings",
+      Confirm: "Confirm",
+      Cancel: "Cancel",
       Close: "Close",
       ConfirmResetAll: "Are you sure you want to reset all configurations?",
       ConfirmClearAll: "Are you sure you want to reset all data?",
+      SyncCurrentSessionConfig:
+        "Do you want to synchronize to the settings of the current conversation?",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

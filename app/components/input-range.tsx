@@ -3,6 +3,8 @@ import styles from "./input-range.module.scss";
 
 interface InputRangeProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onMouseUp?: React.MouseEventHandler<HTMLInputElement>;
+  onTouchEnd?: React.TouchEventHandler<HTMLInputElement>;
   title?: string;
   value: number | string;
   className?: string;
@@ -13,6 +15,8 @@ interface InputRangeProps {
 
 export function InputRange({
   onChange,
+  onMouseUp,
+  onTouchEnd,
   title,
   value,
   className,
@@ -31,6 +35,8 @@ export function InputRange({
         max={max}
         step={step}
         onChange={onChange}
+        onMouseUp={onMouseUp}
+        onTouchEnd={onTouchEnd}
       ></input>
     </div>
   );

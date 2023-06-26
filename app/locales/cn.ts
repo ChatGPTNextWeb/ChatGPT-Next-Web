@@ -112,9 +112,12 @@ const cn = {
     Actions: {
       ClearAll: "清除所有数据",
       ResetAll: "重置所有选项",
+      Confirm: "确认",
+      Cancel: "取消",
       Close: "关闭",
       ConfirmResetAll: "确认重置所有配置？",
       ConfirmClearAll: "确认清除所有数据？",
+      SyncCurrentSessionConfig: "是否同步修改当前对话的设置？",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
