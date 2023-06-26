@@ -17,7 +17,7 @@ const cn = {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `共 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -25,7 +25,18 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
+      Pin: "固定",
+      PinToastContent: "已将 2 条对话固定至预设提示词",
+      PinToastAction: "查看",
       Delete: "删除",
+    },
+    Commands: {
+      new: "新建聊天",
+      newm: "从面具新建聊天",
+      next: "下一个聊天",
+      prev: "上一个聊天",
+      clear: "清除上下文",
+      del: "删除聊天",
     },
     InputActions: {
       Stop: "停止响应",
@@ -47,7 +58,7 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全";
+      return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
     Config: {
@@ -113,6 +124,11 @@ const cn = {
     FontSize: {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
+    },
+
+    InputTemplate: {
+      Title: "用户输入预处理",
+      SubTitle: "用户最新的一条消息会填充到此模板",
     },
 
     Update: {
@@ -197,6 +213,10 @@ const cn = {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
     },
+    FrequencyPenalty: {
+      Title: "频率惩罚度 (frequency_penalty)",
+      SubTitle: "值越大，越有可能降低重复字词",
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",
@@ -277,6 +297,12 @@ const cn = {
     Create: "新建",
     Edit: "编辑",
   },
+  Exporter: {
+    Model: "模型",
+    Messages: "消息",
+    Topic: "主题",
+    Time: "时间",
+  },
 };
 
 type DeepPartial<T> = T extends object
@@ -284,7 +310,8 @@ type DeepPartial<T> = T extends object
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
-export type LocaleType = DeepPartial<typeof cn>;
-export type RequiredLocaleType = typeof cn;
+
+export type LocaleType = typeof cn;
+export type PartialLocaleType = DeepPartial<typeof cn>;
 
 export default cn;

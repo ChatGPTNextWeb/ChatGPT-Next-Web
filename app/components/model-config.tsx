@@ -2,7 +2,7 @@ import { ALL_MODELS, ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
-import { List, ListItem, Select } from "./ui-lib";
+import { ListItem, Select } from "./ui-lib";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -86,6 +86,42 @@ export function ModelConfigList(props: {
             );
           }}
         ></InputRange>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.FrequencyPenalty.Title}
+        subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
+      >
+        <InputRange
+          value={props.modelConfig.frequency_penalty?.toFixed(1)}
+          min="-2"
+          max="2"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.frequency_penalty =
+                  ModalConfigValidator.frequency_penalty(
+                    e.currentTarget.valueAsNumber,
+                  )),
+            );
+          }}
+        ></InputRange>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.InputTemplate.Title}
+        subTitle={Locale.Settings.InputTemplate.SubTitle}
+      >
+        <input
+          type="text"
+          value={props.modelConfig.template}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.template = e.currentTarget.value),
+            )
+          }
+        ></input>
       </ListItem>
 
       <ListItem
