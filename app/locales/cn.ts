@@ -220,7 +220,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "❤️我是小浩同学，主任请吩咐😃",
+    BotHello: "❤️我是小浩同学，主人请吩咐😃",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
