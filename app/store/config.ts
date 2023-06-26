@@ -55,6 +55,30 @@ export type ModelConfig = ChatConfig["modelConfig"];
 const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
+   {
+    name: "gpt-4-poe",
+    available:  true,
+  },
+  {
+    name: "gpt-4-0314-poe",
+    available:  true,
+  },
+  {
+    name: "gpt-4-0613-poe",
+    available:  true,
+  },
+  {
+    name: "gpt-4-32k-poe",
+    available:  true,
+  },
+  {
+    name: "gpt-4-32k-0314-poe",
+    available:  true,
+  },
+  {
+    name: "gpt-4-32k-0613-poe",
+    available:  true,
+  },
   {
     name: "gpt-4",
     available: ENABLE_GPT4,
