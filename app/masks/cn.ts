@@ -2,6 +2,30 @@ import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
   {
+    avatar: "270d-fe0f",
+    name: "中英翻译",
+    context: [
+      {
+        role: "system",
+        content:
+          "Now you will play the role of a translator. Your responsibility is: if the user provides you with Chinese text, you provide an English translation; if the user gives you English text, you provide a Chinese translation. Here is the text for translation by the user:",
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: false,
+      historyMessageCount: 0,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "cn",
+    builtin: true,
+  },
+  {
     avatar: "1f5bc-fe0f",
     name: "以文搜图",
     context: [
@@ -417,30 +441,6 @@ export const CN_MASKS: BuiltinMask[] = [
       frequency_penalty: 0,
       sendMemory: false,
       historyMessageCount: 2,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "cn",
-    builtin: true,
-  },
-  {
-    avatar: "270d-fe0f",
-    name: "中英翻译",
-    context: [
-      {
-        role: "system",
-        content:
-          "Now you will play the role of a translator. Your responsibility is: if the user provides you with Chinese text, you provide an English translation; if the user gives you English text, you provide a Chinese translation. Here is the text for translation by the user:",
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 1,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: false,
-      historyMessageCount: 0,
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
