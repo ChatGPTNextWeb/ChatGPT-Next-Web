@@ -148,7 +148,7 @@ const cn = {
     },
     Mask: {
       Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      SubTitle: "新建聊天时，不会展示面具启动页",
     },
     Prompt: {
       Disable: {
@@ -285,8 +285,8 @@ const cn = {
     Skip: "直接开始",
     NotShow: "不再展示",
     ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
-    Title: "选择一个角色",
-    SubTitle: "点击下面的【直接开始】按钮",
+    Title: "欢迎使用小浩同学",
+    SubTitle: "请点击下面的【直接开始】按钮",
     More: "查看全部",
   },
 
