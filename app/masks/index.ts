@@ -9,7 +9,7 @@ export const BUILTIN_MASK_ID = 100000;
 
 export const BUILTIN_MASK_STORE = {
   buildinId: BUILTIN_MASK_ID,
-  masks: {} as Record<number, Mask>,
+  masks: {} as Record<number, BuiltinMask>,
   get(id?: number) {
     if (!id) return undefined;
     return this.masks[id] as Mask | undefined;
@@ -21,6 +21,6 @@ export const BUILTIN_MASK_STORE = {
   },
 };
 
-export const BUILTIN_MASKS: Mask[] = [...CN_MASKS, ...EN_MASKS].map((m) =>
-  BUILTIN_MASK_STORE.add(m),
+export const BUILTIN_MASKS: BuiltinMask[] = [...CN_MASKS, ...EN_MASKS].map(
+  (m) => BUILTIN_MASK_STORE.add(m),
 );
