@@ -397,7 +397,7 @@ export const useChatStore = create<ChatStore>()(
         if (contextPrompts.length === 0) {
           const systemInfo = createMessage({
             role: "system",
-            content: `IMPORTANT: It is now ${new Date().toLocaleString()}}. You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. ${more_assistant_info}You are a model powered by ${
+            content: `It is now ${new Date().toLocaleString()}. You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. ${more_assistant_info}You are a model powered by ${
               modelConfig.model
             }.`,
           });
