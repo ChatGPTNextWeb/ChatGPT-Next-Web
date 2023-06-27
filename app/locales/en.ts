@@ -229,7 +229,7 @@ const en: LocaleType = {
     Return: "Return",
     Skip: "Skip",
     Title: "Select a Mode 🧠 ",
-    SubTitle: "Didn't find the one you need? \n Let us build one for you 🤖 ",
+    SubTitle: "Ping us for a FREE Customized Mode just for you 🤖 ",
     More: "Find More",
     NotShow: "Don't Show Again",
     ConfirmNoShow: "Confirm to disable! You can of course enable it later from settings.",
