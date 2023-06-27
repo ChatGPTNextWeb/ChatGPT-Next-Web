@@ -316,6 +316,8 @@ function ChatAction(props: {
         props.onClick();
         setTimeout(updateWidth, 1);
       }}
+      onMouseEnter={updateWidth}
+      onTouchStart={updateWidth}
       style={
         {
           "--icon-width": `${width.icon}px`,
