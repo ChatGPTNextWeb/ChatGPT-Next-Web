@@ -938,15 +938,15 @@ export function Chat() {
                           ) : (
                             <>
                               <ChatAction
-                                text={Locale.Chat.Actions.Delete}
-                                icon={<DeleteIcon />}
-                                onClick={() => onDelete(message.id ?? i)}
-                              />
-
-                              <ChatAction
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
                                 onClick={() => onResend(message.id ?? i)}
+                              />
+
+                              <ChatAction
+                                text={Locale.Chat.Actions.Delete}
+                                icon={<DeleteIcon />}
+                                onClick={() => onDelete(message.id ?? i)}
                               />
 
                               <ChatAction
@@ -954,13 +954,13 @@ export function Chat() {
                                 icon={<PinIcon />}
                                 onClick={() => onPinMessage(message)}
                               />
+                              <ChatAction
+                                text={Locale.Chat.Actions.Copy}
+                                icon={<CopyIcon />}
+                                onClick={() => copyToClipboard(message.content)}
+                              />
                             </>
                           )}
-                          <ChatAction
-                            text={Locale.Chat.Actions.Copy}
-                            icon={<CopyIcon />}
-                            onClick={() => copyToClipboard(message.content)}
-                          />
                         </div>
 
                         <div className={styles["chat-message-action-date"]}>
