@@ -218,11 +218,17 @@
   overscroll-behavior: none;
 }
 
-.chat-body-title {
+.chat-body-main-title {
   cursor: pointer;
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-body-title {
+    text-align: center;
   }
 }
 
