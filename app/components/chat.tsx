@@ -310,7 +310,7 @@ function ChatAction(props: {
   }
 
   useEffect(() => {
-    updateWidth();
+    setTimeout(updateWidth, 100);
   }, []);
 
   return (
