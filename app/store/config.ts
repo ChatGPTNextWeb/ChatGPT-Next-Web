@@ -177,9 +177,9 @@ export const useAppConfig = create<ChatConfigStore>()(
     }),
     {
       name: StoreKey.Config,
-      version: 3.1,
+      version: 3.2,
       migrate(persistedState, version) {
-        if (version === 3.1) return persistedState as any;
+        if (version === 3.2) return persistedState as any;
 
         const state = persistedState as ChatConfig;
         state.modelConfig.sendMemory = true;

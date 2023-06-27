@@ -37,7 +37,7 @@ function useHotKey() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.metaKey || e.altKey || e.ctrlKey) {
+      if (e.altKey || e.ctrlKey) {
         if (e.key === "ArrowUp") {
           chatStore.nextSession(-1);
         } else if (e.key === "ArrowDown") {
