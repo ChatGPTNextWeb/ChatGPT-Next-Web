@@ -309,16 +309,6 @@ function ChatAction(props: {
     });
   }
 
-  useEffect(() => {
-    const onClick = () => setTimeout(updateWidth, 10);
-    onClick();
-
-    window.addEventListener("click", onClick);
-    return () => {
-      window.removeEventListener("click", onClick);
-    };
-  }, []);
-
   return (
     <div
       className={`${styles["chat-input-action"]} clickable`}
