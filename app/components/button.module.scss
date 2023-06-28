@@ -27,6 +27,11 @@
       fill: white !important;
     }
   }
+
+  &:hover,
+  &:focus {
+    border-color: var(--primary);
+  }
 }
 
 .shadow {
@@ -35,10 +40,6 @@
 
 .border {
   border: var(--border-in-light);
-}
-
-.icon-button:hover {
-  border-color: var(--primary);
 }
 
 .icon-button-icon {
