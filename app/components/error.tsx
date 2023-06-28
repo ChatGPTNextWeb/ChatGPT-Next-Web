@@ -5,6 +5,7 @@ import ResetIcon from "../icons/reload.svg";
 import { ISSUE_URL } from "../constant";
 import Locale from "../locales";
 import { downloadAs } from "../utils";
+import { showConfirm } from "./ui-lib";
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -57,10 +58,13 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
             <IconButton
               icon={<ResetIcon />}
               text="Clear All Data"
-              onClick={() =>
-                confirm(Locale.Settings.Actions.ConfirmClearAll) &&
-                this.clearAndSaveData()
-              }
+              onClick={async () => {
+                if (
+                  await showConfirm(Locale.Settings.Actions.ConfirmClearAll)
+                ) {
+                  this.clearAndSaveData();
+                }
+              }}
               bordered
             />
           </div>
