@@ -35,7 +35,7 @@ export const DEFAULT_CONFIG = {
     temperature: 0.5,
     max_tokens: 5000,
     presence_penalty: 0,
-    frequency_penalty: 0.5,
+    frequency_penalty: 1,
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
