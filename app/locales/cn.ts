@@ -29,6 +29,7 @@ const cn = {
       PinToastContent: "已将 2 条对话固定至预设提示词",
       PinToastAction: "查看",
       Delete: "删除",
+      Edit: "编辑",
     },
     Commands: {
       new: "新建聊天",
