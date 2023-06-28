@@ -2,10 +2,12 @@ import * as React from "react";
 
 import styles from "./button.module.scss";
 
+export type ButtonType = "primary" | "danger" | null;
+
 export function IconButton(props: {
   onClick?: () => void;
   icon?: JSX.Element;
-  type?: "primary" | "danger";
+  type?: ButtonType;
   text?: string;
   bordered?: boolean;
   shadow?: boolean;
