@@ -30,6 +30,7 @@ const en: LocaleType = {
       PinToastContent: "Pinned 2 messages to contextual prompts",
       PinToastAction: "View",
       Delete: "Delete",
+      Edit: "Edit",
     },
     Commands: {
       new: "Start a new chat",

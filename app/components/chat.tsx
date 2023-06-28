@@ -23,6 +23,7 @@ import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import DeleteIcon from "../icons/clear.svg";
 import PinIcon from "../icons/pin.svg";
+import EditIcon from "../icons/rename.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -902,6 +903,25 @@ export function Chat() {
               >
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-avatar"]}>
+                    <div className={styles["chat-message-edit"]}>
+                      <IconButton
+                        icon={<EditIcon />}
+                        onClick={async () => {
+                          const newMessage = await showPrompt(
+                            Locale.Chat.Actions.Edit,
+                            message.content,
+                          );
+                          chatStore.updateCurrentSession((session) => {
+                            const m = session.messages.find(
+                              (m) => m.id === message.id,
+                            );
+                            if (m) {
+                              m.content = newMessage;
+                            }
+                          });
+                        }}
+                      ></IconButton>
+                    </div>
                     {message.role === "user" ? (
                       <Avatar avatar={config.avatar} />
                     ) : (
