@@ -13,6 +13,7 @@ export interface AccessControlStore {
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
+  hideBalanceQuery: boolean;
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
@@ -36,6 +37,7 @@ export const useAccessStore = create<AccessControlStore>()(
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: DEFAULT_OPENAI_URL,
+      hideBalanceQuery: false,
 
       enabledAccessControl() {
         get().fetch();
@@ -60,7 +62,7 @@ export const useAccessStore = create<AccessControlStore>()(
         );
       },
       fetch() {
-        if (fetchState > 0) return;
+        if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
         fetchState = 1;
         fetch("/api/config", {
           method: "post",
