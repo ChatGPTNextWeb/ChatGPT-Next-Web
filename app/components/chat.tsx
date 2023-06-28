@@ -769,17 +769,17 @@ export function Chat() {
               />
             </div>
           )}
-          {!isMobileScreen && (
-            <div className="window-action-button">
-              <IconButton
-                icon={<Hexo />}
-                bordered
-                onClick={() => {
-                  window.open("https://www.zhaoshengmu.top", "_blank");
-                }}
-              />
-            </div>
-          )}
+          {/*{!isMobileScreen && (*/}
+          {/*  <div className="window-action-button">*/}
+          {/*    <IconButton*/}
+          {/*      icon={<Hexo />}*/}
+          {/*      bordered*/}
+          {/*      onClick={() => {*/}
+          {/*        window.open("https://www.zhaoshengmu.top", "_blank");*/}
+          {/*      }}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*)}*/}
         </div>
 
         <PromptToast
