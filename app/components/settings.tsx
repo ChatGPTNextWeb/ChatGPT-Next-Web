@@ -18,6 +18,7 @@ import {
   PasswordInput,
   Popover,
   Select,
+  showConfirm,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -377,8 +378,10 @@ export function Settings() {
           <div className="window-action-button">
             <IconButton
               icon={<ClearIcon />}
-              onClick={() => {
-                if (confirm(Locale.Settings.Actions.ConfirmClearAll)) {
+              onClick={async () => {
+                if (
+                  await showConfirm(Locale.Settings.Actions.ConfirmClearAll)
+                ) {
                   chatStore.clearAllData();
                 }
               }}
@@ -389,8 +392,10 @@ export function Settings() {
           <div className="window-action-button">
             <IconButton
               icon={<ResetIcon />}
-              onClick={() => {
-                if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {
+              onClick={async () => {
+                if (
+                  await showConfirm(Locale.Settings.Actions.ConfirmResetAll)
+                ) {
                   resetConfig();
                 }
               }}

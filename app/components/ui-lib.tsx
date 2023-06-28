@@ -4,6 +4,7 @@ import CloseIcon from "../icons/close.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
 import DownIcon from "../icons/down.svg";
+import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
@@ -87,7 +88,7 @@ export function Loading() {
 
 interface ModalProps {
   title: string;
-  children?: JSX.Element | JSX.Element[];
+  children?: any;
   actions?: JSX.Element[];
   onClose?: () => void;
 }
@@ -261,4 +262,46 @@ export function Select(
       <DownIcon className={styles["select-with-icon-icon"]} />
     </div>
   );
+}
+
+export function showConfirm(content: any) {
+  const div = document.createElement("div");
+  div.className = "modal-mask";
+  document.body.appendChild(div);
+
+  const root = createRoot(div);
+  const closeModal = () => {
+    root.unmount();
+    div.remove();
+  };
+
+  return new Promise<boolean>((resolve) => {
+    root.render(
+      <Modal
+        title={Locale.UI.Confirm}
+        actions={[
+          <IconButton
+            key="cancel"
+            text={Locale.UI.Cancel}
+            onClick={() => {
+              resolve(false);
+              closeModal();
+            }}
+          ></IconButton>,
+          <IconButton
+            key="confirm"
+            text={Locale.UI.Confirm}
+            type="primary"
+            onClick={() => {
+              resolve(true);
+              closeModal();
+            }}
+          ></IconButton>,
+        ]}
+        onClose={closeModal}
+      >
+        {content}
+      </Modal>,
+    );
+  });
 }
