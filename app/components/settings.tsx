@@ -46,6 +46,7 @@ import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
+import { useSyncStore } from "../store/sync";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -195,6 +196,78 @@ function UserPromptModal(props: { onClose?: () => void }) {
         />
       )}
     </div>
+  );
+}
+
+function SyncItems() {
+  const syncStore = useSyncStore();
+  const webdav = syncStore.webDavConfig;
+
+  // not ready: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/920#issuecomment-1609866332
+  return null;
+
+  return (
+    <List>
+      <ListItem
+        title={"上次同步：" + new Date().toLocaleString()}
+        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
+      >
+        <IconButton
+          icon={<ResetIcon />}
+          text="同步"
+          onClick={() => {
+            syncStore.check().then(console.log);
+          }}
+        />
+      </ListItem>
+
+      <ListItem
+        title={"本地备份"}
+        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
+      ></ListItem>
+
+      <ListItem
+        title={"Web Dav Server"}
+        subTitle={Locale.Settings.AccessCode.SubTitle}
+      >
+        <input
+          value={webdav.server}
+          type="text"
+          placeholder={"https://example.com"}
+          onChange={(e) => {
+            syncStore.update(
+              (config) => (config.server = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+
+      <ListItem title="Web Dav User Name" subTitle="user name here">
+        <input
+          value={webdav.username}
+          type="text"
+          placeholder={"username"}
+          onChange={(e) => {
+            syncStore.update(
+              (config) => (config.username = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+
+      <ListItem title="Web Dav Password" subTitle="password here">
+        <input
+          value={webdav.password}
+          type="text"
+          placeholder={"password"}
+          onChange={(e) => {
+            syncStore.update(
+              (config) => (config.password = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </List>
   );
 }
 
@@ -556,6 +629,7 @@ export function Settings() {
               <input
                 type="text"
                 value={accessStore.openaiUrl}
+                placeholder="https://api.openai.com/"
                 onChange={(e) =>
                   accessStore.updateOpenAiUrl(e.currentTarget.value)
                 }
@@ -595,6 +669,8 @@ export function Settings() {
             />
           </ListItem>
         </List>
+
+        <SyncItems />
 
         <List>
           <ModelConfigList
