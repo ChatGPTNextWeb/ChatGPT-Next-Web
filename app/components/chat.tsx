@@ -61,7 +61,7 @@ import Locale from "../locales";
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
 
-import { ListItem, Modal, showConfirm, showToast } from "./ui-lib";
+import { ListItem, Modal, showConfirm, showPrompt, showToast } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
@@ -778,10 +778,13 @@ export function Chat() {
   const [showPromptModal, setShowPromptModal] = useState(false);
 
   const renameSession = () => {
-    const newTopic = prompt(Locale.Chat.Rename, session.topic);
-    if (newTopic && newTopic !== session.topic) {
-      chatStore.updateCurrentSession((session) => (session.topic = newTopic!));
-    }
+    showPrompt(Locale.Chat.Rename, session.topic).then((newTopic) => {
+      if (newTopic && newTopic !== session.topic) {
+        chatStore.updateCurrentSession(
+          (session) => (session.topic = newTopic!),
+        );
+      }
+    });
   };
 
   const clientConfig = useMemo(() => getClientConfig(), []);

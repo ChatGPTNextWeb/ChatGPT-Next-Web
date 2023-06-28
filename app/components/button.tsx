@@ -12,6 +12,8 @@ export function IconButton(props: {
   className?: string;
   title?: string;
   disabled?: boolean;
+  tabIndex?: number;
+  autoFocus?: boolean;
 }) {
   return (
     <button
@@ -25,6 +27,8 @@ export function IconButton(props: {
       title={props.title}
       disabled={props.disabled}
       role="button"
+      tabIndex={props.tabIndex}
+      autoFocus={props.autoFocus}
     >
       {props.icon && (
         <div
