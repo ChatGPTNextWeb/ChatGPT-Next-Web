@@ -238,11 +238,11 @@
   background-color: var(--white);
   color: var(--black);
   font-family: inherit;
-  padding: 10px 90px 10px 14px;
+  padding: 10px;
   resize: none;
   outline: none;
   box-sizing: border-box;
-  min-height: 68px;
+  min-height: 30vh;
 
   &:focus {
     border: 1px solid var(--primary);
