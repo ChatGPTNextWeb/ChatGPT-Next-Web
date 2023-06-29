@@ -12,6 +12,10 @@ async function handle(
 ) {
   console.log("[OpenAI Route] params ", params);
 
+  if (req.method === "OPTIONS") {
+    return NextResponse.json({ body: "OK" }, { status: 200 });
+  }
+
   const subpath = params.path.join("/");
 
   if (!ALLOWD_PATH.has(subpath)) {

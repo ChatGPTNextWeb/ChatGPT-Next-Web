@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const fr: LocaleType = {
+const fr: PartialLocaleType = {
   WIP: "Prochainement...",
   Error: {
     Unauthorized:
@@ -61,14 +61,7 @@ const fr: LocaleType = {
   Settings: {
     Title: "Paramètres",
     SubTitle: "Toutes les configurations",
-    Actions: {
-      ClearAll: "Effacer toutes les données",
-      ResetAll: "Réinitialiser les configurations",
-      Close: "Fermer",
-      ConfirmResetAll:
-        "Êtes-vous sûr de vouloir réinitialiser toutes les configurations?",
-      ConfirmClearAll: "Êtes-vous sûr de vouloir supprimer toutes les données?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION : si vous souhaitez ajouter une nouvelle traduction, ne traduisez pas cette valeur, laissez-la sous forme de `Language`
       All: "Toutes les langues",
@@ -159,6 +152,11 @@ const fr: LocaleType = {
       SubTitle:
         "Une valeur plus élevée augmentera la probabilité d'introduire de nouveaux sujets",
     },
+    FrequencyPenalty: {
+      Title: "Pénalité de fréquence",
+      SubTitle:
+        "Une valeur plus élevée diminuant la probabilité de répéter la même ligne",
+    },
   },
   Store: {
     DefaultTopic: "Nouvelle conversation",
@@ -231,6 +229,12 @@ const fr: LocaleType = {
     Close: "Fermer",
     Create: "Créer",
     Edit: "Éditer",
+  },
+  Exporter: {
+    Model: "Modèle",
+    Messages: "Messages",
+    Topic: "Sujet",
+    Time: "Temps",
   },
 };
 
