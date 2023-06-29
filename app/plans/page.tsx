@@ -73,6 +73,7 @@ const Plans = () => {
                 text="Subscribe 🥰"
               />
             </div>
+          </div>
             
             
           
