@@ -15,7 +15,15 @@ import CopyIcon from "../icons/copy.svg";
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
 import { ROLES } from "../client/api";
-import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
+import {
+  Input,
+  List,
+  ListItem,
+  Modal,
+  Popover,
+  Select,
+  showConfirm,
+} from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
@@ -125,10 +133,10 @@ export function MaskConfig(props: {
             <input
               type="checkbox"
               checked={props.mask.syncGlobalConfig}
-              onChange={(e) => {
+              onChange={async (e) => {
                 if (
                   e.currentTarget.checked &&
-                  confirm(Locale.Mask.Config.Sync.Confirm)
+                  (await showConfirm(Locale.Mask.Config.Sync.Confirm))
                 ) {
                   props.updateMask((mask) => {
                     mask.syncGlobalConfig = e.currentTarget.checked;
@@ -439,8 +447,8 @@ export function MaskPage() {
                     <IconButton
                       icon={<DeleteIcon />}
                       text={Locale.Mask.Item.Delete}
-                      onClick={() => {
-                        if (confirm(Locale.Mask.Item.DeleteConfirm)) {
+                      onClick={async () => {
+                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
                           maskStore.delete(m.id);
                         }
                       }}
