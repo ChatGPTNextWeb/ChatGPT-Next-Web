@@ -1,4 +1,8 @@
-import { OpenaiPath, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  DEFAULT_API_HOST,
+  OpenaiPath,
+  REQUEST_TIMEOUT_MS,
+} from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
@@ -12,6 +16,9 @@ import { prettyObject } from "@/app/utils/format";
 export class ChatGPTApi implements LLMApi {
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
+    if (openaiUrl.length === 0) {
+      openaiUrl = DEFAULT_API_HOST;
+    }
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }
