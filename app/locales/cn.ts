@@ -193,14 +193,14 @@ const cn = {
     },
 
     EnableAOAI: "使用 Azure OpenAI",
-    AzureDomainName: {
-      Title: "Azure OpenAI 自定义子域名",
-      Placeholder: "自定义子域名",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Azure OpenAI 部署实例名称",
-      SubTitle: "启用Azure OpenAI后, 输入部署的实例名称",
-      Placeholder: "部署实例名称",
+      SubTitle: "此值将对应于在部署模型时为部署选择的自定义名称",
+      Placeholder: "部署自定义名称",
     },
     AOAIToken: {
       Title: "Azure OpenAI API Key",

@@ -17,7 +17,6 @@ import {
   Modal,
   PasswordInput,
   Popover,
-  TextInput,
   Select,
   showConfirm,
 } from "./ui-lib";
@@ -608,26 +607,16 @@ export function Settings() {
 
           {accessStore.enableAOAI ? (
             <>
-              <ListItem title={Locale.Settings.AzureDomainName.Title}>
-                <TextInput
-                  value={accessStore.azureDomainName}
-                  type="text"
-                  placeholder={Locale.Settings.AzureDomainName.Placeholder}
-                  onChange={(e) => {
-                    accessStore.updateDomainName(e.currentTarget.value);
-                  }}
-                />
-              </ListItem>
               <ListItem
                 title={Locale.Settings.AzureDeploymentName.Title}
                 subTitle={Locale.Settings.AzureDeploymentName.SubTitle}
               >
-                <TextInput
+                <input
                   value={accessStore.azureDeployName}
                   type="text"
                   placeholder={Locale.Settings.AzureDeploymentName.Placeholder}
                   onChange={(e) => {
-                    accessStore.updateDeployName(e.currentTarget.value);
+                    accessStore.updateAzureDeployName(e.currentTarget.value);
                   }}
                 />
               </ListItem>
@@ -638,6 +627,16 @@ export function Settings() {
                   placeholder={Locale.Settings.AOAIToken.Placeholder}
                   onChange={(e) => {
                     accessStore.updateAOAIToken(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+              <ListItem title={Locale.Settings.AzureEndpoint.Title}>
+                <input
+                  value={accessStore.azureEndpoint}
+                  type="text"
+                  placeholder={Locale.Settings.AzureEndpoint.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateAzureEndpoint(e.currentTarget.value);
                   }}
                 />
               </ListItem>
@@ -687,22 +686,22 @@ export function Settings() {
                   )}
                 </ListItem>
               ) : null}
+              {!accessStore.hideUserApiKey ? (
+                <ListItem
+                  title={Locale.Settings.Endpoint.Title}
+                  subTitle={Locale.Settings.Endpoint.SubTitle}
+                >
+                  <input
+                    type="text"
+                    value={accessStore.openaiUrl}
+                    placeholder="https://api.openai.com/"
+                    onChange={(e) =>
+                      accessStore.updateOpenAiUrl(e.currentTarget.value)
+                    }
+                  ></input>
+                </ListItem>
+              ) : null}
             </>
-          ) : null}
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Endpoint.Title}
-              subTitle={Locale.Settings.Endpoint.SubTitle}
-            >
-              <input
-                type="text"
-                value={accessStore.openaiUrl}
-                placeholder="https://api.openai.com/"
-                onChange={(e) =>
-                  accessStore.updateOpenAiUrl(e.currentTarget.value)
-                }
-              ></input>
-            </ListItem>
           ) : null}
         </List>
 

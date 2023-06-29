@@ -19,12 +19,8 @@ import {
 import { prettyObject } from "@/app/utils/format";
 
 export class ChatGPTApi implements LLMApi {
-  // public ChatPath = "v1/chat/completions";
-  public UsagePath = "dashboard/billing/usage";
-  public SubsPath = "dashboard/billing/subscription";
-
   public get ChatPath() {
-    const OPENAI_REQUEST_PATH = "v1/chat/completions";
+    const OPENAI_REQUEST_PATH = OpenaiPath.ChatPath;
     const { enableAOAI, azureDeployName } = useAccessStore.getState();
     if (!enableAOAI) return OPENAI_REQUEST_PATH;
 
@@ -40,6 +36,12 @@ export class ChatGPTApi implements LLMApi {
     if (openaiUrl.length === 0) {
       openaiUrl = DEFAULT_API_HOST;
     }
+
+    const { enableAOAI, azureEndpoint } = useAccessStore.getState();
+    if (enableAOAI) {
+      openaiUrl = azureEndpoint;
+    }
+
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }
@@ -80,7 +82,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      const chatPath = this.path(this.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),

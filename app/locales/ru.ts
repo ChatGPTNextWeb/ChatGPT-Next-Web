@@ -125,9 +125,9 @@ const ru: PartialLocaleType = {
     },
 
     EnableAOAI: "Use Azure OpenAI",
-    AzureDomainName: {
-      Title: "Azure OpenAI custom subdomain",
-      Placeholder: "custom subdomain",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Azure OpenAI deployment instance name",

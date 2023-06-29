@@ -124,9 +124,9 @@ const it: PartialLocaleType = {
       Placeholder: "OpenAI API Key",
     },
     EnableAOAI: "Usa Azure OpenAI",
-    AzureDomainName: {
-      Title: "Sottodominio personalizzato di Azure OpenAI",
-      Placeholder: "Sottodominio personalizzato",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Nome dell'istanza di distribuzione di Azure OpenAI",

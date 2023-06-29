@@ -56,6 +56,10 @@ const ENABLE_GPT4 = true;
 
 export const AZURE_API_VERSION = [
   {
+    name: "2023-05-15",
+    available: true,
+  },
+  {
     name: "2023-03-15-preview",
     available: true,
   },

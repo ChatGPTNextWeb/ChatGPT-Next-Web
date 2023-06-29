@@ -123,9 +123,9 @@ const tr: PartialLocaleType = {
       Placeholder: "OpenAI API Anahtarı",
     },
     EnableAOAI: "Azure OpenAI Kullanın",
-    AzureDomainName: {
-      Title: "Azure OpenAI özel alt etki alanı",
-      Placeholder: "özel alt etki alanı",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Azure OpenAI dağıtım örneği adı",

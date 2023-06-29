@@ -125,9 +125,9 @@ const jp: PartialLocaleType = {
       Placeholder: "OpenAI APIキー",
     },
     EnableAOAI: "Azure OpenAI を使用する",
-    AzureDomainName: {
-      Title: "Azure OpenAI カスタム サブドメイン",
-      Placeholder: "カスタム サブドメイン",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Azure OpenAI 展開インスタンス名",

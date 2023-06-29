@@ -120,9 +120,9 @@ const tw: PartialLocaleType = {
       Placeholder: "OpenAI API Key",
     },
     EnableAOAI: "啟用 Azure OpenAI",
-    AzureDomainName: {
-      Title: "Azure OpenAI 自定義子域名",
-      Placeholder: "自定義子域名",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Azure OpenAI 部署實例名稱",

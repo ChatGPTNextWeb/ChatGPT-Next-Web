@@ -123,9 +123,9 @@ const vi: PartialLocaleType = {
     },
 
     EnableAOAI: "Sử dụng Azure OpenAI",
-    AzureDomainName: {
-      Title: "Tên miền phụ tùy chỉnh Azure OpenAI",
-      Placeholder: "tên miền phụ tùy chỉnh",
+    AzureEndpoint: {
+      Title: "Azure OpenAI Endpoint",
+      Placeholder: "https://docs-test-001.openai.azure.com/",
     },
     AzureDeploymentName: {
       Title: "Tên phiên bản triển khai Azure OpenAI",

@@ -11,7 +11,7 @@ export interface AccessControlStore {
   token: string;
 
   enableAOAI: boolean;
-  azureDomainName: string;
+  azureEndpoint: string;
   azureDeployName: string;
   aoaiToken: string;
 
@@ -23,8 +23,8 @@ export interface AccessControlStore {
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
   switchAOAI: (_: boolean) => void;
-  updateDomainName: (_: string) => void;
-  updateDeployName: (_: string) => void;
+  updateAzureEndpoint: (_: string) => void;
+  updateAzureDeployName: (_: string) => void;
   updateAOAIToken: (_: string) => void;
   updateOpenAiUrl: (_: string) => void;
   enabledAccessControl: () => boolean;
@@ -45,7 +45,7 @@ export const useAccessStore = create<AccessControlStore>()(
       accessCode: "",
 
       enableAOAI: false as boolean,
-      azureDomainName: "",
+      azureEndpoint: "",
       azureDeployName: "",
       aoaiToken: "",
 
@@ -69,10 +69,10 @@ export const useAccessStore = create<AccessControlStore>()(
       switchAOAI(switchStatus: boolean) {
         set((state) => ({ enableAOAI: switchStatus }));
       },
-      updateDomainName(azureDomainName: string) {
-        set((state) => ({ azureDomainName }));
+      updateAzureEndpoint(azureEndpoint: string) {
+        set((state) => ({ azureEndpoint }));
       },
-      updateDeployName(azureDeployName: string) {
+      updateAzureDeployName(azureDeployName: string) {
         set((state) => ({ azureDeployName }));
       },
       updateAOAIToken(aoaiToken: string) {
@@ -88,7 +88,7 @@ export const useAccessStore = create<AccessControlStore>()(
         // has token or has code or disabled access control
         if (get().enableAOAI) {
           return (
-            !!get().azureDomainName &&
+            !!get().azureEndpoint &&
             !!get().azureDeployName &&
             !!get().aoaiToken
           );
