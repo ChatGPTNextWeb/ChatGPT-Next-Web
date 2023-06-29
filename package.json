@@ -4,7 +4,7 @@
   "license": "mit",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "cross-env BUILD_MODE=standalone next build",
     "start": "next start",
     "lint": "next lint",
     "export": "cross-env BUILD_MODE=export BUILD_APP=1 yarn build",
@@ -55,7 +55,8 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.7",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "webpack": "^5.88.1"
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2"
