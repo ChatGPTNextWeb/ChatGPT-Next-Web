@@ -44,9 +44,9 @@ const Plans = () => {
             
             <div className={`${styles.plan} ${styles["ultimate-value-plan"]}`}>
               <p className={styles.type}>5 YEARLY</p>
-              <h2 className={styles.price}>$299</h2>
+              <h2 className={styles.price}>$5/m</h2>
               <p className={styles.description}>
-                Ultimate Plan for Prime Users With Ultimate Savings
+                Ultimate Plan for Prime Users With Ultimate Savings | Billed at just $299/5y
               </p>
               <IconButton
                 onClick={() => {
@@ -60,9 +60,9 @@ const Plans = () => {
             
             <div className={styles.plan}>
               <p className={styles.type}>Annual</p>
-              <h2 className={styles.price}>$149</h2>
+              <h2 className={styles.price}>$12.5/m</h2>
               <p className={styles.description}>
-                Yearly Plan For PRO Users
+                Yearly Plan For PRO Users | Billed at just $149/y
               </p>
               <IconButton
                 onClick={() => {
@@ -74,27 +74,12 @@ const Plans = () => {
               />
             </div>
             
-            <div className={styles.plan}>
-              <p className={styles.type}>WEEKLY</p>
-              <h2 className={styles.price}>$5</h2>
-              <p className={styles.description}>
-                Weekly Plan For Students
-              </p>
-              <IconButton
-                onClick={() => {
-                  onOpen("app-USD-Weekly");
-                }}
-                bordered
-                className={styles.button}
-                text="Subscribe 💖"
-              />
-            </div>
-          </div>
+            
           
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
-              <h2 className={styles.price}>$9</h2>
+              <h2 className={styles.price}>$9/m</h2>
               <p className={styles.description}>
                 WhatsApp Bot
               </p>
@@ -102,7 +87,7 @@ const Plans = () => {
           
             <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
-              <h2 className={styles.price}>$9</h2>
+              <h2 className={styles.price}>$9/m</h2>
               <p className={styles.description}>
                 Telegram Bot
               </p>
