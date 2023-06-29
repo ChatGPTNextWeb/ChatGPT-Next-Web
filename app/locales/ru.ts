@@ -61,13 +61,7 @@ const ru: PartialLocaleType = {
   Settings: {
     Title: "Настройки",
     SubTitle: "Все настройки",
-    Actions: {
-      ClearAll: "Очистить все данные",
-      ResetAll: "Сбросить все настройки",
-      Close: "Закрыть",
-      ConfirmResetAll: "Вы уверены, что хотите сбросить все настройки?",
-      ConfirmClearAll: "Вы уверены, что хотите очистить все данные?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Все языки",
@@ -157,6 +151,11 @@ const ru: PartialLocaleType = {
       SubTitle:
         "Чем выше значение, тем больше вероятность общения на новые темы",
     },
+    FrequencyPenalty: {
+      Title: "Штраф за частоту",
+      SubTitle:
+        "Большее значение снижает вероятность повторения одной и той же строки",
+    },
   },
   Store: {
     DefaultTopic: "Новый разговор",
@@ -231,6 +230,12 @@ const ru: PartialLocaleType = {
     Close: "Закрыть",
     Create: "Создать",
     Edit: "Редактировать",
+  },
+  Exporter: {
+    Model: "Модель",
+    Messages: "Сообщения",
+    Topic: "Тема",
+    Time: "Время",
   },
 };
 

@@ -33,6 +33,7 @@ export enum StoreKey {
   Mask = "mask-store",
   Prompt = "prompt-store",
   Update = "chat-update",
+  Sync = "sync",
 }
 
 export const MAX_SIDEBAR_WIDTH = 500;
@@ -52,3 +53,10 @@ export const OpenaiPath = {
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
 };
+
+export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
+export const DEFAULT_SYSTEM_TEMPLATE = `
+You are ChatGPT, a large language model trained by OpenAI.
+Knowledge cutoff: 2021-09
+Current model: {{model}}
+Current time: {{time}}`;
