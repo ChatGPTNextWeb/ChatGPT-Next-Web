@@ -377,7 +377,8 @@ export function Settings() {
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  const showUsage = accessStore.isAuthorized();
+  // For now azure openai api do not expose usage api
+  const showUsage = accessStore.isAuthorized() && !accessStore.enableAOAI;
   useEffect(() => {
     // checks per minutes
     checkUpdate();
