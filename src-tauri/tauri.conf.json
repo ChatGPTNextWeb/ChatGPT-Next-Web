@@ -4,11 +4,12 @@
     "beforeBuildCommand": "yarn export",
     "beforeDevCommand": "yarn export:dev",
     "devPath": "http://localhost:3000",
-    "distDir": "../out"
+    "distDir": "../out",
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "chatgpt-next-web",
-    "version": "2.8.4"
+    "version": "2.8.5"
   },
   "tauri": {
     "allowlist": {
@@ -17,8 +18,18 @@
         "all": false,
         "open": true
       },
+      "dialog": {
+        "all": true,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
+      },
       "clipboard": {
-        "all": true
+        "all": true,
+        "writeText": true,
+        "readText": true
       },
       "window": {
         "all": false,
