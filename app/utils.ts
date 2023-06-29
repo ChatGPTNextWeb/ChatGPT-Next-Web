@@ -8,7 +8,12 @@ export function trimTopic(topic: string) {
 
 export async function copyToClipboard(text: string) {
   try {
-    await navigator.clipboard.writeText(text);
+    if (window.__TAURI__) {
+      window.__TAURI__.writeText(text);
+    } else {
+      await navigator.clipboard.writeText(text);
+    }
+
     showToast(Locale.Copy.Success);
   } catch (error) {
     const textArea = document.createElement("textarea");
