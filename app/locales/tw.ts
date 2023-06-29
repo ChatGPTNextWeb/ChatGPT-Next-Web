@@ -59,13 +59,7 @@ const tw: PartialLocaleType = {
   Settings: {
     Title: "設定",
     SubTitle: "設定選項",
-    Actions: {
-      ClearAll: "清除所有資料",
-      ResetAll: "重設所有設定",
-      Close: "關閉",
-      ConfirmResetAll: "您確定要重設所有設定嗎？",
-      ConfirmClearAll: "您確定要清除所有数据嗎？",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
