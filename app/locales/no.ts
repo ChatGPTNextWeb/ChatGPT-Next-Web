@@ -56,11 +56,7 @@ const no: PartialLocaleType = {
   Settings: {
     Title: "Innstillinger",
     SubTitle: "Alle innstillinger",
-    Actions: {
-      ClearAll: "Fjern alle data",
-      ResetAll: "Nullstill innstillinger",
-      Close: "Lukk",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
     },
