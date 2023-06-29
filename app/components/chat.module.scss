@@ -251,6 +251,12 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  &:hover {
+    .chat-message-edit {
+      opacity: 0.9;
+    }
+  }
 }
 
 .chat-message-user > .chat-message-container {
@@ -259,6 +265,23 @@
 
 .chat-message-avatar {
   margin-top: 20px;
+  position: relative;
+
+  .chat-message-edit {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all ease 0.3s;
+
+    button {
+      padding: 7px;
+    }
+  }
 }
 
 .chat-message-status {
