@@ -46,7 +46,7 @@ const Plans = () => {
               <p className={styles.type}>5 YEARLY</p>
               <h2 className={styles.price}>$5/m</h2>
               <p className={styles.description}>
-                Ultimate Plan for Prime Users  | Billed at just $299/5y
+                Ultimate Plan for Prime Users | Billed at just $299/5y
               <p className={styles.description}>
                 🆓 USE BOTS AT NO EXTRA CHARGES 😲
 
