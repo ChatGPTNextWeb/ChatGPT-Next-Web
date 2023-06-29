@@ -31,13 +31,13 @@ export const DEFAULT_CONFIG = {
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
 
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
-    temperature: 0.5,
-    max_tokens: 2000,
+    model: "gpt-4" as ModelType,
+    temperature: 0.7,
+    max_tokens: 100000,
     presence_penalty: 0,
-    frequency_penalty: 0,
-    sendMemory: true,
-    historyMessageCount: 4,
+    frequency_penalty: 0.5,
+    sendMemory: false,
+    historyMessageCount: 1000,
     compressMessageLengthThreshold: 1000,
     template: DEFAULT_INPUT_TEMPLATE,
   },
@@ -147,7 +147,7 @@ export const ModalConfigValidator = {
     return limitModel(x) as ModelType;
   },
   max_tokens(x: number) {
-    return limitNumber(x, 0, 32000, 2000);
+    return limitNumber(x, 0, 100000, 2000);
   },
   presence_penalty(x: number) {
     return limitNumber(x, -2, 2, 0);
