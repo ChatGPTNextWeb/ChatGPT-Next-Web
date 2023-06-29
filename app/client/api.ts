@@ -1,5 +1,6 @@
+import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX } from "../constant";
-import { ChatMessage, ModelConfig, ModelType, useAccessStore } from "../store";
+import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 
 export const ROLES = ["system", "user", "assistant"] as const;
@@ -42,6 +43,27 @@ export abstract class LLMApi {
   abstract usage(): Promise<LLMUsage>;
 }
 
+type ProviderName = "openai" | "azure" | "claude" | "palm";
+
+interface Model {
+  name: string;
+  provider: ProviderName;
+  ctxlen: number;
+}
+
+interface ChatProvider {
+  name: ProviderName;
+  apiConfig: {
+    baseUrl: string;
+    apiKey: string;
+    summaryModel: Model;
+  };
+  models: Model[];
+
+  chat: () => void;
+  usage: () => void;
+}
+
 export class ClientApi {
   public llm: LLMApi;
 
@@ -72,7 +94,11 @@ export class ClientApi {
     // Please do not modify this message
 
     console.log("[Share]", msgs);
-    const res = await fetch("/sharegpt", {
+    const clientConfig = getClientConfig();
+    const proxyUrl = "/sharegpt";
+    const rawUrl = "https://sharegpt.com/api/conversations";
+    const shareUrl = clientConfig?.isApp ? rawUrl : proxyUrl;
+    const res = await fetch(shareUrl, {
       body: JSON.stringify({
         avatarUrl,
         items: msgs,

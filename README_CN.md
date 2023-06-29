@@ -98,9 +98,11 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
-## 开发
+### `HIDE_BALANCE_QUERY` （可选）
 
-> 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
+如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+
+## 开发
 
 点击下方按钮，开始二次开发：
 
@@ -110,6 +112,9 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 ```
 OPENAI_API_KEY=<your api key here>
+
+# 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
+BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
@@ -144,6 +149,12 @@ docker run -d -p 3000:3000 \
    --net=host \
    -e PROXY_URL="http://127.0.0.1:7890" \
    yidadaa/chatgpt-next-web
+```
+
+如果你的本地代理需要账号密码，可以使用：
+
+```shell
+-e PROXY_URL="http://127.0.0.1:7890 user password"
 ```
 
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
