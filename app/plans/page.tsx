@@ -32,6 +32,9 @@ const Plans = () => {
               <p className={styles.description}>
                 Monthly Plan For Casual User
               </p>
+              <p className={styles.description}>
+                Billed at just $19/m
+              </p>
               <IconButton
                 onClick={() => {
                   onOpen("app-USD-Monthly");
@@ -43,13 +46,13 @@ const Plans = () => {
             </div>
             
             <div className={`${styles.plan} ${styles["ultimate-value-plan"]}`}>
-              <p className={styles.type}>5 YEARLY</p>
+              <p className={styles.type}>5 YEARLY </p>
               <h2 className={styles.price}>$5/m</h2>
               <p className={styles.description}>
-                Ultimate Plan for Prime Users | Billed at just $299/5y
+                Ultimate Plan for Prime Users
               </p>
               <p className={styles.description}>
-                🆓 USE BOTS AT NO EXTRA CHARGES 😲
+                Billed at just $299/5y
               </p>
               <IconButton
                 onClick={() => {
@@ -65,7 +68,10 @@ const Plans = () => {
               <p className={styles.type}>Annual</p>
               <h2 className={styles.price}>$12.5/m</h2>
               <p className={styles.description}>
-                Yearly Plan For PRO Users | Billed at just $149/y
+                Yearly Plan For PRO Users
+              </p>
+                <p className={styles.description}>
+                Billed at just $149/y
               </p>
               <IconButton
                 onClick={() => {
