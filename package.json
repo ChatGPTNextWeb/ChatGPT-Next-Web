@@ -4,7 +4,7 @@
   "license": "mit",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "cross-env BUILD_MODE=standalone next build",
     "start": "next start",
     "lint": "next lint",
     "export": "cross-env BUILD_MODE=export BUILD_APP=1 yarn build",
