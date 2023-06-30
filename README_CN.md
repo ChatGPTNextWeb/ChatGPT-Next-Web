@@ -98,6 +98,10 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
+### `HIDE_BALANCE_QUERY` （可选）
+
+如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+
 ## 开发
 
 点击下方按钮，开始二次开发：
@@ -117,7 +121,7 @@ BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 
 1. 安装 nodejs 18 和 yarn，具体细节请询问 ChatGPT；
 2. 执行 `yarn install && yarn dev` 即可。⚠️ 注意：此命令仅用于本地开发，不要用于部署！
-3. 如果你想本地部署，请使用 `yarn install && yarn start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
+3. 如果你想本地部署，请使用 `yarn install && yarn build && yarn start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
 
 ## 部署
 
@@ -145,6 +149,12 @@ docker run -d -p 3000:3000 \
    --net=host \
    -e PROXY_URL="http://127.0.0.1:7890" \
    yidadaa/chatgpt-next-web
+```
+
+如果你的本地代理需要账号密码，可以使用：
+
+```shell
+-e PROXY_URL="http://127.0.0.1:7890 user password"
 ```
 
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。

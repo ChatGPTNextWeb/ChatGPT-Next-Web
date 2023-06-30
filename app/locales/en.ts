@@ -18,7 +18,7 @@ const en: LocaleType = {
     ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} messages with ChatGPT`,
+    SubTitle: (count: number) => `${count} messages`,
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
@@ -26,7 +26,19 @@ const en: LocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      Pin: "Pin",
+      PinToastContent: "Pinned 2 messages to contextual prompts",
+      PinToastAction: "View",
       Delete: "Delete",
+      Edit: "Edit",
+    },
+    Commands: {
+      new: "Start a new chat",
+      newm: "Start a new chat with mask",
+      next: "Next Chat",
+      prev: "Previous Chat",
+      clear: "Clear Context",
+      del: "Delete Chat",
     },
     InputActions: {
       Stop: "Stop",
@@ -48,7 +60,7 @@ const en: LocaleType = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += ", Shift + Enter to wrap";
       }
-      return inputHints + ", / to search prompts";
+      return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
     Config: {
@@ -100,12 +112,19 @@ const en: LocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
-    Actions: {
-      ClearAll: "Clear All Data",
-      ResetAll: "Reset All Settings",
-      Close: "Close",
-      ConfirmResetAll: "Are you sure you want to reset all configurations?",
-      ConfirmClearAll: "Are you sure you want to reset all data?",
+    Danger: {
+      Reset: {
+        Title: "Reset All Settings",
+        SubTitle: "Reset all setting items to default",
+        Action: "Reset",
+        Confirm: "Confirm to reset all settings to default?",
+      },
+      Clear: {
+        Title: "Clear All Data",
+        SubTitle: "Clear all messages and settings",
+        Action: "Clear",
+        Confirm: "Confirm to clear all messages and settings?",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -116,6 +135,12 @@ const en: LocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
+
+    InputTemplate: {
+      Title: "Input Template",
+      SubTitle: "Newest message will be filled to this template",
+    },
+
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Latest version",

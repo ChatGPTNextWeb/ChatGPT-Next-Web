@@ -18,6 +18,7 @@ import {
   PasswordInput,
   Popover,
   Select,
+  showConfirm,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -39,13 +40,14 @@ import Locale, {
 } from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
-import { Path, UPDATE_URL } from "../constant";
+import { Path, RELEASE_URL, UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
+import { useSyncStore } from "../store/sync";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -198,17 +200,114 @@ function UserPromptModal(props: { onClose?: () => void }) {
   );
 }
 
-function formatVersionDate(t: string) {
-  const d = new Date(+t);
-  const year = d.getUTCFullYear();
-  const month = d.getUTCMonth() + 1;
-  const day = d.getUTCDate();
+function DangerItems() {
+  const chatStore = useChatStore();
+  const appConfig = useAppConfig();
 
-  return [
-    year.toString(),
-    month.toString().padStart(2, "0"),
-    day.toString().padStart(2, "0"),
-  ].join("");
+  return (
+    <List>
+      <ListItem
+        title={Locale.Settings.Danger.Reset.Title}
+        subTitle={Locale.Settings.Danger.Reset.SubTitle}
+      >
+        <IconButton
+          text={Locale.Settings.Danger.Reset.Action}
+          onClick={async () => {
+            if (await showConfirm(Locale.Settings.Danger.Reset.Confirm)) {
+              appConfig.reset();
+            }
+          }}
+          type="danger"
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Danger.Clear.Title}
+        subTitle={Locale.Settings.Danger.Clear.SubTitle}
+      >
+        <IconButton
+          text={Locale.Settings.Danger.Clear.Action}
+          onClick={async () => {
+            if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
+              chatStore.clearAllData();
+            }
+          }}
+          type="danger"
+        />
+      </ListItem>
+    </List>
+  );
+}
+
+function SyncItems() {
+  const syncStore = useSyncStore();
+  const webdav = syncStore.webDavConfig;
+
+  // not ready: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/920#issuecomment-1609866332
+  return null;
+
+  return (
+    <List>
+      <ListItem
+        title={"上次同步：" + new Date().toLocaleString()}
+        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
+      >
+        <IconButton
+          icon={<ResetIcon />}
+          text="同步"
+          onClick={() => {
+            syncStore.check().then(console.log);
+          }}
+        />
+      </ListItem>
+
+      <ListItem
+        title={"本地备份"}
+        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
+      ></ListItem>
+
+      <ListItem
+        title={"Web Dav Server"}
+        subTitle={Locale.Settings.AccessCode.SubTitle}
+      >
+        <input
+          value={webdav.server}
+          type="text"
+          placeholder={"https://example.com"}
+          onChange={(e) => {
+            syncStore.update(
+              (config) => (config.server = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+
+      <ListItem title="Web Dav User Name" subTitle="user name here">
+        <input
+          value={webdav.username}
+          type="text"
+          placeholder={"username"}
+          onChange={(e) => {
+            syncStore.update(
+              (config) => (config.username = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+
+      <ListItem title="Web Dav Password" subTitle="password here">
+        <input
+          value={webdav.password}
+          type="text"
+          placeholder={"password"}
+          onChange={(e) => {
+            syncStore.update(
+              (config) => (config.password = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </List>
+  );
 }
 
 export function Settings() {
@@ -216,14 +315,14 @@ export function Settings() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
-  const resetConfig = config.reset;
   const chatStore = useChatStore();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = formatVersionDate(updateStore.version);
-  const remoteId = formatVersionDate(updateStore.remoteVersion);
+  const currentVersion = updateStore.formatVersion(updateStore.version);
+  const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
   const hasNewVersion = currentVersion !== remoteId;
+  const updateUrl = getClientConfig()?.isApp ? RELEASE_URL : UPDATE_URL;
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
@@ -231,14 +330,8 @@ export function Settings() {
       setCheckingUpdate(false);
     });
 
-    console.log(
-      "[Update] local version ",
-      new Date(+updateStore.version).toLocaleString(),
-    );
-    console.log(
-      "[Update] remote version ",
-      new Date(+updateStore.remoteVersion).toLocaleString(),
-    );
+    console.log("[Update] local version ", updateStore.version);
+    console.log("[Update] remote version ", updateStore.remoteVersion);
   }
 
   const usage = {
@@ -301,36 +394,13 @@ export function Settings() {
           </div>
         </div>
         <div className="window-actions">
-          <div className="window-action-button">
-            <IconButton
-              icon={<ClearIcon />}
-              onClick={() => {
-                if (confirm(Locale.Settings.Actions.ConfirmClearAll)) {
-                  chatStore.clearAllData();
-                }
-              }}
-              bordered
-              title={Locale.Settings.Actions.ClearAll}
-            />
-          </div>
-          <div className="window-action-button">
-            <IconButton
-              icon={<ResetIcon />}
-              onClick={() => {
-                if (confirm(Locale.Settings.Actions.ConfirmResetAll)) {
-                  resetConfig();
-                }
-              }}
-              bordered
-              title={Locale.Settings.Actions.ResetAll}
-            />
-          </div>
+          <div className="window-action-button"></div>
+          <div className="window-action-button"></div>
           <div className="window-action-button">
             <IconButton
               icon={<CloseIcon />}
               onClick={() => navigate(Path.Home)}
               bordered
-              title={Locale.Settings.Actions.Close}
             />
           </div>
         </div>
@@ -372,7 +442,7 @@ export function Settings() {
             {checkingUpdate ? (
               <LoadingIcon />
             ) : hasNewVersion ? (
-              <Link href={UPDATE_URL} target="_blank" className="link">
+              <Link href={updateUrl} target="_blank" className="link">
                 {Locale.Settings.Update.GoToUpdate}
               </Link>
             ) : (
@@ -522,29 +592,31 @@ export function Settings() {
             </ListItem>
           ) : null}
 
-          <ListItem
-            title={Locale.Settings.Usage.Title}
-            subTitle={
-              showUsage
-                ? loadingUsage
-                  ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
-                : Locale.Settings.Usage.NoAccess
-            }
-          >
-            {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={() => checkUsage(true)}
-              />
-            )}
-          </ListItem>
+          {!accessStore.hideBalanceQuery ? (
+            <ListItem
+              title={Locale.Settings.Usage.Title}
+              subTitle={
+                showUsage
+                  ? loadingUsage
+                    ? Locale.Settings.Usage.IsChecking
+                    : Locale.Settings.Usage.SubTitle(
+                        usage?.used ?? "[?]",
+                        usage?.subscription ?? "[?]",
+                      )
+                  : Locale.Settings.Usage.NoAccess
+              }
+            >
+              {!showUsage || loadingUsage ? (
+                <div />
+              ) : (
+                <IconButton
+                  icon={<ResetIcon></ResetIcon>}
+                  text={Locale.Settings.Usage.Check}
+                  onClick={() => checkUsage(true)}
+                />
+              )}
+            </ListItem>
+          ) : null}
 
           {!accessStore.hideUserApiKey ? (
             <ListItem
@@ -554,6 +626,7 @@ export function Settings() {
               <input
                 type="text"
                 value={accessStore.openaiUrl}
+                placeholder="https://api.openai.com/"
                 onChange={(e) =>
                   accessStore.updateOpenAiUrl(e.currentTarget.value)
                 }
@@ -594,6 +667,8 @@ export function Settings() {
           </ListItem>
         </List>
 
+        <SyncItems />
+
         <List>
           <ModelConfigList
             modelConfig={config.modelConfig}
@@ -608,6 +683,8 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
+
+        <DangerItems />
       </div>
     </ErrorBoundary>
   );

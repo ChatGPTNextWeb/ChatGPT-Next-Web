@@ -17,7 +17,7 @@ const cn = {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `共 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -25,7 +25,19 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
+      Pin: "固定",
+      PinToastContent: "已将 2 条对话固定至预设提示词",
+      PinToastAction: "查看",
       Delete: "删除",
+      Edit: "编辑",
+    },
+    Commands: {
+      new: "新建聊天",
+      newm: "从面具新建聊天",
+      next: "下一个聊天",
+      prev: "上一个聊天",
+      clear: "清除上下文",
+      del: "删除聊天",
     },
     InputActions: {
       Stop: "停止响应",
@@ -47,7 +59,7 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全";
+      return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
     Config: {
@@ -97,13 +109,21 @@ const cn = {
   },
   Settings: {
     Title: "设置",
-    SubTitle: "设置选项",
-    Actions: {
-      ClearAll: "清除所有数据",
-      ResetAll: "重置所有选项",
-      Close: "关闭",
-      ConfirmResetAll: "确认重置所有配置？",
-      ConfirmClearAll: "确认清除所有数据？",
+    SubTitle: "所有设置选项",
+
+    Danger: {
+      Reset: {
+        Title: "重置所有设置",
+        SubTitle: "重置所有设置项回默认值",
+        Action: "立即重置",
+        Confirm: "确认重置所有设置？",
+      },
+      Clear: {
+        Title: "清除所有数据",
+        SubTitle: "清除所有聊天、设置数据",
+        Action: "立即清除",
+        Confirm: "确认清除所有聊天、设置数据？",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -113,6 +133,11 @@ const cn = {
     FontSize: {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
+    },
+
+    InputTemplate: {
+      Title: "用户输入预处理",
+      SubTitle: "用户最新的一条消息会填充到此模板",
     },
 
     Update: {
