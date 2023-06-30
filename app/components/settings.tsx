@@ -351,16 +351,18 @@ export function Settings() {
       <div className={styles["settings"]}>
         <List>
           <ListItem
-            title={`Total used tokens for gpt 4 at ${getCurrentFormatedDate()}`}
+            title={`GPT-4 Tokens in the month ${getCurrentFormatedDate()}`}
           >
             <div className={styles.avatar}>{getTokensCountForMonth()[1]}</div>
           </ListItem>
           <ListItem
-            title={`Total used tokens for gpt 3 at ${getCurrentFormatedDate()}`}
+            title={`GPT-3.5 Tokens in the month ${getCurrentFormatedDate()}`}
           >
             <div className={styles.avatar}>{getTokensCountForMonth()[0]}</div>
           </ListItem>
+        </List>
 
+        <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
