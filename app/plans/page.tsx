@@ -23,8 +23,9 @@ const Plans = () => {
         />
       </div>
       <div className={styles.container}>
-        <h1 className={styles.heading}>Subscribe</h1>
+        
         <div className={styles.planContainer}>
+          <h1 className={styles.price}>SUBSCRIBE</h1>
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>Monthly</p>
@@ -104,12 +105,10 @@ const Plans = () => {
             </div>
           </div>
 
-          
-        </div>
-
-        <p className={styles.description}>
+          <p className={styles.type}>
                 * F.U.P.- 10 Lakhs Token for GPT-3.5-TurboGPT & 1 Lakh Tokens for GPT-4 per month.
               </p>
+        </div>
       </div>
     </div>
   );
