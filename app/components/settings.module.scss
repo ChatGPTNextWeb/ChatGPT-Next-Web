@@ -60,6 +60,8 @@ $ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
 
       .user-prompt-header {
         max-width: calc(100% - 100px);
+        background: #333333;
+        background: linear-gradient(135deg, rgba(51,51,51,1) 50%, rgba(2,2,2,1) 100%);
 
         .user-prompt-title {
           font-size: 14px;
