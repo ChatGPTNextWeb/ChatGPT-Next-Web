@@ -193,16 +193,18 @@ export function SideBar(props: { className?: string }) {
             />
           </div>
           
-          {/*<div className={styles["sidebar-action"]}>
-            <Link href='/settings'>
-              <IconButton icon={<SettingsIcon />} shadow />
-            </Link>
-          </div> */}
-          {/*<div className={styles["sidebar-action"]}>
+          <div className={styles["sidebar-action"]}>
             <Link href='https://cognitiev.com/'>
-              <IconButton icon={<HomeIcon />} shadow />
+              <a>
+                <IconButton
+               icon={<HomeIcon />}
+               className={styles["sidebar-bar-button"]}
+                  shadow 
+                />
+              </a>
             </Link>
-          </div>*/}
+          </div>
+          
           <div className={styles["sidebar-action"]}>
             <Link href='/account/plans'>
               <a>
