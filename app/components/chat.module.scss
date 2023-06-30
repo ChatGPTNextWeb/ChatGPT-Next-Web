@@ -239,6 +239,19 @@
   &:last-child {
     animation: slide-in ease 0.3s;
   }
+
+  &:hover {
+    .chat-message-actions {
+      opacity: 1;
+      transform: translateY(0px);
+      max-width: 100%;
+      height: 40px;
+    }
+
+    .chat-message-action-date {
+      opacity: 0.2;
+    }
+  }
 }
 
 .chat-message-user {
@@ -305,45 +318,40 @@
   position: relative;
   transition: all ease 0.3s;
 
-  &:hover {
-    .chat-message-actions {
-      opacity: 1;
-      transform: translateY(0px);
-      max-width: 100%;
-      height: 40px;
-
-      .chat-message-action-date {
-        opacity: 0.3;
-      }
-    }
-  }
-
   .chat-message-actions {
     display: flex;
     box-sizing: border-box;
     font-size: 12px;
     align-items: flex-end;
     justify-content: space-between;
-    transition: all ease 0.3s;
-    transform: translateY(10px);
+    transition: all ease 0.3s 0.15s;
+    transform: translateX(-5px) scale(0.9) translateY(30px);
     opacity: 0;
     height: 0;
     max-width: 0;
+    position: absolute;
+    left: 0;
+    z-index: 2;
 
     .chat-input-actions {
       display: flex;
       flex-wrap: nowrap;
     }
   }
+}
 
-  .chat-message-action-date {
-    white-space: nowrap;
-    transition: all ease 0.6s;
-    color: var(--black);
-    opacity: 0;
-    text-align: right;
-    margin-left: 20px;
-  }
+.chat-message-action-date {
+  font-size: 12px;
+  opacity: 0.2;
+  white-space: nowrap;
+  transition: all ease 0.6s;
+  color: var(--black);
+  text-align: right;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 10px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
