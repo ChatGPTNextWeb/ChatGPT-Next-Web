@@ -42,6 +42,7 @@ import {
 } from "../utils";
 
 import dynamic from "next/dynamic";
+import { useUser } from "@clerk/nextjs";
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
@@ -59,10 +60,16 @@ import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { changeTheme } from "../store/theme.server";
+import { encode } from "gpt-tokenizer";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
+
+function tokensCount(input: string) {
+  let tokensCount = encode(input).length;
+  return tokensCount;
+}
 
 function exportMessages(messages: ChatMessage[], topic: string) {
   const mdText =
@@ -415,6 +422,7 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const onChatBodyScroll = (e: HTMLElement) => {
@@ -485,6 +493,25 @@ export function Chat() {
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("en-US");
+
+    const propmtTokensCount = tokensCount(userInput);
+    if (user) {
+      let oldTokensCount = null;
+      if (user.unsafeMetadata?.propmtTokensCount)
+        oldTokensCount = (user.unsafeMetadata?.propmtTokensCount as any)[
+          formattedDate
+        ] as number;
+      if (!oldTokensCount) oldTokensCount = 0;
+
+      const updateData = {} as any;
+      updateData[formattedDate] = oldTokensCount + propmtTokensCount;
+      user.update({
+        unsafeMetadata: { propmtTokensCount: updateData },
+      });
+    }
+
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
   };
