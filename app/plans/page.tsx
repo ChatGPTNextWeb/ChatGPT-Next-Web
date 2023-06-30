@@ -102,8 +102,11 @@ const Plans = () => {
                 Telegram Bot
               </p>
             </div>
-           </div>
-      
+          </div>
+
+          <p className={styles.description}>
+                * F.U.P.- 10 Lakhs Token for GPT-3.5-TurboGPT & 1 Lakh Tokens for GPT-4 per month.
+              </p>
         </div>
       </div>
     </div>
