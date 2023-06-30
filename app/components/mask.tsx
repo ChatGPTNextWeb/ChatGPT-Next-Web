@@ -18,7 +18,7 @@ import { ROLES } from "../client/api";
 import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
 import { useEffect, useState } from "react";
@@ -310,6 +310,7 @@ export function MaskPage() {
       } catch {}
     });
   };
+  const { state } = useLocation();
 
   return (
     <ErrorBoundary>
@@ -409,6 +410,16 @@ export function MaskPage() {
                   </div>
                 </div>
                 <div className={styles["mask-actions"]}>
+                  {state?.fromgroup && (
+                    <IconButton
+                      icon={<AddIcon />}
+                      text={Locale.Mask.Item.Invite}
+                      onClick={() => {
+                        chatStore.newSession(m);
+                        navigate(Path.Chat);
+                      }}
+                    />
+                  )}
                   <IconButton
                     icon={<AddIcon />}
                     text={Locale.Mask.Item.Chat}
