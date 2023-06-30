@@ -164,12 +164,12 @@ const de: PartialLocaleType = {
       "Etwas ist schief gelaufen, bitte versuchen Sie es später noch einmal.",
     Prompt: {
       History: (content: string) =>
-        "Dies ist eine Zusammenfassung des Chatverlaufs zwischen dem KI und dem Benutzer als Rückblick: " +
+        "Summary of the past dialogue, to support contextual continuity for the dialogue: " +
         content,
       Topic:
         "Bitte erstellen Sie einen vier- bis fünfwörtigen Titel, der unser Gespräch zusammenfasst, ohne Einleitung, Zeichensetzung, Anführungszeichen, Punkte, Symbole oder zusätzlichen Text. Entfernen Sie Anführungszeichen.",
       Summarize:
-        "Fassen Sie unsere Diskussion kurz in 200 Wörtern oder weniger zusammen, um sie als Pronpt für zukünftige Gespräche zu verwenden.",
+        "Create a short summary of the dialogue (300 words or less) to support contextual continuity for the dialogue to come.",
     },
   },
   Copy: {
