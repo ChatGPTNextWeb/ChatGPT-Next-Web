@@ -172,17 +172,6 @@ export function SideBar(props: { className?: string }) {
       </div>
 
       <div className={styles["sidebar-tail"]}>
-        <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"] + " " + styles.mobile}>
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={() => {
-                if (confirm(Locale.Home.DeleteChat)) {
-                  chatStore.deleteSession(chatStore.currentSessionIndex);
-                }
-              }}
-            />
-          </div>
           
           <div className={styles["sidebar-action"]}>
             <IconButton
@@ -206,12 +195,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           
-          { /*<div className={styles["sidebar-action"]}>
-           <a href={REPO_URL} target="_blank">
-             <IconButton icon={<GithubIcon />} shadow />
-            </a>
-          </div> */ }
-        </div>
+        
         <div>
           <IconButton
             icon={<AddIcon />}
