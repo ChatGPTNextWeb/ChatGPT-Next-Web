@@ -351,12 +351,12 @@ export function Settings() {
       <div className={styles["settings"]}>
         <List>
           <ListItem
-            title={`GPT-4 Tokens ${getCurrentFormatedDate()}`}
+            title={`GPT-4 Usage in ${getCurrentFormatedDate()}`}
           >
             <div className={styles.avatar}>{getTokensCountForMonth()[1]}</div>
           </ListItem>
           <ListItem
-            title={`GPT-3.5 Tokens ${getCurrentFormatedDate()}`}
+            title={`GPT-3.5 Usage in ${getCurrentFormatedDate()}`}
           >
             <div className={styles.avatar}>{getTokensCountForMonth()[0]}</div>
           </ListItem>
