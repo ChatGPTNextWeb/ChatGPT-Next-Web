@@ -173,7 +173,7 @@ export function SideBar(props: { className?: string }) {
 
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
-          {/*<div className={styles["sidebar-action"] + " " + styles.mobile}>
+          <div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
               icon={<CloseIcon />}
               onClick={() => {
@@ -182,7 +182,7 @@ export function SideBar(props: { className?: string }) {
                 }
               }}
             />
-          </div>*/}
+          </div>
           
           <div className={styles["sidebar-action"]}>
             <IconButton
@@ -193,17 +193,6 @@ export function SideBar(props: { className?: string }) {
             />
           </div>
           
-          <div className={styles["sidebar-action"]}>
-            <Link href='https://cognitiev.com/'>
-              <a>
-                <IconButton
-               icon={<HomeIcon />}
-               className={styles["sidebar-bar-button"]}
-                  shadow 
-                />
-              </a>
-            </Link>
-          </div>
           
           <div className={styles["sidebar-action"]}>
             <Link href='/account/plans'>
