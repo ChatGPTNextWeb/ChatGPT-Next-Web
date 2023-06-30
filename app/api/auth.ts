@@ -4,19 +4,19 @@ import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
 
 function getIP(req: NextRequest) {
-  let ip = req.ip ?? req.headers.get("x-real-ip");
-  const forwardedFor = req.headers.get("x-forwarded-for");
+  let ip = req.ip ?? req.headers["x-real-ip"];
+  const forwardedFor = req.headers["x-forwarded-for"];
 
   if (!ip && forwardedFor) {
-    ip = forwardedFor.split(",").at(0) ?? "";
+    [ip] = forwardedFor.split(",") ?? [""];
   }
 
   return ip;
 }
 
 function parseApiKey(bearToken: string) {
-  const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+  const token = bearToken.trim();
+  const isOpenAiKey = !token.startsWith("Bearer ");
 
   return {
     accessCode: isOpenAiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
@@ -25,38 +25,38 @@ function parseApiKey(bearToken: string) {
 }
 
 export function auth(req: NextRequest) {
-  const authToken = req.headers.get("Authorization") ?? "";
+  const authToken = req.headers.get("Authorization") || "";
 
-  // check if it is openai api key or user token
+  // check if it is an OpenAI API key or a user token
   const { accessCode, apiKey: token } = parseApiKey(authToken);
 
-  const hashedCode = md5.hash(accessCode ?? "").trim();
+  const hashedCode = md5.hash(accessCode || "").trim();
 
   const serverConfig = getServerSideConfig();
-  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
+  console.log("[Auth] allowed hashed codes:", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
   console.log("[Auth] hashed access code:", hashedCode);
-  console.log("[User IP] ", getIP(req));
-  console.log("[Time] ", new Date().toLocaleString());
+  console.log("[User IP]:", getIP(req));
+  console.log("[Time]:", new Date().toLocaleString());
 
   if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
     return {
       error: true,
-      msg: !accessCode ? "empty access code" : "wrong access code",
+      msg: accessCode ? "wrong access code" : "empty access code",
     };
   }
 
-  // if user does not provide an api key, inject system api key
+  // if the user does not provide an API key, inject the system API key
   if (!token) {
-    const apiKey = serverConfig.apiKey;
+    const { apiKey } = serverConfig;
     if (apiKey) {
-      console.log("[Auth] use system api key");
+      console.log("[Auth] use system API key");
       req.headers.set("Authorization", `Bearer ${apiKey}`);
     } else {
-      console.log("[Auth] admin did not provide an api key");
+      console.log("[Auth] admin did not provide an API key");
     }
   } else {
-    console.log("[Auth] use user api key");
+    console.log("[Auth] use user API key");
   }
 
   return {
