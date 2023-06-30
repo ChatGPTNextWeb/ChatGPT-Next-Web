@@ -31,6 +31,8 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 
+import AddIcon from "../icons/add.svg";
+
 import {
   ChatMessage,
   SubmitKey,
@@ -66,7 +68,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
-import { useMaskStore } from "../store/mask";
+import { useMaskStore, Mask } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
@@ -398,6 +400,8 @@ export function ChatActions(props: {
     });
   }
 
+  const { state } = useLocation(); //获取被跳转路由之前传入的那个state
+
   return (
     <div className={styles["chat-input-actions"]}>
       {couldStop && (
@@ -437,7 +441,6 @@ export function ChatActions(props: {
           </>
         }
       />
-
       <ChatAction
         onClick={props.showPromptHints}
         text={Locale.Chat.InputActions.Prompt}
@@ -472,6 +475,15 @@ export function ChatActions(props: {
         text={currentModel}
         icon={<RobotIcon />}
       />
+      {state?.fromGroup && (
+        <ChatAction
+          onClick={() => {
+            navigate(Path.Masks, { state: { fromgroup: true } });
+          }}
+          text={Locale.Chat.InputActions.add}
+          icon={<AddIcon />}
+        />
+      )}
     </div>
   );
 }
@@ -784,6 +796,11 @@ export function Chat() {
 
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
+  const { state } = useLocation();
+  const startChat = (mask?: Mask) => {
+    chatStore.newSession(mask);
+    setTimeout(() => navigate(Path.Chat), 1);
+  };
 
   useCommand({
     fill: setUserInput,

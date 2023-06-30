@@ -50,6 +50,7 @@ const cn = {
       Masks: "所有面具",
       Clear: "清除聊天",
       Settings: "对话设置",
+      add: "邀请一个面具进入群聊",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -109,6 +110,7 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "设置选项",
+    Group: "定义你的群聊",
     Actions: {
       ClearAll: "清除所有数据",
       ResetAll: "重置所有选项",
@@ -120,6 +122,9 @@ const cn = {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
     },
+    groupmem: "人数",
+    groupName: "群聊名称",
+    groupUser: "用户数量",
     Avatar: "头像",
     FontSize: {
       Title: "字体大小",
@@ -196,6 +201,11 @@ const cn = {
       SubTitle: "管理员已开启加密访问",
       Placeholder: "请输入访问密码",
     },
+    groupMem: {
+      Placeholder: "请输入群聊里的人数",
+      PlaceholderName: "请输入群聊名称",
+      PlaceholderUser: "请输入用户数量",
+    },
     Endpoint: {
       Title: "接口地址",
       SubTitle: "除默认地址外，必须包含 http(s)://",
@@ -244,6 +254,9 @@ const cn = {
   Plugin: {
     Name: "插件",
   },
+  Group: {
+    Name: "群聊",
+  },
   Mask: {
     Name: "面具",
     Page: {
@@ -259,6 +272,7 @@ const cn = {
       Edit: "编辑",
       Delete: "删除",
       DeleteConfirm: "确认删除？",
+      Invite: "邀请",
     },
     EditModal: {
       Title: (readonly: boolean) =>

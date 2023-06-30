@@ -162,6 +162,7 @@
   user-select: none;
   border: 2px solid transparent;
   position: relative;
+//  border-color: rgb(168, 176, 82);
 }
 
 .chat-item:hover {
@@ -170,6 +171,10 @@
 
 .chat-item-selected {
   border-color: var(--primary);
+}
+
+.chat-item-group {
+  border-color: rgb(168, 176, 82);
 }
 
 .chat-item-title {
@@ -307,6 +312,7 @@
 
 .sidebar-actions {
   display: inline-flex;
+ 
 }
 
 .sidebar-action:not(:last-child) {

@@ -53,6 +53,8 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+
+  group: boolean;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -76,6 +78,28 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+
+    group: false, //标记群组
+  };
+}
+function createEmptySessions(): ChatSession {
+  //比原函数多加s，区分创建群聊
+  return {
+    id: Date.now() + Math.random(),
+    topic: DEFAULT_TOPIC,
+    memoryPrompt: "",
+    messages: [],
+    stat: {
+      tokenCount: 0,
+      wordCount: 0,
+      charCount: 0,
+    },
+    lastUpdate: Date.now(),
+    lastSummarizeIndex: 0,
+
+    mask: createEmptyMask(),
+
+    group: true,
   };
 }
 
@@ -87,6 +111,7 @@ interface ChatStore {
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: (mask?: Mask) => void;
+  newSessions: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   nextSession: (delta: number) => void;
@@ -204,7 +229,31 @@ export const useChatStore = create<ChatStore>()(
           sessions: [session].concat(state.sessions),
         }));
       },
+      newSessions(mask) {
+        const session = createEmptySessions();
 
+        set(() => ({ globalId: get().globalId + 1 }));
+        session.id = get().globalId;
+
+        if (mask) {
+          const config = useAppConfig.getState();
+          const globalModelConfig = config.modelConfig;
+
+          session.mask = {
+            ...mask,
+            modelConfig: {
+              ...globalModelConfig,
+              ...mask.modelConfig,
+            },
+          };
+          session.topic = mask.name;
+        }
+
+        set((state) => ({
+          currentSessionIndex: 0,
+          sessions: [session].concat(state.sessions),
+        }));
+      },
       nextSession(delta) {
         const n = get().sessions.length;
         const limit = (x: number) => (x + n) % n;

@@ -6,6 +6,16 @@ import { BOT_HELLO } from "./chat";
 import { ALL_MODELS } from "./config";
 import { getClientConfig } from "../config/client";
 
+export interface groupControlStore {
+  groupmem: number;
+  groupName: string;
+  groupUser: number;
+
+  updateMem: (_: number) => void;
+  updateName: (_: string) => void;
+  updateUser: (_: number) => void;
+}
+
 export interface AccessControlStore {
   accessCode: string;
   token: string;
