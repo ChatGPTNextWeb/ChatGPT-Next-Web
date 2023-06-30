@@ -105,6 +105,23 @@ keepalive_timeout 300;  # 设定keep-alive超时时间为65秒
 
 API KEY 有问题。余额不足。
 
+## 使用时遇到 "Error: Loading CSS chunk xxx failed..."
+
+为了减少首屏白屏时间，默认启用了分块编译，技术原理见下：
+
+- https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading
+- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
+- https://github.com/vercel/next.js/issues/38507
+- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
+
+然而 NextJS 的兼容性比较差，在比较老的浏览器上会导致此报错，可以在编译时关闭分块编译。
+
+对于 Vercel 平台，在环境变量中增加 `DISABLE_CHUNK=1`，然后重新部署即可；
+对于自行编译部署的项目，在构建时使用 `DISABLE_CHUNK=1 yarn build` 构建即可；
+对于 Docker 用户，由于 Docker 打包时已经构建完毕，所以暂不支持关闭此特性。
+
+注意，关闭此特性后，用户会在第一次访问网站时加载所有资源，如果用户网络状况较差，可能会引起较长时间的白屏，从而影响用户使用体验，所以自行考虑。
+
 # 网络服务相关问题
 
 ## Cloudflare 是什么？
