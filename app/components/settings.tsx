@@ -271,10 +271,11 @@ export function Settings() {
     if (user) {
       let gbt3Tokens = 0;
       let gbt4Tokens = 0;
-
-      gbt3Tokens = (user.unsafeMetadata[formattedDate] as any)
-        .gbt3andHalfTokens;
-      gbt4Tokens = (user.unsafeMetadata[formattedDate] as any).gbt4Tokens;
+      if (user.unsafeMetadata[formattedDate] as any) {
+        gbt3Tokens = (user.unsafeMetadata[formattedDate] as any)
+          .gbt3andHalfTokens;
+        gbt4Tokens = (user.unsafeMetadata[formattedDate] as any).gbt4Tokens;
+      }
       return [gbt3Tokens, gbt4Tokens];
     }
     return [0, 0, formattedDate];
