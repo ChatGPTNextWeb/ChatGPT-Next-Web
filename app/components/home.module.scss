@@ -167,6 +167,9 @@
 .chat-item:hover {
   background-color: var(--hover-color);
 }
+.chat-item-group {
+  border-color: rgb(168, 176, 82);
+}
 
 .chat-item-selected {
   border-color: var(--primary);

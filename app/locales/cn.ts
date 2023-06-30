@@ -80,6 +80,7 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "设置选项",
+    Group: "定义你的群聊",
     Actions: {
       ClearAll: "清除所有数据",
       ResetAll: "重置所有选项",
@@ -91,6 +92,9 @@ const cn = {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有语言",
     },
+    groupmem: "人数",
+    groupName: "群聊名称",
+    groupUser: "用户数量",
     Avatar: "头像",
     FontSize: {
       Title: "字体大小",
@@ -147,7 +151,11 @@ const cn = {
       SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
     },
-
+    groupMem: {
+      Placeholder: "请输入群聊里的人数",
+      PlaceholderName: "请输入群聊名称",
+      PlaceholderUser: "请输入用户数量",
+    },
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
@@ -202,6 +210,9 @@ const cn = {
   Plugin: {
     Name: "插件",
   },
+  Group: {
+    Name: "群聊",
+  },
   Mask: {
     Name: "面具",
     Page: {
@@ -217,6 +228,7 @@ const cn = {
       Edit: "编辑",
       Delete: "删除",
       DeleteConfirm: "确认删除？",
+      Invite: "邀请",
     },
     EditModal: {
       Title: (readonly: boolean) =>

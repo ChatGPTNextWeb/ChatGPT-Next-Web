@@ -22,6 +22,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import AddIcon from "../icons/add.svg";
 
 import {
   ChatMessage,
@@ -58,7 +59,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
-import { useMaskStore } from "../store/mask";
+import { useMaskStore, Mask } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
@@ -331,6 +332,7 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
+  const { state } = useLocation(); //获取被跳转路由之前传入的那个state
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -403,6 +405,16 @@ export function ChatActions(props: {
       >
         <BreakIcon />
       </div>
+      {state?.fromGroup && (
+        <div
+          className={`${chatStyle["chat-input-action"]} clickable`}
+          onClick={() => {
+            navigate(Path.Masks, { state: { fromgroup: true } });
+          }}
+        >
+          <AddIcon />
+        </div>
+      )}
     </div>
   );
 }
@@ -668,6 +680,11 @@ export function Chat() {
   const location = useLocation();
   const isChat = location.pathname === Path.Chat;
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
+  const { state } = useLocation();
+  const startChat = (mask?: Mask) => {
+    chatStore.newSession(mask);
+    setTimeout(() => navigate(Path.Chat), 1);
+  };
   useCommand({
     fill: setUserInput,
     submit: (text) => {
