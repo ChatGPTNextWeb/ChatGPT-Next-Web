@@ -41,6 +41,7 @@ import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { changeTheme } from "../store/theme.server";
+import { useUser } from "@clerk/nextjs";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -207,6 +208,7 @@ function formatVersionDate(t: string) {
 }
 
 export function Settings() {
+  const { user } = useUser();
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
@@ -250,6 +252,33 @@ export function Settings() {
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
+
+  const getCurrentFormatedDate = () => {
+    const currentDate: Date = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      month: "numeric",
+      year: "numeric",
+    };
+    const formattedDate: string = currentDate.toLocaleDateString(
+      "en-US",
+      options,
+    );
+    return formattedDate;
+  };
+
+  const getTokensCountForMonth = () => {
+    const formattedDate = getCurrentFormatedDate();
+    if (user) {
+      let gbt3Tokens = 0;
+      let gbt4Tokens = 0;
+
+      gbt3Tokens = (user.unsafeMetadata[formattedDate] as any)
+        .gbt3andHalfTokens;
+      gbt4Tokens = (user.unsafeMetadata[formattedDate] as any).gbt4Tokens;
+      return [gbt3Tokens, gbt4Tokens];
+    }
+    return [0, 0, formattedDate];
+  };
 
   const showUsage = accessStore.isAuthorized();
   useEffect(() => {
@@ -320,6 +349,17 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
+          <ListItem
+            title={`Total used tokens for gpt 4 at ${getCurrentFormatedDate()}`}
+          >
+            <div className={styles.avatar}>{getTokensCountForMonth()[1]}</div>
+          </ListItem>
+          <ListItem
+            title={`Total used tokens for gpt 3 at ${getCurrentFormatedDate()}`}
+          >
+            <div className={styles.avatar}>{getTokensCountForMonth()[0]}</div>
+          </ListItem>
+
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}

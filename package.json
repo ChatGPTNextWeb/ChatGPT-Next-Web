@@ -20,6 +20,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
+    "axios": "^1.4.0",
     "chargebee": "^2.22.3",
     "chargebee-typescript": "^2.20.1",
     "emoji-picker-react": "^4.4.7",

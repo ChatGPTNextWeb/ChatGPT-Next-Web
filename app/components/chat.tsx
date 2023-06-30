@@ -61,6 +61,7 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { changeTheme } from "../store/theme.server";
 import { encode } from "gpt-tokenizer";
+import { UserResource } from "@clerk/types";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -425,6 +426,53 @@ export function Chat() {
   const { user } = useUser();
   const navigate = useNavigate();
 
+  const saveTokensCount = (
+    user: UserResource | null | undefined,
+    text2Tokenize: string,
+  ) => {
+    const currentDate: Date = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      month: "numeric",
+      year: "numeric",
+    };
+    const formattedDate: string = currentDate.toLocaleDateString(
+      "en-US",
+      options,
+    );
+
+    const propmtTokensCount = tokensCount(text2Tokenize);
+
+    if (user) {
+      let gbt3Tokens = 0;
+      let gbt4Tokens = 0;
+
+      if (!user.unsafeMetadata[formattedDate])
+        user.unsafeMetadata[formattedDate] = {
+          gbt3andHalfTokens: 0,
+          gbt4Tokens: 0,
+        };
+      else if (
+        (user.unsafeMetadata[formattedDate] as any).gbt3andHalfTokens ||
+        (user.unsafeMetadata[formattedDate] as any).gbt4Tokens
+      ) {
+        gbt3Tokens = (user.unsafeMetadata[formattedDate] as any)
+          .gbt3andHalfTokens;
+        gbt4Tokens = (user.unsafeMetadata[formattedDate] as any).gbt4Tokens;
+      }
+      const updateData = user.unsafeMetadata[formattedDate] as any;
+
+      const chatModel = session.mask.modelConfig.model;
+      if (chatModel.includes("gpt-4")) {
+        updateData.gbt4Tokens = gbt4Tokens + propmtTokensCount;
+      } else updateData.gbt3andHalfTokens = gbt3Tokens + propmtTokensCount;
+      const data = user.unsafeMetadata;
+      data[formattedDate] = updateData;
+      user.update({
+        unsafeMetadata: data,
+      });
+    }
+  };
+
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
@@ -493,24 +541,16 @@ export function Chat() {
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString("en-US");
 
-    const propmtTokensCount = tokensCount(userInput);
-    if (user) {
-      let oldTokensCount = null;
-      if (user.unsafeMetadata?.propmtTokensCount)
-        oldTokensCount = (user.unsafeMetadata?.propmtTokensCount as any)[
-          formattedDate
-        ] as number;
-      if (!oldTokensCount) oldTokensCount = 0;
+    saveTokensCount(user, userInput);
 
-      const updateData = {} as any;
-      updateData[formattedDate] = oldTokensCount + propmtTokensCount;
-      user.update({
-        unsafeMetadata: { propmtTokensCount: updateData },
-      });
-    }
+    setTimeout(() => {
+      saveTokensCount(
+        user,
+        session.messages[session.messages.length - 1].content,
+      );
+      console.log(session.messages[session.messages.length - 1].content);
+    }, 7000);
 
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
