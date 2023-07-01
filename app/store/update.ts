@@ -81,8 +81,7 @@ export const useUpdateStore = create<UpdateStore>()(
 
         set(() => ({ version }));
 
-        const shouldCheck =
-          Date.now() - get().lastUpdate > 24 * 60 * ONE_MINUTE;
+        const shouldCheck = Date.now() - get().lastUpdate > 2 * 60 * ONE_MINUTE;
         if (!force && !shouldCheck) return;
 
         set(() => ({
