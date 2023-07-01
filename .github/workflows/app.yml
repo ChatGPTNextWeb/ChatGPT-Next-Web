@@ -45,10 +45,7 @@ jobs:
             rust_target: x86_64-unknown-linux-gnu
           - os: macos-latest
             arch: x86_64
-            rust_target: x86_64-apple-darwin
-          - os: macos-latest
-            arch: aarch64
-            rust_target: aarch64-apple-darwin
+            rust_target: universal-apple-darwin
           - os: windows-latest
             arch: x86_64
             rust_target: x86_64-pc-windows-msvc
