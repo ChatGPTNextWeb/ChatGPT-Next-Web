@@ -121,6 +121,8 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-sub-title"]}>
           更强的写作能力  更智能的AI模型
+           <div class="container">
+            <a class="navbar-brand smooth " style="font-size: large" href="https://xhtx.vip/">欢迎使用浩哥VIP视频解析网站，打开有惊喜哟</a>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
