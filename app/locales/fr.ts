@@ -61,14 +61,7 @@ const fr: PartialLocaleType = {
   Settings: {
     Title: "Paramètres",
     SubTitle: "Toutes les configurations",
-    Actions: {
-      ClearAll: "Effacer toutes les données",
-      ResetAll: "Réinitialiser les configurations",
-      Close: "Fermer",
-      ConfirmResetAll:
-        "Êtes-vous sûr de vouloir réinitialiser toutes les configurations?",
-      ConfirmClearAll: "Êtes-vous sûr de vouloir supprimer toutes les données?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION : si vous souhaitez ajouter une nouvelle traduction, ne traduisez pas cette valeur, laissez-la sous forme de `Language`
       All: "Toutes les langues",
