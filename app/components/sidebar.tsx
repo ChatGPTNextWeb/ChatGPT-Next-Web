@@ -127,7 +127,6 @@ export function SideBar(props: { className?: string }) {
           <ChatGptIcon />
         </div>
       </div>
-
       <div className={styles["sidebar-header-bar"]}>
         <IconButton
           icon={<MaskIcon />}
@@ -143,13 +142,13 @@ export function SideBar(props: { className?: string }) {
           onClick={() => navigate(Path.Group, { state: { fromHome: true } })}
           shadow
         />
-        <IconButton
-          icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
-          className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
-          shadow
-        />
+        {/*<IconButton*/}
+        {/*  icon={<PluginIcon />}*/}
+        {/*  text={shouldNarrow ? undefined : Locale.Plugin.Name}*/}
+        {/*  className={styles["sidebar-bar-button"]}*/}
+        {/*  onClick={() => showToast(Locale.WIP)}*/}
+        {/*  shadow*/}
+        {/*/>*/}
       </div>
 
       <div

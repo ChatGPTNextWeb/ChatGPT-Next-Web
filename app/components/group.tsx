@@ -82,12 +82,8 @@ export function Group() {
       <div className={styles["mask-header"]}>
         <div className="window-header" data-tauri-drag-region>
           <div className="window-header-title">
-            <div className="window-header-main-title">
-              {Locale.Settings.Title}
-            </div>
-            <div className="window-header-sub-title">
-              {Locale.Settings.Group}
-            </div>
+            <div className="window-header-main-title">{}</div>
+            <div className="window-header-sub-title">{}</div>
           </div>
         </div>
         <div className={styles["settings"]}>

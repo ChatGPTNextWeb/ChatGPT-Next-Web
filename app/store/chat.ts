@@ -79,6 +79,8 @@ function createEmptySession(): ChatSession {
 function createEmptySessions(): ChatSession {
   //比原函数多加s，区分创建群聊
   return {
+    clearContextIndex: 0,
+    fileUploaded: [],
     id: Date.now() + Math.random(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
@@ -92,7 +94,6 @@ function createEmptySessions(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-
     group: true,
   };
 }

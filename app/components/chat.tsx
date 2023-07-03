@@ -781,7 +781,7 @@ export function Chat() {
     //setPrompts(res.content)
   }
   function fileCount() {}
-
+  const uuid = session.id.toString();
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header">
@@ -1076,7 +1076,7 @@ export function Chat() {
         <ExportMessageModal onClose={() => setShowExport(false)} />
       )}
       {showCount && (
-        <ExportFileCountModel onClose={() => setShowCount(false)} />
+        <ExportFileCountModel onClose={() => setShowCount(false)} uuid={uuid} />
       )}
     </div>
   );

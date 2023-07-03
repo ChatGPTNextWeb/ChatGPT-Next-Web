@@ -28,23 +28,23 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
 
-export function ExportFileCountModel(props: { onClose: () => void }) {
+export function ExportFileCountModel(props: {
+  onClose: () => void;
+  uuid: string;
+}) {
   return (
     <div className="modal-mask">
       <Modal title={Locale.FileCount.Title} onClose={props.onClose}>
         <div style={{ minHeight: "40vh" }}>
-          <FileExporter />
+          <FileExporter uuid={props.uuid} />
         </div>
       </Modal>
     </div>
   );
 }
 
-async function FetchFileCount(): Promise<string[]> {
+async function FetchFileCount(uuid: string): Promise<string[]> {
   const testPath = "http://127.0.0.1:3001/api/fileCount";
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
-  const uuid = session.id.toString();
   const testBody = {
     uuid: uuid,
   };
@@ -60,11 +60,11 @@ async function FetchFileCount(): Promise<string[]> {
   return data;
 }
 
-function FileExporter() {
+function FileExporter(props: { uuid: string }) {
   const [fileCount, setFileCount] = useState<string[]>([]);
 
   useEffect(() => {
-    FetchFileCount()
+    FetchFileCount(props.uuid)
       .then((data) => setFileCount(data))
       .catch((error) => {
         console.error("Error:", error);
