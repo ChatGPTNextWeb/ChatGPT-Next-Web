@@ -49,6 +49,25 @@ export function ModelConfigList(props: {
         ></InputRange>
       </ListItem>
       <ListItem
+        title={Locale.Settings.TopP.Title}
+        subTitle={Locale.Settings.TopP.SubTitle}
+      >
+        <InputRange
+          value={(props.modelConfig.top_p ?? 1).toFixed(1)}
+          min="0"
+          max="1"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.temperature = ModalConfigValidator.top_p(
+                  e.currentTarget.valueAsNumber,
+                )),
+            );
+          }}
+        ></InputRange>
+      </ListItem>
+      <ListItem
         title={Locale.Settings.MaxTokens.Title}
         subTitle={Locale.Settings.MaxTokens.SubTitle}
       >
