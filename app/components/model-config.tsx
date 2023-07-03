@@ -60,7 +60,7 @@ export function ModelConfigList(props: {
           onChange={(e) => {
             props.updateConfig(
               (config) =>
-                (config.temperature = ModalConfigValidator.top_p(
+                (config.top_p = ModalConfigValidator.top_p(
                   e.currentTarget.valueAsNumber,
                 )),
             );
