@@ -17,6 +17,7 @@ import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import UploadFileIcon from "../icons/uploadfile.svg";
+import FileCountIcon from "../icons/fileCount.svg";
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
@@ -62,6 +63,7 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+import { ExportFileCountModel } from "./filecount";
 import tr from "@/app/locales/tr";
 import { Property } from "csstype";
 import Height = Property.Height;
@@ -418,6 +420,7 @@ export function Chat() {
   const fontSize = config.fontSize;
 
   const [showExport, setShowExport] = useState(false);
+  const [showCount, setShowCount] = useState(false);
   const [editingHeight2, setEditingHeight2] = useState<number | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -747,12 +750,20 @@ export function Chat() {
   //   }
   // };
   async function handlePostFile() {
+    const session = chatStore.currentSession();
+    let uuidValue = session.id.toString();
     let data = new FormData();
-    if (fileInputRef.current!.files)
+    data.append("uuid", uuidValue);
+    if (fileInputRef.current!.files) {
       data.append("files", fileInputRef.current!.files[0]);
+    }
     const res = await ResponseController.postPDFprompt(data);
+    if (res.text !== "") {
+      alert("It upload success!");
+    }
     //setPrompts(res.content)
   }
+  function fileCount() {}
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -797,6 +808,18 @@ export function Chat() {
                 name="pdf_file"
                 style={{ display: "none" }}
                 onChange={handlePostFile}
+              />
+            </div>
+          )}
+          {isLangchain && (
+            <div className="window-action-button">
+              <IconButton
+                icon={<FileCountIcon />}
+                bordered
+                title={Locale.Chat.Actions.Count}
+                onClick={() => {
+                  setShowCount(true);
+                }}
               />
             </div>
           )}
@@ -1034,6 +1057,9 @@ export function Chat() {
 
       {showExport && (
         <ExportMessageModal onClose={() => setShowExport(false)} />
+      )}
+      {showCount && (
+        <ExportFileCountModel onClose={() => setShowCount(false)} />
       )}
     </div>
   );

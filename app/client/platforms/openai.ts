@@ -14,6 +14,7 @@ export class ChatGPTApi implements LLMApi {
   public ChatPath = "v1/chat/completions";
   public UsagePath = "dashboard/billing/usage";
   public SubsPath = "dashboard/billing/subscription";
+
   getHistory(messages: any[]): any[] {
     const history: any[] = [];
     let systemContent: any = null;
@@ -133,7 +134,7 @@ export class ChatGPTApi implements LLMApi {
               responseText = await res.clone().text();
               return finish();
             }
-            alert("Streaming");
+            //alert("Streaming");
             //alert(sendMessage);
             if (
               !res.ok ||
@@ -190,7 +191,7 @@ export class ChatGPTApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        alert("No straming!!!");
+        //alert("No straming!!!");
         if (modelConfig.model !== "lang chain") {
           //console.log(JSON.stringify(testBody))
 
@@ -212,11 +213,14 @@ export class ChatGPTApi implements LLMApi {
           }
         } else {
           //console.log(JSON.stringify(testBody))
-
+          //alert("hhhh")
           const history = this.getHistory(messages);
-
+          //const chatstore = useChatStore();
+          const uuid = options.uuid;
+          //alert("hhhhhhh"+uuid);
           const testPath = "http://localhost:3001/api/chat/";
           const testBody = {
+            uuid: uuid,
             question: question,
             history: history,
           };
@@ -231,7 +235,7 @@ export class ChatGPTApi implements LLMApi {
           };
 
           try {
-            alert("hhhhhh");
+            //alert("hhhhhh");
             const res = await fetch(testPath, testPayload);
             clearTimeout(requestTimeoutId);
 
