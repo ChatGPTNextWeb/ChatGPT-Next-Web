@@ -16,6 +16,7 @@ const en: RequiredLocaleType = {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
       Export: "Export All Messages as Markdown",
+      Count: "Count",
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
@@ -37,6 +38,9 @@ const en: RequiredLocaleType = {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+  },
+  FileCount: {
+    Title: "FileCount",
   },
   Export: {
     Title: "Export Messages",

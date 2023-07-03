@@ -49,6 +49,7 @@ export interface ChatSession {
 
   mask: Mask;
   group: boolean;
+  fileUploaded: string[];
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -70,7 +71,7 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
-
+    fileUploaded: [],
     mask: createEmptyMask(),
     group: false,
   };
@@ -274,6 +275,7 @@ export const useChatStore = create<ChatStore>()(
       async onUserInput(content) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+
         //alert(modelConfig.model)
         const userMessage: ChatMessage = createMessage({
           role: "user",
@@ -322,7 +324,11 @@ export const useChatStore = create<ChatStore>()(
         //alert(isStreaming)
         // make request
         console.log("[User Input] ", sendMessages);
+        const chat = get().currentSession();
+        const uuid = chat.id;
+        alert("1111" + uuid);
         api.llm.chat({
+          uuid: uuid,
           messages: sendMessages,
           config: { ...modelConfig, stream: isStreaming },
           onUpdate(message) {
@@ -479,7 +485,10 @@ export const useChatStore = create<ChatStore>()(
               content: Locale.Store.Prompt.Topic,
             }),
           );
+          //alert("2222")
+          const uuid = session.id;
           api.llm.chat({
+            uuid: uuid,
             messages: topicMessages,
             config: {
               model: "gpt-3.5-turbo",
@@ -528,7 +537,10 @@ export const useChatStore = create<ChatStore>()(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
+          const uuid = session.id;
+          //alert("33333")
           api.llm.chat({
+            uuid: uuid,
             messages: toBeSummarizedMsgs.concat({
               role: "system",
               content: Locale.Store.Prompt.Summarize,

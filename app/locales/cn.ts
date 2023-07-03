@@ -15,6 +15,7 @@ const cn = {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
       Export: "导出聊天记录",
+      Count: "统计文件个数",
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
@@ -36,6 +37,9 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
+  },
+  FileCount: {
+    Title: "FileCount",
   },
   Export: {
     Title: "分享聊天记录",
