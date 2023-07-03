@@ -48,7 +48,7 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
-
+  group: boolean;
   fileUploaded: string[];
 }
 
@@ -73,9 +73,29 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
     fileUploaded: [],
     mask: createEmptyMask(),
+    group: false,
   };
 }
+function createEmptySessions(): ChatSession {
+  //比原函数多加s，区分创建群聊
+  return {
+    id: Date.now() + Math.random(),
+    topic: DEFAULT_TOPIC,
+    memoryPrompt: "",
+    messages: [],
+    stat: {
+      tokenCount: 0,
+      wordCount: 0,
+      charCount: 0,
+    },
+    lastUpdate: Date.now(),
+    lastSummarizeIndex: 0,
 
+    mask: createEmptyMask(),
+
+    group: true,
+  };
+}
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
@@ -84,6 +104,7 @@ interface ChatStore {
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: (mask?: Mask) => void;
+  newSessions: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
@@ -154,6 +175,23 @@ export const useChatStore = create<ChatStore>()(
 
       newSession(mask) {
         const session = createEmptySession();
+
+        set(() => ({ globalId: get().globalId + 1 }));
+        session.id = get().globalId;
+
+        if (mask) {
+          session.mask = { ...mask };
+          session.topic = mask.name;
+        }
+
+        set((state) => ({
+          currentSessionIndex: 0,
+          sessions: [session].concat(state.sessions),
+        }));
+      },
+
+      newSessions(mask) {
+        const session = createEmptySessions();
 
         set(() => ({ globalId: get().globalId + 1 }));
         session.id = get().globalId;
