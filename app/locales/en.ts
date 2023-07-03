@@ -86,6 +86,7 @@ const en: RequiredLocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
+    Group: "define you group",
     Actions: {
       ClearAll: "Clear All Data",
       ResetAll: "Reset All Settings",
@@ -97,6 +98,9 @@ const en: RequiredLocaleType = {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "All Languages",
     },
+    groupmem: "people number",
+    groupName: "group name",
+    groupUser: "userCount",
     Avatar: "Avatar",
     FontSize: {
       Title: "Font Size",
@@ -153,6 +157,11 @@ const en: RequiredLocaleType = {
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
     },
+    groupMem: {
+      Placeholder: "please input the number of agents",
+      PlaceholderName: "please input the name of group",
+      PlaceholderUser: "please input the number of users",
+    },
     Usage: {
       Title: "Account Balance",
       SubTitle(used: any, total: any) {
@@ -206,6 +215,9 @@ const en: RequiredLocaleType = {
     Clear: "Context Cleared",
     Revert: "Revert",
   },
+  Group: {
+    Name: "Group",
+  },
   Plugin: {
     Name: "Plugin",
   },
@@ -224,6 +236,7 @@ const en: RequiredLocaleType = {
       Edit: "Edit",
       Delete: "Delete",
       DeleteConfirm: "Confirm to delete?",
+      Invite: "Invite",
     },
     EditModal: {
       Title: (readonly: boolean) =>
