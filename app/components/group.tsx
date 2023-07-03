@@ -64,11 +64,11 @@ export function Group() {
 
   const [inputValue, setInputValue] = useState("");
   const [inputValuenum, setInputValuenum] = useState(0);
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
     // 在这里可以将输入的内容保存到数据库或发送给服务器等操作
   };
-  const handleInputChangeNum = (event) => {
+  const handleInputChangeNum = (event: any) => {
     setInputValuenum(event.target.value);
     // 在这里可以将输入的内容保存到数据库或发送给服务器等操作
   };
