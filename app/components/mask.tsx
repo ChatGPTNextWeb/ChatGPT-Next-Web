@@ -134,13 +134,18 @@ export function MaskConfig(props: {
               type="checkbox"
               checked={props.mask.syncGlobalConfig}
               onChange={async (e) => {
+                const checked = e.currentTarget.checked;
                 if (
-                  e.currentTarget.checked &&
+                  checked &&
                   (await showConfirm(Locale.Mask.Config.Sync.Confirm))
                 ) {
                   props.updateMask((mask) => {
-                    mask.syncGlobalConfig = e.currentTarget.checked;
+                    mask.syncGlobalConfig = checked;
                     mask.modelConfig = { ...globalConfig.modelConfig };
+                  });
+                } else if (!checked) {
+                  props.updateMask((mask) => {
+                    mask.syncGlobalConfig = checked;
                   });
                 }
               }}
