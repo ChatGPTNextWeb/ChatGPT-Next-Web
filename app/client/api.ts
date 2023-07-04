@@ -98,6 +98,7 @@ export function getHeaders() {
   let headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
+    "api-key": accessStore.token,
   };
 
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;
@@ -105,7 +106,10 @@ export function getHeaders() {
 
   // use user's api key first
   if (validString(accessStore.token)) {
+    //徐中伟修改为了Azure
+    //headers.Authorization = makeBearer(accessStore.token);
     headers.Authorization = makeBearer(accessStore.token);
+    //headers.api-key = accessStore.token;
   } else if (
     accessStore.enabledAccessControl() &&
     validString(accessStore.accessCode)

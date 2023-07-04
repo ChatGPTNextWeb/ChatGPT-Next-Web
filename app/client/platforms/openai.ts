@@ -11,7 +11,8 @@ import { prettyObject } from "@/app/utils/format";
 import { sendMessage } from "next/dist/client/dev/error-overlay/websocket";
 
 export class ChatGPTApi implements LLMApi {
-  public ChatPath = "v1/chat/completions";
+  public ChatPath =
+    "/openai/deployments/chatGPT/chat/completions\\?api-version\\=2023-05-15";
   public UsagePath = "dashboard/billing/usage";
   public SubsPath = "dashboard/billing/subscription";
 
@@ -78,7 +79,7 @@ export class ChatGPTApi implements LLMApi {
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
+      //presence_penalty: modelConfig.presence_penalty,
     };
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -87,6 +88,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
+      //alert("options.config.stream"+ options.config.stream +"  "+shouldStream)
       const chatPath = this.path(this.ChatPath);
       const chatPayload = {
         method: "POST",
@@ -136,7 +138,7 @@ export class ChatGPTApi implements LLMApi {
                 ?.startsWith(EventStreamContentType) ||
               res.status !== 200
             ) {
-              alert("The here");
+              //alert("The here");
 
               const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
