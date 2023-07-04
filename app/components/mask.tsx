@@ -424,6 +424,7 @@ export function MaskPage() {
                 setEditingMaskId(createdMask.id);
               }}
             />
+            {/* 新建面具的位置 */}
           </div>
 
           <div>
