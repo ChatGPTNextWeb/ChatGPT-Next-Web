@@ -29,6 +29,7 @@ export const DEFAULT_CONFIG = {
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
+  dontAddBuiltinMasks: false, // dont add builtin masks
 
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
