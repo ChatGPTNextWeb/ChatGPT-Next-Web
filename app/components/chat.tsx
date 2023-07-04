@@ -886,7 +886,8 @@ export function Chat() {
           const showActions =
             !isUser &&
             i > 0 &&
-            !(message.preview || message.content.length === 0);
+            !(message.preview || message.content.length === 0) &&
+            i >= context.length; // do not show actions for context prompts
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
@@ -920,7 +921,7 @@ export function Chat() {
                         }}
                       ></IconButton>
                     </div>
-                    {message.role === "user" ? (
+                    {isUser ? (
                       <Avatar avatar={config.avatar} />
                     ) : (
                       <MaskAvatar mask={session.mask} />

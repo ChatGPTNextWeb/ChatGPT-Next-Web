@@ -225,6 +225,10 @@ const en: LocaleType = {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
     },
+    TopP: {
+      Title: "Top P",
+      SubTitle: "Do not alter this value together with temperature",
+    },
     MaxTokens: {
       Title: "Max Tokens",
       SubTitle: "Maximum length of input tokens and generated tokens",
@@ -259,7 +263,7 @@ const en: LocaleType = {
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
-    Edit: "Contextual and Memory Prompts",
+    Edit: "Current Chat Settings",
     Add: "Add a Prompt",
     Clear: "Context Cleared",
     Revert: "Revert",
