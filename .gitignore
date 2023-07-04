@@ -38,6 +38,10 @@ dev
 
 .vscode
 .idea
+.vs
 
 # docker-compose env files
 .env
+
+*.key
+*.key.pub

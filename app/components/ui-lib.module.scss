@@ -207,7 +207,7 @@
 .select-with-icon {
   position: relative;
   max-width: fit-content;
-  
+
   .select-with-icon-select {
     height: 100%;
     border: var(--border-in-light);
@@ -226,5 +226,25 @@
     right: 10px;
     transform: translateY(-50%);
     pointer-events: none;
+  }
+}
+
+.modal-input {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  border: var(--border-in-light);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
+  background-color: var(--white);
+  color: var(--black);
+  font-family: inherit;
+  padding: 10px;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  min-height: 30vh;
+
+  &:focus {
+    border: 1px solid var(--primary);
   }
 }
