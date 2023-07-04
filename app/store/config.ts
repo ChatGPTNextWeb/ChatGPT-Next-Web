@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { LLMModel } from "../client/api";
 import { getClientConfig } from "../config/client";
-import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
+import { DEFAULT_INPUT_TEMPLATE, DEFAULT_MODELS, StoreKey } from "../constant";
+
+export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -30,6 +33,8 @@ export const DEFAULT_CONFIG = {
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
 
+  models: DEFAULT_MODELS as any as LLMModel[],
+
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
@@ -49,80 +54,10 @@ export type ChatConfig = typeof DEFAULT_CONFIG;
 export type ChatConfigStore = ChatConfig & {
   reset: () => void;
   update: (updater: (config: ChatConfig) => void) => void;
+  mergeModels: (newModels: LLMModel[]) => void;
 };
 
 export type ModelConfig = ChatConfig["modelConfig"];
-
-const ENABLE_GPT4 = true;
-
-export const ALL_MODELS = [
-  {
-    name: "gpt-4",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-0613",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0613",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0613",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-16k",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-16k-0613",
-    available: true,
-  },
-  {
-    name: "qwen-v1", // 通义千问
-    available: false,
-  },
-  {
-    name: "ernie", // 文心一言
-    available: false,
-  },
-  {
-    name: "spark", // 讯飞星火
-    available: false,
-  },
-  {
-    name: "llama", // llama
-    available: false,
-  },
-  {
-    name: "chatglm", // chatglm-6b
-    available: false,
-  },
-] as const;
-
-export type ModelType = (typeof ALL_MODELS)[number]["name"];
 
 export function limitNumber(
   x: number,
@@ -138,7 +73,8 @@ export function limitNumber(
 }
 
 export function limitModel(name: string) {
-  return ALL_MODELS.some((m) => m.name === name && m.available)
+  const allModels = useAppConfig.getState().models;
+  return allModels.some((m) => m.name === name && m.available)
     ? name
     : "gpt-3.5-turbo";
 }
@@ -177,6 +113,25 @@ export const useAppConfig = create<ChatConfigStore>()(
         const config = { ...get() };
         updater(config);
         set(() => config);
+      },
+
+      mergeModels(newModels) {
+        const oldModels = get().models;
+        const modelMap: Record<string, LLMModel> = {};
+
+        for (const model of oldModels) {
+          model.available = false;
+          modelMap[model.name] = model;
+        }
+
+        for (const model of newModels) {
+          model.available = true;
+          modelMap[model.name] = model;
+        }
+
+        set(() => ({
+          models: Object.values(modelMap),
+        }));
       },
     }),
     {
