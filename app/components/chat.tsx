@@ -911,6 +911,7 @@ export function Chat() {
                           const newMessage = await showPrompt(
                             Locale.Chat.Actions.Edit,
                             message.content,
+                            10,
                           );
                           chatStore.updateCurrentSession((session) => {
                             const m = session.messages.find(
