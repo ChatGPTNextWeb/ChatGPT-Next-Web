@@ -64,8 +64,15 @@ export function Group() {
 
   const [inputValue, setInputValue] = useState("");
   const [inputValuenum, setInputValuenum] = useState(0);
+  const [inputValuenumUser, setInputValuenumUser] = useState(0);
+
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
+    // 在这里可以将输入的内容保存到数据库或发送给服务器等操作
+  };
+  const handleInputChangeUser = (event: any) => {
+    setInputValuenumUser(event.target.value);
+    console.log(inputValuenumUser);
     // 在这里可以将输入的内容保存到数据库或发送给服务器等操作
   };
   const handleInputChangeNum = (event: any) => {
@@ -107,12 +114,10 @@ export function Group() {
             </ListItem>
             <ListItem title={Locale.Settings.groupUser}>
               <input
-                value={accessStore.accessCode}
+                value={inputValuenumUser}
                 type="text"
                 placeholder={Locale.Settings.groupMem.PlaceholderUser}
-                onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                }}
+                onChange={handleInputChangeUser}
               ></input>
             </ListItem>
           </List>

@@ -11,6 +11,7 @@ import { StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
+import { useState } from "react";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -98,6 +99,7 @@ function createEmptySessions(): ChatSession {
   };
 }
 interface ChatStore {
+  inputContent: string;
   sessions: ChatSession[];
   currentSessionIndex: number;
   globalId: number;
@@ -135,6 +137,7 @@ export const useChatStore = create<ChatStore>()(
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
       globalId: 0,
+      inputContent: "",
 
       clearSessions() {
         set(() => ({
@@ -271,115 +274,243 @@ export const useChatStore = create<ChatStore>()(
         });
         get().updateStat(message);
         get().summarizeSession();
+        const msg = get().currentSession().messages;
+        const content = msg[msg.length - 1].content;
+        //console.log("[The msg is ]"+content);
       },
 
       async onUserInput(content) {
-        const session = get().currentSession();
-        const modelConfig = session.mask.modelConfig;
+        if (content === "xzw want the agents talk!!!!!!!!!") {
+          const session = get().currentSession();
+          const modelConfig = session.mask.modelConfig;
+          const question = get().inputContent;
+          //alert(modelConfig.model)
+          const userMessage: ChatMessage = createMessage({
+            role: "user",
+            content: question,
+          });
 
-        //alert(modelConfig.model)
-        const userMessage: ChatMessage = createMessage({
-          role: "user",
-          content,
-        });
+          const botMessage: ChatMessage = createMessage({
+            role: "assistant",
+            streaming: true,
+            id: userMessage.id! + 1,
+            model: modelConfig.model,
+          });
 
-        const botMessage: ChatMessage = createMessage({
-          role: "assistant",
-          streaming: true,
-          id: userMessage.id! + 1,
-          model: modelConfig.model,
-        });
+          const systemInfo = createMessage({
+            role: "system",
+            content: `IMPORTANT: You are a virtual assistant powered by the ${
+              modelConfig.model
+            } model, now time is ${new Date().toLocaleString()}}`,
+            id: botMessage.id! + 1,
+          });
 
-        const systemInfo = createMessage({
-          role: "system",
-          content: `IMPORTANT: You are a virtual assistant powered by the ${
-            modelConfig.model
-          } model, now time is ${new Date().toLocaleString()}}`,
-          id: botMessage.id! + 1,
-        });
+          // get recent messages
+          const systemMessages = [];
+          // if user define a mask with context prompts, wont send system info
+          if (session.mask.context.length === 0) {
+            //alert("hhhhh")
+            systemMessages.push(systemInfo);
+          }
 
-        // get recent messages
-        const systemMessages = [];
-        // if user define a mask with context prompts, wont send system info
-        if (session.mask.context.length === 0) {
-          systemMessages.push(systemInfo);
+          const recentMessages = get().getMessagesWithMemory();
+          console.log("[recentMessage", recentMessages);
+          const sendMessages = systemMessages.concat(
+            recentMessages.concat(userMessage),
+          );
+
+          console.log("[SendMessage is] : ", sendMessages);
+          const sessionIndex = get().currentSessionIndex;
+          const messageIndex = get().currentSession().messages.length + 1;
+
+          // save user's and bot's message
+          get().updateCurrentSession((session) => {
+            session.messages.push(userMessage);
+            session.messages.push(botMessage);
+          });
+          let isStreaming = true;
+          //alert(modelConfig.model);
+          if (modelConfig.model === "lang chain") {
+            isStreaming = false;
+          }
+          //alert(isStreaming)
+          // make request
+          console.log("[User Input] ", sendMessages);
+          const chat = get().currentSession();
+          const uuid = chat.id;
+          //alert("1111uuidcd  " + uuid);
+          api.llm.chat({
+            uuid: uuid,
+            messages: sendMessages,
+            config: { ...modelConfig, stream: isStreaming },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              set(() => ({}));
+            },
+            onFinish(message) {
+              set((state) => ({
+                ...state,
+                inputContent: message, // 更新 inputContent 的值
+              }));
+              botMessage.streaming = false;
+              //alert(botMessage.content);
+              if (message) {
+                botMessage.content = message;
+                //here is
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+              set(() => ({}));
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+
+              set(() => ({}));
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+        } else {
+          const session = get().currentSession();
+          const modelConfig = session.mask.modelConfig;
+
+          //alert(modelConfig.model)
+          const userMessage: ChatMessage = createMessage({
+            role: "user",
+            content,
+          });
+
+          const botMessage: ChatMessage = createMessage({
+            role: "assistant",
+            streaming: true,
+            id: userMessage.id! + 1,
+            model: modelConfig.model,
+          });
+
+          const systemInfo = createMessage({
+            role: "system",
+            content: `IMPORTANT: You are a virtual assistant powered by the ${
+              modelConfig.model
+            } model, now time is ${new Date().toLocaleString()}}`,
+            id: botMessage.id! + 1,
+          });
+
+          // get recent messages
+          const systemMessages = [];
+          // if user define a mask with context prompts, wont send system info
+          if (session.mask.context.length === 0) {
+            //alert("hhhhh")
+            systemMessages.push(systemInfo);
+          }
+
+          const recentMessages = get().getMessagesWithMemory();
+          console.log("[recentMessage", recentMessages);
+          const sendMessages = systemMessages.concat(
+            recentMessages.concat(userMessage),
+          );
+
+          console.log("[SendMessage is] : ", sendMessages);
+          const sessionIndex = get().currentSessionIndex;
+          const messageIndex = get().currentSession().messages.length + 1;
+
+          // save user's and bot's message
+          get().updateCurrentSession((session) => {
+            session.messages.push(userMessage);
+            session.messages.push(botMessage);
+          });
+          let isStreaming = true;
+          //alert(modelConfig.model);
+          if (modelConfig.model === "lang chain") {
+            isStreaming = false;
+          }
+          //alert(isStreaming)
+          // make request
+          console.log("[User Input] ", sendMessages);
+          const chat = get().currentSession();
+          const uuid = chat.id;
+
+          api.llm.chat({
+            uuid: uuid,
+            messages: sendMessages,
+            config: { ...modelConfig, stream: isStreaming },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              set(() => ({}));
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              //alert(botMessage.content);
+              if (message) {
+                botMessage.content = message;
+                //here is
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+              set(() => ({}));
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+
+              set(() => ({}));
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
         }
-
-        const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = systemMessages.concat(
-          recentMessages.concat(userMessage),
-        );
-        const sessionIndex = get().currentSessionIndex;
-        const messageIndex = get().currentSession().messages.length + 1;
-
-        // save user's and bot's message
-        get().updateCurrentSession((session) => {
-          session.messages.push(userMessage);
-          session.messages.push(botMessage);
-        });
-        let isStreaming = true;
-        //alert(modelConfig.model);
-        if (modelConfig.model === "lang chain") {
-          isStreaming = false;
-        }
-        //alert(isStreaming)
-        // make request
-        console.log("[User Input] ", sendMessages);
-        const chat = get().currentSession();
-        const uuid = chat.id;
-        alert("1111" + uuid);
-        api.llm.chat({
-          uuid: uuid,
-          messages: sendMessages,
-          config: { ...modelConfig, stream: isStreaming },
-          onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
-            set(() => ({}));
-          },
-          onFinish(message) {
-            botMessage.streaming = false;
-            if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
-            }
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
-            set(() => ({}));
-          },
-          onError(error) {
-            const isAborted = error.message.includes("aborted");
-            botMessage.content =
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
-              });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
-
-            set(() => ({}));
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
-
-            console.error("[Chat] failed ", error);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ChatControllerPool.addController(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-        });
       },
 
       getMemoryPrompt() {
@@ -486,7 +617,7 @@ export const useChatStore = create<ChatStore>()(
               content: Locale.Store.Prompt.Topic,
             }),
           );
-          //alert("2222")
+          console.log("[topicMessage] : ", topicMessages);
           const uuid = session.id;
           api.llm.chat({
             uuid: uuid,
@@ -533,13 +664,16 @@ export const useChatStore = create<ChatStore>()(
           historyMsgLength,
           modelConfig.compressMessageLengthThreshold,
         );
+        const message =
+          toBeSummarizedMsgs[toBeSummarizedMsgs.length - 1].content;
+        //console.log("xzw want" + message);
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
           const uuid = session.id;
-          //alert("33333")
+          alert("33333");
           api.llm.chat({
             uuid: uuid,
             messages: toBeSummarizedMsgs.concat({

@@ -7,7 +7,7 @@ export function trimTopic(topic: string) {
 }
 
 export async function editContent(text: string) {
-  alert(text);
+  //alert(text);
 }
 
 export async function copyToClipboard(text: string) {
