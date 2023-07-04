@@ -673,7 +673,7 @@ export const useChatStore = create<ChatStore>()(
           modelConfig.sendMemory
         ) {
           const uuid = session.id;
-          alert("33333");
+          //alert("33333");
           api.llm.chat({
             uuid: uuid,
             messages: toBeSummarizedMsgs.concat({
