@@ -214,6 +214,10 @@ const cn = {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
     },
+    TopP: {
+      Title: "核采样 (top_p)",
+      SubTitle: "与随机性类似，但不要和随机性一起更改",
+    },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
       SubTitle: "单次交互所用的最大 Token 数",
