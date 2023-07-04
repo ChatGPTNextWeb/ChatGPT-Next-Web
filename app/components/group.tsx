@@ -29,10 +29,6 @@ import App from "../page";
 import LeftIcon from "../icons/left.svg";
 import { EmojiAvatar } from "./emoji";
 
-export function SiblingComponent(props: any) {
-  return <div>The input value is: {props.inputValue}</div>;
-}
-
 export function Group() {
   const onSearch = (text: string) => {
     setSearchText(text);
@@ -89,7 +85,9 @@ export function Group() {
     chatStore.updateCurrentSession((session) => (session.topic = inputValue));
   };
   const reNum = () => {
-    chatStore.updateNum((session) => (session.groupMem = inputValuenum));
+    chatStore.updateNum(
+      (session) => (session.groupMem = inputValuenum - inputValuenumUser),
+    );
   };
   return (
     <div className={styles["new-chat"]}>
@@ -160,7 +158,6 @@ export function Group() {
             reNum();
           }}
         />
-        <SiblingComponent inputValue={inputValuenum} />
       </div>
     </div>
   );
