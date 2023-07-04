@@ -65,13 +65,6 @@ export class ChatGPTApi implements LLMApi {
       content: v.content,
     }));
 
-    //
-    // messages.forEach((message) => {
-    //   const output = `Role: ${message.role}\nContent: ${message.content}`;
-    //   alert(output);
-    // });
-
-    //alert(messages[messages.length-1].content)
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -143,6 +136,8 @@ export class ChatGPTApi implements LLMApi {
                 ?.startsWith(EventStreamContentType) ||
               res.status !== 200
             ) {
+              alert("The here");
+
               const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
               try {

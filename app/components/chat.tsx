@@ -18,6 +18,7 @@ import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import UploadFileIcon from "../icons/uploadfile.svg";
 import FileCountIcon from "../icons/fileCount.svg";
+import StartIcon from "../icons/start.svg";
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
@@ -316,6 +317,7 @@ export function ChatActions(props: {
   scrollToBottom: () => void;
   showPromptHints: () => void;
   hitBottom: boolean;
+  onBeginSession: () => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -417,6 +419,15 @@ export function ChatActions(props: {
           <AddIcon />
         </div>
       )}
+      {state?.fromGroup && (
+        <div
+          className={`${chatStyle["chat-input-action"]} clickable`}
+          onClick={props.onBeginSession}
+          style={{ width: "20px", height: "20px" }}
+        >
+          <StartIcon />
+        </div>
+      )}
     </div>
   );
 }
@@ -447,7 +458,8 @@ export function Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-
+  //const [input, setinput] = useState("Can you tell me a food?");
+  //const input = "This is a begin";
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
@@ -465,6 +477,7 @@ export function Chat() {
   );
 
   const onPromptSelect = (prompt: Prompt) => {
+    alert("onPromptSelect ");
     setPromptHints([]);
     inputRef.current?.focus();
     setTimeout(() => setUserInput(prompt.content), 60);
@@ -509,11 +522,28 @@ export function Chat() {
     }
   };
 
+  const AgentsTalk = (userInput: string) => {
+    //console.log("[The input is ]" + userInput);
+    if (userInput.trim() !== "xzw want the agents talk!!!!!!!!!") return;
+    setIsLoading(true);
+
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+
+    localStorage.setItem(LAST_INPUT_KEY, userInput);
+    //alert(userInput);
+    setUserInput("");
+    setPromptHints([]);
+    if (!isMobileScreen) inputRef.current?.focus();
+    setAutoScroll(true);
+  };
+
   const doSubmit = (userInput: string) => {
+    //console.log("[The input is ]" + userInput);
     if (userInput.trim() === "") return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
+    //alert(userInput);
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
@@ -670,7 +700,7 @@ export function Chat() {
           ]
         : [],
     );
-
+  //console.log("[The Message is ]" + messages);
   const [showPromptModal, setShowPromptModal] = useState(false);
 
   const renameSession = () => {
@@ -782,6 +812,32 @@ export function Chat() {
   }
   function fileCount() {}
   const uuid = session.id.toString();
+
+  const [isRunning, setIsRunning] = useState(false);
+
+  function beginSession() {
+    setIsRunning((prevIsRunning) => !prevIsRunning);
+  }
+
+  const chatstore = useChatStore();
+
+  useEffect(() => {
+    let intervalId: string | number | NodeJS.Timeout | undefined;
+
+    if (isRunning) {
+      intervalId = setInterval(() => {
+        const input = "xzw want the agents talk!!!!!!!!!";
+        AgentsTalk(input);
+      }, 10000);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isRunning]);
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header">
@@ -1048,6 +1104,7 @@ export function Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          onBeginSession={beginSession}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
