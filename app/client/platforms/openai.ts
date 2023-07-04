@@ -1,7 +1,11 @@
-import { REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  DEFAULT_API_HOST,
+  OpenaiPath,
+  REQUEST_TIMEOUT_MS,
+} from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
+import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -9,15 +13,26 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 
-export class ChatGPTApi implements LLMApi {
-  public ChatPath = "v1/chat/completions";
-  public UsagePath = "dashboard/billing/usage";
-  public SubsPath = "dashboard/billing/subscription";
+export interface OpenAIListModelResponse {
+  object: string;
+  data: Array<{
+    id: string;
+    object: string;
+    root: string;
+  }>;
+}
 
+export class ChatGPTApi implements LLMApi {
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
+    if (openaiUrl.length === 0) {
+      openaiUrl = DEFAULT_API_HOST;
+    }
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
+    }
+    if (!openaiUrl.startsWith("http") && !openaiUrl.startsWith("/api/openai")) {
+      openaiUrl = "https://" + openaiUrl;
     }
     return [openaiUrl, path].join("/");
   }
@@ -46,6 +61,8 @@ export class ChatGPTApi implements LLMApi {
       model: modelConfig.model,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
+      frequency_penalty: modelConfig.frequency_penalty,
+      top_p: modelConfig.top_p,
     };
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -55,7 +72,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(this.ChatPath);
+      const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -177,14 +194,14 @@ export class ChatGPTApi implements LLMApi {
     const [used, subs] = await Promise.all([
       fetch(
         this.path(
-          `${this.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
+          `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
         ),
         {
           method: "GET",
           headers: getHeaders(),
         },
       ),
-      fetch(this.path(this.SubsPath), {
+      fetch(this.path(OpenaiPath.SubsPath), {
         method: "GET",
         headers: getHeaders(),
       }),
@@ -227,4 +244,23 @@ export class ChatGPTApi implements LLMApi {
       total: total.hard_limit_usd,
     } as LLMUsage;
   }
+
+  async models(): Promise<LLMModel[]> {
+    const res = await fetch(this.path(OpenaiPath.ListModelPath), {
+      method: "GET",
+      headers: {
+        ...getHeaders(),
+      },
+    });
+
+    const resJson = (await res.json()) as OpenAIListModelResponse;
+    const chatModels = resJson.data.filter((m) => m.id.startsWith("gpt-"));
+    console.log("[Models]", chatModels);
+
+    return chatModels.map((m) => ({
+      name: m.id,
+      available: true,
+    }));
+  }
 }
+export { OpenaiPath };
