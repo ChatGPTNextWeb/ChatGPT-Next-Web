@@ -189,7 +189,7 @@ export function UserLoginDetail() {
                 navigate(Path.Home);
               }}
               bordered
-              title={Locale.Settings.Actions.Close}
+              title={"关闭"}
             />
           </div>
         </div>

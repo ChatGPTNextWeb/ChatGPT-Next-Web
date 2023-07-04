@@ -28,8 +28,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { showConfirm, showToast } from "./ui-lib";
-import { showToast, showModal } from "./ui-lib";
+import { showConfirm, showToast, showModal } from "./ui-lib";
 import { about } from "../user-setting/user-feedback";
 import zBotServiceClient, {
   UserConstantVO,

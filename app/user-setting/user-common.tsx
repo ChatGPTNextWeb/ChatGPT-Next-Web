@@ -62,7 +62,7 @@ export function UserInfoWindowHeader({
             icon={<CloseIcon />}
             onClick={() => navigate(Path.Home)}
             bordered
-            title={Locale.Settings.Actions.Close}
+            title={"关闭"}
           />
         </div>
       </div>

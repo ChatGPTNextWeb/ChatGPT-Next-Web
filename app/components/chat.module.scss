@@ -51,6 +51,35 @@
   }
 }
 
+
+.chat-voice-input {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between; /* 左右对齐 */
+  padding: 10px 20px 10px 20px; // 上右下左
+
+  .chat-voice-input-send {
+    flex-basis: 50%;
+    margin-right: 10px;
+    background-color: gray;
+  }
+
+  .chat-voice-input-send-pressed {
+    flex-basis: 50%;
+    margin-right: 10px;
+    background-color: red;
+  }
+
+  .chat-voice-input-autostop {
+    flex-basis: 25%;
+    margin-right: 10px;
+  }
+  .chat-voice-input-setting {
+    flex-basis: 12.5%;
+  }
+}
+
 .prompt-toast {
   position: absolute;
   bottom: -50px;
