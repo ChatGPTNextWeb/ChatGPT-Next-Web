@@ -28,6 +28,11 @@ import LightningIcon from "../icons/lightning.svg";
 import App from "../page";
 import LeftIcon from "../icons/left.svg";
 import { EmojiAvatar } from "./emoji";
+
+export function SiblingComponent(props: any) {
+  return <div>The input value is: {props.inputValue}</div>;
+}
+
 export function Group() {
   const onSearch = (text: string) => {
     setSearchText(text);
@@ -76,7 +81,9 @@ export function Group() {
   const renameSession = () => {
     chatStore.updateCurrentSession((session) => (session.topic = inputValue));
   };
-
+  const reNum = () => {
+    chatStore.updateNum((session) => (session.groupMem = inputValuenum));
+  };
   return (
     <div className={styles["new-chat"]}>
       <div className={styles["mask-header"]}>
@@ -145,8 +152,10 @@ export function Group() {
           onClick={() => {
             startGroupChat();
             renameSession();
+            reNum();
           }}
         />
+        <SiblingComponent inputValue={inputValuenum} />
       </div>
     </div>
   );

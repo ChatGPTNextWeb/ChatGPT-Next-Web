@@ -11,6 +11,7 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
+import RobotIcon from "../icons/rename.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
@@ -27,6 +28,18 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
+
+interface numStore {
+  memNum: number;
+  userNum: number;
+  memNumAll: number[];
+  updateNum: (memNum: number) => void;
+  updateNumAll: (index: number, value: number) => void;
+}
+
+function DisplayNumber(props: any) {
+  return <div>The submitted number is: {props.number}</div>;
+}
 
 export function MaskAvatar(props: { mask: Mask }) {
   return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
@@ -312,6 +325,14 @@ export function MaskPage() {
   };
   const { state } = useLocation();
 
+  // 测试展示传递数字
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
+  const minusOne = () => {
+    chatStore.updateNum((session) => (session.groupMem = session.groupMem - 1));
+  };
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -325,6 +346,18 @@ export function MaskPage() {
             </div>
           </div>
 
+          {session.groupMem > 0 && state?.fromgroup && (
+            <div className="window-action-button">
+              Left: {session.groupMem} <> </>
+              <RobotIcon />
+            </div>
+          )}
+          {session.groupMem <= 0 && state?.fromgroup && (
+            <div className="window-action-button">
+              Done <> </>
+              <RobotIcon />
+            </div>
+          )}
           <div className="window-actions">
             <div className="window-action-button">
               <IconButton
@@ -415,19 +448,20 @@ export function MaskPage() {
                       icon={<AddIcon />}
                       text={Locale.Mask.Item.Invite}
                       onClick={() => {
+                        minusOne();
+                      }}
+                    />
+                  )}
+                  {!state?.fromgroup && (
+                    <IconButton
+                      icon={<AddIcon />}
+                      text={Locale.Mask.Item.Chat}
+                      onClick={() => {
                         chatStore.newSession(m);
                         navigate(Path.Chat);
                       }}
                     />
                   )}
-                  <IconButton
-                    icon={<AddIcon />}
-                    text={Locale.Mask.Item.Chat}
-                    onClick={() => {
-                      chatStore.newSession(m);
-                      navigate(Path.Chat);
-                    }}
-                  />
                   {m.builtin ? (
                     <IconButton
                       icon={<EyeIcon />}
