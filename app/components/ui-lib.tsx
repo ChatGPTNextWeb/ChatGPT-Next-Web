@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
@@ -412,5 +413,22 @@ export function showPrompt(content: any, value = "", rows = 3) {
         ></PromptInput>
       </Modal>,
     );
+  });
+}
+
+export function showImageModal(img: string) {
+  showModal({
+    title: Locale.Export.Image.Modal,
+    children: (
+      <div>
+        <img
+          src={img}
+          alt="preview"
+          style={{
+            maxWidth: "100%",
+          }}
+        ></img>
+      </div>
+    ),
   });
 }
