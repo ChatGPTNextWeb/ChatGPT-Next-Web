@@ -11,18 +11,21 @@ import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 
-export function Mermaid(props: { code: string; onError: () => void }) {
+export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (props.code && ref.current) {
       mermaid
         .run({
           nodes: [ref.current],
+          suppressErrors: true,
         })
         .catch((e) => {
-          props.onError();
+          setHasError(true);
           console.error("[Mermaid] ", e.message);
         });
     }
@@ -41,10 +44,17 @@ export function Mermaid(props: { code: string; onError: () => void }) {
     }
   }
 
+  if (hasError) {
+    return null;
+  }
+
   return (
     <div
-      className="no-dark"
-      style={{ cursor: "pointer", overflow: "auto" }}
+      className="no-dark mermaid"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
       ref={ref}
       onClick={() => viewSvgInNewWindow()}
     >
@@ -55,33 +65,40 @@ export function Mermaid(props: { code: string; onError: () => void }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const refText = ref.current?.innerText;
   const [mermaidCode, setMermaidCode] = useState("");
 
-  useEffect(() => {
+  const renderMermaid = useDebouncedCallback(() => {
     if (!ref.current) return;
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
     if (mermaidDom) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
-  }, [props.children]);
+  }, 600);
 
-  if (mermaidCode) {
-    return <Mermaid code={mermaidCode} onError={() => setMermaidCode("")} />;
-  }
+  useEffect(() => {
+    setTimeout(renderMermaid, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refText]);
 
   return (
-    <pre ref={ref}>
-      <span
-        className="copy-code-button"
-        onClick={() => {
-          if (ref.current) {
-            const code = ref.current.innerText;
-            copyToClipboard(code);
-          }
-        }}
-      ></span>
-      {props.children}
-    </pre>
+    <>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
+          }}
+        ></span>
+        {props.children}
+      </pre>
+    </>
   );
 }
 
@@ -127,43 +144,58 @@ export function Markdown(
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
   const renderedHeight = useRef(0);
+  const renderedWidth = useRef(0);
   const inView = useRef(!!props.defaultShow);
+  const [_, triggerRender] = useState(0);
+  const checkInView = useThrottledCallback(
+    () => {
+      const parent = props.parentRef?.current;
+      const md = mdRef.current;
+      if (parent && md && !props.defaultShow) {
+        const parentBounds = parent.getBoundingClientRect();
+        const twoScreenHeight = Math.max(500, parentBounds.height * 2);
+        const mdBounds = md.getBoundingClientRect();
+        const parentTop = parentBounds.top - twoScreenHeight;
+        const parentBottom = parentBounds.bottom + twoScreenHeight;
+        const isOverlap =
+          Math.max(parentTop, mdBounds.top) <=
+          Math.min(parentBottom, mdBounds.bottom);
+        inView.current = isOverlap;
+        triggerRender(Date.now());
+      }
 
-  const parent = props.parentRef?.current;
-  const md = mdRef.current;
+      if (inView.current && md) {
+        const rect = md.getBoundingClientRect();
+        renderedHeight.current = Math.max(renderedHeight.current, rect.height);
+        renderedWidth.current = Math.max(renderedWidth.current, rect.width);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    300,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
 
-  const checkInView = () => {
-    if (parent && md) {
-      const parentBounds = parent.getBoundingClientRect();
-      const twoScreenHeight = Math.max(500, parentBounds.height * 2);
-      const mdBounds = md.getBoundingClientRect();
-      const parentTop = parentBounds.top - twoScreenHeight;
-      const parentBottom = parentBounds.bottom + twoScreenHeight;
-      const isOverlap =
-        Math.max(parentTop, mdBounds.top) <=
-        Math.min(parentBottom, mdBounds.bottom);
-      inView.current = isOverlap;
-    }
+  useEffect(() => {
+    props.parentRef?.current?.addEventListener("scroll", checkInView);
+    checkInView();
+    return () =>
+      props.parentRef?.current?.removeEventListener("scroll", checkInView);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (inView.current && md) {
-      renderedHeight.current = Math.max(
-        renderedHeight.current,
-        md.getBoundingClientRect().height,
-      );
-    }
-  };
-
-  setTimeout(() => checkInView(), 1);
+  const getSize = (x: number) => (!inView.current && x > 0 ? x : "auto");
 
   return (
     <div
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
-        height:
-          !inView.current && renderedHeight.current > 0
-            ? renderedHeight.current
-            : "auto",
+        height: getSize(renderedHeight.current),
+        width: getSize(renderedWidth.current),
+        direction: /[\u0600-\u06FF]/.test(props.content) ? "rtl" : "ltr",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}

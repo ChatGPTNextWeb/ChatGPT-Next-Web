@@ -304,6 +304,9 @@ pre {
   &:hover {
     filter: brightness(0.9);
   }
+  &:focus {
+    filter: brightness(0.95);
+  }
 }
 
 .error {

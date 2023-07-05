@@ -1,5 +1,10 @@
 # 1. Versions
 
+## v2.1.0
+publish time: 2023-07-05
+ - Pull open/latest and merge into zhixing
+ - Chat history can be edited
+
 ## v2.0.0
 publish time: 2023-06-11
  - Add Voice conmunication
