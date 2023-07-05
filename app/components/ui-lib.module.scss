@@ -79,6 +79,19 @@
 
   --modal-padding: 20px;
 
+  &-max {
+    width: 95vw;
+    max-width: unset;
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+
+    .modal-content {
+      max-height: unset !important;
+      flex-grow: 1;
+    }
+  }
+
   .modal-header {
     padding: var(--modal-padding);
     display: flex;
@@ -91,11 +104,19 @@
       font-size: 16px;
     }
 
-    .modal-close-btn {
-      cursor: pointer;
+    .modal-header-actions {
+      display: flex;
 
-      &:hover {
-        filter: brightness(1.2);
+      .modal-header-action {
+        cursor: pointer;
+
+        &:not(:last-child) {
+          margin-right: 20px;
+        }
+
+        &:hover {
+          filter: brightness(1.2);
+        }
       }
     }
   }
