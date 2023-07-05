@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import { LocaleType } from "./index";
+import { PartialLocaleType } from "./index";
 
-const bn: LocaleType = {
+const bn: PartialLocaleType = {
   WIP: "শীঘ্রই আসছে...",
   Error: {
     Unauthorized:
@@ -159,7 +159,8 @@ const bn: LocaleType = {
     Mask: {
       Splash: {
         Title: "মাস্ক স্প্ল্যাশ স্ক্রিন",
-        SubTitle: "নতুন চ্যাট শুরু করার আগে মাস্ক স্প্ল্যাশ স্ক্রিন প্রদর্শন করুন",
+        SubTitle:
+          "নতুন চ্যাট শুরু করার আগে মাস্ক স্প্ল্যাশ স্ক্রিন প্রদর্শন করুন",
       },
       Builtin: {
         Title: "মূলত মাস্ক গোপন করুন",
@@ -294,7 +295,8 @@ const bn: LocaleType = {
       Sync: {
         Title: "গ্লোবাল কনফিগ ব্যবহার করুন",
         SubTitle: "এই চ্যাটে গ্লোবাল কনফিগ ব্যবহার করুন",
-        Confirm: "গ্লোবাল কনফিগ দ্বারা কাস্টম কনফিগ ওভাররাইড করতে নিশ্চিত করতে?",
+        Confirm:
+          "গ্লোবাল কনফিগ দ্বারা কাস্টম কনফিগ ওভাররাইড করতে নিশ্চিত করতে?",
       },
       HideContext: {
         Title: "সংশ্লিষ্টতা প্রম্পটগুলি লুকান",
@@ -314,7 +316,8 @@ const bn: LocaleType = {
     SubTitle: "মাস্কের পিছনে আত্মার সঙ্গে চ্যাট করুন",
     More: "আরো খুঁজুন",
     NotShow: "এখনও দেখাবেন না",
-    ConfirmNoShow: "নিষ্ক্রিয় করতে নিশ্চিত করুন? পরে আপনি এটি সেটিংসে সক্ষম করতে পারবেন।",
+    ConfirmNoShow:
+      "নিষ্ক্রিয় করতে নিশ্চিত করুন? পরে আপনি এটি সেটিংসে সক্ষম করতে পারবেন।",
   },
 
   UI: {
