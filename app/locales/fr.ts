@@ -88,9 +88,15 @@ const fr: PartialLocaleType = {
       SubTitle: "Aperçu du Markdown dans une bulle",
     },
     Mask: {
-      Title: "Écran de masque",
-      SubTitle:
-        "Afficher un écran de masque avant de démarrer une nouvelle discussion",
+      Splash: {
+        Title: "Écran de masque",
+        SubTitle:
+          "Afficher un écran de masque avant de démarrer une nouvelle discussion",
+      },
+      Builtin: {
+        Title: "Show Builtin Masks",
+        SubTitle: "Show builtin masks in mask list",
+      },
     },
     Prompt: {
       Disable: {
