@@ -42,12 +42,11 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
-  ALL_MODELS,
+  ModelType,
 } from "../store";
 
 import {
   copyToClipboard,
-  downloadAs,
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
@@ -387,12 +386,12 @@ export function ChatActions(props: {
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   function nextModel() {
-    const models = ALL_MODELS.filter((m) => m.available).map((m) => m.name);
+    const models = config.models.filter((m) => m.available).map((m) => m.name);
     const modelIndex = models.indexOf(currentModel);
     const nextIndex = (modelIndex + 1) % models.length;
     const nextModel = models[nextIndex];
     chatStore.updateCurrentSession((session) => {
-      session.mask.modelConfig.model = nextModel;
+      session.mask.modelConfig.model = nextModel as ModelType;
       session.mask.syncGlobalConfig = false;
     });
   }
@@ -888,7 +887,8 @@ export function Chat() {
           const showActions =
             !isUser &&
             i > 0 &&
-            !(message.preview || message.content.length === 0);
+            !(message.preview || message.content.length === 0) &&
+            i >= context.length; // do not show actions for context prompts
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
@@ -910,6 +910,7 @@ export function Chat() {
                           const newMessage = await showPrompt(
                             Locale.Chat.Actions.Edit,
                             message.content,
+                            10,
                           );
                           chatStore.updateCurrentSession((session) => {
                             const m = session.messages.find(
