@@ -79,6 +79,7 @@ export class ChatGPTApi implements LLMApi {
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
+      //max_tokens: 50,
       //presence_penalty: modelConfig.presence_penalty,
     };
 
