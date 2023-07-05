@@ -103,6 +103,23 @@ const Plans = () => {
                 Telegram Bot
               </p>
             </div>
+
+            <div className={styles.plan}>
+              <p className={styles.type}>Manage Subscription</p>
+             
+               <p className={styles.description}>
+                Manage Your Subscription
+              </p>
+              <Link href='/account/plans'>
+              <a>
+                <IconButton
+               icon={<PayIcon />}
+               className={styles["sidebar-bar-button"]}
+                  shadow 
+                />
+              </a>
+            </Link>
+            </div>
           </div>
 
           <p className={styles.type}>
