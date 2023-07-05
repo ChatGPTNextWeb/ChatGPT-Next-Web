@@ -58,7 +58,7 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   cs: "Čeština",
   no: "Nynorsk",
   ar: "العربية",
-  bn: "Bangla",
+  bn: "বাংলা",
 };
 
 const LANG_KEY = "lang";
