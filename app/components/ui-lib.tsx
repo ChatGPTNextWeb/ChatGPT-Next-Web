@@ -448,7 +448,7 @@ export function Selector<T>(props: {
   multiple?: boolean;
 }) {
   return (
-    <div className={styles["selector"]}>
+    <div className={styles["selector"]} onClick={() => props.onClose?.()}>
       <div className={styles["selector-content"]}>
         <List>
           {props.items.map((item, i) => {
