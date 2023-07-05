@@ -87,8 +87,14 @@ const cs: PartialLocaleType = {
       SubTitle: "Zobrazit v náhledu bubliny",
     },
     Mask: {
-      Title: "Úvodní obrazovka Masek",
-      SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
+      Splash: {
+        Title: "Úvodní obrazovka Masek",
+        SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
+      },
+      Builtin: {
+        Title: "Show Builtin Masks",
+        SubTitle: "Show builtin masks in mask list",
+      },
     },
     Prompt: {
       Disable: {
