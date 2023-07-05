@@ -89,6 +89,10 @@ const en: LocaleType = {
       Select: "Select",
       Preview: "Preview",
     },
+    Image: {
+      Toast: "Capturing Image...",
+      Modal: "Long press or right click to save image",
+    },
   },
   Select: {
     Search: "Search",
