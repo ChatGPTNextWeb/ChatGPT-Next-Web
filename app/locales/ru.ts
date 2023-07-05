@@ -91,10 +91,6 @@ const ru: PartialLocaleType = {
         Title: "Экран заставки маски",
         SubTitle: "Показывать экран заставки маски перед началом нового чата",
       },
-      Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
-      },
     },
     Prompt: {
       Disable: {
