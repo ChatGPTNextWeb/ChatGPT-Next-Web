@@ -4,6 +4,8 @@ import { UserButton } from "@clerk/nextjs";
 import { IconButton } from "../components/button";
 import { useSwitchTheme } from "../components/home";
 import styles from "./styles.module.scss";
+import PayIcon from "../icons/pay.svg";
+import Link from 'next/link'
 
 const Plans = () => {
   useSwitchTheme();
