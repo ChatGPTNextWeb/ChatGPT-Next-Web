@@ -108,7 +108,7 @@ const bn: RequiredLocaleType = {
       ConfirmClearAll: "আপনি কি নিশ্চিত যে আপনি সমস্ত ডেটা পুনরায় সেট করতে চান?",
     },
     Lang: {
-      Name: "Bangla", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "বাংলা", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "সমস্ত ভাষা",
     },
     Avatar: "অবতার",
