@@ -2,7 +2,15 @@
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
-import { List, ListItem, Modal, Select, showModal, showToast } from "./ui-lib";
+import {
+  List,
+  ListItem,
+  Modal,
+  Select,
+  showImageModal,
+  showModal,
+  showToast,
+} from "./ui-lib";
 import { IconButton } from "./button";
 import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
 
@@ -357,24 +365,6 @@ function ExportAvatar(props: { avatar: string }) {
   }
 
   return <Avatar avatar={props.avatar}></Avatar>;
-}
-
-export function showImageModal(img: string) {
-  showModal({
-    title: Locale.Export.Image.Modal,
-    children: (
-      <div>
-        <img
-          src={img}
-          alt="preview"
-          style={{
-            maxWidth: "100%",
-          }}
-        ></img>
-      </div>
-    ),
-    defaultMax: true,
-  });
 }
 
 export function ImagePreviewer(props: {
