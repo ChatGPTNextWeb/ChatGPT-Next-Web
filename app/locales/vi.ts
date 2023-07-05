@@ -91,10 +91,6 @@ const vi: PartialLocaleType = {
         Title: "Mask Splash Screen",
         SubTitle: "Chớp màn hình khi bắt đầu cuộc trò chuyện mới",
       },
-      Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
-      },
     },
     Prompt: {
       Disable: {
