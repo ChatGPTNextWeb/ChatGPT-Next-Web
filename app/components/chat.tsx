@@ -63,7 +63,14 @@ import Locale from "../locales";
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
 
-import { ListItem, Modal, showConfirm, showPrompt, showToast } from "./ui-lib";
+import {
+  ListItem,
+  Modal,
+  Selector,
+  showConfirm,
+  showPrompt,
+  showToast,
+} from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
@@ -414,16 +421,11 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  function nextModel() {
-    const models = config.models.filter((m) => m.available).map((m) => m.name);
-    const modelIndex = models.indexOf(currentModel);
-    const nextIndex = (modelIndex + 1) % models.length;
-    const nextModel = models[nextIndex];
-    chatStore.updateCurrentSession((session) => {
-      session.mask.modelConfig.model = nextModel as ModelType;
-      session.mask.syncGlobalConfig = false;
-    });
-  }
+  const models = useMemo(
+    () => config.models.filter((m) => m.available).map((m) => m.name),
+    [config.models],
+  );
+  const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -495,7 +497,7 @@ export function ChatActions(props: {
       />
 
       <ChatAction
-        onClick={nextModel}
+        onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
       />
@@ -509,6 +511,24 @@ export function ChatActions(props: {
         }
         icon={webSearch ? <SearchOpenIcon /> : <SearchCloseIcon />}
       />
+
+      {showModelSelector && (
+        <Selector
+          items={models.map((m) => ({
+            title: m,
+            value: m,
+          }))}
+          onClose={() => setShowModelSelector(false)}
+          onSelection={(s) => {
+            if (s.length === 0) return;
+            chatStore.updateCurrentSession((session) => {
+              session.mask.modelConfig.model = s[0] as ModelType;
+              session.mask.syncGlobalConfig = false;
+            });
+            showToast(s[0]);
+          }}
+        />
+      )}
     </div>
   );
 }
