@@ -1,4 +1,4 @@
-import { ALL_MODELS, ModalConfigValidator, ModelConfig } from "../store";
+import { ModalConfigValidator, ModelConfig, useAppConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
@@ -8,6 +8,8 @@ export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
+  const config = useAppConfig();
+
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -22,7 +24,7 @@ export function ModelConfigList(props: {
             );
           }}
         >
-          {ALL_MODELS.map((v) => (
+          {config.models.map((v) => (
             <option value={v.name} key={v.name} disabled={!v.available}>
               {v.name}
             </option>
@@ -60,7 +62,7 @@ export function ModelConfigList(props: {
           onChange={(e) => {
             props.updateConfig(
               (config) =>
-                (config.temperature = ModalConfigValidator.top_p(
+                (config.top_p = ModalConfigValidator.top_p(
                   e.currentTarget.valueAsNumber,
                 )),
             );

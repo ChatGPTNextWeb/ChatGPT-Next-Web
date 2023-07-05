@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import { DEFAULT_API_HOST, StoreKey } from "../constant";
 import { getHeaders } from "../client/api";
 import { BOT_HELLO } from "./chat";
-import { ALL_MODELS } from "./config";
 import { getClientConfig } from "../config/client";
 
 export interface AccessControlStore {
@@ -75,14 +74,6 @@ export const useAccessStore = create<AccessControlStore>()(
           .then((res: DangerConfig) => {
             console.log("[Config] got config from server", res);
             set(() => ({ ...res }));
-
-            if (!res.enableGPT4) {
-              ALL_MODELS.forEach((model) => {
-                if (model.name.startsWith("gpt-4")) {
-                  (model as any).available = false;
-                }
-              });
-            }
 
             if ((res as any).botHello) {
               BOT_HELLO.content = (res as any).botHello;
