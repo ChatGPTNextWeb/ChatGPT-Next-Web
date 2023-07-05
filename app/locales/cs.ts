@@ -91,10 +91,6 @@ const cs: PartialLocaleType = {
         Title: "Úvodní obrazovka Masek",
         SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
       },
-      Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
-      },
     },
     Prompt: {
       Disable: {

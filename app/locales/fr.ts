@@ -93,10 +93,6 @@ const fr: PartialLocaleType = {
         SubTitle:
           "Afficher un écran de masque avant de démarrer une nouvelle discussion",
       },
-      Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
-      },
     },
     Prompt: {
       Disable: {
