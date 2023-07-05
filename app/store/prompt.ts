@@ -127,7 +127,7 @@ export const usePromptStore = create<PromptStore>()(
       search(text) {
         if (text.length === 0) {
           // return all rompts
-          return SearchService.allPrompts.concat([...get().getUserPrompts()]);
+          return get().getUserPrompts().concat(SearchService.builtinPrompts);
         }
         return SearchService.search(text) as Prompt[];
       },
