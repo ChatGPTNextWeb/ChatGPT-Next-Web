@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
-import { List, ListItem, Modal, Select, showToast } from "./ui-lib";
+import { List, ListItem, Modal, Select, showModal, showToast } from "./ui-lib";
 import { IconButton } from "./button";
 import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
 
@@ -23,6 +24,7 @@ import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
+import { getClientConfig } from "../config/client";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -357,6 +359,24 @@ function ExportAvatar(props: { avatar: string }) {
   return <Avatar avatar={props.avatar}></Avatar>;
 }
 
+export function showImageModal(img: string) {
+  showModal({
+    title: Locale.Export.Image.Modal,
+    children: (
+      <div>
+        <img
+          src={img}
+          alt="preview"
+          style={{
+            maxWidth: "100%",
+          }}
+        ></img>
+      </div>
+    ),
+    defaultMax: true,
+  });
+}
+
 export function ImagePreviewer(props: {
   messages: ChatMessage[];
   topic: string;
@@ -369,6 +389,7 @@ export function ImagePreviewer(props: {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const copy = () => {
+    showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
     toBlob(dom).then((blob) => {
@@ -393,17 +414,15 @@ export function ImagePreviewer(props: {
   const isMobile = useMobileScreen();
 
   const download = () => {
+    showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
     toPng(dom)
       .then((blob) => {
         if (!blob) return;
 
-        if (isMobile) {
-          const image = new Image();
-          image.src = blob;
-          const win = window.open("");
-          win?.document.write(image.outerHTML);
+        if (isMobile || getClientConfig()?.isApp) {
+          showImageModal(blob);
         } else {
           const link = document.createElement("a");
           link.download = `${props.topic}.png`;

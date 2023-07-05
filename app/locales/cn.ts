@@ -86,6 +86,10 @@ const cn = {
       Select: "选取",
       Preview: "预览",
     },
+    Image: {
+      Toast: "正在生成截图",
+      Modal: "长按或右键保存图片",
+    },
   },
   Select: {
     Search: "搜索消息",
