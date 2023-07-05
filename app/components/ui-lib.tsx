@@ -47,9 +47,13 @@ export function ListItem(props: {
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
+  onClick?: () => void;
 }) {
   return (
-    <div className={styles["list-item"] + ` ${props.className || ""}`}>
+    <div
+      className={styles["list-item"] + ` ${props.className || ""}`}
+      onClick={props.onClick}
+    >
       <div className={styles["list-header"]}>
         {props.icon && <div className={styles["list-icon"]}>{props.icon}</div>}
         <div className={styles["list-item-title"]}>
@@ -431,4 +435,38 @@ export function showImageModal(img: string) {
       </div>
     ),
   });
+}
+
+export function Selector<T>(props: {
+  items: Array<{
+    title: string;
+    subTitle?: string;
+    value: T;
+  }>;
+  onSelection?: (selection: T[]) => void;
+  onClose?: () => void;
+  multiple?: boolean;
+}) {
+  return (
+    <div className={styles["selector"]}>
+      <div className={styles["selector-content"]}>
+        <List>
+          {props.items.map((item, i) => {
+            return (
+              <ListItem
+                className={styles["selector-item"]}
+                key={i}
+                title={item.title}
+                subTitle={item.subTitle}
+                onClick={() => {
+                  props.onSelection?.([item.value]);
+                  props.onClose?.();
+                }}
+              ></ListItem>
+            );
+          })}
+        </List>
+      </div>
+    </div>
+  );
 }
