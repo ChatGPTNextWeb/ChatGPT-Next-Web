@@ -95,6 +95,7 @@ interface ModalProps {
   title: string;
   children?: any;
   actions?: JSX.Element[];
+  defaultMax?: boolean;
   onClose?: () => void;
 }
 export function Modal(props: ModalProps) {
@@ -113,7 +114,7 @@ export function Modal(props: ModalProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [isMax, setMax] = useState(false);
+  const [isMax, setMax] = useState(!!props.defaultMax);
 
   return (
     <div
