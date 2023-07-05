@@ -23,6 +23,7 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  toolPrompt?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -31,6 +32,7 @@ export function createMessage(override: Partial<ChatMessage>): ChatMessage {
     date: new Date().toLocaleString(),
     role: "user",
     content: "",
+    toolPrompt: undefined,
     ...override,
   };
 }
@@ -53,6 +55,7 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+  webSearch: boolean;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -76,6 +79,7 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+    webSearch: false,
   };
 }
 
@@ -309,10 +313,39 @@ export const useChatStore = create<ChatStore>()(
             ...userMessage,
             content,
           };
-          session.messages = session.messages.concat([
-            savedUserMessage,
-            botMessage,
-          ]);
+          session.messages.push(savedUserMessage);
+        });
+
+        if (session.webSearch) {
+          const query = encodeURIComponent(content);
+          let searchResult = await api.searchTool.call(query);
+          console.log("[Tools] ", searchResult);
+          const webSearchPrompt = `
+Using the provided web search results, write a comprehensive reply to the given query.
+If the provided search results refer to multiple subjects with the same name, write separate answers for each subject.
+Make sure to cite results using \`[[number](URL)]\` notation after the reference.
+
+Web search json results:
+"""
+${JSON.stringify(searchResult)}
+"""
+
+Current date:
+"""
+${new Date().toISOString()}
+"""
+
+Query:
+"""
+${content}
+"""
+
+Reply in ${getLang()} and markdown.`;
+          userMessage.toolPrompt = webSearchPrompt;
+        }
+        // save user's and bot's message
+        get().updateCurrentSession((session) => {
+          session.messages.push(botMessage);
         });
 
         // make request
