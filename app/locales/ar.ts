@@ -134,10 +134,6 @@ const ar: PartialLocaleType = {
         Title: "شاشة تظهر الأقنعة",
         SubTitle: "عرض شاشة تظهر الأقنعة قبل بدء الدردشة الجديدة",
       },
-      Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
-      },
     },
     Prompt: {
       Disable: {

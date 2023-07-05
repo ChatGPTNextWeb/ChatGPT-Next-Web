@@ -90,7 +90,7 @@ export const useMaskStore = create<MaskStore>()(
           (a, b) => b.id - a.id,
         );
         const config = useAppConfig.getState();
-        if (config.dontAddBuiltinMasks) return userMasks;
+        if (config.hideBuiltinMasks) return userMasks;
         const buildinMasks = BUILTIN_MASKS.map(
           (m) =>
             ({

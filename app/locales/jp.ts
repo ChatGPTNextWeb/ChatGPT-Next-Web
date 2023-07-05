@@ -108,10 +108,6 @@ const jp: PartialLocaleType = {
         Title: "キャラクターページ",
         SubTitle: "新規チャット作成時にキャラクターページを表示する",
       },
-      Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
-      },
     },
     Prompt: {
       Disable: {

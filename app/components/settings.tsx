@@ -568,11 +568,11 @@ export function Settings() {
           >
             <input
               type="checkbox"
-              checked={!config.dontAddBuiltinMasks}
+              checked={config.hideBuiltinMasks}
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.dontAddBuiltinMasks = !e.currentTarget.checked),
+                    (config.hideBuiltinMasks = e.currentTarget.checked),
                 )
               }
             ></input>
