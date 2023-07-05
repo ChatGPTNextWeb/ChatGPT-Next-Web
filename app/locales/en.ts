@@ -301,6 +301,11 @@ const en: LocaleType = {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
       },
+      Share: {
+        Title: "Share This Mask",
+        SubTitle: "Generate a link to this mask",
+        Action: "Copy Link",
+      },
     },
   },
   NewChat: {
