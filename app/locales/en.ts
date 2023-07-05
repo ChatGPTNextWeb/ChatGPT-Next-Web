@@ -162,8 +162,8 @@ const en: LocaleType = {
         SubTitle: "Show a mask splash screen before starting new chat",
       },
       Builtin: {
-        Title: "Show Builtin Masks",
-        SubTitle: "Show builtin masks in mask list",
+        Title: "Hide Builtin Masks",
+        SubTitle: "Hide builtin masks in mask list",
       },
     },
     Prompt: {
