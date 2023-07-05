@@ -303,20 +303,48 @@ export const useChatStore = create<ChatStore>()(
 
           const systemInfo = createMessage({
             role: "system",
-            content: `IMPORTANT: You are a virtual assistant powered by the ${
-              modelConfig.model
-            } model, now time is ${new Date().toLocaleString()}}`,
+            // content: `IMPORTANT: You are a virtual assistant powered by the ${
+            //   modelConfig.model
+            // } model, now time is ${new Date().toLocaleString()}}`,
+            content:
+              "从现在起你是一个充满哲学思维的心灵导师，当我每次输入一个疑问时你需要用一句富有哲理的名言警句来回答我，并且表明作者和出处\n\n\n要求字数不少于15个字，不超过30字，每次只返回一句且不输出额外的其他信息，你需要使用中文和英文双语输出\n\n\n当你准备好的时候只需要回复“我已经准备好了”（不需要输出任何其他内容）,你每次说话请使用“我是一个哲学家”开头",
+
             id: botMessage.id! + 1,
           });
 
           // get recent messages
           const systemMessages = [];
           // if user define a mask with context prompts, wont send system info
-          if (session.mask.context.length === 0) {
-            //alert("hhhhh")
+
+          const systemInfo1 = createMessage({
+            role: "system",
+            content:
+              "你的任务是以小红书博主的文章结构，以我给出的主题写一篇帖子推荐。你的回答应包括使用表情符号来增加趣味和互动，以及与每个段落相匹配的图片。请以一个引人入胜的介绍开始，为你的推荐设置基调。然后，提供至少三个与主题相关的段落，突出它们的独特特点和吸引力。在你的写作中使用表情符号，使它更加引人入胜和有趣。对于每个段落，请提供一个与描述内容相匹配的图片。这些图片应该视觉上吸引人，并帮助你的描述更加生动形象。你每次说话请使用“我是一个小红书博主”开头",
+            id: botMessage.id! + 1,
+          });
+
+          const systemInfo2 = createMessage({
+            role: "system",
+            content:
+              "我想让你担任职业顾问。我将为您提供一个在职业生涯中寻求指导的人，您的任务是帮助他们根据自己的技能、兴趣和经验确定最适合的职业。您还应该对可用的各种选项进行研究，解释不同行业的就业市场趋势，并就哪些资格对追求特定领域有益提出建议。你每次说话请使用“我是一个职业规划顾问”开头",
+            id: botMessage.id! + 1,
+          });
+          const messageIndex1 = get().currentSession().messages.length / 2;
+          if (messageIndex1 % 3 == 1) {
+            console.log("哲学家");
+            console.log(messageIndex1);
             systemMessages.push(systemInfo);
           }
-
+          if (messageIndex1 % 3 == 0) {
+            console.log("小红书");
+            console.log(messageIndex1);
+            systemMessages.push(systemInfo1);
+          }
+          if (messageIndex1 % 3 == 2) {
+            console.log("小职业顾问");
+            console.log(messageIndex1);
+            systemMessages.push(systemInfo2);
+          }
           const recentMessages = get().getMessagesWithMemory();
           console.log("[recentMessage", recentMessages);
           const sendMessages = systemMessages.concat(
@@ -326,7 +354,7 @@ export const useChatStore = create<ChatStore>()(
           console.log("[SendMessage is] : ", sendMessages);
           const sessionIndex = get().currentSessionIndex;
           const messageIndex = get().currentSession().messages.length + 1;
-
+          console.log("[messageIndex] : ", messageIndex);
           // save user's and bot's message
           get().updateCurrentSession((session) => {
             session.messages.push(userMessage);
