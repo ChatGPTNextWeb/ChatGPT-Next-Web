@@ -297,6 +297,11 @@ const cn = {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
       },
+      Share: {
+        Title: "分享此面具",
+        SubTitle: "生成此面具的直达链接",
+        Action: "复制链接",
+      },
     },
   },
   NewChat: {
