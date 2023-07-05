@@ -1032,22 +1032,6 @@ export function Chat() {
                     </div>
                   )}
                   <div className={styles["chat-message-item"]}>
-                    <Markdown
-                      content={message.content}
-                      loading={
-                        (message.preview || message.content.length === 0) &&
-                        !isUser
-                      }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
-                      fontSize={fontSize}
-                      parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 10}
-                    />
-
                     {showActions && (
                       <div className={styles["chat-message-actions"]}>
                         <div
@@ -1087,11 +1071,34 @@ export function Chat() {
                                 icon={<CopyIcon />}
                                 onClick={() => copyToClipboard(message.content)}
                               />
+                              <ChatAction
+                                text={"播放"}
+                                icon={<MicphoneIcon />}
+                                onClick={() =>
+                                  speechSdk.handleSynthesize(message.content)
+                                }
+                              />
                             </>
                           )}
                         </div>
                       </div>
                     )}
+
+                    <Markdown
+                      content={message.content}
+                      loading={
+                        (message.preview || message.content.length === 0) &&
+                        !isUser
+                      }
+                      onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen) return;
+                        setUserInput(message.content);
+                      }}
+                      fontSize={fontSize}
+                      parentRef={scrollRef}
+                      defaultShow={i >= messages.length - 10}
+                    />
                   </div>
 
                   {showActions && (

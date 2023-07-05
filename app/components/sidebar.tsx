@@ -136,6 +136,20 @@ export function SideBar(props: { className?: string }) {
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
+        <IconButton
+          icon={<AddIcon />}
+          text={shouldNarrow ? undefined : Locale.Home.NewChat}
+          onClick={() => {
+            if (config.dontShowMaskSplashScreen) {
+              chatStore.newSession();
+              navigate(Path.Chat);
+            } else {
+              navigate(Path.NewChat);
+            }
+          }}
+          shadow
+        />
+
         {/* 新的聊天=面具, 重复了*/}
         {/* <IconButton
           icon={<MaskIcon />}
@@ -195,22 +209,6 @@ export function SideBar(props: { className?: string }) {
               onClick={() => about(userConstantVO)}
             />
           </div>
-        </div>
-
-        <div>
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                navigate(Path.NewChat);
-              }
-            }}
-            shadow
-          />
         </div>
       </div>
 

@@ -273,9 +273,9 @@
   &:hover {
     .chat-message-actions {
       opacity: 1;
-      transform: translateY(0px);
-      max-width: 100%;
-      height: 40px;
+      // transform: translateY(0px);
+      // max-width: 100%;
+      // height: 40px;
     }
 
     .chat-message-action-date {
@@ -350,6 +350,7 @@
 
   .chat-message-actions {
     display: flex;
+    flex-direction: row-reverse;
     box-sizing: border-box;
     font-size: 12px;
     align-items: flex-end;
@@ -360,7 +361,8 @@
     height: 0;
     max-width: 0;
     position: absolute;
-    left: 0;
+    right: 20px;
+    top: -30px;
     z-index: 2;
 
     .chat-input-actions {

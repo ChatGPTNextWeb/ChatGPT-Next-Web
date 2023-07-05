@@ -52,6 +52,8 @@
   .sidebar-header-bar {
     display: flex;
     margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
 
     .sidebar-bar-button {
       flex-grow: 1;
@@ -125,6 +127,9 @@
   position: relative;
   padding-top: 20px;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sidebar-logo {
@@ -286,6 +291,7 @@
   .sidebar-tail {
     flex-direction: column-reverse;
     align-items: center;
+    justify-content: center;
 
     .sidebar-actions {
       flex-direction: column-reverse;
@@ -303,6 +309,8 @@
   display: flex;
   justify-content: space-between;
   padding-top: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 .sidebar-actions {
