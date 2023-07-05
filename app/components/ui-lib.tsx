@@ -6,6 +6,8 @@ import EyeOffIcon from "../icons/eye-off.svg";
 import DownIcon from "../icons/down.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
+import MaxIcon from "../icons/max.svg";
+import MinIcon from "../icons/min.svg";
 
 import Locale from "../locales";
 
@@ -111,13 +113,30 @@ export function Modal(props: ModalProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [isMax, setMax] = useState(false);
+
   return (
-    <div className={styles["modal-container"]}>
+    <div
+      className={
+        styles["modal-container"] + ` ${isMax && styles["modal-container-max"]}`
+      }
+    >
       <div className={styles["modal-header"]}>
         <div className={styles["modal-title"]}>{props.title}</div>
 
-        <div className={styles["modal-close-btn"]} onClick={props.onClose}>
-          <CloseIcon />
+        <div className={styles["modal-header-actions"]}>
+          <div
+            className={styles["modal-header-action"]}
+            onClick={() => setMax(!isMax)}
+          >
+            {isMax ? <MinIcon /> : <MaxIcon />}
+          </div>
+          <div
+            className={styles["modal-header-action"]}
+            onClick={props.onClose}
+          >
+            <CloseIcon />
+          </div>
         </div>
       </div>
 
