@@ -340,6 +340,10 @@ export function Settings() {
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage(force = false) {
+    if (accessStore.hideBalanceQuery) {
+      return;
+    }
+
     setLoadingUsage(true);
     updateStore.updateUsage(force).finally(() => {
       setLoadingUsage(false);
@@ -595,19 +599,34 @@ export function Settings() {
           )}
 
           {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Token.Title}
-              subTitle={Locale.Settings.Token.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.token}
-                type="text"
-                placeholder={Locale.Settings.Token.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateToken(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
+            <>
+              <ListItem
+                title={Locale.Settings.Endpoint.Title}
+                subTitle={Locale.Settings.Endpoint.SubTitle}
+              >
+                <input
+                  type="text"
+                  value={accessStore.openaiUrl}
+                  placeholder="https://api.openai.com/"
+                  onChange={(e) =>
+                    accessStore.updateOpenAiUrl(e.currentTarget.value)
+                  }
+                ></input>
+              </ListItem>
+              <ListItem
+                title={Locale.Settings.Token.Title}
+                subTitle={Locale.Settings.Token.SubTitle}
+              >
+                <PasswordInput
+                  value={accessStore.token}
+                  type="text"
+                  placeholder={Locale.Settings.Token.Placeholder}
+                  onChange={(e) => {
+                    accessStore.updateToken(e.currentTarget.value);
+                  }}
+                />
+              </ListItem>
+            </>
           ) : null}
 
           {!accessStore.hideBalanceQuery ? (
@@ -633,22 +652,6 @@ export function Settings() {
                   onClick={() => checkUsage(true)}
                 />
               )}
-            </ListItem>
-          ) : null}
-
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Endpoint.Title}
-              subTitle={Locale.Settings.Endpoint.SubTitle}
-            >
-              <input
-                type="text"
-                value={accessStore.openaiUrl}
-                placeholder="https://api.openai.com/"
-                onChange={(e) =>
-                  accessStore.updateOpenAiUrl(e.currentTarget.value)
-                }
-              ></input>
             </ListItem>
           ) : null}
         </List>

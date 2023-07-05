@@ -321,6 +321,7 @@ export function showConfirm(content: any) {
 function PromptInput(props: {
   value: string;
   onChange: (value: string) => void;
+  rows?: number;
 }) {
   const [input, setInput] = useState(props.value);
   const onInput = (value: string) => {
@@ -334,11 +335,12 @@ function PromptInput(props: {
       autoFocus
       value={input}
       onInput={(e) => onInput(e.currentTarget.value)}
+      rows={props.rows ?? 3}
     ></textarea>
   );
 }
 
-export function showPrompt(content: any, value = "") {
+export function showPrompt(content: any, value = "", rows = 3) {
   const div = document.createElement("div");
   div.className = "modal-mask";
   document.body.appendChild(div);
@@ -386,6 +388,7 @@ export function showPrompt(content: any, value = "") {
         <PromptInput
           onChange={(val) => (userInput = val)}
           value={value}
+          rows={rows}
         ></PromptInput>
       </Modal>,
     );
