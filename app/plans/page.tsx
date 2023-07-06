@@ -121,8 +121,6 @@ const Plans = () => {
                 className={styles.button}
                 text="MANAGE 💲"
               />
-              </a>
-            </Link>
             </div>
           </div>
 
