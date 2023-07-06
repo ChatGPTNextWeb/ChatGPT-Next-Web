@@ -113,14 +113,15 @@ const Plans = () => {
                <p className={styles.description}>
                 Manage Your Subscription
               </p>
-              <IconButton
-                onClick={() => {
-                  onOpen(href='/account/plans');
-                }}
-                bordered
-                className={styles.button}
-                text="MANAGE 💲"
-              />
+              <Link href='/account/plans'>
+                <a>
+                  <IconButton
+                  bordered
+                  className={styles.button}
+                  text="MANAGE 💲"
+                  />
+                </a>
+              </Link>
             </div>
           </div>
 
