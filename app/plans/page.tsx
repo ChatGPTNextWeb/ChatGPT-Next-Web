@@ -110,13 +110,13 @@ const Plans = () => {
             <div className={styles.plan}>
               <p className={styles.type}>Manage Subscription</p>
              
-               <h2 className={styles.price}> 💰 </h2>
+               <h2 className={styles.price}> Manage 💳 </h2>
               <Link href='/account/plans'>
                 <a>
                   <IconButton
                   bordered
                   className={styles.button}
-                  text="MANAGE💲"
+                  text="Subscription 🤑"
                   />
                 </a>
               </Link>
