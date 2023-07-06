@@ -27,8 +27,12 @@ const Plans = () => {
       <div className={styles.container}>
         
         <div className={styles.planContainer}>
+          <div className={styles.plans}>
+            <div className={styles.plan}>
           <h2 className={styles.price}>SUBSCRIBE</h2>
           <p className={styles.type}>Please ALLOW POP-UP to go through Payments</p>
+              </div>
+            </div>
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>Monthly</p>
