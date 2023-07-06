@@ -28,6 +28,7 @@ const Plans = () => {
         
         <div className={styles.planContainer}>
           <h1 className={styles.price}>SUBSCRIBE</h1>
+          <p className={styles.type}>Please Allow Pop-Ups to go through Payments</p>
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>Monthly</p>
@@ -112,13 +113,14 @@ const Plans = () => {
                <p className={styles.description}>
                 Manage Your Subscription
               </p>
-              <Link href='/account/plans'>
-              <a>
-                <IconButton
-               icon={<PayIcon />}
-               className={styles["sidebar-bar-button"]}
-                  shadow 
-                />
+              <IconButton
+                onClick={() => {
+                  onOpen(href='/account/plans');
+                }}
+                bordered
+                className={styles.button}
+                text="MANAGE 💲"
+              />
               </a>
             </Link>
             </div>
