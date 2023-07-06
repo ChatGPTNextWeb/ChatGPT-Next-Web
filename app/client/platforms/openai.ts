@@ -211,7 +211,7 @@ export class ChatGPTApi implements LLMApi {
           }
         } else {
           //console.log(JSON.stringify(testBody))
-          //alert("hhhh")
+          alert("hhhh");
           const history = this.getHistory(messages);
           //const chatstore = useChatStore();
           const uuid = options.uuid;
@@ -222,7 +222,7 @@ export class ChatGPTApi implements LLMApi {
             question: question,
             history: history,
           };
-
+          console.log(testBody);
           const testPayload = {
             method: "POST",
             body: JSON.stringify(testBody),

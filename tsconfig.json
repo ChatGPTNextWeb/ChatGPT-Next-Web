@@ -23,6 +23,13 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/calcTextareaHeight.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/calcTextareaHeight.ts",
+    "node_modules/pdf-lib/ts3.4/apps/deno/dummy.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

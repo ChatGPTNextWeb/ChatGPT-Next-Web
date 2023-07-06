@@ -153,4 +153,17 @@ export default class ResponseController {
     const data = await response.json();
     return data;
   }
+  static async postTXTprompt(formData: any) {
+    let response = await fetch(BASEURL + "appendTXTPrompt", {
+      method: "POST",
+      mode: "cors", // 添加跨域请求模式
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    return data;
+  }
 }
