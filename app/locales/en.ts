@@ -1,6 +1,7 @@
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
 
+// if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
@@ -86,6 +87,10 @@ const en: LocaleType = {
     Steps: {
       Select: "Select",
       Preview: "Preview",
+    },
+    Image: {
+      Toast: "Capturing Image...",
+      Modal: "Long press or right click to save image",
     },
   },
   Select: {
