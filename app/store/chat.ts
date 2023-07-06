@@ -420,7 +420,7 @@ export const useChatStore = create<ChatStore>()(
           modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0 &&
-          session.lastSummarizeIndex <= clearContextIndex;
+          session.lastSummarizeIndex > clearContextIndex;
         const longTermMemoryPrompts = shouldSendLongTermMemory
           ? [get().getMemoryPrompt()]
           : [];

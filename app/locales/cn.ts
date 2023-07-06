@@ -86,6 +86,10 @@ const cn = {
       Select: "选取",
       Preview: "预览",
     },
+    Image: {
+      Toast: "正在生成截图",
+      Modal: "长按或右键保存图片",
+    },
   },
   Select: {
     Search: "搜索消息",
@@ -156,8 +160,14 @@ const cn = {
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Splash: {
+        Title: "面具启动页",
+        SubTitle: "新建聊天时，展示面具启动页",
+      },
+      Builtin: {
+        Title: "隐藏内置面具",
+        SubTitle: "在所有面具列表中隐藏内置面具",
+      },
     },
     Prompt: {
       Disable: {
@@ -290,6 +300,11 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+      },
+      Share: {
+        Title: "分享此面具",
+        SubTitle: "生成此面具的直达链接",
+        Action: "复制链接",
       },
     },
   },
