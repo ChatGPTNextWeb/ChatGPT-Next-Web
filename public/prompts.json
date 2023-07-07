@@ -16,8 +16,8 @@
       "Run a short and interactive training course for me on:\n\n Topic: \"Prompt Engineering\" and best practices for using GPT-4. \n\n Objective: I would like to improve my use of GPT for typical consultant activities through better GPT prompt engineering skills.\n\nI am a management consultant for business and IT.\n\n\nIntroduce me to the 5 most important concepts:\n- give an intro on one concept at a time\n- give a multiple choice question with 3 or 4 answer options\n- await my response before you proceed with the next concept\n- stop the quiz and provide an overall result once:\na. you are done with all concepts\nb. I give the keyword STOPP"
     ],
     [
-      "General - Learning",
-      "I want to learn about [insert topic]. Identify and share the most important 20% of learnings from this topic that will help me understand 80% of it."
+      "Business Capabilities - Create BC Map (incl. impact from a factor of change)",
+      "Create a business capability map for the following company:\n\n\"<Company, Location - potentially a division?\"\n\nI need to understand the impact from following factor of change: \n\n\"Generative AI and its expected impact on each business capability\"\n\nCreate a table with following columns:\n- ID\n- Level 0\n- Level 1\n- Level 2\n- impact from expectable change (0-5)\n- type of change impact"
     ],
     [
     "Proposal - Analyze CVs",
