@@ -61,13 +61,7 @@ const ko: PartialLocaleType = {
   Settings: {
     Title: "설정",
     SubTitle: "모든 설정",
-    Actions: {
-      ClearAll: "모든 데이터 지우기",
-      ResetAll: "모든 설정 초기화",
-      Close: "닫기",
-      ConfirmResetAll: "모든 설정을 초기화하시겠습니까?",
-      ConfirmClearAll: "모든 데이터를 지우시겠습니까?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "All Languages",
@@ -93,9 +87,11 @@ const ko: PartialLocaleType = {
       SubTitle: "버블에서 마크다운 미리 보기",
     },
     Mask: {
-      Title: "마스크 시작 화면",
-      SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
-      CodeTitle:'도움이 된다면 찬조해 주십시오',
+      Splash: {
+        Title: "마스크 시작 화면",
+        SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
+        CodeTitle:'도움이 된다면 찬조해 주십시오',
+      },
     },
     Prompt: {
       Disable: {

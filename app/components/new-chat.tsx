@@ -14,6 +14,8 @@ import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
+import { showConfirm } from "./ui-lib";
+import { BUILTIN_MASK_STORE } from "../masks";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -92,14 +94,17 @@ export function NewChat() {
   const { state } = useLocation();
 
   const startChat = (mask?: Mask) => {
-    chatStore.newSession(mask);
-    setTimeout(() => navigate(Path.Chat), 1);
+    setTimeout(() => {
+      chatStore.newSession(mask);
+      navigate(Path.Chat);
+    }, 10);
   };
 
   useCommand({
     mask: (id) => {
       try {
-        const mask = maskStore.get(parseInt(id));
+        const intId = parseInt(id);
+        const mask = maskStore.get(intId) ?? BUILTIN_MASK_STORE.get(intId);
         startChat(mask ?? undefined);
       } catch {
         console.error("[New Chat] failed to create chat from mask id=", id);
@@ -125,8 +130,8 @@ export function NewChat() {
         {!state?.fromHome && (
           <IconButton
             text={Locale.NewChat.NotShow}
-            onClick={() => {
-              if (confirm(Locale.NewChat.ConfirmNoShow)) {
+            onClick={async () => {
+              if (await showConfirm(Locale.NewChat.ConfirmNoShow)) {
                 startChat();
                 config.update(
                   (config) => (config.dontShowMaskSplashScreen = true),

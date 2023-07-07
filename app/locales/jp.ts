@@ -61,12 +61,19 @@ const jp: PartialLocaleType = {
   Settings: {
     Title: "設定",
     SubTitle: "設定オプション",
-    Actions: {
-      ClearAll: "すべてのデータをクリア",
-      ResetAll: "すべてのオプションをリセット",
-      Close: "閉じる",
-      ConfirmResetAll: "すべての設定をリセットしてもよろしいですか？",
-      ConfirmClearAll: "すべてのチャットをリセットしてもよろしいですか？",
+    Danger: {
+      Reset: {
+        Title: "設定をリセット",
+        SubTitle: "すべての設定項目をデフォルトにリセットします",
+        Action: "今すぐリセットする",
+        Confirm: "すべての設定項目をリセットしてもよろしいですか？",
+      },
+      Clear: {
+        Title: "データを消去",
+        SubTitle: "すべてのチャット履歴と設定を消去します",
+        Action: "今すぐ消去する",
+        Confirm: "すべてのチャット履歴と設定を消去しますか？",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -77,7 +84,10 @@ const jp: PartialLocaleType = {
       Title: "フォントサイズ",
       SubTitle: "チャット内容のフォントサイズ",
     },
-
+    InputTemplate: {
+      Title: "入力の前処理",
+      SubTitle: "新規入力がこのテンプレートに埋め込まれます",
+    },
     Update: {
       Version: (x: string) => `現在のバージョン：${x}`,
       IsLatest: "最新バージョンです",
@@ -94,9 +104,11 @@ const jp: PartialLocaleType = {
       SubTitle: "プレビューバブルでマークダウンコンテンツをプレビュー",
     },
     Mask: {
-      Title: "マスク起動ページです",
-      SubTitle: "チャットを作成するとき、マスクのページを表示します",
-      CodeTitle:'もしお役に立てるようでしたら協賛をお願いします',
+      Splash: {
+        Title: "キャラクターページ",
+        SubTitle: "新規チャット作成時にキャラクターページを表示する",
+        CodeTitle:'もしお役に立てるようでしたら協賛をお願いします',
+      },
     },
     Prompt: {
       Disable: {

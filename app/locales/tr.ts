@@ -61,13 +61,7 @@ const tr: PartialLocaleType = {
   Settings: {
     Title: "Ayarlar",
     SubTitle: "Tüm Ayarlar",
-    Actions: {
-      ClearAll: "Tüm Verileri Temizle",
-      ResetAll: "Tüm Ayarları Sıfırla",
-      Close: "Kapat",
-      ConfirmResetAll: "Tüm ayarları sıfırlamak istediğinizden emin misiniz?",
-      ConfirmClearAll: "Tüm sohbeti sıfırlamak istediğinizden emin misiniz?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Tüm Diller",
@@ -93,9 +87,11 @@ const tr: PartialLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
-      CodeTitle:'Size yardımcı olursa, lütfen sponsor olun',
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+        CodeTitle:'Size yardımcı olursa, lütfen sponsor olun',
+      },
     },
     Prompt: {
       Disable: {

@@ -61,13 +61,7 @@ const cs: PartialLocaleType = {
   Settings: {
     Title: "Nastavení",
     SubTitle: "Všechna nastavení",
-    Actions: {
-      ClearAll: "Vymazat všechna data",
-      ResetAll: "Obnovit veškeré nastavení",
-      Close: "Zavřít",
-      ConfirmResetAll: "Jste si jisti, že chcete obnovit všechna nastavení?",
-      ConfirmClearAll: "Jste si jisti, že chcete smazat všechna data?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Všechny jazyky",
@@ -93,9 +87,11 @@ const cs: PartialLocaleType = {
       SubTitle: "Zobrazit v náhledu bubliny",
     },
     Mask: {
-      Title: "Úvodní obrazovka Masek",
-      SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
-      CodeTitle:'Pokud vám to pomůže, prosím, sponzorujte to',
+      Splash: {
+        Title: "Úvodní obrazovka Masek",
+        SubTitle: "Před zahájením nového chatu zobrazte úvodní obrazovku Masek",
+        CodeTitle:'Pokud vám to pomůže, prosím, sponzorujte to',
+      },
     },
     Prompt: {
       Disable: {
