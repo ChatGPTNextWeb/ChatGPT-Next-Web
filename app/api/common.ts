@@ -4,7 +4,6 @@ export const OPENAI_URL = "api.openai.com";
 const DEFAULT_PROTOCOL = "https";
 const PROTOCOL = process.env.PROTOCOL ?? DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL ?? OPENAI_URL;
-const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
@@ -47,30 +46,6 @@ export async function requestOpenai(req: NextRequest) {
     duplex: "half",
     signal: controller.signal,
   };
-
-  // #1815 try to refuse gpt4 request
-  if (DISABLE_GPT4 && req.body) {
-    try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody);
-
-      if ((jsonBody?.model ?? "").includes("gpt-4")) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: "you are not allowed to use gpt-4 model",
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error("[OpenAI] gpt4 filter", e);
-    }
-  }
 
   try {
     const res = await fetch(fetchUrl, fetchOptions);
