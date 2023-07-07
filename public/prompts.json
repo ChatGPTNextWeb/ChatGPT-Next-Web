@@ -8,8 +8,16 @@
     "[paste your writing] Proofread my writing above. Fix grammar and spelling mistakes. And make suggestions that will improve the clarity of my writing."
     ],
     [
-    "General - Learning",
-    "I want to learn about [insert topic]. Identify and share the most important 20% of learnings from this topic that will help me understand 80% of it."
+      "General - Proofreading (with detailed feedback) - Review any draft (email, slide, post, PoV, …). ",
+      "Point out any issues with my following draft, separating following type of issues:\n- grammar\n- spelling\n- language / expressions\n- content: \n   a. contradictions or inconsistencies\n   b. potential misunderstandings\n\nThen, provide feedback on what to improve to better write/act as a Trusted Advisor, instead as an SME/consultant.\n\nAfter all, create an improved version, but reflect my basic style of writing. \n\n### DRAFT:\n[paste YOUR DRAFT]\n\nEmpty Prompt Content"
+    ],
+    [
+      "General - Learning (interactive with Quiz) - Run a short and interactive training course for me on ...",
+      "Run a short and interactive training course for me on:\n\n Topic: \"Prompt Engineering\" and best practices for using GPT-4. \n\n Objective: I would like to improve my use of GPT for typical consultant activities through better GPT prompt engineering skills.\n\nI am a management consultant for business and IT.\n\n\nIntroduce me to the 5 most important concepts:\n- give an intro on one concept at a time\n- give a multiple choice question with 3 or 4 answer options\n- await my response before you proceed with the next concept\n- stop the quiz and provide an overall result once:\na. you are done with all concepts\nb. I give the keyword STOPP"
+    ],
+    [
+      "General - Learning",
+      "I want to learn about [insert topic]. Identify and share the most important 20% of learnings from this topic that will help me understand 80% of it."
     ],
     [
     "Proposal - Analyze CVs",
