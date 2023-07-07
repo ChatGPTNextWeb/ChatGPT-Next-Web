@@ -38,9 +38,15 @@ export interface LLMUsage {
   total: number;
 }
 
+export interface LLMModel {
+  name: string;
+  available: boolean;
+}
+
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
+  abstract models(): Promise<LLMModel[]>;
 }
 
 type ProviderName = "openai" | "azure" | "claude" | "palm";
