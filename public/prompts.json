@@ -9,7 +9,7 @@
     ],
     [
       "General - Proofreading (with detailed feedback) - Review any draft (email, slide, post, PoV, …). ",
-      "Point out any issues with my following draft, separating following type of issues:\n- grammar\n- spelling\n- language / expressions\n- content: \n   a. contradictions or inconsistencies\n   b. potential misunderstandings\n\nThen, provide feedback on what to improve to better write/act as a Trusted Advisor, instead as an SME/consultant.\n\nAfter all, create an improved version, but reflect my basic style of writing. \n\n### DRAFT:\n[paste YOUR DRAFT]\n\nEmpty Prompt Content"
+      "Point out any issues with my following draft, separating following type of issues:\n- grammar\n- spelling\n- language / expressions\n- content: \n   a. contradictions or inconsistencies\n   b. potential misunderstandings\n\nThen, provide feedback on what to improve to better write/act as a Trusted Advisor, instead as an SME/consultant.\n\nAfter all, create an improved version, but reflect my basic style of writing. \n\n### DRAFT:\n[paste YOUR DRAFT]\n\n"
     ],
     [
       "General - Learning (interactive with Quiz) - Run a short and interactive training course for me on ...",
