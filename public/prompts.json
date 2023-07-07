@@ -17,7 +17,7 @@
     ],
     [
       "Business Capabilities - Create BC Map (incl. impact from a factor of change)",
-      "Create a business capability map for the following company:\n\n\"<Company, Location - potentially a division?\"\n\nI need to understand the impact from following factor of change: \n\n\"Generative AI and its expected impact on each business capability\"\n\nCreate a table with following columns:\n- ID\n- Level 0\n- Level 1\n- Level 2\n- impact from expectable change (0-5)\n- type of change impact"
+      "Create a business capability map for the following company:\n\n\"[Company name, location - optionally specify a division - for unknown companies specify industry and type of business]\"\n\nI need to understand the impact from following factor of change: \n\n\"Generative AI and its expected impact on each business capability\"\n\nCreate a table with following columns:\n- ID\n- Level 0\n- Level 1\n- Level 2\n- impact from expectable change (0-5)\n- type of change impact"
     ],
     [
     "Proposal - Analyze CVs",
