@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { LLMModel } from "../client/api";
 import { getClientConfig } from "../config/client";
-import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
+import { DEFAULT_INPUT_TEMPLATE, DEFAULT_MODELS, StoreKey } from "../constant";
+
+export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -29,10 +32,14 @@ export const DEFAULT_CONFIG = {
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
+  hideBuiltinMasks: false, // dont add builtin masks
+
+  models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
+    top_p: 1,
     max_tokens: 2000,
     presence_penalty: 0,
     frequency_penalty: 0,
@@ -48,80 +55,10 @@ export type ChatConfig = typeof DEFAULT_CONFIG;
 export type ChatConfigStore = ChatConfig & {
   reset: () => void;
   update: (updater: (config: ChatConfig) => void) => void;
+  mergeModels: (newModels: LLMModel[]) => void;
 };
 
 export type ModelConfig = ChatConfig["modelConfig"];
-
-const ENABLE_GPT4 = true;
-
-export const ALL_MODELS = [
-  {
-    name: "gpt-4",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-0613",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0613",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0613",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-16k",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-16k-0613",
-    available: true,
-  },
-  {
-    name: "qwen-v1", // 通义千问
-    available: false,
-  },
-  {
-    name: "ernie", // 文心一言
-    available: false,
-  },
-  {
-    name: "spark", // 讯飞星火
-    available: false,
-  },
-  {
-    name: "llama", // llama
-    available: false,
-  },
-  {
-    name: "chatglm", // chatglm-6b
-    available: false,
-  },
-] as const;
-
-export type ModelType = (typeof ALL_MODELS)[number]["name"];
 
 export function limitNumber(
   x: number,
@@ -137,7 +74,8 @@ export function limitNumber(
 }
 
 export function limitModel(name: string) {
-  return ALL_MODELS.some((m) => m.name === name && m.available)
+  const allModels = useAppConfig.getState().models;
+  return allModels.some((m) => m.name === name && m.available)
     ? name
     : "gpt-3.5-turbo";
 }
@@ -158,6 +96,9 @@ export const ModalConfigValidator = {
   temperature(x: number) {
     return limitNumber(x, 0, 1, 1);
   },
+  top_p(x: number) {
+    return limitNumber(x, 0, 1, 1);
+  },
 };
 
 export const useAppConfig = create<ChatConfigStore>()(
@@ -174,20 +115,41 @@ export const useAppConfig = create<ChatConfigStore>()(
         updater(config);
         set(() => config);
       },
+
+      mergeModels(newModels) {
+        const oldModels = get().models;
+        const modelMap: Record<string, LLMModel> = {};
+
+        for (const model of oldModels) {
+          model.available = false;
+          modelMap[model.name] = model;
+        }
+
+        for (const model of newModels) {
+          model.available = true;
+          modelMap[model.name] = model;
+        }
+
+        set(() => ({
+          models: Object.values(modelMap),
+        }));
+      },
     }),
     {
       name: StoreKey.Config,
-      version: 3.2,
+      version: 3.4,
       migrate(persistedState, version) {
-        if (version === 3.2) return persistedState as any;
+        if (version === 3.4) return persistedState as any;
 
         const state = persistedState as ChatConfig;
         state.modelConfig.sendMemory = true;
         state.modelConfig.historyMessageCount = 4;
         state.modelConfig.compressMessageLengthThreshold = 1000;
         state.modelConfig.frequency_penalty = 0;
+        state.modelConfig.top_p = 1;
         state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
         state.dontShowMaskSplashScreen = false;
+        state.hideBuiltinMasks = false;
 
         return state;
       },
