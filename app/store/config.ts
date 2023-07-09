@@ -117,6 +117,10 @@ export const useAppConfig = create<ChatConfigStore>()(
       },
 
       mergeModels(newModels) {
+        if (!newModels || newModels.length === 0) {
+          return;
+        }
+
         const oldModels = get().models;
         const modelMap: Record<string, LLMModel> = {};
 
