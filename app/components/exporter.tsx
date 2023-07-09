@@ -407,50 +407,50 @@ export function ImagePreviewer(props: {
 
   const isMobile = useMobileScreen();
 
-  // const download = () => {
-  //   const dom = previewRef.current;
-  //   if (!dom) return;
-  //   toPng(dom)
-  //     .then((blob) => {
-  //       if (!blob) return;
-  //
-  //       if (isMobile) {
-  //         const image = new Image();
-  //         image.src = blob;
-  //         const win = window.open("");
-  //         win?.document.write(image.outerHTML);
-  //       } else {
-  //         const link = document.createElement("a");
-  //         link.download = `${props.topic}.png`;
-  //         link.href = blob;
-  //         link.click();
-  //       }
-  //     })
-  //     .catch((e) => console.log("[Export Image] ", e));
-  // };
-
   const download = () => {
     const dom = previewRef.current;
     if (!dom) return;
+    toPng(dom)
+      .then((blob) => {
+        if (!blob) return;
 
-    html2canvas(dom).then(
-      (canvas: {
-        toDataURL: (arg0: string) => any;
-        height: number;
-        width: number;
-      }) => {
-        const imgData = canvas.toDataURL("image/png");
-
-        const pdf = new jsPDF("p", "mm", "a4");
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-        alert("hhhhh");
-        pdf.save(`${props.topic}.pdf`);
-        alert("hhhhhggg");
-      },
-    );
+        if (isMobile) {
+          const image = new Image();
+          image.src = blob;
+          const win = window.open("");
+          win?.document.write(image.outerHTML);
+        } else {
+          const link = document.createElement("a");
+          link.download = `${props.topic}.png`;
+          link.href = blob;
+          link.click();
+        }
+      })
+      .catch((e) => console.log("[Export Image] ", e));
   };
+
+  // const download = () => {
+  //   const dom = previewRef.current;
+  //   if (!dom) return;
+  //
+  //   html2canvas(dom).then(
+  //     (canvas: {
+  //       toDataURL: (arg0: string) => any;
+  //       height: number;
+  //       width: number;
+  //     }) => {
+  //       const imgData = canvas.toDataURL("image/png");
+  //
+  //       const pdf = new jsPDF("p", "mm", "a4");
+  //       const imgWidth = 210;
+  //       const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  //       alert("hhhhh");
+  //       pdf.save(`${props.topic}.pdf`);
+  //       alert("hhhhhggg");
+  //     },
+  //   );
+  // };
   const upload = async () => {
     const session = chatStore.currentSession();
     let uuidValue = session.id.toString();
@@ -478,7 +478,7 @@ export function ImagePreviewer(props: {
     // 调用 ResponseController
     const res = await ResponseController.postPDFprompt(data);
     if (res.text !== "") {
-      alert("It upload success!");
+      alert("It upload successfully!");
     }
   };
 
@@ -572,6 +572,7 @@ export function MarkdownPreviewer(props: {
           : `## ${Locale.Export.MessageFromChatGPT}:\n${m.content.trim()}`;
       })
       .join("\n\n");
+
   const txtText =
     `${props.topic}\n\n` +
     props.messages
@@ -610,7 +611,7 @@ export function MarkdownPreviewer(props: {
 
     const res = await ResponseController.postTXTprompt(data);
     if (res.text !== "") {
-      alert("It upload success!");
+      alert("It upload successfully!");
     }
   };
 

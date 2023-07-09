@@ -807,7 +807,7 @@ export function Chat() {
     data.append("filename", "This is a PDF");
     const res = await ResponseController.postPDFprompt(data);
     if (res.text !== "") {
-      alert("It upload success!");
+      alert("It upload successfully!");
     }
   }
   function fileCount() {}
