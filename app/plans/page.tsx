@@ -25,8 +25,8 @@ const Plans = () => {
         />
       </div>
       <div className={styles.container}>
-        <div className={styles.planContainer}>
-          <div className={styles.plans}>
+        <div className={styles.plans}>
+          <div className={styles.plan}>
             <h2 className={styles.price}>SUBSCRIBE</h2> 
           </div>
         </div>
