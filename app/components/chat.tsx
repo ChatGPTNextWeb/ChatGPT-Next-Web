@@ -730,16 +730,18 @@ export function Chat() {
     deleteMessage(msgId);
   };
 
-  const onResend = (botMessageId: number) => {
-    // find last user input message and resend
-    const userIndex = findLastUserIndex(botMessageId);
-    if (userIndex === null) return;
+  const onResend = (message: ChatMessage) => {
+    let content = message.content;
+
+    if (message.role === "assistant" && message.id) {
+      const userIndex = findLastUserIndex(message.id);
+      if (userIndex) {
+        content = session.messages.at(userIndex)?.content ?? content;
+      }
+    }
 
     setIsLoading(true);
-    const userMsg = session.messages[userIndex];
-    deleteMessage(userMsg.id);
-    deleteMessage(botMessageId);
-    chatStore.onUserInput(userMsg.content).then(() => setIsLoading(false));
+    chatStore.onUserInput(content).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -918,12 +920,11 @@ export function Chat() {
       >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
-          // const showActions =
-          //   !isUser &&
-          //   i > 0 &&
-          //   !(message.preview || message.content.length === 0) &&
-          //   i >= context.length; // do not show actions for context prompts
-          const showActions = true;
+          const isContext = i < context.length;
+          const showActions =
+            i > 0 &&
+            !(message.preview || message.content.length === 0) &&
+            !isContext;
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
@@ -980,7 +981,7 @@ export function Chat() {
                               <ChatAction
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
-                                onClick={() => onResend(message.id ?? i)}
+                                onClick={() => onResend(message)}
                               />
 
                               <ChatAction
@@ -1028,11 +1029,11 @@ export function Chat() {
                     />
                   </div>
 
-                  {showActions && (
-                    <div className={styles["chat-message-action-date"]}>
-                      {message.date.toLocaleString()}
-                    </div>
-                  )}
+                  <div className={styles["chat-message-action-date"]}>
+                    {isContext
+                      ? Locale.Chat.IsContext
+                      : message.date.toLocaleString()}
+                  </div>
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
