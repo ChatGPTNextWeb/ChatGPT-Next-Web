@@ -70,7 +70,7 @@ import tr from "@/app/locales/tr";
 import { Property } from "csstype";
 import Height = Property.Height;
 import ResponseController from "@/app/api/controller/ResponseController";
-
+import { BUILTIN_MASK_STORE } from "../masks";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -531,6 +531,7 @@ export function Chat() {
 
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     //alert(userInput);
+
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
@@ -820,12 +821,87 @@ export function Chat() {
   }
 
   const chatstore = useChatStore();
-
+  const maskStore = useMaskStore();
+  let index = 0;
   useEffect(() => {
     let intervalId: string | number | NodeJS.Timeout | undefined;
 
+    let len = session.maskId.length;
+
+    let tempmessage: ChatMessage[] = [];
+    let messageLen = 0;
+    let finalmessage: ChatMessage[] = [];
+    let sysMessage: ChatMessage[] = [];
+    let i = 0;
     if (isRunning) {
       intervalId = setInterval(() => {
+        console.log("所有消息", session.messages);
+
+        if (session.messages.length >= 2) {
+          const messageAdd = session.messages.slice(-2);
+          console.log("adddd", messageAdd);
+
+          messageAdd.forEach((element) => {
+            console.log("i", i);
+            element.maskId = session.maskId[i];
+            console.log(session.maskId[index]);
+            i = i + 1;
+            i = i % len;
+          });
+          session.messages[session.messages.length - 2].maskId =
+            messageAdd[0].maskId;
+          session.messages[session.messages.length - 1].maskId =
+            messageAdd[1].maskId;
+          // for(const value of messageAdd){
+          //   console.log("i",i);
+          //  console.log("id",session.maskId[i]);
+          //   value.maskId=session.maskId[i];
+          //   i=i+1;
+          //   }
+          // console.log(session.maskId);
+          // console.log(session.messages);
+          console.log("add", messageAdd);
+          tempmessage = tempmessage.concat(messageAdd);
+          // const summarizeIndex = Math.max(
+          //   session.lastSummarizeIndex,
+          //   session.clearContextIndex ?? 0,
+          // );
+          // let toBeSummarizedMsgs = messages
+          // .filter((msg) => !msg.isError)
+          // .slice(-10);
+          messageLen = messageLen + 1;
+          // console.log("聊天记录",tempmessage);
+          // tempmessage[messageLen].maskId=session.maskId[index];
+          console.log("加了MASKID聊天记录", tempmessage);
+          index = index + 1;
+          index = index % len;
+          // console.log("index",index);
+          // console.log("maskID",session.maskId)
+          const mask =
+            maskStore.get(session.maskId[index]) ??
+            BUILTIN_MASK_STORE.get(session.maskId[index]);
+          // console.log(session.maskId[index])
+          // console.log("面具完整版",mask)
+          // console.log("面具",mask.context[0].content)
+          const systemMessage: ChatMessage = createMessage({
+            role: "system",
+            content: mask.context[0].content,
+            id: session.maskId[index],
+          });
+          sysMessage[0] = systemMessage;
+          console.log("index", session.maskId[index]);
+          for (const value of tempmessage) {
+            if (value.maskId == session.maskId[index]) {
+              value.role = "assistant";
+            } else {
+              value.role = "user";
+            }
+          }
+        }
+        console.log("修改Role的聊天记录", tempmessage);
+        finalmessage = sysMessage.concat(tempmessage);
+        console.log("最终的聊天记录", finalmessage);
+
         const input = "xzw want the agents talk!!!!!!!!!";
         AgentsTalk(input);
       }, 10000);
@@ -955,6 +1031,11 @@ export function Chat() {
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
+          // const avatarMask =maskStore.get(message.maskId[index]) ?? BUILTIN_MASK_STORE.get(session.maskId[index])??session.mask;
+          const avatarMask =
+            maskStore.get(message.maskId) ??
+            BUILTIN_MASK_STORE.get(message.maskId) ??
+            session.mask;
 
           const editContent = () => {
             setEditingContent(message.content);
@@ -965,7 +1046,9 @@ export function Chat() {
             message.content = editingContent;
             setisEditing(false);
           };
-
+          // console.log("avatar",session.maskId[index]);
+          // console.log("maskstore",maskStore.get(session.maskId[index]));
+          // console.log("BUILTIN",BUILTIN_MASK_STORE.get(session.maskId[index]));
           return (
             <>
               <div
@@ -976,12 +1059,13 @@ export function Chat() {
               >
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-avatar"]}>
-                    {message.role === "user" ? (
+                    {/* {message.role === "user" ? (
                       <Avatar avatar={config.avatar} />
-                    ) : (
-                      <MaskAvatar mask={session.mask} />
-                    )}
+                    ) : ( */}
+                    <MaskAvatar mask={avatarMask} />
+                    {/* )} */}
                   </div>
+
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>
                       {Locale.Chat.Typing}

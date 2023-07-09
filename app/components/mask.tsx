@@ -259,6 +259,7 @@ export function ContextPrompts(props: {
                 role: "user",
                 content: "",
                 date: "",
+                maskId: 0,
               })
             }
           />
@@ -332,6 +333,9 @@ export function MaskPage() {
   ]);
   const minusOne = () => {
     chatStore.updateNum((session) => (session.groupMem = session.groupMem - 1));
+  };
+  const inviteAgent = (id: number) => {
+    chatStore.pushMaskId(id);
   };
   return (
     <ErrorBoundary>
@@ -450,6 +454,10 @@ export function MaskPage() {
                       text={Locale.Mask.Item.Invite}
                       onClick={() => {
                         minusOne();
+                        inviteAgent(m.id);
+                        // console.log(m.context);
+                        const message: ChatMessage = m.context[0];
+                        console.log(message);
                       }}
                     />
                   )}
