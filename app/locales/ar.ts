@@ -130,8 +130,10 @@ const ar: PartialLocaleType = {
       SubTitle: "معاينة Markdown في فقاعة",
     },
     Mask: {
-      Title: "شاشة تظهر الأقنعة",
-      SubTitle: "عرض شاشة تظهر الأقنعة قبل بدء الدردشة الجديدة",
+      Splash: {
+        Title: "شاشة تظهر الأقنعة",
+        SubTitle: "عرض شاشة تظهر الأقنعة قبل بدء الدردشة الجديدة",
+      },
     },
     Prompt: {
       Disable: {
