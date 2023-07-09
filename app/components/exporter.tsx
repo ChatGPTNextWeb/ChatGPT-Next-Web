@@ -8,7 +8,6 @@ import {
   Modal,
   Select,
   showImageModal,
-  showModal,
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
@@ -149,7 +148,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id ?? i)));
+    ret.push(...session.messages.filter((m, i) => selection.has(m.id)));
     return ret;
   }, [
     exportConfig.includeContext,
@@ -244,9 +243,10 @@ export function RenderExport(props: {
       return;
     }
 
-    const renderMsgs = messages.map((v) => {
+    const renderMsgs = messages.map((v, i) => {
       const [_, role] = v.id.split(":");
       return {
+        id: i.toString(),
         role: role as any,
         content: v.innerHTML,
         date: "",
