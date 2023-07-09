@@ -10,22 +10,23 @@ import React, { useEffect } from "react";
 
 const RazorpayButton = () => {
   useEffect(() => {
-    const script = document.createElement("script");
-
-    script.src = "https://cdn.razorpay.com/static/widget/subscription-button.js";
+    const script = document.createElement('script');
+    
+    script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+    script.setAttribute('data-payment_button_id', 'pl_H5Y8Wq7oBQZ6Q9');
     script.async = true;
-    script.setAttribute("data-subscription_button_id", "pl_MBWACEdFNQ5eMh");
-    script.setAttribute("data-button_theme", "brand-color");
-
+    
     document.body.appendChild(script);
-
+    
     return () => {
       document.body.removeChild(script);
-    };
+    }
   }, []);
 
   return (
-    <form id="myForm"></form>
+    <form>
+      <div id="razorpay-payment-button"></div>
+    </form>
   );
 };
 
