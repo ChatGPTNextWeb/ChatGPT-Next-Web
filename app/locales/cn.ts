@@ -220,6 +220,10 @@ const cn = {
       Title: "接口地址",
       SubTitle: "除默认地址外，必须包含 http(s)://",
     },
+    CustomModel: {
+      Title: "自定义模型名",
+      SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
+    },
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",

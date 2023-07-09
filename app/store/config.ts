@@ -34,6 +34,7 @@ export const DEFAULT_CONFIG = {
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
   hideBuiltinMasks: false, // dont add builtin masks
 
+  customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
@@ -141,7 +142,7 @@ export const useAppConfig = create<ChatConfigStore>()(
     }),
     {
       name: StoreKey.Config,
-      version: 3.4,
+      version: 3.5,
       migrate(persistedState, version) {
         const state = persistedState as ChatConfig;
 
@@ -154,6 +155,10 @@ export const useAppConfig = create<ChatConfigStore>()(
           state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
           state.dontShowMaskSplashScreen = false;
           state.hideBuiltinMasks = false;
+        }
+
+        if (version < 3.5) {
+          state.customModels = "claude,claude-100k";
         }
 
         return state as any;
