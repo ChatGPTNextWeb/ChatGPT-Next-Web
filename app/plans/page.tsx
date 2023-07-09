@@ -6,6 +6,7 @@ import { useSwitchTheme } from "../components/home";
 import styles from "./styles.module.scss";
 import PayIcon from "../icons/pay.svg";
 import Link from 'next/link'
+import React, { useEffect } from "react";
 
 const Plans = () => {
   useSwitchTheme();
@@ -13,6 +14,21 @@ const Plans = () => {
   const onOpen = (id: string) => {
     window.open(`/account/checkout?id=${id}`, "_self");
   }
+
+  useEffect(() => {
+    const script = document.createElement("script");
+
+    script.src = "https://cdn.razorpay.com/static/widget/subscription-button.js";
+    script.async = true;
+    script.dataset.subscriptionButtonId = "pl_MBWACEdFNQ5eMh";
+    script.dataset.buttonTheme = "brand-color";
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
 
   return (
     <div className={`${styles.scrollContainer} ${styles["tight-container"]}`}>
@@ -90,6 +106,15 @@ const Plans = () => {
                 text="Subscribe 🥰"
               />
             </div>
+             <div className={`${styles.plan} ${styles["ultimate-value-plan"]}`}>
+              <p className={styles.type}>Indian </p>
+              <h2 className={styles.price}>$UPI</h2>
+              <p className={styles.description}>
+                Subscription For Indian Users
+              </p>
+              <form id="myForm"></form>
+            </div>
+            
           </div>
             
             
