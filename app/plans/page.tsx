@@ -11,13 +11,13 @@ import React, { useEffect } from "react";
 const RazorpayButton = () => {
   useEffect(() => {
     const script = document.createElement('script');
-    
     script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
     script.setAttribute('data-payment_button_id', 'pl_H5Y8Wq7oBQZ6Q9');
     script.async = true;
-    
+    script.onload = () => {
+      document.getElementById('razorpay-payment-button-container').style.display = 'block';
+    };
     document.body.appendChild(script);
-    
     return () => {
       document.body.removeChild(script);
     }
@@ -25,10 +25,13 @@ const RazorpayButton = () => {
 
   return (
     <form>
-      <div id="razorpay-payment-button"></div>
+      <div id="razorpay-payment-button-container" style={{display: 'none'}}>
+        <div id="razorpay-payment-button"></div>
+      </div>
     </form>
   );
 };
+
 
 const Plans = () => {
   useSwitchTheme();
