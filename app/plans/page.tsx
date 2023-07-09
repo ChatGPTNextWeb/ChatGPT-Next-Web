@@ -15,7 +15,10 @@ const RazorpayButton = () => {
     script.setAttribute('data-payment_button_id', 'pl_H5Y8Wq7oBQZ6Q9');
     script.async = true;
     script.onload = () => {
-      document.getElementById('razorpay-payment-button-container').style.display = 'block';
+      const element = document.getElementById('razorpay-payment-button-container');
+      if (element) {
+        element.style.display = 'block';
+      }
     };
     document.body.appendChild(script);
     return () => {
