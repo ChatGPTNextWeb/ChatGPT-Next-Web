@@ -30,7 +30,7 @@ const handle = async (req: NextRequest) => {
     const subscriptions = await getSubscriptionsForUser(userId);
 
     const activeSubscriptions = subscriptions.filter(
-      (subscription: any) => subscription.status === "active",
+      (subscription: any) => subscription.status === "active" || subscription.status === "in_trial",
     );
 
     if (activeSubscriptions.length === 0) {
