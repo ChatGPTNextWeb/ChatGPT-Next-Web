@@ -103,6 +103,7 @@ interface ChatStore {
   resetSession: () => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
+  getSuggestions: () => Promise<string[]>;
 
   clearAllData: () => void;
 }
@@ -278,96 +279,99 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async onUserInput(content) {
-        const session = get().currentSession();
-        const modelConfig = session.mask.modelConfig;
+      onUserInput(content) {
+        return new Promise((resolve) => {
+          const session = get().currentSession();
+          const modelConfig = session.mask.modelConfig;
 
-        const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] after template: ", userContent);
+          const userContent = fillTemplateWith(content, modelConfig);
+          console.log("[User Input] after template: ", userContent);
 
-        const userMessage: ChatMessage = createMessage({
-          role: "user",
-          content: userContent,
-        });
+          const userMessage: ChatMessage = createMessage({
+            role: "user",
+            content: userContent,
+          });
 
-        const botMessage: ChatMessage = createMessage({
-          role: "assistant",
-          streaming: true,
-          id: userMessage.id! + 1,
-          model: modelConfig.model,
-        });
+          const botMessage: ChatMessage = createMessage({
+            role: "assistant",
+            streaming: true,
+            id: userMessage.id! + 1,
+            model: modelConfig.model,
+          });
 
-        // get recent messages
-        const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
-        const sessionIndex = get().currentSessionIndex;
-        const messageIndex = get().currentSession().messages.length + 1;
+          // get recent messages
+          const recentMessages = get().getMessagesWithMemory();
+          const sendMessages = recentMessages.concat(userMessage);
+          const sessionIndex = get().currentSessionIndex;
+          const messageIndex = get().currentSession().messages.length + 1;
 
-        // save user's and bot's message
-        get().updateCurrentSession((session) => {
-          const savedUserMessage = {
-            ...userMessage,
-            content,
-          };
-          session.messages = session.messages.concat([
-            savedUserMessage,
-            botMessage,
-          ]);
-        });
+          // save user's and bot's message
+          get().updateCurrentSession((session) => {
+            const savedUserMessage = {
+              ...userMessage,
+              content,
+            };
+            session.messages = session.messages.concat([
+              savedUserMessage,
+              botMessage,
+            ]);
+          });
 
-        // make request
-        api.llm.chat({
-          messages: sendMessages,
-          config: { ...modelConfig, stream: true },
-          onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
-            get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
-            });
-          },
-          onFinish(message) {
-            botMessage.streaming = false;
-            if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
-            }
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
-          },
-          onError(error) {
-            const isAborted = error.message.includes("aborted");
-            botMessage.content =
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
+          // make request
+          api.llm.chat({
+            messages: sendMessages,
+            config: { ...modelConfig, stream: true },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
               });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
-            get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
-            });
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+                resolve();
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
 
-            console.error("[Chat] failed ", error);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ChatControllerPool.addController(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
         });
       },
 
@@ -593,6 +597,62 @@ export const useChatStore = create<ChatStore>()(
       clearAllData() {
         localStorage.clear();
         location.reload();
+      },
+
+      getSuggestions() {
+        return new Promise((resolve) => {
+          // get last bot messages
+          const messages = get().currentSession().messages;
+          let lastBotMessage: ChatMessage | undefined = undefined;
+
+          for (let i = messages.length - 1; i >= 0; i -= 1) {
+            if (messages[i].role === "assistant") {
+              lastBotMessage = messages[i];
+              break;
+            }
+          }
+
+          const botMsg = lastBotMessage?.content;
+
+          if (!lastBotMessage || !botMsg) return resolve([]);
+
+          const prompt = `
+here is bot's reponse:
+'''
+${botMsg}
+'''
+
+according to bot's reponse,
+- according to the bot's message, generate three short user input suggestions
+- detect the bot's language and response in detected language 
+- no other words, just response in pure json format:
+{questions: string[]}";
+`;
+
+          api.llm.chat({
+            messages: [
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+            config: {
+              model: "gpt-3.5-turbo",
+            },
+            onFinish(msg) {
+              try {
+                const msgJson = JSON.parse(msg) as {
+                  questions: string[];
+                };
+                if (Array.isArray(msgJson.questions)) {
+                  resolve(msgJson.questions);
+                }
+              } catch {
+                console.error("[Suggestions] failed to parse: ", msg);
+              }
+            },
+          });
+        });
       },
     }),
     {

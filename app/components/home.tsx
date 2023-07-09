@@ -28,6 +28,7 @@ import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
+import { useChatStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -114,6 +115,7 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
+  const chat = useChatStore();
 
   useEffect(() => {
     loadAsyncGoogleFont();

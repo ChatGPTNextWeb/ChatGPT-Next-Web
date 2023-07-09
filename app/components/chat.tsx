@@ -606,6 +606,8 @@ export function Chat() {
     }
   };
 
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
@@ -616,7 +618,13 @@ export function Chat() {
       return;
     }
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    setSuggestions([]);
+    chatStore.onUserInput(userInput).then(() => {
+      setIsLoading(false);
+      chatStore
+        .getSuggestions()
+        .then((suggestions) => setSuggestions(suggestions));
+    });
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
@@ -1061,6 +1069,25 @@ export function Chat() {
             onSearch("");
           }}
         />
+
+        {suggestions.length > 0 && (
+          <div className={styles["chat-suggestions"]}>
+            {suggestions.map((s, i) => {
+              return (
+                <div
+                  key={i}
+                  className={styles["chat-suggestion"] + " clickable"}
+                  onClick={() => {
+                    doSubmit(s);
+                  }}
+                >
+                  {s}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
             ref={inputRef}

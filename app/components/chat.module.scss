@@ -475,3 +475,21 @@
     bottom: 30px;
   }
 }
+
+.chat-suggestions {
+  display: flex;
+  flex-direction: column;
+
+  .chat-suggestion {
+    display: inline;
+    white-space: nowrap;
+    border-radius: 20px;
+    font-size: 12px;
+    background-color: var(--white);
+    color: var(--black);
+    border: var(--border-in-light);
+    padding: 4px 10px;
+    animation: slide-in ease 0.3s;
+    margin-bottom: 5px;
+  }
+}
