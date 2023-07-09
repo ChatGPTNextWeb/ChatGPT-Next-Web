@@ -414,8 +414,12 @@ export function ChatActions(props: {
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const models = useMemo(
-    () => config.models.filter((m) => m.available).map((m) => m.name),
-    [config.models],
+    () =>
+      config
+        .allModels()
+        .filter((m) => m.available)
+        .map((m) => m.name),
+    [config],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
 
