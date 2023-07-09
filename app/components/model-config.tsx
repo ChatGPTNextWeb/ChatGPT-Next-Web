@@ -9,10 +9,6 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const config = useAppConfig();
-  const customModels = config.customModels
-    .split(",")
-    .map((m) => ({ name: m, available: true }));
-  const models = config.models.concat(customModels);
 
   return (
     <>
@@ -28,7 +24,7 @@ export function ModelConfigList(props: {
             );
           }}
         >
-          {models.map((v, i) => (
+          {config.allModels().map((v, i) => (
             <option value={v.name} key={i} disabled={!v.available}>
               {v.name}
             </option>
