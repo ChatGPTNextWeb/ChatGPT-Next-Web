@@ -8,27 +8,33 @@ import PayIcon from "../icons/pay.svg";
 import Link from 'next/link'
 import React, { useEffect } from "react";
 
+const RazorpayButton = () => {
+  useEffect(() => {
+    const script = document.createElement("script");
+
+    script.src = "https://cdn.razorpay.com/static/widget/subscription-button.js";
+    script.async = true;
+    script.setAttribute("data-subscription_button_id", "pl_MBWACEdFNQ5eMh");
+    script.setAttribute("data-button_theme", "brand-color");
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <form id="myForm"></form>
+  );
+};
+
 const Plans = () => {
   useSwitchTheme();
 
   const onOpen = (id: string) => {
     window.open(`/account/checkout?id=${id}`, "_self");
   }
-
-  useEffect(() => {
-    const script = document.createElement("script");
-
-    script.src = "https://cdn.razorpay.com/static/widget/subscription-button.js";
-    script.async = true;
-    script.dataset.subscriptionButtonId = "pl_MBWACEdFNQ5eMh";
-    script.dataset.buttonTheme = "brand-color";
-
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    }
-  }, []);
 
   return (
     <div className={`${styles.scrollContainer} ${styles["tight-container"]}`}>
@@ -41,14 +47,13 @@ const Plans = () => {
         />
       </div>
       <div className={styles.container}>
-        
         <div className={styles.planContainer}>
           <div className={styles.plans}>
             <div className={styles.plan}>
-          <h2 className={styles.price}>SUBSCRIBE</h2>
-          <p className={styles.type}>Please ALLOW POP-UP to go through Payments</p>
-              </div>
+              <h2 className={styles.price}>SUBSCRIBE</h2>
+              <p className={styles.type}>Please ALLOW POP-UP to go through Payments</p>
             </div>
+          </div>
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>Monthly</p>
@@ -68,7 +73,6 @@ const Plans = () => {
                 text="Subscribe 😘"
               />
             </div>
-            
             <div className={`${styles.plan} ${styles["ultimate-value-plan"]}`}>
               <p className={styles.type}>5 YEARLY </p>
               <h2 className={styles.price}>$5/m</h2>
@@ -87,14 +91,13 @@ const Plans = () => {
                 text="Subscribe 😍"
               />
             </div>
-            
             <div className={styles.plan}>
               <p className={styles.type}>Annual</p>
               <h2 className={styles.price}>$12.5/m</h2>
               <p className={styles.description}>
                 Yearly Plan For PRO Users
               </p>
-                <p className={styles.description}>
+              <p className={styles.description}>
                 Billed at just $149/y
               </p>
               <IconButton
@@ -106,19 +109,15 @@ const Plans = () => {
                 text="Subscribe 🥰"
               />
             </div>
-             <div className={`${styles.plan} ${styles["ultimate-value-plan"]}`}>
-              <p className={styles.type}>Indian </p>
-              <h2 className={styles.price}>$UPI</h2>
+            <div className={`${styles.plan} ${styles["ultimate-value-plan"]}`}>
+              <p className={styles.type}> From India ? </p>
+              <h2 className={styles.price}>₹</h2>
               <p className={styles.description}>
                 Subscription For Indian Users
               </p>
-              <form id="myForm"></form>
+              <RazorpayButton />
             </div>
-            
           </div>
-            
-            
-          
           <div className={styles.plans}>
             <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
@@ -127,7 +126,6 @@ const Plans = () => {
                 WhatsApp Bot
               </p>
             </div>
-          
             <div className={styles.plan}>
               <p className={styles.type}>ADD-ON</p>
               <h2 className={styles.price}>$9/m</h2>
@@ -135,11 +133,9 @@ const Plans = () => {
                 Telegram Bot
               </p>
             </div>
-
             <div className={styles.plan}>
               <p className={styles.type}>Manage Subscription</p>
-             
-               <h2 className={styles.price}> 💲 </h2>
+              <h2 className={styles.price}> 💲 </h2>
               <Link href='/account/plans'>
                 <a>
                   <IconButton
@@ -151,10 +147,9 @@ const Plans = () => {
               </Link>
             </div>
           </div>
-
           <p className={styles.type}>
-                * F.U.P.- 10 Lakh Tokens for GPT-3.5-TurboGPT & 1 Lakh Tokens for GPT-4 per month.
-              </p>
+            * F.U.P.- 10 Lakh Tokens for GPT-3.5-TurboGPT & 1 Lakh Tokens for GPT-4 per month.
+          </p>
         </div>
       </div>
     </div>
