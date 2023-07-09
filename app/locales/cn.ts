@@ -45,6 +45,7 @@ const cn = {
     Title: "分享聊天记录",
     Copy: "全部复制",
     Download: "下载文件",
+    Upload: "上传记录",
     Share: "分享到 ShareGPT",
     MessageFromYou: "来自你的消息",
     MessageFromChatGPT: "来自 ChatGPT 的消息",

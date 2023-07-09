@@ -4,12 +4,17 @@ import styles from "./exporter.module.scss";
 import { List, ListItem, Modal, Select, showToast } from "./ui-lib";
 import { IconButton } from "./button";
 import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
+import jsPDF from "jspdf";
+import "html2canvas";
+import ResponseController from "@/app/api/controller/ResponseController";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
 import ShareIcon from "../icons/share.svg";
 import BotIcon from "../icons/bot.png";
+import UploadIcon from "../icons/uploadfile.svg";
 
 import DownloadIcon from "../icons/download.svg";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -23,6 +28,7 @@ import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
+import html2canvas from "html2canvas";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -240,6 +246,7 @@ export function RenderExport(props: {
         role: role as any,
         content: v.innerHTML,
         date: "",
+        maskId: "",
       };
     });
 
@@ -264,6 +271,7 @@ export function RenderExport(props: {
 export function PreviewActions(props: {
   download: () => void;
   copy: () => void;
+  upload: () => Promise<void>;
   showCopy?: boolean;
   messages?: ChatMessage[];
 }) {
@@ -314,6 +322,13 @@ export function PreviewActions(props: {
           shadow
           icon={<DownloadIcon />}
           onClick={props.download}
+        ></IconButton>
+        <IconButton
+          text={Locale.Export.Upload}
+          bordered
+          shadow
+          icon={<UploadIcon />}
+          onClick={props.upload}
         ></IconButton>
         <IconButton
           text={Locale.Export.Share}
@@ -392,26 +407,79 @@ export function ImagePreviewer(props: {
 
   const isMobile = useMobileScreen();
 
+  // const download = () => {
+  //   const dom = previewRef.current;
+  //   if (!dom) return;
+  //   toPng(dom)
+  //     .then((blob) => {
+  //       if (!blob) return;
+  //
+  //       if (isMobile) {
+  //         const image = new Image();
+  //         image.src = blob;
+  //         const win = window.open("");
+  //         win?.document.write(image.outerHTML);
+  //       } else {
+  //         const link = document.createElement("a");
+  //         link.download = `${props.topic}.png`;
+  //         link.href = blob;
+  //         link.click();
+  //       }
+  //     })
+  //     .catch((e) => console.log("[Export Image] ", e));
+  // };
+
   const download = () => {
     const dom = previewRef.current;
     if (!dom) return;
-    toPng(dom)
-      .then((blob) => {
-        if (!blob) return;
 
-        if (isMobile) {
-          const image = new Image();
-          image.src = blob;
-          const win = window.open("");
-          win?.document.write(image.outerHTML);
-        } else {
-          const link = document.createElement("a");
-          link.download = `${props.topic}.png`;
-          link.href = blob;
-          link.click();
-        }
-      })
-      .catch((e) => console.log("[Export Image] ", e));
+    html2canvas(dom).then(
+      (canvas: {
+        toDataURL: (arg0: string) => any;
+        height: number;
+        width: number;
+      }) => {
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        alert("hhhhh");
+        pdf.save(`${props.topic}.pdf`);
+        alert("hhhhhggg");
+      },
+    );
+  };
+  const upload = async () => {
+    const session = chatStore.currentSession();
+    let uuidValue = session.id.toString();
+    let data = new FormData();
+
+    // 添加 uuid
+    data.append("uuid", uuidValue);
+
+    // 添加文件或生成 PDF
+    const dom = previewRef.current;
+    if (dom) {
+      const canvas = await html2canvas(dom);
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      const pdfBlob = pdf.output("blob");
+      data.append("files", pdfBlob, `${props.topic}.pdf`);
+    } else {
+      alert("Upload failure!");
+    }
+
+    // 调用 ResponseController
+    const res = await ResponseController.postPDFprompt(data);
+    if (res.text !== "") {
+      alert("It upload success!");
+    }
   };
 
   return (
@@ -419,6 +487,7 @@ export function ImagePreviewer(props: {
       <PreviewActions
         copy={copy}
         download={download}
+        upload={upload}
         showCopy={!isMobile}
         messages={props.messages}
       />
@@ -438,9 +507,6 @@ export function ImagePreviewer(props: {
 
           <div>
             <div className={styles["main-title"]}>Agents Builder</div>
-            <div className={styles["sub-title"]}>
-              github.com/Yidadaa/ChatGPT-Next-Web
-            </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
               <span className={styles["icon-space"]}>&</span>
@@ -496,6 +562,7 @@ export function MarkdownPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
 }) {
+  const chatStore = useChatStore();
   const mdText =
     `# ${props.topic}\n\n` +
     props.messages
@@ -505,12 +572,46 @@ export function MarkdownPreviewer(props: {
           : `## ${Locale.Export.MessageFromChatGPT}:\n${m.content.trim()}`;
       })
       .join("\n\n");
-
+  const txtText =
+    `${props.topic}\n\n` +
+    props.messages
+      .map((m) => {
+        return m.role === "user"
+          ? `question:\n${m.content}`
+          : `answer:\n${m.content.trim()}`;
+      })
+      .join("\n\n");
   const copy = () => {
     copyToClipboard(mdText);
   };
   const download = () => {
     downloadAs(mdText, `${props.topic}.md`);
+  };
+  const foo = async () => {
+    const session = chatStore.currentSession();
+    let uuidValue = session.id.toString();
+    alert(uuidValue);
+    const data = {
+      uuid: uuidValue,
+      content: txtText,
+      filename: `${props.topic}` + ".txt",
+    };
+
+    console.log(txtText);
+    // // data.append("uuid", uuidValue);
+    // // data.append("content", txtText);
+    // // data.append("filename",`${props.topic}`+'.txt');
+    // // console.log("[The text is ]", txtText)
+
+    // const data = new FormData();
+    // data.append('uuid', uuidValue);
+    // data.append('content', txtText);
+    // data.append('filename', `${props.topic}.txt`);
+
+    const res = await ResponseController.postTXTprompt(data);
+    if (res.text !== "") {
+      alert("It upload success!");
+    }
   };
 
   return (
@@ -518,6 +619,7 @@ export function MarkdownPreviewer(props: {
       <PreviewActions
         copy={copy}
         download={download}
+        upload={foo}
         messages={props.messages}
       />
       <div className="markdown-body">

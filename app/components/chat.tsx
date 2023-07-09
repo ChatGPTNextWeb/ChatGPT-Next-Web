@@ -805,11 +805,11 @@ export function Chat() {
     if (fileInputRef.current!.files) {
       data.append("files", fileInputRef.current!.files[0]);
     }
+    data.append("filename", "This is a PDF");
     const res = await ResponseController.postPDFprompt(data);
     if (res.text !== "") {
       alert("It upload success!");
     }
-    //setPrompts(res.content)
   }
   function fileCount() {}
   const uuid = session.id.toString();
@@ -903,7 +903,6 @@ export function Chat() {
         console.log("最终的聊天记录", finalmessage);
 
         const input = "xzw want the agents talk!!!!!!!!!";
-        AgentsTalk(input);
       }, 10000);
     } else {
       clearInterval(intervalId);
@@ -944,12 +943,6 @@ export function Chat() {
                 bordered
                 onClick={handleFileUpload}
               />
-              {/*<input*/}
-              {/*    type="file"*/}
-              {/*    ref={fileInputRef}*/}
-              {/*    style={{ display: 'none' }}*/}
-              {/*    onChange={handlePostFile}*/}
-              {/*/>*/}
               <input
                 ref={fileInputRef}
                 type="file"

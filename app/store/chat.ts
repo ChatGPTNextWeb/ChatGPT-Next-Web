@@ -27,7 +27,9 @@ export function createMessage(override: Partial<ChatMessage>): ChatMessage {
     date: new Date().toLocaleString(),
     role: "user",
     content: "",
+
     maskId: 0,
+
     ...override,
   };
 }
@@ -748,7 +750,9 @@ export const useChatStore = create<ChatStore>()(
               role: "system",
               content: Locale.Store.Prompt.Summarize,
               date: "",
+
               maskId: 0,
+
             }),
             config: { ...modelConfig, stream: true },
             onUpdate(message) {

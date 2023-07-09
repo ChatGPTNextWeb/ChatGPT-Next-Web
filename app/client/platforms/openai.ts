@@ -79,6 +79,7 @@ export class ChatGPTApi implements LLMApi {
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
+      //max_tokens: 50,
       //presence_penalty: modelConfig.presence_penalty,
     };
 
@@ -210,7 +211,7 @@ export class ChatGPTApi implements LLMApi {
           }
         } else {
           //console.log(JSON.stringify(testBody))
-          //alert("hhhh")
+          alert("hhhh");
           const history = this.getHistory(messages);
           //const chatstore = useChatStore();
           const uuid = options.uuid;
@@ -221,7 +222,7 @@ export class ChatGPTApi implements LLMApi {
             question: question,
             history: history,
           };
-
+          console.log(testBody);
           const testPayload = {
             method: "POST",
             body: JSON.stringify(testBody),
