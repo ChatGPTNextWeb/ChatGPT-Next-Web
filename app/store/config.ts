@@ -137,6 +137,7 @@ export const useAppConfig = create<ChatConfigStore>()(
       allModels() {
         const customModels = get()
           .customModels.split(",")
+          .filter((v) => !!v && v.length > 0)
           .map((m) => ({ name: m, available: true }));
 
         const models = get().models.concat(customModels);
