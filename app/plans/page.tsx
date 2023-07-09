@@ -89,17 +89,17 @@ const Plans = () => {
                 text="Subscribe 🥰"
               />
             </div>
-            <div className={styles.plan}>
-  <p className={styles.type}>For Indian Users</p>
-  <h2 className={styles.price}> ₹ </h2>
-  <a href='https://rzp.io/l/cognitiev' target='_blank' rel='noopener noreferrer'>
-    <IconButton
-      bordered
-      className={styles.button}
-      text=" SUBSCRIBE 🤩 "
-    />
-  </a>
-</div>
+            {/*  <div className={styles.plan}>
+              <p className={styles.type}>For Indian Users</p>
+              <h2 className={styles.price}> ₹ </h2>
+              <a href='https://rzp.io/l/cognitiev' target='_blank' rel='noopener noreferrer'>
+                <IconButton
+                bordered
+                className={styles.button}
+                text=" SUBSCRIBE 🤩 "
+                />
+              </a>
+            </div> */}
           </div>
             
             
