@@ -111,6 +111,11 @@ const fr: PartialLocaleType = {
       Title: "Taille des polices",
       SubTitle: "Ajuste la taille de police du contenu de la conversation",
     },
+    InjectSystemPrompts: {
+      Title: "Injecter des invites système",
+      SubTitle:
+        "Ajoute de force une invite système simulée de ChatGPT au début de la liste des messages pour chaque demande",
+    },
     InputTemplate: {
       Title: "Template",
       SubTitle: "Le message le plus récent sera ajouté à ce template.",
