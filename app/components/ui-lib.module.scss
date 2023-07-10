@@ -286,7 +286,9 @@
 
   &-content {
     .list {
-      overflow: hidden;
+      max-height: 90vh;
+      overflow-x: hidden;
+      overflow-y: auto;
 
       .list-item {
         cursor: pointer;
