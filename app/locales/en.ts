@@ -143,8 +143,7 @@ const en: LocaleType = {
     },
     InjectSystemPrompts: {
       Title: "Inject System Prompts",
-      SubTitle:
-        "Forcefully add a simulated ChatGPT system prompt at the beginning of the message list for every request",
+      SubTitle: "Inject a global system prompt for every request",
     },
     InputTemplate: {
       Title: "Input Template",
