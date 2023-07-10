@@ -257,12 +257,14 @@ export class ChatGPTApi implements LLMApi {
     const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
     console.log("[Models]", chatModels);
 
-    return (
-      chatModels?.map((m) => ({
-        name: m.id,
-        available: true,
-      })) || []
-    );
+    if (!chatModels) {
+      return [];
+    }
+
+    return chatModels.map((m) => ({
+      name: m.id,
+      available: true,
+    }));
   }
 }
 export { OpenaiPath };
