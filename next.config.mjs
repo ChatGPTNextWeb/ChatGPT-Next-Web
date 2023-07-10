@@ -20,6 +20,10 @@ const nextConfig = {
       );
     }
 
+    config.resolve.fallback = {
+      child_process: false,
+    };
+
     return config;
   },
   output: mode,
