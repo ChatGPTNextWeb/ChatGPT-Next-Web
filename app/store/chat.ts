@@ -120,7 +120,10 @@ interface ChatStore {
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (
+    content: string | ChatMessage[],
+    maskId: number,
+  ) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -313,168 +316,15 @@ export const useChatStore = create<ChatStore>()(
       //     console.log(get().SystemInfos.length)
       //     console.log(get().SystemInfos[0])
       //  },
-      async onUserInput(content) {
-        if (content === "xzw want the agents talk!!!!!!!!!") {
-          const session = get().currentSession();
-          const modelConfig = session.mask.modelConfig;
-          const question = get().inputContent;
-          //alert(modelConfig.model)
-          const userMessage: ChatMessage = createMessage({
-            role: "user",
-            content: question,
-          });
-
-          const botMessage: ChatMessage = createMessage({
-            role: "assistant",
-            streaming: true,
-            id: userMessage.id! + 1,
-            model: modelConfig.model,
-          });
-
-          // const groupNum = get().SystemInfos.length;
-          // console.log(groupNum);
-
-          const systemInfo = createMessage({
-            role: "system",
-            content: `IMPORTANT: You are a virtual assistant powered by the ${
-              modelConfig.model
-            } model, now time is ${new Date().toLocaleString()}}`,
-            // content:
-            // "从现在起你是一个充满哲学思维的心灵导师，当我每次输入一个疑问时你需要用一句富有哲理的名言警句来回答我，并且表明作者和出处\n\n\n要求字数不少于15个字，不超过30字，每次只返回一句且不输出额外的其他信息，你需要使用中文和英文双语输出\n\n\n当你准备好的时候只需要回复“我已经准备好了”（不需要输出任何其他内容）,你每次说话请使用“我是一个哲学家”开头",
-          });
-
-          // get recent messages
-          const systemMessages = [];
-          // if user define a mask with context prompts, wont send system info
-
-          // const systemInfo1 = createMessage({
-          //   role: "system",
-          //   content:
-          //     "你的任务是以小红书博主的文章结构，以我给出的主题写一篇帖子推荐。你的回答应包括使用表情符号来增加趣味和互动，以及与每个段落相匹配的图片。请以一个引人入胜的介绍开始，为你的推荐设置基调。然后，提供至少三个与主题相关的段落，突出它们的独特特点和吸引力。在你的写作中使用表情符号，使它更加引人入胜和有趣。对于每个段落，请提供一个与描述内容相匹配的图片。这些图片应该视觉上吸引人，并帮助你的描述更加生动形象。你每次说话请使用“我是一个小红书博主”开头",
-
-          // });
-
-          // const systemInfo2 = createMessage({
-          //   role: "system",
-          //   content:
-          //     "我想让你担任职业顾问。我将为您提供一个在职业生涯中寻求指导的人，您的任务是帮助他们根据自己的技能、兴趣和经验确定最适合的职业。您还应该对可用的各种选项进行研究，解释不同行业的就业市场趋势，并就哪些资格对追求特定领域有益提出建议。你每次说话请使用“我是一个职业规划顾问”开头",
-
-          // });
-          const messageIndex1 = get().currentSession().messages.length / 2;
-
-          // let i=0;
-          // while(i<groupNum){
-          //   if(messageIndex1 % groupNum == i)
-          //   systemMessages.push(get().SystemInfos[i])
-          // }
-
-          if (session.mask.context.length === 0) {
-            console.log("哲学家");
-            console.log(messageIndex1);
-            systemMessages.push(systemInfo);
-          }
-          // if (messageIndex1 % 3 == 0) {
-          //   console.log("小红书");
-          //   console.log(messageIndex1);
-          //   systemMessages.push(systemInfo1);
-          // }
-          // if (messageIndex1 % 3 == 2) {
-          //   console.log("小职业顾问");
-          //   console.log(messageIndex1);
-          //   systemMessages.push(systemInfo2);
-          // }
-          const recentMessages = get().getMessagesWithMemory();
-          console.log("[recentMessage", recentMessages);
-          const sendMessages = systemMessages.concat(
-            recentMessages.concat(userMessage),
-          );
-
-          console.log("[SendMessage is] : ", sendMessages);
-          const sessionIndex = get().currentSessionIndex;
-          const messageIndex = get().currentSession().messages.length + 1;
-          console.log("[messageIndex] : ", messageIndex);
-          // save user's and bot's message
-          get().updateCurrentSession((session) => {
-            session.messages.push(userMessage);
-            session.messages.push(botMessage);
-          });
-          let isStreaming = true;
-          //alert(modelConfig.model);
-          if (modelConfig.model === "lang chain") {
-            isStreaming = false;
-          }
-          //alert(isStreaming)
-          // make request
-          console.log("[User Input] ", sendMessages);
-          const chat = get().currentSession();
-          const uuid = chat.id;
-          //alert("1111uuidcd  " + uuid);
-          api.llm.chat({
-            uuid: uuid,
-            messages: sendMessages,
-            config: { ...modelConfig, stream: isStreaming },
-            onUpdate(message) {
-              botMessage.streaming = true;
-              if (message) {
-                botMessage.content = message;
-              }
-              set(() => ({}));
-            },
-            onFinish(message) {
-              set((state) => ({
-                ...state,
-                inputContent: message, // 更新 inputContent 的值
-              }));
-              botMessage.streaming = false;
-              //alert(botMessage.content);
-              if (message) {
-                botMessage.content = message;
-                //here is
-                get().onNewMessage(botMessage);
-              }
-              ChatControllerPool.remove(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-              );
-              set(() => ({}));
-            },
-            onError(error) {
-              const isAborted = error.message.includes("aborted");
-              botMessage.content =
-                "\n\n" +
-                prettyObject({
-                  error: true,
-                  message: error.message,
-                });
-              botMessage.streaming = false;
-              userMessage.isError = !isAborted;
-              botMessage.isError = !isAborted;
-
-              set(() => ({}));
-              ChatControllerPool.remove(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-              );
-
-              console.error("[Chat] failed ", error);
-            },
-            onController(controller) {
-              // collect controller for stop/retry
-              ChatControllerPool.addController(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-                controller,
-              );
-            },
-          });
-        } else {
+      async onUserInput(content: string | ChatMessage[], maskId: number) {
+        if (typeof content === "string") {
           const session = get().currentSession();
           const modelConfig = session.mask.modelConfig;
 
           //alert(modelConfig.model)
           const userMessage: ChatMessage = createMessage({
             role: "user",
-            content,
+            content: content,
           });
 
           const botMessage: ChatMessage = createMessage({
@@ -540,6 +390,127 @@ export const useChatStore = create<ChatStore>()(
             onFinish(message) {
               botMessage.streaming = false;
               //alert(botMessage.content);
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+              set(() => ({}));
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+
+              set(() => ({}));
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+        } else {
+          const session = get().currentSession();
+          const modelConfig = session.mask.modelConfig;
+          const question = content[content.length - 1].content;
+          //alert(modelConfig.model)
+          const userMessage: ChatMessage = createMessage({
+            role: "user",
+            content: question,
+          });
+
+          const botMessage: ChatMessage = createMessage({
+            role: "assistant",
+            streaming: true,
+            id: userMessage.id! + 1,
+            model: modelConfig.model,
+          });
+
+          // const groupNum = get().SystemInfos.length;
+          // console.log(groupNum);
+
+          const systemInfo = createMessage({
+            role: "system",
+            content: `IMPORTANT: You are a virtual assistant powered by the ${
+              modelConfig.model
+            } model, now time is ${new Date().toLocaleString()}}`,
+            // content:
+            // "从现在起你是一个充满哲学思维的心灵导师，当我每次输入一个疑问时你需要用一句富有哲理的名言警句来回答我，并且表明作者和出处\n\n\n要求字数不少于15个字，不超过30字，每次只返回一句且不输出额外的其他信息，你需要使用中文和英文双语输出\n\n\n当你准备好的时候只需要回复“我已经准备好了”（不需要输出任何其他内容）,你每次说话请使用“我是一个哲学家”开头",
+          });
+
+          // get recent messages
+          const systemMessages = [];
+
+          if (session.mask.context.length === 0) {
+            systemMessages.push(systemInfo);
+          }
+
+          const recentMessages = get().getMessagesWithMemory();
+          console.log("[recentMessage", recentMessages);
+          const sendMessages = systemMessages.concat(
+            recentMessages.concat(userMessage),
+          );
+
+          console.log("[SendMessage is] : ", sendMessages);
+          const sessionIndex = get().currentSessionIndex;
+          const messageIndex = get().currentSession().messages.length + 1;
+          console.log("[messageIndex] : ", messageIndex);
+          // save user's and bot's message
+          get().updateCurrentSession((session) => {
+            session.messages.push(botMessage);
+          });
+          let isStreaming = true;
+          //alert(modelConfig.model);
+          if (modelConfig.model === "lang chain") {
+            isStreaming = false;
+          }
+          //alert(isStreaming)
+          // make request
+          console.log("[User Input] ", sendMessages);
+          const chat = get().currentSession();
+          const uuid = chat.id;
+          //alert("1111uuidcd  " + uuid);
+          api.llm.chat({
+            uuid: uuid,
+            messages: content,
+            config: { ...modelConfig, stream: isStreaming },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              set(() => ({}));
+            },
+            onFinish(message) {
+              set((state) => ({
+                ...state,
+                inputContent: message, // 更新 inputContent 的值
+              }));
+              botMessage.streaming = false;
+              //console.log("修改maskid之前的聊天记录",session.messages);
+              alert("The maskId is " + maskId.toString());
+              botMessage.maskId = maskId;
+              //console.log("修改maskid之后的聊天记录",session.messages);
               if (message) {
                 botMessage.content = message;
                 //here is
@@ -752,7 +723,6 @@ export const useChatStore = create<ChatStore>()(
               date: "",
 
               maskId: 0,
-
             }),
             config: { ...modelConfig, stream: true },
             onUpdate(message) {

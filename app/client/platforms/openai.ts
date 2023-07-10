@@ -120,10 +120,10 @@ export class ChatGPTApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
+            // console.log(
+            //   "[OpenAI] request response content type: ",
+            //   contentType,
+            // );
 
             //alert(question)
             if (contentType?.startsWith("text/plain")) {

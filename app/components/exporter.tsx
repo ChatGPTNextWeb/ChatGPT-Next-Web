@@ -250,6 +250,7 @@ export function RenderExport(props: {
       };
     });
 
+    // @ts-ignore
     props.onRender(renderMsgs);
   });
 

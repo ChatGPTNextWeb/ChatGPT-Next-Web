@@ -522,27 +522,44 @@ export function Chat() {
     }
   };
 
-  const AgentsTalk = (userInput: string) => {
+  const AgentsTalk = (userInput: string | ChatMessage[]) => {
     //console.log("[The input is ]" + userInput);
-    if (userInput.trim() !== "xzw want the agents talk!!!!!!!!!") return;
-    setIsLoading(true);
+    if (typeof userInput === "string") {
+      if (userInput.trim() !== "xzw want the agents talk!!!!!!!!!") return;
+      setIsLoading(true);
+      chatStore.onUserInput(userInput, 0).then(() => setIsLoading(false));
 
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+      localStorage.setItem(LAST_INPUT_KEY, userInput);
+      //alert(userInput);
 
-    localStorage.setItem(LAST_INPUT_KEY, userInput);
-    //alert(userInput);
+      setUserInput("");
+      setPromptHints([]);
+      if (!isMobileScreen) inputRef.current?.focus();
+      setAutoScroll(true);
+    } else {
+      setIsLoading(true);
+      chatStore
+        .onUserInput(userInput, session.maskId[index])
+        .then(() => setIsLoading(false));
 
-    setUserInput("");
-    setPromptHints([]);
-    if (!isMobileScreen) inputRef.current?.focus();
-    setAutoScroll(true);
+      localStorage.setItem(
+        LAST_INPUT_KEY,
+        userInput[userInput.length - 1].content,
+      );
+      //alert(userInput);
+
+      setUserInput("");
+      setPromptHints([]);
+      if (!isMobileScreen) inputRef.current?.focus();
+      setAutoScroll(true);
+    }
   };
 
   const doSubmit = (userInput: string) => {
     //console.log("[The input is ]" + userInput);
     if (userInput.trim() === "") return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore.onUserInput(userInput, 0).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     //alert(userInput);
     setUserInput("");
@@ -645,7 +662,7 @@ export function Chat() {
     setIsLoading(true);
     const content = session.messages[userIndex].content;
     deleteMessage(userIndex);
-    chatStore.onUserInput(content).then(() => setIsLoading(false));
+    chatStore.onUserInput(content, 0).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -752,51 +769,6 @@ export function Chat() {
     fileInputRef.current?.click();
   };
 
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const formData = new FormData();
-  //     formData.append('file', file);
-  //
-  //     fetch('/Users/xuzhongwei/uiuc', {
-  //       method: 'POST',
-  //       body: formData,
-  //     })
-  //         .then(response => {
-  //           // 处理上传成功的响应
-  //           console.log('文件上传成功！');
-  //         })
-  //         .catch(error => {
-  //           // 处理上传失败的错误
-  //           console.error('文件上传失败:', error);
-  //         });
-  //   }
-  // };
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       const fileContent = reader.result as string;
-  //
-  //
-  //       // 创建一个虚拟的下载链接，并触发下载
-  //       const downloadLink = document.createElement('a');
-  //       downloadLink.href = URL.createObjectURL(new Blob([fileContent]));
-  //       downloadLink.setAttribute('download', file.name);
-  //       downloadLink.style.display = 'none';
-  //       document.body.appendChild(downloadLink);
-  //       downloadLink.click();
-  //       document.body.removeChild(downloadLink);
-  //
-  //       console.log('文件保存成功！');
-  //     };
-  //     reader.onerror = () => {
-  //       console.error('文件读取错误');
-  //     };
-  //     reader.readAsText(file);
-  //   }
-  // };
   async function handlePostFile() {
     const session = chatStore.currentSession();
     let uuidValue = session.id.toString();
@@ -826,83 +798,54 @@ export function Chat() {
   useEffect(() => {
     let intervalId: string | number | NodeJS.Timeout | undefined;
 
-    let len = session.maskId.length;
-
-    let tempmessage: ChatMessage[] = [];
+    let len = session.maskId?.length || 0;
+    if (len === 0) {
+      alert("PLEASE SET THE AGENTS");
+    }
     let messageLen = 0;
     let finalmessage: ChatMessage[] = [];
     let sysMessage: ChatMessage[] = [];
     let i = 0;
     if (isRunning) {
+      //alert("changed!!!")
       intervalId = setInterval(() => {
-        console.log("所有消息", session.messages);
+        index = index + 1;
+        index = index % len;
+        console.log("[所有消息]", session.messages);
+        let tempmessages = session.messages;
 
-        if (session.messages.length >= 2) {
-          const messageAdd = session.messages.slice(-2);
-          console.log("adddd", messageAdd);
+        //          alert(session.messages.length);
+        const mask =
+          maskStore.get(session.maskId[index]) ??
+          BUILTIN_MASK_STORE.get(session.maskId[index]);
 
-          messageAdd.forEach((element) => {
-            console.log("i", i);
-            element.maskId = session.maskId[i];
-            console.log(session.maskId[index]);
-            i = i + 1;
-            i = i % len;
-          });
-          session.messages[session.messages.length - 2].maskId =
-            messageAdd[0].maskId;
-          session.messages[session.messages.length - 1].maskId =
-            messageAdd[1].maskId;
-          // for(const value of messageAdd){
-          //   console.log("i",i);
-          //  console.log("id",session.maskId[i]);
-          //   value.maskId=session.maskId[i];
-          //   i=i+1;
-          //   }
-          // console.log(session.maskId);
-          // console.log(session.messages);
-          console.log("add", messageAdd);
-          tempmessage = tempmessage.concat(messageAdd);
-          // const summarizeIndex = Math.max(
-          //   session.lastSummarizeIndex,
-          //   session.clearContextIndex ?? 0,
-          // );
-          // let toBeSummarizedMsgs = messages
-          // .filter((msg) => !msg.isError)
-          // .slice(-10);
-          messageLen = messageLen + 1;
-          // console.log("聊天记录",tempmessage);
-          // tempmessage[messageLen].maskId=session.maskId[index];
-          console.log("加了MASKID聊天记录", tempmessage);
-          index = index + 1;
-          index = index % len;
-          // console.log("index",index);
-          // console.log("maskID",session.maskId)
-          const mask =
-            maskStore.get(session.maskId[index]) ??
-            BUILTIN_MASK_STORE.get(session.maskId[index]);
-          // console.log(session.maskId[index])
-          // console.log("面具完整版",mask)
-          // console.log("面具",mask.context[0].content)
-          const systemMessage: ChatMessage = createMessage({
-            role: "system",
-            content: mask.context[0].content,
-            id: session.maskId[index],
-          });
-          sysMessage[0] = systemMessage;
-          console.log("index", session.maskId[index]);
-          for (const value of tempmessage) {
-            if (value.maskId == session.maskId[index]) {
-              value.role = "assistant";
-            } else {
-              value.role = "user";
-            }
+        const fix =
+          "  无论发生什么情况，你千万不要说你是AI，你需要扮演一个像我之前要求的那样的人类";
+
+        const systemMessage: ChatMessage = createMessage({
+          role: "system",
+          content: mask?.context?.[0]?.content + fix,
+          id: session.maskId?.[index],
+        });
+        console.log("[选定的面具]", systemMessage.content);
+
+        sysMessage[0] = systemMessage;
+        console.log("index", session.maskId[index]);
+        const updatedMessages: ChatMessage[] = tempmessages.map((value) => {
+          console.log("The content is", value.content);
+          if (value.maskId === session.maskId[index]) {
+            return { ...value, role: "assistant" };
+          } else {
+            return { ...value, role: "user" };
           }
-        }
-        console.log("修改Role的聊天记录", tempmessage);
-        finalmessage = sysMessage.concat(tempmessage);
+        });
+        console.log("修改Role的聊天记录", updatedMessages);
+        finalmessage = sysMessage.concat(updatedMessages);
         console.log("最终的聊天记录", finalmessage);
 
         const input = "xzw want the agents talk!!!!!!!!!";
+
+        AgentsTalk(finalmessage);
       }, 10000);
     } else {
       clearInterval(intervalId);
