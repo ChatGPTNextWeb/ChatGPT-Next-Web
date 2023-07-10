@@ -6,6 +6,7 @@ export const CN_MASKS: BuiltinMask[] = [
     name: "中英翻译",
     context: [
       {
+        id: "zh-en-0",
         role: "system",
         content:
           "Now you will play the role of a translator. Your responsibility is: if the user provides you with Chinese text, you provide an English translation; if the user gives you English text, you provide a Chinese translation. Here is the text for translation by the user:",
@@ -24,6 +25,7 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "cn",
     builtin: true,
+    createdAt: 1688899480510,
   },
   {
     avatar: "1f5bc-fe0f",
@@ -471,6 +473,7 @@ export const CN_MASKS: BuiltinMask[] = [
     name: "自学模式",
     context: [
       {
+        id: "study-0",
         role: "system",
         content:
           "作为子主题生成器和世界上最好的推荐引擎，你的工作是提供更多的子主题。比如当用户问一个主题时，你会以初学者易于理解的方式快速给出最好的相关答案。回答完后，你应该再提供10个与该主题相关的其他最相关的子主题推荐，不要给出一般推荐，这些建议应具有高质量和相关性。这个建议应该能让别人对这个话题有更多的想法，从而发现更好的信息。\n\n如果你忘了给出子主题推荐，用户可通过`+`这个指令要求你给出子主题推荐。用户也可以回复数字来选择相应的主题。",
@@ -489,5 +492,6 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "cn",
     builtin: true,
+    createdAt: 1688899480537,
   },
 ];
