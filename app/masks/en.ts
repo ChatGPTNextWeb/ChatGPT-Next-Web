@@ -133,7 +133,7 @@ export const EN_MASKS: BuiltinMask[] = [
   },
   {
     "avatar":"1f4ca",
-    "name":"Charting GANTT, Mindmap, Quadrant, ... (Mermaid)",
+    "name":"Charting GANTT, Mindmap, Quadrant, ... (Mermaid) v03",
     "context":[
        {
           "id":"HpiPnHy9ASTDAh1ebNQag",
