@@ -14,6 +14,8 @@ import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
+import { showConfirm } from "./ui-lib";
+import { BUILTIN_MASK_STORE } from "../masks";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -27,32 +29,8 @@ function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
 }
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
-  const domRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const changeOpacity = () => {
-      const dom = domRef.current;
-      const parent = document.getElementById(SlotID.AppBody);
-      if (!parent || !dom) return;
-
-      const domRect = dom.getBoundingClientRect();
-      const parentRect = parent.getBoundingClientRect();
-      const intersectionArea = getIntersectionArea(domRect, parentRect);
-      const domArea = domRect.width * domRect.height;
-      const ratio = intersectionArea / domArea;
-      const opacity = ratio > 0.9 ? 1 : 0.4;
-      dom.style.opacity = opacity.toString();
-    };
-
-    setTimeout(changeOpacity, 30);
-
-    window.addEventListener("resize", changeOpacity);
-
-    return () => window.removeEventListener("resize", changeOpacity);
-  }, [domRef]);
-
   return (
-    <div className={styles["mask"]} ref={domRef} onClick={props.onClick}>
+    <div className={styles["mask"]} onClick={props.onClick}>
       <MaskAvatar mask={props.mask} />
       <div className={styles["mask-name"] + " one-line"}>{props.mask.name}</div>
     </div>
@@ -63,32 +41,38 @@ function useMaskGroup(masks: Mask[]) {
   const [groups, setGroups] = useState<Mask[][]>([]);
 
   useEffect(() => {
-    const appBody = document.getElementById(SlotID.AppBody);
-    if (!appBody || masks.length === 0) return;
+    const computeGroup = () => {
+      const appBody = document.getElementById(SlotID.AppBody);
+      if (!appBody || masks.length === 0) return;
 
-    const rect = appBody.getBoundingClientRect();
-    const maxWidth = rect.width;
-    const maxHeight = rect.height * 0.6;
-    const maskItemWidth = 120;
-    const maskItemHeight = 50;
+      const rect = appBody.getBoundingClientRect();
+      const maxWidth = rect.width;
+      const maxHeight = rect.height * 0.6;
+      const maskItemWidth = 120;
+      const maskItemHeight = 50;
 
-    const randomMask = () => masks[Math.floor(Math.random() * masks.length)];
-    let maskIndex = 0;
-    const nextMask = () => masks[maskIndex++ % masks.length];
+      const randomMask = () => masks[Math.floor(Math.random() * masks.length)];
+      let maskIndex = 0;
+      const nextMask = () => masks[maskIndex++ % masks.length];
 
-    const rows = Math.ceil(maxHeight / maskItemHeight);
-    const cols = Math.ceil(maxWidth / maskItemWidth);
+      const rows = Math.ceil(maxHeight / maskItemHeight);
+      const cols = Math.ceil(maxWidth / maskItemWidth);
 
-    const newGroups = new Array(rows)
-      .fill(0)
-      .map((_, _i) =>
-        new Array(cols)
-          .fill(0)
-          .map((_, j) => (j < 1 || j > cols - 2 ? randomMask() : nextMask())),
-      );
+      const newGroups = new Array(rows)
+        .fill(0)
+        .map((_, _i) =>
+          new Array(cols)
+            .fill(0)
+            .map((_, j) => (j < 1 || j > cols - 2 ? randomMask() : nextMask())),
+        );
 
-    setGroups(newGroups);
+      setGroups(newGroups);
+    };
 
+    computeGroup();
+
+    window.addEventListener("resize", computeGroup);
+    return () => window.removeEventListener("resize", computeGroup);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -105,23 +89,34 @@ export function NewChat() {
   const navigate = useNavigate();
   const config = useAppConfig();
 
+  const maskRef = useRef<HTMLDivElement>(null);
+
   const { state } = useLocation();
 
   const startChat = (mask?: Mask) => {
-    chatStore.newSession(mask);
-    setTimeout(() => navigate(Path.Chat), 1);
+    setTimeout(() => {
+      chatStore.newSession(mask);
+      navigate(Path.Chat);
+    }, 10);
   };
 
   useCommand({
     mask: (id) => {
       try {
-        const mask = maskStore.get(parseInt(id));
+        const mask = maskStore.get(id) ?? BUILTIN_MASK_STORE.get(id);
         startChat(mask ?? undefined);
       } catch {
         console.error("[New Chat] failed to create chat from mask id=", id);
       }
     },
   });
+
+  useEffect(() => {
+    if (maskRef.current) {
+      maskRef.current.scrollLeft =
+        (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
+    }
+  }, [groups]);
 
   return (
     <div className={styles["new-chat"]}>
@@ -134,8 +129,8 @@ export function NewChat() {
         {!state?.fromHome && (
           <IconButton
             text={Locale.NewChat.NotShow}
-            onClick={() => {
-              if (confirm(Locale.NewChat.ConfirmNoShow)) {
+            onClick={async () => {
+              if (await showConfirm(Locale.NewChat.ConfirmNoShow)) {
                 startChat();
                 config.update(
                   (config) => (config.dontShowMaskSplashScreen = true),
@@ -162,24 +157,24 @@ export function NewChat() {
 
       <div className={styles["actions"]}>
         <IconButton
-          text={Locale.NewChat.Skip}
-          onClick={() => startChat()}
-          icon={<LightningIcon />}
-          type="primary"
-          shadow
-        />
-
-        <IconButton
-          className={styles["more"]}
           text={Locale.NewChat.More}
           onClick={() => navigate(Path.Masks)}
           icon={<EyeIcon />}
           bordered
           shadow
         />
+
+        <IconButton
+          text={Locale.NewChat.Skip}
+          onClick={() => startChat()}
+          icon={<LightningIcon />}
+          type="primary"
+          shadow
+          className={styles["skip"]}
+        />
       </div>
 
-      <div className={styles["masks"]}>
+      <div className={styles["masks"]} ref={maskRef}>
         {groups.map((masks, i) => (
           <div key={i} className={styles["mask-row"]}>
             {masks.map((mask, index) => (
