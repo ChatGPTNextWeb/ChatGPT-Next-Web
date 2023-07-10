@@ -13,7 +13,13 @@ import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
-import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
+import {
+  ChatMessage,
+  createMessage,
+  ModelConfig,
+  useAppConfig,
+  useChatStore,
+} from "../store";
 import { ROLES } from "../client/api";
 import {
   Input,
@@ -35,6 +41,7 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
+import { nanoid } from "nanoid";
 
 export function MaskAvatar(props: { mask: Mask }) {
   return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
@@ -279,11 +286,13 @@ export function ContextPrompts(props: {
             bordered
             className={chatStyle["context-prompt-button"]}
             onClick={() =>
-              addContextPrompt({
-                role: "user",
-                content: "",
-                date: "",
-              })
+              addContextPrompt(
+                createMessage({
+                  role: "user",
+                  content: "",
+                  date: "",
+                }),
+              )
             }
           />
         </div>
@@ -319,7 +328,7 @@ export function MaskPage() {
     }
   };
 
-  const [editingMaskId, setEditingMaskId] = useState<number | undefined>();
+  const [editingMaskId, setEditingMaskId] = useState<string | undefined>();
   const editingMask =
     maskStore.get(editingMaskId) ?? BUILTIN_MASK_STORE.get(editingMaskId);
   const closeMaskModal = () => setEditingMaskId(undefined);
