@@ -26,7 +26,7 @@ const cn = {
       Stop: "停止",
       Retry: "重试",
       Pin: "固定",
-      PinToastContent: "已将 2 条对话固定至预设提示词",
+      PinToastContent: "已将 1 条对话固定至预设提示词",
       PinToastAction: "查看",
       Delete: "删除",
       Edit: "编辑",
@@ -66,6 +66,7 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
+    IsContext: "预设提示词",
   },
   Export: {
     Title: "分享聊天记录",
@@ -218,6 +219,10 @@ const cn = {
     Endpoint: {
       Title: "接口地址",
       SubTitle: "除默认地址外，必须包含 http(s)://",
+    },
+    CustomModel: {
+      Title: "自定义模型名",
+      SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
     },
     Model: "模型 (model)",
     Temperature: {

@@ -263,6 +263,10 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ![More](./docs/images/more.png)
 
+## Translation
+
+If you want to add a new translation, read this [document](./docs/translation.md).
+
 ## Donation
 
 [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
