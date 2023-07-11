@@ -71,6 +71,11 @@ const tr: PartialLocaleType = {
       Title: "Yazı Boyutu",
       SubTitle: "Sohbet içeriğinin yazı boyutunu ayarlayın",
     },
+    InjectSystemPrompts: {
+      Title: "Sistem İpucu Ekleyin",
+      SubTitle:
+        "Her istek için ileti listesinin başına simüle edilmiş bir ChatGPT sistem ipucu ekleyin",
+    },
     Update: {
       Version: (x: string) => `Sürüm: ${x}`,
       IsLatest: "En son sürüm",
@@ -87,8 +92,10 @@ const tr: PartialLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
     },
     Prompt: {
       Disable: {

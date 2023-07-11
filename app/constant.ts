@@ -53,6 +53,7 @@ export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
+  ListModelPath: "v1/models",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -61,3 +62,50 @@ You are ChatGPT, a large language model trained by OpenAI.
 Knowledge cutoff: 2021-09
 Current model: {{model}}
 Current time: {{time}}`;
+
+export const DEFAULT_MODELS = [
+  {
+    name: "gpt-4",
+    available: true,
+  },
+  {
+    name: "gpt-4-0314",
+    available: true,
+  },
+  {
+    name: "gpt-4-0613",
+    available: true,
+  },
+  {
+    name: "gpt-4-32k",
+    available: true,
+  },
+  {
+    name: "gpt-4-32k-0314",
+    available: true,
+  },
+  {
+    name: "gpt-4-32k-0613",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-0301",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-0613",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-16k",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-16k-0613",
+    available: true,
+  },
+] as const;
