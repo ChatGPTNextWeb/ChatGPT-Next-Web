@@ -270,9 +270,9 @@ const cn = {
   Mask: {
     Name: "角色",
     Page: {
-      Title: "预设角色角色",
+      Title: "预设角色",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
-      Search: "搜索角色角色",
+      Search: "搜索角色",
       Create: "新建",
     },
     Item: {
