@@ -84,6 +84,11 @@ const jp: PartialLocaleType = {
       Title: "フォントサイズ",
       SubTitle: "チャット内容のフォントサイズ",
     },
+    InjectSystemPrompts: {
+      Title: "システムプロンプトの挿入",
+      SubTitle:
+        "各リクエストのメッセージリストの先頭に、ChatGPTのシステムプロンプトを強制的に追加します",
+    },
     InputTemplate: {
       Title: "入力の前処理",
       SubTitle: "新規入力がこのテンプレートに埋め込まれます",

@@ -71,6 +71,11 @@ const ko: PartialLocaleType = {
       Title: "글꼴 크기",
       SubTitle: "채팅 내용의 글꼴 크기 조정",
     },
+    InjectSystemPrompts: {
+      Title: "시스템 프롬프트 주입",
+      SubTitle:
+        "각 요청의 메시지 목록의 시작에 ChatGPT 시스템 프롬프트를 강제로 추가합니다",
+    },
     Update: {
       Version: (x: string) => `버전: ${x}`,
       IsLatest: "최신 버전",

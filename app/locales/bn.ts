@@ -135,7 +135,11 @@ const bn: PartialLocaleType = {
       Title: "ফন্ট সাইজ",
       SubTitle: "চ্যাট সামগ্রীর ফন্ট সাইজ সংশোধন করুন",
     },
-
+    InjectSystemPrompts: {
+      Title: "حقن تلميحات النظام",
+      SubTitle:
+        "قم بإضافة تلميحة نظام محاكاة ChatGPT إلى بداية قائمة الرسائل المُطلَبة في كل طلب",
+    },
     InputTemplate: {
       Title: "ইনপুট টেমপ্লেট",
       SubTitle: "নতুনতম বার্তা এই টেমপ্লেটে পূরণ হবে",
