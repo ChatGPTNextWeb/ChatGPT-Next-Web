@@ -289,7 +289,6 @@ export const useChatStore = create<ChatStore>()(
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
           streaming: true,
-          id: userMessage.id! + 1,
           model: modelConfig.model,
         });
 
@@ -387,8 +386,7 @@ export const useChatStore = create<ChatStore>()(
         const contextPrompts = session.mask.context.slice();
 
         // system prompts, to get close to OpenAI Web ChatGPT
-        // only will be injected if user does not use a mask or set none context prompts
-        const shouldInjectSystemPrompts = contextPrompts.length === 0;
+        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
         const systemPrompts = shouldInjectSystemPrompts
           ? [
               createMessage({
