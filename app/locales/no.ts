@@ -65,6 +65,11 @@ const no: PartialLocaleType = {
       Title: "Fontstørrelsen",
       SubTitle: "Juster fontstørrelsen for samtaleinnholdet.",
     },
+    InjectSystemPrompts: {
+      Title: "Sett inn systemprompter",
+      SubTitle:
+        "Tving tillegg av en simulert ChatGPT-systemprompt i begynnelsen av meldingslisten for hver forespørsel",
+    },
     Update: {
       Version: (x: string) => `Versjon: ${x}`,
       IsLatest: "Siste versjon",
