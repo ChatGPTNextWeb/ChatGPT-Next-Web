@@ -4,20 +4,24 @@
   ],
   "en": [
     [
-    "General - Proofreading",
-    "[paste your writing] Proofread my writing above. Fix grammar and spelling mistakes. And make suggestions that will improve the clarity of my writing."
-    ],
-    [
-      "General - Proofreading (with detailed feedback) - Review any draft (email, slide, post, PoV, …). ",
+      "AdEx General - Proofreading (with detailed feedback) - Review any draft (email, slide, post, PoV, …). ",
       "Point out any issues with my following draft, separating following type of issues:\n- grammar\n- spelling\n- language / expressions\n- content: \n   a. contradictions or inconsistencies\n   b. potential misunderstandings\n\nThen, provide feedback on what to improve to better write/act as a Trusted Advisor, instead as an SME/consultant.\n\nAfter all, create an improved version, but reflect my basic style of writing. \n\n### DRAFT:\n[paste YOUR DRAFT]\n\n"
     ],
     [
-      "General - Learning (interactive with Quiz) - Run a short and interactive training course for me on ...",
-      "Run a short and interactive training course for me on:\n\n Topic: \"Prompt Engineering\" and best practices for using GPT-4. \n\n Objective: I would like to improve my use of GPT for typical consultant activities through better GPT prompt engineering skills.\n\nI am a management consultant for business and IT.\n\n\nIntroduce me to the 5 most important concepts:\n- give an intro on one concept at a time\n- give a multiple choice question with 3 or 4 answer options\n- await my response before you proceed with the next concept\n- stop the quiz and provide an overall result once:\na. you are done with all concepts\nb. I give the keyword STOPP"
+      "AdEx General - Hyper-personalized Training (interactive with Quiz) - Run a short and interactive training course for me on ANYTHING",
+      "I am a management consultant for business and IT. Run a short and interactive training course for me on following:\n\n---\n### Topic:\n\nOrganizational transformation at a mid-size consulting company that is facing but not yet realizing severe impact from Gen AI being applicable across:\n- all conventional consulting activities (internal and externally facing)\n- all of the clients' business capabilities and operating model elements\n \n### Objective: \n\nI need to learn how to accelerate organizational resistance and end a 'paralysis' from ignoring already tangible facts and benefits, leading to a trend of denying and delaying by a growing number of employees.\n\n---\nIntroduce me to the most important concepts:\n- give an intro on one concept at a time\n- give a multiple choice question with 3 or 4 answer options\n- await my response before you proceed with the next concept\n- stop the quiz and provide an overall result once:\na. you are done with all concepts\nb. I give the keyword STOP"
     ],
     [
-      "Business Capabilities - Create BC Map (incl. impact from a factor of change)",
+      "AdEx General - Hyper-personalized Training (interactive with Quiz) - GPT Prompt Engineering",
+      "I am a management consultant for business and IT. Run a short and interactive training course for me on following:\n\n---\n### Topic:\n\n'Prompt Engineering' and best practices for using GPT-4.\n \n### Objective: \n\nI would like to improve my use of GPT for typical consultant activities through better GPT prompt engineering skills.\n\n---\nIntroduce me to the most important concepts:\n- give an intro on one concept at a time\n- give a multiple choice question with 3 or 4 answer options\n- await my response before you proceed with the next concept\n- stop the quiz and provide an overall result once:\n   a. you are done with all concepts\n   b. I give the keyword STOP"
+    ],
+    [
+      "AdEx Business Capabilities - Create BC Map (incl. impact from a factor of change)",
       "Create a business capability map for the following company:\n\n\"[Company name, location - optionally specify a division - for unknown companies specify industry and type of business]\"\n\nI need to understand the impact from following factor of change: \n\n\"Generative AI and its expected impact on each business capability\"\n\nCreate a table with following columns:\n- ID\n- Level 0\n- Level 1\n- Level 2\n- impact from expectable change (0-5)\n- type of change impact\n- most relevant examples for change impact"
+    ],
+    [
+      "General - Proofreading",
+      "[paste your writing] Proofread my writing above. Fix grammar and spelling mistakes. And make suggestions that will improve the clarity of my writing."
     ],
     [
     "Proposal - Analyze CVs",
@@ -45,7 +49,7 @@
     ],
     [
     "Advisory - Product Manager",
-    "Please acknowledge my following request. Please respond to me as a product manager. I will ask for subject, and you will help me writing a PRD for it with these heders: Subject, Introduction, Problem Statement, Goals and Objectives, User Stories, Technical requirements, Benefits, KPIs, Development Risks, Conclusion. Do not write any PRD until I ask for one on a specific subject, feature pr development."
+    "Please acknowledge my following request. Please respond to me as a product manager. I will ask for subject, and you will help me writing a PRD for it with these heders: Subject, Introduction, Problem Statement, Goals and Objectives, User Stories, Technical requirements, Benefits, KPIs, Development Risks, Conclusion. Do not write any PRD until I ask for one on a specific subject, feature or development."
     ],
     [
     "AI prompt engineering - AI Writing Tutor",
