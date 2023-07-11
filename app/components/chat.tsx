@@ -710,7 +710,7 @@ export function Chat() {
   };
 
   const findLastUserIndex = (messageId: string) => {
-    // find last user input message and resend
+    // find last user input message
     let lastUserMessageIndex: number | null = null;
     for (let i = 0; i < session.messages.length; i += 1) {
       const message = session.messages[i];
@@ -737,17 +737,56 @@ export function Chat() {
   };
 
   const onResend = (message: ChatMessage) => {
-    let content = message.content;
+    // when it is resending a message
+    // 1. for a user's message, find the next bot response
+    // 2. for a bot's message, find the last user's input
+    // 3. delete original user input and bot's message
+    // 4. resend the user's input
 
-    if (message.role === "assistant" && message.id) {
-      const userIndex = findLastUserIndex(message.id);
-      if (userIndex) {
-        content = session.messages.at(userIndex)?.content ?? content;
+    const resendingIndex = session.messages.findIndex(
+      (m) => m.id === message.id,
+    );
+
+    if (resendingIndex <= 0 || resendingIndex >= session.messages.length) {
+      console.error("[Chat] failed to find resending message", message);
+      return;
+    }
+
+    let userMessage: ChatMessage | undefined;
+    let botMessage: ChatMessage | undefined;
+
+    if (message.role === "assistant") {
+      // if it is resending a bot's message, find the user input for it
+      botMessage = message;
+      for (let i = resendingIndex; i >= 0; i -= 1) {
+        if (session.messages[i].role === "user") {
+          userMessage = session.messages[i];
+          break;
+        }
+      }
+    } else if (message.role === "user") {
+      // if it is resending a user's input, find the bot's response
+      userMessage = message;
+      for (let i = resendingIndex; i < session.messages.length; i += 1) {
+        if (session.messages[i].role === "assistant") {
+          botMessage = session.messages[i];
+          break;
+        }
       }
     }
 
+    if (userMessage === undefined) {
+      console.error("[Chat] failed to resend", message);
+      return;
+    }
+
+    // delete the original messages
+    deleteMessage(userMessage.id);
+    deleteMessage(botMessage?.id);
+
+    // resend the message
     setIsLoading(true);
-    chatStore.onUserInput(content).then(() => setIsLoading(false));
+    chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 

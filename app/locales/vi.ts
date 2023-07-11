@@ -71,6 +71,11 @@ const vi: PartialLocaleType = {
       Title: "Font chữ",
       SubTitle: "Thay đổi font chữ của nội dung trò chuyện",
     },
+    InjectSystemPrompts: {
+      Title: "Tiêm Prompt Hệ thống",
+      SubTitle:
+        "Bắt buộc thêm một prompt hệ thống giả lập ChatGPT ở đầu danh sách tin nhắn cho mỗi yêu cầu",
+    },
     Update: {
       Version: (x: string) => `Phiên bản: ${x}`,
       IsLatest: "Phiên bản mới nhất",
