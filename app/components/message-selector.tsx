@@ -51,9 +51,9 @@ function useShiftRange() {
 }
 
 export function useMessageSelector() {
-  const [selection, setSelection] = useState(new Set<number>());
-  const updateSelection: Updater<Set<number>> = (updater) => {
-    const newSelection = new Set<number>(selection);
+  const [selection, setSelection] = useState(new Set<string>());
+  const updateSelection: Updater<Set<string>> = (updater) => {
+    const newSelection = new Set<string>(selection);
     updater(newSelection);
     setSelection(newSelection);
   };
@@ -65,8 +65,8 @@ export function useMessageSelector() {
 }
 
 export function MessageSelector(props: {
-  selection: Set<number>;
-  updateSelection: Updater<Set<number>>;
+  selection: Set<string>;
+  updateSelection: Updater<Set<string>>;
   defaultSelectAll?: boolean;
   onSelected?: (messages: ChatMessage[]) => void;
 }) {
@@ -83,12 +83,12 @@ export function MessageSelector(props: {
   const config = useAppConfig();
 
   const [searchInput, setSearchInput] = useState("");
-  const [searchIds, setSearchIds] = useState(new Set<number>());
-  const isInSearchResult = (id: number) => {
+  const [searchIds, setSearchIds] = useState(new Set<string>());
+  const isInSearchResult = (id: string) => {
     return searchInput.length === 0 || searchIds.has(id);
   };
   const doSearch = (text: string) => {
-    const searchResults = new Set<number>();
+    const searchResults = new Set<string>();
     if (text.length > 0) {
       messages.forEach((m) =>
         m.content.includes(text) ? searchResults.add(m.id!) : null,

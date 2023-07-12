@@ -103,8 +103,7 @@ export function NewChat() {
   useCommand({
     mask: (id) => {
       try {
-        const intId = parseInt(id);
-        const mask = maskStore.get(intId) ?? BUILTIN_MASK_STORE.get(intId);
+        const mask = maskStore.get(id) ?? BUILTIN_MASK_STORE.get(id);
         startChat(mask ?? undefined);
       } catch {
         console.error("[New Chat] failed to create chat from mask id=", id);

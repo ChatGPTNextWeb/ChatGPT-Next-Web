@@ -3,24 +3,25 @@ import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
 import { getLang } from "../locales";
 import { StoreKey } from "../constant";
+import { nanoid } from "nanoid";
 
 export interface Prompt {
-  id?: number;
+  id: string;
   isUser?: boolean;
   title: string;
   content: string;
+  createdAt: number;
 }
 
 export interface PromptStore {
   counter: number;
-  latestId: number;
-  prompts: Record<number, Prompt>;
+  prompts: Record<string, Prompt>;
 
-  add: (prompt: Prompt) => number;
-  get: (id: number) => Prompt | undefined;
-  remove: (id: number) => void;
+  add: (prompt: Prompt) => string;
+  get: (id: string) => Prompt | undefined;
+  remove: (id: string) => void;
   search: (text: string) => Prompt[];
-  update: (id: number, updater: (prompt: Prompt) => void) => void;
+  update: (id: string, updater: (prompt: Prompt) => void) => void;
 
   getUserPrompts: () => Prompt[];
 }
@@ -46,7 +47,7 @@ export const SearchService = {
     this.ready = true;
   },
 
-  remove(id: number) {
+  remove(id: string) {
     this.userEngine.remove((doc) => doc.id === id);
   },
 
@@ -70,8 +71,9 @@ export const usePromptStore = create<PromptStore>()(
 
       add(prompt) {
         const prompts = get().prompts;
-        prompt.id = get().latestId + 1;
+        prompt.id = nanoid();
         prompt.isUser = true;
+        prompt.createdAt = Date.now();
         prompts[prompt.id] = prompt;
 
         set(() => ({
@@ -105,11 +107,13 @@ export const usePromptStore = create<PromptStore>()(
 
       getUserPrompts() {
         const userPrompts = Object.values(get().prompts ?? {});
-        userPrompts.sort((a, b) => (b.id && a.id ? b.id - a.id : 0));
+        userPrompts.sort((a, b) =>
+          b.id && a.id ? b.createdAt - a.createdAt : 0,
+        );
         return userPrompts;
       },
 
-      update(id: number, updater) {
+      update(id, updater) {
         const prompt = get().prompts[id] ?? {
           title: "",
           content: "",
@@ -134,7 +138,18 @@ export const usePromptStore = create<PromptStore>()(
     }),
     {
       name: StoreKey.Prompt,
-      version: 1,
+      version: 3,
+
+      migrate(state, version) {
+        const newState = JSON.parse(JSON.stringify(state)) as PromptStore;
+
+        if (version < 3) {
+          Object.values(newState.prompts).forEach((p) => (p.id = nanoid()));
+        }
+
+        return newState;
+      },
+
       onRehydrateStorage(state) {
         const PROMPT_URL = "./prompts.json";
 
@@ -152,9 +167,10 @@ export const usePromptStore = create<PromptStore>()(
                 return promptList.map(
                   ([title, content]) =>
                     ({
-                      id: Math.random(),
+                      id: nanoid(),
                       title,
                       content,
+                      createdAt: Date.now(),
                     } as Prompt),
                 );
               },

@@ -24,8 +24,8 @@ export function ModelConfigList(props: {
             );
           }}
         >
-          {config.models.map((v) => (
-            <option value={v.name} key={v.name} disabled={!v.available}>
+          {config.allModels().map((v, i) => (
+            <option value={v.name} key={i} disabled={!v.available}>
               {v.name}
             </option>
           ))}
@@ -128,6 +128,22 @@ export function ModelConfigList(props: {
             );
           }}
         ></InputRange>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.InjectSystemPrompts.Title}
+        subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
+      >
+        <input
+          type="checkbox"
+          checked={props.modelConfig.enableInjectSystemPrompts}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) =>
+                (config.enableInjectSystemPrompts = e.currentTarget.checked),
+            )
+          }
+        ></input>
       </ListItem>
 
       <ListItem

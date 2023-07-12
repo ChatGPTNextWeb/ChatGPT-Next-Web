@@ -221,9 +221,11 @@ function useSubmitHandler() {
   };
 }
 
+export type RenderPompt = Pick<Prompt, "title" | "content">;
+
 export function PromptHints(props: {
-  prompts: Prompt[];
-  onPromptSelect: (prompt: Prompt) => void;
+  prompts: RenderPompt[];
+  onPromptSelect: (prompt: RenderPompt) => void;
 }) {
   const noPrompts = props.prompts.length === 0;
   const [selectIndex, setSelectIndex] = useState(0);
@@ -412,8 +414,12 @@ export function ChatActions(props: {
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const models = useMemo(
-    () => config.models.filter((m) => m.available).map((m) => m.name),
-    [config.models],
+    () =>
+      config
+        .allModels()
+        .filter((m) => m.available)
+        .map((m) => m.name),
+    [config],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
 
@@ -542,7 +548,7 @@ export function Chat() {
 
   // prompt hints
   const promptStore = usePromptStore();
-  const [promptHints, setPromptHints] = useState<Prompt[]>([]);
+  const [promptHints, setPromptHints] = useState<RenderPompt[]>([]);
   const onSearch = useDebouncedCallback(
     (text: string) => {
       const matchedPrompts = promptStore.search(text);
@@ -624,7 +630,7 @@ export function Chat() {
     setAutoScroll(true);
   };
 
-  const onPromptSelect = (prompt: Prompt) => {
+  const onPromptSelect = (prompt: RenderPompt) => {
     setTimeout(() => {
       setPromptHints([]);
 
@@ -642,8 +648,8 @@ export function Chat() {
   };
 
   // stop response
-  const onUserStop = (messageId: number) => {
-    ChatControllerPool.stop(sessionIndex, messageId);
+  const onUserStop = (messageId: string) => {
+    ChatControllerPool.stop(session.id, messageId);
   };
 
   useEffect(() => {
@@ -703,54 +709,90 @@ export function Chat() {
     }
   };
 
-  const findLastUserIndex = (messageId: number) => {
-    // find last user input message and resend
+  const findLastUserIndex = (messageId: string) => {
+    // find last user input message
     let lastUserMessageIndex: number | null = null;
     for (let i = 0; i < session.messages.length; i += 1) {
       const message = session.messages[i];
-      if (message.id === messageId) {
-        break;
-      }
       if (message.role === "user") {
         lastUserMessageIndex = i;
+      }
+      if (message.id === messageId) {
+        break;
       }
     }
 
     return lastUserMessageIndex;
   };
 
-  const deleteMessage = (userIndex: number) => {
-    chatStore.updateCurrentSession((session) =>
-      session.messages.splice(userIndex, 2),
+  const deleteMessage = (msgId?: string) => {
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.messages = session.messages.filter((m) => m.id !== msgId)),
     );
   };
 
-  const onDelete = (botMessageId: number) => {
-    const userIndex = findLastUserIndex(botMessageId);
-    if (userIndex === null) return;
-    deleteMessage(userIndex);
+  const onDelete = (msgId: string) => {
+    deleteMessage(msgId);
   };
 
-  const onResend = (botMessageId: number) => {
-    // find last user input message and resend
-    const userIndex = findLastUserIndex(botMessageId);
-    if (userIndex === null) return;
+  const onResend = (message: ChatMessage) => {
+    // when it is resending a message
+    // 1. for a user's message, find the next bot response
+    // 2. for a bot's message, find the last user's input
+    // 3. delete original user input and bot's message
+    // 4. resend the user's input
 
+    const resendingIndex = session.messages.findIndex(
+      (m) => m.id === message.id,
+    );
+
+    if (resendingIndex <= 0 || resendingIndex >= session.messages.length) {
+      console.error("[Chat] failed to find resending message", message);
+      return;
+    }
+
+    let userMessage: ChatMessage | undefined;
+    let botMessage: ChatMessage | undefined;
+
+    if (message.role === "assistant") {
+      // if it is resending a bot's message, find the user input for it
+      botMessage = message;
+      for (let i = resendingIndex; i >= 0; i -= 1) {
+        if (session.messages[i].role === "user") {
+          userMessage = session.messages[i];
+          break;
+        }
+      }
+    } else if (message.role === "user") {
+      // if it is resending a user's input, find the bot's response
+      userMessage = message;
+      for (let i = resendingIndex; i < session.messages.length; i += 1) {
+        if (session.messages[i].role === "assistant") {
+          botMessage = session.messages[i];
+          break;
+        }
+      }
+    }
+
+    if (userMessage === undefined) {
+      console.error("[Chat] failed to resend", message);
+      return;
+    }
+
+    // delete the original messages
+    deleteMessage(userMessage.id);
+    deleteMessage(botMessage?.id);
+
+    // resend the message
     setIsLoading(true);
-    const content = session.messages[userIndex].content;
-    deleteMessage(userIndex);
-    chatStore.onUserInput(content).then(() => setIsLoading(false));
+    chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
-  const onPinMessage = (botMessage: ChatMessage) => {
-    if (!botMessage.id) return;
-    const userMessageIndex = findLastUserIndex(botMessage.id);
-    if (userMessageIndex === null) return;
-
-    const userMessage = session.messages[userMessageIndex];
+  const onPinMessage = (message: ChatMessage) => {
     chatStore.updateCurrentSession((session) =>
-      session.mask.context.push(userMessage, botMessage),
+      session.mask.context.push(message),
     );
 
     showToast(Locale.Chat.Actions.PinToastContent, {
@@ -923,11 +965,11 @@ export function Chat() {
       >
         {messages.map((message, i) => {
           const isUser = message.role === "user";
+          const isContext = i < context.length;
           const showActions =
-            !isUser &&
             i > 0 &&
             !(message.preview || message.content.length === 0) &&
-            i >= context.length; // do not show actions for context prompts
+            !isContext;
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
@@ -941,64 +983,38 @@ export function Chat() {
                 }
               >
                 <div className={styles["chat-message-container"]}>
-                  <div className={styles["chat-message-avatar"]}>
-                    <div className={styles["chat-message-edit"]}>
-                      <IconButton
-                        icon={<EditIcon />}
-                        onClick={async () => {
-                          const newMessage = await showPrompt(
-                            Locale.Chat.Actions.Edit,
-                            message.content,
-                            10,
-                          );
-                          chatStore.updateCurrentSession((session) => {
-                            const m = session.messages.find(
-                              (m) => m.id === message.id,
+                  <div className={styles["chat-message-header"]}>
+                    <div className={styles["chat-message-avatar"]}>
+                      <div className={styles["chat-message-edit"]}>
+                        <IconButton
+                          icon={<EditIcon />}
+                          onClick={async () => {
+                            const newMessage = await showPrompt(
+                              Locale.Chat.Actions.Edit,
+                              message.content,
+                              10,
                             );
-                            if (m) {
-                              m.content = newMessage;
-                            }
-                          });
-                        }}
-                      ></IconButton>
+                            chatStore.updateCurrentSession((session) => {
+                              const m = session.messages.find(
+                                (m) => m.id === message.id,
+                              );
+                              if (m) {
+                                m.content = newMessage;
+                              }
+                            });
+                          }}
+                        ></IconButton>
+                      </div>
+                      {isUser ? (
+                        <Avatar avatar={config.avatar} />
+                      ) : (
+                        <MaskAvatar mask={session.mask} />
+                      )}
                     </div>
-                    {isUser ? (
-                      <Avatar avatar={config.avatar} />
-                    ) : (
-                      <MaskAvatar mask={session.mask} />
-                    )}
-                  </div>
-                  {showTyping && (
-                    <div className={styles["chat-message-status"]}>
-                      {Locale.Chat.Typing}
-                    </div>
-                  )}
-                  <div className={styles["chat-message-item"]}>
-                    <Markdown
-                      content={message.content}
-                      loading={
-                        (message.preview || message.content.length === 0) &&
-                        !isUser
-                      }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
-                      fontSize={fontSize}
-                      parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 10}
-                    />
 
                     {showActions && (
                       <div className={styles["chat-message-actions"]}>
-                        <div
-                          className={styles["chat-input-actions"]}
-                          style={{
-                            marginTop: 10,
-                            marginBottom: 0,
-                          }}
-                        >
+                        <div className={styles["chat-input-actions"]}>
                           {message.streaming ? (
                             <ChatAction
                               text={Locale.Chat.Actions.Stop}
@@ -1010,7 +1026,7 @@ export function Chat() {
                               <ChatAction
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
-                                onClick={() => onResend(message.id ?? i)}
+                                onClick={() => onResend(message)}
                               />
 
                               <ChatAction
@@ -1035,12 +1051,34 @@ export function Chat() {
                       </div>
                     )}
                   </div>
-
-                  {showActions && (
-                    <div className={styles["chat-message-action-date"]}>
-                      {message.date.toLocaleString()}
+                  {showTyping && (
+                    <div className={styles["chat-message-status"]}>
+                      {Locale.Chat.Typing}
                     </div>
                   )}
+                  <div className={styles["chat-message-item"]}>
+                    <Markdown
+                      content={message.content}
+                      loading={
+                        (message.preview || message.content.length === 0) &&
+                        !isUser
+                      }
+                      onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen) return;
+                        setUserInput(message.content);
+                      }}
+                      fontSize={fontSize}
+                      parentRef={scrollRef}
+                      defaultShow={i >= messages.length - 10}
+                    />
+                  </div>
+
+                  <div className={styles["chat-message-action-date"]}>
+                    {isContext
+                      ? Locale.Chat.IsContext
+                      : message.date.toLocaleString()}
+                  </div>
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
