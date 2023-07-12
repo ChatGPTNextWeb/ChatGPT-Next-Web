@@ -31,6 +31,8 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import SearchCloseIcon from "../icons/search_close.svg";
+import SearchOpenIcon from "../icons/search_open.svg";
 
 import {
   ChatMessage,
@@ -397,6 +399,14 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
 
+  // switch web search
+  const webSearch = chatStore.currentSession().webSearch;
+  function switchWebSearch() {
+    chatStore.updateCurrentSession((session) => {
+      session.webSearch = !session.webSearch;
+    });
+  }
+
   // switch themes
   const theme = config.theme;
   function nextTheme() {
@@ -496,6 +506,16 @@ export function ChatActions(props: {
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
+      />
+
+      <ChatAction
+        onClick={switchWebSearch}
+        text={
+          webSearch
+            ? Locale.Chat.InputActions.CloseWebSearch
+            : Locale.Chat.InputActions.OpenWebSearch
+        }
+        icon={webSearch ? <SearchOpenIcon /> : <SearchCloseIcon />}
       />
 
       {showModelSelector && (

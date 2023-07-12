@@ -51,6 +51,8 @@ const cn = {
       Masks: "所有面具",
       Clear: "清除聊天",
       Settings: "对话设置",
+      OpenWebSearch: "开启联网",
+      CloseWebSearch: "关闭联网",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
