@@ -1,17 +1,42 @@
-import { REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  DEFAULT_API_HOST,
+  DEFAULT_MODELS,
+  OpenaiPath,
+  REQUEST_TIMEOUT_MS,
+} from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
+import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import Locale from "../../locales";
+import {
+  EventStreamContentType,
+  fetchEventSource,
+} from "@fortaine/fetch-event-source";
+import { prettyObject } from "@/app/utils/format";
+
+export interface OpenAIListModelResponse {
+  object: string;
+  data: Array<{
+    id: string;
+    object: string;
+    root: string;
+  }>;
+}
 
 export class ChatGPTApi implements LLMApi {
-  public ChatPath = "v1/chat/completions";
-  public UsagePath = "dashboard/billing/usage";
-  public SubsPath = "dashboard/billing/subscription";
+  private disableListModels = true;
 
   path(path: string): string {
-    const openaiUrl = useAccessStore.getState().openaiUrl;
-    if (openaiUrl.endsWith("/")) openaiUrl.slice(0, openaiUrl.length - 1);
+    let openaiUrl = useAccessStore.getState().openaiUrl;
+    if (openaiUrl.length === 0) {
+      openaiUrl = DEFAULT_API_HOST;
+    }
+    if (openaiUrl.endsWith("/")) {
+      openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
+    }
+    if (!openaiUrl.startsWith("http") && !openaiUrl.startsWith("/api/openai")) {
+      openaiUrl = "https://" + openaiUrl;
+    }
     return [openaiUrl, path].join("/");
   }
 
@@ -39,6 +64,8 @@ export class ChatGPTApi implements LLMApi {
       model: modelConfig.model,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
+      frequency_penalty: modelConfig.frequency_penalty,
+      top_p: modelConfig.top_p,
     };
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -48,7 +75,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(this.ChatPath);
+      const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -57,52 +84,71 @@ export class ChatGPTApi implements LLMApi {
       };
 
       // make a fetch request
-      const reqestTimeoutId = setTimeout(
+      const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
 
       if (shouldStream) {
         let responseText = "";
+        let finished = false;
 
         const finish = () => {
-          options.onFinish(responseText);
+          if (!finished) {
+            options.onFinish(responseText);
+            finished = true;
+          }
         };
 
-        const res = await fetch(chatPath, chatPayload);
-        clearTimeout(reqestTimeoutId);
+        controller.signal.onabort = finish;
 
-        if (res.status === 401) {
-          responseText += "\n\n" + Locale.Error.Unauthorized;
-          return finish();
-        }
+        fetchEventSource(chatPath, {
+          ...chatPayload,
+          async onopen(res) {
+            clearTimeout(requestTimeoutId);
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
 
-        if (
-          !res.ok ||
-          !res.headers.get("Content-Type")?.includes("stream") ||
-          !res.body
-        ) {
-          return options.onError?.(new Error());
-        }
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            return finish();
-          }
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("data: ");
-
-          for (const line of lines) {
-            const text = line.trim();
-            if (line.startsWith("[DONE]")) {
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
               return finish();
             }
-            if (text.length === 0) continue;
+
+            if (
+              !res.ok ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
+              try {
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
+              } catch {}
+
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
+              }
+
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
+
+              responseText = responseTexts.join("\n\n");
+
+              return finish();
+            }
+          },
+          onmessage(msg) {
+            if (msg.data === "[DONE]" || finished) {
+              return finish();
+            }
+            const text = msg.data;
             try {
               const json = JSON.parse(text);
               const delta = json.choices[0].delta.content;
@@ -111,13 +157,21 @@ export class ChatGPTApi implements LLMApi {
                 options.onUpdate?.(responseText, delta);
               }
             } catch (e) {
-              console.error("[Request] parse error", text, chunk);
+              console.error("[Request] parse error", text, msg);
             }
-          }
-        }
+          },
+          onclose() {
+            finish();
+          },
+          onerror(e) {
+            options.onError?.(e);
+            throw e;
+          },
+          openWhenHidden: true,
+        });
       } else {
         const res = await fetch(chatPath, chatPayload);
-        clearTimeout(reqestTimeoutId);
+        clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
@@ -143,21 +197,25 @@ export class ChatGPTApi implements LLMApi {
     const [used, subs] = await Promise.all([
       fetch(
         this.path(
-          `${this.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
+          `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
         ),
         {
           method: "GET",
           headers: getHeaders(),
         },
       ),
-      fetch(this.path(this.SubsPath), {
+      fetch(this.path(OpenaiPath.SubsPath), {
         method: "GET",
         headers: getHeaders(),
       }),
     ]);
 
-    if (!used.ok || !subs.ok || used.status === 401) {
+    if (used.status === 401) {
       throw new Error(Locale.Error.Unauthorized);
+    }
+
+    if (!used.ok || !subs.ok) {
+      throw new Error("Failed to query usage from openai");
     }
 
     const response = (await used.json()) as {
@@ -189,4 +247,31 @@ export class ChatGPTApi implements LLMApi {
       total: total.hard_limit_usd,
     } as LLMUsage;
   }
+
+  async models(): Promise<LLMModel[]> {
+    if (this.disableListModels) {
+      return DEFAULT_MODELS.slice();
+    }
+
+    const res = await fetch(this.path(OpenaiPath.ListModelPath), {
+      method: "GET",
+      headers: {
+        ...getHeaders(),
+      },
+    });
+
+    const resJson = (await res.json()) as OpenAIListModelResponse;
+    const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
+    console.log("[Models]", chatModels);
+
+    if (!chatModels) {
+      return [];
+    }
+
+    return chatModels.map((m) => ({
+      name: m.id,
+      available: true,
+    }));
+  }
 }
+export { OpenaiPath };
