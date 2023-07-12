@@ -802,14 +802,15 @@ export function Chat() {
     let intervalId: string | number | NodeJS.Timeout | undefined;
 
     let len = session.maskId?.length || 0;
-    if (len === 0) {
-      alert("PLEASE SET THE AGENTS");
-    }
     let messageLen = 0;
     let finalmessage: ChatMessage[] = [];
     let sysMessage: ChatMessage[] = [];
     let i = 0;
     if (isRunning) {
+      if (len === 0) {
+        alert("PLEASE SET THE AGENTS");
+        return;
+      }
       //alert("changed!!!")
       intervalId = setInterval(() => {
         index = index + 1;
@@ -865,7 +866,7 @@ export function Chat() {
   const isStart = messages.length < 3;
   const isGroupStart = !isGroup || (isGroup && !isStart);
   if (isGroupStart) {
-    messages.splice(2, 1);
+    if (isGroup) messages.splice(2, 1);
   }
   // console.log("messages",messages);
   return (

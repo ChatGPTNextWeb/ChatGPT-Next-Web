@@ -66,8 +66,10 @@ export const BOT_HELLO: ChatMessage = createMessage({
 });
 
 function createEmptySession(): ChatSession {
+  const val = Date.now() + Math.random();
+  //alert("Here is the "+ val.toString());
   return {
-    id: Date.now() + Math.random(),
+    id: val,
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
     messages: [],
@@ -207,7 +209,7 @@ export const useChatStore = create<ChatStore>()(
         const session = createEmptySession();
 
         set(() => ({ globalId: get().globalId + 1 }));
-        session.id = get().globalId;
+        //ssession.id = get().globalId;
 
         if (mask) {
           session.mask = { ...mask };
@@ -290,7 +292,7 @@ export const useChatStore = create<ChatStore>()(
         }
 
         const session = sessions[index];
-
+        //alert("Here " + session.id.toString())
         return session;
       },
 
@@ -377,7 +379,11 @@ export const useChatStore = create<ChatStore>()(
           // make request
           console.log("[User Input] ", sendMessages);
           const chat = get().currentSession();
+
+          //const chat_id = get().globalId
+          //alert(chat_id);
           const uuid = chat.id;
+          alert(uuid);
 
           api.llm.chat({
             uuid: uuid,
@@ -511,7 +517,7 @@ export const useChatStore = create<ChatStore>()(
               }));
               botMessage.streaming = false;
               //console.log("修改maskid之前的聊天记录",session.messages);
-              alert("The maskId is " + maskId.toString());
+              //alert("The maskId is " + maskId.toString());
               botMessage.maskId = maskId;
               //console.log("修改maskid之后的聊天记录",session.messages);
               if (message) {
@@ -781,7 +787,7 @@ export const useChatStore = create<ChatStore>()(
         const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
 
         if (version < 2) {
-          newState.globalId = 0;
+          newState.globalId = Date.now() + Math.random();
           newState.sessions = [];
 
           const oldSessions = state.sessions;
