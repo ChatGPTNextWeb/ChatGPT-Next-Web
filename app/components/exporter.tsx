@@ -430,28 +430,6 @@ export function ImagePreviewer(props: {
       .catch((e) => console.log("[Export Image] ", e));
   };
 
-  // const download = () => {
-  //   const dom = previewRef.current;
-  //   if (!dom) return;
-  //
-  //   html2canvas(dom).then(
-  //     (canvas: {
-  //       toDataURL: (arg0: string) => any;
-  //       height: number;
-  //       width: number;
-  //     }) => {
-  //       const imgData = canvas.toDataURL("image/png");
-  //
-  //       const pdf = new jsPDF("p", "mm", "a4");
-  //       const imgWidth = 210;
-  //       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  //       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-  //       alert("hhhhh");
-  //       pdf.save(`${props.topic}.pdf`);
-  //       alert("hhhhhggg");
-  //     },
-  //   );
-  // };
   const upload = async () => {
     const session = chatStore.currentSession();
     let uuidValue = session.id.toString();
@@ -592,7 +570,7 @@ export function MarkdownPreviewer(props: {
   const foo = async () => {
     const session = chatStore.currentSession();
     let uuidValue = session.id.toString();
-    alert(uuidValue);
+    //alert(uuidValue);
     const data = {
       uuid: uuidValue,
       content: txtText,
