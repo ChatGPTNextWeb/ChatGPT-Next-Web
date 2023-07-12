@@ -56,6 +56,7 @@ export interface ChatSession {
   fileUploaded: string[];
   groupMem: number;
   maskId: number[];
+  groupSpeed?: number;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -107,6 +108,7 @@ function createEmptySessions(): ChatSession {
     group: true,
     groupMem: 0,
     maskId: [],
+    groupSpeed: 0,
   };
 }
 interface ChatStore {
@@ -130,6 +132,7 @@ interface ChatStore {
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
   updateNum: (updater: (session: ChatSession) => void) => void;
+  updateSpeed: (updater: (session: ChatSession) => void) => void;
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
@@ -759,6 +762,12 @@ export const useChatStore = create<ChatStore>()(
         set(() => ({ sessions }));
       },
       updateNum(updater) {
+        const sessions = get().sessions;
+        const index = get().currentSessionIndex;
+        updater(sessions[index]);
+        set(() => ({ sessions }));
+      },
+      updateSpeed(updater) {
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
         updater(sessions[index]);
