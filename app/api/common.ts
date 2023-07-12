@@ -35,12 +35,12 @@ export async function requestOpenai(req: NextRequest) {
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
+      "Cache-Control": "no-store",
       Authorization: authValue,
       ...(process.env.OPENAI_ORG_ID && {
         "OpenAI-Organization": process.env.OPENAI_ORG_ID,
       }),
     },
-    cache: "no-store",
     method: req.method,
     body: req.body,
     // @ts-ignore
