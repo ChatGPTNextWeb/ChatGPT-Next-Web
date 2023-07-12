@@ -71,6 +71,11 @@ const it: PartialLocaleType = {
       Title: "Dimensione carattere",
       SubTitle: "Regolare la dimensione dei caratteri del contenuto della chat",
     },
+    InjectSystemPrompts: {
+      Title: "Inserisci Prompts di Sistema",
+      SubTitle:
+        "Aggiungi forzatamente un prompt di sistema simulato di ChatGPT all'inizio della lista dei messaggi per ogni richiesta",
+    },
     Update: {
       Version: (x: string) => `Versione: ${x}`,
       IsLatest: "Ultima versione",
@@ -87,8 +92,10 @@ const it: PartialLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
     },
     Prompt: {
       Disable: {

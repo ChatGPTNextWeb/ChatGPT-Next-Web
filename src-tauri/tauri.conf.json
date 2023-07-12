@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "ChatGPT Next Web",
-    "version": "2.8.6"
+    "version": "2.8.9"
   },
   "tauri": {
     "allowlist": {
