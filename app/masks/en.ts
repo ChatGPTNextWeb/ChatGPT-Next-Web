@@ -166,7 +166,6 @@ export const EN_MASKS: BuiltinMask[] = [
     "createdAt":1688974343250
  },
  {
-    "id":"d_NpyenhRnE8gEhO6CXV3",
     "avatar":"1f4dd",
     "name":"AdEx CV Partners Helper",
     "context":[
