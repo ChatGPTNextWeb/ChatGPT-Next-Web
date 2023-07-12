@@ -61,13 +61,7 @@ const tr: PartialLocaleType = {
   Settings: {
     Title: "Ayarlar",
     SubTitle: "Tüm Ayarlar",
-    Actions: {
-      ClearAll: "Tüm Verileri Temizle",
-      ResetAll: "Tüm Ayarları Sıfırla",
-      Close: "Kapat",
-      ConfirmResetAll: "Tüm ayarları sıfırlamak istediğinizden emin misiniz?",
-      ConfirmClearAll: "Tüm sohbeti sıfırlamak istediğinizden emin misiniz?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Tüm Diller",
@@ -76,6 +70,11 @@ const tr: PartialLocaleType = {
     FontSize: {
       Title: "Yazı Boyutu",
       SubTitle: "Sohbet içeriğinin yazı boyutunu ayarlayın",
+    },
+    InjectSystemPrompts: {
+      Title: "Sistem İpucu Ekleyin",
+      SubTitle:
+        "Her istek için ileti listesinin başına simüle edilmiş bir ChatGPT sistem ipucu ekleyin",
     },
     Update: {
       Version: (x: string) => `Sürüm: ${x}`,
@@ -93,8 +92,10 @@ const tr: PartialLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
     },
     Prompt: {
       Disable: {

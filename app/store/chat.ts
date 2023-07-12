@@ -7,26 +7,33 @@ import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
-import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
+import {
+  DEFAULT_INPUT_TEMPLATE,
+  DEFAULT_SYSTEM_TEMPLATE,
+  StoreKey,
+} from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
+import { nanoid } from "nanoid";
 
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
   isError?: boolean;
-  id?: number;
+  id: string;
   model?: ModelType;
+  toolPrompt?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
-    id: Date.now(),
+    id: nanoid(),
     date: new Date().toLocaleString(),
     role: "user",
     content: "",
+    toolPrompt: undefined,
     ...override,
   };
 }
@@ -38,7 +45,7 @@ export interface ChatStat {
 }
 
 export interface ChatSession {
-  id: number;
+  id: string;
   topic: string;
 
   memoryPrompt: string;
@@ -49,6 +56,7 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+  webSearch: boolean;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -59,7 +67,7 @@ export const BOT_HELLO: ChatMessage = createMessage({
 
 function createEmptySession(): ChatSession {
   return {
-    id: Date.now() + Math.random(),
+    id: nanoid(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
     messages: [],
@@ -72,13 +80,13 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+    webSearch: false,
   };
 }
 
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
-  globalId: number;
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
@@ -135,7 +143,6 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
-      globalId: 0,
 
       clearSessions() {
         set(() => ({
@@ -177,9 +184,6 @@ export const useChatStore = create<ChatStore>()(
 
       newSession(mask) {
         const session = createEmptySession();
-
-        set(() => ({ globalId: get().globalId + 1 }));
-        session.id = get().globalId;
 
         if (mask) {
           const config = useAppConfig.getState();
@@ -279,7 +283,7 @@ export const useChatStore = create<ChatStore>()(
         const modelConfig = session.mask.modelConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] fill with template: ", userContent);
+        console.log("[User Input] after template: ", userContent);
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
@@ -289,14 +293,12 @@ export const useChatStore = create<ChatStore>()(
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
           streaming: true,
-          id: userMessage.id! + 1,
           model: modelConfig.model,
         });
 
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
-        const sessionIndex = get().currentSessionIndex;
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -305,14 +307,42 @@ export const useChatStore = create<ChatStore>()(
             ...userMessage,
             content,
           };
-          session.messages = session.messages.concat([
-            savedUserMessage,
-            botMessage,
-          ]);
+          session.messages.push(savedUserMessage);
+        });
+
+        if (session.webSearch) {
+          const query = encodeURIComponent(content);
+          let searchResult = await api.searchTool.call(query);
+          console.log("[Tools] ", searchResult);
+          const webSearchPrompt = `
+Using the provided web search results, write a comprehensive reply to the given query.
+If the provided search results refer to multiple subjects with the same name, write separate answers for each subject.
+Make sure to cite results using \`[[number](URL)]\` notation after the reference.
+
+Web search json results:
+"""
+${JSON.stringify(searchResult)}
+"""
+
+Current date:
+"""
+${new Date().toISOString()}
+"""
+
+Query:
+"""
+${content}
+"""
+
+Reply in ${getLang()} and markdown.`;
+          userMessage.toolPrompt = webSearchPrompt;
+        }
+        // save user's and bot's message
+        get().updateCurrentSession((session) => {
+          session.messages.push(botMessage);
         });
 
         // make request
-        console.log("[User Input] ", sendMessages);
         api.llm.chat({
           messages: sendMessages,
           config: { ...modelConfig, stream: true },
@@ -331,10 +361,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.content = message;
               get().onNewMessage(botMessage);
             }
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
+            ChatControllerPool.remove(session.id, botMessage.id);
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
@@ -351,7 +378,7 @@ export const useChatStore = create<ChatStore>()(
               session.messages = session.messages.concat();
             });
             ChatControllerPool.remove(
-              sessionIndex,
+              session.id,
               botMessage.id ?? messageIndex,
             );
 
@@ -360,7 +387,7 @@ export const useChatStore = create<ChatStore>()(
           onController(controller) {
             // collect controller for stop/retry
             ChatControllerPool.addController(
-              sessionIndex,
+              session.id,
               botMessage.id ?? messageIndex,
               controller,
             );
@@ -391,12 +418,32 @@ export const useChatStore = create<ChatStore>()(
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
 
+        // system prompts, to get close to OpenAI Web ChatGPT
+        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
+        const systemPrompts = shouldInjectSystemPrompts
+          ? [
+              createMessage({
+                role: "system",
+                content: fillTemplateWith("", {
+                  ...modelConfig,
+                  template: DEFAULT_SYSTEM_TEMPLATE,
+                }),
+              }),
+            ]
+          : [];
+        if (shouldInjectSystemPrompts) {
+          console.log(
+            "[Global System Prompt] ",
+            systemPrompts.at(0)?.content ?? "empty",
+          );
+        }
+
         // long term memory
         const shouldSendLongTermMemory =
           modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0 &&
-          session.lastSummarizeIndex <= clearContextIndex;
+          session.lastSummarizeIndex > clearContextIndex;
         const longTermMemoryPrompts = shouldSendLongTermMemory
           ? [get().getMemoryPrompt()]
           : [];
@@ -409,6 +456,7 @@ export const useChatStore = create<ChatStore>()(
         );
 
         // lets concat send messages, including 4 parts:
+        // 0. system prompt: to get close to OpenAI Web ChatGPT
         // 1. long term memory: summarized memory messages
         // 2. pre-defined in-context prompts
         // 3. short term memory: latest n messages
@@ -435,6 +483,7 @@ export const useChatStore = create<ChatStore>()(
 
         // concat all messages
         const recentMessages = [
+          ...systemPrompts,
           ...longTermMemoryPrompts,
           ...contextPrompts,
           ...reversedRecentMessages.reverse(),
@@ -530,11 +579,13 @@ export const useChatStore = create<ChatStore>()(
           modelConfig.sendMemory
         ) {
           api.llm.chat({
-            messages: toBeSummarizedMsgs.concat({
-              role: "system",
-              content: Locale.Store.Prompt.Summarize,
-              date: "",
-            }),
+            messages: toBeSummarizedMsgs.concat(
+              createMessage({
+                role: "system",
+                content: Locale.Store.Prompt.Summarize,
+                date: "",
+              }),
+            ),
             config: { ...modelConfig, stream: true },
             onUpdate(message) {
               session.memoryPrompt = message;
@@ -571,13 +622,12 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: StoreKey.Chat,
-      version: 2,
+      version: 3,
       migrate(persistedState, version) {
         const state = persistedState as any;
         const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
 
         if (version < 2) {
-          newState.globalId = 0;
           newState.sessions = [];
 
           const oldSessions = state.sessions;
@@ -590,6 +640,14 @@ export const useChatStore = create<ChatStore>()(
             newSession.mask.modelConfig.compressMessageLengthThreshold = 1000;
             newState.sessions.push(newSession);
           }
+        }
+
+        if (version < 3) {
+          // migrate id to nanoid
+          newState.sessions.forEach((s) => {
+            s.id = nanoid();
+            s.messages.forEach((m) => (m.id = nanoid()));
+          });
         }
 
         return newState;

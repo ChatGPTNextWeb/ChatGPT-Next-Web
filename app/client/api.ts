@@ -2,6 +2,7 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { DuckDuckGoSearch } from "./tools/ddg_search";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -12,6 +13,7 @@ export type ChatModel = ModelType;
 export interface RequestMessage {
   role: MessageRole;
   content: string;
+  toolPrompt?: string;
 }
 
 export interface LLMConfig {
@@ -38,9 +40,15 @@ export interface LLMUsage {
   total: number;
 }
 
+export interface LLMModel {
+  name: string;
+  available: boolean;
+}
+
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
+  abstract models(): Promise<LLMModel[]>;
 }
 
 type ProviderName = "openai" | "azure" | "claude" | "palm";
@@ -64,11 +72,19 @@ interface ChatProvider {
   usage: () => void;
 }
 
+export abstract class ToolApi {
+  abstract call(input: string): Promise<string>;
+  abstract name: string;
+  abstract description: string;
+}
+
 export class ClientApi {
   public llm: LLMApi;
+  public searchTool: ToolApi;
 
   constructor() {
     this.llm = new ChatGPTApi();
+    this.searchTool = new DuckDuckGoSearch();
   }
 
   config() {}
