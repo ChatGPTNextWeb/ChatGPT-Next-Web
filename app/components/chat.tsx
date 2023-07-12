@@ -673,7 +673,7 @@ export function Chat() {
       : -1;
 
   // preview messages
-  const messages = context
+  let messages = context
     .concat(session.messages as RenderMessage[])
     .concat(
       isLoading
@@ -913,6 +913,14 @@ export function Chat() {
     };
   }, [isRunning]);
 
+  const isGroup = session.group; //判断是否群聊
+  const isRuningGroup = !isGroup || (isGroup && isRunning); //判断是否群聊且已经按了开始按钮
+  const isStart = messages.length < 3;
+  const isGroupStart = !isGroup || (isGroup && !isStart);
+  if (isGroupStart) {
+    messages.splice(2, 1);
+  }
+  // console.log("messages",messages);
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header">
@@ -1023,6 +1031,13 @@ export function Chat() {
             !(message.preview || message.content.length === 0);
           const showTyping = message.preview || message.streaming;
 
+          // const isGroup = session.group; //判断是否群聊
+          // const isRuningGroup =(!isGroup)||(isGroup&&isRunning);//判断是否群聊且已经按了开始按钮
+          // const isStart = messages.length===3;
+          // const isGroupStart =(!isGroup)||(isGroup&&!isStart);
+          // console.log("!!!!!!",isGroupStart);
+          // console.log("messages.length",messages.length);
+
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
           // const avatarMask =maskStore.get(message.maskId[index]) ?? BUILTIN_MASK_STORE.get(session.maskId[index])??session.mask;
           const avatarMask =
@@ -1039,6 +1054,7 @@ export function Chat() {
             message.content = editingContent;
             setisEditing(false);
           };
+
           // console.log("avatar",session.maskId[index]);
           // console.log("maskstore",maskStore.get(session.maskId[index]));
           // console.log("BUILTIN",BUILTIN_MASK_STORE.get(session.maskId[index]));
