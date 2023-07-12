@@ -261,7 +261,6 @@ export function ContextPrompts(props: {
                 date: "",
 
                 maskId: 0,
-
               })
             }
           />
@@ -383,7 +382,9 @@ export function MaskPage() {
               <IconButton
                 icon={<CloseIcon />}
                 bordered
-                onClick={() => navigate(-1)}
+                onClick={() =>
+                  navigate(Path.Chat, { state: { fromGroup: true } })
+                }
               />
             </div>
           </div>
