@@ -24,7 +24,6 @@
 
   .window-header-sub-title {
     font-size: 14px;
-    margin-top: 5px;
   }
 }
 
@@ -32,6 +31,6 @@
   display: inline-flex;
 }
 
-.window-action-button {
+.window-action-button:not(:first-child) {
   margin-left: 10px;
 }
