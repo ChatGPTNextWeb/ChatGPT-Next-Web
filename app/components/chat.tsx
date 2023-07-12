@@ -25,7 +25,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import AddIcon from "../icons/add.svg";
-
+import { InputRange } from "./input-range";
 import {
   ChatMessage,
   SubmitKey,
@@ -337,7 +337,10 @@ export function ChatActions(props: {
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
   const { state } = useLocation(); //获取被跳转路由之前传入的那个state
-
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
   return (
     <div className={chatStyle["chat-input-actions"]}>
       {couldStop && (
@@ -846,7 +849,8 @@ export function Chat() {
         const input = "xzw want the agents talk!!!!!!!!!";
 
         AgentsTalk(finalmessage);
-      }, 10000);
+      }, (session.groupSpeed ?? 10) * 1000);
+      console.log(session.groupSpeed);
     } else {
       clearInterval(intervalId);
     }
@@ -879,6 +883,24 @@ export function Chat() {
           </div>
         </div>
         <div className="window-actions">
+          {state?.fromGroup && <div>消息间隔：</div>}
+          {state?.fromGroup && (
+            <InputRange
+              title={`${session.groupSpeed ?? 10}秒`}
+              value={session.groupSpeed ?? 1}
+              min="1"
+              max="20"
+              step="1"
+              onChange={(e) =>
+                chatStore.updateSpeed(
+                  (session) =>
+                    (session.groupSpeed = Number.parseInt(
+                      e.currentTarget.value,
+                    )),
+                )
+              }
+            ></InputRange>
+          )}
           <div className={"window-action-button" + " " + styles.mobile}>
             <IconButton
               icon={<ReturnIcon />}
@@ -933,6 +955,7 @@ export function Chat() {
               }}
             />
           </div>
+
           {!isMobileScreen && (
             <div className="window-action-button">
               <IconButton
