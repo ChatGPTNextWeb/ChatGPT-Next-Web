@@ -225,10 +225,6 @@ const en: LocaleType = {
       Title: "Endpoint",
       SubTitle: "Custom endpoint must start with http(s)://",
     },
-    CustomModel: {
-      Title: "Custom Models",
-      SubTitle: "Add extra model options, separate by comma",
-    },
     Model: "Model",
     Temperature: {
       Title: "Temperature",
