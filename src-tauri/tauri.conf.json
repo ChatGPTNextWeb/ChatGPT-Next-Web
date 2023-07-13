@@ -85,7 +85,7 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://github.com/yeenbean/ChatGPT-Next-Web/releases/download/{{current_version}}/latest.json"
+        "https://github.com/yeenbean/ChatGPT-Next-Web/releases/latest/download/latest.json"
       ],
       "dialog": false,
       "windows": {
