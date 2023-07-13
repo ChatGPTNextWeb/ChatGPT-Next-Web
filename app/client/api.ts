@@ -2,6 +2,7 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import {getServerSideConfig} from "@/app/config/server";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -132,6 +133,8 @@ export function getHeaders() {
     "x-requested-with": "XMLHttpRequest",
   };
 
+  const serverConfig = getServerSideConfig();
+  const apiKey = serverConfig.apiKey;
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;
   const validString = (x: string) => x && x.length > 0;
 
@@ -143,7 +146,7 @@ export function getHeaders() {
     validString(accessStore.accessCode)
   ) {
     headers.Authorization = makeBearer(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
+        apiKey
     );
   }
 
