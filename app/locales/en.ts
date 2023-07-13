@@ -167,12 +167,12 @@ const en: LocaleType = {
     },
     Mask: {
       Splash: {
-        Title: "Mask Splash Screen",
-        SubTitle: "Show a mask splash screen before starting new chat",
+        Title: "Persona Splash Screen",
+        SubTitle: "Show the Persona splash screen before starting new chat",
       },
       Builtin: {
-        Title: "Hide Builtin Masks",
-        SubTitle: "Hide builtin masks in mask list",
+        Title: "Hide Builtin Personas",
+        SubTitle: "Hide builtin personas in mask list",
       },
     },
     Prompt: {
