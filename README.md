@@ -17,15 +17,10 @@ ChatGPT Next Web, now with a sprinkle of yeen.
 [Web App](https://gpt.yeenimal.com) / [Desktop App](https://github.com/yeenbean/ChatGPT-Next-Web/releases) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Support Yidadaa](https://www.buymeacoffee.com/yidadaa)
 
 [web-url]: https://gpt.yeenimal.com
-   
 [download-url]: https://github.com/yeenbean/ChatGPT-Next-Web/releases
-
 [Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=firefox&logoColor=white
-
 [Windows-image]: https://img.shields.io/badge/Windows-blue?logo=windows11&logoColor=white
-
 [MacOS-image]: https://img.shields.io/badge/MacOS-black?logo=apple&logoColor=white
-
 [Linux-image]: https://img.shields.io/badge/Linux-333?logo=linux&logoColor=white
 
 ![cover](./docs/images/cover.png)
@@ -146,6 +141,16 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
+### `HIDE_BALANCE_QUERY` (optional)
+
+> Default: Empty
+
+If you do not want users to query balance, set this value to 1.
+
+## Requirements
+
+NodeJS >= 18, Docker >= 20
+
 ## Development
 
 > [简体中文 > 如何进行二次开发](./README_CN.md#开发)
@@ -193,6 +198,12 @@ docker run -d -p 3000:3000 \
    yidadaa/chatgpt-next-web
 ```
 
+If your proxy needs password, use:
+
+```shell
+-e PROXY_URL="http://127.0.0.1:7890 user pass"
+```
+
 ### Shell
 
 ```shell
@@ -204,6 +215,10 @@ bash <(curl -s https://raw.githubusercontent.com/yeenbean/ChatGPT-Next-Web/main/
 ![Settings](./docs/images/settings.png)
 
 ![More](./docs/images/more.png)
+
+## Translation
+
+If you want to add a new translation, read this [document](./docs/translation.md).
 
 ## Donation
 
@@ -236,6 +251,7 @@ bash <(curl -s https://raw.githubusercontent.com/yeenbean/ChatGPT-Next-Web/main/
 [@Sha1rholder](https://github.com/Sha1rholder)
 [@AnsonHyq](https://github.com/AnsonHyq)
 [@synwith](https://github.com/synwith)
+[@piksonGit](https://github.com/piksonGit)
 
 ### Contributor
 
