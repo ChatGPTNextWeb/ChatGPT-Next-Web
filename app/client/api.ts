@@ -2,7 +2,7 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import {getServerSideConfig} from "@/app/config/server";
+import { getServerSideConfig } from "@/app/config/server";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -145,9 +145,7 @@ export function getHeaders() {
     accessStore.enabledAccessControl() &&
     validString(accessStore.accessCode)
   ) {
-    headers.Authorization = makeBearer(
-        apiKey
-    );
+    headers.Authorization = makeBearer(apiKey);
   }
 
   return headers;
