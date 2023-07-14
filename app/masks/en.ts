@@ -167,7 +167,7 @@ export const EN_MASKS: BuiltinMask[] = [
  },
  {
     "avatar":"1f4dd",
-    "name":"AdEx CV Partners Helper",
+    "name":"AdEx CV Partners Helper (V0.8b)",
     "context":[
       {
           "id":"HpiPnHy9ASTDAh1ebNQag",
