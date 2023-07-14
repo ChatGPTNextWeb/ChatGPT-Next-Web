@@ -244,11 +244,11 @@ export function RenderExport(props: {
     }
 
     const renderMsgs = messages.map((v, i) => {
-      const [_, role] = v.id.split(":");
+      const [role, _] = v.id.split(":");
       return {
         id: i.toString(),
         role: role as any,
-        content: v.innerHTML,
+        content: role === "user" ? v.textContent ?? "" : v.innerHTML,
         date: "",
       };
     });
