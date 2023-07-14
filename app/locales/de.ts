@@ -7,6 +7,13 @@ const de: PartialLocaleType = {
     Unauthorized:
       "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der Einstellungsseite ein.",
   },
+  Auth: {
+    Title: "Zugangscode benötigt",
+    Tips: "Bitte geben sie den Zugangscode ein.",
+    Input: "Zugangs Code",
+    Confirm: "Bestätigen",
+    Later: "Später",
+  },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} Nachrichten`,
   },
@@ -14,12 +21,37 @@ const de: PartialLocaleType = {
     SubTitle: (count: number) => `${count} Nachrichten mit ChatGPT`,
     Actions: {
       ChatList: "Zur Chat-Liste gehen",
-      CompressedHistory: "Komprimierter Gedächtnis-Prompt",
+      CompressedHistory: "komprimierter Verlauf",
       Export: "Alle Nachrichten als Markdown exportieren",
       Copy: "Kopieren",
       Stop: "Stop",
       Retry: "Wiederholen",
-      Delete: "Delete",
+      Pin: "Anheften",
+      PinToastContent: "Eine Nachricht an den Context angeheftet",
+      PinToastAction: "Anzeigen",
+      Delete: "Löschen",
+      Edit: "Bearbeiten",
+    },
+    Commands: {
+      new: "Neuen Chat starten",
+      newm: "Neuen Chat mit Persona starten",
+      next: "Nächster Chat",
+      prev: "Vorheriger Chat",
+      clear: "Kontext zurücksetzen",
+      del: "Chat löschen",
+    },
+    InputActions: {
+      Stop: "Stop",
+      ToBottom: "zur letzen Nachricht",
+      Theme: {
+        auto: "Auto",
+        light: "Helle Farben",
+        dark: "Dunkle Farben",
+      },
+      Prompt: "Prompts",
+      Masks: "Personas",
+      Clear: "Kontext löschen",
+      Settings: "Einstellungen",
     },
     Rename: "Chat umbenennen",
     Typing: "Tippen...",
@@ -32,9 +64,10 @@ const de: PartialLocaleType = {
     },
     Send: "Senden",
     Config: {
-      Reset: "Reset to Default",
-      SaveAs: "Save as Mask",
+      Reset: "Zurücksetzen",
+      SaveAs: "Als Persona speichern",
     },
+    IsContext: "Kontext Prompt",
   },
   Export: {
     Title: "Alle Nachrichten",
@@ -42,28 +75,65 @@ const de: PartialLocaleType = {
     Download: "Herunterladen",
     MessageFromYou: "Deine Nachricht",
     MessageFromChatGPT: "Nachricht von ChatGPT",
+    Share: "Teilen mit ShareGPT",
+    Format: {
+      Title: "Export Format",
+      SubTitle: "Markdown oder PNG Bild",
+    },
+    IncludeContext: {
+      Title: "Kontext einschließen",
+      SubTitle: "Export Kontext Prompts in eine Persona",
+    },
+    Steps: {
+      Select: "Auswählen",
+      Preview: "Vorschau",
+    },
+    Image: {
+      Toast: "Screenshot...",
+      Modal: "Langes klicken oder Rechtsclick um Chat als Bild zu speichern",
+    },
+  },
+  Select: {
+    Search: "Suche",
+    All: "Alles auswählen",
+    Latest: "Aktuellste Auswählen",
+    Clear: "Löschen",
   },
   Memory: {
-    Title: "Gedächtnis-Prompt",
+    Title: "Verlauf",
     EmptyContent: "Noch nichts.",
-    Send: "Gedächtnis senden",
-    Copy: "Gedächtnis kopieren",
+    Send: "Verlauf senden",
+    Copy: "Verlauf kopieren",
     Reset: "Sitzung zurücksetzen",
     ResetConfirm:
       "Das Zurücksetzen löscht den aktuellen Gesprächsverlauf und das Langzeit-Gedächtnis. Möchten Sie wirklich zurücksetzen?",
   },
   Home: {
     NewChat: "Neuer Chat",
-    DeleteChat: "Bestätigen Sie, um das ausgewählte Gespräch zu löschen?",
+    DeleteChat: "Das ausgewählte Gespräch wirklich löschen?",
     DeleteToast: "Chat gelöscht",
     Revert: "Zurücksetzen",
   },
   Settings: {
     Title: "Einstellungen",
     SubTitle: "Alle Einstellungen",
-
+    Danger: {
+      Reset: {
+        Title: "Alle Einstellungen zurücksetzen",
+        SubTitle:
+          "Alle Einstellungen auf die Standardeinstellungen zurücksetzen",
+        Action: "Zurücksetzen",
+        Confirm: "Wirklich auf Standardeinstellungen zurücksetzen?",
+      },
+      Clear: {
+        Title: "Alle Daten löschen",
+        SubTitle: "Lösche alle Chats und Einstellungen",
+        Action: "Löschen",
+        Confirm: "Wirklich alle Chats und Einstellungen löschen?",
+      },
+    },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Sprache", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Alle Sprachen",
     },
     Avatar: "Avatar",
@@ -76,6 +146,11 @@ const de: PartialLocaleType = {
       SubTitle:
         "Erzwingt das Hinzufügen eines simulierten systemweiten Prompts von ChatGPT am Anfang der Nachrichtenliste bei jeder Anfrage",
     },
+    InputTemplate: {
+      Title: "Eingabe Template",
+      SubTitle: "Neue Nachrichten werden mit diesem Template gesendet.",
+    },
+
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Neueste Version",
@@ -84,17 +159,23 @@ const de: PartialLocaleType = {
       FoundUpdate: (x: string) => `Neue Version gefunden: ${x}`,
       GoToUpdate: "Aktualisieren",
     },
-    SendKey: "Senden-Taste",
+    SendKey: "Nachricht Senden",
     Theme: "Erscheinungsbild",
     TightBorder: "Enger Rahmen",
     SendPreviewBubble: {
       Title: "Vorschau-Bubble senden",
-      SubTitle: "Preview markdown in bubble",
+      SubTitle: "Markdown-Vorschau in Bubble",
     },
     Mask: {
       Splash: {
-        Title: "Mask Splash Screen",
-        SubTitle: "Show a mask splash screen before starting new chat",
+        Title: "Persona Startbildschirm",
+        SubTitle:
+          "Vor dem Start eines neuen Chats einen Startbildschirm anzeigen",
+      },
+      Builtin: {
+        Title: "Vorinstallierte Personas ausblenden",
+        SubTitle:
+          "Ausblenden der vorinstallierten Personas in der Auswahlliste",
       },
     },
     Prompt: {
@@ -108,11 +189,11 @@ const de: PartialLocaleType = {
       Edit: "Bearbeiten",
       Modal: {
         Title: "Prompt List",
-        Add: "Add One",
-        Search: "Search Prompts",
+        Add: "Hinzufügen",
+        Search: "Suche Prompts",
       },
       EditModal: {
-        Title: "Edit Prompt",
+        Title: "Prompt bearbeiten",
       },
     },
     HistoryCount: {
@@ -122,12 +203,12 @@ const de: PartialLocaleType = {
     CompressThreshold: {
       Title: "Schwellenwert für Verlaufskomprimierung",
       SubTitle:
-        "Komprimierung, wenn die Länge der unkomprimierten Nachrichten den Wert überschreitet",
+        "Komprimiert den Verlauf, wenn die Länge der unkomprimierten Nachrichten den Wert überschreitet",
     },
     Token: {
       Title: "API-Schlüssel",
       SubTitle:
-        "Verwenden Sie Ihren Schlüssel, um das Zugangscode-Limit zu ignorieren",
+        "Verwenden Sie Ihren eignen API-Schlüssel, um nicht an das Nutzungslimit gebunden zu sein",
       Placeholder: "OpenAI API-Schlüssel",
     },
     Usage: {
@@ -144,10 +225,22 @@ const de: PartialLocaleType = {
       SubTitle: "Zugangskontrolle aktiviert",
       Placeholder: "Zugangscode erforderlich",
     },
+    Endpoint: {
+      Title: "Endpoint",
+      SubTitle: "Custom endpoint must start with http(s)://",
+    },
+    CustomModel: {
+      Title: "Custom Models",
+      SubTitle: "Add extra model options, separate by comma",
+    },
     Model: "Modell",
     Temperature: {
       Title: "Temperature", //Temperatur
       SubTitle: "Ein größerer Wert führt zu zufälligeren Antworten",
+    },
+    TopP: {
+      Title: "Top P",
+      SubTitle: "Do not alter this value together with temperature",
     },
     MaxTokens: {
       Title: "Max Tokens", //Maximale Token
@@ -161,7 +254,7 @@ const de: PartialLocaleType = {
     FrequencyPenalty: {
       Title: "Frequency Penalty", // HäufigkeitStrafe
       SubTitle:
-        "Ein größerer Wert, der die Wahrscheinlichkeit verringert, dass dieselbe Zeile wiederholt wird",
+        "Ein größerer Wert verringert die Wahrscheinlichkeit, dass dieselbe Zeile wiederholt wird",
     },
   },
   Store: {
@@ -171,12 +264,12 @@ const de: PartialLocaleType = {
       "Etwas ist schief gelaufen, bitte versuchen Sie es später noch einmal.",
     Prompt: {
       History: (content: string) =>
-        "Dies ist eine Zusammenfassung des Chatverlaufs zwischen dem KI und dem Benutzer als Rückblick: " +
+        "Dies ist eine Zusammenfassung des Chatverlaufs zwischen der KI und dem Benutzer als Verlauf: " +
         content,
       Topic:
-        "Bitte erstellen Sie einen vier- bis fünfwörtigen Titel, der unser Gespräch zusammenfasst, ohne Einleitung, Zeichensetzung, Anführungszeichen, Punkte, Symbole oder zusätzlichen Text. Entfernen Sie Anführungszeichen.",
+        "Erstellen einen Titel der aus vier bis fünf Wörtern besteht, der diesen Chat zusammenfasst. Ohne Einleitung, Zeichensetzung, Anführungszeichen, Punkte, Symbole oder zusätzlichen Text. Entfernen Sie Anführungszeichen.",
       Summarize:
-        "Fassen Sie unsere Diskussion kurz in 200 Wörtern oder weniger zusammen, um sie als Pronpt für zukünftige Gespräche zu verwenden.",
+        "Fassen diesen Chat kurz in 200 Wörtern oder weniger zusammen, um die Zusammenfassung als Pronpt für zukünftige Gespräche zu verwenden.",
     },
   },
   Copy: {
@@ -186,55 +279,73 @@ const de: PartialLocaleType = {
   },
   Context: {
     Toast: (x: any) => `Mit ${x} Kontext-Prompts`,
-    Edit: "Kontext- und Gedächtnis-Prompts",
+    Edit: "Kontext und Verlauf",
     Add: "Hinzufügen",
+    Clear: "Context Cleared",
+    Revert: "Revert",
   },
   Plugin: {
     Name: "Plugin",
   },
   Mask: {
-    Name: "Mask",
+    Name: "Persona",
     Page: {
       Title: "Prompt Template",
       SubTitle: (count: number) => `${count} prompt templates`,
-      Search: "Search Templates",
-      Create: "Create",
+      Search: "Templates suchen",
+      Create: "Anlegen",
     },
     Item: {
       Info: (count: number) => `${count} prompts`,
       Chat: "Chat",
-      View: "View",
-      Edit: "Edit",
-      Delete: "Delete",
-      DeleteConfirm: "Confirm to delete?",
+      View: "Anzeigen",
+      Edit: "Bearbeiten",
+      Delete: "Löschen",
+      DeleteConfirm: "Wirklich löschen?",
     },
     EditModal: {
       Title: (readonly: boolean) =>
         `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
       Download: "Download",
-      Clone: "Clone",
+      Clone: "Duplizieren",
     },
     Config: {
       Avatar: "Bot Avatar",
       Name: "Bot Name",
+      Sync: {
+        Title: "Globale Konfiguration",
+        SubTitle: "Globale Konfiguration für diesen Chat übernehmen",
+        Confirm: "Wirklich globale Konfiguration übernehmen?",
+      },
+      HideContext: {
+        Title: "Kontext Prompts ausblenden",
+        SubTitle: "Kontextabhängige Prompts im Chat nicht anzeigen",
+      },
+      Share: {
+        Title: "Persona teilen",
+        SubTitle: "Generiere einen Link für diese Persona",
+        Action: "Link kopieren",
+      },
     },
   },
   NewChat: {
-    Return: "Return",
-    Skip: "Skip",
-    Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
-    More: "Find More",
-    NotShow: "Not Show Again",
-    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+    Return: "Zurück",
+    Skip: "Überspringen",
+    Title: "Persona wählen",
+    SubTitle:
+      "Eine Persona enthält eine Rollenbeschreibung für deinen Bot und einen vordefinierten Prompt.",
+    More: "Weitere finden",
+    NotShow: "Nicht nochmal anzeigen",
+    ConfirmNoShow:
+      "Wirklich deaktivieren? Du kannst diese Einstellung später wieder aktivieren.",
   },
 
   UI: {
-    Confirm: "Confirm",
-    Cancel: "Cancel",
-    Close: "Close",
-    Create: "Create",
-    Edit: "Edit",
+    Confirm: "Bestätigen",
+    Cancel: "Abbrechen",
+    Close: "Schließen",
+    Create: "Anlegen",
+    Edit: "Bearbeiten",
   },
   Exporter: {
     Model: "Modell",
