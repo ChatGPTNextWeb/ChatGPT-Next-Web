@@ -8,7 +8,12 @@ export function trimTopic(topic: string) {
 
 export async function copyToClipboard(text: string) {
   try {
-    await navigator.clipboard.writeText(text);
+    if (window.__TAURI__) {
+      window.__TAURI__.writeText(text);
+    } else {
+      await navigator.clipboard.writeText(text);
+    }
+
     showToast(Locale.Copy.Success);
   } catch (error) {
     const textArea = document.createElement("textarea");
@@ -40,6 +45,26 @@ export function downloadAs(text: string, filename: string) {
   element.click();
 
   document.body.removeChild(element);
+}
+
+export function readFromFile() {
+  return new Promise<string>((res, rej) => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "application/json";
+
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = (e: any) => {
+        res(e.target.result);
+      };
+      fileReader.onerror = (e) => rej(e);
+      fileReader.readAsText(file);
+    };
+
+    fileInput.click();
+  });
 }
 
 export function isIOS() {
@@ -76,13 +101,6 @@ export function useMobileScreen() {
   const { width } = useWindowSize();
 
   return width <= MOBILE_MAX_WIDTH;
-}
-
-export function isMobileScreen() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-  return window.innerWidth <= MOBILE_MAX_WIDTH;
 }
 
 export function isFirefox() {
@@ -138,15 +156,16 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
   const width = getDomContentWidth(dom);
   measureDom.style.width = width + "px";
-  measureDom.innerText = dom.value.trim().length > 0 ? dom.value : "1";
-
-  const lineWrapCount = Math.max(0, dom.value.split("\n").length - 1);
+  measureDom.innerText = dom.value !== "" ? dom.value : "1";
+  measureDom.style.fontSize = dom.style.fontSize;
+  const endWithEmptyLine = dom.value.endsWith("\n");
   const height = parseFloat(window.getComputedStyle(measureDom).height);
   const singleLineHeight = parseFloat(
     window.getComputedStyle(singleLineDom).height,
   );
 
-  const rows = Math.round(height / singleLineHeight) + lineWrapCount;
+  const rows =
+    Math.round(height / singleLineHeight) + (endWithEmptyLine ? 1 : 0);
 
   return rows;
 }

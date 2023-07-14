@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const tr: LocaleType = {
+const tr: PartialLocaleType = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
@@ -61,31 +61,20 @@ const tr: LocaleType = {
   Settings: {
     Title: "Ayarlar",
     SubTitle: "Tüm Ayarlar",
-    Actions: {
-      ClearAll: "Tüm Verileri Temizle",
-      ResetAll: "Tüm Ayarları Sıfırla",
-      Close: "Kapat",
-      ConfirmResetAll: "Tüm ayarları sıfırlamak istediğinizden emin misiniz?",
-      ConfirmClearAll: "Tüm sohbeti sıfırlamak istediğinizden emin misiniz?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      All: "All Languages",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-      },
+      All: "Tüm Diller",
     },
     Avatar: "Avatar",
     FontSize: {
       Title: "Yazı Boyutu",
       SubTitle: "Sohbet içeriğinin yazı boyutunu ayarlayın",
+    },
+    InjectSystemPrompts: {
+      Title: "Sistem İpucu Ekleyin",
+      SubTitle:
+        "Her istek için ileti listesinin başına simüle edilmiş bir ChatGPT sistem ipucu ekleyin",
     },
     Update: {
       Version: (x: string) => `Sürüm: ${x}`,
@@ -103,8 +92,10 @@ const tr: LocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
     },
     Prompt: {
       Disable: {
@@ -163,10 +154,15 @@ const tr: LocaleType = {
       SubTitle:
         "Girdi belirteçlerinin ve oluşturulan belirteçlerin maksimum uzunluğu",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Varlık Cezası",
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",
+    },
+    FrequencyPenalty: {
+      Title: "Frekans Cezası",
+      SubTitle:
+        "Aynı satırı tekrar etme olasılığını azaltan daha büyük bir değer",
     },
   },
   Store: {
@@ -238,6 +234,12 @@ const tr: LocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Mesajlar",
+    Topic: "Konu",
+    Time: "Zaman",
   },
 };
 

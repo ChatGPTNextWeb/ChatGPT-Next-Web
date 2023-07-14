@@ -7,26 +7,101 @@ import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
+import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { showImageModal } from "./ui-lib";
+
+export function Mermaid(props: { code: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (props.code && ref.current) {
+      mermaid
+        .run({
+          nodes: [ref.current],
+          suppressErrors: true,
+        })
+        .catch((e) => {
+          setHasError(true);
+          console.error("[Mermaid] ", e.message);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.code]);
+
+  function viewSvgInNewWindow() {
+    const svg = ref.current?.querySelector("svg");
+    if (!svg) return;
+    const text = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([text], { type: "image/svg+xml" });
+    console.log(blob);
+    // const url = URL.createObjectURL(blob);
+    // const win = window.open(url);
+    // if (win) {
+    //   win.onload = () => URL.revokeObjectURL(url);
+    // }
+    showImageModal(URL.createObjectURL(blob));
+  }
+
+  if (hasError) {
+    return null;
+  }
+
+  return (
+    <div
+      className="no-dark mermaid"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
+      ref={ref}
+      onClick={() => viewSvgInNewWindow()}
+    >
+      {props.code}
+    </div>
+  );
+}
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const refText = ref.current?.innerText;
+  const [mermaidCode, setMermaidCode] = useState("");
+
+  const renderMermaid = useDebouncedCallback(() => {
+    if (!ref.current) return;
+    const mermaidDom = ref.current.querySelector("code.language-mermaid");
+    if (mermaidDom) {
+      setMermaidCode((mermaidDom as HTMLElement).innerText);
+    }
+  }, 600);
+
+  useEffect(() => {
+    setTimeout(renderMermaid, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refText]);
 
   return (
-    <pre ref={ref}>
-      <span
-        className="copy-code-button"
-        onClick={() => {
-          if (ref.current) {
-            const code = ref.current.innerText;
-            copyToClipboard(code);
-          }
-        }}
-      ></span>
-      {props.children}
-    </pre>
+    <>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
+          }}
+        ></span>
+        {props.children}
+      </pre>
+    </>
   );
 }
 
@@ -66,47 +141,64 @@ export function Markdown(
     content: string;
     loading?: boolean;
     fontSize?: number;
-    parentRef: RefObject<HTMLDivElement>;
+    parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
   const renderedHeight = useRef(0);
+  const renderedWidth = useRef(0);
   const inView = useRef(!!props.defaultShow);
+  const [_, triggerRender] = useState(0);
+  const checkInView = useThrottledCallback(
+    () => {
+      const parent = props.parentRef?.current;
+      const md = mdRef.current;
+      if (parent && md && !props.defaultShow) {
+        const parentBounds = parent.getBoundingClientRect();
+        const twoScreenHeight = Math.max(500, parentBounds.height * 2);
+        const mdBounds = md.getBoundingClientRect();
+        const parentTop = parentBounds.top - twoScreenHeight;
+        const parentBottom = parentBounds.bottom + twoScreenHeight;
+        const isOverlap =
+          Math.max(parentTop, mdBounds.top) <=
+          Math.min(parentBottom, mdBounds.bottom);
+        inView.current = isOverlap;
+        triggerRender(Date.now());
+      }
 
-  const parent = props.parentRef.current;
-  const md = mdRef.current;
+      if (inView.current && md) {
+        const rect = md.getBoundingClientRect();
+        renderedHeight.current = Math.max(renderedHeight.current, rect.height);
+        renderedWidth.current = Math.max(renderedWidth.current, rect.width);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    300,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
 
-  const checkInView = () => {
-    if (parent && md) {
-      const parentBounds = parent.getBoundingClientRect();
-      const twoScreenHeight = Math.max(500, parentBounds.height * 2);
-      const mdBounds = md.getBoundingClientRect();
-      const isInRange = (x: number) =>
-        x <= parentBounds.bottom + twoScreenHeight &&
-        x >= parentBounds.top - twoScreenHeight;
-      inView.current = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
-    }
+  useEffect(() => {
+    props.parentRef?.current?.addEventListener("scroll", checkInView);
+    checkInView();
+    return () =>
+      props.parentRef?.current?.removeEventListener("scroll", checkInView);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (inView.current && md) {
-      renderedHeight.current = Math.max(
-        renderedHeight.current,
-        md.getBoundingClientRect().height,
-      );
-    }
-  };
-
-  checkInView();
+  const getSize = (x: number) => (!inView.current && x > 0 ? x : "auto");
 
   return (
     <div
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
-        height:
-          !inView.current && renderedHeight.current > 0
-            ? renderedHeight.current
-            : "auto",
+        height: getSize(renderedHeight.current),
+        width: getSize(renderedWidth.current),
+        direction: /[\u0600-\u06FF]/.test(props.content) ? "rtl" : "ltr",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
