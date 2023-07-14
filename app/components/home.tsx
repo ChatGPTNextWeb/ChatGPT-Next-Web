@@ -15,6 +15,8 @@ import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
+import { getLang } from "../locales";
+
 import {
   HashRouter as Router,
   Routes,
@@ -25,6 +27,8 @@ import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
+import { api } from "../client/api";
+import { useAccessStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -94,9 +98,14 @@ const useHasHydrated = () => {
 
 const loadAsyncGoogleFont = () => {
   const linkEl = document.createElement("link");
+  const proxyFontUrl = "/google-fonts";
+  const remoteFontUrl = "https://fonts.googleapis.com";
+  const googleFontUrl =
+    getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
   linkEl.rel = "stylesheet";
   linkEl.href =
-    "/google-fonts/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
+    googleFontUrl +
+    "/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
   document.head.appendChild(linkEl);
 };
 
@@ -119,7 +128,7 @@ function Screen() {
           config.tightBorder && !isMobileScreen
             ? styles["tight-container"]
             : styles.container
-        }`
+        } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
       }
     >
       {isAuth ? (
@@ -145,11 +154,25 @@ function Screen() {
   );
 }
 
+export function useLoadData() {
+  const config = useAppConfig();
+
+  useEffect(() => {
+    (async () => {
+      const models = await api.llm.models();
+      config.mergeModels(models);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
 export function Home() {
   useSwitchTheme();
+  useLoadData();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
+    useAccessStore.getState().fetch();
   }, []);
 
   if (!useHasHydrated()) {
