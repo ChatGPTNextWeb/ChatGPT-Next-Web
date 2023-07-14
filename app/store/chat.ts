@@ -623,9 +623,14 @@ export const useChatStore = create<ChatStore>()(
         if (version < 3.1) {
           newState.sessions.forEach((s) => {
             if (
+              // Exclude those already set by user
               !s.mask.modelConfig.hasOwnProperty("enableInjectSystemPrompts")
             ) {
-              s.mask.modelConfig.enableInjectSystemPrompts = true;
+              // Because users may have changed this configuration,
+              // the user's current configuration is used instead of the default
+              const config = useAppConfig.getState();
+              s.mask.modelConfig.enableInjectSystemPrompts =
+                config.modelConfig.enableInjectSystemPrompts;
             }
           });
         }
