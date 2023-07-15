@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ChatGPT Next Web",
+    "productName": "Atomic Assistant",
     "version": "2.8.9"
   },
   "tauri": {
@@ -49,7 +49,7 @@
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "2023, Zhang Yifei All Rights Reserved.",
+      "copyright": "2023, Paul Devey All Rights Reserved.",
       "deb": {
         "depends": []
       },
@@ -61,8 +61,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "ChatGPT Next Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "identifier": "com.pddesigns.atomic.assistant",
+      "longDescription": "Atomic Assistant is a cross-platform ChatGPT client. Get help with the smallest of details.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -71,7 +71,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "ChatGPT Next Web App",
+      "shortDescription": "Chatbot that can wear many masks.",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -98,7 +98,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ChatGPT Next Web",
+        "title": "Atomic Assistant",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
