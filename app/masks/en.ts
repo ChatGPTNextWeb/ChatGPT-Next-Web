@@ -80,7 +80,7 @@ export const EN_MASKS: BuiltinMask[] = [
         date: ""
       }
     ],
-    modelConfig": {
+    modelConfig: {
       model: "gpt-4",
       temperature: 0.5,
       max_tokens: 2000,
@@ -112,7 +112,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-3.5",
+      model: "gpt-3.5-turbo",
       temperature: 0.8,
       max_tokens: 1500,
       presence_penalty: 0,
