@@ -126,7 +126,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "📊",
+    avatar: "1F4CA",
     name: "Excel Expert",
     context: [
       {
@@ -157,7 +157,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "💰",
+    avatar: "1F4B0",
     name: "Accountant",
     context: [
       {
@@ -188,7 +188,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "🎓",
+    avatar: "1F393",
     name: "Professor",
     context: [
       {
@@ -219,7 +219,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "📚",
+    avatar: "1F4DA",
     name: "Storyteller",
     context: [
       {
@@ -250,7 +250,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "🔮",
+    avatar: "1F52E",
     name: "LLM Prompt Generator",
     context: [
       {
