@@ -190,7 +190,7 @@ export class ChatGPTApi implements LLMApi {
         });
       } else {
         //alert("No straming!!!");
-        if (modelConfig.model !== "lang chain") {
+        if (modelConfig.model !== "lang chain(Upload your docs)") {
           //console.log(JSON.stringify(testBody))
 
           try {
@@ -210,12 +210,8 @@ export class ChatGPTApi implements LLMApi {
             console.error("Request error:", error);
           }
         } else {
-          //console.log(JSON.stringify(testBody))
-          //alert("hhhh");
           const history = this.getHistory(messages);
-          //const chatstore = useChatStore();
           const uuid = options.uuid;
-          //alert("hhhhhhh"+uuid);
           const testPath = "http://localhost:3001/api/chat/";
           const testBody = {
             uuid: uuid,
@@ -233,7 +229,6 @@ export class ChatGPTApi implements LLMApi {
           };
 
           try {
-            //alert("hhhhhh");
             const res = await fetch(testPath, testPayload);
             clearTimeout(requestTimeoutId);
 

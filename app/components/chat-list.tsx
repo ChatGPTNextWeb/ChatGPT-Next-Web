@@ -70,7 +70,7 @@ export function ChatItem(props: {
             <>
               <div className={styles["chat-item-title"]}>
                 {props.title}
-                {props.group && "(群聊)"}
+                {props.group && "(Group)"}
               </div>
               {/* 标记群聊 */}
               <div className={styles["chat-item-info"]}>

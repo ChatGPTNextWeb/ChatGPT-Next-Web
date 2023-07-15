@@ -188,7 +188,7 @@ const de: LocaleType = {
     Name: "Plugin",
   },
   Mask: {
-    Name: "Mask",
+    Name: "Agents",
     Page: {
       Title: "Prompt Template",
       SubTitle: (count: number) => `${count} prompt templates`,

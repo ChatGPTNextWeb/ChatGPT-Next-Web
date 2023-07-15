@@ -278,7 +278,7 @@ export function PreviewActions(props: {
 }) {
   const [loading, setLoading] = useState(false);
   const [shouldExport, setShouldExport] = useState(false);
-
+  const [isUploading, setisUploading] = useState(false);
   const onRenderMsgs = (msgs: ChatMessage[]) => {
     setShouldExport(false);
 

@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
-
+import CircleIcon from "../icons/Circle.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -71,6 +71,7 @@ import { Property } from "csstype";
 import Height = Property.Height;
 import ResponseController from "@/app/api/controller/ResponseController";
 import { BUILTIN_MASK_STORE } from "../masks";
+import "./circle.module.scss";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -388,30 +389,30 @@ export function ChatActions(props: {
         <PromptIcon />
       </div>
 
-      <div
-        className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
-      >
-        <MaskIcon />
-      </div>
+      {/*<div*/}
+      {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
+      {/*  onClick={() => {*/}
+      {/*    navigate(Path.Masks);*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <MaskIcon />*/}
+      {/*</div>*/}
 
-      <div
-        className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={() => {
-          chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
-              session.clearContextIndex = -1;
-            } else {
-              session.clearContextIndex = session.messages.length;
-              session.memoryPrompt = ""; // will clear memory
-            }
-          });
-        }}
-      >
-        <BreakIcon />
-      </div>
+      {/*<div*/}
+      {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
+      {/*  onClick={() => {*/}
+      {/*    chatStore.updateCurrentSession((session) => {*/}
+      {/*      if (session.clearContextIndex === session.messages.length) {*/}
+      {/*        session.clearContextIndex = -1;*/}
+      {/*      } else {*/}
+      {/*        session.clearContextIndex = session.messages.length;*/}
+      {/*        session.memoryPrompt = ""; // will clear memory*/}
+      {/*      }*/}
+      {/*    });*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <BreakIcon />*/}
+      {/*</div>*/}
       {state?.fromGroup && (
         <div
           className={`${chatStyle["chat-input-action"]} clickable`}
@@ -761,7 +762,7 @@ export function Chat() {
   useEffect(() => {
     const sessions = chatStore.currentSession();
     const model = sessions.mask.modelConfig.model;
-    if (model === "lang chain") {
+    if (model === "lang chain(Upload your docs)") {
       setisLangchain(true);
     }
   }, []);
@@ -773,6 +774,7 @@ export function Chat() {
   };
 
   async function handlePostFile() {
+    setisUploading(true);
     const session = chatStore.currentSession();
     let uuidValue = session.id.toString();
     let data = new FormData();
@@ -782,6 +784,7 @@ export function Chat() {
     }
     data.append("filename", "This is a PDF");
     const res = await ResponseController.postPDFprompt(data);
+    setisUploading(false);
     if (res.text !== "") {
       alert("It upload successfully!");
     }
@@ -790,7 +793,7 @@ export function Chat() {
   const uuid = session.id.toString();
 
   const [isRunning, setIsRunning] = useState(false);
-
+  const [isUploading, setisUploading] = useState(false);
   function beginSession() {
     setIsRunning((prevIsRunning) => !prevIsRunning);
   }
@@ -850,7 +853,7 @@ export function Chat() {
         const input = "xzw want the agents talk!!!!!!!!!";
 
         AgentsTalk(finalmessage);
-      }, (session.groupSpeed ?? 10) * 1000);
+      }, 10000);
       console.log(session.groupSpeed);
     } else {
       clearInterval(intervalId);
@@ -861,6 +864,10 @@ export function Chat() {
     };
   }, [isRunning]);
 
+  const warn_fun = () => {
+    alert("File uploading, please wait!");
+  };
+
   const isGroup = session.group; //判断是否群聊
   const isRuningGroup = !isGroup || (isGroup && isRunning); //判断是否群聊且已经按了开始按钮
   const isStart = messages.length < 3;
@@ -868,6 +875,8 @@ export function Chat() {
   if (isGroupStart) {
     if (isGroup) messages.splice(2, 1);
   }
+  const isRoating = true;
+
   // console.log("messages",messages);
   return (
     <div className={styles.chat} key={session.id}>
@@ -884,24 +893,24 @@ export function Chat() {
           </div>
         </div>
         <div className="window-actions">
-          {state?.fromGroup && <div>消息间隔：</div>}
-          {state?.fromGroup && (
-            <InputRange
-              title={`${session.groupSpeed ?? 10}秒`}
-              value={session.groupSpeed ?? 1}
-              min="1"
-              max="20"
-              step="1"
-              onChange={(e) =>
-                chatStore.updateSpeed(
-                  (session) =>
-                    (session.groupSpeed = Number.parseInt(
-                      e.currentTarget.value,
-                    )),
-                )
-              }
-            ></InputRange>
-          )}
+          {/*{state?.fromGroup && <div>message interval：</div>}*/}
+          {/*{state?.fromGroup && (*/}
+          {/*  <InputRange*/}
+          {/*    title={`${session.groupSpeed ?? 10}min`}*/}
+          {/*    value={session.groupSpeed ?? 1}*/}
+          {/*    min="1"*/}
+          {/*    max="20"*/}
+          {/*    step="1"*/}
+          {/*    onChange={(e) =>*/}
+          {/*      chatStore.updateSpeed(*/}
+          {/*        (session) =>*/}
+          {/*          (session.groupSpeed = Number.parseInt(*/}
+          {/*            e.currentTarget.value,*/}
+          {/*          )),*/}
+          {/*      )*/}
+          {/*    }*/}
+          {/*  ></InputRange>*/}
+          {/*)}*/}
           <div className={"window-action-button" + " " + styles.mobile}>
             <IconButton
               icon={<ReturnIcon />}
@@ -910,23 +919,32 @@ export function Chat() {
               onClick={() => navigate(Path.Home)}
             />
           </div>
-          {isLangchain && (
-            <div className="window-action-button">
-              <IconButton
-                icon={<UploadFileIcon />}
-                bordered
-                onClick={handleFileUpload}
-              />
-              <input
-                ref={fileInputRef}
-                type="file"
-                id="prompt_file"
-                name="pdf_file"
-                style={{ display: "none" }}
-                onChange={handlePostFile}
-              />
-            </div>
-          )}
+          {isLangchain &&
+            (isUploading ? (
+              <div className="window-action-button">
+                <IconButton
+                  icon={<CircleIcon className="rotate" />}
+                  bordered
+                  onClick={warn_fun}
+                />
+              </div>
+            ) : (
+              <div className="window-action-button">
+                <IconButton
+                  icon={<UploadFileIcon />}
+                  bordered
+                  onClick={handleFileUpload}
+                />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  id="prompt_file"
+                  name="pdf_file"
+                  style={{ display: "none" }}
+                  onChange={handlePostFile}
+                />
+              </div>
+            ))}
           {isLangchain && (
             <div className="window-action-button">
               <IconButton
@@ -939,13 +957,13 @@ export function Chat() {
               />
             </div>
           )}
-          <div className="window-action-button">
-            <IconButton
-              icon={<RenameIcon />}
-              bordered
-              onClick={renameSession}
-            />
-          </div>
+          {/*<div className="window-action-button">*/}
+          {/*  <IconButton*/}
+          {/*    icon={<RenameIcon />}*/}
+          {/*    bordered*/}
+          {/*    onClick={renameSession}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div className="window-action-button">
             <IconButton
               icon={<ExportIcon />}

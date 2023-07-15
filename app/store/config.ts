@@ -52,66 +52,66 @@ export type ModelConfig = ChatConfig["modelConfig"];
 const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
+  // {
+  //   name: "gpt-4",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-0314",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k-0314",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-mobile",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "text-davinci-002-render-sha-mobile",
+  //   available: true,
+  // },
   {
-    name: "gpt-4",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-mobile",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "text-davinci-002-render-sha-mobile",
+    name: "gpt-3.5-turbo(Free talk)",
     available: true,
   },
+  // {
+  //   name: "gpt-3.5-turbo-0301",
+  //   available: true,
+  // },
   {
-    name: "gpt-3.5-turbo",
+    name: "lang chain(Upload your docs)", //lang chain
     available: true,
   },
-  {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-  },
-  {
-    name: "lang chain", //lang chain
-    available: true,
-  },
-  {
-    name: "chatPDF", //chatPDF
-    available: false,
-  },
-  {
-    name: "qwen-v1", // 通义千问
-    available: false,
-  },
-  {
-    name: "ernie", // 文心一言
-    available: false,
-  },
-  {
-    name: "spark", // 讯飞星火
-    available: false,
-  },
-  {
-    name: "llama", // llama
-    available: false,
-  },
-  {
-    name: "chatglm", // chatglm-6b
-    available: false,
-  },
+  // {
+  //   name: "chatPDF", //chatPDF
+  //   available: false,
+  // },
+  // {
+  //   name: "qwen-v1", // 通义千问
+  //   available: false,
+  // },
+  // {
+  //   name: "ernie", // 文心一言
+  //   available: false,
+  // },
+  // {
+  //   name: "spark", // 讯飞星火
+  //   available: false,
+  // },
+  // {
+  //   name: "llama", // llama
+  //   available: false,
+  // },
+  // {
+  //   name: "chatglm", // chatglm-6b
+  //   available: false,
+  // },
 ] as const;
 
 export type ModelType = (typeof ALL_MODELS)[number]["name"];
@@ -132,7 +132,7 @@ export function limitNumber(
 export function limitModel(name: string) {
   return ALL_MODELS.some((m) => m.name === name && m.available)
     ? name
-    : ALL_MODELS[4].name;
+    : ALL_MODELS[0].name;
 }
 
 export const ModalConfigValidator = {

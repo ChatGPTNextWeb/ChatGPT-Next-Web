@@ -24,6 +24,7 @@ const en: RequiredLocaleType = {
       Edit: "Edit",
       Save: "Save",
     },
+    Uploading: "Uploading",
     Rename: "Rename Chat",
     Typing: "Typing…",
     Input: (submitKey: string) => {
@@ -123,8 +124,8 @@ const en: RequiredLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Title: "Agents Splash Screen",
+      SubTitle: "Show a agent splash screen before starting new chat",
     },
     Prompt: {
       Disable: {
@@ -223,7 +224,7 @@ const en: RequiredLocaleType = {
     Name: "Plugin",
   },
   Mask: {
-    Name: "Mask",
+    Name: "Agents",
     Page: {
       Title: "Prompt Template",
       SubTitle: (count: number) => `${count} prompt templates`,

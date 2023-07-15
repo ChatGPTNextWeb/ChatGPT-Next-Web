@@ -3,7 +3,7 @@ import * as React from "react";
 import styles from "./button.module.scss";
 
 export function IconButton(props: {
-  onClick?: () => void;
+  onClick?: (() => void) | ((value: boolean) => void);
   icon?: JSX.Element;
   type?: "primary" | "danger";
   text?: string;
@@ -13,6 +13,16 @@ export function IconButton(props: {
   title?: string;
   disabled?: boolean;
 }) {
+  const handleClick = () => {
+    if (props.onClick) {
+      if (typeof props.onClick === "function") {
+        (props.onClick as () => void)(); // 调用无参函数
+      } else {
+        (props.onClick as (value: boolean) => void)(true); // 调用带布尔参数的函数
+      }
+    }
+  };
+
   return (
     <button
       className={
@@ -21,7 +31,7 @@ export function IconButton(props: {
           props.className ?? ""
         } clickable ${styles[props.type ?? ""]}`
       }
-      onClick={props.onClick}
+      onClick={handleClick}
       title={props.title}
       disabled={props.disabled}
       role="button"

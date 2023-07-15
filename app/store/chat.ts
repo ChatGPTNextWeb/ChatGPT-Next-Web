@@ -372,7 +372,7 @@ export const useChatStore = create<ChatStore>()(
           });
           let isStreaming = true;
           //alert(modelConfig.model);
-          if (modelConfig.model === "lang chain") {
+          if (modelConfig.model === "lang chain(Upload your docs)") {
             isStreaming = false;
           }
           //alert(isStreaming)
@@ -383,7 +383,7 @@ export const useChatStore = create<ChatStore>()(
           //const chat_id = get().globalId
           //alert(chat_id);
           const uuid = chat.id;
-          alert(uuid);
+          //alert(uuid);
 
           api.llm.chat({
             uuid: uuid,
@@ -490,7 +490,7 @@ export const useChatStore = create<ChatStore>()(
           });
           let isStreaming = true;
           //alert(modelConfig.model);
-          if (modelConfig.model === "lang chain") {
+          if (modelConfig.model === "lang chain(Upload your docs)") {
             isStreaming = false;
           }
           //alert(isStreaming)

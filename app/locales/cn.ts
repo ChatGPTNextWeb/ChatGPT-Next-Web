@@ -23,6 +23,7 @@ const cn = {
       Edit: "修改",
       Save: "修改完成",
     },
+    Uploading: "Uploading",
     Rename: "重命名对话",
     Typing: "正在输入…",
     Input: (submitKey: string) => {
@@ -216,7 +217,7 @@ const cn = {
     Name: "插件",
   },
   Group: {
-    Name: "群聊",
+    Name: "Group",
   },
   Mask: {
     Name: "面具",
