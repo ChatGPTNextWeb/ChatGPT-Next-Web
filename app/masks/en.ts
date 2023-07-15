@@ -19,7 +19,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
@@ -50,7 +50,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
@@ -81,7 +81,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
@@ -112,7 +112,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-0613",
       temperature: 0.8,
       max_tokens: 1500,
       presence_penalty: 0,
@@ -126,7 +126,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "📊",
+    avatar: "1F4CA",
     name: "Excel Expert",
     context: [
       {
@@ -143,7 +143,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 100,
       presence_penalty: 0,
@@ -157,7 +157,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "💰",
+    avatar: "1F4B0",
     name: "Accountant",
     context: [
       {
@@ -174,7 +174,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 100,
       presence_penalty: 0,
@@ -188,7 +188,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "🎓",
+    avatar: "1F393",
     name: "Professor",
     context: [
       {
@@ -205,7 +205,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 100,
       presence_penalty: 0,
@@ -219,7 +219,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "📚",
+    avatar: "1F4DA",
     name: "Storyteller",
     context: [
       {
@@ -236,7 +236,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.7,
       max_tokens: 200,
       presence_penalty: 0,
@@ -250,7 +250,7 @@ export const EN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480413
   },
   {
-    avatar: "🔮",
+    avatar: "1F52E",
     name: "LLM Prompt Generator",
     context: [
       {
@@ -267,7 +267,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.6,
       max_tokens: 150,
       presence_penalty: 0,
@@ -298,7 +298,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-0613",
       temperature: 0.7,
       max_tokens: 500,
       presence_penalty: 0,
@@ -341,7 +341,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 1,
       max_tokens: 300,
       presence_penalty: 0,
@@ -372,7 +372,7 @@ export const EN_MASKS: BuiltinMask[] = [
       }
     ],
     modelConfig: {
-      model: "gpt-4",
+      model: "gpt-4-0613",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
