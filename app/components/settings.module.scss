@@ -60,18 +60,13 @@
       .user-prompt-buttons {
         display: flex;
         align-items: center;
+        column-gap: 2px;
 
         .user-prompt-button {
-          height: 100%;
-
-          &:not(:last-child) {
-            margin-right: 5px;
-          }
+          //height: 100%;
+          padding: 7px;
         }
       }
     }
-  }
-
-  .user-prompt-actions {
   }
 }

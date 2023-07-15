@@ -26,11 +26,30 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { showToast } from "./ui-lib";
+import { showConfirm, showToast } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
+
+function useHotKey() {
+  const chatStore = useChatStore();
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey) {
+        if (e.key === "ArrowUp") {
+          chatStore.nextSession(-1);
+        } else if (e.key === "ArrowDown") {
+          chatStore.nextSession(1);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+}
 
 function useDragSideBar() {
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
@@ -86,8 +105,9 @@ export function SideBar(props: { className?: string }) {
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
-
   const config = useAppConfig();
+
+  useHotKey();
 
   return (
     <div
@@ -95,8 +115,10 @@ export function SideBar(props: { className?: string }) {
         shouldNarrow && styles["narrow-sidebar"]
       }`}
     >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+      <div className={styles["sidebar-header"]} data-tauri-drag-region>
+        <div className={styles["sidebar-title"]} data-tauri-drag-region>
+          ChatGPT Next
+        </div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
         </div>
@@ -138,8 +160,8 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={() => {
-                if (confirm(Locale.Home.DeleteChat)) {
+              onClick={async () => {
+                if (await showConfirm(Locale.Home.DeleteChat)) {
                   chatStore.deleteSession(chatStore.currentSessionIndex);
                 }
               }}
