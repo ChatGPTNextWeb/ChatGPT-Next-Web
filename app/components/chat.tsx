@@ -77,7 +77,7 @@ import {
   showToast,
 } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Path, LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
+import { Path, LAST_INPUT_KEY, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -575,13 +575,13 @@ export function ChatActions(props: {
 
       <ChatAction
         onClick={props.showTTSModal}
-        text={Locale.Chat.InputActions.Masks}
+        text={Locale.Chat.InputActions.Settings}
         icon={<MicrophoneIcon />}
       />
-        
+
       <ChatAction
         onClick={toggleAssistantVoice}
-        text={Locale.Chat.InputActions.Masks}
+        text={Locale.Chat.Actions.Speak}
         icon={props.soundOn ? <SoundOnIcon /> : <SoundOffIcon />}
       />
 
@@ -1284,12 +1284,16 @@ export function Chat() {
                                 icon={<CopyIcon />}
                                 onClick={() => copyToClipboard(message.content)}
                               />
-                             <ChatAction
+                              <ChatAction
                                 text={Locale.Chat.Actions.Speak}
                                 icon={<SoundOnIcon />}
-                                onClick={() => 
+                                onClick={() =>
                                   soundOn &&
-                                  speak(message.content, session.ttsConfig?.voice)}
+                                  speak(
+                                    message.content,
+                                    session.ttsConfig?.voice,
+                                  )
+                                }
                               />
                             </>
                           )}
