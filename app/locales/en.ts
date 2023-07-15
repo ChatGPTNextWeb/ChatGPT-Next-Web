@@ -1,7 +1,8 @@
 import { SubmitKey } from "../store/config";
-import { RequiredLocaleType } from "./index";
+import { LocaleType } from "./index";
 
-const en: RequiredLocaleType = {
+// if you are adding a new translation, please use PartialLocaleType instead of LocaleType
+const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
@@ -18,7 +19,7 @@ const en: RequiredLocaleType = {
     ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} messages with ChatGPT`,
+    SubTitle: (count: number) => `${count} messages`,
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
@@ -26,7 +27,19 @@ const en: RequiredLocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      Pin: "Pin",
+      PinToastContent: "Pinned 1 messages to contextual prompts",
+      PinToastAction: "View",
       Delete: "Delete",
+      Edit: "Edit",
+    },
+    Commands: {
+      new: "Start a new chat",
+      newm: "Start a new chat with mask",
+      next: "Next Chat",
+      prev: "Previous Chat",
+      clear: "Clear Context",
+      del: "Delete Chat",
     },
     InputActions: {
       Stop: "Stop",
@@ -48,13 +61,14 @@ const en: RequiredLocaleType = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += ", Shift + Enter to wrap";
       }
-      return inputHints + ", / to search prompts";
+      return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
     Config: {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+    IsContext: "Contextual Prompt",
   },
   Export: {
     Title: "Export Messages",
@@ -74,6 +88,10 @@ const en: RequiredLocaleType = {
     Steps: {
       Select: "Select",
       Preview: "Preview",
+    },
+    Image: {
+      Toast: "Capturing Image...",
+      Modal: "Long press or right click to save image",
     },
   },
   Select: {
@@ -100,12 +118,19 @@ const en: RequiredLocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
-    Actions: {
-      ClearAll: "Clear All Data",
-      ResetAll: "Reset All Settings",
-      Close: "Close",
-      ConfirmResetAll: "Are you sure you want to reset all configurations?",
-      ConfirmClearAll: "Are you sure you want to reset all data?",
+    Danger: {
+      Reset: {
+        Title: "Reset All Settings",
+        SubTitle: "Reset all setting items to default",
+        Action: "Reset",
+        Confirm: "Confirm to reset all settings to default?",
+      },
+      Clear: {
+        Title: "Clear All Data",
+        SubTitle: "Clear all messages and settings",
+        Action: "Clear",
+        Confirm: "Confirm to clear all messages and settings?",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -116,6 +141,15 @@ const en: RequiredLocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
+    InjectSystemPrompts: {
+      Title: "Inject System Prompts",
+      SubTitle: "Inject a global system prompt for every request",
+    },
+    InputTemplate: {
+      Title: "Input Template",
+      SubTitle: "Newest message will be filled to this template",
+    },
+
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Latest version",
@@ -132,8 +166,14 @@ const en: RequiredLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
+      Builtin: {
+        Title: "Hide Builtin Masks",
+        SubTitle: "Hide builtin masks in mask list",
+      },
     },
     Prompt: {
       Disable: {
@@ -185,10 +225,18 @@ const en: RequiredLocaleType = {
       Title: "Endpoint",
       SubTitle: "Custom endpoint must start with http(s)://",
     },
+    CustomModel: {
+      Title: "Custom Models",
+      SubTitle: "Add extra model options, separate by comma",
+    },
     Model: "Model",
     Temperature: {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
+    },
+    TopP: {
+      Title: "Top P",
+      SubTitle: "Do not alter this value together with temperature",
     },
     MaxTokens: {
       Title: "Max Tokens",
@@ -198,6 +246,11 @@ const en: RequiredLocaleType = {
       Title: "Presence Penalty",
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
+    },
+    FrequencyPenalty: {
+      Title: "Frequency Penalty",
+      SubTitle:
+        "A larger value decreasing the likelihood to repeat the same line",
     },
   },
   Store: {
@@ -219,7 +272,7 @@ const en: RequiredLocaleType = {
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
-    Edit: "Contextual and Memory Prompts",
+    Edit: "Current Chat Settings",
     Add: "Add a Prompt",
     Clear: "Context Cleared",
     Revert: "Revert",
@@ -261,6 +314,11 @@ const en: RequiredLocaleType = {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
       },
+      Share: {
+        Title: "Share This Mask",
+        SubTitle: "Generate a link to this mask",
+        Action: "Copy Link",
+      },
     },
   },
   NewChat: {
@@ -279,6 +337,12 @@ const en: RequiredLocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Messages",
+    Topic: "Topic",
+    Time: "Time",
   },
 };
 
