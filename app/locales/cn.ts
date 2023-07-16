@@ -4,13 +4,20 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+  },
+  Auth: {
+    Title: "需要密码",
+    Tips: "管理员开启了密码验证，请在下方填入访问码",
+    Input: "在此处填写访问码",
+    Confirm: "确认",
+    Later: "稍后再说",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `共 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -18,7 +25,32 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
+      Pin: "固定",
+      PinToastContent: "已将 1 条对话固定至预设提示词",
+      PinToastAction: "查看",
       Delete: "删除",
+      Edit: "编辑",
+    },
+    Commands: {
+      new: "新建聊天",
+      newm: "从面具新建聊天",
+      next: "下一个聊天",
+      prev: "上一个聊天",
+      clear: "清除上下文",
+      del: "删除聊天",
+    },
+    InputActions: {
+      Stop: "停止响应",
+      ToBottom: "滚到最新",
+      Theme: {
+        auto: "自动主题",
+        light: "亮色模式",
+        dark: "深色模式",
+      },
+      Prompt: "快捷指令",
+      Masks: "所有面具",
+      Clear: "清除聊天",
+      Settings: "对话设置",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -27,13 +59,14 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全";
+      return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
     Config: {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
+    IsContext: "预设提示词",
   },
   Export: {
     Title: "分享聊天记录",
@@ -53,6 +86,10 @@ const cn = {
     Steps: {
       Select: "选取",
       Preview: "预览",
+    },
+    Image: {
+      Toast: "正在生成截图",
+      Modal: "长按或右键保存图片",
     },
   },
   Select: {
@@ -77,13 +114,21 @@ const cn = {
   },
   Settings: {
     Title: "设置",
-    SubTitle: "设置选项",
-    Actions: {
-      ClearAll: "清除所有数据",
-      ResetAll: "重置所有选项",
-      Close: "关闭",
-      ConfirmResetAll: "确认重置所有配置？",
-      ConfirmClearAll: "确认清除所有数据？",
+    SubTitle: "所有设置选项",
+
+    Danger: {
+      Reset: {
+        Title: "重置所有设置",
+        SubTitle: "重置所有设置项回默认值",
+        Action: "立即重置",
+        Confirm: "确认重置所有设置？",
+      },
+      Clear: {
+        Title: "清除所有数据",
+        SubTitle: "清除所有聊天、设置数据",
+        Action: "立即清除",
+        Confirm: "确认清除所有聊天、设置数据？",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -93,6 +138,14 @@ const cn = {
     FontSize: {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
+    },
+    InjectSystemPrompts: {
+      Title: "注入系统级提示信息",
+      SubTitle: "强制给每次请求的消息列表开头添加一个模拟 ChatGPT 的系统提示",
+    },
+    InputTemplate: {
+      Title: "用户输入预处理",
+      SubTitle: "用户最新的一条消息会填充到此模板",
     },
 
     Update: {
@@ -111,8 +164,14 @@ const cn = {
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Splash: {
+        Title: "面具启动页",
+        SubTitle: "新建聊天时，展示面具启动页",
+      },
+      Builtin: {
+        Title: "隐藏内置面具",
+        SubTitle: "在所有面具列表中隐藏内置面具",
+      },
     },
     Prompt: {
       Disable: {
@@ -160,10 +219,22 @@ const cn = {
       SubTitle: "管理员已开启加密访问",
       Placeholder: "请输入访问密码",
     },
+    Endpoint: {
+      Title: "接口地址",
+      SubTitle: "除默认地址外，必须包含 http(s)://",
+    },
+    CustomModel: {
+      Title: "自定义模型名",
+      SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
+    },
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
+    },
+    TopP: {
+      Title: "核采样 (top_p)",
+      SubTitle: "与随机性类似，但不要和随机性一起更改",
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
@@ -172,6 +243,10 @@ const cn = {
     PresencePenalty: {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
+    },
+    FrequencyPenalty: {
+      Title: "频率惩罚度 (frequency_penalty)",
+      SubTitle: "值越大，越有可能降低重复字词",
     },
   },
   Store: {
@@ -234,6 +309,11 @@ const cn = {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
       },
+      Share: {
+        Title: "分享此面具",
+        SubTitle: "生成此面具的直达链接",
+        Action: "复制链接",
+      },
     },
   },
   NewChat: {
@@ -253,6 +333,12 @@ const cn = {
     Create: "新建",
     Edit: "编辑",
   },
+  Exporter: {
+    Model: "模型",
+    Messages: "消息",
+    Topic: "主题",
+    Time: "时间",
+  },
 };
 
 type DeepPartial<T> = T extends object
@@ -260,7 +346,8 @@ type DeepPartial<T> = T extends object
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
-export type LocaleType = DeepPartial<typeof cn>;
-export type RequiredLocaleType = typeof cn;
+
+export type LocaleType = typeof cn;
+export type PartialLocaleType = DeepPartial<typeof cn>;
 
 export default cn;
