@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const OPENAI_URL = "api.openai.com";
 const DEFAULT_PROTOCOL = "https";
 const PROTOCOL = process.env.PROTOCOL || DEFAULT_PROTOCOL;
-const BASE_URL = process.env.BASE_URL || OPENAI_URL; // ?? 仅在 undefined 时候才转向后者，但是环境变量大家都不会去注释掉变量，因此最好用 ||
+const BASE_URL = process.env.BASE_URL || OPENAI_URL;
 const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
 
 export async function requestOpenai(req: NextRequest) {
