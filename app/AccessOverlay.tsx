@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const AccessOverlay = ({ children }) => {
   const [password, setPassword] = useState("");
   const [accessGranted, setAccessGranted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -18,7 +23,10 @@ const AccessOverlay = ({ children }) => {
     }
   };
 
-  if (accessGranted) {
+  if (!isClient) {
+    // If we're not on the client, don't render anything
+    return null;
+  } else if (accessGranted) {
     return children;
   } else {
     return (
