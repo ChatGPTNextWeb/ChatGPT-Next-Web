@@ -30,12 +30,20 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   }
 })();
 
+// export const getServerSideConfig = () => {
+//   if (typeof process === "undefined") {
+//     throw Error(
+//       "[Server Config] you are importing a nodejs-only module outside of nodejs",
+//     );
+//   }
+
 export const getServerSideConfig = () => {
   if (typeof process === "undefined") {
     throw Error(
-      "[Server Config] you are importing a nodejs-only module outside of nodejs",
+      "[Server Config] you are importing a nodejs-only module outside of nodejs"
     );
   }
+};
 const apiKeys=(process.env.OPENAI_API_KEY ?? ").split(',')
 const apiKey=apiKeys.at(Math.floor(Math.random()* apiKeys.length))??"
   return {
