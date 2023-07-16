@@ -1,11 +1,31 @@
+import dynamic from 'next/dynamic';
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
-import AccessOverlay from './AccessOverlay.client';
+
+// Dynamically import AccessOverlay component
+const AccessOverlay = dynamic(
+  () => import('./AccessOverlay'),
+  { ssr: false }  // This will make the component only render on client side
+);
 
 export const metadata = {
-  // existing metadata...
+  title: "ChatGPT Next Web",
+  description: "Your personal ChatGPT Chat Bot.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+  ],
+  appleWebApp: {
+    title: "ChatGPT Next Web",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({
@@ -16,7 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* existing head elements */}
+        <meta name="config" content={JSON.stringify(getClientConfig())} />
+        <link rel="manifest" href="/site.webmanifest"></link>
+        <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
         <AccessOverlay>{children}</AccessOverlay>
