@@ -589,7 +589,7 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: StoreKey.Chat,
-      version: 3,
+      version: 3.1,
       migrate(persistedState, version) {
         const state = persistedState as any;
         const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
@@ -614,6 +614,23 @@ export const useChatStore = create<ChatStore>()(
           newState.sessions.forEach((s) => {
             s.id = nanoid();
             s.messages.forEach((m) => (m.id = nanoid()));
+          });
+        }
+
+        // Enable `enableInjectSystemPrompts` attribute for old sessions.
+        // Resolve issue of old sessions not automatically enabling.
+        if (version < 3.1) {
+          newState.sessions.forEach((s) => {
+            if (
+              // Exclude those already set by user
+              !s.mask.modelConfig.hasOwnProperty("enableInjectSystemPrompts")
+            ) {
+              // Because users may have changed this configuration,
+              // the user's current configuration is used instead of the default
+              const config = useAppConfig.getState();
+              s.mask.modelConfig.enableInjectSystemPrompts =
+                config.modelConfig.enableInjectSystemPrompts;
+            }
           });
         }
 
