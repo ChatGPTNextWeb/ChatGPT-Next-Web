@@ -2,7 +2,9 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
-import AccessOverlay from './AccessOverlay';
+import dynamic from 'next/dynamic';
+
+const AccessOverlay = dynamic(() => import('./AccessOverlay.client'), { ssr: false });
 
 export const metadata = {
   title: "ChatGPT Next Web",
@@ -40,4 +42,3 @@ export default function RootLayout({
     </html>
   );
 }
-
