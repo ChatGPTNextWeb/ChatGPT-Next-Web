@@ -1,6 +1,5 @@
 {
   "name": "chatgpt-next-web",
-  "private": false,
   "license": "mit",
   "scripts": {
     "dev": "next dev",
@@ -16,6 +15,7 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.21.15",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.3.0",
     "@svgr/webpack": "^6.5.1",
