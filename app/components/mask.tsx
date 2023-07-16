@@ -11,6 +11,7 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
+import DragIcon from "../icons/drag.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import {
@@ -214,7 +215,7 @@ function ContextPromptItem(props: {
   const [focusingInput, setFocusingInput] = useState(false);
 
   return (
-    <Draggable draggableId={props.prompt.id} index={props.index}>
+    <Draggable draggableId={props.prompt.id.toString()} index={props.index}>
       {(provided) => (
         <div
           className={chatStyle["context-prompt-row"]}
@@ -223,22 +224,27 @@ function ContextPromptItem(props: {
           {...provided.dragHandleProps}
         >
           {!focusingInput && (
-            <Select
-              value={props.prompt.role}
-              className={chatStyle["context-role"]}
-              onChange={(e) =>
-                props.update({
-                  ...props.prompt,
-                  role: e.target.value as any,
-                })
-              }
-            >
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </Select>
+            <>
+              <div className={chatStyle["context-drag"]}>
+                <DragIcon />
+              </div>
+              <Select
+                value={props.prompt.role}
+                className={chatStyle["context-role"]}
+                onChange={(e) =>
+                  props.update({
+                    ...props.prompt,
+                    role: e.target.value as any,
+                  })
+                }
+              >
+                {ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </Select>
+            </>
           )}
           <Input
             value={props.prompt.content}
