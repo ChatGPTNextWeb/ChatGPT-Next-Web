@@ -1,14 +1,8 @@
-import dynamic from 'next/dynamic';
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
-
-// Dynamically import AccessOverlay component
-const AccessOverlay = dynamic(
-  () => import('./AccessOverlay'),
-  { ssr: false }  // This will make the component only render on client side
-);
+import AccessOverlay from './AccessOverlay';
 
 export const metadata = {
   title: "ChatGPT Next Web",
