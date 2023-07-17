@@ -29,9 +29,9 @@
 
 ## LICENSE
 
-   This repo originated from the awesome work by Yidadaa in his [repo](https://github.com/Yidadaa/ChatGPT-Next-Web). And we tried to make it better in every way we can with our limited budget. Thus, for the components and parts that are still used by the source repo have the following licence that is same as the source repo:
+   This repo originated from the awesome work by Yidadaa in his [repo](https://github.com/Yidadaa/ChatGPT-Next-Web). And we tried to make it better in every way we can with our limited budget. Thus, for the components and parts that are still used from the source repo have the following license that is the same as the source repo:
    
 [Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)
    
    
-   For everything else our [Terms of Use](https://cognitiev.com/#terms) will be final and binding for all parties.
+   For everything else that we added, changed, or improved from the parent repository is our proprietary, and our [Terms of Use](https://cognitiev.com/#terms will be final and binding for all parties. In case of any doubt please contact us at support@cognitiev.com 🧠
