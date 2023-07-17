@@ -50,7 +50,7 @@
     "@types/spark-md5": "^3.0.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.44.0",
-    "eslint-config-next": "13.2.3",
+    "eslint-config-next": "13.4.10",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
