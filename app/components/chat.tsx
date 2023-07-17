@@ -71,7 +71,7 @@ import { Property } from "csstype";
 import Height = Property.Height;
 import ResponseController from "@/app/api/controller/ResponseController";
 import { BUILTIN_MASK_STORE } from "../masks";
-import "./circle.module.scss";
+import "./circle.css";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
