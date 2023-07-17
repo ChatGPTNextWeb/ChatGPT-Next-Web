@@ -215,7 +215,7 @@ function ContextPromptItem(props: {
   const [focusingInput, setFocusingInput] = useState(false);
 
   return (
-    <Draggable draggableId={props.prompt.id.toString()} index={props.index}>
+    <Draggable draggableId={props.prompt.id || props.index.toString()} index={props.index}>
       {(provided) => (
         <div
           className={chatStyle["context-prompt-row"]}
