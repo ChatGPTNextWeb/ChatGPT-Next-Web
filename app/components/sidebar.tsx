@@ -10,6 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
 
@@ -198,7 +199,9 @@ export function SideBar(props: { className?: string }) {
       <div
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}
-      ></div>
+      >
+        <DragIcon />
+      </div>
     </div>
   );
 }
