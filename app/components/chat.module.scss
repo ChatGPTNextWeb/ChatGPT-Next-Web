@@ -101,6 +101,19 @@
     width: 100%;
     margin-bottom: 10px;
 
+    &:hover {
+      .context-drag {
+        opacity: 1;
+      }
+    }
+
+    .context-drag {
+      display: flex;
+      align-items: center;
+      opacity: 0.5;
+      transition: all ease 0.3s;
+    }
+
     .context-role {
       margin-right: 10px;
     }
