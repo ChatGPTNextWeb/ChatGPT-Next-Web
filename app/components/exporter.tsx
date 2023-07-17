@@ -8,6 +8,7 @@ import {
   Modal,
   Select,
   showImageModal,
+  showModal,
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
@@ -287,7 +288,30 @@ export function PreviewActions(props: {
       .share(msgs)
       .then((res) => {
         if (!res) return;
-        copyToClipboard(res);
+        showModal({
+          title: Locale.Export.Share,
+          children: [
+            <input
+              type="text"
+              value={res}
+              key="input"
+              style={{
+                width: "100%",
+                maxWidth: "unset",
+              }}
+              readOnly
+              onClick={(e) => e.currentTarget.select()}
+            ></input>,
+          ],
+          actions: [
+            <IconButton
+              icon={<CopyIcon />}
+              text={Locale.Chat.Actions.Copy}
+              key="copy"
+              onClick={() => copyToClipboard(res)}
+            />,
+          ],
+        });
         setTimeout(() => {
           window.open(res, "_blank");
         }, 800);
