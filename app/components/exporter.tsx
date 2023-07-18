@@ -8,6 +8,7 @@ import {
   Modal,
   Select,
   showImageModal,
+  showModal,
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
@@ -244,11 +245,11 @@ export function RenderExport(props: {
     }
 
     const renderMsgs = messages.map((v, i) => {
-      const [_, role] = v.id.split(":");
+      const [role, _] = v.id.split(":");
       return {
         id: i.toString(),
         role: role as any,
-        content: v.innerHTML,
+        content: role === "user" ? v.textContent ?? "" : v.innerHTML,
         date: "",
       };
     });
@@ -287,7 +288,30 @@ export function PreviewActions(props: {
       .share(msgs)
       .then((res) => {
         if (!res) return;
-        copyToClipboard(res);
+        showModal({
+          title: Locale.Export.Share,
+          children: [
+            <input
+              type="text"
+              value={res}
+              key="input"
+              style={{
+                width: "100%",
+                maxWidth: "unset",
+              }}
+              readOnly
+              onClick={(e) => e.currentTarget.select()}
+            ></input>,
+          ],
+          actions: [
+            <IconButton
+              icon={<CopyIcon />}
+              text={Locale.Chat.Actions.Copy}
+              key="copy"
+              onClick={() => copyToClipboard(res)}
+            />,
+          ],
+        });
         setTimeout(() => {
           window.open(res, "_blank");
         }, 800);
