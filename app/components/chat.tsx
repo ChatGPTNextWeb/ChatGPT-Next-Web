@@ -375,7 +375,7 @@ export function ChatActions(props: {
         </div>
       )}
       
-       <ChatAction
+       <ChatActions
         onClick={() => {
           chatStore.updateWebSearchStat();
         }}
