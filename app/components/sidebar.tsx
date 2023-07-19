@@ -11,6 +11,7 @@ import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
+import MyImage from "../icons/suey.png";
 
 import Locale from "../locales";
 
@@ -119,6 +120,9 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
           AI个人助理
+          <div className={styles["image-container"]}>
+            <img src={MyImage} alt="My Image" width="50" height="50" />
+          </div>
         </div>
         <div className={styles["sidebar-sub-title"]}>
           有任何问题请及时联系 @一果
