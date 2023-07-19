@@ -39,7 +39,7 @@ export const getServerSideConfig = () => {
 
   debugger;
   return {
-    apiKey: "sk-U6QANTMKS2YfkXyF20B6Ee3b5f594f258751Aa644311BdE2",
+    apiKey: "sk-OHzDMzARj0H1izsn0b3cB305076e49D580Fb55Ef7249380d",
     code: "1999",
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
