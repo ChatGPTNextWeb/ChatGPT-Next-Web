@@ -5,7 +5,7 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/suey.png";
+import SueyGptIcon from './path/to/SueyGptIcon';
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
@@ -124,7 +124,7 @@ export function SideBar(props: { className?: string }) {
           有任何问题请及时联系 @一果
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          <SueyGptIcon imagePath="../icons/suey.png" />
         </div>
       </div>
 
