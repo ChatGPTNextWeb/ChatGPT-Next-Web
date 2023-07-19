@@ -13,6 +13,7 @@ const en: RequiredLocaleType = {
   Chat: {
     SubTitle: (count: number) => `${count} messages with ChatGPT`,
     Actions: {
+      Play: "Play",
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
       Export: "Export All Messages as Markdown",

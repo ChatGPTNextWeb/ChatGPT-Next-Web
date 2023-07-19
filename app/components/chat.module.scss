@@ -2,7 +2,15 @@
 
 .chat-input-actions {
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
+
+  .left-icons,
+  .right-icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
 
   .chat-input-action {
     display: inline-flex;

@@ -25,7 +25,10 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import AddIcon from "../icons/add.svg";
+import MicoIcon from "../icons/mico.svg";
 import { InputRange } from "./input-range";
+import BrowserSpeechToText from "./BrowserSpeechToText";
+
 import {
   ChatMessage,
   SubmitKey,
@@ -71,7 +74,7 @@ import { Property } from "csstype";
 import Height = Property.Height;
 import ResponseController from "@/app/api/controller/ResponseController";
 import { BUILTIN_MASK_STORE } from "../masks";
-import "./circle.module.scss";
+import "./circle.scss";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -319,10 +322,15 @@ export function ChatActions(props: {
   showPromptHints: () => void;
   hitBottom: boolean;
   onBeginSession: () => void;
+  isListening: boolean;
+  setisListening: (
+    update: ((prevIsListening: boolean) => boolean) | boolean,
+  ) => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
+  const [isRecording, setisRecording] = useState(false);
 
   // switch themes
   const theme = config.theme;
@@ -334,6 +342,15 @@ export function ChatActions(props: {
     config.update((config) => (config.theme = nextTheme));
   }
 
+  const startRecording = () => {
+    setisRecording(true);
+    props.setisListening(true);
+  };
+  const stopRecording = () => {
+    props.setisListening(false);
+    setisRecording(false);
+  };
+
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
@@ -344,94 +361,116 @@ export function ChatActions(props: {
   ]);
   return (
     <div className={chatStyle["chat-input-actions"]}>
-      {couldStop && (
-        <div
-          className={`${chatStyle["chat-input-action"]} clickable`}
-          onClick={stopAll}
-        >
-          <StopIcon />
-        </div>
-      )}
-      {!props.hitBottom && (
-        <div
-          className={`${chatStyle["chat-input-action"]} clickable`}
-          onClick={props.scrollToBottom}
-        >
-          <BottomIcon />
-        </div>
-      )}
-      {props.hitBottom && (
-        <div
-          className={`${chatStyle["chat-input-action"]} clickable`}
-          onClick={props.showPromptModal}
-        >
-          <SettingsIcon />
-        </div>
-      )}
+      <div className={chatStyle["left-icons"]}>
+        {couldStop && (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={stopAll}
+          >
+            <StopIcon />
+          </div>
+        )}
+        {!props.hitBottom && (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={props.scrollToBottom}
+          >
+            <BottomIcon />
+          </div>
+        )}
+        {props.hitBottom && (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={props.showPromptModal}
+          >
+            <SettingsIcon />
+          </div>
+        )}
 
-      <div
-        className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={nextTheme}
-      >
-        {theme === Theme.Auto ? (
-          <AutoIcon />
-        ) : theme === Theme.Light ? (
-          <LightIcon />
-        ) : theme === Theme.Dark ? (
-          <DarkIcon />
-        ) : null}
+        <div
+          className={`${chatStyle["chat-input-action"]} clickable`}
+          onClick={nextTheme}
+        >
+          {theme === Theme.Auto ? (
+            <AutoIcon />
+          ) : theme === Theme.Light ? (
+            <LightIcon />
+          ) : theme === Theme.Dark ? (
+            <DarkIcon />
+          ) : null}
+        </div>
+
+        <div
+          className={`${chatStyle["chat-input-action"]} clickable`}
+          onClick={props.showPromptHints}
+        >
+          <PromptIcon />
+        </div>
+
+        {/*<div*/}
+        {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
+        {/*  onClick={() => {*/}
+        {/*    navigate(Path.Masks);*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <MaskIcon />*/}
+        {/*</div>*/}
+
+        {/*<div*/}
+        {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
+        {/*  onClick={() => {*/}
+        {/*    chatStore.updateCurrentSession((session) => {*/}
+        {/*      if (session.clearContextIndex === session.messages.length) {*/}
+        {/*        session.clearContextIndex = -1;*/}
+        {/*      } else {*/}
+        {/*        session.clearContextIndex = session.messages.length;*/}
+        {/*        session.memoryPrompt = ""; // will clear memory*/}
+        {/*      }*/}
+        {/*    });*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <BreakIcon />*/}
+        {/*</div>*/}
+        {state?.fromGroup && (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={() => {
+              navigate(Path.Masks, { state: { fromgroup: true } });
+            }}
+          >
+            <AddIcon />
+          </div>
+        )}
+        {state?.fromGroup && (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={props.onBeginSession}
+            style={{ width: "20px", height: "20px" }}
+          >
+            s
+            <StartIcon />
+          </div>
+        )}
       </div>
-
-      <div
-        className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={props.showPromptHints}
-      >
-        <PromptIcon />
+      <div className={`${chatStyle["right-icon"]}`}>
+        {isRecording ? (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={stopRecording}
+            style={{ width: "16px", height: "16px" }}
+          >
+            <StopIcon />
+          </div>
+        ) : (
+          <div
+            className={`${chatStyle["chat-input-action"]} clickable`}
+            onClick={startRecording}
+            style={{ width: "16px", height: "16px" }}
+          >
+            <MicoIcon />
+          </div>
+        )}
       </div>
-
-      {/*<div*/}
-      {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
-      {/*  onClick={() => {*/}
-      {/*    navigate(Path.Masks);*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <MaskIcon />*/}
-      {/*</div>*/}
-
-      {/*<div*/}
-      {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
-      {/*  onClick={() => {*/}
-      {/*    chatStore.updateCurrentSession((session) => {*/}
-      {/*      if (session.clearContextIndex === session.messages.length) {*/}
-      {/*        session.clearContextIndex = -1;*/}
-      {/*      } else {*/}
-      {/*        session.clearContextIndex = session.messages.length;*/}
-      {/*        session.memoryPrompt = ""; // will clear memory*/}
-      {/*      }*/}
-      {/*    });*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <BreakIcon />*/}
-      {/*</div>*/}
-      {state?.fromGroup && (
-        <div
-          className={`${chatStyle["chat-input-action"]} clickable`}
-          onClick={() => {
-            navigate(Path.Masks, { state: { fromgroup: true } });
-          }}
-        >
-          <AddIcon />
-        </div>
-      )}
-      {state?.fromGroup && (
-        <div
-          className={`${chatStyle["chat-input-action"]} clickable`}
-          onClick={props.onBeginSession}
-          style={{ width: "20px", height: "20px" }}
-        >
-          <StartIcon />
-        </div>
-      )}
     </div>
   );
 }
@@ -792,6 +831,8 @@ export function Chat() {
   function fileCount() {}
   const uuid = session.id.toString();
 
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [isUploading, setisUploading] = useState(false);
   function beginSession() {
@@ -1035,14 +1076,31 @@ export function Chat() {
             setisEditing(true);
             setSelectedMessageId(message.id ?? null);
           };
+
+          const playContent = (content: string) => {
+            stopSynthesis();
+
+            const synth = window.speechSynthesis;
+            const utterThis = new SpeechSynthesisUtterance(message.content);
+
+            synth.speak(utterThis);
+          };
+
+          const stopSynthesis = () => {
+            if (window.speechSynthesis) {
+              window.speechSynthesis.cancel();
+            } else {
+              console.error(
+                "Speech synthesis is not supported in this browser.",
+              );
+            }
+          };
+
           const saveContent = () => {
             message.content = editingContent;
             setisEditing(false);
           };
 
-          // console.log("avatar",session.maskId[index]);
-          // console.log("maskstore",maskStore.get(session.maskId[index]));
-          // console.log("BUILTIN",BUILTIN_MASK_STORE.get(session.maskId[index]));
           return (
             <>
               <div
@@ -1103,12 +1161,22 @@ export function Chat() {
                                 {Locale.Chat.Actions.Save}
                               </div>
                             ) : (
-                              <div
-                                className={styles["chat-message-top-action"]}
-                                onClick={() => copyToClipboard(message.content)}
-                              >
-                                {Locale.Chat.Actions.Copy}
-                              </div>
+                              <>
+                                <div
+                                  className={styles["chat-message-top-action"]}
+                                  onClick={() =>
+                                    copyToClipboard(message.content)
+                                  }
+                                >
+                                  {Locale.Chat.Actions.Copy}
+                                </div>
+                                <div
+                                  className={styles["chat-message-top-action"]}
+                                  onClick={() => playContent("徐中伟好帅")}
+                                >
+                                  {Locale.Chat.Actions.Play}
+                                </div>
+                              </>
                             )}
                           </>
                         )}
@@ -1166,7 +1234,13 @@ export function Chat() {
 
       <div className={styles["chat-input-panel"]}>
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
-
+        <BrowserSpeechToText
+          isListening={isListening}
+          language={"English"}
+          Transcript={userInput}
+          setIsListening={setIsListening}
+          setTranscript={setUserInput}
+        />
         <ChatActions
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
@@ -1183,6 +1257,8 @@ export function Chat() {
             onSearch("");
           }}
           onBeginSession={beginSession}
+          isListening={isListening}
+          setisListening={setIsListening}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
