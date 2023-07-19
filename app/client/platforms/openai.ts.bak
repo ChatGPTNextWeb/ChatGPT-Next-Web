@@ -236,14 +236,4 @@ export class ChatGPTApi implements LLMApi {
       total: total.hard_limit_usd,
     } as LLMUsage;
   }
-  
-  
-  async websearch(query: string) {
-    try {
-      const results = await this.searxApi.searxSearch(query);
-      return results;
-    } catch (error) {
-      return "??????????,?????";
-    }
-  }
 }

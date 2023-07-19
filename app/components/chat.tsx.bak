@@ -548,10 +548,7 @@ export function Chat() {
   const doSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return;
     setIsLoading(true);
-    const webresults = await chatStore.onWebsearch(userInput);
-    chatStore
-      .onUserInput(webSearch ? `${webresults}:${userInput}` : userInput)
-      .then(() => setIsLoading(false));
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);

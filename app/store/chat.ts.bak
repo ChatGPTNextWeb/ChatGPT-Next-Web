@@ -332,17 +332,6 @@ export const useChatStore = create<ChatStore>()(
           },
         });
       },
-      
-      onWebsearch: async (content: string) => {
-        try {
-          const results = await api.llm.websearch(content);
-          return results;
-          // ?????????,????????
-        } catch (error) {
-          return "??????????,?????";
-        }
-      },
-
 
       getMemoryPrompt() {
         const session = get().currentSession();
