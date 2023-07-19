@@ -123,9 +123,6 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-sub-title"]}>
           有任何问题请及时联系 @一果
         </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          <SueyGptIcon imagePath="../icons/suey.png" />
-        </div>
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
