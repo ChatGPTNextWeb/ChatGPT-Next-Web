@@ -121,7 +121,7 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
           AI个人助理
           <div className={styles["image-container"]}>
-            <img src={MyImage} alt="My Image" width="50" height="50" />
+            <img src={MyImage.src} alt="My Image" width="50" height="50" />
           </div>
         </div>
         <div className={styles["sidebar-sub-title"]}>
