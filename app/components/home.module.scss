@@ -21,6 +21,14 @@
   @include container();
 }
 
+.image-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* 使图片与 SideBar 的右边保持固定的距离 */
+  margin-right: 16px; /* 调整图片与 sidebar-sub-title 的间距 */
+  height: 100%; /* 与 sidebar-sub-title 保持相对合适的高度 */
+}
+
 @media only screen and (min-width: 600px) {
   .tight-container {
     --window-width: 100vw;
