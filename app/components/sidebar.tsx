@@ -11,8 +11,7 @@ import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
-import MyImage from "../icons/suey.png";
-
+import MYIMG from "../icons/suey.png";
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
@@ -125,7 +124,7 @@ export function SideBar(props: { className?: string }) {
           有任何问题请及时联系 @一果
         </div>
         <div className={styles["image-container"]}>
-           <img src={MyImage.src} alt="My Image" width="50" height="50" />
+           <img src={MYIMG.src} alt="My Image" width="50" height="50" />
         </div>
       </div>
 
