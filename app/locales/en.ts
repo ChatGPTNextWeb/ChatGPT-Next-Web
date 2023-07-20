@@ -20,6 +20,12 @@ const en: LocaleType = {
   },
   Chat: {
     SubTitle: (count: number) => `${count} messages`,
+    EditMessage: {
+      Topic: {
+        Title: "Topic",
+        SubTitle: "Change the current topic",
+      },
+    },
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
