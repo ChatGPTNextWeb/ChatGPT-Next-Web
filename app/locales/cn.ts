@@ -251,7 +251,9 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: `**Yuelink ChatGPT** 免费3.5版本。  
+ 请勿恶意消耗API额度。  
+ 如果有可能可以在[设置](/#/settings)页填入你自己的 OpenAI API Key。`,
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
