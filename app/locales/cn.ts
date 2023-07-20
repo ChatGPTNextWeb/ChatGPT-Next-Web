@@ -326,6 +326,11 @@ const cn = {
     More: "查看全部",
   },
 
+  URLCommand: {
+    Code: "检测到链接中已经包含访问码，是否自动填入？",
+    Settings: "检测到链接中包含了预制设置，是否自动填入？",
+  },
+
   UI: {
     Confirm: "确认",
     Cancel: "取消",

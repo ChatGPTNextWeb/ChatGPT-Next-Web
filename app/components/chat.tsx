@@ -882,6 +882,41 @@ export function Chat() {
     submit: (text) => {
       doSubmit(text);
     },
+    code: (text) => {
+      console.log("[Command] got code from url: ", text);
+      showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
+        if (res) {
+          accessStore.updateCode(text);
+        }
+      });
+    },
+    settings: (text) => {
+      try {
+        const payload = JSON.parse(text) as {
+          key?: string;
+          url?: string;
+        };
+
+        console.log("[Command] got settings from url: ", payload);
+
+        if (payload.key || payload.url) {
+          showConfirm(
+            Locale.URLCommand.Settings +
+              `\n${JSON.stringify(payload, null, 4)}`,
+          ).then((res) => {
+            if (!res) return;
+            if (payload.key) {
+              accessStore.updateToken(payload.key);
+            }
+            if (payload.url) {
+              accessStore.updateOpenAiUrl(payload.url);
+            }
+          });
+        }
+      } catch {
+        console.error("[Command] failed to get settings from url: ", text);
+      }
+    },
   });
 
   return (
