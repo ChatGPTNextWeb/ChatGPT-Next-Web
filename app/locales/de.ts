@@ -5,7 +5,7 @@ const de: PartialLocaleType = {
   WIP: "In Bearbeitung...",
   Error: {
     Unauthorized:
-      "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der Einstellungsseite ein.",
+      "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der [Einstellungsseite](/#/settings) ein.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} Nachrichten`,
@@ -20,6 +20,7 @@ const de: PartialLocaleType = {
       Stop: "Stop",
       Retry: "Wiederholen",
       Delete: "Delete",
+      Speak: "Sprechen",
     },
     Rename: "Chat umbenennen",
     Typing: "Tippen...",
@@ -158,6 +159,7 @@ const de: PartialLocaleType = {
       SubTitle:
         "Ein größerer Wert erhöht die Wahrscheinlichkeit, dass über neue Themen gesprochen wird",
     },
+    Voice: "Stimme",
     FrequencyPenalty: {
       Title: "Frequency Penalty", // HäufigkeitStrafe
       SubTitle:
@@ -188,6 +190,9 @@ const de: PartialLocaleType = {
     Toast: (x: any) => `Mit ${x} Kontext-Prompts`,
     Edit: "Kontext- und Gedächtnis-Prompts",
     Add: "Hinzufügen",
+  },
+  Voice: {
+    Edit: "Stimmeinstellungen",
   },
   Plugin: {
     Name: "Plugin",

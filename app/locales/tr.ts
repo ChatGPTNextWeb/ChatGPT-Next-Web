@@ -5,7 +5,7 @@ const tr: PartialLocaleType = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
-      "Yetkisiz erişim, lütfen erişim kodunu ayarlar sayfasından giriniz.",
+      "Yetkisiz erişim, lütfen erişim kodunu [ayarlar sayfasından](/#/settings) giriniz.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mesaj`,
@@ -20,6 +20,7 @@ const tr: PartialLocaleType = {
       Stop: "Durdur",
       Retry: "Tekrar Dene",
       Delete: "Delete",
+      Speak: "Konuş",
     },
     Rename: "Sohbeti Yeniden Adlandır",
     Typing: "Yazıyor…",
@@ -159,6 +160,7 @@ const tr: PartialLocaleType = {
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",
     },
+    Voice: "Ses",
     FrequencyPenalty: {
       Title: "Frekans Cezası",
       SubTitle:
@@ -187,6 +189,9 @@ const tr: PartialLocaleType = {
     Toast: (x: any) => `${x} bağlamsal bellek komutu`,
     Edit: "Bağlamsal ve Bellek Komutları",
     Add: "Yeni Ekle",
+  },
+  Voice: {
+    Edit: "Ses Tercihi",
   },
   Plugin: {
     Name: "Plugin",

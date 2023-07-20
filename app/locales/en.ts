@@ -31,6 +31,7 @@ const en: LocaleType = {
       PinToastContent: "Pinned 1 messages to contextual prompts",
       PinToastAction: "View",
       Delete: "Delete",
+      Speak: "Speak",
       Edit: "Edit",
     },
     Commands: {
@@ -247,6 +248,7 @@ const en: LocaleType = {
       SubTitle:
         "A larger value increases the likelihood to talk about new topics",
     },
+    Voice: "Voice",
     FrequencyPenalty: {
       Title: "Frequency Penalty",
       SubTitle:
@@ -276,6 +278,9 @@ const en: LocaleType = {
     Add: "Add a Prompt",
     Clear: "Context Cleared",
     Revert: "Revert",
+  },
+  Voice: {
+    Edit: "Voice Preference",
   },
   Plugin: {
     Name: "Plugin",

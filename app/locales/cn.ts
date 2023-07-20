@@ -29,6 +29,7 @@ const cn = {
       PinToastContent: "已将 1 条对话固定至预设提示词",
       PinToastAction: "查看",
       Delete: "删除",
+      Speak: "AI语音",
       Edit: "编辑",
     },
     Commands: {
@@ -244,6 +245,7 @@ const cn = {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
     },
+    Voice: "语音类型",
     FrequencyPenalty: {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
@@ -271,6 +273,9 @@ const cn = {
     Add: "新增预设对话",
     Clear: "上下文已清除",
     Revert: "恢复上下文",
+  },
+  Voice: {
+    Edit: "语音设置",
   },
   Plugin: {
     Name: "插件",

@@ -5,7 +5,7 @@ const it: PartialLocaleType = {
   WIP: "Work in progress...",
   Error: {
     Unauthorized:
-      "Accesso non autorizzato, inserire il codice di accesso nella pagina delle impostazioni.",
+      "Accesso non autorizzato, inserire il codice di accesso nella [pagina delle impostazioni](/#/settings).",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messaggi`,
@@ -20,6 +20,7 @@ const it: PartialLocaleType = {
       Stop: "Stop",
       Retry: "Riprova",
       Delete: "Delete",
+      Speak: "Parlare",
     },
     Rename: "Rinomina Chat",
     Typing: "Typing…",
@@ -158,6 +159,7 @@ const it: PartialLocaleType = {
       SubTitle:
         "Un valore maggiore aumenta la probabilità di parlare di nuovi argomenti",
     },
+    Voice: "La voce",
     FrequencyPenalty: {
       Title: "Penalità di frequenza",
       SubTitle:
@@ -187,6 +189,9 @@ const it: PartialLocaleType = {
     Toast: (x: any) => `Con ${x} prompts contestuali`,
     Edit: "Prompt contestuali e di memoria",
     Add: "Aggiungi altro",
+  },
+  Voice: {
+    Edit: "Preferenza vocale",
   },
   Plugin: {
     Name: "Plugin",

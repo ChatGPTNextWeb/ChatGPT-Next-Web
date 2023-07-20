@@ -31,6 +31,9 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import MicrophoneIcon from "../icons/microphone.svg";
+import SoundOnIcon from "../icons/sound-on.svg";
+import SoundOffIcon from "../icons/sound-off.svg";
 import RobotIcon from "../icons/robot.svg";
 
 import {
@@ -57,21 +60,24 @@ import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
+import { VoiceConfig } from "../store/config";
 import Locale from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
 
 import {
+  List,
   ListItem,
   Modal,
+  showModal,
   Selector,
   showConfirm,
   showPrompt,
   showToast,
 } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
+import { Path, LAST_INPUT_KEY, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
 import { MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -147,10 +153,85 @@ export function SessionConfigModel(props: { onClose: () => void }) {
   );
 }
 
+export function TTSConfigModel(props: {
+  ttsConfig: VoiceConfig;
+  onClose: () => void;
+}) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Voice.Edit}
+        onClose={() => props.onClose()}
+        actions={[
+          <IconButton
+            key="reset"
+            icon={<ResetIcon />}
+            bordered
+            text={Locale.Chat.Config.Reset}
+            onClick={() =>
+              confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
+            }
+          />,
+        ]}
+      >
+        <TTSConfig
+          ttsConfig={{ ...props.ttsConfig }}
+          updateConfig={(voice: string) => {
+            chatStore.updateCurrentSession(
+              (session) => (session.ttsConfig.voice = voice),
+            );
+          }}
+        />
+      </Modal>
+    </div>
+  );
+}
+
+export type Voice = {
+  name: string;
+  lang: string;
+  localService: boolean;
+  default: boolean;
+  voiceURI: string;
+};
+
+const TTSConfig = (props: {
+  ttsConfig: VoiceConfig;
+  updateConfig: (_: string) => void;
+}) => {
+  const ALL_VOICES: Voice[] = window.speechSynthesis.getVoices();
+  return (
+    <>
+      <List>
+        <ListItem title={Locale.Settings.Voice}>
+          <select
+            value={props.ttsConfig.voice}
+            onChange={(e) => {
+              const val = e.currentTarget.value;
+              if (val) props.updateConfig(val);
+            }}
+          >
+            {ALL_VOICES.map((v) => (
+              <option value={v.name} key={v.name}>
+                {`(${v.lang})${v.name}`}
+              </option>
+            ))}
+          </select>
+        </ListItem>
+      </List>
+    </>
+  );
+};
+
 function PromptToast(props: {
   showToast?: boolean;
   showModal?: boolean;
+  showTTSModal?: boolean;
   setShowModal: (_: boolean) => void;
+  setShowTTSModal: (_: boolean) => void;
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -172,6 +253,12 @@ function PromptToast(props: {
       )}
       {props.showModal && (
         <SessionConfigModel onClose={() => props.setShowModal(false)} />
+      )}
+      {props.showTTSModal && (
+        <TTSConfigModel
+          onClose={() => props.setShowTTSModal(false)}
+          ttsConfig={session.ttsConfig}
+        />
       )}
     </div>
   );
@@ -390,9 +477,12 @@ function useScrollToBottom() {
 
 export function ChatActions(props: {
   showPromptModal: () => void;
+  showTTSModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  toggleSound: () => void;
   hitBottom: boolean;
+  soundOn: boolean;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -423,6 +513,11 @@ export function ChatActions(props: {
     [config],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
+
+  const toggleAssistantVoice = () => {
+    if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+    props.toggleSound();
+  };
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -476,6 +571,18 @@ export function ChatActions(props: {
         }}
         text={Locale.Chat.InputActions.Masks}
         icon={<MaskIcon />}
+      />
+
+      <ChatAction
+        onClick={props.showTTSModal}
+        text={Locale.Chat.InputActions.Settings}
+        icon={<MicrophoneIcon />}
+      />
+
+      <ChatAction
+        onClick={toggleAssistantVoice}
+        text={Locale.Chat.Actions.Speak}
+        icon={props.soundOn ? <SoundOnIcon /> : <SoundOffIcon />}
       />
 
       <ChatAction
@@ -539,6 +646,7 @@ export function Chat() {
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
+  const [soundOn, setSoundOn] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
@@ -821,6 +929,40 @@ export function Chat() {
     context.push(copiedHello);
   }
 
+  const toggleSound = () => {
+    setSoundOn(!soundOn);
+  };
+
+  const initialRender = useRef(true);
+
+  useEffect(() => {
+    if (initialRender.current) {
+      // Skip the initial render
+      initialRender.current = false;
+      return;
+    }
+
+    const latestMessage = session.messages[session.messages.length - 1];
+    // If the message is from the chatbot and is done
+    if (
+      latestMessage &&
+      latestMessage.role === "assistant" &&
+      latestMessage.content &&
+      !latestMessage.isError &&
+      !latestMessage.streaming
+    ) {
+      const ttsConfig = session.ttsConfig || {
+        voice: "Google US English",
+        lang: "en-US",
+      };
+      soundOn &&
+        speak(messages[messages.length - 1].content, session.ttsConfig?.voice);
+    }
+  }, [
+    isLoading,
+    session.messages[session.messages.length - 1]?.content,
+    session.messages[session.messages.length - 1]?.streaming,
+  ]);
   // clear context index = context length + index in messages
   const clearContextIndex =
     (session.clearContextIndex ?? -1) >= 0
@@ -858,6 +1000,7 @@ export function Chat() {
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+  const [showTTSModal, setShowTTSModal] = useState(false);
 
   const renameSession = () => {
     showPrompt(Locale.Chat.Rename, session.topic).then((newTopic) => {
@@ -883,6 +1026,100 @@ export function Chat() {
       doSubmit(text);
     },
   });
+
+  const getVoices = (): Promise<SpeechSynthesisVoice[]> => {
+    return new Promise((resolve) => {
+      let voices = speechSynthesis.getVoices();
+      if (voices.length) {
+        resolve(voices);
+        return;
+      }
+      speechSynthesis.onvoiceschanged = () => {
+        voices = speechSynthesis.getVoices();
+        resolve(voices);
+      };
+    });
+  };
+
+  const isChinese = (text: string): boolean => {
+    const chineseRegex = /[\u4e00-\u9fff]/;
+    return chineseRegex.test(text);
+  };
+
+  const speak = async (text: string, voiceName: string) => {
+    if ("speechSynthesis" in window) {
+      const maxWordsPerChunk = 20; // Adjust this value based on your testing
+      const maxCharsPerChunk = 40; // Adjust this value based on your testing
+      const textChunks: string[] = [];
+
+      if (isChinese(text)) {
+        const splitByPunctuation = text.split(/(?:[，。！？；]|[\r\n]+)/);
+        splitByPunctuation.forEach((sentence: string) => {
+          if (sentence.length > maxCharsPerChunk) {
+            for (let i = 0; i < sentence.length; i += maxCharsPerChunk) {
+              textChunks.push(sentence.slice(i, i + maxCharsPerChunk).trim());
+            }
+          } else {
+            textChunks.push(sentence.trim());
+          }
+        });
+      } else {
+        const sentences = text.split(/(?:[.!?]+|[,;:]|[\r\n]+)/);
+
+        sentences.forEach((sentence: string) => {
+          const words = sentence.split(/\s+/);
+          let currentChunk = "";
+
+          words.forEach((word: string) => {
+            if (
+              (currentChunk + " " + word).trim().split(/\s+/).length <=
+              maxWordsPerChunk
+            ) {
+              currentChunk += " " + word;
+            } else {
+              textChunks.push(currentChunk.trim());
+              currentChunk = word;
+            }
+          });
+
+          if (currentChunk) {
+            textChunks.push(currentChunk.trim());
+          }
+        });
+      }
+
+      const filteredTextChunks = textChunks.filter((chunk) => chunk.length > 0);
+
+      const setVoiceAndSpeak = (voices: SpeechSynthesisVoice[], index = 0) => {
+        if (index >= filteredTextChunks.length) return;
+
+        const selectedVoice = voices.find((voice) => voice.name === voiceName);
+
+        if (selectedVoice?.name) {
+          const utterance = new SpeechSynthesisUtterance(
+            filteredTextChunks[index],
+          );
+          utterance.voice = selectedVoice;
+          utterance.rate = 0.9; // Lower rate for a more natural sound
+          utterance.pitch = 1; // Default pitch
+          utterance.volume = 1; // Default volume
+
+          utterance.onend = () => {
+            setVoiceAndSpeak(voices, index + 1);
+          };
+
+          window.speechSynthesis.speak(utterance);
+        } else {
+          console.error("Selected voice is not found in this browser.");
+        }
+      };
+
+      const voices = await getVoices();
+      setVoiceAndSpeak(voices);
+    } else {
+      console.error("Web Speech API not supported in this browser.");
+    }
+  };
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -949,7 +1186,9 @@ export function Chat() {
         <PromptToast
           showToast={!hitBottom}
           showModal={showPromptModal}
+          showTTSModal={showTTSModal}
           setShowModal={setShowPromptModal}
+          setShowTTSModal={setShowTTSModal}
         />
       </div>
 
@@ -1045,6 +1284,17 @@ export function Chat() {
                                 icon={<CopyIcon />}
                                 onClick={() => copyToClipboard(message.content)}
                               />
+                              <ChatAction
+                                text={Locale.Chat.Actions.Speak}
+                                icon={<SoundOnIcon />}
+                                onClick={() =>
+                                  soundOn &&
+                                  speak(
+                                    message.content,
+                                    session.ttsConfig?.voice,
+                                  )
+                                }
+                              />
                             </>
                           )}
                         </div>
@@ -1092,6 +1342,7 @@ export function Chat() {
 
         <ChatActions
           showPromptModal={() => setShowPromptModal(true)}
+          showTTSModal={() => setShowTTSModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           showPromptHints={() => {
@@ -1105,6 +1356,8 @@ export function Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          toggleSound={toggleSound}
+          soundOn={soundOn}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea

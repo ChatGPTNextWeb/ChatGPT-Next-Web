@@ -5,7 +5,7 @@ const es: PartialLocaleType = {
   WIP: "En construcción...",
   Error: {
     Unauthorized:
-      "Acceso no autorizado, por favor ingrese el código de acceso en la página de configuración.",
+      "Acceso no autorizado, por favor ingrese el código de acceso en la [página de configuración](/#/settings).",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mensajes`,
@@ -20,6 +20,7 @@ const es: PartialLocaleType = {
       Stop: "Detener",
       Retry: "Reintentar",
       Delete: "Delete",
+      Speak: "Hablar",
     },
     Rename: "Renombrar chat",
     Typing: "Escribiendo...",
@@ -157,6 +158,7 @@ const es: PartialLocaleType = {
       SubTitle:
         "Un valor mayor aumenta la probabilidad de hablar sobre nuevos temas",
     },
+    Voice: "Voz",
     FrequencyPenalty: {
       Title: "Penalización de frecuencia",
       SubTitle:
@@ -186,6 +188,9 @@ const es: PartialLocaleType = {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
     Add: "Add One",
+  },
+  Voice: {
+    Edit: "Preferencia de voz",
   },
   Plugin: {
     Name: "Plugin",

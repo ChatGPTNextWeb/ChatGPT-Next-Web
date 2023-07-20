@@ -4,7 +4,8 @@ import type { PartialLocaleType } from "./index";
 const tw: PartialLocaleType = {
   WIP: "該功能仍在開發中……",
   Error: {
-    Unauthorized: "目前您的狀態是未授權，請前往設定頁面輸入授權碼。",
+    Unauthorized:
+      "目前您的狀態是未授權，請前往[設定頁面](/#/settings)輸入授權碼。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 條對話`,
@@ -19,6 +20,7 @@ const tw: PartialLocaleType = {
       Stop: "停止",
       Retry: "重試",
       Delete: "刪除",
+      Speak: "語音",
     },
     Rename: "重命名對話",
     Typing: "正在輸入…",
@@ -152,6 +154,7 @@ const tw: PartialLocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    Voice: "語音",
     FrequencyPenalty: {
       Title: "頻率懲罰度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重複字詞",
@@ -178,6 +181,9 @@ const tw: PartialLocaleType = {
     Toast: (x: any) => `已設定 ${x} 條前置上下文`,
     Edit: "前置上下文和歷史記憶",
     Add: "新增一條",
+  },
+  Voice: {
+    Edit: "語音偏好",
   },
   Plugin: { Name: "插件" },
   Mask: {
