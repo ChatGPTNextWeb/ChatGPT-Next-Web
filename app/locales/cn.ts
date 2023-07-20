@@ -18,6 +18,12 @@ const cn = {
   },
   Chat: {
     SubTitle: (count: number) => `共 ${count} 条对话`,
+    EditMessage: {
+      Topic: {
+        Title: "聊天主题",
+        SubTitle: "更改当前聊天主题",
+      },
+    },
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
