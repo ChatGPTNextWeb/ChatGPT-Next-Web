@@ -344,6 +344,11 @@ const en: LocaleType = {
     Topic: "Topic",
     Time: "Time",
   },
+
+  URLCommand: {
+    Code: "Detected access code from url, confirm to apply? ",
+    Settings: "Detected settings from url, confirm to apply?",
+  },
 };
 
 export default en;
