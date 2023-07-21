@@ -95,11 +95,28 @@
 }
 
 .context-prompt {
+  .context-prompt-insert {
+    display: flex;
+    justify-content: center;
+    padding: 4px;
+    opacity: 0.2;
+    transition: all ease 0.3s;
+    background-color: rgba(0, 0, 0, 0);
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+
+    &:hover {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
   .context-prompt-row {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
 
     &:hover {
       .context-drag {
