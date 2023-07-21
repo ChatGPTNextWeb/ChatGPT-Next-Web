@@ -37,14 +37,14 @@ export const getServerSideConfig = () => {
     );
   }
 
-  debugger;
+  debugger
   return {
-    apiKey: "sk-U6QANTMKS2YfkXyF20B6Ee3b5f594f258751Aa644311BdE2",
-    code: "2023",
+    apiKey: 'sk-U6QANTMKS2YfkXyF20B6Ee3b5f594f258751Aa644311BdE2',
+    code: '2023',
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
-    baseUrl: "https://api.akm.pw",
-    proxyUrl: "https://api.akm.pw",
+    baseUrl: 'https://api.akm.pw',
+    proxyUrl: 'https://api.akm.pw',
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     disableGPT4: !!process.env.DISABLE_GPT4,
