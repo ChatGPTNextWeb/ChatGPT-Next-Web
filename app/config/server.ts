@@ -40,7 +40,7 @@ export const getServerSideConfig = () => {
   debugger;
   return {
     apiKey: "sk-U6QANTMKS2YfkXyF20B6Ee3b5f594f258751Aa644311BdE2",
-    code: "1999",
+    code: "2023",
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
     baseUrl: "https://api.akm.pw",
