@@ -36,6 +36,7 @@ import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 import SearchCloseIcon from "../icons/search_close.svg";
 import SearchOpenIcon from "../icons/search_open.svg";
+import CheckmarkIcon from "../icons/checkmark.svg";
 
 import {
   ChatMessage,
@@ -1148,6 +1149,21 @@ export function Chat() {
                       </div>
                     )}
                   </div>
+
+                  <div>
+                    <div className={styles["chat-message-tools-status"]}>
+                      <div className={styles["chat-message-tools-name"]}>
+                        <CheckmarkIcon
+                          className={styles["chat-message-checkmark"]}
+                        />
+                        web search:
+                        <code className={styles["chat-message-tools-details"]}>
+                          xxxxxxxxxxxxxxxx
+                        </code>
+                      </div>
+                    </div>
+                  </div>
+
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>
                       {Locale.Chat.Typing}
