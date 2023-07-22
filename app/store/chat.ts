@@ -25,7 +25,7 @@ export interface ChatToolMessage {
 
 export type ChatMessage = RequestMessage & {
   date: string;
-  toolMessages: ChatToolMessage[];
+  toolMessages?: ChatToolMessage[];
   streaming?: boolean;
   isError?: boolean;
   id: string;
@@ -299,6 +299,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           streaming: true,
           model: modelConfig.model,
+          toolMessages: [],
         });
 
         // get recent messages
@@ -333,7 +334,7 @@ export const useChatStore = create<ChatStore>()(
             onToolUpdate(toolName, toolInput) {
               botMessage.streaming = true;
               if (toolName && toolInput) {
-                botMessage.toolMessages.push({
+                botMessage.toolMessages!.push({
                   toolName,
                   toolInput,
                 });
