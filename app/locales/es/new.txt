@@ -1,0 +1,361 @@
+import { SubmitKey } desde ".. /store/config";
+import { LocaleType } desde "./index";
+
+si va a agregar una nueva traducción, utilice PartialLocaleType en lugar de LocaleType
+const en: LocaleType = {
+const new: PartialLocaleType =
+  WIP: "Próximamente...",
+  Error: {
+    Desautorizado:
+      "Acceso no autorizado, introduzca el código de acceso en la página [auth](/#/auth).",
+  },
+  Auth: {
+    Título: "Necesita código de acceso",
+    Consejos: "Por favor, introduzca el código de acceso a continuación",
+    Entrada: "código de acceso",
+    Confirmar: "Confirmar",
+    Más tarde: "Más tarde",
+  },
+  ChatItem: {
+    ChatItemCount: (count: number) => '${count} messages',
+  },
+  Chat: {
+    Subtítulo: (count: number) => '${count} messages',
+    EditMessage: {
+      Tema: {
+        Título: "Tema",
+        Subtítulo: "Cambiar el tema actual",
+      },
+    },
+    Acciones: {
+      ChatList: "Ir a la lista de chat",
+      CompressedHistory: "Solicitud de memoria de historial comprimido",
+      Exportar: "Exportar todos los mensajes como Markdown",
+      Copia: "Copiar",
+      Stop: "Stop",
+      Reintentar: "Reintentar",
+      Pin: "Pin",
+      PinToastContent: "Anclado 1 mensajes a mensajes contextuales",
+      PinToastAction: "Ver",
+      Suprimir: "Suprimir",
+      Editar: "Editar",
+    },
+    Comandos: {
+      nuevo: "Iniciar un nuevo chat",
+      newm: "Iniciar un nuevo chat con máscara",
+      siguiente: "Siguiente chat",
+      anterior: "Chat anterior",
+      claro: "Contexto claro",
+      del: "Eliminar Chat",
+    },
+    InputActions: {
+      Stop: "Stop",
+      ToBottom: "A más tardar",
+      Tema: {
+        auto: "Auto",
+        luz: "Tema de luz",
+        dark: "Dark Theme",
+      },
+      Prompt: "Prompts",
+      Máscaras: "Plantillas",
+      Claro: "Limpiar contexto",
+      Ajustes: "Configuración",
+    },
+    Cambiar nombre: "Renombrar chat",
+    Mecanografía: "Mecanografía...",
+    Entrada: (submitKey: string) => {
+      var inputHints = '${submitKey} to send';
+      if (submitKey === String(SubmitKey.Enter)) {
+        inputHints += ", Mayús + Entrar para ajustar";
+      }
+      return inputHints + ", / to search prompts, : to use commands";
+    },
+    Enviar: "Enviar",
+    Config: {
+      Restablecer: "Restablecer a los valores predeterminados",
+      SaveAs: "Guardar como máscara",
+    },
+    IsContext: "Mensaje contextual",
+  },
+  Exportar: {
+    Título: "Exportar mensajes",
+    Copia: "Copiar todo",
+    Descargar: "Descargar",
+    MessageFromYou: "Mensaje tuyo",
+    MessageFromChatGPT: "Mensaje de ChatGPT",
+    Compartir: "Compartir para compartirGPT",
+    Formato: {
+      Título: "Formato de exportación",
+      Subtítulo: "Markdown o imagen PNG",
+    },
+    IncludeContext: {
+      Título: "Incluido el contexto",
+      Subtítulo: "Exportar mensajes de contexto en máscara o no",
+    },
+    Pasos: {
+      Seleccionar: "Seleccionar",
+      Vista previa: "Vista previa",
+    },
+    Imagen: {
+      Brindis: "Captura de imagen...",
+      Modo: "Mantenga presionado o haga clic derecho para guardar la imagen",
+    },
+  },
+  Seleccionar: {
+    Búsqueda: "Buscar",
+    Todos: "Seleccionar todo",
+    Lo último: "Seleccione lo último",
+    Claro: "Claro",
+  },
+  Memoria: {
+    Título: "Memory Prompt",
+    EmptyContent: "Nada todavía.",
+    Enviar: "Enviar memoria",
+    Copia: "Copiar memoria",
+    Restablecer: "Restablecer sesión",
+    ResetConfirm:
+      "El restablecimiento borrará el historial de conversación actual y la memoria histórica. ¿Está seguro de que desea restablecer?",
+  },
+  Inicio: {
+    NewChat: "Nuevo chat",
+    DeleteChat: "¿Confirmar para eliminar la conversación seleccionada?",
+    DeleteToast: "Chat eliminado",
+    Revertir: "Revertir",
+  },
+  Configuración: {
+    Título: "Configuración",
+    Subtítulo: "Todas las configuraciones",
+    Peligro: {
+      Restablecer: {
+        Título: "Restablecer todas las configuraciones",
+        Subtítulo: "Restablecer todos los elementos de configuración a los valores predeterminados",
+        Acción: "Restablecer",
+        Confirme: "¿Confirmar para restablecer todos los ajustes predeterminados?",
+      },
+      Claro: {
+        Título: "Borrar todos los datos",
+        Subtítulo: "Borrar todos los mensajes y configuraciones",
+        Acción: "Claro",
+        Confirme: "¿Confirmar para borrar todos los mensajes y configuraciones?",
+      },
+    },
+    Lang: {
+      Nombre: "Idioma", // ATENCIÓN: si desea agregar una nueva traducción, por favor no traduzca este valor, déjelo como 'Idioma'
+      Todos: "Todos los idiomas",
+    },
+    Avatar: "Avatar",
+    FontSize: {
+      Título: "Tamaño de fuente",
+      Subtítulo: "Ajustar el tamaño de fuente del contenido del chat",
+    },
+    InjectSystemPrompts: {
+      Título: "Inject System Prompts",
+      Subtítulo: "Inyectar un indicador global del sistema para cada solicitud",
+    },
+    InputTemplate: {
+      Título: "Plantilla de entrada",
+      Subtítulo: "El mensaje más reciente se completará en esta plantilla",
+    },
+
+    Actualización: {
+      Versión: (x: string) => 'Versión: ${x}',
+      IsLatest: "Última versión",
+      CheckUpdate: "Comprobar actualización",
+      IsChecking: "Comprobando actualización...",
+      FoundUpdate: (x: string) => 'Found new version: ${x}',
+      GoToUpdate: "Actualizar",
+    },
+    SendKey: "Enviar clave",
+    Tema: "Tema",
+    TightBorder: "Borde apretado",
+    SendPreviewBubble: {
+      Título: "Enviar burbuja de vista previa",
+      Subtítulo: "Vista previa de markdown en burbuja",
+    },
+    Máscara: {
+      Salpicadura: {
+        Título: "Mask Splash Screen",
+        Subtítulo: "Mostrar una pantalla de bienvenida de máscara antes de iniciar un nuevo chat",
+      },
+      Incorporado: {
+        Título: "Hide Builtin Masks",
+        Subtítulo: "Ocultar máscaras incorporadas en la lista de máscaras",
+      },
+    },
+    Preguntar: {
+      Desactivar: {
+        Título: "Desactivar autocompletado",
+        Subtítulo: "Entrada / para activar el autocompletado",
+      },
+      Lista: "Lista de solicitudes",
+      ListCount: (incorporado: número, personalizado: número) =>
+        '${builtin} built-in, ${custom} user-defined',
+      Editar: "Editar",
+      Modal: {
+        Título: "Prompt List",
+        Añadir: "Añadir uno",
+        Búsqueda: "Mensajes de búsqueda",
+      },
+      EditModal: {
+        Título: "Editar mensaje",
+      },
+    },
+    HistoryCount: {
+      Título: "Attached Messages Count",
+      Subtítulo: "Número de mensajes enviados adjuntos por solicitud",
+    },
+    CompressThreshold: {
+      Título: "History Compression Threshold",
+      Subtítulo:
+        "Se comprimirá si la longitud de los mensajes sin comprimir excede el valor",
+    },
+    Token: {
+      Título: "API Key",
+      Subtítulo: "Use su clave para ignorar el límite del código de acceso",
+      Marcador de posición: "OpenAI API Key",
+    },
+    Uso: {
+      Título: "Saldo de cuenta",
+      SubTitle(used: any, total: any) {
+        return 'Usado este mes $${usado}, suscripción $${total}';
+      },
+      IsChecking: "Comprobando...",
+      Comprobación: "Comprobar",
+      NoAccess: "Ingrese la clave API para verificar el saldo",
+    },
+    Código de acceso: {
+      Título: "Código de acceso",
+      Subtítulo: "Control de acceso habilitado",
+      Marcador de posición: "Necesita código de acceso",
+    },
+    Punto final: {
+      Título: "Endpoint",
+      Subtítulo: "El punto final personalizado debe comenzar con http(s)://",
+    },
+    CustomModel: {
+      Título: "Custom Models",
+      Subtítulo: "Agregar opciones de modelo adicionales, separadas por coma",
+    },
+    Modelo: "Modelo",
+    Temperatura: {
+      Título: "Temperatura",
+      Subtítulo: "Un valor más grande hace la salida más aleatoria",
+    },
+    TopP: {
+      Título: "Top P",
+      Subtítulo: "No alterar este valor junto con la temperatura",
+    },
+    MaxTokens: {
+      Título: "Max Tokens",
+      Subtítulo: "Longitud máxima de los tokens de entrada y tokens generados",
+    },
+    PresencePenalty: {
+      Título: "Pena de presencia",
+      Subtítulo:
+        "Un valor mayor aumenta la probabilidad de hablar sobre nuevos temas",
+    },
+    FrequencyPenalty: {
+      Título: "Penalización de frecuencia",
+      Subtítulo:
+        "Un valor mayor que disminuye la probabilidad de repetir la misma línea",
+    },
+  },
+  Tienda: {
+    DefaultTopic: "Nueva conversación",
+    BotHello: "¡Hola! ¿Cómo puedo ayudarte hoy?",
+    Error: "Algo salió mal, inténtalo de nuevo más tarde.",
+    Preguntar: {
+      Historial: (contenido: cadena) =>
+        "Este es un resumen del historial de chat como resumen: " + contenido,
+      Tema:
+        "Por favor, genere un título de cuatro a cinco palabras que resuma nuestra conversación sin ninguna introducción, puntuación, comillas, puntos, símbolos o texto adicional. Eliminar las comillas adjuntas.",
+      Resumir:
+        "Resuma la discusión brevemente en 200 palabras o menos para usarla como un aviso para el contexto futuro.",
+    },
+  },
+  Copia: {
+    Éxito: "Copiado al portapapeles",
+    Error: "Error de copia, conceda permiso para acceder al portapapeles",
+  },
+  Contexto: {
+    Notificación del sistema: (x: any) => 'Con ${x} mensajes contextuales',
+    Editar: "Configuración actual del chat",
+    Añadir: "Añadir un mensaje",
+    Claro: "Contexto borrado",
+    Revertir: "Revertir",
+  },
+  Plugin: {
+    Nombre: "Plugin",
+  },
+  Máscara: {
+    Nombre: "Plantillas",
+    Página: {
+      Título: "Plantillas de Prompts",
+      Subtítulo: (count: number) => '${count} prompt templates',
+      Buscar: "Buscar Plantillas",
+      Crear: "Crear",
+    },
+    Artículo: {
+      Info: (count: number) => '${count} prompts',
+      Chat: "Chatear",
+      Vista: "Ver",
+      Edición: "Editar",
+      Suprimir: "Borrar",
+      DeleteConfirm: "¿Confirmar borrado?",
+    },
+    EditModal: {
+      Título: (readonly: boolean) =>
+        'Editar plantilla de solicitud ${readonly ? "(sólo lectura)" : ""}',
+      Descargar: "Descargar",
+      Clon: "Clon",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Nombre: "Nombre del bot",
+      Sincronizar: {
+        Título: "Usar configuración global",
+        Subtítulo: "Usar configuración global en este chat",
+        Confirme: "¿Confirmar para anular la configuración personalizada con la configuración global?",
+      },
+      HideContext: {
+        Título: "Hide Context Prompts",
+        Subtítulo: "No mostrar mensajes en contexto en el chat",
+      },
+      Compartir: {
+        Título: "Comparte esta máscara",
+        Subtítulo: "Generar un enlace a esta máscara",
+        Acción: "Copiar enlace",
+      },
+    },
+  },
+  NewChat: {
+    Devolución: "Devolución",
+    Omitir: "Just Start",
+    Título: "Selecciona una Plantilla",
+    Subtítulo: "Chatea usando una Plantilla",
+    Más: "Buscar Mas",
+    NotShow: "Never Show Again",
+    ConfirmNoShow: "¿Confirmar para deshabilitar?Puede habilitarlo en la configuración más adelante.",
+  },
+
+  UI: {
+    Confirmar: "Confirmar",
+    Cancelar: "Cancelar",
+    Cerrar: "Cerrar",
+    Crear: "Crear",
+    Editar: "Editar",
+  },
+  Exportador: {
+    Modelo: "Modelo",
+    Mensajes: "Mensajes",
+    Tema: "Tema",
+    Tiempo: "Tiempo",
+  },
+
+  URLCommand: {
+    Código: "Código de acceso detectado desde url, confirmar para aplicar? ",
+    Configuración: "Configuración detectada desde la url, ¿confirmar para aplicar?",
+  },
+};
+
+exportar por defecto nuevo;

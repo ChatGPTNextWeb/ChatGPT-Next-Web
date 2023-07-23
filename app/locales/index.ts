@@ -1,3 +1,4 @@
+import new from './new';
 import cn from "./cn";
 import en from "./en";
 import tw from "./tw";
@@ -36,6 +37,7 @@ const ALL_LANGS = {
   no,
   ar,
   bn,
+  new,
 };
 
 export type Lang = keyof typeof ALL_LANGS;
@@ -59,6 +61,7 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   no: "Nynorsk",
   ar: "العربية",
   bn: "বাংলা",
+  new: 'New Lang',
 };
 
 const LANG_KEY = "lang";
