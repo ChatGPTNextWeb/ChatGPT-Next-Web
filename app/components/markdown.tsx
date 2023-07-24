@@ -12,6 +12,7 @@ import mermaid from "mermaid";
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { showImageModal } from "./ui-lib";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,11 +38,13 @@ export function Mermaid(props: { code: string }) {
     if (!svg) return;
     const text = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([text], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-    const win = window.open(url);
-    if (win) {
-      win.onload = () => URL.revokeObjectURL(url);
-    }
+    console.log(blob);
+    // const url = URL.createObjectURL(blob);
+    // const win = window.open(url);
+    // if (win) {
+    //   win.onload = () => URL.revokeObjectURL(url);
+    // }
+    showImageModal(URL.createObjectURL(blob));
   }
 
   if (hasError) {
