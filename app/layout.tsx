@@ -5,9 +5,9 @@ import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
 import { type Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: "ChatGPT Next Web",
-  description: "Your personal ChatGPT Chat Bot.",
+export const metadata = {
+  title: "AI-Powered Business Strategies and Plans | Opti by Get Fractional",
+  description: "Get Fractional's 'secret weapon' for complex business problem solving and goal achievement.",
   viewport: {
     width: "device-width",
     initialScale: 1,
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "ChatGPT Next Web",
+    title: "Opti",
     statusBarStyle: "default",
   },
 };
