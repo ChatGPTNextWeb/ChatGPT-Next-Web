@@ -48,6 +48,13 @@ async function handle(req: NextRequest) {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
   try {
+    const authResult = auth(req);
+    if (authResult.error) {
+      return NextResponse.json(authResult, {
+        status: 401,
+      });
+    }
+
     const encoder = new TextEncoder();
     const transformStream = new TransformStream();
     const writer = transformStream.writable.getWriter();
@@ -56,7 +63,6 @@ async function handle(req: NextRequest) {
     const handler = BaseCallbackHandler.fromMethods({
       async handleLLMNewToken(token: string) {
         if (token) {
-          // console.log("token", token);
           var response = new ResponseBody();
           response.message = token;
           await writer.ready;
@@ -71,12 +77,10 @@ async function handle(req: NextRequest) {
       //   await writer.abort(err);
       // },
       async handleChainEnd(outputs, runId, parentRunId, tags) {
-        // console.log("writer close");
         await writer.ready;
         await writer.close();
       },
       async handleLLMEnd() {
-        // console.log("writer close");
         // await writer.ready;
         // await writer.close();
       },
@@ -92,20 +96,24 @@ async function handle(req: NextRequest) {
         // console.log("handleChainStart: I'm the second handler!!", { chain });
       },
       async handleAgentAction(action) {
-        console.log(
-          "agent (llm)",
-          `tool: ${action.tool} toolInput: ${action.toolInput}`,
-          { action },
-        );
-        var response = new ResponseBody();
-        response.isToolMessage = true;
-        let toolInput = <ToolInput>(<unknown>action.toolInput);
-        response.message = toolInput.input;
-        response.toolName = action.tool;
-        await writer.ready;
-        await writer.write(
-          encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
-        );
+        try {
+          console.log(
+            "agent (llm)",
+            `tool: ${action.tool} toolInput: ${action.toolInput}`,
+            { action },
+          );
+          var response = new ResponseBody();
+          response.isToolMessage = true;
+          let toolInput = <ToolInput>(<unknown>action.toolInput);
+          response.message = toolInput.input;
+          response.toolName = action.tool;
+          await writer.ready;
+          await writer.write(
+            encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
+          );
+        } catch (ex) {
+          console.error("[handleAgentAction]", ex);
+        }
       },
       handleToolStart(tool, input) {
         console.log("handleToolStart", { tool, input });
@@ -115,17 +123,13 @@ async function handle(req: NextRequest) {
     const tools = [
       new RequestsGetTool(),
       new RequestsPostTool(),
-      new SerpAPI(process.env.SERPAPI_API_KEY, {
-        location: "Austin,Texas,United States",
-        hl: "en",
-        gl: "us",
-      }),
+      new SerpAPI(process.env.SERPAPI_API_KEY),
+      new Calculator(),
       // new DynamicTool({
       //   name: ddg.name,
       //   description: ddg.description,
       //   func: async (input: string) => ddg.call(input),
       // }),
-      new Calculator(),
     ];
 
     const pastMessages = new Array();
@@ -140,8 +144,6 @@ async function handle(req: NextRequest) {
         if (message.role === "assistant")
           pastMessages.push(new AIMessage(message.content));
       });
-
-    // console.log("mesage", { pastMessages })
 
     const memory = new BufferMemory({
       memoryKey: "chat_history",
