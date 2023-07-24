@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const ru: LocaleType = {
+const ru: PartialLocaleType = {
   WIP: "Скоро...",
   Error: {
     Unauthorized:
@@ -61,36 +61,20 @@ const ru: LocaleType = {
   Settings: {
     Title: "Настройки",
     SubTitle: "Все настройки",
-    Actions: {
-      ClearAll: "Очистить все данные",
-      ResetAll: "Сбросить все настройки",
-      Close: "Закрыть",
-      ConfirmResetAll: "Вы уверены, что хотите сбросить все настройки?",
-      ConfirmClearAll: "Вы уверены, что хотите очистить все данные?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Все языки",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        fr: "Français",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-        ko: "한국어",
-      },
     },
     Avatar: "Аватар",
     FontSize: {
       Title: "Размер шрифта",
       SubTitle: "Настроить размер шрифта контента чата",
+    },
+    InjectSystemPrompts: {
+      Title: "Вставить системные подсказки",
+      SubTitle:
+        "Принудительно добавить симулированную системную подсказку ChatGPT в начало списка сообщений для каждого запроса",
     },
     Update: {
       Version: (x: string) => `Версия: ${x}`,
@@ -108,8 +92,10 @@ const ru: LocaleType = {
       SubTitle: "Предварительный просмотр markdown в пузыре",
     },
     Mask: {
-      Title: "Экран заставки маски",
-      SubTitle: "Показывать экран заставки маски перед началом нового чата",
+      Splash: {
+        Title: "Экран заставки маски",
+        SubTitle: "Показывать экран заставки маски перед началом нового чата",
+      },
     },
     Prompt: {
       Disable: {
@@ -171,6 +157,11 @@ const ru: LocaleType = {
       Title: "Штраф за повторения",
       SubTitle:
         "Чем выше значение, тем больше вероятность общения на новые темы",
+    },
+    FrequencyPenalty: {
+      Title: "Штраф за частоту",
+      SubTitle:
+        "Большее значение снижает вероятность повторения одной и той же строки",
     },
   },
   Store: {
@@ -246,6 +237,12 @@ const ru: LocaleType = {
     Close: "Закрыть",
     Create: "Создать",
     Edit: "Редактировать",
+  },
+  Exporter: {
+    Model: "Модель",
+    Messages: "Сообщения",
+    Topic: "Тема",
+    Time: "Время",
   },
 };
 

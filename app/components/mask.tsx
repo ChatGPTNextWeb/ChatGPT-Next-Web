@@ -11,22 +11,52 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
+import DragIcon from "../icons/drag.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
-import { ChatMessage, ModelConfig, useChatStore } from "../store";
+import {
+  ChatMessage,
+  createMessage,
+  ModelConfig,
+  useAppConfig,
+  useChatStore,
+} from "../store";
 import { ROLES } from "../client/api";
-import { Input, List, ListItem, Modal, Popover, Select } from "./ui-lib";
+import {
+  Input,
+  List,
+  ListItem,
+  Modal,
+  Popover,
+  Select,
+  showConfirm,
+} from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
-import Locale, { AllLangs, Lang } from "../locales";
+import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useState } from "react";
-import { downloadAs, readFromFile } from "../utils";
+import { useEffect, useState } from "react";
+import { copyToClipboard, downloadAs, readFromFile } from "../utils";
 import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
+import { nanoid } from "nanoid";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  OnDragEndResponder,
+} from "@hello-pangea/dnd";
+
+// drag and drop helper function
+function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
+  const result = [...list];
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+}
 
 export function MaskAvatar(props: { mask: Mask }) {
   return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
@@ -41,6 +71,7 @@ export function MaskConfig(props: {
   updateMask: Updater<Mask>;
   extraListItems?: JSX.Element;
   readonly?: boolean;
+  shouldSyncFromGlobal?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -49,8 +80,19 @@ export function MaskConfig(props: {
 
     const config = { ...props.mask.modelConfig };
     updater(config);
-    props.updateMask((mask) => (mask.modelConfig = config));
+    props.updateMask((mask) => {
+      mask.modelConfig = config;
+      // if user changed current session mask, it will disable auto sync
+      mask.syncGlobalConfig = false;
+    });
   };
+
+  const copyMaskLink = () => {
+    const maskLink = `${location.protocol}//${location.host}/#${Path.NewChat}?mask=${props.mask.id}`;
+    copyToClipboard(maskLink);
+  };
+
+  const globalConfig = useAppConfig();
 
   return (
     <>
@@ -90,10 +132,67 @@ export function MaskConfig(props: {
             type="text"
             value={props.mask.name}
             onInput={(e) =>
-              props.updateMask((mask) => (mask.name = e.currentTarget.value))
+              props.updateMask((mask) => {
+                mask.name = e.currentTarget.value;
+              })
             }
           ></input>
         </ListItem>
+        <ListItem
+          title={Locale.Mask.Config.HideContext.Title}
+          subTitle={Locale.Mask.Config.HideContext.SubTitle}
+        >
+          <input
+            type="checkbox"
+            checked={props.mask.hideContext}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                mask.hideContext = e.currentTarget.checked;
+              });
+            }}
+          ></input>
+        </ListItem>
+
+        {!props.shouldSyncFromGlobal ? (
+          <ListItem
+            title={Locale.Mask.Config.Share.Title}
+            subTitle={Locale.Mask.Config.Share.SubTitle}
+          >
+            <IconButton
+              icon={<CopyIcon />}
+              text={Locale.Mask.Config.Share.Action}
+              onClick={copyMaskLink}
+            />
+          </ListItem>
+        ) : null}
+
+        {props.shouldSyncFromGlobal ? (
+          <ListItem
+            title={Locale.Mask.Config.Sync.Title}
+            subTitle={Locale.Mask.Config.Sync.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={props.mask.syncGlobalConfig}
+              onChange={async (e) => {
+                const checked = e.currentTarget.checked;
+                if (
+                  checked &&
+                  (await showConfirm(Locale.Mask.Config.Sync.Confirm))
+                ) {
+                  props.updateMask((mask) => {
+                    mask.syncGlobalConfig = checked;
+                    mask.modelConfig = { ...globalConfig.modelConfig };
+                  });
+                } else if (!checked) {
+                  props.updateMask((mask) => {
+                    mask.syncGlobalConfig = checked;
+                  });
+                }
+              }}
+            ></input>
+          </ListItem>
+        ) : null}
       </List>
 
       <List>
@@ -108,6 +207,7 @@ export function MaskConfig(props: {
 }
 
 function ContextPromptItem(props: {
+  index: number;
   prompt: ChatMessage;
   update: (prompt: ChatMessage) => void;
   remove: () => void;
@@ -117,22 +217,27 @@ function ContextPromptItem(props: {
   return (
     <div className={chatStyle["context-prompt-row"]}>
       {!focusingInput && (
-        <Select
-          value={props.prompt.role}
-          className={chatStyle["context-role"]}
-          onChange={(e) =>
-            props.update({
-              ...props.prompt,
-              role: e.target.value as any,
-            })
-          }
-        >
-          {ROLES.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </Select>
+        <>
+          <div className={chatStyle["context-drag"]}>
+            <DragIcon />
+          </div>
+          <Select
+            value={props.prompt.role}
+            className={chatStyle["context-role"]}
+            onChange={(e) =>
+              props.update({
+                ...props.prompt,
+                role: e.target.value as any,
+              })
+            }
+          >
+            {ROLES.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </Select>
+        </>
       )}
       <Input
         value={props.prompt.content}
@@ -140,7 +245,12 @@ function ContextPromptItem(props: {
         className={chatStyle["context-content"]}
         rows={focusingInput ? 5 : 1}
         onFocus={() => setFocusingInput(true)}
-        onBlur={() => setFocusingInput(false)}
+        onBlur={() => {
+          setFocusingInput(false);
+          // If the selection is not removed when the user loses focus, some
+          // extensions like "Translate" will always display a floating bar
+          window?.getSelection()?.removeAllRanges();
+        }}
         onInput={(e) =>
           props.update({
             ...props.prompt,
@@ -166,8 +276,8 @@ export function ContextPrompts(props: {
 }) {
   const context = props.context;
 
-  const addContextPrompt = (prompt: ChatMessage) => {
-    props.updateContext((context) => context.push(prompt));
+  const addContextPrompt = (prompt: ChatMessage, i: number) => {
+    props.updateContext((context) => context.splice(i, 0, prompt));
   };
 
   const removeContextPrompt = (i: number) => {
@@ -178,33 +288,90 @@ export function ContextPrompts(props: {
     props.updateContext((context) => (context[i] = prompt));
   };
 
+  const onDragEnd: OnDragEndResponder = (result) => {
+    if (!result.destination) {
+      return;
+    }
+    const newContext = reorder(
+      context,
+      result.source.index,
+      result.destination.index,
+    );
+    props.updateContext((context) => {
+      context.splice(0, context.length, ...newContext);
+    });
+  };
+
   return (
     <>
       <div className={chatStyle["context-prompt"]} style={{ marginBottom: 20 }}>
-        {context.map((c, i) => (
-          <ContextPromptItem
-            key={i}
-            prompt={c}
-            update={(prompt) => updateContextPrompt(i, prompt)}
-            remove={() => removeContextPrompt(i)}
-          />
-        ))}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="context-prompt-list">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {context.map((c, i) => (
+                  <Draggable
+                    draggableId={c.id || i.toString()}
+                    index={i}
+                    key={c.id}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ContextPromptItem
+                          index={i}
+                          prompt={c}
+                          update={(prompt) => updateContextPrompt(i, prompt)}
+                          remove={() => removeContextPrompt(i)}
+                        />
+                        <div
+                          className={chatStyle["context-prompt-insert"]}
+                          onClick={() => {
+                            addContextPrompt(
+                              createMessage({
+                                role: "user",
+                                content: "",
+                                date: new Date().toLocaleString(),
+                              }),
+                              i + 1,
+                            );
+                          }}
+                        >
+                          <AddIcon />
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
 
-        <div className={chatStyle["context-prompt-row"]}>
-          <IconButton
-            icon={<AddIcon />}
-            text={Locale.Context.Add}
-            bordered
-            className={chatStyle["context-prompt-button"]}
-            onClick={() =>
-              addContextPrompt({
-                role: "user",
-                content: "",
-                date: "",
-              })
-            }
-          />
-        </div>
+        {props.context.length === 0 && (
+          <div className={chatStyle["context-prompt-row"]}>
+            <IconButton
+              icon={<AddIcon />}
+              text={Locale.Context.Add}
+              bordered
+              className={chatStyle["context-prompt-button"]}
+              onClick={() =>
+                addContextPrompt(
+                  createMessage({
+                    role: "user",
+                    content: "",
+                    date: "",
+                  }),
+                  props.context.length,
+                )
+              }
+            />
+          </div>
+        )}
       </div>
     </>
   );
@@ -237,7 +404,7 @@ export function MaskPage() {
     }
   };
 
-  const [editingMaskId, setEditingMaskId] = useState<number | undefined>();
+  const [editingMaskId, setEditingMaskId] = useState<string | undefined>();
   const editingMask =
     maskStore.get(editingMaskId) ?? BUILTIN_MASK_STORE.get(editingMaskId);
   const closeMaskModal = () => setEditingMaskId(undefined);
@@ -330,7 +497,7 @@ export function MaskPage() {
               </option>
               {AllLangs.map((lang) => (
                 <option value={lang} key={lang}>
-                  {Locale.Settings.Lang.Options[lang]}
+                  {ALL_LANG_OPTIONS[lang]}
                 </option>
               ))}
             </Select>
@@ -358,7 +525,7 @@ export function MaskPage() {
                     <div className={styles["mask-name"]}>{m.name}</div>
                     <div className={styles["mask-info"] + " one-line"}>
                       {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        Locale.Settings.Lang.Options[m.lang]
+                        ALL_LANG_OPTIONS[m.lang]
                       } / ${m.modelConfig.model}`}
                     </div>
                   </div>
@@ -389,8 +556,8 @@ export function MaskPage() {
                     <IconButton
                       icon={<DeleteIcon />}
                       text={Locale.Mask.Item.Delete}
-                      onClick={() => {
-                        if (confirm(Locale.Mask.Item.DeleteConfirm)) {
+                      onClick={async () => {
+                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
                           maskStore.delete(m.id);
                         }
                       }}

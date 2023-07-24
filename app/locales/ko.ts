@@ -1,8 +1,8 @@
 import { SubmitKey } from "../store/config";
 
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const ko: LocaleType = {
+const ko: PartialLocaleType = {
   WIP: "곧 출시 예정...",
   Error: {
     Unauthorized: "권한이 없습니다. 설정 페이지에서 액세스 코드를 입력하세요.",
@@ -61,37 +61,21 @@ const ko: LocaleType = {
   Settings: {
     Title: "설정",
     SubTitle: "모든 설정",
-    Actions: {
-      ClearAll: "모든 데이터 지우기",
-      ResetAll: "모든 설정 초기화",
-      Close: "닫기",
-      ConfirmResetAll: "모든 설정을 초기화하시겠습니까?",
-      ConfirmClearAll: "모든 데이터를 지우시겠습니까?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "All Languages",
-      Options: {
-        cn: "简体中文",
-        en: "English",
-        tw: "繁體中文",
-        fr: "Français",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-        vi: "Tiếng Việt",
-        ru: "Русский",
-        cs: "Čeština",
-        ko: "한국어",
-      },
     },
     Avatar: "아바타",
     FontSize: {
-    Title: "글꼴 크기",
-    SubTitle: "채팅 내용의 글꼴 크기 조정",
-  },
+      Title: "글꼴 크기",
+      SubTitle: "채팅 내용의 글꼴 크기 조정",
+    },
+    InjectSystemPrompts: {
+      Title: "시스템 프롬프트 주입",
+      SubTitle:
+        "각 요청의 메시지 목록의 시작에 ChatGPT 시스템 프롬프트를 강제로 추가합니다",
+    },
     Update: {
       Version: (x: string) => `버전: ${x}`,
       IsLatest: "최신 버전",
@@ -108,8 +92,10 @@ const ko: LocaleType = {
       SubTitle: "버블에서 마크다운 미리 보기",
     },
     Mask: {
-      Title: "마스크 시작 화면",
-      SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
+      Splash: {
+        Title: "마스크 시작 화면",
+        SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
+      },
     },
     Prompt: {
       Disable: {
@@ -135,8 +121,7 @@ const ko: LocaleType = {
     },
     CompressThreshold: {
       Title: "기록 압축 임계값",
-      SubTitle:
-        "미압축 메시지 길이가 임계값을 초과하면 압축됨",
+      SubTitle: "미압축 메시지 길이가 임계값을 초과하면 압축됨",
     },
     Token: {
       Title: "API 키",
@@ -165,11 +150,14 @@ const ko: LocaleType = {
     MaxTokens: {
       Title: "최대 토큰 수 (max_tokens)",
       SubTitle: "입력 토큰과 생성된 토큰의 최대 길이",
-    },  
+    },
     PresencePenalty: {
       Title: "존재 페널티 (presence_penalty)",
-      SubTitle:
-        "값이 클수록 새로운 주제에 대해 대화할 가능성이 높아집니다.",
+      SubTitle: "값이 클수록 새로운 주제에 대해 대화할 가능성이 높아집니다.",
+    },
+    FrequencyPenalty: {
+      Title: "빈도 페널티(frequency penalty)",
+      SubTitle: "값이 클수록 같은 줄이 반복될 가능성이 줄어듭니다.",
     },
   },
   Store: {
@@ -178,8 +166,7 @@ const ko: LocaleType = {
     Error: "문제가 발생했습니다. 나중에 다시 시도해주세요.",
     Prompt: {
       History: (content: string) =>
-        "이것은 AI와 사용자 간의 대화 기록을 요약한 내용입니다: " +
-        content,
+        "이것은 AI와 사용자 간의 대화 기록을 요약한 내용입니다: " + content,
       Topic:
         "다음과 같이 대화 내용을 요약하는 4~5단어 제목을 생성해주세요. 따옴표, 구두점, 인용부호, 기호 또는 추가 텍스트를 제거하십시오. 따옴표로 감싸진 부분을 제거하십시오.",
       Summarize:
@@ -232,7 +219,8 @@ const ko: LocaleType = {
     SubTitle: "마스크 뒤의 영혼과 대화하세요",
     More: "더 보기",
     NotShow: "다시 표시하지 않음",
-    ConfirmNoShow: "비활성화하시겠습니까? 나중에 설정에서 다시 활성화할 수 있습니다.",
+    ConfirmNoShow:
+      "비활성화하시겠습니까? 나중에 설정에서 다시 활성화할 수 있습니다.",
   },
 
   UI: {
@@ -242,6 +230,12 @@ const ko: LocaleType = {
     Create: "생성",
     Edit: "편집",
   },
-  };
+  Exporter: {
+    Model: "모델",
+    Messages: "메시지",
+    Topic: "주제",
+    Time: "시간",
+  },
+};
 
 export default ko;
