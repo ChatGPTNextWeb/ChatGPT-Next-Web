@@ -23,6 +23,13 @@ export interface OpenAIListModelResponse {
   }>;
 }
 
+interface LangChainAgentResponse {
+  message: string;
+  isToolMessage: boolean;
+  toolName?: string;
+  toolInput?: object;
+}
+
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
@@ -47,7 +54,7 @@ export class ChatGPTApi implements LLMApi {
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,
-      content: v.toolPrompt ?? v.content,
+      content: v.content,
     }));
 
     const modelConfig = {
@@ -182,6 +189,151 @@ export class ChatGPTApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
+
+  async toolAgentChat(options: ChatOptions) {
+    const messages = options.messages.map((v) => ({
+      role: v.role,
+      content: v.content,
+    }));
+
+    const modelConfig = {
+      ...useAppConfig.getState().modelConfig,
+      ...useChatStore.getState().currentSession().mask.modelConfig,
+      ...{
+        model: options.config.model,
+      },
+    };
+
+    const requestPayload = {
+      messages,
+      stream: options.config.stream,
+      model: modelConfig.model,
+      temperature: modelConfig.temperature,
+      presence_penalty: modelConfig.presence_penalty,
+      frequency_penalty: modelConfig.frequency_penalty,
+      top_p: modelConfig.top_p,
+    };
+
+    console.log("[Request] openai payload: ", requestPayload);
+
+    const shouldStream = true;
+    const controller = new AbortController();
+    options.onController?.(controller);
+
+    try {
+      const path = "/api/langchain/tool/agent";
+      const chatPayload = {
+        method: "POST",
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
+        headers: getHeaders(),
+      };
+
+      // make a fetch request
+      const requestTimeoutId = setTimeout(
+        () => controller.abort(),
+        REQUEST_TIMEOUT_MS,
+      );
+      console.log("shouldStream", shouldStream);
+
+      if (shouldStream) {
+        let responseText = "";
+        let finished = false;
+
+        const finish = () => {
+          if (!finished) {
+            options.onFinish(responseText);
+            finished = true;
+          }
+        };
+
+        controller.signal.onabort = finish;
+
+        fetchEventSource(path, {
+          ...chatPayload,
+          async onopen(res) {
+            clearTimeout(requestTimeoutId);
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
+
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
+              return finish();
+            }
+
+            if (
+              !res.ok ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
+              console.warn(`extraInfo: ${extraInfo}`);
+              // try {
+              //   const resJson = await res.clone().json();
+              //   extraInfo = prettyObject(resJson);
+              // } catch { }
+
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
+              }
+
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
+
+              responseText = responseTexts.join("\n\n");
+
+              return finish();
+            }
+          },
+          onmessage(msg) {
+            if (msg.data === "[DONE]" || finished) {
+              return finish();
+            }
+            let response: LangChainAgentResponse = JSON.parse(msg.data);
+            try {
+              if (response && !response.isToolMessage) {
+                responseText += response.message;
+                options.onUpdate?.(
+                  responseText,
+                  JSON.stringify(response.toolInput),
+                );
+              } else {
+                options.onToolUpdate?.(response.toolName!, response.message);
+              }
+            } catch (e) {
+              console.error("[Request] parse error", response, msg);
+            }
+          },
+          onclose() {
+            finish();
+          },
+          onerror(e) {
+            options.onError?.(e);
+            throw e;
+          },
+          openWhenHidden: true,
+        });
+      } else {
+        const res = await fetch(path, chatPayload);
+        clearTimeout(requestTimeoutId);
+
+        const resJson = await res.json();
+        const message = this.extractMessage(resJson);
+        options.onFinish(message);
+      }
+    } catch (e) {
+      console.log("[Request] failed to make a chat reqeust", e);
+      options.onError?.(e as Error);
+    }
+  }
+
   async usage() {
     const formatDate = (d: Date) =>
       `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d

@@ -34,8 +34,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
-import SearchCloseIcon from "../icons/search_close.svg";
-import SearchOpenIcon from "../icons/search_open.svg";
+import CheckmarkIcon from "../icons/checkmark.svg";
 
 import {
   ChatMessage,
@@ -403,11 +402,11 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
 
-  // switch web search
-  const webSearch = chatStore.currentSession().webSearch;
-  function switchWebSearch() {
+  // switch tools
+  const useTools = chatStore.currentSession().useTools;
+  function switchUseTools() {
     chatStore.updateCurrentSession((session) => {
-      session.webSearch = !session.webSearch;
+      session.useTools = !session.useTools;
     });
   }
 
@@ -512,15 +511,15 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
-      <ChatAction
-        onClick={switchWebSearch}
+      {/* <ChatAction
+        onClick={switchUseTools}
         text={
-          webSearch
-            ? Locale.Chat.InputActions.CloseWebSearch
-            : Locale.Chat.InputActions.OpenWebSearch
+          useTools
+            ? Locale.Chat.InputActions.CloseTools
+            : Locale.Chat.InputActions.OpenTools
         }
-        icon={webSearch ? <SearchOpenIcon /> : <SearchCloseIcon />}
-      />
+        icon={useTools ? <SearchOpenIcon /> : <SearchCloseIcon />}
+      /> */}
 
       {showModelSelector && (
         <Selector
@@ -1148,6 +1147,28 @@ export function Chat() {
                       </div>
                     )}
                   </div>
+                  {session.useTools &&
+                    !isUser &&
+                    message.toolMessages &&
+                    message.toolMessages.map((tool, index) => (
+                      <div
+                        className={styles["chat-message-tools-status"]}
+                        key={index}
+                      >
+                        <div className={styles["chat-message-tools-name"]}>
+                          <CheckmarkIcon
+                            className={styles["chat-message-checkmark"]}
+                          />
+                          {tool.toolName}:
+                          <code
+                            className={styles["chat-message-tools-details"]}
+                          >
+                            {tool.toolInput}
+                          </code>
+                        </div>
+                      </div>
+                    ))}
+
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>
                       {Locale.Chat.Typing}

@@ -13,7 +13,6 @@ export type ChatModel = ModelType;
 export interface RequestMessage {
   role: MessageRole;
   content: string;
-  toolPrompt?: string;
 }
 
 export interface LLMConfig {
@@ -28,7 +27,7 @@ export interface LLMConfig {
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
-
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
   onUpdate?: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
@@ -47,6 +46,7 @@ export interface LLMModel {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
+  abstract toolAgentChat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
