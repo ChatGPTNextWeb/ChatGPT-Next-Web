@@ -18,10 +18,6 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 
-const more_assistant_info = `
-The following information can be used to supplement your personal information, but you do not need to proactively tell others unless they ask: 
-"Aizpy" is a name made up of the combination of the words "AI" (artificial intelligence) and "zippy".
-`;
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
@@ -388,15 +384,6 @@ export const useChatStore = create<ChatStore>()(
 
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
-        if (contextPrompts.length === 0) {
-          const systemInfo = createMessage({
-            role: "system",
-            content: `It is now ${new Date().toLocaleString()}. You are a personal AI assistant. Your name is Aizpy. You are intelligent, knowledgeable, wise, and polite. Sometimes you even show a bit of humor. ${more_assistant_info}You are a model powered by ${
-              modelConfig.model
-            }.`,
-          });
-          contextPrompts.push(systemInfo);
-        }
 
         // system prompts, to get close to OpenAI Web ChatGPT
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
