@@ -3008,6 +3008,7 @@ __metadata:
     fuse.js: ^6.6.2
     html-to-image: ^1.11.11
     husky: ^8.0.0
+    jose: ^4.14.4
     lint-staged: ^13.2.2
     mermaid: ^10.2.3
     nanoid: ^4.0.2
@@ -5598,6 +5599,13 @@ __metadata:
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
   checksum: 98cd68b696781caed61c983a3ee30bf880b5bd021c01d98f47b143d4362b85d0737f8523761e2713d45e18b4f9a2b98af1eaee77afade4111bb65c77d6f7c980
+  languageName: node
+  linkType: hard
+
+"jose@npm:^4.14.4":
+  version: 4.14.4
+  resolution: "jose@npm:4.14.4"
+  checksum: 2d820a91a8fd97c05d8bc8eedc373b944a0cd7f5fe41063086da233d0473c73fb523912a9f026ea870782bd221f4a515f441a2d3af4de48c6f2c76dac5082377
   languageName: node
   linkType: hard
 

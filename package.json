@@ -21,6 +21,7 @@
     "emoji-picker-react": "^4.4.10",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
+    "jose": "^4.14.4",
     "mermaid": "^10.2.3",
     "nanoid": "^4.0.2",
     "next": "^13.4.12",
