@@ -61,14 +61,7 @@ const de: PartialLocaleType = {
   Settings: {
     Title: "Einstellungen",
     SubTitle: "Alle Einstellungen",
-    Actions: {
-      ClearAll: "Alle Daten löschen",
-      ResetAll: "Alle Einstellungen zurücksetzen",
-      Close: "Schließen",
-      ConfirmResetAll:
-        "Möchten Sie wirklich alle Konfigurationen zurücksetzen?",
-      ConfirmClearAll: "Möchten Sie wirklich alle Chats zurücksetzen?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Alle Sprachen",
@@ -77,6 +70,11 @@ const de: PartialLocaleType = {
     FontSize: {
       Title: "Schriftgröße",
       SubTitle: "Schriftgröße des Chat-Inhalts anpassen",
+    },
+    InjectSystemPrompts: {
+      Title: "System-Prompts einfügen",
+      SubTitle:
+        "Erzwingt das Hinzufügen eines simulierten systemweiten Prompts von ChatGPT am Anfang der Nachrichtenliste bei jeder Anfrage",
     },
     Update: {
       Version: (x: string) => `Version: ${x}`,
@@ -94,8 +92,10 @@ const de: PartialLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
     },
     Prompt: {
       Disable: {

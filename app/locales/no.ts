@@ -56,11 +56,7 @@ const no: PartialLocaleType = {
   Settings: {
     Title: "Innstillinger",
     SubTitle: "Alle innstillinger",
-    Actions: {
-      ClearAll: "Fjern alle data",
-      ResetAll: "Nullstill innstillinger",
-      Close: "Lukk",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
     },
@@ -68,6 +64,11 @@ const no: PartialLocaleType = {
     FontSize: {
       Title: "Fontstørrelsen",
       SubTitle: "Juster fontstørrelsen for samtaleinnholdet.",
+    },
+    InjectSystemPrompts: {
+      Title: "Sett inn systemprompter",
+      SubTitle:
+        "Tving tillegg av en simulert ChatGPT-systemprompt i begynnelsen av meldingslisten for hver forespørsel",
     },
     Update: {
       Version: (x: string) => `Versjon: ${x}`,

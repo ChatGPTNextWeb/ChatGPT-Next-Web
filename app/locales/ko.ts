@@ -61,13 +61,7 @@ const ko: PartialLocaleType = {
   Settings: {
     Title: "설정",
     SubTitle: "모든 설정",
-    Actions: {
-      ClearAll: "모든 데이터 지우기",
-      ResetAll: "모든 설정 초기화",
-      Close: "닫기",
-      ConfirmResetAll: "모든 설정을 초기화하시겠습니까?",
-      ConfirmClearAll: "모든 데이터를 지우시겠습니까?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "All Languages",
@@ -76,6 +70,11 @@ const ko: PartialLocaleType = {
     FontSize: {
       Title: "글꼴 크기",
       SubTitle: "채팅 내용의 글꼴 크기 조정",
+    },
+    InjectSystemPrompts: {
+      Title: "시스템 프롬프트 주입",
+      SubTitle:
+        "각 요청의 메시지 목록의 시작에 ChatGPT 시스템 프롬프트를 강제로 추가합니다",
     },
     Update: {
       Version: (x: string) => `버전: ${x}`,
@@ -93,8 +92,10 @@ const ko: PartialLocaleType = {
       SubTitle: "버블에서 마크다운 미리 보기",
     },
     Mask: {
-      Title: "마스크 시작 화면",
-      SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
+      Splash: {
+        Title: "마스크 시작 화면",
+        SubTitle: "새로운 채팅 시작 전에 마스크 시작 화면 표시",
+      },
     },
     Prompt: {
       Disable: {

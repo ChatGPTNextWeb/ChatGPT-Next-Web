@@ -61,13 +61,7 @@ const es: PartialLocaleType = {
   Settings: {
     Title: "Configuración",
     SubTitle: "Todas las configuraciones",
-    Actions: {
-      ClearAll: "Borrar todos los datos",
-      ResetAll: "Restablecer todas las configuraciones",
-      Close: "Cerrar",
-      ConfirmResetAll: "Are you sure you want to reset all configurations?",
-      ConfirmClearAll: "Are you sure you want to reset all chat?",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Todos los idiomas",
@@ -76,6 +70,11 @@ const es: PartialLocaleType = {
     FontSize: {
       Title: "Tamaño de fuente",
       SubTitle: "Ajustar el tamaño de fuente del contenido del chat",
+    },
+    InjectSystemPrompts: {
+      Title: "Inyectar Prompts del Sistema",
+      SubTitle:
+        "Agregar forzosamente un prompt de sistema simulado de ChatGPT al comienzo de la lista de mensajes en cada solicitud",
     },
     Update: {
       Version: (x: string) => `Versión: ${x}`,
@@ -93,8 +92,10 @@ const es: PartialLocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
     },
     Prompt: {
       Disable: {

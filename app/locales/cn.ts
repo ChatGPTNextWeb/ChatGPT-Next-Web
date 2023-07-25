@@ -18,6 +18,12 @@ const cn = {
   },
   Chat: {
     SubTitle: (count: number) => `共 ${count} 条对话`,
+    EditMessage: {
+      Topic: {
+        Title: "聊天主题",
+        SubTitle: "更改当前聊天主题",
+      },
+    },
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -26,9 +32,10 @@ const cn = {
       Stop: "停止",
       Retry: "重试",
       Pin: "固定",
-      PinToastContent: "已将 2 条对话固定至预设提示词",
+      PinToastContent: "已将 1 条对话固定至预设提示词",
       PinToastAction: "查看",
       Delete: "删除",
+      Edit: "编辑",
     },
     Commands: {
       new: "新建聊天",
@@ -65,6 +72,7 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
+    IsContext: "预设提示词",
   },
   Export: {
     Title: "分享聊天记录",
@@ -84,6 +92,10 @@ const cn = {
     Steps: {
       Select: "选取",
       Preview: "预览",
+    },
+    Image: {
+      Toast: "正在生成截图",
+      Modal: "长按或右键保存图片",
     },
   },
   Select: {
@@ -108,13 +120,21 @@ const cn = {
   },
   Settings: {
     Title: "设置",
-    SubTitle: "设置选项",
-    Actions: {
-      ClearAll: "清除所有数据",
-      ResetAll: "重置所有选项",
-      Close: "关闭",
-      ConfirmResetAll: "确认重置所有配置？",
-      ConfirmClearAll: "确认清除所有数据？",
+    SubTitle: "所有设置选项",
+
+    Danger: {
+      Reset: {
+        Title: "重置所有设置",
+        SubTitle: "重置所有设置项回默认值",
+        Action: "立即重置",
+        Confirm: "确认重置所有设置？",
+      },
+      Clear: {
+        Title: "清除所有数据",
+        SubTitle: "清除所有聊天、设置数据",
+        Action: "立即清除",
+        Confirm: "确认清除所有聊天、设置数据？",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -125,7 +145,10 @@ const cn = {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
     },
-
+    InjectSystemPrompts: {
+      Title: "注入系统级提示信息",
+      SubTitle: "强制给每次请求的消息列表开头添加一个模拟 ChatGPT 的系统提示",
+    },
     InputTemplate: {
       Title: "用户输入预处理",
       SubTitle: "用户最新的一条消息会填充到此模板",
@@ -147,8 +170,14 @@ const cn = {
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Splash: {
+        Title: "面具启动页",
+        SubTitle: "新建聊天时，展示面具启动页",
+      },
+      Builtin: {
+        Title: "隐藏内置面具",
+        SubTitle: "在所有面具列表中隐藏内置面具",
+      },
     },
     Prompt: {
       Disable: {
@@ -200,10 +229,18 @@ const cn = {
       Title: "接口地址",
       SubTitle: "除默认地址外，必须包含 http(s)://",
     },
+    CustomModel: {
+      Title: "自定义模型名",
+      SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
+    },
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
+    },
+    TopP: {
+      Title: "核采样 (top_p)",
+      SubTitle: "与随机性类似，但不要和随机性一起更改",
     },
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
@@ -278,6 +315,11 @@ const cn = {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
       },
+      Share: {
+        Title: "分享此面具",
+        SubTitle: "生成此面具的直达链接",
+        Action: "复制链接",
+      },
     },
   },
   NewChat: {
@@ -288,6 +330,11 @@ const cn = {
     Title: "挑选一个面具",
     SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
     More: "查看全部",
+  },
+
+  URLCommand: {
+    Code: "检测到链接中已经包含访问码，是否自动填入？",
+    Settings: "检测到链接中包含了预制设置，是否自动填入？",
   },
 
   UI: {
