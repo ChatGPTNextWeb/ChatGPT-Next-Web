@@ -39,7 +39,7 @@ Docker 版本相当于稳定版，latest Docker 总是与 latest release version
 
 > 相关讨论：[#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
 
-如果你使用 ngnix 反向代理，需要在配置文件中增加下列代码：
+如果你使用 nginx 反向代理，需要在配置文件中增加下列代码：
 
 ```
 # 不缓存，支持流式输出
