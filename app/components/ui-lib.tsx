@@ -119,11 +119,13 @@ export function Modal(props: ModalProps) {
           <CloseIcon />
         </div>
       </div>
+      {props.message !== undefined && (
+        <div className={styles["modal-content"]}>
+          <CollapsibleElement message={props.message?.sourceDocs} />
+        </div>
+      )}
 
       <div className={styles["modal-content"]}>{props.children}</div>
-      <div className={styles["modal-content"]}>
-        <CollapsibleElement message={props.message?.sourceDocs} />
-      </div>
 
       <div className={styles["modal-footer"]}>
         <div className={styles["modal-actions"]}>
