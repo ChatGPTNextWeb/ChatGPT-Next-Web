@@ -213,10 +213,13 @@ export class ChatGPTApi implements LLMApi {
           const history = this.getHistory(messages);
           const uuid = options.uuid;
           const testPath = "http://localhost:3001/api/chat/";
+          //          const prompt = "xzw is cool!!"
+
           const testBody = {
             uuid: uuid,
             question: question,
             history: history,
+            agent_prompt: options.prompt,
           };
           console.log(testBody);
           const testPayload = {
@@ -227,9 +230,10 @@ export class ChatGPTApi implements LLMApi {
               "Content-Type": "application/json",
             },
           };
-
+          //salert("There!")
           try {
             const res = await fetch(testPath, testPayload);
+            console.log("{The res is }", res);
             clearTimeout(requestTimeoutId);
 
             if (!res.ok) {
@@ -237,8 +241,11 @@ export class ChatGPTApi implements LLMApi {
             }
             const resJson = await res.json();
             const message = resJson.text;
+            const sourceDocs = resJson.sourceDocuments;
+
+            console.log("The Docs is ", sourceDocs);
             //alert(message)
-            options.onFinish(message);
+            options.onFinish(message, sourceDocs);
           } catch (error) {
             console.error("Request error:", error);
           }

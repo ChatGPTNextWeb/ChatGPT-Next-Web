@@ -13,6 +13,18 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
+    "@microsoft/fetch-event-source": "^2.0.1",
+    "@pinecone-database/pinecone": "0.0.12",
+    "@radix-ui/react-accordion": "^1.1.1",
+    "clsx": "^1.2.1",
+    "dotenv": "^16.0.3",
+    "html2canvas": "^1.4.1",
+    "langchain": "0.0.55",
+    "lucide-react": "^0.125.0",
+    "react-hot-toast": "^2.4.0",
+    "i18next": "^22.4.13",
+    "pdf-parse": "1.1.1",
+    "tailwind-merge": "^1.10.0",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.2.0",
     "@svgr/webpack": "^6.5.1",

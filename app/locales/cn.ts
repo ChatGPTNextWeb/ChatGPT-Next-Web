@@ -12,6 +12,7 @@ const cn = {
   Chat: {
     SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
     Actions: {
+      Show: "显示参考资料",
       Play: "播放",
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -211,6 +212,7 @@ const cn = {
     Toast: (x: any) => `包含 ${x} 条预设提示词`,
     Edit: "当前对话设置",
     Add: "新增预设对话",
+    Source: "参考资料",
     Clear: "上下文已清除",
     Revert: "恢复上下文",
   },

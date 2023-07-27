@@ -8,6 +8,8 @@ import DownIcon from "../icons/down.svg";
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
 import { IconButton } from "./button";
+import CollapsibleElement from "@/app/components/accordion";
+import { ChatMessage } from "@/app/store";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -90,6 +92,7 @@ interface ModalProps {
   children?: JSX.Element | JSX.Element[];
   actions?: JSX.Element[];
   onClose?: () => void;
+  message?: ChatMessage;
 }
 export function Modal(props: ModalProps) {
   useEffect(() => {
@@ -118,6 +121,9 @@ export function Modal(props: ModalProps) {
       </div>
 
       <div className={styles["modal-content"]}>{props.children}</div>
+      <div className={styles["modal-content"]}>
+        <CollapsibleElement message={props.message?.sourceDocs} />
+      </div>
 
       <div className={styles["modal-footer"]}>
         <div className={styles["modal-actions"]}>

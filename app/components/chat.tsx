@@ -1,4 +1,6 @@
 import { ChangeEvent } from "react";
+
+import ReactMarkdown from "react-markdown";
 import { useDebouncedCallback } from "use-debounce";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import CircleIcon from "../icons/Circle.svg";
@@ -75,6 +77,8 @@ import Height = Property.Height;
 import ResponseController from "@/app/api/controller/ResponseController";
 import { BUILTIN_MASK_STORE } from "../masks";
 import "./circle.scss";
+import CollapsibleElement from "@/app/components/accordion";
+
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -142,10 +146,36 @@ export function SessionConfigModel(props: { onClose: () => void }) {
   );
 }
 
+export function SessionConfigSource(props: {
+  onClose: () => void;
+  message: ChatMessage;
+}) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const maskStore = useMaskStore();
+  const navigate = useNavigate();
+  const messageListRef = useRef<HTMLDivElement>(null);
+  console.log(props.message);
+  if (props.message !== undefined)
+    console.log("The Docs is ", props.message.sourceDocs);
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Context.Source}
+        message={props.message}
+        onClose={() => props.onClose()}
+      ></Modal>
+    </div>
+  );
+}
+
 function PromptToast(props: {
   showToast?: boolean;
   showModal?: boolean;
+  showSource?: boolean;
   setShowModal: (_: boolean) => void;
+  setShowSource: (_: boolean) => void;
+  message: ChatMessage;
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -167,6 +197,12 @@ function PromptToast(props: {
       )}
       {props.showModal && (
         <SessionConfigModel onClose={() => props.setShowModal(false)} />
+      )}
+      {props.showSource && (
+        <SessionConfigSource
+          onClose={() => props.setShowSource(false)}
+          message={props.message}
+        />
       )}
     </div>
   );
@@ -484,7 +520,7 @@ export function Chat() {
   ]);
   const config = useAppConfig();
   const fontSize = config.fontSize;
-
+  const [number, setnumber] = useState(0);
   const [showExport, setShowExport] = useState(false);
   const [showCount, setShowCount] = useState(false);
   const [editingHeight2, setEditingHeight2] = useState<number | null>(null);
@@ -732,6 +768,7 @@ export function Chat() {
       ? session.clearContextIndex! + context.length
       : -1;
 
+  const chat_message = session.messages[number - 1];
   // preview messages
   let messages = context
     .concat(session.messages as RenderMessage[])
@@ -763,6 +800,7 @@ export function Chat() {
     );
   //console.log("[The Message is ]" + messages);
   const [showPromptModal, setShowPromptModal] = useState(false);
+  const [showSourceDocs, setshowSourceDocs] = useState(false);
 
   const renameSession = () => {
     const newTopic = prompt(Locale.Chat.Rename, session.topic);
@@ -831,6 +869,7 @@ export function Chat() {
   function fileCount() {}
   const uuid = session.id.toString();
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isRunning, setIsRunning] = useState(false);
@@ -917,7 +956,10 @@ export function Chat() {
     if (isGroup) messages.splice(2, 1);
   }
   const isRoating = true;
-
+  const showClick = (i: number) => {
+    setshowSourceDocs(true);
+    setnumber(i);
+  };
   // console.log("messages",messages);
   return (
     <div className={styles.chat} key={session.id}>
@@ -1035,6 +1077,9 @@ export function Chat() {
           showToast={!hitBottom}
           showModal={showPromptModal}
           setShowModal={setShowPromptModal}
+          showSource={showSourceDocs}
+          setShowSource={setshowSourceDocs}
+          message={chat_message}
         />
       </div>
 
@@ -1056,13 +1101,6 @@ export function Chat() {
             i > 0 &&
             !(message.preview || message.content.length === 0);
           const showTyping = message.preview || message.streaming;
-
-          // const isGroup = session.group; //判断是否群聊
-          // const isRuningGroup =(!isGroup)||(isGroup&&isRunning);//判断是否群聊且已经按了开始按钮
-          // const isStart = messages.length===3;
-          // const isGroupStart =(!isGroup)||(isGroup&&!isStart);
-          // console.log("!!!!!!",isGroupStart);
-          // console.log("messages.length",messages.length);
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
           // const avatarMask =maskStore.get(message.maskId[index]) ?? BUILTIN_MASK_STORE.get(session.maskId[index])??session.mask;
@@ -1176,6 +1214,14 @@ export function Chat() {
                                 >
                                   {Locale.Chat.Actions.Play}
                                 </div>
+                                <div
+                                  className={styles["chat-message-top-action"]}
+                                  onClick={() => {
+                                    showClick(i);
+                                  }}
+                                >
+                                  {Locale.Chat.Actions.Show}
+                                </div>
                               </>
                             )}
                           </>
@@ -1224,6 +1270,52 @@ export function Chat() {
                       </div>
                     </div>
                   )}
+                  {/*<Layout>*/}
+                  {/*  <div className="mx-auto flex flex-col gap-4">*/}
+                  {/*    <main className={styles.main}>*/}
+                  {/*      <div className={styles.cloud}>*/}
+                  {/*        <div ref={messageListRef} className={styles.messagelist}>*/}
+                  {/*          {messages.map((message, index) => {*/}
+                  {/*            return (*/}
+                  {/*                <>*/}
+                  {/*                  {message.sourceDocs && (*/}
+                  {/*                      <div*/}
+                  {/*                          className="p-5"*/}
+                  {/*                          key={`sourceDocsAccordion-${index}`}*/}
+                  {/*                      >*/}
+                  {/*                        <Accordion*/}
+                  {/*                            type="single"*/}
+                  {/*                            collapsible*/}
+                  {/*                            className="flex-col"*/}
+                  {/*                        >*/}
+                  {/*                          {message.sourceDocs.map((doc, index) => (*/}
+                  {/*                              <div key={`messageSourceDocs-${index}`}>*/}
+                  {/*                                <AccordionItem value={`item-${index}`}>*/}
+                  {/*                                  <AccordionTrigger>*/}
+                  {/*                                    <h3>Source {index + 1}</h3>*/}
+                  {/*                                  </AccordionTrigger>*/}
+                  {/*                                  <AccordionContent>*/}
+                  {/*                                    <ReactMarkdown linkTarget="_blank">*/}
+                  {/*                                      {doc.pageContent}*/}
+                  {/*                                    </ReactMarkdown>*/}
+                  {/*                                    <p className="mt-2">*/}
+                  {/*                                      <b>Source:</b> {doc.metadata.source}*/}
+                  {/*                                    </p>*/}
+                  {/*                                  </AccordionContent>*/}
+                  {/*                                </AccordionItem>*/}
+                  {/*                              </div>*/}
+                  {/*                          ))}*/}
+                  {/*                        </Accordion>*/}
+                  {/*                      </div>*/}
+                  {/*                  )}*/}
+                  {/*                </>*/}
+                  {/*            );*/}
+                  {/*          })}*/}
+                  {/*        </div>*/}
+                  {/*      </div>*/}
+                  {/*    </main>*/}
+                  {/*  </div>*/}
+                  {/*</Layout>*/}
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}

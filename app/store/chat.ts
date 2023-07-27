@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+import { Document } from "langchain/document";
 import { trimTopic } from "../utils";
 
 import Locale from "../locales";
@@ -19,6 +19,7 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  sourceDocs?: Document[];
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -385,10 +386,19 @@ export const useChatStore = create<ChatStore>()(
           const uuid = chat.id;
           //alert(uuid);
 
+          let prompt = "";
+          for (let i = chat.messages.length - 1; i >= 0; i--) {
+            if (chat.messages[i].role === "assistant") {
+              prompt = chat.mask?.context[0]?.content;
+              alert(prompt);
+              break;
+            }
+          }
           api.llm.chat({
             uuid: uuid,
             messages: sendMessages,
             config: { ...modelConfig, stream: isStreaming },
+            prompt: prompt,
             onUpdate(message) {
               botMessage.streaming = true;
               if (message) {
@@ -396,13 +406,19 @@ export const useChatStore = create<ChatStore>()(
               }
               set(() => ({}));
             },
-            onFinish(message) {
+            onFinish(message, sourceDocs?) {
+              alert("triggered1!!");
               botMessage.streaming = false;
               //alert(botMessage.content);
               if (message) {
                 botMessage.content = message;
+                if (sourceDocs) {
+                  botMessage.sourceDocs = sourceDocs;
+                }
+
                 get().onNewMessage(botMessage);
               }
+
               ChatControllerPool.remove(
                 sessionIndex,
                 botMessage.id ?? messageIndex,
@@ -498,10 +514,19 @@ export const useChatStore = create<ChatStore>()(
           console.log("[User Input] ", sendMessages);
           const chat = get().currentSession();
           const uuid = chat.id;
+          let prompt = "";
+          for (let i = chat.messages.length - 1; i >= 0; i--) {
+            if (chat.messages[i].role === "assistant") {
+              prompt = chat.mask.avatar;
+              //alert(prompt);
+              break;
+            }
+          }
           //alert("1111uuidcd  " + uuid);
           api.llm.chat({
             uuid: uuid,
             messages: content,
+            prompt: prompt,
             config: { ...modelConfig, stream: isStreaming },
             onUpdate(message) {
               botMessage.streaming = true;
@@ -510,7 +535,8 @@ export const useChatStore = create<ChatStore>()(
               }
               set(() => ({}));
             },
-            onFinish(message) {
+            onFinish(message, sourceDocs?) {
+              alert("triggered!!");
               set((state) => ({
                 ...state,
                 inputContent: message, // 更新 inputContent 的值
@@ -523,6 +549,11 @@ export const useChatStore = create<ChatStore>()(
               if (message) {
                 botMessage.content = message;
                 //here is
+
+                if (sourceDocs) {
+                  botMessage.sourceDocs = sourceDocs;
+                }
+
                 get().onNewMessage(botMessage);
               }
               ChatControllerPool.remove(
@@ -670,12 +701,14 @@ export const useChatStore = create<ChatStore>()(
           console.log("[topicMessage] : ", topicMessages);
           const uuid = session.id;
           api.llm.chat({
+            prompt: "",
             uuid: uuid,
             messages: topicMessages,
             config: {
               model: "gpt-3.5-turbo",
             },
             onFinish(message) {
+              alert("triggered3!!");
               get().updateCurrentSession(
                 (session) =>
                   (session.topic =
@@ -726,6 +759,7 @@ export const useChatStore = create<ChatStore>()(
           //alert("33333");
           api.llm.chat({
             uuid: uuid,
+            prompt: "",
             messages: toBeSummarizedMsgs.concat({
               role: "system",
               content: Locale.Store.Prompt.Summarize,
@@ -738,6 +772,7 @@ export const useChatStore = create<ChatStore>()(
               session.memoryPrompt = message;
             },
             onFinish(message) {
+              alert("triggered4!!");
               console.log("[Memory] ", message);
               session.lastSummarizeIndex = lastSummarizeIndex;
             },

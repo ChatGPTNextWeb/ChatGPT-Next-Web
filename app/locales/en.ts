@@ -13,6 +13,7 @@ const en: RequiredLocaleType = {
   Chat: {
     SubTitle: (count: number) => `${count} messages with ChatGPT`,
     Actions: {
+      Show: "Show",
       Play: "Play",
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
@@ -213,6 +214,7 @@ const en: RequiredLocaleType = {
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
+    Source: "Reference",
     Edit: "Contextual and Memory Prompts",
     Add: "Add a Prompt",
     Clear: "Context Cleared",
