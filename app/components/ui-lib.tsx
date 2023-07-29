@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import styles from "./ui-lib.module.scss";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
@@ -6,6 +7,8 @@ import EyeOffIcon from "../icons/eye-off.svg";
 import DownIcon from "../icons/down.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
+import MaxIcon from "../icons/max.svg";
+import MinIcon from "../icons/min.svg";
 
 import Locale from "../locales";
 
@@ -44,9 +47,13 @@ export function ListItem(props: {
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
+  onClick?: () => void;
 }) {
   return (
-    <div className={styles["list-item"] + ` ${props.className || ""}`}>
+    <div
+      className={styles["list-item"] + ` ${props.className || ""}`}
+      onClick={props.onClick}
+    >
       <div className={styles["list-header"]}>
         {props.icon && <div className={styles["list-icon"]}>{props.icon}</div>}
         <div className={styles["list-item-title"]}>
@@ -93,6 +100,7 @@ interface ModalProps {
   title: string;
   children?: any;
   actions?: JSX.Element[];
+  defaultMax?: boolean;
   onClose?: () => void;
 }
 export function Modal(props: ModalProps) {
@@ -111,13 +119,30 @@ export function Modal(props: ModalProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [isMax, setMax] = useState(!!props.defaultMax);
+
   return (
-    <div className={styles["modal-container"]}>
+    <div
+      className={
+        styles["modal-container"] + ` ${isMax && styles["modal-container-max"]}`
+      }
+    >
       <div className={styles["modal-header"]}>
         <div className={styles["modal-title"]}>{props.title}</div>
 
-        <div className={styles["modal-close-btn"]} onClick={props.onClose}>
-          <CloseIcon />
+        <div className={styles["modal-header-actions"]}>
+          <div
+            className={styles["modal-header-action"]}
+            onClick={() => setMax(!isMax)}
+          >
+            {isMax ? <MinIcon /> : <MaxIcon />}
+          </div>
+          <div
+            className={styles["modal-header-action"]}
+            onClick={props.onClose}
+          >
+            <CloseIcon />
+          </div>
         </div>
       </div>
 
@@ -321,6 +346,7 @@ export function showConfirm(content: any) {
 function PromptInput(props: {
   value: string;
   onChange: (value: string) => void;
+  rows?: number;
 }) {
   const [input, setInput] = useState(props.value);
   const onInput = (value: string) => {
@@ -334,11 +360,12 @@ function PromptInput(props: {
       autoFocus
       value={input}
       onInput={(e) => onInput(e.currentTarget.value)}
+      rows={props.rows ?? 3}
     ></textarea>
   );
 }
 
-export function showPrompt(content: any, value = "") {
+export function showPrompt(content: any, value = "", rows = 3) {
   const div = document.createElement("div");
   div.className = "modal-mask";
   document.body.appendChild(div);
@@ -386,8 +413,60 @@ export function showPrompt(content: any, value = "") {
         <PromptInput
           onChange={(val) => (userInput = val)}
           value={value}
+          rows={rows}
         ></PromptInput>
       </Modal>,
     );
   });
+}
+
+export function showImageModal(img: string) {
+  showModal({
+    title: Locale.Export.Image.Modal,
+    children: (
+      <div>
+        <img
+          src={img}
+          alt="preview"
+          style={{
+            maxWidth: "100%",
+          }}
+        ></img>
+      </div>
+    ),
+  });
+}
+
+export function Selector<T>(props: {
+  items: Array<{
+    title: string;
+    subTitle?: string;
+    value: T;
+  }>;
+  onSelection?: (selection: T[]) => void;
+  onClose?: () => void;
+  multiple?: boolean;
+}) {
+  return (
+    <div className={styles["selector"]} onClick={() => props.onClose?.()}>
+      <div className={styles["selector-content"]}>
+        <List>
+          {props.items.map((item, i) => {
+            return (
+              <ListItem
+                className={styles["selector-item"]}
+                key={i}
+                title={item.title}
+                subTitle={item.subTitle}
+                onClick={() => {
+                  props.onSelection?.([item.value]);
+                  props.onClose?.();
+                }}
+              ></ListItem>
+            );
+          })}
+        </List>
+      </div>
+    </div>
+  );
 }
