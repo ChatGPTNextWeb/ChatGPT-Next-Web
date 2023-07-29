@@ -9,12 +9,14 @@ import {
   DynamicTool,
   RequestsGetTool,
   RequestsPostTool,
+  Tool,
 } from "langchain/tools";
-import { SerpAPI } from "langchain/tools";
-import { Calculator } from "langchain/tools/calculator";
 import { AIMessage, HumanMessage, SystemMessage } from "langchain/schema";
 import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
+import { SerpAPI } from "langchain/tools";
+import { Calculator } from "langchain/tools/calculator";
+import { DuckDuckGo } from "@/app/api/tools/duckduckgo";
 
 const serverConfig = getServerSideConfig();
 
@@ -120,16 +122,21 @@ async function handle(req: NextRequest) {
       },
     });
 
+    let searchTool: Tool = new DuckDuckGo();
+    if (process.env.SERPAPI_API_KEY) {
+      let serpAPITool = new SerpAPI(process.env.SERPAPI_API_KEY);
+      searchTool = new DynamicTool({
+        name: "google_search",
+        description: serpAPITool.description,
+        func: async (input: string) => serpAPITool.call(input),
+      });
+    }
+
     const tools = [
+      searchTool,
       new RequestsGetTool(),
       new RequestsPostTool(),
-      new SerpAPI(process.env.SERPAPI_API_KEY),
       new Calculator(),
-      // new DynamicTool({
-      //   name: ddg.name,
-      //   description: ddg.description,
-      //   func: async (input: string) => ddg.call(input),
-      // }),
     ];
 
     const pastMessages = new Array();
@@ -192,4 +199,4 @@ async function handle(req: NextRequest) {
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+export const runtime = "nodejs";

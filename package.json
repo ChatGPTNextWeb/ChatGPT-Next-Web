@@ -24,6 +24,7 @@
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
+    "html-to-text": "^9.0.5",
     "langchain": "^0.0.114",
     "mermaid": "^10.2.3",
     "nanoid": "^4.0.2",
@@ -45,6 +46,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.4.0",
+    "@types/html-to-text": "^9.0.1",
     "@types/node": "^20.3.3",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.7",
