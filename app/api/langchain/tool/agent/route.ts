@@ -16,7 +16,7 @@ import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { SerpAPI } from "langchain/tools";
 import { Calculator } from "langchain/tools/calculator";
-import { DuckDuckGo } from "@/app/api/tools/duckduckgo";
+import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo";
 
 const serverConfig = getServerSideConfig();
 
