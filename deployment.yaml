@@ -1,0 +1,42 @@
+# kubectl apply -f deployment.yaml
+# kubectl delete -f deployment.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatgpt-nw-service
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30300
+  selector:
+    app: chatgpt-nw
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatgpt-nw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatgpt-nw
+  template:
+    metadata:
+      labels:
+        app: chatgpt-nw
+    spec:
+      containers:
+        - image: yidadaa/chatgpt-next-web
+          name: chatgpt-nw
+          env:
+            - name: OPENAI_API_KEY
+              value: "sk-xxxx"
+            - name: CODE
+              value: "your-password"
+            # - name: PROXY_URL
+            #   value: "http://localhost:7890"
+          ports:
+            - containerPort: 3000
+              name: chatgpt-nw
