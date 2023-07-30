@@ -19,6 +19,12 @@ const de: PartialLocaleType = {
   },
   Chat: {
     SubTitle: (count: number) => `${count} Nachrichten mit ChatGPT`,
+    EditMessage: {
+      Topic: {
+        Title: "Titel",
+        SubTitle: "Titel des Chats ändern",
+      },
+    },
     Actions: {
       ChatList: "Zur Chat-Liste gehen",
       CompressedHistory: "komprimierter Verlauf",
@@ -27,7 +33,7 @@ const de: PartialLocaleType = {
       Stop: "Stop",
       Retry: "Wiederholen",
       Pin: "Anheften",
-      PinToastContent: "Eine Nachricht an den Context angeheftet",
+      PinToastContent: "Es wurde eine Nachricht an den Context angeheftet",
       PinToastAction: "Anzeigen",
       Delete: "Löschen",
       Edit: "Bearbeiten",
@@ -82,7 +88,7 @@ const de: PartialLocaleType = {
     },
     IncludeContext: {
       Title: "Kontext einschließen",
-      SubTitle: "Export Kontext Prompts in eine Persona",
+      SubTitle: "Export Kontextprompts in eine Persona",
     },
     Steps: {
       Select: "Auswählen",
@@ -90,7 +96,7 @@ const de: PartialLocaleType = {
     },
     Image: {
       Toast: "Screenshot...",
-      Modal: "Langes klicken oder Rechtsclick um Chat als Bild zu speichern",
+      Modal: "Langes klicken oder Rechtsklick um Chat als Bild zu speichern",
     },
   },
   Select: {
@@ -101,16 +107,16 @@ const de: PartialLocaleType = {
   },
   Memory: {
     Title: "Verlauf",
-    EmptyContent: "Noch nichts.",
+    EmptyContent: "Bisher kein Gesprächsverlauf.",
     Send: "Verlauf senden",
     Copy: "Verlauf kopieren",
     Reset: "Sitzung zurücksetzen",
     ResetConfirm:
-      "Das Zurücksetzen löscht den aktuellen Gesprächsverlauf und das Langzeit-Gedächtnis. Möchten Sie wirklich zurücksetzen?",
+      "Zurücksetzen löscht den aktuellen Gesprächsverlauf und das Langzeitgedächtnis. Möchten Sie wirklich zurücksetzen?",
   },
   Home: {
     NewChat: "Neuer Chat",
-    DeleteChat: "Das ausgewählte Gespräch wirklich löschen?",
+    DeleteChat: "Den ausgewählten Chat wirklich löschen?",
     DeleteToast: "Chat gelöscht",
     Revert: "Zurücksetzen",
   },
@@ -142,7 +148,7 @@ const de: PartialLocaleType = {
       SubTitle: "Schriftgröße des Chat-Inhalts anpassen",
     },
     InjectSystemPrompts: {
-      Title: "System-Prompts einfügen",
+      Title: "Systemprompts einfügen",
       SubTitle:
         "Erzwingt das Hinzufügen eines simulierten systemweiten Prompts von ChatGPT am Anfang der Nachrichtenliste bei jeder Anfrage",
     },
@@ -154,21 +160,21 @@ const de: PartialLocaleType = {
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Neueste Version",
-      CheckUpdate: "Update prüfen",
+      CheckUpdate: "Auf Update prüfen",
       IsChecking: "Update wird geprüft...",
       FoundUpdate: (x: string) => `Neue Version gefunden: ${x}`,
       GoToUpdate: "Aktualisieren",
     },
     SendKey: "Nachricht Senden",
     Theme: "Erscheinungsbild",
-    TightBorder: "Enger Rahmen",
+    TightBorder: "Schmaler Rahmen",
     SendPreviewBubble: {
-      Title: "Vorschau-Bubble senden",
-      SubTitle: "Markdown-Vorschau in Bubble",
+      Title: "Nachricht als Vorschau-Bubble",
+      SubTitle: "Markdown-Vorschau der aktuellen Chat-Nachricht",
     },
     Mask: {
       Splash: {
-        Title: "Persona Startbildschirm",
+        Title: "Persona-Startbildschirm",
         SubTitle:
           "Vor dem Start eines neuen Chats einen Startbildschirm anzeigen",
       },
@@ -188,7 +194,7 @@ const de: PartialLocaleType = {
         `${builtin} integriert, ${custom} benutzerdefiniert`,
       Edit: "Bearbeiten",
       Modal: {
-        Title: "Prompt List",
+        Title: "Prompt-Liste",
         Add: "Hinzufügen",
         Search: "Suche Prompts",
       },
@@ -197,8 +203,9 @@ const de: PartialLocaleType = {
       },
     },
     HistoryCount: {
-      Title: "Anzahl der angehängten Nachrichten",
-      SubTitle: "Anzahl der pro Anfrage angehängten gesendeten Nachrichten",
+      Title: "Anzahl angehängte Nachrichten",
+      SubTitle:
+        "Anzahl der pro Anfrage angehängten Nachrichten aus dem Verlauf",
     },
     CompressThreshold: {
       Title: "Schwellenwert für Verlaufskomprimierung",
@@ -209,7 +216,7 @@ const de: PartialLocaleType = {
       Title: "API-Schlüssel",
       SubTitle:
         "Verwenden Sie Ihren eignen API-Schlüssel, um nicht an das Nutzungslimit gebunden zu sein",
-      Placeholder: "OpenAI API-Schlüssel",
+      Placeholder: "API-Schlüssel",
     },
     Usage: {
       Title: "Kontostand",
@@ -226,33 +233,35 @@ const de: PartialLocaleType = {
       Placeholder: "Zugangscode erforderlich",
     },
     Endpoint: {
-      Title: "Endpoint",
-      SubTitle: "Custom endpoint must start with http(s)://",
+      Title: "Endpunkt",
+      SubTitle: "Benutzerdefinierter Endpunkt, muß mit http(s):// beginnen",
     },
     CustomModel: {
-      Title: "Custom Models",
-      SubTitle: "Add extra model options, separate by comma",
+      Title: "Benutzerdefinierte Modelle",
+      SubTitle:
+        "Hinzufügen von eigenen, fine-getunten Modellen. Modellnamen sind durch Komma getrennt.",
     },
     Model: "Modell",
     Temperature: {
-      Title: "Temperature", //Temperatur
+      Title: "Temperatur",
       SubTitle: "Ein größerer Wert führt zu zufälligeren Antworten",
     },
     TopP: {
       Title: "Top P",
-      SubTitle: "Do not alter this value together with temperature",
+      SubTitle:
+        "Ändern sie diesen Werte nicht gleichzeitig mit der Temperatur.",
     },
     MaxTokens: {
-      Title: "Max Tokens", //Maximale Token
+      Title: "Max Tokens",
       SubTitle: "Maximale Anzahl der Anfrage- plus Antwort-Token",
     },
     PresencePenalty: {
-      Title: "Presence Penalty", //Anwesenheitsstrafe
+      Title: "Presence Penalty",
       SubTitle:
         "Ein größerer Wert erhöht die Wahrscheinlichkeit, dass über neue Themen gesprochen wird",
     },
     FrequencyPenalty: {
-      Title: "Frequency Penalty", // HäufigkeitStrafe
+      Title: "Frequency Penalty",
       SubTitle:
         "Ein größerer Wert verringert die Wahrscheinlichkeit, dass dieselbe Zeile wiederholt wird",
     },
@@ -264,12 +273,12 @@ const de: PartialLocaleType = {
       "Etwas ist schief gelaufen, bitte versuchen Sie es später noch einmal.",
     Prompt: {
       History: (content: string) =>
-        "Dies ist eine Zusammenfassung des Chatverlaufs zwischen der KI und dem Benutzer als Verlauf: " +
+        "Dies ist eine Zusammenfassung des Chatverlaufs zwischen der KI und dem Benutzer: " +
         content,
       Topic:
-        "Erstellen einen Titel der aus vier bis fünf Wörtern besteht, der diesen Chat zusammenfasst. Ohne Einleitung, Zeichensetzung, Anführungszeichen, Punkte, Symbole oder zusätzlichen Text. Entfernen Sie Anführungszeichen.",
+        "Thema des Chats, darf aus vier bis fünf Wörtern bestehen und soll diesen Chat zusammenfassen. Nur Buchstaben, keine Sonderzeichen, Satzzeichen, Symbole/Emojis oder zusätzlichen Text.",
       Summarize:
-        "Fassen diesen Chat kurz in 200 Wörtern oder weniger zusammen, um die Zusammenfassung als Pronpt für zukünftige Gespräche zu verwenden.",
+        "Fasse diesen Chat kurz, in 200 Wörtern oder weniger, zusammen. Die Zusammenfassung sollte so beschrieben sein, das sie als Prompt für zukünftige Chats verwendet werden kann.",
     },
   },
   Copy: {
@@ -281,8 +290,8 @@ const de: PartialLocaleType = {
     Toast: (x: any) => `Mit ${x} Kontext-Prompts`,
     Edit: "Kontext und Verlauf",
     Add: "Hinzufügen",
-    Clear: "Context Cleared",
-    Revert: "Revert",
+    Clear: "Kontext gelöscht",
+    Revert: "Rückgängig machen",
   },
   Plugin: {
     Name: "Plugin",
@@ -305,7 +314,7 @@ const de: PartialLocaleType = {
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+        `Prompt Template bearbeiten ${readonly ? "(schreibgeschützt)" : ""}`,
       Download: "Download",
       Clone: "Duplizieren",
     },
@@ -318,7 +327,7 @@ const de: PartialLocaleType = {
         Confirm: "Wirklich globale Konfiguration übernehmen?",
       },
       HideContext: {
-        Title: "Kontext Prompts ausblenden",
+        Title: "Kontextprompts ausblenden",
         SubTitle: "Kontextabhängige Prompts im Chat nicht anzeigen",
       },
       Share: {
@@ -352,6 +361,11 @@ const de: PartialLocaleType = {
     Messages: "Nachrichten",
     Topic: "Thema",
     Time: "Zeit",
+  },
+
+  URLCommand: {
+    Code: "Zugangscode-URL erkannt. Zugangscode übernehmen?",
+    Settings: "Konfigurations-URL erkannt. Konfiguration aus URL übernehmen?",
   },
 };
 
