@@ -6,6 +6,9 @@ declare global {
       OPENAI_API_KEY?: string;
       CODE?: string;
       BASE_URL?: string;
+      OPENAI_ON_AZURE?: string;
+      AZURE_OPENAI_APIVERSION?: string;
+      AZURE_OPENAI_DEPLOYMENT_ID?: string;
       PROXY_URL?: string;
       VERCEL?: string;
       HIDE_USER_API_KEY?: string; // disable user's api key input
@@ -39,6 +42,9 @@ export const getServerSideConfig = () => {
 
   return {
     apiKey: process.env.OPENAI_API_KEY,
+    openaiOnAzure: process.env.OPENAI_ON_AZURE,
+    azureApiVersion: process.env.AZURE_OPENAI_APIVERSION,
+    azureDeploymentId: process.env.AZURE_OPENAI_DEPLOYMENT_ID,
     code: process.env.CODE,
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
