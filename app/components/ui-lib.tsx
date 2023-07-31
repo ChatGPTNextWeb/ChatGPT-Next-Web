@@ -354,6 +354,10 @@ function PromptInput(props: {
     setInput(value);
   };
 
+  useEffect(() => {
+    onInput(input);
+  }, []);
+
   return (
     <textarea
       className={styles["modal-input"]}
