@@ -39,7 +39,7 @@
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.4",
-    "zustand": "^4.3.8"
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.4.0",
