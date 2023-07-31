@@ -2,7 +2,6 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import { DuckDuckGoSearch } from "./tools/ddg_search";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -80,11 +79,9 @@ export abstract class ToolApi {
 
 export class ClientApi {
   public llm: LLMApi;
-  public searchTool: ToolApi;
 
   constructor() {
     this.llm = new ChatGPTApi();
-    this.searchTool = new DuckDuckGoSearch();
   }
 
   config() {}

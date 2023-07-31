@@ -17,6 +17,7 @@ import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { SerpAPI } from "langchain/tools";
 import { Calculator } from "langchain/tools/calculator";
 import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo";
+import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
 
 const serverConfig = getServerSideConfig();
 
@@ -36,6 +37,7 @@ interface RequestBody {
 }
 
 class ResponseBody {
+  isSuccess: boolean = true;
   message!: string;
   isToolMessage: boolean = false;
   toolName?: string;
@@ -73,11 +75,17 @@ async function handle(req: NextRequest) {
           );
         }
       },
-      // async handleChainError(err, runId, parentRunId, tags) {
-      //   console.log("writer error");
-      //   await writer.ready;
-      //   await writer.abort(err);
-      // },
+      async handleChainError(err, runId, parentRunId, tags) {
+        console.log(err, "writer error");
+        var response = new ResponseBody();
+        response.isSuccess = false;
+        response.message = err;
+        await writer.ready;
+        await writer.write(
+          encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
+        );
+        await writer.close();
+      },
       async handleChainEnd(outputs, runId, parentRunId, tags) {
         await writer.ready;
         await writer.close();
@@ -87,9 +95,15 @@ async function handle(req: NextRequest) {
         // await writer.close();
       },
       async handleLLMError(e: Error) {
-        console.log("writer error");
+        console.log(e, "writer error");
+        var response = new ResponseBody();
+        response.isSuccess = false;
+        response.message = e.message;
         await writer.ready;
-        await writer.abort(e);
+        await writer.write(
+          encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
+        );
+        await writer.close();
       },
       handleLLMStart(llm, _prompts: string[]) {
         // console.log("handleLLMStart: I'm the second handler!!", { llm });
@@ -115,6 +129,14 @@ async function handle(req: NextRequest) {
           );
         } catch (ex) {
           console.error("[handleAgentAction]", ex);
+          var response = new ResponseBody();
+          response.isSuccess = false;
+          response.message = (ex as Error).message;
+          await writer.ready;
+          await writer.write(
+            encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
+          );
+          await writer.close();
         }
       },
       handleToolStart(tool, input) {
@@ -134,8 +156,9 @@ async function handle(req: NextRequest) {
 
     const tools = [
       searchTool,
-      new RequestsGetTool(),
-      new RequestsPostTool(),
+      new HttpGetTool(),
+      // new RequestsGetTool(),
+      // new RequestsPostTool(),
       new Calculator(),
     ];
 
@@ -175,14 +198,12 @@ async function handle(req: NextRequest) {
       maxIterations: 3,
       memory: memory,
     });
-    executor
-      .call(
-        {
-          input: reqBody.messages.slice(-1)[0].content,
-        },
-        [handler],
-      )
-      .catch((e: Error) => console.error(e));
+    executor.call(
+      {
+        input: reqBody.messages.slice(-1)[0].content,
+      },
+      [handler],
+    );
 
     console.log("returning response");
     return new Response(transformStream.readable, {

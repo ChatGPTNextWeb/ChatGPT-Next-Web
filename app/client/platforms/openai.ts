@@ -23,13 +23,6 @@ export interface OpenAIListModelResponse {
   }>;
 }
 
-interface LangChainAgentResponse {
-  message: string;
-  isToolMessage: boolean;
-  toolName?: string;
-  toolInput?: object;
-}
-
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
@@ -165,6 +158,7 @@ export class ChatGPTApi implements LLMApi {
               }
             } catch (e) {
               console.error("[Request] parse error", text, msg);
+              throw e;
             }
           },
           onclose() {
@@ -296,14 +290,15 @@ export class ChatGPTApi implements LLMApi {
             if (msg.data === "[DONE]" || finished) {
               return finish();
             }
-            let response: LangChainAgentResponse = JSON.parse(msg.data);
+            let response = JSON.parse(msg.data);
+            if (!response.isSuccess) {
+              console.error("[Request]", response, msg);
+              throw Error(response.message);
+            }
             try {
               if (response && !response.isToolMessage) {
                 responseText += response.message;
-                options.onUpdate?.(
-                  responseText,
-                  JSON.stringify(response.toolInput),
-                );
+                options.onUpdate?.(responseText, response.message);
               } else {
                 options.onToolUpdate?.(response.toolName!, response.message);
               }

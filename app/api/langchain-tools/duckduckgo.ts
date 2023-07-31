@@ -18,10 +18,7 @@ export class DuckDuckGo extends Tool {
 
     const results = searchResults.results
       .slice(0, this.maxResults)
-      .map(
-        ({ title, description, url }) =>
-          `title:${title}\ncontent:${htmlToText(description)}\nurl:${url}`,
-      )
+      .map(({ title, description, url }) => htmlToText(description))
       .join("\n\n");
 
     return results;
