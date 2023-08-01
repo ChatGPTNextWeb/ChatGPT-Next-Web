@@ -377,7 +377,7 @@ export function showPrompt(content: any, value = "", rows = 3) {
   };
 
   return new Promise<string>((resolve) => {
-    let userInput = "";
+    let userInput = value;
 
     root.render(
       <Modal
