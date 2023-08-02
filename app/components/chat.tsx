@@ -387,7 +387,7 @@ function useScrollToBottom() {
       if (autoScroll.current) {
         scrollToBottom();
       }
-    }, 100);
+    }, 30);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
