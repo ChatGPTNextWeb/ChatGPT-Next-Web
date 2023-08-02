@@ -1,23 +1,23 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 <h1 align="center">ChatGPT Next Web LangChain</h1>
-一键免费部署你的跨平台私人 ChatGPT 应用。基于 LangChain 实现的插件功能。
+一键免费部署你的跨平台私人 ChatGPT 应用（基于 LangChain 实现插件功能）。
 
 [![Web][Web-image]][web-url]
 [![Windows][Windows-image]][download-url]
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[网页版](https://chat-gpt-next-web-git-dev-gosuto.vercel.app/#/) / [客户端](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases) / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues)
+[网页版](https://chat-gpt-next-web-gosuto.vercel.app/) / [客户端](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases) / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues)
 
-[web-url]: https://chat-gpt-next-web-git-dev-gosuto.vercel.app/#/
+[web-url]: https://chat-gpt-next-web-gosuto.vercel.app/
 [download-url]: https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases
 [Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=microsoftedge
 [Windows-image]: https://img.shields.io/badge/-Windows-blue?logo=windows
 [MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHk-Gosuto%2FChatGPT-Next-Web-LangChain&env=OPENAI_API_KEY,CODE,SERPAPI_API_KEY&project-name=chatgpt-next-web-langchain&repository-name=ChatGPT-Next-Web-LangChain)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHk-Gosuto%2FChatGPT-Next-Web-LangChain&env=OPENAI_API_KEY,CODE&project-name=chatgpt-next-web-langchain&repository-name=ChatGPT-Next-Web-LangChain)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain)
 
@@ -32,9 +32,9 @@
 - 除插件工具外，与原项目保持一致 [ChatGPT-Next-Web 主要功能](https://github.com/Yidadaa/ChatGPT-Next-Web#主要功能)
 - 基于 [LangChain](https://github.com/hwchase17/langchainjs) 实现的插件功能，目前支持以下插件，未来会添加更多
   - [SerpAPI](https://js.langchain.com/docs/api/tools/classes/SerpAPI)
-  - [RequestsGetTool](https://js.langchain.com/docs/api/tools/classes/RequestsGetTool)
-  - [RequestsPostTool](https://js.langchain.com/docs/api/tools/classes/RequestsPostTool)
   - [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator)
+  - DuckDuckGo
+  - HttpGet
 
 
 ## 开发计划
@@ -47,7 +47,7 @@
 - [ ] 支持开关指定插件
 - [ ] 支持添加自定义插件
 - [ ] 支持 Agent 参数配置（ agentType, maxIterations, returnIntermediateSteps 等）
-- [ ] 支持 ChatSession 级别插件工具开关
+- [ ] 支持 ChatSession 级别插件功能开关
 
 ## 已知问题
 - [ ] 使用插件时需将模型切换为 `0613` 版本模型，如：`gpt-3.5-turbo-0613`
@@ -122,7 +122,7 @@ After adding or modifying this environment variable, please redeploy the project
 
 Your openai api key.
 
-### `SERPAPI_API_KEY` (required)
+### `SERPAPI_API_KEY` (optional)
 
 [SerpApi: Google Search API](https://serpapi.com/)
 
