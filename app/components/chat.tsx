@@ -504,6 +504,7 @@ export function ChatActions(props: {
 
       {showModelSelector && (
         <Selector
+          defaultSelectedValue={currentModel}
           items={models.map((m) => ({
             title: m,
             value: m,
