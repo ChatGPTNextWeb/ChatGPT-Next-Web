@@ -18,6 +18,7 @@
     align-items: center;
     height: 16px;
     width: var(--icon-width);
+    overflow: hidden;
 
     &:not(:last-child) {
       margin-right: 5px;
@@ -29,14 +30,16 @@
       opacity: 0;
       transform: translateX(-5px);
       transition: all ease 0.3s;
-      transition-delay: 0.1s;
       pointer-events: none;
     }
 
     &:hover {
+      --delay: 0.5s;
       width: var(--full-width);
+      transition-delay: var(--delay);
 
       .text {
+        transition-delay: var(--delay);
         opacity: 1;
         transform: translate(0);
       }
