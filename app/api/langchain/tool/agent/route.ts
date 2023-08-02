@@ -16,7 +16,7 @@ import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { SerpAPI } from "langchain/tools";
 import { Calculator } from "langchain/tools/calculator";
-import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo";
+import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
 import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
 
 const serverConfig = getServerSideConfig();
@@ -220,4 +220,4 @@ async function handle(req: NextRequest) {
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "nodejs";
+export const runtime = "edge";

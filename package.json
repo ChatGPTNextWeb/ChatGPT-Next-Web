@@ -23,6 +23,7 @@
     "duck-duck-scrape": "^2.2.4",
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
+    "html-entities": "^2.4.0",
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",
     "langchain": "^0.0.114",
