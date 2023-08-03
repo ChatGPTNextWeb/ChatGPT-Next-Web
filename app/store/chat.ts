@@ -22,6 +22,13 @@ export type ChatMessage = RequestMessage & {
   sourceDocs?: Document[];
 };
 
+export interface Masks {
+  id?: number;
+  isUser?: boolean;
+  title: string;
+  content: string;
+}
+
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
     id: Date.now(),
@@ -64,6 +71,11 @@ export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 export const BOT_HELLO: ChatMessage = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
+});
+
+export const BOT_Group: ChatMessage = createMessage({
+  role: "assistant",
+  content: Locale.Store.GroupDefault,
 });
 
 function createEmptySession(): ChatSession {
@@ -128,6 +140,7 @@ interface ChatStore {
   onUserInput: (
     content: string | ChatMessage[],
     maskId: number,
+    isGroup?: boolean,
   ) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
@@ -322,7 +335,11 @@ export const useChatStore = create<ChatStore>()(
       //     console.log(get().SystemInfos.length)
       //     console.log(get().SystemInfos[0])
       //  },
-      async onUserInput(content: string | ChatMessage[], maskId: number) {
+      async onUserInput(
+        content: string | ChatMessage[],
+        maskId: number,
+        isGroup?: boolean,
+      ) {
         if (typeof content === "string") {
           const session = get().currentSession();
           const modelConfig = session.mask.modelConfig;
@@ -367,15 +384,22 @@ export const useChatStore = create<ChatStore>()(
           const messageIndex = get().currentSession().messages.length + 1;
 
           // save user's and bot's message
-          get().updateCurrentSession((session) => {
-            session.messages.push(userMessage);
-            session.messages.push(botMessage);
-          });
+          if (!isGroup) {
+            get().updateCurrentSession((session) => {
+              session.messages.push(userMessage);
+              session.messages.push(botMessage);
+            });
+          } else {
+            get().updateCurrentSession((session) => {
+              session.messages.push(userMessage);
+            });
+          }
           let isStreaming = true;
           //alert(modelConfig.model);
           if (modelConfig.model === "lang chain(Upload your docs)") {
             isStreaming = false;
           }
+
           //alert(isStreaming)
           // make request
           console.log("[User Input] ", sendMessages);
@@ -390,7 +414,7 @@ export const useChatStore = create<ChatStore>()(
           for (let i = chat.messages.length - 1; i >= 0; i--) {
             if (chat.messages[i].role === "assistant") {
               prompt = chat.mask?.context[0]?.content;
-              alert(prompt);
+              //alert(prompt);
               break;
             }
           }
@@ -407,7 +431,7 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             },
             onFinish(message, sourceDocs?) {
-              alert("triggered1!!");
+              //alert("triggered1!!");
               botMessage.streaming = false;
               //alert(botMessage.content);
               if (message) {
@@ -509,8 +533,8 @@ export const useChatStore = create<ChatStore>()(
           if (modelConfig.model === "lang chain(Upload your docs)") {
             isStreaming = false;
           }
-          //alert(isStreaming)
-          // make request
+          isStreaming = false;
+
           console.log("[User Input] ", sendMessages);
           const chat = get().currentSession();
           const uuid = chat.id;
@@ -536,7 +560,7 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             },
             onFinish(message, sourceDocs?) {
-              alert("triggered!!");
+              //alert("triggered!!");
               set((state) => ({
                 ...state,
                 inputContent: message, // 更新 inputContent 的值
@@ -708,7 +732,7 @@ export const useChatStore = create<ChatStore>()(
               model: "gpt-3.5-turbo",
             },
             onFinish(message) {
-              alert("triggered3!!");
+              //alert("triggered3!!");
               get().updateCurrentSession(
                 (session) =>
                   (session.topic =
@@ -772,7 +796,7 @@ export const useChatStore = create<ChatStore>()(
               session.memoryPrompt = message;
             },
             onFinish(message) {
-              alert("triggered4!!");
+              //alert("triggered4!!");
               console.log("[Memory] ", message);
               session.lastSummarizeIndex = lastSummarizeIndex;
             },

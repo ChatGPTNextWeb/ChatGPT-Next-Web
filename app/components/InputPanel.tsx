@@ -35,6 +35,7 @@ function InputPanel({
   waiting,
   notify,
 }: InputPanelProps) {
+  // @ts-ignore
   const { i18n } = useTranslation();
 
   function RecordButton() {
@@ -152,7 +153,9 @@ function InputPanel({
         placeholder={(i18n.t("common.type-your-message") as string) + "..."}
         className="bg-white rounded-lg px-4 py-2 w-full border-none focus:ring-0 focus:outline-none resize-none"
         value={userInput}
-        onChange={(event) => setUserInput(event.target.value)}
+        onChange={(event: { target: { value: string } }) =>
+          setUserInput(event.target.value)
+        }
         onKeyDown={handleInputKeyDown}
         maxRows={5}
       />

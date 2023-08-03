@@ -194,7 +194,11 @@ export class ChatGPTApi implements LLMApi {
           //console.log(JSON.stringify(testBody))
 
           try {
+            const startTime = new Date();
             const res = await fetch(chatPath, chatPayload);
+            const endTime = new Date();
+            const executionTime = endTime.getTime() - startTime.getTime();
+            alert(executionTime);
             //const res = await fetch(testPath, testPayload);
             clearTimeout(requestTimeoutId);
 

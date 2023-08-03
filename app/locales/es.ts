@@ -215,7 +215,7 @@ const es: LocaleType = {
     Return: "Return",
     Skip: "Skip",
     Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
+    SubTitle: "Chat with the Soul behind the Agents",
     More: "Find More",
     NotShow: "Not Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",

@@ -44,6 +44,7 @@ export const createEmptyMask = () =>
     syncGlobalConfig: true, // use global config as default
     modelConfig: { ...useAppConfig.getState().modelConfig },
     lang: getLang(),
+    hideContext: true,
     builtin: false,
   } as Mask);
 

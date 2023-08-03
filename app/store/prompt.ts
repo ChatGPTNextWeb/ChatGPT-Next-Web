@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
 import { getLang } from "../locales";
 import { StoreKey } from "../constant";
+import { useMaskStore } from "@/app/store/mask";
 
 export interface Prompt {
   id?: number;
@@ -20,6 +21,7 @@ export interface PromptStore {
   get: (id: number) => Prompt | undefined;
   remove: (id: number) => void;
   search: (text: string) => Prompt[];
+  searchAgents: (text: string) => Prompt[];
   update: (id: number, updater: (prompt: Prompt) => void) => void;
 
   getUserPrompts: () => Prompt[];
@@ -57,6 +59,8 @@ export const SearchService = {
   search(text: string) {
     const userResults = this.userEngine.search(text);
     const builtinResults = this.builtinEngine.search(text);
+    console.log("The userResult is", userResults);
+    console.log("The build is", builtinResults);
     return userResults.concat(builtinResults).map((v) => v.item);
   },
 };
@@ -125,6 +129,15 @@ export const usePromptStore = create<PromptStore>()(
       },
 
       search(text) {
+        if (text.length === 0) {
+          // return all rompts
+          return SearchService.allPrompts.concat([...get().getUserPrompts()]);
+        }
+        return SearchService.search(text) as Prompt[];
+      },
+
+      searchAgents(text) {
+        //const maskStore = useMaskStore();
         if (text.length === 0) {
           // return all rompts
           return SearchService.allPrompts.concat([...get().getUserPrompts()]);

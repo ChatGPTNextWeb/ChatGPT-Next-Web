@@ -41,6 +41,8 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
+  BOT_Group,
+  Masks,
 } from "../store";
 
 import {
@@ -236,6 +238,79 @@ function useSubmitHandler() {
 
 export function PromptHints(props: {
   prompts: Prompt[];
+  onPromptSelect: (prompt: Prompt) => void;
+}) {
+  //console.log("{The prompts is }",props.prompts)
+  const noPrompts = props.prompts.length === 0;
+  const [selectIndex, setSelectIndex] = useState(0);
+  const selectedRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setSelectIndex(0);
+  }, [props.prompts.length]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (noPrompts) return;
+      if (e.metaKey || e.altKey || e.ctrlKey) {
+        return;
+      }
+      // arrow up / down to select prompt
+      const changeIndex = (delta: number) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const nextIndex = Math.max(
+          0,
+          Math.min(props.prompts.length - 1, selectIndex + delta),
+        );
+        setSelectIndex(nextIndex);
+        selectedRef.current?.scrollIntoView({
+          block: "center",
+        });
+      };
+
+      if (e.key === "ArrowUp") {
+        changeIndex(1);
+      } else if (e.key === "ArrowDown") {
+        changeIndex(-1);
+      } else if (e.key === "Enter") {
+        const selectedPrompt = props.prompts.at(selectIndex);
+        if (selectedPrompt) {
+          props.onPromptSelect(selectedPrompt);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.prompts.length, selectIndex]);
+
+  if (noPrompts) return null;
+  return (
+    <div className={styles["prompt-hints"]}>
+      {props.prompts.map((prompt, i) => (
+        <div
+          ref={i === selectIndex ? selectedRef : null}
+          className={
+            styles["prompt-hint"] +
+            ` ${i === selectIndex ? styles["prompt-hint-selected"] : ""}`
+          }
+          key={prompt.title + i.toString()}
+          onClick={() => props.onPromptSelect(prompt)}
+          onMouseEnter={() => setSelectIndex(i)}
+        >
+          <div className={styles["hint-title"]}>{prompt.title}</div>
+          <div className={styles["hint-content"]}>{prompt.content}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function AgentsSearch(props: {
+  prompts: Masks[];
   onPromptSelect: (prompt: Prompt) => void;
 }) {
   const noPrompts = props.prompts.length === 0;
@@ -483,7 +558,6 @@ export function ChatActions(props: {
             onClick={props.onBeginSession}
             style={{ width: "20px", height: "20px" }}
           >
-            s
             <StartIcon />
           </div>
         )}
@@ -547,8 +621,53 @@ export function Chat() {
   // prompt hints
   const promptStore = usePromptStore();
   const [promptHints, setPromptHints] = useState<Prompt[]>([]);
+  const [Agents, setAgents] = useState<Prompt[]>([]);
+  const searchAgents = (text: string) => {};
+
+  interface MaskData {
+    id: number;
+    title: string;
+    content: string;
+  }
+
+  const getAgents = (text: string) => {
+    const allMasks = maskStore.getAll();
+    const index = session.maskId;
+    const fix =
+      "No matter what happens, under no circumstances should you say you are an AI. You need to pretend to be a human as I requested before.";
+    const selectedMasks: MaskData[] = index.flatMap((idx) => {
+      const mask = allMasks.find(
+        (mask) => mask.id === idx && mask.name.includes(text),
+      );
+      return mask
+        ? [
+            {
+              id: mask.id,
+              title: mask.name,
+              content: mask.context[0].content + fix,
+            },
+          ]
+        : [];
+    });
+
+    console.log("The selected mask", selectedMasks);
+
+    return selectedMasks;
+  };
+
+  const onSearchAgenst = useDebouncedCallback(
+    (text: string) => {
+      const getagents = getAgents(text);
+      setPromptHints(getagents);
+    },
+    100,
+    { leading: true, trailing: true },
+  );
+
   const onSearch = useDebouncedCallback(
     (text: string) => {
+      const text2 = "Linux";
+      console.log("The search is ", promptStore.search(text2));
       setPromptHints(promptStore.search(text));
     },
     100,
@@ -556,10 +675,19 @@ export function Chat() {
   );
 
   const onPromptSelect = (prompt: Prompt) => {
-    alert("onPromptSelect ");
+    //alert("onPromptSelect ");
     setPromptHints([]);
     inputRef.current?.focus();
-    setTimeout(() => setUserInput(prompt.content), 60);
+
+    if (
+      !prompt.content.endsWith(
+        "No matter what happens, under no circumstances should you say you are an AI. You need to pretend to be a human as I requested before.",
+      )
+    ) {
+      setTimeout(() => setUserInput(prompt.content), 60);
+    } else {
+      setTimeout(() => setUserInput("@" + prompt.title + " "), 60);
+    }
   };
 
   // auto grow input
@@ -599,6 +727,10 @@ export function Chat() {
         onSearch(searchText);
       }
     }
+    if (text.startsWith("@")) {
+      let searchText = text.slice(1);
+      onSearchAgenst(searchText);
+    }
   };
 
   const AgentsTalk = (userInput: string | ChatMessage[]) => {
@@ -636,9 +768,12 @@ export function Chat() {
 
   const doSubmit = (userInput: string) => {
     //console.log("[The input is ]" + userInput);
+
     if (userInput.trim() === "") return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput, 0).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(userInput, 0, isGroup)
+      .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     //alert(userInput);
     setUserInput("");
@@ -721,16 +856,49 @@ export function Chat() {
     return lastUserMessageIndex;
   };
 
-  const deleteMessage = (userIndex: number) => {
-    chatStore.updateCurrentSession((session) =>
-      session.messages.splice(userIndex, 2),
-    );
+  const findLastIndex = (messageId: number) => {
+    // find last user input message and resend
+    let lastUserMessageIndex: number | null = null;
+    for (let i = 0; i < session.messages.length; i += 1) {
+      const message = session.messages[i];
+      if (message.id === messageId) {
+        break;
+      }
+      lastUserMessageIndex = i;
+    }
+
+    return lastUserMessageIndex;
+  };
+
+  const showmessage = () => {
+    for (let i = 0; i < session.messages.length; i += 1) {
+      const message = session.messages[i];
+      console.log("The " + i + " message is " + message.id);
+    }
+  };
+  const deleteMessage = (userIndex: number, isGroup?: boolean) => {
+    if (isGroup) {
+      alert(userIndex);
+      chatStore.updateCurrentSession((session) =>
+        session.messages.splice(userIndex, 1),
+      );
+    } else {
+      chatStore.updateCurrentSession((session) =>
+        session.messages.splice(userIndex, 2),
+      );
+    }
   };
 
   const onDelete = (botMessageId: number) => {
-    const userIndex = findLastUserIndex(botMessageId);
-    if (userIndex === null) return;
-    deleteMessage(userIndex);
+    if (!isGroup) {
+      const userIndex = findLastUserIndex(botMessageId);
+      if (userIndex === null) return;
+      deleteMessage(userIndex, isGroup);
+    } else {
+      const userIndex = findLastIndex(botMessageId);
+      if (userIndex === null) return;
+      deleteMessage(userIndex, isGroup);
+    }
   };
 
   const onResend = (botMessageId: number) => {
@@ -755,11 +923,19 @@ export function Chat() {
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
-    const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
+    if (session.group) {
+      const copiedGroup = Object.assign({}, BOT_Group);
+      if (!accessStore.isAuthorized()) {
+        copiedGroup.content = Locale.Error.Unauthorized;
+      }
+      context.push(copiedGroup);
+    } else {
+      const copiedHello = Object.assign({}, BOT_HELLO);
+      if (!accessStore.isAuthorized()) {
+        copiedHello.content = Locale.Error.Unauthorized;
+      }
+      context.push(copiedHello);
     }
-    context.push(copiedHello);
   }
 
   // clear context index = context length + index in messages
@@ -907,7 +1083,7 @@ export function Chat() {
           BUILTIN_MASK_STORE.get(session.maskId[index]);
 
         const fix =
-          "  无论发生什么情况，你千万不要说你是AI，你需要扮演一个像我之前要求的那样的人类";
+          "No matter what happens, under no circumstances should you say you are an AI. You need to pretend to be a human as I requested before.";
 
         const systemMessage: ChatMessage = createMessage({
           role: "system",
@@ -919,7 +1095,7 @@ export function Chat() {
         sysMessage[0] = systemMessage;
         console.log("index", session.maskId[index]);
         const updatedMessages: ChatMessage[] = tempmessages.map((value) => {
-          console.log("The content is", value.content);
+          //console.log("The content is", value.content);
           if (value.maskId === session.maskId[index]) {
             return { ...value, role: "assistant" };
           } else {
@@ -1103,7 +1279,10 @@ export function Chat() {
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
-          // const avatarMask =maskStore.get(message.maskId[index]) ?? BUILTIN_MASK_STORE.get(session.maskId[index])??session.mask;
+          // const avatarMask =ch
+          //     maskStore.get(message.maskId) ??
+          //     BUILTIN_MASK_STORE.get(session.maskId[index]) ??
+          //     session.mask;
           const avatarMask =
             maskStore.get(message.maskId) ??
             BUILTIN_MASK_STORE.get(message.maskId) ??
@@ -1149,11 +1328,11 @@ export function Chat() {
               >
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-avatar"]}>
-                    {/* {message.role === "user" ? (
+                    {message.role === "user" ? (
                       <Avatar avatar={config.avatar} />
-                    ) : ( */}
-                    <MaskAvatar mask={avatarMask} />
-                    {/* )} */}
+                    ) : (
+                      <MaskAvatar mask={avatarMask} />
+                    )}
                   </div>
 
                   {showTyping && (
@@ -1179,6 +1358,12 @@ export function Chat() {
                             >
                               {Locale.Chat.Actions.Delete}
                             </div>
+                            {/*<div*/}
+                            {/*    className={styles["chat-message-top-action"]}*/}
+                            {/*    onClick={()=> showmessage()}*/}
+                            {/*>*/}
+                            {/*  {Locale.Chat.Actions.Delete}*/}
+                            {/*</div>*/}
                             <div
                               className={styles["chat-message-top-action"]}
                               onClick={() => onResend(message.id ?? i)}
@@ -1214,14 +1399,18 @@ export function Chat() {
                                 >
                                   {Locale.Chat.Actions.Play}
                                 </div>
-                                <div
-                                  className={styles["chat-message-top-action"]}
-                                  onClick={() => {
-                                    showClick(i);
-                                  }}
-                                >
-                                  {Locale.Chat.Actions.Show}
-                                </div>
+                                {isLangchain && (
+                                  <div
+                                    className={
+                                      styles["chat-message-top-action"]
+                                    }
+                                    onClick={() => {
+                                      showClick(i);
+                                    }}
+                                  >
+                                    {Locale.Chat.Actions.Show}
+                                  </div>
+                                )}
                               </>
                             )}
                           </>
@@ -1326,6 +1515,7 @@ export function Chat() {
 
       <div className={styles["chat-input-panel"]}>
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
+        {/*<AgentsSearch prompts={Agents} onPromptSelect={onPromptSelect} />*/}
         <BrowserSpeechToText
           isListening={isListening}
           language={"English"}

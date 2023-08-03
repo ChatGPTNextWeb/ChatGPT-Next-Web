@@ -196,6 +196,7 @@ const en: RequiredLocaleType = {
     },
   },
   Store: {
+    GroupDefault: `Please click on the ➕ inside the navigation bar first, then invite the Agents you want to join this group chat. After that, enter the scenario you wish to chat about in the chat box, and click ▷ to start the conversation."`,
     DefaultTopic: "New Conversation",
     BotHello: "Hello! How can I assist you today?",
     Error: "Something went wrong, please try again later.",
@@ -266,8 +267,8 @@ const en: RequiredLocaleType = {
   NewChat: {
     Return: "Return",
     Skip: "Just Start",
-    Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
+    Title: "Pick a Agents",
+    SubTitle: "Chat with the Soul behind the Agents",
     More: "Find More",
     NotShow: "Never Show Again",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",

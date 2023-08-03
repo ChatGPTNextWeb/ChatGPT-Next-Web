@@ -1,5 +1,6 @@
 import { SubmitKey } from "../store/config";
-
+import AddIcon from "../icons/add.svg";
+import StartIcon from "../icons/start.svg";
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
@@ -193,6 +194,7 @@ const cn = {
     },
   },
   Store: {
+    GroupDefault: `请先点击导航栏里面的 ⊕ ,然后邀请你想要加入这个群聊的Agents。然后在聊天框内输入你希望这次聊天发生的场景后，点击 ▷ 开始聊天`,
     DefaultTopic: "新的聊天",
     BotHello: "有什么可以帮你的吗",
     Error: "出错了，稍后重试吧",
