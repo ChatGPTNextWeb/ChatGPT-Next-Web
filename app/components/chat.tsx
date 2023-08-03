@@ -74,7 +74,13 @@ import {
   showToast,
 } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
+import {
+  CHAT_PAGE_SIZE,
+  LAST_INPUT_KEY,
+  MAX_RENDER_MSG_COUNT,
+  Path,
+  REQUEST_TIMEOUT_MS,
+} from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
@@ -370,33 +376,31 @@ function ChatAction(props: {
 function useScrollToBottom() {
   // for auto-scroll
   const scrollRef = useRef<HTMLDivElement>(null);
-  const autoScroll = useRef(true);
-  const scrollToBottom = useCallback(() => {
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  function scrollDomToBottom() {
     const dom = scrollRef.current;
     if (dom) {
-      requestAnimationFrame(() => dom.scrollTo(0, dom.scrollHeight));
+      requestAnimationFrame(() => {
+        setAutoScroll(true);
+        dom.scrollTo(0, dom.scrollHeight);
+      });
     }
-  }, []);
-  const setAutoScroll = (enable: boolean) => {
-    autoScroll.current = enable;
-  };
+  }
 
   // auto scroll
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (autoScroll.current) {
-        scrollToBottom();
-      }
-    }, 30);
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    console.log("auto scroll", autoScroll);
+    if (autoScroll) {
+      scrollDomToBottom();
+    }
+  });
 
   return {
     scrollRef,
     autoScroll,
     setAutoScroll,
-    scrollToBottom,
+    scrollDomToBottom,
   };
 }
 
@@ -595,7 +599,7 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
-export function Chat() {
+function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -609,20 +613,10 @@ export function Chat() {
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
-  const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
+  const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-
-  const lastBodyScroolTop = useRef(0);
-  const onChatBodyScroll = (e: HTMLElement) => {
-    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 10;
-    setHitBottom(isTouchBottom);
-
-    // only enable auto scroll when scroll down and touched bottom
-    setAutoScroll(e.scrollTop >= lastBodyScroolTop.current && isTouchBottom);
-    lastBodyScroolTop.current = e.scrollTop;
-  };
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -865,10 +859,9 @@ export function Chat() {
     });
   };
 
-  const context: RenderMessage[] = session.mask.hideContext
-    ? []
-    : session.mask.context.slice();
-
+  const context: RenderMessage[] = useMemo(() => {
+    return session.mask.hideContext ? [] : session.mask.context.slice();
+  }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
 
   if (
@@ -889,34 +882,80 @@ export function Chat() {
       : -1;
 
   // preview messages
-  const messages = context
-    .concat(session.messages as RenderMessage[])
-    .concat(
-      isLoading
-        ? [
-            {
-              ...createMessage({
-                role: "assistant",
-                content: "……",
-              }),
-              preview: true,
-            },
-          ]
-        : [],
-    )
-    .concat(
-      userInput.length > 0 && config.sendPreviewBubble
-        ? [
-            {
-              ...createMessage({
-                role: "user",
-                content: userInput,
-              }),
-              preview: true,
-            },
-          ]
-        : [],
+  const renderMessages = useMemo(() => {
+    return context
+      .concat(session.messages as RenderMessage[])
+      .concat(
+        isLoading
+          ? [
+              {
+                ...createMessage({
+                  role: "assistant",
+                  content: "……",
+                }),
+                preview: true,
+              },
+            ]
+          : [],
+      )
+      .concat(
+        userInput.length > 0 && config.sendPreviewBubble
+          ? [
+              {
+                ...createMessage({
+                  role: "user",
+                  content: userInput,
+                }),
+                preview: true,
+              },
+            ]
+          : [],
+      );
+  }, [
+    config.sendPreviewBubble,
+    context,
+    isLoading,
+    session.messages,
+    userInput,
+  ]);
+
+  const [msgRenderIndex, setMsgRenderIndex] = useState(
+    renderMessages.length - CHAT_PAGE_SIZE,
+  );
+  const messages = useMemo(() => {
+    const endRenderIndex = Math.min(
+      msgRenderIndex + 3 * CHAT_PAGE_SIZE,
+      renderMessages.length,
     );
+    return renderMessages.slice(msgRenderIndex, endRenderIndex);
+  }, [msgRenderIndex, renderMessages]);
+
+  const onChatBodyScroll = (e: HTMLElement) => {
+    const EDGE_THRESHOLD = 100;
+    const bottomHeight = e.scrollTop + e.clientHeight;
+    const isTouchTopEdge = e.scrollTop <= EDGE_THRESHOLD;
+    const isTouchBottomEdge = bottomHeight >= e.scrollHeight - EDGE_THRESHOLD;
+    const isHitBottom = bottomHeight >= e.scrollHeight - 10;
+
+    if (isTouchTopEdge) {
+      setMsgRenderIndex(Math.max(0, msgRenderIndex - CHAT_PAGE_SIZE));
+    } else if (isTouchBottomEdge) {
+      setMsgRenderIndex(
+        Math.min(
+          msgRenderIndex + CHAT_PAGE_SIZE,
+          renderMessages.length - CHAT_PAGE_SIZE,
+        ),
+      );
+    }
+
+    setHitBottom(isHitBottom);
+    setAutoScroll(isHitBottom);
+  };
+
+  function scrollToBottom() {
+    setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
+    scrollDomToBottom();
+  }
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
@@ -1064,7 +1103,7 @@ export function Chat() {
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
 
           return (
-            <Fragment key={i}>
+            <Fragment key={message.id}>
               <div
                 className={
                   isUser ? styles["chat-message-user"] : styles["chat-message"]
@@ -1148,7 +1187,8 @@ export function Chat() {
                     <Markdown
                       content={message.content}
                       loading={
-                        (message.preview || message.content.length === 0) &&
+                        (message.preview || message.streaming) &&
+                        message.content.length === 0 &&
                         !isUser
                       }
                       onContextMenu={(e) => onRightClick(e, message)}
@@ -1202,7 +1242,8 @@ export function Chat() {
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
-            onFocus={() => setAutoScroll(true)}
+            onFocus={scrollToBottom}
+            onClick={scrollToBottom}
             rows={inputRows}
             autoFocus={autoFocus}
             style={{
@@ -1232,4 +1273,10 @@ export function Chat() {
       )}
     </div>
   );
+}
+
+export function Chat() {
+  const chatStore = useChatStore();
+  const sessionIndex = chatStore.currentSessionIndex;
+  return <_Chat key={sessionIndex}></_Chat>;
 }
