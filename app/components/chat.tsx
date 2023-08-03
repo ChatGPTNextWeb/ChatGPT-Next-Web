@@ -965,10 +965,7 @@ function _Chat() {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
 
-  const location = useLocation();
-  const isChat = location.pathname === Path.Chat;
-
-  const autoFocus = !isMobileScreen || isChat; // only focus in chat page
+  const autoFocus = !isMobileScreen; // wont auto focus on mobile screen
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
 
   useCommand({
