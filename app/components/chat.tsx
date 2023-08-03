@@ -874,12 +874,6 @@ function _Chat() {
     context.push(copiedHello);
   }
 
-  // clear context index = context length + index in messages
-  const clearContextIndex =
-    (session.clearContextIndex ?? -1) >= 0
-      ? session.clearContextIndex! + context.length
-      : -1;
-
   // preview messages
   const renderMessages = useMemo(() => {
     return context
@@ -960,6 +954,12 @@ function _Chat() {
     setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
     scrollDomToBottom();
   }
+
+  // clear context index = context length + index in messages
+  const clearContextIndex =
+    (session.clearContextIndex ?? -1) >= 0
+      ? session.clearContextIndex! + context.length - msgRenderIndex
+      : -1;
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
