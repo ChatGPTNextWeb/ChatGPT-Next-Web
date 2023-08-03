@@ -854,7 +854,7 @@ export function Chat() {
   };
 
   const context: RenderMessage[] = session.mask.hideContext
-    ? []
+    ? session.mask.context.slice().filter(v => {return v?.forceShow})
     : session.mask.context.slice();
 
   const accessStore = useAccessStore();
