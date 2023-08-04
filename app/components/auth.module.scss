@@ -24,6 +24,11 @@
     margin: 3vh 0;
   }
 
+  .auth-input:focus-visible {
+    margin: 3vh 0;
+    border: 2px solid var(--primary);
+  }
+
   .auth-actions {
     display: flex;
     justify-content: center;

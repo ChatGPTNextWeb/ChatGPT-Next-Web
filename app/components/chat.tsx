@@ -1195,20 +1195,39 @@ export function Chat() {
           }}
         />
         <div className={styles["chat-input-panel-inner"]}>
-          <textarea
-            ref={inputRef}
-            className={styles["chat-input"]}
-            placeholder={Locale.Chat.Input(submitKey)}
-            onInput={(e) => onInput(e.currentTarget.value)}
-            value={userInput}
-            onKeyDown={onInputKeyDown}
-            onFocus={() => setAutoScroll(true)}
-            rows={inputRows}
-            autoFocus={autoFocus}
-            style={{
-              fontSize: config.fontSize,
-            }}
-          />
+          {isMobileScreen ? (
+            <textarea
+              ref={inputRef}
+              className={styles["chat-input"]}
+              placeholder={Locale.Chat.MobileInput()}
+              onInput={(e) => onInput(e.currentTarget.value)}
+              value={userInput}
+              onKeyDown={onInputKeyDown}
+              onFocus={() => setAutoScroll(true)}
+              onBlur={() => setAutoScroll(false)}
+              rows={inputRows}
+              autoFocus={autoFocus}
+              style={{
+                fontSize: config.fontSize,
+              }}
+            />
+          ) : (
+            <textarea
+              ref={inputRef}
+              className={styles["chat-input"]}
+              placeholder={Locale.Chat.Input(submitKey)}
+              onInput={(e) => onInput(e.currentTarget.value)}
+              value={userInput}
+              onKeyDown={onInputKeyDown}
+              onFocus={() => setAutoScroll(true)}
+              onBlur={() => setAutoScroll(false)}
+              rows={inputRows}
+              autoFocus={autoFocus}
+              style={{
+                fontSize: config.fontSize,
+              }}
+            />
+          )}
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
