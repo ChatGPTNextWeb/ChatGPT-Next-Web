@@ -68,9 +68,7 @@ const cn = {
       }
       return inputHints + "，/ 触发补全，: 触发命令";
     },
-    MobileInput: () => {
-      return "/ 触发补全，: 触发命令";
-    },
+    MobileInput: "/ 触发补全，: 触发命令",
     Send: "发送",
     Config: {
       Reset: "清除记忆",
