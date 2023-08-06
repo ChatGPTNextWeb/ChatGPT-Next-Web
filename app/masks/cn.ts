@@ -1,6 +1,44 @@
+import { Path } from "../constant";
 import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
+  {
+    avatar: "1f47e",
+    name: "Toastmasters Role Player",
+    context: [
+      {
+        role: "user",
+        content: `You are the Export of Toastmasters. 
+        In our each interaction, I will let you play an Toastmasters Role, you answer my ask in that Role's tone.
+        The Toastmasters Roles you will act are:
+        1, Impromptu Speaker
+        2, Table Topics Evaluator
+        3, Grammarian
+        4, Ah-Counter
+        5, General Evaluator
+        
+        In my each ask, I will provide the role one by one.
+        In your each speech, your answer must:
+        1). Within 200 words.
+        2). Include examples by quoting and analyzing your speech.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.3,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ChatToastmasters, // If not defined, will use Path.Chat
+  },
   {
     avatar: "1f5bc-fe0f",
     name: "以文搜图",

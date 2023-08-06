@@ -432,7 +432,7 @@ export function MaskPage() {
                     text={Locale.Mask.Item.Chat}
                     onClick={() => {
                       chatStore.newSession(m);
-                      navigate(Path.Chat);
+                      navigate(m.pagePath ?? Path.Chat); // If m.pagePath is undefined, navigate to Path.Chat
                     }}
                   />
                   {m.builtin ? (

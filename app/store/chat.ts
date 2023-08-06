@@ -16,6 +16,9 @@ import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
+import { BuiltinMask } from "../masks/typing";
+import { ToastmastersRoles } from "../masks/en-toastmasters";
+import { send } from "process";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -102,6 +105,7 @@ interface ChatStore {
     updater: (message?: ChatMessage) => void,
   ) => void;
   resetSession: () => void;
+  resetSessionFromIndex: (index: number) => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
   getIsFinished: () => Promise<boolean>;
@@ -497,6 +501,13 @@ export const useChatStore = create<ChatStore>()(
       resetSession() {
         get().updateCurrentSession((session) => {
           session.messages = [];
+          session.memoryPrompt = "";
+        });
+      },
+
+      resetSessionFromIndex(index) {
+        get().updateCurrentSession((session) => {
+          session.messages.splice(index);
           session.memoryPrompt = "";
         });
       },
