@@ -121,7 +121,7 @@ export function SideBar(props: { className?: string }) {
           Lucid Home
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          反卷总署,让别人无路可卷
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
