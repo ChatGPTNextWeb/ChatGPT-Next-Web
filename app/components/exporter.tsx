@@ -149,7 +149,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id ?? i)));
+    ret.push(...session.messages.filter((m, i) => selection.has(m.id)));
     return ret;
   }, [
     exportConfig.includeContext,
@@ -244,11 +244,12 @@ export function RenderExport(props: {
       return;
     }
 
-    const renderMsgs = messages.map((v) => {
-      const [_, role] = v.id.split(":");
+    const renderMsgs = messages.map((v, i) => {
+      const [role, _] = v.id.split(":");
       return {
+        id: i.toString(),
         role: role as any,
-        content: v.innerHTML,
+        content: role === "user" ? v.textContent ?? "" : v.innerHTML,
         date: "",
       };
     });
@@ -287,7 +288,30 @@ export function PreviewActions(props: {
       .share(msgs)
       .then((res) => {
         if (!res) return;
-        copyToClipboard(res);
+        showModal({
+          title: Locale.Export.Share,
+          children: [
+            <input
+              type="text"
+              value={res}
+              key="input"
+              style={{
+                width: "100%",
+                maxWidth: "unset",
+              }}
+              readOnly
+              onClick={(e) => e.currentTarget.select()}
+            ></input>,
+          ],
+          actions: [
+            <IconButton
+              icon={<CopyIcon />}
+              text={Locale.Chat.Actions.Copy}
+              key="copy"
+              onClick={() => copyToClipboard(res)}
+            />,
+          ],
+        });
         setTimeout(() => {
           window.open(res, "_blank");
         }, 800);

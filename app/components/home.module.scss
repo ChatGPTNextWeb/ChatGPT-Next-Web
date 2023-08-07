@@ -61,24 +61,36 @@
       }
     }
   }
+
+  &:hover,
+  &:active {
+    .sidebar-drag {
+      background-color: rgba($color: #000000, $alpha: 0.01);
+
+      svg {
+        opacity: 0.2;
+      }
+    }
+  }
 }
 
 .sidebar-drag {
-  $width: 10px;
+  $width: 14px;
 
   position: absolute;
   top: 0;
   right: 0;
   height: 100%;
   width: $width;
-  background-color: var(--black);
+  background-color: rgba($color: #000000, $alpha: 0);
   cursor: ew-resize;
-  opacity: 0;
   transition: all ease 0.3s;
+  display: flex;
+  align-items: center;
 
-  &:hover,
-  &:active {
-    opacity: 0.2;
+  svg {
+    opacity: 0;
+    margin-left: -2px;
   }
 }
 
@@ -162,6 +174,7 @@
   user-select: none;
   border: 2px solid transparent;
   position: relative;
+  content-visibility: auto;
 }
 
 .chat-item:hover {

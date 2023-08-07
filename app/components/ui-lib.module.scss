@@ -282,10 +282,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 999;
 
   &-content {
     .list {
-      overflow: hidden;
+      max-height: 90vh;
+      overflow-x: hidden;
+      overflow-y: auto;
 
       .list-item {
         cursor: pointer;
