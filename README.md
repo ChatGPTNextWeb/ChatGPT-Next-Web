@@ -31,17 +31,28 @@
 
 - 除插件工具外，与原项目保持一致 [ChatGPT-Next-Web 主要功能](https://github.com/Yidadaa/ChatGPT-Next-Web#主要功能)
 - 基于 [LangChain](https://github.com/hwchase17/langchainjs) 实现的插件功能，目前支持以下插件，未来会添加更多
-  - [SerpAPI](https://js.langchain.com/docs/api/tools/classes/SerpAPI)
-  - [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator)
-  - DuckDuckGo
-  - HttpGet
+  - 搜索
+    - [SerpAPI](https://js.langchain.com/docs/api/tools/classes/SerpAPI)
+    - [BingSerpAPI](https://js.langchain.com/docs/api/tools/classes/BingSerpAPI)
+    - DuckDuckGo
+  
+  - 计算
+    - [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator)
+  
+  - 网络请求
+    - HttpGet
+  
 
 
 ## 开发计划
 
 - [x] 支持使用 DuckDuckGo 作为默认搜索引擎
 
-  当前配置 `SERPAPI_API_KEY` 时优先使用 `serpapi` 作为搜索插件，不配置时默认使用 `duckduckgo` 作为搜索插件。
+  当前配置 `SERPAPI_API_KEY` 时优先使用 `SerpAPI` 作为搜索插件，不配置时默认使用 `DuckDuckGo` 作为搜索插件。
+
+  当前配置 `BING_SEARCH_API_KEY` 时优先使用 `BingSerpAPI` 作为搜索插件，不配置时默认使用 `DuckDuckGo` 作为搜索插件。
+
+  优先级：`SerpAPI > BingSerpAPI > DuckDuckGo`
 
 - [ ] 插件列表页面开发
 - [ ] 支持开关指定插件
@@ -125,6 +136,10 @@ Your openai api key.
 ### `SERPAPI_API_KEY` (optional)
 
 [SerpApi: Google Search API](https://serpapi.com/)
+
+### `BING_SEARCH_API_KEY` (optional)
+
+[Web Search API | Microsoft Bing](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
 
 ### `CODE` (optional)
 

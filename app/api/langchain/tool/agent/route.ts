@@ -6,6 +6,7 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { BaseCallbackHandler } from "langchain/callbacks";
 
 import {
+  BingSerpAPI,
   DynamicTool,
   RequestsGetTool,
   RequestsPostTool,
@@ -145,7 +146,14 @@ async function handle(req: NextRequest) {
     });
 
     let searchTool: Tool = new DuckDuckGo();
-    if (process.env.SERPAPI_API_KEY) {
+    if (process.env.BING_SEARCH_API_KEY) {
+      let bingSearchTool = new BingSerpAPI(process.env.BING_SEARCH_API_KEY);
+      searchTool = new DynamicTool({
+        name: "bing_search",
+        description: bingSearchTool.description,
+        func: async (input: string) => bingSearchTool.call(input),
+      });
+    } else if (process.env.SERPAPI_API_KEY) {
       let serpAPITool = new SerpAPI(process.env.SERPAPI_API_KEY);
       searchTool = new DynamicTool({
         name: "google_search",
