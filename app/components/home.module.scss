@@ -566,3 +566,19 @@
   height: 100%;
   width: 100%;
 }
+
+
+//公告栏
+.sidebar-notice {
+  background-color: rgb(0, 0, 0, 0.05);
+  font-size: 12px;
+  color: blueviolet;
+  margin: 20px 0;
+  // width: 100px;
+  // height: 50px;
+  .notice-title{
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+  }
+}
