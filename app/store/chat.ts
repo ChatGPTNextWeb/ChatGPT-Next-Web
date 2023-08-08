@@ -553,7 +553,7 @@ export const useChatStore = create<ChatStore>()(
                 date: "",
               }),
             ),
-            config: { ...modelConfig, stream: true },
+            config: { ...modelConfig, stream: true, model: "gpt-3.5-turbo" },
             onUpdate(message) {
               session.memoryPrompt = message;
             },
