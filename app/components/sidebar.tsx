@@ -199,6 +199,7 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-notice"]}>
         <span className={styles["notice-title"]}>重要公告：</span>
         由于底层API成本原因，免费无法持续。密码到期时间8月15日，如需继续使用，请加微信：rc7_777，备注：gpt
+        <div className={styles["notice-ps"]}>ps:已开通不受影响</div>
       </div>
     </div>
   );
