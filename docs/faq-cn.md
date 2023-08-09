@@ -39,7 +39,7 @@ Docker 版本相当于稳定版，latest Docker 总是与 latest release version
 
 > 相关讨论：[#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
 
-如果你使用 ngnix 反向代理，需要在配置文件中增加下列代码：
+如果你使用 nginx 反向代理，需要在配置文件中增加下列代码：
 
 ```
 # 不缓存，支持流式输出
@@ -212,7 +212,8 @@ OpenAI 网站计费说明：https://openai.com/pricing#language-models
 OpenAI 根据 token 数收费，1000 个 token 通常可代表 750 个英文单词，或 500 个汉字。输入（Prompt）和输出（Completion）分别统计费用。  
 |模型|用户输入（Prompt）计费|模型输出（Completion）计费|每次交互最大 token 数|
 |----|----|----|----|
-|gpt-3.5|$0.002 / 1 千 tokens|$0.002 / 1 千 tokens|4096|
+|gpt-3.5-turbo|$0.0015 / 1 千 tokens|$0.002 / 1 千 tokens|4096|
+|gpt-3.5-turbo-16K|$0.003 / 1 千 tokens|$0.004 / 1 千 tokens|16384|
 |gpt-4|$0.03 / 1 千 tokens|$0.06 / 1 千 tokens|8192|
 |gpt-4-32K|$0.06 / 1 千 tokens|$0.12 / 1 千 tokens|32768|
 
