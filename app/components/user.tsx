@@ -4,7 +4,7 @@ require("../polyfill");
 
 import { useState, useEffect } from "react";
 
-import styles from "./home.module.scss";
+import styles from "./user.module.scss";
 
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -139,15 +139,12 @@ function Screen() {
         </>
       ) : (
         <>
-          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
+          <button>登錄</button>
+          <AuthPage />
+<Login/>
           <div className={styles["window-content"]} id={SlotID.AppBody}>
             <Routes>
-              <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
-              <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
+              <Route path={Path.Login} element={<Login />} />
             </Routes>
           </div>
         </>
@@ -168,7 +165,7 @@ export function useLoadData() {
   }, []);
 }
 
-export function Home() {
+export function User() {
   useSwitchTheme();
   useLoadData();
 
