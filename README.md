@@ -2,7 +2,6 @@
 <img src="./docs/images/icon.svg" alt="icon"/>
 <h1 align="center">ChatGPT Next Web LangChain</h1>
 一键免费部署你的跨平台私人 ChatGPT 应用（基于 LangChain 实现插件功能）。
-
 [![Web][Web-image]][web-url]
 [![Windows][Windows-image]][download-url]
 [![MacOS][MacOS-image]][download-url]
@@ -64,8 +63,10 @@
 - [ ] 使用插件时需将模型切换为 `0613` 版本模型，如：`gpt-3.5-turbo-0613`
 - [x] `SERPAPI_API_KEY` 目前为必填，后续会支持使用 DuckDuckGo 替换搜索插件
 - [ ] Agent 不支持自定义接口地址
-- [ ] 部分场景下插件会调用失败
-- [ ] 插件调用失败后无反馈
+- [x] ~~部分场景下插件会调用失败~~
+
+  问题出现在使用 [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator) 进行计算时的参数错误，暂时无法干预。
+- [x] 插件调用失败后无反馈
 
 ## 最新动态
 
@@ -85,170 +86,114 @@
 
 [English > FAQ](./docs/faq-en.md)
 
-## Keep Updated
+## 配置页面访问密码
 
-> [简体中文 > 如何保持代码更新](./README_CN.md#保持更新)
+> 配置密码后，用户需要在设置页手动填写访问码才可以正常聊天，否则会通过消息提示未授权状态。
 
-If you have deployed your own project with just one click following the steps above, you may encounter the issue of "Updates Available" constantly showing up. This is because Vercel will create a new project for you by default instead of forking this project, resulting in the inability to detect updates correctly.
+> **警告**：请务必将密码的位数设置得足够长，最好 7 位以上，否则[会被爆破](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/518)。
 
-We recommend that you follow the steps below to re-deploy:
-
-- Delete the original repository;
-- Use the fork button in the upper right corner of the page to fork this project;
-- Choose and deploy in Vercel again, [please see the detailed tutorial](./docs/vercel-cn.md).
-
-### Enable Automatic Updates
-
-> If you encounter a failure of Upstream Sync execution, please manually sync fork once.
-
-After forking the project, due to the limitations imposed by GitHub, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
-
-![Automatic Updates](./docs/images/enable-actions.jpg)
-
-![Enable Automatic Updates](./docs/images/enable-actions-sync.jpg)
-
-### Manually Updating Code
-
-If you want to update instantly, you can check out the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
-
-You can star or watch this project or follow author to get release notifictions in time.
-
-## Access Password
-
-> [简体中文 > 如何增加访问密码](./README_CN.md#配置页面访问密码)
-
-This project provides limited access control. Please add an environment variable named `CODE` on the vercel environment variables page. The value should be passwords separated by comma like this:
+本项目提供有限的权限控制功能，请在 Vercel 项目控制面板的环境变量页增加名为 `CODE` 的环境变量，值为用英文逗号分隔的自定义密码：
 
 ```
 code1,code2,code3
 ```
 
-After adding or modifying this environment variable, please redeploy the project for the changes to take effect.
+增加或修改该环境变量后，请**重新部署**项目使改动生效。
 
-## Environment Variables
+## 环境变量
 
-> [简体中文 > 如何配置 api key、访问密码、接口代理](./README_CN.md#环境变量)
+> 本项目大多数配置项都通过环境变量来设置，教程：[如何修改 Vercel 环境变量](./docs/vercel-cn.md)。
 
-### `OPENAI_API_KEY` (required)
+### `OPENAI_API_KEY` （必填项）
 
-Your openai api key.
+OpanAI 密钥，你在 openai 账户页面申请的 api key。
 
-### `SERPAPI_API_KEY` (optional)
+### `SERPAPI_API_KEY` (可选)
 
 [SerpApi: Google Search API](https://serpapi.com/)
 
-### `BING_SEARCH_API_KEY` (optional)
+### `BING_SEARCH_API_KEY` (可选)
 
 [Web Search API | Microsoft Bing](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
 
-### `CODE` (optional)
+### `CODE` （可选）
 
-Access passsword, separated by comma.
+访问密码，可选，可以使用逗号隔开多个密码。
 
-### `BASE_URL` (optional)
+**警告**：如果不填写此项，则任何人都可以直接使用你部署后的网站，可能会导致你的 token 被急速消耗完毕，建议填写此选项。
+
+### `BASE_URL` （可选）
 
 > Default: `https://api.openai.com`
 
 > Examples: `http://your-openai-proxy.com`
 
-Override openai api request base url.
+OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。
 
-### `OPENAI_ORG_ID` (optional)
+> 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
 
-Specify OpenAI organization ID.
+### `OPENAI_ORG_ID` （可选）
 
-### `HIDE_USER_API_KEY` (optional)
+指定 OpenAI 中的组织 ID。
 
-> Default: Empty
+### `HIDE_USER_API_KEY` （可选）
 
-If you do not want users to input their own API key, set this value to 1.
+如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
 
-### `DISABLE_GPT4` (optional)
+### `DISABLE_GPT4` （可选）
 
-> Default: Empty
+如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
-If you do not want users to use GPT-4, set this value to 1.
+### `HIDE_BALANCE_QUERY` （可选）
 
-### `HIDE_BALANCE_QUERY` (optional)
+如果你不想让用户查询余额，将此环境变量设置为 1 即可。
 
-> Default: Empty
+## 部署
 
-If you do not want users to query balance, set this value to 1.
+### 容器部署 （推荐）
 
-## Requirements
+> Docker 版本需要在 20 及其以上，否则会提示找不到镜像。
 
-NodeJS >= 18, Docker >= 20
-
-## Development
-
-> [简体中文 > 如何进行二次开发](./README_CN.md#开发)
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
-
-Before starting development, you must create a new `.env.local` file at project root, and place your api key into it:
-
-```
-OPENAI_API_KEY=<your api key here>
-
-# if you are not able to access openai service, use this BASE_URL
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
-```
-
-### Local Development
-
-```shell
-# 1. install nodejs and yarn first
-# 2. config local env vars in `.env.local`
-# 3. run
-yarn install
-yarn dev
-```
-
-## Deployment
-
-> [简体中文 > 如何部署到私人服务器](./README_CN.md#部署)
-
-### Docker (Recommended)
+> ⚠️ 注意：docker 版本在大多数时间都会落后最新的版本 1 到 2 天，所以部署后会持续出现“存在更新”的提示，属于正常现象。
 
 ```shell
 docker pull gosuto/chatgpt-next-web-langchain
 
 docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
+   -e CODE="页面访问密码" \
    gosuto/chatgpt-next-web-langchain
 ```
 
-You can start service behind a proxy:
+你也可以指定 proxy：
 
 ```shell
 docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
-   -e PROXY_URL="http://localhost:7890" \
+   -e CODE="页面访问密码" \
+   --net=host \
+   -e PROXY_URL="http://127.0.0.1:7890" \
    gosuto/chatgpt-next-web-langchain
 ```
 
-If your proxy needs password, use:
+如果你的本地代理需要账号密码，可以使用：
 
 ```shell
--e PROXY_URL="http://127.0.0.1:7890 user pass"
+-e PROXY_URL="http://127.0.0.1:7890 user password"
 ```
 
-## Screenshots
+如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
+
+## 截图
 
 ![Settings](./docs/images/settings.png)
 
 ![More](./docs/images/more.png)
 
-## Translation
-
-If you want to add a new translation, read this [document](./docs/translation.md).
-
-## Donation
+## 捐赠
 
 [请项目原作者喝杯咖啡](https://www.buymeacoffee.com/yidadaa)
 
-## LICENSE
+## 开源协议
 
 [MIT](https://opensource.org/license/mit/)

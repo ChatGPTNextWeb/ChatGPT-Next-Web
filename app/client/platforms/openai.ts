@@ -287,13 +287,14 @@ export class ChatGPTApi implements LLMApi {
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
             let response = JSON.parse(msg.data);
             if (!response.isSuccess) {
-              console.error("[Request]", response, msg);
+              console.error("[Request]", msg.data);
+              responseText = msg.data;
               throw Error(response.message);
+            }
+            if (msg.data === "[DONE]" || finished) {
+              return finish();
             }
             try {
               if (response && !response.isToolMessage) {
