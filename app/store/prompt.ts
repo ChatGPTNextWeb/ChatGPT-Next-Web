@@ -2,65 +2,79 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import Fuse from "fuse.js";
 import { getLang } from "../locales";
+import { StoreKey } from "../constant";
+import { nanoid } from "nanoid";
 
 export interface Prompt {
-  id?: number;
+  id: string;
+  isUser?: boolean;
   title: string;
   content: string;
+  createdAt: number;
 }
 
 export interface PromptStore {
-  latestId: number;
-  prompts: Map<number, Prompt>;
+  counter: number;
+  prompts: Record<string, Prompt>;
 
-  add: (prompt: Prompt) => number;
-  remove: (id: number) => void;
+  add: (prompt: Prompt) => string;
+  get: (id: string) => Prompt | undefined;
+  remove: (id: string) => void;
   search: (text: string) => Prompt[];
-}
+  update: (id: string, updater: (prompt: Prompt) => void) => void;
 
-export const PROMPT_KEY = "prompt-store";
+  getUserPrompts: () => Prompt[];
+}
 
 export const SearchService = {
   ready: false,
-  engine: new Fuse<Prompt>([], { keys: ["title"] }),
+  builtinEngine: new Fuse<Prompt>([], { keys: ["title"] }),
+  userEngine: new Fuse<Prompt>([], { keys: ["title"] }),
   count: {
     builtin: 0,
   },
-  allBuiltInPrompts: [] as Prompt[],
+  allPrompts: [] as Prompt[],
+  builtinPrompts: [] as Prompt[],
 
-  init(prompts: Prompt[]) {
+  init(builtinPrompts: Prompt[], userPrompts: Prompt[]) {
     if (this.ready) {
       return;
     }
-    this.allBuiltInPrompts = prompts;
-    this.engine.setCollection(prompts);
+    this.allPrompts = userPrompts.concat(builtinPrompts);
+    this.builtinPrompts = builtinPrompts.slice();
+    this.builtinEngine.setCollection(builtinPrompts);
+    this.userEngine.setCollection(userPrompts);
     this.ready = true;
   },
 
-  remove(id: number) {
-    this.engine.remove((doc) => doc.id === id);
+  remove(id: string) {
+    this.userEngine.remove((doc) => doc.id === id);
   },
 
   add(prompt: Prompt) {
-    this.engine.add(prompt);
+    this.userEngine.add(prompt);
   },
 
   search(text: string) {
-    const results = this.engine.search(text);
-    return results.map((v) => v.item);
+    const userResults = this.userEngine.search(text);
+    const builtinResults = this.builtinEngine.search(text);
+    return userResults.concat(builtinResults).map((v) => v.item);
   },
 };
 
 export const usePromptStore = create<PromptStore>()(
   persist(
     (set, get) => ({
+      counter: 0,
       latestId: 0,
-      prompts: new Map(),
+      prompts: {},
 
       add(prompt) {
         const prompts = get().prompts;
-        prompt.id = get().latestId + 1;
-        prompts.set(prompt.id, prompt);
+        prompt.id = nanoid();
+        prompt.isUser = true;
+        prompt.createdAt = Date.now();
+        prompts[prompt.id] = prompt;
 
         set(() => ({
           latestId: prompt.id!,
@@ -70,28 +84,72 @@ export const usePromptStore = create<PromptStore>()(
         return prompt.id!;
       },
 
+      get(id) {
+        const targetPrompt = get().prompts[id];
+
+        if (!targetPrompt) {
+          return SearchService.builtinPrompts.find((v) => v.id === id);
+        }
+
+        return targetPrompt;
+      },
+
       remove(id) {
         const prompts = get().prompts;
-        prompts.delete(id);
+        delete prompts[id];
         SearchService.remove(id);
 
         set(() => ({
           prompts,
+          counter: get().counter + 1,
         }));
+      },
+
+      getUserPrompts() {
+        const userPrompts = Object.values(get().prompts ?? {});
+        userPrompts.sort((a, b) =>
+          b.id && a.id ? b.createdAt - a.createdAt : 0,
+        );
+        return userPrompts;
+      },
+
+      update(id, updater) {
+        const prompt = get().prompts[id] ?? {
+          title: "",
+          content: "",
+          id,
+        };
+
+        SearchService.remove(id);
+        updater(prompt);
+        const prompts = get().prompts;
+        prompts[id] = prompt;
+        set(() => ({ prompts }));
+        SearchService.add(prompt);
       },
 
       search(text) {
         if (text.length === 0) {
-          // return all prompts
-          const userPrompts = get().prompts?.values?.() ?? [];
-          return SearchService.allBuiltInPrompts.concat([...userPrompts]);
+          // return all rompts
+          return get().getUserPrompts().concat(SearchService.builtinPrompts);
         }
         return SearchService.search(text) as Prompt[];
       },
     }),
     {
-      name: PROMPT_KEY,
-      version: 1,
+      name: StoreKey.Prompt,
+      version: 3,
+
+      migrate(state, version) {
+        const newState = JSON.parse(JSON.stringify(state)) as PromptStore;
+
+        if (version < 3) {
+          Object.values(newState.prompts).forEach((p) => (p.id = nanoid()));
+        }
+
+        return newState;
+      },
+
       onRehydrateStorage(state) {
         const PROMPT_URL = "./prompts.json";
 
@@ -104,24 +162,28 @@ export const usePromptStore = create<PromptStore>()(
             if (getLang() === "cn") {
               fetchPrompts = fetchPrompts.reverse();
             }
-            const builtinPrompts = fetchPrompts
-              .map((promptList: PromptList) => {
+            const builtinPrompts = fetchPrompts.map(
+              (promptList: PromptList) => {
                 return promptList.map(
                   ([title, content]) =>
                     ({
+                      id: nanoid(),
                       title,
                       content,
+                      createdAt: Date.now(),
                     } as Prompt),
                 );
-              })
-              .concat([...(state?.prompts?.values() ?? [])]);
-
-            const allPromptsForSearch = builtinPrompts.reduce(
-              (pre, cur) => pre.concat(cur),
-              [],
+              },
             );
+
+            const userPrompts =
+              usePromptStore.getState().getUserPrompts() ?? [];
+
+            const allPromptsForSearch = builtinPrompts
+              .reduce((pre, cur) => pre.concat(cur), [])
+              .filter((v) => !!v.title && !!v.content);
             SearchService.count.builtin = res.en.length + res.cn.length;
-            SearchService.init(allPromptsForSearch);
+            SearchService.init(allPromptsForSearch, userPrompts);
           });
       },
     },
