@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "chatgpt-next-web-yeening",
-    "version": "0.0.4"
+    "version": "0.0.5"
   },
   "tauri": {
     "allowlist": {
