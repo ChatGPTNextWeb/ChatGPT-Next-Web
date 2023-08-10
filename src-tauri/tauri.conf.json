@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "chatgpt-next-web-yeening",
+    "productName": "ChatGPT Next Web[y]",
     "version": "0.0.5"
   },
   "tauri": {
