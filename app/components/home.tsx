@@ -56,6 +56,13 @@ const ChatToastmasters = dynamic(
   },
 );
 
+const ChatTmEvaluator = dynamic(
+  async () => (await import("./chat-tm-evaluator")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
@@ -176,6 +183,10 @@ function Screen() {
               <Route
                 path={Path.ChatToastmasters}
                 element={<ChatToastmasters />}
+              />
+              <Route
+                path={Path.ChatTmEvaluator}
+                element={<ChatTmEvaluator />}
               />
               <Route path={Path.Settings} element={<Settings />} />
               <Route path={Path.UserLogin} element={<UserLogin />} />

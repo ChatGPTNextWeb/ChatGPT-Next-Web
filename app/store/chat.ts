@@ -56,6 +56,9 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+  // inputs: { userInput: string, userInputSpeech: string };
+  userInput?: string;
+  userInputSpeech?: string;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -79,6 +82,10 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+
+    // // TODO: tempfix
+    // inputs: {},
+    // inputs: {userInput: "", userInputSpeech: ""},
   };
 }
 

@@ -3,9 +3,10 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
+import { AppInfo } from "./constant";
 
 export const metadata = {
-  title: "知行AI",
+  title: AppInfo.Title,
   description: "",
   viewport: {
     width: "device-width",
@@ -17,7 +18,7 @@ export const metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "知行AI",
+    title: AppInfo.Title,
     statusBarStyle: "default",
   },
 };

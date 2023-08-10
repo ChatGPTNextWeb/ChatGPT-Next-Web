@@ -89,12 +89,14 @@ import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
 
-import speechSdk from "../cognitive/speech-sdk";
+import speechSdk, { speechRecognizer } from "../cognitive/speech-sdk";
 
 import {
   ToastmastersRoles,
-  EN_TOASTMASTERS_ROLES,
+  ToastmastersEvaluatorGuidance,
+  ToastmastersEvaluators,
 } from "../masks/en-toastmasters";
+import en from "../locales/en";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -512,7 +514,10 @@ export function Chat() {
   const [showExport, setShowExport] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRefSpeech = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [userInputSpeech, setUserInputSpeech] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
@@ -520,13 +525,12 @@ export function Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
-  const [impromptuSpeech, setImpromptuSpeech] = useState("");
-  const [toastmastersProcess, setToastmastersProcess] = useState<number>(-1);
-
   // 使用 useEffect 钩子来监听 voiceButtonStarted 的变化。
   // 当 voiceButtonStarted 发生变化时，可以在 useEffect 钩子中执行一些副作用，例如更新组件的样式
   const [voiceButtonStarted, setVoiceButtonStarted] = useState(false);
   useEffect(() => {}, [voiceButtonStarted]);
+  const [speechRecordStarted, setSpeechRecordStarted] = useState(false);
+  useEffect(() => {}, [speechRecordStarted]);
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 10;
@@ -566,6 +570,29 @@ export function Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
+  // auto grow input
+  const [inputRowsSpeech, setInputRowsSpeech] = useState(2);
+  const measureSpeech = useDebouncedCallback(
+    () => {
+      const rows = inputRefSpeech.current
+        ? autoGrowTextArea(inputRefSpeech.current)
+        : 1;
+      const inputRows = Math.min(
+        20,
+        Math.max(2 + Number(!isMobileScreen), rows),
+      );
+      setInputRowsSpeech(inputRows);
+    },
+    100,
+    {
+      leading: true,
+      trailing: true,
+    },
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(measureSpeech, [userInputSpeech]);
+
   // chat commands shortcuts
   const chatCommands = useChatCommand({
     new: () => chatStore.newSession(),
@@ -589,226 +616,52 @@ export function Chat() {
     if (n === 0) {
       setPromptHints([]);
     }
-    // else if (text.startsWith(ChatCommandPrefix)) {
-    //   setPromptHints(chatCommands.search(text));
-    // } else if (!config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
-    //   // check if need to trigger auto completion
-    //   if (text.startsWith("/")) {
-    //     let searchText = text.slice(1);
-    //     onSearch(searchText);
-    //   }
-    // }
   };
+  const onInputSpeech = (text: string) => {
+    setUserInputSpeech(text);
+    const n = text.trim().length;
 
-  const doSubmit_backup = async (userInput: string) => {
-    console.log("userInput:", userInput);
-
-    if (userInput.trim() === "") return;
-
-    // reset status
-    chatStore.resetSession();
-    setToastmastersProcess(-1); // i is doing
-
-    // the 1st role: 0: Impromptu Speaker doing
-    setToastmastersProcess(toastmastersProcess + 1); // i is doing
-    console.log("toastmastersProcess= " + toastmastersProcess);
-
-    var ask = EN_TOASTMASTERS_ROLES[toastmastersProcess].content;
-    ask = ask.replace("{{question}}", userInput);
-    chatStore.onUserInput(ask);
-
-    // the ist role is doing
-    // while (toastmastersProcess < EN_TOASTMASTERS_ROLES.length) {
-    //   console.log( "toastmastersProcess= " + toastmastersProcess + ", answer:" + session.messages[session.messages.length - 1]?.content);
-
-    //   chatStore.getIsFinished().then(() => {
-    //     setToastmastersProcess(toastmastersProcess + 1)
-    //     ask = EN_TOASTMASTERS_ROLES[toastmastersProcess].content;
-    //     chatStore.onUserInput(ask)
-    //   });
-    // }
-    for (let i = 1; i < EN_TOASTMASTERS_ROLES.length; i++) {
-      console.log(
-        "toastmastersProcess= " +
-          toastmastersProcess +
-          ", answer:" +
-          session.messages[session.messages.length - 1]?.content,
-      );
-
-      chatStore.getIsFinished().then(() => {
-        setToastmastersProcess(i);
-        ask = EN_TOASTMASTERS_ROLES[toastmastersProcess].content;
-        chatStore.onUserInput(ask);
-      });
-    }
-
-    // the last role is doing
-    chatStore.getIsFinished().then(() => {
-      setToastmastersProcess(toastmastersProcess + 1);
-
-      // last work
-      setIsLoading(false);
-      localStorage.setItem(LAST_INPUT_KEY, userInput);
-      setUserInput("");
+    // clear search results
+    if (n === 0) {
       setPromptHints([]);
-    });
-
-    // chatStore.getIsFinished().then(() => {
-    //   setToastmastersProcess(2) // 2: Table Topics Evaluator doing
-    //   console.log( "i= " + 0 + ", answer:" + session.messages[session.messages.length - 1]?.content);
-    //   ask = EN_TOASTMASTERS_ROLES[1].content;
-    //   chatStore.onUserInput(ask)
-    // });
-
-    // chatStore.getIsFinished().then(() => {
-    //   setToastmastersProcess(3) // 3: Grammarian doing
-    //   console.log( "i= " + 1 + ", answer:" + session.messages[session.messages.length - 1]?.content);
-    //   ask = EN_TOASTMASTERS_ROLES[2].content;
-    //   chatStore.onUserInput(ask)
-    // });
-
-    // chatStore.getIsFinished().then(() => {
-    //   setToastmastersProcess(4) // 4: Grammarian done
-    //   console.log( "i= " + 2 + ", answer:" + session.messages[session.messages.length - 1]?.content);
-
-    //   setIsLoading(false)
-    //   localStorage.setItem(LAST_INPUT_KEY, userInput);
-    //   setUserInput("");
-    //   setPromptHints([]);
-    // });
-
-    // for (let i = 0; i < EN_TOASTMASTERS_ROLES.length; i++) {
-    //   var ask = EN_TOASTMASTERS_ROLES[i].content;
-    //   if ( i == 0)
-    //   {
-    //     ask = ask.replace("{{question}}", userInput)
-    //   }
-
-    //   console.log( "i= " + i + ", ask:" + ask);
-    //   await chatStore.onUserInput(ask)
-
-    //   // await chatStore.getIsFinished()
-
-    //   while (!chatStore.isFinished) {
-    //     await new Promise((resolve) => setTimeout(resolve, 1000));
-    //   }
-
-    //   console.log( "i= " + i + ", answer:" + session.messages[session.messages.length - 1]?.content);
-
-    //   setIsLoading(false)
-    //   localStorage.setItem(LAST_INPUT_KEY, userInput);
-    //   setUserInput("");
-    //   setPromptHints([]);
-    //   // chatStore.getIsFinished().then((isFinished) => {
-    //   // });
-    // }
-
-    // chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-    // chatStore.resetSession();
-    // chatStore.onUserInputToastmasters(userInput, ToastmastersRoles.ImpromptuSpeaker).then(() =>
-    //   {
-    //     setImpromptuSpeech(session.messages[session.messages.length - 1]?.content);
-    //     console.log("session.messages[session.messages.length - 1]?.content:", session.messages[session.messages.length - 1]?.content);
-    //     console.log("impromptuSpeech:", impromptuSpeech);
-    //     setIsLoading(false)
-    //   }
-    // );
-    // chatStore.getIsFinished().then((isFinished) => {
-    //   if (isFinished) {
-    //     console.log("isFinished:", isFinished);
-    //     setImpromptuSpeech(session.messages[session.messages.length - 1]?.content);
-    //   }
-    //   else {
-    //     console.log("isFinished:", isFinished);
-    //     setImpromptuSpeech("");
-    //   }
-    // });
-
-    // localStorage.setItem(LAST_INPUT_KEY, userInput);
-    // setUserInput("");
-    // setPromptHints([]);
-    if (!isMobileScreen) inputRef.current?.focus();
-    // setAutoScroll(true);
-  };
-
-  const doSubmit_backup2 = (userInput: string) => {
-    console.log("userInput:", userInput);
-
-    if (userInput.trim() === "") return;
-
-    // reset status
-    chatStore.resetSession();
-
-    // the 1st role: 0: Impromptu Speaker doing
-    console.log("toastmastersProcess= " + toastmastersProcess);
-
-    setIsLoading(false);
-    localStorage.setItem(LAST_INPUT_KEY, userInput);
-    setUserInput("");
-
-    var ask = EN_TOASTMASTERS_ROLES[0].content;
-    ask = ask.replace("{{question}}", userInput);
-    chatStore.onUserInput(ask);
-
-    for (let i = 1; i < EN_TOASTMASTERS_ROLES.length; i++) {
-      console.log(
-        "toastmastersProcess= " +
-          toastmastersProcess +
-          ", answer:" +
-          session.messages[session.messages.length - 1]?.content,
-      );
-
-      chatStore.getIsFinished().then(() => {
-        ask = EN_TOASTMASTERS_ROLES[i].content;
-        chatStore.onUserInput(ask);
-      });
     }
-
-    // the last role is doing
-    chatStore.getIsFinished().then(() => {
-      setPromptHints([]);
-    });
-
-    // localStorage.setItem(LAST_INPUT_KEY, userInput);
-    // setUserInput("");
-    // setPromptHints([]);
-    if (!isMobileScreen) inputRef.current?.focus();
-    setAutoScroll(true);
   };
 
-  const doSubmit = (userInput: string) => {
-    console.log("userInput:", userInput);
+  const doSubmit = (topic: string, speech: string) => {
+    console.log("topic:", topic);
+    console.log("speech:", speech);
 
-    if (userInput.trim() === "") return;
+    if (topic.trim() === "" || speech === "") return;
 
     // reset status from 0
     chatStore.resetSession();
 
-    doSubmitFromIndex(userInput);
+    doSubmitFromIndex(topic, speech);
   };
 
-  const doSubmitFromIndex = (userInput: string, roleIndex: number = 0) => {
+  const doSubmitFromIndex = (
+    topic: string,
+    speech: string,
+    roleIndex: number = 0,
+  ) => {
     console.log("userInput:", userInput);
 
     // the 1st role: 0: Impromptu Speaker doing
     setIsLoading(false);
-    localStorage.setItem(LAST_INPUT_KEY, userInput);
-    setUserInput("");
+    // localStorage.setItem(LAST_INPUT_KEY, userInput);
 
-    var ask = EN_TOASTMASTERS_ROLES[roleIndex].content;
-    ask = ask.replace("{{question}}", userInput);
+    // save input
+    session.userInput = topic;
+    session.userInputSpeech = speech;
+    setUserInput("");
+    setUserInputSpeech("");
+
+    var ask = ToastmastersEvaluatorGuidance(topic, speech);
     chatStore.onUserInput(ask);
 
-    for (let i = roleIndex + 1; i < EN_TOASTMASTERS_ROLES.length; i++) {
-      console.log(
-        "toastmastersProcess= " +
-          toastmastersProcess +
-          ", answer:" +
-          session.messages[session.messages.length - 1]?.content,
-      );
-
+    for (let i = roleIndex; i < ToastmastersEvaluators.length; i++) {
       chatStore.getIsFinished().then(() => {
-        ask = EN_TOASTMASTERS_ROLES[i].content;
+        ask = ToastmastersEvaluators[i].content;
         chatStore.onUserInput(ask);
       });
     }
@@ -818,11 +671,14 @@ export function Chat() {
       setPromptHints([]);
     });
 
-    // localStorage.setItem(LAST_INPUT_KEY, userInput);
-    // setUserInput("");
-    // setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
+  };
+
+  const doResetInput = () => {
+    setIsLoading(false);
+    setUserInput("");
+    setUserInputSpeech("");
   };
 
   // stop response
@@ -872,7 +728,7 @@ export function Chat() {
       return;
     }
     if (shouldSubmit(e) && promptHints.length === 0) {
-      doSubmit(userInput);
+      // doSubmit(userInput);
       e.preventDefault();
     }
   };
@@ -885,7 +741,7 @@ export function Chat() {
     // reset status from messageIndex = 2 * roleIndex
     chatStore.resetSessionFromIndex(2 * roleIndex);
 
-    doSubmitFromIndex(userInput, roleIndex);
+    // doSubmitFromIndex(userInput, roleIndex);
   };
 
   const onEdit = async (botMessage: ChatMessage) => {
@@ -902,25 +758,38 @@ export function Chat() {
   };
 
   const onRecord = () => {
-    // continues conversation
     if (!voiceButtonStarted) {
-      speechSdk.startRecognition().then(() => {
-        setVoiceButtonStarted(true);
-      });
+      speechRecognizer.startRecording(appendUserInput);
+      setVoiceButtonStarted(true);
     } else {
-      speechSdk
-        .stopRecognition()
-        .then((text) => {
-          if (text !== "" && text !== undefined && text.length !== 0) {
-            setUserInput(text);
-          }
-        })
-        .catch((error) => {
-          console.error("speechSdk.stopRecognition failed: ", error);
-        })
-        .finally(() => {
-          setVoiceButtonStarted(false);
-        });
+      speechRecognizer.stopRecording();
+      setVoiceButtonStarted(false);
+    }
+  };
+  const appendUserInput = (newState: string): void => {
+    // 每次按下button时 换行显示
+    if (userInput === "") {
+      setUserInput(newState);
+    } else {
+      setUserInput(userInput + "\n" + newState);
+    }
+  };
+
+  const onRecordSpeech = () => {
+    if (!speechRecordStarted) {
+      speechRecognizer.startRecording(appendUserInputSpeech);
+      setSpeechRecordStarted(true);
+    } else {
+      speechRecognizer.stopRecording();
+      setSpeechRecordStarted(false);
+    }
+  };
+  const appendUserInputSpeech = (newState: string): void => {
+    // 每次按下button时 换行显示
+    if (userInputSpeech === "") {
+      setUserInputSpeech(newState);
+    } else {
+      setUserInputSpeech(userInputSpeech + "\n" + newState);
     }
   };
 
@@ -1000,33 +869,37 @@ export function Chat() {
   useCommand({
     fill: setUserInput,
     submit: (text) => {
-      doSubmit(text);
+      // doSubmit(text);
     },
   });
 
-  /*
-  From [You are the Impromptu Speaker. Question is "how to learn english?"], exact the question [how to learn english?]
-  */
-  const exactUserInput = (message: string) => {
-    var question = message.substring(
-      message.indexOf('"') + 1,
-      message.lastIndexOf('"'),
-    );
-    return question;
+  const extractUserInput = () => {
+    if (userInput !== "") return userInput;
+
+    if (session.userInput !== undefined && session.userInput !== "") {
+      return session.userInput;
+    }
+
+    return userInput;
+  };
+
+  const extractUserInputSpeech = () => {
+    if (userInputSpeech !== "") return userInputSpeech;
+
+    if (
+      session.userInputSpeech !== undefined &&
+      session.userInputSpeech !== ""
+    ) {
+      return session.userInputSpeech;
+    }
+
+    return userInputSpeech;
   };
 
   const promptInput = (submitKey: string) => {
-    var inputHints = `${submitKey} 发送`;
-    if (submitKey === String(SubmitKey.Enter)) {
-      inputHints += "，Shift + Enter 换行";
-    }
+    var inputHints = "Enter To wrap";
     return inputHints;
   };
-
-  var userQuestion =
-    userInput === "" && session.messages.length > 0
-      ? exactUserInput(session.messages[0]?.content)
-      : userInput;
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -1100,7 +973,7 @@ export function Chat() {
       <div
         className={styles["chat-body"]}
         ref={scrollRef}
-        // onScroll={(e) => onChatBodyScroll(e.currentTarget)}  // show contextual prompts on the head
+        // onScroll={(e) => onChatBodyScroll(e.currentTarget)}
         onMouseDown={() => inputRef.current?.blur()}
         onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
         onTouchStart={() => {
@@ -1109,22 +982,19 @@ export function Chat() {
         }}
       >
         <List>
-          <ListItem title={`Title: \n (Question/Topic)`}>
-            <div
-              style={{
-                display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                marginLeft: "20px",
-              }}
-            >
+          <div className={styles["chat-input-panel-noborder"]}>
+            <div className={styles["chat-input-panel-title"]}>
+              {" "}
+              {`Title: (Question/Topic)`}{" "}
+            </div>
+            <div className={styles["chat-input-panel-inner"]}>
               <textarea
                 ref={inputRef}
                 className={styles["chat-input"]}
                 placeholder={promptInput(submitKey)}
                 onInput={(e) => onInput(e.currentTarget.value)}
-                value={userQuestion}
-                onKeyDown={onInputKeyDown}
+                value={extractUserInput()}
+                // onFocus={() => setAutoScroll(true)}
                 onBlur={() => setAutoScroll(false)}
                 rows={inputRows}
                 autoFocus={autoFocus}
@@ -1132,196 +1002,163 @@ export function Chat() {
                   fontSize: config.fontSize,
                 }}
               />
-              <div className={styles["chat-input-buttons"]}>
-                <IconButton
-                  icon={<MicphoneIcon />}
-                  text={voiceButtonStarted ? "Recording" : "Record"}
-                  bordered
-                  className={
-                    voiceButtonStarted
-                      ? styles["chat-voice-input-send-pressed"]
-                      : styles["chat-voice-input-send"]
-                  }
-                  onClick={onRecord}
-                />
-                <IconButton
-                  icon={<SendWhiteIcon />}
-                  text={Locale.Chat.Send}
-                  className={styles["chat-input-send-top-right"]}
-                  type="primary"
-                  onClick={() => doSubmit(userQuestion)}
-                />
-              </div>
+              <IconButton
+                icon={<MicphoneIcon />}
+                text={voiceButtonStarted ? "Recording" : "Record"}
+                bordered
+                className={
+                  voiceButtonStarted
+                    ? styles["chat-input-send-recording"]
+                    : styles["chat-input-send-record"]
+                }
+                onClick={onRecord}
+              />
             </div>
-          </ListItem>
+          </div>
 
-          {/* <ListItem title={"Question"}>
-            <textarea
-              id="question"
-              rows={3}
-              className={styles["modal-input"]}
-              onChange={(e) => setUserInput(e.target.value)}
-              value={userQuestion}
-            ></textarea>
+          <div className={styles["chat-input-panel-noborder"]}>
+            <div className={styles["chat-input-panel-title"]}>
+              {" "}
+              {`Speech: (Impromptu/Prepared)`}{" "}
+            </div>
+            <div className={styles["chat-input-panel-inner"]}>
+              <textarea
+                ref={inputRefSpeech}
+                className={styles["chat-input"]}
+                placeholder={promptInput(submitKey)}
+                onInput={(e) => onInputSpeech(e.currentTarget.value)}
+                value={extractUserInputSpeech()}
+                onBlur={() => setAutoScroll(false)}
+                rows={inputRowsSpeech}
+                autoFocus={autoFocus}
+                style={{
+                  fontSize: config.fontSize,
+                }}
+              />
+              <IconButton
+                icon={<MicphoneIcon />}
+                text={speechRecordStarted ? "Recording" : "Record"}
+                bordered
+                className={
+                  speechRecordStarted
+                    ? styles["chat-input-send-recording"]
+                    : styles["chat-input-send-record"]
+                }
+                onClick={onRecordSpeech}
+              />
+            </div>
+          </div>
+          <div className={styles["chat-input-panel-buttons"]}>
+            <IconButton
+              icon={<ResetIcon />}
+              text={"Reset"}
+              className={styles["chat-input-button-reset"]}
+              bordered
+              onClick={doResetInput}
+            />
             <IconButton
               icon={<SendWhiteIcon />}
               text={Locale.Chat.Send}
+              className={styles["chat-input-button-send"]}
+              bordered
               type="primary"
-              onClick={() => doSubmit(userQuestion)}
+              onClick={() =>
+                doSubmit(extractUserInput(), extractUserInputSpeech())
+              }
             />
-          </ListItem> */}
+          </div>
+          <div className={styles["chat-input-border-bottom"]}></div>
 
-          <div
-            className={styles["chat-body"]}
-            ref={scrollRef}
-            onScroll={(e) => onChatBodyScroll(e.currentTarget)}
-            onMouseDown={() => inputRef.current?.blur()}
-            onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
-            onTouchStart={() => {
-              inputRef.current?.blur();
-              setAutoScroll(false);
-            }}
-          >
-            {EN_TOASTMASTERS_ROLES.map((role, index) => {
+          <div className={styles["chat-input-panel"]}>
+            {ToastmastersEvaluators.map((role, index) => {
               // if length > index => the data is ready => show the data, else show the last data
               var message: ChatMessage = createMessage({});
-              if (session.messages.length > 2 * index + 2)
+              if (session.messages.length > 2 * index + 4)
                 // data is ready, just read it
-                message = session.messages[2 * index + 1];
-              else if (session.messages.length == 2 * index + 2)
+                message = session.messages[2 * index + 3];
+              else if (session.messages.length == 2 * index + 4)
                 message = session.messages[session.messages.length - 1];
 
               var showActions = message.content.length > 0;
 
               return (
-                <div key={index} className={styles["chat-message"]}>
-                  <div
-                    className={styles["chat-message-container-toastmasters"]}
-                  >
-                    {/* TODO: 1). Put edit together with other action. 2) Select avatar */}
-                    <div className={styles["chat-message-avatar"]}>
-                      {/* <MaskAvatar mask={session.mask} /> */}
-                      <div> {role.role} </div>
-                    </div>
+                <div key={index} className={styles["chat-message-hover"]}>
+                  <div className={styles["chat-input-panel-title"]}>
+                    {" "}
+                    {role.role}
+                  </div>
 
-                    <div className={styles["chat-message-item"]}>
-                      {showActions && (
-                        <div className={styles["chat-message-actions"]}>
-                          <div
-                            className={styles["chat-input-actions"]}
-                            style={{
-                              marginTop: 10,
-                              marginBottom: 0,
-                            }}
-                          >
-                            {message.streaming ? (
+                  <div className={styles["chat-message-item"]}>
+                    {showActions && (
+                      <div className={styles["chat-message-actions"]}>
+                        <div
+                          className={styles["chat-input-actions"]}
+                          style={{
+                            marginTop: 10,
+                            marginBottom: 0,
+                          }}
+                        >
+                          {message.streaming ? (
+                            <ChatAction
+                              text={Locale.Chat.Actions.Stop}
+                              icon={<StopIcon />}
+                              onClick={() =>
+                                onUserStop(message.id ?? 2 * index + 3)
+                              }
+                            />
+                          ) : (
+                            <>
                               <ChatAction
-                                text={Locale.Chat.Actions.Stop}
-                                icon={<StopIcon />}
+                                text={Locale.Chat.Actions.Edit}
+                                icon={<EditIcon />}
+                                onClick={() => onEdit(message)}
+                              />
+                              {/* <ChatAction
+                                text={Locale.Chat.Actions.Retry}
+                                icon={<ResetIcon />}
+                                onClick={() => onResend(userQuestion, index)}
+                              /> */}
+                              <ChatAction
+                                text={Locale.Chat.Actions.Copy}
+                                icon={<CopyIcon />}
+                                onClick={() => copyToClipboard(message.content)}
+                              />
+                              <ChatAction
+                                text={Locale.Chat.Actions.Play}
+                                icon={<MicphoneIcon />}
                                 onClick={() =>
-                                  onUserStop(message.id ?? 2 * index + 1)
+                                  speechSdk.handleSynthesize(message.content)
                                 }
                               />
-                            ) : (
-                              <>
-                                <ChatAction
-                                  text={Locale.Chat.Actions.Edit}
-                                  icon={<EditIcon />}
-                                  onClick={() => onEdit(message)}
-                                />
-                                <ChatAction
-                                  text={Locale.Chat.Actions.Retry}
-                                  icon={<ResetIcon />}
-                                  onClick={() => onResend(userQuestion, index)}
-                                />
-                                <ChatAction
-                                  text={Locale.Chat.Actions.Copy}
-                                  icon={<CopyIcon />}
-                                  onClick={() =>
-                                    copyToClipboard(message.content)
-                                  }
-                                />
-                                <ChatAction
-                                  text={Locale.Chat.Actions.Play}
-                                  icon={<MicphoneIcon />}
-                                  onClick={() =>
-                                    speechSdk.handleSynthesize(message.content)
-                                  }
-                                />
-                              </>
-                            )}
-                          </div>
+                            </>
+                          )}
                         </div>
-                      )}
-
-                      <div className={styles["chat-botmassage-show"]}>
-                        <Markdown
-                          content={message?.content}
-                          fontSize={fontSize}
-                          parentRef={scrollRef}
-                        />
                       </div>
+                    )}
 
-                      <div className={styles["chat-message-action-date"]}>
-                        {message.content.length > 0
-                          ? message.content.split(/\s+/).length
-                          : 0}{" "}
-                        words
-                      </div>
+                    <Markdown
+                      content={message?.content}
+                      fontSize={fontSize}
+                      parentRef={scrollRef}
+                    />
+
+                    <div className={styles["chat-message-action-date"]}>
+                      {message.content.length > 0
+                        ? message.content.split(/\s+/).length
+                        : 0}{" "}
+                      words
                     </div>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* Success */}
-          {/* <div
-            className={styles["chat-body"]}
-            ref={scrollRef}
-            onScroll={(e) => onChatBodyScroll(e.currentTarget)}
-            onMouseDown={() => inputRef.current?.blur()}
-            onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
-            onTouchStart={() => {
-              inputRef.current?.blur();
-              setAutoScroll(false);
-            }}
-            >{
-              EN_TOASTMASTERS_ROLES.map((role, index) => {
-                // if length > index => the data is ready => show the data, else show the last data
-                var message = session.messages[ session.messages.length > index ? 2*index + 1 : session.messages.length - 1]
-                
-                return (
-                  <ListItem
-                    key={index}
-                    title={role.role}
-                  >
-                    <Input
-                      rows={15}
-                      className={styles["modal-input"]}
-                      value={ message?.content }
-                    ></Input>
-                    <div className={styles["button-container"]}>
-                      <IconButton
-                        icon={<ResetIcon />}
-                        text={"Retry"}
-                        bordered
-                        onClick={() => doSubmit(userInput)}
-                      />
-                      <IconButton
-                        icon={<MicphoneIcon />}
-                        text={"Play"}
-                        bordered
-                      />
-                      <div>{ message?.content.split(/\s+/).length} words</div>
-                    </div>
-                  </ListItem>
-                )
-              })
-            }
-          </div> */}
         </List>
       </div>
+
+      {showExport && (
+        <ExportMessageModal onClose={() => setShowExport(false)} />
+      )}
     </div>
   );
 }

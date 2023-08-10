@@ -4,7 +4,7 @@ import { BuiltinMask } from "./typing";
 export const CN_MASKS: BuiltinMask[] = [
   {
     avatar: "1f47e",
-    name: "Toastmasters Role Player",
+    name: "Toastmasters Speaker",
     context: [
       {
         role: "user",
@@ -19,7 +19,7 @@ export const CN_MASKS: BuiltinMask[] = [
         
         In my each ask, I will provide the role one by one.
         In your each speech, your answer must:
-        1). Within 200 words.
+        1). Within 100 words.
         2). Include examples by quoting and analyzing your speech.
         `,
         date: "",
@@ -38,6 +38,47 @@ export const CN_MASKS: BuiltinMask[] = [
     lang: "en",
     builtin: true,
     pagePath: Path.ChatToastmasters, // If not defined, will use Path.Chat
+  },
+  {
+    avatar: "1f47e",
+    name: "Toastmasters Evaluators",
+    context: [
+      {
+        role: "user",
+        content: `
+        You are the Evaluator of Toastmasters, Including 
+        Table Topics Evaluator, Grammarian, Ah-Counter, 
+        and the General Evaluator.
+        I will firstly provide you the Topic and Speech, 
+        which is formatted as json like:
+        {
+          "Topic": "xxx",
+          "Speech": "xxx"
+        },
+        And in each interaction, I will let you play an Evaluator Role, 
+        you answer my ask in that Role's tone.
+        
+        In my each ask, I will provide the role one by one. 
+        Your answer must:
+        1). Briefly answer within 100 words.
+        2). Include examples by quoting and analyzing your speech.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.3,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ChatTmEvaluator,
   },
   {
     avatar: "1f5bc-fe0f",

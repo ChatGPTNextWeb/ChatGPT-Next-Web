@@ -33,7 +33,7 @@
   align-items: center;
   min-height: 40px;
   border-bottom: var(--border-in-light);
-  padding: 10px 20px;
+  padding: 10px 20px; // 这段代码是在设置一个元素的内边距。具体来说，它将上下内边距设置为10像素，左右内边距设置为20像素。
   animation: slide-in ease 0.6s;
 
   .list-header {

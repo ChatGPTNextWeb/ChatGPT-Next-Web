@@ -9,10 +9,17 @@ export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_API_HOST = "https://chatgpt1.nextweb.fun/api/proxy";
 
+export enum AppInfo {
+  Title = "知行AI",
+  SubTitle = "",
+  Url = "https://www.zcareers.cn",
+}
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
   ChatToastmasters = "/toastmasters",
+  ChatTmEvaluator = "/toastmasters/evaluators",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",

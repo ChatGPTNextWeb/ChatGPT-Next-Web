@@ -321,6 +321,12 @@
   }
 }
 
+.chat-message-hover {
+  @extend .chat-message;
+  display: initial;
+  flex-direction: initial;
+}
+
 .chat-message-user {
   display: flex;
   flex-direction: row-reverse;
@@ -340,7 +346,6 @@
 }
 
 .chat-message-container-toastmasters {
-  // max-width: var(--message-max-width);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -387,6 +392,7 @@
 .chat-message-item {
   box-sizing: border-box;
   max-width: 100%;
+  width: 100%;
   margin-top: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
@@ -407,7 +413,7 @@
     justify-content: space-between;
     transition: all ease 0.3s 0.15s;
     transform: translateX(-5px) scale(0.9) translateY(30px);
-    // opacity: 0; // 透明度
+    opacity: 0; // 透明度
     height: 0;
     max-width: 0;
     position: absolute;
@@ -459,6 +465,24 @@
       margin-bottom: 10px;
     }
   }
+}
+
+.chat-input-panel-noborder {
+  position: relative;
+  width: 100%;
+  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.chat-input-panel-buttons {
+  // position: relative;
+  // width: 50%;
+  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
+  // box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 @mixin single-line {
@@ -519,10 +543,11 @@
   flex: 1;
 }
 
-.chat-input-panel-right {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+.chat-input-panel-title {
+  font-size: medium;
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-top: 10px;
 }
 
 .chat-input {
@@ -554,24 +579,43 @@
   bottom: 32px;
 }
 
-.chat-botmassage-show {
-  // display: flex;
-  // flex: 1;
-  // justify-content: space-between;
+.chat-input-send-record {
+  background-color: gray;
+  color: white;
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+}
+
+.chat-input-send-recording {
+  @extend .chat-input-send-record;
+  background-color: red;
+}
+
+.chat-input-button-send {
+  background-color: var(--primary);
+  color: white;
+  margin-top: 10px;
   // width: 100%;
-  // height: 100%;
-  // min-width: 100%; // 设置最小宽度为100%
-  // border-radius: 10px;
-  // border: var(--border-in-light);
-  // box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
-  // background-color: var(--white);
-  // color: var(--black);
-  // font-family: inherit;
-  // padding: 10px 900px 10px 14px;
-  // resize: none;
-  // outline: none;
-  // box-sizing: border-box;
-  // min-height: 68px;
+}
+
+.chat-input-button-reset {
+  background-color: gray;
+  color: white;
+  margin-top: 10px;
+  // width: 100%;
+}
+
+.chat-input-border-bottom {
+  margin-top: 10px;
+  border-bottom: var(--border-in-light);
+}
+
+.tm-chat-inputs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  border-bottom: var(--border-in-light);
 }
 
 .chat-input-buttons {
@@ -585,7 +629,7 @@
 .chat-input-send-top-right {
   background-color: var(--primary);
   color: white;
-  width: fit-content;
+  // width: fit-content;
   // margin-left: auto;
 
   // position: relative;
@@ -593,6 +637,61 @@
   // bottom: 40px;
 }
 
+// ----Tomstmasters pages start---
+.tm-chat-input {
+  margin-right: 10px;
+
+  // TODO: when put sub style in here, it will not work
+}
+
+.tm-chat-input-panel {
+  display: flex;
+  flex-direction: column;
+  border-bottom: var(--border-in-light);
+  padding: 10px 20px; // 这段代码是在设置一个元素的内边距。具体来说，它将上下内边距设置为10像素，左右内边距设置为20像素。
+  animation: slide-in ease 0.6s;
+}
+
+.tm-chat-input-panel-inner {
+  // margin-right: 0px;  // placeholder
+  // display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.tm-chat-input-textarea-button {
+  // height: auto;
+  // width: 100%;
+  position: relative;
+  display: flex;
+  flex: 1;
+
+  .tm-chat-input-recordButton {
+    background-color: gray;
+    color: white;
+    width: fit-content;
+    height: fit-content;
+  
+    // 父组件relative，子组件absolute，才能实现子组件相对于父组件绝对定位
+    position: absolute; 
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .tm-chat-input-recordButton-pressed {
+    @extend .tm-chat-input-recordButton;
+    background-color: red;
+  }
+}
+
+
+// ----Tomstmasters pages end---
+
+/*
+这段代码是一个媒体查询，它的意思是当屏幕宽度小于或等于600像素时，
+将.chat-input的字体大小设置为16像素，并将.chat-input-send的底部位置设置为30像素。
+这是为了在小屏幕设备上优化聊天输入框的显示效果。
+*/
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
