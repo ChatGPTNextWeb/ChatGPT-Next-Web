@@ -68,6 +68,7 @@ async function handle(req: NextRequest) {
     const handler = BaseCallbackHandler.fromMethods({
       async handleLLMNewToken(token: string) {
         if (token) {
+          console.log("[Token]", token);
           var response = new ResponseBody();
           response.message = token;
           await writer.ready;
@@ -199,13 +200,13 @@ async function handle(req: NextRequest) {
       presencePenalty: reqBody.presence_penalty,
       frequencyPenalty: reqBody.frequency_penalty,
     });
-
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
       agentType: "openai-functions",
       returnIntermediateSteps: true,
       maxIterations: 3,
       memory: memory,
     });
+
     executor.call(
       {
         input: reqBody.messages.slice(-1)[0].content,

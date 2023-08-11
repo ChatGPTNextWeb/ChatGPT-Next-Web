@@ -57,10 +57,14 @@
 - [ ] 支持开关指定插件
 - [ ] 支持添加自定义插件
 - [ ] 支持 Agent 参数配置（ agentType, maxIterations, returnIntermediateSteps 等）
-- [ ] 支持 ChatSession 级别插件功能开关
+- [x] 支持 ChatSession 级别插件功能开关
+
+  仅在使用 `0613` 版本模型时会出现插件开关，其它模型默认为关闭状态，开关也不会显示。
 
 ## 已知问题
-- [ ] 使用插件时需将模型切换为 `0613` 版本模型，如：`gpt-3.5-turbo-0613`
+- [x] 使用插件时需将模型切换为 `0613` 版本模型，如：`gpt-3.5-turbo-0613`
+
+  尝试使用 `chat-conversational-react-description` 等类型的 `agent` 使用插件时效果并不理想，不再考虑支持其它版本的模型。
 - [x] `SERPAPI_API_KEY` 目前为必填，后续会支持使用 DuckDuckGo 替换搜索插件
 - [ ] Agent 不支持自定义接口地址
 - [x] ~~部分场景下插件会调用失败~~
