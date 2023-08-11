@@ -20,6 +20,10 @@ export async function requestOpenai(req: NextRequest) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;
   }
 
+  if (baseUrl.endsWith('/')) {
+    baseUrl = baseUrl.slice(0, -1);
+  }
+
   console.log("[Proxy] ", openaiPath);
   console.log("[Base Url]", baseUrl);
 
