@@ -417,10 +417,10 @@ export function ChatActions(props: {
   const chatStore = useChatStore();
 
   // switch Plugins
-  const usePlugins = chatStore.currentSession().usePlugins;
+  const usePlugins = chatStore.currentSession().mask.usePlugins;
   function switchUsePlugins() {
     chatStore.updateCurrentSession((session) => {
-      session.usePlugins = !session.usePlugins;
+      session.mask.usePlugins = !session.mask.usePlugins;
     });
   }
 
@@ -511,15 +511,17 @@ export function ChatActions(props: {
           icon={<RobotIcon />}
         />
 
-        <ChatAction
-          onClick={switchUsePlugins}
-          text={
-            usePlugins
-              ? Locale.Chat.InputActions.DisablePlugins
-              : Locale.Chat.InputActions.EnablePlugins
-          }
-          icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
-        />
+        {currentModel.endsWith("0613") && (
+          <ChatAction
+            onClick={switchUsePlugins}
+            text={
+              usePlugins
+                ? Locale.Chat.InputActions.DisablePlugins
+                : Locale.Chat.InputActions.EnablePlugins
+            }
+            icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
+          />
+        )}
 
         {showModelSelector && (
           <Selector
@@ -534,6 +536,8 @@ export function ChatActions(props: {
               chatStore.updateCurrentSession((session) => {
                 session.mask.modelConfig.model = s[0] as ModelType;
                 session.mask.syncGlobalConfig = false;
+                session.mask.usePlugins =
+                  session.mask.modelConfig.model.endsWith("0613");
               });
               showToast(s[0]);
             }}
@@ -1203,8 +1207,7 @@ function _Chat() {
                       </div>
                     )}
                   </div>
-                  {session.usePlugins &&
-                    !isUser &&
+                  {!isUser &&
                     message.toolMessages &&
                     message.toolMessages.map((tool, index) => (
                       <div

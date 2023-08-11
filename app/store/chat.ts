@@ -61,7 +61,6 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
-  usePlugins: boolean;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -85,7 +84,6 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-    usePlugins: true,
   };
 }
 
@@ -317,7 +315,7 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
-        if (session.usePlugins) {
+        if (session.mask.usePlugins) {
           console.log("[ToolAgent] start");
           api.llm.toolAgentChat({
             messages: sendMessages,

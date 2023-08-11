@@ -200,20 +200,12 @@ async function handle(req: NextRequest) {
       presencePenalty: reqBody.presence_penalty,
       frequencyPenalty: reqBody.frequency_penalty,
     });
-
-    let executor = await initializeAgentExecutorWithOptions(tools, llm, {
-      agentType: "chat-conversational-react-description",
+    const executor = await initializeAgentExecutorWithOptions(tools, llm, {
+      agentType: "openai-functions",
       returnIntermediateSteps: true,
       maxIterations: 3,
       memory: memory,
     });
-    if (reqBody.model.endsWith("0613"))
-      executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "openai-functions",
-        returnIntermediateSteps: true,
-        maxIterations: 3,
-        memory: memory,
-      });
 
     executor.call(
       {
