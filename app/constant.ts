@@ -10,7 +10,8 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_API_HOST = "https://chatgpt1.nextweb.fun/api/proxy";
 
 export enum Path {
-  Login = "/Login",
+  Login = "/login",
+  Register = "/register",
   Home = "/",
   Chat = "/chat",
   Settings = "/settings",

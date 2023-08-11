@@ -1,4 +1,4 @@
-.login-page {
+.register-page {
   background:var(--color-prettylights-syntax-brackethighlighter-angle) ;
   display: flex;
   //justify-content: center;
@@ -8,11 +8,11 @@
   width: 100%;
   flex-direction: column;
 
-  .login-logo {
+  .register-logo {
     transform: scale(1.4);
   }
 
-  .login-title {
+  .register-title {
     color: var(--white);
     font-size: 24px;
     font-weight: bold;
@@ -20,26 +20,22 @@
     margin-bottom: 30px;
   }
 
-  .login-tips {
+  .register-tips {
     font-size: 14px;
   }
 
-  .login-input {
+  .register-input {
     margin: 10px 0;
     width: 250px;
   }
 
-  .login-actions {
+  .register-actions {
     width: 250px;
     display: flex;
     justify-content: center;
     flex-direction: column;
   }
-  .login-button {
+  .register-button {
     width:100%;
-  }
-  .register-button{
-    margin-top: 5px;
-    float: right;
   }
 }

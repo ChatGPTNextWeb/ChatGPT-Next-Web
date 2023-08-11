@@ -6,6 +6,21 @@ const cn = {
     Unauthorized:
       "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
   },
+  Register: {
+    Title: "注册",
+    Phone: "手机号",
+    Name: "账号名称",
+    Input1: "密码",
+    Input2: "重复密码",
+    Confirm: "确认",
+  },
+  Login: {
+    Title: "登录",
+    Input1: "账号",
+    Input2: "密码",
+    Confirm: "登录",
+    register: "注册",
+  },
   Auth: {
     Title: "需要密码",
     Tips: "管理员开启了密码验证，请在下方填入访问码",
