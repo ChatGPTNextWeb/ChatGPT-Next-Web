@@ -49,6 +49,7 @@ import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
+import { GENERATE_TITLE_OPTION } from "../constant";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -543,6 +544,30 @@ export function Settings() {
                 )
               }
             ></input>
+          </ListItem>
+        </List>
+
+        <List>
+          <ListItem
+            title={Locale.Settings.GenerateTitle.Title}
+            subTitle={Locale.Settings.GenerateTitle.SubTitle}
+          >
+            <Select
+              value={config.generateTitle.selected}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.generateTitle.selected = e.currentTarget
+                      .value as GENERATE_TITLE_OPTION),
+                )
+              }
+            >
+              {Object.values(GENERATE_TITLE_OPTION).map((option) => (
+                <option value={option} key={option}>
+                  {Locale.Settings.GenerateTitle.Options[option]}
+                </option>
+              ))}
+            </Select>
           </ListItem>
         </List>
 
