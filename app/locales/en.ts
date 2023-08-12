@@ -172,6 +172,15 @@ const en: LocaleType = {
       Title: "Send Preview Bubble",
       SubTitle: "Preview markdown in bubble",
     },
+    GenerateTitle: {
+      Title: "Generate Title",
+      SubTitle: "Choose a title generation option",
+      Options: {
+        disable: "Disable",
+        prompt: "User Prompt",
+        ai: "AI Summary",
+      },
+    },
     Mask: {
       Splash: {
         Title: "Mask Splash Screen",

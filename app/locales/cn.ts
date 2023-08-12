@@ -170,6 +170,15 @@ const cn = {
       Title: "预览气泡",
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
+    GenerateTitle: {
+      Title: "生成标题",
+      SubTitle: "选择一个生成标题的方案",
+      Options: {
+        disable: "关闭",
+        prompt: "用户输入",
+        ai: "AI总结",
+      },
+    },
     Mask: {
       Splash: {
         Title: "面具启动页",
