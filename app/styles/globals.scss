@@ -105,6 +105,7 @@ body {
   align-items: center;
   user-select: none;
   touch-action: pan-x pan-y;
+  overflow: hidden;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
