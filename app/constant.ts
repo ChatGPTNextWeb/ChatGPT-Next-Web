@@ -18,8 +18,9 @@ export enum AppInfo {
 export enum Path {
   Home = "/",
   Chat = "/chat",
-  ChatToastmasters = "/toastmasters",
-  ChatTmEvaluator = "/toastmasters/evaluators",
+  ToastmastersTTMaster = "/toastmasters/tableTopicsMaster",
+  ToastmastersImpromptuSpeaker = "/toastmasters/impromptuSpeaker",
+  ToastmastersEvaluators = "/toastmasters/evaluators",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",

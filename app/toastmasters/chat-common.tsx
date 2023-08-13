@@ -1,11 +1,13 @@
 import { useDebouncedCallback } from "use-debounce";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
+import LoadingIcon from "../icons/three-dots.svg";
 import MicphoneIcon from "../icons/Micphone.svg";
 
 import { useAppConfig } from "../store";
 
 import { autoGrowTextArea } from "../utils";
+import dynamic from "next/dynamic";
 
 import { IconButton } from "../components/button";
 import styles from "../components/chat.module.scss";
@@ -71,23 +73,6 @@ export const ChatInput = (props: {
     }
   };
 
-  const onInput = (text: string) => {
-    console.log("onInput:", text);
-    setUserInput(text);
-
-    const n = text.trim().length;
-
-    // // clear search results
-    // if (n === 0) {
-    //   setPromptHints([]);
-    // }
-  };
-
-  const promptInput = () => {
-    var inputHints = "Enter To wrap";
-    return inputHints;
-  };
-
   return (
     <div className={styles["chat-input-panel-noborder"]}>
       <div className={styles["chat-input-panel-title"]}>{props.title}</div>
@@ -95,9 +80,8 @@ export const ChatInput = (props: {
         <textarea
           ref={inputRef}
           className={styles["chat-input"]}
-          placeholder={promptInput()}
-          // onInput={(e) => onInput(e.currentTarget.value)}
-          onChange={(e) => onInput(e.currentTarget.value)}
+          placeholder={"Enter To wrap"}
+          onInput={(e) => setUserInput(e.currentTarget.value)}
           value={userInput}
           // onFocus={() => setAutoScroll(true)}
           // onBlur={() => setAutoScroll(false)}
@@ -171,3 +155,34 @@ export const ChatAction = (props: {
     </div>
   );
 };
+
+export const Markdown = dynamic(
+  async () => (await import("../components/markdown")).Markdown,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
+
+export function useScrollToBottom() {
+  // for auto-scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+  const scrollToBottom = useCallback(() => {
+    const dom = scrollRef.current;
+    if (dom) {
+      requestAnimationFrame(() => dom.scrollTo(0, dom.scrollHeight));
+    }
+  }, []);
+
+  // auto scroll
+  useEffect(() => {
+    autoScroll && scrollToBottom();
+  });
+
+  return {
+    scrollRef,
+    autoScroll,
+    setAutoScroll,
+    scrollToBottom,
+  };
+}

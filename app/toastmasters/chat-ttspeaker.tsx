@@ -11,6 +11,7 @@ import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
+import LoadingIcon from "../icons/three-dots.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import EditIcon from "../icons/rename.svg";
@@ -67,7 +68,7 @@ import zBotServiceClient, {
 
 import speechSdk from "../cognitive/speech-sdk";
 
-import { ToastmastersEvaluatorGuidance, ToastmastersEvaluators } from "./roles";
+import { ToastmastersTTSpeaker, ToastmastersTTSpeakerGuidance } from "./roles";
 import en from "../locales/en";
 import {
   ChatInput,
@@ -109,25 +110,21 @@ export function Chat() {
   const setInputTitle = (text: string) => {
     session.inputs.input1 = text;
   };
-  const setInputSpeech = (text: string) => {
-    session.inputs.input2 = text;
-  };
 
   const doSubmit = () => {
     const topic = session.inputs.input1;
-    const speech = session.inputs.input2;
 
-    if (topic.trim() === "" || speech === "") return;
+    if (topic.trim() === "") return;
 
     // reset status from 0
     chatStore.resetSession();
 
-    var ask = ToastmastersEvaluatorGuidance(topic, speech);
+    var ask = ToastmastersTTSpeakerGuidance(topic);
     chatStore.onUserInput(ask);
 
-    for (let i = 0; i < ToastmastersEvaluators.length; i++) {
+    for (let i = 0; i < ToastmastersTTSpeaker.length; i++) {
       chatStore.getIsFinished().then(() => {
-        ask = ToastmastersEvaluators[i].content;
+        ask = ToastmastersTTSpeaker[i].content;
         chatStore.onUserInput(ask);
       });
     }
@@ -142,12 +139,12 @@ export function Chat() {
     // reset status from messageIndex
     chatStore.resetSessionFromIndex(2 * roleIndex + 2);
 
-    var ask = ToastmastersEvaluators[roleIndex].content;
+    var ask = ToastmastersTTSpeaker[roleIndex].content;
     chatStore.onUserInput(ask);
 
-    for (let i = roleIndex + 1; i < ToastmastersEvaluators.length; i++) {
+    for (let i = roleIndex + 1; i < ToastmastersTTSpeaker.length; i++) {
       chatStore.getIsFinished().then(() => {
-        ask = ToastmastersEvaluators[i].content;
+        ask = ToastmastersTTSpeaker[i].content;
         chatStore.onUserInput(ask);
       });
     }
@@ -320,11 +317,6 @@ export function Chat() {
             onReturnValue={setInputTitle}
             defaultInput={session.inputs.input1}
           />
-          <ChatInput
-            title="Impromptu Speech"
-            onReturnValue={setInputSpeech}
-            defaultInput={session.inputs.input2}
-          />
 
           <div className={styles["chat-input-panel-buttons"]}>
             <IconButton
@@ -340,7 +332,7 @@ export function Chat() {
           <div className={styles["chat-input-border-bottom"]}></div>
 
           <div className={styles["chat-input-panel"]}>
-            {ToastmastersEvaluators.map((role, index) => {
+            {ToastmastersTTSpeaker.map((role, index) => {
               // if length > index => the data is ready => show the data, else show the last data
               var message: ChatMessage = createMessage({});
               if (session.messages.length > 2 * index + 4)
@@ -354,7 +346,6 @@ export function Chat() {
               return (
                 <div key={index} className={styles["chat-message-hover"]}>
                   <div className={styles["chat-input-panel-title"]}>
-                    {" "}
                     {role.role}
                   </div>
 

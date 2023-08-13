@@ -3,8 +3,35 @@ import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
   {
-    avatar: "1f47e",
-    name: "Toastmasters Speaker",
+    avatar: "toastmasters",
+    name: "Toastmasters Table Topics Master",
+    context: [
+      {
+        role: "user",
+        content: `You are the Export of Toastmasters. 
+        I will firstly provide you the Topic in table topics session,
+        and then I will ask you some questions about the Topic.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.3,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersTTMaster,
+  },
+  {
+    avatar: "toastmasters",
+    name: "Toastmasters Impromptu Speaker",
     context: [
       {
         role: "user",
@@ -37,10 +64,10 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ChatToastmasters, // If not defined, will use Path.Chat
+    pagePath: Path.ToastmastersImpromptuSpeaker, // If not defined, will use Path.Chat
   },
   {
-    avatar: "1f47e",
+    avatar: "toastmasters",
     name: "Toastmasters Evaluators",
     context: [
       {
@@ -49,10 +76,10 @@ export const CN_MASKS: BuiltinMask[] = [
         You are the Evaluator of Toastmasters, Including 
         Table Topics Evaluator, Grammarian, Ah-Counter, 
         and the General Evaluator.
-        I will firstly provide you the Topic and Speech, 
+        I will firstly provide you the Question and Speech, 
         which is formatted as json like:
         {
-          "Topic": "xxx",
+          "Question": "xxx",
           "Speech": "xxx"
         },
         And in each interaction, I will let you play an Evaluator Role, 
@@ -78,7 +105,7 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ChatTmEvaluator,
+    pagePath: Path.ToastmastersEvaluators,
   },
   {
     avatar: "1f5bc-fe0f",
