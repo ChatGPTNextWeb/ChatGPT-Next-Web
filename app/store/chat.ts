@@ -17,7 +17,7 @@ import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { BuiltinMask } from "../masks/typing";
-import { ToastmastersRoles } from "../masks/en-toastmasters";
+import { ToastmastersRoles } from "../toastmasters/roles";
 import { send } from "process";
 
 export type ChatMessage = RequestMessage & {
@@ -56,6 +56,8 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+  inputs: { [key: string]: string };
+
   // inputs: { userInput: string, userInputSpeech: string };
   userInput?: string;
   userInputSpeech?: string;
@@ -83,9 +85,9 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
 
-    // // TODO: tempfix
+    // // TODO: future make this a list of inputs
     // inputs: {},
-    // inputs: {userInput: "", userInputSpeech: ""},
+    inputs: { input1: "", input2: "" },
   };
 }
 

@@ -60,8 +60,8 @@ import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, DEFAULT_LANG } from "../locales";
 
-import { IconButton } from "./button";
-import styles from "./chat.module.scss";
+import { IconButton } from "../components/button";
+import styles from "../components/chat.module.scss";
 
 import {
   Input,
@@ -73,15 +73,15 @@ import {
   showConfirm,
   showPrompt,
   showToast,
-} from "./ui-lib";
+} from "../components/ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
-import { Avatar } from "./emoji";
-import { MaskAvatar, MaskConfig } from "./mask";
+import { Avatar } from "../components/emoji";
+import { MaskAvatar, MaskConfig } from "../components/mask";
 import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
-import { ExportMessageModal } from "./exporter";
+import { ExportMessageModal } from "../components/exporter";
 import { getClientConfig } from "../config/client";
 import { ModelConfig, SpeechConfig } from "../store/config";
 
@@ -91,14 +91,14 @@ import zBotServiceClient, {
 
 import speechSdk from "../cognitive/speech-sdk";
 
-import {
-  ToastmastersRoles,
-  EN_TOASTMASTERS_ROLES,
-} from "../masks/en-toastmasters";
+import { ToastmastersRoles, EN_TOASTMASTERS_ROLES } from "./roles";
 
-const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
-  loading: () => <LoadingIcon />,
-});
+const Markdown = dynamic(
+  async () => (await import("../components/markdown")).Markdown,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
 
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();

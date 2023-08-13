@@ -50,14 +50,14 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 });
 
 const ChatToastmasters = dynamic(
-  async () => (await import("./chat-toastmasters")).Chat,
+  async () => (await import("../toastmasters/chat-speaker")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
 );
 
 const ChatTmEvaluator = dynamic(
-  async () => (await import("./chat-tm-evaluator")).Chat,
+  async () => (await import("../toastmasters/chat-evaluators")).Chat,
   {
     loading: () => <Loading noLogo />,
   },

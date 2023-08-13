@@ -60,8 +60,8 @@ import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, DEFAULT_LANG } from "../locales";
 
-import { IconButton } from "./button";
-import styles from "./chat.module.scss";
+import { IconButton } from "../components/button";
+import styles from "../components/chat.module.scss";
 
 import {
   Input,
@@ -73,15 +73,15 @@ import {
   showConfirm,
   showPrompt,
   showToast,
-} from "./ui-lib";
+} from "../components/ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
-import { Avatar } from "./emoji";
-import { MaskAvatar, MaskConfig } from "./mask";
+import { Avatar } from "../components/emoji";
+import { MaskAvatar, MaskConfig } from "../components/mask";
 import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
-import { ExportMessageModal } from "./exporter";
+import { ExportMessageModal } from "../components/exporter";
 import { getClientConfig } from "../config/client";
 import { ModelConfig, SpeechConfig } from "../store/config";
 
@@ -95,12 +95,16 @@ import {
   ToastmastersRoles,
   ToastmastersEvaluatorGuidance,
   ToastmastersEvaluators,
-} from "../masks/en-toastmasters";
+} from "./roles";
 import en from "../locales/en";
+import { ChatInput } from "./chat-input";
 
-const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
-  loading: () => <LoadingIcon />,
-});
+const Markdown = dynamic(
+  async () => (await import("../components/markdown")).Markdown,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
 
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
@@ -525,16 +529,31 @@ export function Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
-  // 使用 useEffect 钩子来监听 voiceButtonStarted 的变化。
-  // 当 voiceButtonStarted 发生变化时，可以在 useEffect 钩子中执行一些副作用，例如更新组件的样式
-  const [voiceButtonStarted, setVoiceButtonStarted] = useState(false);
-  useEffect(() => {}, [voiceButtonStarted]);
-  const [speechRecordStarted, setSpeechRecordStarted] = useState(false);
-  useEffect(() => {}, [speechRecordStarted]);
+  const [titleRecord, setTitleRecord] = useState(false);
+  const [speechRecord, setSpeechRecord] = useState(false);
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 10;
     setHitBottom(isTouchBottom);
+  };
+
+  // useEffect(() => {
+  //   if (session.inputs === undefined) {
+  //     session.inputs = { title: "", speech: "" };
+  //   }
+  // }, [session]);
+
+  /*
+  when page is mounted, show session.userInput
+  when page is unmounted, save to session.userInput
+  when userInput is changed, show userInput
+  when Send button is clicked, show session.messages[session.messages.length-1].content
+  */
+  const saveInputTitle = (text: string) => {
+    session.inputs.input1 = text;
+  };
+  const saveInputSpeech = (text: string) => {
+    session.inputs.input2 = text;
   };
 
   // prompt hints
@@ -578,7 +597,7 @@ export function Chat() {
         ? autoGrowTextArea(inputRefSpeech.current)
         : 1;
       const inputRows = Math.min(
-        20,
+        10,
         Math.max(2 + Number(!isMobileScreen), rows),
       );
       setInputRowsSpeech(inputRows);
@@ -609,6 +628,7 @@ export function Chat() {
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
+    // console.log("onInput:", text);
     setUserInput(text);
     const n = text.trim().length;
 
@@ -627,9 +647,9 @@ export function Chat() {
     }
   };
 
-  const doSubmit = (topic: string, speech: string) => {
-    console.log("topic:", topic);
-    console.log("speech:", speech);
+  const doSubmit = () => {
+    const topic = session.inputs.input1;
+    const speech = session.inputs.input2;
 
     if (topic.trim() === "" || speech === "") return;
 
@@ -644,17 +664,9 @@ export function Chat() {
     speech: string,
     roleIndex: number = 0,
   ) => {
-    console.log("userInput:", userInput);
-
     // the 1st role: 0: Impromptu Speaker doing
     setIsLoading(false);
     // localStorage.setItem(LAST_INPUT_KEY, userInput);
-
-    // save input
-    session.userInput = topic;
-    session.userInputSpeech = speech;
-    setUserInput("");
-    setUserInputSpeech("");
 
     var ask = ToastmastersEvaluatorGuidance(topic, speech);
     chatStore.onUserInput(ask);
@@ -673,12 +685,6 @@ export function Chat() {
 
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
-  };
-
-  const doResetInput = () => {
-    setIsLoading(false);
-    setUserInput("");
-    setUserInputSpeech("");
   };
 
   // stop response
@@ -733,17 +739,6 @@ export function Chat() {
     }
   };
 
-  const onResend = (userInput: string, roleIndex: number) => {
-    console.log("userInput:", userInput);
-
-    if (userInput.trim() === "") return;
-
-    // reset status from messageIndex = 2 * roleIndex
-    chatStore.resetSessionFromIndex(2 * roleIndex);
-
-    // doSubmitFromIndex(userInput, roleIndex);
-  };
-
   const onEdit = async (botMessage: ChatMessage) => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
@@ -758,12 +753,12 @@ export function Chat() {
   };
 
   const onRecord = () => {
-    if (!voiceButtonStarted) {
+    if (!titleRecord) {
       speechRecognizer.startRecording(appendUserInput);
-      setVoiceButtonStarted(true);
+      setTitleRecord(true);
     } else {
       speechRecognizer.stopRecording();
-      setVoiceButtonStarted(false);
+      setTitleRecord(false);
     }
   };
   const appendUserInput = (newState: string): void => {
@@ -776,12 +771,12 @@ export function Chat() {
   };
 
   const onRecordSpeech = () => {
-    if (!speechRecordStarted) {
+    if (!speechRecord) {
       speechRecognizer.startRecording(appendUserInputSpeech);
-      setSpeechRecordStarted(true);
+      setSpeechRecord(true);
     } else {
       speechRecognizer.stopRecording();
-      setSpeechRecordStarted(false);
+      setSpeechRecord(false);
     }
   };
   const appendUserInputSpeech = (newState: string): void => {
@@ -982,73 +977,29 @@ export function Chat() {
         }}
       >
         <List>
-          <div className={styles["chat-input-panel-noborder"]}>
-            <div className={styles["chat-input-panel-title"]}>
-              {" "}
-              {`Title: (Question/Topic)`}{" "}
-            </div>
-            <div className={styles["chat-input-panel-inner"]}>
-              <textarea
-                ref={inputRef}
-                className={styles["chat-input"]}
-                placeholder={promptInput(submitKey)}
-                onInput={(e) => onInput(e.currentTarget.value)}
-                value={extractUserInput()}
-                // onFocus={() => setAutoScroll(true)}
-                onBlur={() => setAutoScroll(false)}
-                rows={inputRows}
-                autoFocus={autoFocus}
-                style={{
-                  fontSize: config.fontSize,
-                }}
-              />
-              <IconButton
-                icon={<MicphoneIcon />}
-                text={voiceButtonStarted ? "Recording" : "Record"}
-                bordered
-                className={
-                  voiceButtonStarted
-                    ? styles["chat-input-send-recording"]
-                    : styles["chat-input-send-record"]
-                }
-                onClick={onRecord}
-              />
-            </div>
+          <ChatInput
+            title="Title: (Question/Topic)"
+            onReturnValue={saveInputTitle}
+            defaultInput={session.inputs.input1}
+          />
+          <ChatInput
+            title="Speech: (Impromptu)"
+            onReturnValue={saveInputSpeech}
+            defaultInput={session.inputs.input2}
+          />
+
+          <div className={styles["chat-input-panel-buttons"]}>
+            <IconButton
+              icon={<SendWhiteIcon />}
+              text={Locale.Chat.Send}
+              className={styles["chat-input-button-send"]}
+              bordered
+              type="primary"
+              onClick={doSubmit}
+            />
           </div>
 
-          <div className={styles["chat-input-panel-noborder"]}>
-            <div className={styles["chat-input-panel-title"]}>
-              {" "}
-              {`Speech: (Impromptu/Prepared)`}{" "}
-            </div>
-            <div className={styles["chat-input-panel-inner"]}>
-              <textarea
-                ref={inputRefSpeech}
-                className={styles["chat-input"]}
-                placeholder={promptInput(submitKey)}
-                onInput={(e) => onInputSpeech(e.currentTarget.value)}
-                value={extractUserInputSpeech()}
-                onBlur={() => setAutoScroll(false)}
-                rows={inputRowsSpeech}
-                autoFocus={autoFocus}
-                style={{
-                  fontSize: config.fontSize,
-                }}
-              />
-              <IconButton
-                icon={<MicphoneIcon />}
-                text={speechRecordStarted ? "Recording" : "Record"}
-                bordered
-                className={
-                  speechRecordStarted
-                    ? styles["chat-input-send-recording"]
-                    : styles["chat-input-send-record"]
-                }
-                onClick={onRecordSpeech}
-              />
-            </div>
-          </div>
-          <div className={styles["chat-input-panel-buttons"]}>
+          {/* <div className={styles["chat-input-panel-buttons"]}>
             <IconButton
               icon={<ResetIcon />}
               text={"Reset"}
@@ -1066,7 +1017,7 @@ export function Chat() {
                 doSubmit(extractUserInput(), extractUserInputSpeech())
               }
             />
-          </div>
+          </div> */}
           <div className={styles["chat-input-border-bottom"]}></div>
 
           <div className={styles["chat-input-panel"]}>
