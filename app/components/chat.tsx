@@ -83,10 +83,6 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { SpeechConfig } from "../store/config";
 
-import zBotServiceClient, {
-  LocalStorageKeys,
-} from "../zbotservice/ZBotServiceClient";
-
 import speechSdk from "../cognitive/speech-sdk";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
@@ -591,27 +587,6 @@ export function Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
-
-    let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-    if (userEmail === null) {
-      showToast("您尚未登录, 请前往设置中心登录");
-      return;
-    }
-
-    let userHasCoins = localStorage.getItem(LocalStorageKeys.userHasCoins);
-    console.log("userHasCoins:", userHasCoins);
-    if (userHasCoins !== null && userHasCoins === "false") {
-      showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
-      return;
-    }
-
-    // update db
-    zBotServiceClient.updateRequest(userEmail).then((item) => {
-      localStorage.setItem(
-        LocalStorageKeys.userHasCoins,
-        item.userHasCoins.toString(),
-      );
-    });
 
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {

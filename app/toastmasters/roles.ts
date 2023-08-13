@@ -13,7 +13,7 @@ Are you ready?
 
 export const ToastmastersTTMaster = [
   {
-    role: "Introcution",
+    role: "Introduction",
     content: `To give an introduction about this topic.
     Your answer must:
     1). About 100 words.`,

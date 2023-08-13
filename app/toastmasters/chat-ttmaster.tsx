@@ -53,18 +53,9 @@ import {
 } from "../components/ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
-import { Avatar } from "../components/emoji";
-import { MaskAvatar, MaskConfig } from "../components/mask";
-import { useMaskStore } from "../store/mask";
-import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "../components/exporter";
 import { getClientConfig } from "../config/client";
-import { ModelConfig, SpeechConfig } from "../store/config";
-
-import zBotServiceClient, {
-  LocalStorageKeys,
-} from "../zbotservice/ZBotServiceClient";
 
 import speechSdk from "../cognitive/speech-sdk";
 
@@ -101,18 +92,8 @@ export function Chat() {
     setHitBottom(isTouchBottom);
   };
 
-  /*
-  when page is mounted, show session.userInput
-  when page is unmounted, save to session.userInput
-  when userInput is changed, show userInput
-  when Send button is clicked, show session.messages[session.messages.length-1].content
-  */
-  const setInputTitle = (text: string) => {
-    session.inputs.input1 = text;
-  };
-
   const doSubmit = () => {
-    const topic = session.inputs.input1;
+    const topic = session.input.text;
 
     if (topic.trim() === "") return;
 
@@ -312,11 +293,7 @@ export function Chat() {
         }}
       >
         <List>
-          <ChatInput
-            title="Topic"
-            onReturnValue={setInputTitle}
-            defaultInput={session.inputs.input1}
-          />
+          <ChatInput title="Topic" inputStore={session.input} />
 
           <div className={styles["chat-input-panel-buttons"]}>
             <IconButton

@@ -52,18 +52,10 @@ import {
 } from "../components/ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
-import { Avatar } from "../components/emoji";
-import { MaskAvatar, MaskConfig } from "../components/mask";
-import { useMaskStore } from "../store/mask";
-import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "../components/exporter";
 import { getClientConfig } from "../config/client";
 import { ModelConfig, SpeechConfig } from "../store/config";
-
-import zBotServiceClient, {
-  LocalStorageKeys,
-} from "../zbotservice/ZBotServiceClient";
 
 import speechSdk from "../cognitive/speech-sdk";
 
@@ -100,29 +92,16 @@ export function Chat() {
     setHitBottom(isTouchBottom);
   };
 
-  /*
-  when page is mounted, show session.userInput
-  when page is unmounted, save to session.userInput
-  when userInput is changed, show userInput
-  when Send button is clicked, show session.messages[session.messages.length-1].content
-  */
-  const setInputTitle = (text: string) => {
-    session.inputs.input1 = text;
-  };
-  const setInputSpeech = (text: string) => {
-    session.inputs.input2 = text;
-  };
-
   const doSubmit = () => {
-    const topic = session.inputs.input1;
-    const speech = session.inputs.input2;
+    const question = session.input.text;
+    const speech = session.input2.text;
 
-    if (topic.trim() === "" || speech === "") return;
+    if (question.trim() === "" || speech === "") return;
 
     // reset status from 0
     chatStore.resetSession();
 
-    var ask = ToastmastersEvaluatorGuidance(topic, speech);
+    var ask = ToastmastersEvaluatorGuidance(question, speech);
     chatStore.onUserInput(ask);
 
     for (let i = 0; i < ToastmastersEvaluators.length; i++) {
@@ -315,16 +294,8 @@ export function Chat() {
         }}
       >
         <List>
-          <ChatInput
-            title="Question"
-            onReturnValue={setInputTitle}
-            defaultInput={session.inputs.input1}
-          />
-          <ChatInput
-            title="Impromptu Speech"
-            onReturnValue={setInputSpeech}
-            defaultInput={session.inputs.input2}
-          />
+          <ChatInput title="Question" inputStore={session.input} />
+          <ChatInput title="Impromptu Speech" inputStore={session.input2} />
 
           <div className={styles["chat-input-panel-buttons"]}>
             <IconButton

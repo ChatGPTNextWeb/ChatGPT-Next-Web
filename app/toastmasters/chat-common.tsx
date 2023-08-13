@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import LoadingIcon from "../icons/three-dots.svg";
 import MicphoneIcon from "../icons/Micphone.svg";
 
-import { useAppConfig } from "../store";
+import { InputStore, useAppConfig } from "../store";
 
 import { autoGrowTextArea } from "../utils";
 import dynamic from "next/dynamic";
@@ -14,16 +14,43 @@ import styles from "../components/chat.module.scss";
 
 import speechSdk, { speechRecognizer } from "../cognitive/speech-sdk";
 
-export const ChatInput = (props: {
-  title: string;
-  defaultInput: string;
-  onReturnValue: (arg0: string) => void;
-}) => {
+export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   const config = useAppConfig();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [userInput, setUserInput] = useState(props.defaultInput ?? "");
   const [recording, setRecording] = useState(false);
+
+  /*
+  when page is mounted, show last userInput
+  when userInput is changed, show userInput
+  when Send button is clicked, show session.messages[session.messages.length-1].content
+  */
+  const [userInput, setUserInput] = useState(props.inputStore.text);
+  const [time, setTime] = useState(props.inputStore.time);
+
+  // 计时器
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (recording) {
+      intervalId = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+
+    return () => {
+      // save to store
+      props.inputStore.time = time;
+      clearInterval(intervalId);
+    };
+  }, [recording]);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   // auto grow input
   const [inputRows, setInputRows] = useState(2);
@@ -49,7 +76,9 @@ export const ChatInput = (props: {
 
   // set parent value
   useEffect(() => {
-    props.onReturnValue(userInput);
+    // save to store
+    props.inputStore.text = userInput;
+
     // set the focus to the input at the end of textarea
     inputRef.current?.focus();
   }, [userInput]); // should not depend props in case auto focus expception
@@ -102,6 +131,10 @@ export const ChatInput = (props: {
           }
           onClick={onRecord}
         />
+        <div className={styles["chat-input-words"]}>
+          {userInput.length > 0 ? userInput.split(/\s+/).length : 0} words,{" "}
+          {formatTime(time)}
+        </div>
       </div>
     </div>
   );
