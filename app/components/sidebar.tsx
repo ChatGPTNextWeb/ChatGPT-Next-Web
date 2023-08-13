@@ -145,7 +145,8 @@ export function SideBar(props: { className?: string }) {
               chatStore.newSession();
               navigate(Path.Chat);
             } else {
-              navigate(Path.NewChat);
+              // navigate(Path.NewChat);
+              navigate(Path.Masks);
             }
           }}
           shadow
@@ -171,11 +172,12 @@ export function SideBar(props: { className?: string }) {
 
       <div
         className={styles["sidebar-body"]}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
-        }}
+        // disable to navigate to home in case error page route
+        // onClick={(e) => {
+        //   if (e.target === e.currentTarget) {
+        //     navigate(Path.Home);
+        //   }
+        // }}
       >
         <ChatList narrow={shouldNarrow} />
       </div>

@@ -89,15 +89,15 @@ export const ToastmastersEvaluators = [
     content: `You are the ${ToastmastersRoles.Grammarian}. 
     Evaluate my speech.`,
   },
-  // {
-  //   role: ToastmastersRoles.AhCounter,
-  //   content: `You are the ${ToastmastersRoles.AhCounter}.
-  //   Evaluate my speech.`,
-  // },
-  // {
-  //   role: ToastmastersRoles.GeneralEvaluator,
-  //   content: `You are the ${ToastmastersRoles.GeneralEvaluator}.
-  //   Evaluate the above 3 roles' speech,
-  //   including ${ToastmastersRoles.TableTopicsEvaluator}, ${ToastmastersRoles.Grammarian}, and ${ToastmastersRoles.AhCounter}.`,
-  // },
+  {
+    role: ToastmastersRoles.AhCounter,
+    content: `You are the ${ToastmastersRoles.AhCounter}.
+    Evaluate my speech.`,
+  },
+  {
+    role: ToastmastersRoles.GeneralEvaluator,
+    content: `You are the ${ToastmastersRoles.GeneralEvaluator}.
+    Evaluate the above 3 roles' speech,
+    including ${ToastmastersRoles.TableTopicsEvaluator}, ${ToastmastersRoles.Grammarian}, and ${ToastmastersRoles.AhCounter}.`,
+  },
 ];
