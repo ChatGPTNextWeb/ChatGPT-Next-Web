@@ -57,10 +57,6 @@ export interface ChatSession {
 
   mask: Mask;
   inputs: { [key: string]: string };
-
-  // inputs: { userInput: string, userInputSpeech: string };
-  userInput?: string;
-  userInputSpeech?: string;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -86,7 +82,6 @@ function createEmptySession(): ChatSession {
     mask: createEmptyMask(),
 
     // // TODO: future make this a list of inputs
-    // inputs: {},
     inputs: { input1: "", input2: "" },
   };
 }

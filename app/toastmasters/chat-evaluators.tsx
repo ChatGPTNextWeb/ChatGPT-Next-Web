@@ -1,4 +1,3 @@
-import { useDebouncedCallback } from "use-debounce";
 import React, {
   useState,
   useRef,
@@ -8,29 +7,15 @@ import React, {
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
-import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import PromptIcon from "../icons/prompt.svg";
-import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
-import ResetIcon from "../icons/reload.svg";
-import BreakIcon from "../icons/break.svg";
-import SettingsIcon from "../icons/chat-settings.svg";
-import DeleteIcon from "../icons/clear.svg";
-import PinIcon from "../icons/pin.svg";
 import EditIcon from "../icons/rename.svg";
-
-import LightIcon from "../icons/light.svg";
-import DarkIcon from "../icons/dark.svg";
-import AutoIcon from "../icons/auto.svg";
-import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
-import RobotIcon from "../icons/robot.svg";
 import MicphoneIcon from "../icons/Micphone.svg";
 
 import {
@@ -46,18 +31,11 @@ import {
   ALL_MODELS,
 } from "../store";
 
-import {
-  copyToClipboard,
-  downloadAs,
-  selectOrCopy,
-  autoGrowTextArea,
-  useMobileScreen,
-} from "../utils";
+import { copyToClipboard, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
-import { Prompt, usePromptStore } from "../store/prompt";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, DEFAULT_LANG } from "../locales";
 
 import { IconButton } from "../components/button";
@@ -89,15 +67,11 @@ import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
 
-import speechSdk, { speechRecognizer } from "../cognitive/speech-sdk";
+import speechSdk from "../cognitive/speech-sdk";
 
-import {
-  ToastmastersRoles,
-  ToastmastersEvaluatorGuidance,
-  ToastmastersEvaluators,
-} from "./roles";
+import { ToastmastersEvaluatorGuidance, ToastmastersEvaluators } from "./roles";
 import en from "../locales/en";
-import { ChatInput } from "./chat-input";
+import { ChatInput, ChatAction } from "./chat-input";
 
 const Markdown = dynamic(
   async () => (await import("../components/markdown")).Markdown,
@@ -105,265 +79,6 @@ const Markdown = dynamic(
     loading: () => <LoadingIcon />,
   },
 );
-
-export function SessionConfigModel(props: { onClose: () => void }) {
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
-  const maskStore = useMaskStore();
-  const navigate = useNavigate();
-
-  return (
-    <div className="modal-mask">
-      <Modal
-        title={Locale.Context.Edit}
-        onClose={() => props.onClose()}
-        actions={[
-          <IconButton
-            key="reset"
-            icon={<ResetIcon />}
-            bordered
-            text={Locale.Chat.Config.Reset}
-            onClick={async () => {
-              if (await showConfirm(Locale.Memory.ResetConfirm)) {
-                chatStore.updateCurrentSession(
-                  (session) => (session.memoryPrompt = ""),
-                );
-              }
-            }}
-          />,
-          <IconButton
-            key="copy"
-            icon={<CopyIcon />}
-            bordered
-            text={Locale.Chat.Config.SaveAs}
-            onClick={() => {
-              navigate(Path.Masks);
-              setTimeout(() => {
-                maskStore.create(session.mask);
-              }, 500);
-            }}
-          />,
-        ]}
-      >
-        <MaskConfig
-          mask={session.mask}
-          updateMask={(updater) => {
-            const mask = { ...session.mask };
-            updater(mask);
-            chatStore.updateCurrentSession((session) => (session.mask = mask));
-          }}
-          shouldSyncFromGlobal
-          extraListItems={
-            session.mask.modelConfig.sendMemory ? (
-              <ListItem
-                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
-                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
-              ></ListItem>
-            ) : (
-              <></>
-            )
-          }
-        ></MaskConfig>
-      </Modal>
-    </div>
-  );
-}
-
-function PromptToast(props: {
-  showToast?: boolean;
-  showModal?: boolean;
-  setShowModal: (_: boolean) => void;
-}) {
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
-  const context = session.mask.context;
-
-  return (
-    <div className={styles["prompt-toast"]} key="prompt-toast">
-      {props.showToast && (
-        <div
-          className={styles["prompt-toast-inner"] + " clickable"}
-          role="button"
-          onClick={() => props.setShowModal(true)}
-        >
-          <BrainIcon />
-          <span className={styles["prompt-toast-content"]}>
-            {Locale.Context.Toast(context.length)}
-          </span>
-        </div>
-      )}
-      {props.showModal && (
-        <SessionConfigModel onClose={() => props.setShowModal(false)} />
-      )}
-    </div>
-  );
-}
-
-function useSubmitHandler() {
-  const config = useAppConfig();
-  const submitKey = config.submitKey;
-
-  const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key !== "Enter") return false;
-    if (e.key === "Enter" && e.nativeEvent.isComposing) return false;
-    return (
-      (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
-      (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
-      (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
-      (config.submitKey === SubmitKey.MetaEnter && e.metaKey) ||
-      (config.submitKey === SubmitKey.Enter &&
-        !e.altKey &&
-        !e.ctrlKey &&
-        !e.shiftKey &&
-        !e.metaKey)
-    );
-  };
-
-  return {
-    submitKey,
-    shouldSubmit,
-  };
-}
-
-export function PromptHints(props: {
-  prompts: Prompt[];
-  onPromptSelect: (prompt: Prompt) => void;
-}) {
-  const noPrompts = props.prompts.length === 0;
-  const [selectIndex, setSelectIndex] = useState(0);
-  const selectedRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setSelectIndex(0);
-  }, [props.prompts.length]);
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (noPrompts || e.metaKey || e.altKey || e.ctrlKey) {
-        return;
-      }
-      // arrow up / down to select prompt
-      const changeIndex = (delta: number) => {
-        e.stopPropagation();
-        e.preventDefault();
-        const nextIndex = Math.max(
-          0,
-          Math.min(props.prompts.length - 1, selectIndex + delta),
-        );
-        setSelectIndex(nextIndex);
-        selectedRef.current?.scrollIntoView({
-          block: "center",
-        });
-      };
-
-      if (e.key === "ArrowUp") {
-        changeIndex(1);
-      } else if (e.key === "ArrowDown") {
-        changeIndex(-1);
-      } else if (e.key === "Enter") {
-        const selectedPrompt = props.prompts.at(selectIndex);
-        if (selectedPrompt) {
-          props.onPromptSelect(selectedPrompt);
-        }
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.prompts.length, selectIndex]);
-
-  if (noPrompts) return null;
-  return (
-    <div className={styles["prompt-hints"]}>
-      {props.prompts.map((prompt, i) => (
-        <div
-          ref={i === selectIndex ? selectedRef : null}
-          className={
-            styles["prompt-hint"] +
-            ` ${i === selectIndex ? styles["prompt-hint-selected"] : ""}`
-          }
-          key={prompt.title + i.toString()}
-          onClick={() => props.onPromptSelect(prompt)}
-          onMouseEnter={() => setSelectIndex(i)}
-        >
-          <div className={styles["hint-title"]}>{prompt.title}</div>
-          <div className={styles["hint-content"]}>{prompt.content}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ClearContextDivider() {
-  const chatStore = useChatStore();
-
-  return (
-    <div
-      className={styles["clear-context"]}
-      onClick={() =>
-        chatStore.updateCurrentSession(
-          (session) => (session.clearContextIndex = undefined),
-        )
-      }
-    >
-      <div className={styles["clear-context-tips"]}>{Locale.Context.Clear}</div>
-      <div className={styles["clear-context-revert-btn"]}>
-        {Locale.Context.Revert}
-      </div>
-    </div>
-  );
-}
-
-function ChatAction(props: {
-  text: string;
-  icon: JSX.Element;
-  onClick: () => void;
-}) {
-  const iconRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState({
-    full: 16,
-    icon: 16,
-  });
-
-  function updateWidth() {
-    if (!iconRef.current || !textRef.current) return;
-    const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
-    const textWidth = getWidth(textRef.current);
-    const iconWidth = getWidth(iconRef.current);
-    setWidth({
-      full: textWidth + iconWidth,
-      icon: iconWidth,
-    });
-  }
-
-  return (
-    <div
-      className={`${styles["chat-input-action"]} clickable`}
-      onClick={() => {
-        props.onClick();
-        setTimeout(updateWidth, 1);
-      }}
-      onMouseEnter={updateWidth}
-      onTouchStart={updateWidth}
-      style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
-      }
-    >
-      <div ref={iconRef} className={styles["icon"]}>
-        {props.icon}
-      </div>
-      <div className={styles["text"]} ref={textRef}>
-        {props.text}
-      </div>
-    </div>
-  );
-}
 
 function useScrollToBottom() {
   // for auto-scroll
@@ -389,121 +104,6 @@ function useScrollToBottom() {
   };
 }
 
-export function ChatActions(props: {
-  showPromptModal: () => void;
-  scrollToBottom: () => void;
-  showPromptHints: () => void;
-  hitBottom: boolean;
-}) {
-  const config = useAppConfig();
-  const navigate = useNavigate();
-  const chatStore = useChatStore();
-
-  // switch themes
-  const theme = config.theme;
-  function nextTheme() {
-    const themes = [Theme.Auto, Theme.Light, Theme.Dark];
-    const themeIndex = themes.indexOf(theme);
-    const nextIndex = (themeIndex + 1) % themes.length;
-    const nextTheme = themes[nextIndex];
-    config.update((config) => (config.theme = nextTheme));
-  }
-
-  // stop all responses
-  const couldStop = ChatControllerPool.hasPending();
-  const stopAll = () => ChatControllerPool.stopAll();
-
-  // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  function nextModel() {
-    const models = ALL_MODELS.filter((m) => m.available).map((m) => m.name);
-    const modelIndex = models.indexOf(currentModel);
-    const nextIndex = (modelIndex + 1) % models.length;
-    const nextModel = models[nextIndex];
-    chatStore.updateCurrentSession((session) => {
-      session.mask.modelConfig.model = nextModel;
-      session.mask.syncGlobalConfig = false;
-    });
-  }
-
-  return (
-    <div className={styles["chat-input-actions"]}>
-      {couldStop && (
-        <ChatAction
-          onClick={stopAll}
-          text={Locale.Chat.InputActions.Stop}
-          icon={<StopIcon />}
-        />
-      )}
-      {!props.hitBottom && (
-        <ChatAction
-          onClick={props.scrollToBottom}
-          text={Locale.Chat.InputActions.ToBottom}
-          icon={<BottomIcon />}
-        />
-      )}
-      {props.hitBottom && (
-        <ChatAction
-          onClick={props.showPromptModal}
-          text={Locale.Chat.InputActions.Settings}
-          icon={<SettingsIcon />}
-        />
-      )}
-
-      <ChatAction
-        onClick={nextTheme}
-        text={Locale.Chat.InputActions.Theme[theme]}
-        icon={
-          <>
-            {theme === Theme.Auto ? (
-              <AutoIcon />
-            ) : theme === Theme.Light ? (
-              <LightIcon />
-            ) : theme === Theme.Dark ? (
-              <DarkIcon />
-            ) : null}
-          </>
-        }
-      />
-
-      <ChatAction
-        onClick={props.showPromptHints}
-        text={Locale.Chat.InputActions.Prompt}
-        icon={<PromptIcon />}
-      />
-
-      <ChatAction
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
-        text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
-      />
-
-      <ChatAction
-        text={Locale.Chat.InputActions.Clear}
-        icon={<BreakIcon />}
-        onClick={() => {
-          chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
-              session.clearContextIndex = undefined;
-            } else {
-              session.clearContextIndex = session.messages.length;
-              session.memoryPrompt = ""; // will clear memory
-            }
-          });
-        }}
-      />
-
-      <ChatAction
-        onClick={nextModel}
-        text={currentModel}
-        icon={<RobotIcon />}
-      />
-    </div>
-  );
-}
-
 export function Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -516,32 +116,17 @@ export function Chat() {
   const fontSize = config.fontSize;
 
   const [showExport, setShowExport] = useState(false);
-
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const inputRefSpeech = useRef<HTMLTextAreaElement>(null);
-  const [userInput, setUserInput] = useState("");
-  const [userInputSpeech, setUserInputSpeech] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false);
-  const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
-  const [titleRecord, setTitleRecord] = useState(false);
-  const [speechRecord, setSpeechRecord] = useState(false);
-
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 10;
     setHitBottom(isTouchBottom);
   };
-
-  // useEffect(() => {
-  //   if (session.inputs === undefined) {
-  //     session.inputs = { title: "", speech: "" };
-  //   }
-  // }, [session]);
 
   /*
   when page is mounted, show session.userInput
@@ -549,102 +134,11 @@ export function Chat() {
   when userInput is changed, show userInput
   when Send button is clicked, show session.messages[session.messages.length-1].content
   */
-  const saveInputTitle = (text: string) => {
+  const setInputTitle = (text: string) => {
     session.inputs.input1 = text;
   };
-  const saveInputSpeech = (text: string) => {
+  const setInputSpeech = (text: string) => {
     session.inputs.input2 = text;
-  };
-
-  // prompt hints
-  const promptStore = usePromptStore();
-  const [promptHints, setPromptHints] = useState<Prompt[]>([]);
-  const onSearch = useDebouncedCallback(
-    (text: string) => {
-      const matchedPrompts = promptStore.search(text);
-      setPromptHints(matchedPrompts);
-    },
-    100,
-    { leading: true, trailing: true },
-  );
-
-  // auto grow input
-  const [inputRows, setInputRows] = useState(2);
-  const measure = useDebouncedCallback(
-    () => {
-      const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
-      const inputRows = Math.min(
-        20,
-        Math.max(2 + Number(!isMobileScreen), rows),
-      );
-      setInputRows(inputRows);
-    },
-    100,
-    {
-      leading: true,
-      trailing: true,
-    },
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(measure, [userInput]);
-
-  // auto grow input
-  const [inputRowsSpeech, setInputRowsSpeech] = useState(2);
-  const measureSpeech = useDebouncedCallback(
-    () => {
-      const rows = inputRefSpeech.current
-        ? autoGrowTextArea(inputRefSpeech.current)
-        : 1;
-      const inputRows = Math.min(
-        10,
-        Math.max(2 + Number(!isMobileScreen), rows),
-      );
-      setInputRowsSpeech(inputRows);
-    },
-    100,
-    {
-      leading: true,
-      trailing: true,
-    },
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(measureSpeech, [userInputSpeech]);
-
-  // chat commands shortcuts
-  const chatCommands = useChatCommand({
-    new: () => chatStore.newSession(),
-    newm: () => navigate(Path.NewChat),
-    prev: () => chatStore.nextSession(-1),
-    next: () => chatStore.nextSession(1),
-    clear: () =>
-      chatStore.updateCurrentSession(
-        (session) => (session.clearContextIndex = session.messages.length),
-      ),
-    del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
-  });
-
-  // only search prompts when user input is short
-  const SEARCH_TEXT_LIMIT = 30;
-  const onInput = (text: string) => {
-    // console.log("onInput:", text);
-    setUserInput(text);
-    const n = text.trim().length;
-
-    // clear search results
-    if (n === 0) {
-      setPromptHints([]);
-    }
-  };
-  const onInputSpeech = (text: string) => {
-    setUserInputSpeech(text);
-    const n = text.trim().length;
-
-    // clear search results
-    if (n === 0) {
-      setPromptHints([]);
-    }
   };
 
   const doSubmit = () => {
@@ -665,7 +159,6 @@ export function Chat() {
     roleIndex: number = 0,
   ) => {
     // the 1st role: 0: Impromptu Speaker doing
-    setIsLoading(false);
     // localStorage.setItem(LAST_INPUT_KEY, userInput);
 
     var ask = ToastmastersEvaluatorGuidance(topic, speech);
@@ -679,9 +172,7 @@ export function Chat() {
     }
 
     // the last role is doing
-    chatStore.getIsFinished().then(() => {
-      setPromptHints([]);
-    });
+    chatStore.getIsFinished().then(() => {});
 
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
@@ -721,24 +212,6 @@ export function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // check if should send message
-  const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // if ArrowUp and no userInput, fill with last input
-    if (
-      e.key === "ArrowUp" &&
-      userInput.length <= 0 &&
-      !(e.metaKey || e.altKey || e.ctrlKey)
-    ) {
-      setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
-      e.preventDefault();
-      return;
-    }
-    if (shouldSubmit(e) && promptHints.length === 0) {
-      // doSubmit(userInput);
-      e.preventDefault();
-    }
-  };
-
   const onEdit = async (botMessage: ChatMessage) => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
@@ -750,42 +223,6 @@ export function Chat() {
         m.content = newMessage;
       }
     });
-  };
-
-  const onRecord = () => {
-    if (!titleRecord) {
-      speechRecognizer.startRecording(appendUserInput);
-      setTitleRecord(true);
-    } else {
-      speechRecognizer.stopRecording();
-      setTitleRecord(false);
-    }
-  };
-  const appendUserInput = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (userInput === "") {
-      setUserInput(newState);
-    } else {
-      setUserInput(userInput + "\n" + newState);
-    }
-  };
-
-  const onRecordSpeech = () => {
-    if (!speechRecord) {
-      speechRecognizer.startRecording(appendUserInputSpeech);
-      setSpeechRecord(true);
-    } else {
-      speechRecognizer.stopRecording();
-      setSpeechRecord(false);
-    }
-  };
-  const appendUserInputSpeech = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (userInputSpeech === "") {
-      setUserInputSpeech(newState);
-    } else {
-      setUserInputSpeech(userInputSpeech + "\n" + newState);
-    }
   };
 
   const context: RenderMessage[] = session.mask.hideContext
@@ -811,38 +248,6 @@ export function Chat() {
       ? session.clearContextIndex! + context.length
       : -1;
 
-  // preview messages
-  const messages = context
-    .concat(session.messages as RenderMessage[])
-    .concat(
-      isLoading
-        ? [
-            {
-              ...createMessage({
-                role: "assistant",
-                content: "……",
-              }),
-              preview: true,
-            },
-          ]
-        : [],
-    )
-    .concat(
-      userInput.length > 0 && config.sendPreviewBubble
-        ? [
-            {
-              ...createMessage({
-                role: "user",
-                content: userInput,
-              }),
-              preview: true,
-            },
-          ]
-        : [],
-    );
-
-  const [showPromptModal, setShowPromptModal] = useState(false);
-
   const renameSession = () => {
     showPrompt(Locale.Chat.Rename, session.topic).then((newTopic) => {
       if (newTopic && newTopic !== session.topic) {
@@ -860,41 +265,6 @@ export function Chat() {
 
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
-
-  useCommand({
-    fill: setUserInput,
-    submit: (text) => {
-      // doSubmit(text);
-    },
-  });
-
-  const extractUserInput = () => {
-    if (userInput !== "") return userInput;
-
-    if (session.userInput !== undefined && session.userInput !== "") {
-      return session.userInput;
-    }
-
-    return userInput;
-  };
-
-  const extractUserInputSpeech = () => {
-    if (userInputSpeech !== "") return userInputSpeech;
-
-    if (
-      session.userInputSpeech !== undefined &&
-      session.userInputSpeech !== ""
-    ) {
-      return session.userInputSpeech;
-    }
-
-    return userInputSpeech;
-  };
-
-  const promptInput = (submitKey: string) => {
-    var inputHints = "Enter To wrap";
-    return inputHints;
-  };
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -957,12 +327,6 @@ export function Chat() {
             </div>
           )}
         </div>
-
-        <PromptToast
-          showToast={!hitBottom}
-          showModal={showPromptModal}
-          setShowModal={setShowPromptModal}
-        />
       </div>
 
       <div
@@ -979,12 +343,12 @@ export function Chat() {
         <List>
           <ChatInput
             title="Title: (Question/Topic)"
-            onReturnValue={saveInputTitle}
+            onReturnValue={setInputTitle}
             defaultInput={session.inputs.input1}
           />
           <ChatInput
             title="Speech: (Impromptu)"
-            onReturnValue={saveInputSpeech}
+            onReturnValue={setInputSpeech}
             defaultInput={session.inputs.input2}
           />
 
@@ -999,25 +363,6 @@ export function Chat() {
             />
           </div>
 
-          {/* <div className={styles["chat-input-panel-buttons"]}>
-            <IconButton
-              icon={<ResetIcon />}
-              text={"Reset"}
-              className={styles["chat-input-button-reset"]}
-              bordered
-              onClick={doResetInput}
-            />
-            <IconButton
-              icon={<SendWhiteIcon />}
-              text={Locale.Chat.Send}
-              className={styles["chat-input-button-send"]}
-              bordered
-              type="primary"
-              onClick={() =>
-                doSubmit(extractUserInput(), extractUserInputSpeech())
-              }
-            />
-          </div> */}
           <div className={styles["chat-input-border-bottom"]}></div>
 
           <div className={styles["chat-input-panel"]}>
