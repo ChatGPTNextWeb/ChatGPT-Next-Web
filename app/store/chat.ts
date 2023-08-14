@@ -273,6 +273,7 @@ export const useChatStore = create<ChatStore>()(
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
+        get().generateSessionTopicWithAI();
         get().summarizeSession();
       },
 
@@ -534,8 +535,6 @@ export const useChatStore = create<ChatStore>()(
 
         // remove error messages if any
         const messages = session.messages;
-
-        get().generateSessionTopicWithAI();
 
         const modelConfig = session.mask.modelConfig;
         const summarizeIndex = Math.max(
