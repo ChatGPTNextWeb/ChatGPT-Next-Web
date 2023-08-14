@@ -38,12 +38,6 @@ export function Mermaid(props: { code: string }) {
     if (!svg) return;
     const text = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([text], { type: "image/svg+xml" });
-    console.log(blob);
-    // const url = URL.createObjectURL(blob);
-    // const win = window.open(url);
-    // if (win) {
-    //   win.onload = () => URL.revokeObjectURL(url);
-    // }
     showImageModal(URL.createObjectURL(blob));
   }
 
@@ -152,7 +146,7 @@ export function Markdown(
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
-        direction: /[\u0600-\u06FF]/.test(props.content) ? "rtl" : "ltr",
+        direction: /^[\u0600-\u06FF]/.test(props.content) ? "rtl" : "ltr",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
