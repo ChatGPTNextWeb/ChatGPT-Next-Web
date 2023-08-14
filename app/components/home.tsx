@@ -49,6 +49,27 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
 
+const ToastmastersTTMaster = dynamic(
+  async () => (await import("../toastmasters/chat-ttmaster")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+const ToastmastersImpromptuSpeaker = dynamic(
+  async () => (await import("../toastmasters/chat-ttspeaker")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+const ToastmastersEvaluators = dynamic(
+  async () => (await import("../toastmasters/chat-evaluators")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
@@ -166,6 +187,18 @@ function Screen() {
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
+              <Route
+                path={Path.ToastmastersTTMaster}
+                element={<ToastmastersTTMaster />}
+              />
+              <Route
+                path={Path.ToastmastersImpromptuSpeaker}
+                element={<ToastmastersImpromptuSpeaker />}
+              />
+              <Route
+                path={Path.ToastmastersEvaluators}
+                element={<ToastmastersEvaluators />}
+              />
               <Route path={Path.Settings} element={<Settings />} />
               <Route path={Path.UserLogin} element={<UserLogin />} />
               <Route

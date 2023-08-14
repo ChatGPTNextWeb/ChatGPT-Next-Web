@@ -17,6 +17,10 @@ import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 
+import zBotServiceClient, {
+  LocalStorageKeys,
+} from "../zbotservice/ZBotServiceClient";
+
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
@@ -41,6 +45,11 @@ export interface ChatStat {
   charCount: number;
 }
 
+export class InputStore {
+  text: string = "";
+  time: number = 0;
+}
+
 export interface ChatSession {
   id: number;
   topic: string;
@@ -53,6 +62,10 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+
+  // TODO: future make this a list of inputs
+  input: InputStore;
+  input2: InputStore;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -76,6 +89,9 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+
+    input: new InputStore(),
+    input2: new InputStore(),
   };
 }
 
@@ -102,6 +118,7 @@ interface ChatStore {
     updater: (message?: ChatMessage) => void,
   ) => void;
   resetSession: () => void;
+  resetSessionFromIndex: (index: number) => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
   getIsFinished: () => Promise<boolean>;
@@ -289,6 +306,25 @@ export const useChatStore = create<ChatStore>()(
       },
 
       async onUserInput(content) {
+        // check user login
+        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        if (userEmail === null) {
+          showToast("您尚未登录, 请前往设置中心登录");
+          return;
+        }
+        let userHasCoins = localStorage.getItem(LocalStorageKeys.userHasCoins);
+        if (userHasCoins !== null && userHasCoins === "false") {
+          showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
+          return;
+        }
+        // update db
+        zBotServiceClient.updateRequest(userEmail).then((item) => {
+          localStorage.setItem(
+            LocalStorageKeys.userHasCoins,
+            item.userHasCoins.toString(),
+          );
+        });
+
         set(() => ({ isFinished: false }));
 
         const session = get().currentSession();
@@ -497,6 +533,13 @@ export const useChatStore = create<ChatStore>()(
       resetSession() {
         get().updateCurrentSession((session) => {
           session.messages = [];
+          session.memoryPrompt = "";
+        });
+      },
+
+      resetSessionFromIndex(index) {
+        get().updateCurrentSession((session) => {
+          session.messages.splice(index);
           session.memoryPrompt = "";
         });
       },

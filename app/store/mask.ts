@@ -4,7 +4,7 @@ import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, ChatMessage } from "./chat";
 import { ModelConfig, useAppConfig } from "./config";
-import { StoreKey } from "../constant";
+import { Path, StoreKey } from "../constant";
 
 export type Mask = {
   id: number;
@@ -16,6 +16,7 @@ export type Mask = {
   modelConfig: ModelConfig;
   lang: Lang;
   builtin: boolean;
+  pagePath?: Path;
 };
 
 export const DEFAULT_MASK_STATE = {

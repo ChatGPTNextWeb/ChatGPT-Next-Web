@@ -256,6 +256,43 @@
   }
 }
 
+.chat-body-toastmasters {
+  flex: 1;
+  overflow: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  padding-bottom: 40px;
+  position: relative;
+  overscroll-behavior: none;
+}
+
+.modal-input {
+  height: 50%;
+  width: 80%;
+  border-radius: 10px;
+  border: var(--border-in-light);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
+  background-color: var(--white);
+  color: var(--black);
+  font-family: inherit;
+  padding: 10px;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  // min-height: 30vh;
+
+  &:focus {
+    border: 1px solid var(--primary);
+  }
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
 @media only screen and (max-width: 600px) {
   .chat-body-title {
     text-align: center;
@@ -284,6 +321,12 @@
   }
 }
 
+.chat-message-hover {
+  @extend .chat-message;
+  display: initial;
+  flex-direction: initial;
+}
+
 .chat-message-user {
   display: flex;
   flex-direction: row-reverse;
@@ -291,6 +334,18 @@
 
 .chat-message-container {
   max-width: var(--message-max-width);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &:hover {
+    .chat-message-edit {
+      opacity: 0.9;
+    }
+  }
+}
+
+.chat-message-container-toastmasters {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -337,6 +392,7 @@
 .chat-message-item {
   box-sizing: border-box;
   max-width: 100%;
+  width: 100%;
   margin-top: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
@@ -357,7 +413,7 @@
     justify-content: space-between;
     transition: all ease 0.3s 0.15s;
     transform: translateX(-5px) scale(0.9) translateY(30px);
-    opacity: 0;
+    opacity: 0; // 透明度
     height: 0;
     max-width: 0;
     position: absolute;
@@ -409,6 +465,24 @@
       margin-bottom: 10px;
     }
   }
+}
+
+.chat-input-panel-noborder {
+  position: relative;
+  width: 100%;
+  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.chat-input-panel-buttons {
+  // position: relative;
+  // width: 50%;
+  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
+  // box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 @mixin single-line {
@@ -469,6 +543,13 @@
   flex: 1;
 }
 
+.chat-input-panel-title {
+  font-size: medium;
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
 .chat-input {
   height: 100%;
   width: 100%;
@@ -498,6 +579,47 @@
   bottom: 32px;
 }
 
+.chat-input-send-record {
+  background-color: gray;
+  color: white;
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+}
+
+.chat-input-send-recording {
+  @extend .chat-input-send-record;
+  background-color: red;
+}
+
+.chat-input-button-send {
+  background-color: var(--primary);
+  color: white;
+  margin-top: 10px;
+  // width: 100%;
+}
+
+.chat-input-border-bottom {
+  margin-top: 10px;
+  border-bottom: var(--border-in-light);
+}
+
+.chat-input-words {
+  position: absolute;
+  right: 30px;
+  top: 8px;
+  opacity: 0.2;
+  font-size: 14px;
+}
+
+// ----Tomstmasters pages start---
+// ----Tomstmasters pages end---
+
+/*
+这段代码是一个媒体查询，它的意思是当屏幕宽度小于或等于600像素时，
+将.chat-input的字体大小设置为16像素，并将.chat-input-send的底部位置设置为30像素。
+这是为了在小屏幕设备上优化聊天输入框的显示效果。
+*/
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;

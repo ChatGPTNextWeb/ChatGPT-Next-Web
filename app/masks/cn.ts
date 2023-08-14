@@ -1,6 +1,112 @@
+import { Path } from "../constant";
 import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
+  {
+    avatar: "toastmasters",
+    name: "Toastmasters Table Topics Master",
+    context: [
+      {
+        role: "user",
+        content: `You are the Export of Toastmasters. 
+        I will firstly provide you the Topic in table topics session,
+        and then I will ask you some questions about the Topic.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersTTMaster,
+  },
+  {
+    avatar: "toastmasters",
+    name: "Toastmasters Impromptu Speaker",
+    context: [
+      {
+        role: "user",
+        content: `You are the Export of Toastmasters. 
+        In our each interaction, I will let you play an Toastmasters Role, you answer my ask in that Role's tone.
+        The Toastmasters Roles you will act are:
+        1, Impromptu Speaker
+        2, Table Topics Evaluator
+        3, Grammarian
+        4, Ah-Counter
+        5, General Evaluator
+        
+        In my each ask, I will provide the role one by one.
+        In your each speech, your answer must:
+        1). Within 100 words.
+        2). Include examples by quoting and analyzing your speech.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.3,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersImpromptuSpeaker, // If not defined, will use Path.Chat
+  },
+  {
+    avatar: "toastmasters",
+    name: "Toastmasters Evaluators",
+    context: [
+      {
+        role: "user",
+        content: `
+        You are the Evaluator of Toastmasters, Including 
+        Table Topics Evaluator, Grammarian, Ah-Counter, 
+        and the General Evaluator.
+        I will firstly provide you the Question and Speech, 
+        which is formatted as json like:
+        {
+          "Question": "xxx",
+          "Speech": "xxx"
+        },
+        And in each interaction, I will let you play an Evaluator Role, 
+        you answer my ask in that Role's tone.
+        
+        In my each ask, I will provide the role one by one. 
+        Your answer must:
+        1). Briefly answer within 100 words.
+        2). Include examples by quoting and analyzing your speech.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.3,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersEvaluators,
+  },
   {
     avatar: "1f5bc-fe0f",
     name: "以文搜图",

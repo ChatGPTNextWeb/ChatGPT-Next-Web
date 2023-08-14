@@ -65,6 +65,11 @@
     }
   }
 
+  .actions-margin-top {
+    @extend .actions;
+    margin-top: 2vh;
+  }
+
   .masks {
     flex-grow: 1;
     width: 100%;
@@ -122,4 +127,13 @@
       }
     }
   }
+}
+
+.new-chat-unset-height {
+  @extend .new-chat;
+  height: unset;
+}
+
+.border-bottom {
+  border-bottom: var(--border-in-light);
 }

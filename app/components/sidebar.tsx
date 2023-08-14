@@ -23,6 +23,7 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   REPO_URL,
+  AppInfo,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -128,8 +129,8 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>知行AI</div>
-        <div className={styles["sidebar-sub-title"]}></div>
+        <div className={styles["sidebar-title"]}>{AppInfo.Title}</div>
+        <div className={styles["sidebar-sub-title"]}>{AppInfo.SubTitle}</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
@@ -144,7 +145,8 @@ export function SideBar(props: { className?: string }) {
               chatStore.newSession();
               navigate(Path.Chat);
             } else {
-              navigate(Path.NewChat);
+              // navigate(Path.NewChat);
+              navigate(Path.Masks);
             }
           }}
           shadow
@@ -170,11 +172,12 @@ export function SideBar(props: { className?: string }) {
 
       <div
         className={styles["sidebar-body"]}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
-        }}
+        // disable to navigate to home in case error page route
+        // onClick={(e) => {
+        //   if (e.target === e.currentTarget) {
+        //     navigate(Path.Home);
+        //   }
+        // }}
       >
         <ChatList narrow={shouldNarrow} />
       </div>

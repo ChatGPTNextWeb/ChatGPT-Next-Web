@@ -65,12 +65,12 @@ class SpeechSdk {
     this.recognizer.startContinuousRecognitionAsync();
 
     // wait for ready
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   public async stopRecognition(): Promise<string> {
     // wait for completed
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     this.recognizer.stopContinuousRecognitionAsync();
     let result = this.recognizedText;
@@ -94,5 +94,48 @@ class SpeechSdk {
   // TODO: close recognizer
 }
 
-let speechSdk = new SpeechSdk(DEFAULT_LANG);
+type UpdateParentStateType = (newState: string) => void;
+
+class SpeechRecognizer {
+  private recognizer!: sdk.SpeechRecognizer;
+  public recognizedText: string = "";
+
+  public startRecording(updateParentState: UpdateParentStateType) {
+    var speechConfig = sdk.SpeechConfig.fromSubscription(
+      config.speechSubscriptionKey!,
+      config.speechServiceRegion!,
+    );
+    speechConfig.speechRecognitionLanguage = ALL_LANG_TO_LOCALES["en"];
+
+    var audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
+    this.recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+    this.recognizer.startContinuousRecognitionAsync();
+    this.recognizer.recognized = (s, e) => {
+      if (e.result.reason === sdk.ResultReason.RecognizedSpeech) {
+        // console.log(`Recognized: ${e.result.text}`);
+        // 每句停顿 加一个换行
+        if (this.recognizedText === "") {
+          this.recognizedText = e.result.text;
+        } else {
+          this.recognizedText += "\n" + e.result.text;
+        }
+
+        updateParentState(this.recognizedText);
+      }
+    };
+  }
+
+  public stopRecording() {
+    this.recognizer.stopContinuousRecognitionAsync(() => {
+      this.recognizer.close();
+      this.recognizedText = "";
+    });
+  }
+}
+
+// TODO: language
+// let speechSdk = new SpeechSdk(DEFAULT_LANG);
+let speechSdk = new SpeechSdk("en"); // TODO
 export default speechSdk;
+
+export const speechRecognizer = new SpeechRecognizer();

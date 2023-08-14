@@ -2,6 +2,7 @@ import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 
 import styles from "./mask.module.scss";
+import styles_newchat from "./new-chat.module.scss";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -11,6 +12,7 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
+import LightningIcon from "../icons/lightning.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
@@ -329,6 +331,11 @@ export function MaskPage() {
     });
   };
 
+  const startChat = (mask?: Mask) => {
+    chatStore.newSession(mask);
+    setTimeout(() => navigate(Path.Chat), 1);
+  };
+
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -366,6 +373,25 @@ export function MaskPage() {
             </div>
           </div>
         </div>
+
+        <div className={styles_newchat["new-chat-unset-height"]}>
+          <div className={styles_newchat["title"]}>{Locale.NewChat.Title}</div>
+          <div className={styles_newchat["sub-title"]}>
+            {Locale.NewChat.SubTitle}
+          </div>
+          <div className={styles_newchat["actions-margin-top"]}>
+            <IconButton
+              text={Locale.NewChat.Skip}
+              onClick={() => startChat()}
+              icon={<LightningIcon />}
+              type="primary"
+              shadow
+              className={styles_newchat["skip"]}
+            />
+          </div>
+        </div>
+
+        <div className={styles_newchat["border-bottom"]}></div>
 
         <div className={styles["mask-page-body"]}>
           <div className={styles["mask-filter"]}>
@@ -432,7 +458,7 @@ export function MaskPage() {
                     text={Locale.Mask.Item.Chat}
                     onClick={() => {
                       chatStore.newSession(m);
-                      navigate(Path.Chat);
+                      navigate(m.pagePath ?? Path.Chat); // If m.pagePath is undefined, navigate to Path.Chat
                     }}
                   />
                   {m.builtin ? (

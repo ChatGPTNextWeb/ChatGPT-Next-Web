@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# TODO: in case the secret omit
+*app/config/server.ts
+
 # dependencies
 /node_modules
 /.pnp

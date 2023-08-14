@@ -137,7 +137,7 @@ export function ChatList(props: { narrow?: boolean }) {
                 index={i}
                 selected={i === selectedIndex}
                 onClick={() => {
-                  navigate(Path.Chat);
+                  navigate(item.mask.pagePath ?? Path.Chat); // for special mask
                   selectSession(i);
                 }}
                 onDelete={async () => {
