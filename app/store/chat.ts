@@ -93,6 +93,7 @@ interface ChatStore {
   onNewMessage: (message: ChatMessage) => void;
   onUserInput: (content: string) => Promise<void>;
   generateSessionTopicWithAI: () => void;
+  generateSessionTopicWithPrompt: (prompt: string) => void;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -511,6 +512,21 @@ export const useChatStore = create<ChatStore>()(
             },
           });
         }
+      },
+
+      generateSessionTopicWithPrompt(prompt: string) {
+        // The entire user input cannot be used as the title and needs to be truncated.
+        // Possible solutions for future revisions:
+        // 1. Select an appropriate length calculation method, considering the unfairness in counting the length of words and Chinese characters (words usually contain more letters, while Chinese characters can express the same meaning more concisely).
+        // 2. Consider using paragraph symbols (.,。, or other punctuation marks) to divide the input and select the first paragraph block.
+
+        get().updateCurrentSession(
+          (session) =>
+            (session.topic =
+              prompt.length > 0
+                ? trimTopic(prompt).slice(0, 50)
+                : DEFAULT_TOPIC),
+        );
       },
 
       summarizeSession() {
