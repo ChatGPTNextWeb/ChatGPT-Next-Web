@@ -114,7 +114,7 @@ export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
 
 export enum GENERATE_TITLE_OPTION {
-  disable = "disable",
-  prompt = "prompt",
   ai = "ai",
+  prompt = "prompt",
+  disable = "disable",
 }
