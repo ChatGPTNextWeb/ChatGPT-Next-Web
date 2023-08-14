@@ -11,6 +11,7 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_SYSTEM_TEMPLATE,
   StoreKey,
+  GENERATE_TITLE_OPTION,
 } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
@@ -61,6 +62,8 @@ export const BOT_HELLO: ChatMessage = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
 });
+
+const config = useAppConfig.getState();
 
 function createEmptySession(): ChatSession {
   return {
@@ -273,7 +276,11 @@ export const useChatStore = create<ChatStore>()(
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
-        get().generateSessionTopicWithAI();
+
+        if (config.generateTitle.selected === GENERATE_TITLE_OPTION.ai) {
+          get().generateSessionTopicWithAI();
+        }
+
         get().summarizeSession();
       },
 
@@ -283,6 +290,13 @@ export const useChatStore = create<ChatStore>()(
 
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
+
+        if (
+          config.generateTitle.selected === GENERATE_TITLE_OPTION.prompt &&
+          session.topic === DEFAULT_TOPIC
+        ) {
+          get().generateSessionTopicWithPrompt(userContent);
+        }
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
