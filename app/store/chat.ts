@@ -92,6 +92,7 @@ interface ChatStore {
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   onUserInput: (content: string) => Promise<void>;
+  generateSessionTopicWithAI: () => void;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -478,7 +479,7 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
-      summarizeSession() {
+      generateSessionTopicWithAI() {
         const session = get().currentSession();
 
         // remove error messages if any
@@ -510,6 +511,15 @@ export const useChatStore = create<ChatStore>()(
             },
           });
         }
+      },
+
+      summarizeSession() {
+        const session = get().currentSession();
+
+        // remove error messages if any
+        const messages = session.messages;
+
+        get().generateSessionTopicWithAI();
 
         const modelConfig = session.mask.modelConfig;
         const summarizeIndex = Math.max(
