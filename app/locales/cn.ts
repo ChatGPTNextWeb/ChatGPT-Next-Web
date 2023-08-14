@@ -172,8 +172,7 @@ const cn = {
     },
     AutoGenerateTitle: {
       Title: "自动生成标题",
-      SubTitle:
-        "根据对话内容生成合适的标题（需标题为默认标题，并且内容长度大于设定的最小长度）",
+      SubTitle: "根据对话内容生成合适的标题",
     },
     Mask: {
       Splash: {

@@ -174,8 +174,7 @@ const en: LocaleType = {
     },
     AutoGenerateTitle: {
       Title: "Auto Generate Title",
-      SubTitle:
-        "Generate a suitable title based on the conversation content (requires default title and content length greater than the set minimum length)",
+      SubTitle: "Generate a suitable title based on the conversation content",
     },
     Mask: {
       Splash: {
