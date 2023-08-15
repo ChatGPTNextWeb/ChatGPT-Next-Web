@@ -479,6 +479,7 @@ export const useChatStore = create<ChatStore>()(
       },
 
       summarizeSession() {
+        const config = useAppConfig.getState();
         const session = get().currentSession();
 
         // remove error messages if any
@@ -487,6 +488,7 @@ export const useChatStore = create<ChatStore>()(
         // should summarize topic after chating more than 50 words
         const SUMMARIZE_MIN_LEN = 50;
         if (
+          config.enableAutoGenerateTitle &&
           session.topic === DEFAULT_TOPIC &&
           countMessages(messages) >= SUMMARIZE_MIN_LEN
         ) {
