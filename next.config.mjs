@@ -1,5 +1,10 @@
+import webpack from "webpack";
+
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
+
+const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
+console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,27 +14,46 @@ const nextConfig = {
       use: ["@svgr/webpack"],
     });
 
+    if (disableChunk) {
+      config.plugins.push(
+        new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+      );
+    }
+
+    config.resolve.fallback = {
+      child_process: false,
+    };
+
     return config;
   },
   output: mode,
+  images: {
+    unoptimized: mode === "export",
+  },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
 
 if (mode !== "export") {
   nextConfig.headers = async () => {
     return [
       {
-        source: "/:path*",
+        source: "/api/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           { key: "Access-Control-Allow-Origin", value: "*" },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+            value: "*",
           },
           {
             key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+            value: "*",
+          },
+          {
+            key: "Access-Control-Max-Age",
+            value: "86400",
           },
         ],
       },
