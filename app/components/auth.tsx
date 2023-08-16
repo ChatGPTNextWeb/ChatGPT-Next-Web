@@ -7,12 +7,21 @@ import { useAccessStore } from "../store";
 import Locale from "../locales";
 
 import BotIcon from "../icons/bot.svg";
+import { useEffect } from "react";
+import { getClientConfig } from "../config/client";
 
 export function AuthPage() {
   const navigate = useNavigate();
   const access = useAccessStore();
 
   const goHome = () => navigate(Path.Home);
+
+  useEffect(() => {
+    if (getClientConfig()?.isApp) {
+      navigate(Path.Settings);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles["auth-page"]}>
