@@ -511,7 +511,7 @@ export function ChatActions(props: {
           icon={<RobotIcon />}
         />
 
-        {currentModel.endsWith("0613") && (
+        {config.pluginConfig.enable && currentModel.endsWith("0613") && (
           <ChatAction
             onClick={switchUsePlugins}
             text={

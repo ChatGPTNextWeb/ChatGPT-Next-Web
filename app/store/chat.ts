@@ -305,6 +305,9 @@ export const useChatStore = create<ChatStore>()(
         const sendMessages = recentMessages.concat(userMessage);
         const messageIndex = get().currentSession().messages.length + 1;
 
+        const config = useAppConfig.getState();
+        const pluginConfig = useAppConfig.getState().pluginConfig;
+
         // save user's and bot's message
         get().updateCurrentSession((session) => {
           const savedUserMessage = {
@@ -315,11 +318,12 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
-        if (session.mask.usePlugins) {
+        if (config.pluginConfig.enable && session.mask.usePlugins) {
           console.log("[ToolAgent] start");
           api.llm.toolAgentChat({
             messages: sendMessages,
             config: { ...modelConfig, stream: true },
+            agentConfig: { ...pluginConfig },
             onUpdate(message) {
               botMessage.streaming = true;
               if (message) {

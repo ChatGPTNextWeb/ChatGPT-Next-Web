@@ -35,6 +35,8 @@ interface RequestBody {
   presence_penalty?: number;
   frequency_penalty?: number;
   top_p?: number;
+  maxIterations: number;
+  returnIntermediateSteps: boolean;
 }
 
 class ResponseBody {
@@ -120,6 +122,7 @@ async function handle(req: NextRequest) {
             `tool: ${action.tool} toolInput: ${action.toolInput}`,
             { action },
           );
+          if (!reqBody.returnIntermediateSteps) return;
           var response = new ResponseBody();
           response.isToolMessage = true;
           let toolInput = <ToolInput>(<unknown>action.toolInput);
@@ -202,8 +205,8 @@ async function handle(req: NextRequest) {
     });
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
       agentType: "openai-functions",
-      returnIntermediateSteps: true,
-      maxIterations: 3,
+      returnIntermediateSteps: reqBody.returnIntermediateSteps,
+      maxIterations: reqBody.maxIterations,
       memory: memory,
     });
 

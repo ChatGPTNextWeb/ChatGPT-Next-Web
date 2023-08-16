@@ -265,6 +265,20 @@ const en: LocaleType = {
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
     },
+    Plugin: {
+      Enable: {
+        Title: "Enable Plugin",
+        SubTitle: "Enable plugin invocation",
+      },
+      MaxIteration: {
+        Title: "Max Iterations",
+        SubTitle: "Max of plugin iterations",
+      },
+      ReturnIntermediateStep: {
+        Title: "Return Intermediate Steps",
+        SubTitle: "Return Intermediate Steps",
+      },
+    },
   },
   Store: {
     DefaultTopic: "New Conversation",

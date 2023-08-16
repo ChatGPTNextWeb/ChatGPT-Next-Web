@@ -6,7 +6,14 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import {
+  AgentChatOptions,
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+} from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -188,7 +195,7 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
-  async toolAgentChat(options: ChatOptions) {
+  async toolAgentChat(options: AgentChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: v.content,
@@ -210,6 +217,8 @@ export class ChatGPTApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
+      maxIterations: options.agentConfig.maxIterations,
+      returnIntermediateSteps: options.agentConfig.returnIntermediateSteps,
     };
 
     console.log("[Request] openai payload: ", requestPayload);

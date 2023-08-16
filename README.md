@@ -59,7 +59,7 @@
 - [ ] 插件列表页面开发
 - [ ] 支持开关指定插件
 - [ ] 支持添加自定义插件
-- [ ] 支持 Agent 参数配置（ agentType, maxIterations, returnIntermediateSteps 等）
+- [x] 支持 Agent 参数配置（ ~~agentType~~, maxIterations, returnIntermediateSteps 等）
 - [x] 支持 ChatSession 级别插件功能开关
 
   仅在使用 `0613` 版本模型时会出现插件开关，其它模型默认为关闭状态，开关也不会显示。
