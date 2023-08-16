@@ -37,12 +37,12 @@ export const getServerSideConfig = () => {
     );
   }
 
-  var apiKeys = (process.env.OPENAI_API_KEY ?? '').split(',')
-  var apiKey = apiKeys.at(Math.floor(Math.random() * apiKeys.length)) ?? ''
+  //var apiKeys = (process.env.OPENAI_API_KEY ?? '').split(',')
+  //var apiKey = apiKeys.at(Math.floor(Math.random() * apiKeys.length)) ?? ''
   
   return {
-    apiKeys,
-    //apiKey: process.env.OPENAI_API_KEY,
+   // apiKeys,
+    apiKey: process.env.OPENAI_API_KEY,
     code: process.env.CODE,
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
