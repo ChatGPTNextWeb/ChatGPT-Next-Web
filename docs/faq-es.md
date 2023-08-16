@@ -39,7 +39,7 @@ Esta es su contraseña de acceso personalizada, puede elegir:
 
 > Debates relacionados:[#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
 
-Si utiliza el proxy inverso ngnix, debe agregar el siguiente código al archivo de configuración:
+Si utiliza el proxy inverso nginx, debe agregar el siguiente código al archivo de configuración:
 
     # 不缓存，支持流式输出
     proxy_cache off;  # 关闭缓存

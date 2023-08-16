@@ -3,7 +3,7 @@
 
 <h1 align="center">ChatGPT Next Web</h1>
 
-English / [简体中文](./README_CN.md)
+English / [简体中文](./README_CN.md) / [日本語](./README_JA.md)
 
 One-Click to get well-designed cross-platform ChatGPT web UI.
 
@@ -135,7 +135,7 @@ After forking the project, due to the limitations imposed by GitHub, you need to
 
 If you want to update instantly, you can check out the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
 
-You can star or watch this project or follow author to get release notifictions in time.
+You can star or watch this project or follow author to get release notifications in time.
 
 ## Access Password
 
