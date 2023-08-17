@@ -1,20 +1,19 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
-import { getServerSideConfig } from "../config/server";
-
-const serviceAddress = getServerSideConfig().zBotServiceUrl;
 
 class HttpClient {
   instance: AxiosInstance;
+  serviceAddress: string;
 
-  constructor(config: AxiosRequestConfig, silent = false) {
+  constructor(config: AxiosRequestConfig, serviceAddress: string) {
     this.instance = axios.create(config);
+    this.serviceAddress = serviceAddress;
   }
 
   get<T>(url: string, params: any) {
     return new Promise<T>((resolve, reject) => {
       this.instance
-        .get(serviceAddress + url, { params })
+        .get(this.serviceAddress + url, { params })
         .then((response) => {
           resolve(response?.data);
         })
@@ -27,7 +26,7 @@ class HttpClient {
   post<T>(url: string, params: any) {
     return new Promise<T>((resolve, reject) => {
       this.instance
-        .post(serviceAddress + url, params)
+        .post(this.serviceAddress + url, params)
         .then((response) => {
           resolve(response?.data);
         })

@@ -108,6 +108,7 @@ interface ChatStore {
   currentSession: () => ChatSession;
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
+  isEnoughCoins(requiredCoins: number): Promise<boolean>;
   onUserInput: (content: string) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
@@ -305,6 +306,28 @@ export const useChatStore = create<ChatStore>()(
         return get().isFinished;
       },
 
+      async isEnoughCoins(requiredCoins: number): Promise<boolean> {
+        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        if (userEmail === null) {
+          showToast("您尚未登录, 请前往设置中心登录");
+          return false;
+        }
+
+        let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
+          userEmail,
+        );
+        if (
+          userRequestInfoVO !== null &&
+          userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
+            requiredCoins
+        ) {
+          return true;
+        }
+
+        showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
+        return false;
+      },
+
       async onUserInput(content) {
         // check user login
         let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
@@ -312,18 +335,9 @@ export const useChatStore = create<ChatStore>()(
           showToast("您尚未登录, 请前往设置中心登录");
           return;
         }
-        let userHasCoins = localStorage.getItem(LocalStorageKeys.userHasCoins);
-        if (userHasCoins !== null && userHasCoins === "false") {
-          showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
-          return;
-        }
+
         // update db
-        zBotServiceClient.updateRequest(userEmail).then((item) => {
-          localStorage.setItem(
-            LocalStorageKeys.userHasCoins,
-            item.userHasCoins.toString(),
-          );
-        });
+        zBotServiceClient.updateRequest(userEmail);
 
         set(() => ({ isFinished: false }));
 
@@ -387,6 +401,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.id ?? messageIndex,
             );
             set(() => ({ isFinished: true }));
+            console.log("[Chat] finished ", message);
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");

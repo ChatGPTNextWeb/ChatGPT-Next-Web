@@ -50,6 +50,7 @@ export const getServerSideConfig = () => {
     enableGPT4: !process.env.DISABLE_GPT4,
     hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
     zBotServiceUrl: process.env.ZBotServiceUrl,
+    zCareersPayUrl: process.env.ZCareersPayUrl,
     speechSubscriptionKey: process.env.SpeechSubscriptionKey,
     speechServiceRegion: "eastus",
   };
@@ -65,6 +66,7 @@ export const getServerSideConfig = () => {
   The env variables can get from the Azure Key Vault
   */
   config.zBotServiceUrl = "placeholder";
+  config.zCareersPayUrl = "placeholder";
   config.speechSubscriptionKey = "placeholder";
 
   // production, development

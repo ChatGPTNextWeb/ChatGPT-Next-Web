@@ -92,10 +92,17 @@ export function Chat() {
     setHitBottom(isTouchBottom);
   };
 
-  const doSubmit = () => {
+  const doSubmit = async () => {
     const topic = session.input.text;
 
     if (topic.trim() === "") return;
+
+    let isEnoughCoins = await chatStore.isEnoughCoins(
+      ToastmastersTTMaster.length + 1,
+    );
+    if (!isEnoughCoins) {
+      return;
+    }
 
     // reset status from 0
     chatStore.resetSession();
@@ -116,7 +123,14 @@ export function Chat() {
     setAutoScroll(true);
   };
 
-  const onResend = (roleIndex: number) => {
+  const onResend = async (roleIndex: number) => {
+    let isEnoughCoins = await chatStore.isEnoughCoins(
+      ToastmastersTTMaster.length - roleIndex,
+    );
+    if (!isEnoughCoins) {
+      return;
+    }
+
     // reset status from messageIndex
     chatStore.resetSessionFromIndex(2 * roleIndex + 2);
 

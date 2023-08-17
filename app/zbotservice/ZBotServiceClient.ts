@@ -1,4 +1,5 @@
 import HttpClient from "./HttpClient";
+import { getServerSideConfig } from "../config/server";
 
 export class UserInfoVO {
   email!: string;
@@ -42,7 +43,7 @@ export enum UserCheckResultVO {
 export class UserRequestInfoVO {
   email!: string;
   baseCoins!: number;
-  signinDayCoins!: number;
+  thisDayCoins!: number;
   totalSigninDays!: number;
   totalRequests!: number;
   isThisDaySignin!: boolean;
@@ -70,7 +71,6 @@ export class UserFeedbackVO {
 // put here for use convenience
 export enum LocalStorageKeys {
   userEmail = "userEmail",
-  userHasCoins = "userHasCoins",
   zBotServiceUrl = "zBotServiceUrl",
 }
 
@@ -78,7 +78,8 @@ class ZBotServiceClient {
   client: HttpClient;
 
   constructor(silent = false) {
-    this.client = new HttpClient({}, silent);
+    const serviceAddress = getServerSideConfig().zBotServiceUrl;
+    this.client = new HttpClient({}, serviceAddress as string);
   }
 
   getHealth() {
