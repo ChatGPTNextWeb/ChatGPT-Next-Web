@@ -355,7 +355,7 @@ const en: LocaleType = {
     SubTitle: "Chat with the Soul behind the Mask",
     More: "Find More",
     NotShow: "Never Show Again",
-    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+    ConfirmNoShow: "Confirm to disable? You can enable it in settings later.",
   },
 
   UI: {
@@ -373,7 +373,7 @@ const en: LocaleType = {
   },
 
   URLCommand: {
-    Code: "Detected access code from url, confirm to apply? ",
+    Code: "Detected access code from url, confirm to apply?",
     Settings: "Detected settings from url, confirm to apply?",
   },
 };
