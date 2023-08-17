@@ -81,39 +81,56 @@ export function UserOrder() {
       <div> {UserInfoWindowHeader({ navigate })} </div>
 
       <div className={styles["settings"]}>
-        <List>
-          <ListItem title="10元套餐" subTitle="10 个AI币, 小试牛刀">
+        {/* <List>
+          <ListItem title="0.01元 套餐" subTitle="娱乐至上">
             {
               <IconButton
                 text={"充值"}
                 type="primary"
-                onClick={() => submit(10, 10)}
+                onClick={() => submit(0.01, 1)}
+              />
+            }
+          </ListItem>
+        </List> */}
+        <List>
+          <ListItem
+            title="10元 套餐"
+            subTitle="100 个AI币, 100次问答, 小试牛刀"
+          >
+            {
+              <IconButton
+                text={"充值"}
+                type="primary"
+                onClick={() => submit(10, 100)}
               />
             }
           </ListItem>
         </List>
         <List>
-          <ListItem title="30元套餐" subTitle="50 个AI币, 物美价廉">
+          <ListItem
+            title="30元 套餐"
+            subTitle="500 个AI币, 500次问答，物美价廉"
+          >
             {
               <IconButton
                 text={"充值"}
                 type="primary"
-                onClick={() => submit(30, 50)}
+                onClick={() => submit(30, 500)}
               />
             }
           </ListItem>
         </List>
-        <List>
-          <ListItem title="60元套餐" subTitle="150 个AI币, 高性价比">
+        {/* <List>
+          <ListItem title="68元 包月套餐" subTitle="30天内: 每日100次问答上限, 尽情畅聊">
             {
               <IconButton
                 text={"充值"}
                 type="primary"
-                onClick={() => submit(60, 150)}
+                onClick={() => submit(68, 150)}
               />
             }
           </ListItem>
-        </List>
+        </List> */}
         {showQrCode &&
           (qrCodeUrl === "" ? (
             <div className={styles_uilib["list-center"]}>
