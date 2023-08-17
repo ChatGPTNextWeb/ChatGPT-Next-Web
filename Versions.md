@@ -1,5 +1,13 @@
 # 1. Versions
 
+## v3.0.6
+publish time: 2023-08-16
+ - Add Pay
+
+## v3.0.4
+publish time: 2023-08-14
+ - Add InputStore
+
 ## v3.0.3
 publish time: 2023-08-13
  - Add Toastmasters TTMaster

@@ -96,6 +96,13 @@ const UserRegister = dynamic(
   },
 );
 
+const UserOrder = dynamic(
+  async () => (await import("../user-setting/user-order")).UserOrder,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -205,6 +212,7 @@ function Screen() {
                 path={Path.UserLoginDetail}
                 element={<UserLoginDetail />}
               />
+              <Route path={Path.UserOrder} element={<UserOrder />} />
               <Route path={Path.UserRegister} element={<UserRegister />} />
             </Routes>
           </div>

@@ -409,6 +409,13 @@ export function Settings() {
                 onClick={() => navigate(Path.UserLoginDetail)}
               />
             </ListItem>
+            <ListItem title="充值中心">
+              <IconButton
+                text={"去充值"}
+                type="primary"
+                onClick={() => navigate(Path.UserOrder)}
+              />
+            </ListItem>
           </List>
         </div>
       );

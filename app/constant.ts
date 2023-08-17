@@ -28,6 +28,7 @@ export enum Path {
   UserLogin = "/user-login",
   UserLoginDetail = "/user-login-detail",
   UserRegister = "/user-register",
+  UserOrder = "/user-order",
 }
 
 export enum SlotID {

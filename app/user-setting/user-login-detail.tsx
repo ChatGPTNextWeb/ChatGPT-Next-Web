@@ -65,8 +65,6 @@ const toSignin = async (email: string) => {
   try {
     const result = await zBotServiceClient.signin(email);
     if (result === UserCheckResultVO.success) {
-      // if sign in, then user can directly use the bot
-      localStorage.setItem(LocalStorageKeys.userHasCoins, "true");
       showToast("签到成功");
     } else if (result === UserCheckResultVO.notFound) {
       showToast("邮箱尚未注册, 请先注册");
@@ -118,7 +116,7 @@ function UserbalanceInfo(userEmail: string) {
         <label> {userRequestInfoVO.baseCoins}</label>
       </ListItem>
       <ListItem title="限时AI币余额" subTitle={`限时1天, 0点清空`}>
-        <label> {userRequestInfoVO.signinDayCoins}</label>
+        <label> {userRequestInfoVO.thisDayCoins}</label>
       </ListItem>
       <ListItem title="每条消息消耗AI币" subTitle="先限时币, 再基础币">
         <label> {1}</label>
@@ -261,6 +259,18 @@ export function UserLoginDetail() {
 
         {UserbalanceInfo(userEmail)}
 
+        <List>
+          <ListItem title="充值中心">
+            {
+              <IconButton
+                text={"去充值"}
+                type="primary"
+                onClick={() => navigate(Path.UserOrder)}
+              />
+            }
+          </ListItem>
+        </List>
+
         <ListItem title="">
           {
             <IconButton
@@ -271,7 +281,6 @@ export function UserLoginDetail() {
                 showToast("退出登录成功");
                 // remove all local save
                 localStorage.removeItem(LocalStorageKeys.userEmail);
-                localStorage.removeItem(LocalStorageKeys.userHasCoins);
                 navigate(Path.Settings);
               }}
             />

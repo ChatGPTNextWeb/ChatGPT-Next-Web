@@ -585,7 +585,7 @@ export function Chat() {
     }
   };
 
-  const doSubmit = (userInput: string) => {
+  const doSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return;
 
     const matchCommand = chatCommands.match(userInput);
@@ -595,6 +595,12 @@ export function Chat() {
       matchCommand.invoke();
       return;
     }
+
+    let isEnoughCoins = await chatStore.isEnoughCoins(1);
+    if (!isEnoughCoins) {
+      return;
+    }
+
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
