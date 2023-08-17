@@ -275,7 +275,7 @@ export function Chat() {
               bordered
               title={Locale.Chat.Actions.Export}
               onClick={() => {
-                setShowExport(true);
+                // setShowExport(true);
               }}
             />
           </div>
