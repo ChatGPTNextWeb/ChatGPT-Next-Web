@@ -35,6 +35,7 @@ interface RequestBody {
   presence_penalty?: number;
   frequency_penalty?: number;
   top_p?: number;
+  baseUrl?: string;
   maxIterations: number;
   returnIntermediateSteps: boolean;
 }
@@ -194,15 +195,29 @@ async function handle(req: NextRequest) {
       outputKey: "output",
       chatHistory: new ChatMessageHistory(pastMessages),
     });
-    const llm = new ChatOpenAI({
-      modelName: reqBody.model,
-      openAIApiKey: serverConfig.apiKey,
-      temperature: reqBody.temperature,
-      streaming: reqBody.stream,
-      topP: reqBody.top_p,
-      presencePenalty: reqBody.presence_penalty,
-      frequencyPenalty: reqBody.frequency_penalty,
-    });
+    // support base url
+    let baseUrl = "https://api.openai.com/v1";
+    if (serverConfig.baseUrl) baseUrl = serverConfig.baseUrl;
+    if (
+      reqBody.baseUrl?.startsWith("http://") ||
+      reqBody.baseUrl?.startsWith("https://")
+    )
+      baseUrl = reqBody.baseUrl;
+    if (!baseUrl.endsWith("/v1"))
+      baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
+    console.log("[baseUrl]", baseUrl);
+    const llm = new ChatOpenAI(
+      {
+        modelName: reqBody.model,
+        openAIApiKey: serverConfig.apiKey,
+        temperature: reqBody.temperature,
+        streaming: reqBody.stream,
+        topP: reqBody.top_p,
+        presencePenalty: reqBody.presence_penalty,
+        frequencyPenalty: reqBody.frequency_penalty,
+      },
+      { basePath: baseUrl },
+    );
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
       agentType: "openai-functions",
       returnIntermediateSteps: reqBody.returnIntermediateSteps,
