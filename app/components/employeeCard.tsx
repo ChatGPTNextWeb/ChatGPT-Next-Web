@@ -12,7 +12,7 @@ export default function EmployeeCard(props: {
     <Link className={styles["link"]} href={props.href}>
       <div className={styles["employeeCard"]}>
         <div>
-          <h2>{props.employeeName}</h2>
+          <p className={styles["employeeName"]}>{props.employeeName}</p>
           <p>{props.employeeRole}</p>
         </div>
         <img
