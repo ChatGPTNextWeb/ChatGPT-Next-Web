@@ -2,11 +2,14 @@ $defaultWhite: #fff;
 $defaultBlack: #000;
 $secondary-4-default: #ede8d7;
 
+.link {
+  text-decoration: none;
+}
+
 .employeeCard {
   background-color: $defaultWhite;
   padding-inline: 2rem;
-  min-width: 17.5rem;
-  max-width: 20rem;
+  width: 20rem;
   height: 13.625rem;
 
   border-radius: 1.1875rem;
