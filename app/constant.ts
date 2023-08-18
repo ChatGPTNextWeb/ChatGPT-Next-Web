@@ -124,8 +124,4 @@ export const DEFAULT_MODELS = [
     name: "llama", // llama
     available: false,
   },
-  {
-    name: "text-bison-001", // text-bison-001
-    available: true,
-  },
 ] as const;
