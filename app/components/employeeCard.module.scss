@@ -2,8 +2,8 @@ $defaultWhite: #fff;
 $defaultBlack: #000;
 $secondary-4-default: #ede8d7;
 
-.link {
-  text-decoration: none;
+.list {
+  list-style-type: none;
 }
 
 .employeeCard {
@@ -12,6 +12,8 @@ $secondary-4-default: #ede8d7;
   padding-inline: 2rem;
   width: 20rem;
   height: 13.625rem;
+
+  text-decoration: none;
 
   border-radius: 1.1875rem;
   border: 1px solid $secondary-4-default;
