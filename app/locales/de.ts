@@ -176,7 +176,7 @@ const de: PartialLocaleType = {
       Topic:
         "Bitte erstellen Sie einen vier- bis fünfwörtigen Titel, der unser Gespräch zusammenfasst, ohne Einleitung, Zeichensetzung, Anführungszeichen, Punkte, Symbole oder zusätzlichen Text. Entfernen Sie Anführungszeichen.",
       Summarize:
-        "Create a short summary of the dialogue (300 words or less) to support contextual continuity for the dialogue to come.",
+        "Create a short summary of the dialogue (using 4000 words at max., ideally less), to support contextual continuity for the upcoming dialogue.",
     },
   },
   Copy: {

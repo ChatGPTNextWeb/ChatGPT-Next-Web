@@ -278,7 +278,7 @@ const en: LocaleType = {
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, or additional text. Remove enclosing quotation marks.",
       Summarize:
-        "Summarize the discussion briefly in 200 words or less to use as a prompt for future context.",
+        "Create a short summary of the dialogue (using 4000 words at max., ideally less), to support contextual continuity for the upcoming dialogue",
     },
   },
   Copy: {
