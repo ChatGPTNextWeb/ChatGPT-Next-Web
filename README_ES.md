@@ -74,7 +74,7 @@ Las contraseñas de acceso, opcionalmente, se pueden separar por comas.
 
 **advertir**: Si no completa este campo, cualquiera puede usar directamente su sitio web implementado, lo que puede hacer que su token se consuma rápidamente, se recomienda completar esta opción.
 
-### `BASE_URL` (Opcional)
+### `BASE_API_URL` (Opcional)
 
 > Predeterminado: `https://api.openai.com`
 
@@ -82,7 +82,7 @@ Las contraseñas de acceso, opcionalmente, se pueden separar por comas.
 
 URL del proxy de interfaz OpenAI, complete esta opción si configuró manualmente el proxy de interfaz openAI.
 
-> Si encuentra problemas con el certificado SSL, establezca el `BASE_URL` El protocolo se establece en http.
+> Si encuentra problemas con el certificado SSL, establezca el `BASE_API_URL` El protocolo se establece en http.
 
 ### `OPENAI_ORG_ID` (Opcional)
 

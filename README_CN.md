@@ -76,7 +76,7 @@ OpanAI 密钥，你在 openai 账户页面申请的 api key。
 
 **警告**：如果不填写此项，则任何人都可以直接使用你部署后的网站，可能会导致你的 token 被急速消耗完毕，建议填写此选项。
 
-### `BASE_URL` （可选）
+### `BASE_API_URL` （可选）
 
 > Default: `https://api.openai.com`
 
@@ -84,7 +84,7 @@ OpanAI 密钥，你在 openai 账户页面申请的 api key。
 
 OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。
 
-> 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
+> 如果遇到 ssl 证书问题，请将 `BASE_API_URL` 的协议设置为 http。
 
 ### `OPENAI_ORG_ID` （可选）
 
@@ -114,7 +114,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
+BASE_API_URL=https://chatgpt1.nextweb.fun/api/proxy
 ```
 
 ### 本地开发

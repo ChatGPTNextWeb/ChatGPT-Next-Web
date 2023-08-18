@@ -127,7 +127,7 @@ OpenAI の api キー。
 
 カンマで区切られたアクセスパスワード。
 
-### `BASE_URL` (オプション)
+### `BASE_API_URL` (オプション)
 
 > デフォルト: `https://api.openai.com`
 
@@ -172,8 +172,8 @@ NodeJS >= 18、Docker >= 20
 ```
 OPENAI_API_KEY=<your api key here>
 
-# OpenAI サービスにアクセスできない場合は、この BASE_URL を使用してください
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
+# OpenAI サービスにアクセスできない場合は、この BASE_API_URL を使用してください
+BASE_API_URL=https://chatgpt1.nextweb.fun/api/proxy
 ```
 
 ### ローカルデプロイ

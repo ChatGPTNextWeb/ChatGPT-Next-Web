@@ -161,7 +161,7 @@ Your openai api key.
 
 Access passsword, separated by comma.
 
-### `BASE_URL` (optional)
+### `BASE_API_URL` (optional)
 
 > Default: `https://api.openai.com`
 
@@ -206,8 +206,8 @@ Before starting development, you must create a new `.env.local` file at project 
 ```
 OPENAI_API_KEY=<your api key here>
 
-# if you are not able to access openai service, use this BASE_URL
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
+# if you are not able to access openai service, use this BASE_API_URL
+BASE_API_URL=https://chatgpt1.nextweb.fun/api/proxy
 ```
 
 ### Local Development

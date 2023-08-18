@@ -5,7 +5,7 @@ declare global {
     interface ProcessEnv {
       OPENAI_API_KEY?: string;
       CODE?: string;
-      BASE_URL?: string;
+      BASE_API_URL?: string;
       PROXY_URL?: string;
       VERCEL?: string;
       HIDE_USER_API_KEY?: string; // disable user's api key input
@@ -42,7 +42,7 @@ export const getServerSideConfig = () => {
     code: process.env.CODE,
     codes: ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
-    baseUrl: process.env.BASE_URL,
+    baseUrl: process.env.BASE_API_URL,
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,

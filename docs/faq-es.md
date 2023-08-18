@@ -66,7 +66,7 @@ Marque para descartar los siguientes problemas:
 Debido a las restricciones de IP de OpenAI, China y algunos otros países no pueden conectarse directamente a las API de OpenAI y necesitan pasar por un proxy. Puede usar un servidor proxy (proxy de reenvío) o un proxy inverso de API OpenAI ya configurado.
 
 *   Ejemplo de agente positivo: escalera científica de Internet. En el caso de la implementación de Docker, establezca la variable de entorno HTTP_PROXY en su dirección proxy (por ejemplo: 10.10.10.10:8002).
-*   Ejemplo de proxy inverso: puede usar una dirección proxy creada por otra persona o configurarla de forma gratuita a través de Cloudflare. Establezca la variable de entorno del proyecto BASE_URL en su dirección proxy.
+*   Ejemplo de proxy inverso: puede usar una dirección proxy creada por otra persona o configurarla de forma gratuita a través de Cloudflare. Establezca la variable de entorno del proyecto BASE_API_URL en su dirección proxy.
 
 ## ¿Se pueden implementar servidores domésticos?
 
