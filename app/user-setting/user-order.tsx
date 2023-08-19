@@ -22,7 +22,14 @@ import zBotServiceClient, {
   UserRequestInfoVO,
   UserConstantVO,
   LocalStorageKeys,
+  UserOrderVO,
 } from "../zbotservice/ZBotServiceClient";
+
+// 放到这里, 方便修改
+const pricingPackage = [
+  { amount: 10, base_coins: 100, requests: 100 },
+  { amount: 30, base_coins: 500, requests: 500 },
+];
 
 export function UserOrder() {
   const navigate = useNavigate();
@@ -36,6 +43,7 @@ export function UserOrder() {
       <div className={styles_settings["settings"]}>
         {UserbalanceInfo(userEmail)}
         {UserOrderInfo(userEmail)}
+        {UserOrderHistory(userEmail)}
       </div>
     </ErrorBoundary>
   );
@@ -149,15 +157,10 @@ function UserbalanceInfo(userEmail: string) {
 }
 
 function UserOrderInfo(userEmail: string) {
-  const [selectedButton, setSelectedButton] = useState(0);
+  const [selectedPackage, setSelectedButton] = useState(0);
 
   const [showQrCode, setShowQrCode] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-
-  const pricingPackage = [
-    { amount: 10, base_coins: 100, requests: 100 },
-    { amount: 30, base_coins: 500, requests: 500 },
-  ];
 
   const handleButtonClick = (buttonId: number) => {
     setSelectedButton(buttonId);
@@ -178,8 +181,8 @@ function UserOrderInfo(userEmail: string) {
   }, [qrCodeUrl]);
 
   const submit = async () => {
-    let amount = pricingPackage[selectedButton - 1].amount;
-    let baseCoins = pricingPackage[selectedButton - 1].base_coins;
+    let amount = pricingPackage[selectedPackage - 1].amount;
+    let baseCoins = pricingPackage[selectedPackage - 1].base_coins;
 
     setShowQrCode(true);
     setQrCodeUrl("");
@@ -189,7 +192,7 @@ function UserOrderInfo(userEmail: string) {
       email: userEmail,
       amount: amount_cent,
       base_coins: baseCoins,
-      mode: 1,
+      mode: selectedPackage,
     };
 
     try {
@@ -209,7 +212,7 @@ function UserOrderInfo(userEmail: string) {
             <label
               key={index}
               className={
-                selectedButton === index + 1
+                selectedPackage === index + 1
                   ? styles_user["user-order-balance-button-selected"]
                   : styles_user["user-order-balance-button"]
               }
@@ -225,12 +228,12 @@ function UserOrderInfo(userEmail: string) {
           );
         })}
       </div>
-      {selectedButton > 0 ? (
+      {selectedPackage > 0 ? (
         <ListItem title="套餐选择">
           <label className={styles_user["user-order-signed"]}>{`您已选择: ${
-            pricingPackage[selectedButton - 1].amount
+            pricingPackage[selectedPackage - 1].amount
           }元套餐`}</label>
-          <IconButton text={"去充值"} type="primary" onClick={() => submit()} />
+          <IconButton text={"去充值"} type="primary" onClick={submit} />
           <div></div>
         </ListItem>
       ) : (
@@ -266,6 +269,46 @@ function UserOrderInfo(userEmail: string) {
           </div>
         )
       ) : null}
+    </List>
+  );
+}
+
+function UserOrderHistory(userEmail: string) {
+  const [orderHistory, setOrderHistory] = useState<UserOrderVO[]>([]);
+
+  useEffect(() => {
+    zBotServiceClient.getUserOrders(userEmail).then((item) => {
+      setOrderHistory(item);
+    });
+  }, []);
+
+  return (
+    <List>
+      <ListItem title="充值历史"></ListItem>
+      <div className={styles_user["order-history-container"]}>
+        <table className={styles_user["order-history-table"]}>
+          <thead>
+            <tr>
+              <th>套餐类型</th>
+              <th>充值金额(元)</th>
+              <th>基础AI币(个)</th>
+              <th>下单时间</th>
+              <th>订单完成时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orderHistory.map((order, index) => (
+              <tr key={index}>
+                <td>{order.amount / 100}元套餐</td>
+                <td>{order.amount / 100}</td>
+                <td>{order.baseCoins}</td>
+                <td>{order.orderTime.toString()}</td>
+                <td>{order.orderCompleteTime.toString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </List>
   );
 }

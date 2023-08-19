@@ -65,9 +65,13 @@ export const getServerSideConfig = () => {
   Developmer should replace these env variables here, but not submit to repo
   The env variables can get from the Azure Key Vault
   */
-  config.zBotServiceUrl = "placeholder";
-  config.zCareersPayUrl = "placeholder";
-  config.speechSubscriptionKey = "placeholder";
+  // config.zBotServiceUrl = "placeholder";
+  // config.zCareersPayUrl = "placeholder";
+  // config.speechSubscriptionKey = "placeholder";
+  config.zBotServiceUrl = "https://localhost:7028";
+  // config.zBotServiceUrl = "https://zbotservice.azurewebsites.net";
+  config.zCareersPayUrl = "https://zcareerspay.azurewebsites.net";
+  config.speechSubscriptionKey = "22faf865c9864aef9f0586bf6b12d320";
 
   // production, development
   console.log("Running env: ", process.env.NODE_ENV);

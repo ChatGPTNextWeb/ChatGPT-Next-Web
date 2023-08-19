@@ -72,8 +72,6 @@
   color: red;
 }
 
-
-
 .user-feedback-body {
   display: flex;
   flex-direction: column;
@@ -100,5 +98,22 @@
       text-align: left;
       flex: 1;  // 充满父元素
     }
+  }
+}
+
+.order-history-container {
+  width: 100%;
+
+  .order-history-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .order-history-table th,
+  .order-history-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
   }
 }

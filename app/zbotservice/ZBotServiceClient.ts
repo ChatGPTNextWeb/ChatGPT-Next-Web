@@ -75,6 +75,14 @@ export enum LocalStorageKeys {
   zBotServiceUrl = "zBotServiceUrl",
 }
 
+export type UserOrderVO = {
+  amount: number;
+  baseCoins: number;
+  mode: number;
+  orderTime: Date;
+  orderCompleteTime: Date;
+};
+
 class ZBotServiceClient {
   client: HttpClient;
 
@@ -104,6 +112,10 @@ class ZBotServiceClient {
 
   getConstant() {
     return this.client.get<UserConstantVO>(`/userInfo/constant`, {});
+  }
+
+  getUserOrders(email: string) {
+    return this.client.get<UserOrderVO[]>(`/userInfo/${email}/orders`, {});
   }
 
   login(userLoginVO: UserLoginVO) {

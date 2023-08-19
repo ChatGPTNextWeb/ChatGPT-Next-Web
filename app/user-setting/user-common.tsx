@@ -55,14 +55,6 @@ export function UserInfoWindowHeader(
             title="返回"
           ></IconButton>
         </div>
-        <div className="window-action-button">
-          <IconButton
-            icon={<CloseIcon />}
-            onClick={() => navigate(Path.Home)}
-            bordered
-            title={"关闭"}
-          />
-        </div>
       </div>
     </div>
   );
