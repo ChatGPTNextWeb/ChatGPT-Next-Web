@@ -66,6 +66,7 @@ export class UserFeedbackVO {
   email: string = "";
   title: string = "";
   description: string = "";
+  phone: string = "";
 }
 
 // put here for use convenience
@@ -73,6 +74,14 @@ export enum LocalStorageKeys {
   userEmail = "userEmail",
   zBotServiceUrl = "zBotServiceUrl",
 }
+
+export type UserOrderVO = {
+  amount: number;
+  baseCoins: number;
+  mode: number;
+  orderTime: Date;
+  orderCompleteTime: Date;
+};
 
 class ZBotServiceClient {
   client: HttpClient;
@@ -103,6 +112,10 @@ class ZBotServiceClient {
 
   getConstant() {
     return this.client.get<UserConstantVO>(`/userInfo/constant`, {});
+  }
+
+  getUserOrders(email: string) {
+    return this.client.get<UserOrderVO[]>(`/userInfo/${email}/orders`, {});
   }
 
   login(userLoginVO: UserLoginVO) {

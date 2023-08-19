@@ -30,7 +30,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast, showModal } from "./ui-lib";
-import { about } from "../user-setting/user-feedback";
 import zBotServiceClient, {
   UserConstantVO,
 } from "../zbotservice/ZBotServiceClient";
@@ -204,14 +203,6 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<GithubIcon />} shadow />
             </a>
           </div> */}
-
-          <div className={styles["sidebar-action"]}>
-            <IconButton
-              icon={<AnnouncementIcon />}
-              text="关于"
-              onClick={() => about(userConstantVO)}
-            />
-          </div>
         </div>
       </div>
 

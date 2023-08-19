@@ -1,4 +1,7 @@
 import styles from "../components/settings.module.scss";
+import styles_user from "./user.module.scss";
+
+import SendWhiteIcon from "../icons/send-white.svg";
 import { IconButton } from "../components/button";
 import { AppInfo } from "../constant";
 
@@ -11,22 +14,19 @@ import zBotServiceClient, {
   UserConstantVO,
 } from "../zbotservice/ZBotServiceClient";
 
-export function about(userConstantVO: UserConstantVO) {
+export function about() {
   const mdText = `
     欢迎来到${AppInfo.Title}！
 
-    ${AppInfo.Title}提供了与ChatGPT进行对话的能力。您可以随时随地与我们的AI助手展开对话。
+    ${AppInfo.Title} 基于GPT3.5开发。相对于ChatGPT, 我们提供了更加舒适的交互体验，
+    如Markdown格式的输入与输出编辑, 语音录入与播放结果, 一键复制/重试/删除结果等。
+    
+    同时我们定义了一些特定的AI角色, 如Toastmasters Copilot, 用于辅助Toastmasters的演讲；文案写手，用于辅助文案写作与润色等。
+    
+    我们非常重视用户隐私和数据安全。在使用${AppInfo.Title}时，我们不会后台存储或分析用户的聊天记录。
+    所有的聊天记录都直接转发到OpenAI，这意味着您的对话数据将由OpenAI进行处理和存储。
 
-    我们非常重视用户隐私和数据安全。在使用${AppInfo.Title}时，我们不会后台存储或分析用户的聊天记录。所有的聊天记录都直接转发到OpenAI，这意味着您的对话数据将由OpenAI进行处理和存储。
-    作为一家技术领先的公司，OpenAI采取了严格的数据保护措施，以确保您的数据安全和隐私保护。
-
-    我们采用AI币聊天方式, AI币 = 基础AI币 + 限时AI币 
-      - 1). 新用户注册, 赠送: ${userConstantVO.firstBaseCoins}个基础币
-      - 2). 每日签到，赠送: ${userConstantVO.dayBaseCoins}个基础币 + ${userConstantVO.dayLimitCoins}个限时币
-      - 3). 邀请用户, 邀请人和被邀请人均赠送: ${userConstantVO.inviteBaseCoins}个基础币 
-      - 4). 基础币不会清空, 限时币每日0点清空
-      - 5). 每条消息消耗1个AI币
-
+    有任何问题或建议，欢迎通过 ***设置->反馈我们*** 联系我们。我们会尽快回复。
     祝畅聊愉快。
     `;
 
@@ -44,13 +44,13 @@ const submit = async (feedbackVO: UserFeedbackVO) => {
   console.log("feedbackVO: ", feedbackVO);
 
   if (feedbackVO.email === null || feedbackVO.email.trim().length === 0) {
-    showToast("用户尚未登录, 请先登录");
+    showToast("邮箱不可为空");
     return;
   } else if (feedbackVO.title.trim().length === 0) {
-    showToast("Title不可为空");
+    showToast("标题不可为空");
     return;
   } else if (feedbackVO.description.trim().length === 0) {
-    showToast("description不可为空");
+    showToast("详细描述不可为空");
     return;
   }
 
@@ -58,8 +58,6 @@ const submit = async (feedbackVO: UserFeedbackVO) => {
     const result = await zBotServiceClient.sendFeedback(feedbackVO);
     if (result === UserCheckResultVO.success) {
       showToast("反馈已提交, 请返回");
-    } else if (result === UserCheckResultVO.notFound) {
-      showToast("邮箱尚未注册, 请先注册");
     } else {
       showToast("反馈提交失败, 请重新提交");
     }
@@ -77,28 +75,67 @@ export function feedback() {
   showModal({
     title: AppInfo.Title + "-反馈",
     children: (
-      <div className={styles["edit-prompt-modal"]}>
-        <input
-          type="text"
-          placeholder="标题"
-          className={styles["edit-prompt-title"]}
-          onChange={(e) => {
-            feedbackVO.title = e.target.value;
-          }}
-        ></input>
-        <Input
-          placeholder="详细描述"
-          rows={10}
-          className={styles["edit-prompt-content"]}
-          onChange={(e) => {
-            feedbackVO.description = e.currentTarget.value;
-          }}
-        ></Input>
+      <div className={styles_user["user-feedback-body"]}>
+        {feedbackVO.email === null || feedbackVO.email.trim().length === 0 ? (
+          <div className={styles_user["user-feedback-body-item"]}>
+            <label className={styles_user["user-feedback-body-item-label"]}>
+              邮箱*
+            </label>
+            <input
+              type="text"
+              placeholder="邮箱"
+              className={styles_user["edit-prompt-title"]}
+              onChange={(e) => {
+                feedbackVO.email = e.target.value;
+              }}
+            ></input>
+          </div>
+        ) : null}
+        <div className={styles_user["user-feedback-body-item"]}>
+          <label className={styles_user["user-feedback-body-item-label"]}>
+            标题*
+          </label>
+          <input
+            type="text"
+            placeholder="标题"
+            className={styles_user["edit-prompt-title"]}
+            onChange={(e) => {
+              feedbackVO.title = e.target.value;
+            }}
+          ></input>
+        </div>
+        <div className={styles_user["user-feedback-body-item"]}>
+          <label className={styles_user["user-feedback-body-item-label"]}>
+            详细描述*
+          </label>
+          <Input
+            placeholder="详细描述"
+            rows={10}
+            className={styles_user["edit-prompt-content"]}
+            onChange={(e) => {
+              feedbackVO.description = e.currentTarget.value;
+            }}
+          ></Input>
+        </div>
+        <div className={styles_user["user-feedback-body-item"]}>
+          <label className={styles_user["user-feedback-body-item-label"]}>
+            联系电话(可选)
+          </label>
+          <input
+            type="text"
+            placeholder="电话"
+            className={styles_user["edit-prompt-title"]}
+            onChange={(e) => {
+              feedbackVO.phone = e.target.value;
+            }}
+          ></input>
+        </div>
       </div>
     ),
     actions: [
       <IconButton
-        bordered
+        icon={<SendWhiteIcon />}
+        type="primary"
         key=""
         text="提交"
         onClick={() => submit(feedbackVO)}
