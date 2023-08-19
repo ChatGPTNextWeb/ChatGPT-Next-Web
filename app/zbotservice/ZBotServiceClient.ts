@@ -66,6 +66,7 @@ export class UserFeedbackVO {
   email: string = "";
   title: string = "";
   description: string = "";
+  phone: string = "";
 }
 
 // put here for use convenience

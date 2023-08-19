@@ -22,7 +22,7 @@ import {
   showToast,
   showModal,
 } from "./ui-lib";
-import { ModelConfigList } from "./model-config";
+import { ModelConfigList, ModelConfigListSimple } from "./model-config";
 
 import { IconButton } from "./button";
 import {
@@ -409,9 +409,9 @@ export function Settings() {
                 onClick={() => navigate(Path.UserLoginDetail)}
               />
             </ListItem>
-            <ListItem title="充值中心">
+            <ListItem title="余额中心">
               <IconButton
-                text={"去充值"}
+                text={"余额中心"}
                 type="primary"
                 onClick={() => navigate(Path.UserOrder)}
               />
@@ -527,7 +527,10 @@ export function Settings() {
             </Select>
           </ListItem>
 
-          <ListItem title={Locale.Settings.Lang.Name}>
+          <ListItem
+            title={Locale.Settings.Lang.Name}
+            subTitle={Locale.Settings.Lang.SubName}
+          >
             <Select
               value={getLang()}
               onChange={(e) => {
@@ -577,7 +580,7 @@ export function Settings() {
             ></input>
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Mask.Title}
             subTitle={Locale.Settings.Mask.SubTitle}
           >
@@ -592,10 +595,12 @@ export function Settings() {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
         </List>
 
-        <List>
+        {/* TODO: should set enabledAccessControl parameter  */}
+        {/* TODO: should set HIDE_USER_API_KEY="false" in config, but not success*/}
+        {/* <List>
           {showAccessCode ? (
             <ListItem
               title={Locale.Settings.AccessCode.Title}
@@ -614,8 +619,7 @@ export function Settings() {
             <></>
           )}
 
-          {/* TODO: should set enabledAccessControl parameter  */}
-          {/* <ListItem
+          <ListItem
             title={Locale.Settings.AccessCode.Title}
             subTitle={Locale.Settings.AccessCode.SubTitle}
           >
@@ -627,10 +631,9 @@ export function Settings() {
                 accessStore.updateCode(e.currentTarget.value);
               }}
             />
-          </ListItem> */}
+          </ListItem>
 
-          {/* TODO: should set HIDE_USER_API_KEY="false" in config, but not success*/}
-          {/* {!accessStore.hideUserApiKey ? (
+          {!accessStore.hideUserApiKey ? (
             <ListItem
               title={Locale.Settings.Token.Title}
               subTitle={Locale.Settings.Token.SubTitle}
@@ -644,7 +647,7 @@ export function Settings() {
                 }}
               />
             </ListItem>
-          ) : null} */}
+          ) : null}
 
           {!accessStore.hideBalanceQuery ? (
             <ListItem
@@ -687,9 +690,9 @@ export function Settings() {
               ></input>
             </ListItem>
           ) : null}
-        </List>
+        </List> */}
 
-        <List>
+        {/* <List>
           <ListItem
             title={Locale.Settings.Prompt.Disable.Title}
             subTitle={Locale.Settings.Prompt.Disable.SubTitle}
@@ -719,12 +722,12 @@ export function Settings() {
               onClick={() => setShowPromptModal(true)}
             />
           </ListItem>
-        </List>
+        </List> */}
 
         <SyncItems />
 
         <List>
-          <ModelConfigList
+          <ModelConfigListSimple
             modelConfig={config.modelConfig}
             updateConfig={(updater) => {
               const modelConfig = { ...config.modelConfig };
@@ -734,26 +737,20 @@ export function Settings() {
           />
         </List>
 
-        <List>
-          <ListItem title="关于我们">
-            <IconButton
-              text="详情"
-              bordered
-              onClick={() => about(userConstantVO)}
-            />
-          </ListItem>
-          <ListItem title="反馈我们" subTitle="有价值的反馈会以AI币作为奖赏">
-            <IconButton text="反馈" bordered onClick={feedback} />
-          </ListItem>
-        </List>
-
-        {/* {about_feedback()} */}
-
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
 
         <DangerItems />
+
+        <List>
+          <ListItem title="关于我们">
+            <IconButton text="详情" bordered onClick={about} />
+          </ListItem>
+          <ListItem title="反馈我们" subTitle="有价值的反馈会以AI币作为奖赏">
+            <IconButton text="反馈" bordered onClick={feedback} />
+          </ListItem>
+        </List>
       </div>
     </ErrorBoundary>
   );

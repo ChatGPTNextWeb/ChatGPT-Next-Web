@@ -4,7 +4,6 @@ import LeftIcon from "../icons/left.svg";
 import CloseIcon from "../icons/close.svg";
 import { IconButton } from "../components/button";
 import { Path } from "../constant";
-import Locale from "../locales";
 import { NavigateFunction } from "react-router";
 
 import zBotServiceClient, {
@@ -38,15 +37,14 @@ export async function sendVerifyCode(userEmail: string) {
   }
 }
 
-export function UserInfoWindowHeader({
-  navigate,
-}: {
-  navigate: NavigateFunction;
-}) {
+export function UserInfoWindowHeader(
+  navigate: NavigateFunction,
+  title: string,
+) {
   return (
     <div className="window-header">
       <div className="window-header-title">
-        <div className="window-header-main-title">{"用户信息"}</div>
+        <div className="window-header-main-title">{title}</div>
       </div>
       <div className="window-actions">
         <div className="window-action-button">

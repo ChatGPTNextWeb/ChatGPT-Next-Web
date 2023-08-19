@@ -1,29 +1,14 @@
-import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
+import { useState } from "react";
 
 import styles from "../components/settings.module.scss";
 
 import SendWhiteIcon from "../icons/send-white.svg";
-import {
-  Input,
-  List,
-  ListItem,
-  Modal,
-  PasswordInput,
-  Popover,
-  Select,
-  showToast,
-} from "../components/ui-lib";
-
-import { useAppConfig } from "../store";
+import { List, ListItem, showToast } from "../components/ui-lib";
 
 import { IconButton } from "../components/button";
-
-import Locale from "../locales";
-import Link from "next/link";
 import { Path } from "../constant";
 import { ErrorBoundary } from "../components/error";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarPicker } from "../components/emoji";
 import { UserInfoWindowHeader } from "./user-common";
 
 import zBotServiceClient, {
@@ -75,7 +60,7 @@ export function UserLogin() {
 
   return (
     <ErrorBoundary>
-      <div> {UserInfoWindowHeader({ navigate })} </div>
+      <div> {UserInfoWindowHeader(navigate, "用户登录")} </div>
 
       <div className={styles["settings"]}>
         <List>

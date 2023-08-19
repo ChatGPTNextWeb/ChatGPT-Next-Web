@@ -1,3 +1,104 @@
-.user-order-code {
-  padding: 10px; // 这段代码是在设置一个元素的内边距。具体来说，它将上下内边距设置为10像素。
+
+
+.user-order-balance {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  border-bottom: var(--border-in-light);
+
+  .user-order-balance-item {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    
+    .user-order-balance-num {
+      justify-content: center;
+      align-items: center; 
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .user-order-balance-title {
+      font-size: 18px;
+    }
+
+    .user-order-balance-title-padding {
+      font-size: 14px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+
+  .user-order-balance-button {
+    @extend .user-order-balance-item;
+    background-color: rgb(239, 239, 239);
+  }
+  .user-order-balance-button-selected {
+    @extend .user-order-balance-item;
+    background-color: var(--primary);
+  }
+
+}
+
+.user-order-pay {
+  @extend .user-order-balance;
+  padding: 10px;
+}
+
+.user-order-qrcode-desc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px; /* 设置尾部间隔 */
+
+  .user-order-qrcode {
+    padding-top: 10px; // 这段代码是在设置一个元素的内边距。具体来说，它将上下内边距设置为10像素。
+  }
+}
+
+.user-order-desc {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.user-order-signed {
+  color: green;
+}
+
+.user-order-unsigned {
+  color: red;
+}
+
+
+
+.user-feedback-body {
+  display: flex;
+  flex-direction: column;
+
+
+  .user-feedback-body-item {
+    display: flex;
+    flex-direction: row;
+    
+    .user-feedback-body-item-label {
+      width: 80px;
+      padding-right: 10px;
+    }
+    
+    .edit-prompt-title {
+      max-width: unset;
+      margin-bottom: 10px;
+      text-align: left;
+      flex: 1;  // 充满父元素
+    }
+    .edit-prompt-content {
+      max-width: unset;
+      margin-bottom: 10px;
+      text-align: left;
+      flex: 1;  // 充满父元素
+    }
+  }
 }

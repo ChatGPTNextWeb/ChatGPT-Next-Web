@@ -68,12 +68,6 @@
   border: 0;
 }
 
-.list-center {
-  @extend .list;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 .modal-container {
   box-shadow: var(--card-shadow);

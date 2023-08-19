@@ -1,28 +1,13 @@
 import { useState } from "react";
 
 import styles from "../components/settings.module.scss";
-
-import EditIcon from "../icons/edit.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 
-import {
-  Input,
-  List,
-  ListItem,
-  Modal,
-  PasswordInput,
-  Popover,
-  Select,
-  showToast,
-} from "../components/ui-lib";
+import { List, ListItem, showToast } from "../components/ui-lib";
 
 import { IconButton } from "../components/button";
-
-import Locale from "../locales";
-import Link from "next/link";
 import { Path, UPDATE_URL } from "../constant";
 import { ErrorBoundary } from "../components/error";
-import { InputRange } from "../components/input-range";
 import { useNavigate } from "react-router-dom";
 
 import zBotServiceClient, {
@@ -93,7 +78,7 @@ export function UserRegister() {
 
   return (
     <ErrorBoundary>
-      <div> {UserInfoWindowHeader({ navigate })} </div>
+      <div> {UserInfoWindowHeader(navigate, "用户注册中心")} </div>
 
       <div className={styles["settings"]}>
         <List>

@@ -1,41 +1,24 @@
 import { useState } from "react";
 
 import styles from "../components/settings.module.scss";
-
-import LeftIcon from "../icons/left.svg";
-import CloseIcon from "../icons/close.svg";
-import { NavigateFunction } from "react-router";
-
-import EditIcon from "../icons/edit.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
-import {
-  Input,
-  List,
-  ListItem,
-  Modal,
-  PasswordInput,
-  Popover,
-  Select,
-  showToast,
-} from "../components/ui-lib";
+import { List, ListItem, Popover, showToast } from "../components/ui-lib";
 
 import { useAppConfig } from "../store";
 
 import { IconButton } from "../components/button";
 
 import Locale from "../locales";
-import Link from "next/link";
 import { Path } from "../constant";
 import { ErrorBoundary } from "../components/error";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "../components/emoji";
+import { UserInfoWindowHeader } from "./user-common";
 
 import zBotServiceClient, {
   UserCheckResultVO,
   LocalStorageKeys,
-  UserRequestInfoVO,
   UserInfoVO,
-  UserConstantVO,
 } from "../zbotservice/ZBotServiceClient";
 
 const submitChange = async (userInfoVO: UserInfoVO) => {
@@ -61,81 +44,6 @@ const submitChange = async (userInfoVO: UserInfoVO) => {
   }
 };
 
-const toSignin = async (email: string) => {
-  try {
-    const result = await zBotServiceClient.signin(email);
-    if (result === UserCheckResultVO.success) {
-      showToast("签到成功");
-    } else if (result === UserCheckResultVO.notFound) {
-      showToast("邮箱尚未注册, 请先注册");
-    } else if (result === UserCheckResultVO.Signined) {
-      showToast("今日已签到, 无须多次签到");
-    } else {
-      showToast("签到失败, 请重新签到");
-    }
-  } catch (error) {
-    console.log("db access failed:"), error;
-  }
-};
-
-function UserbalanceInfo(userEmail: string) {
-  const [userRequestInfoVO, setuserRequestInfoVO] = useState(
-    new UserRequestInfoVO(),
-  );
-  zBotServiceClient.getRequestInfo(userEmail).then((item) => {
-    setuserRequestInfoVO(item);
-  });
-
-  const [userConstantVO, setUserConstantVO] = useState(new UserConstantVO());
-  zBotServiceClient.getConstant().then((item) => {
-    setUserConstantVO(item);
-  });
-
-  return (
-    <List>
-      <ListItem
-        title="签到领取AI币"
-        subTitle={`每日签到领取${userConstantVO.dayBaseCoins}个基础AI币,${userConstantVO.dayLimitCoins}个限时AI币`}
-      >
-        <label>
-          {" "}
-          {"已累计签到 " + `${userRequestInfoVO.totalSigninDays}` + "天"}
-        </label>
-
-        {userRequestInfoVO.isThisDaySignin === true ? (
-          <IconButton text={"今日已签到"} bordered disabled />
-        ) : (
-          <IconButton
-            text={"去签到"}
-            bordered
-            onClick={() => toSignin(userEmail)}
-          />
-        )}
-      </ListItem>
-      <ListItem title="基础AI币余额" subTitle="不会清空, 注册+邀请+签到 等获取">
-        <label> {userRequestInfoVO.baseCoins}</label>
-      </ListItem>
-      <ListItem title="限时AI币余额" subTitle={`限时1天, 0点清空`}>
-        <label> {userRequestInfoVO.thisDayCoins}</label>
-      </ListItem>
-      <ListItem title="每条消息消耗AI币" subTitle="先限时币, 再基础币">
-        <label> {1}</label>
-      </ListItem>
-
-      <ListItem title="总消息数">
-        <label> {userRequestInfoVO.totalRequests}</label>
-      </ListItem>
-      {/* <ListItem title="升级服务">
-        <IconButton
-          text="升级"
-          bordered
-          onClick={() => showToast("开发小哥加班加点中, 敬请期待")}
-        />
-      </ListItem> */}
-    </List>
-  );
-}
-
 export function UserLoginDetail() {
   let userEmail = localStorage.getItem(LocalStorageKeys.userEmail) as string;
 
@@ -145,9 +53,8 @@ export function UserLoginDetail() {
   const config = useAppConfig();
   const updateConfig = config.update;
 
-  const [userNickName, setuserNickName] = useState("");
+  const [userNickName, setUserNickName] = useState("");
   const [occupation, setOccupation] = useState("");
-  const [updateButton, setUpdateButton] = useState(false);
 
   // db UserInfo value
   const [dbUserInfoVO, setDbUserInfoVO] = useState(new UserInfoVO());
@@ -155,49 +62,21 @@ export function UserLoginDetail() {
     setDbUserInfoVO(item);
   });
 
-  // to update db
-  let userInfoVO = new UserInfoVO();
-  userInfoVO.email = userEmail;
-  userInfoVO.nickName = userNickName;
-  userInfoVO.occupation = occupation;
+  const saveUserInfo = async () => {
+    let _userInfoVO = new UserInfoVO();
+    _userInfoVO.email = userEmail;
+    _userInfoVO.nickName =
+      userNickName === "" ? dbUserInfoVO.nickName : userNickName;
+    _userInfoVO.occupation =
+      occupation === "" ? dbUserInfoVO.occupation : occupation;
+    // _userInfoVO.inviterEmail = dbUserInfoVO.inviterEmail;  // inviterEmail 不可修改 in backend
 
-  function UserInfoWindowHeader({ navigate }: { navigate: NavigateFunction }) {
-    return (
-      <div className="window-header">
-        <div className="window-header-title">
-          <div className="window-header-main-title">{"用户信息"}</div>
-        </div>
-        <div className="window-actions">
-          <div className="window-action-button">
-            <IconButton
-              icon={<LeftIcon />}
-              onClick={() => {
-                updateButton && submitChange(userInfoVO); // save change
-                navigate(Path.Settings);
-              }}
-              bordered
-              title="返回"
-            ></IconButton>
-          </div>
-          <div className="window-action-button">
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={() => {
-                updateButton && submitChange(userInfoVO); // save change
-                navigate(Path.Home);
-              }}
-              bordered
-              title={"关闭"}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+    submitChange(_userInfoVO);
+  };
 
   return (
     <ErrorBoundary>
-      <div> {UserInfoWindowHeader({ navigate })} </div>
+      <div> {UserInfoWindowHeader(navigate, "用户个人中心")} </div>
 
       <div className={styles["settings"]}>
         <List>
@@ -208,11 +87,10 @@ export function UserLoginDetail() {
             <input
               type="text"
               name="username"
-              placeholder="昵称"
+              placeholder="加载中..."
               defaultValue={dbUserInfoVO.nickName}
-              onChange={(e) => {
-                setUpdateButton(true);
-                setuserNickName(e.target.value);
+              onInput={(e) => {
+                setUserNickName(e.currentTarget.value);
               }}
             ></input>
           </ListItem>
@@ -220,11 +98,10 @@ export function UserLoginDetail() {
             <input
               type="text"
               name="occupation"
-              placeholder="职业"
+              placeholder="加载中..."
               defaultValue={dbUserInfoVO.occupation}
-              onChange={(e) => {
-                setUpdateButton(true);
-                setOccupation(e.target.value);
+              onInput={(e) => {
+                setOccupation(e.currentTarget.value);
               }}
             ></input>
           </ListItem>
@@ -257,34 +134,27 @@ export function UserLoginDetail() {
           </ListItem>
         </List>
 
-        {UserbalanceInfo(userEmail)}
-
-        <List>
-          <ListItem title="充值中心">
-            {
-              <IconButton
-                text={"去充值"}
-                type="primary"
-                onClick={() => navigate(Path.UserOrder)}
-              />
-            }
-          </ListItem>
-        </List>
-
         <ListItem title="">
-          {
-            <IconButton
-              icon={<SendWhiteIcon />}
-              text={"退出登录"}
-              type="primary"
-              onClick={() => {
-                showToast("退出登录成功");
-                // remove all local save
-                localStorage.removeItem(LocalStorageKeys.userEmail);
-                navigate(Path.Settings);
-              }}
-            />
-          }
+          {/* {
+
+          } */}
+          <IconButton
+            icon={<SendWhiteIcon />}
+            text={"保存修改"}
+            type="primary"
+            onClick={saveUserInfo}
+          />
+          <IconButton
+            icon={<SendWhiteIcon />}
+            text={"退出登录"}
+            type="primary"
+            onClick={() => {
+              showToast("退出登录成功");
+              // remove all local save
+              localStorage.removeItem(LocalStorageKeys.userEmail);
+              navigate(Path.Settings);
+            }}
+          />
         </ListItem>
       </div>
     </ErrorBoundary>

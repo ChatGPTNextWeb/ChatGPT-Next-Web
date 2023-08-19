@@ -127,7 +127,9 @@ const cn = {
       },
     },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      // Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "语言", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      SubName: "仅影响界面显示, 不影响对话结果，也不影响角色面具",
       All: "所有语言",
     },
     Avatar: "头像",

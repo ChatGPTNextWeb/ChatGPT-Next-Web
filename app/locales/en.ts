@@ -129,6 +129,8 @@ const en: LocaleType = {
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      SubName:
+        "Only to affect UI show, not affect chat result, and not affect the mask role",
       All: "All Languages",
     },
     Avatar: "Avatar",
