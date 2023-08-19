@@ -115,6 +115,7 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";
           const isInternal = /^\/#/i.test(href);
@@ -150,7 +151,6 @@ export function Markdown(
       ref={mdRef}
       onContextMenu={props.onContextMenu}
       onDoubleClickCapture={props.onDoubleClickCapture}
-      dir="auto"
     >
       {props.loading ? (
         <LoadingIcon />
