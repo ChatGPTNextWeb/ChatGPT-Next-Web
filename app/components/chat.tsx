@@ -940,7 +940,7 @@ function _Chat() {
     const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
     const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
 
-    if (isTouchTopEdge) {
+    if (isTouchTopEdge && !isTouchBottomEdge) {
       setMsgRenderIndex(prevPageMsgIndex);
     } else if (isTouchBottomEdge) {
       setMsgRenderIndex(nextPageMsgIndex);
@@ -1123,9 +1123,9 @@ function _Chat() {
                               10,
                             );
                             chatStore.updateCurrentSession((session) => {
-                              const m = session.messages.find(
-                                (m) => m.id === message.id,
-                              );
+                              const m = session.mask.context
+                                .concat(session.messages)
+                                .find((m) => m.id === message.id);
                               if (m) {
                                 m.content = newMessage;
                               }
