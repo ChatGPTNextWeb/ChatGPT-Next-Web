@@ -1,4 +1,15 @@
 # 1. Versions
+/*The version should be max(ZBotService, ZBotPortal),
+And ZBotService, ZBotPortal better has same version define in case roll back
+*/
+
+## v3.1.1
+publish time: 2023-08-19
+ - append
+
+## v3.1.0
+publish time: 2023-08-19
+ - Reorganize code and optimize paymethod
 
 ## v3.0.6
 publish time: 2023-08-16

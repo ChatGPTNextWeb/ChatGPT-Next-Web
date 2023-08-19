@@ -12,7 +12,9 @@ import dynamic from "next/dynamic";
 import { IconButton } from "../components/button";
 import styles from "../components/chat.module.scss";
 
-import speechSdk, { speechRecognizer } from "../cognitive/speech-sdk";
+import { speechRecognizer } from "../cognitive/speech-sdk";
+
+const ToastmastersDefaultLangugage = "en";
 
 export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   const config = useAppConfig();
@@ -85,7 +87,10 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
 
   const onRecord = () => {
     if (!recording) {
-      speechRecognizer.startRecording(appendUserInput);
+      speechRecognizer.startRecording(
+        appendUserInput,
+        ToastmastersDefaultLangugage,
+      );
       setRecording(true);
     } else {
       speechRecognizer.stopRecording();

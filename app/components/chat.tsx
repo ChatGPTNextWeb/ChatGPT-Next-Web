@@ -81,9 +81,8 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
-import { SpeechConfig } from "../store/config";
 
-import speechSdk from "../cognitive/speech-sdk";
+import { speechSynthesizer, speechRecognizer } from "../cognitive/speech-sdk";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -610,56 +609,33 @@ export function Chat() {
     setAutoScroll(true);
 
     // voice
-    SpeechConfig.enablePlay &&
-      chatStore.getIsFinished().then((isFinished) => {
-        if (isFinished) {
-          var text = session.messages[session.messages.length - 1].content;
-          speechSdk.handleSynthesize(text);
-        }
+    autoPlay &&
+      chatStore.getIsFinished().then(() => {
+        var text = session.messages[session.messages.length - 1].content;
+        speechSynthesizer.startSynthesize(text, speechLanguage);
       });
   };
 
-  const doSubmitVoice = () => {
-    // once conversation
-    if (SpeechConfig.autoEnd) {
-      setVoiceButtonStarted(true);
-      speechSdk
-        .recognizeOnceAsync()
-        .then((text) => {
-          if (text !== "" && text !== undefined && text.length !== 0) {
-            setUserInput(text);
-            doSubmit(text);
-          }
-        })
-        .catch((error) => {
-          console.error("speechSdk.recognizeOnceAsync failed: ", error);
-        })
-        .finally(() => {
-          setVoiceButtonStarted(false);
-        });
-      return;
-    }
+  const [autoPlay, setAutoPlay] = useState(false);
+  const [speechLanguage, setSpeechLanguage] = useState(DEFAULT_LANG);
+  const [recording, setRecording] = useState(false);
 
-    // continues conversation
-    if (!voiceButtonStarted) {
-      speechSdk.startRecognition().then(() => {
-        setVoiceButtonStarted(true);
-      });
+  const onRecord = () => {
+    if (!recording) {
+      speechRecognizer.startRecording(appendUserInput, speechLanguage);
+      setRecording(true);
     } else {
-      speechSdk
-        .stopRecognition()
-        .then((text) => {
-          if (text !== "" && text !== undefined && text.length !== 0) {
-            setUserInput(text);
-            doSubmit(text);
-          }
-        })
-        .catch((error) => {
-          console.error("speechSdk.stopRecognition failed: ", error);
-        })
-        .finally(() => {
-          setVoiceButtonStarted(false);
-        });
+      speechRecognizer.stopRecording();
+      setRecording(false);
+    }
+  };
+
+  const appendUserInput = (newState: string): void => {
+    // 每次按下button时 换行显示
+    if (userInput === "") {
+      setUserInput(newState);
+    } else {
+      setUserInput(userInput + "\n" + newState);
     }
   };
 
@@ -1055,9 +1031,12 @@ export function Chat() {
                               <ChatAction
                                 text={Locale.Chat.Actions.Play}
                                 icon={<MicphoneIcon />}
-                                onClick={() =>
-                                  speechSdk.handleSynthesize(message.content)
-                                }
+                                onClick={() => {
+                                  speechSynthesizer.startSynthesize(
+                                    message.content,
+                                    speechLanguage,
+                                  );
+                                }}
                               />
                             </>
                           )}
@@ -1145,43 +1124,32 @@ export function Chat() {
           <div className={styles["chat-voice-input"]}>
             <IconButton
               icon={<MicphoneIcon />}
-              text={voiceButtonStarted ? "语音采集中: " : "开始语音"}
+              text={recording ? "录音中" : "开始语音"}
+              bordered
               className={
-                voiceButtonStarted
+                recording
                   ? styles["chat-voice-input-send-pressed"]
                   : styles["chat-voice-input-send"]
               }
-              type="primary"
-              onClick={doSubmitVoice}
+              onClick={onRecord}
             />
             <label>
               <input
                 type="checkbox"
-                defaultChecked={SpeechConfig.autoEnd}
-                className={styles["chat-voice-input-autostop"]}
-                onChange={(e) =>
-                  (SpeechConfig.autoEnd = e.currentTarget.checked)
-                }
-              ></input>
-              自动结束
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                defaultChecked={SpeechConfig.enablePlay}
+                defaultChecked={false}
                 className={styles["chat-voice-input-setting"]}
                 onChange={(e) => {
-                  SpeechConfig.enablePlay = e.currentTarget.checked;
+                  setAutoPlay(e.currentTarget.checked);
                 }}
               ></input>
-              播放
+              自动播放结果
             </label>
 
             {/* TODO: here language only for speech */}
             <Select
               defaultValue={DEFAULT_LANG}
               onChange={(e) => {
-                speechSdk.resetSpeaker(e.target.value);
+                setSpeechLanguage(e.target.value);
               }}
             >
               {AllLangs.map((lang) => (

@@ -34,33 +34,21 @@ import {
 import { copyToClipboard, useMobileScreen } from "../utils";
 
 import { ChatControllerPool } from "../client/controller";
-import Locale, { AllLangs, ALL_LANG_OPTIONS, DEFAULT_LANG } from "../locales";
+import Locale from "../locales";
 
 import { IconButton } from "../components/button";
 import styles from "../components/chat.module.scss";
 
-import {
-  Input,
-  List,
-  ListItem,
-  Modal,
-  Select,
-  showModal,
-  showConfirm,
-  showPrompt,
-  showToast,
-} from "../components/ui-lib";
+import { List, showPrompt } from "../components/ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "../components/exporter";
 import { getClientConfig } from "../config/client";
-import { ModelConfig, SpeechConfig } from "../store/config";
 
-import speechSdk from "../cognitive/speech-sdk";
+import { speechSynthesizer } from "../cognitive/speech-sdk";
 
 import { ToastmastersEvaluatorGuidance, ToastmastersEvaluators } from "./roles";
-import en from "../locales/en";
 import {
   ChatInput,
   ChatAction,
@@ -382,7 +370,10 @@ export function Chat() {
                                 text={Locale.Chat.Actions.Play}
                                 icon={<MicphoneIcon />}
                                 onClick={() =>
-                                  speechSdk.handleSynthesize(message.content)
+                                  speechSynthesizer.startSynthesize(
+                                    message.content,
+                                    session.mask.lang,
+                                  )
                                 }
                               />
                             </>

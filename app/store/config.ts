@@ -44,11 +44,6 @@ export const DEFAULT_CONFIG = {
   },
 };
 
-export const SpeechConfig = {
-  autoEnd: true,
-  enablePlay: false,
-};
-
 export type ChatConfig = typeof DEFAULT_CONFIG;
 
 export type ChatConfigStore = ChatConfig & {
