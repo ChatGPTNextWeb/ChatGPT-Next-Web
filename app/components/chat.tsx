@@ -790,7 +790,22 @@ function _Chat() {
   const onDelete = (msgId: string) => {
     deleteMessage(msgId);
   };
+  
+ const findLastUserIndex = (messageId: number) => {
+    // find last user input message and resend
+    let lastUserMessageIndex: number | null = null;
+    for (let i = 0; i < session.messages.length; i += 1) {
+      const message = session.messages[i];
+      if (message.role === "user") {
+        lastUserMessageIndex = i;
+      }
+      if (message.id === messageId) {
+        break;
+      }
+    }
 
+    return lastUserMessageIndex;
+  };
 const deleteMessage2 = (userIndex: number) => {
     chatStore.updateCurrentSession((session) =>
       session.messages.splice(userIndex, 2),
