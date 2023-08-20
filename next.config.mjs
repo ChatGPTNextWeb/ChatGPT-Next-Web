@@ -1,4 +1,5 @@
 import webpack from "webpack";
+import million from 'million/compiler';
 
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
@@ -33,7 +34,13 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  reactStrictMode: true,
+
 };
+
+const millionConfig = {
+  auto: { rsc: true },
+}
 
 if (mode !== "export") {
   nextConfig.headers = async () => {
@@ -91,4 +98,4 @@ if (mode !== "export") {
   };
 }
 
-export default nextConfig;
+export default million.next(nextConfig, millionConfig);

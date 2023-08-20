@@ -23,6 +23,7 @@
     "html-to-image": "^1.11.11",
     "jose": "^4.14.4",
     "mermaid": "^10.2.4",
+    "million": "^2.5.13",
     "nanoid": "^4.0.2",
     "next": "^13.4.12",
     "node-fetch": "^3.3.2",
