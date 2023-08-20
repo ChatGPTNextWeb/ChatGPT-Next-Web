@@ -599,7 +599,7 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
-function _Chat() {
+function OriginChat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -1304,5 +1304,5 @@ function _Chat() {
 export function Chat() {
   const chatStore = useChatStore();
   const sessionIndex = chatStore.currentSessionIndex;
-  return <_Chat key={sessionIndex}></_Chat>;
+  return <OriginChat key={sessionIndex}></OriginChat>;
 }
