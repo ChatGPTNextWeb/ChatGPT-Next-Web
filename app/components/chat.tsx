@@ -791,6 +791,17 @@ function _Chat() {
     deleteMessage(msgId);
   };
 
+const deleteMessage2 = (userIndex: number) => {
+    chatStore.updateCurrentSession((session) =>
+      session.messages.splice(userIndex, 2),
+    );
+  };
+  
+const onDelete2 = (botMessageId: number) => {
+    const userIndex = findLastUserIndex(botMessageId);
+    if (userIndex === null) return;
+    deleteMessage2(userIndex);
+  };
   const onResend = (message: ChatMessage) => {
     // when it is resending a message
     // 1. for a user's message, find the next bot response
@@ -1184,7 +1195,7 @@ function _Chat() {
                               <ChatAction
                                 text={Locale.Chat.Actions.Delete}
                                 icon={<DeleteIcon />}
-                                onClick={() => onDelete(message.id ?? i)}
+                                onClick={() => onDelete2(message.id ?? i)}
                               />
 
                               <ChatAction
