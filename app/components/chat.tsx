@@ -791,32 +791,6 @@ function _Chat() {
     deleteMessage(msgId);
   };
   
- const findLastUserIndex = (messageId: number) => {
-    // find last user input message and resend
-    let lastUserMessageIndex: number | null = null;
-    for (let i = 0; i < session.messages.length; i += 1) {
-      const message = session.messages[i];
-      if (message.role === "user") {
-        lastUserMessageIndex = i;
-      }
-      if (message.id === messageId) {
-        break;
-      }
-    }
-
-    return lastUserMessageIndex;
-  };
-const deleteMessage2 = (userIndex: number) => {
-    chatStore.updateCurrentSession((session) =>
-      session.messages.splice(userIndex, 2),
-    );
-  };
-  
-const onDelete2 = (botMessageId: number) => {
-    const userIndex = findLastUserIndex(botMessageId);
-    if (userIndex === null) return;
-    deleteMessage2(userIndex);
-  };
 
 const onResend2 = (message: ChatMessage) => {
     // when it is resending a message
