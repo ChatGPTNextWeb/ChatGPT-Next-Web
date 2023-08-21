@@ -6,8 +6,8 @@ import styles from "../components/chat.module.scss";
 import { List, showToast } from "../components/ui-lib";
 
 import {
-  ToastmastersEvaluatorGuidance,
-  ToastmastersTableTopicsEvaluators,
+  ToastmastersTTEvaluatorGuidance as ToastmastersRoleGuidance,
+  ToastmastersTTEvaluator as ToastmastersRoleOptions,
   ToastmastersRolePrompt,
   InputSubmitStatus,
 } from "./roles";
@@ -37,7 +37,7 @@ export function Chat() {
   // 进来时, 读取上次的输入
   useEffect(() => {
     var roles = session.inputs.roles?.map(
-      (index: number) => ToastmastersTableTopicsEvaluators[index],
+      (index: number) => ToastmastersRoleOptions[index],
     );
     setToastmastersEvaluators(roles);
   }, [session]);
@@ -57,7 +57,7 @@ export function Chat() {
     }
 
     // Add a return statement for the case where the input is valid
-    var guidance = ToastmastersEvaluatorGuidance(question, speech);
+    var guidance = ToastmastersRoleGuidance(question, speech);
     return new InputSubmitStatus(true, guidance);
   };
 
@@ -83,7 +83,7 @@ export function Chat() {
           />
 
           <ChatInputSubmit
-            roleOptions={ToastmastersTableTopicsEvaluators}
+            roleOptions={ToastmastersRoleOptions}
             selectedValues={toastmastersEvaluators}
             updateParent={setToastmastersEvaluators}
             checkInput={checkInput}

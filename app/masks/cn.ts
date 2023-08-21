@@ -38,7 +38,7 @@ export const CN_MASKS: BuiltinMask[] = [
         content: `You are the Export of Toastmasters. 
         In our each interaction, I will let you play an Toastmasters Role, you answer my ask in that Role's tone.
         The Toastmasters Roles you will act are:
-        1, Impromptu Speaker
+        1, Table Topics Speaker
         2, Table Topics Evaluator
         3, Grammarian
         4, Ah-Counter
@@ -54,7 +54,7 @@ export const CN_MASKS: BuiltinMask[] = [
     ],
     modelConfig: {
       model: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
       frequency_penalty: 0,
@@ -64,7 +64,7 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersImpromptuSpeaker, // If not defined, will use Path.Chat
+    pagePath: Path.ToastmastersTTSpeaker, // If not defined, will use Path.Chat
   },
   {
     avatar: "toastmasters",
@@ -95,7 +95,7 @@ export const CN_MASKS: BuiltinMask[] = [
     ],
     modelConfig: {
       model: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
       frequency_penalty: 0,
@@ -105,7 +105,7 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersEvaluators,
+    pagePath: Path.ToastmastersTTEvaluator,
   },
   {
     avatar: "toastmasters",
@@ -128,15 +128,14 @@ export const CN_MASKS: BuiltinMask[] = [
         
         In my each ask, I will provide the role one by one. 
         Your answer must:
-        1). Briefly answer within 100 words.
-        2). Include examples by quoting and analyzing your speech.
+        1). Include examples by quoting and analyzing your speech.
         `,
         date: "",
       },
     ],
     modelConfig: {
       model: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
       frequency_penalty: 0,
@@ -146,7 +145,7 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersEvaluators,
+    pagePath: Path.ToastmastersIEvaluator,
   },
   {
     avatar: "1f5bc-fe0f",
