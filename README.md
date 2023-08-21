@@ -42,7 +42,7 @@
     - [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator)
   
   - 网络请求
-    - HttpGet
+    - [WebBrowser](https://js.langchain.com/docs/api/tools_webbrowser/classes/WebBrowser)
   
 
 

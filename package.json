@@ -20,6 +20,8 @@
     "@hello-pangea/dnd": "^16.3.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "duck-duck-scrape": "^2.2.4",
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",

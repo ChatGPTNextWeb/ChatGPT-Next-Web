@@ -20,6 +20,9 @@ import { Calculator } from "langchain/tools/calculator";
 import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
 import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
 import { ACCESS_CODE_PREFIX } from "@/app/constant";
+import { OpenAI } from "langchain/llms/openai";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { WebBrowser } from "langchain/tools/webbrowser";
 
 const serverConfig = getServerSideConfig();
 
@@ -76,6 +79,18 @@ async function handle(req: NextRequest) {
     if (isOpenAiKey && token) {
       apiKey = token;
     }
+
+    // support base url
+    let baseUrl = "https://api.openai.com/v1";
+    if (serverConfig.baseUrl) baseUrl = serverConfig.baseUrl;
+    if (
+      reqBody.baseUrl?.startsWith("http://") ||
+      reqBody.baseUrl?.startsWith("https://")
+    )
+      baseUrl = reqBody.baseUrl;
+    if (!baseUrl.endsWith("/v1"))
+      baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
+    console.log("[baseUrl]", baseUrl);
 
     const handler = BaseCallbackHandler.fromMethods({
       async handleLLMNewToken(token: string) {
@@ -176,9 +191,24 @@ async function handle(req: NextRequest) {
       });
     }
 
+    const model = new OpenAI(
+      {
+        temperature: 0,
+        modelName: reqBody.model,
+        openAIApiKey: apiKey,
+      },
+      { basePath: baseUrl },
+    );
+    const embeddings = new OpenAIEmbeddings(
+      {
+        openAIApiKey: apiKey,
+      },
+      { basePath: baseUrl },
+    );
+
     const tools = [
       searchTool,
-      new HttpGetTool(),
+      new WebBrowser({ model, embeddings }),
       // new RequestsGetTool(),
       // new RequestsPostTool(),
       new Calculator(),
@@ -204,17 +234,7 @@ async function handle(req: NextRequest) {
       outputKey: "output",
       chatHistory: new ChatMessageHistory(pastMessages),
     });
-    // support base url
-    let baseUrl = "https://api.openai.com/v1";
-    if (serverConfig.baseUrl) baseUrl = serverConfig.baseUrl;
-    if (
-      reqBody.baseUrl?.startsWith("http://") ||
-      reqBody.baseUrl?.startsWith("https://")
-    )
-      baseUrl = reqBody.baseUrl;
-    if (!baseUrl.endsWith("/v1"))
-      baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
-    console.log("[baseUrl]", baseUrl);
+
     const llm = new ChatOpenAI(
       {
         modelName: reqBody.model,
