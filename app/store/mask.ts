@@ -47,7 +47,7 @@ export const createEmptyMask = () =>
     lang: getLang(),
     builtin: false,
     createdAt: Date.now(),
-    usePlugins: useAppConfig.getState().modelConfig.model.endsWith("0613"),
+    usePlugins: !/03\d{2}$/.test(useAppConfig.getState().modelConfig.model),
   } as Mask);
 
 export const useMaskStore = create<MaskStore>()(

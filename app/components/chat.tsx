@@ -511,7 +511,7 @@ export function ChatActions(props: {
           icon={<RobotIcon />}
         />
 
-        {config.pluginConfig.enable && currentModel.endsWith("0613") && (
+        {config.pluginConfig.enable && !/03\d{2}$/.test(currentModel) && (
           <ChatAction
             onClick={switchUsePlugins}
             text={
@@ -536,8 +536,9 @@ export function ChatActions(props: {
               chatStore.updateCurrentSession((session) => {
                 session.mask.modelConfig.model = s[0] as ModelType;
                 session.mask.syncGlobalConfig = false;
-                session.mask.usePlugins =
-                  session.mask.modelConfig.model.endsWith("0613");
+                session.mask.usePlugins = !/03\d{2}$/.test(
+                  session.mask.modelConfig.model,
+                );
               });
               showToast(s[0]);
             }}
