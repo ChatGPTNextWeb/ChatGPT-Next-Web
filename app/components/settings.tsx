@@ -389,12 +389,6 @@ export function Settings() {
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
 
-  // get userConstant
-  const [userConstantVO, setUserConstantVO] = useState(new UserConstantVO());
-  zBotServiceClient.getConstant().then((item) => {
-    setUserConstantVO(item);
-  });
-
   function getUserInfo() {
     let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
 

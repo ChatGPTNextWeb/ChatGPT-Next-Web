@@ -66,6 +66,8 @@ export interface ChatSession {
   // TODO: future make this a list of inputs
   input: InputStore;
   input2: InputStore;
+
+  inputs: { roles: number[]; input: InputStore; input2: InputStore };
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -92,6 +94,8 @@ function createEmptySession(): ChatSession {
 
     input: new InputStore(),
     input2: new InputStore(),
+
+    inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
   };
 }
 
@@ -335,7 +339,6 @@ export const useChatStore = create<ChatStore>()(
           showToast("您尚未登录, 请前往设置中心登录");
           return;
         }
-
         // update db
         zBotServiceClient.updateRequest(userEmail);
 
@@ -345,7 +348,6 @@ export const useChatStore = create<ChatStore>()(
         const modelConfig = session.mask.modelConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] after template: ", userContent);
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
@@ -401,7 +403,6 @@ export const useChatStore = create<ChatStore>()(
               botMessage.id ?? messageIndex,
             );
             set(() => ({ isFinished: true }));
-            console.log("[Chat] finished ", message);
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
@@ -615,12 +616,13 @@ export const useChatStore = create<ChatStore>()(
 
         const lastSummarizeIndex = session.messages.length;
 
-        console.log(
-          "[Chat History] ",
-          toBeSummarizedMsgs,
-          historyMsgLength,
-          modelConfig.compressMessageLengthThreshold,
-        );
+        // Richard: No need for me to see this.
+        // console.log(
+        //   "[Chat History] ",
+        //   toBeSummarizedMsgs,
+        //   historyMsgLength,
+        //   modelConfig.compressMessageLengthThreshold,
+        // );
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&

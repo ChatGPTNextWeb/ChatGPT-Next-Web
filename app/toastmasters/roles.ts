@@ -1,9 +1,26 @@
 export enum ToastmastersRoles {
   ImpromptuSpeaker = "Impromptu Speaker",
   TableTopicsEvaluator = "Table Topics Evaluator",
+  IndividualEvaluator = "Individual Evaluator",
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
   GeneralEvaluator = "General Evaluator",
+}
+
+export interface ToastmastersRolePrompt {
+  role_index: number;
+  role: string;
+  content: string;
+}
+
+export class InputSubmitStatus {
+  canSubmit: boolean;
+  guidance: string;
+
+  constructor(canSubmit: boolean, guidance: string) {
+    this.canSubmit = canSubmit;
+    this.guidance = guidance;
+  }
 }
 
 export const ToastmastersTTMasterGuidance = (topic: string) => `
@@ -83,6 +100,105 @@ export const ToastmastersEvaluators = [
     content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
     Evaluate my impromptu speech.
     Your evaluation should include the relevance between the Speech and the Question.`,
+  },
+  {
+    role: ToastmastersRoles.Grammarian,
+    content: `You are the ${ToastmastersRoles.Grammarian}. 
+    Evaluate my speech.`,
+  },
+  {
+    role: ToastmastersRoles.AhCounter,
+    content: `You are the ${ToastmastersRoles.AhCounter}.
+    Evaluate my speech.`,
+  },
+  {
+    role: ToastmastersRoles.GeneralEvaluator,
+    content: `You are the ${ToastmastersRoles.GeneralEvaluator}.
+    Evaluate the above 3 roles' speech,
+    including ${ToastmastersRoles.TableTopicsEvaluator}, ${ToastmastersRoles.Grammarian}, and ${ToastmastersRoles.AhCounter}.`,
+  },
+];
+
+export const ToastmastersTableTopicsEvaluators: ToastmastersRolePrompt[] = [
+  {
+    role_index: 0, // role_index is the index of this item in the array
+    role: ToastmastersRoles.TableTopicsEvaluator,
+    content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+    Evaluate my impromptu speech.
+    Your evaluation should include the relevance between the Speech and the Question.`,
+  },
+  {
+    role_index: 1,
+    role: ToastmastersRoles.Grammarian,
+    content: `You are the ${ToastmastersRoles.Grammarian}. 
+    Evaluate my speech.`,
+  },
+  {
+    role_index: 2,
+    role: ToastmastersRoles.AhCounter,
+    content: `You are the ${ToastmastersRoles.AhCounter}.
+    Evaluate my speech.`,
+  },
+  {
+    role_index: 3,
+    role: ToastmastersRoles.GeneralEvaluator,
+    content: `You are the ${ToastmastersRoles.GeneralEvaluator}.
+    Evaluate the above 3 roles' speech,
+    including ${ToastmastersRoles.TableTopicsEvaluator}, ${ToastmastersRoles.Grammarian}, and ${ToastmastersRoles.AhCounter}.`,
+  },
+];
+
+// export const ToastmastersTableTopicsEvaluatorRecord: Record<string, ToastmastersRolePrompt> = {
+//   [ToastmastersRoles.TableTopicsEvaluator]:
+//   {
+//     role: ToastmastersRoles.TableTopicsEvaluator,
+//     content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}.
+//     Evaluate my impromptu speech.
+//     Your evaluation should include the relevance between the Speech and the Question.`,
+//   },
+
+//   [ToastmastersRoles.Grammarian]:
+//   {
+//     role: ToastmastersRoles.Grammarian,
+//     content: `You are the ${ToastmastersRoles.Grammarian}.
+//     Evaluate my speech.`,
+//   },
+
+//   [ToastmastersRoles.AhCounter]:
+//   {
+//     role: ToastmastersRoles.AhCounter,
+//     content: `You are the ${ToastmastersRoles.AhCounter}.
+//     Evaluate my speech.`,
+//   },
+
+//   [ToastmastersRoles.GeneralEvaluator]:
+//   {
+//     role: ToastmastersRoles.GeneralEvaluator,
+//     content: `You are the ${ToastmastersRoles.GeneralEvaluator}.
+//     Evaluate the above 3 roles' speech,
+//     including ${ToastmastersRoles.TableTopicsEvaluator}, ${ToastmastersRoles.Grammarian}, and ${ToastmastersRoles.AhCounter}.`,
+//   },
+// };
+
+export const ToastmastersIndividualEvaluatorGuidance = (
+  question: string,
+  speech: string,
+) => `
+My input is:
+{
+	"Topic": "${question}",
+	"Speech": "${speech}"
+},
+Are you ready to play an Evaluator role with my guidance?
+`;
+
+export const ToastmastersIndividualEvaluators = [
+  {
+    role: ToastmastersRoles.IndividualEvaluator,
+    content: `You are the ${ToastmastersRoles.IndividualEvaluator}. 
+    Evaluate my prepared speech.
+    Your evaluation should include the relevance between the Speech and the Topic.
+    Your evaluation should be about 2 minutes and 200 words`,
   },
   {
     role: ToastmastersRoles.Grammarian,

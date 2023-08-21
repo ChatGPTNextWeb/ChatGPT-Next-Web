@@ -64,7 +64,7 @@ const ToastmastersImpromptuSpeaker = dynamic(
 );
 
 const ToastmastersEvaluators = dynamic(
-  async () => (await import("../toastmasters/chat-evaluators")).Chat,
+  async () => (await import("../toastmasters/chat-ttevaluator")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
