@@ -26,6 +26,7 @@
     "html-to-image": "^1.11.11",
     "mermaid": "^10.2.3",
     "microsoft-cognitiveservices-speech-sdk": "^1.29.0",
+    "multiselect-react-dropdown": "^2.0.25",
     "next": "^13.4.6",
     "node-fetch": "^3.3.1",
     "react": "^18.2.0",

@@ -55,16 +55,20 @@ const ToastmastersTTMaster = dynamic(
     loading: () => <Loading noLogo />,
   },
 );
-
-const ToastmastersImpromptuSpeaker = dynamic(
+const ToastmastersTTSpeaker = dynamic(
   async () => (await import("../toastmasters/chat-ttspeaker")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
 );
-
-const ToastmastersEvaluators = dynamic(
-  async () => (await import("../toastmasters/chat-evaluators")).Chat,
+const ToastmastersTTEvaluator = dynamic(
+  async () => (await import("../toastmasters/chat-ttevaluator")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+const ToastmastersIEvaluator = dynamic(
+  async () => (await import("../toastmasters/chat-ievaluator")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
@@ -199,12 +203,16 @@ function Screen() {
                 element={<ToastmastersTTMaster />}
               />
               <Route
-                path={Path.ToastmastersImpromptuSpeaker}
-                element={<ToastmastersImpromptuSpeaker />}
+                path={Path.ToastmastersTTSpeaker}
+                element={<ToastmastersTTSpeaker />}
               />
               <Route
-                path={Path.ToastmastersEvaluators}
-                element={<ToastmastersEvaluators />}
+                path={Path.ToastmastersTTEvaluator}
+                element={<ToastmastersTTEvaluator />}
+              />
+              <Route
+                path={Path.ToastmastersIEvaluator}
+                element={<ToastmastersIEvaluator />}
               />
               <Route path={Path.Settings} element={<Settings />} />
               <Route path={Path.UserLogin} element={<UserLogin />} />

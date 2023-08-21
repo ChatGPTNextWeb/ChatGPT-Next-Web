@@ -1,0 +1,44 @@
+.chat-input-send-record {
+  background-color: gray;
+  color: white;
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+}
+
+.chat-input-send-recording {
+  @extend .chat-input-send-record;
+  background-color: red;
+}
+
+.chat-input-words {
+  position: absolute;
+  right: 30px;
+  top: 8px;
+  opacity: 0.2;
+  font-size: 14px;
+}
+
+
+.chat-input-panel-buttons {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  // margin-top: 10px;
+  border-bottom: var(--border-in-light);
+}
+
+.chat-input-button-submit {
+  @extend .chat-input-send-record;
+  position: unset;
+  background-color: var(--primary);
+}
+
+.chat-input-button-submitting {
+  @extend .chat-input-send-record;
+  position: unset;
+  background-color: red;
+  border: blue 2px solid;
+}

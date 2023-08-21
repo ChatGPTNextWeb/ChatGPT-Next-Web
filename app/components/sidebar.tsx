@@ -115,12 +115,6 @@ export function SideBar(props: { className?: string }) {
 
   useHotKey();
 
-  // get userConstant
-  const [userConstantVO, setUserConstantVO] = useState(new UserConstantVO());
-  zBotServiceClient.getConstant().then((item) => {
-    setUserConstantVO(item);
-  });
-
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${

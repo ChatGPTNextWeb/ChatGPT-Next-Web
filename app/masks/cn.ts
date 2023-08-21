@@ -31,14 +31,14 @@ export const CN_MASKS: BuiltinMask[] = [
   },
   {
     avatar: "toastmasters",
-    name: "Toastmasters Impromptu Speaker",
+    name: "Toastmasters Table Topics Speaker",
     context: [
       {
         role: "user",
         content: `You are the Export of Toastmasters. 
         In our each interaction, I will let you play an Toastmasters Role, you answer my ask in that Role's tone.
         The Toastmasters Roles you will act are:
-        1, Impromptu Speaker
+        1, Table Topics Speaker
         2, Table Topics Evaluator
         3, Grammarian
         4, Ah-Counter
@@ -54,7 +54,7 @@ export const CN_MASKS: BuiltinMask[] = [
     ],
     modelConfig: {
       model: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
       frequency_penalty: 0,
@@ -64,11 +64,11 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersImpromptuSpeaker, // If not defined, will use Path.Chat
+    pagePath: Path.ToastmastersTTSpeaker, // If not defined, will use Path.Chat
   },
   {
     avatar: "toastmasters",
-    name: "Toastmasters Evaluators",
+    name: "Toastmasters Table Topics Evaluator",
     context: [
       {
         role: "user",
@@ -95,7 +95,7 @@ export const CN_MASKS: BuiltinMask[] = [
     ],
     modelConfig: {
       model: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
       frequency_penalty: 0,
@@ -105,7 +105,47 @@ export const CN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersEvaluators,
+    pagePath: Path.ToastmastersTTEvaluator,
+  },
+  {
+    avatar: "toastmasters",
+    name: "Toastmasters Individual Evaluator",
+    context: [
+      {
+        role: "user",
+        content: `
+        You are the Evaluator of Toastmasters, Including 
+        Individual Evaluator, Grammarian, Ah-Counter, 
+        and the General Evaluator.
+        I will firstly provide you the Topic and Speech, 
+        which is formatted as json like:
+        {
+          "Topic": "xxx",
+          "Speech": "xxx"
+        },
+        And in each interaction, I will let you play an Evaluator Role, 
+        you answer my ask in that Role's tone.
+        
+        In my each ask, I will provide the role one by one. 
+        Your answer must:
+        1). Include examples by quoting and analyzing your speech.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersIEvaluator,
   },
   {
     avatar: "1f5bc-fe0f",

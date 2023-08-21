@@ -475,15 +475,7 @@
   flex-direction: column;
 }
 
-.chat-input-panel-buttons {
-  // position: relative;
-  // width: 50%;
-  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
-  // box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
+
 
 @mixin single-line {
   white-space: nowrap;
@@ -579,38 +571,7 @@
   bottom: 32px;
 }
 
-.chat-input-send-record {
-  background-color: gray;
-  color: white;
-  position: absolute;
-  right: 30px;
-  bottom: 20px;
-}
 
-.chat-input-send-recording {
-  @extend .chat-input-send-record;
-  background-color: red;
-}
-
-.chat-input-button-send {
-  background-color: var(--primary);
-  color: white;
-  margin-top: 10px;
-  // width: 100%;
-}
-
-.chat-input-border-bottom {
-  margin-top: 10px;
-  border-bottom: var(--border-in-light);
-}
-
-.chat-input-words {
-  position: absolute;
-  right: 30px;
-  top: 8px;
-  opacity: 0.2;
-  font-size: 14px;
-}
 
 // ----Tomstmasters pages start---
 // ----Tomstmasters pages end---

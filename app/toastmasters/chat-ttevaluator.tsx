@@ -6,8 +6,8 @@ import styles from "../components/chat.module.scss";
 import { List, showToast } from "../components/ui-lib";
 
 import {
-  ToastmastersTTSpeakerGuidance as ToastmastersRoleGuidance,
-  ToastmastersTTSpeaker as ToastmastersRoleOptions,
+  ToastmastersTTEvaluatorGuidance as ToastmastersRoleGuidance,
+  ToastmastersTTEvaluator as ToastmastersRoleOptions,
   ToastmastersRolePrompt,
   InputSubmitStatus,
 } from "./roles";
@@ -44,14 +44,20 @@ export function Chat() {
 
   const checkInput = (): InputSubmitStatus => {
     const question = session.inputs.input.text;
+    const speech = session.inputs.input2.text;
 
     if (question.trim() === "") {
-      showToast("Topic can not be empty");
+      showToast("Question can not be empty");
+      return new InputSubmitStatus(false, "");
+    }
+
+    if (speech === "") {
+      showToast("Speech can not be empty");
       return new InputSubmitStatus(false, "");
     }
 
     // Add a return statement for the case where the input is valid
-    var guidance = ToastmastersRoleGuidance(question);
+    var guidance = ToastmastersRoleGuidance(question, speech);
     return new InputSubmitStatus(true, guidance);
   };
 
@@ -70,7 +76,11 @@ export function Chat() {
         }}
       >
         <List>
-          <ChatInput title="Topic" inputStore={session.inputs.input} />
+          <ChatInput title="Question" inputStore={session.inputs.input} />
+          <ChatInput
+            title="Table Topics Speech"
+            inputStore={session.inputs.input2}
+          />
 
           <ChatInputSubmit
             roleOptions={ToastmastersRoleOptions}
