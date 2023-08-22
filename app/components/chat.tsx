@@ -640,7 +640,7 @@ function _Chat() {
       );
       setInputRows(inputRows);
     },
-    100,
+    300,
     {
       leading: true,
       trailing: true,
