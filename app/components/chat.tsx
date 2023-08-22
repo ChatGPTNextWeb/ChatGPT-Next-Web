@@ -715,7 +715,7 @@ function _Chat() {
         setUserInput(prompt.content);
       }
       inputRef.current?.focus();
-    }, 30);
+    }, 100);
   };
 
   // stop response
