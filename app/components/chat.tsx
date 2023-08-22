@@ -802,7 +802,7 @@ function OriginChat() {
       (m) => m.id === message.id,
     );
 
-    if (resendingIndex <= 0 || resendingIndex >= session.messages.length) {
+    if (resendingIndex < 0 || resendingIndex >= session.messages.length) {
       console.error("[Chat] failed to find resending message", message);
       return;
     }
