@@ -11,6 +11,7 @@ export interface ToastmastersRolePrompt {
   role_index: number;
   role: string;
   content: string;
+  words?: number;
 }
 
 export class InputSubmitStatus {
@@ -161,6 +162,89 @@ export const ToastmastersTTEvaluator: ToastmastersRolePrompt[] = [
     `,
   },
 ];
+
+// TODO: start
+export class ToastmastersRoleSetting {
+  words: number = 100;
+}
+
+class ToastmastersTTEvaluatorClass {
+  Guidance = (question: string, speech: string) => `
+      My input is:
+      {
+        "Question": "${question}",
+        "Speech": "${speech}"
+      },
+      Are you ready to play an Evaluator role with my guidance?
+      `;
+
+  TableTopicsEvaluator = (props: ToastmastersRoleSetting) =>
+    `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+    Evaluate my impromptu speech.
+    Your evaluation should:
+    1). Include the relevance between the Speech and the Question.
+    2). Bold keywords using markdown when present your answer.
+    3). About ${props.words} words.
+    `;
+}
+export const toastmastersTTEvaluatorClass = new ToastmastersTTEvaluatorClass();
+
+export const ToastmastersTTEvaluatorConst = {
+  Guidance: (question: string, speech: string) => `
+      My input is:
+      {
+        "Question": "${question}",
+        "Speech": "${speech}"
+      },
+      Are you ready to play an Evaluator role with my guidance?
+      `,
+
+  TableTopicsEvaluator: (props: ToastmastersRoleSetting) =>
+    `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+    Evaluate my impromptu speech.
+    Your evaluation should:
+    1). Include the relevance between the Speech and the Question.
+    2). Bold keywords using markdown when present your answer.
+    3). About ${props.words} words.
+    `,
+
+  Grammarian: (props: ToastmastersRoleSetting) =>
+    `You are the ${ToastmastersRoles.Grammarian}. 
+    Evaluate my speech.
+    Your evaluation should:
+    1). Don't make things up, all your quoted sentence must from my speech.
+    2). First give me an accurate number where is the grammar error, and then evaluate my speech.
+    3). Bold keywords using markdown when present your answer.
+    4). About ${props.words} words.
+    `,
+};
+// TODO: end
+
+export const ToastmastersTableTopicsEvaluatorRecord: Record<
+  string,
+  ToastmastersRolePrompt
+> = {
+  [ToastmastersRoles.TableTopicsEvaluator]: {
+    role_index: 0, // role_index is the index of this item in the array
+    role: ToastmastersRoles.TableTopicsEvaluator,
+    content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+    Evaluate my impromptu speech.
+    Your evaluation should:
+    1). Include the relevance between the Speech and the Question.
+    2). Bold keywords using markdown when present your answer.
+    3). About 100 words.
+    `,
+    words: 100,
+  },
+
+  [ToastmastersRoles.Grammarian]: {
+    role_index: 1,
+    role: ToastmastersRoles.Grammarian,
+    content: `You are the ${ToastmastersRoles.Grammarian}.
+    Evaluate my speech.`,
+    words: 100,
+  },
+};
 
 export const ToastmastersIEvaluatorGuidance = (
   topic: string,

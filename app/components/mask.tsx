@@ -349,7 +349,8 @@ export function MaskPage() {
             </div>
           </div>
 
-          <div className="window-actions">
+          {/* TODO */}
+          {/* <div className="window-actions">
             <div className="window-action-button">
               <IconButton
                 icon={<DownloadIcon />}
@@ -371,7 +372,7 @@ export function MaskPage() {
                 onClick={() => navigate(-1)}
               />
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className={styles_newchat["new-chat-unset-height"]}>

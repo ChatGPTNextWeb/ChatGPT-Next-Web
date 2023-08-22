@@ -50,6 +50,10 @@ export class InputStore {
   time: number = 0;
 }
 
+export class InputSettingStore {
+  words: number = 0;
+}
+
 export interface ChatSession {
   id: number;
   topic: string;
@@ -64,9 +68,6 @@ export interface ChatSession {
   mask: Mask;
 
   // TODO: future make this a list of inputs
-  input: InputStore;
-  input2: InputStore;
-
   inputs: { roles: number[]; input: InputStore; input2: InputStore };
 }
 
@@ -91,10 +92,6 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-
-    input: new InputStore(),
-    input2: new InputStore(),
-
     inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
   };
 }
