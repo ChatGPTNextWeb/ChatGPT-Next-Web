@@ -461,13 +461,20 @@ export function MaskPage() {
                       navigate(m.pagePath ?? Path.Chat); // If m.pagePath is undefined, navigate to Path.Chat
                     }}
                   />
-                  {m.builtin ? (
+                  {/* {m.builtin ? (  // Richard: Comment out this block to hide the view button
                     <IconButton
                       icon={<EyeIcon />}
                       text={Locale.Mask.Item.View}
                       onClick={() => setEditingMaskId(m.id)}
                     />
                   ) : (
+                    <IconButton
+                      icon={<EditIcon />}
+                      text={Locale.Mask.Item.Edit}
+                      onClick={() => setEditingMaskId(m.id)}
+                    />
+                  )} */}
+                  {!m.builtin && (
                     <IconButton
                       icon={<EditIcon />}
                       text={Locale.Mask.Item.Edit}

@@ -3,10 +3,15 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v3.2.1
+publish time: 2023-08-21
+ - Hide Mask view
+
 ## v3.2.0
 publish time: 2023-08-21
  - Reorganize toastmasters
  - Add Individual Evaluator
+ - User select evaluator roles
 
 ## v3.1.1
 publish time: 2023-08-19

@@ -87,7 +87,7 @@ export const CN_MASKS: BuiltinMask[] = [
         
         In my each ask, I will provide the role one by one. 
         Your answer must:
-        1). Briefly answer within 100 words.
+        1). Briefly answer within my request max words.
         2). Include examples by quoting and analyzing your speech.
         `,
         date: "",
