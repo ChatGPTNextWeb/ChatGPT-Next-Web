@@ -11,7 +11,7 @@ const de: PartialLocaleType = {
     ChatItemCount: (count: number) => `${count} Nachrichten`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} Nachrichten mit ChatGPT`,
+    SubTitle: (count: number) => `${count} Nachrichten mit AdExGPT`,
     Actions: {
       ChatList: "Zur Chat-Liste gehen",
       CompressedHistory: "Komprimierter Gedächtnis-Prompt",
@@ -41,7 +41,7 @@ const de: PartialLocaleType = {
     Copy: "Alles kopieren",
     Download: "Herunterladen",
     MessageFromYou: "Deine Nachricht",
-    MessageFromChatGPT: "Nachricht von ChatGPT",
+    MessageFromChatGPT: "Nachricht von AdExGPT",
   },
   Memory: {
     Title: "Gedächtnis-Prompt",
@@ -74,7 +74,7 @@ const de: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "System-Prompts einfügen",
       SubTitle:
-        "Erzwingt das Hinzufügen eines simulierten systemweiten Prompts von ChatGPT am Anfang der Nachrichtenliste bei jeder Anfrage",
+        "Erzwingt das Hinzufügen eines simulierten systemweiten Prompts von AdExGPT am Anfang der Nachrichtenliste bei jeder Anfrage",
     },
     Update: {
       Version: (x: string) => `Version: ${x}`,
