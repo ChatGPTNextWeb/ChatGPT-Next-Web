@@ -54,7 +54,7 @@ export const DEFAULT_CONFIG = {
 
   pluginConfig: {
     enable: true,
-    maxIterations: 3,
+    maxIterations: 10,
     returnIntermediateSteps: true,
   },
 };
