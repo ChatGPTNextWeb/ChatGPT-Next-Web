@@ -128,7 +128,7 @@ const tw: PartialLocaleType = {
     Usage: {
       Title: "帳戶餘額",
       SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，訂閱總額 $${total}`;
+        return `本月已使用积分 ${used}，訂閱總額 $${total}`;
       },
       IsChecking: "正在檢查…",
       Check: "重新檢查",

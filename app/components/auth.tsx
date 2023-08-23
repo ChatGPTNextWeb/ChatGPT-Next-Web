@@ -47,8 +47,9 @@ export function AuthPage() {
       .then(function (data) {
         if (data.code === 0) {
           showToast("登录成功！");
-          localStorage.setItem("SECRET_TOKEN", data.data);
-          localStorage.setItem("SECRET_TOKEN", data.data.token);
+          // localStorage.setItem("SECRET_TOKEN", data.data);
+          // localStorage.setItem("SECRET_TOKEN", data.data.token);
+          access.updateToken(data.data.token);
           return navigate(Path.Home);
         } else {
           showToast(data.message);
@@ -95,7 +96,7 @@ export function AuthPage() {
         className={styles["auth-input"]}
         type="password"
         placeholder="请输入密码"
-        value={access.accessCode}
+        // value={access.accessCode}
         onChange={(e) => {
           passwoardUpdate(e.currentTarget.value);
         }}

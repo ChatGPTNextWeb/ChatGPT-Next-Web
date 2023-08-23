@@ -239,7 +239,7 @@ export class ChatGPTApi implements LLMApi {
     }
 
     if (response.total_usage) {
-      response.total_usage = Math.round(response.total_usage) / 100;
+      response.total_usage = Math.round(response.total_usage);
     }
 
     if (total.hard_limit_usd) {

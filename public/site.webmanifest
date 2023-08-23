@@ -1,14 +1,14 @@
 {
-    "name": "ChatGPT Next Web",
-    "short_name": "ChatGPT",
+    "name": "ChatKore Next Web",
+    "short_name": "ChatKore",
     "icons": [
       {
-        "src": "/android-chrome-192x192.png",
+        "src": "/newchat/android-chrome-192x192.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "/android-chrome-512x512.png",
+        "src": "/newchat/android-chrome-512x512.png",
         "sizes": "512x512",
         "type": "image/png"
       }
