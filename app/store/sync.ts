@@ -44,7 +44,7 @@ export const useSyncStore = create<SyncStore>()(
       async check() {
         try {
           const res = await fetch(this.path(""), {
-            method: "PROFIND",
+            method: "PROPFIND",
             headers: this.headers(),
           });
           console.log(res);
