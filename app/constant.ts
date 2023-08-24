@@ -1,6 +1,7 @@
 export const OWNER = "172478394";
 export const REPO = "ChatGPT-Next-Web";
-export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
+// export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
+export const REPO_URL = `https://www.chatkore.com/`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;
 export const RELEASE_URL = `${REPO_URL}/releases`;
