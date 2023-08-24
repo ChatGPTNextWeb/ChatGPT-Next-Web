@@ -1,4 +1,4 @@
-export const OWNER = "Yidadaa";
+export const OWNER = "kirad1231";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
@@ -7,7 +7,8 @@ export const RELEASE_URL = `${REPO_URL}/releases`;
 export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/commits?per_page=1`;
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
-export const DEFAULT_API_HOST = "https://chatgpt1.nextweb.fun/api/proxy";
+export const DEFAULT_API_HOST = "https://api.laodongai.com/";
+export const AIGC_URL = "https://syncup.cn/";
 
 export enum Path {
   Home = "/",
@@ -66,6 +67,10 @@ Current time: {{time}}`;
 export const DEFAULT_MODELS = [
   {
     name: "gpt-4",
+    available: true,
+  },
+  {
+    name: "gpt-4-online",
     available: true,
   },
   {
