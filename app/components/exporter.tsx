@@ -465,7 +465,7 @@ export function ImagePreviewer(props: {
         ref={previewRef}
       >
         <div className={styles["chat-info"]}>
-          <div className={styles["logo"] + " no-dark"}>
+          <div className={styles["logo"]}>
             <NextImage
               src={ChatGptIcon.src}
               alt="logo"
