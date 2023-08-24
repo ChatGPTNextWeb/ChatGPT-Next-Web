@@ -406,7 +406,6 @@ export function ImagePreviewer(props: {
   const config = useAppConfig();
 
   const previewRef = useRef<HTMLDivElement>(null);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const copy = () => {
     showToast(Locale.Export.Image.Toast);
@@ -431,25 +430,12 @@ export function ImagePreviewer(props: {
     });
   };
 
-    const isMobile = useMobileScreen();
+  const isMobile = useMobileScreen();
 
-  const download = async () => {
+  const download = () => {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-
-    // Wait for the image to finish loading before taking the screenshot
-    if (!isImageLoaded) {
-      await new Promise<void>((resolve) => { // Add 'void' as the argument type for the resolve function
-        const image = new Image();
-        image.src = ChatGptIcon.src;
-        image.onload = () => {
-          setIsImageLoaded(true);
-          resolve();
-        };
-      });
-    }
-
     toPng(dom)
       .then((blob) => {
         if (!blob) return;
@@ -457,13 +443,13 @@ export function ImagePreviewer(props: {
         if (isMobile || getClientConfig()?.isApp) {
           showImageModal(blob);
         } else {
-          const link = document.createElement('a');
+          const link = document.createElement("a");
           link.download = `${props.topic}.png`;
           link.href = blob;
           link.click();
         }
       })
-      .catch((e) => console.log('[Export Image] ', e));
+      .catch((e) => console.log("[Export Image] ", e));
   };
 
   return (
@@ -485,7 +471,6 @@ export function ImagePreviewer(props: {
               alt="logo"
               width={50}
               height={50}
-              onLoad={() => setIsImageLoaded(true)} // Add onLoad event handler
             />
           </div>
 
