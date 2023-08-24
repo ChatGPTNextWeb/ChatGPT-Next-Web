@@ -10,7 +10,7 @@ case "$(uname -s)" in
         exit 1
       fi
     else
-      if [[ ! "$(cat /etc/*-release | grep '^ID=')" =~ ^(ID=\"ubuntu\")|(ID=\"centos\")|(ID=\"arch\")|(ID=\"debian\")$ ]]; then
+      if [[ !"$(cat /etc/*-release | grep '^ID=')" =~ ^(ID=\"ubuntu\")|(ID=\"centos\")|(ID=\"arch\")|(ID=\"debian\")$ ]]; then
         echo "Unsupported Linux distribution."
         exit 1
       fi
