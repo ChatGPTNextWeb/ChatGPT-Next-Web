@@ -186,6 +186,9 @@ const ko: PartialLocaleType = {
   Plugin: {
     Name: "플러그인",
   },
+  FineTuned: {
+    Sysmessage: "당신은 어시스턴트입니다",
+  },
   Mask: {
     Name: "마스크",
     Page: {
