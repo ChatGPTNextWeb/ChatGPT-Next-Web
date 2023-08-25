@@ -62,6 +62,7 @@
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
   animation: slide-in ease 0.3s;
+  background: var(--white);
 }
 
 .list .list-item:last-child {
@@ -79,6 +80,19 @@
 
   --modal-padding: 20px;
 
+  &-max {
+    width: 95vw;
+    max-width: unset;
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+
+    .modal-content {
+      max-height: unset !important;
+      flex-grow: 1;
+    }
+  }
+
   .modal-header {
     padding: var(--modal-padding);
     display: flex;
@@ -91,11 +105,19 @@
       font-size: 16px;
     }
 
-    .modal-close-btn {
-      cursor: pointer;
+    .modal-header-actions {
+      display: flex;
 
-      &:hover {
-        filter: brightness(1.2);
+      .modal-header-action {
+        cursor: pointer;
+
+        &:not(:last-child) {
+          margin-right: 20px;
+        }
+
+        &:hover {
+          filter: brightness(1.2);
+        }
       }
     }
   }
@@ -247,5 +269,39 @@
 
   &:focus {
     border: 1px solid var(--primary);
+  }
+}
+
+.selector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+
+  &-content {
+    .list {
+      max-height: 90vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .list-item {
+        cursor: pointer;
+        background-color: var(--white);
+
+        &:hover {
+          filter: brightness(0.95);
+        }
+
+        &:active {
+          filter: brightness(0.9);
+        }
+      }
+    }
   }
 }

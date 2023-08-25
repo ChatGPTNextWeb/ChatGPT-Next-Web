@@ -4,7 +4,8 @@ import type { PartialLocaleType } from "./index";
 const no: PartialLocaleType = {
   WIP: "Arbeid pågår ...",
   Error: {
-    Unauthorized: "Du har ikke tilgang. Vennlig oppgi tildelt adgangskode.",
+    Unauthorized:
+      "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,
@@ -64,6 +65,11 @@ const no: PartialLocaleType = {
     FontSize: {
       Title: "Fontstørrelsen",
       SubTitle: "Juster fontstørrelsen for samtaleinnholdet.",
+    },
+    InjectSystemPrompts: {
+      Title: "Sett inn systemprompter",
+      SubTitle:
+        "Tving tillegg av en simulert ChatGPT-systemprompt i begynnelsen av meldingslisten for hver forespørsel",
     },
     Update: {
       Version: (x: string) => `Versjon: ${x}`,

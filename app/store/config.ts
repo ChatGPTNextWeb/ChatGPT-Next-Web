@@ -27,12 +27,15 @@ export const DEFAULT_CONFIG = {
   theme: Theme.Auto as Theme,
   tightBorder: !!getClientConfig()?.isApp,
   sendPreviewBubble: true,
+  enableAutoGenerateTitle: true,
   sidebarWidth: 300,
 
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
+  hideBuiltinMasks: false, // dont add builtin masks
 
+  customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
@@ -45,6 +48,7 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
+    enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
   },
 };
@@ -55,6 +59,7 @@ export type ChatConfigStore = ChatConfig & {
   reset: () => void;
   update: (updater: (config: ChatConfig) => void) => void;
   mergeModels: (newModels: LLMModel[]) => void;
+  allModels: () => LLMModel[];
 };
 
 export type ModelConfig = ChatConfig["modelConfig"];
@@ -72,19 +77,12 @@ export function limitNumber(
   return Math.min(max, Math.max(min, x));
 }
 
-export function limitModel(name: string) {
-  const allModels = useAppConfig.getState().models;
-  return allModels.some((m) => m.name === name && m.available)
-    ? name
-    : "gpt-3.5-turbo-0613";
-}
-
 export const ModalConfigValidator = {
   model(x: string) {
-    return limitModel(x) as ModelType;
+    return x as ModelType;
   },
   max_tokens(x: number) {
-    return limitNumber(x, 0, 32000, 2000);
+    return limitNumber(x, 0, 100000, 2000);
   },
   presence_penalty(x: number) {
     return limitNumber(x, -2, 2, 0);
@@ -116,6 +114,10 @@ export const useAppConfig = create<ChatConfigStore>()(
       },
 
       mergeModels(newModels) {
+        if (!newModels || newModels.length === 0) {
+          return;
+        }
+
         const oldModels = get().models;
         const modelMap: Record<string, LLMModel> = {};
 
@@ -133,23 +135,47 @@ export const useAppConfig = create<ChatConfigStore>()(
           models: Object.values(modelMap),
         }));
       },
+
+      allModels() {
+        const customModels = get()
+          .customModels.split(",")
+          .filter((v) => !!v && v.length > 0)
+          .map((m) => ({ name: m, available: true }));
+
+        const models = get().models.concat(customModels);
+        return models;
+      },
     }),
     {
       name: StoreKey.Config,
-      version: 3.3,
+      version: 3.7,
       migrate(persistedState, version) {
-        if (version === 3.3) return persistedState as any;
-
         const state = persistedState as ChatConfig;
-        state.modelConfig.sendMemory = true;
-        state.modelConfig.historyMessageCount = 4;
-        state.modelConfig.compressMessageLengthThreshold = 1000;
-        state.modelConfig.frequency_penalty = 0;
-        state.modelConfig.top_p = 1;
-        state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
-        state.dontShowMaskSplashScreen = false;
 
-        return state;
+        if (version < 3.4) {
+          state.modelConfig.sendMemory = true;
+          state.modelConfig.historyMessageCount = 4;
+          state.modelConfig.compressMessageLengthThreshold = 1000;
+          state.modelConfig.frequency_penalty = 0;
+          state.modelConfig.top_p = 1;
+          state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
+          state.dontShowMaskSplashScreen = false;
+          state.hideBuiltinMasks = false;
+        }
+
+        if (version < 3.5) {
+          state.customModels = "claude,claude-100k";
+        }
+
+        if (version < 3.6) {
+          state.modelConfig.enableInjectSystemPrompts = true;
+        }
+
+        if (version < 3.7) {
+          state.enableAutoGenerateTitle = true;
+        }
+
+        return state as any;
       },
     },
   ),

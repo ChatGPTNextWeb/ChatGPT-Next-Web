@@ -41,7 +41,7 @@ export const MAX_SIDEBAR_WIDTH = 500;
 export const MIN_SIDEBAR_WIDTH = 230;
 export const NARROW_SIDEBAR_WIDTH = 100;
 
-export const ACCESS_CODE_PREFIX = "ak-";
+export const ACCESS_CODE_PREFIX = "nk-";
 
 export const LAST_INPUT_KEY = "last-input";
 
@@ -64,30 +64,30 @@ Current model: {{model}}
 Current time: {{time}}`;
 
 export const DEFAULT_MODELS = [
-  // {
-  //   name: "gpt-4",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4-0314",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4-0613",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4-32k",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4-32k-0314",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4-32k-0613",
-  //   available: false,
-  // },
+  {
+    name: "gpt-4",
+    available: true,
+  },
+  {
+    name: "gpt-4-0314",
+    available: true,
+  },
+  {
+    name: "gpt-4-0613",
+    available: true,
+  },
+  {
+    name: "gpt-4-32k",
+    available: true,
+  },
+  {
+    name: "gpt-4-32k-0314",
+    available: true,
+  },
+  {
+    name: "gpt-4-32k-0613",
+    available: true,
+  },
   {
     name: "gpt-3.5-turbo",
     available: true,
@@ -108,24 +108,7 @@ export const DEFAULT_MODELS = [
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
   },
-  {
-    name: "qwen-v1", // 通义千问
-    available: false,
-  },
-  {
-    name: "ernie", // 文心一言
-    available: false,
-  },
-  {
-    name: "spark", // 讯飞星火
-    available: false,
-  },
-  {
-    name: "llama", // llama
-    available: false,
-  },
-  {
-    name: "chatglm", // chatglm-6b
-    available: false,
-  },
 ] as const;
+
+export const CHAT_PAGE_SIZE = 15;
+export const MAX_RENDER_MSG_COUNT = 45;
