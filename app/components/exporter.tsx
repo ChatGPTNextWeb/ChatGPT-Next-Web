@@ -565,21 +565,32 @@ export function MarkdownPreviewer(props: {
   );
 }
 
+// modified by BackTrackZ now it's looks better
+
 export function JsonPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
 }) {
-  const msgs = props.messages.map((m) => ({
-    role: m.role,
-    content: m.content,
-  }));
-  const mdText = "\n" + JSON.stringify(msgs, null, 2) + "\n";
+  const msgs = {
+    messages: [
+      {
+        role: "system",
+        content: "You are an assistant that " + props.topic,
+      },
+      ...props.messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+    ],
+  };
+  const mdText = "```json\n" + JSON.stringify(msgs, null, 2) + "\n```";
+  const minifiedJson = JSON.stringify(msgs);
 
   const copy = () => {
-    copyToClipboard(JSON.stringify(msgs, null, 2));
+    copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs(JSON.stringify(msgs, null, 2), `${props.topic}.json`);
+    downloadAs(JSON.stringify(msgs), `${props.topic}.json`);
   };
 
   return (
@@ -587,11 +598,11 @@ export function JsonPreviewer(props: {
       <PreviewActions
         copy={copy}
         download={download}
-        showCopy={true}
+        showCopy={false}
         messages={props.messages}
       />
-      <div className="markdown-body">
-        <pre className={styles["export-content"]}>{mdText}</pre>
+      <div className="markdown-body" onClick={copy}>
+      <Markdown content={mdText} />
       </div>
     </>
   );
