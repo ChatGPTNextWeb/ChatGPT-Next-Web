@@ -422,6 +422,7 @@ export function ImagePreviewer(props: {
           ])
           .then(() => {
             showToast(Locale.Copy.Success);
+            refreshPreview();
           });
       } catch (e) {
         console.error("[Copy Image] ", e);
@@ -447,9 +448,17 @@ export function ImagePreviewer(props: {
           link.download = `${props.topic}.png`;
           link.href = blob;
           link.click();
+          refreshPreview();
         }
       })
       .catch((e) => console.log("[Export Image] ", e));
+  };
+
+  const refreshPreview = () => {
+    const dom = previewRef.current;
+    if (dom) {
+      dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+    }
   };
 
   return (
@@ -465,7 +474,7 @@ export function ImagePreviewer(props: {
         ref={previewRef}
       >
         <div className={styles["chat-info"]}>
-          <div className={styles["logo"]}>
+        <div className={styles["logo"] + " no-dark"}>
             <NextImage
               src={ChatGptIcon.src}
               alt="logo"
