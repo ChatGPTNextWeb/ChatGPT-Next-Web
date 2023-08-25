@@ -274,6 +274,9 @@ const id: PartialLocaleType = {
   Plugin: {
     Name: "Plugin",
   },
+  FineTuned: {
+    Sysmessage: "Anda adalah asisten yang",
+  },
   Mask: {
     Name: "Masks",
     Page: {

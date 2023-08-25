@@ -185,8 +185,8 @@ const cs: PartialLocaleType = {
     Edit: "Kontextové a paměťové pokyny",
     Add: "Přidat pokyn",
   },
-  Plugin: {
-    Name: "Plugin",
+  FineTuned: {
+    Sysmessage: "Jste asistent, který",
   },
   Mask: {
     Name: "Maska",
