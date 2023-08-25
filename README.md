@@ -9,7 +9,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 一键免费部署你的跨平台私人 ChatGPT 应用。
 
-[生产可用地址](https://chatgpt-plus.zeabur.app/) / [公众号]（纵横AI大世界） / [充值问题](微信(QQ)：373055922) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) 
+[生产可用地址] (https://chatgpt-plus.zeabur.app/) / [公众号]（纵横AI大世界） / [充值问题] （微信(QQ)：373055922） / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) 
 
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
