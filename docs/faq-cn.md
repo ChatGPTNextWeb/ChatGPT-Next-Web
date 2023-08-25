@@ -101,7 +101,7 @@ keepalive_timeout 300;  # 设定keep-alive超时时间为65秒
 
 项目通过环境变量 CODE 设置了访问密码。第一次使用时，需要到设置中，输入访问码才可以使用。
 
-## 使用时提示"You exceeded your current quota, ..."
+## 使用时提示 "You exceeded your current quota, ..."
 
 API KEY 有问题。余额不足。
 
@@ -121,6 +121,9 @@ API KEY 有问题。余额不足。
 对于 Docker 用户，由于 Docker 打包时已经构建完毕，所以暂不支持关闭此特性。
 
 注意，关闭此特性后，用户会在第一次访问网站时加载所有资源，如果用户网络状况较差，可能会引起较长时间的白屏，从而影响用户使用体验，所以自行考虑。
+
+## 使用时遇到 "NotFoundError: Failed to execute 'removeChild' on 'Node': The node...."
+请关闭浏览器自身的自动翻译功能，并关闭所有自动翻译插件。
 
 # 网络服务相关问题
 
