@@ -1,0 +1,55 @@
+# Modified by backtrackz
+# Mark TRAP cache skipped because it only a few lines
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '18 8 * * 2'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+
+    - name: Perform CodeQL Analysis
+      id: codeql
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:${{matrix.language}}"
+        codeql-path: /opt/hostedtoolcache/CodeQL/2.14.1/x64/codeql/codeql
+        upload-trap-cache: true
+        upload-trap-cache-exclude: '.*'
+
+    - name: Mark TRAP cache skipped
+      if: steps.codeql.outputs.upload_trap_cache_skipped == 'true'
+      run: echo "::set-output name=trap_cache_skipped::true"
+
+    - name: Start Analysis
+      if: steps.codeql.outputs.upload_trap_cache_skipped == 'false'
+      run: echo "Starting analysis..."
