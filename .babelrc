@@ -5,7 +5,7 @@
       {
         "preset-env": {
           "targets": {
-            "browsers": ["> 5%"]
+            "browsers": ["chrome > 100", "ios > 13"]
           }
         }
       }
