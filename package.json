@@ -18,6 +18,8 @@
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.3.0",
     "@svgr/webpack": "^6.5.1",
+    "@types/cookie": "^0.5.1",
+    "cookie": "^0.5.0",
     "emoji-picker-react": "^4.4.11",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",

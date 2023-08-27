@@ -2282,6 +2282,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@types/cookie@npm:0.5.1"
+  checksum: 9a8d60fc84797122bc399d6bd330fe5780dc7aab032321de705049ea925339f74658bfa418de483a625d51858770efef58df633ff2e20f1bdf7fbd74a52847e2
+  languageName: node
+  linkType: hard
+
 "@types/d3-scale-chromatic@npm:^3.0.0":
   version: 3.0.0
   resolution: "@types/d3-scale-chromatic@npm:3.0.0"
@@ -3235,11 +3242,13 @@ __metadata:
     "@hello-pangea/dnd": ^16.3.0
     "@svgr/webpack": ^6.5.1
     "@tauri-apps/cli": ^1.4.0
+    "@types/cookie": ^0.5.1
     "@types/node": ^20.5.6
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     "@types/react-katex": ^3.0.0
     "@types/spark-md5": ^3.0.2
+    cookie: ^0.5.0
     cross-env: ^7.0.3
     emoji-picker-react: ^4.4.11
     eslint: ^8.48.0
@@ -3449,6 +3458,13 @@ __metadata:
   version: 1.9.0
   resolution: "convert-source-map@npm:1.9.0"
   checksum: dc55a1f28ddd0e9485ef13565f8f756b342f9a46c4ae18b843fe3c30c675d058d6a4823eff86d472f187b176f0adf51ea7b69ea38be34be4a63cbbf91b0593c8
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "cookie@npm:0.5.0"
+  checksum: 1f4bd2ca5765f8c9689a7e8954183f5332139eb72b6ff783d8947032ec1fdf43109852c178e21a953a30c0dd42257828185be01b49d1eb1a67fd054ca588a180
   languageName: node
   linkType: hard
 
