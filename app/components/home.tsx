@@ -29,6 +29,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
+import { useJWTCookieAuthCheck } from "../client/auth";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -120,6 +121,7 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
+  useJWTCookieAuthCheck()
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
