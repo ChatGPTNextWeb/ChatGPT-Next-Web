@@ -29,11 +29,11 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
-import { useJWTCookieAuthCheck } from "../client/auth";
+import { gotoLogin, useJWTCookieAuthCheck } from "../client/auth";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
-    <div className={styles["loading-content"] + " no-dark"}>
+    <div className={styles["loading-content"] + " no-dark"} onClick={gotoLogin}>
       {!props.noLogo && <BotIcon />}
       <LoadingIcon />
     </div>
