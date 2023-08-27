@@ -20,7 +20,7 @@
     "@hello-pangea/dnd": "^16.3.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
-    "@google-ai/generativelanguage",
+    "@google-ai/generativelanguage": "1.0.0",
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
