@@ -24,7 +24,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { api } from "../client/api";
-import { gotoLogin } from "../client/auth";
+import { gotoLogin, useJWTCookieAuthCheck } from "../client/auth";
 import { getClientConfig } from "../config/client";
 import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
@@ -33,11 +33,7 @@ import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
-    <div
-      className={styles["loading-content"] + " no-dark"}
-      onClick={gotoLogin}
-      style={{ backgroundColor: "aqua" }}
-    >
+    <div className={styles["loading-content"] + " no-dark"}>
       {!props.noLogo && <BotIcon />}
       <LoadingIcon />
     </div>
@@ -128,6 +124,7 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
+  useJWTCookieAuthCheck()
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
