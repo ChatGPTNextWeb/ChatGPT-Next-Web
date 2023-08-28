@@ -482,7 +482,7 @@ export function ImagePreviewer(props: {
               height={50}
             />
           </div>
-          // this A better preview image since it support emoji
+    
           <div>
             <div className={styles["main-title"]}>ChatGPT Next Web</div>
             <div className={styles["sub-title"]}>
