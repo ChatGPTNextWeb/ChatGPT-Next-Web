@@ -383,7 +383,7 @@ export function PreviewActions(props: {
 function ExportAvatar(props: { avatar: string }) {
   if (props.avatar === DEFAULT_MASK_AVATAR) {
     return (
-      <NextImage
+      <img
         src={BotIcon.src}
         width={30}
         height={30}
@@ -393,7 +393,7 @@ function ExportAvatar(props: { avatar: string }) {
     );
   }
 
-  return <Avatar avatar={props.avatar}></Avatar>;
+  return <Avatar avatar={props.avatar} />;
 }
 
 export function ImagePreviewer(props: {
@@ -422,6 +422,7 @@ export function ImagePreviewer(props: {
           ])
           .then(() => {
             showToast(Locale.Copy.Success);
+            refreshPreview();
           });
       } catch (e) {
         console.error("[Copy Image] ", e);
@@ -447,9 +448,17 @@ export function ImagePreviewer(props: {
           link.download = `${props.topic}.png`;
           link.href = blob;
           link.click();
+          refreshPreview();
         }
       })
       .catch((e) => console.log("[Export Image] ", e));
+  };
+
+  const refreshPreview = () => {
+    const dom = previewRef.current;
+    if (dom) {
+      dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+    }
   };
 
   return (
@@ -565,21 +574,32 @@ export function MarkdownPreviewer(props: {
   );
 }
 
+// modified by BackTrackZ now it's looks better
+
 export function JsonPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
 }) {
-  const msgs = props.messages.map((m) => ({
-    role: m.role,
-    content: m.content,
-  }));
-  const mdText = "\n" + JSON.stringify(msgs, null, 2) + "\n";
+  const msgs = {
+    messages: [
+      {
+        role: "system",
+        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
+      },
+      ...props.messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+    ],
+  };
+  const mdText = "```json\n" + JSON.stringify(msgs, null, 2) + "\n```";
+  const minifiedJson = JSON.stringify(msgs);
 
   const copy = () => {
-    copyToClipboard(JSON.stringify(msgs, null, 2));
+    copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs(JSON.stringify(msgs, null, 2), `${props.topic}.json`);
+    downloadAs(JSON.stringify(msgs), `${props.topic}.json`);
   };
 
   return (
@@ -587,11 +607,11 @@ export function JsonPreviewer(props: {
       <PreviewActions
         copy={copy}
         download={download}
-        showCopy={true}
+        showCopy={false}
         messages={props.messages}
       />
-      <div className="markdown-body">
-        <pre className={styles["export-content"]}>{mdText}</pre>
+      <div className="markdown-body" onClick={copy}>
+        <Markdown content={mdText} />
       </div>
     </>
   );
