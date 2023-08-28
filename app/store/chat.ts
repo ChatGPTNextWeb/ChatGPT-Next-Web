@@ -287,6 +287,12 @@ export const useChatStore = create<ChatStore>()(
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
 
+        //Prevent bugs where the system crashes even after refreshing when the input information directly exceeds the set maximum length, and prompt users to avoid entering overly long information to reduce request access and storage
+        if (userContent.length > modelConfig.max_tokens) {
+          showToast(Locale.Settings.MaxTokens.SubTitle);
+          return;
+        }
+
         const userMessage: ChatMessage = createMessage({
           role: "user",
           content: userContent,
