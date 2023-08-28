@@ -584,7 +584,7 @@ export function JsonPreviewer(props: {
     messages: [
       {
         role: "system",
-        content: "You are an assistant that " + props.topic,
+        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
       },
       ...props.messages.map((m) => ({
         role: m.role,
@@ -611,7 +611,7 @@ export function JsonPreviewer(props: {
         messages={props.messages}
       />
       <div className="markdown-body" onClick={copy}>
-      <Markdown content={mdText} />
+        <Markdown content={mdText} />
       </div>
     </>
   );
