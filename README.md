@@ -45,7 +45,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - New in v2: create, share and debug your chat tools with prompt templates (mask)
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
-- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어
+- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어, Indonesia
 
 ## Roadmap
 
@@ -256,6 +256,16 @@ If your proxy needs password, use:
 ```shell
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
+
+## Documentation
+
+> Please go to the [docs][./docs] directory for more documentation instructions.
+
+- [Deploy with cloudflare (Deprecated)](./docs/cloudflare-pages-en.md)
+- [Frequent Ask Questions](./docs/faq-en.md)
+- [How to add a new translation](./docs/translation.md)
+- [How to use Vercel (No English)](./docs/vercel-cn.md)
+- [User Manual (Only Chinese, WIP)](./docs/user-manual-cn.md)
 
 ## Screenshots
 
