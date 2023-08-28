@@ -584,7 +584,7 @@ export function JsonPreviewer(props: {
     messages: [
       {
         role: "system",
-        content: "You are an assistant that " + props.topic,
+        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
       },
       ...props.messages.map((m) => ({
         role: m.role,
