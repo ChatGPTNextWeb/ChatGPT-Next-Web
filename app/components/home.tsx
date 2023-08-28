@@ -128,7 +128,6 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
-  // useJWTCookieAuthCheck()
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
