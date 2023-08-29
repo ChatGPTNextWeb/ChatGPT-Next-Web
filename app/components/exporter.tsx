@@ -383,7 +383,7 @@ export function PreviewActions(props: {
 function ExportAvatar(props: { avatar: string }) {
   if (props.avatar === DEFAULT_MASK_AVATAR) {
     return (
-      <NextImage
+      <img
         src={BotIcon.src}
         width={30}
         height={30}
@@ -393,7 +393,7 @@ function ExportAvatar(props: { avatar: string }) {
     );
   }
 
-  return <Avatar avatar={props.avatar}></Avatar>;
+  return <Avatar avatar={props.avatar} />;
 }
 
 export function ImagePreviewer(props: {
@@ -422,6 +422,7 @@ export function ImagePreviewer(props: {
           ])
           .then(() => {
             showToast(Locale.Copy.Success);
+            refreshPreview();
           });
       } catch (e) {
         console.error("[Copy Image] ", e);
@@ -447,9 +448,17 @@ export function ImagePreviewer(props: {
           link.download = `${props.topic}.png`;
           link.href = blob;
           link.click();
+          refreshPreview();
         }
       })
       .catch((e) => console.log("[Export Image] ", e));
+  };
+
+  const refreshPreview = () => {
+    const dom = previewRef.current;
+    if (dom) {
+      dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+    }
   };
 
   return (
@@ -575,7 +584,7 @@ export function JsonPreviewer(props: {
     messages: [
       {
         role: "system",
-        content: "You are an assistant that " + props.topic,
+        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
       },
       ...props.messages.map((m) => ({
         role: m.role,
@@ -602,7 +611,7 @@ export function JsonPreviewer(props: {
         messages={props.messages}
       />
       <div className="markdown-body" onClick={copy}>
-      <Markdown content={mdText} />
+        <Markdown content={mdText} />
       </div>
     </>
   );

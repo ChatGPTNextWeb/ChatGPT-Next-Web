@@ -180,6 +180,7 @@ const tw: PartialLocaleType = {
     Add: "新增一條",
   },
   Plugin: { Name: "外掛" },
+  FineTuned: { Sysmessage: "你是一個助手" },
   Mask: {
     Name: "面具",
     Page: {
