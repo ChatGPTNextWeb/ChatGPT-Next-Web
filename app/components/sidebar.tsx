@@ -4,13 +4,13 @@ import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
+import LightningIcon from "../icons/lightning.svg";
 
 import Locale from "../locales";
 
@@ -28,6 +28,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import { Mask } from "@/app/store/mask";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -110,6 +111,13 @@ export function SideBar(props: { className?: string }) {
 
   useHotKey();
 
+  const startChat = (mask?: Mask) => {
+    setTimeout(() => {
+      chatStore.newSession(mask);
+      navigate(Path.Chat);
+    }, 10);
+  };
+
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
@@ -173,11 +181,16 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-              <IconButton icon={<GithubIcon />} shadow />
-            </a>
-          </div>
+        </div>
+        <div>
+          <IconButton
+            text={Locale.NewChat.Skip}
+            onClick={() => startChat()}
+            icon={<LightningIcon />}
+            type="primary"
+            shadow
+            className={styles["skip"]}
+          />
         </div>
         <div>
           <IconButton
