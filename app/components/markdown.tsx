@@ -7,50 +7,99 @@ import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect } from "react";
 import { copyToClipboard } from "../utils";
+import mermaid from "mermaid";
 
-export function PreCode(props: { children: any }) {
-  const ref = useRef<HTMLPreElement>(null);
+import LoadingIcon from "../icons/three-dots.svg";
+import React from "react";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { showImageModal } from "./ui-lib";
+
+export function Mermaid(props: { code: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (props.code && ref.current) {
+      mermaid
+        .run({
+          nodes: [ref.current],
+          suppressErrors: true,
+        })
+        .catch((e) => {
+          setHasError(true);
+          console.error("[Mermaid] ", e.message);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.code]);
+
+  function viewSvgInNewWindow() {
+    const svg = ref.current?.querySelector("svg");
+    if (!svg) return;
+    const text = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([text], { type: "image/svg+xml" });
+    showImageModal(URL.createObjectURL(blob));
+  }
+
+  if (hasError) {
+    return null;
+  }
 
   return (
-    <pre ref={ref}>
-      <span
-        className="copy-code-button"
-        onClick={() => {
-          if (ref.current) {
-            const code = ref.current.innerText;
-            copyToClipboard(code);
-          }
-        }}
-      ></span>
-      {props.children}
-    </pre>
+    <div
+      className="no-dark mermaid"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
+      ref={ref}
+      onClick={() => viewSvgInNewWindow()}
+    >
+      {props.code}
+    </div>
   );
 }
 
-const useLazyLoad = (ref: RefObject<Element>): boolean => {
-  const [isIntersecting, setIntersecting] = useState<boolean>(false);
+export function PreCode(props: { children: any }) {
+  const ref = useRef<HTMLPreElement>(null);
+  const refText = ref.current?.innerText;
+  const [mermaidCode, setMermaidCode] = useState("");
+
+  const renderMermaid = useDebouncedCallback(() => {
+    if (!ref.current) return;
+    const mermaidDom = ref.current.querySelector("code.language-mermaid");
+    if (mermaidDom) {
+      setMermaidCode((mermaidDom as HTMLElement).innerText);
+    }
+  }, 600);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIntersecting(true);
-        observer.disconnect();
-      }
-    });
+    setTimeout(renderMermaid, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refText]);
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+  return (
+    <>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
+          }}
+        ></span>
+        {props.children}
+      </pre>
+    </>
+  );
+}
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [ref]);
-
-  return isIntersecting;
-};
-
-export function Markdown(props: { content: string }) {
+function _MarkDownContent(props: { content: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
@@ -66,9 +115,48 @@ export function Markdown(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        p: (pProps) => <p {...pProps} dir="auto" />,
+        a: (aProps) => {
+          const href = aProps.href || "";
+          const isInternal = /^\/#/i.test(href);
+          const target = isInternal ? "_self" : aProps.target ?? "_blank";
+          return <a {...aProps} target={target} />;
+        },
       }}
     >
       {props.content}
     </ReactMarkdown>
+  );
+}
+
+export const MarkdownContent = React.memo(_MarkDownContent);
+
+export function Markdown(
+  props: {
+    content: string;
+    loading?: boolean;
+    fontSize?: number;
+    parentRef?: RefObject<HTMLDivElement>;
+    defaultShow?: boolean;
+  } & React.DOMAttributes<HTMLDivElement>,
+) {
+  const mdRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      className="markdown-body"
+      style={{
+        fontSize: `${props.fontSize ?? 14}px`,
+      }}
+      ref={mdRef}
+      onContextMenu={props.onContextMenu}
+      onDoubleClickCapture={props.onDoubleClickCapture}
+    >
+      {props.loading ? (
+        <LoadingIcon />
+      ) : (
+        <MarkdownContent content={props.content} />
+      )}
+    </div>
   );
 }

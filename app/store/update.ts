@@ -1,49 +1,128 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FETCH_COMMIT_URL, FETCH_TAG_URL } from "../constant";
-import { getCurrentVersion } from "../utils";
+import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
+import { api } from "../client/api";
+import { getClientConfig } from "../config/client";
 
 export interface UpdateStore {
+  versionType: "date" | "tag";
   lastUpdate: number;
-  remoteId: string;
+  version: string;
+  remoteVersion: string;
 
-  getLatestCommitId: (force: boolean) => Promise<string>;
+  used?: number;
+  subscription?: number;
+  lastUpdateUsage: number;
+
+  getLatestVersion: (force?: boolean) => Promise<void>;
+  updateUsage: (force?: boolean) => Promise<void>;
+
+  formatVersion: (version: string) => string;
 }
 
-export const UPDATE_KEY = "chat-update";
+const ONE_MINUTE = 60 * 1000;
+
+function formatVersionDate(t: string) {
+  const d = new Date(+t);
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+
+  return [
+    year.toString(),
+    month.toString().padStart(2, "0"),
+    day.toString().padStart(2, "0"),
+  ].join("");
+}
+
+async function getVersion(type: "date" | "tag") {
+  if (type === "date") {
+    const data = (await (await fetch(FETCH_COMMIT_URL)).json()) as {
+      commit: {
+        author: { name: string; date: string };
+      };
+      sha: string;
+    }[];
+    const remoteCommitTime = data[0].commit.author.date;
+    const remoteId = new Date(remoteCommitTime).getTime().toString();
+    return remoteId;
+  } else if (type === "tag") {
+    const data = (await (await fetch(FETCH_TAG_URL)).json()) as {
+      commit: { sha: string; url: string };
+      name: string;
+    }[];
+    return data.at(0)?.name;
+  }
+}
 
 export const useUpdateStore = create<UpdateStore>()(
   persist(
     (set, get) => ({
+      versionType: "tag",
       lastUpdate: 0,
-      remoteId: "",
+      version: "unknown",
+      remoteVersion: "",
 
-      async getLatestCommitId(force = false) {
-        const overTenMins = Date.now() - get().lastUpdate > 10 * 60 * 1000;
-        const shouldFetch = force || overTenMins;
-        if (!shouldFetch) {
-          return getCurrentVersion();
+      lastUpdateUsage: 0,
+
+      formatVersion(version: string) {
+        if (get().versionType === "date") {
+          version = formatVersionDate(version);
         }
+        return version;
+      },
+
+      async getLatestVersion(force = false) {
+        const versionType = get().versionType;
+        let version =
+          versionType === "date"
+            ? getClientConfig()?.commitDate
+            : getClientConfig()?.version;
+
+        set(() => ({ version }));
+
+        const shouldCheck = Date.now() - get().lastUpdate > 2 * 60 * ONE_MINUTE;
+        if (!force && !shouldCheck) return;
+
+        set(() => ({
+          lastUpdate: Date.now(),
+        }));
 
         try {
-          // const data = await (await fetch(FETCH_TAG_URL)).json();
-          // const remoteId = data[0].name as string;
-          const data = await (await fetch(FETCH_COMMIT_URL)).json();
-          const remoteId = (data[0].sha as string).substring(0, 7);
+          const remoteId = await getVersion(versionType);
           set(() => ({
-            lastUpdate: Date.now(),
-            remoteId,
+            remoteVersion: remoteId,
           }));
           console.log("[Got Upstream] ", remoteId);
-          return remoteId;
         } catch (error) {
           console.error("[Fetch Upstream Commit Id]", error);
-          return getCurrentVersion();
+        }
+      },
+
+      async updateUsage(force = false) {
+        const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
+        if (!overOneMinute && !force) return;
+
+        set(() => ({
+          lastUpdateUsage: Date.now(),
+        }));
+
+        try {
+          const usage = await api.llm.usage();
+
+          if (usage) {
+            set(() => ({
+              used: usage.used,
+              subscription: usage.total,
+            }));
+          }
+        } catch (e) {
+          console.error((e as Error).message);
         }
       },
     }),
     {
-      name: UPDATE_KEY,
+      name: StoreKey.Update,
       version: 1,
     },
   ),
