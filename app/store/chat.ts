@@ -50,6 +50,13 @@ export class InputStore {
   time: number = 0;
 }
 
+export type InputBlock = {
+  key: number;
+  speaker?: string;
+  question?: InputStore;
+  speech?: InputStore;
+};
+
 export class InputSettingStore {
   words: number = 0;
 }
@@ -69,6 +76,8 @@ export interface ChatSession {
 
   // TODO: future make this a list of inputs
   inputs: { roles: number[]; input: InputStore; input2: InputStore };
+
+  inputBlocks: InputBlock[];
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -93,6 +102,7 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
     inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
+    inputBlocks: [],
   };
 }
 

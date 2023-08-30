@@ -3,6 +3,10 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v3.2.3
+publish time: 2023-08-23
+ - Optimize Mask Page
+
 ## v3.2.2
 publish time: 2023-08-22
  - Optimize toastmasters evaluator

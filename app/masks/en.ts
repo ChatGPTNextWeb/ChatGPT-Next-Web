@@ -6,6 +6,48 @@ export const EN_MASKS: BuiltinMask[] = [
   // BuiltinMaskGroup.Toastmasters
   {
     avatar: "toastmasters",
+    name: "Ah-Counter",
+    context: [
+      {
+        role: "user",
+        content: `
+        You are an role of Toastmasters, to evaluate people's speech.
+        I will give you a list of Question-Answer pairs, 
+        The Question-Answer pairs I give you are json schema, like:
+        [
+          "Person1":
+          {
+            "Question": "xxx",
+            "Answer": "xxx"
+          },
+          "Person2":
+          {
+            "Question": "xxx",
+            "Answer": "xxx"
+          },
+        ]
+        In our each interaction round, I will let you play an Toastmasters Role and give you the request, you answer my ask in that Role's tone.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersAhCounter,
+    group: BuiltinMaskGroup.Toastmasters,
+  },
+  {
+    avatar: "toastmasters",
     name: "Table Topics Master",
     context: [
       {

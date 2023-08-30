@@ -1,3 +1,55 @@
+.chat-input-panel-noborder {
+  position: relative;
+  width: 100%;
+  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
+  box-sizing: border-box;
+  flex-direction: column;
+
+  .chat-input-panel-title {
+    font-size: medium;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
+
+  .chat-input-panel-textarea {
+    display: flex;
+    flex: 1;
+  }
+}
+
+.chat-input-name-group {
+  @extend .chat-input-panel-noborder;
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+}
+
+.chat-input-group-actions-L0 {
+  position: relative;
+
+  .chat-input-group-actions-L1 {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}
+
+.chat-input-add-button {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 10px;
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 .chat-input-send-record {
   background-color: gray;
   color: white;

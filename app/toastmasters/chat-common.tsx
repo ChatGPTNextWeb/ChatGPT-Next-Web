@@ -236,9 +236,11 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   };
 
   return (
-    <div className={styles["chat-input-panel-noborder"]}>
-      <div className={styles["chat-input-panel-title"]}>{props.title}</div>
-      <div className={styles["chat-input-panel-inner"]}>
+    <div className={styles_toastmasters["chat-input-panel-noborder"]}>
+      <div className={styles_toastmasters["chat-input-panel-title"]}>
+        {props.title}
+      </div>
+      <div className={styles_toastmasters["chat-input-panel-textarea"]}>
         <textarea
           ref={inputRef}
           className={styles["chat-input"]}
@@ -268,6 +270,44 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
           {userInput.length > 0 ? userInput.split(/\s+/).length : 0} words,{" "}
           {formatTime(time)}
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const ChatInputName = (props: {
+  title: string;
+  inputStore: InputStore;
+}) => {
+  const config = useAppConfig();
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [userInput, setUserInput] = useState(props.inputStore.text);
+
+  // set parent value
+  useEffect(() => {
+    // save to store
+    props.inputStore.text = userInput;
+
+    // set the focus to the input at the end of textarea
+    inputRef.current?.focus();
+  }, [userInput]); // should not depend props in case auto focus expception
+
+  return (
+    <div className={styles_toastmasters["chat-input-name-group"]}>
+      <div className={styles_toastmasters["chat-input-panel-title"]}>
+        {props.title}
+      </div>
+      <div className={styles_toastmasters["chat-input-panel-textarea"]}>
+        <textarea
+          ref={inputRef}
+          className={styles["chat-input-no-height"]}
+          onInput={(e) => setUserInput(e.currentTarget.value)}
+          value={userInput}
+          rows={1}
+          style={{
+            fontSize: config.fontSize,
+          }}
+        />
       </div>
     </div>
   );

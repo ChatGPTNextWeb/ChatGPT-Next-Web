@@ -467,16 +467,6 @@
   }
 }
 
-.chat-input-panel-noborder {
-  position: relative;
-  width: 100%;
-  padding: 0px 20px; // 设置元素的内边距。上下内边距=0像素，左右内边距=20像素。
-  box-sizing: border-box;
-  flex-direction: column;
-}
-
-
-
 @mixin single-line {
   white-space: nowrap;
   overflow: hidden;
@@ -530,18 +520,6 @@
   }
 }
 
-.chat-input-panel-inner {
-  display: flex;
-  flex: 1;
-}
-
-.chat-input-panel-title {
-  font-size: medium;
-  font-weight: bold;
-  margin-bottom: 5px;
-  margin-top: 10px;
-}
-
 .chat-input {
   height: 100%;
   width: 100%;
@@ -556,6 +534,13 @@
   outline: none;
   box-sizing: border-box;
   min-height: 68px;
+}
+
+.chat-input-no-height {
+  @extend .chat-input;
+  min-height: 0;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .chat-input:focus {

@@ -306,3 +306,36 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
     `,
   },
 ];
+
+export const ToastmastersAhCounterGuidance = (
+  topic: string,
+  speech: string,
+) => `
+My input is:
+{
+	"Topic": "${topic}",
+	"Speech": "${speech}"
+},
+Are you ready to play an Evaluator role with my guidance?
+`;
+
+export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
+  {
+    role_index: 0,
+    role: ToastmastersRoles.AhCounter + "-Count",
+    content: ` 
+    You are the ${ToastmastersRoles.AhCounter}. 
+    1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech
+    `,
+  },
+  {
+    role_index: 0,
+    role: ToastmastersRoles.AhCounter + "-Analysis",
+    content: ` 
+    You are the ${ToastmastersRoles.AhCounter}. To analysis your stats in your table, you should:
+    1). Generate a summary with the Ah-Counter's tone according to the table
+    2). Bold keywords using markdown when present your answer.
+    3). About 200 words in total.
+    `,
+  },
+];
