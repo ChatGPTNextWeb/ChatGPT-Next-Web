@@ -6,6 +6,7 @@ import styles from "../components/chat.module.scss";
 import styles_toastmasters from "./toastmasters.module.scss";
 import { List, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
+import CollapsibleTable from "./chat-input-table";
 
 import {
   ToastmastersAhCounterGuidance as ToastmastersRoleGuidance,
@@ -100,28 +101,6 @@ export function Chat() {
     });
   };
 
-  const addItem1 = () => {
-    const newItem: InputBlock = {
-      key: session.inputBlocks.length + 1,
-      speaker: `Speaker ${session.inputBlocks.length + 1}`,
-    };
-    session.inputBlocks = [...session.inputBlocks, newItem];
-    // setInputBlocks([...session.inputBlocks, newItem]);
-  };
-  const deleteItem1 = (key: number) => {
-    session.inputBlocks = session.inputBlocks.filter(
-      (item) => item.key !== key,
-    );
-    // setInputBlocks(updatedItems);
-  };
-  const renameSpeaker1 = (index: number) => {
-    showPrompt("Rename", session.inputBlocks[index].speaker).then((newName) => {
-      if (newName && newName !== session.inputBlocks[index].speaker) {
-        chatStore.updateCurrentSession((session) => (session.topic = newName!));
-      }
-    });
-  };
-
   const getSpeaker = (item: InputBlock): string => {
     if (item.speaker === undefined) {
       item.speaker = `Speaker ${item.key}`;
@@ -148,6 +127,8 @@ export function Chat() {
         >
           Add Speaker
         </button>
+
+        <CollapsibleTable />
 
         {session.inputBlocks.map((item, index) => (
           <List key={index}>
