@@ -25,15 +25,16 @@
   width: 50%;
 }
 
-.chat-input-group-actions-L0 {
-  position: relative;
+.chat-input-table-actions {
+  display: flex;
+  flex-direction: row-reverse;
+}
 
-  .chat-input-group-actions-L1 {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    display: flex;
-    flex-direction: row-reverse;
+.chat-input-speaker {
+  cursor: pointer;
+  color: blue;
+  &:hover {
+    text-decoration: underline;
   }
 }
 

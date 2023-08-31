@@ -52,9 +52,9 @@ export class InputStore {
 
 export type InputBlock = {
   key: number;
-  speaker?: string;
-  question?: InputStore;
-  speech?: InputStore;
+  name: string;
+  input: InputStore;
+  input2: InputStore;
 };
 
 export class InputSettingStore {
@@ -78,6 +78,7 @@ export interface ChatSession {
   inputs: { roles: number[]; input: InputStore; input2: InputStore };
 
   inputBlocks: InputBlock[];
+  // inputRoles: number[];  // TODO
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;

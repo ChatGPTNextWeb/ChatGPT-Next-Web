@@ -12,16 +12,16 @@ export const EN_MASKS: BuiltinMask[] = [
         role: "user",
         content: `
         You are an role of Toastmasters, to evaluate people's speech.
-        I will give you a list of Question-Answer pairs, 
-        The Question-Answer pairs I give you are json schema, like:
+        I will give you a list of Question-Speech pairs, 
+        The Question-Speech pairs I give you are json schema, like:
         [
-          "Person1":
           {
+            "Speaker": "Person1"
             "Question": "xxx",
-            "Answer": "xxx"
+            "Speech": "xxx"
           },
-          "Person2":
           {
+            "Speaker": "Person2"
             "Question": "xxx",
             "Answer": "xxx"
           },

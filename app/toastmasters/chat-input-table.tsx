@@ -24,7 +24,6 @@ function createData(
     question,
     speech,
     speech_words,
-
     // TODO: show input blocks
     history: [
       {

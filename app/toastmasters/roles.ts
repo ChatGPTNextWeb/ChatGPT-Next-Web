@@ -307,16 +307,12 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
   },
 ];
 
-export const ToastmastersAhCounterGuidance = (
-  topic: string,
-  speech: string,
-) => `
-My input is:
-{
-	"Topic": "${topic}",
-	"Speech": "${speech}"
-},
-Are you ready to play an Evaluator role with my guidance?
+export const ToastmastersAhCounterGuidance = (input: string) => `
+The Question-Speech pairs are:
+[
+  ${input}
+]
+Are you ready to answer? If you understand, answer yes.
 `;
 
 export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
@@ -325,11 +321,13 @@ export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
     role: ToastmastersRoles.AhCounter + "-Count",
     content: ` 
     You are the ${ToastmastersRoles.AhCounter}. 
-    1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech
+    1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
+    2). Only response the table, 
+    3). Do not include any extra description and extra words. 
     `,
   },
   {
-    role_index: 0,
+    role_index: 1,
     role: ToastmastersRoles.AhCounter + "-Analysis",
     content: ` 
     You are the ${ToastmastersRoles.AhCounter}. To analysis your stats in your table, you should:
