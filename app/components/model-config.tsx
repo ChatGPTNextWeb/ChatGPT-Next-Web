@@ -2,27 +2,67 @@ import { ModalConfigValidator, ModelConfig, useAppConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
-import { ListItem, Select } from "./ui-lib";
+import { ListItem, Select, showPrompt } from "./ui-lib";
+import { IconButton } from "./button";
+import { useState } from "react";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
+  const [authorizationCode, setAuthorizationCode] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const config = useAppConfig();
+
+  const handleAuthorization = (code: string) => {
+    // 在这里进行授权码的验证逻辑
+    // 如果授权码正确，可以设置一个状态来标记授权成功
+    // 例如：setIsAuthorized(true);
+    // 如果授权码不正确，可以显示错误信息或者禁用下拉框
+    setAuthorizationCode(code);
+    if (code === "ziyanwouldCode") {
+      setIsAuthorized(true);
+    } else {
+      setIsAuthorized(false);
+    }
+  };
+  const openAuthorizationModal = () => {
+    showPrompt("Enter Authorization Code", authorizationCode, 1)
+      .then((code) => {
+        handleAuthorization(code);
+      })
+      .catch(() => {
+        setIsAuthorized(false);
+      });
+  };
 
   return (
     <>
+      <ListItem title="Authorization Code">
+        <IconButton
+          text={
+            isAuthorized
+              ? "Change Authorization Code"
+              : "Enter Authorization Code"
+          }
+          onClick={openAuthorizationModal}
+          type={!isAuthorized ? "danger" : "primary"}
+        />
+      </ListItem>
       <ListItem title={Locale.Settings.Model}>
         <Select
           value={props.modelConfig.model}
           onChange={(e) => {
+            if (!isAuthorized) return false;
             props.updateConfig(
               (config) =>
                 (config.model = ModalConfigValidator.model(
                   e.currentTarget.value,
                 )),
             );
+            setIsAuthorized(false);
           }}
+          disabled={!isAuthorized}
         >
           {config.allModels().map((v, i) => (
             <option value={v.name} key={i} disabled={!v.available}>
