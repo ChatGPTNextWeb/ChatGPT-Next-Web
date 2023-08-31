@@ -530,6 +530,22 @@ export function Settings() {
           </ListItem>
 
           <ListItem
+            title={Locale.Settings.AutoGenerateTitle.Title}
+            subTitle={Locale.Settings.AutoGenerateTitle.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.enableAutoGenerateTitle}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableAutoGenerateTitle = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+
+          <ListItem
             title={Locale.Settings.SendPreviewBubble.Title}
             subTitle={Locale.Settings.SendPreviewBubble.SubTitle}
           >
