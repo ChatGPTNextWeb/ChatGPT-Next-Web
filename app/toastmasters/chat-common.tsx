@@ -174,14 +174,6 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
     };
   }, [recording]);
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
   // auto grow input
   const [inputRows, setInputRows] = useState(2);
   const measure = useDebouncedCallback(
@@ -267,13 +259,35 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
           onClick={onRecord}
         />
         <div className={styles_toastmasters["chat-input-words"]}>
-          {userInput.length > 0 ? userInput.split(/\s+/).length : 0} words,{" "}
-          {formatTime(time)}
+          {ChatUtility.getWordsNumber(userInput)} words,{" "}
+          {ChatUtility.formatTime(time)}
         </div>
       </div>
     </div>
   );
 };
+
+export class ChatUtility {
+  static getWordsNumber(text: string): number {
+    return text.length > 0 ? text.split(/\s+/).length : 0;
+  }
+
+  static getFirstNWords(text: string, number: number): string {
+    var words = this.getWordsNumber(text);
+    if (words <= number) {
+      return text;
+    }
+    return text.split(/\s+/).slice(0, number).join(" ") + "...";
+  }
+
+  static formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+}
 
 export const ChatInputName = (props: {
   title: string;

@@ -20,6 +20,7 @@ import {
   ChatResponse,
   useScrollToBottom,
   ChatInputName,
+  ChatUtility,
 } from "./chat-common";
 import { InputBlock } from "../store/chat";
 
@@ -29,6 +30,7 @@ import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import RenameIcon from "../icons/rename.svg";
+import CopyIcon from "../icons/copy.svg";
 
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -43,6 +45,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { text } from "stream/consumers";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -60,29 +63,20 @@ export function Chat() {
     ToastmastersRolePrompt[]
   >([]);
 
-  const [inputBlocks, setInputBlocks] = useState<InputBlock[]>([]);
-
   // 进来时, 读取上次的输入
   useEffect(() => {
     var roles = session.inputs.roles?.map(
       (index: number) => ToastmastersRoleOptions[index],
     );
     setToastmastersEvaluators(roles);
-
-    setInputBlocks(session.inputBlocks ?? []);
   }, []);
-
-  // 每次输入变化时, 保存输入
-  // useEffect(() => {
-  //   session.inputBlocks = inputBlocks;
-  // }, [inputBlocks, session]);
 
   const checkInput = (): InputSubmitStatus => {
     var speakerInputs: string[] = [];
 
-    inputBlocks.forEach((element) => {
-      let question = element.input.text.trim();
-      let speech = element.input2.text.trim();
+    session.inputBlocks.forEach((element) => {
+      let question = element.question.text.trim();
+      let speech = element.speech.text.trim();
       if (question === "" || speech === "") {
         showToast("Question or Speech can not be empty");
         return new InputSubmitStatus(false, "");
@@ -90,9 +84,9 @@ export function Chat() {
 
       var speakerInput: string = `
       {
-        "Speaker": "${element.name}",
-        "Question": "${element.input.text}",
-        "Speech": "${element.input2.text}"
+        "Speaker": "${element.speaker}",
+        "Question": "${element.question.text}",
+        "Speech": "${element.speech.text}"
       }
       `;
       speakerInputs.push(speakerInput);
@@ -109,55 +103,80 @@ export function Chat() {
 
   const addItem = () => {
     const newItem: InputBlock = {
-      key: inputBlocks.length + 1,
-      name: `Speaker${inputBlocks.length + 1}`,
-      input: { text: "", time: 0 },
-      input2: { text: "", time: 0 },
+      speaker: `Speaker${session.inputBlocks.length + 1}`,
+      question: { text: "", time: 0 },
+      speech: { text: "", time: 0 },
     };
-    var newInputBlocks = [...inputBlocks, newItem];
-    setInputBlocks(newInputBlocks);
-
+    var newInputBlocks = [...session.inputBlocks, newItem];
     chatStore.updateCurrentSession(
       (session) => (session.inputBlocks = newInputBlocks),
     );
   };
-  const deleteItem = (key: number) => {
-    const updatedItems = inputBlocks.filter((item) => item.key !== key);
-    setInputBlocks(updatedItems);
-    session.inputBlocks = inputBlocks;
-  };
-  const renameSpeaker = (row: InputBlock) => {
-    showPrompt("Rename", row.name).then((newName) => {
-      if (newName && newName !== row.name) {
-        chatStore.updateCurrentSession((session) => (row.name = newName));
-      }
-    });
+  const deleteItem = (row_index: number) => {
+    chatStore.updateCurrentSession((session) =>
+      session.inputBlocks.splice(row_index, 1),
+    );
   };
 
-  const getSpeaker = (item: InputBlock): string => {
-    if (item.name === undefined) {
-      item.name = `Speaker ${item.key}`;
-    }
-    return item.name;
+  const renameSpeaker = (row: InputBlock) => {
+    showPrompt("Rename", row.speaker).then((newName) => {
+      if (newName && newName !== row.speaker) {
+        chatStore.updateCurrentSession((session) => (row.speaker = newName));
+      }
+    });
   };
 
   function CollapsibleTable(props: { inputBlocks: InputBlock[] }) {
     return (
       <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
+        <Table
+          aria-label="collapsible table"
+          className={styles_toastmasters["table-border"]}
+        >
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>Name</TableCell>
-              <TableCell align="right">Question</TableCell>
-              <TableCell align="right">Speech</TableCell>
-              <TableCell align="right">SpeechWords</TableCell>
-              <TableCell align="right">Action</TableCell>
+              <TableCell
+                align="left"
+                className={styles_toastmasters["table-border-header"]}
+              >
+                Speaker
+              </TableCell>
+              <TableCell
+                align="left"
+                className={styles_toastmasters["table-border-header"]}
+              >
+                Question
+              </TableCell>
+              <TableCell
+                align="left"
+                className={styles_toastmasters["table-border-header"]}
+              >
+                Speech
+              </TableCell>
+              <TableCell
+                align="left"
+                className={styles_toastmasters["table-border-header"]}
+              >
+                SpeechWords
+              </TableCell>
+              <TableCell
+                align="left"
+                className={styles_toastmasters["table-border-header"]}
+              >
+                SpeechTime
+              </TableCell>
+              <TableCell
+                align="left"
+                className={styles_toastmasters["table-border-header"]}
+              >
+                Action
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {props.inputBlocks.map((row, index) => (
-              <Row key={row.key} row={row} />
+              <Row key={index} row={row} row_index={index} />
             ))}
           </TableBody>
         </Table>
@@ -165,8 +184,8 @@ export function Chat() {
     );
   }
 
-  function Row(props: { row: InputBlock }) {
-    const { row } = props;
+  function Row(props: { row: InputBlock; row_index: number }) {
+    const { row, row_index } = props;
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -188,25 +207,27 @@ export function Chat() {
                 renameSpeaker(row);
               }}
             >
-              {row.name}
+              {row.speaker}
             </div>
           </TableCell>
-          {/* TODO: take 1st 10 words */}
-          <TableCell align="right">
-            {row.input.text.substring(0, 10)}...
+          <TableCell align="left">
+            {ChatUtility.getFirstNWords(row.question.text, 20)}
           </TableCell>
-          <TableCell align="right">
-            {row.input2.text.substring(0, 10)}...
+          <TableCell align="left">
+            {ChatUtility.getFirstNWords(row.speech.text, 20)}
           </TableCell>
-          <TableCell align="right">{"TODO"}</TableCell>
-          <TableCell align="right">
+          <TableCell align="left">
+            {ChatUtility.getWordsNumber(row.speech.text)}
+          </TableCell>
+          <TableCell align="left">
+            {ChatUtility.formatTime(row.speech.time)}
+          </TableCell>
+          <TableCell align="left">
             <div className={styles_toastmasters["chat-input-table-actions"]}>
               <IconButton
                 icon={<CloseIcon />}
-                onClick={() => deleteItem(row.key)}
+                onClick={() => deleteItem(row_index)}
               />
-              <IconButton icon={<DownloadIcon />} onClick={() => {}} />
-              <IconButton icon={<UploadIcon />} onClick={() => {}} />
             </div>
           </TableCell>
         </TableRow>
@@ -215,10 +236,10 @@ export function Chat() {
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
                 <List>
-                  <ChatInput title="Question" inputStore={row.input} />
+                  <ChatInput title="Question" inputStore={row.question} />
                   <ChatInput
                     title="Table Topics Speech"
-                    inputStore={row.input2}
+                    inputStore={row.speech}
                   />
                 </List>
               </Box>
@@ -236,7 +257,7 @@ export function Chat() {
         className={styles["chat-body"]}
         ref={scrollRef}
         onMouseDown={() => inputRef.current?.blur()}
-        onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
+        // onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
         onTouchStart={() => {
           inputRef.current?.blur();
           setAutoScroll(false);

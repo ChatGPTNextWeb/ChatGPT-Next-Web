@@ -51,10 +51,9 @@ export class InputStore {
 }
 
 export type InputBlock = {
-  key: number;
-  name: string;
-  input: InputStore;
-  input2: InputStore;
+  speaker: string;
+  question: InputStore;
+  speech: InputStore;
 };
 
 export class InputSettingStore {

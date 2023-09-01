@@ -95,3 +95,13 @@
   background-color: red;
   border: blue 2px solid;
 }
+
+
+.table-border {
+  border: 2px solid #ddd;
+
+  .table-border-header {
+    font-weight: bold;
+    font-size: medium;
+  }
+}
