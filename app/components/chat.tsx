@@ -802,7 +802,7 @@ function _Chat() {
       (m) => m.id === message.id,
     );
 
-    if (resendingIndex <= 0 || resendingIndex >= session.messages.length) {
+    if (resendingIndex < 0 || resendingIndex >= session.messages.length) {
       console.error("[Chat] failed to find resending message", message);
       return;
     }
@@ -935,12 +935,12 @@ function _Chat() {
 
     const isTouchTopEdge = e.scrollTop <= edgeThreshold;
     const isTouchBottomEdge = bottomHeight >= e.scrollHeight - edgeThreshold;
-    const isHitBottom = bottomHeight >= e.scrollHeight - 10;
+    const isHitBottom = bottomHeight >= e.scrollHeight - (isMobileScreen ? 0 : 10);
 
     const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
     const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
 
-    if (isTouchTopEdge) {
+    if (isTouchTopEdge && !isTouchBottomEdge) {
       setMsgRenderIndex(prevPageMsgIndex);
     } else if (isTouchBottomEdge) {
       setMsgRenderIndex(nextPageMsgIndex);
@@ -1123,9 +1123,9 @@ function _Chat() {
                               10,
                             );
                             chatStore.updateCurrentSession((session) => {
-                              const m = session.messages.find(
-                                (m) => m.id === message.id,
-                              );
+                              const m = session.mask.context
+                                .concat(session.messages)
+                                .find((m) => m.id === message.id);
                               if (m) {
                                 m.content = newMessage;
                               }
