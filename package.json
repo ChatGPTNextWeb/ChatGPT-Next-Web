@@ -9,11 +9,11 @@
     "lint": "next lint",
     "export": "cross-env BUILD_MODE=export BUILD_APP=1 next build",
     "export:dev": "cross-env BUILD_MODE=export BUILD_APP=1 next dev",
-    "app:dev": "yarn tauri dev",
-    "app:build": "yarn tauri build",
+    "app:dev": "pnpm tauri dev",
+    "app:build": "pnpm tauri build",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
-    "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
+    "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf pnpm dev"
   },
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
@@ -58,8 +58,5 @@
     "prettier": "^3.0.2",
     "typescript": "4.9.5",
     "webpack": "^5.88.1"
-  },
-  "resolutions": {
-    "lint-staged/yaml": "^2.2.2"
   }
 }
