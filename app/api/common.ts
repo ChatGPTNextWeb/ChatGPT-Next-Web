@@ -42,9 +42,18 @@ export async function requestOpenai(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  const jsonBody = req.body ? await req.clone().json() : {};
-  const reqModel = jsonBody?.model ?? "";
-  let fetchUrl: RequestInfo | URL;
+  let reqJson;
+  let reqModel = "";
+  if (req.body) {
+    try {
+      reqJson = await req.text();
+      reqJson = JSON.parse(reqJson);
+      reqModel = reqJson?.model ?? "";
+    } catch {
+      reqJson = {};
+    }
+  }
+  let fetchUrl;
   if (reqModel.startsWith("Azure")) {
     fetchUrl = `${PROTOCOL}://${AZURE_BASE_URL}/openai/deployments/${reqModel.replaceAll(
       ".",
@@ -92,28 +101,29 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
+    console.log(
+      `[Request][${req.method}] ${fetchUrl} ${JSON.stringify(reqJson)}`,
+    );
     const res = await fetch(fetchUrl, fetchOptions);
-    // console.log(`[Request][${req.method}] ${fetchUrl} ${JSON.stringify(jsonBody)}`);
-    // const res = await fetch(fetchUrl, fetchOptions);
-    // const reader = res.clone().body?.getReader();
-    // let content = "";
-    // while (reader) {
-    //   const { done, value } = await reader.read();
-    //   let msgList;
-    //   try {
-    //     msgList = new TextDecoder().decode(value).split("\n");
-    //     msgList = msgList
-    //       .map((msg) => msg.replace("data:", "").trim())
-    //       .filter((msg) => msg);
-    //     for (let msg of msgList) {
-    //       const data = JSON.parse(msg);
-    //       const delta = data?.choices?.[0]?.delta?.content || "";
-    //       content += delta;
-    //     }
-    //   } catch (e) {}
-    //   if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
-    // }
-    // console.log(`[Response][${req.method}] ${content}`);
+    const reader = res.clone().body?.getReader();
+    let content = "";
+    while (reader) {
+      const { done, value } = await reader.read();
+      let msgList;
+      try {
+        msgList = new TextDecoder().decode(value).split("\n");
+        msgList = msgList
+          .map((msg) => msg.replace("data:", "").trim())
+          .filter((msg) => msg);
+        for (let msg of msgList) {
+          const data = JSON.parse(msg);
+          const delta = data?.choices?.[0]?.delta?.content || "";
+          content += delta;
+        }
+      } catch (e) {}
+      if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
+    }
+    console.log(`[Response][${req.method}] ${content}`);
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
