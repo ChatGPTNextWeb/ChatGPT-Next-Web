@@ -1,15 +1,16 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import styles from "./settings.module.scss";
 
-import ResetIcon from "../icons/reload.svg";
 import AddIcon from "../icons/add.svg";
+import ClearIcon from "../icons/clear.svg";
 import CloseIcon from "../icons/close.svg";
 import CopyIcon from "../icons/copy.svg";
-import ClearIcon from "../icons/clear.svg";
-import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
+import ResetIcon from "../icons/reload.svg";
+import LoadingIcon from "../icons/three-dots.svg";
+import { ModelConfigList } from "./model-config";
 import {
   Input,
   List,
@@ -20,35 +21,34 @@ import {
   Select,
   showConfirm,
 } from "./ui-lib";
-import { ModelConfigList } from "./model-config";
 
-import { IconButton } from "./button";
 import {
   SubmitKey,
-  useChatStore,
   Theme,
-  useUpdateStore,
   useAccessStore,
   useAppConfig,
+  useChatStore,
+  useUpdateStore,
 } from "../store";
+import { IconButton } from "./button";
 
+import { nanoid } from "nanoid";
+import Link from "next/link";
+import { useNavigate } from "react-router-dom";
+import { getClientConfig } from "../config/client";
+import { Path, RELEASE_URL, UPDATE_URL } from "../constant";
 import Locale, {
-  AllLangs,
   ALL_LANG_OPTIONS,
+  AllLangs,
   changeLang,
   getLang,
 } from "../locales";
-import { copyToClipboard } from "../utils";
-import Link from "next/link";
-import { Path, RELEASE_URL, UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
+import { useSyncStore } from "../store/sync";
+import { copyToClipboard } from "../utils";
+import { Avatar, AvatarPicker } from "./emoji";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
-import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarPicker } from "./emoji";
-import { getClientConfig } from "../config/client";
-import { useSyncStore } from "../store/sync";
-import { nanoid } from "nanoid";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();

@@ -5,10 +5,14 @@ const DEFAULT_PROTOCOL = "https";
 const PROTOCOL = process.env.PROTOCOL || DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL || OPENAI_URL;
 const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
+const AZURE_BASE_URL = process.env.AZURE_BASE_URL;
+const AZURE_API_VERSION = process.env.AZURE_API_VERSION;
+const AZURE_API_KEY = process.env.AZURE_API_KEY;
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
   const authValue = req.headers.get("Authorization") ?? "";
+
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
@@ -20,22 +24,36 @@ export async function requestOpenai(req: NextRequest) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;
   }
 
-  if (baseUrl.endsWith('/')) {
+  if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", openaiPath);
-  console.log("[Base Url]", baseUrl);
+  // console.log("[Proxy] ", openaiPath);
+  // console.log("[Base Url]", baseUrl);
 
   if (process.env.OPENAI_ORG_ID) {
     console.log("[Org ID]", process.env.OPENAI_ORG_ID);
   }
 
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, 10 * 60 * 1000);
+  const timeoutId = setTimeout(
+    () => {
+      controller.abort();
+    },
+    10 * 60 * 1000,
+  );
 
-  const fetchUrl = `${baseUrl}/${openaiPath}`;
+  const jsonBody = req.body ? await req.clone().json() : {};
+  const reqModel = jsonBody?.model ?? "";
+  let fetchUrl: RequestInfo | URL;
+  if (reqModel.startsWith("Azure")) {
+    fetchUrl = `${PROTOCOL}://${AZURE_BASE_URL}/openai/deployments/${reqModel.replaceAll(
+      ".",
+      "",
+    )}/chat/completions?api-version=${AZURE_API_VERSION}&api-key=${AZURE_API_KEY}`;
+  } else {
+    fetchUrl = `${baseUrl}/${openaiPath}`;
+  }
+
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -57,12 +75,7 @@ export async function requestOpenai(req: NextRequest) {
   // #1815 try to refuse gpt4 request
   if (DISABLE_GPT4 && req.body) {
     try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody);
-
-      if ((jsonBody?.model ?? "").includes("gpt-4")) {
+      if (reqModel.includes("gpt-4")) {
         return NextResponse.json(
           {
             error: true,
@@ -78,8 +91,35 @@ export async function requestOpenai(req: NextRequest) {
     }
   }
 
-  try {
+  async function logFetch() {
+    console.log(
+      `[Request][${req.method}] ${fetchUrl} ${JSON.stringify(jsonBody)}`,
+    );
     const res = await fetch(fetchUrl, fetchOptions);
+    const reader = res.clone().body?.getReader();
+    let content = "";
+    while (reader) {
+      const { done, value } = await reader.read();
+      let msgList;
+      try {
+        msgList = new TextDecoder().decode(value).split("\n");
+        msgList = msgList
+          .map((msg) => msg.replace("data:", "").trim())
+          .filter((msg) => msg);
+        for (let msg of msgList) {
+          const data = JSON.parse(msg);
+          const delta = data?.choices?.[0]?.delta?.content || "";
+          content += delta;
+        }
+      } catch (e) {}
+      if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
+    }
+    console.log(`[Response][${req.method}] ${content}`);
+    return res;
+  }
+
+  try {
+    const res = await logFetch();
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);

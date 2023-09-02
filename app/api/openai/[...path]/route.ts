@@ -24,7 +24,7 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[OpenAI Route] params ", params);
+  // console.log("[OpenAI Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
@@ -57,7 +57,9 @@ async function handle(
 
     // list models
     if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
-      const resJson = (await response.json()) as OpenAIListModelResponse;
+      const resJson = (await response
+        .clone()
+        .json()) as OpenAIListModelResponse;
       const availableModels = getModels(resJson);
       return NextResponse.json(availableModels, {
         status: response.status,
@@ -67,6 +69,7 @@ async function handle(
     return response;
   } catch (e) {
     console.error("[OpenAI] ", e);
+    console.trace(e);
     return NextResponse.json(prettyObject(e));
   }
 }
