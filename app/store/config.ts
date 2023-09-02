@@ -21,7 +21,7 @@ export enum Theme {
 }
 
 export const DEFAULT_CONFIG = {
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
@@ -148,7 +148,7 @@ export const useAppConfig = create<ChatConfigStore>()(
     }),
     {
       name: StoreKey.Config,
-      version: 3.7,
+      version: 3.8,
       migrate(persistedState, version) {
         const state = persistedState as ChatConfig;
 
@@ -173,6 +173,10 @@ export const useAppConfig = create<ChatConfigStore>()(
 
         if (version < 3.7) {
           state.enableAutoGenerateTitle = true;
+        }
+
+        if (version < 3.8) {
+          state.modelConfig.model = DEFAULT_MODELS[0].name;
         }
 
         return state as any;
