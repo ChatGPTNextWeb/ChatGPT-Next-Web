@@ -96,25 +96,25 @@ export async function requestOpenai(req: NextRequest) {
       `[Request][${req.method}] ${fetchUrl} ${JSON.stringify(jsonBody)}`,
     );
     const res = await fetch(fetchUrl, fetchOptions);
-    const reader = res.clone().body?.getReader();
-    let content = "";
-    while (reader) {
-      const { done, value } = await reader.read();
-      let msgList;
-      try {
-        msgList = new TextDecoder().decode(value).split("\n");
-        msgList = msgList
-          .map((msg) => msg.replace("data:", "").trim())
-          .filter((msg) => msg);
-        for (let msg of msgList) {
-          const data = JSON.parse(msg);
-          const delta = data?.choices?.[0]?.delta?.content || "";
-          content += delta;
-        }
-      } catch (e) {}
-      if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
-    }
-    console.log(`[Response][${req.method}] ${content}`);
+    // const reader = res.clone().body?.getReader();
+    // let content = "";
+    // while (reader) {
+    //   const { done, value } = await reader.read();
+    //   let msgList;
+    //   try {
+    //     msgList = new TextDecoder().decode(value).split("\n");
+    //     msgList = msgList
+    //       .map((msg) => msg.replace("data:", "").trim())
+    //       .filter((msg) => msg);
+    //     for (let msg of msgList) {
+    //       const data = JSON.parse(msg);
+    //       const delta = data?.choices?.[0]?.delta?.content || "";
+    //       content += delta;
+    //     }
+    //   } catch (e) {}
+    //   if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
+    // }
+    // console.log(`[Response][${req.method}] ${content}`);
     return res;
   }
 
