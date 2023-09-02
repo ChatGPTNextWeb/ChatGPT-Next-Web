@@ -91,11 +91,10 @@ export async function requestOpenai(req: NextRequest) {
     }
   }
 
-  async function logFetch() {
-    console.log(
-      `[Request][${req.method}] ${fetchUrl} ${JSON.stringify(jsonBody)}`,
-    );
+  try {
     const res = await fetch(fetchUrl, fetchOptions);
+    // console.log(`[Request][${req.method}] ${fetchUrl} ${JSON.stringify(jsonBody)}`);
+    // const res = await fetch(fetchUrl, fetchOptions);
     // const reader = res.clone().body?.getReader();
     // let content = "";
     // while (reader) {
@@ -115,11 +114,6 @@ export async function requestOpenai(req: NextRequest) {
     //   if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
     // }
     // console.log(`[Response][${req.method}] ${content}`);
-    return res;
-  }
-
-  try {
-    const res = await logFetch();
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
