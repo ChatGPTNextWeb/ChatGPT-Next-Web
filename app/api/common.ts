@@ -42,17 +42,10 @@ export async function requestOpenai(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  let reqJson;
-  let reqModel = "";
-  if (req.body) {
-    try {
-      reqJson = await req.text();
-      reqJson = JSON.parse(reqJson);
-      reqModel = reqJson?.model ?? "";
-    } catch {
-      reqJson = {};
-    }
-  }
+  const content = await req.clone().text();
+  const reqJson = JSON.parse(content);
+  const reqModel = reqJson?.model ?? "";
+
   let fetchUrl;
   if (reqModel.startsWith("Azure")) {
     fetchUrl = `${PROTOCOL}://${AZURE_BASE_URL}/openai/deployments/${reqModel.replaceAll(
@@ -100,14 +93,13 @@ export async function requestOpenai(req: NextRequest) {
     }
   }
 
-  try {
-    console.log(
-      `[Request][${req.method}] ${fetchUrl} ${JSON.stringify(reqJson)}`,
-    );
-    const res = await fetch(fetchUrl, fetchOptions);
+  const logResponse = async (res: Response) => {
     const reader = res.clone().body?.getReader();
+    if (!reader) {
+      return;
+    }
     let content = "";
-    while (reader) {
+    while (true) {
       const { done, value } = await reader.read();
       let msgList;
       try {
@@ -124,6 +116,14 @@ export async function requestOpenai(req: NextRequest) {
       if (done || !msgList || msgList.indexOf("[DONE]") !== -1) break;
     }
     console.log(`[Response][${req.method}] ${content}`);
+  };
+
+  try {
+    console.log(
+      `[Request][${req.method}] ${fetchUrl} ${JSON.stringify(reqJson)}`,
+    );
+    const res = await fetch(fetchUrl, fetchOptions);
+    logResponse(res);
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
