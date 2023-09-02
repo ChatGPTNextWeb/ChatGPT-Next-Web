@@ -57,9 +57,7 @@ async function handle(
 
     // list models
     if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
-      const resJson = (await response
-        .clone()
-        .json()) as OpenAIListModelResponse;
+      const resJson = (await response.json()) as OpenAIListModelResponse;
       const availableModels = getModels(resJson);
       return NextResponse.json(availableModels, {
         status: response.status,
