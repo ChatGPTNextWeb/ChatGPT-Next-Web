@@ -42,20 +42,6 @@ export async function requestOpenai(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  const content = await req.clone().text();
-  const reqJson = JSON.parse(content);
-  const reqModel = reqJson?.model ?? "";
-
-  let fetchUrl;
-  if (reqModel.startsWith("Azure")) {
-    fetchUrl = `${PROTOCOL}://${AZURE_BASE_URL}/openai/deployments/${reqModel.replaceAll(
-      ".",
-      "",
-    )}/chat/completions?api-version=${AZURE_API_VERSION}&api-key=${AZURE_API_KEY}`;
-  } else {
-    fetchUrl = `${baseUrl}/${openaiPath}`;
-  }
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -73,6 +59,21 @@ export async function requestOpenai(req: NextRequest) {
     duplex: "half",
     signal: controller.signal,
   };
+
+  const body = await req.text();
+  fetchOptions.body = body;
+  const reqJson = JSON.parse(body);
+  const reqModel = reqJson?.model ?? "";
+
+  let fetchUrl;
+  if (reqModel.startsWith("Azure")) {
+    fetchUrl = `${PROTOCOL}://${AZURE_BASE_URL}/openai/deployments/${reqModel.replaceAll(
+      ".",
+      "",
+    )}/chat/completions?api-version=${AZURE_API_VERSION}&api-key=${AZURE_API_KEY}`;
+  } else {
+    fetchUrl = `${baseUrl}/${openaiPath}`;
+  }
 
   // #1815 try to refuse gpt4 request
   if (DISABLE_GPT4 && req.body) {
