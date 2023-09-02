@@ -25,10 +25,7 @@
   width: 50%;
 }
 
-.chat-input-table-actions {
-  display: flex;
-  flex-direction: row-reverse;
-}
+
 
 .chat-input-speaker {
   cursor: pointer;
@@ -36,18 +33,6 @@
   &:hover {
     text-decoration: underline;
   }
-}
-
-.chat-input-add-button {
-  background-color: var(--primary);
-  color: white;
-  border-radius: 10px;
-  width: 100%;
-  height: 30px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 
@@ -97,11 +82,32 @@
 }
 
 
+.chat-input-button-add {
+  @extend .chat-input-send-record;
+  position: unset;
+  background-color: rgb(155, 154, 154);
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+}
+
+
 .table-border {
   border: 2px solid #ddd;
 
-  .table-border-header {
+  .table-header {
     font-weight: bold;
     font-size: medium;
   }
+}
+
+.table-actions {
+  display: flex;
+  flex-direction: row;
 }

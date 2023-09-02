@@ -274,6 +274,7 @@ export class ChatUtility {
 
   static getFirstNWords(text: string, number: number): string {
     var words = this.getWordsNumber(text);
+
     if (words <= number) {
       return text;
     }

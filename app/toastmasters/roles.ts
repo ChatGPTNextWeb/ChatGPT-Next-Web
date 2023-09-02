@@ -317,7 +317,39 @@ Are you ready to answer? If you understand, answer yes.
 
 export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
   {
-    role_index: 0,
+    role_index: 0, // role_index is the index of this item in the array
+    role: ToastmastersRoles.TableTopicsEvaluator,
+    content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+    Evaluate the speech for all speakers.
+    Your evaluation should:
+    1). Bold keywords using markdown when present your answer.
+    2). Each speaker's evaluation should be about 50 words.
+    `,
+  },
+  {
+    role_index: 1,
+    role: ToastmastersRoles.Grammarian + "-Count",
+    content: `You are the ${ToastmastersRoles.Grammarian}.
+    1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
+    2). Only response the table, 
+    3). Do not include any extra description and extra words. 
+    `,
+  },
+  {
+    role_index: 2,
+    role: ToastmastersRoles.Grammarian + "-Analysis",
+    content: `You are the ${ToastmastersRoles.Grammarian}. 
+    Evaluate the speech for all speakers.
+    and to analysis your stats in your table. 
+    Your evaluation should:
+    1). Don't make things up, all your quoted sentence must from the speaker's speech.
+    2). Bold keywords using markdown when present your answer.
+    3). Provide addvice to the speaker.
+    4). Each speaker's evaluation should be about 50 words.
+    `,
+  },
+  {
+    role_index: 3,
     role: ToastmastersRoles.AhCounter + "-Count",
     content: ` 
     You are the ${ToastmastersRoles.AhCounter}. 
@@ -327,13 +359,15 @@ export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
     `,
   },
   {
-    role_index: 1,
+    role_index: 4,
     role: ToastmastersRoles.AhCounter + "-Analysis",
     content: ` 
-    You are the ${ToastmastersRoles.AhCounter}. To analysis your stats in your table, you should:
+    You are the ${ToastmastersRoles.AhCounter}. 
+    To analysis your stats in your table. 
+    You should:
     1). Generate a summary with the Ah-Counter's tone according to the table
     2). Bold keywords using markdown when present your answer.
-    3). About 200 words in total.
+    3). Each speaker's evaluation should be about 50 words.
     `,
   },
 ];
