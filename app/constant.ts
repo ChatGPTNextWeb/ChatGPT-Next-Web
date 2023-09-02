@@ -68,19 +68,19 @@ export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
 export const DEFAULT_MODELS = [
   {
     name: "Azure-gpt-3.5-turbo",
-    avalilable: true,
+    available: true,
   },
   {
     name: "Azure-gpt-3.5-turbo-16k",
-    avalilable: true,
+    available: true,
   },
   {
     name: "Azure-gpt-4",
-    avalilable: true,
+    available: true,
   },
   {
     name: "Azure-gpt-4-32k",
-    avalilable: true,
+    available: true,
   },
   // {
   //   name: "gpt-4",
