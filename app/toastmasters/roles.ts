@@ -9,12 +9,11 @@ export enum ToastmastersRoles {
 }
 
 export interface ToastmastersRolePrompt {
-  role_index: number; // TODO: remove it
   role: string;
-  content: string; // TODO: remove it
+  contentWithSetting: (setting: ToastmastersRoleSetting) => string;
 
-  // TODO: make it necessary
-  contentWithSetting?: (setting: ToastmastersRoleSetting) => string;
+  role_index: number; // TODO: remove it
+  content: string; // TODO: remove it
   words?: number; // TODO: remove it
 }
 
@@ -40,11 +39,13 @@ export const ToastmastersTTMaster: ToastmastersRolePrompt[] = [
     content: `To give an introduction about this topic.
     Your answer must:
     1). About 100 words.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 1,
     role: "Top 10 Questions",
     content: `To give 10 questions about this topic used in table topics session.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 2,
@@ -52,6 +53,7 @@ export const ToastmastersTTMaster: ToastmastersRolePrompt[] = [
     content: `To give an advertisement about this topic.
     Your answer must:
     1). About 100 words.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
 ];
 
@@ -66,6 +68,7 @@ export const ToastmastersTTSpeaker: ToastmastersRolePrompt[] = [
     role: ToastmastersRoles.TableTopicsSpeaker,
     content: `You are the ${ToastmastersRoles.TableTopicsSpeaker}. 
     Give me an impromptu speech about the question.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 1,
@@ -73,18 +76,21 @@ export const ToastmastersTTSpeaker: ToastmastersRolePrompt[] = [
     content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
     Evaluate your impromptu speech.
     Your evaluation should include the relevance between the Speech and the Question.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 2,
     role: ToastmastersRoles.Grammarian,
     content: `You are the ${ToastmastersRoles.Grammarian}. 
     Evaluate your impromptu speech.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 3,
     role: ToastmastersRoles.AhCounter,
     content: `You are the ${ToastmastersRoles.AhCounter}. 
     Evaluate your impromptu speech.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 4,
@@ -92,6 +98,7 @@ export const ToastmastersTTSpeaker: ToastmastersRolePrompt[] = [
     content: `You are the ${ToastmastersRoles.GeneralEvaluator}. 
     Evaluate the above 3 roles' speech,
     including ${ToastmastersRoles.TableTopicsEvaluator}, ${ToastmastersRoles.Grammarian}, and ${ToastmastersRoles.AhCounter}.`,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
 ];
 
@@ -122,6 +129,7 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
     2). Bold keywords using markdown when present your answer.
     3). About 200 words or 2 minutes.
     `,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 1,
@@ -134,6 +142,7 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
     3). Bold keywords using markdown when present your answer.
     4). About 100 words.
     `,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 2,
@@ -146,6 +155,7 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
     2). Bold keywords using markdown when present your answer.
     3). About 100 words.
     `,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
   {
     role_index: 3,
@@ -157,6 +167,7 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
     2). Bold keywords using markdown when present your answer.
     3). About 500 words.
     `,
+    contentWithSetting: (setting: ToastmastersRoleSetting) => "",
   },
 ];
 
@@ -176,10 +187,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role_index: 0, // not used now
       role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
-      content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      1). Give me a table which presenting the keywords used in each person's speech
-      2). Only response the table, 
-      3). Do not include any extra description and extra words. 
+      content: `
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
@@ -191,20 +199,17 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role_index: 1, // role_index is the index of this item in the array
       role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
-      content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      Evaluate the speech for all speakers.
-      Your evaluation should:
-      1). Refer some of the keywords in the table in your evaluation.
-      2). Bold keywords using markdown when present your answer.
-      3). Each speaker's evaluation should be about 50 words.
+      content: `
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
       Evaluate the speech for all speakers.
       Your evaluation should:
-      1). Refer some of the keywords in the table in your evaluation.
-      2). Bold keywords using markdown when present your answer.
-      3). Each speaker's evaluation should be about ${setting.words} words.
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Refer some of the keywords in the table in your evaluation.
+      3). Bold keywords using markdown when present your answer.
+      4). Provide addvice to the speaker based on his speech.
+      5). Each speaker's evaluation should be about ${setting.words} words.
       `,
     },
   ],
@@ -212,10 +217,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role_index: 2,
       role: ToastmastersRoles.Grammarian + "-Count",
-      content: `You are the ${ToastmastersRoles.Grammarian}.
-      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
-      2). Only response the table, 
-      3). Do not include any extra description and extra words. 
+      content: `
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the ${ToastmastersRoles.Grammarian}.
@@ -227,13 +229,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role_index: 3,
       role: ToastmastersRoles.Grammarian + "-Evaluation",
-      content: `You are the ${ToastmastersRoles.Grammarian}. 
-      Evaluate the speech for all speakers and to analysis your stats in your table. 
-      Your evaluation should:
-      1). Don't make things up, all your quoted sentence must from the speaker's speech.
-      2). Bold keywords using markdown when present your answer.
-      3). Provide addvice to the speaker.
-      4). Each speaker's evaluation should be about 50 words.
+      content: `
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the ${ToastmastersRoles.Grammarian}. 
@@ -241,8 +237,8 @@ export const ToastmastersTTEvaluatorRecord: Record<
       Your evaluation should:
       1). Don't make things up, all your quoted sentence must from the speaker's speech.
       2). Bold keywords using markdown when present your answer.
-      3). Provide addvice to the speaker.
-      4). Each speaker's evaluation should be about 50 words.
+      3). Provide addvice to the speaker based on his speech.
+      4). Each speaker's evaluation should be about ${setting.words} words.
       `,
     },
   ],
@@ -251,10 +247,6 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role_index: 4,
       role: ToastmastersRoles.AhCounter + "-Count",
       content: `
-      You are the ${ToastmastersRoles.AhCounter}.
-      1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
-      2). Only response the table,
-      3). Do not include any extra description and extra words.
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the ${ToastmastersRoles.AhCounter}.
@@ -267,12 +259,6 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role_index: 5,
       role: ToastmastersRoles.AhCounter + "-Evaluation",
       content: `
-      You are the ${ToastmastersRoles.AhCounter}.
-      To analysis your stats in your table.
-      You should:
-      1). Generate a summary with the Ah-Counter's tone according to the table
-      2). Bold keywords using markdown when present your answer.
-      3). Each speaker's evaluation should be about 50 words.
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the ${ToastmastersRoles.AhCounter}.
@@ -280,7 +266,8 @@ export const ToastmastersTTEvaluatorRecord: Record<
       You should:
       1). Generate a summary with the Ah-Counter's tone according to the table
       2). Bold keywords using markdown when present your answer.
-      3). Each speaker's evaluation should be about ${setting.words} words.
+      3). Provide addvice to the speaker based on his speech.
+      4). Each speaker's evaluation should be about ${setting.words} words.
       `,
     },
   ],
@@ -288,11 +275,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role_index: 3,
       role: "Revised Speech",
-      content: `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
-      Help revise, polish and improve the speech for all speakers.
-      You should:
-      1). Don't say who you are, just provide your revised speech.
-      2). Bold keywords using markdown when present your answer.
+      content: `
       `,
       contentWithSetting: (setting: ToastmastersRoleSetting) =>
         `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
@@ -306,9 +289,10 @@ export const ToastmastersTTEvaluatorRecord: Record<
   ],
 };
 
+// 100 words is about 48s speech
 export const ToastmastersSettings: Record<string, ToastmastersRoleSetting> = {
   [ToastmastersRoles.TableTopicsEvaluator]: {
-    words: 50,
+    words: 100,
   },
   [ToastmastersRoles.Grammarian]: {
     words: 50,
