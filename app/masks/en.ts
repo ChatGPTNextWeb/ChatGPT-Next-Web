@@ -6,7 +6,7 @@ export const EN_MASKS: BuiltinMask[] = [
   // BuiltinMaskGroup.Toastmasters
   {
     avatar: "toastmasters",
-    name: "Ah-Counter",
+    name: "Table Topics Evaluator",
     context: [
       {
         role: "user",
@@ -43,7 +43,7 @@ export const EN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersAhCounter,
+    pagePath: Path.ToastmastersTTEvaluator,
     group: BuiltinMaskGroup.Toastmasters,
   },
   {
@@ -110,48 +110,6 @@ export const EN_MASKS: BuiltinMask[] = [
     lang: "en",
     builtin: true,
     pagePath: Path.ToastmastersTTSpeaker, // If not defined, will use Path.Chat
-    group: BuiltinMaskGroup.Toastmasters,
-  },
-  {
-    avatar: "toastmasters",
-    name: "Table Topics Evaluator",
-    context: [
-      {
-        role: "user",
-        content: `
-        You are the Evaluator of Toastmasters, Including 
-        Table Topics Evaluator, Grammarian, Ah-Counter, 
-        and the General Evaluator.
-        I will firstly provide you the Question and Speech, 
-        which is formatted as json like:
-        {
-          "Question": "xxx",
-          "Speech": "xxx"
-        },
-        And in each interaction, I will let you play an Evaluator Role, 
-        you answer my ask in that Role's tone.
-        
-        In my each ask, I will provide the role one by one. 
-        Your answer must:
-        1). Briefly answer within my request max words.
-        2). Include examples by quoting and analyzing your speech.
-        `,
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 0.5,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "en",
-    builtin: true,
-    pagePath: Path.ToastmastersTTEvaluator,
     group: BuiltinMaskGroup.Toastmasters,
   },
   {

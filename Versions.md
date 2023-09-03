@@ -3,6 +3,10 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v3.3.0
+publish time: 2023-09-04
+ - TTEvaluator support multi speakers
+
 ## v3.2.3
 publish time: 2023-08-23
  - Optimize Mask Page
