@@ -20,6 +20,10 @@ import { estimateTokenLength } from "../utils/token";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import {
+  ToastmastersRoleSetting,
+  ToastmastersSettings,
+} from "../toastmasters/roles";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -78,6 +82,7 @@ export interface ChatSession {
 
   inputTable: InputTableRow[];
   inputRole: string;
+  inputSetting: Record<string, ToastmastersRoleSetting>;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -104,6 +109,7 @@ function createEmptySession(): ChatSession {
     inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
     inputTable: [],
     inputRole: "Table Topics Evaluator", // TODO
+    inputSetting: ToastmastersSettings,
   };
 }
 

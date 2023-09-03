@@ -81,11 +81,16 @@
   border: blue 2px solid;
 }
 
-
-.chat-input-button-add {
-  border: #ddd 2px solid;
+.chat-input-button-add-row {
+  display: flex;
+  justify-content: space-between;
   margin-left: 20px;
+  margin-right: 20px;
   margin-bottom: 10px;
+
+  .chat-input-button-add {
+    border: #ddd 2px solid;
+  }
 }
 
 .table-container {

@@ -5,13 +5,17 @@ export enum ToastmastersRoles {
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
   GeneralEvaluator = "General Evaluator",
+  RevisedSpeech = "Revised Speech",
 }
 
 export interface ToastmastersRolePrompt {
-  role_index: number;
+  role_index: number; // TODO: remove it
   role: string;
-  content: string;
-  words?: number;
+  content: string; // TODO: remove it
+
+  // TODO: make it necessary
+  contentWithSetting?: (setting: ToastmastersRoleSetting) => string;
+  words?: number; // TODO: remove it
 }
 
 export class InputSubmitStatus {
@@ -164,8 +168,8 @@ export const ToastmastersTTEvaluator: ToastmastersRolePrompt[] = [
 ];
 
 // TODO: start
-export class ToastmastersRoleSetting {
-  words: number = 100;
+export interface ToastmastersRoleSetting {
+  words: number;
 }
 
 class ToastmastersTTEvaluatorClass {
@@ -328,6 +332,12 @@ export const ToastmastersAhCounterRecord: Record<
       2). Only response the table, 
       3). Do not include any extra description and extra words. 
       `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      1). Give me a table which presenting the keywords used in each person's speech
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
     },
     {
       role_index: 1, // role_index is the index of this item in the array
@@ -339,6 +349,14 @@ export const ToastmastersAhCounterRecord: Record<
       2). Bold keywords using markdown when present your answer.
       3). Each speaker's evaluation should be about 50 words.
       `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      Evaluate the speech for all speakers.
+      Your evaluation should:
+      1). Refer some of the keywords in the table in your evaluation.
+      2). Bold keywords using markdown when present your answer.
+      3). Each speaker's evaluation should be about ${setting.words} words.
+      `,
     },
   ],
   [ToastmastersRoles.Grammarian]: [
@@ -346,6 +364,12 @@ export const ToastmastersAhCounterRecord: Record<
       role_index: 2,
       role: ToastmastersRoles.Grammarian + "-Count",
       content: `You are the ${ToastmastersRoles.Grammarian}.
+      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.Grammarian}.
       1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
       2). Only response the table, 
       3). Do not include any extra description and extra words. 
@@ -362,33 +386,56 @@ export const ToastmastersAhCounterRecord: Record<
       3). Provide addvice to the speaker.
       4). Each speaker's evaluation should be about 50 words.
       `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.Grammarian}. 
+      Evaluate the speech for all speakers and to analysis your stats in your table. 
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to the speaker.
+      4). Each speaker's evaluation should be about 50 words.
+      `,
     },
   ],
   [ToastmastersRoles.AhCounter]: [
     {
       role_index: 4,
       role: ToastmastersRoles.AhCounter + "-Count",
-      content: ` 
-      You are the ${ToastmastersRoles.AhCounter}. 
+      content: `
+      You are the ${ToastmastersRoles.AhCounter}.
       1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
-      2). Only response the table, 
-      3). Do not include any extra description and extra words. 
+      2). Only response the table,
+      3). Do not include any extra description and extra words.
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
+      2). Only response the table,
+      3). Do not include any extra description and extra words.
       `,
     },
     {
       role_index: 5,
       role: ToastmastersRoles.AhCounter + "-Evaluation",
-      content: ` 
-      You are the ${ToastmastersRoles.AhCounter}. 
-      To analysis your stats in your table. 
+      content: `
+      You are the ${ToastmastersRoles.AhCounter}.
+      To analysis your stats in your table.
       You should:
       1). Generate a summary with the Ah-Counter's tone according to the table
       2). Bold keywords using markdown when present your answer.
       3). Each speaker's evaluation should be about 50 words.
       `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      To analysis your stats in your table.
+      You should:
+      1). Generate a summary with the Ah-Counter's tone according to the table
+      2). Bold keywords using markdown when present your answer.
+      3). Each speaker's evaluation should be about ${setting.words} words.
+      `,
     },
   ],
-  "Revised Speech": [
+  [ToastmastersRoles.RevisedSpeech]: [
     {
       role_index: 3,
       role: "Revised Speech",
@@ -398,8 +445,31 @@ export const ToastmastersAhCounterRecord: Record<
       1). Don't say who you are, just provide your revised speech.
       2). Bold keywords using markdown when present your answer.
       `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
+      Help revise, polish and improve the speech for all speakers.
+      You should:
+      1). Don't say who you are, just provide your revised speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Each speaker's evaluation should be about ${setting.words} words.
+      `,
     },
   ],
+};
+
+export const ToastmastersSettings: Record<string, ToastmastersRoleSetting> = {
+  [ToastmastersRoles.TableTopicsEvaluator]: {
+    words: 50,
+  },
+  [ToastmastersRoles.Grammarian]: {
+    words: 50,
+  },
+  [ToastmastersRoles.AhCounter]: {
+    words: 50,
+  },
+  [ToastmastersRoles.RevisedSpeech]: {
+    words: 100,
+  },
 };
 
 export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [

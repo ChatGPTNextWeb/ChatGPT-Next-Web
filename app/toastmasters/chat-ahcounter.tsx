@@ -4,7 +4,14 @@ import { useChatStore } from "../store";
 
 import styles_chat from "../components/chat.module.scss";
 import styles_tm from "./toastmasters.module.scss";
-import { List, showPrompt, showToast } from "../components/ui-lib";
+import {
+  List,
+  ListItem,
+  showPrompt,
+  showToast,
+  showModal,
+  Input,
+} from "../components/ui-lib";
 import { IconButton } from "../components/button";
 
 import {
@@ -13,6 +20,7 @@ import {
   ToastmastersAhCounterRecord as ToastmastersRecord,
   ToastmastersRolePrompt,
   InputSubmitStatus,
+  ToastmastersRoles,
 } from "./roles";
 import {
   ChatTitle,
@@ -23,7 +31,7 @@ import {
   ChatInputName,
   ChatUtility,
 } from "./chat-common";
-import { InputTableRow } from "../store/chat";
+import { ChatSession, InputTableRow } from "../store/chat";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -33,6 +41,7 @@ import CloseIcon from "../icons/close.svg";
 import RenameIcon from "../icons/rename.svg";
 import CopyIcon from "../icons/copy.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
+import SettingsIcon from "../icons/settings.svg";
 
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -53,8 +62,6 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-
-import Multiselect from "multiselect-react-dropdown";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -270,12 +277,20 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        <IconButton
-          icon={<AddIcon />}
-          text="Add Speaker"
-          onClick={addItem}
-          className={styles_tm["chat-input-button-add"]}
-        />
+        <div className={styles_tm["chat-input-button-add-row"]}>
+          <IconButton
+            icon={<AddIcon />}
+            text="Add Speaker"
+            onClick={addItem}
+            className={styles_tm["chat-input-button-add"]}
+          />
+          <IconButton
+            icon={<SettingsIcon />}
+            text="Settings"
+            onClick={() => ToastmastersSettings(session)}
+            className={styles_tm["chat-input-button-add"]}
+          />
+        </div>
 
         <div style={{ padding: "0px 20px" }}>
           <CollapsibleTable />
@@ -309,6 +324,12 @@ const ChatInputAddSubmit = (props: {
 
   const [submitting, setSubmitting] = useState(false);
 
+  const [inputRole, setInputRole] = useState(session.inputRole);
+
+  const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputRole((event.target as HTMLInputElement).value);
+  };
+
   const doSubmit = async () => {
     var checkInputResult = props.checkInput();
     if (!checkInputResult.canSubmit) {
@@ -333,27 +354,16 @@ const ChatInputAddSubmit = (props: {
     chatStore.resetSession();
 
     chatStore.onUserInput(checkInputResult.guidance);
-
-    toastmastersRolePrompts.forEach((element: ToastmastersRolePrompt) => {
-      chatStore.getIsFinished().then(() => {
-        var ask = element.content;
-        chatStore.onUserInput(ask);
-      });
-    });
-
-    // the last role is doing
-    chatStore.getIsFinished().then(() => {
-      setSubmitting(false);
-    });
+    for (const item of toastmastersRolePrompts) {
+      await chatStore.getIsFinished();
+      var ask = item.contentWithSetting(session.inputSetting[inputRole]); // TODO: make it necessary
+      chatStore.onUserInput(ask);
+    }
+    await chatStore.getIsFinished();
+    setSubmitting(false);
 
     // if (!isMobileScreen) inputRef.current?.focus();
     // setAutoScroll(true);
-  };
-
-  const [inputRole, setInputRole] = useState(session.inputRole);
-
-  const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputRole((event.target as HTMLInputElement).value);
   };
 
   return (
@@ -398,3 +408,34 @@ const ChatInputAddSubmit = (props: {
     </div>
   );
 };
+
+// TODO: when confirm, update the setting
+function ToastmastersSettings(session: ChatSession) {
+  var setting = session.inputSetting;
+  showModal({
+    title: "Toastmasters Settings",
+    children: (
+      <div>
+        {Object.entries(ToastmastersRecord).map(([role]) => {
+          return (
+            <List key={role}>
+              <ListItem title={role}></ListItem>
+              <ListItem
+                title=""
+                subTitle={"- Evaluation Words for each Speaker"}
+              >
+                <Input
+                  rows={1}
+                  defaultValue={setting[role].words}
+                  onChange={(e) =>
+                    (setting[role].words = parseInt(e.currentTarget.value))
+                  }
+                ></Input>
+              </ListItem>
+            </List>
+          );
+        })}
+      </div>
+    ),
+  });
+}
