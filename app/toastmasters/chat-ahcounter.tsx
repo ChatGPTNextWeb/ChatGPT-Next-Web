@@ -10,6 +10,7 @@ import { IconButton } from "../components/button";
 import {
   ToastmastersAhCounterGuidance as ToastmastersRoleGuidance,
   ToastmastersAhCounter as ToastmastersRoleOptions,
+  ToastmastersAhCounterRecord as ToastmastersRecord,
   ToastmastersRolePrompt,
   InputSubmitStatus,
 } from "./roles";
@@ -22,7 +23,7 @@ import {
   ChatInputName,
   ChatUtility,
 } from "./chat-common";
-import { InputBlock } from "../store/chat";
+import { InputTableRow } from "../store/chat";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -47,6 +48,11 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { text } from "stream/consumers";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 import Multiselect from "multiselect-react-dropdown";
 
@@ -63,36 +69,22 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
 
-  const [toastmastersEvaluators, setToastmastersEvaluators] = useState<
-    ToastmastersRolePrompt[]
-  >([]);
-
-  // 进来时, 读取上次的输入
-  useEffect(() => {
-    var roles = session.inputs.roles?.map(
-      (index: number) => ToastmastersRoleOptions[index],
-    );
-    setToastmastersEvaluators(roles);
-  }, []);
-
   const checkInput = (): InputSubmitStatus => {
     var speakerInputs: string[] = [];
 
-    const isAllValid = session.inputBlocks.every((element) => {
-      let question = element.question.text.trim();
-      let speech = element.speech.text.trim();
+    const isAllValid = session.inputTable.every((row) => {
+      let question = row.question.text.trim();
+      let speech = row.speech.text.trim();
       if (question === "" || speech === "") {
-        showToast(
-          `${element.speaker}: Question or Speech is empty, please check`,
-        );
+        showToast(`${row.speaker}: Question or Speech is empty, please check`);
         return false;
       }
 
       var speakerInput: string = `
       {
-        "Speaker": "${element.speaker}",
-        "Question": "${element.question.text}",
-        "Speech": "${element.speech.text}"
+        "Speaker": "${row.speaker}",
+        "Question": "${row.question.text}",
+        "Speech": "${row.speech.text}"
       }
       `;
       speakerInputs.push(speakerInput);
@@ -113,13 +105,26 @@ export function Chat() {
     return new InputSubmitStatus(true, guidance);
   };
 
-  const deleteItem = (row_index: number) => {
-    chatStore.updateCurrentSession((session) =>
-      session.inputBlocks.splice(row_index, 1),
+  const addItem = () => {
+    setAutoScroll(false);
+    const newItem: InputTableRow = {
+      speaker: `Speaker${session.inputTable.length + 1}`,
+      question: { text: "", time: 0 },
+      speech: { text: "", time: 0 },
+    };
+    var newInputBlocks = [...session.inputTable, newItem];
+    chatStore.updateCurrentSession(
+      (session) => (session.inputTable = newInputBlocks),
     );
   };
 
-  const renameSpeaker = (row: InputBlock) => {
+  const deleteItem = (row_index: number) => {
+    chatStore.updateCurrentSession((session) =>
+      session.inputTable.splice(row_index, 1),
+    );
+  };
+
+  const renameSpeaker = (row: InputTableRow) => {
     showPrompt("Rename", row.speaker).then((newName) => {
       if (newName && newName !== row.speaker) {
         chatStore.updateCurrentSession((session) => (row.speaker = newName));
@@ -127,7 +132,7 @@ export function Chat() {
     });
   };
 
-  function CollapsibleTable(props: { inputBlocks: InputBlock[] }) {
+  function CollapsibleTable() {
     return (
       <TableContainer component={Paper}>
         <Table
@@ -174,7 +179,7 @@ export function Chat() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.inputBlocks.map((row, index) => (
+            {session.inputTable.map((row, index) => (
               <Row key={index} row={row} row_index={index} />
             ))}
           </TableBody>
@@ -183,7 +188,7 @@ export function Chat() {
     );
   }
 
-  function Row(props: { row: InputBlock; row_index: number }) {
+  function Row(props: { row: InputTableRow; row_index: number }) {
     const { row, row_index } = props;
     const [open, setOpen] = React.useState(false);
 
@@ -265,21 +270,26 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
+        <IconButton
+          icon={<AddIcon />}
+          text="Add Speaker"
+          onClick={addItem}
+          className={styles_tm["chat-input-button-add"]}
+        />
+
         <div style={{ padding: "0px 20px" }}>
-          <CollapsibleTable inputBlocks={session.inputBlocks} />
+          <CollapsibleTable />
         </div>
 
         <ChatInputAddSubmit
           roleOptions={ToastmastersRoleOptions}
-          selectedValues={toastmastersEvaluators}
-          updateParent={setToastmastersEvaluators}
           checkInput={checkInput}
           updateAutoScroll={setAutoScroll}
         />
 
         <ChatResponse
           scrollRef={scrollRef}
-          toastmastersRolePrompts={toastmastersEvaluators}
+          toastmastersRolePrompts={ToastmastersRecord[session.inputRole]}
         />
       </div>
     </div>
@@ -288,8 +298,6 @@ export function Chat() {
 
 const ChatInputAddSubmit = (props: {
   roleOptions: ToastmastersRolePrompt[];
-  selectedValues: ToastmastersRolePrompt[];
-  updateParent: (selectRoles: ToastmastersRolePrompt[]) => void;
   checkInput: () => InputSubmitStatus;
   updateAutoScroll: (status: boolean) => void;
 }) => {
@@ -299,21 +307,7 @@ const ChatInputAddSubmit = (props: {
     state.currentSessionIndex,
   ]);
 
-  const roleSelectRef = useRef<Multiselect>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  const addItem = () => {
-    props.updateAutoScroll(false);
-    const newItem: InputBlock = {
-      speaker: `Speaker${session.inputBlocks.length + 1}`,
-      question: { text: "", time: 0 },
-      speech: { text: "", time: 0 },
-    };
-    var newInputBlocks = [...session.inputBlocks, newItem];
-    chatStore.updateCurrentSession(
-      (session) => (session.inputBlocks = newInputBlocks),
-    );
-  };
 
   const doSubmit = async () => {
     var checkInputResult = props.checkInput();
@@ -321,7 +315,7 @@ const ChatInputAddSubmit = (props: {
       return;
     }
 
-    var toastmastersRolePrompts = roleSelectRef.current?.getSelectedItems();
+    var toastmastersRolePrompts = ToastmastersRecord[inputRole];
 
     let isEnoughCoins = await chatStore.isEnoughCoins(
       toastmastersRolePrompts.length + 1,
@@ -330,13 +324,10 @@ const ChatInputAddSubmit = (props: {
       return;
     }
     setSubmitting(true);
-    props.updateParent(toastmastersRolePrompts);
     props.updateAutoScroll(true);
 
     // 保存输入: 于是ChatResponse可以使用
-    session.inputs.roles = toastmastersRolePrompts?.map(
-      (v: ToastmastersRolePrompt) => v.role_index,
-    );
+    session.inputRole = inputRole;
 
     // reset status from 0
     chatStore.resetSession();
@@ -359,31 +350,39 @@ const ChatInputAddSubmit = (props: {
     // setAutoScroll(true);
   };
 
+  const [inputRole, setInputRole] = useState(session.inputRole);
+
+  const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputRole((event.target as HTMLInputElement).value);
+  };
+
   return (
     <div className={styles_tm["chat-input-panel-buttons"]}>
-      <Multiselect
-        options={props.roleOptions} // Options to display in the dropdown
-        ref={roleSelectRef}
-        // onSelect={this.onSelect} // Function will trigger on select event
-        // onRemove={this.onRemove} // Function will trigger on remove event
-        displayValue="role" // Property name to display in the dropdown options
-        placeholder="Select Roles" // Placeholder for the dropdown search input
-        showCheckbox
-        selectedValues={props.selectedValues}
-        style={{
-          searchBox: {
-            "border-bottom": "1px solid blue",
-            "border-radius": "2px",
-          },
-        }}
-      />
-
-      <IconButton
-        icon={<AddIcon />}
-        text="Add Speaker"
-        onClick={addItem}
-        className={styles_tm["chat-input-button-add"]}
-      />
+      <FormControl>
+        <FormLabel id="demo-controlled-radio-buttons-group">
+          Evaluators
+        </FormLabel>
+        <RadioGroup
+          aria-labelledby="demo-controlled-radio-buttons-group"
+          name="controlled-radio-buttons-group"
+          value={inputRole}
+          onChange={onInputRoleChange}
+          row
+        >
+          {Object.entries(ToastmastersRecord).map(
+            ([role, ToastmastersRolePrompts]) => {
+              return (
+                <FormControlLabel
+                  key={role}
+                  value={role}
+                  control={<Radio />}
+                  label={role}
+                />
+              );
+            },
+          )}
+        </RadioGroup>
+      </FormControl>
 
       <IconButton
         icon={<SendWhiteIcon />}

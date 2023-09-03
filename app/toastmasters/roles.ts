@@ -315,19 +315,115 @@ The Question-Speech pairs are:
 Are you ready to answer? If you understand, answer yes.
 `;
 
+export const ToastmastersAhCounterRecord: Record<
+  string,
+  ToastmastersRolePrompt[]
+> = {
+  [ToastmastersRoles.TableTopicsEvaluator]: [
+    {
+      role_index: 0, // role_index is the index of this item in the array
+      role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
+      content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      1). Give me a table which presenting the keywords used in each person's speech
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
+    },
+    {
+      role_index: 1, // role_index is the index of this item in the array
+      role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
+      content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      Evaluate the speech for all speakers.
+      Your evaluation should:
+      1). Refer some of the keywords in the table in your evaluation.
+      2). Bold keywords using markdown when present your answer.
+      3). Each speaker's evaluation should be about 50 words.
+      `,
+    },
+  ],
+  [ToastmastersRoles.Grammarian]: [
+    {
+      role_index: 2,
+      role: ToastmastersRoles.Grammarian + "-Count",
+      content: `You are the ${ToastmastersRoles.Grammarian}.
+      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
+    },
+    {
+      role_index: 3,
+      role: ToastmastersRoles.Grammarian + "-Evaluation",
+      content: `You are the ${ToastmastersRoles.Grammarian}. 
+      Evaluate the speech for all speakers and to analysis your stats in your table. 
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to the speaker.
+      4). Each speaker's evaluation should be about 50 words.
+      `,
+    },
+  ],
+  [ToastmastersRoles.AhCounter]: [
+    {
+      role_index: 4,
+      role: ToastmastersRoles.AhCounter + "-Count",
+      content: ` 
+      You are the ${ToastmastersRoles.AhCounter}. 
+      1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
+    },
+    {
+      role_index: 5,
+      role: ToastmastersRoles.AhCounter + "-Evaluation",
+      content: ` 
+      You are the ${ToastmastersRoles.AhCounter}. 
+      To analysis your stats in your table. 
+      You should:
+      1). Generate a summary with the Ah-Counter's tone according to the table
+      2). Bold keywords using markdown when present your answer.
+      3). Each speaker's evaluation should be about 50 words.
+      `,
+    },
+  ],
+  "Revised Speech": [
+    {
+      role_index: 3,
+      role: "Revised Speech",
+      content: `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
+      Help revise, polish and improve the speech for all speakers.
+      You should:
+      1). Don't say who you are, just provide your revised speech.
+      2). Bold keywords using markdown when present your answer.
+      `,
+    },
+  ],
+};
+
 export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
   {
     role_index: 0, // role_index is the index of this item in the array
-    role: ToastmastersRoles.TableTopicsEvaluator,
+    role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
     content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-    Evaluate the speech for all speakers.
+    1). Give me a table which presenting the keywords used in each person's speech and your 1-word or 1-sentence evaluation,
+    2). Only response the table, 
+    3). Do not include any extra description and extra words. 
+    `,
+  },
+  {
+    role_index: 1, // role_index is the index of this item in the array
+    role: ToastmastersRoles.TableTopicsEvaluator + "-Analysis",
+    content: `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+    Evaluate the speech for all speakers and to analysis your stats in your table.
     Your evaluation should:
     1). Bold keywords using markdown when present your answer.
     2). Each speaker's evaluation should be about 50 words.
     `,
   },
   {
-    role_index: 1,
+    role_index: 2,
     role: ToastmastersRoles.Grammarian + "-Count",
     content: `You are the ${ToastmastersRoles.Grammarian}.
     1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
@@ -336,11 +432,10 @@ export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
     `,
   },
   {
-    role_index: 2,
+    role_index: 3,
     role: ToastmastersRoles.Grammarian + "-Analysis",
     content: `You are the ${ToastmastersRoles.Grammarian}. 
-    Evaluate the speech for all speakers.
-    and to analysis your stats in your table. 
+    Evaluate the speech for all speakers and to analysis your stats in your table. 
     Your evaluation should:
     1). Don't make things up, all your quoted sentence must from the speaker's speech.
     2). Bold keywords using markdown when present your answer.
@@ -349,7 +444,7 @@ export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
     `,
   },
   {
-    role_index: 3,
+    role_index: 4,
     role: ToastmastersRoles.AhCounter + "-Count",
     content: ` 
     You are the ${ToastmastersRoles.AhCounter}. 
@@ -359,7 +454,7 @@ export const ToastmastersAhCounter: ToastmastersRolePrompt[] = [
     `,
   },
   {
-    role_index: 4,
+    role_index: 5,
     role: ToastmastersRoles.AhCounter + "-Analysis",
     content: ` 
     You are the ${ToastmastersRoles.AhCounter}. 

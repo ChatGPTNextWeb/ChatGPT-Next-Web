@@ -83,9 +83,9 @@
 
 
 .chat-input-button-add {
-  @extend .chat-input-send-record;
-  position: unset;
-  background-color: rgb(155, 154, 154);
+  border: #ddd 2px solid;
+  margin-left: 20px;
+  margin-bottom: 10px;
 }
 
 .table-container {

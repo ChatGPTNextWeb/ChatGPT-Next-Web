@@ -50,7 +50,7 @@ export class InputStore {
   time: number = 0;
 }
 
-export type InputBlock = {
+export type InputTableRow = {
   speaker: string;
   question: InputStore;
   speech: InputStore;
@@ -76,8 +76,8 @@ export interface ChatSession {
   // TODO: future make this a list of inputs
   inputs: { roles: number[]; input: InputStore; input2: InputStore };
 
-  inputBlocks: InputBlock[];
-  // inputRoles: number[];  // TODO
+  inputTable: InputTableRow[];
+  inputRole: string;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -102,7 +102,8 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
     inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
-    inputBlocks: [],
+    inputTable: [],
+    inputRole: "Table Topics Evaluator", // TODO
   };
 }
 
