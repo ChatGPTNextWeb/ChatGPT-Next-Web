@@ -43,6 +43,7 @@ interface RequestBody {
   apiKey?: string;
   maxIterations: number;
   returnIntermediateSteps: boolean;
+  useTools: (undefined | string)[];
 }
 
 class ResponseBody {
@@ -207,12 +208,16 @@ async function handle(req: NextRequest) {
     );
 
     const tools = [
-      searchTool,
-      new WebBrowser({ model, embeddings }),
       // new RequestsGetTool(),
       // new RequestsPostTool(),
-      new Calculator(),
     ];
+    const webBrowserTool = new WebBrowser({ model, embeddings });
+    const calculatorTool = new Calculator();
+    if (reqBody.useTools.includes("web-search")) tools.push(searchTool);
+    if (reqBody.useTools.includes(webBrowserTool.name))
+      tools.push(webBrowserTool);
+    if (reqBody.useTools.includes(calculatorTool.name))
+      tools.push(calculatorTool);
 
     const pastMessages = new Array();
 

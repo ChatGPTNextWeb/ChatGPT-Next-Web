@@ -56,8 +56,8 @@
 
   优先级：`SerpAPI > BingSerpAPI > DuckDuckGo`
 
-- [ ] 插件列表页面开发
-- [ ] 支持开关指定插件
+- [x] 插件列表页面开发
+- [x] 支持开关指定插件
 - [ ] 支持添加自定义插件
 - [x] 支持 Agent 参数配置（ ~~agentType~~, maxIterations, returnIntermediateSteps 等）
 - [x] 支持 ChatSession 级别插件功能开关

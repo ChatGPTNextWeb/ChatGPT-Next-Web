@@ -305,6 +305,24 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
+    Page: {
+      Title: "预设插件",
+      SubTitle: (count: number) => `${count} 个预设插件`,
+      Search: "搜索插件",
+      Create: "新建",
+    },
+    Item: {
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `编辑预设插件 ${readonly ? "（只读）" : ""}`,
+      Download: "下载预设",
+      Clone: "克隆预设",
+    },
   },
   FineTuned: {
     Sysmessage: "你是一个助手",

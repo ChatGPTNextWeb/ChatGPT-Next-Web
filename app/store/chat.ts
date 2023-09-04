@@ -18,6 +18,7 @@ import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
+import { Plugin, usePluginStore } from "../store/plugin";
 
 export interface ChatToolMessage {
   toolName: string;
@@ -313,6 +314,10 @@ export const useChatStore = create<ChatStore>()(
 
         const config = useAppConfig.getState();
         const pluginConfig = useAppConfig.getState().pluginConfig;
+        const pluginStore = usePluginStore.getState();
+        const allPlugins = pluginStore
+          .getAll()
+          .filter((m) => (!getLang() || m.lang === getLang()) && m.enable);
 
         // save user's and bot's message
         get().updateCurrentSession((session) => {
@@ -324,12 +329,17 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
-        if (config.pluginConfig.enable && session.mask.usePlugins) {
+        if (
+          config.pluginConfig.enable &&
+          session.mask.usePlugins &&
+          allPlugins.length > 0
+        ) {
           console.log("[ToolAgent] start");
+          const pluginToolNames = allPlugins.map((m) => m.toolName);
           api.llm.toolAgentChat({
             messages: sendMessages,
             config: { ...modelConfig, stream: true },
-            agentConfig: { ...pluginConfig },
+            agentConfig: { ...pluginConfig, useTools: pluginToolNames },
             onUpdate(message) {
               botMessage.streaming = true;
               if (message) {

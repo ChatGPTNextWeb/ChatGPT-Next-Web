@@ -310,6 +310,24 @@ const en: LocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+    Page: {
+      Title: "Plugin Template",
+      SubTitle: (count: number) => `${count} plugin templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Plugin Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
   },
   FineTuned: {
     Sysmessage: "You are an assistant that",

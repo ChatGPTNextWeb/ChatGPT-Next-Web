@@ -220,6 +220,7 @@ export class ChatGPTApi implements LLMApi {
       baseUrl: useAccessStore.getState().openaiUrl,
       maxIterations: options.agentConfig.maxIterations,
       returnIntermediateSteps: options.agentConfig.returnIntermediateSteps,
+      useTools: options.agentConfig.useTools,
     };
 
     console.log("[Request] openai payload: ", requestPayload);

@@ -26,6 +26,7 @@ export interface LLMConfig {
 export interface LLMAgentConfig {
   maxIterations: number;
   returnIntermediateSteps: boolean;
+  useTools?: (string | undefined)[];
 }
 
 export interface ChatOptions {
