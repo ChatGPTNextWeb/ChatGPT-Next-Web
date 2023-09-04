@@ -29,6 +29,8 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
+import { useNavigate } from "react-router-dom";
+
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -57,17 +59,14 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
 
 export function useSwitchTheme() {
   const config = useAppConfig();
-
   useEffect(() => {
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
-
     if (config.theme === "dark") {
       document.body.classList.add("dark");
     } else if (config.theme === "light") {
       document.body.classList.add("light");
     }
-
     const metaDescriptionDark = document.querySelector(
       'meta[name="theme-color"][media*="dark"]',
     );
@@ -114,8 +113,7 @@ const loadAsyncGoogleFont = () => {
   const googleFontUrl =
     getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
   linkEl.rel = "stylesheet";
-  linkEl.href =
-    googleFontUrl + "/css2?family=Noto+Sans:wght@300;400;700;900&display=swap";
+  linkEl.href = googleFontUrl + "/css2?family=Noto+Sans:wght@300;400;700;900&display=swap";
   document.head.appendChild(linkEl);
 };
 
@@ -125,7 +123,7 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-
+  IsAuths();
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
@@ -162,6 +160,14 @@ function Screen() {
       )}
     </div>
   );
+}
+// 是否授权登录
+function IsAuths() {
+  const access = useAccessStore().isAuthorized();
+  const navigate = useNavigate();
+  if(!access) {
+    return navigate(Path.Auth);
+  }
 }
 
 export function useLoadData() {
