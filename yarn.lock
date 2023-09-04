@@ -2762,10 +2762,10 @@ elkjs@^0.8.2:
   resolved "https://registry.npmmirror.com/elkjs/-/elkjs-0.8.2.tgz#c37763c5a3e24e042e318455e0147c912a7c248e"
   integrity sha512-L6uRgvZTH+4OF5NE/MBbzQx/WYpru1xCBE9respNj6qznEewGUIfhzmm7horWWxbNO2M0WckQypGctR8lH79xQ==
 
-emoji-picker-react@^4.4.7:
-  version "4.4.8"
-  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.4.8.tgz#cd18e942720d0d01e3d488a008f5e79aa315ec87"
-  integrity sha512-5bbj0PCvpjB64PZj31wZ35EoebF2mKoHqEEx9u2ZLghx7sGoD1MgyDhse851rqROypjhmK9IUY15QBa7mCLP0g==
+emoji-picker-react@^4.4.12:
+  version "4.4.12"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.4.12.tgz#3de9d30a5c7f5ec544ef2310d757305621a4a9f9"
+  integrity sha512-CpaOmUvAH4wOFiwkKivOstqPvKPs1KsmvzD0qPApKck4jRAYfhi9StXGZPsR3oWbDS+i720JXUU2ucTbI8ra5A==
   dependencies:
     clsx "^1.2.1"
 
