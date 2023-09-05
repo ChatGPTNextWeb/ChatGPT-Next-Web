@@ -6,6 +6,8 @@ const jp: PartialLocaleType = {
   Error: {
     Unauthorized:
       "現在は未承認状態です。左下の設定ボタンをクリックし、アクセスパスワードかOpenAIのAPIキーを入力してください。",
+    Content_Policy:
+      "お客様のリクエストは、コンテンツポリシーの違反によりフラグが立てられました。\n詳細はこちらをご覧ください：https://platform.openai.com/docs/guides/moderation/overview",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 通のチャット`,

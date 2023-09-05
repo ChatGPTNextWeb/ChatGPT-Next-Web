@@ -47,13 +47,66 @@ export class ChatGPTApi implements LLMApi {
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
   }
-
+  // added moderation with auto enabled by kfear1337 (b0zal) aka backtrackz
   async chat(options: ChatOptions) {
+    const moderationEnabled = true; // Set to true if moderation is enabled
+    let moderationModel = "text-moderation-latest"; // Specify the moderation model
+  
+    // Perform moderation step for user messages only
+    if (moderationEnabled) {
+      const messages = options.messages.map((v) => ({
+        role: v.role,
+        content: v.content,
+      }));
+  
+      const userMessages = messages.filter((msg) => msg.role === "user");
+      const userMessage = userMessages[userMessages.length - 1]?.content;
+  
+      if (userMessage) {
+        const moderationPath = this.path(OpenaiPath.ModerationPath);
+        const moderationPayload = {
+          input: userMessage,
+          model: moderationModel,
+        };
+  
+        let moderationResponse = await fetch(moderationPath, {
+          method: "POST",
+          body: JSON.stringify(moderationPayload),
+          headers: getHeaders(),
+        });
+  
+        let moderationJson = await moderationResponse.json();
+        let moderationResult = moderationJson.results[0]; // Access the first element of the array
+  
+        if (!moderationResult.flagged) {
+          moderationModel = "text-moderation-stable"; // Fall back to "text-moderation-stable" if "text-moderation-latest" is still false
+  
+          moderationPayload.model = moderationModel;
+          moderationResponse = await fetch(moderationPath, {
+            method: "POST",
+            body: JSON.stringify(moderationPayload),
+            headers: getHeaders(),
+          });
+  
+          moderationJson = await moderationResponse.json();
+          moderationResult = moderationJson.results[0]; // Access the first element of the array
+        }
+  
+        if (moderationResult.flagged) {
+          // Display a message indicating content policy violation
+          console.log(Locale.Error.Content_Policy, "\n");
+          const responseText = `${Locale.Error.Content_Policy}\n`;
+          options.onFinish(responseText);
+          return;
+        }
+      }
+    }
+  
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: v.content,
     }));
-
+  
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -61,7 +114,7 @@ export class ChatGPTApi implements LLMApi {
         model: options.config.model,
       },
     };
-
+  
     const requestPayload = {
       messages,
       stream: options.config.stream,
@@ -71,13 +124,13 @@ export class ChatGPTApi implements LLMApi {
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
     };
-
+  
     console.log("[Request] openai payload: ", requestPayload);
-
+  
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
-
+  
     try {
       const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
@@ -86,26 +139,27 @@ export class ChatGPTApi implements LLMApi {
         signal: controller.signal,
         headers: getHeaders(),
       };
-
-      // make a fetch request
+  
+      // Make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-
+  
+      let responseText = "";
+  
       if (shouldStream) {
-        let responseText = "";
         let finished = false;
-
+  
         const finish = () => {
           if (!finished) {
             options.onFinish(responseText);
             finished = true;
           }
         };
-
+  
         controller.signal.onabort = finish;
-
+  
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
@@ -115,12 +169,12 @@ export class ChatGPTApi implements LLMApi {
               "[OpenAI] request response content type: ",
               contentType,
             );
-
+  
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
             }
-
+  
             if (
               !res.ok ||
               !res.headers
@@ -134,17 +188,17 @@ export class ChatGPTApi implements LLMApi {
                 const resJson = await res.clone().json();
                 extraInfo = prettyObject(resJson);
               } catch {}
-
+  
               if (res.status === 401) {
                 responseTexts.push(Locale.Error.Unauthorized);
               }
-
+  
               if (extraInfo) {
                 responseTexts.push(extraInfo);
               }
-
+  
               responseText = responseTexts.join("\n\n");
-
+  
               return finish();
             }
           },
@@ -176,16 +230,18 @@ export class ChatGPTApi implements LLMApi {
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
-
+  
         const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        responseText = this.extractMessage(resJson);
       }
+  
+      options.onFinish(responseText);
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     const formatDate = (d: Date) =>
       `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d

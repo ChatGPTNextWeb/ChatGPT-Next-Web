@@ -6,6 +6,8 @@ const bn: PartialLocaleType = {
   Error: {
     Unauthorized:
       "অননুমোদিত অ্যাক্সেস, অনুগ্রহ করে [অথোরাইজশন](/#/auth) পৃষ্ঠায় অ্যাক্সেস কোড ইনপুট করুন।",
+    Content_Policy:
+    "আপনার অনুরোধটি কন্টেন্ট নীতি লঙ্ঘনের কারণে পতাকায় চিহ্নিত হয়েছে।\nএখানে পড়ুন: https://platform.openai.com/docs/guides/moderation/overview",
   },
   Auth: {
     Title: "একটি অ্যাক্সেস কোড প্রয়োজন",

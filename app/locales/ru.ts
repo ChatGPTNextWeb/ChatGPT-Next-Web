@@ -6,6 +6,8 @@ const ru: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Несанкционированный доступ. Пожалуйста, введите код доступа на [странице](/#/auth) настроек.",
+    Content_Policy:
+      "Ваш запрос был помечен как нарушение политики контента.\nЧитать здесь: https://platform.openai.com/docs/guides/moderation/overview",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} сообщений`,

@@ -6,6 +6,8 @@ const id: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Akses tidak diizinkan. Silakan [otorisasi](/#/auth) dengan memasukkan kode akses.",
+    Content_Policy:
+      "Permintaan Anda ditandai karena Pelanggaran Kebijakan Konten.\nBaca di sini: https://platform.openai.com/docs/guides/moderation/overview",
   },
   Auth: {
     Title: "Diperlukan Kode Akses",

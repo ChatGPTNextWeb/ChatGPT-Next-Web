@@ -6,6 +6,8 @@ const no: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
+    Content_Policy:
+      "Førespurnaden din blei merka som brot på retningslinjene for innhald.\nLes her: https://platform.openai.com/docs/guides/moderation/overview",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,

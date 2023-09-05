@@ -6,6 +6,8 @@ const vi: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Truy cập chưa xác thực, vui lòng nhập mã truy cập trong trang cài đặt.",
+    Content_Policy:
+      "Yêu cầu của bạn đã bị đánh dấu vì vi phạm Chính sách Nội dung.\nĐọc tại đây: https://platform.openai.com/docs/guides/moderation/overview",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} tin nhắn`,

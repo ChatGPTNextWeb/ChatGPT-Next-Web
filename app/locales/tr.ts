@@ -6,6 +6,8 @@ const tr: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Yetkisiz erişim, lütfen erişim kodunu ayarlar [sayfasından](/#/auth) giriniz.",
+    Content_Policy:
+      "İsteğiniz, İçerik Politikası İhlali nedeniyle işaretlendi.\nBuradan okuyun: https://platform.openai.com/docs/guides/moderation/overview",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mesaj`,

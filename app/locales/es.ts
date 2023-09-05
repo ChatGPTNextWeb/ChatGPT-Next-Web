@@ -6,6 +6,8 @@ const es: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Acceso no autorizado, por favor ingrese el código de acceso en la [página](/#/auth) de configuración.",
+    Content_Policy:
+      "Su solicitud fue marcada debido a una Violación de la Política de Contenido.\nLeer aquí: https://platform.openai.com/docs/guides/moderation/overview",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mensajes`,

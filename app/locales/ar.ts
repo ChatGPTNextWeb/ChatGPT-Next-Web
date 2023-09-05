@@ -6,6 +6,8 @@ const ar: PartialLocaleType = {
   Error: {
     Unauthorized:
       "غير مصرح بالوصول، يرجى إدخال رمز الوصول [auth](/#/auth) في صفحة المصادقة.",
+    Content_Policy:
+      "تم تمييز طلبك بسبب انتهاك سياسة المحتوى\nاقرأ هنا: https://platform.openai.com/docs/guides/moderation/overview",
   },
   Auth: {
     Title: "تحتاج إلى رمز الوصول",
