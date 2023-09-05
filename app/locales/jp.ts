@@ -80,6 +80,17 @@ const jp: PartialLocaleType = {
         Action: "エクスポート",
         Confirm: "すべてのメッセージと設定をエクスポートしますか？",
       },
+      Import: {
+        Title: "すべてのデータをインポート",
+        SubTitle: "すべてのメッセージと設定をインポート",
+        Action: "インポート",
+        Confirm: "すべてのメッセージと設定をインポートしますか？",
+      },
+    },
+    Toast: {
+      Success : "すべてのデータのインポートに成功しました",
+      Error: "すべてのデータのインポートに失敗しました",
+      InvalidFormat: "無効な形式です",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

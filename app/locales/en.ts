@@ -148,6 +148,18 @@ const en: LocaleType = {
         Action: "Export",
         Confirm: "Confirm to export all messages and settings?",
       },
+      Import: {
+        Title: "Import All Data",
+        SubTitle: "Import all messages and settings",
+        Action: "Import",
+        Confirm: "Confirm to import all messages and settings?",
+      },
+      
+    },
+    Toast: {
+      Success : "All data successfully imported",
+      Error: "All data failed imported",
+      InvalidFormat: "Invalid format",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

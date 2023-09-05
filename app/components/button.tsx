@@ -2,7 +2,7 @@ import * as React from "react";
 
 import styles from "./button.module.scss";
 
-export type ButtonType = "primary" | "danger" | null;
+export type ButtonType = "primary" | "danger" |  null;
 
 export function IconButton(props: {
   onClick?: () => void;
@@ -16,36 +16,63 @@ export function IconButton(props: {
   disabled?: boolean;
   tabIndex?: number;
   autoFocus?: boolean;
+  importData?: () => void; // Add importData prop
+  confirmDialogVisible?: boolean; // Add confirmDialogVisible prop
 }) {
+  const {
+    onClick,
+    icon,
+    type,
+    text,
+    bordered,
+    shadow,
+    className,
+    title,
+    disabled,
+    tabIndex,
+    autoFocus,
+    importData, // Destructure importData prop
+    confirmDialogVisible, // Destructure confirmDialogVisible prop
+  } = props;
+
+  const handleClick = () => {
+    if (confirmDialogVisible) {
+      // Handle confirm dialog logic here
+    } else if (importData) {
+      importData();
+    } else if (onClick) {
+      onClick();
+    }
+  };
+  
+
   return (
     <button
       className={
         styles["icon-button"] +
-        ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
-          props.className ?? ""
-        } clickable ${styles[props.type ?? ""]}`
+        ` ${bordered && styles.border} ${shadow && styles.shadow} ${
+          className ?? ""
+        } clickable ${styles[type ?? ""]}`
       }
-      onClick={props.onClick}
-      title={props.title}
-      disabled={props.disabled}
+      onClick={handleClick}
+      title={title}
+      disabled={disabled}
       role="button"
-      tabIndex={props.tabIndex}
-      autoFocus={props.autoFocus}
+      tabIndex={tabIndex}
+      autoFocus={autoFocus}
     >
-      {props.icon && (
+      {icon && (
         <div
           className={
             styles["icon-button-icon"] +
-            ` ${props.type === "primary" && "no-dark"}`
+            ` ${type === "primary" && "no-dark"}`
           }
         >
-          {props.icon}
+          {icon}
         </div>
       )}
 
-      {props.text && (
-        <div className={styles["icon-button-text"]}>{props.text}</div>
-      )}
+      {text && <div className={styles["icon-button-text"]}>{text}</div>}
     </button>
   );
 }

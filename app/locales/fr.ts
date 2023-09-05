@@ -106,6 +106,17 @@ const fr: PartialLocaleType = {
         Action: "Exporter",
         Confirm: "Confirmer l'exportation de tous les messages et les paramètres ?",
       },
+      Import: {
+        Title: "Importer toutes les données",
+        SubTitle: "Importer tous les messages et les paramètres",
+        Action: "Importer",
+        Confirm: "Confirmer l'importation de tous les messages et les paramètres ?",
+      },
+    },
+    Toast: {
+      Success : "Toutes les données ont été importées avec succès",
+      Error: "Échec de l'importation de toutes les données",
+      InvalidFormat: "Format invalide",
     },
     Lang: {
       Name: "Language", // ATTENTION : si vous souhaitez ajouter une nouvelle traduction, ne traduisez pas cette valeur, laissez-la sous forme de `Language`

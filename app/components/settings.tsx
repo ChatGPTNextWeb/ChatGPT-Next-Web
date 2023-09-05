@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import styles from "./settings.module.scss";
 
@@ -207,52 +207,100 @@ function DangerItems() {
   const chatStore = useChatStore();
   const appConfig = useAppConfig();
 
+// added by kfear1337
+
+function ImportDataButton({ onImport }: { onImport: (file: File) => void }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onImport(file);
+    }
+  };
+
+  const handleImportData = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
-    <List>
-      <ListItem
-        title={Locale.Settings.Danger.Reset.Title}
-        subTitle={Locale.Settings.Danger.Reset.SubTitle}
-      >
-        <IconButton
-          text={Locale.Settings.Danger.Reset.Action}
-          onClick={async () => {
-            if (await showConfirm(Locale.Settings.Danger.Reset.Confirm)) {
-              appConfig.reset();
-            }
-          }}
-          type="danger"
-        />
-      </ListItem>
-      <ListItem
-        title={Locale.Settings.Danger.Clear.Title}
-        subTitle={Locale.Settings.Danger.Clear.SubTitle}
-      >
-        <IconButton
-          text={Locale.Settings.Danger.Clear.Action}
-          onClick={async () => {
-            if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
-              chatStore.clearAllData();
-            }
-          }}
-          type="danger"
-        />
-      </ListItem>
-      <ListItem
-        title={Locale.Settings.Danger.Download.Title}
-        subTitle={Locale.Settings.Danger.Download.SubTitle}
-      >
-        <IconButton
-          text={Locale.Settings.Danger.Download.Action}
-          onClick={async () => {
-            if (await showConfirm(Locale.Settings.Danger.Download.Confirm)) {
-              chatStore.downloadAllData();
-            }
-          }}
-          type="danger"
-        />
-      </ListItem>
-    </List>
+    <>
+      <input
+        type="file"
+        accept=".json"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+      <IconButton
+        text={Locale.Settings.Danger.Import.Action}
+        onClick={handleImportData}
+        type="danger"
+      />
+    </>
   );
+}
+
+return (
+  <List>
+    <ListItem
+      title={Locale.Settings.Danger.Reset.Title}
+      subTitle={Locale.Settings.Danger.Reset.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.Reset.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.Reset.Confirm)) {
+            appConfig.reset();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.Clear.Title}
+      subTitle={Locale.Settings.Danger.Clear.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.Clear.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
+            chatStore.clearAllData();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.Download.Title}
+      subTitle={Locale.Settings.Danger.Download.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.Download.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.Download.Confirm)) {
+            chatStore.downloadAllData();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.Import.Title}
+      subTitle={Locale.Settings.Danger.Import.SubTitle}
+    >
+      <ImportDataButton
+        onImport={async (file) => {
+          if (await showConfirm(Locale.Settings.Danger.Import.Confirm)) {
+            chatStore.importData(file);
+          }
+        }}
+      />
+    </ListItem>
+  </List>
+);
 }
 
 function SyncItems() {

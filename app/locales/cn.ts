@@ -146,6 +146,17 @@ const cn = {
         Action: "导出",
         Confirm: "确认导出所有消息和设置？",
       },
+      Import: {
+        Title: "导入所有数据",
+        SubTitle: "导入所有消息和设置",
+        Action: "导入",
+        Confirm: "确认导入所有消息和设置？",
+      },
+    },
+    Toast: {
+      Success : "所有数据成功导入",
+      Error: "所有数据导入失败",
+      InvalidFormat: "无效格式",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

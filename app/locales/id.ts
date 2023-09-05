@@ -131,7 +131,19 @@ const id: PartialLocaleType = {
         Action: "Ekspor",
         Confirm: "Konfirmasi untuk meng-ekspor semua pesan dan pengaturan?",
       },
+      Import: {
+        Title: "Impor Semua Data",
+        SubTitle: "Impor semua pesan dan pengaturan",
+        Action: "Impor",
+        Confirm: "Konfirmasi untuk mengimpor semua pesan dan pengaturan?",
+      },
     },
+    Toast: {
+      Success : "Semua data berhasil diimpor",
+      Error: "Gagal mengimpor semua data",
+      InvalidFormat: "Format tidak valid",
+    },
+
     Lang: {
         Name: "Bahasa", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
         All: "Semua Bahasa",

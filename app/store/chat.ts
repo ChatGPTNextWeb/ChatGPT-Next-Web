@@ -111,6 +111,7 @@ interface ChatStore {
   getMemoryPrompt: () => ChatMessage;
   clearAllData: () => void;
   downloadAllData: () => void; // Added function to export all chat history from JSON
+  importData: (file: File) => Promise<void>; // Added function to import chat history from JSON
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -615,8 +616,30 @@ export const useChatStore = create<ChatStore>()(
         a.download = fileName;
         a.click();
         URL.revokeObjectURL(url);
-      },          
+      },      
 
+      async importData(file: File) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const data = event.target?.result as string;
+          try {
+            const importedData = JSON.parse(data);
+            if (importedData.sessions) {
+              set(() => ({
+                sessions: importedData.sessions,
+                currentSessionIndex: 0,
+              }));
+              showToast(Locale.Settings.Toast.Success);
+            } else {
+              showToast(Locale.Settings.Toast.InvalidFormat);
+            }
+          } catch (error) {
+            console.error("[Import Data] Error: ", error);
+            showToast(Locale.Settings.Toast.Error);
+          }
+        };
+        reader.readAsText(file);
+      },      
     }),
     {
       name: StoreKey.Chat,
