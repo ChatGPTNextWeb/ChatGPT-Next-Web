@@ -58,68 +58,94 @@ export class ChatGPTApi implements LLMApi {
         role: v.role,
         content: v.content,
       }));
-  
+
       const userMessages = messages.filter((msg) => msg.role === "user");
       const userMessage = userMessages[userMessages.length - 1]?.content;
-  
+
       if (userMessage) {
         const moderationPath = this.path(OpenaiPath.ModerationPath);
         const moderationPayload = {
           input: userMessage,
           model: moderationModel,
         };
-  
-        let moderationResponse = await fetch(moderationPath, {
-          method: "POST",
-          body: JSON.stringify(moderationPayload),
-          headers: getHeaders(),
-        });
-  
-        let moderationJson = await moderationResponse.json();
-        let moderationResult = moderationJson.results[0]; // Access the first element of the array
-  
-        if (!moderationResult.flagged) {
-          moderationModel = "text-moderation-stable"; // Fall back to "text-moderation-stable" if "text-moderation-latest" is still false
-  
-          moderationPayload.model = moderationModel;
-          moderationResponse = await fetch(moderationPath, {
+
+        try {
+          let moderationResponse = await fetch(moderationPath, {
             method: "POST",
             body: JSON.stringify(moderationPayload),
             headers: getHeaders(),
           });
-  
-          moderationJson = await moderationResponse.json();
-          moderationResult = moderationJson.results[0]; // Access the first element of the array
-        }
-        
-        if (moderationResult.flagged) {
-          // Display a message indicating content policy violation
-          const contentPolicyViolations = moderationResult.categories;
-          const flaggedCategories = Object.entries(contentPolicyViolations)
-            .filter(([category, flagged]) => flagged)
-            .map(([category]) => category);
-        
-          if (flaggedCategories.length > 0) {
-            const translatedReasons = flaggedCategories.map((category) => {
-              const translation = (Locale.Error.Content_Policy.Reason as any)[category];
-              return translation ? translation : category; // Use category name if translation is not available
-            });
-            const translatedReasonText = translatedReasons.join(", ");
-            const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
-        
-            // Generate text-based graph for category scores
-            const categoryScores = moderationResult.category_scores;
-            const graphLines = flaggedCategories.map((category) => {
-              const score = categoryScores[category];
-              const barLength = Math.round(score * 100);
-              const bar = '█'.repeat(barLength / 10);
-              return `${category}: ${bar} [${barLength.toFixed(2)}%]`;
-            });
-            const graphText = graphLines.join('\n');
-        
-            const responseWithGraph = `${responseText}${graphText}`;
-            options.onFinish(responseWithGraph);
-            return;
+
+          let moderationJson = await moderationResponse.json();
+          
+          if (moderationJson.results && moderationJson.results.length > 0) {
+            let moderationResult = moderationJson.results[0]; // Access the first element of the array
+
+            if (!moderationResult.flagged) {
+              moderationModel = "text-moderation-stable"; // Fall back to "text-moderation-stable" if "text-moderation-latest" is still false
+
+              moderationPayload.model = moderationModel;
+              moderationResponse = await fetch(moderationPath, {
+                method: "POST",
+                body: JSON.stringify(moderationPayload),
+                headers: getHeaders(),
+              });
+
+              moderationJson = await moderationResponse.json();
+
+              if (moderationJson.results && moderationJson.results.length > 0) {
+                moderationResult = moderationJson.results[0]; // Access the first element of the array
+              }
+            }
+
+            if (moderationResult && moderationResult.flagged) {
+              // Display a message indicating content policy violation
+              const contentPolicyViolations = moderationResult.categories;
+              const flaggedCategories = Object.entries(contentPolicyViolations)
+                .filter(([category, flagged]) => flagged)
+                .map(([category]) => category);
+
+              if (flaggedCategories.length > 0) {
+                const translatedReasons = flaggedCategories.map((category) => {
+                  const translation = (Locale.Error.Content_Policy.Reason as any)[category];
+                  return translation ? translation : category; // Use category name if translation is not available
+                });
+                const translatedReasonText = translatedReasons.join(", ");
+                const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
+
+                // Generate text-based graph for category scores
+                const categoryScores = moderationResult.category_scores;
+                const graphLines = flaggedCategories.map((category) => {
+                  const score = categoryScores[category];
+                  const barLength = Math.round(score * 100);
+                  const bar = '█'.repeat(barLength / 10);
+                  return `${category}: ${bar} [${barLength.toFixed(2)}%]`;
+                });
+                const graphText = graphLines.join('\n');
+
+                const responseWithGraph = `${responseText}${graphText}`;
+                options.onFinish(responseWithGraph);
+                return;
+              }
+            }
+          }
+        } catch (e) {
+          console.log("[Request] failed to make a moderation request", e);
+          options.onError?.(e as Error);
+
+          // Show error response as JSON for 401 status code
+          if (e instanceof Response && e.status === 401) {
+            const errorResponse = {
+              error: "Unauthorized",
+              extraInfo: await e.text(),
+            };
+            options.onFinish(JSON.stringify(errorResponse));
+          } else {
+            const errorResponse = {
+              error: (e as Error).message,
+              stack: (e as Error).stack,
+            };
+            options.onFinish(JSON.stringify(errorResponse));
           }
         }
       }
