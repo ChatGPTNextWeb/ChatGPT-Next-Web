@@ -267,7 +267,7 @@ const cn = {
   Store: {
     DefaultTopic: "新的聊天",
     BotHello: "##公告:
-      欢迎您使用本chatgpt网站，本网站为非营利性网站，由本人运营并为chatgpt使用付费，但由于使用人数较多，为了保证使用的体验，我在本网站使用了key池并进行`多key轮询`，因此带来的后果就是需要承担**高额支出**，为了本网站的长久运行，我推出了`vip服务`,每月仅需1.9元（连续包月0.99）为了网站的长期生存我建议您成为尊贵的vip用户,点击链接进行[会员开通和查询](https://www.liyaorui.xyz/chatgptvip)。感谢您的理解和支持",
+      ####欢迎您使用本chatgpt网站，本网站为非营利性网站，由本人运营并为chatgpt使用付费，但由于使用人数较多，为了保证使用的体验，和本网站的长久运行，本站推出了`vip服务`,每月仅需1.9元（连续包月0.99）建议您成为尊贵的vip用户,点击链接进行[会员开通和查询](https://www.liyaorui.xyz/chatgptvip)。感谢您的理解和支持",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
