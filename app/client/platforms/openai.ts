@@ -49,11 +49,9 @@ export class ChatGPTApi implements LLMApi {
   }
   // added moderation with auto enabled by kfear1337 (b0zal) aka backtrackz
   async chat(options: ChatOptions) {
-    const moderationEnabled = true; // Set to true if moderation is enabled
-    let moderationModel = "text-moderation-latest"; // Specify the moderation model
-  
+    const latest = OpenaiPath.TextModerationModels.latest;
     // Perform moderation step for user messages only
-    if (moderationEnabled) {
+    if (OpenaiPath.TextModeration) {
       const messages = options.messages.map((v) => ({
         role: v.role,
         content: v.content,
@@ -66,7 +64,7 @@ export class ChatGPTApi implements LLMApi {
         const moderationPath = this.path(OpenaiPath.ModerationPath);
         const moderationPayload = {
           input: userMessage,
-          model: moderationModel,
+          model: latest,
         };
 
         try {
@@ -82,9 +80,8 @@ export class ChatGPTApi implements LLMApi {
             let moderationResult = moderationJson.results[0]; // Access the first element of the array
 
             if (!moderationResult.flagged) {
-              moderationModel = "text-moderation-stable"; // Fall back to "text-moderation-stable" if "text-moderation-latest" is still false
-
-              moderationPayload.model = moderationModel;
+              const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
+              moderationPayload.model = stable;
               moderationResponse = await fetch(moderationPath, {
                 method: "POST",
                 body: JSON.stringify(moderationPayload),

@@ -53,7 +53,13 @@ export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   // added by kfear1337 (b0zal) aka backtrackz
+  // as openai path better enable this by default
+  TextModeration: true,
   ModerationPath: "v1/moderations",
+  TextModerationModels: {
+    latest: "text-moderation-latest",
+    stable: "text-moderation-stable",
+  },
   // todo from kfear1337 (b0zal) aka backtrackz
   ImageCreationPath: "v1/images/generations",
   ImageEditPath: "v1/images/edits",
