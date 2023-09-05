@@ -91,13 +91,24 @@ export class ChatGPTApi implements LLMApi {
           moderationJson = await moderationResponse.json();
           moderationResult = moderationJson.results[0]; // Access the first element of the array
         }
-  
+        
         if (moderationResult.flagged) {
           // Display a message indicating content policy violation
-          console.log(Locale.Error.Content_Policy, "\n");
-          const responseText = `${Locale.Error.Content_Policy}\n`;
-          options.onFinish(responseText);
-          return;
+          const contentPolicyViolations = moderationResult.categories;
+          const flaggedCategories = Object.entries(contentPolicyViolations)
+            .filter(([category, flagged]) => flagged)
+            .map(([category]) => category);
+        
+          if (flaggedCategories.length > 0) {
+            const translatedReasons = flaggedCategories.map((category) => {
+              const translation = (Locale.Error.Content_Policy.Reason as any)[category];
+              return translation ? translation : category; // Use category name if translation is not available
+            });
+            const translatedReasonText = translatedReasons.join(", ");
+            const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
+            options.onFinish(responseText);
+            return;
+          }
         }
       }
     }

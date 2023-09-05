@@ -9,8 +9,23 @@ const cn = {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
       : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
-    Content_Policy:
-      "您的请求因违反内容政策而被标记。\n阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
+    Content_Policy: {
+      Title: "您的请求因违反内容政策而被标记。\n阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "理由",
+        sexual: "性别",
+        hate: "仇恨",
+        harassment: "骚扰",
+        "self-harm": "自残",
+        "sexual/minors": "性别/未成年人",
+        "hate/threatening": "仇恨/威胁",
+        "violence/graphic": "暴力/图形",
+        "self-harm/intent": "自残/意图",
+        "self-harm/instructions": "自残/指导",
+        "harassment/threatening": "骚扰/威胁",
+        violence: "暴力",
+      },
+    },
   },
   Auth: {
     Title: "需要密码",

@@ -6,8 +6,23 @@ const fr: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Accès non autorisé, veuillez saisir le code d'accès dans la [page](/#/auth) des paramètres.",
-    Content_Policy:
-      "Votre demande a été signalée en raison d'une violation de la politique de contenu.\nLire ici : https://platform.openai.com/docs/guides/moderation/overview",
+    Content_Policy: {
+      Title: "Votre demande a été signalée en raison d'une violation de la politique de contenu.\nLire ici : https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "raison",
+        sexual: "sexuel",
+        hate: "haine",
+        harassment: "harcèlement",
+        "self-harm": "automutilation",
+        "sexual/minors": "sexuel/mineurs",
+        "hate/threatening": "haine/menace",
+        "violence/graphic": "violence/graphique",
+        "self-harm/intent": "automutilation/intention",
+        "self-harm/instructions": "automutilation/instructions",
+        "harassment/threatening": "harcèlement/menace",
+        violence: "violence",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages en total`,
