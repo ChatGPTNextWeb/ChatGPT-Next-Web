@@ -617,6 +617,7 @@ function _Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
+
   // prompt hints
   const promptStore = usePromptStore();
   const [promptHints, setPromptHints] = useState<RenderPompt[]>([]);
@@ -862,16 +863,19 @@ function _Chat() {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
-
   if (
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
+    if (accessStore.isAuthorized()) {
       copiedHello.content = Locale.Error.Unauthorized;
+      setTimeout(() => {
+        navigate(Path.Auth);
+      }, 100)
+    } else {
+      context.push(copiedHello);
     }
-    context.push(copiedHello);
   }
 
   // preview messages

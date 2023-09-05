@@ -123,7 +123,6 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-  IsAuths();
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
@@ -161,15 +160,6 @@ function Screen() {
     </div>
   );
 }
-// 是否授权登录
-function IsAuths() {
-  const access = useAccessStore().isAuthorized();
-  const navigate = useNavigate();
-  if(!access) {
-    return navigate(Path.Auth);
-  }
-}
-
 export function useLoadData() {
   const config = useAppConfig();
 
