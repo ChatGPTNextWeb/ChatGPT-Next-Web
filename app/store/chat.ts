@@ -109,8 +109,8 @@ interface ChatStore {
   resetSession: () => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
-
   clearAllData: () => void;
+  downloadAllData: () => void; // Added function to export all chat history from JSON
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -598,6 +598,25 @@ export const useChatStore = create<ChatStore>()(
         localStorage.clear();
         location.reload();
       },
+
+      downloadAllData() {
+        const currentDate = new Date().toISOString().split("T")[0];
+        const fileName = `all_data_chatgpt_${currentDate}.json`;
+      
+        const data = JSON.stringify({
+          sessions: get().sessions,
+          settings: useAppConfig.getState().modelConfig, // Include settings in the data
+        }, null, 2);
+      
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      },          
+
     }),
     {
       name: StoreKey.Chat,

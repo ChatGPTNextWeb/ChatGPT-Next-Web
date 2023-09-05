@@ -142,6 +142,12 @@ const en: LocaleType = {
         Action: "Clear",
         Confirm: "Confirm to clear all messages and settings?",
       },
+      Download: {
+        Title: "Export All Data",
+        SubTitle: "Export all messages and settings",
+        Action: "Export",
+        Confirm: "Confirm to export all messages and settings?",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

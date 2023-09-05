@@ -237,6 +237,20 @@ function DangerItems() {
           type="danger"
         />
       </ListItem>
+      <ListItem
+        title={Locale.Settings.Danger.Download.Title}
+        subTitle={Locale.Settings.Danger.Download.SubTitle}
+      >
+        <IconButton
+          text={Locale.Settings.Danger.Download.Action}
+          onClick={async () => {
+            if (await showConfirm(Locale.Settings.Danger.Download.Confirm)) {
+              chatStore.downloadAllData();
+            }
+          }}
+          type="danger"
+        />
+      </ListItem>
     </List>
   );
 }

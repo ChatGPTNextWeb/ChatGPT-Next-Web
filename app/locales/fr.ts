@@ -100,6 +100,12 @@ const fr: PartialLocaleType = {
         Action: "Supprimer",
         Confirm: "Confirmer la suppression de toutes les données?",
       },
+      Download: {
+        Title: "Exporter toutes les données",
+        SubTitle: "Exporter tous les messages et les paramètres",
+        Action: "Exporter",
+        Confirm: "Confirmer l'exportation de tous les messages et les paramètres ?",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION : si vous souhaitez ajouter une nouvelle traduction, ne traduisez pas cette valeur, laissez-la sous forme de `Language`

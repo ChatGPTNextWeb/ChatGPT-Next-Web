@@ -125,6 +125,12 @@ const id: PartialLocaleType = {
         Action: "Hapus",
         Confirm: "Anda yakin ingin menghapus semua pesan dan pengaturan?",
       },
+      Download: {
+        Title: "Ekspor Semua Data",
+        SubTitle: "Ekspor semua pesan dan pengaturan",
+        Action: "Ekspor",
+        Confirm: "Konfirmasi untuk meng-ekspor semua pesan dan pengaturan?",
+      },
     },
     Lang: {
         Name: "Bahasa", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

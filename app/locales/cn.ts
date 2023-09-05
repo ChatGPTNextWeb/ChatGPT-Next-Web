@@ -140,6 +140,12 @@ const cn = {
         Action: "立即清除",
         Confirm: "确认清除所有聊天、设置数据？",
       },
+      Download: {
+        Title: "导出所有数据",
+        SubTitle: "导出所有消息和设置",
+        Action: "导出",
+        Confirm: "确认导出所有消息和设置？",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
