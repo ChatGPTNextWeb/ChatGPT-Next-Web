@@ -317,7 +317,12 @@ export const useChatStore = create<ChatStore>()(
         const pluginStore = usePluginStore.getState();
         const allPlugins = pluginStore
           .getAll()
-          .filter((m) => (!getLang() || m.lang === getLang()) && m.enable);
+          .filter(
+            (m) =>
+              (!getLang() ||
+                m.lang === (getLang() == "cn" ? getLang() : "en")) &&
+              m.enable,
+          );
 
         // save user's and bot's message
         get().updateCurrentSession((session) => {

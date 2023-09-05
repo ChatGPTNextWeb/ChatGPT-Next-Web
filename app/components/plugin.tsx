@@ -297,7 +297,9 @@ export function PluginPage() {
 
   const allPlugins = pluginStore
     .getAll()
-    .filter((m) => !getLang() || m.lang === getLang());
+    .filter(
+      (m) => !getLang() || m.lang === (getLang() == "cn" ? getLang() : "en"),
+    );
 
   const [searchPlugins, setSearchPlugins] = useState<Plugin[]>([]);
   const [searchText, setSearchText] = useState("");
