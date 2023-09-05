@@ -106,7 +106,19 @@ export class ChatGPTApi implements LLMApi {
             });
             const translatedReasonText = translatedReasons.join(", ");
             const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
-            options.onFinish(responseText);
+        
+            // Generate text-based graph for category scores
+            const categoryScores = moderationResult.category_scores;
+            const graphLines = flaggedCategories.map((category) => {
+              const score = categoryScores[category];
+              const barLength = Math.round(score * 100);
+              const bar = '█'.repeat(barLength / 10);
+              return `${category}: ${bar} [${barLength.toFixed(2)}%]`;
+            });
+            const graphText = graphLines.join('\n');
+        
+            const responseWithGraph = `${responseText}${graphText}`;
+            options.onFinish(responseWithGraph);
             return;
           }
         }
