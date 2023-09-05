@@ -80,6 +80,7 @@ import {
   MAX_RENDER_MSG_COUNT,
   Path,
   REQUEST_TIMEOUT_MS,
+  UNFINISHED_INPUT,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -935,7 +936,8 @@ function _Chat() {
 
     const isTouchTopEdge = e.scrollTop <= edgeThreshold;
     const isTouchBottomEdge = bottomHeight >= e.scrollHeight - edgeThreshold;
-    const isHitBottom = bottomHeight >= e.scrollHeight - (isMobileScreen ? 0 : 10);
+    const isHitBottom =
+      bottomHeight >= e.scrollHeight - (isMobileScreen ? 0 : 10);
 
     const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
     const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
@@ -1012,6 +1014,23 @@ function _Chat() {
 
   // edit / insert message modal
   const [isEditingMessage, setIsEditingMessage] = useState(false);
+
+  // remember unfinished input
+  useEffect(() => {
+    // try to load from local storage
+    const key = UNFINISHED_INPUT(session.id);
+    const mayBeUnfinishedInput = localStorage.getItem(key);
+    if (mayBeUnfinishedInput && userInput.length === 0) {
+      setUserInput(mayBeUnfinishedInput);
+      localStorage.removeItem(key);
+    }
+
+    const dom = inputRef.current;
+    return () => {
+      localStorage.setItem(key, dom?.value ?? "");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles.chat} key={session.id}>
