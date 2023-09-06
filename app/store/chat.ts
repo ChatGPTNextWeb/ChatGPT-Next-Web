@@ -603,12 +603,12 @@ export const useChatStore = create<ChatStore>()(
       downloadAllData() {
         const currentDate = new Date().toISOString().split("T")[0];
         const fileName = `all_data_chatgpt_${currentDate}.json`;
-      
+
         const data = JSON.stringify({
           sessions: get().sessions,
-          settings: useAppConfig.getState().modelConfig, // Include settings in the data
+          modelConfig: useAppConfig.getState().modelConfig, // Include modelConfig in the data
         }, null, 2);
-      
+
         const blob = new Blob([data], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -616,7 +616,7 @@ export const useChatStore = create<ChatStore>()(
         a.download = fileName;
         a.click();
         URL.revokeObjectURL(url);
-      },      
+      },
 
       async importData(file: File) {
         const reader = new FileReader();
@@ -629,6 +629,9 @@ export const useChatStore = create<ChatStore>()(
                 sessions: importedData.sessions,
                 currentSessionIndex: 0,
               }));
+              if (importedData.modelConfig) {
+                useAppConfig.getState().modelConfig = importedData.modelConfig;
+              }
               showToast(Locale.Settings.Toast.Success);
             } else {
               showToast(Locale.Settings.Toast.InvalidFormat);
@@ -639,7 +642,7 @@ export const useChatStore = create<ChatStore>()(
           }
         };
         reader.readAsText(file);
-      },      
+      },
     }),
     {
       name: StoreKey.Chat,
