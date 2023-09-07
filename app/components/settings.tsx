@@ -205,60 +205,11 @@ function UserPromptModal(props: { onClose?: () => void }) {
 
 function DangerItems() {
   const chatStore = useChatStore();
-  const appConfig = useAppConfig();
 
 // added by kfear1337
 
-function ImportDataButton({ onImport }: { onImport: (file: File) => void }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      onImport(file);
-    }
-  };
-
-  const handleImportData = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  return (
-    <>
-      <input
-        type="file"
-        accept=".json"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        style={{ display: "none" }}
-      />
-      <IconButton
-        text={Locale.Settings.Danger.ImportMsg.Action}
-        onClick={handleImportData}
-        type="danger"
-      />
-    </>
-  );
-}
-
 return (
   <List>
-    <ListItem
-      title={Locale.Settings.Danger.Reset.Title}
-      subTitle={Locale.Settings.Danger.Reset.SubTitle}
-    >
-      <IconButton
-        text={Locale.Settings.Danger.Reset.Action}
-        onClick={async () => {
-          if (await showConfirm(Locale.Settings.Danger.Reset.Confirm)) {
-            appConfig.reset();
-          }
-        }}
-        type="danger"
-      />
-    </ListItem>
     <ListItem
       title={Locale.Settings.Danger.Clear.Title}
       subTitle={Locale.Settings.Danger.Clear.SubTitle}
@@ -271,32 +222,6 @@ return (
           }
         }}
         type="danger"
-      />
-    </ListItem>
-    <ListItem
-      title={Locale.Settings.Danger.ExportSettings.Title}
-      subTitle={Locale.Settings.Danger.ExportSettings.SubTitle}
-    >
-      <IconButton
-        text={Locale.Settings.Danger.ExportSettings.Action}
-        onClick={async () => {
-          if (await showConfirm(Locale.Settings.Danger.ExportSettings.Confirm)) {
-            appConfig.exportConfig();
-          }
-        }}
-        type="danger"
-      />
-    </ListItem>
-    <ListItem
-      title={Locale.Settings.Danger.ImportSettings.Title}
-      subTitle={Locale.Settings.Danger.ImportSettings.SubTitle}
-    >
-      <ImportDataButton
-        onImport={async (file) => {
-          if (await showConfirm(Locale.Settings.Danger.ImportSettings.Confirm)) {
-            appConfig.importConfig(file);
-          }
-        }}
       />
     </ListItem>
   </List>
@@ -368,6 +293,105 @@ return (
             chatStore.importData(file);
           }
         }}
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.ClearChats.Title}
+      subTitle={Locale.Settings.Danger.ClearChats.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.ClearChats.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.ClearChats.Confirm)) {
+            chatStore.clearAllChats();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+  </List>
+);
+}
+// a separate for settings aka global config
+function AppCfgDangerItems() {
+  const appConfig = useAppConfig();
+
+// added by kfear1337
+
+function ImportDataButton({ onImport }: { onImport: (file: File) => void }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onImport(file);
+    }
+  };
+
+  const handleImportData = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  return (
+    <>
+      <input
+        type="file"
+        accept=".json"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+      <IconButton
+        text={Locale.Settings.Danger.ImportSettings.Action}
+        onClick={handleImportData}
+        type="danger"
+      />
+    </>
+  );
+}
+
+return (
+  <List>
+    <ListItem
+      title={Locale.Settings.Danger.ExportSettings.Title}
+      subTitle={Locale.Settings.Danger.ExportSettings.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.ExportSettings.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.ExportSettings.Confirm)) {
+            appConfig.exportConfig();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.ImportSettings.Title}
+      subTitle={Locale.Settings.Danger.ImportSettings.SubTitle}
+    >
+      <ImportDataButton
+        onImport={async (file) => {
+          if (await showConfirm(Locale.Settings.Danger.ImportSettings.Confirm)) {
+            appConfig.importConfig(file);
+          }
+        }}
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.Reset.Title}
+      subTitle={Locale.Settings.Danger.Reset.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.Reset.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.Reset.Confirm)) {
+            appConfig.reset();
+          }
+        }}
+        type="danger"
       />
     </ListItem>
   </List>
@@ -870,9 +894,9 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
-
-        <DangerItems />
         <MsgDangerItems />
+        <AppCfgDangerItems />
+        <DangerItems />
       </div>
     </ErrorBoundary>
   );

@@ -110,6 +110,7 @@ interface ChatStore {
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
   clearAllData: () => void;
+  clearAllChats: () => void; // Added function to clear all chat history
   downloadAllData: () => void; // Added function to export all chat history from JSON
   importData: (file: File) => Promise<void>; // Added function to import chat history from JSON
 }
@@ -600,6 +601,13 @@ export const useChatStore = create<ChatStore>()(
         location.reload();
       },
 
+      clearAllChats() { // made a sperate for chats since default it used to be clearing all chats include settings
+        set(() => ({
+          sessions: [createEmptySession()],
+          currentSessionIndex: 0,
+        }));
+      },
+
       downloadAllData() {
         const currentDate = new Date().toISOString().split("T")[0];
         const fileName = `All data messages chatgpt ${currentDate}.json`;
@@ -633,6 +641,7 @@ export const useChatStore = create<ChatStore>()(
                 useAppConfig.getState().modelConfig = importedData.modelConfig;
               }
               showToast(Locale.Settings.Toast.ImportedSuccess);
+              location.reload(); // when import success it will reload
             } else {
               showToast(Locale.Settings.Toast.InvalidFormat);
             }
