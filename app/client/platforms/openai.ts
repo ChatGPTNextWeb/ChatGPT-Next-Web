@@ -116,7 +116,7 @@ export class ChatGPTApi implements LLMApi {
                   const score = categoryScores[category];
                   const barLength = Math.round(score * 100);
                   const bar = '█'.repeat(barLength / 10);
-                  return `${category}: ${bar} [${barLength.toFixed(2)}%]`;
+                  return `${translatedReasonText}: ${bar} [${barLength.toFixed(2)}%]`;
                 });
                 const graphText = graphLines.join('\n');
 
