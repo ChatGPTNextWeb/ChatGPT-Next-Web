@@ -175,6 +175,7 @@ export const useAppConfig = create<ChatConfigStore>()(
               ...importedConfig,
             }));
             showToast(Locale.Settings.Toast.ImportedSuccess);
+            location.reload(); // when import success it will reload
           } catch (error) {
             console.error("[Import Config] Error: ", error);
             showToast(Locale.Settings.Toast.ImportError);
