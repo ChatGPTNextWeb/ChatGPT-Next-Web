@@ -30,8 +30,8 @@ import {
   useUpdateStore,
   useAccessStore,
   useAppConfig,
+  useBackupdata,
 } from "../store";
-
 import Locale, {
   AllLangs,
   ALL_LANG_OPTIONS,
@@ -205,11 +205,72 @@ function UserPromptModal(props: { onClose?: () => void }) {
 
 function DangerItems() {
   const chatStore = useChatStore();
+  const backup = useBackupdata();
 
 // added by kfear1337
 
+function ImportDataButton({ onImport }: { onImport: (file: File) => void }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onImport(file);
+    }
+  };
+
+  const handleImportData = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  return (
+    <>
+      <input
+        type="file"
+        accept=".json"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+      <IconButton
+        text={Locale.Settings.Danger.ImportAllData.Action}
+        onClick={handleImportData}
+        type="danger"
+      />
+    </>
+  );
+}
+
 return (
   <List>
+        <ListItem
+      title={Locale.Settings.Danger.ExportAllData.Title}
+      subTitle={Locale.Settings.Danger.ExportAllData.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.ExportAllData.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.ExportAllData.Confirm)) {
+            backup.BackupAllData();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.ImportAllData.Title}
+      subTitle={Locale.Settings.Danger.ImportAllData.SubTitle}
+    >
+      <ImportDataButton
+        onImport={async (file) => {
+          if (await showConfirm(Locale.Settings.Danger.ImportAllData.Confirm)) {
+            backup.RestoreAllData(file);
+          }
+        }}
+      />
+    </ListItem>
     <ListItem
       title={Locale.Settings.Danger.Clear.Title}
       subTitle={Locale.Settings.Danger.Clear.SubTitle}

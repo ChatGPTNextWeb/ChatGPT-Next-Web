@@ -154,7 +154,20 @@ const id: PartialLocaleType = {
         SubTitle: "Semua pengaturan akan diimpor dari file JSON",
         Action: "Impor",
         Confirm: "Apakah Anda yakin ingin mengimpor semua pengaturan?",
-      },      
+      },
+      ExportAllData: {
+        Title: "Cadangkan Semua Data",
+        SubTitle: "Cadangkan Semua Data ke dalam sebuah file JSON",
+        Action: "Cadangkan",
+        Confirm: "Apakah Anda yakin ingin mencadangkan semua data?",
+      },
+      ImportAllData: {
+        Title: "Pulihkan Semua Data",
+        SubTitle: "Pulihkan Semua Data dari sebuah file JSON",
+        Action: "Pulihkan",
+        Confirm: "Apakah Anda yakin ingin memulihkan semua data?",
+      },
+            
     },
     Toast:{
       ImportedSuccess: "Berhasil Di impor",

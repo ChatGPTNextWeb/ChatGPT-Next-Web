@@ -169,7 +169,19 @@ const cn = {
         SubTitle: "所有设置将从一个JSON文件中导入",
         Action: "导入",
         Confirm: "确定要导入所有设置吗？",
-      },      
+      },
+      ExportAllData: {
+        Title: "备份所有数据",
+        SubTitle: "将所有数据备份到一个JSON文件中",
+        Action: "备份",
+        Confirm: "确定要备份所有数据吗？",
+      },
+      ImportAllData: {
+        Title: "恢复所有数据",
+        SubTitle: "将所有数据恢复到一个JSON文件中",
+        Action: "恢复",
+        Confirm: "确定要恢复所有数据吗？",
+      },             
     },
     Toast:{
       ImportedSuccess: "导入成功",

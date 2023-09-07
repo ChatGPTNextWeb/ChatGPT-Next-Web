@@ -171,6 +171,18 @@ const en: LocaleType = {
         SubTitle: "All Settings will be imported from a JSON file",
         Action: "Import",
         Confirm: "Are you sure you want to import all settings?",
+      },
+      ExportAllData: {
+        Title: "Backup All Data",
+        SubTitle: "Backup All Data into a JSON file",
+        Action: "Backup",
+        Confirm: "Are you sure you want to backup all data?",
+      },
+      ImportAllData: {
+        Title: "Restore All Data",
+        SubTitle: "Restore All Data into a JSON file",
+        Action: "Restore",
+        Confirm: "Are you sure you want to restore all data?",
       },      
     },
     Toast:{

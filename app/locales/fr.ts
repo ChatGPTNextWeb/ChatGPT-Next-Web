@@ -129,7 +129,20 @@ const fr: PartialLocaleType = {
         SubTitle: "Tous les paramètres seront importés à partir d'un fichier JSON",
         Action: "Importer",
         Confirm: "Êtes-vous sûr de vouloir importer tous les paramètres ?",
-      },      
+      },
+      ExportAllData: {
+        Title: "Sauvegarder toutes les données",
+        SubTitle: "Sauvegarder toutes les données dans un fichier JSON",
+        Action: "Sauvegarder",
+        Confirm: "Êtes-vous sûr de vouloir sauvegarder toutes les données ?",
+      },
+      ImportAllData: {
+        Title: "Restaurer toutes les données",
+        SubTitle: "Restaurer toutes les données à partir d'un fichier JSON",
+        Action: "Restaurer",
+        Confirm: "Êtes-vous sûr de vouloir restaurer toutes les données ?",
+      },
+            
     },
     Toast:{
       ImportedSuccess: "Importation réussie",

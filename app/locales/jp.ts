@@ -103,7 +103,19 @@ const jp: PartialLocaleType = {
         SubTitle: "すべての設定がJSONファイルからインポートされます",
         Action: "インポート",
         Confirm: "すべての設定をインポートしてもよろしいですか？",
-      },      
+      },
+      ExportAllData: {
+        Title: "すべてのデータをバックアップ",
+        SubTitle: "すべてのデータをJSONファイルにバックアップします",
+        Action: "バックアップ",
+        Confirm: "すべてのデータをバックアップしますか？",
+      },
+      ImportAllData: {
+        Title: "すべてのデータを復元",
+        SubTitle: "すべてのデータをJSONファイルから復元します",
+        Action: "復元",
+        Confirm: "すべてのデータを復元しますか？",
+      },            
     },
     Toast:{
       ImportedSuccess: "インポートに成功しました",
