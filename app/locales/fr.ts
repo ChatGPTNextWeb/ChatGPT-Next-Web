@@ -100,22 +100,35 @@ const fr: PartialLocaleType = {
         Action: "Supprimer",
         Confirm: "Confirmer la suppression de toutes les données?",
       },
-      Download: {
-        Title: "Exporter toutes les données",
-        SubTitle: "Exporter tous les messages et les paramètres",
+      ExportMsg: {
+        Title: "Exporter tous les messages",
+        SubTitle: "Cela exportera tous les messages, y compris les paramètres du modèle",
         Action: "Exporter",
-        Confirm: "Confirmer l'exportation de tous les messages et les paramètres ?",
+        Confirm: "Confirmer l'exportation de tous les messages ?",
       },
-      Import: {
-        Title: "Importer toutes les données",
-        SubTitle: "Importer tous les messages et les paramètres",
+      ImportMsg: {
+        Title: "Importer tous les messages",
+        SubTitle: "Cela importera tous les messages, y compris les paramètres du modèle",
         Action: "Importer",
-        Confirm: "Confirmer l'importation de tous les messages et les paramètres ?",
+        Confirm: "Confirmer l'importation de tous les messages ?",
+      },
+      ExportSettings: {
+        Title: "Exporter les paramètres de configuration globale",
+        SubTitle: "Cela exportera tous les paramètres de configuration globale",
+        Action: "Exporter",
+        Confirm: "Confirmer l'exportation de tous les paramètres de configuration globale ?",
+      },
+      ImportSettings: {
+        Title: "Importer les paramètres de configuration globale",
+        SubTitle: "Cela importera tous les paramètres de configuration globale",
+        Action: "Importer",
+        Confirm: "Confirmer l'importation de tous les paramètres de configuration globale ?",
       },
     },
-    Toast: {
-      Success : "Toutes les données ont été importées avec succès",
-      Error: "Échec de l'importation de toutes les données",
+    Toast:{
+      ImportedSuccess: "Importation réussie",
+      ExportedSuccess: "Exportation réussie",
+      ImportError: "Échec de l'importation de toutes les données",
       InvalidFormat: "Format invalide",
     },
     Lang: {

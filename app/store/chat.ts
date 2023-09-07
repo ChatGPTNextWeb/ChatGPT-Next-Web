@@ -602,7 +602,7 @@ export const useChatStore = create<ChatStore>()(
 
       downloadAllData() {
         const currentDate = new Date().toISOString().split("T")[0];
-        const fileName = `all_data_chatgpt_${currentDate}.json`;
+        const fileName = `All data messages chatgpt ${currentDate}.json`;
 
         const data = JSON.stringify({
           sessions: get().sessions,
@@ -632,13 +632,13 @@ export const useChatStore = create<ChatStore>()(
               if (importedData.modelConfig) {
                 useAppConfig.getState().modelConfig = importedData.modelConfig;
               }
-              showToast(Locale.Settings.Toast.Success);
+              showToast(Locale.Settings.Toast.ImportedSuccess);
             } else {
               showToast(Locale.Settings.Toast.InvalidFormat);
             }
           } catch (error) {
             console.error("[Import Data] Error: ", error);
-            showToast(Locale.Settings.Toast.Error);
+            showToast(Locale.Settings.Toast.ImportError);
           }
         };
         reader.readAsText(file);

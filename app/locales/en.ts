@@ -142,24 +142,36 @@ const en: LocaleType = {
         Action: "Clear",
         Confirm: "Confirm to clear all messages and settings?",
       },
-      Download: {
-        Title: "Export All Data",
-        SubTitle: "Export all messages and settings",
+      ExportMsg: {
+        Title: "Export All messages",
+        SubTitle: "This will Export all messages include model settings",
         Action: "Export",
-        Confirm: "Confirm to export all messages and settings?",
+        Confirm: "Confirm to export all messages?",
       },
-      Import: {
-        Title: "Import All Data",
-        SubTitle: "Import all messages and settings",
+      ImportMsg: {
+        Title: "Import All messages",
+        SubTitle: "This will Import all messages include model settings",
         Action: "Import",
-        Confirm: "Confirm to import all messages and settings?",
+        Confirm: "Confirm to import all messages?",
       },
-      
+      ExportSettings: {
+        Title: "Export Global config settings",
+        SubTitle: "This will Export all global config settings",
+        Action: "Export",
+        Confirm: "Confirm to export all global config settings?",
+      },
+      ImportSettings: {
+        Title: "Import Global config settings",
+        SubTitle: "This will Import all global config settings",
+        Action: "Import",
+        Confirm: "Confirm to import all global config settings?",
+      },
     },
-    Toast: {
-      Success : "All data successfully imported",
-      Error: "All data failed imported",
-      InvalidFormat: "Invalid format",
+    Toast:{
+      ImportedSuccess: "Successfully Imported",
+      ExportedSuccess: "Successfully Exported",
+      ImportError: "All data failed Imported",
+      InvalidFormat: "Invalid Format",
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`

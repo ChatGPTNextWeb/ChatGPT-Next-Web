@@ -235,7 +235,7 @@ function ImportDataButton({ onImport }: { onImport: (file: File) => void }) {
         style={{ display: "none" }}
       />
       <IconButton
-        text={Locale.Settings.Danger.Import.Action}
+        text={Locale.Settings.Danger.ImportMsg.Action}
         onClick={handleImportData}
         type="danger"
       />
@@ -274,13 +274,85 @@ return (
       />
     </ListItem>
     <ListItem
-      title={Locale.Settings.Danger.Download.Title}
-      subTitle={Locale.Settings.Danger.Download.SubTitle}
+      title={Locale.Settings.Danger.ExportSettings.Title}
+      subTitle={Locale.Settings.Danger.ExportSettings.SubTitle}
     >
       <IconButton
-        text={Locale.Settings.Danger.Download.Action}
+        text={Locale.Settings.Danger.ExportSettings.Action}
         onClick={async () => {
-          if (await showConfirm(Locale.Settings.Danger.Download.Confirm)) {
+          if (await showConfirm(Locale.Settings.Danger.ExportSettings.Confirm)) {
+            appConfig.exportConfig();
+          }
+        }}
+        type="danger"
+      />
+    </ListItem>
+    <ListItem
+      title={Locale.Settings.Danger.ImportSettings.Title}
+      subTitle={Locale.Settings.Danger.ImportSettings.SubTitle}
+    >
+      <ImportDataButton
+        onImport={async (file) => {
+          if (await showConfirm(Locale.Settings.Danger.ImportSettings.Confirm)) {
+            appConfig.importConfig(file);
+          }
+        }}
+      />
+    </ListItem>
+  </List>
+);
+}
+// a separate for msg
+function MsgDangerItems() {
+  const chatStore = useChatStore();
+  const appConfig = useAppConfig();
+
+// added by kfear1337
+
+function ImportDataButton({ onImport }: { onImport: (file: File) => void }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onImport(file);
+    }
+  };
+
+  const handleImportData = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  return (
+    <>
+      <input
+        type="file"
+        accept=".json"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+      <IconButton
+        text={Locale.Settings.Danger.ImportMsg.Action}
+        onClick={handleImportData}
+        type="danger"
+      />
+    </>
+  );
+}
+
+return (
+  <List>
+    <ListItem
+      title={Locale.Settings.Danger.ExportMsg.Title}
+      subTitle={Locale.Settings.Danger.ExportMsg.SubTitle}
+    >
+      <IconButton
+        text={Locale.Settings.Danger.ExportMsg.Action}
+        onClick={async () => {
+          if (await showConfirm(Locale.Settings.Danger.ExportMsg.Confirm)) {
             chatStore.downloadAllData();
           }
         }}
@@ -288,12 +360,12 @@ return (
       />
     </ListItem>
     <ListItem
-      title={Locale.Settings.Danger.Import.Title}
-      subTitle={Locale.Settings.Danger.Import.SubTitle}
+      title={Locale.Settings.Danger.ImportMsg.Title}
+      subTitle={Locale.Settings.Danger.ImportMsg.SubTitle}
     >
       <ImportDataButton
         onImport={async (file) => {
-          if (await showConfirm(Locale.Settings.Danger.Import.Confirm)) {
+          if (await showConfirm(Locale.Settings.Danger.ImportMsg.Confirm)) {
             chatStore.importData(file);
           }
         }}
@@ -302,7 +374,6 @@ return (
   </List>
 );
 }
-
 function SyncItems() {
   const syncStore = useSyncStore();
   const webdav = syncStore.webDavConfig;
@@ -802,6 +873,7 @@ export function Settings() {
         )}
 
         <DangerItems />
+        <MsgDangerItems />
       </div>
     </ErrorBoundary>
   );

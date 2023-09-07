@@ -125,25 +125,37 @@ const id: PartialLocaleType = {
         Action: "Hapus",
         Confirm: "Anda yakin ingin menghapus semua pesan dan pengaturan?",
       },
-      Download: {
-        Title: "Ekspor Semua Data",
-        SubTitle: "Ekspor semua pesan dan pengaturan",
+      ExportMsg: {
+        Title: "Ekspor Semua Pesan",
+        SubTitle: "Ini akan meng-ekspor semua pesan termasuk pengaturan model",
         Action: "Ekspor",
-        Confirm: "Konfirmasi untuk meng-ekspor semua pesan dan pengaturan?",
+        Confirm: "Konfirmasi untuk meng-ekspor semua pesan?",
       },
-      Import: {
-        Title: "Impor Semua Data",
-        SubTitle: "Impor semua pesan dan pengaturan",
+      ImportMsg: {
+        Title: "Impor Semua Pesan",
+        SubTitle: "Ini akan meng-impor semua pesan termasuk pengaturan model",
         Action: "Impor",
-        Confirm: "Konfirmasi untuk mengimpor semua pesan dan pengaturan?",
+        Confirm: "Konfirmasi untuk meng-impor semua pesan?",
+      },
+      ExportSettings: {
+        Title: "Ekspor Pengaturan Konfigurasi Global",
+        SubTitle: "Ini akan meng-ekspor semua pengaturan konfigurasi global",
+        Action: "Ekspor",
+        Confirm: "Konfirmasi untuk meng-ekspor semua pengaturan konfigurasi global?",
+      },
+      ImportSettings: {
+        Title: "Impor Pengaturan Konfigurasi Global",
+        SubTitle: "Ini akan meng-impor semua pengaturan konfigurasi global",
+        Action: "Impor",
+        Confirm: "Konfirmasi untuk meng-impor semua pengaturan konfigurasi global?",
       },
     },
-    Toast: {
-      Success : "Semua data berhasil diimpor",
-      Error: "Gagal mengimpor semua data",
+    Toast:{
+      ImportedSuccess: "Berhasil Di impor",
+      ExportedSuccess: "Berhasil Di export",
+      ImportError: "Gagal mengimpor semua data",
       InvalidFormat: "Format tidak valid",
     },
-
     Lang: {
         Name: "Bahasa", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
         All: "Semua Bahasa",

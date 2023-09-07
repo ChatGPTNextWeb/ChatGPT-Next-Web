@@ -74,22 +74,35 @@ const jp: PartialLocaleType = {
         Action: "今すぐ消去する",
         Confirm: "すべてのチャット履歴と設定を消去しますか？",
       },
-      Download: {
-        Title: "すべてのデータをエクスポート",
-        SubTitle: "すべてのメッセージと設定をエクスポート",
+      ExportMsg: {
+        Title: "すべてのメッセージをエクスポート",
+        SubTitle: "これにはモデルの設定も含まれます",
         Action: "エクスポート",
-        Confirm: "すべてのメッセージと設定をエクスポートしますか？",
+        Confirm: "すべてのメッセージをエクスポートしますか？",
       },
-      Import: {
-        Title: "すべてのデータをインポート",
-        SubTitle: "すべてのメッセージと設定をインポート",
+      ImportMsg: {
+        Title: "すべてのメッセージをインポート",
+        SubTitle: "これにはモデルの設定も含まれます",
         Action: "インポート",
-        Confirm: "すべてのメッセージと設定をインポートしますか？",
+        Confirm: "すべてのメッセージをインポートしますか？",
+      },
+      ExportSettings: {
+        Title: "グローバル設定をエクスポート",
+        SubTitle: "これにより、すべてのグローバル設定がエクスポートされます",
+        Action: "エクスポート",
+        Confirm: "すべてのグローバル設定をエクスポートしますか？",
+      },
+      ImportSettings: {
+        Title: "グローバル設定をインポート",
+        SubTitle: "これにより、すべてのグローバル設定がインポートされます",
+        Action: "インポート",
+        Confirm: "すべてのグローバル設定をインポートしますか？",
       },
     },
-    Toast: {
-      Success : "すべてのデータのインポートに成功しました",
-      Error: "すべてのデータのインポートに失敗しました",
+    Toast:{
+      ImportedSuccess: "インポートに成功しました",
+      ExportedSuccess: "エクスポートに成功しました",
+      ImportError: "すべてのデータのインポートに失敗しました",
       InvalidFormat: "無効な形式です",
     },
     Lang: {

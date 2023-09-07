@@ -140,22 +140,35 @@ const cn = {
         Action: "立即清除",
         Confirm: "确认清除所有聊天、设置数据？",
       },
-      Download: {
-        Title: "导出所有数据",
-        SubTitle: "导出所有消息和设置",
+      ExportMsg: {
+        Title: "导出所有消息",
+        SubTitle: "这将导出包括模型设置在内的所有消息",
         Action: "导出",
-        Confirm: "确认导出所有消息和设置？",
+        Confirm: "确认导出所有消息？",
       },
-      Import: {
-        Title: "导入所有数据",
-        SubTitle: "导入所有消息和设置",
+      ImportMsg: {
+        Title: "导入所有消息",
+        SubTitle: "这将导入包括模型设置在内的所有消息",
         Action: "导入",
-        Confirm: "确认导入所有消息和设置？",
+        Confirm: "确认导入所有消息？",
+      },
+      ExportSettings: {
+        Title: "导出全局配置设置",
+        SubTitle: "这将导出所有全局配置设置",
+        Action: "导出",
+        Confirm: "确认导出所有全局配置设置？",
+      },
+      ImportSettings: {
+        Title: "导入全局配置设置",
+        SubTitle: "这将导入所有全局配置设置",
+        Action: "导入",
+        Confirm: "确认导入所有全局配置设置？",
       },
     },
-    Toast: {
-      Success : "所有数据成功导入",
-      Error: "所有数据导入失败",
+    Toast:{
+      ImportedSuccess: "导入成功",
+      ExportedSuccess: "导出成功",
+      ImportError: "所有数据导入失败",
       InvalidFormat: "无效格式",
     },
     Lang: {

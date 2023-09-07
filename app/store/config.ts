@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { LLMModel } from "../client/api";
 import { getClientConfig } from "../config/client";
+import Locale from "../locales";
+import { showToast } from "../components/ui-lib";
 import { DEFAULT_INPUT_TEMPLATE, DEFAULT_MODELS, StoreKey } from "../constant";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
@@ -60,6 +62,8 @@ export type ChatConfigStore = ChatConfig & {
   update: (updater: (config: ChatConfig) => void) => void;
   mergeModels: (newModels: LLMModel[]) => void;
   allModels: () => LLMModel[];
+  exportConfig: () => void; // Added for Export config
+  importConfig: (file: File) => Promise<void>; // added for Export config
 };
 
 export type ModelConfig = ChatConfig["modelConfig"];
@@ -145,6 +149,40 @@ export const useAppConfig = create<ChatConfigStore>()(
         const models = get().models.concat(customModels);
         return models;
       },
+
+      exportConfig() {
+        const currentDate = new Date().toISOString().split("T")[0];
+        const fileName = `global config chatgpt ${currentDate}.json`;
+
+        const data = JSON.stringify(get(), null, 2);
+
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+
+      async importConfig(file: File) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const data = event.target?.result as string;
+          try {
+            const importedConfig = JSON.parse(data);
+            set(() => ({
+              ...importedConfig,
+            }));
+            showToast(Locale.Settings.Toast.ImportedSuccess);
+          } catch (error) {
+            console.error("[Import Config] Error: ", error);
+            showToast(Locale.Settings.Toast.ImportError);
+          }
+        };
+        reader.readAsText(file);
+      },
+      
     }),
     {
       name: StoreKey.Config,
