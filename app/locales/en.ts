@@ -180,7 +180,7 @@ const en: LocaleType = {
       },
       ImportAllData: {
         Title: "Restore All Data",
-        SubTitle: "Restore All Data into a JSON file",
+        SubTitle: "Restore All Data from a JSON file",
         Action: "Restore",
         Confirm: "Are you sure you want to restore all data?",
       },      

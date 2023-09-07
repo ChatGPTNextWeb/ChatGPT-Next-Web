@@ -178,10 +178,10 @@ const cn = {
       },
       ImportAllData: {
         Title: "恢复所有数据",
-        SubTitle: "将所有数据恢复到一个JSON文件中",
+        SubTitle: "从JSON文件中恢复所有数据",
         Action: "恢复",
         Confirm: "确定要恢复所有数据吗？",
-      },             
+      },           
     },
     Toast:{
       ImportedSuccess: "导入成功",
