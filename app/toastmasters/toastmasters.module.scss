@@ -116,3 +116,10 @@
   display: flex;
   flex-direction: row;
 }
+
+.video-container {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  // height: 100vh; /* 设置容器的高度为视口的高度，以实现垂直居中 */
+}
