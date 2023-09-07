@@ -11,6 +11,7 @@ import { StoreKey } from "../constant";
 export type Backupdata = {
   BackupAllData: () => void; // Added for Export config
   RestoreAllData: (file: File) => Promise<void>; // added for Export config
+  lastBackupDate?: string; // New property for storing the last backup date
 } 
 
 export const useBackupdata = create<Backupdata>()(
@@ -35,6 +36,8 @@ export const useBackupdata = create<Backupdata>()(
           a.download = fileName;
           a.click();
           URL.revokeObjectURL(url);
+
+          useBackupdata.setState({ lastBackupDate: currentDate });
         },
   
         RestoreAllData: async (file: File): Promise<void> => {
@@ -43,16 +46,29 @@ export const useBackupdata = create<Backupdata>()(
             const data = event.target?.result as string;
             try {
               const importedData = JSON.parse(data);
-              if (importedData.prompt && importedData.mask && importedData.config && importedData.chat && importedData.access) {
+              if (
+                importedData.prompt &&
+                importedData.mask &&
+                importedData.config &&
+                importedData.chat &&
+                importedData.access
+              ) {
                 usePromptStore.setState(importedData.prompt);
                 useMaskStore.setState(importedData.mask);
                 useAppConfig.setState(importedData.config);
                 useChatStore.setState(importedData.chat);
                 useAccessStore.setState(importedData.access);
+        
+                // Store the last backup created date from the imported data
+                const currentDate = new Date().toISOString().split("T")[0];
+                useBackupdata.setState((state) => ({
+                  ...state,
+                  lastBackupDate: currentDate,
+                }));
+        
                 showToast(Locale.Settings.Toast.ImportedSuccess);
                 location.reload(); // when import success it will reload
-              }
-               else {
+              } else {
                 console.error("[Import Data] Error: Invalid data format");
                 showToast(Locale.Settings.Toast.InvalidFormat);
               }
@@ -62,11 +78,11 @@ export const useBackupdata = create<Backupdata>()(
             }
           };
           reader.readAsText(file);
-        },
+        },        
       }),
       {
         name: StoreKey.Backup,
-        version: 1,
+        version: 1.1, // added last Backup Date when backup created
       },
     ),
   );  

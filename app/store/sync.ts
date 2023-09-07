@@ -1,7 +1,6 @@
 import { Updater } from "../typing";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreKey } from "../constant";
 
 export interface WebDavConfig {
   server: string;
@@ -80,7 +79,7 @@ export const useSyncStore = create<SyncStore>()(
       },
     }),
     {
-      name: StoreKey.Sync,
+      name: "SyncStore", // this disabled because too danger about webdav always vulnerable
       version: 1,
     },
   ),
