@@ -28,8 +28,6 @@ import {
 } from "./chat-common";
 import { ChatSession, InputTableRow } from "../store/chat";
 
-import ChatAvatar from "./chat-avatar";
-
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
 import EditIcon from "../icons/edit.svg";
@@ -59,6 +57,9 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import LinearProgress from "@mui/material/LinearProgress";
+
+import { VideoFetchStatus } from "../cognitive/speech-avatar";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -303,13 +304,25 @@ export function Chat() {
           toastmastersRolePrompts={ToastmastersRecord[session.inputRole]}
         />
 
-        <ChatAvatar></ChatAvatar>
-        {/* <div className={styles_tm["video-container"]}>
-          <video controls width="800" height="600">
-            <source src="https://cvoiceprodwus2.blob.core.windows.net/batch-synthesis-output/7c618222-32cc-4f34-8c1a-31dd2995f2e1/0001.webm?skoid=85130dbe-2390-4897-a9e9-5c88bb59daff&sktid=33e01921-4d64-4f8c-a055-5bdaffd5e33d&skt=2023-09-07T12%3A30%3A30Z&ske=2023-09-13T12%3A35%3A30Z&sks=b&skv=2023-01-03&sv=2023-01-03&st=2023-09-07T12%3A30%3A30Z&se=2023-09-08T12%3A35%3A30Z&sr=b&sp=rl&sig=W4GH0qTfU0PBIm%2B1E6qXnDMe02R3OfoU2Kd0NyeSn3A%3D" type="video/webm" />
-            Your browser does not support the video tag.
-          </video>
-        </div> */}
+        {session.videoUrl === VideoFetchStatus.Loading ? (
+          <div>
+            <h3 className={styles_tm["video-container"]}>
+              {" "}
+              Video is generating...{" "}
+            </h3>
+            <Box sx={{ width: "100%" }}>
+              {/* Show is loading */}
+              <LinearProgress />
+            </Box>
+          </div>
+        ) : (
+          <div className={styles_tm["video-container"]}>
+            <video controls width="400" height="300">
+              <source src={session.videoUrl} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        )}
       </div>
     </div>
   );

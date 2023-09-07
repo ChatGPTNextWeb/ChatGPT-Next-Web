@@ -53,6 +53,7 @@ export const getServerSideConfig = () => {
     zCareersPayUrl: process.env.ZCareersPayUrl,
     speechSubscriptionKey: process.env.SpeechSubscriptionKey,
     speechServiceRegion: "eastus",
+    speechAvatarSubscriptionKey: "placeholder",
   };
 
   /*

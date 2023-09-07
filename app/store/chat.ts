@@ -83,6 +83,7 @@ export interface ChatSession {
   inputTable: InputTableRow[];
   inputRole: string;
   inputSetting: Record<string, ToastmastersRoleSetting>;
+  videoUrl: string;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -110,6 +111,7 @@ function createEmptySession(): ChatSession {
     inputTable: [],
     inputRole: "Table Topics Evaluator", // TODO
     inputSetting: ToastmastersSettings,
+    videoUrl: "",
   };
 }
 

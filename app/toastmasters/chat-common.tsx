@@ -47,6 +47,7 @@ import styles_toastmasters from "./toastmasters.module.scss";
 import { ToastmastersRolePrompt, InputSubmitStatus } from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
+import { onChatAvatar } from "../cognitive/speech-avatar";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -538,6 +539,17 @@ export const ChatResponse = (props: {
                               message.content,
                               session.mask.lang,
                             )
+                          }
+                        />
+                        <ChatAction
+                          text={"ToVideo"}
+                          icon={<MicphoneIcon />}
+                          onClick={() =>
+                            onChatAvatar("Hello", (videoUrl: string) => {
+                              chatStore.updateCurrentSession(
+                                (session) => (session.videoUrl = videoUrl),
+                              );
+                            })
                           }
                         />
                       </>
