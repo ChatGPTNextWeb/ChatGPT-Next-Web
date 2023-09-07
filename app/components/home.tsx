@@ -73,7 +73,6 @@ const ToastmastersIEvaluator = dynamic(
     loading: () => <Loading noLogo />,
   },
 );
-
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });

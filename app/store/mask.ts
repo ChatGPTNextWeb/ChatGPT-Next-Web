@@ -17,6 +17,7 @@ export type Mask = {
   lang: Lang;
   builtin: boolean;
   pagePath?: Path;
+  group: string;
 };
 
 export const DEFAULT_MASK_STATE = {
@@ -46,6 +47,7 @@ export const createEmptyMask = () =>
     modelConfig: { ...useAppConfig.getState().modelConfig },
     lang: getLang(),
     builtin: false,
+    group: "",
   } as Mask);
 
 export const useMaskStore = create<MaskStore>()(

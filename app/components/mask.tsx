@@ -37,6 +37,7 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
+import { BuiltinMaskGroupOrder } from "../masks/cn";
 
 export function MaskAvatar(props: { mask: Mask }) {
   return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
@@ -336,6 +337,23 @@ export function MaskPage() {
     setTimeout(() => navigate(Path.Chat), 1);
   };
 
+  // 对面具角色 分组并排序
+  const groupedMasks = masks.reduce((groups: Record<string, any[]>, item) => {
+    if (!groups[item.group]) {
+      groups[item.group] = [];
+    }
+    groups[item.group].push(item);
+    return groups;
+  }, {});
+
+  const sortedGroupedMasks = Object.entries(groupedMasks).sort(
+    ([groupA], [groupB]) => {
+      const indexA = BuiltinMaskGroupOrder.indexOf(groupA);
+      const indexB = BuiltinMaskGroupOrder.indexOf(groupB);
+      return indexA - indexB;
+    },
+  );
+
   return (
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
@@ -349,8 +367,9 @@ export function MaskPage() {
             </div>
           </div>
 
+          {/* TODO */}
           <div className="window-actions">
-            <div className="window-action-button">
+            {/* <div className="window-action-button">
               <IconButton
                 icon={<DownloadIcon />}
                 bordered
@@ -363,7 +382,7 @@ export function MaskPage() {
                 bordered
                 onClick={() => importFromFile()}
               />
-            </div>
+            </div> */}
             <div className="window-action-button">
               <IconButton
                 icon={<CloseIcon />}
@@ -437,54 +456,72 @@ export function MaskPage() {
           </div>
 
           <div>
-            {masks.map((m) => (
-              <div className={styles["mask-item"]} key={m.id}>
-                <div className={styles["mask-header"]}>
-                  <div className={styles["mask-icon"]}>
-                    <MaskAvatar mask={m} />
-                  </div>
-                  <div className={styles["mask-title"]}>
-                    <div className={styles["mask-name"]}>{m.name}</div>
-                    <div className={styles["mask-info"] + " one-line"}>
-                      {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        ALL_LANG_OPTIONS[m.lang]
-                      } / ${m.modelConfig.model}`}
+            {sortedGroupedMasks.map(([groupName, items]) => (
+              <div key={groupName}>
+                <h2>{groupName}</h2>
+                <div>
+                  {items.map((m) => (
+                    <div className={styles["mask-item"]} key={m.id}>
+                      <div className={styles["mask-header"]}>
+                        <div className={styles["mask-icon"]}>
+                          <MaskAvatar mask={m} />
+                        </div>
+                        <div className={styles["mask-title"]}>
+                          <div className={styles["mask-name"]}>{m.name}</div>
+                          <div className={styles["mask-info"] + " one-line"}>
+                            {`${Locale.Mask.Item.Info(m.context.length)} / ${
+                              ALL_LANG_OPTIONS[m.lang as Lang]
+                            } / ${m.modelConfig.model}`}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles["mask-actions"]}>
+                        <IconButton
+                          icon={<AddIcon />}
+                          text={Locale.Mask.Item.Chat}
+                          onClick={() => {
+                            chatStore.newSession(m);
+                            navigate(m.pagePath ?? Path.Chat); // If m.pagePath is undefined, navigate to Path.Chat
+                          }}
+                        />
+                        {/* {m.builtin ? (  // Richard: Comment out this block to hide the view button
+                          <IconButton
+                            icon={<EyeIcon />}
+                            text={Locale.Mask.Item.View}
+                            onClick={() => setEditingMaskId(m.id)}
+                          />
+                        ) : (
+                          <IconButton
+                            icon={<EditIcon />}
+                            text={Locale.Mask.Item.Edit}
+                            onClick={() => setEditingMaskId(m.id)}
+                          />
+                        )} */}
+                        {!m.builtin && (
+                          <IconButton
+                            icon={<EditIcon />}
+                            text={Locale.Mask.Item.Edit}
+                            onClick={() => setEditingMaskId(m.id)}
+                          />
+                        )}
+                        {!m.builtin && (
+                          <IconButton
+                            icon={<DeleteIcon />}
+                            text={Locale.Mask.Item.Delete}
+                            onClick={async () => {
+                              if (
+                                await showConfirm(
+                                  Locale.Mask.Item.DeleteConfirm,
+                                )
+                              ) {
+                                maskStore.delete(m.id);
+                              }
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className={styles["mask-actions"]}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    text={Locale.Mask.Item.Chat}
-                    onClick={() => {
-                      chatStore.newSession(m);
-                      navigate(m.pagePath ?? Path.Chat); // If m.pagePath is undefined, navigate to Path.Chat
-                    }}
-                  />
-                  {m.builtin ? (
-                    <IconButton
-                      icon={<EyeIcon />}
-                      text={Locale.Mask.Item.View}
-                      onClick={() => setEditingMaskId(m.id)}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={<EditIcon />}
-                      text={Locale.Mask.Item.Edit}
-                      onClick={() => setEditingMaskId(m.id)}
-                    />
-                  )}
-                  {!m.builtin && (
-                    <IconButton
-                      icon={<DeleteIcon />}
-                      text={Locale.Mask.Item.Delete}
-                      onClick={async () => {
-                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
-                          maskStore.delete(m.id);
-                        }
-                      }}
-                    />
-                  )}
+                  ))}
                 </div>
               </div>
             ))}
