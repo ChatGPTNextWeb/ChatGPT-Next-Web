@@ -305,7 +305,6 @@ return (
 // a separate for msg
 function MsgDangerItems() {
   const chatStore = useChatStore();
-  const appConfig = useAppConfig();
 
 // added by kfear1337
 
