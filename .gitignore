@@ -44,3 +44,6 @@ dev
 
 *.key
 *.key.pub
+.husky/pre-commit
+yarn.lock
+package-lock.json

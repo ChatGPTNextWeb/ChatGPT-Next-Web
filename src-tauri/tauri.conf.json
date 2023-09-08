@@ -3,7 +3,7 @@
   "build": {
     "beforeBuildCommand": "yarn export",
     "beforeDevCommand": "yarn export:dev",
-    "devPath": "http://localhost:3000",
+    "devPath": "http://localhost:3000/ChatGPT-Next-Web",
     "distDir": "../out",
     "withGlobalTauri": true
   },
