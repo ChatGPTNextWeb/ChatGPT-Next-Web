@@ -1,0 +1,58 @@
+name: Upstream Sync all branch
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # every day
+  workflow_dispatch:
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync all branch latest commits from upstream repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
+    steps:
+      # Step 1: run a standard checkout action
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+      # Step 2: run the sync action main first
+      - name: Sync upstream changes (main)
+        id: sync_main
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          upstream_sync_repo: Yidadaa/ChatGPT-Next-Web
+          upstream_sync_branch: main
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          test_mode: false
+      # Step 3: Check main branch sync status
+      - name: Check main branch sync status
+        if: ${{ failure() }}
+        run: |
+          echo "[Error] 由于上游仓库的 workflow 文件变更，导致 GitHub 自动暂停了本次自动更新，你需要手动 Sync Fork 一次，详细教程请查看：https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E6%89%93%E5%BC%80%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0"
+          echo "[Error] Due to a change in the workflow file of the upstream repository, GitHub has automatically suspended the scheduled automatic update. You need to manually sync your fork. Please refer to the detailed tutorial for instructions: https://github.com/Yidadaa/ChatGPT-Next-Web#enable-automatic-updates"
+          exit 1
+      # Step 4: sync other branches
+      - name: Sync upstream changes (other branches)
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
+        run: |
+          branches=$(echo "${{ steps.sync_main.outputs.branches }}" | tr -d '[]')
+          for branch in $branches; do
+            echo "Syncing branch $branch"
+            # Add the following step to set the branch name explicitly
+            - name: Set branch name
+              run: echo "::set-env name=BRANCH_NAME::$branch"
+            # Use the BRANCH_NAME environment variable in the next step
+            - name: Sync upstream changes (branch)
+              id: sync_branch
+              uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+              with:
+                upstream_sync_repo: Yidadaa/ChatGPT-Next-Web
+                upstream_sync_branch: main
+                target_sync_branch: ${{ env.BRANCH_NAME }}
+                target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+                test_mode: false
+          done
