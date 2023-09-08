@@ -12,7 +12,7 @@ Fork this project on GitHub, then log in to dash.cloudflare.com and go to Pages.
 7. In "Build Settings", choose the "Framework presets" option and select "Next.js".
 8. Do not use the default "Build command" due to a node:buffer bug. Instead, use the following command:
     ```
-    npx https://prerelease-registry.devprod.cloudflare.dev/next-on-pages/runs/4930842298/npm-package-next-on-pages-230 --experimental-minify
+    npx @cloudflare/next-on-pages --experimental-minify
     ```
 9. For "Build output directory", use the default value and do not modify it.
 10. Do not modify "Root Directory".
