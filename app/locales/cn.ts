@@ -103,7 +103,7 @@ const cn = {
     ResetConfirm: "确认清空历史摘要？",
   },
   Home: {
-    NewChat: "新的聊天",
+    NewChat: "自由对话",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
@@ -263,9 +263,9 @@ const cn = {
   Mask: {
     Name: "面具",
     Page: {
-      Title: "预设角色面具",
+      Title: "角色选择",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
-      Search: "搜索角色面具",
+      Search: "搜索角色",
       Create: "新建",
     },
     Item: {

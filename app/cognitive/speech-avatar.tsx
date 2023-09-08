@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getServerSideConfig } from "../config/server";
+import { HttpRequestResponse } from "../store";
 
 const config = getServerSideConfig();
 
@@ -12,11 +13,11 @@ export enum VideoFetchStatus {
 }
 
 // pure function
-export const onChatAvatar = async (
-  text: string,
-  setSessionVideoUrl: (videoUrl: string) => void,
+export const onSpeechAvatar = async (
+  inputText: string,
+  setOutputAvatar: (outputAvatar: HttpRequestResponse) => void,
 ) => {
-  setSessionVideoUrl(VideoFetchStatus.Empty);
+  setOutputAvatar({ status: VideoFetchStatus.Empty, data: "" });
 
   const subscriptionKey = config.speechAvatarSubscriptionKey;
   const urlBase = "https://westus2.customvoice.api.speech.microsoft.com/api";
@@ -27,7 +28,7 @@ export const onChatAvatar = async (
     textType: "PlainText",
     inputs: [
       {
-        text: text,
+        text: inputText,
       },
     ],
     synthesisConfig: {
@@ -57,12 +58,8 @@ export const onChatAvatar = async (
     );
 
     if (response.status >= 400) {
-      console.log("Job submission failed, check your subscription key");
-      console.log(response.data);
-      setSessionVideoUrl(VideoFetchStatus.Error);
+      setOutputAvatar({ status: VideoFetchStatus.Error, data: response.data });
     } else {
-      console.log("Job submitted successfully");
-      console.log("response: ", response);
       const jobId = response.data.id;
 
       // 轮询获取状态
@@ -78,26 +75,27 @@ export const onChatAvatar = async (
           );
 
           if (result.data.status === VideoFetchStatus.Succeeded) {
-            console.log("Synthesized video:", result.data.outputs.result);
-            setSessionVideoUrl(result.data.outputs.result);
-          } else if (result.data.status === VideoFetchStatus.Succeeded) {
-            console.log("Synthesis failed");
-            setSessionVideoUrl(VideoFetchStatus.Succeeded);
+            setOutputAvatar({
+              status: VideoFetchStatus.Succeeded,
+              data: result.data.outputs.result,
+            });
+          } else if (result.data.status === VideoFetchStatus.Failed) {
+            setOutputAvatar({
+              status: VideoFetchStatus.Failed,
+              data: result.data,
+            });
           } else {
-            console.log("Synthesis in progress, status:", result.data.status);
-            setSessionVideoUrl(VideoFetchStatus.Loading);
+            setOutputAvatar({ status: VideoFetchStatus.Loading, data: "" });
             setTimeout(pollStatus, 500);
           }
         } catch (error) {
-          console.error("Error polling status:", error);
-          setSessionVideoUrl(VideoFetchStatus.Error);
+          setOutputAvatar({ status: VideoFetchStatus.Error, data: error });
         }
       };
 
       pollStatus();
     }
   } catch (error) {
-    console.error("Error submitting job:", error);
-    setSessionVideoUrl(VideoFetchStatus.Error);
+    setOutputAvatar({ status: VideoFetchStatus.Error, data: error });
   }
 };

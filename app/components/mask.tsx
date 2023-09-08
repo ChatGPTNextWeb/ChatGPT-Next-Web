@@ -37,7 +37,7 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { BuiltinMaskGroupOrder } from "../masks/cn";
+import { BuiltinMaskGroup, BuiltinMaskGroupOrder } from "../masks/cn";
 
 export function MaskAvatar(props: { mask: Mask }) {
   return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
@@ -345,13 +345,17 @@ export function MaskPage() {
     groups[item.group].push(item);
     return groups;
   }, {});
-
-  const sortedGroupedMasks = Object.entries(groupedMasks).sort(
+  let sortedGroupedMasks = Object.entries(groupedMasks).sort(
     ([groupA], [groupB]) => {
       const indexA = BuiltinMaskGroupOrder.indexOf(groupA);
       const indexB = BuiltinMaskGroupOrder.indexOf(groupB);
       return indexA - indexB;
     },
+  );
+
+  // 仅显示Toastmasters面具: TODO: for hackathon
+  sortedGroupedMasks = sortedGroupedMasks.filter(
+    ([group, masks]) => group === BuiltinMaskGroup.Toastmasters || group === "",
   );
 
   return (
@@ -362,12 +366,11 @@ export function MaskPage() {
             <div className="window-header-main-title">
               {Locale.Mask.Page.Title}
             </div>
-            <div className="window-header-submai-title">
+            {/* <div className="window-header-submai-title">
               {Locale.Mask.Page.SubTitle(allMasks.length)}
-            </div>
+            </div> */}
           </div>
 
-          {/* TODO */}
           <div className="window-actions">
             {/* <div className="window-action-button">
               <IconButton
@@ -393,7 +396,7 @@ export function MaskPage() {
           </div>
         </div>
 
-        <div className={styles_newchat["new-chat-unset-height"]}>
+        {/* <div className={styles_newchat["new-chat-unset-height"]}>
           <div className={styles_newchat["title"]}>{Locale.NewChat.Title}</div>
           <div className={styles_newchat["sub-title"]}>
             {Locale.NewChat.SubTitle}
@@ -408,7 +411,7 @@ export function MaskPage() {
               className={styles_newchat["skip"]}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className={styles_newchat["border-bottom"]}></div>
 

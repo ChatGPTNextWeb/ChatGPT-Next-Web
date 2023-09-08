@@ -32,6 +32,7 @@ import {
   useAppConfig,
   DEFAULT_TOPIC,
   InputStore,
+  HttpRequestResponse,
 } from "../store";
 
 import { useNavigate } from "react-router-dom";
@@ -52,7 +53,7 @@ import {
 } from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
-import { onChatAvatar } from "../cognitive/speech-avatar";
+import { onSpeechAvatar } from "../cognitive/speech-avatar";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
@@ -527,11 +528,16 @@ export const ChatResponse = (props: {
     When confirm, ${cost} AI coins will be cost.
     `;
 
-    const isConfirmed = await showConfirm(
-      <span style={{ whiteSpace: "pre-line" }}> {confirmText} </span>,
-    );
+    if (
+      session.inputSetting[ToastmastersRoles.PageSettings].avatarCostPreview ==
+      true
+    ) {
+      const isConfirmed = await showConfirm(
+        <span style={{ whiteSpace: "pre-line" }}> {confirmText} </span>,
+      );
 
-    if (!isConfirmed) return;
+      if (!isConfirmed) return;
+    }
 
     const isEnoughCoins = await chatStore.isEnoughCoins(cost);
 
@@ -539,15 +545,15 @@ export const ChatResponse = (props: {
       return;
     }
 
-    await onChatAvatar(
+    await onSpeechAvatar(
       ChatUtility.getFirstNWords(
         messageContent,
         session.inputSetting[ToastmastersRoles.PageSettings].words,
         false,
       ),
-      (videoUrl: string) => {
+      (outputAvatar: HttpRequestResponse) => {
         chatStore.updateCurrentSession(
-          (session) => (session.videoUrl = videoUrl),
+          (session) => (session.outputAvatar = outputAvatar),
         );
       },
     );
@@ -585,8 +591,8 @@ export const ChatResponse = (props: {
                   <div
                     className={styles["chat-input-actions"]}
                     style={{
-                      marginTop: 10,
-                      marginBottom: 0,
+                      marginTop: 20,
+                      marginBottom: -5,
                     }}
                   >
                     {message.streaming ? (

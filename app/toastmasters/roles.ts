@@ -105,6 +105,7 @@ export const ToastmastersTTSpeaker: ToastmastersRolePrompt[] = [
 
 export interface ToastmastersRoleSetting {
   words: number;
+  avatarCostPreview?: boolean;
 }
 
 export const ToastmastersIEvaluatorGuidance = (
@@ -306,5 +307,6 @@ export const ToastmastersSettings: Record<string, ToastmastersRoleSetting> = {
   },
   [ToastmastersRoles.PageSettings]: {
     words: 5,
+    avatarCostPreview: true,
   },
 };

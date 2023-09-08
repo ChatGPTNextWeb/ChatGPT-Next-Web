@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import _ from "lodash";
 
 import { useChatStore } from "../store";
 
@@ -27,7 +28,7 @@ import {
   useScrollToBottom,
   ChatUtility,
 } from "./chat-common";
-import { ChatSession, InputTableRow } from "../store/chat";
+import { ChatSession, InputTableRow, HttpRequestResponse } from "../store/chat";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -59,6 +60,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import LinearProgress from "@mui/material/LinearProgress";
+import Switch from "@mui/material/Switch";
 
 import { VideoFetchStatus } from "../cognitive/speech-avatar";
 
@@ -305,24 +307,7 @@ export function Chat() {
           toastmastersRolePrompts={ToastmastersRecord[session.inputRole]}
         />
 
-        {session.videoUrl === VideoFetchStatus.Loading ? (
-          <div>
-            <h3 className={styles_tm["video-container"]}>
-              Avatar Video is generating...
-            </h3>
-            <Box sx={{ width: "100%" }}>
-              {/* Show is loading */}
-              <LinearProgress />
-            </Box>
-          </div>
-        ) : (
-          <div className={styles_tm["video-container"]}>
-            <video controls width="800" height="600">
-              <source src={session.videoUrl} type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        )}
+        <ChatAvatarShow outputAvatar={session.outputAvatar} />
       </div>
     </div>
   );
@@ -425,9 +410,19 @@ const ChatInputAddSubmit = (props: {
   );
 };
 
-// TODO: when confirm, update the setting
 function ToastmastersSettings(session: ChatSession) {
-  var setting = session.inputSetting;
+  /*
+  将当前的设置值复制到initialSettings: 创建一个新的对象副本，而不是引用相同的对象
+  const setting = { ...session.inputSetting }; 
+  在JavaScript中，使用{ ...session.inputSetting }这种方式创建一个对象副本时，通常会复制对象的第一层属性，但对于嵌套的对象或子对象，它们仍然是引用。这就是为什么修改setting会影响到session.inputSetting的原因。
+  */
+  const setting = _.cloneDeep(session.inputSetting);
+
+  const onSubmit = async () => {
+    session.inputSetting = { ...setting };
+    showToast("Setting has been saved, please return");
+  };
+
   showModal({
     title: "Current Page Settings",
     children: (
@@ -435,7 +430,7 @@ function ToastmastersSettings(session: ChatSession) {
         <List>
           <ListItem title="Page Settings"></ListItem>
           <ListItem
-            title="- Speech Avatar max words"
+            title="Speech Avatar max words"
             subTitle={"Cost: 1 word costs 1 AI coin. -1 means no limit."}
           >
             <Input
@@ -447,6 +442,24 @@ function ToastmastersSettings(session: ChatSession) {
                 ))
               }
             ></Input>
+          </ListItem>
+          <ListItem
+            title={"Avatar Cost Preview"}
+            subTitle={
+              "Preview how many AI coins will be cost when generating avatar video"
+            }
+          >
+            <Switch
+              defaultChecked={
+                setting[ToastmastersRoles.PageSettings].avatarCostPreview ??
+                true
+              }
+              onChange={(e) =>
+                (setting[ToastmastersRoles.PageSettings].avatarCostPreview =
+                  e.currentTarget.checked)
+              }
+              inputProps={{ "aria-label": "controlled" }}
+            />
           </ListItem>
         </List>
         <List>
@@ -486,5 +499,54 @@ function ToastmastersSettings(session: ChatSession) {
         </List>
       </div>
     ),
+    actions: [
+      <IconButton
+        icon={<SendWhiteIcon />}
+        type="primary"
+        key=""
+        text="Confirm"
+        onClick={onSubmit}
+      />,
+    ],
   });
 }
+
+const ChatAvatarShow = (props: { outputAvatar: HttpRequestResponse }) => {
+  const { outputAvatar } = props;
+
+  if (outputAvatar.status === VideoFetchStatus.Empty) {
+    return null;
+  }
+
+  if (outputAvatar.status === VideoFetchStatus.Error) {
+    return <div>{outputAvatar.data}</div>;
+  }
+
+  if (outputAvatar.status === VideoFetchStatus.Failed) {
+    return <div>{outputAvatar.data}</div>;
+  }
+
+  if (outputAvatar.status === VideoFetchStatus.Loading) {
+    return (
+      <div>
+        <h3 className={styles_tm["video-container"]}>
+          Avatar Video is generating...
+        </h3>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress />
+        </Box>
+      </div>
+    );
+  }
+
+  if (outputAvatar.status === VideoFetchStatus.Succeeded) {
+    return (
+      <div className={styles_tm["video-container"]}>
+        <video controls width="800" height="600">
+          <source src={outputAvatar.data} type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    );
+  }
+};
