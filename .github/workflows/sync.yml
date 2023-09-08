@@ -19,18 +19,22 @@ jobs:
       - name: Checkout target repo
         uses: actions/checkout@v3
 
-      # Step 2: run the sync action
+      # Step 2: Fetch branches from your repository
+      - name: Fetch branches
+        id: fetch_branches
+        run: |
+          echo "::set-output name=branches::$(git ls-remote --heads origin | awk -F/ '{print $3}' | grep -vE 'main|master')"
+
+      # Step 3: Sync changes for each branch
       - name: Sync upstream changes
         id: sync
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
           upstream_sync_repo: Yidadaa/ChatGPT-Next-Web
           upstream_sync_branch: main
-          target_sync_branch: main
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set
-
-          # Set test_mode true to run tests instead of the true action!!
-          test_mode: false
+          target_sync_branch: 'main''Backup_Preview''backu-chat'
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          test_mode: true
 
       - name: Sync check
         if: failure()
