@@ -6,6 +6,7 @@ export enum ToastmastersRoles {
   AhCounter = "Ah-Counter",
   GeneralEvaluator = "General Evaluator",
   RevisedSpeech = "Revised Speech",
+  PageSettings = "Page Settings",
 }
 
 export interface ToastmastersRolePrompt {
@@ -302,5 +303,8 @@ export const ToastmastersSettings: Record<string, ToastmastersRoleSetting> = {
   },
   [ToastmastersRoles.RevisedSpeech]: {
     words: 100,
+  },
+  [ToastmastersRoles.PageSettings]: {
+    words: 5,
   },
 };

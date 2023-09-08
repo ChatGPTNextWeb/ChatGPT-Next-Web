@@ -121,4 +121,19 @@
   display: flex;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
+  flex-direction: column;
+}
+
+
+.settings-role-words {
+  display: flex;
+  // justify-content: space-around;
+  flex-direction: column;
+
+  .settings-role-words-item {
+    display: flex;
+    // justify-content: space-around;
+    flex-direction: row;
+    // margin-bottom: 10px;
+  }
 }

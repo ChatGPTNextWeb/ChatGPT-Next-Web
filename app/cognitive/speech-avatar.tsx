@@ -21,16 +21,13 @@ export const onChatAvatar = async (
   const subscriptionKey = config.speechAvatarSubscriptionKey;
   const urlBase = "https://westus2.customvoice.api.speech.microsoft.com/api";
 
-  const ssml =
-    '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN"><voice name="zh-CN-XiaoxiaoNeural">你好，我是微软AI虚拟人。</voice></speak>';
-
   const payload = {
-    displayName: "avatar test",
-    description: "<description>",
-    textType: "SSML",
+    displayName: "speech avatar speaking",
+    description: "",
+    textType: "PlainText",
     inputs: [
       {
-        text: ssml,
+        text: text,
       },
     ],
     synthesisConfig: {
@@ -38,11 +35,11 @@ export const onChatAvatar = async (
     },
     properties: {
       talkingAvatarCharacter: "lisa", // # currently only one platform character (lisa)
-      talkingAvatarStyle: "graceful-sitting", // # chosen from 5 styles (casual-sitting, graceful-sitting, graceful-standing, technical-sitting, technical-standing)
+      talkingAvatarStyle: "casual-sitting", // # chosen from 5 styles (casual-sitting, graceful-sitting, graceful-standing, technical-sitting, technical-standing)
       videoFormat: "webm", // # mp4 or webm, webm is required for transparent background
       videoCodec: "vp9", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
       subtitleType: "soft_embedded",
-      backgroundColor: "transparent",
+      backgroundColor: "white", // # white or transparent
     },
   };
 

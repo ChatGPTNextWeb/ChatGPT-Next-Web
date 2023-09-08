@@ -18,6 +18,7 @@ import {
   ToastmastersTTEvaluatorGuidance as ToastmastersRoleGuidance,
   ToastmastersTTEvaluatorRecord as ToastmastersRecord,
   InputSubmitStatus,
+  ToastmastersRoles,
 } from "./roles";
 import {
   ChatTitle,
@@ -307,8 +308,7 @@ export function Chat() {
         {session.videoUrl === VideoFetchStatus.Loading ? (
           <div>
             <h3 className={styles_tm["video-container"]}>
-              {" "}
-              Video is generating...{" "}
+              Avatar Video is generating...
             </h3>
             <Box sx={{ width: "100%" }}>
               {/* Show is loading */}
@@ -317,7 +317,7 @@ export function Chat() {
           </div>
         ) : (
           <div className={styles_tm["video-container"]}>
-            <video controls width="400" height="300">
+            <video controls width="800" height="600">
               <source src={session.videoUrl} type="video/webm" />
               Your browser does not support the video tag.
             </video>
@@ -429,28 +429,61 @@ const ChatInputAddSubmit = (props: {
 function ToastmastersSettings(session: ChatSession) {
   var setting = session.inputSetting;
   showModal({
-    title: "Toastmasters Settings",
+    title: "Current Page Settings",
     children: (
       <div>
-        {Object.entries(ToastmastersRecord).map(([role]) => {
-          return (
-            <List key={role}>
-              <ListItem title={role}></ListItem>
-              <ListItem
-                title=""
-                subTitle={"- Evaluation Words for each Speaker"}
-              >
-                <Input
-                  rows={1}
-                  defaultValue={setting[role].words}
-                  onChange={(e) =>
-                    (setting[role].words = parseInt(e.currentTarget.value))
-                  }
-                ></Input>
-              </ListItem>
-            </List>
-          );
-        })}
+        <List>
+          <ListItem title="Page Settings"></ListItem>
+          <ListItem
+            title="- Speech Avatar max words"
+            subTitle={"Cost: 1 word costs 1 AI coin. -1 means no limit."}
+          >
+            <Input
+              rows={1}
+              defaultValue={setting[ToastmastersRoles.PageSettings].words}
+              onChange={(e) =>
+                (setting[ToastmastersRoles.PageSettings].words = parseInt(
+                  e.currentTarget.value,
+                ))
+              }
+            ></Input>
+          </ListItem>
+        </List>
+        <List>
+          <ListItem title="Role Settings"></ListItem>
+          <TableContainer component={Paper}>
+            <Table className={styles_tm["table-border"]}>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Role</TableCell>
+                  <TableCell align="center">
+                    Evaluation Words for each Speaker
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.entries(ToastmastersRecord).map(([role]) => (
+                  <TableRow key={role}>
+                    <TableCell component="th" scope="row">
+                      {role}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Input
+                        rows={1}
+                        defaultValue={setting[role].words}
+                        onChange={(e) =>
+                          (setting[role].words = parseInt(
+                            e.currentTarget.value,
+                          ))
+                        }
+                      ></Input>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </List>
       </div>
     ),
   });

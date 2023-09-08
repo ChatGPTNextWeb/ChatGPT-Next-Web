@@ -19,6 +19,7 @@ import EditIcon from "../icons/rename.svg";
 import StopIcon from "../icons/pause.svg";
 import MicphoneIcon from "../icons/Micphone.svg";
 import ResetIcon from "../icons/reload.svg";
+import AvatarIcon from "../icons/avatar36.svg";
 import { IconButton } from "../components/button";
 
 import { copyToClipboard, useMobileScreen } from "../utils";
@@ -35,7 +36,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-import { showPrompt, showToast } from "../components/ui-lib";
+import { showPrompt, showToast, showConfirm } from "../components/ui-lib";
 import { autoGrowTextArea } from "../utils";
 import dynamic from "next/dynamic";
 import Multiselect from "multiselect-react-dropdown";
@@ -44,10 +45,17 @@ import { ExportMessageModal } from "../components/exporter";
 
 import styles from "../components/chat.module.scss";
 import styles_toastmasters from "./toastmasters.module.scss";
-import { ToastmastersRolePrompt, InputSubmitStatus } from "./roles";
+import {
+  ToastmastersRolePrompt,
+  InputSubmitStatus,
+  ToastmastersRoles,
+} from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
 import { onChatAvatar } from "../cognitive/speech-avatar";
+import zBotServiceClient, {
+  LocalStorageKeys,
+} from "../zbotservice/ZBotServiceClient";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -273,13 +281,24 @@ export class ChatUtility {
     return text.length > 0 ? text.split(/\s+/).length : 0;
   }
 
-  static getFirstNWords(text: string, number: number): string {
+  static getFirstNWords(
+    text: string,
+    number: number,
+    withOmit: boolean = true,
+  ): string {
     var words = this.getWordsNumber(text);
 
-    if (words <= number) {
+    if (number == -1 || words <= number) {
       return text;
     }
-    return text.split(/\s+/).slice(0, number).join(" ") + "...";
+
+    var firstWords = text.split(/\s+/).slice(0, number).join(" ");
+
+    if (!withOmit) {
+      return firstWords;
+    }
+
+    return firstWords + "...";
   }
 
   static formatTime = (time: number): string => {
@@ -434,6 +453,7 @@ export const ChatResponse = (props: {
   // var session = props.session;
   const config = useAppConfig();
 
+  // TODO: fix not correct - 20230908
   // TODO: use toastmastersRolePrompts
   const onResend = async (roleIndex: number) => {
     let isEnoughCoins = await chatStore.isEnoughCoins(
@@ -462,6 +482,7 @@ export const ChatResponse = (props: {
     // if (!isMobileScreen) inputRef.current?.focus();
     // setAutoScroll(true);
   };
+
   const onEdit = async (botMessage: ChatMessage) => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
@@ -478,6 +499,63 @@ export const ChatResponse = (props: {
   // stop response
   const onUserStop = (messageId: number) => {
     ChatControllerPool.stop(sessionIndex, messageId);
+  };
+
+  const onVideoGenerate = async (messageContent: string) => {
+    const words = ChatUtility.getWordsNumber(messageContent);
+    const cost =
+      session.inputSetting[ToastmastersRoles.PageSettings].words == -1
+        ? words
+        : Math.min(
+            session.inputSetting[ToastmastersRoles.PageSettings].words,
+            words,
+          );
+
+    const confirmText: string = `
+    This will generate a video by a Speech Avatar according to your speech content.
+    
+    The cost way: 1 word costs 1 AI coin; 
+    Current setting: - Speech Avatar max words: ${
+      session.inputSetting[ToastmastersRoles.PageSettings].words
+    };
+    current words: ${words}.
+
+    When confirm, ${cost} AI coins will be cost.
+    `;
+
+    const isConfirmed = await showConfirm(
+      <span style={{ whiteSpace: "pre-line" }}> {confirmText} </span>,
+    );
+
+    if (!isConfirmed) return;
+
+    const isEnoughCoins = await chatStore.isEnoughCoins(cost);
+
+    if (!isEnoughCoins) {
+      return;
+    }
+
+    await onChatAvatar(
+      ChatUtility.getFirstNWords(
+        messageContent,
+        session.inputSetting[ToastmastersRoles.PageSettings].words,
+        false,
+      ),
+      (videoUrl: string) => {
+        chatStore.updateCurrentSession(
+          (session) => (session.videoUrl = videoUrl),
+        );
+      },
+    );
+
+    // check user login
+    let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    if (userEmail === null) {
+      showToast("您尚未登录, 请前往设置中心登录");
+      return;
+    }
+    // update db
+    zBotServiceClient.updateRequest(userEmail); // TODO: count
   };
 
   return (
@@ -542,15 +620,9 @@ export const ChatResponse = (props: {
                           }
                         />
                         <ChatAction
-                          text={"ToVideo"}
-                          icon={<MicphoneIcon />}
-                          onClick={() =>
-                            onChatAvatar("Hello", (videoUrl: string) => {
-                              chatStore.updateCurrentSession(
-                                (session) => (session.videoUrl = videoUrl),
-                              );
-                            })
-                          }
+                          text={"AvatarVideo"}
+                          icon={<AvatarIcon />}
+                          onClick={() => onVideoGenerate(message.content)}
                         />
                       </>
                     )}
