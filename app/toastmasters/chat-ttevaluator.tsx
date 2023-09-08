@@ -347,12 +347,12 @@ const ChatInputAddSubmit = (props: {
   };
 
   const doSubmit = async () => {
-    var checkInputResult = props.checkInput();
+    const checkInputResult = props.checkInput();
     if (!checkInputResult.canSubmit) {
       return;
     }
 
-    var toastmastersRolePrompts = ToastmastersRecord[inputRole];
+    const toastmastersRolePrompts = ToastmastersRecord[inputRole];
 
     let isEnoughCoins = await chatStore.isEnoughCoins(
       toastmastersRolePrompts.length + 1,
@@ -372,7 +372,7 @@ const ChatInputAddSubmit = (props: {
     chatStore.onUserInput(checkInputResult.guidance);
     for (const item of toastmastersRolePrompts) {
       await chatStore.getIsFinished();
-      var ask = item.contentWithSetting(session.inputSetting[inputRole]); // TODO: make it necessary
+      let ask = item.contentWithSetting(session.inputSetting[inputRole]);
       chatStore.onUserInput(ask);
     }
     await chatStore.getIsFinished();

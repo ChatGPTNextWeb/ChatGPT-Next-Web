@@ -444,39 +444,43 @@ export const ChatResponse = (props: {
   scrollRef: React.RefObject<HTMLDivElement>;
   toastmastersRolePrompts: ToastmastersRolePrompt[];
 }) => {
+  const { scrollRef, toastmastersRolePrompts } = props;
+
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
     state.currentSession(),
     state.currentSessionIndex,
   ]);
 
-  // var session = props.session;
   const config = useAppConfig();
 
-  // TODO: fix not correct - 20230908
-  // TODO: use toastmastersRolePrompts
+  // prompt count
+  const promptCount = 3;
+
+  // TODO: more debug for other roles except tte
   const onResend = async (roleIndex: number) => {
-    let isEnoughCoins = await chatStore.isEnoughCoins(
-      props.toastmastersRolePrompts.length - roleIndex,
+    const isEnoughCoins = await chatStore.isEnoughCoins(
+      toastmastersRolePrompts.length - roleIndex,
     );
     if (!isEnoughCoins) {
       return;
     }
 
-    // reset status from messageIndex
-    chatStore.resetSessionFromIndex(2 * roleIndex + 2);
+    // -1: means reset from the last message of roleIndex
+    chatStore.resetSessionFromIndex(promptCount + 2 * roleIndex - 1);
 
-    var ask = props.toastmastersRolePrompts[roleIndex].content;
-    chatStore.onUserInput(ask);
-
-    for (let i = roleIndex + 1; i < props.toastmastersRolePrompts.length; i++) {
-      chatStore.getIsFinished().then(() => {
-        ask = props.toastmastersRolePrompts[i].content;
-        chatStore.onUserInput(ask);
-      });
+    /*
+    JavaScript 中的 for 循环通常是同步顺序执行的。这意味着循环内的代码会按顺序执行，每次迭代都会等待上一次迭代完成后才会开始下一次迭代。
+    这是因为 JavaScript 是单线程的，它在执行循环时会阻塞其他代码的执行，直到循环完成。
+    */
+    for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
+      let item = toastmastersRolePrompts[i];
+      let ask = item.contentWithSetting(
+        session.inputSetting[session.inputRole],
+      );
+      chatStore.onUserInput(ask);
+      await chatStore.getIsFinished();
     }
-    // the last role is doing
-    // chatStore.getIsFinished().then(() => {});
 
     // TODO
     // if (!isMobileScreen) inputRef.current?.focus();
@@ -563,10 +567,10 @@ export const ChatResponse = (props: {
       {props.toastmastersRolePrompts.map((role, index) => {
         // if length > index => the data is ready => show the data, else show the last data
         var message: ChatMessage = createMessage({});
-        if (session.messages.length > 2 * index + 4)
+        if (session.messages.length > promptCount + 2 * index + 1)
           // data is ready, just read it
-          message = session.messages[2 * index + 3];
-        else if (session.messages.length == 2 * index + 4)
+          message = session.messages[promptCount + 2 * index];
+        else if (session.messages.length == promptCount + 2 * index + 1)
           message = session.messages[session.messages.length - 1];
 
         var showActions = message.content.length > 0;
@@ -602,7 +606,6 @@ export const ChatResponse = (props: {
                           text={Locale.Chat.Actions.Retry}
                           icon={<ResetIcon />}
                           onClick={() => onResend(index)}
-                          // onClick={() => {}}
                         />
                         <ChatAction
                           text={Locale.Chat.Actions.Copy}
@@ -633,7 +636,7 @@ export const ChatResponse = (props: {
               <Markdown
                 content={message?.content}
                 fontSize={config.fontSize}
-                parentRef={props.scrollRef}
+                parentRef={scrollRef}
               />
 
               <div className={styles["chat-message-action-date"]}>
