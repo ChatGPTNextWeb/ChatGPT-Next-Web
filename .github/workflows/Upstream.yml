@@ -1,4 +1,4 @@
-name: Upstream Sync all branch
+name: Upstream Sync All Branch
 
 on:
   schedule:
