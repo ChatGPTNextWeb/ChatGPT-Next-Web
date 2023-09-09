@@ -54,8 +54,8 @@ export const getBuildConfig = () => {
         .filter((message) => message.trim() !== ""); // Exclude empty lines
 
       const commitMessageObj = {
-        title: title || "No title",
-        messages: uniqueMessages.length > 0 ? uniqueMessages : undefined,
+        summary: title || "No title",
+        description: uniqueMessages.length > 0 ? uniqueMessages : undefined,
         "Co-Authored-By": coAuthors.length > 0 ? coAuthors : undefined,
       };
 
@@ -71,7 +71,7 @@ export const getBuildConfig = () => {
       return {
         commitDate: "unknown",
         commitHash: "unknown",
-        commitMessage: { title: "unknown", messages: undefined, "Co-Authored-By": undefined },
+        commitMessage: { summary: "unknown", description: undefined, "Co-Authored-By": undefined },
         Author: "unknown",
         coAuthored: false,
       };
