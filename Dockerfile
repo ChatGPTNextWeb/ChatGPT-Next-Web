@@ -22,9 +22,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# RUN yarn build
-RUN npm i sharp
-RUN npm run build
+RUN yarn build
 
 FROM base AS runner
 WORKDIR /app
@@ -42,8 +40,6 @@ COPY --from=builder /app/.next/server ./.next/server
 
 EXPOSE 3000
 
-
-WORKDIR /
 CMD if [ -n "$PROXY_URL" ]; then \
         export HOSTNAME="127.0.0.1"; \
         protocol=$(echo $PROXY_URL | cut -d: -f1); \
@@ -62,5 +58,5 @@ CMD if [ -n "$PROXY_URL" ]; then \
         cat /etc/proxychains.conf; \
         proxychains -f $conf node server.js; \
     else \
-        node /app/server.js; \
+        node server.js; \
     fi

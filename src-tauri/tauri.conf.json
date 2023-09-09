@@ -3,13 +3,13 @@
   "build": {
     "beforeBuildCommand": "yarn export",
     "beforeDevCommand": "yarn export:dev",
-    "devPath": "http://localhost:3000/ChatGPT-Next-Web",
+    "devPath": "http://localhost:3000",
     "distDir": "../out",
     "withGlobalTauri": true
   },
   "package": {
     "productName": "ChatGPT Next Web",
-    "version": "2.9.5"
+    "version": "2.9.4"
   },
   "tauri": {
     "allowlist": {
