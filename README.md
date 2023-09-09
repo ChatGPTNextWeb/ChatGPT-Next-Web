@@ -43,6 +43,9 @@
   
   - 网络请求
     - [WebBrowser](https://js.langchain.com/docs/api/tools_webbrowser/classes/WebBrowser)
+   
+  - 其它
+    - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
   
 
 
