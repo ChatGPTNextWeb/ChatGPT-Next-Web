@@ -318,6 +318,71 @@ export function showConfirm(content: any) {
   });
 }
 
+interface IShowConfirmProps {
+  children?: any;
+  title?: string;
+  confirmText?: string;
+  cancelText?: string;
+}
+export function showConfirmWithProps(props: IShowConfirmProps) {
+  // =：这是赋予默认值的语法，表示如果在 options 对象中找不到对应的属性，将使用默认值。
+  const {
+    children,
+    title = Locale.UI.Confirm,
+    confirmText = Locale.UI.Confirm,
+    cancelText = Locale.UI.Cancel,
+  } = props;
+
+  const div = document.createElement("div");
+  div.className = "modal-mask";
+  document.body.appendChild(div);
+
+  const root = createRoot(div);
+  const closeModal = () => {
+    root.unmount();
+    div.remove();
+  };
+
+  return new Promise<boolean>((resolve) => {
+    root.render(
+      <Modal
+        title={title}
+        actions={[
+          <IconButton
+            key="cancel"
+            text={cancelText}
+            onClick={() => {
+              resolve(false);
+              closeModal();
+            }}
+            icon={<CancelIcon />}
+            tabIndex={0}
+            bordered
+            shadow
+          ></IconButton>,
+          <IconButton
+            key="confirm"
+            text={confirmText}
+            type="primary"
+            onClick={() => {
+              resolve(true);
+              closeModal();
+            }}
+            icon={<ConfirmIcon />}
+            tabIndex={0}
+            autoFocus
+            bordered
+            shadow
+          ></IconButton>,
+        ]}
+        onClose={closeModal}
+      >
+        {children}
+      </Modal>,
+    );
+  });
+}
+
 function PromptInput(props: {
   value: string;
   onChange: (value: string) => void;

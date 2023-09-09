@@ -430,7 +430,7 @@ function ToastmastersSettings(session: ChatSession) {
         <List>
           <ListItem title="Page Settings"></ListItem>
           <ListItem
-            title="Speech Avatar max words"
+            title="Avatar Video max words"
             subTitle={"Cost: 1 word costs 1 AI coin. -1 means no limit."}
           >
             <Input
@@ -444,7 +444,7 @@ function ToastmastersSettings(session: ChatSession) {
             ></Input>
           </ListItem>
           <ListItem
-            title={"Avatar Cost Preview"}
+            title={"Avatar Video Cost Preview"}
             subTitle={
               "Preview how many AI coins will be cost when generating avatar video"
             }

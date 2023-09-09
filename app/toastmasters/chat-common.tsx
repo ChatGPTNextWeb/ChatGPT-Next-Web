@@ -7,6 +7,8 @@ import React, {
   useCallback,
 } from "react";
 
+import _ from "lodash";
+
 import LoadingIcon from "../icons/three-dots.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -37,7 +39,16 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-import { showPrompt, showToast, showConfirm } from "../components/ui-lib";
+import {
+  List,
+  ListItem,
+  Input,
+  showPrompt,
+  showToast,
+  showModal,
+  showConfirm,
+  showConfirmWithProps,
+} from "../components/ui-lib";
 import { autoGrowTextArea } from "../utils";
 import dynamic from "next/dynamic";
 import Multiselect from "multiselect-react-dropdown";
@@ -57,6 +68,7 @@ import { onSpeechAvatar } from "../cognitive/speech-avatar";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import { title } from "process";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -488,6 +500,40 @@ export const ChatResponse = (props: {
     // setAutoScroll(true);
   };
 
+  // TODO: when resending, the page will auto scroll to the bottom, so the avatar video will cover the reponse message
+  const onResendConfirm = async (
+    role: ToastmastersRolePrompt,
+    roleIndex: number,
+  ) => {
+    const setting = _.cloneDeep(session.inputSetting[session.inputRole]);
+    const ContentComponent = () => {
+      return (
+        <List>
+          <ListItem title="Evaluation Words for each Speaker">
+            <Input
+              rows={1}
+              defaultValue={setting.words}
+              onChange={(e) =>
+                (setting.words = parseInt(e.currentTarget.value))
+              }
+            ></Input>
+          </ListItem>
+        </List>
+      );
+    };
+
+    const isConfirmed = await showConfirmWithProps({
+      children: <ContentComponent />,
+      title: `${role.role} Settings`,
+      cancelText: "Cancel",
+      confirmText: "Confirm",
+    });
+    if (!isConfirmed) return;
+
+    session.inputSetting[session.inputRole] = _.cloneDeep(setting);
+    onResend(roleIndex);
+  };
+
   const onEdit = async (botMessage: ChatMessage) => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
@@ -611,7 +657,7 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.Retry}
                           icon={<ResetIcon />}
-                          onClick={() => onResend(index)}
+                          onClick={() => onResendConfirm(role, index)}
                         />
                         <ChatAction
                           text={Locale.Chat.Actions.Copy}
