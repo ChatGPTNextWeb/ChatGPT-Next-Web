@@ -151,7 +151,7 @@ export const usePromptStore = create<PromptStore>()(
       },
 
       onRehydrateStorage(state) {
-        const PROMPT_URL = "./prompts.json";
+        const PROMPT_URL = `.${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/prompts.json`;
 
         type PromptList = Array<[string, string]>;
 

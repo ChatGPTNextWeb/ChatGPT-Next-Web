@@ -8,9 +8,7 @@ console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  
-  basePath: '/ChatGPT-Next-Web',
-
+  basePath:process.env.NEXT_PUBLIC_BASE_PATH ?? "",
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

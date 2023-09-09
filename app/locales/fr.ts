@@ -244,9 +244,6 @@ const fr: PartialLocaleType = {
   Plugin: {
     Name: "Extension",
   },
-  FineTuned: {
-    Sysmessage: "Eres un asistente que",
-  },
   Mask: {
     Name: "Masque",
     Page: {

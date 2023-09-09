@@ -114,8 +114,9 @@ const loadAsyncGoogleFont = () => {
   const googleFontUrl =
     getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
   linkEl.rel = "stylesheet";
-  linkEl.href =
-    googleFontUrl + "/css2?family=Noto+Sans:wght@300;400;700;900&display=swap";
+  // console.log()
+  linkEl.href = `.${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/css2family=Noto+Sanswght@300;400;700;900&display=swap.font`;
+    // remoteFontUrl + "/css2?family=Noto+Sans:wght@300;400;700;900&display=swap";
   document.head.appendChild(linkEl);
 };
 

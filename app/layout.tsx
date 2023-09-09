@@ -32,8 +32,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="config" content={JSON.stringify(getClientConfig())} />
-        <link rel="manifest" href="/site.webmanifest"></link>
-        <script src="/serviceWorkerRegister.js" defer></script>
+        <link rel="manifest" href={`.${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/site.webmanifest`}></link>
+        <script src={`.${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/serviceWorkerRegister.js`} defer></script>
       </head>
       <body>{children}</body>
     </html>
