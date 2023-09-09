@@ -30,4 +30,14 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
   },
+  {
+    name: "Wikipedia",
+    toolName: "WikipediaQueryRun",
+    lang: "en",
+    description:
+      "A tool for interacting with and fetching data from the Wikipedia API.",
+    builtin: true,
+    createdAt: 1694235989000,
+    enable: false,
+  },
 ];

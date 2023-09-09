@@ -423,7 +423,6 @@ export function PluginPage() {
                     </div>
                   </div>
                 </div>
-                {/* 操作按钮 */}
                 <div className={styles["plugin-actions"]}>
                   <input
                     type="checkbox"

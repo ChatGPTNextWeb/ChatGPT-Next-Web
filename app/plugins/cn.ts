@@ -29,4 +29,13 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
   },
+  {
+    name: "维基百科",
+    toolName: "WikipediaQueryRun",
+    lang: "cn",
+    description: "用于与Wikipedia API交互和从Wikipedia API获取数据的工具。",
+    builtin: true,
+    createdAt: 1694235989000,
+    enable: false,
+  },
 ];
