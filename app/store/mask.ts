@@ -43,8 +43,6 @@ export const useMaskStore = createPersistStore(
   { ...DEFAULT_MASK_STATE },
 
   (set, get) => ({
-    ...DEFAULT_MASK_STATE,
-
     create(mask?: Partial<Mask>) {
       const masks = get().masks;
       const id = nanoid();
