@@ -10,6 +10,9 @@ import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
+import DownloadIcon from "../icons/download.svg";
+import UploadIcon from "../icons/upload.svg";
+
 import {
   Input,
   List,
@@ -49,6 +52,7 @@ import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
+import { useMaskStore } from "../store/mask";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -75,7 +79,7 @@ function EditPromptModal(props: { id: string; onClose: () => void }) {
             readOnly={!prompt.isUser}
             className={styles["edit-prompt-title"]}
             onInput={(e) =>
-              promptStore.update(
+              promptStore.updatePrompt(
                 props.id,
                 (prompt) => (prompt.title = e.currentTarget.value),
               )
@@ -87,7 +91,7 @@ function EditPromptModal(props: { id: string; onClose: () => void }) {
             className={styles["edit-prompt-content"]}
             rows={10}
             onInput={(e) =>
-              promptStore.update(
+              promptStore.updatePrompt(
                 props.id,
                 (prompt) => (prompt.content = e.currentTarget.value),
               )
@@ -127,14 +131,15 @@ function UserPromptModal(props: { onClose?: () => void }) {
         actions={[
           <IconButton
             key="add"
-            onClick={() =>
-              promptStore.add({
+            onClick={() => {
+              const promptId = promptStore.add({
                 id: nanoid(),
                 createdAt: Date.now(),
                 title: "Empty Prompt",
                 content: "Empty Prompt Content",
-              })
-            }
+              });
+              setEditingPromptId(promptId);
+            }}
             icon={<AddIcon />}
             bordered
             text={Locale.Settings.Prompt.Modal.Add}
@@ -244,19 +249,31 @@ function DangerItems() {
 function SyncItems() {
   const syncStore = useSyncStore();
   const webdav = syncStore.webDavConfig;
+  const chatStore = useChatStore();
+  const promptStore = usePromptStore();
+  const maskStore = useMaskStore();
 
-  // not ready: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/920#issuecomment-1609866332
-  return null;
+  const stateOverview = useMemo(() => {
+    const sessions = chatStore.sessions;
+    const messageCount = sessions.reduce((p, c) => p + c.messages.length, 0);
+
+    return {
+      chat: sessions.length,
+      message: messageCount,
+      prompt: Object.keys(promptStore.prompts).length,
+      mask: Object.keys(maskStore.masks).length,
+    };
+  }, [chatStore.sessions, maskStore.masks, promptStore.prompts]);
 
   return (
     <List>
       <ListItem
-        title={"上次同步：" + new Date().toLocaleString()}
-        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
+        title={Locale.Settings.Sync.LastUpdate}
+        subTitle={new Date().toLocaleString()}
       >
         <IconButton
           icon={<ResetIcon />}
-          text="同步"
+          text={Locale.UI.Sync}
           onClick={() => {
             syncStore.check().then(console.log);
           }}
@@ -264,50 +281,25 @@ function SyncItems() {
       </ListItem>
 
       <ListItem
-        title={"本地备份"}
-        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
-      ></ListItem>
-
-      <ListItem
-        title={"Web Dav Server"}
-        subTitle={Locale.Settings.AccessCode.SubTitle}
+        title={Locale.Settings.Sync.LocalState}
+        subTitle={Locale.Settings.Sync.Overview(stateOverview)}
       >
-        <input
-          value={webdav.server}
-          type="text"
-          placeholder={"https://example.com"}
-          onChange={(e) => {
-            syncStore.update(
-              (config) => (config.server = e.currentTarget.value),
-            );
-          }}
-        />
-      </ListItem>
-
-      <ListItem title="Web Dav User Name" subTitle="user name here">
-        <input
-          value={webdav.username}
-          type="text"
-          placeholder={"username"}
-          onChange={(e) => {
-            syncStore.update(
-              (config) => (config.username = e.currentTarget.value),
-            );
-          }}
-        />
-      </ListItem>
-
-      <ListItem title="Web Dav Password" subTitle="password here">
-        <input
-          value={webdav.password}
-          type="text"
-          placeholder={"password"}
-          onChange={(e) => {
-            syncStore.update(
-              (config) => (config.password = e.currentTarget.value),
-            );
-          }}
-        />
+        <div style={{ display: "flex" }}>
+          <IconButton
+            icon={<UploadIcon />}
+            text={Locale.UI.Export}
+            onClick={() => {
+              syncStore.export();
+            }}
+          />
+          <IconButton
+            icon={<DownloadIcon />}
+            text={Locale.UI.Import}
+            onClick={() => {
+              syncStore.import();
+            }}
+          />
+        </div>
       </ListItem>
     </List>
   );
@@ -562,6 +554,8 @@ export function Settings() {
           </ListItem>
         </List>
 
+        <SyncItems />
+
         <List>
           <ListItem
             title={Locale.Settings.Mask.Splash.Title}
@@ -721,8 +715,6 @@ export function Settings() {
             ></input>
           </ListItem>
         </List>
-
-        <SyncItems />
 
         <List>
           <ModelConfigList
