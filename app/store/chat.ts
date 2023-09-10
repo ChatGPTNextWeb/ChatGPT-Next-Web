@@ -195,7 +195,7 @@ export const useChatStore = createPersistStore(
         });
       },
 
-      newSession(mask: Mask) {
+      newSession(mask?: Mask) {
         const session = createEmptySession();
 
         if (mask) {
