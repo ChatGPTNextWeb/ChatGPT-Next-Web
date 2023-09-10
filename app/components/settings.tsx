@@ -52,9 +52,7 @@ import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
 import { LocalStorageKeys } from "../zbotservice/ZBotServiceClient";
 import { about, feedback } from "../user-setting/user-feedback";
-import zBotServiceClient, {
-  UserConstantVO,
-} from "../zbotservice/ZBotServiceClient";
+import { SpeechAvatarVideoSetting } from "../cognitive/speech-avatar-component";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -448,9 +446,7 @@ export function Settings() {
           <div className="window-action-button">
             <IconButton
               icon={<CloseIcon />}
-              onClick={() =>
-                navigate(chatStore.currentSession().mask.pagePath ?? Path.Home)
-              }
+              onClick={() => navigate(-1)}
               bordered
             />
           </div>
@@ -719,6 +715,8 @@ export function Settings() {
         </List> */}
 
         <SyncItems />
+
+        <SpeechAvatarVideoSetting></SpeechAvatarVideoSetting>
 
         <List>
           <ModelConfigListSimple

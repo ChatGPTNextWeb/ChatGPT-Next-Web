@@ -42,6 +42,11 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     template: DEFAULT_INPUT_TEMPLATE,
   },
+
+  avatarVideo: {
+    maxWords: 5,
+    previewCost: true,
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;

@@ -3,6 +3,11 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v4.0.0
+publish time: 2023-09-10
+ - Hackathon: Speech Copilot
+ - Avatar Video
+
 ## v3.3.0
 publish time: 2023-09-04
  - TTEvaluator support multi speakers

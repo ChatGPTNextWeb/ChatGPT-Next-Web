@@ -52,13 +52,13 @@ In `Access keys`, Enable `Admin user` to get `Username` and `password`
 ## 2). Build docker image
 Usage:
 ```shell
-docker build -t <ACR>.azurecr.io/<IMAGE NAME>:<TAG> .
+docker build . -t <ACR>.azurecr.io/<IMAGE NAME>:<TAG>
 docker login <ACR>.azurecr.io --username <USER> --password <PASSWORD>
 docker push <ACR>.azurecr.io/<IMAGE NAME>:<TAG> 
 ``` 
 so that
 ```shell
-docker build -t ZCareersContainerRegistry.azurecr.io/zbotportal-image:v1.0.0 .
+docker build . -t ZCareersContainerRegistry.azurecr.io/zbotportal-image:v1.0.0
 docker push ZCareersContainerRegistry.azurecr.io/zbotportal-image:v1.0.0
 ``` 
 if need login, using

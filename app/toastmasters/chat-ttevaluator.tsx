@@ -59,10 +59,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import LinearProgress from "@mui/material/LinearProgress";
-import Switch from "@mui/material/Switch";
-
-import { VideoFetchStatus } from "../cognitive/speech-avatar";
+import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar-component";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -290,12 +287,6 @@ export function Chat() {
             onClick={addItem}
             className={styles_tm["chat-input-button-add"]}
           />
-          <IconButton
-            icon={<SettingsIcon />}
-            text="Settings"
-            onClick={() => ToastmastersSettings(session)}
-            className={styles_tm["chat-input-button-add"]}
-          />
         </div>
         {session.inputTable.length > 0 && (
           <>
@@ -317,7 +308,7 @@ export function Chat() {
           />
         )}
 
-        <ChatAvatarShow outputAvatar={session.outputAvatar} />
+        <SpeechAvatarVideoShow outputAvatar={session.outputAvatar} />
       </div>
     </div>
   );
@@ -418,145 +409,4 @@ const ChatInputAddSubmit = (props: {
       />
     </div>
   );
-};
-
-function ToastmastersSettings(session: ChatSession) {
-  /*
-  将当前的设置值复制到initialSettings: 创建一个新的对象副本，而不是引用相同的对象
-  const setting = { ...session.inputSetting }; 
-  在JavaScript中，使用{ ...session.inputSetting }这种方式创建一个对象副本时，通常会复制对象的第一层属性，但对于嵌套的对象或子对象，它们仍然是引用。这就是为什么修改setting会影响到session.inputSetting的原因。
-  */
-  const setting = _.cloneDeep(session.inputSetting);
-
-  const onSubmit = async () => {
-    session.inputSetting = { ...setting };
-    showToast("Setting has been saved, please return");
-  };
-
-  showModal({
-    title: "Current Page Settings",
-    children: (
-      <div>
-        <List>
-          <ListItem title="Page Settings"></ListItem>
-          <ListItem
-            title="Avatar Video max words"
-            subTitle={"Cost: 1 word costs 1 AI coin. -1 means no limit."}
-          >
-            <Input
-              rows={1}
-              defaultValue={setting[ToastmastersRoles.PageSettings].words}
-              onChange={(e) =>
-                (setting[ToastmastersRoles.PageSettings].words = parseInt(
-                  e.currentTarget.value,
-                ))
-              }
-            ></Input>
-          </ListItem>
-          <ListItem
-            title={"Avatar Video Cost Preview"}
-            subTitle={
-              "Preview how many AI coins will be cost when generating avatar video"
-            }
-          >
-            <Switch
-              defaultChecked={
-                setting[ToastmastersRoles.PageSettings].avatarCostPreview ??
-                true
-              }
-              onChange={(e) =>
-                (setting[ToastmastersRoles.PageSettings].avatarCostPreview =
-                  e.currentTarget.checked)
-              }
-              inputProps={{ "aria-label": "controlled" }}
-            />
-          </ListItem>
-        </List>
-        <List>
-          <ListItem title="Role Settings"></ListItem>
-          <TableContainer component={Paper}>
-            <Table className={styles_tm["table-border"]}>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left">Role</TableCell>
-                  <TableCell align="center">
-                    Evaluation Words for each Speaker
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Object.entries(ToastmastersRecord).map(([role]) => (
-                  <TableRow key={role}>
-                    <TableCell component="th" scope="row">
-                      {role}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Input
-                        rows={1}
-                        defaultValue={setting[role].words}
-                        onChange={(e) =>
-                          (setting[role].words = parseInt(
-                            e.currentTarget.value,
-                          ))
-                        }
-                      ></Input>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </List>
-      </div>
-    ),
-    actions: [
-      <IconButton
-        icon={<SendWhiteIcon />}
-        type="primary"
-        key=""
-        text="Confirm"
-        onClick={onSubmit}
-      />,
-    ],
-  });
-}
-
-const ChatAvatarShow = (props: { outputAvatar: HttpRequestResponse }) => {
-  const { outputAvatar } = props;
-
-  if (outputAvatar.status === VideoFetchStatus.Empty) {
-    return null;
-  }
-
-  if (outputAvatar.status === VideoFetchStatus.Error) {
-    return <div>{outputAvatar.data}</div>;
-  }
-
-  if (outputAvatar.status === VideoFetchStatus.Failed) {
-    return <div>{outputAvatar.data}</div>;
-  }
-
-  if (outputAvatar.status === VideoFetchStatus.Loading) {
-    return (
-      <div>
-        <h3 className={styles_tm["video-container"]}>
-          Avatar Video is generating...
-        </h3>
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      </div>
-    );
-  }
-
-  if (outputAvatar.status === VideoFetchStatus.Succeeded) {
-    return (
-      <div className={styles_tm["video-container"]}>
-        <video controls width="800" height="600">
-          <source src={outputAvatar.data} type="video/webm" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    );
-  }
 };

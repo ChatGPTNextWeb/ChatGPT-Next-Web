@@ -68,6 +68,7 @@ import { onSpeechAvatar } from "../cognitive/speech-avatar";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import { SpeechAvatarVideoSetting } from "../cognitive/speech-avatar-component";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -552,33 +553,39 @@ export const ChatResponse = (props: {
   };
 
   const onVideoGenerate = async (messageContent: string) => {
+    // TODO: cost not change with config.avatarVideo.maxWords
+
+    // const [cost, setCost] = useState(0);
+    // useEffect(() => {
+    //   const newCost =
+    //     config.avatarVideo.maxWords == -1
+    //       ? words
+    //       : Math.min(
+    //         config.avatarVideo.maxWords,
+    //           words,
+    //         );
+    //       setCost(newCost);
+    // }, [words]);
+
     const words = ChatUtility.getWordsNumber(messageContent);
     const cost =
-      session.inputSetting[ToastmastersRoles.PageSettings].words == -1
+      config.avatarVideo.maxWords == -1
         ? words
-        : Math.min(
-            session.inputSetting[ToastmastersRoles.PageSettings].words,
-            words,
-          );
+        : Math.min(config.avatarVideo.maxWords, words);
 
-    const confirmText: string = `
-    This will generate a video by a Speech Avatar according to your speech content.
-    
-    The cost way: 1 word costs 1 AI coin; 
-    Current setting: - Speech Avatar max words: ${
-      session.inputSetting[ToastmastersRoles.PageSettings].words
-    };
-    current words: ${words}.
-
-    When confirm, ${cost} AI coins will be cost.
-    `;
-
-    if (
-      session.inputSetting[ToastmastersRoles.PageSettings].avatarCostPreview ==
-      true
-    ) {
+    if (config.avatarVideo.previewCost === true) {
       const isConfirmed = await showConfirm(
-        <span style={{ whiteSpace: "pre-line" }}> {confirmText} </span>,
+        <>
+          <SpeechAvatarVideoSetting></SpeechAvatarVideoSetting>
+          {/* <List>
+            <ListItem title={`当前实际字数为`}>
+              <div>{words}</div>
+            </ListItem>
+            <ListItem title={`确认时, 预计消耗AI币为`}>
+              <div>{cost}</div>
+            </ListItem>
+          </List> */}
+        </>,
       );
 
       if (!isConfirmed) return;
@@ -593,7 +600,7 @@ export const ChatResponse = (props: {
     await onSpeechAvatar(
       ChatUtility.getFirstNWords(
         messageContent,
-        session.inputSetting[ToastmastersRoles.PageSettings].words,
+        config.avatarVideo.maxWords,
         false,
       ),
       (outputAvatar: HttpRequestResponse) => {
@@ -664,7 +671,7 @@ export const ChatResponse = (props: {
                           onClick={() => copyToClipboard(message.content)}
                         />
                         <ChatAction
-                          text={Locale.Chat.Actions.Play}
+                          text={"语音播放"}
                           icon={<MicphoneIcon />}
                           onClick={() =>
                             speechSynthesizer.startSynthesize(
@@ -674,7 +681,7 @@ export const ChatResponse = (props: {
                           }
                         />
                         <ChatAction
-                          text={"AvatarVideo"}
+                          text={"数字人播放"}
                           icon={<AvatarIcon />}
                           onClick={() => onVideoGenerate(message.content)}
                         />
