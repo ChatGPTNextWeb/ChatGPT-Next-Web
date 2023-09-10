@@ -270,7 +270,7 @@ function SyncItems() {
     <List>
       <ListItem
         title={Locale.Settings.Sync.LastUpdate}
-        subTitle={new Date().toLocaleString()}
+        subTitle={new Date(syncStore.lastSyncTime).toLocaleString()}
       >
         <IconButton
           icon={<ResetIcon />}
