@@ -17,17 +17,6 @@ export interface WebDavConfig {
   password: string;
 }
 
-export interface SyncStore {
-  webDavConfig: WebDavConfig;
-  lastSyncTime: number;
-
-  update: Updater<WebDavConfig>;
-  check: () => Promise<boolean>;
-
-  path: (path: string) => string;
-  headers: () => { Authorization: string };
-}
-
 export const useSyncStore = createPersistStore(
   {
     webDavConfig: {
@@ -39,18 +28,11 @@ export const useSyncStore = createPersistStore(
     lastSyncTime: 0,
   },
   (set, get) => ({
-    webDavConfig: {
-      server: "",
-      username: "",
-      password: "",
-    },
-
-    lastSyncTime: 0,
-
     export() {
       const state = getLocalAppState();
       const fileName = `Backup-${new Date().toLocaleString()}.json`;
       downloadAs(JSON.stringify(state), fileName);
+      set({ lastSyncTime: Date.now() });
     },
 
     async import() {
