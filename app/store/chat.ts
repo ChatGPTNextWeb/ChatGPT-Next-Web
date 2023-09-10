@@ -31,6 +31,7 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  title?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -134,10 +135,14 @@ interface ChatStore {
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   isEnoughCoins(requiredCoins: number): Promise<boolean>;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (content: string, responseTitle?: string) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
+  updateSession: (
+    index: number,
+    updater: (session: ChatSession) => void,
+  ) => void;
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
@@ -353,7 +358,7 @@ export const useChatStore = create<ChatStore>()(
         return false;
       },
 
-      async onUserInput(content) {
+      async onUserInput(content, responseTitle = undefined) {
         // check user login
         let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
         if (userEmail === null) {
@@ -380,6 +385,7 @@ export const useChatStore = create<ChatStore>()(
           streaming: true,
           id: userMessage.id! + 1,
           model: modelConfig.model,
+          title: responseTitle,
         });
 
         // get recent messages
@@ -680,6 +686,14 @@ export const useChatStore = create<ChatStore>()(
       updateCurrentSession(updater) {
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
+        console.log("updateCurrentSession index: ", index);
+        updater(sessions[index]);
+        set(() => ({ sessions }));
+      },
+
+      updateSession(index, updater) {
+        const sessions = get().sessions;
+        console.log("updateSession index: ", index);
         updater(sessions[index]);
         set(() => ({ sessions }));
       },

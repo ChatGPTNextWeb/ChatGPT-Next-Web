@@ -210,6 +210,11 @@
         }
       }
     }
+
+    .message-column {
+      @extend .message;
+      flex-direction: column;
+    }
   }
 
   .default-theme {

@@ -53,10 +53,10 @@ import { autoGrowTextArea } from "../utils";
 import dynamic from "next/dynamic";
 import Multiselect from "multiselect-react-dropdown";
 import { getClientConfig } from "../config/client";
-import { ExportMessageModal } from "../components/exporter";
+import { ExportMessageModal } from "../components/exporterTm";
 
 import styles from "../components/chat.module.scss";
-import styles_toastmasters from "./toastmasters.module.scss";
+import styles_tm from "./toastmasters.module.scss";
 import {
   ToastmastersRolePrompt,
   InputSubmitStatus,
@@ -134,16 +134,16 @@ export function ChatTitle() {
             />
           </div>
         )}
-        {/* <div className="window-action-button">
-            <IconButton
-              icon={<ExportIcon />}
-              bordered
-              title={Locale.Chat.Actions.Export}
-              onClick={() => {
-                setShowExport(true);   // TODO: export png without question
-              }}
-            />
-          </div> */}
+        <div className="window-action-button">
+          <IconButton
+            icon={<ExportIcon />}
+            bordered
+            title={Locale.Chat.Actions.Export}
+            onClick={() => {
+              setShowExport(true); // TODO: export png without question
+            }}
+          />
+        </div>
         {showMaxIcon && (
           <div className="window-action-button">
             <IconButton
@@ -250,11 +250,9 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   };
 
   return (
-    <div className={styles_toastmasters["chat-input-panel-noborder"]}>
-      <div className={styles_toastmasters["chat-input-panel-title"]}>
-        {props.title}
-      </div>
-      <div className={styles_toastmasters["chat-input-panel-textarea"]}>
+    <div className={styles_tm["chat-input-panel-noborder"]}>
+      <div className={styles_tm["chat-input-panel-title"]}>{props.title}</div>
+      <div className={styles_tm["chat-input-panel-textarea"]}>
         <textarea
           ref={inputRef}
           className={styles["chat-input"]}
@@ -275,12 +273,12 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
           bordered
           className={
             recording
-              ? styles_toastmasters["chat-input-send-recording"]
-              : styles_toastmasters["chat-input-send-record"]
+              ? styles_tm["chat-input-send-recording"]
+              : styles_tm["chat-input-send-record"]
           }
           onClick={onRecord}
         />
-        <div className={styles_toastmasters["chat-input-words"]}>
+        <div className={styles_tm["chat-input-words"]}>
           {ChatUtility.getWordsNumber(userInput)} words,{" "}
           {ChatUtility.formatTime(time)}
         </div>
@@ -341,11 +339,9 @@ export const ChatInputName = (props: {
   }, [userInput]); // should not depend props in case auto focus expception
 
   return (
-    <div className={styles_toastmasters["chat-input-name-group"]}>
-      <div className={styles_toastmasters["chat-input-panel-title"]}>
-        {props.title}
-      </div>
-      <div className={styles_toastmasters["chat-input-panel-textarea"]}>
+    <div className={styles_tm["chat-input-name-group"]}>
+      <div className={styles_tm["chat-input-panel-title"]}>{props.title}</div>
+      <div className={styles_tm["chat-input-panel-textarea"]}>
         <textarea
           ref={inputRef}
           className={styles["chat-input-no-height"]}
@@ -406,7 +402,7 @@ export const ChatInputSubmit = (props: {
     toastmastersRolePrompts.forEach((element: ToastmastersRolePrompt) => {
       chatStore.getIsFinished().then(() => {
         var ask = element.content;
-        chatStore.onUserInput(ask);
+        chatStore.onUserInput(ask, element.role);
       });
     });
 
@@ -420,7 +416,7 @@ export const ChatInputSubmit = (props: {
   };
 
   return (
-    <div className={styles_toastmasters["chat-input-panel-buttons"]}>
+    <div className={styles_tm["chat-input-panel-buttons"]}>
       <Multiselect
         options={props.roleOptions} // Options to display in the dropdown
         ref={roleSelectRef}
@@ -444,8 +440,8 @@ export const ChatInputSubmit = (props: {
         disabled={submitting}
         className={
           submitting
-            ? styles_toastmasters["chat-input-button-submitting"]
-            : styles_toastmasters["chat-input-button-submit"]
+            ? styles_tm["chat-input-button-submitting"]
+            : styles_tm["chat-input-button-submit"]
         }
         onClick={doSubmit}
       />

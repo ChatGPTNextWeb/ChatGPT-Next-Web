@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import _ from "lodash";
-
+import { useNavigate } from "react-router-dom";
 import { useChatStore } from "../store";
 
 import styles_chat from "../components/chat.module.scss";
@@ -28,7 +28,12 @@ import {
   useScrollToBottom,
   ChatUtility,
 } from "./chat-common";
-import { ChatSession, InputTableRow, HttpRequestResponse } from "../store/chat";
+import {
+  ChatSession,
+  InputTableRow,
+  HttpRequestResponse,
+  InputStore,
+} from "../store/chat";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -39,6 +44,7 @@ import RenameIcon from "../icons/rename.svg";
 import CopyIcon from "../icons/copy.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import SettingsIcon from "../icons/settings.svg";
+import MenuIcon from "../icons/menu.svg";
 
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -60,6 +66,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar-component";
+import { EN_MASKS } from "../masks/en";
+import { Mask } from "../store/mask";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -201,6 +209,21 @@ export function Chat() {
   function Row(props: { row: InputTableRow; row_index: number }) {
     const { row, row_index } = props;
     const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
+
+    const onDetailClick = () => {
+      const mask = EN_MASKS[3] as Mask; // IE
+      chatStore.newSession(mask);
+      navigate(mask.pagePath as any);
+
+      // new session has index 0
+      chatStore.updateSession(0, (session) => {
+        session.inputs.input = { ...row.question };
+        session.inputs.input2 = { ...row.speech };
+        session.topic = row.speaker;
+        return session;
+      });
+    };
 
     return (
       <React.Fragment>
@@ -240,12 +263,13 @@ export function Chat() {
             {ChatUtility.formatTime(row.speech.time)}
           </TableCell> */}
           <TableCell align="left">
-            {/* <div className={styles_tm["table-actions"]}> */}
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={() => deleteItem(row_index)}
-            />
-            {/* </div> */}
+            <div className={styles_tm["table-actions"]}>
+              <IconButton icon={<MenuIcon />} onClick={onDetailClick} />
+              <IconButton
+                icon={<CloseIcon />}
+                onClick={() => deleteItem(row_index)}
+              />
+            </div>
           </TableCell>
         </TableRow>
         <TableRow>
@@ -359,7 +383,7 @@ const ChatInputAddSubmit = (props: {
     for (const item of toastmastersRolePrompts) {
       await chatStore.getIsFinished();
       let ask = item.contentWithSetting(session.inputSetting[inputRole]);
-      chatStore.onUserInput(ask);
+      chatStore.onUserInput(ask, item.role);
     }
     await chatStore.getIsFinished();
     setSubmitting(false);

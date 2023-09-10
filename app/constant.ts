@@ -12,7 +12,7 @@ export const DEFAULT_API_HOST = "https://chatgpt1.nextweb.fun/api/proxy";
 export enum AppInfo {
   Title = "Speech Copilot",
   SubTitle = "",
-  Url = "https://www.zcareers.cn",
+  Url = "",
 }
 
 export enum Path {
