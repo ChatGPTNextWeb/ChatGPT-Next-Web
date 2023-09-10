@@ -1,5 +1,3 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { LLMModel } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { DEFAULT_INPUT_TEMPLATE, DEFAULT_MODELS, StoreKey } from "../constant";
