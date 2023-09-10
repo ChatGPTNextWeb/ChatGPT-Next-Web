@@ -16,14 +16,14 @@ export const EN_MASKS: BuiltinMask[] = [
         The Question-Speech pairs I give you are json schema, like:
         [
           {
-            "Speaker": "Person1"
+            "Speaker": "Speaker1"
             "Question": "xxx",
             "Speech": "xxx"
           },
           {
-            "Speaker": "Person2"
+            "Speaker": "Speaker2"
             "Question": "xxx",
-            "Answer": "xxx"
+            "Speech": "xxx"
           },
         ]
         In our each interaction round, I will let you play an Toastmasters Role and give you the request, you answer my ask in that Role's tone.

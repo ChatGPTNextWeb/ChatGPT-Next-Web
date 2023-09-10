@@ -80,6 +80,11 @@ export function Chat() {
   const checkInput = (): InputSubmitStatus => {
     var speakerInputs: string[] = [];
 
+    if (session.inputTable.length === 0) {
+      showToast(`Input Table is empty, please check`);
+      return new InputSubmitStatus(false, "");
+    }
+
     const isAllValid = session.inputTable.every((row) => {
       let question = row.question.text.trim();
       let speech = row.speech.text.trim();
@@ -163,7 +168,7 @@ export function Chat() {
               <TableCell align="left" className={styles_tm["table-header"]}>
                 Speech
               </TableCell>
-              <TableCell
+              {/* <TableCell
                 align="left"
                 className={styles_tm["table-header"]}
                 style={{ width: "100px" }}
@@ -176,7 +181,7 @@ export function Chat() {
                 style={{ width: "100px" }}
               >
                 SpeechTime
-              </TableCell>
+              </TableCell> */}
               <TableCell
                 align="left"
                 className={styles_tm["table-header"]}
@@ -231,12 +236,12 @@ export function Chat() {
           <TableCell align="left">
             {ChatUtility.getFirstNWords(row.speech.text, 20)}
           </TableCell>
-          <TableCell align="left">
+          {/* <TableCell align="left">
             {ChatUtility.getWordsNumber(row.speech.text)}
           </TableCell>
           <TableCell align="left">
             {ChatUtility.formatTime(row.speech.time)}
-          </TableCell>
+          </TableCell> */}
           <TableCell align="left">
             {/* <div className={styles_tm["table-actions"]}> */}
             <IconButton
@@ -292,20 +297,25 @@ export function Chat() {
             className={styles_tm["chat-input-button-add"]}
           />
         </div>
+        {session.inputTable.length > 0 && (
+          <>
+            <div style={{ padding: "0px 20px" }}>
+              <CollapsibleTable />
+            </div>
+            <ChatInputAddSubmit
+              checkInput={checkInput}
+              updateAutoScroll={setAutoScroll}
+            />
+          </>
+        )}
 
-        <div style={{ padding: "0px 20px" }}>
-          <CollapsibleTable />
-        </div>
-
-        <ChatInputAddSubmit
-          checkInput={checkInput}
-          updateAutoScroll={setAutoScroll}
-        />
-
-        <ChatResponse
-          scrollRef={scrollRef}
-          toastmastersRolePrompts={ToastmastersRecord[session.inputRole]}
-        />
+        {/* 3 is the predifined message length */}
+        {session.inputTable.length > 0 && session.messages.length > 3 && (
+          <ChatResponse
+            scrollRef={scrollRef}
+            toastmastersRolePrompts={ToastmastersRecord[session.inputRole]}
+          />
+        )}
 
         <ChatAvatarShow outputAvatar={session.outputAvatar} />
       </div>
