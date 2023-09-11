@@ -1,11 +1,11 @@
-import { SubmitKey } from "../store/app";
-import type { LocaleType } from "./index";
+import { SubmitKey } from "../store/config";
+import type { PartialLocaleType } from "./index";
 
-const es: LocaleType = {
+const es: PartialLocaleType = {
   WIP: "En construcción...",
   Error: {
     Unauthorized:
-      "Acceso no autorizado, por favor ingrese el código de acceso en la página de configuración.",
+      "Acceso no autorizado, por favor ingrese el código de acceso en la [página](/#/auth) de configuración.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mensajes`,
@@ -31,6 +31,10 @@ const es: LocaleType = {
       return inputHints;
     },
     Send: "Enviar",
+    Config: {
+      Reset: "Reset to Default",
+      SaveAs: "Save as Mask",
+    },
   },
   Export: {
     Title: "Todos los mensajes",
@@ -57,34 +61,20 @@ const es: LocaleType = {
   Settings: {
     Title: "Configuración",
     SubTitle: "Todas las configuraciones",
-    Actions: {
-      ClearAll: "Borrar todos los datos",
-      ResetAll: "Restablecer todas las configuraciones",
-      Close: "Cerrar",
-      ConfirmResetAll: {
-        Confirm: "Are you sure you want to reset all configurations?",
-      },
-      ConfirmClearAll: {
-        Confirm: "Are you sure you want to reset all chat?",
-      },
-    },
+
     Lang: {
-      Name: "Language",
-      Options: {
-        cn: "简体中文",
-        en: "Inglés",
-        tw: "繁體中文",
-        es: "Español",
-        it: "Italiano",
-        tr: "Türkçe",
-        jp: "日本語",
-        de: "Deutsch",
-      },
+      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "Todos los idiomas",
     },
     Avatar: "Avatar",
     FontSize: {
       Title: "Tamaño de fuente",
       SubTitle: "Ajustar el tamaño de fuente del contenido del chat",
+    },
+    InjectSystemPrompts: {
+      Title: "Inyectar Prompts del Sistema",
+      SubTitle:
+        "Agregar forzosamente un prompt de sistema simulado de ChatGPT al comienzo de la lista de mensajes en cada solicitud",
     },
     Update: {
       Version: (x: string) => `Versión: ${x}`,
@@ -97,7 +87,16 @@ const es: LocaleType = {
     SendKey: "Tecla de envío",
     Theme: "Tema",
     TightBorder: "Borde ajustado",
-    SendPreviewBubble: "Enviar burbuja de vista previa",
+    SendPreviewBubble: {
+      Title: "Enviar burbuja de vista previa",
+      SubTitle: "Preview markdown in bubble",
+    },
+    Mask: {
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
+    },
     Prompt: {
       Disable: {
         Title: "Desactivar autocompletado",
@@ -111,6 +110,9 @@ const es: LocaleType = {
         Title: "Prompt List",
         Add: "Add One",
         Search: "Search Prompts",
+      },
+      EditModal: {
+        Title: "Edit Prompt",
       },
     },
     HistoryCount: {
@@ -150,10 +152,15 @@ const es: LocaleType = {
       Title: "Máximo de tokens",
       SubTitle: "Longitud máxima de tokens de entrada y tokens generados",
     },
-    PresencePenlty: {
+    PresencePenalty: {
       Title: "Penalización de presencia",
       SubTitle:
         "Un valor mayor aumenta la probabilidad de hablar sobre nuevos temas",
+    },
+    FrequencyPenalty: {
+      Title: "Penalización de frecuencia",
+      SubTitle:
+        "Un valor mayor que disminuye la probabilidad de repetir la misma línea",
     },
   },
   Store: {
@@ -169,8 +176,6 @@ const es: LocaleType = {
       Summarize:
         "Resuma nuestra discusión brevemente en 200 caracteres o menos para usarlo como un recordatorio para futuros contextos.",
     },
-    ConfirmClearAll:
-      "¿Confirmar para borrar todos los datos de chat y configuración?",
   },
   Copy: {
     Success: "Copiado al portapapeles",
@@ -181,6 +186,62 @@ const es: LocaleType = {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Contextual and Memory Prompts",
     Add: "Add One",
+  },
+  Plugin: {
+    Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Eres un asistente que",
+  },
+  Mask: {
+    Name: "Mask",
+    Page: {
+      Title: "Prompt Template",
+      SubTitle: (count: number) => `${count} prompt templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} prompts`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+    },
+  },
+  NewChat: {
+    Return: "Return",
+    Skip: "Skip",
+    Title: "Pick a Mask",
+    SubTitle: "Chat with the Soul behind the Mask",
+    More: "Find More",
+    NotShow: "Not Show Again",
+    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+  },
+
+  UI: {
+    Confirm: "Confirm",
+    Cancel: "Cancel",
+    Close: "Close",
+    Create: "Create",
+    Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Modelo",
+    Messages: "Mensajes",
+    Topic: "Tema",
+    Time: "Time",
   },
 };
 
