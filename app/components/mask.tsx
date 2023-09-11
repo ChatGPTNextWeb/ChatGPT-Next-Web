@@ -410,7 +410,7 @@ export function MaskPage() {
   const closeMaskModal = () => setEditingMaskId(undefined);
 
   const downloadAll = () => {
-    downloadAs(JSON.stringify(masks), FileName.Masks);
+    downloadAs(JSON.stringify(masks.filter((v) => !v.builtin)), FileName.Masks);
   };
 
   const importFromFile = () => {
@@ -452,11 +452,13 @@ export function MaskPage() {
                 icon={<DownloadIcon />}
                 bordered
                 onClick={downloadAll}
+                text={Locale.UI.Export}
               />
             </div>
             <div className="window-action-button">
               <IconButton
                 icon={<UploadIcon />}
+                text={Locale.UI.Import}
                 bordered
                 onClick={() => importFromFile()}
               />
@@ -604,7 +606,7 @@ export function MaskPage() {
             <MaskConfig
               mask={editingMask}
               updateMask={(updater) =>
-                maskStore.update(editingMaskId!, updater)
+                maskStore.updateMask(editingMaskId!, updater)
               }
               readonly={editingMask.builtin}
             />
