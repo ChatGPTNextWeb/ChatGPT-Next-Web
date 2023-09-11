@@ -197,6 +197,14 @@ const en: LocaleType = {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",
     },
+    Sync: {
+      LastUpdate: "Last Update",
+      LocalState: "Local Data",
+      Overview: (overview: any) => {
+        return `${overview.chat} chats，${overview.message} messages，${overview.prompt} prompts，${overview.mask} masks`;
+      },
+      ImportFailed: "Failed to import from file",
+    },
     Mask: {
       Splash: {
         Title: "Mask Splash Screen",
@@ -372,6 +380,9 @@ const en: LocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+    Export: "Export",
+    Import: "Import",
+    Sync: "Sync",
   },
   Exporter: {
     Model: "Model",
