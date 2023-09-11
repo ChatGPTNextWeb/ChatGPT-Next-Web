@@ -449,6 +449,115 @@ export const ChatInputSubmit = (props: {
   );
 };
 
+export const ChatInputSubmitV2 = (props: {
+  toastmastersRecord: Record<string, ToastmastersRolePrompt[]>;
+  checkInput: () => InputSubmitStatus;
+}) => {
+  const chatStore = useChatStore();
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
+
+  const roleSelectRef = useRef<Multiselect>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  type SelectType = {
+    name: string;
+  };
+  const multiselectOptions = Object.keys(props.toastmastersRecord).map(
+    (roleName) => ({
+      name: roleName,
+    }),
+  );
+
+  const selectedOptions = session.inputRoles.map((roleName) => ({
+    name: roleName,
+  }));
+
+  const doSubmit = async () => {
+    const checkInputResult = props.checkInput();
+    if (!checkInputResult.canSubmit) {
+      return;
+    }
+
+    const selectItems = roleSelectRef.current?.getSelectedItems();
+    // 将选择的role, 合并为一个数组
+    var toastmastersRolePrompts: ToastmastersRolePrompt[] = [];
+    selectItems?.forEach((item: SelectType) => {
+      toastmastersRolePrompts = toastmastersRolePrompts.concat(
+        props.toastmastersRecord[item.name],
+      );
+    });
+
+    let isEnoughCoins = await chatStore.isEnoughCoins(
+      toastmastersRolePrompts.length + 1,
+    );
+    if (!isEnoughCoins) {
+      return;
+    }
+    setSubmitting(true);
+
+    // 保存输入: 于是ChatResponse可以使用
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.inputRoles = selectItems?.map((v: SelectType) => v.name)),
+    );
+
+    // reset status from 0
+    chatStore.resetSession();
+
+    chatStore.onUserInput(checkInputResult.guidance);
+    for (const selectItem of selectItems) {
+      const roleName = selectItem.name;
+      const _RolePrompts = props.toastmastersRecord[roleName];
+      for (const item of _RolePrompts) {
+        await chatStore.getIsFinished();
+        let ask = item.contentWithSetting(session.inputSetting[roleName]);
+        chatStore.onUserInput(ask, item.role);
+      }
+      await chatStore.getIsFinished();
+    }
+    setSubmitting(false);
+
+    // if (!isMobileScreen) inputRef.current?.focus();
+    // setAutoScroll(true);
+  };
+
+  return (
+    <div className={styles_tm["chat-input-panel-buttons"]}>
+      <Multiselect
+        options={multiselectOptions} // Options to display in the dropdown
+        ref={roleSelectRef}
+        // onSelect={this.onSelect} // Function will trigger on select event
+        // onRemove={this.onRemove} // Function will trigger on remove event
+        displayValue="name" // Property name to display in the dropdown options
+        placeholder="Select Roles" // Placeholder for the dropdown search input
+        showCheckbox
+        selectedValues={selectedOptions}
+        style={{
+          searchBox: {
+            "border-bottom": "1px solid blue",
+            "border-radius": "2px",
+          },
+        }}
+      />
+
+      <IconButton
+        icon={<SendWhiteIcon />}
+        text={submitting ? "Submitting" : "Submit"}
+        disabled={submitting}
+        className={
+          submitting
+            ? styles_tm["chat-input-button-submitting"]
+            : styles_tm["chat-input-button-submit"]
+        }
+        onClick={doSubmit}
+      />
+    </div>
+  );
+};
+
 export const ChatResponse = (props: {
   scrollRef: React.RefObject<HTMLDivElement>;
   toastmastersRolePrompts: ToastmastersRolePrompt[];

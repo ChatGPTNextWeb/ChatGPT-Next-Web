@@ -83,11 +83,12 @@ export interface ChatSession {
 
   mask: Mask;
 
-  // TODO: future make this a list of inputs
+  // TODO: deprecate
   inputs: { roles: number[]; input: InputStore; input2: InputStore };
+  inputRole: string;
 
   inputTable: InputTableRow[];
-  inputRole: string;
+  inputRoles: string[];
   inputSetting: Record<string, ToastmastersRoleSetting>;
   outputAvatar: HttpRequestResponse;
 }
@@ -116,6 +117,7 @@ function createEmptySession(): ChatSession {
     inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
     inputTable: [],
     inputRole: "Table Topics Evaluator", // TODO
+    inputRoles: [],
     inputSetting: ToastmastersSettings,
     outputAvatar: { status: "", data: "" },
   };
@@ -686,14 +688,12 @@ export const useChatStore = create<ChatStore>()(
       updateCurrentSession(updater) {
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
-        console.log("updateCurrentSession index: ", index);
         updater(sessions[index]);
         set(() => ({ sessions }));
       },
 
       updateSession(index, updater) {
         const sessions = get().sessions;
-        console.log("updateSession index: ", index);
         updater(sessions[index]);
         set(() => ({ sessions }));
       },

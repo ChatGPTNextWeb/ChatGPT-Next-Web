@@ -1,6 +1,8 @@
 export enum ToastmastersRoles {
-  TableTopicsSpeaker = "Table Topics Speaker",
+  TableTopicsEvaluators = "Table Topics Evaluators",
   TableTopicsEvaluator = "Table Topics Evaluator",
+  TableTopicsMaster = "Table Topics Master",
+  TableTopicsSpeaker = "Table Topics Speaker",
   IndividualEvaluator = "Individual Evaluator",
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
@@ -26,6 +28,26 @@ export class InputSubmitStatus {
     this.guidance = guidance;
   }
 }
+
+export interface ToastmastersRoleSetting {
+  words: number;
+}
+
+// 100 words is about 48s speech
+export const ToastmastersSettings: Record<string, ToastmastersRoleSetting> = {
+  [ToastmastersRoles.TableTopicsEvaluator]: {
+    words: 100,
+  },
+  [ToastmastersRoles.Grammarian]: {
+    words: 50,
+  },
+  [ToastmastersRoles.AhCounter]: {
+    words: 50,
+  },
+  [ToastmastersRoles.RevisedSpeech]: {
+    words: 100,
+  },
+};
 
 export const ToastmastersTTMasterGuidance = (topic: string) => `
 The topic is: "${topic}",
@@ -102,10 +124,6 @@ export const ToastmastersTTSpeaker: ToastmastersRolePrompt[] = [
   },
 ];
 
-export interface ToastmastersRoleSetting {
-  words: number;
-}
-
 export const ToastmastersIEvaluatorGuidance = (
   topic: string,
   speech: string,
@@ -171,7 +189,7 @@ export const ToastmastersIEvaluator: ToastmastersRolePrompt[] = [
   },
 ];
 
-export const ToastmastersTTEvaluatorGuidance = (input: string) => `
+export const ToastmastersTTEvaluatorsGuidance = (input: string) => `
 The Question-Speech pairs are:
 [
   ${input}
@@ -179,7 +197,7 @@ The Question-Speech pairs are:
 Are you ready to answer? If you understand, answer yes.
 `;
 
-export const ToastmastersTTEvaluatorRecord: Record<
+export const ToastmastersTTEvaluatorsRecord: Record<
   string,
   ToastmastersRolePrompt[]
 > = {
@@ -289,18 +307,124 @@ export const ToastmastersTTEvaluatorRecord: Record<
   ],
 };
 
-// 100 words is about 48s speech
-export const ToastmastersSettings: Record<string, ToastmastersRoleSetting> = {
-  [ToastmastersRoles.TableTopicsEvaluator]: {
-    words: 100,
-  },
-  [ToastmastersRoles.Grammarian]: {
-    words: 50,
-  },
-  [ToastmastersRoles.AhCounter]: {
-    words: 50,
-  },
-  [ToastmastersRoles.RevisedSpeech]: {
-    words: 100,
-  },
+export const ToastmastersTTEvaluatorGuidance = (
+  question: string,
+  speech: string,
+) => `
+My input is:
+{
+	"Question": "${question}",
+	"Speech": "${speech}"
+},
+Are you ready to play an Evaluator role with my guidance?
+`;
+
+export const ToastmastersTTEvaluatorRecord: Record<
+  string,
+  ToastmastersRolePrompt[]
+> = {
+  [ToastmastersRoles.TableTopicsEvaluator]: [
+    {
+      role_index: 0, // not used now
+      role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      1). Give me a table which presenting the keywords used in my speech
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
+    },
+    {
+      role_index: 1, // role_index is the index of this item in the array
+      role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      Evaluate my speech.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from my speech.
+      2). Refer some of the keywords in the table in your evaluation.
+      3). Bold keywords using markdown when present your answer.
+      4). Provide addvice to me based on my speech.
+      5). About ${setting.words} words.
+      `,
+    },
+  ],
+  [ToastmastersRoles.Grammarian]: [
+    {
+      role_index: 2,
+      role: ToastmastersRoles.Grammarian + "-Count",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.Grammarian}.
+      1). Give me a table which presenting the accurate number of grammar errors used in my speech,
+      2). Only response the table, 
+      3). Do not include any extra description and extra words. 
+      `,
+    },
+    {
+      role_index: 3,
+      role: ToastmastersRoles.Grammarian + "-Evaluation",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.Grammarian}. 
+      Evaluate my speech and analysis your stats in your table. 
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from my speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to me based on my speech.
+      4). About ${setting.words} words.
+      `,
+    },
+  ],
+  [ToastmastersRoles.AhCounter]: [
+    {
+      role_index: 4,
+      role: ToastmastersRoles.AhCounter + "-Count",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      1). Give me a table which presenting the accurate number of filler words and pauses used in my speech,
+      2). Only response the table,
+      3). Do not include any extra description and extra words.
+      `,
+    },
+    {
+      role_index: 5,
+      role: ToastmastersRoles.AhCounter + "-Evaluation",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      To analysis your stats in your table.
+      You should:
+      1). Generate a summary with the Ah-Counter's tone according to the table
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to to based on my speech.
+      4). About ${setting.words} words.
+      `,
+    },
+  ],
+  [ToastmastersRoles.RevisedSpeech]: [
+    {
+      role_index: 3,
+      role: "Revised Speech",
+      content: `
+      `,
+      contentWithSetting: (setting: ToastmastersRoleSetting) =>
+        `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
+      Help revise, polish and improve my speech.
+      You should:
+      1). Don't say who you are, just provide your revised speech.
+      2). Bold keywords using markdown when present your answer.
+      3). About ${setting.words} words.
+      `,
+    },
+  ],
 };

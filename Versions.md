@@ -3,6 +3,10 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v4.0.1
+publish time: 2023-09-12
+ - Export & Share
+
 ## v4.0.0
 publish time: 2023-09-10
  - Hackathon: Speech Copilot
