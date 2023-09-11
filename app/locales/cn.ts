@@ -178,6 +178,14 @@ const cn = {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",
     },
+    Sync: {
+      LastUpdate: "上次同步",
+      LocalState: "本地数据",
+      Overview: (overview: any) => {
+        return `${overview.chat} 次对话，${overview.message} 条消息，${overview.prompt} 条提示词，${overview.mask} 个面具`;
+      },
+      ImportFailed: "导入失败",
+    },
     Mask: {
       Splash: {
         Title: "面具启动页",
@@ -355,6 +363,9 @@ const cn = {
     Close: "关闭",
     Create: "新建",
     Edit: "编辑",
+    Export: "导出",
+    Import: "导入",
+    Sync: "同步",
   },
   Exporter: {
     Model: "模型",
