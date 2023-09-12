@@ -586,7 +586,7 @@ export function MaskPage() {
                 onClick={() =>
                   downloadAs(
                     editingMask,
-                    `${editingMask.name}.json`,
+                    `${editingMask.name}`,
                   )
                 }
               />,
