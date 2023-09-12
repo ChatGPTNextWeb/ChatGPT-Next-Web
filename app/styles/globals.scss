@@ -102,13 +102,27 @@ body {
   width: 100vw;
   display: flex;
   justify-content: center;
+  align-items: center;
+  user-select: none;
+  touch-action: pan-x pan-y;
+  overflow: hidden;
+
+  @media only screen and (max-width: 600px) {
+    background-color: var(--second);
+  }
+  @media only screen and (orientation: landscape) {
+  background-color: var(--gray);
+  color: var(--black);
+  margin: 0;
+  padding: 0;
+  height: var(--full-height);
+  width: 100vw;
+  display: flex;
+  justify-content: center;
   align-items: initial;
   user-select: none;
   touch-action: pan-x pan-y;
   overflow: auto;
-
-  @media only screen and (max-width: 600px) {
-    background-color: var(--second);
   }
 }
 
