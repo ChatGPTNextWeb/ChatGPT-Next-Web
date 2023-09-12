@@ -102,10 +102,10 @@ body {
   width: 100vw;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: initial;
   user-select: none;
   touch-action: pan-x pan-y;
-  overflow: hidden;
+  overflow: auto;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
