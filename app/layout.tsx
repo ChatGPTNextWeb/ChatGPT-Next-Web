@@ -6,7 +6,7 @@ import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ChatGPT By DengSuper",
+  title: "ChatGPT By SuperDeng",
   description: "知者不惑，仁者不忧，勇者不惧。",
   viewport: {
     width: "device-width",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "ChatGPT By DengSuper",
+    title: "ChatGPT By SuperDeng",
     statusBarStyle: "default",
   },
 };
