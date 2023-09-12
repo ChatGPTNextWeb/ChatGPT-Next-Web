@@ -2,7 +2,6 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import { DuckDuckGoSearch } from "./tools/ddg_search";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -13,7 +12,6 @@ export type ChatModel = ModelType;
 export interface RequestMessage {
   role: MessageRole;
   content: string;
-  toolPrompt?: string;
 }
 
 export interface LLMConfig {
@@ -25,10 +23,27 @@ export interface LLMConfig {
   frequency_penalty?: number;
 }
 
+export interface LLMAgentConfig {
+  maxIterations: number;
+  returnIntermediateSteps: boolean;
+  useTools?: (string | undefined)[];
+}
+
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
+  onUpdate?: (message: string, chunk: string) => void;
+  onFinish: (message: string) => void;
+  onError?: (err: Error) => void;
+  onController?: (controller: AbortController) => void;
+}
 
+export interface AgentChatOptions {
+  messages: RequestMessage[];
+  config: LLMConfig;
+  agentConfig: LLMAgentConfig;
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
   onUpdate?: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
@@ -47,6 +62,7 @@ export interface LLMModel {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
+  abstract toolAgentChat(options: AgentChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
@@ -80,11 +96,9 @@ export abstract class ToolApi {
 
 export class ClientApi {
   public llm: LLMApi;
-  public searchTool: ToolApi;
 
   constructor() {
     this.llm = new ChatGPTApi();
-    this.searchTool = new DuckDuckGoSearch();
   }
 
   config() {}

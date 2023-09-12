@@ -18,24 +18,30 @@ import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
+import { Plugin, usePluginStore } from "../store/plugin";
+
+export interface ChatToolMessage {
+  toolName: string;
+  toolInput?: string;
+}
 import { createPersistStore } from "../utils/store";
 
 export type ChatMessage = RequestMessage & {
   date: string;
+  toolMessages?: ChatToolMessage[];
   streaming?: boolean;
   isError?: boolean;
   id: string;
   model?: ModelType;
-  toolPrompt?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
     id: nanoid(),
     date: new Date().toLocaleString(),
+    toolMessages: new Array<ChatToolMessage>(),
     role: "user",
     content: "",
-    toolPrompt: undefined,
     ...override,
   };
 }
@@ -58,7 +64,6 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
-  webSearch: boolean;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -82,7 +87,6 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-    webSearch: false,
   };
 }
 
@@ -311,12 +315,25 @@ export const useChatStore = createPersistStore(
           role: "assistant",
           streaming: true,
           model: modelConfig.model,
+          toolMessages: [],
         });
 
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
         const messageIndex = get().currentSession().messages.length + 1;
+
+        const config = useAppConfig.getState();
+        const pluginConfig = useAppConfig.getState().pluginConfig;
+        const pluginStore = usePluginStore.getState();
+        const allPlugins = pluginStore
+          .getAll()
+          .filter(
+            (m) =>
+              (!getLang() ||
+                m.lang === (getLang() == "cn" ? getLang() : "en")) &&
+              m.enable,
+          );
 
         // save user's and bot's message
         get().updateCurrentSession((session) => {
@@ -325,91 +342,132 @@ export const useChatStore = createPersistStore(
             content,
           };
           session.messages.push(savedUserMessage);
-        });
-
-        if (session.webSearch) {
-          const query = encodeURIComponent(content);
-          let searchResult = await api.searchTool.call(query);
-          console.log("[Tools] ", searchResult);
-          const webSearchPrompt = `
-Using the provided web search results, write a comprehensive reply to the given query.
-If the provided search results refer to multiple subjects with the same name, write separate answers for each subject.
-Make sure to cite results using \`[[number](URL)]\` notation after the reference.
-
-Web search json results:
-"""
-${JSON.stringify(searchResult)}
-"""
-
-Current date:
-"""
-${new Date().toISOString()}
-"""
-
-Query:
-"""
-${content}
-"""
-
-Reply in ${getLang()} and markdown.`;
-          userMessage.toolPrompt = webSearchPrompt;
-        }
-        // save user's and bot's message
-        get().updateCurrentSession((session) => {
           session.messages.push(botMessage);
         });
 
-        // make request
-        api.llm.chat({
-          messages: sendMessages,
-          config: { ...modelConfig, stream: true },
-          onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
-            get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
-            });
-          },
-          onFinish(message) {
-            botMessage.streaming = false;
-            if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
-            }
-            ChatControllerPool.remove(session.id, botMessage.id);
-          },
-          onError(error) {
-            const isAborted = error.message.includes("aborted");
-            botMessage.content +=
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
+        if (
+          config.pluginConfig.enable &&
+          session.mask.usePlugins &&
+          allPlugins.length > 0
+        ) {
+          console.log("[ToolAgent] start");
+          const pluginToolNames = allPlugins.map((m) => m.toolName);
+          api.llm.toolAgentChat({
+            messages: sendMessages,
+            config: { ...modelConfig, stream: true },
+            agentConfig: { ...pluginConfig, useTools: pluginToolNames },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
               });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
-            get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
-            });
-            ChatControllerPool.remove(
-              session.id,
-              botMessage.id ?? messageIndex,
-            );
+            },
+            onToolUpdate(toolName, toolInput) {
+              botMessage.streaming = true;
+              if (toolName && toolInput) {
+                botMessage.toolMessages!.push({
+                  toolName,
+                  toolInput,
+                });
+              }
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(session.id, botMessage.id);
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content +=
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+              ChatControllerPool.remove(
+                session.id,
+                botMessage.id ?? messageIndex,
+              );
 
-            console.error("[Chat] failed ", error);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ChatControllerPool.addController(
-              session.id,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-        });
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                session.id,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+        } else {
+          // make request
+          api.llm.chat({
+            messages: sendMessages,
+            config: { ...modelConfig, stream: true },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(session.id, botMessage.id);
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content +=
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+              ChatControllerPool.remove(
+                session.id,
+                botMessage.id ?? messageIndex,
+              );
+
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                session.id,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+        }
       },
 
       getMemoryPrompt() {

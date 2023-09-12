@@ -85,7 +85,7 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://github.com/Hk-Gosuto/ChatGPT-Next-Web/releases/latest/download/latest.json"
+        "https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases/latest/download/latest.json"
       ],
       "dialog": false,
       "windows": {

@@ -3,6 +3,7 @@
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 
   .chat-input-action {
     display: inline-flex;
@@ -357,6 +358,37 @@
       }
     }
   }
+}
+
+.chat-message-checkmark {
+  display: inline-block;
+  margin-right: 5px;
+  height: 12px;
+  width: 12px;
+  color: #13a10e;
+  fill: #13a10e;
+  user-select: none;
+  backface-visibility: hidden;
+  transform: translateZ(0px);
+}
+
+.chat-message-tools-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.chat-message-tools-name {
+  color: #aaa;
+}
+
+.chat-message-tools-details {
+  margin-left: 5px;
+  font-weight: bold;
+  color: #999;
 }
 
 .chat-message-status {

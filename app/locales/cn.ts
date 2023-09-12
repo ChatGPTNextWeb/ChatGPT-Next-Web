@@ -62,8 +62,8 @@ const cn = {
       Masks: "所有面具",
       Clear: "清除聊天",
       Settings: "对话设置",
-      OpenWebSearch: "开启联网",
-      CloseWebSearch: "关闭联网",
+      EnablePlugins: "开启插件",
+      DisablePlugins: "关闭插件",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -273,6 +273,20 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+    Plugin: {
+      Enable: {
+        Title: "启用插件",
+        SubTitle: "启用插件调用功能",
+      },
+      MaxIteration: {
+        Title: "最大迭代数",
+        SubTitle: "插件调用最大迭代数",
+      },
+      ReturnIntermediateStep: {
+        Title: "返回中间步骤",
+        SubTitle: "是否返回插件调用的中间步骤",
+      },
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",
@@ -299,6 +313,24 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
+    Page: {
+      Title: "预设插件",
+      SubTitle: (count: number) => `${count} 个预设插件`,
+      Search: "搜索插件",
+      Create: "新建",
+    },
+    Item: {
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `编辑预设插件 ${readonly ? "（只读）" : ""}`,
+      Download: "下载预设",
+      Clone: "克隆预设",
+    },
   },
   FineTuned: {
     Sysmessage: "你是一个助手",
