@@ -557,8 +557,11 @@ export function MarkdownPreviewer(props: {
     copyToClipboard(mdText);
   };
   const download = () => {
-    downloadAs(mdText, `${props.topic}.md`);
-  };
+    const fileContent = {
+      content: mdText,
+    };
+    downloadAs(fileContent, `${props.topic}.md`);
+  };  
   return (
     <>
       <PreviewActions
@@ -599,7 +602,7 @@ export function JsonPreviewer(props: {
     copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs(JSON.stringify(msgs), `${props.topic}.json`);
+    downloadAs(msgs, `${props.topic}.json`);
   };
 
   return (
