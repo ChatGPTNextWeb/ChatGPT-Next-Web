@@ -482,11 +482,11 @@ export function ImagePreviewer(props: {
               height={50}
             />
           </div>
-
+    
           <div>
             <div className={styles["main-title"]}>ChatGPT Next Web</div>
             <div className={styles["sub-title"]}>
-              github.com/Yidadaa/ChatGPT-Next-Web
+              Build your own AI assistant.
             </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
@@ -496,16 +496,19 @@ export function ImagePreviewer(props: {
           </div>
           <div>
             <div className={styles["chat-info-item"]}>
-              {Locale.Exporter.Model}: {mask.modelConfig.model}
+            {"🔗"} https://github.com/Yidadaa/ChatGPT-Next-Web
             </div>
             <div className={styles["chat-info-item"]}>
-              {Locale.Exporter.Messages}: {props.messages.length}
+            {"🤖"} {Locale.Exporter.Model}: {mask.modelConfig.model}
             </div>
             <div className={styles["chat-info-item"]}>
-              {Locale.Exporter.Topic}: {session.topic}
+            {"💭"} {Locale.Exporter.Messages}: {props.messages.length}
             </div>
             <div className={styles["chat-info-item"]}>
-              {Locale.Exporter.Time}:{" "}
+            {"💫"} {Locale.Exporter.Topic}: {session.topic}
+            </div>
+            <div className={styles["chat-info-item"]}>
+            {"🗓️"} {Locale.Exporter.Time}:{" "}
               {new Date(
                 props.messages.at(-1)?.date ?? Date.now(),
               ).toLocaleString()}
