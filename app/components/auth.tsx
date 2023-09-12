@@ -15,6 +15,7 @@ export function AuthPage() {
   const access = useAccessStore();
 
   const goHome = () => navigate(Path.Home);
+  const resetAccessCode = () => access.updateCode(""); // Reset access code to empty string
 
   useEffect(() => {
     if (getClientConfig()?.isApp) {
@@ -48,7 +49,10 @@ export function AuthPage() {
           type="primary"
           onClick={goHome}
         />
-        <IconButton text={Locale.Auth.Later} onClick={goHome} />
+        <IconButton text={Locale.Auth.Later} onClick={() => {
+          resetAccessCode();
+          goHome();
+        }} />
       </div>
     </div>
   );
