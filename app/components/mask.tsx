@@ -410,7 +410,7 @@ export function MaskPage() {
   const closeMaskModal = () => setEditingMaskId(undefined);
 
   const downloadAll = () => {
-    downloadAs(JSON.stringify(masks.filter((v) => !v.builtin)), FileName.Masks);
+    downloadAs(masks.filter((v) => !v.builtin), FileName.Masks);
   };
 
   const importFromFile = () => {
@@ -585,7 +585,7 @@ export function MaskPage() {
                 bordered
                 onClick={() =>
                   downloadAs(
-                    JSON.stringify(editingMask),
+                    editingMask,
                     `${editingMask.name}.json`,
                   )
                 }
