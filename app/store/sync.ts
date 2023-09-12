@@ -56,7 +56,12 @@ export const useSyncStore = createPersistStore(
           method: "PROFIND",
           headers: this.headers(),
         });
-        console.log(res);
+        const sanitizedRes = {
+          status: res.status,
+          statusText: res.statusText,
+          headers: res.headers,
+        };
+        console.log(sanitizedRes);
         return res.status === 207;
       } catch (e) {
         console.error("[Sync] ", e);
