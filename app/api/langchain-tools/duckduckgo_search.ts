@@ -1,6 +1,9 @@
 import { decode } from "html-entities";
 import { convert as htmlToText } from "html-to-text";
 import { Tool } from "langchain/tools";
+import fetch from "node-fetch";
+
+const DDG_PROXY_URL = process.env.DDG_PROXY_URL;
 
 const SEARCH_REGEX =
   /DDG\.pageLayout\.load\('d',(\[.+\])\);DDG\.duckbar\.load\('images'/;
@@ -323,9 +326,15 @@ async function search(
           // cdrexp: 'b'
         }),
   };
+  let proxyAgent;
+  if (DDG_PROXY_URL) {
+    const { HttpsProxyAgent } = require("https-proxy-agent");
+    proxyAgent = new HttpsProxyAgent(DDG_PROXY_URL);
+  }
 
   const response = await fetch(
     `https://links.duckduckgo.com/d.js?${queryString(queryObject)}`,
+    { agent: proxyAgent },
   );
   const data = await response.text();
 
@@ -455,8 +464,14 @@ function queryString(query: Record<string, string>) {
 
 async function getVQD(query: string, ia = "web") {
   try {
+    let proxyAgent;
+    if (DDG_PROXY_URL) {
+      const { HttpsProxyAgent } = require("https-proxy-agent");
+      proxyAgent = new HttpsProxyAgent(DDG_PROXY_URL);
+    }
     const response = await fetch(
       `https://duckduckgo.com/?${queryString({ q: query, ia })}`,
+      { agent: proxyAgent },
     );
     const data = await response.text();
     return VQD_REGEX.exec(data)![1];

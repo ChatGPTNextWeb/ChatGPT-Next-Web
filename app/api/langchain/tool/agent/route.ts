@@ -181,7 +181,8 @@ async function handle(req: NextRequest) {
         description: bingSearchTool.description,
         func: async (input: string) => bingSearchTool.call(input),
       });
-    } else if (process.env.SERPAPI_API_KEY) {
+    }
+    if (process.env.SERPAPI_API_KEY) {
       let serpAPITool = new langchainTools["SerpAPI"](
         process.env.SERPAPI_API_KEY,
       );
@@ -290,4 +291,4 @@ async function handle(req: NextRequest) {
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+export const runtime = process.env.DDG_PROXY_URL ? "nodejs" : "edge";
