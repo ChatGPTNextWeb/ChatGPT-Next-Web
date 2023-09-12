@@ -233,8 +233,7 @@ const fr: PartialLocaleType = {
   },
   Copy: {
     Success: "Copié dans le presse-papiers",
-    Failed:
-      "La copie a échoué, veuillez accorder l'autorisation d'accès au presse-papiers",
+    Failed: "Échec de la copie, veuillez accorder l'autorisation d'accès au presse-papiers ou l'API Clipboard n'est pas prise en charge (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Avec ${x} contextes de prompts`,

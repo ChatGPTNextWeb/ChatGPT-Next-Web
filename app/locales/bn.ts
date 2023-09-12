@@ -259,7 +259,7 @@ const bn: PartialLocaleType = {
   },
   Copy: {
     Success: "ক্লিপবোর্ডে কপি করা হয়েছে",
-    Failed: "কপি ব্যর্থ, অনুমতি প্রদান করার জন্য অনুমতি প্রদান করুন",
+    Failed: "কপি ব্যর্থ হয়েছে, অনুগ্রহ করে ক্লিপবোর্ড অ্যাক্সেসের অনুমতি দিন বা ক্লিপবোর্ড API সমর্থিত নয় (Tauri)",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,

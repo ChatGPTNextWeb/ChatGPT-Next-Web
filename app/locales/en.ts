@@ -291,7 +291,7 @@ const en: LocaleType = {
   },
   Copy: {
     Success: "Copied to clipboard",
-    Failed: "Copy failed, please grant permission to access clipboard",
+    Failed: "Copy failed, please grant permission to access clipboard or Clipboard API not supported (Tauri)",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,

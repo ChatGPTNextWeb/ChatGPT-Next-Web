@@ -152,7 +152,7 @@ const no: PartialLocaleType = {
   },
   Copy: {
     Success: "Kopiert til utklippstavle",
-    Failed: "Kopiering feilet. Vennligst gi tilgang til utklippstavlen.",
+    Failed: "Kopiering mislyktes, vennligst gi tillatelse til å få tilgang til utklippstavlen eller Clipboard API støttes ikke (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Med ${x} kontekstuelle instrukser`,

@@ -174,9 +174,8 @@ const vi: PartialLocaleType = {
     },
   },
   Copy: {
-    Success: "Sao chép vào bộ nhớ tạm",
-    Failed:
-      "Sao chép không thành công, vui lòng cấp quyền truy cập vào bộ nhớ tạm",
+    Success: "Đã sao chép vào clipboard",
+    Failed: "Sao chép thất bại, vui lòng cấp quyền truy cập vào clipboard hoặc không hỗ trợ Clipboard API (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Sử dụng ${x} tin nhắn chứa ngữ cảnh`,

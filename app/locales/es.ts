@@ -179,8 +179,7 @@ const es: PartialLocaleType = {
   },
   Copy: {
     Success: "Copiado al portapapeles",
-    Failed:
-      "La copia falló, por favor concede permiso para acceder al portapapeles",
+    Failed: "Error al copiar, por favor otorga permiso para acceder al portapapeles o el API del portapapeles no está soportado (Tauri)",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,

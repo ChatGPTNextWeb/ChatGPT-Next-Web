@@ -179,9 +179,8 @@ const it: PartialLocaleType = {
     },
   },
   Copy: {
-    Success: "Copiato sugli appunti",
-    Failed:
-      "Copia fallita, concedere l'autorizzazione all'accesso agli appunti",
+    Success: "Copiato negli appunti",
+    Failed: "Copia non riuscita, concedere l'autorizzazione per accedere agli appunti o l'API degli appunti non è supportata (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Con ${x} prompts contestuali`,
