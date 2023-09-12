@@ -557,10 +557,12 @@ export function MarkdownPreviewer(props: {
     copyToClipboard(mdText);
   };
   const download = () => {
-    const fileContent = {
-      content: mdText,
-    };
-    downloadAs(fileContent, `${props.topic}.md`);
+    const blob = new Blob([mdText], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${props.topic}.md`;
+    link.click();
   };  
   return (
     <>
