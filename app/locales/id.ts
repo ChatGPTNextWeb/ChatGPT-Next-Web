@@ -261,8 +261,8 @@ const id: PartialLocaleType = {
     },
   },
   Copy: {
-    Success: "Berhasil disalin ke clipboard",
-    Failed: "Gagal menyalin, berikan izin untuk memberikan izin",
+    Success: "Tersalin ke clipboard",
+    Failed: "Gagal menyalin, mohon berikan izin untuk mengakses clipboard atau Clipboard API tidak didukung (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Dengan ${x} promp kontekstual`,

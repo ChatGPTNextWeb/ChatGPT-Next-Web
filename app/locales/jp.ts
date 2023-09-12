@@ -199,8 +199,8 @@ const jp: PartialLocaleType = {
     },
   },
   Copy: {
-    Success: "クリップボードに書き込みました",
-    Failed: "コピーに失敗しました。クリップボード許可を与えてください。",
+    Success: "クリップボードにコピーしました",
+    Failed: "コピーに失敗しました。クリップボードへのアクセス許可を付与するか、Clipboard API がサポートされていません（Tauri）",
   },
   Context: {
     Toast: (x: any) => `キャラクターが ${x} 件設定されました`,

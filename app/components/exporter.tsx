@@ -557,8 +557,13 @@ export function MarkdownPreviewer(props: {
     copyToClipboard(mdText);
   };
   const download = () => {
-    downloadAs(mdText, `${props.topic}.md`);
-  };
+    const blob = new Blob([mdText], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${props.topic}.md`;
+    link.click();
+  };  
   return (
     <>
       <PreviewActions
@@ -599,7 +604,7 @@ export function JsonPreviewer(props: {
     copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs(JSON.stringify(msgs), `${props.topic}.json`);
+    downloadAs(msgs, `${props.topic}`);
   };
 
   return (

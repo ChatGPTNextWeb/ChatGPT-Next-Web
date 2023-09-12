@@ -285,8 +285,8 @@ const cn = {
     },
   },
   Copy: {
-    Success: "已写入剪切板",
-    Failed: "复制失败，请赋予剪切板权限",
+    Success: "已复制到剪贴板",
+    Failed: "复制失败，请授予访问剪贴板的权限或不支持 Clipboard API（Tauri）",
   },
   Context: {
     Toast: (x: any) => `包含 ${x} 条预设提示词`,

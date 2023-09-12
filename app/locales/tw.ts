@@ -171,8 +171,8 @@ const tw: PartialLocaleType = {
     },
   },
   Copy: {
-    Success: "已複製到剪貼簿中",
-    Failed: "複製失敗，請賦予剪貼簿權限",
+    Success: "已複製到剪貼簿",
+    Failed: "複製失敗，請授權訪問剪貼簿或不支援 Clipboard API（Tauri）",
   },
   Context: {
     Toast: (x: any) => `已設定 ${x} 條前置上下文`,

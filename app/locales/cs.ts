@@ -178,7 +178,7 @@ const cs: PartialLocaleType = {
   },
   Copy: {
     Success: "Zkopírováno do schránky",
-    Failed: "Kopírování selhalo, prosím, povolte přístup ke schránce",
+    Failed: "Kopírování se nezdařilo, udělte prosím oprávnění k přístupu ke schránce nebo není podporováno API schránky (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Použití ${x} kontextových pokynů`,

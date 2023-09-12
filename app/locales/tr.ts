@@ -181,7 +181,7 @@ const tr: PartialLocaleType = {
   },
   Copy: {
     Success: "Panoya kopyalandı",
-    Failed: "Kopyalama başarısız oldu, lütfen panoya erişim izni verin",
+    Failed: "Kopyalama başarısız, lütfen panoya erişim izni verin veya Panoya API desteği yok (Tauri)",
   },
   Context: {
     Toast: (x: any) => `${x} bağlamsal bellek komutu`,

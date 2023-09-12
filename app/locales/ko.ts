@@ -175,8 +175,8 @@ const ko: PartialLocaleType = {
     },
   },
   Copy: {
-    Success: "클립보드에 복사되었습니다.",
-    Failed: "복사 실패, 클립보드 접근 권한을 허용해주세요.",
+    Success: "클립보드에 복사되었습니다",
+    Failed: "복사에 실패했습니다. 클립보드 접근 권한을 허용하거나 Clipboard API가 지원되지 않습니다 (Tauri)",
   },
   Context: {
     Toast: (x: any) => `컨텍스트 프롬프트 ${x}개 사용`,

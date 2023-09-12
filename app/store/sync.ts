@@ -30,8 +30,8 @@ export const useSyncStore = createPersistStore(
   (set, get) => ({
     export() {
       const state = getLocalAppState();
-      const fileName = `Backup-${new Date().toLocaleString()}.json`;
-      downloadAs(JSON.stringify(state), fileName);
+      const fileName = `Backup-${new Date().toLocaleString()}`;
+      downloadAs(state, fileName);
       set({ lastSyncTime: Date.now() });
     },
 

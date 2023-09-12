@@ -181,8 +181,7 @@ const de: PartialLocaleType = {
   },
   Copy: {
     Success: "In die Zwischenablage kopiert",
-    Failed:
-      "Kopieren fehlgeschlagen, bitte geben Sie die Berechtigung zum Zugriff auf die Zwischenablage frei",
+    Failed: "Kopieren fehlgeschlagen, bitte Zugriff auf die Zwischenablage erlauben oder Clipboard API wird nicht unterstützt (Tauri)",
   },
   Context: {
     Toast: (x: any) => `Mit ${x} Kontext-Prompts`,
