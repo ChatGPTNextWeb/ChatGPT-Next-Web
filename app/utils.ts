@@ -32,7 +32,7 @@ export async function copyToClipboard(text: string) {
 }
 
 export function downloadAs(text: object, filename: string) {
-  const json = JSON.stringify(text, null, 2);
+  const json = JSON.stringify(text);
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
