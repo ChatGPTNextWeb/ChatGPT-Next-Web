@@ -25,13 +25,20 @@ import {
   ToastmastersSettings,
 } from "../toastmasters/roles";
 
+// To support setting for the message
+export interface MessageSetting {
+  name: string;
+  title: string;
+  // words?: number;
+}
+
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
   isError?: boolean;
   id?: number;
   model?: ModelType;
-  title?: string;
+  setting?: MessageSetting; // TODO: remove from it.
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -65,8 +72,8 @@ export class InputSettingStore {
   words: number = 0;
 }
 
-export interface HttpRequestResponse {
-  status: string;
+export interface IRequestResponse {
+  status: any;
   data: any;
 }
 
@@ -84,13 +91,20 @@ export interface ChatSession {
   mask: Mask;
 
   // TODO: deprecate
-  inputs: { roles: number[]; input: InputStore; input2: InputStore };
-  inputRole: string;
+  // inputs: { roles: number[]; input: InputStore; input2: InputStore };
+  // inputRole: string;
 
-  inputTable: InputTableRow[];
-  inputRoles: string[];
-  inputSetting: Record<string, ToastmastersRoleSetting>;
-  outputAvatar: HttpRequestResponse;
+  // inputTable: InputTableRow[];
+  // inputRoles: string[];
+  // inputSetting: Record<string, ToastmastersRoleSetting>;
+  // outputAvatar: HttpRequestResponse;
+
+  input: {
+    datas: any[];
+    roles: string[];
+    setting: any;
+  };
+  output: { avatar: IRequestResponse };
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -114,12 +128,16 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-    inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
-    inputTable: [],
-    inputRole: "Table Topics Evaluator", // TODO
-    inputRoles: [],
-    inputSetting: ToastmastersSettings,
-    outputAvatar: { status: "", data: "" },
+
+    input: { datas: [], roles: [], setting: {} },
+    output: { avatar: { status: "", data: "" } },
+
+    // inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
+    // inputTable: [],
+    // inputRole: "Table Topics Evaluator", // TODO
+    // inputRoles: [],
+    // inputSetting: ToastmastersSettings,
+    // outputAvatar: { status: "", data: "" },
   };
 }
 
@@ -137,7 +155,10 @@ interface ChatStore {
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   isEnoughCoins(requiredCoins: number): Promise<boolean>;
-  onUserInput: (content: string, responseTitle?: string) => Promise<void>;
+  onUserInput: (
+    content: string,
+    messageSetting?: MessageSetting,
+  ) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -360,7 +381,7 @@ export const useChatStore = create<ChatStore>()(
         return false;
       },
 
-      async onUserInput(content, responseTitle = undefined) {
+      async onUserInput(content, messageSetting = undefined) {
         // check user login
         let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
         if (userEmail === null) {
@@ -387,7 +408,7 @@ export const useChatStore = create<ChatStore>()(
           streaming: true,
           id: userMessage.id! + 1,
           model: modelConfig.model,
-          title: responseTitle,
+          setting: messageSetting,
         });
 
         // get recent messages

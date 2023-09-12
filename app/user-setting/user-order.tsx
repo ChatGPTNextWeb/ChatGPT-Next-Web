@@ -42,8 +42,8 @@ export function UserOrder() {
 
       <div className={styles_settings["settings"]}>
         {UserbalanceInfo(userEmail)}
-        {UserOrderInfo(userEmail)}
-        {UserOrderHistory(userEmail)}
+        {/* {UserOrderInfo(userEmail)}
+        {UserOrderHistory(userEmail)} */}
       </div>
     </ErrorBoundary>
   );

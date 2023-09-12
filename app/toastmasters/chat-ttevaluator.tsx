@@ -35,14 +35,6 @@ export function Chat() {
     ToastmastersRolePrompt[]
   >([]);
 
-  // // 进来时, 读取上次的输入
-  // useEffect(() => {
-  //   var roles = session.inputs.roles?.map(
-  //     (index: number) => ToastmastersRoleOptions[index],
-  //   );
-  //   setToastmastersEvaluators(roles);
-  // }, [session]);
-
   useEffect(() => {
     // 将选择的role, 合并为一个数组
     var _rolePrompts: ToastmastersRolePrompt[] = [];
@@ -58,20 +50,22 @@ export function Chat() {
       return new InputSubmitStatus(false, "");
     }
 
-    const question = session.inputTable[0].question.text;
-    const speech = session.inputTable[0].speech.text;
-    if (question.trim() === "") {
-      showToast("Question can not be empty");
+    const inputRow = session.inputTable[0];
+
+    const question = inputRow.question.text.trim();
+    const speech = inputRow.speech.text.trim();
+    if (question === "" || speech === "") {
+      showToast("Question or Speech is empty, please check");
       return new InputSubmitStatus(false, "");
     }
 
-    if (speech === "") {
-      showToast("Speech can not be empty");
-      return new InputSubmitStatus(false, "");
-    }
-
-    // Add a return statement for the case where the input is valid
-    var guidance = ToastmastersRoleGuidance(question, speech);
+    const speakerInputs = {
+      Question: question,
+      Speech: speech,
+    };
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
+    var guidance = ToastmastersRoleGuidance(speakerInputsString);
     return new InputSubmitStatus(true, guidance);
   };
 
