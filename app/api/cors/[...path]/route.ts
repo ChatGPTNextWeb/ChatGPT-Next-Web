@@ -33,12 +33,6 @@ async function handle(
   return fetchResult;
 }
 
-export const GET = handle;
 export const POST = handle;
-export const PUT = handle;
-
-// nextjs dose not support those https methods, sucks
-export const PROFIND = handle;
-export const MKCOL = handle;
 
 export const runtime = "edge";
