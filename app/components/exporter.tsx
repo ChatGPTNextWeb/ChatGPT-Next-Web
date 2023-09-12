@@ -604,7 +604,7 @@ export function JsonPreviewer(props: {
     copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs(msgs, `${props.topic}.json`);
+    downloadAs(msgs, `${props.topic}`);
   };
 
   return (
