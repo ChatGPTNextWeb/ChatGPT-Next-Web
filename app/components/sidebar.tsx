@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 import styles from "./home.module.scss";
 
@@ -53,7 +53,7 @@ function useHotKey() {
 }
 
 function useDragSideBar() {
-  const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
+  const limit = useCallback((x: number) => Math.min(MAX_SIDEBAR_WIDTH, x));
 
   const config = useAppConfig();
   const startX = useRef(0);
@@ -71,14 +71,16 @@ function useDragSideBar() {
   });
 
   const handleMouseUp = useRef(() => {
-    startDragWidth.current = config.sidebarWidth ?? 300;
+    // In useRef the data is non-responsive, so `config.sidebarWidth` can't get the dynamic sidebarWidth
+    // startDragWidth.current = config.sidebarWidth ?? 300;
     window.removeEventListener("mousemove", handleMouseMove.current);
     window.removeEventListener("mouseup", handleMouseUp.current);
   });
 
   const onDragMouseDown = (e: MouseEvent) => {
     startX.current = e.clientX;
-
+    // Remembers the initial width each time the mouse is pressed
+    startDragWidth.current = config.sidebarWidth
     window.addEventListener("mousemove", handleMouseMove.current);
     window.addEventListener("mouseup", handleMouseUp.current);
   };
