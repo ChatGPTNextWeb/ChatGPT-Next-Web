@@ -19,7 +19,12 @@ const jp: PartialLocaleType = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Pin: "ピン",
+      PinToastContent:
+        "コンテキストプロンプトに1つのメッセージをピン留めしました",
+      PinToastAction: "表示",
       Delete: "削除",
+      Edit: "編集",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -33,7 +38,7 @@ const jp: PartialLocaleType = {
     Send: "送信",
     Config: {
       Reset: "リセット",
-      SaveAs: "另存为面具",
+      SaveAs: "保存",
     },
   },
   Export: {
@@ -83,6 +88,11 @@ const jp: PartialLocaleType = {
     FontSize: {
       Title: "フォントサイズ",
       SubTitle: "チャット内容のフォントサイズ",
+    },
+    InjectSystemPrompts: {
+      Title: "システムプロンプトの挿入",
+      SubTitle:
+        "各リクエストのメッセージリストの先頭に、ChatGPTのシステムプロンプトを強制的に追加します",
     },
     InputTemplate: {
       Title: "入力の前処理",
@@ -199,6 +209,7 @@ const jp: PartialLocaleType = {
     Add: "追加",
   },
   Plugin: { Name: "プラグイン" },
+  FineTuned: { Sysmessage: "あなたはアシスタントです" },
   Mask: {
     Name: "キャラクタープリセット",
     Page: {

@@ -76,7 +76,7 @@ export function ModelConfigList(props: {
         <input
           type="number"
           min={100}
-          max={32000}
+          max={100000}
           value={props.modelConfig.max_tokens}
           onChange={(e) =>
             props.updateConfig(
@@ -131,6 +131,22 @@ export function ModelConfigList(props: {
       </ListItem>
 
       <ListItem
+        title={Locale.Settings.InjectSystemPrompts.Title}
+        subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
+      >
+        <input
+          type="checkbox"
+          checked={props.modelConfig.enableInjectSystemPrompts}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) =>
+                (config.enableInjectSystemPrompts = e.currentTarget.checked),
+            )
+          }
+        ></input>
+      </ListItem>
+
+      <ListItem
         title={Locale.Settings.InputTemplate.Title}
         subTitle={Locale.Settings.InputTemplate.SubTitle}
       >
@@ -153,7 +169,7 @@ export function ModelConfigList(props: {
           title={props.modelConfig.historyMessageCount.toString()}
           value={props.modelConfig.historyMessageCount}
           min="0"
-          max="32"
+          max="64"
           step="1"
           onChange={(e) =>
             props.updateConfig(

@@ -5,7 +5,7 @@ const es: PartialLocaleType = {
   WIP: "En construcción...",
   Error: {
     Unauthorized:
-      "Acceso no autorizado, por favor ingrese el código de acceso en la página de configuración.",
+      "Acceso no autorizado, por favor ingrese el código de acceso en la [página](/#/auth) de configuración.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mensajes`,
@@ -70,6 +70,11 @@ const es: PartialLocaleType = {
     FontSize: {
       Title: "Tamaño de fuente",
       SubTitle: "Ajustar el tamaño de fuente del contenido del chat",
+    },
+    InjectSystemPrompts: {
+      Title: "Inyectar Prompts del Sistema",
+      SubTitle:
+        "Agregar forzosamente un prompt de sistema simulado de ChatGPT al comienzo de la lista de mensajes en cada solicitud",
     },
     Update: {
       Version: (x: string) => `Versión: ${x}`,
@@ -184,6 +189,9 @@ const es: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Eres un asistente que",
   },
   Mask: {
     Name: "Mask",

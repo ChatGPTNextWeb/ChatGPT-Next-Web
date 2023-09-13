@@ -5,7 +5,7 @@ const fr: PartialLocaleType = {
   WIP: "Prochainement...",
   Error: {
     Unauthorized:
-      "Accès non autorisé, veuillez saisir le code d'accès dans la page des paramètres.",
+      "Accès non autorisé, veuillez saisir le code d'accès dans la [page](/#/auth) des paramètres.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages en total`,
@@ -110,6 +110,11 @@ const fr: PartialLocaleType = {
     FontSize: {
       Title: "Taille des polices",
       SubTitle: "Ajuste la taille de police du contenu de la conversation",
+    },
+    InjectSystemPrompts: {
+      Title: "Injecter des invites système",
+      SubTitle:
+        "Ajoute de force une invite système simulée de ChatGPT au début de la liste des messages pour chaque demande",
     },
     InputTemplate: {
       Title: "Template",
@@ -238,6 +243,9 @@ const fr: PartialLocaleType = {
   },
   Plugin: {
     Name: "Extension",
+  },
+  FineTuned: {
+    Sysmessage: "Eres un asistente que",
   },
   Mask: {
     Name: "Masque",

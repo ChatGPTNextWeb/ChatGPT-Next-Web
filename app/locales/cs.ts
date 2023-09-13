@@ -5,7 +5,7 @@ const cs: PartialLocaleType = {
   WIP: "V přípravě...",
   Error: {
     Unauthorized:
-      "Neoprávněný přístup, zadejte přístupový kód na stránce nastavení.",
+      "Neoprávněný přístup, zadejte přístupový kód na [stránce](/#/auth) nastavení.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} zpráv`,
@@ -70,6 +70,11 @@ const cs: PartialLocaleType = {
     FontSize: {
       Title: "Velikost písma",
       SubTitle: "Nastavení velikosti písma obsahu chatu",
+    },
+    InjectSystemPrompts: {
+      Title: "Vložit systémové prompty",
+      SubTitle:
+        "Vynutit přidání simulovaného systémového promptu ChatGPT na začátek seznamu zpráv každého požadavku",
     },
     Update: {
       Version: (x: string) => `Verze: ${x}`,
@@ -182,6 +187,9 @@ const cs: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Jste asistent, který",
   },
   Mask: {
     Name: "Maska",

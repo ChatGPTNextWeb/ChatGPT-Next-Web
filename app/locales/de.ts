@@ -5,7 +5,7 @@ const de: PartialLocaleType = {
   WIP: "In Bearbeitung...",
   Error: {
     Unauthorized:
-      "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der Einstellungsseite ein.",
+      "Unbefugter Zugriff, bitte geben Sie den Zugangscode auf der [Einstellungsseite](/#/auth) ein.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} Nachrichten`,
@@ -70,6 +70,11 @@ const de: PartialLocaleType = {
     FontSize: {
       Title: "Schriftgröße",
       SubTitle: "Schriftgröße des Chat-Inhalts anpassen",
+    },
+    InjectSystemPrompts: {
+      Title: "System-Prompts einfügen",
+      SubTitle:
+        "Erzwingt das Hinzufügen eines simulierten systemweiten Prompts von ChatGPT am Anfang der Nachrichtenliste bei jeder Anfrage",
     },
     Update: {
       Version: (x: string) => `Version: ${x}`,
@@ -186,6 +191,9 @@ const de: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Du bist ein Assistent, der",
   },
   Mask: {
     Name: "Mask",

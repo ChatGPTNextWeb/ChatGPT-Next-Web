@@ -3,10 +3,11 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
+import { type Metadata } from "next";
 
-export const metadata = {
-  title: "ChatGPT-优燃佳科技",
-  description: "Your personal ChatGPT chatbot. Designed on uranplus",
+export const metadata: Metadata = {
+  title: "ChatGPT Next Web",
+  description: "Your personal ChatGPT Chat Bot.",
   viewport: {
     width: "device-width",
     initialScale: 1,
@@ -17,7 +18,7 @@ export const metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "ChatGPT UranPlus",
+    title: "ChatGPT Next Web",
     statusBarStyle: "default",
   },
 };
