@@ -6,6 +6,23 @@ const tr: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Yetkisiz erişim, lütfen erişim kodunu ayarlar [sayfasından](/#/auth) giriniz.",
+    Content_Policy: {
+      Title: "İsteğiniz, İçerik Politikası İhlali nedeniyle işaretlendi.\nBuradan okuyun: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "sebep",
+        sexual: "cinsel",
+        hate: "nefret",
+        harassment: "taciz",
+        "self-harm": "kendine zarar",
+        "sexual/minors": "cinsel/reşit olmayanlar",
+        "hate/threatening": "nefret/tehdit",
+        "violence/graphic": "şiddet/grafik",
+        "self-harm/intent": "kendine zarar/niyet",
+        "self-harm/instructions": "kendine zarar/talimatlar",
+        "harassment/threatening": "taciz/tehdit",
+        violence: "şiddet",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mesaj`,

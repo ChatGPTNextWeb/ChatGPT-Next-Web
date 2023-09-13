@@ -6,6 +6,23 @@ const it: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Accesso non autorizzato, inserire il codice di accesso nella [pagina](/#/auth) delle impostazioni.",
+    Content_Policy: {
+      Title: "La tua richiesta è stata segnalata a causa di una violazione della politica dei contenuti.\nLeggi qui: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "motivo",
+        sexual: "cinsel",
+        hate: "nefret",
+        harassment: "taciz",
+        "self-harm": "kendine zarar",
+        "sexual/minors": "cinsel/reşit olmayanlar",
+        "hate/threatening": "nefret/tehdit",
+        "violence/graphic": "şiddet/grafik",
+        "self-harm/intent": "kendine zarar/niyet",
+        "self-harm/instructions": "kendine zarar/talimatlar",
+        "harassment/threatening": "taciz/tehdit",
+        violence: "şiddet",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messaggi`,

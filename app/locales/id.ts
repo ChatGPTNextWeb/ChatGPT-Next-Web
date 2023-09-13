@@ -6,6 +6,23 @@ const id: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Akses tidak diizinkan. Silakan [otorisasi](/#/auth) dengan memasukkan kode akses.",
+    Content_Policy: {
+      Title: "Permintaan Anda ditandai karena Pelanggaran Kebijakan Konten.\nBaca di sini: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "alasan",
+        sexual: "seksual",
+        hate: "kebencian",
+        harassment: "pelecehan",
+        "self-harm": "melukai diri sendiri",
+        "sexual/minors": "seksual/anak-anak",
+        "hate/threatening": "kebencian/ancaman",
+        "violence/graphic": "kekerasan/grafis",
+        "self-harm/intent": "melukai diri sendiri/niat",
+        "self-harm/instructions": "melukai diri sendiri/instruksi",
+        "harassment/threatening": "pelecehan/ancaman",
+        violence: "kekerasan",
+      },
+    },
   },
   Auth: {
     Title: "Diperlukan Kode Akses",

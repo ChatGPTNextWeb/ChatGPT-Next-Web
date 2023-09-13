@@ -6,6 +6,23 @@ const cs: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Neoprávněný přístup, zadejte přístupový kód na [stránce](/#/auth) nastavení.",
+    Content_Policy: {
+      Title: "Vaše žádost byla označena kvůli porušení pravidel pro obsah.\nČíst zde: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "důvod",
+        sexual: "sexuální",
+        hate: "nenávist",
+        harassment: "obtěžování",
+        "self-harm": "sebepoškození",
+        "sexual/minors": "sexuální/neplnoletí",
+        "hate/threatening": "nenávist/hrozivý",
+        "violence/graphic": "násilí/grafický",
+        "self-harm/intent": "sebepoškození/úmysl",
+        "self-harm/instructions": "sebepoškození/instrukce",
+        "harassment/threatening": "obtěžování/hrozivý",
+        violence: "násilí",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} zpráv`,

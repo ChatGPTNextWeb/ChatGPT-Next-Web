@@ -7,6 +7,23 @@ const ko: PartialLocaleType = {
   Error: {
     Unauthorized:
       "권한이 없습니다. 설정 페이지에서 액세스 코드를 [입력하세요](/#/auth).",
+    Content_Policy: {
+      Title: "귀하의 요청이 콘텐츠 정책 위반으로 인해 플래그가 지정되었습니다.\n자세한 내용은 여기를 참조하십시오: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "이유",
+        sexual: "성적인",
+        hate: "증오",
+        harassment: "괴롭힘",
+        "self-harm": "자해",
+        "sexual/minors": "성적/미성년자",
+        "hate/threatening": "증오/위협",
+        "violence/graphic": "폭력/그래픽",
+        "self-harm/intent": "자해/의도",
+        "self-harm/instructions": "자해/지침",
+        "harassment/threatening": "괴롭힘/위협",
+        violence: "폭력",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count}개의 메시지`,

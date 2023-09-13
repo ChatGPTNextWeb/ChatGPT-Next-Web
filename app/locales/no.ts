@@ -6,6 +6,23 @@ const no: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
+    Content_Policy: {
+      Title: "Førespurnaden din blei merka som brot på retningslinjene for innhald.\nLes her: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "grunn",
+        sexual: "seksuell",
+        hate: "hat",
+        harassment: "trakasserings",
+        "self-harm": "sjølvskading",
+        "sexual/minors": "seksuell/mindreårige",
+        "hate/threatening": "hat/trugande",
+        "violence/graphic": "vald/grafisk",
+        "self-harm/intent": "sjølvskading/forsett",
+        "self-harm/instructions": "sjølvskading/instruksjonar",
+        "harassment/threatening": "trakassering/trugande",
+        violence: "vald",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,

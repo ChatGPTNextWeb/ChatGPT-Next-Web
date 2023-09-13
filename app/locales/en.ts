@@ -11,6 +11,23 @@ const en: LocaleType = {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
       : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+    Content_Policy: {
+      Title: "Your request got flagged because of a Content Policy Violation.\nRead Here: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "reason",
+        sexual: "sexual",
+        hate: "hate",
+        harassment: "harassment",
+        "self-harm": "self-harm",
+        "sexual/minors": "sexual/minors",
+        "hate/threatening": "hate/threatening",
+        "violence/graphic": "violence/graphic",
+        "self-harm/intent": "self-harm/intent",
+        "self-harm/instructions": "self-harm/instructions",
+        "harassment/threatening": "harassment/threatening",
+        violence: "violence",
+      },
+    },
   },
   Auth: {
     Title: "Need Access Code",

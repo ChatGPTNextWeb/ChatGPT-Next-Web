@@ -6,6 +6,23 @@ const bn: PartialLocaleType = {
   Error: {
     Unauthorized:
       "অননুমোদিত অ্যাক্সেস, অনুগ্রহ করে [অথোরাইজশন](/#/auth) পৃষ্ঠায় অ্যাক্সেস কোড ইনপুট করুন।",
+    Content_Policy: {
+    Title: "আপনার অনুরোধটি কন্টেন্ট নীতি লঙ্ঘনের কারণে পতাকায় চিহ্নিত হয়েছে।\nএখানে পড়ুন: https://platform.openai.com/docs/guides/moderation/overview",
+    Reason: {
+      Title: "বাংলা",
+      sexual: "যৌন",
+      hate: "ঘৃণা",
+      harassment: "হুমকি",
+      "self-harm": "নিজের ক্ষতি",
+      "sexual/minors": "যৌন/অপূর্ণবয়স্ক",
+      "hate/threatening": "ঘৃণা/ভীতিপ্রদর্শন",
+      "violence/graphic": "সংগ্রাম/গ্রাফিক",
+      "self-harm/intent": "নিজের ক্ষতি/উদ্দেশ্য",
+      "self-harm/instructions": "নিজের ক্ষতি/নির্দেশিকা",
+      "harassment/threatening": "হুমকি/ভীতিপ্রদর্শন",
+      violence: "সংগ্রাম",
+      },
+    },
   },
   Auth: {
     Title: "একটি অ্যাক্সেস কোড প্রয়োজন",

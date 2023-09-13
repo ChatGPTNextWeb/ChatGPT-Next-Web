@@ -5,6 +5,23 @@ const tw: PartialLocaleType = {
   WIP: "該功能仍在開發中……",
   Error: {
     Unauthorized: "目前您的狀態是未授權，請前往[設定頁面](/#/auth)輸入授權碼。",
+    Content_Policy: {
+      Title: "您的請求因違反內容政策而被標記。\n閱讀詳情：https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "理由",
+        sexual: "性別",
+        hate: "仇恨",
+        harassment: "騷擾",
+        "self-harm": "自殘",
+        "sexual/minors": "性別/未成年人",
+        "hate/threatening": "仇恨/威脅",
+        "violence/graphic": "暴力/圖形",
+        "self-harm/intent": "自殘/意圖",
+        "self-harm/instructions": "自殘/指示",
+        "harassment/threatening": "騷擾/威脅",
+        violence: "暴力",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 條對話`,

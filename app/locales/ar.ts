@@ -6,6 +6,23 @@ const ar: PartialLocaleType = {
   Error: {
     Unauthorized:
       "غير مصرح بالوصول، يرجى إدخال رمز الوصول [auth](/#/auth) في صفحة المصادقة.",
+    Content_Policy: {
+      Title: "تم تمييز طلبك بسبب انتهاك سياسة المحتوى\nاقرأ هنا: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "سبب",
+        sexual: "جنسي",
+        hate: "كراهية",
+        harassment: "تحرش",
+        "self-harm": "إيذاء النفس",
+        "sexual/minors": "جنسي/قصر",
+        "hate/threatening": "كراهية/تهديد",
+        "violence/graphic": "عنف/رسوم بيانية",
+        "self-harm/intent": "إيذاء النفس/نية",
+        "self-harm/instructions": "إيذاء النفس/تعليمات",
+        "harassment/threatening": "تحرش/تهديد",
+        violence: "عنف",
+      },
+    },
   },
   Auth: {
     Title: "تحتاج إلى رمز الوصول",

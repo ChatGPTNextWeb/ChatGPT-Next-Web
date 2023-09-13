@@ -6,6 +6,23 @@ const vi: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Truy cập chưa xác thực, vui lòng nhập mã truy cập trong trang cài đặt.",
+    Content_Policy: {
+      Title: "Yêu cầu của bạn đã bị đánh dấu vì vi phạm Chính sách Nội dung.\nĐọc tại đây: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "lý do",
+        sexual: "tình dục",
+        hate: "căm ghét",
+        harassment: "quấy rối",
+        "self-harm": "tự tổn thương",
+        "sexual/minors": "tình dục/vị thành niên",
+        "hate/threatening": "căm ghét/đe dọa",
+        "violence/graphic": "bạo lực/đồ họa",
+        "self-harm/intent": "tự tổn thương/ý định",
+        "self-harm/instructions": "tự tổn thương/hướng dẫn",
+        "harassment/threatening": "quấy rối/đe dọa",
+        violence: "bạo lực",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} tin nhắn`,

@@ -6,6 +6,23 @@ const jp: PartialLocaleType = {
   Error: {
     Unauthorized:
       "現在は未承認状態です。左下の設定ボタンをクリックし、アクセスパスワードかOpenAIのAPIキーを入力してください。",
+    Content_Policy: {
+      Title: "お客様のリクエストは、コンテンツポリシーの違反によりフラグが立てられました。\n詳細はこちらをご覧ください：https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "理由",
+        sexual: "性的な",
+        hate: "憎しみ",
+        harassment: "嫌がらせ",
+        "self-harm": "自傷行為",
+        "sexual/minors": "性的/未成年者",
+        "hate/threatening": "憎しみ/脅迫",
+        "violence/graphic": "暴力/グラフィック",
+        "self-harm/intent": "自傷行為/意図",
+        "self-harm/instructions": "自傷行為/指示",
+        "harassment/threatening": "嫌がらせ/脅迫",
+        violence: "暴力",
+      },
+    },
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 通のチャット`,
