@@ -576,67 +576,31 @@ export const ChatResponse = (props: {
   const promptCount = 3;
 
   // 将选择的role, 合并为一个数组
-  var toastmastersRolePrompts: ToastmastersRolePrompt[] = [];
+  let toastmastersRolePrompts: ToastmastersRolePrompt[] = [];
   session.input.roles?.forEach((roleName: any) => {
     toastmastersRolePrompts = toastmastersRolePrompts.concat(
       toastmastersRecord[roleName],
     );
   });
 
-  // TODO: more debug for other roles except tte
-  const onResend = async (messageIndex: number) => {
-    // TODO: check coins
-    // const isEnoughCoins = await chatStore.isEnoughCoins(
-    //   toastmastersRolePrompts.length - messageIndex,
-    // );
-    // if (!isEnoughCoins) {
-    //   return;
-    // }
-
-    const roleIndex = (messageIndex - promptCount) / 2;
-
-    // -1: means reset from the last message of roleIndex
-    chatStore.resetSessionFromIndex(promptCount + messageIndex - 1);
-
-    /*
-    JavaScript 中的 for 循环通常是同步顺序执行的。这意味着循环内的代码会按顺序执行，每次迭代都会等待上一次迭代完成后才会开始下一次迭代。
-    这是因为 JavaScript 是单线程的，它在执行循环时会阻塞其他代码的执行，直到循环完成。
-    */
-    for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
-      let item = toastmastersRolePrompts[i];
-      let ask = item.contentWithSetting(session.input.setting[item.role]);
-      chatStore.onUserInput(ask);
-      await chatStore.getIsFinished();
-    }
-
-    // TODO
-    // if (!isMobileScreen) inputRef.current?.focus();
-    // setAutoScroll(true);
-  };
-
   // TODO: when resending, the page will auto scroll to the bottom, so the avatar video will cover the reponse message
-  const onResendConfirm = async (
-    message: ChatMessage,
-    messageIndex: number,
-  ) => {
-    if (
-      message.setting?.title &&
-      message.setting?.title in session.input.setting
-    ) {
-      const setting = _.cloneDeep(
-        session.input.setting[message.setting?.title],
-      );
+  const onResendConfirm = async (messageIndex: number, roleIndex: number) => {
+    const currentPromptItem = toastmastersRolePrompts[roleIndex];
+    const currentSetting = session.input.setting[currentPromptItem.roleKey];
+    if (currentSetting) {
+      const setting = _.cloneDeep(currentSetting);
       const ContentComponent = () => {
         return (
           <List>
             <ListItem title="Evaluation Words for each Speaker">
-              <Input
-                rows={1}
+              <input
+                type="number"
+                min={0}
                 defaultValue={setting.words}
                 onChange={(e) =>
                   (setting.words = parseInt(e.currentTarget.value))
                 }
-              ></Input>
+              ></input>
             </ListItem>
           </List>
         );
@@ -644,31 +608,26 @@ export const ChatResponse = (props: {
 
       const isConfirmed = await showConfirmWithProps({
         children: <ContentComponent />,
-        title: `${message.setting?.title} Settings`,
+        title: `${currentPromptItem.roleKey} Settings`,
         cancelText: "Cancel",
         confirmText: "Confirm",
       });
       if (!isConfirmed) return;
 
-      session.input.setting[message.setting?.title] = setting;
+      session.input.setting[currentPromptItem.roleKey] = _.cloneDeep(setting);
     }
 
     // -1: means reset from the last message of roleIndex
-    chatStore.resetSessionFromIndex(messageIndex - 2);
+    chatStore.resetSessionFromIndex(messageIndex - 1);
 
     /*
     JavaScript 中的 for 循环通常是同步顺序执行的。这意味着循环内的代码会按顺序执行，每次迭代都会等待上一次迭代完成后才会开始下一次迭代。
     这是因为 JavaScript 是单线程的，它在执行循环时会阻塞其他代码的执行，直到循环完成。
     */
-    const roleIndex = (messageIndex - promptCount) / 2;
+    // const roleIndex = (messageIndex - promptCount) / 2;
     for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
       let item = toastmastersRolePrompts[i];
-      let ask = item.contentWithSetting(
-        session.input.setting[message.setting?.title ?? ""],
-      );
-
-      // TODO: name:
-      let responseSetting = { name: "", title: item.role }; // TODO: words put into item
+      let ask = item.contentWithSetting(session.input.setting[item.roleKey]);
       chatStore.onUserInput(ask);
       await chatStore.getIsFinished();
     }
@@ -734,24 +693,18 @@ export const ChatResponse = (props: {
 
   return (
     <div className={styles["chat-input-panel"]}>
-      {session.messages.map((message, index) => {
-        // if length > index => the data is ready => show the data, else show the last data
-        // var message: ChatMessage = createMessage({});
-        // if (session.messages.length > promptCount + 2 * index + 1)
-        //   // data is ready, just read it
-        //   message = session.messages[promptCount + 2 * index];
-        // else if (session.messages.length == promptCount + 2 * index + 1)
-        //   message = session.messages[session.messages.length - 1];
-
+      {session.messages.map((message, messageIndex) => {
         var showActions = message.content.length > 0;
-        if (index <= 1 || index % 2 == 0) return null;
+
+        // first question-answer pair is guidance, and only show the answer from bot
+        if (messageIndex <= 1 || messageIndex % 2 == 0) return null;
+
+        const roleIndex = (messageIndex - promptCount) / 2;
+        const roleKey = toastmastersRolePrompts[roleIndex].roleKey;
 
         return (
-          <div key={index} className={styles["chat-message-hover"]}>
-            <div className={styles["chat-input-panel-title"]}>
-              {" "}
-              {message.setting?.title}
-            </div>
+          <div key={messageIndex} className={styles["chat-message-hover"]}>
+            <div className={styles["chat-input-panel-title"]}>{roleKey}</div>
 
             <div className={styles["chat-message-item"]}>
               {showActions && (
@@ -767,7 +720,7 @@ export const ChatResponse = (props: {
                       <ChatAction
                         text={Locale.Chat.Actions.Stop}
                         icon={<StopIcon />}
-                        onClick={() => onUserStop(message.id ?? 2 * index + 3)}
+                        onClick={() => onUserStop(message.id ?? messageIndex)}
                       />
                     ) : (
                       <>
@@ -779,7 +732,9 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.Retry}
                           icon={<ResetIcon />}
-                          onClick={() => onResendConfirm(message, index)}
+                          onClick={() =>
+                            onResendConfirm(messageIndex, roleIndex)
+                          }
                         />
                         <ChatAction
                           text={Locale.Chat.Actions.Copy}

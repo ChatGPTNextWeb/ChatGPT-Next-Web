@@ -116,7 +116,6 @@ export function Chat() {
     const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
 
     var guidance = ToastmastersRoleGuidance(speakerInputsString);
-    console.log(guidance);
     return new InputSubmitStatus(true, guidance);
   };
 
@@ -170,20 +169,6 @@ export function Chat() {
               <TableCell align="left" className={styles_tm["table-header"]}>
                 Speech
               </TableCell>
-              {/* <TableCell
-                align="left"
-                className={styles_tm["table-header"]}
-                style={{ width: "100px" }}
-              >
-                SpeechWords
-              </TableCell>
-              <TableCell
-                align="left"
-                className={styles_tm["table-header"]}
-                style={{ width: "100px" }}
-              >
-                SpeechTime
-              </TableCell> */}
               <TableCell
                 align="left"
                 className={styles_tm["table-header"]}
@@ -221,7 +206,7 @@ export function Chat() {
         // session.inputs.input = { ...row.question };
         // session.inputs.input2 = { ...row.speech };
         session.topic = row.speaker;
-        session.input.datas.push(row);
+        session.input.datas.push({ ...row });
         return session;
       });
     };
@@ -257,12 +242,6 @@ export function Chat() {
           <TableCell align="left">
             {ChatUtility.getFirstNWords(row.speech.text, 20)}
           </TableCell>
-          {/* <TableCell align="left">
-            {ChatUtility.getWordsNumber(row.speech.text)}
-          </TableCell>
-          <TableCell align="left">
-            {ChatUtility.formatTime(row.speech.time)}
-          </TableCell> */}
           <TableCell align="left">
             <div className={styles_tm["table-actions"]}>
               <IconButton icon={<MenuIcon />} onClick={onDetailClick} />
@@ -382,18 +361,20 @@ const ChatInputAddSubmit = (props: {
     chatStore.resetSession();
 
     let ask = checkInputResult.guidance;
-    let responseSetting: MessageSetting = {
-      name: inputRole,
-      title: "Guidance",
-    };
-    chatStore.onUserInput(ask, responseSetting);
+
+    // TODO: futher refactor
+    // let responseSetting: MessageSetting = {
+    //   name: inputRole,
+    //   title: "Guidance",
+    // };
+    chatStore.onUserInput(ask);
     for (const item of toastmastersRolePrompts) {
       await chatStore.getIsFinished();
 
       // TODO: move setting into item, but when retry, it will lose
-      ask = item.contentWithSetting(session.input.setting[item.role]);
-      responseSetting = { name: inputRole, title: item.role }; // TODO: words put into item
-      chatStore.onUserInput(ask, responseSetting);
+      ask = item.contentWithSetting(session.input.setting[item.roleKey]);
+      // responseSetting = { name: inputRole, title: item.roleKey }; // TODO: words put into item
+      chatStore.onUserInput(ask);
     }
     await chatStore.getIsFinished();
 
@@ -431,17 +412,19 @@ const ChatInputAddSubmit = (props: {
         </RadioGroup>
       </FormControl>
 
-      <IconButton
-        icon={<SendWhiteIcon />}
-        text={submitting ? "Submitting" : "Submit"}
-        disabled={submitting}
-        className={
-          submitting
-            ? styles_tm["chat-input-button-submitting"]
-            : styles_tm["chat-input-button-submit"]
-        }
-        onClick={doSubmit}
-      />
+      {inputRole && (
+        <IconButton
+          icon={<SendWhiteIcon />}
+          text={submitting ? "Submitting" : "Submit"}
+          disabled={submitting}
+          className={
+            submitting
+              ? styles_tm["chat-input-button-submitting"]
+              : styles_tm["chat-input-button-submit"]
+          }
+          onClick={doSubmit}
+        />
+      )}
     </div>
   );
 };

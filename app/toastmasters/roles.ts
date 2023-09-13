@@ -15,12 +15,13 @@ export interface ToastmastersRoleSetting {
 }
 
 export interface ToastmastersRolePrompt {
-  role: string; // TODO: roleTitle
+  role: string;
+  roleKey: string;
   contentWithSetting: (setting?: ToastmastersRoleSetting) => string;
   setting?: ToastmastersRoleSetting;
 
-  role_index: number; // TODO: remove it
-  content: string; // TODO: remove it
+  role_index?: number; // TODO: remove it
+  content?: string; // TODO: remove it
   words?: number; // TODO: remove it
 }
 
@@ -41,7 +42,7 @@ export const ToastmastersSettings = (
   const settings: Record<string, ToastmastersRoleSetting> = {};
   Object.values(ToastmastersRecord).forEach((prompts) => {
     prompts.forEach((prompt) => {
-      if (prompt.setting) settings[prompt.role] = { ...prompt.setting };
+      if (prompt.setting) settings[prompt.roleKey] = { ...prompt.setting };
     });
   });
   return settings;
@@ -215,10 +216,8 @@ export const ToastmastersTTEvaluatorsRecord: Record<
 > = {
   [ToastmastersRoles.TableTopicsEvaluator]: [
     {
-      role_index: 0, // not used now
-      role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
-      content: `
-      `,
+      role: ToastmastersRoles.TableTopicsEvaluator,
+      roleKey: ToastmastersRoles.TableTopicsEvaluator + "-Count",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
       1). Give me a table which presenting the keywords used in each person's speech
@@ -227,10 +226,8 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       `,
     },
     {
-      role_index: 1, // role_index is the index of this item in the array
-      role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
-      content: `
-      `,
+      role: ToastmastersRoles.TableTopicsEvaluator,
+      roleKey: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
       Evaluate the speech for all speakers.
@@ -246,35 +243,34 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       },
     },
   ],
-  // [ToastmastersRoles.Grammarian]: [
-  //   {
-  //     role_index: 2,
-  //     role: ToastmastersRoles.Grammarian + "-Count",
-  //     content: `
-  //     `,
-  //     contentWithSetting: (setting: ToastmastersRoleSetting) =>
-  //       `You are the ${ToastmastersRoles.Grammarian}.
-  //     1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
-  //     2). Only response the table,
-  //     3). Do not include any extra description and extra words.
-  //     `,
-  //   },
-  //   {
-  //     role_index: 3,
-  //     role: ToastmastersRoles.Grammarian + "-Evaluation",
-  //     content: `
-  //     `,
-  //     contentWithSetting: (setting: ToastmastersRoleSetting) =>
-  //       `You are the ${ToastmastersRoles.Grammarian}.
-  //     Evaluate the speech for all speakers and to analysis your stats in your table.
-  //     Your evaluation should:
-  //     1). Don't make things up, all your quoted sentence must from the speaker's speech.
-  //     2). Bold keywords using markdown when present your answer.
-  //     3). Provide addvice to the speaker based on his speech.
-  //     4). Each speaker's evaluation should be about ${setting.words} words.
-  //     `,
-  //   },
-  // ],
+  [ToastmastersRoles.Grammarian]: [
+    {
+      role: ToastmastersRoles.Grammarian,
+      roleKey: ToastmastersRoles.Grammarian + "-Count",
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.Grammarian}.
+      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
+      2). Only response the table,
+      3). Do not include any extra description and extra words.
+      `,
+    },
+    {
+      role: ToastmastersRoles.Grammarian,
+      roleKey: ToastmastersRoles.Grammarian + "-Evaluation",
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.Grammarian}.
+      Evaluate the speech for all speakers and to analysis your stats in your table.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to the speaker based on his speech.
+      4). Each speaker's evaluation should be about ${setting?.words} words.
+      `,
+      setting: {
+        words: 50,
+      },
+    },
+  ],
   // [ToastmastersRoles.AhCounter]: [
   //   {
   //     role_index: 4,
