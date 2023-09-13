@@ -99,3 +99,8 @@ export const onSpeechAvatar = async (
     setOutputAvatar({ status: VideoFetchStatus.Error, data: error });
   }
 };
+
+/*
+100 words => 4 miniutes = 240 seconds
+1 word => 2.4 seconds
+*/

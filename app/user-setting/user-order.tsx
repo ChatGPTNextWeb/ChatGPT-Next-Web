@@ -4,6 +4,7 @@ import styles_settings from "../components/settings.module.scss";
 import styles_user from "./user.module.scss";
 
 import { List, ListItem, showToast } from "../components/ui-lib";
+import Locale from "../locales";
 
 import { IconButton } from "../components/button";
 
@@ -38,12 +39,18 @@ export function UserOrder() {
 
   return (
     <ErrorBoundary>
-      <div> {UserInfoWindowHeader(navigate, "用户余额中心")} </div>
+      <div>
+        {" "}
+        {UserInfoWindowHeader(
+          navigate,
+          Locale.Settings.UserBalance.BalanceCenter.Title,
+        )}{" "}
+      </div>
 
       <div className={styles_settings["settings"]}>
         {UserbalanceInfo(userEmail)}
-        {UserOrderInfo(userEmail)}
-        {UserOrderHistory(userEmail)}
+        {/* {UserOrderInfo(userEmail)}
+        {UserOrderHistory(userEmail)} */}
       </div>
     </ErrorBoundary>
   );
@@ -66,13 +73,23 @@ function UserbalanceInfo(userEmail: string) {
     try {
       const result = await zBotServiceClient.signin(email);
       if (result === UserCheckResultVO.success) {
-        showToast("签到成功");
+        showToast(
+          Locale.Settings.UserBalance.BalanceCenter.SignState.SignToast.Success,
+        );
       } else if (result === UserCheckResultVO.notFound) {
-        showToast("邮箱尚未注册, 请先注册");
+        showToast(
+          Locale.Settings.UserBalance.BalanceCenter.SignState.SignToast
+            .NotRegister,
+        );
       } else if (result === UserCheckResultVO.Signined) {
-        showToast("今日已签到, 无需多次签到");
+        showToast(
+          Locale.Settings.UserBalance.BalanceCenter.SignState.SignToast
+            .HasSigned,
+        );
       } else {
-        showToast("签到失败, 请重新签到");
+        showToast(
+          Locale.Settings.UserBalance.BalanceCenter.SignState.SignToast.Failed,
+        );
       }
     } catch (error) {
       console.log("db access failed:"), error;
@@ -81,74 +98,124 @@ function UserbalanceInfo(userEmail: string) {
 
   return (
     <List>
-      <ListItem title="账户余额"></ListItem>
+      <ListItem
+        title={Locale.Settings.UserBalance.BalanceCenter.AccountBalance.Title}
+      ></ListItem>
       <div className={styles_user["user-order-balance"]}>
         <div className={styles_user["user-order-balance-item"]}>
           <div className={styles_user["user-order-balance-num"]}>
             {userRequestInfoVO.baseCoins}
           </div>
           <div className={styles_user["user-order-balance-title"]}>
-            基础AI币余额
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance.BaseCoins
+                .Title
+            }
           </div>
-          <div>(不会清空)</div>
+          <div>
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance.BaseCoins
+                .SubTitle
+            }
+          </div>
         </div>
         <div className={styles_user["user-order-balance-item"]}>
           <div className={styles_user["user-order-balance-num"]}>
             {userRequestInfoVO.thisDayCoins}
           </div>
           <div className={styles_user["user-order-balance-title"]}>
-            限时AI币余额
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance
+                .LimitCoins.Title
+            }
           </div>
-          <div>(限时1天, 0点清空)</div>
+          <div>
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance
+                .LimitCoins.SubTitle
+            }
+          </div>
         </div>
         <div className={styles_user["user-order-balance-item"]}>
           <div className={styles_user["user-order-balance-num"]}>
             {userRequestInfoVO.totalRequests}
           </div>
           <div className={styles_user["user-order-balance-title"]}>
-            总对话次数
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance
+                .TotalDialogs.Title
+            }
           </div>
-          <div>(每条对话消耗1个AI币, 先限时币, 再基础币)</div>
+          <div>
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance
+                .TotalDialogs.SubTitle
+            }
+          </div>
         </div>
         <div className={styles_user["user-order-balance-item"]}>
           <div className={styles_user["user-order-balance-num"]}>
             {userRequestInfoVO.totalSigninDays}
           </div>
           <div className={styles_user["user-order-balance-title"]}>
-            总签到天数
+            {
+              Locale.Settings.UserBalance.BalanceCenter.AccountBalance
+                .TotalSignDays.Title
+            }
           </div>
           <div>
-            (
-            {`每日签到领取${userConstantVO.dayBaseCoins}个基础AI币,${userConstantVO.dayLimitCoins}个限时AI币`}
-            )
+            {Locale.Settings.UserBalance.BalanceCenter.AccountBalance.TotalSignDays.SubTitle(
+              userConstantVO.dayBaseCoins,
+              userConstantVO.dayLimitCoins,
+            )}
           </div>
         </div>
       </div>
 
       {userRequestInfoVO.isThisDaySignin ? (
-        <ListItem title="今日签到状态">
+        <ListItem
+          title={
+            Locale.Settings.UserBalance.BalanceCenter.SignState.Signed.Title
+          }
+        >
           <label className={styles_user["user-order-signed"]}>
-            {"已签到 "}
+            {Locale.Settings.UserBalance.BalanceCenter.SignState.Signed.State}
           </label>
-          <IconButton text={"不可重复签到"} bordered disabled />
+          <IconButton text={""} bordered disabled />
         </ListItem>
       ) : (
-        <ListItem title="今日签到状态">
+        <ListItem
+          title={
+            Locale.Settings.UserBalance.BalanceCenter.SignState.NotSigned.Title
+          }
+        >
           <label className={styles_user["user-order-unsigned"]}>
-            {"尚未签到 "}
+            {
+              Locale.Settings.UserBalance.BalanceCenter.SignState.NotSigned
+                .State
+            }
           </label>
           <IconButton
-            text={"去签到"}
+            text={
+              Locale.Settings.UserBalance.BalanceCenter.SignState.NotSigned
+                .Button
+            }
             bordered
             onClick={() => toSignin(userEmail)}
           />
         </ListItem>
       )}
 
-      <ListItem title="AI币说明">
+      <ListItem
+        title={Locale.Settings.UserBalance.BalanceCenter.CoinDescription.Title}
+      >
         <div className={styles_user["user-order-desc"]}>
-          <label>{"- 新用户注册时, 赠送20个基础AI币"}</label>
-          <label>{"- 邀请用户时, 邀请人和被邀请人均赠送5个基础AI币"}</label>
+          <label>
+            {Locale.Settings.UserBalance.BalanceCenter.CoinDescription.Rule1}
+          </label>
+          <label>
+            {Locale.Settings.UserBalance.BalanceCenter.CoinDescription.Rule2}
+          </label>
         </div>
         <div></div>
       </ListItem>

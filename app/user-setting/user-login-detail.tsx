@@ -23,24 +23,25 @@ import zBotServiceClient, {
 
 const submitChange = async (userInfoVO: UserInfoVO) => {
   if (userInfoVO.nickName.trim().length === 0) {
-    showToast("昵称不可为空");
+    showToast(Locale.Settings.UserLogin.LoginCenter.SubmitToast.NullNickName);
     return;
   } else if (userInfoVO.occupation.trim().length === 0) {
-    showToast("职业不可为空");
+    showToast(Locale.Settings.UserLogin.LoginCenter.SubmitToast.NullOccupation);
     return;
   }
 
   try {
     const result = await zBotServiceClient.updateInfo(userInfoVO);
     if (result === UserCheckResultVO.success) {
-      showToast("信息更新成功");
+      showToast(Locale.Settings.UserLogin.LoginCenter.SubmitToast.Success);
     } else if (result === UserCheckResultVO.notFound) {
-      showToast("邮箱尚未注册, 请先注册");
+      showToast(Locale.Settings.UserLogin.LoginCenter.SubmitToast.NotRegister);
     } else {
-      showToast("更新失败, 请重新输入");
+      showToast(Locale.Settings.UserLogin.LoginCenter.SubmitToast.Failed);
     }
   } catch (error) {
-    console.log("db access failed:"), error;
+    console.log(Locale.Settings.UserLogin.LoginCenter.SubmitToast.Failed),
+      error;
   }
 };
 
@@ -76,29 +77,37 @@ export function UserLoginDetail() {
 
   return (
     <ErrorBoundary>
-      <div> {UserInfoWindowHeader(navigate, "用户个人中心")} </div>
+      <div>
+        {" "}
+        {UserInfoWindowHeader(
+          navigate,
+          Locale.Settings.UserLogin.LoginCenter.Title,
+        )}{" "}
+      </div>
 
       <div className={styles["settings"]}>
         <List>
-          <ListItem title="邮箱*">
+          <ListItem title={Locale.Settings.UserLogin.LoginCenter.Email.Title}>
             <label>{userEmail}</label>
           </ListItem>
-          <ListItem title="昵称*">
+          <ListItem
+            title={Locale.Settings.UserLogin.LoginCenter.NickName.Title}
+          >
             <input
               type="text"
               name="username"
-              placeholder="加载中..."
               defaultValue={dbUserInfoVO.nickName}
               onInput={(e) => {
                 setUserNickName(e.currentTarget.value);
               }}
             ></input>
           </ListItem>
-          <ListItem title="职业*">
+          <ListItem
+            title={Locale.Settings.UserLogin.LoginCenter.Occupation.Title}
+          >
             <input
               type="text"
               name="occupation"
-              placeholder="加载中..."
               defaultValue={dbUserInfoVO.occupation}
               onInput={(e) => {
                 setOccupation(e.currentTarget.value);
@@ -129,27 +138,26 @@ export function UserLoginDetail() {
             </Popover>
           </ListItem>
 
-          <ListItem title={"邀请人"}>
+          <ListItem title={Locale.Settings.UserLogin.LoginCenter.Inviter.Title}>
             <label>{dbUserInfoVO.inviterEmail}</label>
           </ListItem>
         </List>
 
         <ListItem title="">
-          {/* {
-
-          } */}
           <IconButton
             icon={<SendWhiteIcon />}
-            text={"保存修改"}
+            text={Locale.Settings.UserLogin.LoginCenter.SaveButton}
             type="primary"
             onClick={saveUserInfo}
           />
           <IconButton
             icon={<SendWhiteIcon />}
-            text={"退出登录"}
+            text={Locale.Settings.UserLogin.LoginCenter.SubmitButton}
             type="primary"
             onClick={() => {
-              showToast("退出登录成功");
+              showToast(
+                Locale.Settings.UserLogin.LoginCenter.SubmitToast.LoginOut,
+              );
               // remove all local save
               localStorage.removeItem(LocalStorageKeys.userEmail);
               navigate(Path.Settings);

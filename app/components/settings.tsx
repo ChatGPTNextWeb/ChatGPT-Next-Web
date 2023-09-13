@@ -394,16 +394,19 @@ export function Settings() {
       return (
         <div>
           <List>
-            <ListItem title="当前已登录" subTitle={userEmail}>
+            <ListItem
+              title={Locale.Settings.UserLogin.Title}
+              subTitle={userEmail}
+            >
               <IconButton
-                text="个人中心"
+                text={Locale.Settings.UserLogin.Button}
                 bordered
                 onClick={() => navigate(Path.UserLoginDetail)}
               />
             </ListItem>
-            <ListItem title="余额中心">
+            <ListItem title={Locale.Settings.UserBalance.Title}>
               <IconButton
-                text={"余额中心"}
+                text={Locale.Settings.UserBalance.Button}
                 type="primary"
                 onClick={() => navigate(Path.UserOrder)}
               />
@@ -415,11 +418,11 @@ export function Settings() {
     return (
       <div>
         <List>
-          <ListItem title="当前未登录">
+          <ListItem title={Locale.Settings.UserNotLogin.Title}>
             {
               <IconButton
                 icon={<EditIcon />}
-                text="去登录"
+                text={Locale.Settings.UserNotLogin.Button}
                 onClick={() => navigate(Path.UserLogin)}
               />
             }
@@ -736,11 +739,19 @@ export function Settings() {
         <DangerItems />
 
         <List>
-          <ListItem title="关于我们">
-            <IconButton text="详情" bordered onClick={about} />
+          <ListItem title={Locale.Settings.About.Title}>
+            <IconButton
+              text={Locale.Settings.About.Button}
+              bordered
+              onClick={about}
+            />
           </ListItem>
-          <ListItem title="反馈我们" subTitle="有价值的反馈会以AI币作为奖赏">
-            <IconButton text="反馈" bordered onClick={feedback} />
+          <ListItem title={Locale.Settings.FeedBack.Title}>
+            <IconButton
+              text={Locale.Settings.FeedBack.Button}
+              bordered
+              onClick={feedback}
+            />
           </ListItem>
         </List>
       </div>

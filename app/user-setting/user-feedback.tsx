@@ -6,6 +6,7 @@ import { IconButton } from "../components/button";
 import { AppInfo } from "../constant";
 
 import { Input, showToast, showModal } from "../components/ui-lib";
+import Locale from "../locales";
 
 import zBotServiceClient, {
   UserCheckResultVO,
@@ -34,7 +35,9 @@ export function about() {
     title: AppInfo.Title,
     children: (
       <div className="markdown-body">
-        <pre className={styles["export-content"]}>{mdText}</pre>
+        <pre className={styles["export-content"]}>
+          {Locale.Settings.About.Introduction(AppInfo.Title)}
+        </pre>
       </div>
     ),
   });
@@ -44,22 +47,24 @@ const submit = async (feedbackVO: UserFeedbackVO) => {
   console.log("feedbackVO: ", feedbackVO);
 
   if (feedbackVO.email === null || feedbackVO.email.trim().length === 0) {
-    showToast("邮箱不可为空");
+    showToast(Locale.Settings.FeedBack.FeedBackCenter.FeedBackToast.EmailEmpty);
     return;
   } else if (feedbackVO.title.trim().length === 0) {
-    showToast("标题不可为空");
+    showToast(Locale.Settings.FeedBack.FeedBackCenter.FeedBackToast.HeadEmpty);
     return;
   } else if (feedbackVO.description.trim().length === 0) {
-    showToast("详细描述不可为空");
+    showToast(
+      Locale.Settings.FeedBack.FeedBackCenter.FeedBackToast.DescriptionEmpty,
+    );
     return;
   }
 
   try {
     const result = await zBotServiceClient.sendFeedback(feedbackVO);
     if (result === UserCheckResultVO.success) {
-      showToast("反馈已提交, 请返回");
+      showToast(Locale.Settings.FeedBack.FeedBackCenter.FeedBackToast.Success);
     } else {
-      showToast("反馈提交失败, 请重新提交");
+      showToast(Locale.Settings.FeedBack.FeedBackCenter.FeedBackToast.Failed);
     }
   } catch (error) {
     console.log("db access failed:"), error;
@@ -73,17 +78,16 @@ export function feedback() {
   feedbackVO.email = localStorage.getItem(LocalStorageKeys.userEmail) as string;
 
   showModal({
-    title: AppInfo.Title + "-反馈",
+    title: Locale.Settings.FeedBack.FeedBackCenter.Title,
     children: (
       <div className={styles_user["user-feedback-body"]}>
         {feedbackVO.email === null || feedbackVO.email.trim().length === 0 ? (
           <div className={styles_user["user-feedback-body-item"]}>
             <label className={styles_user["user-feedback-body-item-label"]}>
-              邮箱*
+              {Locale.Settings.FeedBack.FeedBackCenter.Email}
             </label>
             <input
               type="text"
-              placeholder="邮箱"
               className={styles_user["edit-prompt-title"]}
               onChange={(e) => {
                 feedbackVO.email = e.target.value;
@@ -93,11 +97,10 @@ export function feedback() {
         ) : null}
         <div className={styles_user["user-feedback-body-item"]}>
           <label className={styles_user["user-feedback-body-item-label"]}>
-            标题*
+            {Locale.Settings.FeedBack.FeedBackCenter.Head}
           </label>
           <input
             type="text"
-            placeholder="标题"
             className={styles_user["edit-prompt-title"]}
             onChange={(e) => {
               feedbackVO.title = e.target.value;
@@ -106,10 +109,9 @@ export function feedback() {
         </div>
         <div className={styles_user["user-feedback-body-item"]}>
           <label className={styles_user["user-feedback-body-item-label"]}>
-            详细描述*
+            {Locale.Settings.FeedBack.FeedBackCenter.Description}
           </label>
           <Input
-            placeholder="详细描述"
             rows={10}
             className={styles_user["edit-prompt-content"]}
             onChange={(e) => {
@@ -119,11 +121,10 @@ export function feedback() {
         </div>
         <div className={styles_user["user-feedback-body-item"]}>
           <label className={styles_user["user-feedback-body-item-label"]}>
-            联系电话(可选)
+            {Locale.Settings.FeedBack.FeedBackCenter.Phone}
           </label>
           <input
             type="text"
-            placeholder="电话"
             className={styles_user["edit-prompt-title"]}
             onChange={(e) => {
               feedbackVO.phone = e.target.value;
@@ -137,7 +138,7 @@ export function feedback() {
         icon={<SendWhiteIcon />}
         type="primary"
         key=""
-        text="提交"
+        text={Locale.Settings.FeedBack.FeedBackCenter.SubmitButton}
         onClick={() => submit(feedbackVO)}
       />,
     ],

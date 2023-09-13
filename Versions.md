@@ -3,6 +3,14 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v4.0.3
+publish time: 2023-09-13
+ - Fix Avatar Video words bug
+
+## v4.0.2
+publish time: 2023-09-13
+ - CN & EN language
+
 ## v4.0.1
 publish time: 2023-09-12
  - Export & Share

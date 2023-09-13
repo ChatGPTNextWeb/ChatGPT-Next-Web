@@ -776,7 +776,7 @@ export const ChatResponse = (props: {
                           onClick={() => copyToClipboard(message.content)}
                         />
                         <ChatAction
-                          text={"语音播放"}
+                          text={Locale.Chat.Actions.AudioPlay}
                           icon={<MicphoneIcon />}
                           onClick={() =>
                             speechSynthesizer.startSynthesize(
@@ -786,7 +786,7 @@ export const ChatResponse = (props: {
                           }
                         />
                         <ChatAction
-                          text={"数字人播放"}
+                          text={Locale.Chat.Actions.VideoPlay}
                           icon={<AvatarIcon />}
                           onClick={() => onVideoGenerate(message.content)}
                         />

@@ -132,7 +132,7 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header-bar"]}>
         <IconButton
           icon={<MaskIcon />}
-          text={shouldNarrow ? undefined : "角色对话"}
+          text={shouldNarrow ? undefined : Locale.Home.MaskChat}
           onClick={() => navigate(Path.Masks)}
           shadow
         />
@@ -182,7 +182,11 @@ export function SideBar(props: { className?: string }) {
           </div>
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
-              <IconButton icon={<SettingsIcon />} shadow text="设置" />
+              <IconButton
+                icon={<SettingsIcon />}
+                shadow
+                text={Locale.Settings.Title}
+              />
             </Link>
           </div>
           {/* <div className={styles["sidebar-action"]}>

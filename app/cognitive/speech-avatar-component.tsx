@@ -11,6 +11,8 @@ import {
   showModal,
 } from "../components/ui-lib";
 
+import Locale from "../locales";
+
 import { useAppConfig } from "../store";
 
 import Switch from "@mui/material/Switch";
@@ -28,20 +30,14 @@ export function SpeechAvatarVideoSetting() {
 
   return (
     <List>
-      {/* TODO: Transfor into english */}
-      {/* <ListItem title="Speech Avatar Video"></ListItem>
+      <ListItem title={Locale.Settings.AvatarVideo.Title}></ListItem>
       <ListItem
-        title="Max words"
-        subTitle={"The max words to generate the video. Cost: 1 word costs 1 AI coin. -1 means no limit."}
-      > */}
-      <ListItem title="数字人视频播放"></ListItem>
-      <ListItem
-        title="播放字数"
-        subTitle={"生成视频时的播放字数, -1表示无限制字数. 注:1个字消耗1个AI币"}
+        title={Locale.Settings.AvatarVideo.MaxWords.Title}
+        subTitle={Locale.Settings.AvatarVideo.MaxWords.SubTitle}
       >
         <input
-          type="text"
-          value={config.avatarVideo.maxWords}
+          type="number"
+          defaultValue={config.avatarVideo.maxWords}
           onChange={(e) =>
             updateConfig(
               (config) =>
@@ -51,14 +47,8 @@ export function SpeechAvatarVideoSetting() {
         ></input>
       </ListItem>
       <ListItem
-        // title={"Pop-up Cost Preview"}
-        // subTitle={
-        //   "Preview how many AI coins will be cost when generating avatar video"
-        // }
-        title={"预览AI币消耗"}
-        subTitle={
-          "当生成数字人视频时, 弹窗预览AI币的消耗, 可在·设置·中关闭/开启"
-        }
+        title={Locale.Settings.AvatarVideo.PreviewCost.Title}
+        subTitle={Locale.Settings.AvatarVideo.PreviewCost.SubTitle}
       >
         <Switch
           defaultChecked={config.avatarVideo.previewCost}
