@@ -1,11 +1,11 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const fr: LocaleType = {
+const fr: PartialLocaleType = {
   WIP: "Prochainement...",
   Error: {
     Unauthorized:
-      "Accès non autorisé, veuillez saisir le code d'accès dans la page des paramètres.",
+      "Accès non autorisé, veuillez saisir le code d'accès dans la [page](/#/auth) des paramètres.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages en total`,
@@ -20,6 +20,31 @@ const fr: LocaleType = {
       Stop: "Arrêter",
       Retry: "Réessayer",
       Delete: "Supprimer",
+      Pin: "Épingler",
+      PinToastContent: "Épingler 2 messages à des messages contextuels",
+      PinToastAction: "Voir",
+      Edit: "Modifier",
+    },
+    Commands: {
+      new: "Commencer une nouvelle conversation",
+      newm: "Démarrer une nouvelle conversation avec un assistant",
+      next: "Conversation suivante",
+      prev: "Conversation précédente",
+      clear: "Effacer le contexte",
+      del: "Supprimer la Conversation",
+    },
+    InputActions: {
+      Stop: "Stop",
+      ToBottom: "Au dernier",
+      Theme: {
+        auto: "Auto",
+        light: "Thème clair",
+        dark: "Thème sombre",
+      },
+      Prompt: "Instructions",
+      Masks: "Assistants",
+      Clear: "Effacer le contexte",
+      Settings: "Réglages",
     },
     Rename: "Renommer la conversation",
     Typing: "En train d'écrire…",
@@ -61,13 +86,20 @@ const fr: LocaleType = {
   Settings: {
     Title: "Paramètres",
     SubTitle: "Toutes les configurations",
-    Actions: {
-      ClearAll: "Effacer toutes les données",
-      ResetAll: "Réinitialiser les configurations",
-      Close: "Fermer",
-      ConfirmResetAll:
-        "Êtes-vous sûr de vouloir réinitialiser toutes les configurations?",
-      ConfirmClearAll: "Êtes-vous sûr de vouloir supprimer toutes les données?",
+    Danger: {
+      Reset: {
+        Title: "Restaurer les paramètres",
+        SubTitle: "Restaurer les paramètres par défaut",
+        Action: "Reinitialiser",
+        Confirm: "Confirmer la réinitialisation des paramètres?",
+      },
+      Clear: {
+        Title: "Supprimer toutes les données",
+        SubTitle:
+          "Effacer toutes les données, y compris les conversations et les paramètres",
+        Action: "Supprimer",
+        Confirm: "Confirmer la suppression de toutes les données?",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION : si vous souhaitez ajouter une nouvelle traduction, ne traduisez pas cette valeur, laissez-la sous forme de `Language`
@@ -78,6 +110,15 @@ const fr: LocaleType = {
     FontSize: {
       Title: "Taille des polices",
       SubTitle: "Ajuste la taille de police du contenu de la conversation",
+    },
+    InjectSystemPrompts: {
+      Title: "Injecter des invites système",
+      SubTitle:
+        "Ajoute de force une invite système simulée de ChatGPT au début de la liste des messages pour chaque demande",
+    },
+    InputTemplate: {
+      Title: "Template",
+      SubTitle: "Le message le plus récent sera ajouté à ce template.",
     },
     Update: {
       Version: (x: string) => `Version : ${x}`,
@@ -95,9 +136,15 @@ const fr: LocaleType = {
       SubTitle: "Aperçu du Markdown dans une bulle",
     },
     Mask: {
-      Title: "Écran de masque",
-      SubTitle:
-        "Afficher un écran de masque avant de démarrer une nouvelle discussion",
+      Splash: {
+        Title: "Écran de masque",
+        SubTitle:
+          "Afficher un écran de masque avant de démarrer une nouvelle discussion",
+      },
+      Builtin: {
+        Title: "Masquer Les Assistants Intégrés",
+        SubTitle: "Masquer les assistants intégrés par défaut",
+      },
     },
     Prompt: {
       Disable: {
@@ -150,14 +197,24 @@ const fr: LocaleType = {
       Title: "Température",
       SubTitle: "Une valeur plus élevée rendra les réponses plus aléatoires",
     },
+    TopP: {
+      Title: "Top P",
+      SubTitle:
+        "Ne modifiez pas à moins que vous ne sachiez ce que vous faites",
+    },
     MaxTokens: {
-      Title: "Max Tokens",
+      Title: "Limite de Tokens",
       SubTitle: "Longueur maximale des tokens d'entrée et des tokens générés",
     },
     PresencePenalty: {
       Title: "Pénalité de présence",
       SubTitle:
         "Une valeur plus élevée augmentera la probabilité d'introduire de nouveaux sujets",
+    },
+    FrequencyPenalty: {
+      Title: "Pénalité de fréquence",
+      SubTitle:
+        "Une valeur plus élevée diminuant la probabilité de répéter la même ligne",
     },
   },
   Store: {
@@ -187,6 +244,9 @@ const fr: LocaleType = {
   Plugin: {
     Name: "Extension",
   },
+  FineTuned: {
+    Sysmessage: "Eres un asistente que",
+  },
   Mask: {
     Name: "Masque",
     Page: {
@@ -210,14 +270,28 @@ const fr: LocaleType = {
       Clone: "Dupliquer",
     },
     Config: {
-      Avatar: "Avatar du bot",
-      Name: "Nom du bot",
+      Avatar: "Avatar de lassistant",
+      Name: "Nom de lassistant",
+      Sync: {
+        Title: "Utiliser la configuration globale",
+        SubTitle: "Utiliser la configuration globale dans cette conversation",
+        Confirm: "Voulez-vous definir votre configuration personnalisée ?",
+      },
+      HideContext: {
+        Title: "Masquer les invites contextuelles",
+        SubTitle: "Ne pas afficher les instructions contextuelles dans le chat",
+      },
+      Share: {
+        Title: "Partager ce masque",
+        SubTitle: "Générer un lien vers ce masque",
+        Action: "Copier le lien",
+      },
     },
   },
   NewChat: {
     Return: "Retour",
     Skip: "Passer",
-    Title: "Choisir un masque",
+    Title: "Choisir un assitant",
     SubTitle: "Discutez avec l'âme derrière le masque",
     More: "En savoir plus",
     NotShow: "Ne pas afficher à nouveau",
@@ -231,6 +305,12 @@ const fr: LocaleType = {
     Close: "Fermer",
     Create: "Créer",
     Edit: "Éditer",
+  },
+  Exporter: {
+    Model: "Modèle",
+    Messages: "Messages",
+    Topic: "Sujet",
+    Time: "Temps",
   },
 };
 

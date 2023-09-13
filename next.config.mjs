@@ -1,5 +1,10 @@
+import webpack from "webpack";
+
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
+
+const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
+console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,29 +14,50 @@ const nextConfig = {
       use: ["@svgr/webpack"],
     });
 
+    if (disableChunk) {
+      config.plugins.push(
+        new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+      );
+    }
+
+    config.resolve.fallback = {
+      child_process: false,
+    };
+
     return config;
   },
   output: mode,
+  images: {
+    unoptimized: mode === "export",
+  },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
+
+const CorsHeaders = [
+  { key: "Access-Control-Allow-Credentials", value: "true" },
+  { key: "Access-Control-Allow-Origin", value: "*" },
+  {
+    key: "Access-Control-Allow-Methods",
+    value: "*",
+  },
+  {
+    key: "Access-Control-Allow-Headers",
+    value: "*",
+  },
+  {
+    key: "Access-Control-Max-Age",
+    value: "86400",
+  },
+];
 
 if (mode !== "export") {
   nextConfig.headers = async () => {
     return [
       {
-        source: "/:path*",
-        headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-          },
-        ],
+        source: "/api/:path*",
+        headers: CorsHeaders,
       },
     ];
   };
@@ -51,15 +77,6 @@ if (mode !== "export") {
         destination: "https://sharegpt.com/api/conversations",
       },
     ];
-
-    const apiUrl = process.env.API_URL;
-    if (apiUrl) {
-      console.log("[Next] using api url ", apiUrl);
-      ret.push({
-        source: "/api/:path*",
-        destination: `${apiUrl}/:path*`,
-      });
-    }
 
     return {
       beforeFiles: ret,

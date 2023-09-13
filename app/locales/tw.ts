@@ -1,10 +1,10 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const tw: LocaleType = {
+const tw: PartialLocaleType = {
   WIP: "該功能仍在開發中……",
   Error: {
-    Unauthorized: "目前您的狀態是未授權，請前往設定頁面輸入授權碼。",
+    Unauthorized: "目前您的狀態是未授權，請前往[設定頁面](/#/auth)輸入授權碼。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 條對話`,
@@ -20,7 +20,7 @@ const tw: LocaleType = {
       Retry: "重試",
       Delete: "刪除",
     },
-    Rename: "重命名對話",
+    Rename: "重新命名對話",
     Typing: "正在輸入…",
     Input: (submitKey: string) => {
       var inputHints = `輸入訊息後，按下 ${submitKey} 鍵即可發送`;
@@ -31,8 +31,8 @@ const tw: LocaleType = {
     },
     Send: "發送",
     Config: {
-      Reset: "重置默认",
-      SaveAs: "另存为面具",
+      Reset: "重置預設",
+      SaveAs: "另存新檔",
     },
   },
   Export: {
@@ -59,21 +59,19 @@ const tw: LocaleType = {
   Settings: {
     Title: "設定",
     SubTitle: "設定選項",
-    Actions: {
-      ClearAll: "清除所有資料",
-      ResetAll: "重設所有設定",
-      Close: "關閉",
-      ConfirmResetAll: "您確定要重設所有設定嗎？",
-      ConfirmClearAll: "您確定要清除所有数据嗎？",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
-      All: "所有语言",
+      All: "所有語言",
     },
     Avatar: "大頭貼",
     FontSize: {
       Title: "字型大小",
       SubTitle: "聊天內容的字型大小",
+    },
+    InjectSystemPrompts: {
+      Title: "匯入系統提示",
+      SubTitle: "強制在每個請求的訊息列表開頭添加一個模擬 ChatGPT 的系統提示",
     },
     Update: {
       Version: (x: string) => `當前版本：${x}`,
@@ -88,11 +86,13 @@ const tw: LocaleType = {
     TightBorder: "緊湊邊框",
     SendPreviewBubble: {
       Title: "預覽氣泡",
-      SubTitle: "在预览气泡中预览 Markdown 内容",
+      SubTitle: "在預覽氣泡中預覽 Markdown 内容",
     },
     Mask: {
-      Title: "面具启动页",
-      SubTitle: "新建聊天时，展示面具启动页",
+      Splash: {
+        Title: "面具啟動頁面",
+        SubTitle: "新增聊天時，呈現面具啟動頁面",
+      },
     },
     Prompt: {
       Disable: {
@@ -109,7 +109,7 @@ const tw: LocaleType = {
         Search: "搜尋提示詞",
       },
       EditModal: {
-        Title: "编辑提示词",
+        Title: "編輯提示詞",
       },
     },
     HistoryCount: {
@@ -152,6 +152,10 @@ const tw: LocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    FrequencyPenalty: {
+      Title: "頻率懲罰度 (frequency_penalty)",
+      SubTitle: "值越大，越有可能降低重複字詞",
+    },
   },
   Store: {
     DefaultTopic: "新的對話",
@@ -175,49 +179,56 @@ const tw: LocaleType = {
     Edit: "前置上下文和歷史記憶",
     Add: "新增一條",
   },
-  Plugin: { Name: "插件" },
+  Plugin: { Name: "外掛" },
+  FineTuned: { Sysmessage: "你是一個助手" },
   Mask: {
     Name: "面具",
     Page: {
-      Title: "预设角色面具",
-      SubTitle: (count: number) => `${count} 个预设角色定义`,
-      Search: "搜索角色面具",
-      Create: "新建",
+      Title: "預設角色面具",
+      SubTitle: (count: number) => `${count} 個預設角色定義`,
+      Search: "搜尋角色面具",
+      Create: "新增",
     },
     Item: {
-      Info: (count: number) => `包含 ${count} 条预设对话`,
-      Chat: "对话",
+      Info: (count: number) => `包含 ${count} 條預設對話`,
+      Chat: "對話",
       View: "查看",
-      Edit: "编辑",
+      Edit: "編輯",
       Delete: "删除",
-      DeleteConfirm: "确认删除？",
+      DeleteConfirm: "確認删除？",
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `编辑预设面具 ${readonly ? "（只读）" : ""}`,
-      Download: "下载预设",
-      Clone: "克隆预设",
+        `編輯預設面具 ${readonly ? "（只读）" : ""}`,
+      Download: "下載預設",
+      Clone: "克隆預設",
     },
     Config: {
-      Avatar: "角色头像",
-      Name: "角色名称",
+      Avatar: "角色頭像",
+      Name: "角色名稱",
     },
   },
   NewChat: {
     Return: "返回",
-    Skip: "跳过",
-    Title: "挑选一个面具",
-    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
-    More: "搜索更多",
-    NotShow: "不再展示",
-    ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
+    Skip: "跳過",
+    Title: "挑選一個面具",
+    SubTitle: "現在開始，與面具背後的靈魂思維碰撞",
+    More: "搜尋更多",
+    NotShow: "不再呈現",
+    ConfirmNoShow: "確認禁用？禁用後可以随時在設定中重新啟用。",
   },
   UI: {
-    Confirm: "确认",
+    Confirm: "確認",
     Cancel: "取消",
-    Close: "关闭",
-    Create: "新建",
-    Edit: "编辑",
+    Close: "關閉",
+    Create: "新增",
+    Edit: "編輯",
+  },
+  Exporter: {
+    Model: "模型",
+    Messages: "訊息",
+    Topic: "主題",
+    Time: "時間",
   },
 };
 
