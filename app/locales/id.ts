@@ -187,7 +187,7 @@ const id: PartialLocaleType = {
 
         WebDav: {
           Endpoint: "Lokasi Titik Akhir WebDAV",
-          UserName: "Nama Pengguna",
+          UserName: "User Pengguna",
           Password: "Kata Sandi",
         },
       },
