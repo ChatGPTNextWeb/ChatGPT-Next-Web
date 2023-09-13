@@ -12,6 +12,12 @@ import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
+import ConfigIcon from "../icons/config.svg";
+import ConfirmIcon from "../icons/confirm.svg";
+
+import ConnectionIcon from "../icons/connection.svg";
+import CloudSuccessIcon from "../icons/cloud-success.svg";
+import CloudFailIcon from "../icons/cloud-fail.svg";
 
 import {
   Input,
@@ -54,6 +60,7 @@ import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
+import { ProviderType } from "../utils/cloud";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -247,12 +254,183 @@ function DangerItems() {
   );
 }
 
+function CheckButton() {
+  const syncStore = useSyncStore();
+
+  const couldCheck = useMemo(() => {
+    return syncStore.coundSync();
+  }, [syncStore]);
+
+  const [checkState, setCheckState] = useState<
+    "none" | "checking" | "success" | "failed"
+  >("none");
+
+  async function check() {
+    setCheckState("checking");
+    const valid = await syncStore.check();
+    setCheckState(valid ? "success" : "failed");
+  }
+
+  if (!couldCheck) return null;
+
+  return (
+    <IconButton
+      text="检查可用性"
+      bordered
+      onClick={check}
+      icon={
+        checkState === "none" ? (
+          <ConnectionIcon />
+        ) : checkState === "checking" ? (
+          <LoadingIcon />
+        ) : checkState === "success" ? (
+          <CloudSuccessIcon />
+        ) : checkState === "failed" ? (
+          <CloudFailIcon />
+        ) : (
+          <ConnectionIcon />
+        )
+      }
+    ></IconButton>
+  );
+}
+
+function SyncConfigModal(props: { onClose?: () => void }) {
+  const syncStore = useSyncStore();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Sync.Config.Modal.Title}
+        onClose={() => props.onClose?.()}
+        actions={[
+          <CheckButton key="check" />,
+          <IconButton
+            key="confirm"
+            onClick={props.onClose}
+            icon={<ConfirmIcon />}
+            bordered
+            text={Locale.UI.Confirm}
+          />,
+        ]}
+      >
+        <List>
+          <ListItem
+            title={Locale.Settings.Sync.Config.SyncType.Title}
+            subTitle={Locale.Settings.Sync.Config.SyncType.SubTitle}
+          >
+            <select
+              value={syncStore.provider}
+              onChange={(e) => {
+                syncStore.update(
+                  (config) =>
+                    (config.provider = e.target.value as ProviderType),
+                );
+              }}
+            >
+              {Object.entries(ProviderType).map(([k, v]) => (
+                <option value={v} key={k}>
+                  {k}
+                </option>
+              ))}
+            </select>
+          </ListItem>
+
+          <ListItem
+            title={Locale.Settings.Sync.Config.Proxy.Title}
+            subTitle={Locale.Settings.Sync.Config.Proxy.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={syncStore.useProxy}
+              onChange={(e) => {
+                syncStore.update(
+                  (config) => (config.useProxy = e.currentTarget.checked),
+                );
+              }}
+            ></input>
+          </ListItem>
+          {syncStore.useProxy ? (
+            <ListItem
+              title={Locale.Settings.Sync.Config.ProxyUrl.Title}
+              subTitle={Locale.Settings.Sync.Config.ProxyUrl.SubTitle}
+            >
+              <input
+                type="text"
+                value={syncStore.proxyUrl}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) => (config.proxyUrl = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+          ) : null}
+        </List>
+
+        {syncStore.provider === ProviderType.WebDAV && (
+          <>
+            <List>
+              <ListItem title={Locale.Settings.Sync.Config.WebDav.Endpoint}>
+                <input
+                  type="text"
+                  value={syncStore.webdav.endpoint}
+                  onChange={(e) => {
+                    syncStore.update(
+                      (config) =>
+                        (config.webdav.endpoint = e.currentTarget.value),
+                    );
+                  }}
+                ></input>
+              </ListItem>
+
+              <ListItem title={Locale.Settings.Sync.Config.WebDav.UserName}>
+                <input
+                  type="text"
+                  value={syncStore.webdav.username}
+                  onChange={(e) => {
+                    syncStore.update(
+                      (config) =>
+                        (config.webdav.username = e.currentTarget.value),
+                    );
+                  }}
+                ></input>
+              </ListItem>
+              <ListItem title={Locale.Settings.Sync.Config.WebDav.Password}>
+                <PasswordInput
+                  value={syncStore.webdav.password}
+                  onChange={(e) => {
+                    syncStore.update(
+                      (config) =>
+                        (config.webdav.password = e.currentTarget.value),
+                    );
+                  }}
+                ></PasswordInput>
+              </ListItem>
+            </List>
+          </>
+        )}
+
+        {syncStore.provider === ProviderType.UpStash && (
+          <List>
+            <ListItem title={Locale.WIP}></ListItem>
+          </List>
+        )}
+      </Modal>
+    </div>
+  );
+}
+
 function SyncItems() {
   const syncStore = useSyncStore();
-  const webdav = syncStore.webDavConfig;
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const maskStore = useMaskStore();
+  const couldSync = useMemo(() => {
+    return syncStore.coundSync();
+  }, [syncStore]);
+
+  const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
 
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
@@ -267,42 +445,71 @@ function SyncItems() {
   }, [chatStore.sessions, maskStore.masks, promptStore.prompts]);
 
   return (
-    <List>
-      <ListItem
-        title={Locale.Settings.Sync.LastUpdate}
-        subTitle={new Date(syncStore.lastSyncTime).toLocaleString()}
-      >
-        <IconButton
-          icon={<ResetIcon />}
-          text={Locale.UI.Sync}
-          onClick={() => {
-            showToast(Locale.WIP);
-          }}
-        />
-      </ListItem>
+    <>
+      <List>
+        <ListItem
+          title={Locale.Settings.Sync.CloudState}
+          subTitle={
+            syncStore.lastProvider
+              ? `${new Date(syncStore.lastSyncTime).toLocaleString()} [${
+                  syncStore.lastProvider
+                }]`
+              : Locale.Settings.Sync.NotSyncYet
+          }
+        >
+          <div style={{ display: "flex" }}>
+            <IconButton
+              icon={<ConfigIcon />}
+              text={Locale.UI.Config}
+              onClick={() => {
+                setShowSyncConfigModal(true);
+              }}
+            />
+            {couldSync && (
+              <IconButton
+                icon={<ResetIcon />}
+                text={Locale.UI.Sync}
+                onClick={async () => {
+                  try {
+                    await syncStore.sync();
+                    showToast(Locale.Settings.Sync.Success);
+                  } catch (e) {
+                    showToast(Locale.Settings.Sync.Fail);
+                    console.error("[Sync]", e);
+                  }
+                }}
+              />
+            )}
+          </div>
+        </ListItem>
 
-      <ListItem
-        title={Locale.Settings.Sync.LocalState}
-        subTitle={Locale.Settings.Sync.Overview(stateOverview)}
-      >
-        <div style={{ display: "flex" }}>
-          <IconButton
-            icon={<UploadIcon />}
-            text={Locale.UI.Export}
-            onClick={() => {
-              syncStore.export();
-            }}
-          />
-          <IconButton
-            icon={<DownloadIcon />}
-            text={Locale.UI.Import}
-            onClick={() => {
-              syncStore.import();
-            }}
-          />
-        </div>
-      </ListItem>
-    </List>
+        <ListItem
+          title={Locale.Settings.Sync.LocalState}
+          subTitle={Locale.Settings.Sync.Overview(stateOverview)}
+        >
+          <div style={{ display: "flex" }}>
+            <IconButton
+              icon={<UploadIcon />}
+              text={Locale.UI.Export}
+              onClick={() => {
+                syncStore.export();
+              }}
+            />
+            <IconButton
+              icon={<DownloadIcon />}
+              text={Locale.UI.Import}
+              onClick={() => {
+                syncStore.import();
+              }}
+            />
+          </div>
+        </ListItem>
+      </List>
+
+      {showSyncConfigModal && (
+        <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
+      )}
+    </>
   );
 }
 
