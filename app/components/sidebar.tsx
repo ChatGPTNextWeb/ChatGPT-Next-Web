@@ -67,7 +67,13 @@ function useDragSideBar() {
     lastUpdateTime.current = Date.now();
     const d = e.clientX - startX.current;
     const nextWidth = limit(startDragWidth.current + d);
-    config.update((config) => (config.sidebarWidth = nextWidth));
+    config.update((config) => {
+      if (nextWidth < MIN_SIDEBAR_WIDTH) {
+        config.sidebarWidth = NARROW_SIDEBAR_WIDTH;
+      } else {
+        config.sidebarWidth = nextWidth;
+      }
+    });
   });
 
   const handleMouseUp = useRef(() => {
@@ -80,7 +86,7 @@ function useDragSideBar() {
   const onDragMouseDown = (e: MouseEvent) => {
     startX.current = e.clientX;
     // Remembers the initial width each time the mouse is pressed
-    startDragWidth.current = config.sidebarWidth
+    startDragWidth.current = config.sidebarWidth;
     window.addEventListener("mousemove", handleMouseMove.current);
     window.addEventListener("mouseup", handleMouseUp.current);
   };
