@@ -116,10 +116,11 @@ const id: PartialLocaleType = {
     SubTitle: "Semua Pengaturan",
     Danger: {
       Reset: {
-        Title: "Reset Semua Pengaturan",
-        SubTitle: "Reset semua item pengaturan ke nilai default",
-        Action: "Reset",
-        Confirm: "Konfirmasi untuk mereset semua pengaturan ke nilai default?",
+        Title: "Setel Ulang Semua Pengaturan",
+        SubTitle: "Mengembalikan semua pengaturan ke nilai default",
+        Action: "Setel Ulang",
+        Confirm:
+          "Anda yakin ingin mengembalikan semua pengaturan ke nilai default?",
       },
       Clear: {
         Title: "Hapus Semua Data",
@@ -176,15 +177,16 @@ const id: PartialLocaleType = {
         },
         Proxy: {
           Title: "Aktifkan Proxy CORS",
-          SubTitle: "Aktifkan Proxy untuk menghindari pembatasan lintas sumber",
+          SubTitle:
+            "Aktifkan Proxy untuk menghindari pembatasan atau pemblokiran lintas sumber",
         },
         ProxyUrl: {
-          Title: "Titik Akhir Proxy",
+          Title: "Lokasi Titik Akhir Proxy CORS",
           SubTitle: "Hanya berlaku untuk Proxy CORS bawaan untuk proyek ini",
         },
 
         WebDav: {
-          Endpoint: "Titik Akhir WebDAV",
+          Endpoint: "Lokasi Titik Akhir WebDAV",
           UserName: "Nama Pengguna",
           Password: "Kata Sandi",
         },
