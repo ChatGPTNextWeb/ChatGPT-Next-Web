@@ -141,6 +141,7 @@ export function MessageExporter() {
   const { selection, updateSelection } = useMessageSelector();
 
   const selectedMessages = useMemo(() => {
+    // TODO: input by different role
     const ret: ChatMessage[] = [];
     // inputTable
     const speakerInputs = session.inputTable.map((row) => ({

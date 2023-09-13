@@ -20,6 +20,7 @@ import {
   ToastmastersTTEvaluatorsRecord as ToastmastersRecord,
   InputSubmitStatus,
   ToastmastersRoles,
+  ToastmastersSettings,
 } from "./roles";
 import {
   ChatTitle,
@@ -31,8 +32,9 @@ import {
 import {
   ChatSession,
   InputTableRow,
-  HttpRequestResponse,
+  IRequestResponse,
   InputStore,
+  MessageSetting,
 } from "../store/chat";
 
 import DownloadIcon from "../icons/download.svg";
@@ -83,29 +85,20 @@ export function Chat() {
   const [hitBottom, setHitBottom] = useState(true);
 
   const checkInput = (): InputSubmitStatus => {
-    var speakerInputs: string[] = [];
+    // var speakerInputs: string[] = [];
 
-    if (session.inputTable.length === 0) {
+    if (session.input.datas.length === 0) {
       showToast(`Input Table is empty, please check`);
       return new InputSubmitStatus(false, "");
     }
 
-    const isAllValid = session.inputTable.every((row) => {
+    const isAllValid = session.input.datas.every((row) => {
       let question = row.question.text.trim();
       let speech = row.speech.text.trim();
       if (question === "" || speech === "") {
         showToast(`${row.speaker}: Question or Speech is empty, please check`);
         return false;
       }
-
-      var speakerInput: string = `
-      {
-        "Speaker": "${row.speaker}",
-        "Question": "${row.question.text}",
-        "Speech": "${row.speech.text}"
-      }
-      `;
-      speakerInputs.push(speakerInput);
       return true;
     });
 
@@ -113,11 +106,15 @@ export function Chat() {
       return new InputSubmitStatus(false, "");
     }
 
-    console.log("CheckInput: ", speakerInputs);
+    // inputTable
+    const speakerInputs = session.input.datas.map((row) => ({
+      Speaker: row.speaker,
+      Question: row.question.text,
+      Speech: row.speech.text,
+    }));
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
 
-    var speakerInputsString = speakerInputs.join(",\n");
-
-    // Add a return statement for the case where the input is valid
     var guidance = ToastmastersRoleGuidance(speakerInputsString);
     console.log(guidance);
     return new InputSubmitStatus(true, guidance);
@@ -126,19 +123,19 @@ export function Chat() {
   const addItem = () => {
     setAutoScroll(false);
     const newItem: InputTableRow = {
-      speaker: `Speaker${session.inputTable.length + 1}`,
+      speaker: `Speaker${session.input.datas.length + 1}`,
       question: { text: "", time: 0 },
       speech: { text: "", time: 0 },
     };
-    var newInputBlocks = [...session.inputTable, newItem];
+    var newInputBlocks = [...session.input.datas, newItem];
     chatStore.updateCurrentSession(
-      (session) => (session.inputTable = newInputBlocks),
+      (session) => (session.input.datas = newInputBlocks),
     );
   };
 
   const deleteItem = (row_index: number) => {
     chatStore.updateCurrentSession((session) =>
-      session.inputTable.splice(row_index, 1),
+      session.input.datas.splice(row_index, 1),
     );
   };
 
@@ -197,7 +194,7 @@ export function Chat() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {session.inputTable.map((row, index) => (
+            {session.input.datas.map((row, index) => (
               <Row key={index} row={row} row_index={index} />
             ))}
           </TableBody>
@@ -224,7 +221,7 @@ export function Chat() {
         // session.inputs.input = { ...row.question };
         // session.inputs.input2 = { ...row.speech };
         session.topic = row.speaker;
-        session.inputTable.push(row);
+        session.input.datas.push(row);
         return session;
       });
     };
@@ -316,7 +313,7 @@ export function Chat() {
             className={styles_tm["chat-input-button-add"]}
           />
         </div>
-        {session.inputTable.length > 0 && (
+        {session.input.datas.length > 0 && (
           <>
             <div style={{ padding: "0px 20px" }}>
               <CollapsibleTable />
@@ -329,14 +326,14 @@ export function Chat() {
         )}
 
         {/* 3 is the predifined message length */}
-        {session.inputTable.length > 0 && session.messages.length > 3 && (
+        {session.input.datas.length > 0 && session.messages.length > 3 && (
           <ChatResponse
             scrollRef={scrollRef}
-            toastmastersRolePrompts={ToastmastersRecord[session.inputRole]}
+            toastmastersRecord={ToastmastersRecord}
           />
         )}
 
-        <SpeechAvatarVideoShow outputAvatar={session.outputAvatar} />
+        <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
       </div>
     </div>
   );
@@ -354,7 +351,7 @@ const ChatInputAddSubmit = (props: {
 
   const [submitting, setSubmitting] = useState(false);
 
-  const [inputRole, setInputRole] = useState(session.inputRole);
+  const [inputRole, setInputRole] = useState(session.input.roles[0] || "");
 
   const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputRole((event.target as HTMLInputElement).value);
@@ -368,7 +365,7 @@ const ChatInputAddSubmit = (props: {
 
     const toastmastersRolePrompts = ToastmastersRecord[inputRole];
 
-    let isEnoughCoins = await chatStore.isEnoughCoins(
+    const isEnoughCoins = await chatStore.isEnoughCoins(
       toastmastersRolePrompts.length + 1,
     );
     if (!isEnoughCoins) {
@@ -378,18 +375,28 @@ const ChatInputAddSubmit = (props: {
     props.updateAutoScroll(true);
 
     // 保存输入: 于是ChatResponse可以使用
-    session.inputRole = inputRole;
+    session.input.roles[0] = inputRole;
+    session.input.setting = ToastmastersSettings(ToastmastersRecord);
 
     // reset status from 0
     chatStore.resetSession();
 
-    chatStore.onUserInput(checkInputResult.guidance);
+    let ask = checkInputResult.guidance;
+    let responseSetting: MessageSetting = {
+      name: inputRole,
+      title: "Guidance",
+    };
+    chatStore.onUserInput(ask, responseSetting);
     for (const item of toastmastersRolePrompts) {
       await chatStore.getIsFinished();
-      let ask = item.contentWithSetting(session.inputSetting[inputRole]);
-      chatStore.onUserInput(ask, item.role);
+
+      // TODO: move setting into item, but when retry, it will lose
+      ask = item.contentWithSetting(session.input.setting[item.role]);
+      responseSetting = { name: inputRole, title: item.role }; // TODO: words put into item
+      chatStore.onUserInput(ask, responseSetting);
     }
     await chatStore.getIsFinished();
+
     setSubmitting(false);
 
     // if (!isMobileScreen) inputRef.current?.focus();

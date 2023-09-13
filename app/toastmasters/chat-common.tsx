@@ -34,7 +34,7 @@ import {
   useAppConfig,
   DEFAULT_TOPIC,
   InputStore,
-  HttpRequestResponse,
+  IRequestResponse,
 } from "../store";
 
 import { useNavigate } from "react-router-dom";
@@ -560,9 +560,9 @@ export const ChatInputSubmitV2 = (props: {
 
 export const ChatResponse = (props: {
   scrollRef: React.RefObject<HTMLDivElement>;
-  toastmastersRolePrompts: ToastmastersRolePrompt[];
+  toastmastersRecord: Record<string, ToastmastersRolePrompt[]>;
 }) => {
-  const { scrollRef, toastmastersRolePrompts } = props;
+  const { scrollRef, toastmastersRecord } = props;
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -575,17 +575,28 @@ export const ChatResponse = (props: {
   // prompt count
   const promptCount = 3;
 
-  // TODO: more debug for other roles except tte
-  const onResend = async (roleIndex: number) => {
-    const isEnoughCoins = await chatStore.isEnoughCoins(
-      toastmastersRolePrompts.length - roleIndex,
+  // 将选择的role, 合并为一个数组
+  var toastmastersRolePrompts: ToastmastersRolePrompt[] = [];
+  session.input.roles?.forEach((roleName: any) => {
+    toastmastersRolePrompts = toastmastersRolePrompts.concat(
+      toastmastersRecord[roleName],
     );
-    if (!isEnoughCoins) {
-      return;
-    }
+  });
+
+  // TODO: more debug for other roles except tte
+  const onResend = async (messageIndex: number) => {
+    // TODO: check coins
+    // const isEnoughCoins = await chatStore.isEnoughCoins(
+    //   toastmastersRolePrompts.length - messageIndex,
+    // );
+    // if (!isEnoughCoins) {
+    //   return;
+    // }
+
+    const roleIndex = (messageIndex - promptCount) / 2;
 
     // -1: means reset from the last message of roleIndex
-    chatStore.resetSessionFromIndex(promptCount + 2 * roleIndex - 1);
+    chatStore.resetSessionFromIndex(promptCount + messageIndex - 1);
 
     /*
     JavaScript 中的 for 循环通常是同步顺序执行的。这意味着循环内的代码会按顺序执行，每次迭代都会等待上一次迭代完成后才会开始下一次迭代。
@@ -593,9 +604,7 @@ export const ChatResponse = (props: {
     */
     for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
       let item = toastmastersRolePrompts[i];
-      let ask = item.contentWithSetting(
-        session.inputSetting[session.inputRole],
-      );
+      let ask = item.contentWithSetting(session.input.setting[item.role]);
       chatStore.onUserInput(ask);
       await chatStore.getIsFinished();
     }
@@ -607,36 +616,62 @@ export const ChatResponse = (props: {
 
   // TODO: when resending, the page will auto scroll to the bottom, so the avatar video will cover the reponse message
   const onResendConfirm = async (
-    role: ToastmastersRolePrompt,
-    roleIndex: number,
+    message: ChatMessage,
+    messageIndex: number,
   ) => {
-    const setting = _.cloneDeep(session.inputSetting[session.inputRole]);
-    const ContentComponent = () => {
-      return (
-        <List>
-          <ListItem title="Evaluation Words for each Speaker">
-            <Input
-              rows={1}
-              defaultValue={setting.words}
-              onChange={(e) =>
-                (setting.words = parseInt(e.currentTarget.value))
-              }
-            ></Input>
-          </ListItem>
-        </List>
+    if (
+      message.setting?.title &&
+      message.setting?.title in session.input.setting
+    ) {
+      const setting = _.cloneDeep(
+        session.input.setting[message.setting?.title],
       );
-    };
+      const ContentComponent = () => {
+        return (
+          <List>
+            <ListItem title="Evaluation Words for each Speaker">
+              <Input
+                rows={1}
+                defaultValue={setting.words}
+                onChange={(e) =>
+                  (setting.words = parseInt(e.currentTarget.value))
+                }
+              ></Input>
+            </ListItem>
+          </List>
+        );
+      };
 
-    const isConfirmed = await showConfirmWithProps({
-      children: <ContentComponent />,
-      title: `${role.role} Settings`,
-      cancelText: "Cancel",
-      confirmText: "Confirm",
-    });
-    if (!isConfirmed) return;
+      const isConfirmed = await showConfirmWithProps({
+        children: <ContentComponent />,
+        title: `${message.setting?.title} Settings`,
+        cancelText: "Cancel",
+        confirmText: "Confirm",
+      });
+      if (!isConfirmed) return;
 
-    session.inputSetting[session.inputRole] = _.cloneDeep(setting);
-    onResend(roleIndex);
+      session.input.setting[message.setting?.title] = setting;
+    }
+
+    // -1: means reset from the last message of roleIndex
+    chatStore.resetSessionFromIndex(messageIndex - 2);
+
+    /*
+    JavaScript 中的 for 循环通常是同步顺序执行的。这意味着循环内的代码会按顺序执行，每次迭代都会等待上一次迭代完成后才会开始下一次迭代。
+    这是因为 JavaScript 是单线程的，它在执行循环时会阻塞其他代码的执行，直到循环完成。
+    */
+    const roleIndex = (messageIndex - promptCount) / 2;
+    for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
+      let item = toastmastersRolePrompts[i];
+      let ask = item.contentWithSetting(
+        session.input.setting[message.setting?.title ?? ""],
+      );
+
+      // TODO: name:
+      let responseSetting = { name: "", title: item.role }; // TODO: words put into item
+      chatStore.onUserInput(ask);
+      await chatStore.getIsFinished();
+    }
   };
 
   const onEdit = async (botMessage: ChatMessage) => {
@@ -658,20 +693,6 @@ export const ChatResponse = (props: {
   };
 
   const onVideoGenerate = async (messageContent: string) => {
-    // TODO: cost not change with config.avatarVideo.maxWords
-
-    // const [cost, setCost] = useState(0);
-    // useEffect(() => {
-    //   const newCost =
-    //     config.avatarVideo.maxWords == -1
-    //       ? words
-    //       : Math.min(
-    //         config.avatarVideo.maxWords,
-    //           words,
-    //         );
-    //       setCost(newCost);
-    // }, [words]);
-
     const words = ChatUtility.getWordsNumber(messageContent);
     const cost =
       config.avatarVideo.maxWords == -1
@@ -680,17 +701,7 @@ export const ChatResponse = (props: {
 
     if (config.avatarVideo.previewCost === true) {
       const isConfirmed = await showConfirm(
-        <>
-          <SpeechAvatarVideoSetting></SpeechAvatarVideoSetting>
-          {/* <List>
-            <ListItem title={`当前实际字数为`}>
-              <div>{words}</div>
-            </ListItem>
-            <ListItem title={`确认时, 预计消耗AI币为`}>
-              <div>{cost}</div>
-            </ListItem>
-          </List> */}
-        </>,
+        <SpeechAvatarVideoSetting></SpeechAvatarVideoSetting>,
       );
 
       if (!isConfirmed) return;
@@ -708,39 +719,39 @@ export const ChatResponse = (props: {
         config.avatarVideo.maxWords,
         false,
       ),
-      (outputAvatar: HttpRequestResponse) => {
+      (outputAvatar: IRequestResponse) => {
         chatStore.updateCurrentSession(
-          (session) => (session.outputAvatar = outputAvatar),
+          (session) => (session.output.avatar = outputAvatar),
         );
       },
     );
 
-    // check user login
-    let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-    if (userEmail === null) {
-      showToast("您尚未登录, 请前往设置中心登录");
-      return;
-    }
+    // TODO: count
     // update db
-    zBotServiceClient.updateRequest(userEmail); // TODO: count
+    const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    zBotServiceClient.updateRequest(userEmail ?? "");
   };
 
   return (
     <div className={styles["chat-input-panel"]}>
-      {props.toastmastersRolePrompts.map((role, index) => {
+      {session.messages.map((message, index) => {
         // if length > index => the data is ready => show the data, else show the last data
-        var message: ChatMessage = createMessage({});
-        if (session.messages.length > promptCount + 2 * index + 1)
-          // data is ready, just read it
-          message = session.messages[promptCount + 2 * index];
-        else if (session.messages.length == promptCount + 2 * index + 1)
-          message = session.messages[session.messages.length - 1];
+        // var message: ChatMessage = createMessage({});
+        // if (session.messages.length > promptCount + 2 * index + 1)
+        //   // data is ready, just read it
+        //   message = session.messages[promptCount + 2 * index];
+        // else if (session.messages.length == promptCount + 2 * index + 1)
+        //   message = session.messages[session.messages.length - 1];
 
         var showActions = message.content.length > 0;
+        if (index <= 1 || index % 2 == 0) return null;
 
         return (
           <div key={index} className={styles["chat-message-hover"]}>
-            <div className={styles["chat-input-panel-title"]}> {role.role}</div>
+            <div className={styles["chat-input-panel-title"]}>
+              {" "}
+              {message.setting?.title}
+            </div>
 
             <div className={styles["chat-message-item"]}>
               {showActions && (
@@ -768,7 +779,7 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.Retry}
                           icon={<ResetIcon />}
-                          onClick={() => onResendConfirm(role, index)}
+                          onClick={() => onResendConfirm(message, index)}
                         />
                         <ChatAction
                           text={Locale.Chat.Actions.Copy}

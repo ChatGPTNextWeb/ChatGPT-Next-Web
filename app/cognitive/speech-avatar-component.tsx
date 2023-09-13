@@ -19,7 +19,7 @@ import Switch from "@mui/material/Switch";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 
-import { HttpRequestResponse } from "../store/chat";
+import { IRequestResponse } from "../store/chat";
 import { VideoFetchStatus } from "../cognitive/speech-avatar";
 
 import styles_tm from "../toastmasters/toastmasters.module.scss";
@@ -63,18 +63,22 @@ export function SpeechAvatarVideoSetting() {
 }
 
 export function SpeechAvatarVideoShow(props: {
-  outputAvatar: HttpRequestResponse;
+  outputAvatar: IRequestResponse;
 }) {
   const { outputAvatar } = props;
 
   if (outputAvatar.status === VideoFetchStatus.Empty) {
     return <></>;
-  } else if (
+  }
+
+  if (
     outputAvatar.status === VideoFetchStatus.Error ||
     outputAvatar.status === VideoFetchStatus.Failed
   ) {
     return <div>{outputAvatar.data}</div>;
-  } else if (outputAvatar.status === VideoFetchStatus.Loading) {
+  }
+
+  if (outputAvatar.status === VideoFetchStatus.Loading) {
     return (
       <div>
         <h3 className={styles_tm["video-container"]}>
@@ -85,7 +89,9 @@ export function SpeechAvatarVideoShow(props: {
         </Box>
       </div>
     );
-  } else if (outputAvatar.status === VideoFetchStatus.Succeeded) {
+  }
+
+  if (outputAvatar.status === VideoFetchStatus.Succeeded) {
     return (
       <div className={styles_tm["video-container"]}>
         <video controls width="800" height="600">
