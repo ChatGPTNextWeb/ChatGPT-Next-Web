@@ -512,17 +512,18 @@ export function ChatActions(props: {
           icon={<RobotIcon />}
         />
 
-        {config.pluginConfig.enable && !/03\d{2}$/.test(currentModel) && (
-          <ChatAction
-            onClick={switchUsePlugins}
-            text={
-              usePlugins
-                ? Locale.Chat.InputActions.DisablePlugins
-                : Locale.Chat.InputActions.EnablePlugins
-            }
-            icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
-          />
-        )}
+        {config.pluginConfig.enable &&
+          /^gpt(?!.*03\d{2}$).*$/.test(currentModel) && (
+            <ChatAction
+              onClick={switchUsePlugins}
+              text={
+                usePlugins
+                  ? Locale.Chat.InputActions.DisablePlugins
+                  : Locale.Chat.InputActions.EnablePlugins
+              }
+              icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
+            />
+          )}
 
         {showModelSelector && (
           <Selector
@@ -537,7 +538,7 @@ export function ChatActions(props: {
               chatStore.updateCurrentSession((session) => {
                 session.mask.modelConfig.model = s[0] as ModelType;
                 session.mask.syncGlobalConfig = false;
-                session.mask.usePlugins = !/03\d{2}$/.test(
+                session.mask.usePlugins = /^gpt(?!.*03\d{2}$).*$/.test(
                   session.mask.modelConfig.model,
                 );
               });
