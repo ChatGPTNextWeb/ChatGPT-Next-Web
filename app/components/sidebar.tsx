@@ -53,7 +53,7 @@ function useHotKey() {
 }
 
 function useDragSideBar() {
-  const limit = useCallback((x: number) => Math.min(MAX_SIDEBAR_WIDTH, x));
+  const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
   const config = useAppConfig();
   const startX = useRef(0);
