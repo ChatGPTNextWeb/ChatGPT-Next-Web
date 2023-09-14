@@ -52,7 +52,7 @@ import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
 import { LocalStorageKeys } from "../zbotservice/ZBotServiceClient";
 import { about, feedback } from "../user-setting/user-feedback";
-import { SpeechAvatarVideoSetting } from "../cognitive/speech-avatar-component";
+import { SpeechAvatarVideoSetting } from "../cognitive/speech-avatar";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();

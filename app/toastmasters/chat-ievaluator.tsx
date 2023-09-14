@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 
 import { useChatStore } from "../store";
 
@@ -7,17 +7,17 @@ import { List, showToast } from "../components/ui-lib";
 
 import {
   ToastmastersIEvaluatorGuidance as ToastmastersRoleGuidance,
-  ToastmastersIEvaluator as ToastmastersRoleOptions,
-  ToastmastersRolePrompt,
+  ToastmastersIEvaluatorRecord as ToastmastersRecord,
   InputSubmitStatus,
 } from "./roles";
 import {
   ChatTitle,
   ChatInput,
-  ChatInputSubmit,
   ChatResponse,
-  useScrollToBottom,
+  ChatSubmitCheckbox,
 } from "./chat-common";
+import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
+import { useScrollToBottom } from "../components/chat";
 
 export function Chat() {
   const [session, sessionIndex] = useChatStore((state) => [
@@ -30,40 +30,32 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
 
-  const [toastmastersEvaluators, setToastmastersEvaluators] = useState<
-    ToastmastersRolePrompt[]
-  >([]);
-
-  // 进来时, 读取上次的输入
-  useEffect(() => {
-    var roles = session.inputs.roles?.map(
-      (index: number) => ToastmastersRoleOptions[index],
-    );
-    setToastmastersEvaluators(roles);
-  }, [session]);
-
   const checkInput = (): InputSubmitStatus => {
-    const question = session.inputs.input.text;
-    const speech = session.inputs.input2.text;
-
-    if (question.trim() === "") {
-      showToast("Question can not be empty");
+    const inputRow = session.input.data;
+    const topic = inputRow.question.text.trim();
+    const speech = inputRow.speech.text.trim();
+    if (topic === "" || speech === "") {
+      showToast("Topic or Speech is empty, please check");
       return new InputSubmitStatus(false, "");
     }
-
-    if (speech === "") {
-      showToast("Speech can not be empty");
-      return new InputSubmitStatus(false, "");
-    }
-
-    // Add a return statement for the case where the input is valid
-    var guidance = ToastmastersRoleGuidance(question, speech);
+    const guidance = ToastmastersRoleGuidance(getInputsString());
     return new InputSubmitStatus(true, guidance);
+  };
+
+  const getInputsString = (): string => {
+    const inputRow = session.input.data;
+    const speakerInputs = {
+      Topic: inputRow.question.text.trim(),
+      Speech: inputRow.speech.text.trim(),
+    };
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
+    return speakerInputsString;
   };
 
   return (
     <div className={styles.chat} key={session.id}>
-      <ChatTitle></ChatTitle>
+      <ChatTitle getInputsString={getInputsString}></ChatTitle>
 
       <div
         className={styles["chat-body"]}
@@ -76,23 +68,20 @@ export function Chat() {
         }}
       >
         <List>
-          <ChatInput title="Topic" inputStore={session.inputs.input} />
-          <ChatInput
-            title="Prepared Speech"
-            inputStore={session.inputs.input2}
-          />
+          <ChatInput title="Topic" inputStore={session.input.data.question} />
+          <ChatInput title="Speech" inputStore={session.input.data.speech} />
 
-          <ChatInputSubmit
-            roleOptions={ToastmastersRoleOptions}
-            selectedValues={toastmastersEvaluators}
-            updateParent={setToastmastersEvaluators}
+          <ChatSubmitCheckbox
+            toastmastersRecord={ToastmastersRecord}
             checkInput={checkInput}
           />
 
           <ChatResponse
             scrollRef={scrollRef}
-            toastmastersRolePrompts={toastmastersEvaluators}
+            toastmastersRecord={ToastmastersRecord}
           />
+
+          <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
         </List>
       </div>
     </div>

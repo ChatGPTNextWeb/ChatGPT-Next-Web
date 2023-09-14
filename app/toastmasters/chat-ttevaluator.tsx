@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 
-import { InputStore, useChatStore } from "../store";
+import { useChatStore } from "../store";
 
 import styles from "../components/chat.module.scss";
 import { List, showToast } from "../components/ui-lib";
@@ -8,17 +8,16 @@ import { List, showToast } from "../components/ui-lib";
 import {
   ToastmastersTTEvaluatorGuidance as ToastmastersRoleGuidance,
   ToastmastersTTEvaluatorRecord as ToastmastersRecord,
-  ToastmastersRolePrompt,
   InputSubmitStatus,
 } from "./roles";
 import {
   ChatTitle,
   ChatInput,
-  ChatInputSubmitV2,
   ChatResponse,
-  useScrollToBottom,
+  ChatSubmitCheckbox,
 } from "./chat-common";
-import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar-component";
+import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
+import { useScrollToBottom } from "../components/chat";
 
 export function Chat() {
   const [session, sessionIndex] = useChatStore((state) => [
@@ -31,47 +30,32 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
 
-  const [speakerInputsString, setSpeakerInputsString] = useState("");
-
-  useEffect(() => {
-    // inputTable
-    const speakerInputs = session.input.datas?.map((row) => ({
-      Question: row.question.text,
-      Speech: row.speech.text,
-    }));
-    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
-    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
-    setSpeakerInputsString(speakerInputsString);
-  }, [session.input.datas]);
-
   const checkInput = (): InputSubmitStatus => {
-    if (session.input.datas.length <= 0) {
-      showToast(`Input Table is empty, please check`);
-      return new InputSubmitStatus(false, "");
-    }
-
-    const inputRow = session.input.datas[0];
-
+    const inputRow = session.input.data;
     const question = inputRow.question.text.trim();
     const speech = inputRow.speech.text.trim();
     if (question === "" || speech === "") {
       showToast("Question or Speech is empty, please check");
       return new InputSubmitStatus(false, "");
     }
+    const guidance = ToastmastersRoleGuidance(getInputsString());
+    return new InputSubmitStatus(true, guidance);
+  };
 
+  const getInputsString = (): string => {
+    const inputRow = session.input.data;
     const speakerInputs = {
-      Question: question,
-      Speech: speech,
+      Question: inputRow.question.text.trim(),
+      Speech: inputRow.speech.text.trim(),
     };
     // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
     const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
-    var guidance = ToastmastersRoleGuidance(speakerInputsString);
-    return new InputSubmitStatus(true, guidance);
+    return speakerInputsString;
   };
 
   return (
     <div className={styles.chat} key={session.id}>
-      <ChatTitle speakerInputsString={speakerInputsString}></ChatTitle>
+      <ChatTitle getInputsString={getInputsString}></ChatTitle>
 
       <div
         className={styles["chat-body"]}
@@ -86,22 +70,11 @@ export function Chat() {
         <List>
           <ChatInput
             title="Question"
-            inputStore={
-              session.input.datas.length > 0
-                ? session.input.datas[0].question
-                : new InputStore()
-            }
+            inputStore={session.input.data.question}
           />
-          <ChatInput
-            title="Speech"
-            inputStore={
-              session.input.datas.length > 0
-                ? session.input.datas[0].speech
-                : new InputStore()
-            }
-          />
+          <ChatInput title="Speech" inputStore={session.input.data.speech} />
 
-          <ChatInputSubmitV2
+          <ChatSubmitCheckbox
             toastmastersRecord={ToastmastersRecord}
             checkInput={checkInput}
           />

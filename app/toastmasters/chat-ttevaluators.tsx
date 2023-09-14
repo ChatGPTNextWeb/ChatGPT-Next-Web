@@ -5,14 +5,7 @@ import { useChatStore } from "../store";
 
 import styles_chat from "../components/chat.module.scss";
 import styles_tm from "./toastmasters.module.scss";
-import {
-  List,
-  ListItem,
-  showPrompt,
-  showToast,
-  showModal,
-  Input,
-} from "../components/ui-lib";
+import { List, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
 
 import {
@@ -20,26 +13,18 @@ import {
   ToastmastersTTEvaluatorsRecord as ToastmastersRecord,
   InputSubmitStatus,
   ToastmastersRoles,
-  ToastmastersSettings,
 } from "./roles";
 import {
   ChatTitle,
   ChatInput,
   ChatResponse,
-  useScrollToBottom,
   ChatUtility,
+  ChatSubmitRadiobox,
 } from "./chat-common";
 import { InputTableRow } from "../store/chat";
 
-import DownloadIcon from "../icons/download.svg";
-import UploadIcon from "../icons/upload.svg";
-import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
-import RenameIcon from "../icons/rename.svg";
-import CopyIcon from "../icons/copy.svg";
-import SendWhiteIcon from "../icons/send-white.svg";
-import SettingsIcon from "../icons/settings.svg";
 import MenuIcon from "../icons/menu.svg";
 
 import Box from "@mui/material/Box";
@@ -51,19 +36,13 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { text } from "stream/consumers";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar-component";
+import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { EN_MASKS } from "../masks/en";
 import { Mask } from "../store/mask";
+import { useScrollToBottom } from "../components/chat";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -77,20 +56,6 @@ export function Chat() {
   // 设置自动滑动窗口
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
-
-  const [speakerInputsString, setSpeakerInputsString] = useState("");
-
-  useEffect(() => {
-    // inputTable
-    const speakerInputs = session.input.datas?.map((row) => ({
-      Speaker: row.speaker,
-      Question: row.question.text,
-      Speech: row.speech.text,
-    }));
-    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
-    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
-    setSpeakerInputsString(speakerInputsString);
-  }, [session.input.datas]);
 
   const checkInput = (): InputSubmitStatus => {
     if (session.input.datas.length === 0) {
@@ -112,8 +77,20 @@ export function Chat() {
       return new InputSubmitStatus(false, "");
     }
 
-    var guidance = ToastmastersRoleGuidance(speakerInputsString);
+    var guidance = ToastmastersRoleGuidance(getInputsString());
     return new InputSubmitStatus(true, guidance);
+  };
+
+  const getInputsString = (): string => {
+    // inputTable
+    const speakerInputs = session.input.datas?.map((row) => ({
+      Speaker: row.speaker,
+      Question: row.question.text,
+      Speech: row.speech.text,
+    }));
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
+    return speakerInputsString;
   };
 
   const addItem = () => {
@@ -131,7 +108,7 @@ export function Chat() {
 
   return (
     <div className={styles_chat.chat} key={session.id}>
-      <ChatTitle speakerInputsString={speakerInputsString}></ChatTitle>
+      <ChatTitle getInputsString={getInputsString}></ChatTitle>
       <div
         className={styles_chat["chat-body"]}
         ref={scrollRef}
@@ -155,14 +132,15 @@ export function Chat() {
             <div style={{ padding: "0px 20px" }}>
               <ChatTable />
             </div>
-            <ChatSelectSubmit
+            <ChatSubmitRadiobox
+              toastmastersRecord={ToastmastersRecord}
               checkInput={checkInput}
               updateAutoScroll={setAutoScroll}
             />
           </>
         )}
         {/* 3 is the predifined message length */}
-        {session.input.datas.length > 0 && session.messages.length > 3 && (
+        {session.input.roles.length > 0 && (
           <ChatResponse
             scrollRef={scrollRef}
             toastmastersRecord={ToastmastersRecord}
@@ -214,7 +192,8 @@ function ChatTable() {
       // new session has index 0
       chatStore.updateSession(0, (session) => {
         session.topic = row.speaker;
-        session.input.datas.push({ ...row });
+        session.input.data.question = { ...row.question };
+        session.input.data.speech = { ...row.speech };
         return session;
       });
     };
@@ -319,107 +298,3 @@ function ChatTable() {
     </TableContainer>
   );
 }
-
-const ChatSelectSubmit = (props: {
-  checkInput: () => InputSubmitStatus;
-  updateAutoScroll: (status: boolean) => void;
-}) => {
-  const chatStore = useChatStore();
-  const [session, sessionIndex] = useChatStore((state) => [
-    state.currentSession(),
-    state.currentSessionIndex,
-  ]);
-
-  const [submitting, setSubmitting] = useState(false);
-
-  const [inputRole, setInputRole] = useState(session.input.roles[0] || "");
-
-  const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputRole((event.target as HTMLInputElement).value);
-  };
-
-  const doSubmit = async () => {
-    const checkInputResult = props.checkInput();
-    if (!checkInputResult.canSubmit) {
-      return;
-    }
-
-    const toastmastersRolePrompts = ToastmastersRecord[inputRole];
-
-    const isEnoughCoins = await chatStore.isEnoughCoins(
-      toastmastersRolePrompts.length + 1,
-    );
-    if (!isEnoughCoins) {
-      return;
-    }
-    setSubmitting(true);
-    props.updateAutoScroll(true);
-
-    // 保存输入: 于是ChatResponse可以使用
-    session.input.roles[0] = inputRole;
-    session.input.setting = ToastmastersSettings(ToastmastersRecord);
-
-    // reset status from 0
-    chatStore.resetSession();
-
-    let ask = checkInputResult.guidance;
-    chatStore.onUserInput(ask, "Guidance");
-    for (const item of toastmastersRolePrompts) {
-      await chatStore.getIsFinished();
-
-      // TODO: move setting into item, but when retry, it will lose
-      ask = item.contentWithSetting(session.input.setting[item.role]);
-      chatStore.onUserInput(ask, item.role);
-    }
-    await chatStore.getIsFinished();
-
-    setSubmitting(false);
-
-    // if (!isMobileScreen) inputRef.current?.focus();
-    // setAutoScroll(true);
-  };
-
-  return (
-    <div className={styles_tm["chat-input-panel-buttons"]}>
-      <FormControl>
-        <FormLabel id="demo-controlled-radio-buttons-group">
-          Evaluators
-        </FormLabel>
-        <RadioGroup
-          aria-labelledby="demo-controlled-radio-buttons-group"
-          name="controlled-radio-buttons-group"
-          value={inputRole}
-          onChange={onInputRoleChange}
-          row
-        >
-          {Object.entries(ToastmastersRecord).map(
-            ([role, ToastmastersRolePrompts]) => {
-              return (
-                <FormControlLabel
-                  key={role}
-                  value={role}
-                  control={<Radio />}
-                  label={role}
-                />
-              );
-            },
-          )}
-        </RadioGroup>
-      </FormControl>
-
-      {inputRole && (
-        <IconButton
-          icon={<SendWhiteIcon />}
-          text={submitting ? "Submitting" : "Submit"}
-          disabled={submitting}
-          className={
-            submitting
-              ? styles_tm["chat-input-button-submitting"]
-              : styles_tm["chat-input-button-submit"]
-          }
-          onClick={doSubmit}
-        />
-      )}
-    </div>
-  );
-};

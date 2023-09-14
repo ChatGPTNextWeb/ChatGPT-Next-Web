@@ -20,17 +20,6 @@ import { estimateTokenLength } from "../utils/token";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
-import {
-  ToastmastersRoleSetting,
-  ToastmastersSettings,
-} from "../toastmasters/roles";
-
-// To support setting for the message
-export interface MessageSetting {
-  name: string;
-  title: string;
-  // words?: number;
-}
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -62,11 +51,21 @@ export class InputStore {
   time: number = 0;
 }
 
-export type InputTableRow = {
-  speaker: string;
-  question: InputStore;
-  speech: InputStore;
-};
+export class InputTableRow {
+  speaker = "";
+  question = new InputStore();
+  speech = new InputStore();
+
+  constructor(
+    speaker: string = "",
+    question: string = "",
+    speech: string = "",
+  ) {
+    this.speaker = speaker;
+    this.question.text = question;
+    this.speech.text = speech;
+  }
+}
 
 export class InputSettingStore {
   words: number = 0;
@@ -90,16 +89,8 @@ export interface ChatSession {
 
   mask: Mask;
 
-  // TODO: deprecate
-  // inputs: { roles: number[]; input: InputStore; input2: InputStore };
-  // inputRole: string;
-
-  // inputTable: InputTableRow[];
-  // inputRoles: string[];
-  // inputSetting: Record<string, ToastmastersRoleSetting>;
-  // outputAvatar: HttpRequestResponse;
-
   input: {
+    data: InputTableRow;
     datas: any[];
     roles: string[];
     setting: any;
@@ -129,15 +120,8 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
 
-    input: { datas: [], roles: [], setting: {} },
+    input: { data: new InputTableRow(), datas: [], roles: [], setting: {} },
     output: { avatar: { status: "", data: "" } },
-
-    // inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
-    // inputTable: [],
-    // inputRole: "Table Topics Evaluator", // TODO
-    // inputRoles: [],
-    // inputSetting: ToastmastersSettings,
-    // outputAvatar: { status: "", data: "" },
   };
 }
 
