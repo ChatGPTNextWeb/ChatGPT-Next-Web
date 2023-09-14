@@ -22,12 +22,12 @@ export enum Theme {
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
   tightBorder: !!getClientConfig()?.isApp,
-  sendPreviewBubble: true,
+  sendPreviewBubble: false,
   enableAutoGenerateTitle: true,
   sidebarWidth: 300,
 
@@ -40,7 +40,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
+    model: "gpt-4" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,
