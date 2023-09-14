@@ -6,9 +6,19 @@ const isApp = !!getClientConfig()?.isApp;
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: isApp
-      ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+    Unauthorized:
+      `前往公众号：**[林子书的信箱](https://suo.al/48l)** 回复 **密码** 免费获取密码，然后[👉点击这里](/#/auth)输入密码后解锁**免费使用**。
+      
+ **提问：** 能免费用 GPT-4 吗？
+ **回答：** 太贵了，一次对话一块钱，日常使用 3.5 已完全足够，后续会开放专业用户的 GPT-4 充值
+ 推荐使用**gpt-3.5-turbo-16k-0613**，比默认的**gpt-3.5-turbo**耗时更少，响应更快，可点击聊天界面的🤖进行切换
+ 常见问题与使用说明点击查看 **[👉凉心’s ChatGPT产品简介](https://suo.al/48m)**  
+                                     
+卡顿或无响应？可能是用户量太大， [👉点这里获得独立账号 KEY 使用](https://suo.al/48n)
+                                     
+由林子书提供技术维护支持，为爱发电 [👉点击赞助](https://afdian.net/a/lxcloud/plan)
+                          
+已补充额度并更新版本，更新时间：2023.09.14 19:10`,
   },
   Auth: {
     Title: "需要密码",
@@ -267,7 +277,7 @@ const cn = {
     },
     AccessCode: {
       Title: "访问密码",
-      SubTitle: "管理员已开启加密访问",
+      SubTitle: "到公众号：林子书的信箱 回复【密码】获取",
       Placeholder: "请输入访问密码",
     },
     Endpoint: {
@@ -302,7 +312,12 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: `建议关注：**[林子书的信箱](https://suo.al/48l)**
+    
+已解锁免费使用，有什么可以帮你的吗？
+ 
+卡顿或无响应？可能是用户量太大， **[👉点这里获得独立账号 KEY 使用](https://suo.al/48n)**
+由林子书提供技术维护支持，为爱发电 **[👉点击赞助](https://afdian.net/a/lxcloud/plan)**`,
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
