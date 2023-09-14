@@ -24,9 +24,12 @@ import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME, AppInfo } from "../constant";
 
-const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
-  loading: () => <LoadingIcon />,
-});
+export const Markdown = dynamic(
+  async () => (await import("./markdown")).Markdown,
+  {
+    loading: () => <LoadingIcon />,
+  },
+);
 
 export function ExportMessageModal(props: { onClose: () => void }) {
   return (
@@ -40,7 +43,7 @@ export function ExportMessageModal(props: { onClose: () => void }) {
   );
 }
 
-function useSteps(
+export function useSteps(
   steps: Array<{
     name: string;
     value: string;
@@ -62,7 +65,7 @@ function useSteps(
   };
 }
 
-function Steps<
+export function Steps<
   T extends {
     name: string;
     value: string;
@@ -315,13 +318,13 @@ export function PreviewActions(props: {
           icon={<DownloadIcon />}
           onClick={props.download}
         ></IconButton>
-        <IconButton
+        {/* <IconButton
           text={Locale.Export.Share}
           bordered
           shadow
           icon={loading ? <LoadingIcon /> : <ShareIcon />}
           onClick={share}
-        ></IconButton>
+        ></IconButton> */}
       </div>
       <div
         style={{

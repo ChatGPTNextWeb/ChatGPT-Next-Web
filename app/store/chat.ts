@@ -38,7 +38,7 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
-  setting?: MessageSetting; // TODO: remove from it.
+  title?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -155,10 +155,7 @@ interface ChatStore {
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   isEnoughCoins(requiredCoins: number): Promise<boolean>;
-  onUserInput: (
-    content: string,
-    messageSetting?: MessageSetting,
-  ) => Promise<void>;
+  onUserInput: (content: string, title?: string) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -381,7 +378,7 @@ export const useChatStore = create<ChatStore>()(
         return false;
       },
 
-      async onUserInput(content, messageSetting = undefined) {
+      async onUserInput(content, title?) {
         // check user login
         let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
         if (userEmail === null) {
@@ -408,7 +405,7 @@ export const useChatStore = create<ChatStore>()(
           streaming: true,
           id: userMessage.id! + 1,
           model: modelConfig.model,
-          setting: messageSetting,
+          title: title,
         });
 
         // get recent messages

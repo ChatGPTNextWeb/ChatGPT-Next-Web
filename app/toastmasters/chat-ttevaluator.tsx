@@ -31,26 +31,26 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
 
-  const [toastmastersRolePrompts, setToastmastersRolePrompts] = useState<
-    ToastmastersRolePrompt[]
-  >([]);
+  const [speakerInputsString, setSpeakerInputsString] = useState("");
 
   useEffect(() => {
-    // 将选择的role, 合并为一个数组
-    var _rolePrompts: ToastmastersRolePrompt[] = [];
-    session.inputRoles?.forEach((roleName: any) => {
-      _rolePrompts = _rolePrompts.concat(ToastmastersRecord[roleName]);
-    });
-    setToastmastersRolePrompts(_rolePrompts);
-  }, [session.inputRoles]);
+    // inputTable
+    const speakerInputs = session.input.datas?.map((row) => ({
+      Question: row.question.text,
+      Speech: row.speech.text,
+    }));
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
+    setSpeakerInputsString(speakerInputsString);
+  }, [session.input.datas]);
 
   const checkInput = (): InputSubmitStatus => {
-    if (session.inputTable.length <= 0) {
-      showToast("inputTable.length <= 0");
+    if (session.input.datas.length <= 0) {
+      showToast(`Input Table is empty, please check`);
       return new InputSubmitStatus(false, "");
     }
 
-    const inputRow = session.inputTable[0];
+    const inputRow = session.input.datas[0];
 
     const question = inputRow.question.text.trim();
     const speech = inputRow.speech.text.trim();
@@ -71,7 +71,7 @@ export function Chat() {
 
   return (
     <div className={styles.chat} key={session.id}>
-      <ChatTitle></ChatTitle>
+      <ChatTitle speakerInputsString={speakerInputsString}></ChatTitle>
 
       <div
         className={styles["chat-body"]}
@@ -87,16 +87,16 @@ export function Chat() {
           <ChatInput
             title="Question"
             inputStore={
-              session.inputTable.length > 0
-                ? session.inputTable[0].question
+              session.input.datas.length > 0
+                ? session.input.datas[0].question
                 : new InputStore()
             }
           />
           <ChatInput
             title="Speech"
             inputStore={
-              session.inputTable.length > 0
-                ? session.inputTable[0].speech
+              session.input.datas.length > 0
+                ? session.input.datas[0].speech
                 : new InputStore()
             }
           />
@@ -108,10 +108,10 @@ export function Chat() {
 
           <ChatResponse
             scrollRef={scrollRef}
-            toastmastersRolePrompts={toastmastersRolePrompts}
+            toastmastersRecord={ToastmastersRecord}
           />
 
-          <SpeechAvatarVideoShow outputAvatar={session.outputAvatar} />
+          <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
         </List>
       </div>
     </div>

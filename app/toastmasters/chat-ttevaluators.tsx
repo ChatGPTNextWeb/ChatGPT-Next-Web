@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, use } from "react";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { useChatStore } from "../store";
@@ -29,13 +29,7 @@ import {
   useScrollToBottom,
   ChatUtility,
 } from "./chat-common";
-import {
-  ChatSession,
-  InputTableRow,
-  IRequestResponse,
-  InputStore,
-  MessageSetting,
-} from "../store/chat";
+import { InputTableRow } from "../store/chat";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -84,9 +78,21 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
 
-  const checkInput = (): InputSubmitStatus => {
-    // var speakerInputs: string[] = [];
+  const [speakerInputsString, setSpeakerInputsString] = useState("");
 
+  useEffect(() => {
+    // inputTable
+    const speakerInputs = session.input.datas?.map((row) => ({
+      Speaker: row.speaker,
+      Question: row.question.text,
+      Speech: row.speech.text,
+    }));
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
+    setSpeakerInputsString(speakerInputsString);
+  }, [session.input.datas]);
+
+  const checkInput = (): InputSubmitStatus => {
     if (session.input.datas.length === 0) {
       showToast(`Input Table is empty, please check`);
       return new InputSubmitStatus(false, "");
@@ -106,15 +112,6 @@ export function Chat() {
       return new InputSubmitStatus(false, "");
     }
 
-    // inputTable
-    const speakerInputs = session.input.datas.map((row) => ({
-      Speaker: row.speaker,
-      Question: row.question.text,
-      Speech: row.speech.text,
-    }));
-    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
-    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
-
     var guidance = ToastmastersRoleGuidance(speakerInputsString);
     return new InputSubmitStatus(true, guidance);
   };
@@ -132,6 +129,61 @@ export function Chat() {
     );
   };
 
+  return (
+    <div className={styles_chat.chat} key={session.id}>
+      <ChatTitle speakerInputsString={speakerInputsString}></ChatTitle>
+      <div
+        className={styles_chat["chat-body"]}
+        ref={scrollRef}
+        onMouseDown={() => inputRef.current?.blur()}
+        // onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
+        onTouchStart={() => {
+          inputRef.current?.blur();
+          setAutoScroll(false);
+        }}
+      >
+        <div className={styles_tm["chat-input-button-add-row"]}>
+          <IconButton
+            icon={<AddIcon />}
+            text="Add Speaker"
+            onClick={addItem}
+            className={styles_tm["chat-input-button-add"]}
+          />
+        </div>
+        {session.input.datas.length > 0 && (
+          <>
+            <div style={{ padding: "0px 20px" }}>
+              <ChatTable />
+            </div>
+            <ChatSelectSubmit
+              checkInput={checkInput}
+              updateAutoScroll={setAutoScroll}
+            />
+          </>
+        )}
+        {/* 3 is the predifined message length */}
+        {session.input.datas.length > 0 && session.messages.length > 3 && (
+          <ChatResponse
+            scrollRef={scrollRef}
+            toastmastersRecord={ToastmastersRecord}
+          />
+        )}
+
+        <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
+      </div>
+    </div>
+  );
+}
+
+function ChatTable() {
+  const chatStore = useChatStore();
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
+
+  // TODO: deleteItem执行时, speakerInputsString 并未及时变化, 导致Export结果又不对
+  // 此时需要刷新页面, 才能看到正确的结果
   const deleteItem = (row_index: number) => {
     chatStore.updateCurrentSession((session) =>
       session.input.datas.splice(row_index, 1),
@@ -145,48 +197,6 @@ export function Chat() {
       }
     });
   };
-
-  function CollapsibleTable() {
-    return (
-      <TableContainer component={Paper}>
-        <Table
-          aria-label="collapsible table"
-          className={styles_tm["table-border"]}
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ width: "10px" }} />
-              <TableCell
-                align="left"
-                className={styles_tm["table-header"]}
-                style={{ width: "100px" }}
-              >
-                Speaker
-              </TableCell>
-              <TableCell align="left" className={styles_tm["table-header"]}>
-                Question
-              </TableCell>
-              <TableCell align="left" className={styles_tm["table-header"]}>
-                Speech
-              </TableCell>
-              <TableCell
-                align="left"
-                className={styles_tm["table-header"]}
-                style={{ width: "100px" }}
-              >
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {session.input.datas.map((row, index) => (
-              <Row key={index} row={row} row_index={index} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    );
-  }
 
   function Row(props: { row: InputTableRow; row_index: number }) {
     const { row, row_index } = props;
@@ -203,8 +213,6 @@ export function Chat() {
 
       // new session has index 0
       chatStore.updateSession(0, (session) => {
-        // session.inputs.input = { ...row.question };
-        // session.inputs.input2 = { ...row.speech };
         session.topic = row.speaker;
         session.input.datas.push({ ...row });
         return session;
@@ -272,53 +280,47 @@ export function Chat() {
   }
 
   return (
-    <div className={styles_chat.chat} key={session.id}>
-      <ChatTitle></ChatTitle>
-      <div
-        className={styles_chat["chat-body"]}
-        ref={scrollRef}
-        onMouseDown={() => inputRef.current?.blur()}
-        // onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
-        onTouchStart={() => {
-          inputRef.current?.blur();
-          setAutoScroll(false);
-        }}
+    <TableContainer component={Paper}>
+      <Table
+        aria-label="collapsible table"
+        className={styles_tm["table-border"]}
       >
-        <div className={styles_tm["chat-input-button-add-row"]}>
-          <IconButton
-            icon={<AddIcon />}
-            text="Add Speaker"
-            onClick={addItem}
-            className={styles_tm["chat-input-button-add"]}
-          />
-        </div>
-        {session.input.datas.length > 0 && (
-          <>
-            <div style={{ padding: "0px 20px" }}>
-              <CollapsibleTable />
-            </div>
-            <ChatInputAddSubmit
-              checkInput={checkInput}
-              updateAutoScroll={setAutoScroll}
-            />
-          </>
-        )}
-
-        {/* 3 is the predifined message length */}
-        {session.input.datas.length > 0 && session.messages.length > 3 && (
-          <ChatResponse
-            scrollRef={scrollRef}
-            toastmastersRecord={ToastmastersRecord}
-          />
-        )}
-
-        <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
-      </div>
-    </div>
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ width: "10px" }} />
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "100px" }}
+            >
+              Speaker
+            </TableCell>
+            <TableCell align="left" className={styles_tm["table-header"]}>
+              Question
+            </TableCell>
+            <TableCell align="left" className={styles_tm["table-header"]}>
+              Speech
+            </TableCell>
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "100px" }}
+            >
+              Action
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {session.input.datas.map((row, index) => (
+            <Row key={index} row={row} row_index={index} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
-const ChatInputAddSubmit = (props: {
+const ChatSelectSubmit = (props: {
   checkInput: () => InputSubmitStatus;
   updateAutoScroll: (status: boolean) => void;
 }) => {
@@ -361,20 +363,13 @@ const ChatInputAddSubmit = (props: {
     chatStore.resetSession();
 
     let ask = checkInputResult.guidance;
-
-    // TODO: futher refactor
-    // let responseSetting: MessageSetting = {
-    //   name: inputRole,
-    //   title: "Guidance",
-    // };
-    chatStore.onUserInput(ask);
+    chatStore.onUserInput(ask, "Guidance");
     for (const item of toastmastersRolePrompts) {
       await chatStore.getIsFinished();
 
       // TODO: move setting into item, but when retry, it will lose
-      ask = item.contentWithSetting(session.input.setting[item.roleKey]);
-      // responseSetting = { name: inputRole, title: item.roleKey }; // TODO: words put into item
-      chatStore.onUserInput(ask);
+      ask = item.contentWithSetting(session.input.setting[item.role]);
+      chatStore.onUserInput(ask, item.role);
     }
     await chatStore.getIsFinished();
 

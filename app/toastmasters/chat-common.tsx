@@ -53,7 +53,7 @@ import { autoGrowTextArea } from "../utils";
 import dynamic from "next/dynamic";
 import Multiselect from "multiselect-react-dropdown";
 import { getClientConfig } from "../config/client";
-import { ExportMessageModal } from "../components/exporterTm";
+import { ExportMessageModal } from "./chat-exporter";
 
 import styles from "../components/chat.module.scss";
 import styles_tm from "./toastmasters.module.scss";
@@ -72,11 +72,12 @@ import { SpeechAvatarVideoSetting } from "../cognitive/speech-avatar-component";
 
 const ToastmastersDefaultLangugage = "en";
 
-export function ChatTitle() {
+export function ChatTitle(props: { speakerInputsString: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
 
   const [showExport, setShowExport] = useState(false);
+  const [showMessages, setShowMessages] = useState<ChatMessage[]>([]);
 
   const isMobileScreen = useMobileScreen();
   const clientConfig = useMemo(() => getClientConfig(), []);
@@ -96,6 +97,26 @@ export function ChatTitle() {
         );
       }
     });
+  };
+
+  const onExport = () => {
+    const selectMessages: ChatMessage[] = [];
+
+    selectMessages.push(
+      createMessage({
+        content: props.speakerInputsString,
+        role: "user",
+        title: "Speaker Inputs",
+      }),
+    );
+
+    session.messages.forEach((message, index) => {
+      if (message.role === "assistant" && message.title !== "Guidance") {
+        selectMessages.push(message);
+      }
+    });
+    setShowMessages(selectMessages);
+    setShowExport(true);
   };
 
   return (
@@ -139,9 +160,7 @@ export function ChatTitle() {
             icon={<ExportIcon />}
             bordered
             title={Locale.Chat.Actions.Export}
-            onClick={() => {
-              setShowExport(true); // TODO: export png without question
-            }}
+            onClick={onExport}
           />
         </div>
         {showMaxIcon && (
@@ -160,7 +179,11 @@ export function ChatTitle() {
       </div>
 
       {showExport && (
-        <ExportMessageModal onClose={() => setShowExport(false)} />
+        <ExportMessageModal
+          onClose={() => setShowExport(false)}
+          messages={showMessages}
+          topic={session.topic}
+        />
       )}
     </div>
   );
@@ -471,7 +494,7 @@ export const ChatInputSubmitV2 = (props: {
     }),
   );
 
-  const selectedOptions = session.inputRoles.map((roleName) => ({
+  const selectedOptions = session.input.roles.map((roleName) => ({
     name: roleName,
   }));
 
@@ -501,19 +524,22 @@ export const ChatInputSubmitV2 = (props: {
     // 保存输入: 于是ChatResponse可以使用
     chatStore.updateCurrentSession(
       (session) =>
-        (session.inputRoles = selectItems?.map((v: SelectType) => v.name)),
+        (session.input.roles = selectItems?.map((v: SelectType) => v.name)),
     );
 
     // reset status from 0
     chatStore.resetSession();
 
-    chatStore.onUserInput(checkInputResult.guidance);
+    chatStore.onUserInput(
+      checkInputResult.guidance,
+      ToastmastersRoles.Guidance,
+    );
     for (const selectItem of selectItems) {
       const roleName = selectItem.name;
       const _RolePrompts = props.toastmastersRecord[roleName];
       for (const item of _RolePrompts) {
         await chatStore.getIsFinished();
-        let ask = item.contentWithSetting(session.inputSetting[roleName]);
+        let ask = item.contentWithSetting(session.input.setting[item.role]);
         chatStore.onUserInput(ask, item.role);
       }
       await chatStore.getIsFinished();
@@ -586,7 +612,7 @@ export const ChatResponse = (props: {
   // TODO: when resending, the page will auto scroll to the bottom, so the avatar video will cover the reponse message
   const onResendConfirm = async (messageIndex: number, roleIndex: number) => {
     const currentPromptItem = toastmastersRolePrompts[roleIndex];
-    const currentSetting = session.input.setting[currentPromptItem.roleKey];
+    const currentSetting = session.input.setting[currentPromptItem.role];
     if (currentSetting) {
       const setting = _.cloneDeep(currentSetting);
       const ContentComponent = () => {
@@ -608,13 +634,13 @@ export const ChatResponse = (props: {
 
       const isConfirmed = await showConfirmWithProps({
         children: <ContentComponent />,
-        title: `${currentPromptItem.roleKey} Settings`,
+        title: `${currentPromptItem.role} Settings`,
         cancelText: "Cancel",
         confirmText: "Confirm",
       });
       if (!isConfirmed) return;
 
-      session.input.setting[currentPromptItem.roleKey] = _.cloneDeep(setting);
+      session.input.setting[currentPromptItem.role] = _.cloneDeep(setting);
     }
 
     // -1: means reset from the last message of roleIndex
@@ -627,8 +653,8 @@ export const ChatResponse = (props: {
     // const roleIndex = (messageIndex - promptCount) / 2;
     for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
       let item = toastmastersRolePrompts[i];
-      let ask = item.contentWithSetting(session.input.setting[item.roleKey]);
-      chatStore.onUserInput(ask);
+      let ask = item.contentWithSetting(session.input.setting[item.role]);
+      chatStore.onUserInput(ask, item.role);
       await chatStore.getIsFinished();
     }
   };
@@ -700,7 +726,7 @@ export const ChatResponse = (props: {
         if (messageIndex <= 1 || messageIndex % 2 == 0) return null;
 
         const roleIndex = (messageIndex - promptCount) / 2;
-        const roleKey = toastmastersRolePrompts[roleIndex].roleKey;
+        const roleKey = toastmastersRolePrompts[roleIndex].role;
 
         return (
           <div key={messageIndex} className={styles["chat-message-hover"]}>
