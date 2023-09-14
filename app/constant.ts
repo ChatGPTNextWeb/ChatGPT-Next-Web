@@ -8,6 +8,8 @@ export const RELEASE_URL = `${REPO_URL}/releases`;
 export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/commits?per_page=1`;
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
+
+export const DEFAULT_CORS_HOST = "https://chatgpt2.nextweb.fun";
 export const DEFAULT_API_HOST = "https://www.chatkore.com/api/";
 
 export enum Path {
@@ -17,6 +19,10 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Auth = "/auth",
+}
+
+export enum ApiPath {
+  Cors = "/api/cors",
 }
 
 export enum SlotID {
@@ -46,6 +52,8 @@ export const ACCESS_CODE_PREFIX = "nk-";
 
 export const LAST_INPUT_KEY = "last-input";
 export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
+
+export const STORAGE_KEY = "chatgpt-next-web";
 
 export const REQUEST_TIMEOUT_MS = 60000;
 
