@@ -38,4 +38,13 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1694235989000,
     enable: false,
   },
+  {
+    name: "DALL·E",
+    toolName: "dalle_image_generator",
+    lang: "cn",
+    description: "DALL·E 可以根据自然语言的描述创建逼真的图像和艺术。",
+    builtin: true,
+    createdAt: 1694703673000,
+    enable: false,
+  },
 ];
