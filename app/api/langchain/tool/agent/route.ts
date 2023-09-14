@@ -291,4 +291,4 @@ async function handle(req: NextRequest) {
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = process.env.DDG_PROXY_URL ? "nodejs" : "edge";
+export const runtime = "edge";
