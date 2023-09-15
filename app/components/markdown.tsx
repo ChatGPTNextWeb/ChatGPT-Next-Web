@@ -19,18 +19,28 @@ export function Mermaid(props: { code: string }) {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    if (props.code && ref.current) {
-      mermaid
-        .run({
-          nodes: [ref.current],
-          suppressErrors: true,
-        })
-        .catch((e) => {
+    let isMounted = true;
+
+    const renderMermaid = async () => {
+      if (props.code && ref.current) {
+        try {
+          const result = await mermaid.render("mermaid", props.code);
+          if (isMounted && ref.current) {
+            ref.current.innerHTML = result.svg;
+          }
+        } catch (e) {
           setHasError(true);
-          console.error("[Mermaid] ", e.message);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          console.error("[Mermaid] ", e);
+        }
+      }
+    };
+
+    renderMermaid();
+
+    return () => {
+      isMounted = false;
+    };
   }, [props.code]);
 
   function viewSvgInNewWindow() {
@@ -38,6 +48,7 @@ export function Mermaid(props: { code: string }) {
     if (!svg) return;
     const text = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([text], { type: "image/svg+xml" });
+    console.log(blob);
     showImageModal(URL.createObjectURL(blob));
   }
 
@@ -53,7 +64,7 @@ export function Mermaid(props: { code: string }) {
         overflow: "auto",
       }}
       ref={ref}
-      onClick={() => viewSvgInNewWindow()}
+      onClick={viewSvgInNewWindow}
     >
       {props.code}
     </div>
@@ -100,15 +111,15 @@ export function PreCode(props: { children: any }) {
 }
 
 function _MarkDownContent(props: { content: string }) {
+  const escapedContent = props.content.replace(/\$/g, "&#36;"); // Escape dollar signs
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
       rehypePlugins={[
-        RehypeKatex,
+        [RehypeKatex, { strict: false }],
         [
           RehypeHighlight,
           {
-            detect: false,
             ignoreMissing: true,
           },
         ],
@@ -124,7 +135,7 @@ function _MarkDownContent(props: { content: string }) {
         },
       }}
     >
-      {props.content}
+      {escapedContent}
     </ReactMarkdown>
   );
 }
@@ -138,7 +149,7 @@ export function Markdown(
     fontSize?: number;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
-  } & React.DOMAttributes<HTMLDivElement>,
+  } & React.HTMLAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
 
@@ -149,9 +160,7 @@ export function Markdown(
         fontSize: `${props.fontSize ?? 14}px`,
       }}
       ref={mdRef}
-      onContextMenu={props.onContextMenu}
-      onDoubleClickCapture={props.onDoubleClickCapture}
-      dir="auto"
+      {...props}
     >
       {props.loading ? (
         <LoadingIcon />
