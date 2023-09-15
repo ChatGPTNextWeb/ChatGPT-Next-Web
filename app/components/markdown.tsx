@@ -111,7 +111,18 @@ export function PreCode(props: { children: any }) {
 }
 
 function _MarkDownContent(props: { content: string }) {
-  const escapedContent = props.content.replace(/\$/g, "&#36;"); // Escape dollar signs
+  // this for a codeblocks
+  const escapedContent = props.content.replace(
+    /(`{3}[\s\S]*?`{3}|`[^`]*`)|\$/g,
+    (match, codeBlock) => {
+      // Exclude code blocks from replacement
+      if (codeBlock) {
+        return match; // Return the code block as it is
+      } else {
+        return "&#36;"; // Escape dollar signs outside of code blocks
+      }
+    },
+  );
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
