@@ -19,28 +19,18 @@ export function Mermaid(props: { code: string }) {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const renderMermaid = async () => {
-      if (props.code && ref.current) {
-        try {
-          const result = await mermaid.render("mermaid", props.code);
-          if (isMounted && ref.current) {
-            ref.current.innerHTML = result.svg;
-          }
-        } catch (e) {
+    if (props.code && ref.current) {
+      mermaid
+        .run({
+          nodes: [ref.current],
+          suppressErrors: true,
+        })
+        .catch((e) => {
           setHasError(true);
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          console.error("[Mermaid] ", e);
-        }
-      }
-    };
-
-    renderMermaid();
-
-    return () => {
-      isMounted = false;
-    };
+          console.error("[Mermaid] ", e.message);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.code]);
 
   function viewSvgInNewWindow() {
@@ -48,7 +38,6 @@ export function Mermaid(props: { code: string }) {
     if (!svg) return;
     const text = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([text], { type: "image/svg+xml" });
-    console.log(blob);
     showImageModal(URL.createObjectURL(blob));
   }
 
@@ -64,7 +53,7 @@ export function Mermaid(props: { code: string }) {
         overflow: "auto",
       }}
       ref={ref}
-      onClick={viewSvgInNewWindow}
+      onClick={() => viewSvgInNewWindow()}
     >
       {props.code}
     </div>
@@ -111,11 +100,10 @@ export function PreCode(props: { children: any }) {
 }
 
 function _MarkDownContent(props: { content: string }) {
-  // this for a codeblocks
   const escapedContent = props.content.replace(
-    /(`{3}[\s\S]*?`{3}|`[^`]*`)|\$/g,
+    /(`{3}[\s\S]*?`{3}|`[^`]*`)|(?<!\$)(\$(?!\$))/g,
     (match, codeBlock) => {
-      // Exclude code blocks from replacement
+      // Exclude code blocks & math block from replacement
       if (codeBlock) {
         return match; // Return the code block as it is
       } else {
@@ -123,14 +111,16 @@ function _MarkDownContent(props: { content: string }) {
       }
     },
   );
+
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
       rehypePlugins={[
-        [RehypeKatex, { strict: false }],
+        RehypeKatex,
         [
           RehypeHighlight,
           {
+            detect: false,
             ignoreMissing: true,
           },
         ],
@@ -160,7 +150,7 @@ export function Markdown(
     fontSize?: number;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
-  } & React.HTMLAttributes<HTMLDivElement>,
+  } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
 
@@ -171,7 +161,9 @@ export function Markdown(
         fontSize: `${props.fontSize ?? 14}px`,
       }}
       ref={mdRef}
-      {...props}
+      onContextMenu={props.onContextMenu}
+      onDoubleClickCapture={props.onDoubleClickCapture}
+      dir="auto"
     >
       {props.loading ? (
         <LoadingIcon />
