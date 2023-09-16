@@ -1,9 +1,6 @@
-import * as fs from "fs";
-import * as path from "path";
-import axios from "axios";
-
 import { Tool } from "langchain/tools";
 import OpenAI from "openai";
+import S3FileStorage from "../../utils/r2_file_storage";
 
 export class DallEAPIWrapper extends Tool {
   name = "dalle_image_generator";
@@ -22,20 +19,10 @@ export class DallEAPIWrapper extends Tool {
   }
 
   async saveImageFromUrl(url: string) {
-    const response = await axios.get(url, { responseType: "arraybuffer" });
-
-    const uploadsDir = "public/uploads";
-    console.log("[fileUpload]", { uploadsDir });
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-
-    const filename = `${Date.now()}.png`;
-    const filePath = path.join(uploadsDir, filename);
-
-    fs.writeFileSync(filePath, Buffer.from(response.data, "binary"));
-
-    return `uploads/${filename}`;
+    const response = await fetch(url);
+    const content = await response.arrayBuffer();
+    const buffer = Buffer.from(content);
+    return await S3FileStorage.put(`${Date.now()}.png`, buffer);
   }
 
   /** @ignore */
@@ -61,5 +48,5 @@ export class DallEAPIWrapper extends Tool {
   description = `openai's dall-e image generator.
     input must be a english prompt.
     output will be the image link url.
-    use markdown to display images.`;
+    use markdown to display images. like: ![img](/api/file/xxx.png)`;
 }

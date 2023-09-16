@@ -45,7 +45,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     toolName: "dalle_image_generator",
     lang: "en",
     description:
-      "DALL·E 2 is an AI system that can create realistic images and art from a description in natural language.",
+      "DALL·E 2 is an AI system that can create realistic images and art from a description in natural language. Using this plugin requires configuring Cloudflare R2 object storage service.",
     builtin: true,
     createdAt: 1694703673000,
     enable: false,
