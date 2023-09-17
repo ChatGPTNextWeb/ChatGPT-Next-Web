@@ -3,17 +3,73 @@ export enum ToastmastersRoles {
   TableTopicsEvaluator = "Table Topics Evaluator",
   TableTopicsMaster = "Table Topics Master",
   TableTopicsSpeaker = "Table Topics Speaker",
-  IndividualEvaluator = "Individual Evaluator",
+  IndividualEvaluator = "Prepared Speech Evaluator",
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
   GeneralEvaluator = "General Evaluator",
   RevisedSpeech = "Revised Speech",
+  DemoSpeech = "Demo Speech",
   Guidance = "Guidance",
 
   Introduction = "Introduction",
   Advertisement = "Advertisement",
   Top10Questions = "Top 10 Questions",
 }
+
+export const ToastmastersRolesResponsibilities: Record<string, string> = {
+  [ToastmastersRoles.TableTopicsEvaluators]: `
+  - Evaluate the impromptu speeches given by Table Topics Speakers.
+  - Provide constructive feedback on the speaker's ability to think on their feet, coherence, and communication skills during impromptu speeches.
+  `,
+  [ToastmastersRoles.TableTopicsEvaluator]: `
+  - ***Evaluate*** the impromptu speeches given by Table Topics Speakers.
+  - ***Provide constructive feedback*** on the speaker's ability to think on their feet, coherence, and communication skills during impromptu speeches.
+  `,
+  [ToastmastersRoles.TableTopicsMaster]: `
+  - Conduct the Table Topics session by presenting impromptu speaking topics or questions.
+  - Ensure that Table Topics Speakers have a chance to respond to the topics.
+  - May offer brief commentary or insights on the Table Topics session.
+  `,
+  [ToastmastersRoles.TableTopicsSpeaker]: `
+  - Respond to impromptu speaking topics or questions posed by the Table Topics Master.
+  - Deliver a short, unprepared speech (usually 1-2 minutes) on the given topic.
+  `,
+  [ToastmastersRoles.IndividualEvaluator]: `
+  - Evaluate the prepared speeches given by members based on specific criteria and objectives for each speech project.
+  - Offer constructive feedback on speech content, organization, and delivery.
+  `,
+  [ToastmastersRoles.Grammarian]: `
+  - Listen for good and poor use of language, grammar, and vocabulary during the meeting.
+  - Share feedback on language usage and introduce a "word of the day" to encourage members to expand their vocabulary.
+  `,
+  [ToastmastersRoles.AhCounter]: `
+  - Listen for filler words (e.g., "um," "ah," "like") and other speech habits used by speakers.
+  - Report on the number of times each speaker used such fillers.
+  `,
+  [ToastmastersRoles.GeneralEvaluator]: `
+  - Evaluate the overall conduct of the meeting.
+  - Provide feedback on the meeting's organization, time management, and leadership.
+  - Acknowledge the performance of other evaluators and functionaries.
+  `,
+  [ToastmastersRoles.RevisedSpeech]: `
+  - Help revise, polish and improve the speech according to speaker's speech.
+  `,
+  [ToastmastersRoles.DemoSpeech]: `
+  - To give a demo impromptu speech only according to the question, not related to the speaker's speech.
+  `,
+  [ToastmastersRoles.Guidance]: `
+  - Guidance.
+  `,
+  [ToastmastersRoles.Introduction]: `
+  - An introduction about the topic.
+  `,
+  [ToastmastersRoles.Advertisement]: `
+  - An advertisement about the topic.
+  `,
+  [ToastmastersRoles.Top10Questions]: `
+  - Top 10 Questions about the topic.
+  `,
+};
 
 export interface ToastmastersRoleSetting {
   words: number;
@@ -51,6 +107,9 @@ export const ToastmastersSettings = (
 /*
 100 words = 48s speech => AvatarVideoGeneratingTime = 4 miniutes = 240 seconds
 1 word => 2.4 seconds
+
+100 words = 1$ = 7.2 RMB = 72 Coins
+1 words => 0.7 Coins
 */
 
 export const ToastmastersTTMasterGuidance = (topic: string) => `
@@ -217,10 +276,18 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       role: ToastmastersRoles.Grammarian + "-Count",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.Grammarian}.
-      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech,
-      2). Only response the table,
+      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech.
+      2). Only response the table, the Speaker in your table should be equal to the number of input i provide you.
       3). Do not include any extra description and extra words.
       `,
+      // contentWithSetting: (setting?) =>
+      // `
+      // You are the ${ToastmastersRoles.Grammarian}.
+      // 1). For each speaker, list the number of his grammar errors first.
+      // 2). Then list out an error list table for each speaker.
+      // 3). List all of the specific errors you find in the speaker's speech followed by the corresponding right format. List errors using the complete sentence where the error appears.
+      // 4). Don't appear Unknown Error. The number of rows should be equal to the number of grammar errors.
+      // `,
     },
     {
       role: ToastmastersRoles.Grammarian + "-Evaluation",
@@ -234,7 +301,7 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       4). Each speaker's evaluation should be about ${setting?.words} words.
       `,
       setting: {
-        words: 50,
+        words: 80,
       },
     },
   ],
@@ -260,7 +327,7 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       4). Each speaker's evaluation should be about ${setting?.words} words.
       `,
       setting: {
-        words: 50,
+        words: 80,
       },
     },
   ],
@@ -297,19 +364,19 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      1). Give me a table which presenting the keywords used in my speech
-      2). Only response the table, 
-      3). Do not include any extra description and extra words. 
+      1). Show me the keywords used in my speech from my 1st ask input.
+      2). Don't make things up, all the keywords must from my speech.
+      3). Don't include any extra description and extra words. 
       `,
     },
     {
       role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      Evaluate my speech.
+      Evaluate my speech from my 1st ask input.
       Your evaluation should:
       1). Don't make things up, all your quoted sentence must from my speech.
-      2). Refer some of the keywords in the table in your evaluation.
+      2). Refer some of the keywords in your last answer.
       3). Bold keywords using markdown when present your answer.
       4). Provide addvice to me based on my speech.
       5). About ${setting?.words} words.
@@ -324,7 +391,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role: ToastmastersRoles.Grammarian + "-Count",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.Grammarian}.
-      1). Give me a table which presenting the accurate number of grammar errors used in my speech,
+      1). Give me a table which presenting the accurate number of grammar errors used in my speech from my 1st ask input,
       2). Only response the table, 
       3). Do not include any extra description and extra words. 
       `,
@@ -333,7 +400,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role: ToastmastersRoles.Grammarian + "-Evaluation",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.Grammarian}. 
-      Evaluate my speech and analysis your stats in your table. 
+      Evaluate my speech and analysis your stats in your last table. 
       Your evaluation should:
       1). Don't make things up, all your quoted sentence must from my speech.
       2). Bold keywords using markdown when present your answer.
@@ -350,7 +417,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role: ToastmastersRoles.AhCounter + "-Count",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.AhCounter}.
-      1). Give me a table which presenting the accurate number of filler words and pauses used in my speech,
+      1). Give me a table which presenting the accurate number of filler words and pauses used in my speech from my 1st ask input,
       2). Only response the table,
       3). Do not include any extra description and extra words.
       `,
@@ -359,7 +426,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role: ToastmastersRoles.AhCounter + "-Evaluation",
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.AhCounter}.
-      To analysis your stats in your table.
+      To analysis your stats in your last table.
       You should:
       1). Generate a summary with the Ah-Counter's tone according to the table
       2). Bold keywords using markdown when present your answer.
@@ -376,10 +443,26 @@ export const ToastmastersTTEvaluatorRecord: Record<
       role: "Revised Speech",
       contentWithSetting: (setting?) =>
         `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
-      Help revise, polish and improve my speech.
+      Help revise, polish and improve my speech from my 1st ask input,
       You should:
       1). Don't say who you are, just provide your revised speech.
       2). Bold keywords using markdown when present your answer.
+      3). About ${setting?.words} words.
+      `,
+      setting: {
+        words: 200,
+      },
+    },
+  ],
+  [ToastmastersRoles.DemoSpeech]: [
+    {
+      role: ToastmastersRoles.DemoSpeech,
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.TableTopicsSpeaker}. 
+      Give me a demo impromptu speech according to the Question from my 1st ask input,
+      You should:
+      1). Bold keywords using markdown when present your answer.
+      2). No need to refer my speech.
       3). About ${setting?.words} words.
       `,
       setting: {

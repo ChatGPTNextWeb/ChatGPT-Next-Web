@@ -66,6 +66,14 @@
 
   // margin-top: 10px;
   border-bottom: var(--border-in-light);
+
+  /* styles.css */
+  .selection-tooltip {
+    font-size: 20px; /* 调整悬浮提示文字的大小 */
+    background-color: azure
+    color(srgb red green blue)
+    /* 添加其他样式属性，如颜色、字体等，根据需要自定义 */
+  }
 }
 
 .chat-input-button-submit {
@@ -137,3 +145,4 @@
     // margin-bottom: 10px;
   }
 }
+

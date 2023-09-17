@@ -141,9 +141,7 @@ export function SpeechAvatarVideoSetting() {
       >
         <Switch
           defaultChecked={config.avatarVideo.previewCost}
-          onChange={(e) =>
-            (config.avatarVideo.previewCost = e.currentTarget.checked)
-          }
+          onChange={(e) => (config.avatarVideo.previewCost = e.target.checked)}
           inputProps={{ "aria-label": "controlled" }}
         />
       </ListItem>

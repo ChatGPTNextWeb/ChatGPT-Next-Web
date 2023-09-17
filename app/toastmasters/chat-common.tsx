@@ -61,6 +61,7 @@ import {
   InputSubmitStatus,
   ToastmastersRoles,
   ToastmastersSettings,
+  ToastmastersRolesResponsibilities,
 } from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
@@ -77,6 +78,8 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import Tooltip from "@mui/material/Tooltip";
+import ReactMarkdown from "react-markdown";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -506,12 +509,21 @@ export const ChatSubmitRadiobox = (props: {
           {Object.entries(props.toastmastersRecord).map(
             ([role, ToastmastersRolePrompts]) => {
               return (
-                <FormControlLabel
+                <Tooltip
                   key={role}
-                  value={role}
-                  control={<Radio />}
-                  label={role}
-                />
+                  title={
+                    <ReactMarkdown>
+                      {ToastmastersRolesResponsibilities[role]}
+                    </ReactMarkdown>
+                  }
+                >
+                  <FormControlLabel
+                    value={role}
+                    control={<Radio />}
+                    label={role}
+                    className={styles_tm["selection-tooltip"]}
+                  />
+                </Tooltip>
               );
             },
           )}
@@ -662,10 +674,8 @@ export const ChatResponse = (props: {
       },
     );
 
-    // TODO: count
-    // update db
     const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-    zBotServiceClient.updateRequest(userEmail ?? "");
+    zBotServiceClient.updateRequest(userEmail ?? "", cost);
   };
 
   return (

@@ -370,7 +370,7 @@ export const useChatStore = create<ChatStore>()(
           return;
         }
         // update db
-        zBotServiceClient.updateRequest(userEmail);
+        zBotServiceClient.updateRequest(userEmail, 1);
 
         set(() => ({ isFinished: false }));
 

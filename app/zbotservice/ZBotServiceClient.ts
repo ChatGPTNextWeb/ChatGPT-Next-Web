@@ -143,9 +143,9 @@ class ZBotServiceClient {
     );
   }
 
-  updateRequest(email: string) {
+  updateRequest(email: string, coins: number) {
     return this.client.post<UserRequestResponseVO>(
-      `/userInfo/${email}/updateRequest`,
+      `/userInfo/${email}/updateRequest/${coins}`,
       {},
     );
   }
