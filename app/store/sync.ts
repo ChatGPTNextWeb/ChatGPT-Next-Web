@@ -103,8 +103,7 @@ export const useSyncStore = createPersistStore(
       }
     },
 
-    getClient() {
-      const provider = get().provider;
+    getClient(provider: ProviderType) {
       const client = createSyncClient(provider, get());
       return client;
     },
@@ -117,7 +116,7 @@ export const useSyncStore = createPersistStore(
       const localState = getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
-      const client = this.getClient();
+      const client = this.getClient(provider);
 
       try {
         set({ syncing: true }); // Set syncing to true before performing the sync
@@ -167,7 +166,12 @@ export const useSyncStore = createPersistStore(
         accessControl.disableGPT4;
       }
 
-      await client.set(localState, config.filename);
+      if (provider === ProviderType.WebDAV) {
+        await this.syncWebDAV(client, config.filename, localState);
+      } else if (provider === ProviderType.GitHubGist) {
+        await this.syncGitHubGist(client, config.filename, localState);
+      }
+
       this.markSyncTime(provider);
       this.markUpdateTime(); // Call markUpdateTime to update lastUpdateTime
       set({ syncing: false });
@@ -175,8 +179,16 @@ export const useSyncStore = createPersistStore(
       return true; // Add the return statement here
     },
 
+    async syncWebDAV(client: any, value: string, localState: AppState) {
+      await client.set(value, JSON.stringify(localState));
+    },
+
+    async syncGitHubGist(client: any, value: Object, localState: AppState) {
+      await client.set(localState, value);
+    },
+
     async check() {
-      const client = this.getClient();
+      const client = this.getClient(get().provider);
       return await client.check();
     },
   }),

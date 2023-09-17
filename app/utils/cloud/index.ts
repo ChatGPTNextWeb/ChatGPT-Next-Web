@@ -24,7 +24,7 @@ type SyncClientConfig = {
 
 export type SyncClient = {
   get: (key: string) => Promise<string>;
-  set: (key: Object, value: string) => Promise<void>;
+  set: (key: string, value: Object | string) => Promise<void>; // Update the parameter type to accept both object and string
   check: () => Promise<boolean>;
 };
 
