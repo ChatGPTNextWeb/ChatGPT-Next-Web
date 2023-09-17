@@ -1,14 +1,17 @@
 import { createWebDavClient } from "./webdav";
 import { createUpstashClient } from "./upstash";
+import { createGistClient } from "./gist";
 
 export enum ProviderType {
   WebDAV = "webdav",
   UpStash = "upstash",
+  GitHubGist = "githubGist",
 }
 
 export const SyncClients = {
   [ProviderType.UpStash]: createUpstashClient,
   [ProviderType.WebDAV]: createWebDavClient,
+  [ProviderType.GitHubGist]: createGistClient,
 } as const;
 
 type SyncClientConfig = {
@@ -25,7 +28,7 @@ export type SyncClient = {
   check: () => Promise<boolean>;
 };
 
-export function createSyncClient<T extends ProviderType>(
+export function createSyncClient<T extends keyof typeof SyncClients>(
   provider: T,
   config: SyncClientConfig[T],
 ): SyncClient {

@@ -15,42 +15,66 @@ import { createSyncClient, ProviderType } from "../utils/cloud";
 import { corsPath } from "../utils/cors";
 
 export interface WebDavConfig {
-  server: string;
+  endpoint: string;
   username: string;
   password: string;
+  filename: string;
 }
 
-export type SyncStore = GetStoreState<typeof useSyncStore>;
+export interface GistConfig {
+  filename: string;
+  gistId: string;
+  token: string;
+}
+
+export type SyncStore = GetStoreState<typeof useSyncStore> & {
+  syncing: boolean;
+};
 
 export const useSyncStore = createPersistStore(
   {
     provider: ProviderType.WebDAV,
     useProxy: true,
     proxyUrl: corsPath(ApiPath.Cors),
+    enableAccessControl: false,
+
+    githubGist: {
+      filename: "",
+      gistId: "",
+      token: "",
+    },
 
     webdav: {
       endpoint: "",
       username: "",
       password: "",
+      filename: "",
     },
 
     upstash: {
       endpoint: "",
       username: "",
       apiKey: "",
+      filename: "",
     },
 
     lastSyncTime: 0,
     lastProvider: "",
+    lastUpdateTime: 0,
+    syncing: false,
   },
   (set, get) => ({
-    coundSync() {
+    countSync() {
       const config = get()[get().provider];
       return Object.values(config).every((c) => c.toString().length > 0);
     },
 
-    markSyncTime() {
-      set({ lastSyncTime: Date.now(), lastProvider: get().provider });
+    markSyncTime(provider: ProviderType) {
+      set({ lastSyncTime: Date.now(), lastProvider: provider });
+    },
+
+    markUpdateTime() {
+      set({ lastUpdateTime: Date.now() });
     },
 
     export() {
@@ -63,13 +87,18 @@ export const useSyncStore = createPersistStore(
       const rawContent = await readFromFile();
 
       try {
-        const remoteState = JSON.parse(rawContent) as AppState;
+        const jsonChunks = rawContent.split("\n");
         const localState = getLocalAppState();
-        mergeAppState(localState, remoteState);
+
+        for (const jsonChunk of jsonChunks) {
+          const remoteState = JSON.parse(jsonChunk) as AppState;
+          mergeAppState(localState, remoteState);
+        }
+
         setLocalAppState(localState);
         location.reload();
       } catch (e) {
-        console.error("[Import]", e);
+        console.error("[Import] Failed to import JSON file:", e);
         showToast(Locale.Settings.Sync.ImportFailed);
       }
     },
@@ -80,25 +109,70 @@ export const useSyncStore = createPersistStore(
       return client;
     },
 
-    async sync() {
+    async sync(overwriteAccessControl: boolean = false) {
+      if (get().syncing) {
+        return;
+      }
+
       const localState = getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
       const client = this.getClient();
 
       try {
-        const remoteState = JSON.parse(
-          await client.get(config.username),
-        ) as AppState;
+        set({ syncing: true }); // Set syncing to true before performing the sync
+        const rawContent = await client.get(config.filename);
+        const remoteState = JSON.parse(rawContent) as AppState;
+
+        const sessions = localState[StoreKey.Chat].sessions;
+        const currentSession =
+          sessions[localState[StoreKey.Chat].currentSessionIndex];
+        const filteredTopic =
+          currentSession.topic === "New Conversation" &&
+          currentSession.messages.length === 0;
+
         mergeAppState(localState, remoteState);
+
+        if (filteredTopic) {
+          const remoteSessions = remoteState[StoreKey.Chat].sessions;
+          const remoteCurrentSession =
+            remoteSessions[remoteState[StoreKey.Chat].currentSessionIndex];
+          const remoteFilteredTopic =
+            remoteCurrentSession.topic === "New Conversation" &&
+            remoteCurrentSession.messages.length > 0;
+
+          if (!remoteFilteredTopic) {
+            localState[StoreKey.Chat].sessions[
+              localState[StoreKey.Chat].currentSessionIndex
+            ].mask = {
+              ...currentSession.mask,
+              name: remoteCurrentSession.mask.name,
+            };
+          }
+        }
+
         setLocalAppState(localState);
       } catch (e) {
-        console.log("[Sync] failed to get remoate state", e);
+        console.error(
+          `[Sync] Failed to get remote state from file '${config.filename}' for provider ['${provider}']:`,
+          e,
+          "Will attempt fixing it",
+        );
       }
 
-      await client.set(config.username, JSON.stringify(localState));
+      if (overwriteAccessControl) {
+        const accessControl = localState["access-control"];
+        accessControl.accessCode;
+        accessControl.hideUserApiKey;
+        accessControl.disableGPT4;
+      }
 
-      this.markSyncTime();
+      await client.set(JSON.stringify(localState), config.filename);
+      this.markSyncTime(provider);
+      this.markUpdateTime(); // Call markUpdateTime to update lastUpdateTime
+      set({ syncing: false });
+
+      return true; // Add the return statement here
     },
 
     async check() {

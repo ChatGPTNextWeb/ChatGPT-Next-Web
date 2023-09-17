@@ -201,10 +201,43 @@ const cn = {
           SubTitle: "仅适用于本项目自带的跨域代理",
         },
 
+        AccessControl: {
+          Title: "启用覆盖访问控制",
+          SubTitle: "仅适用于覆盖访问控制设置，例如访问代码",
+        },
+
         WebDav: {
-          Endpoint: "WebDAV 地址",
-          UserName: "用户名",
-          Password: "密码",
+          Endpoint: {
+            Name: "WebDav 终端点",
+            SubTitle: "配置 WebDav 终端点",
+          },
+          UserName: {
+            Name: "用户名",
+            SubTitle: "配置用户名",
+          },
+          Password: {
+            Name: "密码",
+            SubTitle: "配置密码",
+          },
+          FileName: {
+            Name: "文件名",
+            SubTitle: "文件名，例如：backtrackz.json（必须是 JSON 文件）",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "Github Gist ID",
+            SubTitle:
+              "您的 Gist ID 位置，例如：gist.github.com/H0llyW00dzZ/<gistid>/等。复制 <gistid> 并粘贴到这里。",
+          },
+          FileName: {
+            Name: "文件名",
+            SubTitle: "文件名，例如：backtrackz.json（必须是 JSON 文件）",
+          },
+          AccessToken: {
+            Name: "访问令牌",
+            SubTitle: "确保您具有同步的权限。在那里启用私有和公开。",
+          },
         },
       },
 
