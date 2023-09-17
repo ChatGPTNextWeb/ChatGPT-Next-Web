@@ -76,11 +76,11 @@ export const useSyncStore = createPersistStore(
     markUpdateTime() {
       set({ lastUpdateTime: Date.now() });
     },
-
+    // This will automatically generate JSON files without the need to include the ".json" extension.
     export() {
       const state = getLocalAppState();
-      const fileName = `Backup-${new Date().toLocaleString()}.json`;
-      downloadAs(JSON.stringify(state), fileName);
+      const fileName = `Backup-${new Date().toLocaleString()}`;
+      downloadAs(state, fileName);
     },
 
     async import() {
@@ -167,7 +167,7 @@ export const useSyncStore = createPersistStore(
         accessControl.disableGPT4;
       }
 
-      await client.set(JSON.stringify(localState), config.filename);
+      await client.set(localState, config.filename);
       this.markSyncTime(provider);
       this.markUpdateTime(); // Call markUpdateTime to update lastUpdateTime
       set({ syncing: false });
