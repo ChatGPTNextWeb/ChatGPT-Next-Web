@@ -1,5 +1,5 @@
 import { Updater } from "../typing";
-import { ApiPath, StoreKey } from "../constant";
+import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
 import { createPersistStore } from "../utils/store";
 import {
   AppState,
@@ -36,7 +36,7 @@ export const useSyncStore = createPersistStore(
 
     upstash: {
       endpoint: "",
-      username: "",
+      username: STORAGE_KEY,
       apiKey: "",
     },
 
