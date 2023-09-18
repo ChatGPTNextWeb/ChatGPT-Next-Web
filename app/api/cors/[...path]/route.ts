@@ -26,13 +26,18 @@ async function handle(
     duplex: "half",
   };
 
-  console.log("[Any Proxy]", targetUrl);
+  const fetchResult = await fetch(targetUrl, fetchOptions);
 
-  const fetchResult = fetch(targetUrl, fetchOptions);
+  console.log("[Any Proxy]", targetUrl, {
+    status: fetchResult.status,
+    statusText: fetchResult.statusText,
+  });
 
   return fetchResult;
 }
 
 export const POST = handle;
+export const GET = handle;
+export const OPTIONS = handle;
 
 export const runtime = "edge";
