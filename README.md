@@ -25,6 +25,10 @@
 
 ![plugin-example](./docs/images/plugin-example.png)
 
+![wiki-plugin](./docs/images/wiki-plugin-example.png)
+
+![dall-e-plugin](./docs/images/dalle-plugin-example.png)
+
 ![cover](./docs/images/cover.png)
 
 </div>
