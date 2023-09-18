@@ -203,11 +203,46 @@ const en: LocaleType = {
           SubTitle:
             "Only applicable to the built-in CORS proxy for this project",
         },
-
+        AccessControl: {
+          Title: "Enable Overwrite Access Control",
+          SubTitle:
+            "Only applicable to the overwrite access control setting such as an access code",
+        },
         WebDav: {
-          Endpoint: "WebDAV Endpoint",
-          UserName: "User Name",
-          Password: "Password",
+          Endpoint: {
+            Name: "WebDav Endpoint",
+            SubTitle: "Configure the WebDav Endpoint",
+          },
+          UserName: {
+            Name: "User Name",
+            SubTitle: "Configure the User Name",
+          },
+          Password: {
+            Name: "Password",
+            SubTitle: "Configure the Password",
+          },
+          FileName: {
+            Name: "File Name",
+            SubTitle:
+              "File Name, for example: backtrackz.json (must be a JSON file)",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "Github Gist ID",
+            SubTitle:
+              "Your Gist ID location, for example: gist.github.com/H0llyW00dzZ/<gistid>/etc. copy then paste the <gistid> here.",
+          },
+          FileName: {
+            Name: "File Name",
+            SubTitle:
+              "File Name, for example: backtrackz.json (must be a JSON file)",
+          },
+          AccessToken: {
+            Name: "Access Token",
+            SubTitle:
+              "Make sure you have permission for syncing. Enable Private & Public there.",
+          },
         },
       },
 

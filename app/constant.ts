@@ -27,10 +27,10 @@ export enum ApiPath {
 export enum SlotID {
   AppBody = "app-body",
 }
-
+// This will automatically generate JSON files without the need to include the ".json" extension.
 export enum FileName {
-  Masks = "masks.json",
-  Prompts = "prompts.json",
+  Masks = "masks",
+  Prompts = "prompts",
 }
 
 export enum StoreKey {

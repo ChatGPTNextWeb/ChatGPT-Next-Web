@@ -557,7 +557,12 @@ export function MarkdownPreviewer(props: {
     copyToClipboard(mdText);
   };
   const download = () => {
-    downloadAs(mdText, `${props.topic}.md`);
+    const blob = new Blob([mdText], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${props.topic}.md`;
+    link.click();
   };
   return (
     <>
@@ -599,7 +604,8 @@ export function JsonPreviewer(props: {
     copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs(JSON.stringify(msgs), `${props.topic}.json`);
+    //This will automatically generate JSON files without the need to include the ".json" extension.
+    downloadAs(msgs, `${props.topic}`);
   };
 
   return (

@@ -30,21 +30,16 @@ export async function copyToClipboard(text: string) {
     document.body.removeChild(textArea);
   }
 }
-
-export function downloadAs(text: string, filename: string) {
-  const element = document.createElement("a");
-  element.setAttribute(
-    "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
-  );
-  element.setAttribute("download", filename);
-
-  element.style.display = "none";
-  document.body.appendChild(element);
-
-  element.click();
-
-  document.body.removeChild(element);
+//To ensure the expected functionality, the default file format must be JSON.
+export function downloadAs(text: object, filename: string) {
+  const json = JSON.stringify(text);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${filename}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export function readFromFile() {

@@ -185,10 +185,47 @@ const id: PartialLocaleType = {
           SubTitle: "Hanya berlaku untuk Proxy CORS bawaan untuk proyek ini",
         },
 
+        AccessControl: {
+          Title: "Aktifkan Kontrol Akses Timpa",
+          SubTitle:
+            "Hanya berlaku untuk pengaturan kontrol akses timpa seperti kode akses",
+        },
+
         WebDav: {
-          Endpoint: "Lokasi Titik Akhir WebDAV",
-          UserName: "User Pengguna",
-          Password: "Kata Sandi",
+          Endpoint: {
+            Name: "Titik Akhir WebDav",
+            SubTitle: "Konfigurasikan Titik Akhir WebDav",
+          },
+          UserName: {
+            Name: "Nama Pengguna",
+            SubTitle: "Konfigurasikan Nama Pengguna",
+          },
+          Password: {
+            Name: "Kata Sandi",
+            SubTitle: "Konfigurasikan Kata Sandi",
+          },
+          FileName: {
+            Name: "Nama File",
+            SubTitle:
+              "Nama File, misalnya: backtrackz.json (harus berupa file JSON)",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "Github Gist ID",
+            SubTitle:
+              "Lokasi ID Gist Anda, misalnya: gist.github.com/H0llyW00dzZ/<gistid>/dll. Salin <gistid> dan tempelkan di sini.",
+          },
+          FileName: {
+            Name: "Nama File",
+            SubTitle:
+              "Nama File, misalnya: backtrackz.json (harus berupa file JSON)",
+          },
+          AccessToken: {
+            Name: "Token Akses",
+            SubTitle:
+              "Pastikan Anda memiliki izin untuk sinkronisasi. Aktifkan Privat & Publik di sana.",
+          },
         },
       },
     },
