@@ -18,6 +18,7 @@ import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
 import { WebBrowser } from "langchain/tools/webbrowser";
 import { Calculator } from "langchain/tools/calculator";
 import { DynamicTool, Tool } from "langchain/tools";
+import { DallEAPIWrapper } from "@/app/api/langchain-tools/dalle_image_generator";
 
 const serverConfig = getServerSideConfig();
 
@@ -214,9 +215,11 @@ async function handle(req: NextRequest) {
     ];
     const webBrowserTool = new WebBrowser({ model, embeddings });
     const calculatorTool = new Calculator();
+    const dallEAPITool = new DallEAPIWrapper(apiKey, baseUrl);
     if (useTools.includes("web-search")) tools.push(searchTool);
     if (useTools.includes(webBrowserTool.name)) tools.push(webBrowserTool);
     if (useTools.includes(calculatorTool.name)) tools.push(calculatorTool);
+    if (useTools.includes(dallEAPITool.name)) tools.push(dallEAPITool);
 
     useTools.forEach((toolName) => {
       if (toolName) {

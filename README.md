@@ -46,6 +46,8 @@
    
   - 其它
     - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
+    - DALL-E
+      - DALL-E 插件需要配置 R2 存储，请参考 [Cloudflare R2 服务配置指南](./docs/cloudflare-r2-cn.md) 配置
   
 
 
@@ -160,6 +162,21 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 ### `HIDE_BALANCE_QUERY` （可选）
 
 如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+
+### `R2_ACCOUNT_ID` （可选）
+
+Cloudflare R2 帐户 ID，使用 `DALL-E` 插件时需要配置。
+
+### `R2_ACCESS_KEY_ID` （可选）
+
+Cloudflare R2 访问密钥 ID，使用 `DALL-E` 插件时需要配置。
+
+### `R2_SECRET_ACCESS_KEY` （可选）
+
+Cloudflare R2 机密访问密钥，使用 `DALL-E` 插件时需要配置。
+### `R2_BUCKET` （可选）
+
+Cloudflare R2 Bucket 名称，使用 `DALL-E` 插件时需要配置。
 
 ## 部署
 
