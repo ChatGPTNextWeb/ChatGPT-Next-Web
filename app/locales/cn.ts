@@ -187,6 +187,7 @@ const cn = {
       Config: {
         Modal: {
           Title: "配置云同步",
+          Check: "检查可用性",
         },
         SyncType: {
           Title: "同步类型",
