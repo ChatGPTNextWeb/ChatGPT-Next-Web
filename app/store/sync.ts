@@ -22,27 +22,29 @@ export interface WebDavConfig {
 
 export type SyncStore = GetStoreState<typeof useSyncStore>;
 
-export const useSyncStore = createPersistStore(
-  {
-    provider: ProviderType.WebDAV,
-    useProxy: true,
-    proxyUrl: corsPath(ApiPath.Cors),
+const DEFAULT_SYNC_STATE = {
+  provider: ProviderType.WebDAV,
+  useProxy: true,
+  proxyUrl: corsPath(ApiPath.Cors),
 
-    webdav: {
-      endpoint: "",
-      username: "",
-      password: "",
-    },
-
-    upstash: {
-      endpoint: "",
-      username: STORAGE_KEY,
-      apiKey: "",
-    },
-
-    lastSyncTime: 0,
-    lastProvider: "",
+  webdav: {
+    endpoint: "",
+    username: "",
+    password: "",
   },
+
+  upstash: {
+    endpoint: "",
+    username: STORAGE_KEY,
+    apiKey: "",
+  },
+
+  lastSyncTime: 0,
+  lastProvider: "",
+};
+
+export const useSyncStore = createPersistStore(
+  DEFAULT_SYNC_STATE,
   (set, get) => ({
     coundSync() {
       const config = get()[get().provider];
@@ -108,6 +110,16 @@ export const useSyncStore = createPersistStore(
   }),
   {
     name: StoreKey.Sync,
-    version: 1,
+    version: 1.1,
+
+    migrate(persistedState, version) {
+      const newState = persistedState as typeof DEFAULT_SYNC_STATE;
+
+      if (version < 1.1) {
+        newState.upstash.username = STORAGE_KEY;
+      }
+
+      return newState as any;
+    },
   },
 );
