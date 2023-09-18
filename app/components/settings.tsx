@@ -275,7 +275,7 @@ function CheckButton() {
 
   return (
     <IconButton
-      text="检查可用性"
+      text={Locale.Settings.Sync.Config.Modal.Check}
       bordered
       onClick={check}
       icon={
