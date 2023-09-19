@@ -1,5 +1,5 @@
 import { Updater } from "../typing";
-import { ApiPath, StoreKey } from "../constant";
+import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
 import { createPersistStore } from "../utils/store";
 import {
   AppState,
@@ -31,38 +31,39 @@ export type SyncStore = GetStoreState<typeof useSyncStore> & {
   syncing: boolean;
 };
 
-export const useSyncStore = createPersistStore(
-  {
-    provider: ProviderType.WebDAV,
-    useProxy: true,
-    proxyUrl: corsPath(ApiPath.Cors),
-    enableAccessControl: false,
+const DEFAULT_SYNC_STATE = {
+  provider: ProviderType.WebDAV,
+  useProxy: true,
+  proxyUrl: corsPath(ApiPath.Cors),
+  enableAccessControl: false,
 
-    githubGist: {
-      filename: "",
-      gistId: "",
-      token: "",
-    },
-
-    webdav: {
-      endpoint: "",
-      username: "",
-      password: "",
-      filename: "",
-    },
-
-    upstash: {
-      endpoint: "",
-      username: "",
-      apiKey: "",
-      filename: "",
-    },
-
-    lastSyncTime: 0,
-    lastProvider: "",
-    lastUpdateTime: 0,
-    syncing: false,
+  githubGist: {
+    filename: "",
+    gistId: "",
+    token: "",
   },
+
+  webdav: {
+    endpoint: "",
+    username: "",
+    password: "",
+    filename: "",
+  },
+
+  upstash: {
+    endpoint: "",
+    username: "",
+    apiKey: "",
+    filename: "",
+  },
+
+  lastSyncTime: 0,
+  lastProvider: "",
+  lastUpdateTime: 0,
+  syncing: false,
+};
+export const useSyncStore = createPersistStore(
+  DEFAULT_SYNC_STATE,
   (set, get) => ({
     countSync() {
       const config = get()[get().provider];
@@ -76,7 +77,7 @@ export const useSyncStore = createPersistStore(
     markUpdateTime() {
       set({ lastUpdateTime: Date.now() });
     },
-    // This will automatically generate JSON files without the need to include the ".json" extension.
+
     export() {
       const state = getLocalAppState();
       const fileName = `Backup-${new Date().toLocaleString()}`;
@@ -161,9 +162,9 @@ export const useSyncStore = createPersistStore(
 
       if (overwriteAccessControl) {
         const accessControl = localState["access-control"];
-        accessControl.accessCode;
-        accessControl.hideUserApiKey;
-        accessControl.disableGPT4;
+        accessControl.accessCode = "";
+        accessControl.hideUserApiKey = false;
+        accessControl.disableGPT4 = false;
       }
 
       if (provider === ProviderType.WebDAV) {
@@ -194,6 +195,13 @@ export const useSyncStore = createPersistStore(
   }),
   {
     name: StoreKey.Sync,
-    version: 1,
+    version: 1.1,
+    migrate(persistedState, version) {
+      const newState = persistedState as typeof DEFAULT_SYNC_STATE;
+      if (version < 1.1) {
+        newState.upstash.username = STORAGE_KEY;
+      }
+      return newState as any;
+    },
   },
 );
