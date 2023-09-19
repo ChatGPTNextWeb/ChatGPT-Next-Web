@@ -1,4 +1,5 @@
 import { STORAGE_KEY, REPO_URL } from "@/app/constant";
+import { chunks } from "../format";
 import { SyncStore } from "@/app/store/sync";
 import { corsFetch } from "../cors";
 
@@ -26,17 +27,23 @@ export function createGistClient(store: SyncStore) {
     async create(content: string) {
       const description = `[200 OK] [GithubSync] Last Sync: ${currentDate} Site: ${REPO_URL}`;
 
+      const contentChunks = [...chunks(content)];
+      const files: { [key: string]: { content: string } } = {};
+
+      for (let i = 0; i < contentChunks.length; i++) {
+        const fileName = i === 0 ? fileBackup : `${fileBackup}_${i}`;
+        files[fileName] = {
+          content: contentChunks[i],
+        };
+      }
+
       return corsFetch("https://api.github.com/gists", {
         method: "POST",
         headers: this.headers(),
         body: JSON.stringify({
           public: false,
           description,
-          files: {
-            [fileBackup]: {
-              content,
-            },
-          },
+          files,
         }),
       })
         .then((res) => {
