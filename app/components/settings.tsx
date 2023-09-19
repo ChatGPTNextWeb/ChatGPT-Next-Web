@@ -50,7 +50,7 @@ import Locale, {
 } from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
-import { Path, RELEASE_URL, UPDATE_URL } from "../constant";
+import { Path, RELEASE_URL, STORAGE_KEY, UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
@@ -275,7 +275,7 @@ function CheckButton() {
 
   return (
     <IconButton
-      text="检查可用性"
+      text={Locale.Settings.Sync.Config.Modal.Check}
       bordered
       onClick={check}
       icon={
@@ -413,7 +413,42 @@ function SyncConfigModal(props: { onClose?: () => void }) {
 
         {syncStore.provider === ProviderType.UpStash && (
           <List>
-            <ListItem title={Locale.WIP}></ListItem>
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.Endpoint}>
+              <input
+                type="text"
+                value={syncStore.upstash.endpoint}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) =>
+                      (config.upstash.endpoint = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.UserName}>
+              <input
+                type="text"
+                value={syncStore.upstash.username}
+                placeholder={STORAGE_KEY}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) =>
+                      (config.upstash.username = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.Password}>
+              <PasswordInput
+                value={syncStore.upstash.apiKey}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) => (config.upstash.apiKey = e.currentTarget.value),
+                  );
+                }}
+              ></PasswordInput>
+            </ListItem>
           </List>
         )}
       </Modal>

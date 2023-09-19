@@ -31,7 +31,6 @@ import { api } from "../client/api";
 import { useAccessStore } from "../store";
 import { useNavigate } from "react-router-dom";
 
-
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={styles["loading-content"] + " no-dark"}>
@@ -113,7 +112,11 @@ const loadAsyncGoogleFont = () => {
   const googleFontUrl =
     getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
   linkEl.rel = "stylesheet";
-  linkEl.href = googleFontUrl + "/css2?family=Noto+Sans:wght@300;400;700;900&display=swap";
+  linkEl.href =
+    googleFontUrl +
+    "/css2?family=" +
+    encodeURIComponent("Noto Sans:wght@300;400;700;900") +
+    "&display=swap";
   document.head.appendChild(linkEl);
 };
 

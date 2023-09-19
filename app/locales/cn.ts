@@ -187,6 +187,7 @@ const cn = {
       Config: {
         Modal: {
           Title: "配置云同步",
+          Check: "检查可用性",
         },
         SyncType: {
           Title: "同步类型",
@@ -205,6 +206,12 @@ const cn = {
           Endpoint: "WebDAV 地址",
           UserName: "用户名",
           Password: "密码",
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "备份名称",
+          Password: "UpStash Redis REST Token",
         },
       },
 
