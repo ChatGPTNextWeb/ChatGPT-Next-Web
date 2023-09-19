@@ -267,21 +267,8 @@ function CheckButton() {
 
   async function check() {
     setCheckState("checking");
-    if (ProviderType.GitHubGist) {
-      const syncing = await syncStore.sync();
-      try {
-        showToast(Locale.Settings.Sync.Success);
-        //window.location.reload(); // Refresh the page after successful sync
-        setCheckState(syncing ? "success" : "success");
-      } catch (e) {
-        showToast(Locale.Settings.Sync.Fail);
-        setCheckState(syncing ? "failed" : "failed");
-        console.error("[Sync]", e);
-      }
-    } else {
-      const valid = await syncStore.check();
-      setCheckState(valid ? "success" : "failed");
-    }
+    const valid = await syncStore.check();
+    setCheckState(valid ? "success" : "failed");
   }
 
   if (!couldCheck) return null;

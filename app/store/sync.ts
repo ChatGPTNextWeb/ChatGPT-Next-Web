@@ -152,7 +152,7 @@ export const useSyncStore = createPersistStore(
 
         setLocalAppState(localState);
       } catch (e) {
-        console.error(
+        console.log(
           `[Sync] Failed to get remote state from file '${config.filename}' for provider ['${provider}']:`,
           e,
           "Will attempt fixing it",

@@ -64,15 +64,12 @@ export function createGistClient(store: SyncStore) {
       console.log("[Gist] check", res.status, res.statusText);
 
       if (res.status === 200) {
-        const data = await res.json();
-        return data.files[fileBackup]?.content ?? "";
+        return "success"; // Return success if the Gist exists
       } else if (res.status === 404) {
-        // If the Gist file doesn't exist, create a new file inside the current Gist
-        const newContent = await this.set({});
-        return newContent;
+        return "failed"; // Return failed if the Gist doesn't exist
       }
 
-      return "";
+      return ""; // Return an empty string for other cases
     },
 
     async get() {
