@@ -114,7 +114,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://chatgpt2.nextweb.fun/api/proxy
+BASE_URL=https://nb.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
