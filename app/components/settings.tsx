@@ -285,10 +285,8 @@ function CheckButton() {
           <LoadingIcon />
         ) : checkState === "success" ? (
           <CloudSuccessIcon />
-        ) : checkState === "failed" ? (
-          <CloudFailIcon />
         ) : (
-          <ConnectionIcon />
+          <CloudFailIcon />
         )
       }
     ></IconButton>
