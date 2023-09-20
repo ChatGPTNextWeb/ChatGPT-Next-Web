@@ -47,7 +47,12 @@ export function createGistClient(store: SyncStore) {
         }),
       })
         .then((res) => {
-          console.log("[Gist] create", res.status, res.statusText);
+          console.log(
+            "[Gist] Create A File Name",
+            `${fileBackup}`,
+            res.status,
+            res.statusText,
+          );
           if (res.status === 201) {
             return res.json().then((data) => {
               gistId = data.id; // Update the gistId with the new Gist ID
@@ -57,7 +62,7 @@ export function createGistClient(store: SyncStore) {
           return null;
         })
         .catch((error) => {
-          console.error("[Gist] create", error);
+          console.error("[Gist] Create A File Name", `${fileBackup}`, error);
           return null;
         });
     },
@@ -68,7 +73,7 @@ export function createGistClient(store: SyncStore) {
         headers: this.headers(),
       });
 
-      console.log("[Gist] check", res.status, res.statusText);
+      console.log("[Gist] Check A File Name", res.status, res.statusText);
 
       if (res.status === 200) {
         return "success"; // Return success if the Gist exists
@@ -85,7 +90,12 @@ export function createGistClient(store: SyncStore) {
         headers: this.headers(),
       });
 
-      console.log("[Gist] get", res.status, res.statusText);
+      console.log(
+        "[Gist] Get A File Name",
+        `${fileBackup}`,
+        res.status,
+        res.statusText,
+      );
 
       if (res.status === 200) {
         const data = await res.json();
@@ -113,11 +123,20 @@ export function createGistClient(store: SyncStore) {
         }),
       })
         .then((res) => {
-          console.log("[Gist] set", res.status, res.statusText);
+          console.log(
+            "[Gist] Set A Data oF File Name",
+            `${fileBackup}`,
+            res.status,
+            res.statusText,
+          );
           return newContent;
         })
         .catch((error) => {
-          console.error("[Gist] set", error);
+          console.error(
+            "[Gist] Set A Data oF File Name",
+            `${fileBackup}`,
+            error,
+          );
           return "";
         });
     },
