@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { DEFAULT_CORS_HOST } from "@/app/constant";
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
   if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+    // Set CORS headers for preflight requests
+    return NextResponse.json(
+      { body: "OK" },
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": `${DEFAULT_CORS_HOST}`, // Replace * with the appropriate origin(s)
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS", // Add other allowed methods if needed
+          "Access-Control-Allow-Headers": "*", // Replace * with the appropriate headers
+          "Access-Control-Max-Age": "86400", // Adjust the max age value if needed
+        },
+      },
+    );
   }
 
   const [protocol, ...subpath] = params.path;
