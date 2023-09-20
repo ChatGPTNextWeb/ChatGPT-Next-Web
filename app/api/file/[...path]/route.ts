@@ -10,12 +10,12 @@ async function handle(
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req);
-  if (authResult.error) {
-    return NextResponse.json(authResult, {
-      status: 401,
-    });
-  }
+  // const authResult = auth(req);
+  // if (authResult.error) {
+  //   return NextResponse.json(authResult, {
+  //     status: 401,
+  //   });
+  // }
 
   try {
     var file = await S3FileStorage.get(params.path[0]);
