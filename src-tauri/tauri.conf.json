@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "晓智gpt Web",
+    "productName": "晓智gpt",
     "version": "2.9.7"
   },
   "tauri": {
@@ -62,7 +62,7 @@
         "icons/icon.ico"
       ],
       "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "晓智gpt Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "longDescription": "晓智gpt is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -71,7 +71,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "晓智gpt Web App",
+      "shortDescription": "晓智gpt App",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -98,7 +98,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "晓智gpt Web",
+        "title": "晓智gpt",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
