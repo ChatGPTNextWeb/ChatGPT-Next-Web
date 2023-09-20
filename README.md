@@ -10,7 +10,7 @@
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[网页版](https://chat-gpt-next-web-gosuto.vercel.app/) / [客户端](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases) / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues)
+[网页版](https://chat-gpt-next-web-gosuto.vercel.app/) / ~~[客户端](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases)~~ / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues)
 
 [web-url]: https://chat-gpt-next-web-gosuto.vercel.app/
 [download-url]: https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases
