@@ -136,6 +136,15 @@ OpanAI 密钥，你在 openai 账户页面申请的 api key。
 
 [Web Search API | Microsoft Bing](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
 
+### `CHOOSE_SEARCH_ENGINE` (可选)
+
+此项为直连搜索引擎，免去api试用量小的烦恼，但可能因为网络问题导致无法使用
+
+可选项如下：
+
+- google
+- baidu
+
 ### `CODE` （可选）
 
 访问密码，可选，可以使用逗号隔开多个密码。
