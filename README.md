@@ -47,7 +47,7 @@
   
   - 网络请求
     - [WebBrowser](https://js.langchain.com/docs/api/tools_webbrowser/classes/WebBrowser)
-   
+  
   - 其它
     - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
     - DALL-E
@@ -105,6 +105,8 @@
 [简体中文 > 常见问题](./docs/faq-cn.md)
 
 [English > FAQ](./docs/faq-en.md)
+
+[Azure OpenAI](./docs/azure-openai-cn.md)
 
 ## 配置页面访问密码
 
