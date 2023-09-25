@@ -1,5 +1,4 @@
 import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
-import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import ChatGptIcon from "../icons/chatgpt.png";
@@ -85,35 +84,40 @@ export const useUpdateStore = createPersistStore(
         }));
         if (window.__TAURI__?.notification && isApp) {
           // Check if notification permission is granted
-          await window.__TAURI__?.notification.isPermissionGranted().then((granted) => {
-            if (!granted) {
-              return;
-            } else {
-              // Request permission to show notifications
-              window.__TAURI__?.notification.requestPermission().then((permission) => {
-                if (permission === 'granted') {
-                  if (version === remoteId) {
-                    // Show a notification using Tauri
-                    window.__TAURI__?.notification.sendNotification({
-                      title: "ChatGPT Next Web",
-                      body: `${Locale.Settings.Update.IsLatest}`,
-                      icon: `${ChatGptIcon.src}`,
-                      sound: "Default"
-                    });
-                  } else {
-                    const updateMessage = Locale.Settings.Update.FoundUpdate(`${remoteId}`);
-                    // Show a notification for the new version using Tauri
-                    window.__TAURI__?.notification.sendNotification({
-                      title: "ChatGPT Next Web",
-                      body: updateMessage,
-                      icon: `${ChatGptIcon.src}`,
-                      sound: "Default"
-                    });
-                  }
-                }
-              });
-            }
-          });
+          await window.__TAURI__?.notification
+            .isPermissionGranted()
+            .then((granted) => {
+              if (!granted) {
+                return;
+              } else {
+                // Request permission to show notifications
+                window.__TAURI__?.notification
+                  .requestPermission()
+                  .then((permission) => {
+                    if (permission === "granted") {
+                      if (version === remoteId) {
+                        // Show a notification using Tauri
+                        window.__TAURI__?.notification.sendNotification({
+                          title: "ChatGPT Next Web",
+                          body: `${Locale.Settings.Update.IsLatest}`,
+                          icon: `${ChatGptIcon.src}`,
+                          sound: "Default",
+                        });
+                      } else {
+                        const updateMessage =
+                          Locale.Settings.Update.FoundUpdate(`${remoteId}`);
+                        // Show a notification for the new version using Tauri
+                        window.__TAURI__?.notification.sendNotification({
+                          title: "ChatGPT Next Web",
+                          body: updateMessage,
+                          icon: `${ChatGptIcon.src}`,
+                          sound: "Default",
+                        });
+                      }
+                    }
+                  });
+              }
+            });
         }
         console.log("[Got Upstream] ", remoteId);
       } catch (error) {
@@ -130,14 +134,7 @@ export const useUpdateStore = createPersistStore(
       }));
 
       try {
-        const usage = await api.llm.usage();
-
-        if (usage) {
-          set(() => ({
-            used: usage.used,
-            subscription: usage.total,
-          }));
-        }
+        // TODO: add check usage api here
       } catch (e) {
         console.error((e as Error).message);
       }

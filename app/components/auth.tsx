@@ -3,7 +3,7 @@ import { IconButton } from "./button";
 
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-import { useAccessStore } from "../store";
+import { useAccessStore, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 
 import BotIcon from "../icons/bot.svg";
@@ -13,10 +13,14 @@ import { getClientConfig } from "../config/client";
 export function AuthPage() {
   const navigate = useNavigate();
   const access = useAccessStore();
+  const config = useAppConfig();
 
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
-  const resetAccessCode = () => { access.updateCode(""); access.updateToken(""); }; // Reset access code to empty string
+  const resetAccessCode = () => {
+    access.update((config) => (config.accessCode = ""));
+    config.update((config) => (config.providerConfig.openai.apiKey = ""));
+  }; // Reset access code to empty string
 
   useEffect(() => {
     if (getClientConfig()?.isApp) {
@@ -40,7 +44,9 @@ export function AuthPage() {
         placeholder={Locale.Auth.Input}
         value={access.accessCode}
         onChange={(e) => {
-          access.updateCode(e.currentTarget.value);
+          access.update(
+            (config) => (config.accessCode = e.currentTarget.value),
+          );
         }}
       />
       {!access.hideUserApiKey ? (
@@ -50,9 +56,12 @@ export function AuthPage() {
             className={styles["auth-input"]}
             type="password"
             placeholder={Locale.Settings.Token.Placeholder}
-            value={access.token}
+            value={config.providerConfig.openai.apiKey}
             onChange={(e) => {
-              access.updateToken(e.currentTarget.value);
+              config.update(
+                (config) =>
+                  (config.providerConfig.openai.apiKey = e.currentTarget.value),
+              );
             }}
           />
         </>

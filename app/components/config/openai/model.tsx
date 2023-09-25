@@ -1,32 +1,24 @@
-import { ModalConfigValidator, ModelConfig, useAppConfig } from "../store";
+import { ModelConfig } from "@/app/store";
+import { ModelConfigProps } from "../types";
+import { ListItem, Select } from "../../ui-lib";
+import Locale from "@/app/locales";
+import { InputRange } from "../../input-range";
 
-import Locale from "../locales";
-import { InputRange } from "./input-range";
-import { ListItem, Select } from "./ui-lib";
-
-export function _ModelConfigList(props: {
-  modelConfig: ModelConfig;
-  updateConfig: (updater: (config: ModelConfig) => void) => void;
-}) {
-  return null;
-  /*
-  const config = useAppConfig();
-
+export function OpenAIModelConfig(
+  props: ModelConfigProps<ModelConfig["openai"]>,
+) {
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
         <Select
-          value={props.modelConfig.model}
+          value={props.config.model}
           onChange={(e) => {
             props.updateConfig(
-              (config) =>
-                (config.model = ModalConfigValidator.model(
-                  e.currentTarget.value,
-                )),
+              (config) => (config.model = e.currentTarget.value),
             );
           }}
         >
-          {config.allModels().map((v, i) => (
+          {props.models.map((v, i) => (
             <option value={v.name} key={i} disabled={!v.available}>
               {v.name}
             </option>
@@ -38,16 +30,13 @@ export function _ModelConfigList(props: {
         subTitle={Locale.Settings.Temperature.SubTitle}
       >
         <InputRange
-          value={props.modelConfig.temperature?.toFixed(1)}
+          value={props.config.temperature?.toFixed(1)}
           min="0"
           max="1" // lets limit it to 0-1
           step="0.1"
           onChange={(e) => {
             props.updateConfig(
-              (config) =>
-                (config.temperature = ModalConfigValidator.temperature(
-                  e.currentTarget.valueAsNumber,
-                )),
+              (config) => (config.temperature = e.currentTarget.valueAsNumber),
             );
           }}
         ></InputRange>
@@ -57,16 +46,13 @@ export function _ModelConfigList(props: {
         subTitle={Locale.Settings.TopP.SubTitle}
       >
         <InputRange
-          value={(props.modelConfig.top_p ?? 1).toFixed(1)}
+          value={(props.config.top_p ?? 1).toFixed(1)}
           min="0"
           max="1"
           step="0.1"
           onChange={(e) => {
             props.updateConfig(
-              (config) =>
-                (config.top_p = ModalConfigValidator.top_p(
-                  e.currentTarget.valueAsNumber,
-                )),
+              (config) => (config.top_p = e.currentTarget.valueAsNumber),
             );
           }}
         ></InputRange>
@@ -79,13 +65,10 @@ export function _ModelConfigList(props: {
           type="number"
           min={100}
           max={100000}
-          value={props.modelConfig.max_tokens}
+          value={props.config.max_tokens}
           onChange={(e) =>
             props.updateConfig(
-              (config) =>
-                (config.max_tokens = ModalConfigValidator.max_tokens(
-                  e.currentTarget.valueAsNumber,
-                )),
+              (config) => (config.max_tokens = e.currentTarget.valueAsNumber),
             )
           }
         ></input>
@@ -95,17 +78,14 @@ export function _ModelConfigList(props: {
         subTitle={Locale.Settings.PresencePenalty.SubTitle}
       >
         <InputRange
-          value={props.modelConfig.presence_penalty?.toFixed(1)}
+          value={props.config.presence_penalty?.toFixed(1)}
           min="-2"
           max="2"
           step="0.1"
           onChange={(e) => {
             props.updateConfig(
               (config) =>
-                (config.presence_penalty =
-                  ModalConfigValidator.presence_penalty(
-                    e.currentTarget.valueAsNumber,
-                  )),
+                (config.presence_penalty = e.currentTarget.valueAsNumber),
             );
           }}
         ></InputRange>
@@ -116,24 +96,18 @@ export function _ModelConfigList(props: {
         subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
       >
         <InputRange
-          value={props.modelConfig.frequency_penalty?.toFixed(1)}
+          value={props.config.frequency_penalty?.toFixed(1)}
           min="-2"
           max="2"
           step="0.1"
           onChange={(e) => {
             props.updateConfig(
               (config) =>
-                (config.frequency_penalty =
-                  ModalConfigValidator.frequency_penalty(
-                    e.currentTarget.valueAsNumber,
-                  )),
+                (config.frequency_penalty = e.currentTarget.valueAsNumber),
             );
           }}
         ></InputRange>
       </ListItem>
-
-      
     </>
   );
-  */
 }

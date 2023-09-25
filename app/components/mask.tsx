@@ -21,7 +21,6 @@ import {
   useAppConfig,
   useChatStore,
 } from "../store";
-import { ROLES } from "../client/api";
 import {
   Input,
   List,
@@ -36,19 +35,20 @@ import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { copyToClipboard, downloadAs, readFromFile } from "../utils";
 import { Updater } from "../typing";
-import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { nanoid } from "nanoid";
 import {
   DragDropContext,
   Droppable,
   Draggable,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
+import { ROLES } from "../client";
+import { deepClone } from "../utils/clone";
+import { ChatConfigList, ModelConfigList, ProviderSelectItem } from "./config";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -58,11 +58,11 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   return result;
 }
 
-export function MaskAvatar(props: { mask: Mask }) {
-  return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
-    <Avatar avatar={props.mask.avatar} />
+export function MaskAvatar(props: { avatar: string; model: string }) {
+  return props.avatar !== DEFAULT_MASK_AVATAR ? (
+    <Avatar avatar={props.avatar} />
   ) : (
-    <Avatar model={props.mask.modelConfig.model} />
+    <Avatar model={props.model} />
   );
 }
 
@@ -74,14 +74,15 @@ export function MaskConfig(props: {
   shouldSyncFromGlobal?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
+  const modelConfig = useChatStore().extractModelConfig(props.mask.config);
 
   const updateConfig = (updater: (config: ModelConfig) => void) => {
     if (props.readonly) return;
 
-    const config = { ...props.mask.modelConfig };
-    updater(config);
+    const config = deepClone(props.mask.config);
+    updater(config.modelConfig);
     props.updateMask((mask) => {
-      mask.modelConfig = config;
+      mask.config = config;
       // if user changed current session mask, it will disable auto sync
       mask.syncGlobalConfig = false;
     });
@@ -123,7 +124,10 @@ export function MaskConfig(props: {
               onClick={() => setShowPicker(true)}
               style={{ cursor: "pointer" }}
             >
-              <MaskAvatar mask={props.mask} />
+              <MaskAvatar
+                avatar={props.mask.avatar}
+                model={modelConfig.model}
+              />
             </div>
           </Popover>
         </ListItem>
@@ -182,7 +186,7 @@ export function MaskConfig(props: {
                 ) {
                   props.updateMask((mask) => {
                     mask.syncGlobalConfig = checked;
-                    mask.modelConfig = { ...globalConfig.modelConfig };
+                    mask.config = deepClone(globalConfig.globalMaskConfig);
                   });
                 } else if (!checked) {
                   props.updateMask((mask) => {
@@ -196,9 +200,27 @@ export function MaskConfig(props: {
       </List>
 
       <List>
+        <ProviderSelectItem
+          value={props.mask.config.provider}
+          update={(value) => {
+            props.updateMask((mask) => (mask.config.provider = value));
+          }}
+        />
         <ModelConfigList
-          modelConfig={{ ...props.mask.modelConfig }}
+          provider={props.mask.config.provider}
+          config={props.mask.config.modelConfig}
           updateConfig={updateConfig}
+        />
+      </List>
+
+      <List>
+        <ChatConfigList
+          config={props.mask.config.chatConfig}
+          updateConfig={(updater) => {
+            const chatConfig = deepClone(props.mask.config.chatConfig);
+            updater(chatConfig);
+            props.updateMask((mask) => (mask.config.chatConfig = chatConfig));
+          }}
         />
         {props.extraListItems}
       </List>
@@ -398,7 +420,7 @@ export function MaskPage() {
     setSearchText(text);
     if (text.length > 0) {
       const result = allMasks.filter((m) =>
-        m.name.toLowerCase().includes(text.toLowerCase())
+        m.name.toLowerCase().includes(text.toLowerCase()),
       );
       setSearchMasks(result);
     } else {
@@ -523,14 +545,17 @@ export function MaskPage() {
               <div className={styles["mask-item"]} key={m.id}>
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-icon"]}>
-                    <MaskAvatar mask={m} />
+                    <MaskAvatar
+                      avatar={m.avatar}
+                      model={chatStore.extractModelConfig(m.config).model}
+                    />
                   </div>
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
                     <div className={styles["mask-info"] + " one-line"}>
                       {`${Locale.Mask.Item.Info(m.context.length)} / ${
                         ALL_LANG_OPTIONS[m.lang]
-                      } / ${m.modelConfig.model}`}
+                      } / ${chatStore.extractModelConfig(m.config).model}`}
                     </div>
                   </div>
                 </div>

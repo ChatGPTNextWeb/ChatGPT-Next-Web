@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/config";
+import { SubmitKey } from "@/app/typing";
 import type { PartialLocaleType } from "./index";
 
 const ru: PartialLocaleType = {

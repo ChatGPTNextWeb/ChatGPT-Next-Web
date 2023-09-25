@@ -1,5 +1,5 @@
 import { getClientConfig } from "../config/client";
-import { SubmitKey } from "../store/config";
+import { SubmitKey } from "@/app/typing";
 
 const isApp = !!getClientConfig()?.isApp;
 
