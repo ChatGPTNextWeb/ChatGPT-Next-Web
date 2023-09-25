@@ -271,6 +271,9 @@ const bn: PartialLocaleType = {
   Plugin: {
     Name: "প্লাগইন",
   },
+  FineTuned: {
+    Sysmessage: "আপনি একটি সহকারী যা",
+  },
   Mask: {
     Name: "মাস্ক",
     Page: {
