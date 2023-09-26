@@ -98,7 +98,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ChatGPT Next Web",
+        "title": "Walker ChatGPT",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
