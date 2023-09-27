@@ -13,6 +13,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
+import CherryCoreMarkdown from "./cherry-core-markdown";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -156,7 +157,9 @@ export function Markdown(
       {props.loading ? (
         <LoadingIcon />
       ) : (
-        <MarkdownContent content={props.content} />
+        // <MarkdownContent content={props.content} />
+        // <CherryMarkdown content={props.content} />
+        <CherryCoreMarkdown content={props.content} />
       )}
     </div>
   );
