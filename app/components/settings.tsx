@@ -541,9 +541,9 @@ function SyncItems() {
         </ListItem>
       </List>
 
-      {showSyncConfigModal && (
+{/*       {showSyncConfigModal && (
         <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
-      )}
+      )} */}
     </>
   );
 }
