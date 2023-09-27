@@ -64,6 +64,8 @@ export class ChatGPTApi implements LLMApi {
 
     const requestPayload = {
       messages,
+      options.functions,
+      function_call: "auto",
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
