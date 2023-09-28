@@ -175,13 +175,13 @@ export function getCSSVar(varName: string) {
 }
 
 /**
- * Detects if the Operation system is MacOS
+ * Detects Macintosh
  */
 export function isMacOS(): boolean {
   if (typeof window !== "undefined") {
-    let userAgent = window?.navigator?.userAgent;
-    if (userAgent.indexOf("Mac") != -1) return true;
+    let userAgent = window.navigator.userAgent.toLocaleLowerCase();
+    const macintosh = /iphone|ipad|ipod|macintosh/.test(userAgent)
+    return !!macintosh
   }
-
-  return false;
+  return false
 }
