@@ -451,6 +451,46 @@ function SyncConfigModal(props: { onClose?: () => void }) {
             </ListItem>
           </List>
         )}
+        {syncStore.provider === ProviderType.Redist && (
+          <List>
+            <ListItem title={Locale.Settings.Sync.Config.Redist.Endpoint}>
+              <input
+                type="text"
+                value={syncStore.redist.endpoint}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) =>
+                      (config.redist.endpoint = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+
+            <ListItem title={Locale.Settings.Sync.Config.Redist.UserName}>
+              <input
+                type="text"
+                value={syncStore.redist.username}
+                placeholder={STORAGE_KEY}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) =>
+                      (config.redist.username = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+            <ListItem title={Locale.Settings.Sync.Config.Redist.Password}>
+              <PasswordInput
+                value={syncStore.redist.apiKey}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) => (config.redist.apiKey = e.currentTarget.value),
+                  );
+                }}
+              ></PasswordInput>
+            </ListItem>
+          </List>
+        )}
       </Modal>
     </div>
   );
