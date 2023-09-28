@@ -214,9 +214,11 @@ const cn = {
           Password: "UpStash Redis REST Token",
         },
         Redist: {
-          Endpoint: "Redis REST URL",
-          UserName: "备份名称",
-          Password: "Redis 密码",
+          Endpoint: "Redis Host",
+          Port: "Port",
+          Key:  "Key",
+          UserName: "用户名",
+          Password: "密码",
         },
       },
 
