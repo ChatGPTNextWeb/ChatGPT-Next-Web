@@ -173,3 +173,15 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 export function getCSSVar(varName: string) {
   return getComputedStyle(document.body).getPropertyValue(varName).trim();
 }
+
+/**
+ * Detects if the Operation system is MacOS
+ */
+export function isMacOS(): boolean {
+    if (window !== 'undefined') {
+        let userAgent = window?.navigator?.userAgent
+        if (userAgent.indexOf('Mac') != -1) return true
+    }
+
+    return false
+}
