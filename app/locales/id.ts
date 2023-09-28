@@ -190,6 +190,11 @@ const id: PartialLocaleType = {
           UserName: "User Pengguna",
           Password: "Kata Sandi",
         },
+        Redist: {
+          Endpoint: "URL REST Redis",
+          UserName: "Nama Cadangan",
+          Password: "Kata Sandi Redis",
+        },
       },
     },
     SendKey: "Kirim",
