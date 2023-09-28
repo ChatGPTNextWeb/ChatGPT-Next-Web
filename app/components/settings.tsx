@@ -470,10 +470,9 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                 type="text"
                 value={syncStore.redist.port}
                 onChange={(e) => {
-                  syncStore.update(
-                    (config) =>
-                      (config.redist.port = e.currentTarget.value),
-                  );
+                  const port = parseInt(e.currentTarget.value);
+                    syncStore.update((config) => 
+                      (config.redist.port = isNaN(port) ? 0 : port));
                 }}
               ></input>
             </ListItem>
