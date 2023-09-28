@@ -18,7 +18,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 [网页版](https://chatgpt.nextweb.fun/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
-[web-url]: https://chatgpt.nextweb.fun
+[web-url]: https://nextgpteric.vercel.app/
 [download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
 [Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=microsoftedge
 [Windows-image]: https://img.shields.io/badge/-Windows-blue?logo=windows
