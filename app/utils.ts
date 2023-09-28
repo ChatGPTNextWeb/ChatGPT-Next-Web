@@ -178,10 +178,10 @@ export function getCSSVar(varName: string) {
  * Detects if the Operation system is MacOS
  */
 export function isMacOS(): boolean {
-    if (window !== 'undefined') {
-        let userAgent = window?.navigator?.userAgent
-        if (userAgent.indexOf('Mac') != -1) return true
-    }
+  if (typeof window !== "undefined") {
+    let userAgent = window?.navigator?.userAgent;
+    if (userAgent.indexOf("Mac") != -1) return true;
+  }
 
-    return false
+  return false;
 }
