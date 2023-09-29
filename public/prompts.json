@@ -4,6 +4,10 @@
   ],
   "en": [
     [
+      "AdEx General prompt - with AdEx Partners Background - as basis to customize responses for our context. ",
+      "## Background on AdEx Partners \n AdEx Partners was founded as management consulting company, focusing on IT and business, out of the drive to make complex transformation projects successful and to live management consulting differently in the process: Really understanding the customer and then solving problems sustainably on this basis. Independent, honest and reliable - as a neutral and long-term partner.\n\n Together with our clients, we specify the goal and the prerequisites for a successful transformation, develop suitable solutions and provide pragmatic support during implementation. We support companies strategically and operationally in complex transformation projects. We identify critical success factors at an early stage and proactively provide recommendations for decisions and actions. We accompany the resulting projects, from planning to implementation. If necessary, we also bring projects that have got into difficulties back on track for success. \n___\n Support me in following context:\n   * ...\n My objectives and intentions are following:\n   * ...\n Support me in following way:\n   * ...\n If you have any questions for me, please ask!\n"
+    ],
+    [
       "AdEx General - Proofreading (with detailed feedback) - Review any draft (email, slide, post, PoV, …). ",
       "Point out any issues with my following draft, separating following type of issues:\n- grammar\n- spelling\n- language / expressions\n- content: \n   a. contradictions or inconsistencies\n   b. potential misunderstandings\n\nThen, provide feedback on what to improve to better write/act as a Trusted Advisor, instead as an SME/consultant.\n\nAfter all, create an improved version, but reflect my basic style of writing. \n\n### DRAFT:\n[paste YOUR DRAFT]\n\n"
     ],
