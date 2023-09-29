@@ -230,6 +230,12 @@ docker run -d -p 3000:3000 \
 
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
 
+## 贡献者
+
+<a href="https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Hk-Gosuto/ChatGPT-Next-Web-LangChain" />
+</a>
+
 ## 截图
 
 ![Settings](./docs/images/settings.png)
