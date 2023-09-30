@@ -349,6 +349,14 @@
       padding: 7px;
     }
   }
+  /* Specific styles for iOS devices */
+  @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
+    @supports (-webkit-touch-callout: none) {
+      .chat-message-edit {
+        top: -8%;
+      }
+    }
+  }
 }
 
 .chat-message-status {
