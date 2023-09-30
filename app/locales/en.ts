@@ -121,6 +121,9 @@ const en = {
     DeleteChat: "Confirm to delete the selected conversation?",
     DeleteToast: "Chat Deleted",
     Revert: "Revert",
+    Logout: "Logout",
+    Login: "Login",
+    LoginMessage: "☝️ Want to chat? Please login first! 😊",
   },
   Settings: {
     Title: "Settings",
