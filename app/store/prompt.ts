@@ -151,34 +151,30 @@ export const usePromptStore = createPersistStore(
 
       type PromptList = Array<[string, string]>;
 
-        fetch(PROMPT_URL)
-          .then((res) => res.json())
-          .then((res) => {
-            let fetchPrompts = [res.en, res.de];
-            const builtinPrompts = fetchPrompts.map(
-              (promptList: PromptList) => {
-                return promptList.map(
-                  ([title, content]) =>
-                    ({
-                      id: nanoid(),
-                      title,
-                      content,
-                      createdAt: Date.now(),
-                    } as Prompt),
-                );
-              },
+      fetch(PROMPT_URL)
+        .then((res) => res.json())
+        .then((res) => {
+          let fetchPrompts = [res.en, res.de];
+          const builtinPrompts = fetchPrompts.map((promptList: PromptList) => {
+            return promptList.map(
+              ([title, content]) =>
+                ({
+                  id: nanoid(),
+                  title,
+                  content,
+                  createdAt: Date.now(),
+                } as Prompt),
             );
           });
 
           const userPrompts = usePromptStore.getState().getUserPrompts() ?? [];
 
-            const allPromptsForSearch = builtinPrompts
-              .reduce((pre, cur) => pre.concat(cur), [])
-              .filter((v) => !!v.title && !!v.content);
-            SearchService.count.builtin = res.en.length + res.de.length;
-            SearchService.init(allPromptsForSearch, userPrompts);
-          });
-      },
+          const allPromptsForSearch = builtinPrompts
+            .reduce((pre, cur) => pre.concat(cur), [])
+            .filter((v) => !!v.title && !!v.content);
+          SearchService.count.builtin = res.en.length + res.cn.length;
+          SearchService.init(allPromptsForSearch, userPrompts);
+        });
     },
-  ),
+  },
 );

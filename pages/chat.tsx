@@ -5,6 +5,8 @@ import Locale from "../app/locales";
 import "../app/styles/globals.scss";
 import "../app/styles/markdown.scss";
 import "../app/styles/highlight.scss";
+import styles from "../app/components/auth.module.scss";
+import Image from "next/image";
 
 export default function Chat() {
     const { data: session, status } = useSession()
@@ -20,12 +22,11 @@ export default function Chat() {
     if (session) {
         return (
             <>
-                    <Home />
+                <Home />
             </>
         )
     }
     return (
-
         <>
         <style jsx>{`
         button {
@@ -46,8 +47,19 @@ export default function Chat() {
             cursor: pointer;
         }
       `}</style>
-            <h2>{Locale.Home.LoginMessage}</h2>
-            <center><button onClick={() => signIn('okta')}>{Locale.Home.Login}</button></center>
+        <div className={styles["auth-page"]}>
+            <div className={`no-dark ${styles["auth-logo"]}`}>
+                <Image src="/aila-logo-round@2x.png" width="48" height="48" />
+                <p>&nbsp;</p>
+            </div>
+            <div className={styles["auth-title"]}>
+                    {Locale.Home.LoginMessage}
+            </div>
+            <div className={styles["auth-actions"]}>
+                <p>&nbsp;</p>
+                <button onClick={() => signIn('okta')}>{Locale.Home.Login}</button>
+            </div>
+            </div>            
         </>
     )
 }

@@ -7,7 +7,7 @@ export function getClientConfig() {
 
     if (config === "") {
       config =
-        '{"version":"v2.9.2","commitDate":"1696087478000","commitHash":"0b7b5dbb8cff477cf4509fbbe0c8ad9f8099cf5a","buildMode":"standalone","isApp":false}';
+        '{"version":"v3.0.0","commitDate":"1696087478000","commitHash":"0b7b5dbb8cff477cf4509fbbe0c8ad9f8099cf5a","buildMode":"standalone","isApp":false}';
     }
     console.log("config", config);
     return JSON.parse(config) as BuildConfig;

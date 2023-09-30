@@ -187,9 +187,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank">
-              <IconButton icon={<GithubIcon />} shadow />
-            </a>
+            <IconButton icon={<LogoutIcon />} onClick={() => { signOut(); }}  shadow />
           </div>
         </div>
         <div>
