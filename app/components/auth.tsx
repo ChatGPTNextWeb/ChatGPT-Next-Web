@@ -15,6 +15,7 @@ export function AuthPage() {
   const access = useAccessStore();
 
   const goHome = () => navigate(Path.Home);
+  const goChat = () => navigate(Path.Chat);
   const resetAccessCode = () => { access.updateCode(""); access.updateToken(""); }; // Reset access code to empty string
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export function AuthPage() {
         <IconButton
           text={Locale.Auth.Confirm}
           type="primary"
-          onClick={goHome}
+          onClick={goChat}
         />
         <IconButton
           text={Locale.Auth.Later}
