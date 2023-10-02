@@ -6,7 +6,7 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import { ChatOptions, getHeaders, getHeaders_with_token, LLMApi, LLMModel, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -53,7 +53,7 @@ export class ChatGPTApi implements LLMApi {
       role: v.role,
       content: v.content,
     }));
-
+    // console.log("23234234234234")
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -79,12 +79,14 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      // const chatPath = this.path(OpenaiPath.ChatPath);
+      const chatPath = (options.special_api == "") ? this.path(OpenaiPath.ChatPath) : options.special_api;
+      
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: (options.special_token == "") ? getHeaders() : getHeaders_with_token(options.special_token),
       };
 
       // make a fetch request

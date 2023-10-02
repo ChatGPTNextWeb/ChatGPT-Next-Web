@@ -127,6 +127,7 @@ export function MaskConfig(props: {
             </div>
           </Popover>
         </ListItem>
+
         <ListItem title={Locale.Mask.Config.Name}>
           <input
             type="text"
@@ -138,6 +139,33 @@ export function MaskConfig(props: {
             }
           ></input>
         </ListItem>
+
+        {/* 修改 加入面具特有特殊api设定 */} 
+        <ListItem title="Special-API">
+        <input
+            type="text"
+            value={props.mask.special_api}
+            onInput={(e) =>
+              props.updateMask((mask) => {
+                mask.special_api = e.currentTarget.value;
+              })
+            }
+          ></input>
+        </ListItem>
+
+        {/* 修改 加入面具特有特殊api的对应token设定 */} 
+        <ListItem title="Special-TOKEN">
+        <input
+            type="text"
+            value={props.mask.special_token}
+            onInput={(e) =>
+              props.updateMask((mask) => {
+                mask.special_token = e.currentTarget.value;
+              })
+            }
+          ></input>
+        </ListItem>
+
         <ListItem
           title={Locale.Mask.Config.HideContext.Title}
           subTitle={Locale.Mask.Config.HideContext.SubTitle}

@@ -26,6 +26,8 @@ export interface LLMConfig {
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
+  special_api: string;
+  special_token: string;
 
   onUpdate?: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;
@@ -146,6 +148,32 @@ export function getHeaders() {
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }
+
+  return headers;
+}
+
+export function getHeaders_with_token(special_token: string) {
+  const accessStore = useAccessStore.getState();
+  let headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "x-requested-with": "XMLHttpRequest",
+  };
+
+  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
+
+  // use user's api key first
+  headers.Authorization = makeBearer(special_token);
+  // if (validString(special_token)) {
+  //   headers.Authorization = makeBearer(special_token);
+  // } else if (
+  //   accessStore.enabledAccessControl() &&
+  //   validString(accessStore.accessCode)
+  // ) {
+  //   headers.Authorization = makeBearer(
+  //     ACCESS_CODE_PREFIX + accessStore.accessCode,
+  //   );
+  // }
 
   return headers;
 }
