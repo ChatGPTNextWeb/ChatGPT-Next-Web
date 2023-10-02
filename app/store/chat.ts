@@ -325,11 +325,11 @@ export const useChatStore = createPersistStore(
             botMessage,
           ]);
         });
-        // console.log("?????????????")
+
         // make request
-        api.llm.chat({ 
+        api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: true},
+          config: { ...modelConfig, stream: true },
           // 修改 加入 面具设置的api
           special_api: session.mask.special_api,
           special_token: session.mask.special_token,
