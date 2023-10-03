@@ -13,5 +13,10 @@ declare module "*.svg";
 declare interface Window {
   __TAURI__?: {
     writeText(text: string): Promise<void>;
+    notification:{
+      requestPermission(): Promise<Permission>;
+      isPermissionGranted(): Promise<boolean>;
+      sendNotification(options: string | Options): void;
+    };
   };
 }

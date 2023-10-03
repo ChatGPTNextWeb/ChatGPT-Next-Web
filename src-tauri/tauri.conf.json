@@ -44,6 +44,12 @@
         "startDragging": true,
         "unmaximize": true,
         "unminimize": true
+      },
+      "fs": {
+        "all": true
+      },
+      "notification": {
+        "all": true
       }
     },
     "bundle": {
