@@ -3,6 +3,7 @@ import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import ChatGptIcon from "../icons/chatgpt.png";
+import Locale from "../locales";
 
 const ONE_MINUTE = 60 * 1000;
 const isApp = !!getClientConfig()?.isApp;
@@ -86,7 +87,7 @@ export const useUpdateStore = createPersistStore(
           // Check if notification permission is granted
           await window.__TAURI__?.notification.isPermissionGranted().then((granted) => {
             if (!granted) {
-              return
+              return;
             } else {
               // Request permission to show notifications
               window.__TAURI__?.notification.requestPermission().then((permission) => {
@@ -95,15 +96,16 @@ export const useUpdateStore = createPersistStore(
                     // Show a notification using Tauri
                     window.__TAURI__?.notification.sendNotification({
                       title: "ChatGPT Next Web",
-                      body: "Already up to date",
+                      body: `${Locale.Settings.Update.IsLatest}`,
                       icon: `${ChatGptIcon.src}`,
                       sound: "Default"
                     });
                   } else {
+                    const updateMessage = Locale.Settings.Update.FoundUpdate(`${remoteId}`);
                     // Show a notification for the new version using Tauri
                     window.__TAURI__?.notification.sendNotification({
                       title: "ChatGPT Next Web",
-                      body: `A new version (${remoteId}) is available.`,
+                      body: updateMessage,
                       icon: `${ChatGptIcon.src}`,
                       sound: "Default"
                     });
