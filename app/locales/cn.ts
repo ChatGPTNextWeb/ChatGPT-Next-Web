@@ -323,6 +323,10 @@ const cn = {
     Success: "已写入剪切板",
     Failed: "复制失败，请赋予剪切板权限",
   },
+  Download: {
+    Success: "内容已下载到您的目录。",
+    Failed: "下载失败。",
+  },
   Context: {
     Toast: (x: any) => `包含 ${x} 条预设提示词`,
     Edit: "当前对话设置",
