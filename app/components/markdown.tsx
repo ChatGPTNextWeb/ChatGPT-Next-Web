@@ -100,17 +100,38 @@ export function PreCode(props: { children: any }) {
 }
 
 function _MarkDownContent(props: { content: string }) {
-  const escapedContent = props.content.replace(
-    /(`{3}[\s\S]*?`{3}|`[^`]*`)|(?<!\$)(\$(?!\$))/g,
-    (match, codeBlock) => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isAppleDevice =
+    /(iphone|ipad|ipod|macintosh)/i.test(userAgent) ||
+    (userAgent.includes("mac") && "ontouchend" in document);
+
+  let escapedContent = props.content;
+  if (isAppleDevice) {
+    escapedContent = props.content.replace(
       // Exclude code blocks & math block from replacement
-      if (codeBlock) {
-        return match; // Return the code block as it is
-      } else {
-        return "&#36;"; // Escape dollar signs outside of code blocks
+      // custom-regex for unsupported Apple devices
+      /(`{3}[\s\S]*?`{3}|`[^`]*`)|(\$(?!\$))/g,
+      (match, codeBlock) => {
+        if (codeBlock) {
+          return match; // Return the code block as it is
+        } else {
+          return "&#36;"; // Escape dollar signs outside of code blocks
+        }
       }
-    },
-  );
+    );
+  } else {
+    escapedContent = props.content.replace(
+      // Exclude code blocks & math block from replacement
+      /(`{3}[\s\S]*?`{3}|`[^`]*`)|(?<!\$)(\$(?!\$))/g,
+      (match, codeBlock) => {
+        if (codeBlock) {
+          return match; // Return the code block as it is
+        } else {
+          return "&#36;"; // Escape dollar signs outside of code blocks
+        }
+      }
+    );
+  }
 
   return (
     <ReactMarkdown
