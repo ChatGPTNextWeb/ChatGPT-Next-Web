@@ -13,6 +13,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
+import { isIOS } from "../utils"; // Import the isIOS functions from the utils file
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -100,10 +101,7 @@ export function PreCode(props: { children: any }) {
 }
 
 function _MarkDownContent(props: { content: string }) {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const isAppleDevice =
-    /(iphone|ipad|ipod|macintosh)/i.test(userAgent) ||
-    (userAgent.includes("mac") && "ontouchend" in document);
+  const isAppleDevice = isIOS(); // Load isAppleDevice from isIOS functions
 
   let escapedContent = props.content;
   if (isAppleDevice) {
