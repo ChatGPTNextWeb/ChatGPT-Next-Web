@@ -101,7 +101,7 @@ export function PreCode(props: { children: any }) {
 }
 
 function _MarkDownContent(props: { content: string }) {
-  const userAgent = window.navigator.userAgent;
+  const userAgent = navigator.userAgent.toLowerCase();
   const isAppleIosDevice = isIOS(); // Load isAppleDevice from isIOS functions
   // According to this post: https://www.drupal.org/project/next_webform/issues/3358901
   // iOS 16.4 is the first version to support lookbehind
