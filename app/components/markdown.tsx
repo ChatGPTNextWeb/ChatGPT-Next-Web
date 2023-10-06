@@ -109,7 +109,7 @@ function _MarkDownContent(props: { content: string }) {
   let doesIosSupportLookBehind = false;
 
   if (isAppleIosDevice) {
-    const match = /OS (\d+([_.]\d+)+)/.exec(userAgent);
+    const match = /os (\d+([_.]\d+)+)/.exec(userAgent);
     if (match && match[1]) {
       const iosVersion = parseFloat(match[1].replace("_", "."));
       doesIosSupportLookBehind = iosVersion >= iosVersionSupportsLookBehind;
