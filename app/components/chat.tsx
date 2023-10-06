@@ -663,8 +663,9 @@ function _Chat() {
           session.memoryPrompt = importedSession.memoryPrompt;
           // Set any other properties you want to update in the session
         });
-      } catch (error) {
-        console.error("Error importing chat session:", error);
+      } catch (e) {
+        console.error("[Import] Failed to import JSON file:", e);
+        showToast(Locale.Settings.Sync.ImportFailed);
       }
     });
   };
