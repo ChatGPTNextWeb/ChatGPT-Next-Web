@@ -53,6 +53,8 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  downloadAs,
+  readFromFile,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -651,6 +653,22 @@ function _Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
+  const loadchat = () => {
+    readFromFile().then((content) => {
+      try {
+        const importedSession = JSON.parse(content);
+        chatStore.updateCurrentSession((session) => {
+          session.messages = importedSession.messages;
+          session.topic = importedSession.topic;
+          session.memoryPrompt = importedSession.memoryPrompt;
+          // Set any other properties you want to update in the session
+        });
+      } catch (error) {
+        console.error("Error importing chat session:", error);
+      }
+    });
+  };
+  
   // chat commands shortcuts
   const chatCommands = useChatCommand({
     new: () => chatStore.newSession(),
@@ -662,7 +680,10 @@ function _Chat() {
         (session) => (session.clearContextIndex = session.messages.length),
       ),
     del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
-  });
+    save: () =>
+      downloadAs(JSON.stringify(session), `${session.topic}.json`),
+    load: loadchat,
+  });  
 
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;

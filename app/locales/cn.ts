@@ -49,6 +49,8 @@ const cn = {
       prev: "上一个聊天",
       clear: "清除上下文",
       del: "删除聊天",
+      save: "保存当前会话聊天",
+      load: "加载会话聊天",
     },
     InputActions: {
       Stop: "停止响应",

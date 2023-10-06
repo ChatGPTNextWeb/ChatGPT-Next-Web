@@ -39,6 +39,8 @@ const id: PartialLocaleType = {
       prev: "Chat Sebelumnya",
       clear: "Bersihkan Percakapan",
       del: "Hapus Chat",
+      save: "Simpan Percakapan Sesi Saat Ini",
+      load: "Muat Percakapan Sesi",
     },
     InputActions: {
       Stop: "Berhenti",

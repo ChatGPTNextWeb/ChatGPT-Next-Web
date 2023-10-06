@@ -39,6 +39,8 @@ interface ChatCommands {
   prev?: Command;
   clear?: Command;
   del?: Command;
+  save?: Command;
+  load?: Command;
 }
 
 export const ChatCommandPrefix = ":";
