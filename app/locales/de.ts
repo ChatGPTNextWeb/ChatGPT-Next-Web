@@ -192,9 +192,6 @@ const de: PartialLocaleType = {
   Plugin: {
     Name: "Plugin",
   },
-  FineTuned: {
-    Sysmessage: "Du bist ein Assistent, der",
-  },
   Mask: {
     Name: "Mask",
     Page: {

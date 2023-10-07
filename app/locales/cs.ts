@@ -188,9 +188,6 @@ const cs: PartialLocaleType = {
   Plugin: {
     Name: "Plugin",
   },
-  FineTuned: {
-    Sysmessage: "Jste asistent, který",
-  },
   Mask: {
     Name: "Maska",
     Page: {
