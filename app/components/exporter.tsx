@@ -1,16 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
-import {
-  List,
-  ListItem,
-  Modal,
-  Select,
-  showImageModal,
-  showModal,
-  showToast,
-} from "./ui-lib";
+import { List, ListItem, Modal, Select, showToast } from "./ui-lib";
 import { IconButton } from "./button";
 import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
 
@@ -32,7 +23,6 @@ import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
-import { getClientConfig } from "../config/client";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -149,7 +139,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id)));
+    ret.push(...session.messages.filter((m, i) => selection.has(m.id ?? i)));
     return ret;
   }, [
     exportConfig.includeContext,
@@ -244,12 +234,11 @@ export function RenderExport(props: {
       return;
     }
 
-    const renderMsgs = messages.map((v, i) => {
-      const [role, _] = v.id.split(":");
+    const renderMsgs = messages.map((v) => {
+      const [_, role] = v.id.split(":");
       return {
-        id: i.toString(),
         role: role as any,
-        content: role === "user" ? v.textContent ?? "" : v.innerHTML,
+        content: v.innerHTML,
         date: "",
       };
     });
@@ -288,30 +277,7 @@ export function PreviewActions(props: {
       .share(msgs)
       .then((res) => {
         if (!res) return;
-        showModal({
-          title: Locale.Export.Share,
-          children: [
-            <input
-              type="text"
-              value={res}
-              key="input"
-              style={{
-                width: "100%",
-                maxWidth: "unset",
-              }}
-              readOnly
-              onClick={(e) => e.currentTarget.select()}
-            ></input>,
-          ],
-          actions: [
-            <IconButton
-              icon={<CopyIcon />}
-              text={Locale.Chat.Actions.Copy}
-              key="copy"
-              onClick={() => copyToClipboard(res)}
-            />,
-          ],
-        });
+        copyToClipboard(res);
         setTimeout(() => {
           window.open(res, "_blank");
         }, 800);
@@ -403,7 +369,6 @@ export function ImagePreviewer(props: {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const copy = () => {
-    showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
     toBlob(dom).then((blob) => {
@@ -428,15 +393,17 @@ export function ImagePreviewer(props: {
   const isMobile = useMobileScreen();
 
   const download = () => {
-    showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
     toPng(dom)
       .then((blob) => {
         if (!blob) return;
 
-        if (isMobile || getClientConfig()?.isApp) {
-          showImageModal(blob);
+        if (isMobile) {
+          const image = new Image();
+          image.src = blob;
+          const win = window.open("");
+          win?.document.write(image.outerHTML);
         } else {
           const link = document.createElement("a");
           link.download = `${props.topic}.png`;
@@ -470,7 +437,7 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>ChatGPT Next Web</div>
+            <div className={styles["main-title"]}>ChatGPT</div>
             <div className={styles["sub-title"]}>
               github.com/Yidadaa/ChatGPT-Next-Web
             </div>
