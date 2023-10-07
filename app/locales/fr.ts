@@ -181,7 +181,10 @@ const fr: PartialLocaleType = {
     Usage: {
       Title: "Solde du compte",
       SubTitle(used: any, total: any) {
-        return `Épuisé ce mois-ci $${used}, abonnement $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(total.hard_limit_usd) : "inconnu";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(total.system_hard_limit_usd) : "inconnu";
+        const usedFormatted = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(used);
+        return `Utilisé ce mois-ci : ${usedFormatted}, Limite dure : ${hardLimitusd}, Limite d'utilisation approuvée : ${hardLimit}`;
       },
       IsChecking: "Vérification...",
       Check: "Vérifier",

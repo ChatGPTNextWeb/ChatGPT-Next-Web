@@ -133,7 +133,10 @@ const it: PartialLocaleType = {
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
-        return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'USD' }).format(total.hard_limit_usd) : "sconosciuto";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'USD' }).format(total.system_hard_limit_usd) : "sconosciuto";
+        const usedFormatted = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'USD' }).format(used);
+        return `Utilizzato questo mese: ${usedFormatted}, Limite massimo: ${hardLimitusd}, Limite di utilizzo approvato: ${hardLimit}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",

@@ -175,7 +175,10 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
     Usage: {
       Title: "رصيد الحساب",
       SubTitle(used: any, total: any) {
-        return `تم استخدام $${used} من هذا الشهر، الاشتراك ${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? new Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'USD' }).format(total.hard_limit_usd) : "غير معروف";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? new Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'USD' }).format(total.system_hard_limit_usd) : "غير معروف";
+        const usedFormatted = new Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'USD' }).format(used);
+        return `المستخدمة هذا الشهر: ${usedFormatted}، الحد الأقصى الصعب: ${hardLimitusd}، الحد المسموح به للاستخدام: ${hardLimit}`;
       },
       IsChecking: "جارٍ التحقق...",
       Check: "التحقق",

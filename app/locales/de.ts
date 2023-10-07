@@ -133,7 +133,10 @@ const de: PartialLocaleType = {
     Usage: {
       Title: "Kontostand",
       SubTitle(used: any, total: any) {
-        return `Diesen Monat ausgegeben $${used}, Abonnement $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(total.hard_limit_usd) : "unbekannt";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(total.system_hard_limit_usd) : "unbekannt";
+        const usedFormatted = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(used);
+        return `Diesen Monat verwendet: ${usedFormatted}, Harte Grenze: ${hardLimitusd}, Genehmigtes Nutzungslimit: ${hardLimit}`;
       },
       IsChecking: "Wird überprüft...",
       Check: "Erneut prüfen",
