@@ -10,7 +10,6 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
-import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
 
@@ -27,7 +26,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { showConfirm, showToast } from "./ui-lib";
+import { showToast } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -38,7 +37,7 @@ function useHotKey() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey || e.ctrlKey) {
+      if (e.metaKey || e.altKey || e.ctrlKey) {
         if (e.key === "ArrowUp") {
           chatStore.nextSession(-1);
         } else if (e.key === "ArrowDown") {
@@ -118,17 +117,15 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT Next
+          ChatGPT
         </div>
-        <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
-        </div>
+        <div className={styles["sidebar-sub-title"]}>Own AI assistant.</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
       </div>
 
-      <div className={styles["sidebar-header-bar"]}>
+      {/* <div className={styles["sidebar-header-bar"]}>
         <IconButton
           icon={<MaskIcon />}
           text={shouldNarrow ? undefined : Locale.Mask.Name}
@@ -143,7 +140,7 @@ export function SideBar(props: { className?: string }) {
           onClick={() => showToast(Locale.WIP)}
           shadow
         />
-      </div>
+      </div> */}
 
       <div
         className={styles["sidebar-body"]}
@@ -161,14 +158,14 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={async () => {
-                if (await showConfirm(Locale.Home.DeleteChat)) {
+              onClick={() => {
+                if (confirm(Locale.Home.DeleteChat)) {
                   chatStore.deleteSession(chatStore.currentSessionIndex);
                 }
               }}
             />
           </div>
-          <div className={styles["sidebar-action"]}>
+          {/* <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
@@ -177,7 +174,7 @@ export function SideBar(props: { className?: string }) {
             <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
-          </div>
+          </div> */}
         </div>
         <div>
           <IconButton
@@ -199,9 +196,7 @@ export function SideBar(props: { className?: string }) {
       <div
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}
-      >
-        <DragIcon />
-      </div>
+      ></div>
     </div>
   );
 }
