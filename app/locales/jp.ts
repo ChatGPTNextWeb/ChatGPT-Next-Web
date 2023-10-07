@@ -158,7 +158,7 @@ const jp: PartialLocaleType = {
       },
       IsChecking: "確認中...",
       Check: "再確認",
-      NoAccess: "APIキーまたはアクセスパスワードを入力して残高を表示",
+      NoAccess: `残高を確認するには、APIキーの先頭に「sess-」を付けたセッションキーを入力してください。`,
     },
     AccessCode: {
       Title: "アクセスパスワード",

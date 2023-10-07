@@ -185,7 +185,7 @@ const fr: PartialLocaleType = {
       },
       IsChecking: "Vérification...",
       Check: "Vérifier",
-      NoAccess: "Entrez la clé API pour vérifier le solde",
+      NoAccess: `Entrez la clé de session dans la clé API en commençant par le préfixe "sess-" pour vérifier le solde.`,
     },
     AccessCode: {
       Title: "Code d'accès",

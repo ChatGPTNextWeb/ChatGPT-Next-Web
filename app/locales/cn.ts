@@ -271,7 +271,7 @@ const cn = {
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
-      NoAccess: "输入 API Key 或访问密码查看余额",
+      NoAccess: `在以"sess-"为前缀的API密钥中输入会话密钥以检查余额。`,
     },
     AccessCode: {
       Title: "访问密码",

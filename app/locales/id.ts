@@ -249,7 +249,7 @@ const id: PartialLocaleType = {
       },
       IsChecking: "Memeriksa...",
       Check: "Periksa",
-      NoAccess: "Masukkan kunci API untuk memeriksa saldo",
+      NoAccess: `Masukkan Kunci Sesi pada Kunci API yang dimulai dengan awalan "sess-" untuk memeriksa saldo.`,
     },
     AccessCode: {
       Title: "Kode Akses",

@@ -119,7 +119,7 @@ const no: PartialLocaleType = {
       },
       IsChecking: "Sjekker ...",
       Check: "Sjekk",
-      NoAccess: "Skriv inn API-nøkkelen for å sjekke saldo",
+      NoAccess: `Skriv inn øktnøkkelen i API-nøkkelen som starter med prefikset "sess-" for å sjekke saldoen.`,
     },
     AccessCode: {
       Title: "Tilgangskode",

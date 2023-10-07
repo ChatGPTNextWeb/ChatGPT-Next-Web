@@ -211,7 +211,7 @@ const bn: PartialLocaleType = {
       },
       IsChecking: "চেক করা হচ্ছে...",
       Check: "চেক",
-      NoAccess: "ব্যালেন্স চেক করতে অ্যাপি কী ইনপুট করুন",
+      NoAccess: `ব্যালেন্স চেক করতে, API কি-তে "sess-" উপসর্গ দিয়ে সেশন কি প্রবেশ করান।`,
     },
     AccessCode: {
       Title: "অ্যাক্সেস কোড",

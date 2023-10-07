@@ -132,7 +132,7 @@ const tw: PartialLocaleType = {
       },
       IsChecking: "正在檢查…",
       Check: "重新檢查",
-      NoAccess: "輸入 API Key 檢視餘額",
+      NoAccess: `輸入以"sess-"為前綴的API金鑰中的會話金鑰以檢查餘額。`,
     },
     AccessCode: {
       Title: "授權碼",

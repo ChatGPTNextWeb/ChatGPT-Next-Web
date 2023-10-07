@@ -136,7 +136,7 @@ const cs: PartialLocaleType = {
       },
       IsChecking: "Kontroluji...",
       Check: "Zkontrolovat",
-      NoAccess: "Pro kontrolu zůstatku zadejte klíč API",
+      NoAccess: `Zadejte klíč relace ve vstupním klíči API s předponou "sess-" pro kontrolu zůstatku.`,
     },
     AccessCode: {
       Title: "Přístupový kód",

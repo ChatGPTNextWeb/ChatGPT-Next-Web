@@ -137,7 +137,7 @@ const ru: PartialLocaleType = {
       },
       IsChecking: "Проверка...",
       Check: "Проверить",
-      NoAccess: "Введите API ключ, чтобы проверить баланс",
+      NoAccess: `Введите ключ сеанса в ключ API, начинающийся с префикса "sess-", чтобы проверить баланс.`,
     },
     AccessCode: {
       Title: "Код доступа",

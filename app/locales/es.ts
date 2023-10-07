@@ -136,7 +136,7 @@ const es: PartialLocaleType = {
       },
       IsChecking: "Comprobando...",
       Check: "Comprobar de nuevo",
-      NoAccess: "Introduzca la clave API para comprobar el saldo",
+      NoAccess: `Ingresa la clave de sesión en la clave API comenzando con el prefijo "sess-" para verificar el saldo.`,
     },
     AccessCode: {
       Title: "Código de acceso",

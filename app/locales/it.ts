@@ -137,7 +137,7 @@ const it: PartialLocaleType = {
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
-      NoAccess: "Inserire la chiave API per controllare il saldo",
+      NoAccess: `Inserisci la chiave di sessione nella chiave API che inizia con il prefisso "sess-" per verificare il saldo.`,
     },
     AccessCode: {
       Title: "Codice d'accesso",

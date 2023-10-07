@@ -136,7 +136,7 @@ const ko: PartialLocaleType = {
       },
       IsChecking: "확인 중...",
       Check: "확인",
-      NoAccess: "잔액 확인을 위해 API 키를 입력하세요.",
+      NoAccess: `잔액을 확인하려면, API 키에 "sess-" 접두사로 시작하는 세션 키를 입력하세요.`,
     },
     AccessCode: {
       Title: "액세스 코드",

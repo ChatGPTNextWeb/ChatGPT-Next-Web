@@ -137,7 +137,7 @@ const de: PartialLocaleType = {
       },
       IsChecking: "Wird überprüft...",
       Check: "Erneut prüfen",
-      NoAccess: "API-Schlüssel eingeben, um den Kontostand zu überprüfen",
+      NoAccess: `Geben Sie den Sitzungsschlüssel in den API-Schlüssel ein, der mit dem Präfix "sess-" beginnt, um den Saldo zu überprüfen.`,
     },
     AccessCode: {
       Title: "Zugangscode",

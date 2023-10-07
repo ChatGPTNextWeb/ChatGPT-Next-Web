@@ -274,7 +274,7 @@ const en: LocaleType = {
       },
       IsChecking: "Checking...",
       Check: "Check",
-      NoAccess: "Enter API Key to check balance",
+      NoAccess: `Enter Session Key in API Key starting with prefix "sess-" to check balance.`,
     },
     AccessCode: {
       Title: "Access Code",
