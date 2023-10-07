@@ -19,9 +19,11 @@
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.3.0",
+    "@nextui-org/react": "^2.1.13",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.5.1",
+    "framer-motion": "^10.16.4",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.3.1",
