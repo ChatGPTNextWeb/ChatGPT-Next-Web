@@ -330,6 +330,10 @@ const en: LocaleType = {
     Success: "Copied to clipboard",
     Failed: "Copy failed, please grant permission to access clipboard",
   },
+  Download: {
+    Success: "Content downloaded to your directory.",
+    Failed: "Download failed.",
+  },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
     Edit: "Current Chat Settings",

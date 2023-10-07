@@ -301,6 +301,10 @@ const id: PartialLocaleType = {
     Failed:
       "Gagal menyalin, mohon berikan izin untuk mengakses clipboard atau Clipboard API tidak didukung (Tauri)",
   },
+  Download: {
+    Success: "Konten berhasil diunduh ke direktori Anda.",
+    Failed: "Unduhan gagal.",
+  },
   Context: {
     Toast: (x: any) => `Dengan ${x} promp kontekstual`,
     Edit: "Pengaturan Obrolan Saat Ini",
