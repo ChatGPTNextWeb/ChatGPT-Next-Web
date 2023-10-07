@@ -25,10 +25,11 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { useAccessStore } from "../store";
+import { domain } from "../utils/domain";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
-import { api } from "../client/api";
-import { useAccessStore } from "../store";
+import qs from "qs";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -114,9 +115,40 @@ function Screen() {
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
+  const appid =
+    document.location.href.indexOf("kejie") > -1
+      ? "wxa50feb05cc76a3e6"
+      : "wx6d9737cf9aebba69";
   const isMobileScreen = useMobileScreen();
 
+  const access = useAccessStore();
+  const [isUser, setIsUser] = useState(access.isLogin ? true : false);
+  const [showText, setShowText] = useState("验证权限中...");
+  const search = document.location.search || location.search;
+  const query = qs.parse(search.substr(1));
+  const { url, ajaxUrl } = domain(document.location);
+
   useEffect(() => {
+    if (query.state && query.state == "1" && query.code) {
+      access.updateIsLogin(query.state + "");
+      fetch(`${url}/wx/weLogin?code=${query.code}&wxNum=24`, {
+        method: "get",
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.code == 0) {
+            setIsUser(true);
+          } else {
+            setShowText("无权限");
+          }
+        });
+    }
+    if (!access.isLogin && !query.state) {
+      access.updateIsLogin("");
+      document.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${encodeURIComponent(
+        document.location.origin,
+      )}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`;
+    }
     loadAsyncGoogleFont();
   }, []);
 
@@ -135,7 +167,7 @@ function Screen() {
         <>
           <AuthPage />
         </>
-      ) : (
+      ) : isUser ? (
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
@@ -149,30 +181,20 @@ function Screen() {
             </Routes>
           </div>
         </>
+      ) : (
+        <div style={{ textAlign: "center", margin: "20px 0", width: "100%" }}>
+          {showText}
+        </div>
       )}
     </div>
   );
 }
 
-export function useLoadData() {
-  const config = useAppConfig();
-
-  useEffect(() => {
-    (async () => {
-      const models = await api.llm.models();
-      config.mergeModels(models);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-}
-
 export function Home() {
   useSwitchTheme();
-  useLoadData();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
-    useAccessStore.getState().fetch();
   }, []);
 
   if (!useHasHydrated()) {
