@@ -5,7 +5,7 @@ import RemarkBreaks from "remark-breaks";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
-import { useRef, useState, RefObject, useEffect } from "react";
+import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
 
@@ -13,7 +13,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
-import { isIOS } from "../utils"; // Import the isIOS functions from the utils file
+import { isIOS, isMacOS } from "../utils"; // Import the isIOS & isMacOS functions from the utils file
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -100,9 +100,9 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function _MarkDownContent(props: { content: string }) {
+function escapeMarkdownContent(content: string): string {
   const userAgent = navigator.userAgent.toLowerCase();
-  const isAppleIosDevice = isIOS(); // Load isAppleDevice from isIOS functions
+  const isAppleIosDevice = isIOS() || isMacOS(); // Load isAppleDevice from isIOS functions
   // According to this post: https://www.drupal.org/project/next_webform/issues/3358901
   // iOS 16.4 is the first version to support lookbehind
   const iosVersionSupportsLookBehind = 16.4;
@@ -116,9 +116,8 @@ function _MarkDownContent(props: { content: string }) {
     }
   }
 
-  let escapedContent = props.content;
   if (isAppleIosDevice && !doesIosSupportLookBehind) {
-    escapedContent = props.content.replace(
+    return content.replace(
       // Exclude code blocks & math block from replacement
       // custom-regex for unsupported Apple devices
       /(`{3}[\s\S]*?`{3}|`[^`]*`)|(\$(?!\$))/g,
@@ -131,7 +130,7 @@ function _MarkDownContent(props: { content: string }) {
       }
     );
   } else {
-    escapedContent = props.content.replace(
+    return content.replace(
       // Exclude code blocks & math block from replacement
       /(`{3}[\s\S]*?`{3}|`[^`]*`)|(?<!\$)(\$(?!\$))/g,
       (match, codeBlock) => {
@@ -143,6 +142,12 @@ function _MarkDownContent(props: { content: string }) {
       }
     );
   }
+}
+
+function _MarkDownContent(props: { content: string }) {
+  const escapedContent = useMemo(() => escapeMarkdownContent(props.content), [
+    props.content,
+  ]);
 
   return (
     <ReactMarkdown
