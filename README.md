@@ -1,7 +1,11 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
+<<<<<<< HEAD
 <h1 align="center">ChatGPT Next Webq</h1>
+=======
+<h1 align="center">ChatGPT Next Webw</h1>
+>>>>>>> 5a4f13fd71cce133ad4a3afba6d97a843248634e
 
 English / [简体中文](./README_CN.md)
 
