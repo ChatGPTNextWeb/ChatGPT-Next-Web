@@ -5,7 +5,7 @@ const ru: PartialLocaleType = {
   WIP: "Скоро...",
   Error: {
     Unauthorized:
-      "Несанкционированный доступ. Пожалуйста, введите код доступа на странице настроек.",
+      "Несанкционированный доступ. Пожалуйста, введите код доступа на [странице](/#/auth) настроек.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} сообщений`,
@@ -190,6 +190,9 @@ const ru: PartialLocaleType = {
   },
   Plugin: {
     Name: "Плагин",
+  },
+  FineTuned: {
+    Sysmessage: "Вы - ассистент, который",
   },
   Mask: {
     Name: "Маска",
