@@ -4,6 +4,7 @@ import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import ChatGptIcon from "../icons/chatgpt.png";
 import Locale from "../locales";
+import { showToast } from "../components/ui-lib";
 
 const ONE_MINUTE = 60 * 1000;
 const isApp = !!getClientConfig()?.isApp;
@@ -108,6 +109,16 @@ export const useUpdateStore = createPersistStore(
                       body: updateMessage,
                       icon: `${ChatGptIcon.src}`,
                       sound: "Default"
+                    });
+                    // this a wild for updating client app
+                    window.__TAURI__?.updater.checkUpdate().then((updateResult) => {
+                      if (updateResult.status === "DONE") {
+                        window.__TAURI__?.updater.installUpdate();
+                        showToast(Locale.Settings.Update.Success);
+                      }
+                    }).catch((e) => {
+                      console.error("[Check Update Error]", e);
+                      showToast(Locale.Settings.Update.Failed);
                     });
                   }
                 }
