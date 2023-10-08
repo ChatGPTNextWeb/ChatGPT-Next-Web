@@ -52,6 +52,7 @@
     - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
     - DALL-E
       - DALL-E 插件需要配置 R2 存储，请参考 [Cloudflare R2 服务配置指南](./docs/cloudflare-r2-cn.md) 配置
+      - 只支持非 Cloudflare 环境的部署方式，在 Cloudflare 下该插件会失效 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/43 
   
 
 
