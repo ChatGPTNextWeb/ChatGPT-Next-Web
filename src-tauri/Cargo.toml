@@ -1,11 +1,11 @@
 [package]
-name = "chatgpt-next-web"
+name = "yun-xiao-ai"
 version = "0.1.0"
 description = "A cross platform app for LLM ChatBot."
 authors = ["Yidadaa"]
 license = "mit"
 repository = ""
-default-run = "chatgpt-next-web"
+default-run = "yun-xiao-ai"
 edition = "2021"
 rust-version = "1.60"
 
