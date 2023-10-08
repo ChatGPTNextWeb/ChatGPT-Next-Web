@@ -15,6 +15,7 @@ const en: LocaleType = {
   Auth: {
     Title: "Need Access Code",
     Tips: "Please enter access code below",
+    SubTips: "Or enter your OpenAI API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
@@ -328,6 +329,10 @@ const en: LocaleType = {
   Copy: {
     Success: "Copied to clipboard",
     Failed: "Copy failed, please grant permission to access clipboard",
+  },
+  Download: {
+    Success: "Content downloaded to your directory.",
+    Failed: "Download failed.",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,

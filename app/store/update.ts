@@ -2,8 +2,11 @@ import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
 import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
+import ChatGptIcon from "../icons/chatgpt.png";
+import Locale from "../locales";
 
 const ONE_MINUTE = 60 * 1000;
+const isApp = !!getClientConfig()?.isApp;
 
 function formatVersionDate(t: string) {
   const d = new Date(+t);
@@ -80,6 +83,38 @@ export const useUpdateStore = createPersistStore(
         set(() => ({
           remoteVersion: remoteId,
         }));
+        if (window.__TAURI__?.notification && isApp) {
+          // Check if notification permission is granted
+          await window.__TAURI__?.notification.isPermissionGranted().then((granted) => {
+            if (!granted) {
+              return;
+            } else {
+              // Request permission to show notifications
+              window.__TAURI__?.notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                  if (version === remoteId) {
+                    // Show a notification using Tauri
+                    window.__TAURI__?.notification.sendNotification({
+                      title: "ChatGPT Next Web",
+                      body: `${Locale.Settings.Update.IsLatest}`,
+                      icon: `${ChatGptIcon.src}`,
+                      sound: "Default"
+                    });
+                  } else {
+                    const updateMessage = Locale.Settings.Update.FoundUpdate(`${remoteId}`);
+                    // Show a notification for the new version using Tauri
+                    window.__TAURI__?.notification.sendNotification({
+                      title: "ChatGPT Next Web",
+                      body: updateMessage,
+                      icon: `${ChatGptIcon.src}`,
+                      sound: "Default"
+                    });
+                  }
+                }
+              });
+            }
+          });
+        }
         console.log("[Got Upstream] ", remoteId);
       } catch (error) {
         console.error("[Fetch Upstream Commit Id]", error);
