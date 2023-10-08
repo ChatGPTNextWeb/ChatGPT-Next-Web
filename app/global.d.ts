@@ -16,6 +16,10 @@ declare interface Window {
     invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
     dialog: {
       save(options?: Record<string, unknown>): Promise<string | null>;
+      open(options?: OpenDialogOptions): Promise<null | string | string[]>;
+      // support locale language
+      message(message: string, options?: string | MessageDialogOptions): Promise<void>;
+      ask(message: string, options?: string | ConfirmDialogOptions): Promise<boolean>;
     };
     fs: {
       writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
