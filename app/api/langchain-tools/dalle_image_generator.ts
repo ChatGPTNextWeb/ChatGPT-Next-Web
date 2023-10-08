@@ -1,5 +1,4 @@
 import { Tool } from "langchain/tools";
-import OpenAI from "openai";
 import S3FileStorage from "../../utils/r2_file_storage";
 
 export class DallEAPIWrapper extends Tool {
@@ -27,18 +26,29 @@ export class DallEAPIWrapper extends Tool {
 
   /** @ignore */
   async _call(prompt: string) {
-    const openai = new OpenAI({
-      apiKey: this.apiKey,
-      baseURL: this.baseURL,
-    });
-    const response = await openai.images.generate({
-      prompt: prompt,
-      n: this.n,
-      size: this.size,
-    });
+    let image_url;
+    const apiUrl = `${this.baseURL}/images/generations`;
 
-    let image_url = response.data[0].url;
-    console.log(image_url);
+    try {
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          n: this.n,
+          size: this.size
+        })
+      };
+      const response = await fetch(apiUrl, requestOptions);
+      const json = await response.json();
+      console.log("[DALL-E]", json);
+      image_url = json.data[0].url;
+    } catch (e) {
+      console.error("[DALL-E]", e);
+    }
     if (!image_url) return "No image was generated";
     let filePath = await this.saveImageFromUrl(image_url);
     console.log(filePath);
