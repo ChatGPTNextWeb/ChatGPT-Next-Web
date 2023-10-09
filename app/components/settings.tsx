@@ -683,9 +683,28 @@ export function Settings() {
             {checkingUpdate ? (
               <LoadingIcon />
             ) : hasNewVersion ? (
-              <Link href={updateUrl} target="_blank" className="link">
-                {Locale.Settings.Update.GoToUpdate}
-              </Link>
+              <>
+                {clientConfig?.isApp ? (
+                  <IconButton
+                    icon={<ResetIcon></ResetIcon>}
+                    text={Locale.Settings.Update.GoToUpdate}
+                    onClick={() => {
+                      window.__TAURI__?.updater.checkUpdate().then((updateResult) => {
+                        if (updateResult.status === "DONE") {
+                          window.__TAURI__?.updater.installUpdate();
+                        }
+                      }).catch((e) => {
+                        console.error("[Check Update Error]", e);
+                        showToast(Locale.Settings.Update.Failed);
+                      });
+                    }}
+                  />
+                ) : (
+                  <Link href={updateUrl} target="_blank" className="link">
+                    {Locale.Settings.Update.GoToUpdate}
+                  </Link>
+                )}
+              </>
             ) : (
               <IconButton
                 icon={<ResetIcon></ResetIcon>}

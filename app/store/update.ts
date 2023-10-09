@@ -114,7 +114,6 @@ export const useUpdateStore = createPersistStore(
                     window.__TAURI__?.updater.checkUpdate().then((updateResult) => {
                       if (updateResult.status === "DONE") {
                         window.__TAURI__?.updater.installUpdate();
-                        showToast(Locale.Settings.Update.Success);
                       }
                     }).catch((e) => {
                       console.error("[Check Update Error]", e);
