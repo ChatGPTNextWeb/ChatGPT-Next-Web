@@ -8,7 +8,12 @@ export function trimTopic(topic: string) {
 
 export async function copyToClipboard(text: string) {
   try {
-    await navigator.clipboard.writeText(text);
+    if (window.__TAURI__) {
+      window.__TAURI__.writeText(text);
+    } else {
+      await navigator.clipboard.writeText(text);
+    }
+
     showToast(Locale.Copy.Success);
   } catch (error) {
     const textArea = document.createElement("textarea");
@@ -26,22 +31,51 @@ export async function copyToClipboard(text: string) {
   }
 }
 
-export function downloadAs(text: string, filename: string) {
-  const element = document.createElement("a");
-  element.setAttribute(
-    "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
-  );
-  element.setAttribute("download", filename);
+export async function downloadAs(text: string, filename: string) {
+  if (window.__TAURI__) {
+    const result = await window.__TAURI__.dialog.save({
+      defaultPath: `${filename}`,
+      filters: [
+        {
+          name: `${filename.split(".").pop()} files`,
+          extensions: [`${filename.split(".").pop()}`],
+        },
+        {
+          name: "All Files",
+          extensions: ["*"],
+        },
+      ],
+    });
 
-  element.style.display = "none";
-  document.body.appendChild(element);
+    if (result !== null) {
+      try {
+        await window.__TAURI__.fs.writeBinaryFile(
+          result,
+          new Uint8Array([...text].map((c) => c.charCodeAt(0))),
+        );
+        showToast(Locale.Download.Success);
+      } catch (error) {
+        showToast(Locale.Download.Failed);
+      }
+    } else {
+      showToast(Locale.Download.Failed);
+    }
+  } else {
+    const element = document.createElement("a");
+    element.setAttribute(
+      "href",
+      "data:text/plain;charset=utf-8," + encodeURIComponent(text),
+    );
+    element.setAttribute("download", filename);
 
-  element.click();
+    element.style.display = "none";
+    document.body.appendChild(element);
 
-  document.body.removeChild(element);
+    element.click();
+
+    document.body.removeChild(element);
+  }
 }
-
 export function readFromFile() {
   return new Promise<string>((res, rej) => {
     const fileInput = document.createElement("input");
@@ -152,6 +186,7 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
   const width = getDomContentWidth(dom);
   measureDom.style.width = width + "px";
   measureDom.innerText = dom.value !== "" ? dom.value : "1";
+  measureDom.style.fontSize = dom.style.fontSize;
   const endWithEmptyLine = dom.value.endsWith("\n");
   const height = parseFloat(window.getComputedStyle(measureDom).height);
   const singleLineHeight = parseFloat(
@@ -166,4 +201,16 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
 export function getCSSVar(varName: string) {
   return getComputedStyle(document.body).getPropertyValue(varName).trim();
+}
+
+/**
+ * Detects Macintosh
+ */
+export function isMacOS(): boolean {
+  if (typeof window !== "undefined") {
+    let userAgent = window.navigator.userAgent.toLocaleLowerCase();
+    const macintosh = /iphone|ipad|ipod|macintosh/.test(userAgent);
+    return !!macintosh;
+  }
+  return false;
 }

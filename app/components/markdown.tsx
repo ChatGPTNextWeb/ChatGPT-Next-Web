@@ -11,18 +11,22 @@ import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { showImageModal } from "./ui-lib";
 
-export function Mermaid(props: { code: string; onError: () => void }) {
+export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (props.code && ref.current) {
       mermaid
         .run({
           nodes: [ref.current],
+          suppressErrors: true,
         })
         .catch((e) => {
-          props.onError();
+          setHasError(true);
           console.error("[Mermaid] ", e.message);
         });
     }
@@ -34,17 +38,20 @@ export function Mermaid(props: { code: string; onError: () => void }) {
     if (!svg) return;
     const text = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([text], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-    const win = window.open(url);
-    if (win) {
-      win.onload = () => URL.revokeObjectURL(url);
-    }
+    showImageModal(URL.createObjectURL(blob));
+  }
+
+  if (hasError) {
+    return null;
   }
 
   return (
     <div
-      className="no-dark"
-      style={{ cursor: "pointer", overflow: "auto" }}
+      className="no-dark mermaid"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
       ref={ref}
       onClick={() => viewSvgInNewWindow()}
     >
@@ -55,33 +62,40 @@ export function Mermaid(props: { code: string; onError: () => void }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const refText = ref.current?.innerText;
   const [mermaidCode, setMermaidCode] = useState("");
 
-  useEffect(() => {
+  const renderMermaid = useDebouncedCallback(() => {
     if (!ref.current) return;
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
     if (mermaidDom) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
-  }, [props.children]);
+  }, 600);
 
-  if (mermaidCode) {
-    return <Mermaid code={mermaidCode} onError={() => setMermaidCode("")} />;
-  }
+  useEffect(() => {
+    setTimeout(renderMermaid, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refText]);
 
   return (
-    <pre ref={ref}>
-      <span
-        className="copy-code-button"
-        onClick={() => {
-          if (ref.current) {
-            const code = ref.current.innerText;
-            copyToClipboard(code);
-          }
-        }}
-      ></span>
-      {props.children}
-    </pre>
+    <>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
+          }}
+        ></span>
+        {props.children}
+      </pre>
+    </>
   );
 }
 
@@ -101,6 +115,7 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";
           const isInternal = /^\/#/i.test(href);
@@ -126,55 +141,23 @@ export function Markdown(
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
-  const renderedHeight = useRef(0);
-  const inView = useRef(!!props.defaultShow);
-
-  const parent = props.parentRef?.current;
-  const md = mdRef.current;
-
-  const checkInView = () => {
-    if (parent && md) {
-      const parentBounds = parent.getBoundingClientRect();
-      const twoScreenHeight = Math.max(500, parentBounds.height * 2);
-      const mdBounds = md.getBoundingClientRect();
-      const parentTop = parentBounds.top - twoScreenHeight;
-      const parentBottom = parentBounds.bottom + twoScreenHeight;
-      const isOverlap =
-        Math.max(parentTop, mdBounds.top) <=
-        Math.min(parentBottom, mdBounds.bottom);
-      inView.current = isOverlap;
-    }
-
-    if (inView.current && md) {
-      renderedHeight.current = Math.max(
-        renderedHeight.current,
-        md.getBoundingClientRect().height,
-      );
-    }
-  };
-
-  setTimeout(() => checkInView(), 1);
 
   return (
     <div
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
-        height:
-          !inView.current && renderedHeight.current > 0
-            ? renderedHeight.current
-            : "auto",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
       onDoubleClickCapture={props.onDoubleClickCapture}
+      dir="auto"
     >
-      {inView.current &&
-        (props.loading ? (
-          <LoadingIcon />
-        ) : (
-          <MarkdownContent content={props.content} />
-        ))}
+      {props.loading ? (
+        <LoadingIcon />
+      ) : (
+        <MarkdownContent content={props.content} />
+      )}
     </div>
   );
 }
