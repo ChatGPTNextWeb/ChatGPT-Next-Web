@@ -34,5 +34,10 @@ declare interface Window {
       installUpdate(): Promise<void>;
       onUpdaterEvent(handler: (status: UpdateStatusResult) => void): Promise<UnlistenFn>;
     };
+    // can do route in client app like CORS fetch, currently is not enabled yet only module added.
+    http: {
+      fetch<T>(url: string, options?: FetchOptions): Promise<Response<T>>;
+      getClient(options?: ClientOptions): Promise<Client>
+    };
   };
 }
