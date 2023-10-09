@@ -37,7 +37,7 @@ declare interface Window {
     // can do route in client app like CORS fetch, currently is not enabled yet only module added.
     http: {
       fetch<T>(url: string, options?: FetchOptions): Promise<Response<T>>;
-      getClient(options?: ClientOptions): Promise<Client>
+      getClient(options?: ClientOptions): Promise<Client>;
     };
   };
 }
