@@ -565,6 +565,14 @@ export function Settings() {
     setCheckingUpdate(true);
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
+      window.__TAURI__?.updater.checkUpdate().then((updateResult) => {
+        if (updateResult.status === "DONE") {
+          window.__TAURI__?.updater.installUpdate();
+        }
+      }).catch((e) => {
+        console.error("[Check Update Error]", e);
+        showToast(Locale.Settings.Update.Failed);
+      });
     });
 
     console.log("[Update] local version ", updateStore.version);
@@ -686,18 +694,9 @@ export function Settings() {
               <>
                 {clientConfig?.isApp ? (
                   <IconButton
-                    icon={<ResetIcon></ResetIcon>}
+                    icon={<DownloadIcon></DownloadIcon>}
                     text={Locale.Settings.Update.GoToUpdate}
-                    onClick={() => {
-                      window.__TAURI__?.updater.checkUpdate().then((updateResult) => {
-                        if (updateResult.status === "DONE") {
-                          window.__TAURI__?.updater.installUpdate();
-                        }
-                      }).catch((e) => {
-                        console.error("[Check Update Error]", e);
-                        showToast(Locale.Settings.Update.Failed);
-                      });
-                    }}
+                    onClick={() => checkUpdate(true)}
                   />
                 ) : (
                   <Link href={updateUrl} target="_blank" className="link">
