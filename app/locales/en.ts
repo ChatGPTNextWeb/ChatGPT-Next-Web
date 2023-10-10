@@ -50,6 +50,7 @@ const en: LocaleType = {
       newm: "Start a new chat with mask",
       next: "Next Chat",
       prev: "Previous Chat",
+      restart: "Restart a client",
       clear: "Clear Context",
       del: "Delete Chat",
     },

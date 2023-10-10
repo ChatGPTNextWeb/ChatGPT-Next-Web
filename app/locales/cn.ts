@@ -48,6 +48,7 @@ const cn = {
       newm: "从面具新建聊天",
       next: "下一个聊天",
       prev: "上一个聊天",
+      restart: "重新启动客户端",
       clear: "清除上下文",
       del: "删除聊天",
     },

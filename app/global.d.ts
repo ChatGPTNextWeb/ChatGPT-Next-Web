@@ -24,6 +24,9 @@ declare interface Window {
     fs: {
       writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
     };
+    process: {
+      relaunch(): Promise<void>;
+    };
     notification:{
       requestPermission(): Promise<Permission>;
       isPermissionGranted(): Promise<boolean>;
