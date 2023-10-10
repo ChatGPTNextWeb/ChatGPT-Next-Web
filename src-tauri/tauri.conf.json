@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ChatGPT Next Web",
+    "productName": "反 卷 总 署",
     "version": "2.9.9"
   },
   "tauri": {
