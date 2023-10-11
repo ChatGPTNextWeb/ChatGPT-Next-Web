@@ -224,6 +224,24 @@ yarn dev
 
 > [简体中文 > 如何部署到私人服务器](./README_CN.md#部署)
 
+
+<details>
+
+<summary><strong>部署到 Zeabur</strong></summary>
+<div>
+
+> Zeabur 的服务器在国外，自动解决了网络的问题，同时免费的额度也足够个人使用
+
+1. 首先 fork 一份代码。
+2. 进入 [Zeabur](https://zeabur.com?referralCode=songquanpeng)，登录，进入控制台。
+3. 新建一个 Project， 然后在 Service -> Add Service，选择 Git（第一次使用需要先授权），选择你 fork 的仓库。
+4. Deploy 会自动开始
+5. 进入下方 Domains，选择一个合适的域名前缀，如 "my-chat-next-web"，最终域名为 "my-chat-next-web.zeabur.app"，也可以 CNAME 自己的域名。
+6. 等待部署完成，点击生成的域名进入 ChatGPT-Next-Web。
+</div>
+</details>
+
+
 ### Docker (Recommended)
 
 ```shell
