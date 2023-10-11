@@ -14,6 +14,7 @@ declare interface Window {
   __TAURI__?: {
     writeText(text: string): Promise<void>;
     invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
+    setAlwaysOnTop(alwaysOnTop: boolean): Promise<void>;
     dialog: {
       save(options?: Record<string, unknown>): Promise<string | null>;
     };
