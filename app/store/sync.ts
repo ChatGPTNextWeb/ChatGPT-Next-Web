@@ -101,7 +101,7 @@ export const useSyncStore = createPersistStore(
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
       } catch (e) {
-        console.log("[Sync] failed to get remoate state", e);
+        console.log("[Sync] failed to get remote state", e);
       }
 
       await client.set(config.username, JSON.stringify(localState));
