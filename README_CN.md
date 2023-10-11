@@ -169,6 +169,38 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
 
+## 同步聊天记录（upStash）
+### 准备工作
+- GitHub账号
+- 拥有自己搭建过的ChatGPT-Next-Web的服务器
+- [UpStash](https://upstash.com)
+
+### 开始教程
+1. 注册UpStash账号
+2. 创建数据库
+
+    ![注册登录](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-17-32.png)
+
+    ![创建数据库](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-24-04.png)
+
+    ![选择服务器](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-25-49.png)
+
+3. 找到REST API，分别复制UPSTASH_REDIS_REST_URL和UPSTASH_REDIS_REST_TOKEN（⚠切记⚠：不要泄露Token!）
+
+   ![复制](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-28-12.png)
+
+4. UPSTASH_REDIS_REST_URL和UPSTASH_REDIS_REST_TOKEN复制到你的同步配置，点击**检查可用性**
+
+    ![同步1](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-04.png)
+
+    如果没什么问题，那就成功了
+
+    ![同步可用性完成的样子](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-52.png)
+
+5. Success! 
+
+   ![好耶~！](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-34-15.png)
+
 ## 鸣谢
 
 ### 捐赠者

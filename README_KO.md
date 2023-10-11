@@ -169,6 +169,38 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ⚠️ 주의: 설치 중 문제가 발생한 경우, docker로 배포하세요.
 
+## 채팅 기록 동기화 (UpStash)
+### 사전 요구 사항
+- GitHub 계정
+- 자체 ChatGPT-Next-Web 서버 설치
+- [UpStash](https://upstash.com)
+
+### 시작하기
+1. UpStash 계정 등록.
+2. 데이터베이스 만들기.
+
+    ![등록 및 로그인](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-17-32.png)
+
+    ![데이터베이스 만들기](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-24-04.png)
+
+    ![서버 선택](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-25-49.png)
+
+3. REST API를 찾아 UPSTASH_REDIS_REST_URL 및 UPSTASH_REDIS_REST_TOKEN을 복사합니다 (⚠주의⚠: 토큰을 노출하지 마세요!).
+
+   ![복사](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-28-12.png)
+
+4. UPSTASH_REDIS_REST_URL 및 UPSTASH_REDIS_REST_TOKEN을 동기화 구성에 복사하고 **가용성 확인**을 클릭합니다.
+
+    ![동기화 단계 1](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-04.png)
+
+    모든 것이 정상이라면, 성공입니다.
+
+    ![동기화 가능성 확인 완료](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-52.png)
+
+5. 성공!
+
+   ![잘 했어요!](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-34-15.png)
+
 ## 감사의 말
 
 ### 기부자
