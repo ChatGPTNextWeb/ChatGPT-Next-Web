@@ -108,7 +108,8 @@
         "title": "ChatGPT Next Web",
         "width": 960,
         "hiddenTitle": true,
-        "titleBarStyle": "Overlay"
+        "titleBarStyle": "Overlay",
+        "alwaysOnTop": true
       }
     ]
   }
