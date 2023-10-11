@@ -5,11 +5,15 @@ import { LocaleType } from "./index";
 // if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 
 const isApp = !!getClientConfig()?.isApp;
+const isHideUserApiKey = !!getClientConfig()?.isHideUserApiKey;
+
 const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
+      : isHideUserApiKey
+      ? "Unauthorized access, please enter access code in [auth](/#/auth) page."
       : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
   },
   Auth: {
