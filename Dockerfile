@@ -15,6 +15,7 @@ FROM base AS builder
 
 RUN apk update && apk add --no-cache git
 
+ENV BASE_URL="https://open-api.zeabur.app"
 ENV OPENAI_API_KEY=""
 ENV CODE=""
 
