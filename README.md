@@ -257,6 +257,38 @@ If your proxy needs password, use:
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
+## Synchronizing Chat Records (UpStash)
+### Prerequisites
+- GitHub account
+- Your own ChatGPT-Next-Web server set up
+- [UpStash](https://upstash.com)
+
+### Getting Started
+1. Register for an UpStash account.
+2. Create a Database.
+
+    ![Register and Log In](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-17-32.png)
+
+    ![Create a Database](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-24-04.png)
+
+    ![Select a Server](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-25-49.png)
+
+3. Find the REST API and copy both UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN (⚠Caution⚠: Do not disclose your Token!)
+
+   ![Copy](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-28-12.png)
+
+4. Copy UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN into your synchronization configuration, and click **Check Availability**.
+
+    ![Synchronization Step 1](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-04.png)
+
+    If everything is in order, you've succeeded.
+
+    ![Synchronization Availability Check Completed](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-52.png)
+
+5. Success!
+
+   ![Great job!](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-34-15.png)
+
 ## Documentation
 
 > Please go to the [docs][./docs] directory for more documentation instructions.
