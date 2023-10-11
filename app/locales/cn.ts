@@ -310,7 +310,13 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello:
+      "有什么可以帮你的吗？\n" +
+      '[使用说明](https://mazqmkwsnr8.feishu.cn/wiki/PC3IwTGSAiRK8jkofZhcEqyRnnh)  访问密码：`({2"?213` \n\n' +
+      "如果你是第一次使用该系统，请前往[设置](/#/settings) 页填入你自己的令牌（API Key）。\n" +
+      "如果您没有 OpenAI API Key，可以考虑使用本项目的中转服务，价格与 OpenAI 完全保持一致，并且可以在大部分地区直连使用，使用此中转服务将帮助本项目良性发展。\n" +
+      "\n" +
+      "中转入口：SuGPT API: https://open-api.zeabur.app/",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
