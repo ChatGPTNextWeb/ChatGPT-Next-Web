@@ -1,0 +1,22 @@
+name: Merge to production
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "15 0 * * *" # 00:15 every day
+  workflow_dispatch:
+
+jobs:
+  merge_to_prod:
+    name: Merge from main branch to production branch
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+    steps:
+      - name: Merge branch
+        uses: devmasx/merge-branch@1.4.0
+        with:
+          target_branch: production
+          from_branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
