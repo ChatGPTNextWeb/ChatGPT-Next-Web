@@ -407,6 +407,10 @@ const cn = {
     Import: "导入",
     Sync: "同步",
     Config: "配置",
+    AlwaysOnTop: {
+      Enable: "已启用置顶功能。",
+      Disable: "已禁用置顶功能。"
+    },
   },
   Exporter: {
     Model: "模型",

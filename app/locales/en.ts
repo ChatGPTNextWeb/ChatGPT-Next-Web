@@ -408,6 +408,10 @@ const en: LocaleType = {
     Import: "Import",
     Sync: "Sync",
     Config: "Config",
+    AlwaysOnTop: {
+      Enable: "Always On Top Enabled.",
+      Disable: "Always On Top Disable."
+    },
   },
   Exporter: {
     Model: "Model",

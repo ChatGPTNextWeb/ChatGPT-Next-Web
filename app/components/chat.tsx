@@ -969,6 +969,7 @@ function _Chat() {
 
   const autoFocus = !isMobileScreen; // wont auto focus on mobile screen
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
+  const setAlwaysOntop = clientConfig?.isApp;
 
   useCommand({
     fill: setUserInput,
@@ -1014,6 +1015,8 @@ function _Chat() {
 
   // edit / insert message modal
   const [isEditingMessage, setIsEditingMessage] = useState(false);
+  // always ontop
+  const [isAlwaysOnTop, setIsAlwaysOnTop] = useState(false);
 
   // remember unfinished input
   useEffect(() => {
@@ -1088,6 +1091,26 @@ function _Chat() {
                   config.update(
                     (config) => (config.tightBorder = !config.tightBorder),
                   );
+                }}
+              />
+            </div>
+          )}
+          {setAlwaysOntop && (
+            <div className="window-action-button">
+              <IconButton
+                icon={<PinIcon />}
+                bordered
+                title={Locale.Chat.Actions.Export}
+                onClick={() => {
+                  const newIsAlwaysOnTop = !isAlwaysOnTop;
+                  setIsAlwaysOnTop(newIsAlwaysOnTop);
+                  window.__TAURI__?.setAlwaysOnTop(newIsAlwaysOnTop);
+
+                  if (newIsAlwaysOnTop) {
+                    showToast(Locale.UI.AlwaysOnTop.Enable);
+                  } else {
+                    showToast(Locale.UI.AlwaysOnTop.Disable);
+                  }
                 }}
               />
             </div>

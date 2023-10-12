@@ -377,6 +377,10 @@ const id: PartialLocaleType = {
     Close: "Tutup",
     Create: "Buat",
     Edit: "Edit",
+    AlwaysOnTop: {
+      Enable: "Selalu di Atas Diaktifkan.",
+      Disable: "Selalu di Atas Dinonaktifkan."
+    },
   },
   Exporter: {
     Model: "Model",
