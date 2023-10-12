@@ -44,6 +44,7 @@ const en: LocaleType = {
       PinToastAction: "View",
       Delete: "Delete",
       Edit: "Edit",
+      AlwaysOnTop: "Set always on top the client should always be on top of other windows.",
     },
     Commands: {
       new: "Start a new chat",

@@ -31,6 +31,7 @@ const id: PartialLocaleType = {
       PinToastAction: "Lihat",
       Delete: "Hapus",
       Edit: "Edit",
+      AlwaysOnTop: "Mengatur klien selalu berada di atas jendela lain.",
     },
     Commands: {
       new: "Mulai Chat Baru",

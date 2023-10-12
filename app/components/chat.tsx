@@ -1100,7 +1100,7 @@ function _Chat() {
               <IconButton
                 icon={<PinIcon />}
                 bordered
-                title={Locale.Chat.Actions.Export}
+                title={Locale.Chat.Actions.AlwaysOnTop}
                 onClick={() => {
                   const newIsAlwaysOnTop = !isAlwaysOnTop;
                   setIsAlwaysOnTop(newIsAlwaysOnTop);
