@@ -223,38 +223,6 @@ docker run -d -p 3000:3000 \
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
-## チャット履歴の同期（UpStash）
-### 必要なもの
-- GitHub アカウント
-- 独自の ChatGPT-Next-Web サーバーのセットアップ
-- [UpStash](https://upstash.com)
-
-### はじめに
-1. UpStash アカウントを登録します。
-2. データベースを作成します。
-
-    ![登録とログイン](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-17-32.png)
-
-    ![データベースの作成](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-24-04.png)
-
-    ![サーバーの選択](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-25-49.png)
-
-3. REST API を見つけ、UPSTASH_REDIS_REST_URL および UPSTASH_REDIS_REST_TOKEN の両方をコピーします（⚠注意⚠：トークンを公開しないでください！）。
-
-   ![コピー](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-28-12.png)
-
-4. UPSTASH_REDIS_REST_URL および UPSTASH_REDIS_REST_TOKEN を同期設定にコピーし、**可用性を確認** をクリックします。
-
-    ![同期ステップ 1](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-04.png)
-
-    すべてが正常であれば、成功です。
-
-    ![同期の可用性チェックが完了しました](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-33-52.png)
-
-5. 成功！
-
-   ![おめでとうございます！](https://mcheping520.gitee.io/graphic-bed/image/Snipaste_2023-10-11_19-34-15.png)
-
 ## スクリーンショット
 
 ![Settings](./docs/images/settings.png)
