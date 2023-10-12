@@ -42,7 +42,7 @@ export function auth(req: NextRequest) {
   if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
     return {
       error: true,
-      msg: !accessCode ? "empty access code" : "wrong access code",
+      msg: !accessCode ? "请点击登录，输入访问密码" : "输入的访问密码不正确",
     };
   }
 
@@ -50,13 +50,13 @@ export function auth(req: NextRequest) {
   if (!token) {
     const apiKey = serverConfig.apiKey;
     if (apiKey) {
-      console.log("[Auth] use system api key");
+      console.log("[Auth] 使用系统api密钥");
       req.headers.set("Authorization", `Bearer ${apiKey}`);
     } else {
-      console.log("[Auth] admin did not provide an api key");
+      console.log("[Auth] 管理员没有提供api密钥");
     }
   } else {
-    console.log("[Auth] use user api key");
+    console.log("[Auth] 使用用户api密钥");
   }
 
   return {
