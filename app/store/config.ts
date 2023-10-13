@@ -85,16 +85,16 @@ export const ModalConfigValidator = {
     return limitNumber(x, 0, 100000, 2000);
   },
   presence_penalty(x: number) {
-    return limitNumber(x, -2, 2, 0);
+    return limitNumber(x, -2, 2, 0.2);
   },
   frequency_penalty(x: number) {
-    return limitNumber(x, -2, 2, 0);
+    return limitNumber(x, -2, 2, 0.2);
   },
   temperature(x: number) {
-    return limitNumber(x, 0, 1, 1);
+    return limitNumber(x, 0, 2, 1.5);
   },
   top_p(x: number) {
-    return limitNumber(x, 0, 1, 1);
+    return limitNumber(x, 0, 1, 0.6);
   },
 };
 
