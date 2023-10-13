@@ -169,6 +169,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ⚠️ 주의: 설치 중 문제가 발생한 경우, docker로 배포하세요.
 
+
 ## 감사의 말
 
 ### 기부자
