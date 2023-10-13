@@ -12,10 +12,6 @@ export const getBuildConfig = () => {
   const version = "v" + tauriConfig.package.version;
   const isHideUserApiKey = !!process.env.HIDE_USER_API_KEY;
   const isSysHasOpenaiApiKey = !!process.env.OPENAI_API_KEY;
-  console.log("=====================");
-  console.log("HIDE_USER_API_KEY", process.env.HIDE_USER_API_KEY);
-  console.log("isHideUserApiKey", isHideUserApiKey);
-  console.log("=====================");
 
   const commitInfo = (() => {
     try {
