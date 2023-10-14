@@ -8,7 +8,7 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "欢迎使用智能聊天助手，请在[设置](/#/settings)页填入你自己的 OpenAI API Key。<br>如果您没有 OpenAI API Key，可以找我购买，价格与 OpenAI 完全保持一致，很便宜，并且可以在大部分地区直连使用。<br>请关注我的公众号【超级炫酷】，获得购买链接和使用教程，大约9.9可以回答24万字，也可以直接点击[蓝色链接](/#/https://kdqvens6kv.feishu.cn/docx/SjlPdDXzoognxKxQtWBcxfj8nBc?from=from_copylink)进入页面。",
   },
   Auth: {
     Title: "需要密码",
