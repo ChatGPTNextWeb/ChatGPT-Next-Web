@@ -1,6 +1,3 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
 import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
