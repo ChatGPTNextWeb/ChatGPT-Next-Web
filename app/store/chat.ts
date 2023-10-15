@@ -519,10 +519,18 @@ export const useChatStore = createPersistStore(
             },
             onFinish(message) {
               get().updateCurrentSession(
-                (session) =>
-                  (session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
-              );
+                (session) => {
+                  session.topic =
+                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC;
+                  // Add system message after summarizing the topic
+                  const systemMessage: ChatMessage = {
+                    role: "system",
+                    content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
+                    date: new Date().toLocaleString(),
+                    id: nanoid(),
+                  };
+                  session.messages = [systemMessage, ...session.messages];
+                });
             },
           });
         }

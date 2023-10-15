@@ -619,10 +619,6 @@ export function JsonPreviewer(props: {
 }) {
   const msgs = {
     messages: [
-      {
-        role: "system",
-        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
-      },
       ...props.messages.map((m) => ({
         role: m.role,
         content: m.content,
