@@ -313,6 +313,7 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@AnsonHyq](https://github.com/AnsonHyq)
 [@synwith](https://github.com/synwith)
 [@piksonGit](https://github.com/piksonGit)
+[@ouyangzhiping](https://github.com/ouyangzhiping)
 
 ### Contributor
 
