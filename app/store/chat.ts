@@ -523,11 +523,12 @@ export const useChatStore = createPersistStore(
                   session.topic =
                     message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC;
                   // Add system message after summarizing the topic
+                  // which is powerful based of fine-tuning
                   const systemMessage: ChatMessage = {
-                    role: "system",
-                    content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
                     date: new Date().toLocaleString(),
                     id: nanoid(),
+                    role: "system",
+                    content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
                   };
                   session.messages = [systemMessage, ...session.messages];
                 });
