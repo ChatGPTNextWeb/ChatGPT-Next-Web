@@ -437,18 +437,14 @@ export function ChatActions(props: {
         .map((m) => m.name),
     [config],
   );
-  const currentModel = useMemo(() => {
-    let modelName: string = chatStore.currentSession().mask.modelConfig.model;
-    if (models.length > 0 && !models.some(m => m === modelName)) {
-      // If the selected model not avaiable, switch to the first avaiable model.
-      modelName = models[0];
-      chatStore.updateCurrentSession((session) => {
-        session.mask.modelConfig.model = modelName as ModelType;
-        session.mask.syncGlobalConfig = false;
-      });
-    }
-    return modelName;
-  }, [models]);
+  let currentModel: string = chatStore.currentSession().mask.modelConfig.model;
+  if (models.length > 0 && !models.some(m => m === currentModel)) {
+    currentModel = models[0];
+    chatStore.updateCurrentSession((session) => {
+      session.mask.modelConfig.model = currentModel as ModelType;
+      session.mask.syncGlobalConfig = false;
+    });
+  }
   const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
