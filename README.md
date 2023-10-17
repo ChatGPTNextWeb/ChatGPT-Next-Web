@@ -160,7 +160,7 @@ Your openai api key.
 
 ### `CODE` (optional)
 
-Access passsword, separated by comma.
+Access password, separated by comma.
 
 ### `BASE_URL` (optional)
 
