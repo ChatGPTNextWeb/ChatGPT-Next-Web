@@ -51,11 +51,16 @@ export default class S3FileStorage {
 
     console.log(signedUrl);
 
-    await fetch(signedUrl, {
-      method: "PUT",
-      body: data,
-    });
+    try {
+      await fetch(signedUrl, {
+        method: "PUT",
+        body: data,
+      });
 
-    return `/api/file/${fileName}`;
+      return `/api/file/${fileName}`;
+    } catch (e) {
+      console.error("[R2]", e);
+      throw e;
+    }
   }
 }

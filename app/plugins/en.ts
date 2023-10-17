@@ -50,4 +50,14 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1694703673000,
     enable: false,
   },
+  {
+    name: "Stable Diffusion",
+    toolName: "stable_diffusion_image_generator",
+    lang: "en",
+    description:
+      "Stable Diffusion text-to-image model. Using this plugin requires configuring Cloudflare R2 object storage service and stable-diffusion-webui API.",
+    builtin: true,
+    createdAt: 1688899480510,
+    enable: false,
+  },
 ];

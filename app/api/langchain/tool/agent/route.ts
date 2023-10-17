@@ -21,6 +21,7 @@ import { DynamicTool, Tool } from "langchain/tools";
 import { DallEAPIWrapper } from "@/app/api/langchain-tools/dalle_image_generator";
 import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
+import { StableDiffusionWrapper } from "@/app/api/langchain-tools/stable_diffusion_image_generator";
 
 const serverConfig = getServerSideConfig();
 
@@ -228,10 +229,13 @@ async function handle(req: NextRequest) {
     const webBrowserTool = new WebBrowser({ model, embeddings });
     const calculatorTool = new Calculator();
     const dallEAPITool = new DallEAPIWrapper(apiKey, baseUrl);
+    const stableDiffusionTool = new StableDiffusionWrapper();
     if (useTools.includes("web-search")) tools.push(searchTool);
     if (useTools.includes(webBrowserTool.name)) tools.push(webBrowserTool);
     if (useTools.includes(calculatorTool.name)) tools.push(calculatorTool);
     if (useTools.includes(dallEAPITool.name)) tools.push(dallEAPITool);
+    if (useTools.includes(stableDiffusionTool.name))
+      tools.push(stableDiffusionTool);
 
     useTools.forEach((toolName) => {
       if (toolName) {
