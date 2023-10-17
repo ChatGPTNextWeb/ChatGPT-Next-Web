@@ -429,7 +429,6 @@ export function ChatActions(props: {
   const stopAll = () => ChatControllerPool.stopAll();
 
   // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const models = useMemo(
     () =>
       config
@@ -438,6 +437,18 @@ export function ChatActions(props: {
         .map((m) => m.name),
     [config],
   );
+  const currentModel = useMemo(() => {
+    let modelName: string = chatStore.currentSession().mask.modelConfig.model;
+    if (models.length > 0 && !models.some(m => m === modelName)) {
+      // If the selected model not avaiable, switch to the first avaiable model.
+      modelName = models[0];
+      chatStore.updateCurrentSession((session) => {
+        session.mask.modelConfig.model = modelName as ModelType;
+        session.mask.syncGlobalConfig = false;
+      });
+    }
+    return modelName;
+  }, [models]);
   const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
