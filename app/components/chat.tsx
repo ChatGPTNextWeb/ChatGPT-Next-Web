@@ -113,8 +113,8 @@ export function SessionConfigModel(props: { onClose: () => void }) {
     setExporting(false);
   };
 
-  const importchat = () => {
-    readFromFile().then((content) => {
+  const importchat = async () => {
+    await readFromFile().then((content) => {
       try {
         const importedData = JSON.parse(content);
         chatStore.updateCurrentSession((session) => {
