@@ -70,6 +70,7 @@ export class ChatGPTApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
+      max_tokens: modelConfig.max_tokens,
     };
 
     console.log("[Request] openai payload: ", requestPayload);
