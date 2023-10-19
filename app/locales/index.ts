@@ -89,9 +89,9 @@ function setItem(key: string, value: string) {
   } catch {}
 }
 
-function getLanguage() {
+function getLanguages() {
   try {
-    return navigator.language.toLowerCase();
+    return navigator.languages;
   } catch {
     return DEFAULT_LANG;
   }
@@ -104,11 +104,20 @@ export function getLang(): Lang {
     return savedLang as Lang;
   }
 
-  const lang = getLanguage();
+  const preferredLangs = getLanguages();
+  if (typeof preferredLangs === "string") return preferredLangs; // no language list, return the only lang
 
-  for (const option of AllLangs) {
-    if (lang.includes(option)) {
-      return option;
+  // loop for searching best language option based on user accepted language
+  let bestMatch: Lang | null = null;
+  for (let i = 0; i < preferredLangs.length; i++) {
+    for (const option of AllLangs) {
+      if (preferredLangs[i].toLowerCase().includes(option)) {
+        bestMatch = option;
+        break;
+      }
+    }
+    if (bestMatch) {
+      return bestMatch;
     }
   }
 
