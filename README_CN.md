@@ -114,7 +114,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
+BASE_URL=https://nb.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
@@ -135,8 +135,8 @@ BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 docker pull yidadaa/chatgpt-next-web
 
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="页面访问密码" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=页面访问密码 \
    yidadaa/chatgpt-next-web
 ```
 
@@ -144,10 +144,10 @@ docker run -d -p 3000:3000 \
 
 ```shell
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="页面访问密码" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=页面访问密码 \
    --net=host \
-   -e PROXY_URL="http://127.0.0.1:7890" \
+   -e PROXY_URL=http://127.0.0.1:7890 \
    yidadaa/chatgpt-next-web
 ```
 
@@ -169,6 +169,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
 
+
 ## 鸣谢
 
 ### 捐赠者
@@ -178,6 +179,9 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ### 贡献者
 
 [见项目贡献者列表](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
+
+### 相关项目
+- [one-api](https://github.com/songquanpeng/one-api): 一站式大模型额度管理平台，支持市面上所有主流大语言模型
 
 ## 开源协议
 

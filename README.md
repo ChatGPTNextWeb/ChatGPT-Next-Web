@@ -45,7 +45,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - New in v2: create, share and debug your chat tools with prompt templates (mask)
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
-- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어
+- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어, Indonesia
 
 ## Roadmap
 
@@ -159,7 +159,7 @@ Your openai api key.
 
 ### `CODE` (optional)
 
-Access passsword, separated by comma.
+Access password, separated by comma.
 
 ### `BASE_URL` (optional)
 
@@ -230,8 +230,8 @@ yarn dev
 docker pull yidadaa/chatgpt-next-web
 
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
    yidadaa/chatgpt-next-web
 ```
 
@@ -239,9 +239,9 @@ You can start service behind a proxy:
 
 ```shell
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
-   -e PROXY_URL="http://localhost:7890" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
+   -e PROXY_URL=http://localhost:7890 \
    yidadaa/chatgpt-next-web
 ```
 
@@ -256,6 +256,20 @@ If your proxy needs password, use:
 ```shell
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
+
+## Synchronizing Chat Records (UpStash)
+
+| [简体中文](./docs/synchronise-chat-logs-cn.md) | [English](./docs/synchronise-chat-logs-en.md) | [Italiano](./docs/synchronise-chat-logs-es.md) | [日本語](./docs/synchronise-chat-logs-ja.md) | [한국어](./docs/synchronise-chat-logs-ko.md)
+
+## Documentation
+
+> Please go to the [docs][./docs] directory for more documentation instructions.
+
+- [Deploy with cloudflare (Deprecated)](./docs/cloudflare-pages-en.md)
+- [Frequent Ask Questions](./docs/faq-en.md)
+- [How to add a new translation](./docs/translation.md)
+- [How to use Vercel (No English)](./docs/vercel-cn.md)
+- [User Manual (Only Chinese, WIP)](./docs/user-manual-cn.md)
 
 ## Screenshots
 
@@ -299,6 +313,7 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@AnsonHyq](https://github.com/AnsonHyq)
 [@synwith](https://github.com/synwith)
 [@piksonGit](https://github.com/piksonGit)
+[@ouyangzhiping](https://github.com/ouyangzhiping)
 
 ### Contributor
 
