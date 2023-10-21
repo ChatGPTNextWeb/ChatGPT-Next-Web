@@ -525,11 +525,19 @@ export function ChatActions(props: {
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
             if (s.length === 0) return;
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
-              session.mask.syncGlobalConfig = false;
-            });
-            showToast(s[0]);
+            showPrompt("Enter Authorization Code")
+              .then((code) => {
+                if (code === "ziyanwouldCode") {
+                  chatStore.updateCurrentSession((session) => {
+                    session.mask.modelConfig.model = s[0] as ModelType;
+                    session.mask.syncGlobalConfig = false;
+                  });
+                  showToast(s[0]);
+                } else {
+                  showToast("授权码错误");
+                }
+              })
+              .catch(() => {});
           }}
         />
       )}
