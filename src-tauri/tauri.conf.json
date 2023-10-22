@@ -104,7 +104,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "白展堂'sChatGPT",
+        "title": "ChatGPT Next Web",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
