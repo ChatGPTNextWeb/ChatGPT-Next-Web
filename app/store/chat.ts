@@ -341,36 +341,37 @@ export const useChatStore = create<ChatStore>()(
       },
 
       async isEnoughCoins(requiredCoins: number): Promise<boolean> {
-        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-        if (userEmail === null) {
-          showToast("您尚未登录, 请前往设置中心登录");
-          return false;
-        }
+        return true;
+        // let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        // if (userEmail === null) {
+        //   showToast("您尚未登录, 请前往设置中心登录");
+        //   return false;
+        // }
 
-        let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
-          userEmail,
-        );
-        if (
-          userRequestInfoVO !== null &&
-          userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
-            requiredCoins
-        ) {
-          return true;
-        }
+        // let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
+        //   userEmail,
+        // );
+        // if (
+        //   userRequestInfoVO !== null &&
+        //   userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
+        //     requiredCoins
+        // ) {
+        //   return true;
+        // }
 
-        showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
-        return false;
+        // showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
+        // return false;
       },
 
       async onUserInput(content, title?) {
         // check user login
-        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-        if (userEmail === null) {
-          showToast("您尚未登录, 请前往设置中心登录");
-          return;
-        }
-        // update db
-        zBotServiceClient.updateRequest(userEmail, 1);
+        // let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        // if (userEmail === null) {
+        //   showToast("您尚未登录, 请前往设置中心登录");
+        //   return;
+        // }
+        // // update db
+        // zBotServiceClient.updateRequest(userEmail, 1);
 
         set(() => ({ isFinished: false }));
 

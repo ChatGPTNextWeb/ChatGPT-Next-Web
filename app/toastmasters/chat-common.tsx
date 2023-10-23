@@ -674,8 +674,8 @@ export const ChatResponse = (props: {
       },
     );
 
-    const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-    zBotServiceClient.updateRequest(userEmail ?? "", cost);
+    // const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    // zBotServiceClient.updateRequest(userEmail ?? "", cost);
   };
 
   return (
