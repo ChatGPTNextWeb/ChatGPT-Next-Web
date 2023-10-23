@@ -148,8 +148,7 @@ export function SideBar(props: { className?: string }) {
           Pingtao's ChatGPT
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          诸相非相，诸法如如。
-          天心海月🌕，真幻了无！
+          广告位招租，一天1块！
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
