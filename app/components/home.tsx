@@ -48,7 +48,18 @@ const Chat = dynamic(async () => (await import("./chat")).Chat, {
 const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
-
+const ToastmastersTTEvaluators = dynamic(
+  async () => (await import("../toastmasters/chat-ttevaluators")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+const ToastmastersTTEvaluator = dynamic(
+  async () => (await import("../toastmasters/chat-ttevaluator")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 const ToastmastersTTMaster = dynamic(
   async () => (await import("../toastmasters/chat-ttmaster")).Chat,
   {
@@ -57,12 +68,6 @@ const ToastmastersTTMaster = dynamic(
 );
 const ToastmastersTTSpeaker = dynamic(
   async () => (await import("../toastmasters/chat-ttspeaker")).Chat,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
-const ToastmastersTTEvaluator = dynamic(
-  async () => (await import("../toastmasters/chat-ttevaluator")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
@@ -198,16 +203,20 @@ function Screen() {
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route
+                path={Path.ToastmastersTTEvaluators}
+                element={<ToastmastersTTEvaluators />}
+              />
+              <Route
+                path={Path.ToastmastersTTEvaluator}
+                element={<ToastmastersTTEvaluator />}
+              />
+              <Route
                 path={Path.ToastmastersTTMaster}
                 element={<ToastmastersTTMaster />}
               />
               <Route
                 path={Path.ToastmastersTTSpeaker}
                 element={<ToastmastersTTSpeaker />}
-              />
-              <Route
-                path={Path.ToastmastersTTEvaluator}
-                element={<ToastmastersTTEvaluator />}
               />
               <Route
                 path={Path.ToastmastersIEvaluator}

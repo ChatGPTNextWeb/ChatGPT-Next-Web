@@ -7,17 +7,17 @@ import { List, showToast } from "../components/ui-lib";
 
 import {
   ToastmastersTTMasterGuidance as ToastmastersRoleGuidance,
-  ToastmastersTTMaster as ToastmastersRoleOptions,
-  ToastmastersRolePrompt,
+  ToastmastersTTMasterRecord as ToastmastersRecord,
   InputSubmitStatus,
 } from "./roles";
 import {
   ChatTitle,
   ChatInput,
-  ChatInputSubmit,
   ChatResponse,
-  useScrollToBottom,
+  ChatSubmitCheckbox,
 } from "./chat-common";
+import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
+import { useScrollToBottom } from "../components/chat";
 
 export function Chat() {
   const [session, sessionIndex] = useChatStore((state) => [
@@ -30,34 +30,26 @@ export function Chat() {
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
 
-  const [toastmastersEvaluators, setToastmastersEvaluators] = useState<
-    ToastmastersRolePrompt[]
-  >([]);
-
-  // 进来时, 读取上次的输入
-  useEffect(() => {
-    var roles = session.inputs.roles?.map(
-      (index: number) => ToastmastersRoleOptions[index],
-    );
-    setToastmastersEvaluators(roles);
-  }, [session]);
-
   const checkInput = (): InputSubmitStatus => {
-    const question = session.inputs.input.text;
-
-    if (question.trim() === "") {
+    const topic = session.input.data.question.text.trim();
+    if (topic === "") {
       showToast("Topic can not be empty");
       return new InputSubmitStatus(false, "");
     }
 
     // Add a return statement for the case where the input is valid
-    var guidance = ToastmastersRoleGuidance(question);
+    const guidance = ToastmastersRoleGuidance(topic);
     return new InputSubmitStatus(true, guidance);
+  };
+
+  const getInputsString = (): string => {
+    const topic = session.input.data.question.text.trim();
+    return topic;
   };
 
   return (
     <div className={styles.chat} key={session.id}>
-      <ChatTitle></ChatTitle>
+      <ChatTitle getInputsString={getInputsString}></ChatTitle>
 
       <div
         className={styles["chat-body"]}
@@ -70,19 +62,19 @@ export function Chat() {
         }}
       >
         <List>
-          <ChatInput title="Topic" inputStore={session.inputs.input} />
+          <ChatInput title="Topic" inputStore={session.input.data.question} />
 
-          <ChatInputSubmit
-            roleOptions={ToastmastersRoleOptions}
-            selectedValues={toastmastersEvaluators}
-            updateParent={setToastmastersEvaluators}
+          <ChatSubmitCheckbox
+            toastmastersRecord={ToastmastersRecord}
             checkInput={checkInput}
           />
 
           <ChatResponse
             scrollRef={scrollRef}
-            toastmastersRolePrompts={toastmastersEvaluators}
+            toastmastersRecord={ToastmastersRecord}
           />
+
+          <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
         </List>
       </div>
     </div>

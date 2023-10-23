@@ -31,6 +31,8 @@ const cn = {
       Delete: "删除",
       Edit: "编辑",
       Play: "播放",
+      AudioPlay: "语音播放",
+      VideoPlay: "数字人播放",
     },
     Commands: {
       new: "新建聊天",
@@ -103,7 +105,8 @@ const cn = {
     ResetConfirm: "确认清空历史摘要？",
   },
   Home: {
-    NewChat: "新的聊天",
+    NewChat: "自由对话",
+    MaskChat: "角色对话",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
@@ -111,6 +114,195 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "所有设置选项",
+
+    UserLogin: {
+      Title: "当前已登录",
+      Button: "去个人中心",
+      LoginCenter: {
+        Title: "用户个人中心",
+        Email: {
+          Title: "邮箱*",
+        },
+        NickName: {
+          Title: "昵称*",
+        },
+        Occupation: {
+          Title: "职业*",
+        },
+        Avatar: {
+          Title: "头像*",
+        },
+        Inviter: {
+          Title: "邀请人邮箱",
+        },
+        SaveButton: "保存修改",
+        SubmitButton: "退出登录",
+        SubmitToast: {
+          NullNickName: "昵称不能为空",
+          NullOccupation: "职业不能为空",
+          Success: "修改成功",
+          Failed: "更新失败, 请重新尝试",
+          NotRegister: "当前未注册",
+          NotLogin: "当前未登录",
+          LoginOut: "退出登录成功",
+        },
+      },
+    },
+    UserNotLogin: {
+      Title: "当前未登录",
+      Button: "去登录",
+      LoginCenter: {
+        Title: "用户登录中心",
+        Email: {
+          Title: "邮箱*",
+        },
+        EmailVerify: {
+          Title: "邮箱验证码*",
+          Button: "发送验证码",
+        },
+        LoginButton: "登录",
+        RegisterButton: "注册",
+        LoginToast: {
+          Success: "登录成功，欢迎回来！",
+          Failed: "登录失败, 请重新尝试",
+          NotRegister: "邮箱尚未注册, 请先注册",
+          EmailInvalid: "邮箱格式错误, 请重新输入",
+          EmailVerifyInvalid: "邮箱验证码错误, 请重新输入",
+          EmailEmpty: "邮箱不能为空",
+          EmailVerifyEmpty: "邮箱验证码不能为空",
+        },
+      },
+      RegisterCenter: {
+        Title: "用户注册中心",
+        Email: {
+          Title: "邮箱*",
+        },
+        EmailVerify: {
+          Title: "邮箱验证码*",
+          Button: "发送验证码",
+        },
+        NickName: {
+          Title: "昵称*",
+        },
+        Occupuation: {
+          Title: "职业",
+        },
+        Inviter: {
+          Title: "邀请人邮箱",
+          SubTitle: (baseCoins: number) =>
+            `可选, 邀请人和被邀请人均可获取${baseCoins}AI币`,
+        },
+        RegisterButton: "注册",
+        RegisterToast: {
+          Success: "注册成功，欢迎回来！",
+          Failed: "注册失败, 请重新尝试",
+          HasRegister: "该邮箱已被注册, 请重新输入",
+          EmailInvalid: "邮箱格式错误, 请重新输入",
+          EmailVerifyInvalid: "邮箱验证码错误, 请重新输入",
+          EmailEmpty: "邮箱不能为空",
+          EmailVerifyEmpty: "邮箱验证码不能为空",
+          NickNameEmpty: "昵称不能为空",
+          OccupationEmpty: "职业不能为空",
+        },
+      },
+    },
+    UserBalance: {
+      Title: "余额中心",
+      Button: "去余额中心",
+      BalanceCenter: {
+        Title: "用户余额中心",
+        AccountBalance: {
+          Title: "账户余额",
+          BaseCoins: {
+            Title: "基础AI币余额",
+            SubTitle: "(不会清空)",
+          },
+          LimitCoins: {
+            Title: "限时AI币余额",
+            SubTitle: "(限时1天, 0点清空)",
+          },
+          TotalDialogs: {
+            Title: "总对话次数",
+            SubTitle: "(每条对话消耗1个AI币, 先限时币, 再基础币)",
+          },
+          TotalSignDays: {
+            Title: "总签到天数",
+            SubTitle: (baseCoins: number, limitCoins: number) =>
+              `每日签到领取${baseCoins}个基础AI币,${limitCoins}个限时AI币`,
+          },
+        },
+        SignState: {
+          Signed: {
+            Title: "今日签到状态",
+            State: "已签到",
+            Button: "不可重复签到",
+          },
+          NotSigned: {
+            Title: "今日签到状态",
+            State: "尚未签到",
+            Button: "去签到",
+          },
+          SignToast: {
+            Success: "签到成功",
+            Failed: "签到失败, 请重新尝试",
+            NotRegister: "邮箱尚未注册, 请先注册",
+            HasSigned: "今日已签到, 请勿重复签到",
+          },
+        },
+        CoinDescription: {
+          Title: "AI币说明",
+          Rule1: "- 新用户注册时, 赠送20个基础AI币",
+          Rule2: "- 邀请用户时, 邀请人和被邀请人均赠送5个基础AI币",
+        },
+      },
+    },
+    AvatarVideo: {
+      Title: "数字人视频",
+      MaxWords: {
+        Title: "播放字数",
+        SubTitle: "生成视频时的播放字数, -1表示无限制字数. 注:1个字消耗1个AI币",
+      },
+      PreviewCost: {
+        Title: "预览AI币消耗",
+        SubTitle:
+          "当生成数字人视频时, 弹窗预览AI币的消耗. 可在·设置·中关闭/开启",
+      },
+    },
+
+    About: {
+      Title: "关于我们",
+      Button: "详情",
+      Introduction: (appTitle: string) =>
+        `
+      欢迎来到${appTitle}！
+
+      ${appTitle} 基于GPT3.5开发, 主要用辅助演讲, 如即兴演讲, 备稿演讲.
+    
+      我们非常重视用户隐私和数据安全。在使用${appTitle}时，我们不会后台存储或分析用户的聊天记录。
+  
+      有任何问题或建议，欢迎通过 ***设置->反馈我们*** 联系我们。我们会尽快回复。
+      `,
+    },
+    FeedBack: {
+      Title: "反馈我们",
+      Button: "反馈",
+      FeedBackCenter: {
+        Title: "用户反馈中心",
+        Email: "邮箱*",
+        Head: "标题*",
+        Description: "详细描述*",
+        Phone: "联系方式",
+        SubmitButton: "提交",
+        FeedBackToast: {
+          Success: "反馈成功",
+          Failed: "反馈失败, 请重新尝试",
+          EmailInvalid: "邮箱格式错误, 请重新输入",
+          EmailEmpty: "邮箱不能为空",
+          HeadEmpty: "标题不能为空",
+          DescriptionEmpty: "详细描述不能为空",
+        },
+      },
+    },
 
     Danger: {
       Reset: {
@@ -263,9 +455,9 @@ const cn = {
   Mask: {
     Name: "面具",
     Page: {
-      Title: "预设角色面具",
+      Title: "角色选择",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
-      Search: "搜索角色面具",
+      Search: "搜索角色",
       Create: "新建",
     },
     Item: {

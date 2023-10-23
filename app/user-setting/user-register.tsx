@@ -4,6 +4,7 @@ import styles from "../components/settings.module.scss";
 import SendWhiteIcon from "../icons/send-white.svg";
 
 import { List, ListItem, showToast } from "../components/ui-lib";
+import Locale from "../locales";
 
 import { IconButton } from "../components/button";
 import { Path, UPDATE_URL } from "../constant";
@@ -42,16 +43,26 @@ export function UserRegister() {
 
   const submit = async (userRegisterVO: UserRegisterVO) => {
     if (userRegisterVO.email.trim().length === 0) {
-      showToast("邮箱不可为空");
+      showToast(
+        Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast.EmailEmpty,
+      );
       return;
     } else if (userRegisterVO.nickName.trim().length === 0) {
-      showToast("昵称不可为空");
+      showToast(
+        Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast.NickNameEmpty,
+      );
       return;
     } else if (userRegisterVO.verifyCode === 0) {
-      showToast("邮箱验证码不可为空");
+      showToast(
+        Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast
+          .EmailVerifyEmpty,
+      );
       return;
     } else if (userRegisterVO.occupation.trim().length === 0) {
-      showToast("职业不可为空");
+      showToast(
+        Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast
+          .OccupationEmpty,
+      );
       return;
     }
 
@@ -59,17 +70,29 @@ export function UserRegister() {
     try {
       const result = await zBotServiceClient.register(userRegisterVO);
       if (result === UserCheckResultVO.emailInvalid) {
-        showToast("该邮箱格式不正确, 请重新输入");
+        showToast(
+          Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast
+            .EmailInvalid,
+        );
       } else if (result === UserCheckResultVO.emailConflict) {
-        showToast("该邮箱已被注册, 请重新输入");
+        showToast(
+          Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast.HasRegister,
+        );
       } else if (result === UserCheckResultVO.verifyCodeInvalid) {
-        showToast("验证码不正确, 请重新输入");
+        showToast(
+          Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast
+            .EmailVerifyInvalid,
+        );
       } else if (result === UserCheckResultVO.success) {
-        showToast("注册成功, 已自动登录");
+        showToast(
+          Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast.Success,
+        );
         localStorage.setItem(LocalStorageKeys.userEmail, userRegisterVO.email);
         navigate(Path.UserLoginDetail);
       } else {
-        showToast("注册失败, 请再次尝试");
+        showToast(
+          Locale.Settings.UserNotLogin.RegisterCenter.RegisterToast.Failed,
+        );
       }
     } catch (error) {
       console.log("db access failed:", error);
@@ -78,53 +101,68 @@ export function UserRegister() {
 
   return (
     <ErrorBoundary>
-      <div> {UserInfoWindowHeader(navigate, "用户注册中心")} </div>
+      <div>
+        {" "}
+        {UserInfoWindowHeader(
+          navigate,
+          Locale.Settings.UserNotLogin.RegisterCenter.Title,
+        )}{" "}
+      </div>
 
       <div className={styles["settings"]}>
         <List>
           <ListItem
-            title="邮箱*"
-            subTitle="-邮箱仅用来区分用户, 不会访问个人信息"
+            title={Locale.Settings.UserNotLogin.RegisterCenter.Email.Title}
           >
             <input
               type="text"
               name="useremail"
-              placeholder="邮箱不可重复"
               onChange={(e) => setUserEmail(e.target.value)}
             ></input>
           </ListItem>
-          <ListItem title={"邮箱验证码*"}>
-            <input
-              type="number"
-              name="emailcode"
-              placeholder="验证码"
-              onChange={(e) => setVerifyCode(Number(e.target.value))}
-            ></input>
+          <ListItem
+            title={
+              Locale.Settings.UserNotLogin.RegisterCenter.EmailVerify.Title
+            }
+          >
             <IconButton
-              text={"发送验证码"}
+              text={
+                Locale.Settings.UserNotLogin.RegisterCenter.EmailVerify.Button
+              }
               bordered
               onClick={() => sendVerifyCode(userEmail)}
             />
+            <input
+              type="text"
+              name="emailcode"
+              onChange={(e) => setVerifyCode(Number(e.target.value))}
+            ></input>
           </ListItem>
-          <ListItem title="昵称*">
+          <ListItem
+            title={Locale.Settings.UserNotLogin.RegisterCenter.NickName.Title}
+          >
             <input
               type="text"
               name="username"
-              placeholder="昵称"
               onChange={(e) => setNickName(e.target.value)}
             ></input>
           </ListItem>
-          <ListItem title={"职业*"}>
+          <ListItem
+            title={
+              Locale.Settings.UserNotLogin.RegisterCenter.Occupuation.Title
+            }
+          >
             <input
               type="text"
               name="occupation"
-              placeholder="职业"
               onChange={(e) => setOccupation(e.target.value)}
             />
           </ListItem>
           <ListItem
-            title={"邀请人邮箱"}
-            subTitle={`-可选. 邀请人和被邀请人均可获取+${userConstantVO.inviteBaseCoins}AI币`}
+            title={Locale.Settings.UserNotLogin.RegisterCenter.Inviter.Title}
+            subTitle={Locale.Settings.UserNotLogin.RegisterCenter.Inviter.SubTitle(
+              userConstantVO.inviteBaseCoins,
+            )}
           >
             <input
               type="text"

@@ -1,7 +1,7 @@
 import { BuiltinMask } from "./typing";
 
 export enum BuiltinMaskGroup {
-  Toastmasters = "Toastmasters Copilot",
+  Toastmasters = "Speech Copilot",
   Careers = "职业发展",
   Writers = "写手",
   Expert = "专家",

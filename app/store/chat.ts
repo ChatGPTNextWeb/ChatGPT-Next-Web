@@ -20,10 +20,6 @@ import { estimateTokenLength } from "../utils/token";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
-import {
-  ToastmastersRoleSetting,
-  ToastmastersSettings,
-} from "../toastmasters/roles";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -31,6 +27,7 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  title?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -54,14 +51,29 @@ export class InputStore {
   time: number = 0;
 }
 
-export type InputTableRow = {
-  speaker: string;
-  question: InputStore;
-  speech: InputStore;
-};
+export class InputTableRow {
+  speaker = "";
+  question = new InputStore();
+  speech = new InputStore();
+
+  constructor(
+    speaker: string = "",
+    question: string = "",
+    speech: string = "",
+  ) {
+    this.speaker = speaker;
+    this.question.text = question;
+    this.speech.text = speech;
+  }
+}
 
 export class InputSettingStore {
   words: number = 0;
+}
+
+export interface IRequestResponse {
+  status: any;
+  data: any;
 }
 
 export interface ChatSession {
@@ -77,12 +89,13 @@ export interface ChatSession {
 
   mask: Mask;
 
-  // TODO: future make this a list of inputs
-  inputs: { roles: number[]; input: InputStore; input2: InputStore };
-
-  inputTable: InputTableRow[];
-  inputRole: string;
-  inputSetting: Record<string, ToastmastersRoleSetting>;
+  input: {
+    data: InputTableRow;
+    datas: any[];
+    roles: string[];
+    setting: any;
+  };
+  output: { avatar: IRequestResponse };
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -106,10 +119,9 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-    inputs: { roles: [0], input: new InputStore(), input2: new InputStore() },
-    inputTable: [],
-    inputRole: "Table Topics Evaluator", // TODO
-    inputSetting: ToastmastersSettings,
+
+    input: { data: new InputTableRow(), datas: [], roles: [], setting: {} },
+    output: { avatar: { status: "", data: "" } },
   };
 }
 
@@ -127,10 +139,14 @@ interface ChatStore {
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   isEnoughCoins(requiredCoins: number): Promise<boolean>;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (content: string, title?: string) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
+  updateSession: (
+    index: number,
+    updater: (session: ChatSession) => void,
+  ) => void;
   updateMessage: (
     sessionIndex: number,
     messageIndex: number,
@@ -325,36 +341,37 @@ export const useChatStore = create<ChatStore>()(
       },
 
       async isEnoughCoins(requiredCoins: number): Promise<boolean> {
-        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-        if (userEmail === null) {
-          showToast("您尚未登录, 请前往设置中心登录");
-          return false;
-        }
+        return true;
+        // let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        // if (userEmail === null) {
+        //   showToast("您尚未登录, 请前往设置中心登录");
+        //   return false;
+        // }
 
-        let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
-          userEmail,
-        );
-        if (
-          userRequestInfoVO !== null &&
-          userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
-            requiredCoins
-        ) {
-          return true;
-        }
+        // let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
+        //   userEmail,
+        // );
+        // if (
+        //   userRequestInfoVO !== null &&
+        //   userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
+        //     requiredCoins
+        // ) {
+        //   return true;
+        // }
 
-        showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
-        return false;
+        // showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
+        // return false;
       },
 
-      async onUserInput(content) {
+      async onUserInput(content, title?) {
         // check user login
-        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-        if (userEmail === null) {
-          showToast("您尚未登录, 请前往设置中心登录");
-          return;
-        }
-        // update db
-        zBotServiceClient.updateRequest(userEmail);
+        // let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        // if (userEmail === null) {
+        //   showToast("您尚未登录, 请前往设置中心登录");
+        //   return;
+        // }
+        // // update db
+        // zBotServiceClient.updateRequest(userEmail, 1);
 
         set(() => ({ isFinished: false }));
 
@@ -373,6 +390,7 @@ export const useChatStore = create<ChatStore>()(
           streaming: true,
           id: userMessage.id! + 1,
           model: modelConfig.model,
+          title: title,
         });
 
         // get recent messages
@@ -673,6 +691,12 @@ export const useChatStore = create<ChatStore>()(
       updateCurrentSession(updater) {
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
+        updater(sessions[index]);
+        set(() => ({ sessions }));
+      },
+
+      updateSession(index, updater) {
+        const sessions = get().sessions;
         updater(sessions[index]);
         set(() => ({ sessions }));
       },

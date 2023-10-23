@@ -7,6 +7,8 @@ import React, {
   useCallback,
 } from "react";
 
+import _ from "lodash";
+
 import LoadingIcon from "../icons/three-dots.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -19,6 +21,7 @@ import EditIcon from "../icons/rename.svg";
 import StopIcon from "../icons/pause.svg";
 import MicphoneIcon from "../icons/Micphone.svg";
 import ResetIcon from "../icons/reload.svg";
+import AvatarIcon from "../icons/avatar36.svg";
 import { IconButton } from "../components/button";
 
 import { copyToClipboard, useMobileScreen } from "../utils";
@@ -31,30 +34,61 @@ import {
   useAppConfig,
   DEFAULT_TOPIC,
   InputStore,
+  IRequestResponse,
 } from "../store";
 
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
-import { showPrompt, showToast } from "../components/ui-lib";
+import {
+  List,
+  ListItem,
+  Input,
+  showPrompt,
+  showToast,
+  showModal,
+  showConfirm,
+  showConfirmWithProps,
+} from "../components/ui-lib";
 import { autoGrowTextArea } from "../utils";
-import dynamic from "next/dynamic";
 import Multiselect from "multiselect-react-dropdown";
 import { getClientConfig } from "../config/client";
-import { ExportMessageModal } from "../components/exporter";
+import { ExportMessageModal } from "./chat-exporter";
 
 import styles from "../components/chat.module.scss";
-import styles_toastmasters from "./toastmasters.module.scss";
-import { ToastmastersRolePrompt, InputSubmitStatus } from "./roles";
+import styles_tm from "./toastmasters.module.scss";
+import {
+  ToastmastersRolePrompt,
+  InputSubmitStatus,
+  ToastmastersRoles,
+  ToastmastersSettings,
+  ToastmastersRolesResponsibilities,
+} from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
+import { onSpeechAvatar } from "../cognitive/speech-avatar";
+import zBotServiceClient, {
+  LocalStorageKeys,
+} from "../zbotservice/ZBotServiceClient";
+import { SpeechAvatarVideoSetting } from "../cognitive/speech-avatar";
+import { ChatAction } from "../components/chat";
+import { Markdown } from "../components/exporter";
+
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Tooltip from "@mui/material/Tooltip";
+import ReactMarkdown from "react-markdown";
 
 const ToastmastersDefaultLangugage = "en";
 
-export function ChatTitle() {
+export function ChatTitle(props: { getInputsString: () => string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
 
   const [showExport, setShowExport] = useState(false);
+  const [showMessages, setShowMessages] = useState<ChatMessage[]>([]);
 
   const isMobileScreen = useMobileScreen();
   const clientConfig = useMemo(() => getClientConfig(), []);
@@ -74,6 +108,26 @@ export function ChatTitle() {
         );
       }
     });
+  };
+
+  const onExport = () => {
+    const selectMessages: ChatMessage[] = [];
+
+    selectMessages.push(
+      createMessage({
+        content: props.getInputsString(),
+        role: "user",
+        title: "Speaker Inputs",
+      }),
+    );
+
+    session.messages.forEach((message, index) => {
+      if (message.role === "assistant" && message.title !== "Guidance") {
+        selectMessages.push(message);
+      }
+    });
+    setShowMessages(selectMessages);
+    setShowExport(true);
   };
 
   return (
@@ -112,16 +166,14 @@ export function ChatTitle() {
             />
           </div>
         )}
-        {/* <div className="window-action-button">
-            <IconButton
-              icon={<ExportIcon />}
-              bordered
-              title={Locale.Chat.Actions.Export}
-              onClick={() => {
-                setShowExport(true);   // TODO: export png without question
-              }}
-            />
-          </div> */}
+        <div className="window-action-button">
+          <IconButton
+            icon={<ExportIcon />}
+            bordered
+            title={Locale.Chat.Actions.Export}
+            onClick={onExport}
+          />
+        </div>
         {showMaxIcon && (
           <div className="window-action-button">
             <IconButton
@@ -138,7 +190,11 @@ export function ChatTitle() {
       </div>
 
       {showExport && (
-        <ExportMessageModal onClose={() => setShowExport(false)} />
+        <ExportMessageModal
+          onClose={() => setShowExport(false)}
+          messages={showMessages}
+          topic={session.topic}
+        />
       )}
     </div>
   );
@@ -228,11 +284,9 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   };
 
   return (
-    <div className={styles_toastmasters["chat-input-panel-noborder"]}>
-      <div className={styles_toastmasters["chat-input-panel-title"]}>
-        {props.title}
-      </div>
-      <div className={styles_toastmasters["chat-input-panel-textarea"]}>
+    <div className={styles_tm["chat-input-panel-noborder"]}>
+      <div className={styles_tm["chat-input-panel-title"]}>{props.title}</div>
+      <div className={styles_tm["chat-input-panel-textarea"]}>
         <textarea
           ref={inputRef}
           className={styles["chat-input"]}
@@ -253,12 +307,12 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
           bordered
           className={
             recording
-              ? styles_toastmasters["chat-input-send-recording"]
-              : styles_toastmasters["chat-input-send-record"]
+              ? styles_tm["chat-input-send-recording"]
+              : styles_tm["chat-input-send-record"]
           }
           onClick={onRecord}
         />
-        <div className={styles_toastmasters["chat-input-words"]}>
+        <div className={styles_tm["chat-input-words"]}>
           {ChatUtility.getWordsNumber(userInput)} words,{" "}
           {ChatUtility.formatTime(time)}
         </div>
@@ -267,71 +321,8 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   );
 };
 
-export class ChatUtility {
-  static getWordsNumber(text: string): number {
-    return text.length > 0 ? text.split(/\s+/).length : 0;
-  }
-
-  static getFirstNWords(text: string, number: number): string {
-    var words = this.getWordsNumber(text);
-
-    if (words <= number) {
-      return text;
-    }
-    return text.split(/\s+/).slice(0, number).join(" ") + "...";
-  }
-
-  static formatTime = (time: number): string => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
-}
-
-export const ChatInputName = (props: {
-  title: string;
-  inputStore: InputStore;
-}) => {
-  const config = useAppConfig();
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [userInput, setUserInput] = useState(props.inputStore.text);
-
-  // set parent value
-  useEffect(() => {
-    // save to store
-    props.inputStore.text = userInput;
-
-    // set the focus to the input at the end of textarea
-    inputRef.current?.focus();
-  }, [userInput]); // should not depend props in case auto focus expception
-
-  return (
-    <div className={styles_toastmasters["chat-input-name-group"]}>
-      <div className={styles_toastmasters["chat-input-panel-title"]}>
-        {props.title}
-      </div>
-      <div className={styles_toastmasters["chat-input-panel-textarea"]}>
-        <textarea
-          ref={inputRef}
-          className={styles["chat-input-no-height"]}
-          onInput={(e) => setUserInput(e.currentTarget.value)}
-          value={userInput}
-          rows={1}
-          style={{
-            fontSize: config.fontSize,
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
-export const ChatInputSubmit = (props: {
-  roleOptions: ToastmastersRolePrompt[];
-  selectedValues: ToastmastersRolePrompt[];
-  updateParent: (selectRoles: ToastmastersRolePrompt[]) => void;
+export const ChatSubmitCheckbox = (props: {
+  toastmastersRecord: Record<string, ToastmastersRolePrompt[]>;
   checkInput: () => InputSubmitStatus;
 }) => {
   const chatStore = useChatStore();
@@ -343,13 +334,33 @@ export const ChatInputSubmit = (props: {
   const roleSelectRef = useRef<Multiselect>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  type SelectType = {
+    name: string;
+  };
+  const multiselectOptions = Object.keys(props.toastmastersRecord).map(
+    (roleName) => ({
+      name: roleName,
+    }),
+  );
+
+  const selectedOptions = session.input.roles.map((roleName) => ({
+    name: roleName,
+  }));
+
   const doSubmit = async () => {
-    var checkInputResult = props.checkInput();
+    const checkInputResult = props.checkInput();
     if (!checkInputResult.canSubmit) {
       return;
     }
 
-    var toastmastersRolePrompts = roleSelectRef.current?.getSelectedItems();
+    const selectItems = roleSelectRef.current?.getSelectedItems();
+    // 将选择的role, 合并为一个数组
+    var toastmastersRolePrompts: ToastmastersRolePrompt[] = [];
+    selectItems?.forEach((item: SelectType) => {
+      toastmastersRolePrompts = toastmastersRolePrompts.concat(
+        props.toastmastersRecord[item.name],
+      );
+    });
 
     let isEnoughCoins = await chatStore.isEnoughCoins(
       toastmastersRolePrompts.length + 1,
@@ -358,45 +369,47 @@ export const ChatInputSubmit = (props: {
       return;
     }
     setSubmitting(true);
-    props.updateParent(toastmastersRolePrompts);
 
     // 保存输入: 于是ChatResponse可以使用
-    session.inputs.roles = toastmastersRolePrompts?.map(
-      (v: ToastmastersRolePrompt) => v.role_index,
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.input.roles = selectItems?.map((v: SelectType) => v.name)),
     );
+    session.input.setting = ToastmastersSettings(props.toastmastersRecord);
 
     // reset status from 0
     chatStore.resetSession();
 
-    chatStore.onUserInput(checkInputResult.guidance);
-
-    toastmastersRolePrompts.forEach((element: ToastmastersRolePrompt) => {
-      chatStore.getIsFinished().then(() => {
-        var ask = element.content;
-        chatStore.onUserInput(ask);
-      });
-    });
-
-    // the last role is doing
-    chatStore.getIsFinished().then(() => {
-      setSubmitting(false);
-    });
+    chatStore.onUserInput(
+      checkInputResult.guidance,
+      ToastmastersRoles.Guidance,
+    );
+    for (const selectItem of selectItems) {
+      const _RolePrompts = props.toastmastersRecord[selectItem.name];
+      for (const item of _RolePrompts) {
+        await chatStore.getIsFinished();
+        let ask = item.contentWithSetting(session.input.setting[item.role]);
+        chatStore.onUserInput(ask, item.role);
+      }
+      await chatStore.getIsFinished();
+    }
+    setSubmitting(false);
 
     // if (!isMobileScreen) inputRef.current?.focus();
     // setAutoScroll(true);
   };
 
   return (
-    <div className={styles_toastmasters["chat-input-panel-buttons"]}>
+    <div className={styles_tm["chat-input-panel-buttons"]}>
       <Multiselect
-        options={props.roleOptions} // Options to display in the dropdown
+        options={multiselectOptions} // Options to display in the dropdown
         ref={roleSelectRef}
         // onSelect={this.onSelect} // Function will trigger on select event
         // onRemove={this.onRemove} // Function will trigger on remove event
-        displayValue="role" // Property name to display in the dropdown options
+        displayValue="name" // Property name to display in the dropdown options
         placeholder="Select Roles" // Placeholder for the dropdown search input
         showCheckbox
-        selectedValues={props.selectedValues}
+        selectedValues={selectedOptions}
         style={{
           searchBox: {
             "border-bottom": "1px solid blue",
@@ -411,8 +424,8 @@ export const ChatInputSubmit = (props: {
         disabled={submitting}
         className={
           submitting
-            ? styles_toastmasters["chat-input-button-submitting"]
-            : styles_toastmasters["chat-input-button-submit"]
+            ? styles_tm["chat-input-button-submitting"]
+            : styles_tm["chat-input-button-submit"]
         }
         onClick={doSubmit}
       />
@@ -420,9 +433,10 @@ export const ChatInputSubmit = (props: {
   );
 };
 
-export const ChatResponse = (props: {
-  scrollRef: React.RefObject<HTMLDivElement>;
-  toastmastersRolePrompts: ToastmastersRolePrompt[];
+export const ChatSubmitRadiobox = (props: {
+  toastmastersRecord: Record<string, ToastmastersRolePrompt[]>;
+  checkInput: () => InputSubmitStatus;
+  updateAutoScroll: (status: boolean) => void;
 }) => {
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -430,37 +444,184 @@ export const ChatResponse = (props: {
     state.currentSessionIndex,
   ]);
 
-  // var session = props.session;
-  const config = useAppConfig();
+  const [submitting, setSubmitting] = useState(false);
 
-  // TODO: use toastmastersRolePrompts
-  const onResend = async (roleIndex: number) => {
-    let isEnoughCoins = await chatStore.isEnoughCoins(
-      props.toastmastersRolePrompts.length - roleIndex,
+  const [inputRole, setInputRole] = useState(session.input.roles[0] || "");
+
+  const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputRole((event.target as HTMLInputElement).value);
+  };
+
+  const doSubmit = async () => {
+    const checkInputResult = props.checkInput();
+    if (!checkInputResult.canSubmit) {
+      return;
+    }
+
+    const toastmastersRolePrompts = props.toastmastersRecord[inputRole];
+
+    const isEnoughCoins = await chatStore.isEnoughCoins(
+      toastmastersRolePrompts.length + 1,
     );
     if (!isEnoughCoins) {
       return;
     }
+    setSubmitting(true);
+    props.updateAutoScroll(true);
 
-    // reset status from messageIndex
-    chatStore.resetSessionFromIndex(2 * roleIndex + 2);
+    // 保存输入: 于是ChatResponse可以使用
+    session.input.roles[0] = inputRole;
+    session.input.setting = ToastmastersSettings(props.toastmastersRecord);
 
-    var ask = props.toastmastersRolePrompts[roleIndex].content;
-    chatStore.onUserInput(ask);
+    // reset status from 0
+    chatStore.resetSession();
 
-    for (let i = roleIndex + 1; i < props.toastmastersRolePrompts.length; i++) {
-      chatStore.getIsFinished().then(() => {
-        ask = props.toastmastersRolePrompts[i].content;
-        chatStore.onUserInput(ask);
-      });
+    let ask = checkInputResult.guidance;
+    chatStore.onUserInput(ask, ToastmastersRoles.Guidance);
+    for (const item of toastmastersRolePrompts) {
+      await chatStore.getIsFinished();
+
+      // TODO: move setting into item, but when retry, it will lose
+      ask = item.contentWithSetting(session.input.setting[item.role]);
+      chatStore.onUserInput(ask, item.role);
     }
-    // the last role is doing
-    // chatStore.getIsFinished().then(() => {});
+    await chatStore.getIsFinished();
 
-    // TODO
+    setSubmitting(false);
+
     // if (!isMobileScreen) inputRef.current?.focus();
     // setAutoScroll(true);
   };
+
+  return (
+    <div className={styles_tm["chat-input-panel-buttons"]}>
+      <FormControl>
+        <FormLabel id="demo-controlled-radio-buttons-group">
+          Evaluators
+        </FormLabel>
+        <RadioGroup
+          aria-labelledby="demo-controlled-radio-buttons-group"
+          name="controlled-radio-buttons-group"
+          value={inputRole}
+          onChange={onInputRoleChange}
+          row
+        >
+          {Object.entries(props.toastmastersRecord).map(
+            ([role, ToastmastersRolePrompts]) => {
+              return (
+                <Tooltip
+                  key={role}
+                  title={
+                    <ReactMarkdown>
+                      {ToastmastersRolesResponsibilities[role]}
+                    </ReactMarkdown>
+                  }
+                >
+                  <FormControlLabel
+                    value={role}
+                    control={<Radio />}
+                    label={role}
+                    className={styles_tm["selection-tooltip"]}
+                  />
+                </Tooltip>
+              );
+            },
+          )}
+        </RadioGroup>
+      </FormControl>
+
+      {inputRole && (
+        <IconButton
+          icon={<SendWhiteIcon />}
+          text={submitting ? "Submitting" : "Submit"}
+          disabled={submitting}
+          className={
+            submitting
+              ? styles_tm["chat-input-button-submitting"]
+              : styles_tm["chat-input-button-submit"]
+          }
+          onClick={doSubmit}
+        />
+      )}
+    </div>
+  );
+};
+
+export const ChatResponse = (props: {
+  scrollRef: React.RefObject<HTMLDivElement>;
+  toastmastersRecord: Record<string, ToastmastersRolePrompt[]>;
+}) => {
+  const { scrollRef, toastmastersRecord } = props;
+
+  const chatStore = useChatStore();
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
+
+  const config = useAppConfig();
+
+  // prompt count
+  const promptCount = 3;
+
+  // 将选择的role, 合并为一个数组
+  let toastmastersRolePrompts: ToastmastersRolePrompt[] = [];
+  session.input.roles?.forEach((roleName: any) => {
+    toastmastersRolePrompts = toastmastersRolePrompts.concat(
+      toastmastersRecord[roleName],
+    );
+  });
+
+  // TODO: when resending, the page will auto scroll to the bottom, so the avatar video will cover the reponse message
+  const onResendConfirm = async (messageIndex: number, roleIndex: number) => {
+    const currentPromptItem = toastmastersRolePrompts[roleIndex];
+    const currentSetting = session.input.setting[currentPromptItem.role];
+    if (currentSetting) {
+      const setting = _.cloneDeep(currentSetting);
+      const ContentComponent = () => {
+        return (
+          <List>
+            <ListItem title="Evaluation Words for each Speaker">
+              <input
+                type="number"
+                min={0}
+                defaultValue={setting.words}
+                onChange={(e) =>
+                  (setting.words = parseInt(e.currentTarget.value))
+                }
+              ></input>
+            </ListItem>
+          </List>
+        );
+      };
+
+      const isConfirmed = await showConfirmWithProps({
+        children: <ContentComponent />,
+        title: `${currentPromptItem.role} Settings`,
+        cancelText: "Cancel",
+        confirmText: "Confirm",
+      });
+      if (!isConfirmed) return;
+
+      session.input.setting[currentPromptItem.role] = _.cloneDeep(setting);
+    }
+
+    // -1: means reset from the last message of roleIndex
+    chatStore.resetSessionFromIndex(messageIndex - 1);
+
+    /*
+    JavaScript 中的 for 循环通常是同步顺序执行的。这意味着循环内的代码会按顺序执行，每次迭代都会等待上一次迭代完成后才会开始下一次迭代。
+    这是因为 JavaScript 是单线程的，它在执行循环时会阻塞其他代码的执行，直到循环完成。
+    */
+    // const roleIndex = (messageIndex - promptCount) / 2;
+    for (let i = roleIndex; i < toastmastersRolePrompts.length; i++) {
+      let item = toastmastersRolePrompts[i];
+      let ask = item.contentWithSetting(session.input.setting[item.role]);
+      chatStore.onUserInput(ask, item.role);
+      await chatStore.getIsFinished();
+    }
+  };
+
   const onEdit = async (botMessage: ChatMessage) => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
@@ -479,22 +640,58 @@ export const ChatResponse = (props: {
     ChatControllerPool.stop(sessionIndex, messageId);
   };
 
+  const onVideoGenerate = async (messageContent: string) => {
+    const words = ChatUtility.getWordsNumber(messageContent);
+    const cost =
+      config.avatarVideo.maxWords == -1
+        ? words
+        : Math.min(config.avatarVideo.maxWords, words);
+
+    if (config.avatarVideo.previewCost === true) {
+      const isConfirmed = await showConfirm(
+        <SpeechAvatarVideoSetting></SpeechAvatarVideoSetting>,
+      );
+
+      if (!isConfirmed) return;
+    }
+
+    const isEnoughCoins = await chatStore.isEnoughCoins(cost);
+
+    if (!isEnoughCoins) {
+      return;
+    }
+
+    await onSpeechAvatar(
+      ChatUtility.getFirstNWords(
+        messageContent,
+        config.avatarVideo.maxWords,
+        false,
+      ),
+      (outputAvatar: IRequestResponse) => {
+        chatStore.updateCurrentSession(
+          (session) => (session.output.avatar = outputAvatar),
+        );
+      },
+    );
+
+    // const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    // zBotServiceClient.updateRequest(userEmail ?? "", cost);
+  };
+
   return (
     <div className={styles["chat-input-panel"]}>
-      {props.toastmastersRolePrompts.map((role, index) => {
-        // if length > index => the data is ready => show the data, else show the last data
-        var message: ChatMessage = createMessage({});
-        if (session.messages.length > 2 * index + 4)
-          // data is ready, just read it
-          message = session.messages[2 * index + 3];
-        else if (session.messages.length == 2 * index + 4)
-          message = session.messages[session.messages.length - 1];
-
+      {session.messages.map((message, messageIndex) => {
         var showActions = message.content.length > 0;
 
+        // first question-answer pair is guidance, and only show the answer from bot
+        if (messageIndex <= 1 || messageIndex % 2 == 0) return null;
+
+        const roleIndex = (messageIndex - promptCount) / 2;
+        const roleKey = toastmastersRolePrompts[roleIndex].role;
+
         return (
-          <div key={index} className={styles["chat-message-hover"]}>
-            <div className={styles["chat-input-panel-title"]}> {role.role}</div>
+          <div key={messageIndex} className={styles["chat-message-hover"]}>
+            <div className={styles["chat-input-panel-title"]}>{roleKey}</div>
 
             <div className={styles["chat-message-item"]}>
               {showActions && (
@@ -502,15 +699,15 @@ export const ChatResponse = (props: {
                   <div
                     className={styles["chat-input-actions"]}
                     style={{
-                      marginTop: 10,
-                      marginBottom: 0,
+                      marginTop: 20,
+                      marginBottom: -5,
                     }}
                   >
                     {message.streaming ? (
                       <ChatAction
                         text={Locale.Chat.Actions.Stop}
                         icon={<StopIcon />}
-                        onClick={() => onUserStop(message.id ?? 2 * index + 3)}
+                        onClick={() => onUserStop(message.id ?? messageIndex)}
                       />
                     ) : (
                       <>
@@ -522,8 +719,9 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.Retry}
                           icon={<ResetIcon />}
-                          onClick={() => onResend(index)}
-                          // onClick={() => {}}
+                          onClick={() =>
+                            onResendConfirm(messageIndex, roleIndex)
+                          }
                         />
                         <ChatAction
                           text={Locale.Chat.Actions.Copy}
@@ -531,7 +729,7 @@ export const ChatResponse = (props: {
                           onClick={() => copyToClipboard(message.content)}
                         />
                         <ChatAction
-                          text={Locale.Chat.Actions.Play}
+                          text={Locale.Chat.Actions.AudioPlay}
                           icon={<MicphoneIcon />}
                           onClick={() =>
                             speechSynthesizer.startSynthesize(
@@ -539,6 +737,11 @@ export const ChatResponse = (props: {
                               session.mask.lang,
                             )
                           }
+                        />
+                        <ChatAction
+                          text={Locale.Chat.Actions.VideoPlay}
+                          icon={<AvatarIcon />}
+                          onClick={() => onVideoGenerate(message.content)}
                         />
                       </>
                     )}
@@ -549,7 +752,7 @@ export const ChatResponse = (props: {
               <Markdown
                 content={message?.content}
                 fontSize={config.fontSize}
-                parentRef={props.scrollRef}
+                parentRef={scrollRef}
               />
 
               <div className={styles["chat-message-action-date"]}>
@@ -566,82 +769,36 @@ export const ChatResponse = (props: {
   );
 };
 
-export const ChatAction = (props: {
-  text: string;
-  icon: JSX.Element;
-  onClick: () => void;
-}) => {
-  const iconRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState({
-    full: 16,
-    icon: 16,
-  });
-
-  function updateWidth() {
-    if (!iconRef.current || !textRef.current) return;
-    const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
-    const textWidth = getWidth(textRef.current);
-    const iconWidth = getWidth(iconRef.current);
-    setWidth({
-      full: textWidth + iconWidth,
-      icon: iconWidth,
-    });
+export class ChatUtility {
+  static getWordsNumber(text: string): number {
+    return text.length > 0 ? text.split(/\s+/).length : 0;
   }
 
-  return (
-    <div
-      className={`${styles["chat-input-action"]} clickable`}
-      onClick={() => {
-        props.onClick();
-        setTimeout(updateWidth, 1);
-      }}
-      onMouseEnter={updateWidth}
-      onTouchStart={updateWidth}
-      style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
-      }
-    >
-      <div ref={iconRef} className={styles["icon"]}>
-        {props.icon}
-      </div>
-      <div className={styles["text"]} ref={textRef}>
-        {props.text}
-      </div>
-    </div>
-  );
-};
+  static getFirstNWords(
+    text: string,
+    number: number,
+    withOmit: boolean = true,
+  ): string {
+    var words = this.getWordsNumber(text);
 
-export const Markdown = dynamic(
-  async () => (await import("../components/markdown")).Markdown,
-  {
-    loading: () => <LoadingIcon />,
-  },
-);
-
-export function useScrollToBottom() {
-  // for auto-scroll
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [autoScroll, setAutoScroll] = useState(true);
-  const scrollToBottom = useCallback(() => {
-    const dom = scrollRef.current;
-    if (dom) {
-      requestAnimationFrame(() => dom.scrollTo(0, dom.scrollHeight));
+    if (number == -1 || words <= number) {
+      return text;
     }
-  }, []);
 
-  // auto scroll
-  useEffect(() => {
-    autoScroll && scrollToBottom();
-  });
+    var firstWords = text.split(/\s+/).slice(0, number).join(" ");
 
-  return {
-    scrollRef,
-    autoScroll,
-    setAutoScroll,
-    scrollToBottom,
+    if (!withOmit) {
+      return firstWords;
+    }
+
+    return firstWords + "...";
+  }
+
+  static formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 }

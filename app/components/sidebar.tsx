@@ -131,28 +131,21 @@ export function SideBar(props: { className?: string }) {
 
       <div className={styles["sidebar-header-bar"]}>
         <IconButton
+          icon={<MaskIcon />}
+          text={shouldNarrow ? undefined : Locale.Home.MaskChat}
+          onClick={() => navigate(Path.Masks)}
+          shadow
+        />
+        <IconButton
           icon={<AddIcon />}
           text={shouldNarrow ? undefined : Locale.Home.NewChat}
           onClick={() => {
-            if (config.dontShowMaskSplashScreen) {
-              chatStore.newSession();
-              navigate(Path.Chat);
-            } else {
-              // navigate(Path.NewChat);
-              navigate(Path.Masks);
-            }
+            chatStore.newSession();
+            setTimeout(() => navigate(Path.Chat), 1);
           }}
           shadow
         />
 
-        {/* 新的聊天=面具, 重复了*/}
-        {/* <IconButton
-          icon={<MaskIcon />}
-          text={shouldNarrow ? undefined : Locale.Mask.Name}
-          className={styles["sidebar-bar-button"]}
-          onClick={() => navigate(Path.NewChat, { state: { fromHome: true } })}
-          shadow
-        /> */}
         {/* TODO: 该功能仍正在开发中 */}
         {/* <IconButton
           icon={<PluginIcon />}
@@ -189,7 +182,11 @@ export function SideBar(props: { className?: string }) {
           </div>
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
-              <IconButton icon={<SettingsIcon />} shadow text="设置" />
+              <IconButton
+                icon={<SettingsIcon />}
+                shadow
+                text={Locale.Settings.Title}
+              />
             </Link>
           </div>
           {/* <div className={styles["sidebar-action"]}>

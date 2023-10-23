@@ -10,18 +10,19 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_API_HOST = "https://chatgpt1.nextweb.fun/api/proxy";
 
 export enum AppInfo {
-  Title = "知行AI",
-  SubTitle = "",
-  Url = "https://www.zcareers.cn",
+  Title = "Speech Copilot",
+  SubTitle = "Beta",
+  Url = "",
 }
 
 export enum Path {
   Home = "/",
   Chat = "/chat",
-  ToastmastersTTMaster = "/toastmasters/tableTopicsMaster",
-  ToastmastersTTSpeaker = "/toastmasters/tableTopicsSpeaker",
-  ToastmastersTTEvaluator = "/toastmasters/tableTopicsEvaluator",
-  ToastmastersIEvaluator = "/toastmasters/individualEvaluator",
+  ToastmastersTTEvaluators = "/speech/tableTopicsEvaluators",
+  ToastmastersTTEvaluator = "/speech/tableTopicsEvaluator",
+  ToastmastersTTMaster = "/speech/tableTopicsMaster",
+  ToastmastersTTSpeaker = "/speech/tableTopicsSpeaker",
+  ToastmastersIEvaluator = "/speech/individualEvaluator",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",

@@ -3,6 +3,33 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v4.20230921
+ - Temp comment login
+
+## v4.20230917
+ - Change Role names
+
+## v4.20230915
+publish time: 2023-09-15
+ - Enable settings to all roles
+
+## v4.0.3
+publish time: 2023-09-13
+ - Fix Avatar Video words bug
+
+## v4.0.2
+publish time: 2023-09-13
+ - CN & EN language
+
+## v4.0.1
+publish time: 2023-09-12
+ - Export & Share
+
+## v4.0.0
+publish time: 2023-09-10
+ - Hackathon: Speech Copilot
+ - Avatar Video
+
 ## v3.3.0
 publish time: 2023-09-04
  - TTEvaluator support multi speakers

@@ -32,6 +32,8 @@ const en: LocaleType = {
       Delete: "Delete",
       Edit: "Edit",
       Play: "Play",
+      AudioPlay: "VoicePlay",
+      VideoPlay: "AvatarVideoPlay",
     },
     Commands: {
       new: "Start a new chat",
@@ -106,6 +108,7 @@ const en: LocaleType = {
   },
   Home: {
     NewChat: "New Chat",
+    MaskChat: "Role Chat",
     DeleteChat: "Confirm to delete the selected conversation?",
     DeleteToast: "Chat Deleted",
     Revert: "Revert",
@@ -113,6 +116,198 @@ const en: LocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
+
+    UserLogin: {
+      Title: "Logged in",
+      Button: "To User Center",
+      LoginCenter: {
+        Title: "User Center",
+        Email: {
+          Title: "Email*",
+        },
+        NickName: {
+          Title: "Nick Name*",
+        },
+        Occupation: {
+          Title: "Occupation*",
+        },
+        Avatar: {
+          Title: "Avatar*",
+        },
+        Inviter: {
+          Title: "Inviter",
+        },
+        SaveButton: "Save",
+        SubmitButton: "Login out",
+        SubmitToast: {
+          NullNickName: "NickName can not be empty",
+          NullOccupation: "Occupation can not be empty",
+          Success: "Update Success",
+          Failed: "Update Failed, please try again",
+          NotRegister: "Current not register",
+          NotLogin: "Current not login",
+          LoginOut: "Login out success",
+        },
+      },
+    },
+    UserNotLogin: {
+      Title: "Not logged in",
+      Button: "Login/Register",
+      LoginCenter: {
+        Title: "User Login Center",
+        Email: {
+          Title: "Email*",
+        },
+        EmailVerify: {
+          Title: "Email Verify Code*",
+          Button: "Send Verify Code",
+        },
+        LoginButton: "Login",
+        RegisterButton: "Register",
+        LoginToast: {
+          Success: "Login Success",
+          Failed: "Login Failed, please try again",
+          NotRegister: "Current not register",
+          EmailInvalid: "Email format error, please re-enter",
+          EmailVerifyInvalid: "Email verify code error, please re-enter",
+          EmailEmpty: "Email can not be empty",
+          EmailVerifyEmpty: "Email verify code can not be empty",
+        },
+      },
+      RegisterCenter: {
+        Title: "User Register Center",
+        Email: {
+          Title: "Email*",
+        },
+        EmailVerify: {
+          Title: "Email Verify Code*",
+          Button: "Send Verify Code",
+        },
+        NickName: {
+          Title: "Nick Name*",
+        },
+        Occupuation: {
+          Title: "Occupuation*",
+        },
+        Inviter: {
+          Title: "Inviter Email",
+          SubTitle: (baseCoins: number) =>
+            `Optional, both inviter and invitee can earn ${baseCoins} AI coins`,
+        },
+        RegisterButton: "Register",
+        RegisterToast: {
+          Success: "Register successful, welcome back!",
+          Failed: "Register failed, please try again",
+          HasRegister: "This email has been registered, please login",
+          EmailInvalid: "Email format error, please re-enter",
+          EmailVerifyInvalid: "Email verify code error, please re-enter",
+          EmailEmpty: "Email can not be empty",
+          EmailVerifyEmpty: "Email verify code can not be empty",
+          NickNameEmpty: "NickName can not be empty",
+          OccupationEmpty: "Occupation can not be empty",
+        },
+      },
+    },
+    UserBalance: {
+      Title: "Account Balance",
+      Button: "To Balance Center",
+      BalanceCenter: {
+        Title: "Balance Center",
+        AccountBalance: {
+          Title: "Account Balance",
+          BaseCoins: {
+            Title: "Base AI Coins",
+            SubTitle: "(Not clear)",
+          },
+          LimitCoins: {
+            Title: "Time AI Coins",
+            SubTitle: "(1 day clear)",
+          },
+          TotalDialogs: {
+            Title: "Total Dialogs",
+            SubTitle:
+              "(Each conversation costs 1 AI coin, time coins first, then base coins)",
+          },
+          TotalSignDays: {
+            Title: "Total Sign Days",
+            SubTitle: (baseCoins: number, limitCoins: number) =>
+              `Sign in daily to receive ${baseCoins} basic AI coins and ${limitCoins} time AI coins`,
+          },
+        },
+        SignState: {
+          Signed: {
+            Title: "Today's Sign State",
+            State: "Signed",
+            Button: "",
+          },
+          NotSigned: {
+            Title: "Today's Sign State",
+            State: "Not Signed",
+            Button: "To Sign",
+          },
+          SignToast: {
+            Success: "Sign in successfully",
+            Failed: "Sign in failed, please try again",
+            NotRegister: "Current not register",
+            HasSigned: "Today has signed",
+          },
+        },
+        CoinDescription: {
+          Title: "AI Coins Description",
+          Rule1: "- New users are given 20 base AI coins when they sign up",
+          Rule2:
+            "- When inviting users, both the inviter and the invitee are given 5 base AI coins",
+        },
+      },
+    },
+    AvatarVideo: {
+      Title: "Avatar Video",
+      MaxWords: {
+        Title: "Avatar Video Max Words",
+        SubTitle:
+          "The max words played during the video generation. -1 indicates the unlimited number of words. Note: 1 word costs 1 AI coin",
+      },
+      PreviewCost: {
+        Title: "Avatar Video Preview cost",
+        SubTitle:
+          "When the avatar video is generated, to popup preview of the cost of AI coins. This can be turned off/on in ·Settings·",
+      },
+    },
+    About: {
+      Title: "About",
+      Button: "To About",
+      Introduction: (appTitle: string) =>
+        `
+      Welcome to ${appTitle}!
+
+      ${appTitle} is developed based on GPT3.5 and is primarily used to assist with speeches, such as impromptu speeches and prepared speeches.
+      
+      We highly prioritize user privacy and data security. When using ${appTitle}, we do not store or analyze user chat records in the background.
+      
+      If you have any questions or suggestions, please feel free to contact us through · Settings -> Feedback ·. We will respond as soon as possible.
+      `,
+    },
+    FeedBack: {
+      Title: "Feedback",
+      Button: "To Feedback",
+      FeedBackCenter: {
+        Title: "Feedback Center",
+        Email: "Email*",
+        Head: "Title*",
+        Description: "Details*",
+        Phone: "Phone",
+        SubmitButton: "Submit",
+        FeedBackToast: {
+          Success: "Feedback successful",
+          Failed: "Feedback failed, please try again",
+          EmailInvalid: "Email format error, please re-enter",
+          EmailEmpty: "Email can not be empty",
+          HeadEmpty: "Title can not be empty",
+          DescriptionEmpty: "Details can not be empty",
+        },
+      },
+    },
+
     Danger: {
       Reset: {
         Title: "Reset All Settings",
