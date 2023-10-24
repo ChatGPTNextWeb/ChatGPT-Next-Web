@@ -13,6 +13,7 @@ const cn = {
   Auth: {
     Title: "需要密码",
     Tips: "管理员开启了密码验证，请在下方填入访问码",
+    SubTips: "或者输入你的 OpenAI API 密钥",
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
@@ -187,6 +188,7 @@ const cn = {
       Config: {
         Modal: {
           Title: "配置云同步",
+          Check: "检查可用性",
         },
         SyncType: {
           Title: "同步类型",
@@ -205,6 +207,12 @@ const cn = {
           Endpoint: "WebDAV 地址",
           UserName: "用户名",
           Password: "密码",
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "备份名称",
+          Password: "UpStash Redis REST Token",
         },
       },
 
@@ -315,6 +323,10 @@ const cn = {
   Copy: {
     Success: "已写入剪切板",
     Failed: "复制失败，请赋予剪切板权限",
+  },
+  Download: {
+    Success: "内容已下载到您的目录。",
+    Failed: "下载失败。",
   },
   Context: {
     Toast: (x: any) => `包含 ${x} 条预设提示词`,

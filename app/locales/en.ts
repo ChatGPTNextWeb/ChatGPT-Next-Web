@@ -15,6 +15,7 @@ const en: LocaleType = {
   Auth: {
     Title: "Need Access Code",
     Tips: "Please enter access code below",
+    SubTips: "Or enter your OpenAI API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
@@ -189,6 +190,7 @@ const en: LocaleType = {
       Config: {
         Modal: {
           Title: "Config Sync",
+          Check: "Check Connection",
         },
         SyncType: {
           Title: "Sync Type",
@@ -208,6 +210,12 @@ const en: LocaleType = {
           Endpoint: "WebDAV Endpoint",
           UserName: "User Name",
           Password: "Password",
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "Backup Name",
+          Password: "UpStash Redis REST Token",
         },
       },
 
@@ -321,6 +329,10 @@ const en: LocaleType = {
   Copy: {
     Success: "Copied to clipboard",
     Failed: "Copy failed, please grant permission to access clipboard",
+  },
+  Download: {
+    Success: "Content downloaded to your directory.",
+    Failed: "Download failed.",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
