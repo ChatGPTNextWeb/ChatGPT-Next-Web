@@ -186,3 +186,4 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ## 오픈소스 라이센스
 
 [MIT](https://opensource.org/license/mit/)
+
