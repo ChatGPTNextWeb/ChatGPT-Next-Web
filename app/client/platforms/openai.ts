@@ -278,4 +278,3 @@ export class ChatGPTApi implements LLMApi {
     }));
   }
 }
-export { OpenaiPath };
