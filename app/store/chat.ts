@@ -153,6 +153,41 @@ export const useChatStore = createPersistStore(
       };
     }
 
+    function configureSessionWithMask(session: ChatSession, mask: Mask) {
+      const config = useAppConfig.getState();
+      const globalModelConfig = config.modelConfig;
+
+      session.mask = {
+        ...mask,
+        modelConfig: {
+          ...globalModelConfig,
+          ...mask.modelConfig,
+        },
+      };
+
+      session.topic = mask.name;
+    }
+
+    function defaultSessionConfig(session: ChatSession) {
+      session.mask = createEmptyMask();
+
+      session.topic = DEFAULT_TOPIC;
+
+      session.messages = [];
+
+      session.memoryPrompt = "";
+
+      session.stat = {
+        tokenCount: 0,
+        wordCount: 0,
+        charCount: 0,
+      };
+
+      session.lastUpdate = Date.now();
+
+      session.lastSummarizeIndex = 0;
+    }
+
     const methods = {
       clearSessions() {
         set(() => ({
@@ -192,27 +227,21 @@ export const useChatStore = createPersistStore(
         });
       },
 
-      newSession(mask?: Mask) {
+      async newSession(mask?: Mask) {
         const session = createEmptySession();
-
         if (mask) {
-          const config = useAppConfig.getState();
-          const globalModelConfig = config.modelConfig;
-
-          session.mask = {
-            ...mask,
-            modelConfig: {
-              ...globalModelConfig,
-              ...mask.modelConfig,
-            },
-          };
-          session.topic = mask.name;
+          configureSessionWithMask(session, mask);
+        } else {
+          defaultSessionConfig(session);
         }
-
         set((state) => ({
           currentSessionIndex: 0,
           sessions: [session].concat(state.sessions),
         }));
+
+        if (mask) {
+          await get().onUserInput("👋");
+        }
       },
 
       nextSession(delta: number) {
@@ -280,17 +309,27 @@ export const useChatStore = createPersistStore(
       },
 
       onNewMessage(message: ChatMessage) {
+        const session = get().currentSession();
+
         get().updateCurrentSession((session) => {
           session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
-        get().summarizeSession();
+        if (!session.mask.id) {
+          get().summarizeSession();
+        }
       },
 
       async onUserInput(content: string) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+        let context: ChatMessage[] = [];
+
+        if (session.mask.id) {
+          // Получить контекст только если есть маска
+          context = session.mask.context;
+        }
 
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
@@ -307,8 +346,10 @@ export const useChatStore = createPersistStore(
         });
 
         // get recent messages
+
         const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
+        const recentMessagesWithContext = context.concat(recentMessages);
+        const sendMessages = recentMessagesWithContext.concat(userMessage);
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
