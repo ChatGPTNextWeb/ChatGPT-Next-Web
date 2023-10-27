@@ -120,7 +120,6 @@ export const EN_MASKS: BuiltinMask[] = [
       "hideContext":false
    },
    {
-      "id":"EZM6ndXjJDIKMEcctQyLv",
       "avatar":"1f3e2",
       "name":"AdEx - Service Portfolios (short version)",
       "context":[
