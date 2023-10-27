@@ -164,7 +164,7 @@ docker run -d -p 3000:3000 \
 콘솔에서 아래의 명령을 실행하세요:
 
 ```shell
-bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
+bash <(curl -s https://raw.githubusercontent.com/Rewardable-Focus/FocusMeChat-ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
 ⚠️ 주의: 설치 중 문제가 발생한 경우, docker로 배포하세요.

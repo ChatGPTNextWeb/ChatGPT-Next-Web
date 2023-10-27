@@ -220,7 +220,7 @@ docker run -d -p 3000:3000 \
 ### シェル
 
 ```shell
-bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
+bash <(curl -s https://raw.githubusercontent.com/Rewardable-Focus/FocusMeChat-ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
 ## スクリーンショット

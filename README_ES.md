@@ -153,7 +153,7 @@ Si necesita especificar otras variables de entorno, agréguelas usted mismo en e
 Ejecute el siguiente comando en la consola:
 
 ```shell
-bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
+bash <(curl -s https://raw.githubusercontent.com/Rewardable-Focus/FocusMeChat-ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
 ⚠️ Nota: Si tiene problemas durante la instalación, utilice la implementación de Docker.

@@ -254,7 +254,7 @@ If your proxy needs password, use:
 ### Shell
 
 ```shell
-bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
+bash <(curl -s https://raw.githubusercontent.com/Rewardable-Focus/FocusMeChat-ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
 ## Synchronizing Chat Records (UpStash)

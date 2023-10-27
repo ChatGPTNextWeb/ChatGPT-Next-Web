@@ -1,11 +1,11 @@
 [package]
-name = "chatgpt-next-web"
+name = "focus-me-chatgpt"
 version = "0.1.0"
 description = "A cross platform app for LLM ChatBot."
-authors = ["Yidadaa"]
+authors = ["Yidadaa", "Rewardable-Focus"]
 license = "mit"
 repository = ""
-default-run = "chatgpt-next-web"
+default-run = "focus-me-chatgpt"
 edition = "2021"
 rust-version = "1.60"
 

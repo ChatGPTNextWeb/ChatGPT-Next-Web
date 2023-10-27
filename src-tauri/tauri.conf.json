@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ChatGPT Next Web",
+    "productName": "Focus Me ChatGPT",
     "version": "2.9.9"
   },
   "tauri": {
@@ -67,8 +67,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "ChatGPT Next Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "identifier": "com.focusmechat.chatgpt",
+      "longDescription": "Focus Me ChatGPT is a cross-platform ChatGPT client and collection of assistants that focused to help in user's goals, including Web/Win/Linux/OSX/PWA.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -77,7 +77,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "ChatGPT Next Web App",
+      "shortDescription": "Focus Me ChatGPT",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -91,20 +91,20 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://github.com/Yidadaa/ChatGPT-Next-Web/releases/latest/download/latest.json"
+        "https://github.com/Rewardable-Focus/FocusMeChat-ChatGPT-Next-Web/releases/latest/download/latest.json"
       ],
       "dialog": false,
       "windows": {
         "installMode": "passive"
       },
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERFNDE4MENFM0Y1RTZBOTQKUldTVWFsNC96b0JCM3RqM2NmMnlFTmxIaStRaEJrTHNOU2VqRVlIV1hwVURoWUdVdEc1eDcxVEYK"
+      "pubkey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtVAF9AdRDX/njAoyoGDg+EgK1mMA0aca/UhEk/q8asTOEV70cG+5HPyKE3Vq94aapcqNMR7oCOp7/OY8eGNOA+zs45rKxcHP0139Sfi5Mw+/OThDPfUKi2Fh+qF1MafZ1GKFkOCgQwBRcqXQvqyBWvjxi+H8GTx4ixCdPuGBegcShT14Vl+gn16NYnr6LZkbeHEMFK+0ddFzL5ydlap4Fv2GhX4WxxO3dtOQiFLcLuwOCXZiR9YzcPeKxl+wHAO8+7VTHWqfpQMHtRqwVZvMQ+qmcvd+JTJDv5E8C5kUtETt7p5ywM+ybvdXQ7rtlVx7b+MXJI1MEdIi7+q3EIdtSwIDAQAB"
     },
     "windows": [
       {
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ChatGPT Next Web",
+        "title": "Focus Me ChatGPT",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
