@@ -1549,10 +1549,10 @@
     "@typescript-eslint/types" "6.4.0"
     eslint-visitor-keys "^3.4.1"
 
-"@vercel/analytics@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@vercel/analytics/-/analytics-1.0.1.tgz"
-  integrity sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==
+"@vercel/analytics@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-0.1.11.tgz#727a0ac655a4a89104cdea3e6925476470299428"
+  integrity sha512-mj5CPR02y0BRs1tN3oZcBNAX9a8NxsIUl9vElDPcqxnMfP0RbRc9fI9Ud7+QDg/1Izvt5uMumsr+6YsmVHcyuw==
 
 "@webassemblyjs/ast@1.11.6", "@webassemblyjs/ast@^1.11.5":
   version "1.11.6"
@@ -2817,10 +2817,10 @@ eslint-config-next@13.4.19:
     eslint-plugin-react "^7.31.7"
     eslint-plugin-react-hooks "^4.5.0 || 5.0.0-canary-7118f5dd7-20230705"
 
-eslint-config-prettier@^8.9.0:
-  version "8.9.0"
-  resolved "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.9.0.tgz"
-  integrity sha512-+sbni7NfVXnOpnRadUA8S28AUlsZt9GjgFvABIRL9Hkn8KqNzOp+7Lw4QWtrwn20KzU3wqu1QoOj2m+7rKRqkA==
+eslint-config-prettier@^8.8.0:
+  version "8.10.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.10.0.tgz#3a06a662130807e2502fc3ff8b4143d8a0658e11"
+  integrity sha512-SM8AMJdeQqRYT9O9zguiruQZaN7+z+E4eAP9oiLNGKMtomwaB1E9dcgUD6ZAn/eQAb52USbvezbiljfZUhbJcg==
 
 eslint-import-resolver-node@^0.3.6, eslint-import-resolver-node@^0.3.7:
   version "0.3.7"
@@ -3489,6 +3489,11 @@ human-signals@^4.3.0:
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-4.3.1.tgz"
   integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
 
+husky@^8.0.0:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.3.tgz#4936d7212e46d1dea28fef29bb3a108872cd9184"
+  integrity sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==
+
 iconv-lite@0.6:
   version "0.6.3"
   resolved "https://registry.npmmirror.com/iconv-lite/-/iconv-lite-0.6.3.tgz"
@@ -3900,10 +3905,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.2.4.tgz"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
-lint-staged@^14.0.1:
-  version "14.0.1"
-  resolved "https://registry.npmjs.org/lint-staged/-/lint-staged-14.0.1.tgz"
-  integrity sha512-Mw0cL6HXnHN1ag0mN/Dg4g6sr8uf8sn98w2Oc1ECtFto9tvRF7nkXGJRbx8gPlHyoR0pLyBr2lQHbWwmUHe1Sw==
+lint-staged@^13.2.2:
+  version "13.3.0"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.3.0.tgz#7965d72a8d6a6c932f85e9c13ccf3596782d28a5"
+  integrity sha512-mPRtrYnipYYv1FEE134ufbWpeggNTo+O/UPzngoaKzbzHAthvR55am+8GfHTnqNRQVRRrYQLGW9ZyUoD7DsBHQ==
   dependencies:
     chalk "5.3.0"
     commander "11.0.0"
@@ -4186,10 +4191,10 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-mermaid@^10.3.1:
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-10.3.1.tgz#2f3c7e9f6bd7a8da2bef71cce2a542c8eba2a62e"
-  integrity sha512-hkenh7WkuRWPcob3oJtrN3W+yzrrIYuWF1OIfk/d0xGE8UWlvDhfexaHmDwwe8DKQgqMLI8DWEPwGprxkumjuw==
+mermaid@^10.4.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-10.6.0.tgz#151af64fb7c6cf1f8a5c403c53c6151832268b87"
+  integrity sha512-Hcti+Q2NiWnb2ZCijSX89Bn2i7TCUwosBdIn/d+u63Sz7y40XU6EKMctT4UX4qZuZGfKGZpfOeim2/KTrdR7aQ==
   dependencies:
     "@braintree/sanitize-url" "^6.0.1"
     "@types/d3-scale" "^4.0.3"
@@ -5626,7 +5631,7 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^2.1.0, tslib@^2.4.0, tslib@^2.5.0:
+tslib@^2.4.0, tslib@^2.5.0:
   version "2.5.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.0.tgz"
   integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
@@ -5871,10 +5876,10 @@ webpack-sources@^3.2.3:
   resolved "https://registry.npmmirror.com/webpack-sources/-/webpack-sources-3.2.3.tgz"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack@^5.88.2:
-  version "5.88.2"
-  resolved "https://registry.npmjs.org/webpack/-/webpack-5.88.2.tgz"
-  integrity sha512-JmcgNZ1iKj+aiR0OvTYtWQqJwq37Pf683dY9bVORwVbUrDhLhdn/PlO2sHsFHPkj7sHNQF3JwaAkp49V+Sq1tQ==
+webpack@^5.88.1:
+  version "5.89.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.89.0.tgz#56b8bf9a34356e93a6625770006490bf3a7f32dc"
+  integrity sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^1.0.0"

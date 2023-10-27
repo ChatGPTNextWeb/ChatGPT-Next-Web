@@ -433,25 +433,55 @@ export function ImagePreviewer(props: {
 
   const isMobile = useMobileScreen();
 
-  const download = () => {
+  const download = async () => {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-    toPng(dom)
-      .then((blob) => {
-        if (!blob) return;
-
-        if (isMobile || getClientConfig()?.isApp) {
-          showImageModal(blob);
+  
+    const isApp = getClientConfig()?.isApp;
+  
+    try {
+      const blob = await toPng(dom);
+      if (!blob) return;
+  
+      if (isMobile || (isApp && window.__TAURI__)) {
+        if (isApp && window.__TAURI__) {
+          const result = await window.__TAURI__.dialog.save({
+            defaultPath: `${props.topic}.png`,
+            filters: [
+              {
+                name: "PNG Files",
+                extensions: ["png"],
+              },
+              {
+                name: "All Files",
+                extensions: ["*"],
+              },
+            ],
+          });
+  
+          if (result !== null) {
+            const response = await fetch(blob);
+            const buffer = await response.arrayBuffer();
+            const uint8Array = new Uint8Array(buffer);
+            await window.__TAURI__.fs.writeBinaryFile(result, uint8Array);
+            showToast(Locale.Download.Success);
+          } else {
+            showToast(Locale.Download.Failed);
+          }
         } else {
-          const link = document.createElement("a");
-          link.download = `${props.topic}.png`;
-          link.href = blob;
-          link.click();
-          refreshPreview();
+          showImageModal(blob);
         }
-      })
-      .catch((e) => console.log("[Export Image] ", e));
+      } else {
+        const link = document.createElement("a");
+        link.download = `${props.topic}.png`;
+        link.href = blob;
+        link.click();
+        refreshPreview();
+      }
+    } catch (error) {
+      showToast(Locale.Download.Failed);
+    }
   };
 
   const refreshPreview = () => {
