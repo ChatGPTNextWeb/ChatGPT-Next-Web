@@ -43,6 +43,25 @@ import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { EN_MASKS } from "../masks/en";
 import { Mask } from "../store/mask";
 import { useScrollToBottom } from "../components/chat";
+import { TemporaryDrawer } from "./chat-drawer";
+
+import Drawer from "@mui/material/Drawer";
+import Button from "@mui/material/Button";
+import MuiList from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
+
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Tooltip from "@mui/material/Tooltip";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -107,6 +126,144 @@ export function Chat() {
     );
   };
 
+  const [anchorState, setAnchorState] = React.useState(false);
+
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift")
+      ) {
+        return;
+      }
+
+      setAnchorState(open);
+    };
+
+  const TimeSidebar = () => {
+    interface ILightsTime {
+      Green: number;
+      Yellow: number;
+      Red: number;
+    }
+    const [colorGreenTime, setColorGreenTime] = React.useState(0);
+    const [colorYellowTime, setColorYellowTime] = React.useState(0);
+    const [colorRedTime, setColorRedTime] = React.useState(0);
+
+    const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const selectRole = (event.target as HTMLInputElement).value;
+      setColorGreenTime(speakersTimeRecord[selectRole].Green);
+      setColorYellowTime(speakersTimeRecord[selectRole].Yellow);
+      setColorRedTime(speakersTimeRecord[selectRole].Red);
+    };
+
+    const speakersTimeRecord: Record<string, ILightsTime> = {
+      ["TableTopicsSpeaker(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+      ["TableTopicsEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
+      ["PreparedSpeaker(5-7min)"]: { Green: 5, Yellow: 6, Red: 7 },
+      ["PreparedSpeechEvaluator(2-3min)"]: { Green: 2, Yellow: 2.5, Red: 3 },
+      ["GeneralEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
+      ["CustomTime"]: { Green: 0, Yellow: 0, Red: 0 },
+    };
+
+    return (
+      <div className={styles_tm["chat-input-panel-buttons-column"]}>
+        <Box sx={{ width: 350 }}>
+          <List>
+            <FormLabel>Roles</FormLabel>
+            <RadioGroup name="speaker-roles-group" onChange={onInputRoleChange}>
+              {Object.keys(speakersTimeRecord).map((role) => {
+                return (
+                  <FormControlLabel
+                    key={role}
+                    value={role}
+                    control={<Radio />}
+                    label={role}
+                    className={styles_tm["item-radio-button"]}
+                  />
+                );
+              })}
+            </RadioGroup>
+          </List>
+
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Green" />
+                <input
+                  type="number"
+                  step={0.1}
+                  min={0}
+                  max={colorYellowTime}
+                  value={colorGreenTime}
+                  style={{ width: "30%" }}
+                  onChange={(e) =>
+                    setColorGreenTime(parseFloat(e.target.value))
+                  }
+                ></input>
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Yellow" />
+                <input
+                  type="number"
+                  step={0.1}
+                  min={colorGreenTime}
+                  max={colorRedTime}
+                  value={colorYellowTime}
+                  style={{ width: "30%" }}
+                  onChange={(e) =>
+                    setColorYellowTime(parseFloat(e.target.value))
+                  }
+                ></input>
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Red" />
+                <input
+                  type="number"
+                  step={0.1}
+                  min={colorYellowTime}
+                  value={colorRedTime}
+                  style={{ width: "30%" }}
+                  onChange={(e) => setColorRedTime(parseFloat(e.target.value))}
+                ></input>
+              </ListItemButton>
+            </ListItem>
+          </List>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconButton
+              icon={<AddIcon />}
+              text="Add Speaker"
+              bordered
+              onClick={addItem}
+              className={styles_tm["chat-input-button-add"]}
+            />
+          </div>
+        </Box>
+      </div>
+    );
+  };
+
   return (
     <div className={styles_chat.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
@@ -121,12 +278,23 @@ export function Chat() {
         }}
       >
         <div className={styles_tm["chat-input-button-add-row"]}>
-          <IconButton
+          {/* <IconButton
             icon={<AddIcon />}
             text="Add Speaker"
-            onClick={addItem}
+            // onClick={addItem}
+            onClick={toggleDrawer(true)}
             className={styles_tm["chat-input-button-add"]}
-          />
+          /> */}
+          <React.Fragment>
+            <Button onClick={toggleDrawer(true)}>{"Add Speaker"}</Button>
+            <Drawer
+              anchor={"left"}
+              open={anchorState}
+              onClose={toggleDrawer(false)}
+            >
+              {<TimeSidebar></TimeSidebar>}
+            </Drawer>
+          </React.Fragment>
         </div>
         {session.input.datas.length > 0 && (
           <>

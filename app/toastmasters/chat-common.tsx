@@ -80,6 +80,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Tooltip from "@mui/material/Tooltip";
 import ReactMarkdown from "react-markdown";
+import { TimeSlider } from "./chat-timeSlider";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -200,7 +201,13 @@ export function ChatTitle(props: { getInputsString: () => string }) {
   );
 }
 
-export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
+export const ChatInput = (props: {
+  title: string;
+  inputStore: InputStore;
+  showTime?: boolean;
+}) => {
+  const { title, inputStore, showTime = false } = props;
+
   const config = useAppConfig();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -211,8 +218,8 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   when userInput is changed, show userInput
   when Send button is clicked, show session.messages[session.messages.length-1].content
   */
-  const [userInput, setUserInput] = useState(props.inputStore.text);
-  const [time, setTime] = useState(props.inputStore.time);
+  const [userInput, setUserInput] = useState(inputStore.text);
+  const [time, setTime] = useState(inputStore.time);
 
   // 计时器
   useEffect(() => {
@@ -221,11 +228,12 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
       intervalId = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
+      props.inputStore.time = time;
     }
 
     return () => {
       // save to store
-      props.inputStore.time = time;
+      inputStore.time = time;
       clearInterval(intervalId);
     };
   }, [recording]);
@@ -255,7 +263,7 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   // set parent value
   useEffect(() => {
     // save to store
-    props.inputStore.text = userInput;
+    inputStore.text = userInput;
 
     // set the focus to the input at the end of textarea
     inputRef.current?.focus();
@@ -285,7 +293,7 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
 
   return (
     <div className={styles_tm["chat-input-panel-noborder"]}>
-      <div className={styles_tm["chat-input-panel-title"]}>{props.title}</div>
+      <div className={styles_tm["chat-input-panel-title"]}>{title}</div>
       <div className={styles_tm["chat-input-panel-textarea"]}>
         <textarea
           ref={inputRef}
@@ -317,6 +325,8 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
           {ChatUtility.formatTime(time)}
         </div>
       </div>
+
+      {showTime == true ? <TimeSlider time={time}></TimeSlider> : <></>}
     </div>
   );
 };
@@ -674,8 +684,8 @@ export const ChatResponse = (props: {
       },
     );
 
-    // const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-    // zBotServiceClient.updateRequest(userEmail ?? "", cost);
+    const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    zBotServiceClient.updateRequest(userEmail ?? "", cost);
   };
 
   return (
@@ -767,6 +777,16 @@ export const ChatResponse = (props: {
       })}
     </div>
   );
+};
+
+export const BorderLine = () => {
+  const lineStyle = {
+    borderBottom: "var(--border-in-light)",
+    width: "100%", // 横跨整个父容器
+    margin: "10px 0", // 设置上下边距
+  };
+
+  return <div style={lineStyle}></div>;
 };
 
 export class ChatUtility {

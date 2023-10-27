@@ -13,6 +13,7 @@
   }
 
   .chat-input-panel-textarea {
+    position: relative;
     display: flex;
     flex: 1;
   }
@@ -52,7 +53,7 @@
 .chat-input-words {
   position: absolute;
   right: 30px;
-  top: 8px;
+  top: -20px;
   opacity: 0.2;
   font-size: 14px;
 }
@@ -73,6 +74,18 @@
     background-color: azure
     color(srgb red green blue)
     /* 添加其他样式属性，如颜色、字体等，根据需要自定义 */
+  }
+}
+
+.chat-input-panel-buttons-column {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .item-radio-button {
+    padding-left: 10px
   }
 }
 

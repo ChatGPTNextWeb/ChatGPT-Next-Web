@@ -78,6 +78,12 @@ const ToastmastersIEvaluator = dynamic(
     loading: () => <Loading noLogo />,
   },
 );
+const ToastmastersTimer = dynamic(
+  async () => (await import("../toastmasters/chat-timer")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
@@ -221,6 +227,10 @@ function Screen() {
               <Route
                 path={Path.ToastmastersIEvaluator}
                 element={<ToastmastersIEvaluator />}
+              />
+              <Route
+                path={Path.ToastmastersTimer}
+                element={<ToastmastersTimer />}
               />
               <Route path={Path.Settings} element={<Settings />} />
               <Route path={Path.UserLogin} element={<UserLogin />} />

@@ -1,4 +1,5 @@
 export enum ToastmastersRoles {
+  Toastmasters = "Toastmasters",
   TableTopicsEvaluators = "Table Topics Evaluators",
   TableTopicsEvaluator = "Table Topics Evaluator",
   TableTopicsMaster = "Table Topics Master",
@@ -7,6 +8,8 @@ export enum ToastmastersRoles {
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
   GeneralEvaluator = "General Evaluator",
+  Timer = "Timer",
+
   RevisedSpeech = "Revised Speech",
   DemoSpeech = "Demo Speech",
   Guidance = "Guidance",
@@ -73,6 +76,7 @@ export const ToastmastersRolesResponsibilities: Record<string, string> = {
 
 export interface ToastmastersRoleSetting {
   words: number;
+  // guidance?: string
 }
 
 export interface ToastmastersRolePrompt {
@@ -245,15 +249,15 @@ export const ToastmastersTTEvaluatorsRecord: Record<
   ToastmastersRolePrompt[]
 > = {
   [ToastmastersRoles.TableTopicsEvaluator]: [
-    {
-      role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      1). Give me a table which presenting the keywords used in each person's speech
-      2). Only response the table, 
-      3). Do not include any extra description and extra words. 
-      `,
-    },
+    // {
+    //   role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
+    //   contentWithSetting: (setting?) =>
+    //     `You are the ${ToastmastersRoles.TableTopicsEvaluator}.
+    //   1). Give me a table which presenting the keywords used in each person's speech
+    //   2). Only response the table,
+    //   3). Do not include any extra description and extra words.
+    //   `,
+    // },
     {
       role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
       contentWithSetting: (setting?) =>
@@ -267,7 +271,7 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       5). Each speaker's evaluation should be about ${setting?.words} words.
       `,
       setting: {
-        words: 100,
+        words: 50,
       },
     },
   ],
@@ -301,7 +305,7 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       4). Each speaker's evaluation should be about ${setting?.words} words.
       `,
       setting: {
-        words: 80,
+        words: 50,
       },
     },
   ],
@@ -327,23 +331,45 @@ export const ToastmastersTTEvaluatorsRecord: Record<
       4). Each speaker's evaluation should be about ${setting?.words} words.
       `,
       setting: {
-        words: 80,
+        words: 50,
       },
     },
   ],
-  [ToastmastersRoles.RevisedSpeech]: [
+  // [ToastmastersRoles.RevisedSpeech]: [
+  //   {
+  //     role: "Revised Speech",
+  //     contentWithSetting: (setting?) =>
+  //       `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
+  //     Help revise, polish and improve the speech for all speakers.
+  //     You should:
+  //     1). Don't say who you are, just provide your revised speech.
+  //     2). Bold keywords using markdown when present your answer.
+  //     3). Each speaker's evaluation should be about ${setting?.words} words.
+  //     `,
+  //     setting: {
+  //       words: 100,
+  //     },
+  //   },
+  // ],
+  [ToastmastersRoles.Timer]: [
     {
-      role: "Revised Speech",
+      role: ToastmastersRoles.Timer,
       contentWithSetting: (setting?) =>
-        `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
-      Help revise, polish and improve the speech for all speakers.
+        `You are the an teacher of ${ToastmastersRoles.Timer}.
+      Help evaluate all apekers' time usage. And give addvice for his/her speech.
+      For each speaker, GreenTime=01:00, YellowTime=01:30, RedTime=02:00, MaxTime=02:30.
       You should:
-      1). Don't say who you are, just provide your revised speech.
-      2). Bold keywords using markdown when present your answer.
+      1). if (SpeechTime > MaxTime): it's overtime, to list where can be shorten down.
+          else if (SpeechTime > RedTime): it's a little overtime, to list where can be enhanced.
+          else if (SpeechTime > YellowTime): it's just within time, to list where can be enhanced.
+          else if (SpeechTime > GreenTime): it just meets minimum requirement, to list where can be enhanced.
+          else if (SpeechTime <= GreenTime): it didn't meet the minimum requirement, to list where can be expanded.
+      2). Any suggestion or evaluaton should contain example from his/her speech
+      3). To Bold keywords using markdown in your answer.
       3). Each speaker's evaluation should be about ${setting?.words} words.
       `,
       setting: {
-        words: 100,
+        words: 50,
       },
     },
   ],

@@ -23,6 +23,7 @@ export enum Path {
   ToastmastersTTMaster = "/speech/tableTopicsMaster",
   ToastmastersTTSpeaker = "/speech/tableTopicsSpeaker",
   ToastmastersIEvaluator = "/speech/individualEvaluator",
+  ToastmastersTimer = "/speech/timer",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",

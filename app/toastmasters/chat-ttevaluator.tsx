@@ -15,6 +15,7 @@ import {
   ChatInput,
   ChatResponse,
   ChatSubmitCheckbox,
+  BorderLine,
 } from "./chat-common";
 import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { useScrollToBottom } from "../components/chat";
@@ -72,7 +73,13 @@ export function Chat() {
             title="Question"
             inputStore={session.input.data.question}
           />
-          <ChatInput title="Speech" inputStore={session.input.data.speech} />
+          <ChatInput
+            title="Speech"
+            inputStore={session.input.data.speech}
+            showTime={true}
+          />
+
+          <BorderLine></BorderLine>
 
           <ChatSubmitCheckbox
             toastmastersRecord={ToastmastersRecord}
