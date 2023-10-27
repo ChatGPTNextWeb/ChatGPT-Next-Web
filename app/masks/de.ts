@@ -2,7 +2,6 @@ import { BuiltinMask } from "./typing";
 
 export const DE_MASKS: BuiltinMask[] = [
   {
-    id: "-nsJevFsAaCtMuQLEzg4b",
     avatar: "gpt-bot",
     name: "Emailverläufe zusammenfassen",
     context: [
@@ -33,7 +32,6 @@ export const DE_MASKS: BuiltinMask[] = [
     createdAt: 1689686861175,
   },
   {
-    id: "LphaDqjv3uV-GKTrRAkQR",
     avatar: "gpt-bot",
     name: "Landingpage Generator - AIDA Framework",
     context: [

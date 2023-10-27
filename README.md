@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
-<h1 align="center">ChatGPT Next Web</h1>
+<h1 align="center">AILA ChatGPT</h1>
 
 One-Click to get well-designed cross-platform ChatGPT web UI.
 

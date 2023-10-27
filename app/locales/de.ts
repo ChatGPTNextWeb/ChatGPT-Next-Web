@@ -119,6 +119,9 @@ const de: PartialLocaleType = {
     DeleteChat: "Den ausgewählten Chat wirklich löschen?",
     DeleteToast: "Chat gelöscht",
     Revert: "Zurücksetzen",
+    Logout: "Abmelden",
+    Login: "Anmelden",
+    LoginMessage: "☝️ Um zu chatten, melde dich bitte an! 😊",
   },
   Settings: {
     Title: "Einstellungen",
@@ -295,6 +298,9 @@ const de: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Du bist ein Assistent, der",
   },
   Mask: {
     Name: "Persona",

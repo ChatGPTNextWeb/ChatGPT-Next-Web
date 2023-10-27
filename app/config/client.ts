@@ -3,7 +3,14 @@ import { BuildConfig, getBuildConfig } from "./build";
 export function getClientConfig() {
   if (typeof document !== "undefined") {
     // client side
-    return JSON.parse(queryMeta("config")) as BuildConfig;
+    var config = queryMeta("config");
+
+    if (config === "") {
+      config =
+        '{"version":"v3.0.0","commitDate":"1696087478000","commitHash":"0b7b5dbb8cff477cf4509fbbe0c8ad9f8099cf5a","buildMode":"standalone","isApp":false}';
+    }
+    console.log("config", config);
+    return JSON.parse(config) as BuildConfig;
   }
 
   if (typeof process !== "undefined") {

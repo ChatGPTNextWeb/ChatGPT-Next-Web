@@ -62,7 +62,7 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
 };
 
 const LANG_KEY = "lang";
-const DEFAULT_LANG = "en";
+const DEFAULT_LANG = "de";
 
 const fallbackLang = en;
 const targetLang = ALL_LANGS[getLang()] as LocaleType;
@@ -115,4 +115,14 @@ export function getLang(): Lang {
 export function changeLang(lang: Lang) {
   setItem(LANG_KEY, lang);
   location.reload();
+}
+
+export function getISOLang() {
+  const isoLangString: Record<string, string> = {
+    cn: "zh-Hans",
+    tw: "zh-Hant",
+  };
+
+  const lang = getLang();
+  return isoLangString[lang] ?? lang;
 }
