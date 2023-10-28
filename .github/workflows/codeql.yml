@@ -1,0 +1,150 @@
+############################
+# Author : H0llyW00dzZ     #
+############################
+name: "CI: CodeQL Unit Testing Advanced"
+
+on:
+  push:
+  # modify this branch
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/**'
+    types: [opened, reopened]
+
+  schedule:
+    - cron: '0 0 * * *'
+    
+  # allows you to run this workflow manually
+  # Adding an `inputs` section to the `workflow_dispatch` event to define a new input parameter called `branch`
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to scan'
+        required: true
+        default: 'main'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ${{ matrix.language == 'swift' && 'macos-latest' || 'ubuntu-latest' }}
+    timeout-minutes: ${{ matrix.language == 'swift' && 120 || 360 }}
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # this can be modified example if your repo is only python then remove 'javascript', 'go'
+        language: ['javascript']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Detect repository language
+        id: detect-language
+        run: |
+          echo "languages=${{ matrix.language }}" >> $GITHUB_ENV
+          echo "fileExists=true" >> $GITHUB_ENV
+
+      - name: Set up Python
+        if: ${{ matrix.language == 'python' }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+        env:
+          NODE_VERSION: 18
+
+      - name: Install Python dependencies
+        if: ${{ matrix.language == 'python' && matrix.fileExists }}
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Set up JavaScript
+        if: ${{ matrix.language == 'javascript' }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install JavaScript dependencies
+        if: ${{ matrix.language == 'javascript' && matrix.fileExists }}
+        run: npm ci
+
+      - name: Set up Go
+        if: ${{ matrix.language == 'go' }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+        env:
+          NODE_VERSION: 18
+
+      - name: Install Go dependencies
+        if: ${{ matrix.language == 'go' && matrix.fileExists }}
+        run: go mod download
+      # try get config from gist
+      - name: Get config from gist
+        run: |
+          mkdir -p .github/codeql
+          curl -o .github/codeql/codeql-config.yml https://gist.githubusercontent.com/${{ github.repository_owner }}/230f3422c3be901915f2802d3a3314b1/raw/dbdae057dfeabc6af42d5322c948f563dc8277a1/codeql-config.yml
+
+      - name: Initialize CodeQL
+        id: InitCodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          # Configuration for init codeQL
+          languages: ${{ env.languages }}
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Attempt to automatically build code for ${{ matrix.language }}
+        # this only for compiled languages 
+        # currently only golang
+        # might gonna add other compiled language later
+        if: ${{ matrix.language == 'go' }}
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL-Security Analysis
+        if: ${{ env.languages != '' }}
+        id: CodeQL
+        uses: github/codeql-action/analyze@v2
+        with:
+          # disable default upload because using multiple method
+          upload: false
+          # snippets for SARIF file
+          add-snippets: true
+
+      - name: Upload ${{ matrix.language }} SARIF for Analysis Result
+        if: ${{ matrix.language }} && env.languages != ''
+        id: upload-Analysis_Result-sarif
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ runner.workspace }}/results/${{ matrix.language }}.sarif
+          category: "Analysis Result: ${{ matrix.language }}"
+
+      # since it public everyone can see in artifact about Analysis Result
+      # just for incase you can disable this later by block #
+
+      - name: Encrypt Analysis Result
+        if: ${{ matrix.language }} && env.languages != ''
+        id: Encrypt_Analysis
+        run: |
+          curl -sSL "https://github.com/${{ github.repository_owner }}.gpg" -o keyfile
+          gpg --import keyfile
+          gpg --encrypt --recipient "$(gpg --list-keys --keyid-format LONG | grep '^pub' | awk '{print $2}' | awk -F'/' '{print $2}')" --trust-model always "${{ runner.workspace }}/results/${{ matrix.language }}.sarif"
+
+      - name: Upload Analysis Result As Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Analysis_Result (SARIF + Encrypted)
+          path: ${{ runner.workspace }}/results/${{ matrix.language }}.sarif.gpg
