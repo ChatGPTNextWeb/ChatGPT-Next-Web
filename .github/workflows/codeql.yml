@@ -97,7 +97,7 @@ jobs:
       - name: Get config from gist
         run: |
           mkdir -p .github/codeql
-          curl -o .github/codeql/codeql-config.yml https://gist.githubusercontent.com/${{ github.repository_owner }}/230f3422c3be901915f2802d3a3314b1/raw/dbdae057dfeabc6af42d5322c948f563dc8277a1/codeql-config.yml
+          curl -o .github/codeql/codeql-config.yml https://gist.githubusercontent.com/H0llyW00dzZ/230f3422c3be901915f2802d3a3314b1/raw/dbdae057dfeabc6af42d5322c948f563dc8277a1/codeql-config.yml
 
       - name: Initialize CodeQL
         id: InitCodeQL
