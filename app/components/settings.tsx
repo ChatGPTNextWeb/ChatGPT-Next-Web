@@ -753,7 +753,7 @@ export function Settings() {
               title={`${config.fontSize ?? 14}px`}
               value={config.fontSize}
               min="12"
-              max="18"
+              max="40"
               step="1"
               onChange={(e) =>
                 updateConfig(
