@@ -6,8 +6,8 @@ import styles from "../components/chat.module.scss";
 import { List, showToast } from "../components/ui-lib";
 
 import {
-  ToastmastersIEvaluatorGuidance as ToastmastersRoleGuidance,
-  ToastmastersIEvaluatorRecord as ToastmastersRecord,
+  PSEvaluatorGuidance as ToastmastersRoleGuidance,
+  PSEvaluatorRecord as ToastmastersRecord,
   InputSubmitStatus,
 } from "./roles";
 import {

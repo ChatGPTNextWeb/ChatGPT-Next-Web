@@ -18,12 +18,6 @@ export enum AppInfo {
 export enum Path {
   Home = "/",
   Chat = "/chat",
-  ToastmastersTTEvaluators = "/speech/tableTopicsEvaluators",
-  ToastmastersTTEvaluator = "/speech/tableTopicsEvaluator",
-  ToastmastersTTMaster = "/speech/tableTopicsMaster",
-  ToastmastersTTSpeaker = "/speech/tableTopicsSpeaker",
-  ToastmastersIEvaluator = "/speech/individualEvaluator",
-  ToastmastersTimer = "/speech/timer",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
@@ -32,6 +26,11 @@ export enum Path {
   UserLoginDetail = "/user-login-detail",
   UserRegister = "/user-register",
   UserOrder = "/user-order",
+  ToastmastersTTMaster = "/speech/tableTopicsMaster",
+  ToastmastersTTEvaluator = "/speech/tableTopicsEvaluator",
+  ToastmastersISEvaluator = "/speech/impromptuSpeechEvaluator",
+  ToastmastersPSEvaluator = "/speech/preparedSpeechEvaluator",
+  ToastmastersTimer = "/speech/timer",
 }
 
 export enum SlotID {

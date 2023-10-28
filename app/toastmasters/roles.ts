@@ -2,15 +2,18 @@ import { ILightsTime } from "../store";
 
 export enum ToastmastersRoles {
   Toastmasters = "Toastmasters",
-  TableTopicsEvaluators = "Table Topics Evaluators",
-  TableTopicsEvaluator = "Table Topics Evaluator",
   TableTopicsMaster = "Table Topics Master",
-  TableTopicsSpeaker = "Table Topics Speaker",
-  IndividualEvaluator = "Prepared Speech Evaluator",
+  TableTopicsEvaluator = "Table Topics Evaluator",
+  ImpromptuSpeechEvaluator = "Impromptu Speech Evaluator",
+  PreparedSpeechEvaluator = "Prepared Speech Evaluator",
+
+  // TableTopicsEvaluators = "Table Topics Evaluators",
+  // TableTopicsSpeaker = "Table Topics Speaker",
+  // IndividualEvaluator = "Prepared Speech Evaluator",
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
-  GeneralEvaluator = "General Evaluator",
   Timer = "Timer",
+  GeneralEvaluator = "General Evaluator",
 
   RevisedSpeech = "Revised Speech",
   DemoSpeech = "Demo Speech",
@@ -33,10 +36,6 @@ export const speakersTimeRecord: Record<string, ILightsTime> = {
 };
 
 export const ToastmastersRolesResponsibilities: Record<string, string> = {
-  [ToastmastersRoles.TableTopicsEvaluators]: `
-  - Evaluate the impromptu speeches given by Table Topics Speakers.
-  - Provide constructive feedback on the speaker's ability to think on their feet, coherence, and communication skills during impromptu speeches.
-  `,
   [ToastmastersRoles.TableTopicsEvaluator]: `
   - ***Evaluate*** the impromptu speeches given by Table Topics Speakers.
   - ***Provide constructive feedback*** on the speaker's ability to think on their feet, coherence, and communication skills during impromptu speeches.
@@ -46,11 +45,11 @@ export const ToastmastersRolesResponsibilities: Record<string, string> = {
   - Ensure that Table Topics Speakers have a chance to respond to the topics.
   - May offer brief commentary or insights on the Table Topics session.
   `,
-  [ToastmastersRoles.TableTopicsSpeaker]: `
-  - Respond to impromptu speaking topics or questions posed by the Table Topics Master.
-  - Deliver a short, unprepared speech (usually 1-2 minutes) on the given topic.
-  `,
-  [ToastmastersRoles.IndividualEvaluator]: `
+  // [ToastmastersRoles.TableTopicsSpeaker]: `
+  // - Respond to impromptu speaking topics or questions posed by the Table Topics Master.
+  // - Deliver a short, unprepared speech (usually 1-2 minutes) on the given topic.
+  // `,
+  [ToastmastersRoles.PreparedSpeechEvaluator]: `
   - Evaluate the prepared speeches given by members based on specific criteria and objectives for each speech project.
   - Offer constructive feedback on speech content, organization, and delivery.
   `,
@@ -129,15 +128,12 @@ export const ToastmastersSettings = (
 1 words => 0.7 Coins
 */
 
-export const ToastmastersTTMasterGuidance = (topic: string) => `
+export const TTMasterGuidance = (topic: string) => `
 The topic is: "${topic}",
 Are you ready?
 `;
 
-export const ToastmastersTTMasterRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
+export const TTMasterRecord: Record<string, ToastmastersRolePrompt[]> = {
   [ToastmastersRoles.Introduction]: [
     {
       role: ToastmastersRoles.Introduction,
@@ -173,94 +169,13 @@ export const ToastmastersTTMasterRecord: Record<
   ],
 };
 
-export const ToastmastersIEvaluatorGuidance = (input: string) => `
-My input is:
-${input},
-Are you ready to play an Evaluator role with my guidance?
-`;
-
-export const ToastmastersIEvaluatorRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
-  [ToastmastersRoles.IndividualEvaluator]: [
-    {
-      role: ToastmastersRoles.IndividualEvaluator,
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.IndividualEvaluator}. 
-      Evaluate my prepared speech.
-      Your evaluation should:
-      1). Include the relevance between the Speech and the Topic.
-      2). Bold keywords using markdown when present your answer.
-      3). About ${setting?.words} words or 2 minutes.
-      `,
-      setting: {
-        words: 200,
-      },
-    },
-  ],
-  [ToastmastersRoles.Grammarian]: [
-    {
-      role: ToastmastersRoles.Grammarian,
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.Grammarian}. 
-      Evaluate my speech.
-      Your evaluation should:
-      1). Don't make things up, all your quoted sentence must from my speech.
-      2). First give me an accurate number where is the grammar error, and then evaluate my speech.
-      3). Bold keywords using markdown when present your answer.
-      4). About ${setting?.words} words.
-      `,
-      setting: {
-        words: 100,
-      },
-    },
-  ],
-  [ToastmastersRoles.AhCounter]: [
-    {
-      role: ToastmastersRoles.AhCounter,
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.AhCounter}.
-      Evaluate my speech.
-      Your evaluation should:
-      1). First give me an accurate number by count the number of filler words and pauses used in my speech, 
-      and then evaluate my speech
-      2). Bold keywords using markdown when present your answer.
-      3). About ${setting?.words} words.
-      `,
-      setting: {
-        words: 100,
-      },
-    },
-  ],
-  [ToastmastersRoles.RevisedSpeech]: [
-    {
-      role: ToastmastersRoles.RevisedSpeech,
-      contentWithSetting: (setting?) =>
-        `You are the an teacher of ${ToastmastersRoles.IndividualEvaluator}.
-      Help revise, polish and improve my speech.
-      You should:
-      1). Don't say who you are, just provide your revised speech.
-      2). Bold keywords using markdown when present your answer.
-      3). About ${setting?.words} words.
-      `,
-      setting: {
-        words: 500,
-      },
-    },
-  ],
-};
-
-export const ToastmastersTTEvaluatorsGuidance = (input: string) => `
+export const TTEvaluatorGuidance = (input: string) => `
 The Question-Speech pairs are:
 ${input},
 Are you ready to answer? If you understand, answer yes.
 `;
 
-export const ToastmastersTTEvaluatorsRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
+export const TTEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
   [ToastmastersRoles.TableTopicsEvaluator]: [
     // {
     //   role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
@@ -388,16 +303,88 @@ export const ToastmastersTTEvaluatorsRecord: Record<
   ],
 };
 
-export const ToastmastersTTEvaluatorGuidance = (input: string) => `
+export const PSEvaluatorGuidance = (input: string) => `
+My input is:
+${input},
+Are you ready to play an Evaluator role with my guidance?
+`;
+
+export const PSEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
+  [ToastmastersRoles.PreparedSpeechEvaluator]: [
+    {
+      role: ToastmastersRoles.PreparedSpeechEvaluator,
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.PreparedSpeechEvaluator}. 
+      Evaluate my prepared speech.
+      Your evaluation should:
+      1). Include the relevance between the Speech and the Topic.
+      2). Bold keywords using markdown when present your answer.
+      3). About ${setting?.words} words or 2 minutes.
+      `,
+      setting: {
+        words: 200,
+      },
+    },
+  ],
+  [ToastmastersRoles.Grammarian]: [
+    {
+      role: ToastmastersRoles.Grammarian,
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.Grammarian}. 
+      Evaluate my speech.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from my speech.
+      2). First give me an accurate number where is the grammar error, and then evaluate my speech.
+      3). Bold keywords using markdown when present your answer.
+      4). About ${setting?.words} words.
+      `,
+      setting: {
+        words: 100,
+      },
+    },
+  ],
+  [ToastmastersRoles.AhCounter]: [
+    {
+      role: ToastmastersRoles.AhCounter,
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      Evaluate my speech.
+      Your evaluation should:
+      1). First give me an accurate number by count the number of filler words and pauses used in my speech, 
+      and then evaluate my speech
+      2). Bold keywords using markdown when present your answer.
+      3). About ${setting?.words} words.
+      `,
+      setting: {
+        words: 100,
+      },
+    },
+  ],
+  [ToastmastersRoles.RevisedSpeech]: [
+    {
+      role: ToastmastersRoles.RevisedSpeech,
+      contentWithSetting: (setting?) =>
+        `You are the an teacher of ${ToastmastersRoles.Toastmasters}.
+      Help revise, polish and improve my speech.
+      You should:
+      1). Don't say who you are, just provide your revised speech.
+      2). Bold keywords using markdown when present your answer.
+      3). About ${setting?.words} words.
+      `,
+      setting: {
+        words: 500,
+      },
+    },
+  ],
+};
+
+export const ISEvaluatorGuidance = (input: string) => `
 My input is:
 ${input},
 Are you ready to answer? If you understand, answer yes.
 `;
 
-export const ToastmastersTTEvaluatorRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
+export const ISEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
   [ToastmastersRoles.TableTopicsEvaluator]: [
     {
       role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
@@ -481,7 +468,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role: "Revised Speech",
       contentWithSetting: (setting?) =>
-        `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
+        `You are an teacher of ${ToastmastersRoles.Toastmasters}.
       Help revise, polish and improve my speech from my 1st ask input,
       You should:
       1). Don't say who you are, just provide your revised speech.
@@ -497,7 +484,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role: ToastmastersRoles.DemoSpeech,
       contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.TableTopicsSpeaker}. 
+        `You are an teacher of ${ToastmastersRoles.Toastmasters}. 
       Give me a demo impromptu speech according to the Question from my 1st ask input,
       You should:
       1). Bold keywords using markdown when present your answer.

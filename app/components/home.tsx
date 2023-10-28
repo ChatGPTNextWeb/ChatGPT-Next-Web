@@ -48,8 +48,8 @@ const Chat = dynamic(async () => (await import("./chat")).Chat, {
 const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
-const ToastmastersTTEvaluators = dynamic(
-  async () => (await import("../toastmasters/chat-ttevaluators")).Chat,
+const ToastmastersTTMaster = dynamic(
+  async () => (await import("../toastmasters/chat-ttmaster")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
@@ -60,20 +60,14 @@ const ToastmastersTTEvaluator = dynamic(
     loading: () => <Loading noLogo />,
   },
 );
-const ToastmastersTTMaster = dynamic(
-  async () => (await import("../toastmasters/chat-ttmaster")).Chat,
+const ToastmastersISEvaluator = dynamic(
+  async () => (await import("../toastmasters/chat-isevaluator")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
 );
-const ToastmastersTTSpeaker = dynamic(
-  async () => (await import("../toastmasters/chat-ttspeaker")).Chat,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
-const ToastmastersIEvaluator = dynamic(
-  async () => (await import("../toastmasters/chat-ievaluator")).Chat,
+const ToastmastersPSEvaluator = dynamic(
+  async () => (await import("../toastmasters/chat-psevaluator")).Chat,
   {
     loading: () => <Loading noLogo />,
   },
@@ -208,30 +202,6 @@ function Screen() {
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
-              <Route
-                path={Path.ToastmastersTTEvaluators}
-                element={<ToastmastersTTEvaluators />}
-              />
-              <Route
-                path={Path.ToastmastersTTEvaluator}
-                element={<ToastmastersTTEvaluator />}
-              />
-              <Route
-                path={Path.ToastmastersTTMaster}
-                element={<ToastmastersTTMaster />}
-              />
-              <Route
-                path={Path.ToastmastersTTSpeaker}
-                element={<ToastmastersTTSpeaker />}
-              />
-              <Route
-                path={Path.ToastmastersIEvaluator}
-                element={<ToastmastersIEvaluator />}
-              />
-              <Route
-                path={Path.ToastmastersTimer}
-                element={<ToastmastersTimer />}
-              />
               <Route path={Path.Settings} element={<Settings />} />
               <Route path={Path.UserLogin} element={<UserLogin />} />
               <Route
@@ -240,6 +210,26 @@ function Screen() {
               />
               <Route path={Path.UserOrder} element={<UserOrder />} />
               <Route path={Path.UserRegister} element={<UserRegister />} />
+              <Route
+                path={Path.ToastmastersTTMaster}
+                element={<ToastmastersTTMaster />}
+              />
+              <Route
+                path={Path.ToastmastersTTEvaluator}
+                element={<ToastmastersTTEvaluator />}
+              />
+              <Route
+                path={Path.ToastmastersISEvaluator}
+                element={<ToastmastersISEvaluator />}
+              />
+              <Route
+                path={Path.ToastmastersPSEvaluator}
+                element={<ToastmastersPSEvaluator />}
+              />
+              <Route
+                path={Path.ToastmastersTimer}
+                element={<ToastmastersTimer />}
+              />
             </Routes>
           </div>
         </>

@@ -9,8 +9,8 @@ import { List, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
 
 import {
-  ToastmastersTTEvaluatorsGuidance as ToastmastersRoleGuidance,
-  ToastmastersTTEvaluatorsRecord as ToastmastersRecord,
+  TTEvaluatorGuidance as ToastmastersRoleGuidance,
+  TTEvaluatorRecord as ToastmastersRecord,
   InputSubmitStatus,
   ToastmastersRoles,
   speakersTimeRecord,
@@ -44,7 +44,6 @@ import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { EN_MASKS } from "../masks/en";
 import { Mask } from "../store/mask";
 import { useScrollToBottom } from "../components/chat";
-import { TemporaryDrawer } from "./chat-drawer";
 
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -273,15 +272,15 @@ export function Chat() {
         }}
       >
         <div className={styles_tm["chat-input-button-add-row"]}>
-          {/* <IconButton
-            icon={<AddIcon />}
-            text="Add Speaker"
-            // onClick={addItem}
-            onClick={toggleDrawer(true)}
-            className={styles_tm["chat-input-button-add"]}
-          /> */}
           <React.Fragment>
-            <Button onClick={toggleDrawer(true)}>{"Add Speaker"}</Button>
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={toggleDrawer(true)}
+              style={{ textTransform: "none" }}
+            >
+              {"Add Speaker"}
+            </Button>
             <Drawer
               anchor={"left"}
               open={anchorState}
