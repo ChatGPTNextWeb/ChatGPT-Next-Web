@@ -13,6 +13,7 @@ import {
   ToastmastersTTEvaluatorsRecord as ToastmastersRecord,
   InputSubmitStatus,
   ToastmastersRoles,
+  speakersTimeRecord,
 } from "./roles";
 import {
   ChatTitle,
@@ -21,7 +22,7 @@ import {
   ChatUtility,
   ChatSubmitRadiobox,
 } from "./chat-common";
-import { InputTableRow } from "../store/chat";
+import { ILightsTime, InputTableRow } from "../store/chat";
 
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
@@ -113,13 +114,13 @@ export function Chat() {
     return speakerInputsString;
   };
 
-  const addItem = () => {
+  const addItem = (role: string, timeExpect: ILightsTime) => {
     setAutoScroll(false);
-    const newItem: InputTableRow = {
-      speaker: `Speaker${session.input.datas.length + 1}`,
-      question: { text: "", time: 0 },
-      speech: { text: "", time: 0 },
-    };
+    const newItem = new InputTableRow();
+    newItem.speaker = `Speaker${session.input.datas.length + 1}`;
+    newItem.speech.role = role.split("(")[0]; // only keep prefix
+    newItem.speech.timeExpect = timeExpect;
+
     var newInputBlocks = [...session.input.datas, newItem];
     chatStore.updateCurrentSession(
       (session) => (session.input.datas = newInputBlocks),
@@ -142,29 +143,17 @@ export function Chat() {
     };
 
   const TimeSidebar = () => {
-    interface ILightsTime {
-      Green: number;
-      Yellow: number;
-      Red: number;
-    }
+    const [timeRole, setTimeRole] = React.useState("");
     const [colorGreenTime, setColorGreenTime] = React.useState(0);
     const [colorYellowTime, setColorYellowTime] = React.useState(0);
     const [colorRedTime, setColorRedTime] = React.useState(0);
 
     const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const selectRole = (event.target as HTMLInputElement).value;
+      setTimeRole(selectRole);
       setColorGreenTime(speakersTimeRecord[selectRole].Green);
       setColorYellowTime(speakersTimeRecord[selectRole].Yellow);
       setColorRedTime(speakersTimeRecord[selectRole].Red);
-    };
-
-    const speakersTimeRecord: Record<string, ILightsTime> = {
-      ["TableTopicsSpeaker(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
-      ["TableTopicsEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
-      ["PreparedSpeaker(5-7min)"]: { Green: 5, Yellow: 6, Red: 7 },
-      ["PreparedSpeechEvaluator(2-3min)"]: { Green: 2, Yellow: 2.5, Red: 3 },
-      ["GeneralEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
-      ["CustomTime"]: { Green: 0, Yellow: 0, Red: 0 },
     };
 
     return (
@@ -255,7 +244,13 @@ export function Chat() {
               icon={<AddIcon />}
               text="Add Speaker"
               bordered
-              onClick={addItem}
+              onClick={() =>
+                addItem(timeRole, {
+                  Green: colorGreenTime,
+                  Yellow: colorYellowTime,
+                  Red: colorRedTime,
+                })
+              }
               className={styles_tm["chat-input-button-add"]}
             />
           </div>
@@ -401,6 +396,15 @@ function ChatTable() {
           <TableCell align="left">
             {ChatUtility.formatTime(row.speech.time)}
           </TableCell>
+          <TableCell align="left">{row.speech.role}</TableCell>
+          <TableCell align="left">
+            {"G:" +
+              row.speech.timeExpect.Green +
+              ",  Y:" +
+              row.speech.timeExpect.Yellow +
+              ",  R:" +
+              row.speech.timeExpect.Red}
+          </TableCell>
           <TableCell align="left">
             <div className={styles_tm["table-actions"]}>
               <IconButton icon={<MenuIcon />} onClick={onDetailClick} />
@@ -412,7 +416,7 @@ function ChatTable() {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
                 <List>
@@ -453,8 +457,26 @@ function ChatTable() {
             <TableCell align="left" className={styles_tm["table-header"]}>
               Speech
             </TableCell>
-            <TableCell align="left" className={styles_tm["table-header"]}>
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "10px" }}
+            >
               SpeechTime
+            </TableCell>
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "10px" }}
+            >
+              Role
+            </TableCell>
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "100px" }}
+            >
+              TimeExpect
             </TableCell>
             <TableCell
               align="left"

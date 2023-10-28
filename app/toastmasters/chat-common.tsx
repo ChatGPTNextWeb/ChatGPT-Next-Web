@@ -35,6 +35,7 @@ import {
   DEFAULT_TOPIC,
   InputStore,
   IRequestResponse,
+  ILightsTime,
 } from "../store";
 
 import { useNavigate } from "react-router-dom";
@@ -80,7 +81,8 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Tooltip from "@mui/material/Tooltip";
 import ReactMarkdown from "react-markdown";
-import { TimeSlider } from "./chat-timeSlider";
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -228,7 +230,7 @@ export const ChatInput = (props: {
       intervalId = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
-      props.inputStore.time = time;
+      inputStore.time = time;
     }
 
     return () => {
@@ -326,7 +328,14 @@ export const ChatInput = (props: {
         </div>
       </div>
 
-      {showTime == true ? <TimeSlider time={time}></TimeSlider> : <></>}
+      {showTime == true ? (
+        <ChatTimeSlider
+          time={time}
+          timeExpect={inputStore.timeExpect}
+        ></ChatTimeSlider>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
@@ -789,6 +798,81 @@ export const BorderLine = () => {
   return <div style={lineStyle}></div>;
 };
 
+function ChatTimeSlider(props: { time: number; timeExpect: ILightsTime }) {
+  // time is seconds, timeExpect is minutes
+  const { time, timeExpect } = props;
+  const timeExpectSecond: ILightsTime = {
+    Green: timeExpect.Green * 60,
+    Yellow: timeExpect.Yellow * 60,
+    Red: timeExpect.Red * 60,
+  };
+
+  const centerContainerStyle = {
+    display: "flex",
+    flexDirection: "column" as const, // 使用 'column' 来确保类型匹配
+    justifyContent: "center", // 水平居中
+    alignItems: "center", // 垂直居中
+    width: "100%", // 使容器占满可用宽度
+    marginTop: "20px", // 设置子组件距离上边缘的距离
+  };
+
+  // 最多可超时1min
+  const maxValue = (timeExpect.Red + 1) * 60;
+  const sliderColor = () => {
+    if (time >= timeExpectSecond.Red) return "red";
+    else if (time >= timeExpectSecond.Yellow) return "yellow";
+    else if (time >= timeExpectSecond.Green) return "green";
+
+    return "";
+  };
+
+  const marks: { value: number; label: string }[] = [];
+  marks.push({
+    value: timeExpectSecond.Green,
+    label: "G:" + ChatUtility.formatTime(timeExpectSecond.Green),
+  });
+  marks.push({
+    value: timeExpectSecond.Yellow,
+    label: "Y:" + ChatUtility.formatTime(timeExpectSecond.Yellow),
+  });
+  marks.push({
+    value: timeExpectSecond.Red,
+    label: "R:" + ChatUtility.formatTime(timeExpectSecond.Red),
+  });
+
+  return (
+    <div style={centerContainerStyle}>
+      <div>Speech Time </div>
+      <Box sx={{ width: "80%" }}>
+        <Slider
+          aria-label="Always visible"
+          value={props.time}
+          getAriaValueText={ChatUtility.formatTime}
+          valueLabelFormat={ChatUtility.formatTime}
+          step={1}
+          marks={marks}
+          valueLabelDisplay="on"
+          size="medium"
+          max={maxValue}
+          sx={{
+            fontSize: "100px", // 在这里设置字体大小
+            color: sliderColor,
+          }}
+        />
+        {/* {
+          orderedDict.map((d) => (
+            props.time >= d.value && (
+              <IconButton key={d.label} color="primary">
+                <LightbulbIcon />
+              </IconButton>
+            )
+          ))
+        } */}
+      </Box>
+    </div>
+  );
+}
+
 export class ChatUtility {
   static getWordsNumber(text: string): number {
     return text.length > 0 ? text.split(/\s+/).length : 0;
@@ -817,8 +901,9 @@ export class ChatUtility {
   static formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
+    return `
+      ${minutes.toString().padStart(2, "0")}:
+      ${seconds.toString().padStart(2, "0")}
+      `;
   };
 }

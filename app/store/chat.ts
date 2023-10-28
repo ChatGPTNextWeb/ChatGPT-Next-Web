@@ -46,29 +46,23 @@ export interface ChatStat {
   charCount: number;
 }
 
+export interface ILightsTime {
+  Green: number;
+  Yellow: number;
+  Red: number;
+}
+
 export class InputStore {
+  role = "";
   text: string = "";
   time: number = 0;
+  timeExpect: ILightsTime = { Green: 0, Yellow: 0, Red: 0 };
 }
 
 export class InputTableRow {
   speaker = "";
   question = new InputStore();
   speech = new InputStore();
-
-  constructor(
-    speaker: string = "",
-    question: string = "",
-    speech: string = "",
-  ) {
-    this.speaker = speaker;
-    this.question.text = question;
-    this.speech.text = speech;
-  }
-}
-
-export class InputSettingStore {
-  words: number = 0;
 }
 
 export interface IRequestResponse {

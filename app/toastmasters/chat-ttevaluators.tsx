@@ -13,6 +13,7 @@ import {
   ToastmastersTTEvaluatorsRecord as ToastmastersRecord,
   InputSubmitStatus,
   ToastmastersRoles,
+  speakersTimeRecord,
 } from "./roles";
 import {
   ChatTitle,
@@ -96,11 +97,14 @@ export function Chat() {
 
   const addItem = () => {
     setAutoScroll(false);
-    const newItem: InputTableRow = {
-      speaker: `Speaker${session.input.datas.length + 1}`,
-      question: { text: "", time: 0 },
-      speech: { text: "", time: 0 },
-    };
+    const newItem = new InputTableRow();
+    newItem.speaker = `Speaker${session.input.datas.length + 1}`;
+
+    // TODO: More settings
+    const selectRole = "TableTopicsSpeaker(1-2min)";
+    newItem.speech.role = selectRole.split("(")[0]; // only keep prefix
+    newItem.speech.timeExpect = speakersTimeRecord[selectRole];
+
     var newInputBlocks = [...session.input.datas, newItem];
     chatStore.updateCurrentSession(
       (session) => (session.input.datas = newInputBlocks),

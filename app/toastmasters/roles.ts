@@ -1,3 +1,5 @@
+import { ILightsTime } from "../store";
+
 export enum ToastmastersRoles {
   Toastmasters = "Toastmasters",
   TableTopicsEvaluators = "Table Topics Evaluators",
@@ -18,6 +20,17 @@ export enum ToastmastersRoles {
   Advertisement = "Advertisement",
   Top10Questions = "Top 10 Questions",
 }
+
+export const speakersTimeRecord: Record<string, ILightsTime> = {
+  ["TableTopicsSpeaker(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+  ["TableTopicsEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
+  ["PreparedSpeaker(5-7min)"]: { Green: 5, Yellow: 6, Red: 7 },
+  ["PreparedSpeechEvaluator(2-3min)"]: { Green: 2, Yellow: 2.5, Red: 3 },
+  ["GeneralEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
+  ["Grammarian(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+  ["Ah-Counter(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+  ["CustomTime"]: { Green: 0, Yellow: 0, Red: 0 },
+};
 
 export const ToastmastersRolesResponsibilities: Record<string, string> = {
   [ToastmastersRoles.TableTopicsEvaluators]: `
