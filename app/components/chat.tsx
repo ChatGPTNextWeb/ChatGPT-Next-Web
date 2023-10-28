@@ -911,21 +911,25 @@ function _Chat() {
     });
   };
 
-  const context: RenderMessage[] = useMemo(() => {
-    return session.mask.hideContext ? [] : session.mask.context.slice();
-  }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
+  const isAuthorized = accessStore.isAuthorized();
+  const context: RenderMessage[] = useMemo(() => {
+    const contextMessages = session.mask.hideContext ? [] : session.mask.context.slice();
 
-  if (
-    context.length === 0 &&
-    session.messages.at(0)?.content !== BOT_HELLO.content
-  ) {
-    const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
+    if (
+      contextMessages.length === 0 &&
+      session.messages.at(0)?.role !== "system"
+    ) {
+      const copiedHello = Object.assign({}, BOT_HELLO);
+      if (!isAuthorized) {
+        copiedHello.role = "system";
+        copiedHello.content = Locale.Error.Unauthorized;
+      }
+      contextMessages.push(copiedHello);
     }
-    context.push(copiedHello);
-  }
+
+    return contextMessages;
+  }, [session.mask.context, session.mask.hideContext, session.messages, isAuthorized]);
 
   // preview messages
   const renderMessages = useMemo(() => {
