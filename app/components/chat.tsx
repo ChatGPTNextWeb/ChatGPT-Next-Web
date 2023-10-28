@@ -111,11 +111,14 @@ export function SessionConfigModel(props: { onClose: () => void }) {
     if (exporting) return;
     setExporting(true);
     const currentDate = new Date();
+    const currentSession = chatStore.currentSession();
+    const messageCount = currentSession.messages.length;
     const datePart = isApp
       ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
       : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
   
-    const fileName = `${session.topic}-${datePart}.json`;
+    const formattedMessageCount = Locale.ChatItem.ChatItemCount(messageCount); // Format the message count using the translation function
+    const fileName = `${session.topic}-(${formattedMessageCount})-${datePart}.json`;
     await downloadAs(JSON.stringify(session), fileName);
     setExporting(false);
   };
