@@ -105,11 +105,18 @@ export function SessionConfigModel(props: { onClose: () => void }) {
   const navigate = useNavigate();
 
   const [exporting, setExporting] = useState(false);
+  const isApp = !!getClientConfig()?.isApp;
 
   const handleExport = async () => {
     if (exporting) return;
     setExporting(true);
-    await downloadAs(JSON.stringify(session), `${session.topic}.json`);
+    const currentDate = new Date();
+    const datePart = isApp
+      ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
+      : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
+  
+    const fileName = `${session.topic}-${datePart}.json`;
+    await downloadAs(JSON.stringify(session), fileName);
     setExporting(false);
   };
 
