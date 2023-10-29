@@ -8,8 +8,8 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-export const DEFAULT_CORS_HOST = "https://ab.nextweb.fun";
-export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
+export const REMOTE_CORS_HOST = "https://ab.nextweb.fun";
+export const REMOTE_API_HOST = `${REMOTE_CORS_HOST}/api/proxy`;
 
 export enum Path {
   Home = "/",
@@ -20,8 +20,12 @@ export enum Path {
   Auth = "/auth",
 }
 
+export const API_PREFIX = "/api";
+
 export enum ApiPath {
+  OpenAI = "/api/openai",
   Cors = "/api/cors",
+  Config = "/api/config",
 }
 
 export enum SlotID {
@@ -59,12 +63,12 @@ export const REQUEST_TIMEOUT_MS = 60000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
-export const OpenaiPath = {
-  ChatPath: "v1/chat/completions",
-  UsagePath: "dashboard/billing/usage",
-  SubsPath: "dashboard/billing/subscription",
-  ListModelPath: "v1/models",
-};
+export enum OpenaiPath {
+  Chat = "v1/chat/completions",
+  Usage = "dashboard/billing/usage",
+  Subs = "dashboard/billing/subscription",
+  ListModel = "v1/models",
+}
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 export const DEFAULT_SYSTEM_TEMPLATE = `

@@ -1,10 +1,11 @@
 import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, ChatMessage } from "./chat";
-import { ModelConfig, useAppConfig } from "./config";
+import { MaskConfig, ModelConfig, useAppConfig } from "./config";
 import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { deepClone } from "../utils/clone";
 
 export type Mask = {
   id: string;
@@ -14,7 +15,9 @@ export type Mask = {
   hideContext?: boolean;
   context: ChatMessage[];
   syncGlobalConfig?: boolean;
-  modelConfig: ModelConfig;
+
+  config: MaskConfig;
+
   lang: Lang;
   builtin: boolean;
 };
@@ -33,7 +36,7 @@ export const createEmptyMask = () =>
     name: DEFAULT_TOPIC,
     context: [],
     syncGlobalConfig: true, // use global config as default
-    modelConfig: { ...useAppConfig.getState().modelConfig },
+    config: deepClone(useAppConfig.getState().globalMaskConfig),
     lang: getLang(),
     builtin: false,
     createdAt: Date.now(),
@@ -87,10 +90,11 @@ export const useMaskStore = createPersistStore(
       const buildinMasks = BUILTIN_MASKS.map(
         (m) =>
           ({
+            id: m.name,
             ...m,
-            modelConfig: {
-              ...config.modelConfig,
-              ...m.modelConfig,
+            config: {
+              ...config.globalMaskConfig,
+              ...m.config,
             },
           }) as Mask,
       );
@@ -119,6 +123,8 @@ export const useMaskStore = createPersistStore(
         });
         newState.masks = updatedMasks;
       }
+
+      // TODO(yifei): migrate old masks
 
       return newState as any;
     },

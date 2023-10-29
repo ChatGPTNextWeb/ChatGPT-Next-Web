@@ -27,12 +27,12 @@ import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
-import { toBlob, toJpeg, toPng } from "html-to-image";
+import { toBlob, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
-import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
 import { getClientConfig } from "../config/client";
+import { api } from "../client";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -290,7 +290,7 @@ export function PreviewActions(props: {
     setShouldExport(false);
 
     api
-      .share(msgs)
+      .shareToShareGPT(msgs)
       .then((res) => {
         if (!res) return;
         showModal({
@@ -403,6 +403,7 @@ export function ImagePreviewer(props: {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const mask = session.mask;
+  const modelConfig = chatStore.getCurrentModelConfig();
   const config = useAppConfig();
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -437,13 +438,13 @@ export function ImagePreviewer(props: {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-  
+
     const isApp = getClientConfig()?.isApp;
-  
+
     try {
       const blob = await toPng(dom);
       if (!blob) return;
-  
+
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
           const result = await window.__TAURI__.dialog.save({
@@ -459,7 +460,7 @@ export function ImagePreviewer(props: {
               },
             ],
           });
-  
+
           if (result !== null) {
             const response = await fetch(blob);
             const buffer = await response.arrayBuffer();
@@ -526,7 +527,7 @@ export function ImagePreviewer(props: {
           </div>
           <div>
             <div className={styles["chat-info-item"]}>
-              {Locale.Exporter.Model}: {mask.modelConfig.model}
+              {Locale.Exporter.Model}: {modelConfig.model}
             </div>
             <div className={styles["chat-info-item"]}>
               {Locale.Exporter.Messages}: {props.messages.length}

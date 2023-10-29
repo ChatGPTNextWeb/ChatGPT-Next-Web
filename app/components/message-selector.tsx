@@ -71,6 +71,7 @@ export function MessageSelector(props: {
   onSelected?: (messages: ChatMessage[]) => void;
 }) {
   const chatStore = useChatStore();
+  const modelConfig = chatStore.getCurrentModelConfig();
   const session = chatStore.currentSession();
   const isValid = (m: ChatMessage) => m.content && !m.isError && !m.streaming;
   const messages = session.messages.filter(
@@ -195,7 +196,10 @@ export function MessageSelector(props: {
                 {m.role === "user" ? (
                   <Avatar avatar={config.avatar}></Avatar>
                 ) : (
-                  <MaskAvatar mask={session.mask} />
+                  <MaskAvatar
+                    avatar={session.mask.avatar}
+                    model={modelConfig.model}
+                  />
                 )}
               </div>
               <div className={styles["body"]}>

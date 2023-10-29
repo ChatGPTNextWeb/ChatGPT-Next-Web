@@ -57,7 +57,7 @@ export function createUpstashClient(store: SyncStore) {
 
     async get() {
       const chunkCount = Number(await this.redisGet(chunkCountKey));
-      if (!Number.isInteger(chunkCount)) return;
+      if (!Number.isInteger(chunkCount)) return "";
 
       const chunks = await Promise.all(
         new Array(chunkCount)

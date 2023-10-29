@@ -1,5 +1,6 @@
 import { createWebDavClient } from "./webdav";
 import { createUpstashClient } from "./upstash";
+import { SyncStore } from "@/app/store/sync";
 
 export enum ProviderType {
   WebDAV = "webdav",
@@ -27,7 +28,7 @@ export type SyncClient = {
 
 export function createSyncClient<T extends ProviderType>(
   provider: T,
-  config: SyncClientConfig[T],
+  store: SyncStore,
 ): SyncClient {
-  return SyncClients[provider](config as any) as any;
+  return SyncClients[provider](store);
 }

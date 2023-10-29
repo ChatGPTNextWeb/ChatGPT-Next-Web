@@ -1,12 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  useCallback,
-  Fragment,
-} from "react";
+import React, { useState, useRef, useEffect, useMemo, Fragment } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -37,15 +30,12 @@ import RobotIcon from "../icons/robot.svg";
 
 import {
   ChatMessage,
-  SubmitKey,
   useChatStore,
   BOT_HELLO,
   createMessage,
   useAccessStore,
-  Theme,
   useAppConfig,
   DEFAULT_TOPIC,
-  ModelType,
 } from "../store";
 
 import {
@@ -57,7 +47,7 @@ import {
 
 import dynamic from "next/dynamic";
 
-import { ChatControllerPool } from "../client/controller";
+import { ChatControllerPool } from "../client/common/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
@@ -73,11 +63,10 @@ import {
   showPrompt,
   showToast,
 } from "./ui-lib";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
   LAST_INPUT_KEY,
-  MAX_RENDER_MSG_COUNT,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
@@ -89,6 +78,8 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
+import { deepClone } from "../utils/clone";
+import { SubmitKey, Theme } from "../typing";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -142,7 +133,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
           }}
           shouldSyncFromGlobal
           extraListItems={
-            session.mask.modelConfig.sendMemory ? (
+            session.mask.config.chatConfig.sendMemory ? (
               <ListItem
                 title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
                 subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
@@ -427,17 +418,19 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
+  const client = chatStore.getClient();
+  const modelConfig = chatStore.getCurrentModelConfig();
+  const currentModel = modelConfig.model;
 
   // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const models = useMemo(
-    () =>
-      config
-        .allModels()
-        .filter((m) => m.available)
-        .map((m) => m.name),
-    [config],
-  );
+  const [models, setModels] = useState<string[]>([]);
+  useEffect(() => {
+    client
+      .models()
+      .then((_models) =>
+        setModels(_models.filter((v) => v.available).map((v) => v.name)),
+      );
+  }, []);
   const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
@@ -526,7 +519,7 @@ export function ChatActions(props: {
           onSelection={(s) => {
             if (s.length === 0) return;
             chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
+              chatStore.extractModelConfig(session.mask.config).model = s[0];
               session.mask.syncGlobalConfig = false;
             });
             showToast(s[0]);
@@ -603,6 +596,9 @@ function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
   const chatStore = useChatStore();
+  const modelConfig = chatStore.getCurrentModelConfig();
+  const maskConfig = chatStore.getCurrentMaskConfig();
+
   const session = chatStore.currentSession();
   const config = useAppConfig();
   const fontSize = config.fontSize;
@@ -747,7 +743,7 @@ function _Chat() {
       // auto sync mask config from global config
       if (session.mask.syncGlobalConfig) {
         console.log("[Mask] syncing from global, name = ", session.mask.name);
-        session.mask.modelConfig = { ...config.modelConfig };
+        session.mask.config = deepClone(config.globalMaskConfig);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -979,7 +975,7 @@ function _Chat() {
       console.log("[Command] got code from url: ", text);
       showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
         if (res) {
-          accessStore.updateCode(text);
+          accessStore.update((config) => (config.accessCode = text));
         }
       });
     },
@@ -999,10 +995,10 @@ function _Chat() {
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
-              accessStore.updateToken(payload.key);
+              // TODO: auto-fill openai api key here, must specific provider type
             }
             if (payload.url) {
-              accessStore.updateOpenAiUrl(payload.url);
+              // TODO: auto-fill openai url here, must specific provider type
             }
           });
         }
@@ -1159,7 +1155,10 @@ function _Chat() {
                           {["system"].includes(message.role) ? (
                             <Avatar avatar="2699-fe0f" />
                           ) : (
-                            <MaskAvatar mask={session.mask} />
+                            <MaskAvatar
+                              avatar={session.mask.avatar}
+                              model={modelConfig.model}
+                            />
                           )}
                         </>
                       )}

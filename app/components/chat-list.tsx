@@ -39,6 +39,9 @@ export function ChatItem(props: {
       });
     }
   }, [props.selected]);
+
+  const modelConfig = useChatStore().extractModelConfig(props.mask.config);
+
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
@@ -60,7 +63,10 @@ export function ChatItem(props: {
           {props.narrow ? (
             <div className={styles["chat-item-narrow"]}>
               <div className={styles["chat-item-avatar"] + " no-dark"}>
-                <MaskAvatar mask={props.mask} />
+                <MaskAvatar
+                  avatar={props.mask.avatar}
+                  model={modelConfig.model}
+                />
               </div>
               <div className={styles["chat-item-narrow-count"]}>
                 {props.count}

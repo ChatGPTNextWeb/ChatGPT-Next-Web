@@ -29,9 +29,11 @@ function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
 }
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
+  const modelConfig = useChatStore().extractModelConfig(props.mask.config);
+
   return (
     <div className={styles["mask"]} onClick={props.onClick}>
-      <MaskAvatar mask={props.mask} />
+      <MaskAvatar avatar={props.mask.avatar} model={modelConfig.model} />
       <div className={styles["mask-name"] + " one-line"}>{props.mask.name}</div>
     </div>
   );

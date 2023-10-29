@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/config";
+import { SubmitKey } from "@/app/typing";
 import type { PartialLocaleType } from "./index";
 
 const jp: PartialLocaleType = {
@@ -20,7 +20,8 @@ const jp: PartialLocaleType = {
       Stop: "停止",
       Retry: "リトライ",
       Pin: "ピン",
-      PinToastContent: "コンテキストプロンプトに1つのメッセージをピン留めしました",
+      PinToastContent:
+        "コンテキストプロンプトに1つのメッセージをピン留めしました",
       PinToastAction: "表示",
       Delete: "削除",
       Edit: "編集",
