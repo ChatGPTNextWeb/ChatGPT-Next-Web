@@ -40,6 +40,8 @@ jobs:
     permissions:
       actions: read
       contents: read
+      pull-requests: read
+      deployments: read
       security-events: write
 
     strategy:
