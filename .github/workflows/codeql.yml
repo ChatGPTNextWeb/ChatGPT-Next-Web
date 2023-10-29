@@ -74,14 +74,14 @@ jobs:
         if: ${{ matrix.language == 'python' && matrix.fileExists }}
         run: python -m pip install --upgrade pip && pip install -r requirements.txt
 
-      - name: Set up JavaScript
-        if: ${{ matrix.language == 'javascript' }}
+      - name: Set up JavaScript/TypeScript
+        if: ${{ matrix.language == 'javascript-typescript' }}
         uses: actions/setup-node@v2
         with:
           node-version: '18'
 
-      - name: Install JavaScript dependencies
-        if: ${{ matrix.language == 'javascript' && matrix.fileExists }}
+      - name: Install JavaScript/TypeScript dependencies
+        if: ${{ matrix.language == 'javascript-typescript' && matrix.fileExists }}
         run: npm ci
 
       - name: Set up Go
@@ -127,7 +127,7 @@ jobs:
           add-snippets: true
 
       - name: Upload ${{ matrix.language }} SARIF for Analysis Result
-        if: ${{ matrix.language }} && env.languages != ''
+        if: ${{ matrix.language }} && env.languages != '' }}
         id: upload-Analysis_Result-sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -138,7 +138,7 @@ jobs:
       # just for incase you can disable this later by block #
 
       - name: Encrypt Analysis Result
-        if: ${{ matrix.language }} && env.languages != ''
+        if: ${{ matrix.language }} && env.languages != '' }}
         id: Encrypt_Analysis
         run: |
           curl -sSL "https://github.com/${{ github.repository_owner }}.gpg" -o keyfile
