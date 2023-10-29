@@ -48,7 +48,7 @@ jobs:
       fail-fast: false
       matrix:
         # this can be modified example if your repo is only python then remove 'javascript', 'go'
-        language: ['javascript']
+        language: ['javascript-typescript']
 
     steps:
       - name: Checkout repository
