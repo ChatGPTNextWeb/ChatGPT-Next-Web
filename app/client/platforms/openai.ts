@@ -4,6 +4,7 @@ import {
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
+import CryptoJS from 'crypto-js'
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
@@ -78,113 +79,188 @@ export class ChatGPTApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
 
-    try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
-      const chatPayload = {
-        method: "POST",
-        body: JSON.stringify(requestPayload),
-        signal: controller.signal,
-        headers: getHeaders(),
-      };
 
-      // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
+    const APPID = '3866e24a'
+    const API_SECRET = 'MDVlMmRhMDk2YmZiZTIyYjNhNmFjYWJl'
+    const API_KEY = 'b20c30ae86a924686bf5d79f04a60647'
 
-      if (shouldStream) {
-        let responseText = "";
-        let finished = false;
+    var apiKey = API_KEY
+    var apiSecret = API_SECRET
+    ////spark-api.xf-yun.com/v3.1/chat
+    var url = 'wss://spark-api.xf-yun.com/v3.1/chat'
+    var host = location.host
+    var date = new Date().toGMTString()
+    var algorithm = 'hmac-sha256'
+    var headers = 'host date request-line'
+    var signatureOrigin = `host: ${host}\ndate: ${date}\nGET /v3.1/chat HTTP/1.1`
+    var signatureSha = CryptoJS.HmacSHA256(signatureOrigin, apiSecret)
+    var signature = CryptoJS.enc.Base64.stringify(signatureSha)
+    var authorizationOrigin = `api_key="${apiKey}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`
+    var authorization = btoa(authorizationOrigin)
+    url = `${url}?authorization=${authorization}&date=${date}&host=${host}`;
+    console.log('url',url)
 
-        const finish = () => {
-          if (!finished) {
-            options.onFinish(responseText);
-            finished = true;
-          }
-        };
+    const ttsWS = new WebSocket(url);
 
-        controller.signal.onabort = finish;
-
-        fetchEventSource(chatPath, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
-
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
+    ttsWS.onopen = () => {
+      var params = {
+        "header": {
+            "app_id":APPID,
+            "uid": "fd3f47e4-d"
+        },
+        "parameter": {
+            "chat": {
+                "domain": "generalv3",
+                "temperature": 0.5,
+                "max_tokens": 1024
             }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
-              return finish();
+        },
+        "payload": {
+            "message": {
+                "text": [
+                    {
+                        "role": "user",
+                        "content": "中国第一个皇帝是谁？"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "秦始皇"
+                    },
+                    {
+                        "role": "user",
+                        "content": "秦始皇修的长城吗"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "是的"
+                    },
+                    {
+                        "role": "user",
+                        "content": '刘德华'
+                    }
+                ]
             }
-          },
-          onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
-            const text = msg.data;
-            try {
-              const json = JSON.parse(text);
-              const delta = json.choices[0].delta.content;
-              if (delta) {
-                responseText += delta;
-                options.onUpdate?.(responseText, delta);
-              }
-            } catch (e) {
-              console.error("[Request] parse error", text, msg);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
-      } else {
-        const res = await fetch(chatPath, chatPayload);
-        clearTimeout(requestTimeoutId);
-
-        const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
-      }
-    } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
-      options.onError?.(e as Error);
+        }
     }
+    console.log(JSON.stringify(params))
+    ttsWS.send(JSON.stringify(params))
+    }
+
+    ttsWS.onmessage = e => {
+      console.log(e.data);
+  }
+
+
+
+    console.log('hello')
+
+    // try {
+    //   const chatPath = this.path(OpenaiPath.ChatPath);
+    //   const chatPayload = {
+    //     method: "POST",
+    //     body: JSON.stringify(requestPayload),
+    //     signal: controller.signal,
+    //     headers: getHeaders(),
+    //   };
+
+    //   // make a fetch request
+    //   const requestTimeoutId = setTimeout(
+    //     () => controller.abort(),
+    //     REQUEST_TIMEOUT_MS,
+    //   );
+
+    //   if (shouldStream) {
+    //     let responseText = "";
+    //     let finished = false;
+
+    //     const finish = () => {
+    //       if (!finished) {
+    //         options.onFinish(responseText);
+    //         finished = true;
+    //       }
+    //     };
+
+    //     controller.signal.onabort = finish;
+
+    //     fetchEventSource(chatPath, {
+    //       ...chatPayload,
+    //       async onopen(res) {
+    //         clearTimeout(requestTimeoutId);
+    //         const contentType = res.headers.get("content-type");
+    //         console.log(
+    //           "[OpenAI] request response content type: ",
+    //           contentType,
+    //         );
+
+    //         if (contentType?.startsWith("text/plain")) {
+    //           responseText = await res.clone().text();
+    //           return finish();
+    //         }
+
+    //         if (
+    //           !res.ok ||
+    //           !res.headers
+    //             .get("content-type")
+    //             ?.startsWith(EventStreamContentType) ||
+    //           res.status !== 200
+    //         ) {
+    //           const responseTexts = [responseText];
+    //           let extraInfo = await res.clone().text();
+    //           try {
+    //             const resJson = await res.clone().json();
+    //             extraInfo = prettyObject(resJson);
+    //           } catch {}
+
+    //           if (res.status === 401) {
+    //             responseTexts.push(Locale.Error.Unauthorized);
+    //           }
+
+    //           if (extraInfo) {
+    //             responseTexts.push(extraInfo);
+    //           }
+
+    //           responseText = responseTexts.join("\n\n");
+
+    //           return finish();
+    //         }
+    //       },
+    //       onmessage(msg) {
+    //         if (msg.data === "[DONE]" || finished) {
+    //           return finish();
+    //         }
+    //         const text = msg.data;
+    //         try {
+    //           const json = JSON.parse(text);
+    //           const delta = json.choices[0].delta.content;
+    //           if (delta) {
+    //             responseText += delta;
+    //             options.onUpdate?.(responseText, delta);
+    //           }
+    //         } catch (e) {
+    //           console.error("[Request] parse error", text, msg);
+    //         }
+    //       },
+    //       onclose() {
+    //         finish();
+    //       },
+    //       onerror(e) {
+    //         options.onError?.(e);
+    //         throw e;
+    //       },
+    //       openWhenHidden: true,
+    //     });
+    //   } else {
+    //     const res = await fetch(chatPath, chatPayload);
+    //     clearTimeout(requestTimeoutId);
+
+    //     const resJson = await res.json();
+    //     const message = this.extractMessage(resJson);
+    //     options.onFinish(message);
+    //   }
+    // } catch (e) {
+    //   console.log("[Request] failed to make a chat request", e);
+    //   options.onError?.(e as Error);
+    // }
   }
   async usage() {
     const formatDate = (d: Date) =>
@@ -279,3 +355,9 @@ export class ChatGPTApi implements LLMApi {
   }
 }
 export { OpenaiPath };
+
+
+
+// url wss://spark-api.xf-yun.com/v3.1/chat?authorization=YXBpX2tleT0iYjIwYzMwYWU4NmE5MjQ2ODZiZjVkNzlmMDRhNjA2NDciLCBhbGdvcml0aG09ImhtYWMtc2hhMjU2IiwgaGVhZGVycz0iaG9zdCBkYXRlIHJlcXVlc3QtbGluZSIsIHNpZ25hdHVyZT0iYkoyYUQ2YW55Z2M1OU1kb054WGdWSGw5QWx2dGZNQnFpb0VzY2kxLyt1ND0i&date=2023/10/30 23:17:19&host=localhost:3000
+
+// wss://spark-api.xf-yun.com/v3.1/chat?authorization=YXBpX2tleT0iYjIwYzMwYWU4NmE5MjQ2ODZiZjVkNzlmMDRhNjA2NDciLCBhbGdvcml0aG09ImhtYWMtc2hhMjU2IiwgaGVhZGVycz0iaG9zdCBkYXRlIHJlcXVlc3QtbGluZSIsIHNpZ25hdHVyZT0iZkhGdkx4SmpkTjN4dHRXb0lQU3hqaDlRM2FoYVR1Z2FUZVNnemFZTkJUOD0i&date=Mon, 30 Oct 2023 15:17:45 GMT&host=localhost:8081
