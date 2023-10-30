@@ -21,6 +21,7 @@ import {
   ChatResponse,
   ChatUtility,
   ChatSubmitRadiobox,
+  BorderLine,
 } from "./chat-common";
 import { InputTableRow } from "../store/chat";
 
@@ -46,6 +47,7 @@ import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { EN_MASKS } from "../masks/en";
 import { Mask } from "../store/mask";
 import { useScrollToBottom } from "../components/chat";
+import { ChatIntroduction } from "./chat-common-mui";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -109,7 +111,9 @@ export function Chat() {
 
     var newInputBlocks = [...session.input.datas, newItem];
     chatStore.updateCurrentSession(
-      (session) => (session.input.datas = newInputBlocks),
+      (session) => (
+        (session.input.datas = newInputBlocks), (session.input.activeStep = 1)
+      ),
     );
   };
 
@@ -126,6 +130,17 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
+        <ChatIntroduction
+          introduction={`This page is to evaluate the impromptu speeches given by Table Topics Speakers. Here is the general flow.`}
+          steps={[
+            "Add Speaker",
+            "Select Evaluator",
+            "Generate Evaluation",
+            "Display Evaluation",
+          ]}
+        />
+        <BorderLine />
+
         <div className={styles_tm["chat-input-button-add-row"]}>
           <Button
             variant="outlined"
@@ -136,12 +151,12 @@ export function Chat() {
             {"Add Speaker"}
           </Button>
         </div>
-
         {session.input.datas.length > 0 && (
           <>
             <div style={{ padding: "0px 20px" }}>
               <ChatTable />
             </div>
+            <BorderLine />
             <ChatSubmitRadiobox
               toastmastersRecord={ToastmastersRecord}
               checkInput={checkInput}
@@ -173,8 +188,14 @@ function ChatTable() {
   // TODO: deleteItem执行时, speakerInputsString 并未及时变化, 导致Export结果又不对
   // 此时需要刷新页面, 才能看到正确的结果
   const deleteItem = (row_index: number) => {
-    chatStore.updateCurrentSession((session) =>
-      session.input.datas.splice(row_index, 1),
+    chatStore.updateCurrentSession(
+      (session) => (
+        session.input.datas.splice(row_index, 1),
+        // TODO: add reset method into session.input
+        row_index == 0
+          ? ((session.input.activeStep = 0), (session.input.roles = []))
+          : null
+      ),
     );
   };
 
@@ -294,7 +315,11 @@ function ChatTable() {
             <TableCell align="left" className={styles_tm["table-header"]}>
               Speech
             </TableCell>
-            <TableCell align="left" className={styles_tm["table-header"]}>
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "10px" }}
+            >
               SpeechTime
             </TableCell>
             <TableCell

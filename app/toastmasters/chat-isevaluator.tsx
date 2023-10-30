@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import { useChatStore } from "../store";
 
@@ -9,6 +9,7 @@ import {
   ISEvaluatorGuidance as ToastmastersRoleGuidance,
   ISEvaluatorRecord as ToastmastersRecord,
   InputSubmitStatus,
+  speakersTimeRecord,
 } from "./roles";
 import {
   ChatTitle,
@@ -30,6 +31,16 @@ export function Chat() {
 
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
+
+  // Update session.input.data
+  useEffect(() => {
+    // TODO: More settings
+    const selectRole = "TableTopicsSpeaker(1-2min)";
+    session.input.data.speech.role = selectRole.split("(")[0]; // only keep prefix
+    session.input.data.speech.timeExpect = speakersTimeRecord[selectRole];
+  }, []);
+
+  // const steps = ['Record Speech', 'Select Evaluator', 'Generate Evaluation', , 'Display Evaluation'];
 
   const checkInput = (): InputSubmitStatus => {
     const inputRow = session.input.data;

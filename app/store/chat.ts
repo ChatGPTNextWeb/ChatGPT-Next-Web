@@ -88,6 +88,7 @@ export interface ChatSession {
     datas: any[];
     roles: string[];
     setting: any;
+    activeStep: number;
   };
   output: { avatar: IRequestResponse };
 }
@@ -114,7 +115,13 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
 
-    input: { data: new InputTableRow(), datas: [], roles: [], setting: {} },
+    input: {
+      data: new InputTableRow(),
+      datas: [],
+      roles: [],
+      setting: {},
+      activeStep: 0,
+    },
     output: { avatar: { status: "", data: "" } },
   };
 }

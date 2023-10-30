@@ -187,7 +187,7 @@ export const TTEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
     //   `,
     // },
     {
-      role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
+      role: ToastmastersRoles.TableTopicsEvaluator,
       contentWithSetting: (setting?) =>
         `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
       Evaluate the speech for all speakers.

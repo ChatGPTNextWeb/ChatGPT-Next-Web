@@ -469,6 +469,11 @@ export const ChatSubmitRadiobox = (props: {
 
   const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputRole((event.target as HTMLInputElement).value);
+    // Math.max to avoid user select after submit
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.input.activeStep = Math.max(2, session.input.activeStep)),
+    );
   };
 
   const doSubmit = async () => {
@@ -507,6 +512,7 @@ export const ChatSubmitRadiobox = (props: {
     await chatStore.getIsFinished();
 
     setSubmitting(false);
+    chatStore.updateCurrentSession((session) => (session.input.activeStep = 3));
 
     // if (!isMobileScreen) inputRef.current?.focus();
     // setAutoScroll(true);
@@ -750,11 +756,17 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.AudioPlay}
                           icon={<MicphoneIcon />}
-                          onClick={() =>
-                            speechSynthesizer.startSynthesize(
-                              message.content,
-                              session.mask.lang,
-                            )
+                          onClick={
+                            () =>
+                              speechSynthesizer.startSynthesize(
+                                message.content,
+                                session.mask.lang,
+                              )
+                            // speechSynthesizer.SpeechAudioSynthesize(
+                            //   message.content,
+                            //   session.mask.lang,
+                            //   "https://github.com/xinglin-yu/TestRepo/tree/master/Doc/YourAudioFile2.wav"
+                            // )
                           }
                         />
                         <ChatAction
