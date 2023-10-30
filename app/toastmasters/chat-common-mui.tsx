@@ -7,25 +7,10 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepIcon from "@mui/material/StepIcon";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { BorderLine } from "./chat-common";
 
-import { useChatStore } from "../store";
-
-export function ChatIntroduction(props: {
-  introduction: string;
-  steps: string[];
-}) {
-  const [session, sessionIndex] = useChatStore((state) => [
-    state.currentSession(),
-    state.currentSessionIndex,
-  ]);
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  const toggleCollapse = () => {
-    setIsExpanded((prevIsExpanded) => !prevIsExpanded);
-  };
-
+export function MuiStepper(props: { steps: string[]; activeStep: number }) {
   function StepIconWithCustomColor(stepIndex: number, activeStep: number) {
     return function StepIconProps(props: any) {
       const isCompleted = stepIndex < activeStep;
@@ -36,40 +21,55 @@ export function ChatIntroduction(props: {
   }
 
   return (
+    <Box sx={{ width: "100%" }}>
+      <Stepper activeStep={props.activeStep} alternativeLabel>
+        {props.steps.map((label, index) => (
+          <Step key={label}>
+            <StepLabel
+              StepIconComponent={StepIconWithCustomColor(
+                index,
+                props.activeStep,
+              )}
+            >
+              {label}
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
+  );
+}
+
+export function MuiCollapse(props: {
+  title: string;
+  topBorderLine: boolean;
+  children?:
+    | Array<JSX.Element | null | undefined | boolean>
+    | JSX.Element
+    | null
+    | undefined
+    | boolean;
+}) {
+  const { title, topBorderLine, children = null } = props;
+
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const toggleCollapse = () => {
+    setIsExpanded((prevIsExpanded) => !prevIsExpanded);
+  };
+
+  return (
     <>
-      <div
-        style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}
-      >
+      {topBorderLine == true ? <BorderLine /> : null}
+      <div style={{ display: "flex", alignItems: "center", marginLeft: "0px" }}>
         <IconButton onClick={toggleCollapse} color="primary">
           {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
         <div onClick={toggleCollapse} style={{ cursor: "pointer", flex: "1" }}>
-          <span>Introduction</span>
+          <span>{title}</span>
         </div>
       </div>
-      <Collapse in={isExpanded}>
-        <Typography
-          sx={{ mt: 1, mb: 1, marginLeft: "60px", marginBottom: "20px" }}
-        >
-          {props.introduction}
-        </Typography>
-        <Box sx={{ width: "100%" }}>
-          <Stepper activeStep={session.input.activeStep} alternativeLabel>
-            {props.steps.map((label, index) => (
-              <Step key={label}>
-                <StepLabel
-                  StepIconComponent={StepIconWithCustomColor(
-                    index,
-                    session.input.activeStep,
-                  )}
-                >
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
-      </Collapse>
+      <Collapse in={isExpanded}>{children}</Collapse>
     </>
   );
 }

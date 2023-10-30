@@ -42,12 +42,13 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { EN_MASKS } from "../masks/en";
 import { Mask } from "../store/mask";
 import { useScrollToBottom } from "../components/chat";
-import { ChatIntroduction } from "./chat-common-mui";
+import { MuiCollapse, MuiStepper } from "./chat-common-mui";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -130,49 +131,68 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        <ChatIntroduction
-          introduction={`This page is to evaluate the impromptu speeches given by Table Topics Speakers. Here is the general flow.`}
-          steps={[
-            "Add Speaker",
-            "Select Evaluator",
-            "Generate Evaluation",
-            "Display Evaluation",
-          ]}
-        />
-        <BorderLine />
+        <MuiCollapse title="Introduction" topBorderLine={false}>
+          <Typography
+            sx={{ mt: 1, mb: 1, marginLeft: "40px", marginBottom: "20px" }}
+          >
+            {`This page is to evaluate the impromptu speeches given by Table Topics Speakers. Here is the general flow.`}
+          </Typography>
+          <MuiStepper
+            steps={[
+              "Add Speaker",
+              "Select Evaluator",
+              "Generate Evaluation",
+              "Display Evaluation",
+            ]}
+            activeStep={session.input.activeStep}
+          />
+        </MuiCollapse>
 
-        <div className={styles_tm["chat-input-button-add-row"]}>
+        <MuiCollapse title="1. Add Spaker" topBorderLine={true}>
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
             onClick={addItem}
-            style={{ textTransform: "none" }}
+            style={{
+              textTransform: "none",
+              marginLeft: "40px",
+              marginBottom: "10px",
+              marginTop: "10px",
+            }}
           >
             {"Add Speaker"}
           </Button>
-        </div>
-        {session.input.datas.length > 0 && (
-          <>
-            <div style={{ padding: "0px 20px" }}>
+          {session.input.activeStep >= 1 && (
+            <div style={{ padding: "0px 40px" }}>
               <ChatTable />
             </div>
-            <BorderLine />
+          )}
+        </MuiCollapse>
+
+        {session.input.activeStep >= 1 && (
+          <MuiCollapse title="2. Select Evaluator" topBorderLine={true}>
             <ChatSubmitRadiobox
               toastmastersRecord={ToastmastersRecord}
               checkInput={checkInput}
               updateAutoScroll={setAutoScroll}
             />
-          </>
-        )}
-        {/* 3 is the predifined message length */}
-        {session.input.roles.length > 0 && (
-          <ChatResponse
-            scrollRef={scrollRef}
-            toastmastersRecord={ToastmastersRecord}
-          />
+          </MuiCollapse>
         )}
 
-        <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
+        {session.input.activeStep >= 3 && (
+          <MuiCollapse title="3. Generate Evaluation" topBorderLine={true}>
+            <ChatResponse
+              scrollRef={scrollRef}
+              toastmastersRecord={ToastmastersRecord}
+            />
+          </MuiCollapse>
+        )}
+
+        {session.input.activeStep >= 4 && (
+          <MuiCollapse title="4. Display Evaluation" topBorderLine={true}>
+            <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
+          </MuiCollapse>
+        )}
       </div>
     </div>
   );
@@ -280,7 +300,7 @@ function ChatTable() {
                 <List>
                   <ChatInput title="Question" inputStore={row.question} />
                   <ChatInput
-                    title="Table Topics Speech"
+                    title="Speech(1-2min)"
                     inputStore={row.speech}
                     showTime={true}
                   />

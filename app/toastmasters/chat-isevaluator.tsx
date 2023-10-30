@@ -79,6 +79,17 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
+        {/* <ChatIntroduction
+          introduction={`This page is to deeply evaluate a speaker's impromptu speech. Here is the general flow.`}
+          steps={[
+            "Record Speech",
+            "Select Evaluator",
+            "Generate Evaluation",
+            "Report & Share",
+          ]}
+        />
+        <BorderLine /> */}
+
         <List>
           <ChatInput
             title="Question"

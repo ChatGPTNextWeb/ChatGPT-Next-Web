@@ -66,7 +66,7 @@
   justify-content: space-evenly;
 
   // margin-top: 10px;
-  border-bottom: var(--border-in-light);
+  // border-bottom: var(--border-in-light);
 
   /* styles.css */
   .selection-tooltip {
@@ -126,6 +126,8 @@
 
 .table-border {
   border: 2px solid #ddd;
+  // padding: 0px 20px;
+  // margin: 0px 20px;
 
   .table-header {
     font-weight: bold;
