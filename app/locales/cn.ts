@@ -13,6 +13,7 @@ const cn = {
   Auth: {
     Title: "需要密码",
     Tips: "管理员开启了密码验证，请在下方填入访问码",
+    SubTips: "或者输入你的 OpenAI API 密钥",
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
@@ -178,6 +179,49 @@ const cn = {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",
     },
+    Sync: {
+      CloudState: "云端数据",
+      NotSyncYet: "还没有进行过同步",
+      Success: "同步成功",
+      Fail: "同步失败",
+
+      Config: {
+        Modal: {
+          Title: "配置云同步",
+          Check: "检查可用性",
+        },
+        SyncType: {
+          Title: "同步类型",
+          SubTitle: "选择喜爱的同步服务器",
+        },
+        Proxy: {
+          Title: "启用代理",
+          SubTitle: "在浏览器中同步时，必须启用代理以避免跨域限制",
+        },
+        ProxyUrl: {
+          Title: "代理地址",
+          SubTitle: "仅适用于本项目自带的跨域代理",
+        },
+
+        WebDav: {
+          Endpoint: "WebDAV 地址",
+          UserName: "用户名",
+          Password: "密码",
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "备份名称",
+          Password: "UpStash Redis REST Token",
+        },
+      },
+
+      LocalState: "本地数据",
+      Overview: (overview: any) => {
+        return `${overview.chat} 次对话，${overview.message} 条消息，${overview.prompt} 条提示词，${overview.mask} 个面具`;
+      },
+      ImportFailed: "导入失败",
+    },
     Mask: {
       Splash: {
         Title: "面具启动页",
@@ -280,6 +324,10 @@ const cn = {
     Success: "已写入剪切板",
     Failed: "复制失败，请赋予剪切板权限",
   },
+  Download: {
+    Success: "内容已下载到您的目录。",
+    Failed: "下载失败。",
+  },
   Context: {
     Toast: (x: any) => `包含 ${x} 条预设提示词`,
     Edit: "当前对话设置",
@@ -289,6 +337,9 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
+  },
+  FineTuned: {
+    Sysmessage: "你是一个助手",
   },
   Mask: {
     Name: "面具",
@@ -352,6 +403,10 @@ const cn = {
     Close: "关闭",
     Create: "新建",
     Edit: "编辑",
+    Export: "导出",
+    Import: "导入",
+    Sync: "同步",
+    Config: "配置",
   },
   Exporter: {
     Model: "模型",

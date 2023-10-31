@@ -10,6 +10,7 @@ const ar: PartialLocaleType = {
   Auth: {
     Title: "تحتاج إلى رمز الوصول",
     Tips: "يرجى إدخال رمز الوصول أدناه",
+    SubTips: "أو أدخل مفتاح واجهة برمجة تطبيقات OpenAI الخاص بك",
     Input: "رمز الوصول",
     Confirm: "تأكيد",
     Later: "لاحقًا",
@@ -232,6 +233,9 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
   },
   Plugin: {
     Name: "المكوّن الإضافي",
+  },
+  FineTuned: {
+    Sysmessage: "أنت مساعد ي",
   },
   Mask: {
     Name: "الأقنعة",
