@@ -29,6 +29,7 @@
     "emoji-picker-react": "^4.4.7",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
+    "jszip": "^3.10.1",
     "mermaid": "^10.2.3",
     "microsoft-cognitiveservices-speech-sdk": "^1.29.0",
     "multiselect-react-dropdown": "^2.0.25",

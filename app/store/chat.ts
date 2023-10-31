@@ -27,7 +27,10 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+
+  // for sharing and displaying
   title?: string;
+  audio?: IRequestResponse;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -66,6 +69,7 @@ export class InputTableRow {
 }
 
 export interface IRequestResponse {
+  // type: string; // video or audio
   status: any;
   data: any;
 }
@@ -122,7 +126,9 @@ function createEmptySession(): ChatSession {
       setting: {},
       activeStep: 0,
     },
-    output: { avatar: { status: "", data: "" } },
+    output: {
+      avatar: { status: "", data: "" },
+    },
   };
 }
 

@@ -83,6 +83,7 @@ import Tooltip from "@mui/material/Tooltip";
 import ReactMarkdown from "react-markdown";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
+import { SpeechAudioShow, submitSpeechAudio } from "../cognitive/speech-audio";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -496,6 +497,7 @@ export const ChatSubmitRadiobox = (props: {
     // 保存输入: 于是ChatResponse可以使用
     session.input.roles[0] = inputRole;
     session.input.setting = ToastmastersSettings(props.toastmastersRecord);
+    chatStore.updateCurrentSession((session) => (session.input.activeStep = 3));
 
     // reset status from 0
     chatStore.resetSession();
@@ -512,7 +514,6 @@ export const ChatSubmitRadiobox = (props: {
     await chatStore.getIsFinished();
 
     setSubmitting(false);
-    chatStore.updateCurrentSession((session) => (session.input.activeStep = 3));
 
     // if (!isMobileScreen) inputRef.current?.focus();
     // setAutoScroll(true);
@@ -694,10 +695,43 @@ export const ChatResponse = (props: {
       ),
       (outputAvatar: IRequestResponse) => {
         chatStore.updateCurrentSession(
-          (session) => (session.output.avatar = outputAvatar),
+          (session) => (
+            (session.output.avatar = outputAvatar),
+            (session.input.activeStep = 4)
+          ),
         );
       },
     );
+
+    const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    zBotServiceClient.updateRequest(userEmail ?? "", cost);
+  };
+
+  const onAudioGenerate = async (message: ChatMessage) => {
+    const words = ChatUtility.getWordsNumber(message.content);
+
+    // 1 audio => 1 AI coin
+    const cost = 1;
+
+    const isEnoughCoins = await chatStore.isEnoughCoins(cost);
+
+    if (!isEnoughCoins) {
+      return;
+    }
+
+    // reset to previous state and then set value
+    chatStore.updateCurrentSession(
+      (session) => (
+        (message.audio = undefined), (session.input.activeStep = 3)
+      ),
+    );
+    submitSpeechAudio(message.content, (outputAudio: IRequestResponse) => {
+      chatStore.updateCurrentSession(
+        (session) => (
+          (message.audio = outputAudio), (session.input.activeStep = 4)
+        ),
+      );
+    });
 
     const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
     zBotServiceClient.updateRequest(userEmail ?? "", cost);
@@ -756,24 +790,13 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.AudioPlay}
                           icon={<MicphoneIcon />}
-                          onClick={
-                            () =>
-                              speechSynthesizer.startSynthesize(
-                                message.content,
-                                session.mask.lang,
-                              )
-                            // speechSynthesizer.SpeechAudioSynthesize(
-                            //   message.content,
-                            //   session.mask.lang,
-                            //   "https://github.com/xinglin-yu/TestRepo/tree/master/Doc/YourAudioFile2.wav"
-                            // )
-                          }
+                          onClick={() => onAudioGenerate(message)}
                         />
-                        <ChatAction
+                        {/* <ChatAction
                           text={Locale.Chat.Actions.VideoPlay}
                           icon={<AvatarIcon />}
                           onClick={() => onVideoGenerate(message.content)}
-                        />
+                        /> */}
                       </>
                     )}
                   </div>
@@ -792,6 +815,10 @@ export const ChatResponse = (props: {
                   : 0}{" "}
                 words
               </div>
+
+              {message.audio ? (
+                <SpeechAudioShow outputAvatar={message.audio} />
+              ) : null}
             </div>
           </div>
         );

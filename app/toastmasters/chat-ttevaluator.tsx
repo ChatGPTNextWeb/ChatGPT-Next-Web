@@ -21,7 +21,6 @@ import {
   ChatResponse,
   ChatUtility,
   ChatSubmitRadiobox,
-  BorderLine,
 } from "./chat-common";
 import { InputTableRow } from "../store/chat";
 
@@ -44,7 +43,6 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-import { SpeechAvatarVideoShow } from "../cognitive/speech-avatar";
 import { EN_MASKS } from "../masks/en";
 import { Mask } from "../store/mask";
 import { useScrollToBottom } from "../components/chat";
@@ -185,12 +183,6 @@ export function Chat() {
               scrollRef={scrollRef}
               toastmastersRecord={ToastmastersRecord}
             />
-          </MuiCollapse>
-        )}
-
-        {session.input.activeStep >= 4 && (
-          <MuiCollapse title="4. Display Evaluation" topBorderLine={true}>
-            <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
           </MuiCollapse>
         )}
       </div>
