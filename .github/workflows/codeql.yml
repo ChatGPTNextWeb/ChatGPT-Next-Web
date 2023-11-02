@@ -64,7 +64,7 @@ jobs:
 
       - name: Set up Python
         if: ${{ matrix.language == 'python' }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
         env:
@@ -76,7 +76,7 @@ jobs:
 
       - name: Set up JavaScript/TypeScript
         if: ${{ matrix.language == 'javascript-typescript' }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
@@ -86,9 +86,9 @@ jobs:
 
       - name: Set up Go
         if: ${{ matrix.language == 'go' }}
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
-          go-version: '1.17'
+          go-version: '1.21.3'
         env:
           NODE_VERSION: 18
 
