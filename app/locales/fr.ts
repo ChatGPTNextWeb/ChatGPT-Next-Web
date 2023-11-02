@@ -5,7 +5,7 @@ const fr: PartialLocaleType = {
   WIP: "Prochainement...",
   Error: {
     Unauthorized:
-      "Accès non autorisé, veuillez saisir le code d'accès dans la [page](newchat/#/auth) des paramètres.",
+      "Accès non autorisé, veuillez saisir le code d'accès dans la [page](/#/auth) des paramètres.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages en total`,

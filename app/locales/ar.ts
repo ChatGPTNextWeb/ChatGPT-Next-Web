@@ -5,7 +5,7 @@ const ar: PartialLocaleType = {
   WIP: "قريبًا...",
   Error: {
     Unauthorized:
-      "غير مصرح بالوصول، يرجى إدخال رمز الوصول [auth](newchat/#/auth) في صفحة المصادقة.",
+      "غير مصرح بالوصول، يرجى إدخال رمز الوصول [auth](/#/auth) في صفحة المصادقة.",
   },
   Auth: {
     Title: "تحتاج إلى رمز الوصول",

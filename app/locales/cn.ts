@@ -6,7 +6,7 @@ const isApp = !!getClientConfig()?.isApp;
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: "访问密码不正确或为空，请前往[登录](newchat/#/auth)页输入正确的访问密码！"
+    Unauthorized: "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码！"
   },
   Auth: {
     Title: "需要密码",
