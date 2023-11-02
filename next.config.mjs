@@ -28,6 +28,7 @@ const nextConfig = {
   },
   output: mode,
   basePath: '/newchat',
+  // basePath: '/chat',
   images: {
     unoptimized: mode === "export",
   },

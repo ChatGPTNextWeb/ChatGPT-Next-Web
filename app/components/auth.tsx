@@ -62,7 +62,7 @@ export function AuthPage() {
   };
 
   const goRegister = () => {
-    window.open("https://www.chatkore.com/index_gpt.html#/login", "_blank");
+    window.open("https://www.chatkore.com/index_gpt.html#/register", "_blank");
   };
 
   // const goHome = () => navigate(Path.Home);

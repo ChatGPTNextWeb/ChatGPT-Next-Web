@@ -5,7 +5,7 @@ const id: PartialLocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Akses tidak diizinkan. Silakan [otorisasi](/#/auth) dengan memasukkan kode akses.",
+      "Akses tidak diizinkan. Silakan [otorisasi](newchat/#/auth) dengan memasukkan kode akses.",
   },
   Auth: {
     Title: "Diperlukan Kode Akses",
