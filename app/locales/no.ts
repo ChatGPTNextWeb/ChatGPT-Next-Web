@@ -5,7 +5,7 @@ const no: PartialLocaleType = {
   WIP: "Arbeid pågår ...",
   Error: {
     Unauthorized:
-      "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
+      "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](newchat/#/auth).",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,
