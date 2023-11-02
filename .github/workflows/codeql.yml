@@ -131,7 +131,7 @@ jobs:
         id: upload-Analysis_Result-sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: ${{ runner.workspace }}/results/${{ matrix.language }}.sarif
+          sarif_file: ${{ runner.workspace }}/results/javascript.sarif
           category: "Analysis Result: ${{ matrix.language }}"
 
       # since it public everyone can see in artifact about Analysis Result
@@ -143,10 +143,10 @@ jobs:
         run: |
           curl -sSL "https://github.com/${{ github.repository_owner }}.gpg" -o keyfile
           gpg --import keyfile
-          gpg --encrypt --recipient "$(gpg --list-keys --keyid-format LONG | grep '^pub' | awk '{print $2}' | awk -F'/' '{print $2}')" --trust-model always "${{ runner.workspace }}/results/${{ matrix.language }}.sarif"
+          gpg --encrypt --recipient "$(gpg --list-keys --keyid-format LONG | grep '^pub' | awk '{print $2}' | awk -F'/' '{print $2}')" --trust-model always "${{ runner.workspace }}/results/javascript.sarif"
 
       - name: Upload Analysis Result As Artifact
         uses: actions/upload-artifact@v3
         with:
           name: Analysis_Result (SARIF + Encrypted)
-          path: ${{ runner.workspace }}/results/${{ matrix.language }}.sarif.gpg
+          path: ${{ runner.workspace }}/results/javascript.sarif.gpg
