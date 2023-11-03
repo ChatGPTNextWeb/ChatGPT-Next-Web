@@ -93,7 +93,7 @@ export class ClientApi {
         {
           from: "human",
           value:
-            "Share from [ChatGPT Next Web]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+            "点击链接加入群聊：http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zXnwSsUDDlKsuiRobIeAeu1ZK1OvQBh_&authKey=SPzFZ55eMhrQ8iizyGjQwslQcNcUGocwcIbB3pQNBpvD7obvq43ldrDiBpRFHD4m&noverify=0&group_code=948777442",
         },
       ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
