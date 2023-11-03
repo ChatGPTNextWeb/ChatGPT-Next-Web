@@ -56,6 +56,10 @@
     .sidebar-bar-button {
       flex-grow: 1;
 
+      &:disabled {
+        cursor: pointer;
+      }
+
       &:not(:last-child) {
         margin-right: 10px;
       }
@@ -236,6 +240,7 @@
   .sidebar-sub-title {
     display: none;
   }
+
   .sidebar-logo {
     position: relative;
     display: flex;

@@ -170,6 +170,8 @@ export function SideBar(props: { className?: string }) {
           shadow
         />
         <IconButton
+          disabled
+          title={Locale.WIP}
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}
