@@ -1,0 +1,121 @@
+.popupBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);  /* 半透明的黑色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup {
+    color: white;  /* 白色文字 */
+    padding: 20px;
+    position: relative;  /* 为了使关闭按钮相对于此位置定位 */
+    width: 60vw;  /* 视口宽度的60% */
+    max-width: 75%;  /* 为了确保弹窗不会超出屏幕的边界 */
+    background-color: rgba(0, 0, 0, 0.8);  /* 几乎完全不透明的黑色背景 */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    max-height: 80vh;  /* 设置最大高度为视口高度的60% */
+    overflow-y: auto;  /* 允许垂直滚动 */
+    text-align: center;
+}
+
+.images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.images img {
+    width: 10vw;  /* 图片宽度为视口宽度的18% */
+    height: auto; /* 保持图片的原始比例 */
+    object-fit: cover;  /* 使图片按比例缩放并可能裁剪以填充其容器 */
+}
+.closeButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;  /* 白色 "X" 字符 */
+    cursor: pointer;
+}
+
+
+/* ... 其他CSS样式 ... */
+
+.popup {
+    color: white;
+    padding: 30px;
+    position: relative;
+    width: 60vw;
+    max-width: 95%;
+    background-color: rgba(20, 20, 20, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+
+    scrollbar-width: thin;  /* 为 Firefox 等非 Webkit 浏览器设置滚动条宽度 */
+    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0);  /* 为 Firefox 等非 Webkit 浏览器设置滚动条颜色 */
+
+    /* 移除 text-align: center; */
+}
+
+/* 为 Webkit 浏览器（如 Chrome 和 Safari）样式化滚动条 */
+.popup::-webkit-scrollbar {
+    width: 12px;  /* 设置滚动条宽度 */
+    border-radius: 6px;  /* 使滚动条两端为圆角 */
+    background-color: rgba(0, 0, 0, 0.1);  /* 设置滚动条背景颜色 */
+}
+
+.popup::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5);  /* 设置滚动条拇指的颜色 */
+    border-radius: 6px;  /* 使滚动条拇指为圆角 */
+    border: 2px solid rgba(0, 0, 0, 0);  /* 为滚动条拇指添加边框以创建更现代化的外观 */
+}
+
+.popup::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);  /* 设置滚动条轨道的颜色 */
+    border-radius: 6px;  /* 使滚动条轨道为圆角 */
+}
+h2 {
+    text-align: center;  /* 保持标题居中 */
+}
+
+.description {
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;  /* 描述文字左对齐 */
+}
+
+/* ... 其他CSS样式 ... */
+/* 为小屏幕设备应用的媒体查询，如手机 */
+/* 为小屏幕设备应用的媒体查询，如手机 */
+@media (max-width: 768px) {
+    .popup {
+        width: 60vw;  /* 在手机上，弹窗宽度为视口的80% */
+        max-height: 60vh;  /* 在手机上，设置最大高度为视口高度的70% */
+        padding: 15px;  /* 在手机上，减少填充 */
+    }
+
+    .images img {
+        width: 20vw;  /* 在手机上，图片宽度为视口的20% */
+    }
+
+    .description {
+        font-size: 12px;  /* 在手机上，调整描述文字的大小 */
+    }
+
+    h2 {
+        font-size: 18px;  /* 在手机上，调整标题的大小 */
+    }
+}

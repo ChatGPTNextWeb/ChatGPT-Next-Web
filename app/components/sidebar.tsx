@@ -1,7 +1,7 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 
 import styles from "./home.module.scss";
-
+import ContactPopup from "./ContactPopup"; // 根据你的文件结构调整路径
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
@@ -129,7 +129,7 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
-
+  const [showPopup, setShowPopup] = useState(true);
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -207,10 +207,17 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-              <IconButton icon={<GithubIcon />} shadow />
-            </a>
+            {/* <a  target="_blank" rel="noopener noreferrer"> */}
+            <IconButton
+              onClick={() => setShowPopup(true)}
+              icon={<GithubIcon />}
+              shadow
+            />
+            {/* <ContactPopup /> */}
+            {/* </a> */}
           </div>
+
+          {showPopup && <ContactPopup onClose={() => setShowPopup(false)} />}
         </div>
         <div>
           <IconButton
