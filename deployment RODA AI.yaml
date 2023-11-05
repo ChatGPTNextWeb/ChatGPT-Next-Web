@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realchar-deployment
+  labels:
+    app: realchar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: realchar
+  template:
+    metadata:
+      labels:
+        app: realchar
+    spec:
+      containers:
+      - name: realchar-container
+        image: <YOUR_IMAGE_TAG>
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: sqlite:///./test.db
+        - name: OPENAI_API_KEY
+          value: <YOUR_OPENAI_API_KEY>
+        - name: SPEECH_TO_TEXT_USE
+          value: LOCAL_WHISPER
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: <YOUR_GOOGLE_CREDENTIALS_FILE_NAME>
+        - name: OPEN_AI_WHISPER_API_KEY
+          value: <YOUR_OPENAI_API_KEY>
+        - name: TEXT_TO_SPEECH_USE
+          value: ELEVEN_LABS
+        - name: ELEVEN_LABS_API_KEY
+          value: <YOUR_ELEVEN_LABS_API_KEY>
+        - name: USE_AUTH
+          value: ""
+        - name: AUTH_API_KEY
+          value: ""
+        - name: PI_VOICE
+          value: <YOUR_AI_VOICE_ID>
+        - name: RAIDEN_VOICE
+          value: <YOUR_AI_VOICE_ID>
+        - name: LOKI_VOICE
+          value: <YOUR_AI_VOICE_ID>
+        - name: ELON_VOICE
+          value: <YOUR_AI_VOICE_ID>
+        - name: JOBS_VOICE
+          value: <YOUR_AI_VOICE_ID>
+        - name: BRUCE_VOICE
+          value: <YOUR_AI_VOICE_ID>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: realchar-service
+  annotations:
+spec:
+  type: LoadBalancer
+  selector:
+    app: realchar
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
