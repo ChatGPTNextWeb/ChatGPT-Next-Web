@@ -3,7 +3,7 @@ services:
   intelligent: 
     profiles: ["no-proxy"]
     container_name: intelligent
-    image: xiaozhi/intelligent
+    image: xiaozhicloud/intelligent
     ports:
       - 3000:3000
     environment:
@@ -17,7 +17,7 @@ services:
   intelligent-proxy: 
     profiles: ["proxy"]
     container_name: intelligent-proxy
-    image: xiaozhi/intelligent
+    image: xiaozhicloud/intelligent
     ports:
       - 3000:3000
     environment:
