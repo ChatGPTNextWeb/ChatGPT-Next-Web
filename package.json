@@ -57,7 +57,7 @@
     "lint-staged": "^13.2.2",
     "prettier": "^3.0.2",
     "typescript": "5.2.2",
-    "webpack": "^5.88.1"
+    "webpack": "^5.89.0"
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2"
