@@ -49,11 +49,11 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ onClose }) => {
         </p>{" "}
         {/* 添加描述 */}
         <p className="description">
-          <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zXnwSsUDDlKsuiRobIeAeu1ZK1OvQBh_&authKey=SPzFZ55eMhrQ8iizyGjQwslQcNcUGocwcIbB3pQNBpvD7obvq43ldrDiBpRFHD4m&noverify=0&group_code=948777442">
+          <a style="color:#ffff00" href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zXnwSsUDDlKsuiRobIeAeu1ZK1OvQBh_&authKey=SPzFZ55eMhrQ8iizyGjQwslQcNcUGocwcIbB3pQNBpvD7obvq43ldrDiBpRFHD4m&noverify=0&group_code=948777442">
             点击加入QQ群：948777442
           </a>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="https://t.me/+ssknFhdb83Q2YmZl">点击加入TG群</a>
+          <a style="color:#ffff00" href="https://t.me/+ssknFhdb83Q2YmZl">点击加入TG群</a>
         </p>{" "}
         {/* 添加描述 */}
         <hr />
