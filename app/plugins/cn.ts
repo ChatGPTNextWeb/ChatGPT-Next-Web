@@ -58,4 +58,13 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1688899480510,
     enable: false,
   },
+  {
+    name: "Arxiv",
+    toolName: "arxiv",
+    lang: "cn",
+    description: "使用 Arxiv 接口搜索并获取文章信息。",
+    builtin: true,
+    createdAt: 1699265115000,
+    enable: false,
+  },
 ];

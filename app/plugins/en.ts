@@ -60,4 +60,13 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1688899480510,
     enable: false,
   },
+  {
+    name: "Arxiv",
+    toolName: "arxiv",
+    lang: "en",
+    description: "Arxiv search and get the article information.",
+    builtin: true,
+    createdAt: 1699265115000,
+    enable: false,
+  },
 ];
