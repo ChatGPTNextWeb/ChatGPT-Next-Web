@@ -33,7 +33,7 @@
     "react-router-dom": "^6.15.0",
     "rehype-highlight": "^6.0.0",
     "rehype-katex": "^6.0.3",
-    "remark-breaks": "^3.0.2",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.59.2",
