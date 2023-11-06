@@ -15,7 +15,7 @@ import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
-import { getLang } from "../locales";
+import { getISOLang, getLang } from "../locales";
 
 import {
   HashRouter as Router,
@@ -86,6 +86,17 @@ export function useSwitchTheme() {
   }, [config.theme]);
 }
 
+function useHtmlLang() {
+  useEffect(() => {
+    const lang = getISOLang();
+    const htmlLang = document.documentElement.lang;
+
+    if (lang !== htmlLang) {
+      document.documentElement.lang = lang;
+    }
+  }, []);
+}
+
 const useHasHydrated = () => {
   const [hasHydrated, setHasHydrated] = useState<boolean>(false);
 
@@ -105,7 +116,9 @@ const loadAsyncGoogleFont = () => {
   linkEl.rel = "stylesheet";
   linkEl.href =
     googleFontUrl +
-    "/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap";
+    "/css2?family=" +
+    encodeURIComponent("Noto Sans:wght@300;400;700;900") +
+    "&display=swap";
   document.head.appendChild(linkEl);
 };
 
@@ -115,6 +128,7 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
+  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -124,11 +138,9 @@ function Screen() {
     <div
       className={
         styles.container +
-        ` ${
-          config.tightBorder && !isMobileScreen
-            ? styles["tight-container"]
-            : styles.container
-        } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
+          getLang() === "ar" ? styles["rtl-screen"] : ""
+        }`
       }
     >
       {isAuth ? (
@@ -169,6 +181,7 @@ export function useLoadData() {
 export function Home() {
   useSwitchTheme();
   useLoadData();
+  useHtmlLang();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());

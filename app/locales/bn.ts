@@ -10,6 +10,7 @@ const bn: PartialLocaleType = {
   Auth: {
     Title: "একটি অ্যাক্সেস কোড প্রয়োজন",
     Tips: "নীচে অ্যাক্সেস কোড ইনপুট করুন",
+    SubTips: "অথবা আপনার OpenAI API কী প্রবেশ করুন",
     Input: "অ্যাক্সেস কোড",
     Confirm: "নিশ্চিত করুন",
     Later: "পরে",
@@ -270,6 +271,9 @@ const bn: PartialLocaleType = {
   },
   Plugin: {
     Name: "প্লাগইন",
+  },
+  FineTuned: {
+    Sysmessage: "আপনি একটি সহকারী যা",
   },
   Mask: {
     Name: "মাস্ক",

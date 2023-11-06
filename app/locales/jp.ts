@@ -19,7 +19,11 @@ const jp: PartialLocaleType = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Pin: "ピン",
+      PinToastContent: "コンテキストプロンプトに1つのメッセージをピン留めしました",
+      PinToastAction: "表示",
       Delete: "削除",
+      Edit: "編集",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -33,7 +37,7 @@ const jp: PartialLocaleType = {
     Send: "送信",
     Config: {
       Reset: "リセット",
-      SaveAs: "另存为面具",
+      SaveAs: "保存",
     },
   },
   Export: {
@@ -204,6 +208,7 @@ const jp: PartialLocaleType = {
     Add: "追加",
   },
   Plugin: { Name: "プラグイン" },
+  FineTuned: { Sysmessage: "あなたはアシスタントです" },
   Mask: {
     Name: "キャラクタープリセット",
     Page: {
