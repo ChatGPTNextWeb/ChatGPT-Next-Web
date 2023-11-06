@@ -1,3 +1,13 @@
+/*
+ * :file description: 
+
+ * :name: /intelligent/app/components/sidebar.tsx
+ * :author: 张德志
+ * :copyright: (c) 2023, Tungee
+ * :date created: 2023-09-21 06:56:40
+ * :last editor: 张德志
+ * :date last edited: 2023-11-07 07:53:06
+ */
 import { useEffect, useRef, useCallback } from "react";
 
 import styles from "./home.module.scss";
@@ -201,9 +211,10 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+            {/*todo限世故gitlab*/}
+            {/* <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
-            </a>
+            </a> */}
           </div>
         </div>
         <div>
