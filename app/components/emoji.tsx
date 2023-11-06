@@ -19,7 +19,7 @@ export function AvatarPicker(props: {
   return (
     <EmojiPicker
       lazyLoadEmojis
-      theme={EmojiTheme.AUTO}
+      theme={EmojiTheme.LIGHT}
       getEmojiUrl={getEmojiUrl}
       onEmojiClick={(e) => {
         props.onEmojiClick(e.unified);
