@@ -383,7 +383,7 @@ export function PreviewActions(props: {
 function ExportAvatar(props: { avatar: string }) {
   if (props.avatar === DEFAULT_MASK_AVATAR) {
     return (
-      <NextImage
+      <img
         src={BotIcon.src}
         width={30}
         height={30}
@@ -393,7 +393,7 @@ function ExportAvatar(props: { avatar: string }) {
     );
   }
 
-  return <Avatar avatar={props.avatar}></Avatar>;
+  return <Avatar avatar={props.avatar} />;
 }
 
 export function ImagePreviewer(props: {
@@ -422,6 +422,7 @@ export function ImagePreviewer(props: {
           ])
           .then(() => {
             showToast(Locale.Copy.Success);
+            refreshPreview();
           });
       } catch (e) {
         console.error("[Copy Image] ", e);
@@ -432,24 +433,62 @@ export function ImagePreviewer(props: {
 
   const isMobile = useMobileScreen();
 
-  const download = () => {
+  const download = async () => {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-    toPng(dom)
-      .then((blob) => {
-        if (!blob) return;
-
-        if (isMobile || getClientConfig()?.isApp) {
-          showImageModal(blob);
+  
+    const isApp = getClientConfig()?.isApp;
+  
+    try {
+      const blob = await toPng(dom);
+      if (!blob) return;
+  
+      if (isMobile || (isApp && window.__TAURI__)) {
+        if (isApp && window.__TAURI__) {
+          const result = await window.__TAURI__.dialog.save({
+            defaultPath: `${props.topic}.png`,
+            filters: [
+              {
+                name: "PNG Files",
+                extensions: ["png"],
+              },
+              {
+                name: "All Files",
+                extensions: ["*"],
+              },
+            ],
+          });
+  
+          if (result !== null) {
+            const response = await fetch(blob);
+            const buffer = await response.arrayBuffer();
+            const uint8Array = new Uint8Array(buffer);
+            await window.__TAURI__.fs.writeBinaryFile(result, uint8Array);
+            showToast(Locale.Download.Success);
+          } else {
+            showToast(Locale.Download.Failed);
+          }
         } else {
-          const link = document.createElement("a");
-          link.download = `${props.topic}.png`;
-          link.href = blob;
-          link.click();
+          showImageModal(blob);
         }
-      })
-      .catch((e) => console.log("[Export Image] ", e));
+      } else {
+        const link = document.createElement("a");
+        link.download = `${props.topic}.png`;
+        link.href = blob;
+        link.click();
+        refreshPreview();
+      }
+    } catch (error) {
+      showToast(Locale.Download.Failed);
+    }
+  };
+
+  const refreshPreview = () => {
+    const dom = previewRef.current;
+    if (dom) {
+      dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+    }
   };
 
   return (
@@ -575,7 +614,7 @@ export function JsonPreviewer(props: {
     messages: [
       {
         role: "system",
-        content: "You are an assistant that " + props.topic,
+        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
       },
       ...props.messages.map((m) => ({
         role: m.role,
@@ -602,7 +641,7 @@ export function JsonPreviewer(props: {
         messages={props.messages}
       />
       <div className="markdown-body" onClick={copy}>
-      <Markdown content={mdText} />
+        <Markdown content={mdText} />
       </div>
     </>
   );

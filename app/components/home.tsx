@@ -116,7 +116,10 @@ const loadAsyncGoogleFont = () => {
     getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
   linkEl.rel = "stylesheet";
   linkEl.href =
-    googleFontUrl + "/css2?family=Noto+Sans:wght@300;400;700;900&display=swap";
+    googleFontUrl +
+    "/css2?family=" +
+    encodeURIComponent("Noto Sans:wght@300;400;700;900") +
+    "&display=swap";
   document.head.appendChild(linkEl);
 };
 
@@ -127,6 +130,7 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
+  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -136,11 +140,9 @@ function Screen() {
     <div
       className={
         styles.container +
-        ` ${
-          config.tightBorder && !isMobileScreen
-            ? styles["tight-container"]
-            : styles.container
-        } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
+          getLang() === "ar" ? styles["rtl-screen"] : ""
+        }`
       }
     >
       {isAuth ? (

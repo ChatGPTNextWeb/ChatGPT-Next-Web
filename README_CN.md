@@ -114,7 +114,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
+BASE_URL=https://nb.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
@@ -169,6 +169,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
 
+
 ## 鸣谢
 
 ### 捐赠者
@@ -185,3 +186,4 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ## 开源协议
 
 [MIT](https://opensource.org/license/mit/)
+
