@@ -1,5 +1,3 @@
-import { DEFAULT_MODELS } from "../constant";
-
 export interface LLMUsage {
   used: number;
   total: number;
@@ -13,8 +11,6 @@ export interface LLMModel {
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
-
-export type ChatModel = (typeof DEFAULT_MODELS)[number]["name"];
 
 export interface RequestMessage {
   role: MessageRole;

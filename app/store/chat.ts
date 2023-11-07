@@ -2,20 +2,9 @@ import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
-import {
-  LLMProvider,
-  MaskConfig,
-  ModelConfig,
-  ModelType,
-  useAppConfig,
-} from "./config";
+import { MaskConfig, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
-import {
-  DEFAULT_INPUT_TEMPLATE,
-  DEFAULT_SYSTEM_TEMPLATE,
-  StoreKey,
-  SUMMARIZE_MODEL,
-} from "../constant";
+import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
 import { ChatControllerPool } from "../client/common/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
@@ -83,11 +72,6 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
   };
-}
-
-function getSummarizeModel(currentModel: string) {
-  // if it is using gpt-* models, force to use 3.5 to summarize
-  return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -291,6 +275,18 @@ export const useChatStore = createPersistStore(
         return this.extractModelConfig(maskConfig);
       },
 
+      getMaxTokens() {
+        const maskConfig = this.getCurrentMaskConfig();
+
+        if (maskConfig.provider === "openai") {
+          return maskConfig.modelConfig.openai.max_tokens;
+        } else if (maskConfig.provider === "anthropic") {
+          return maskConfig.modelConfig.anthropic.max_tokens_to_sample;
+        }
+
+        return 8192;
+      },
+
       getClient() {
         const appConfig = useAppConfig.getState();
         const currentMaskConfig = get().getCurrentMaskConfig();
@@ -463,7 +459,7 @@ export const useChatStore = createPersistStore(
           : shortTermMemoryStartIndex;
         // and if user has cleared history messages, we should exclude the memory too.
         const contextStartIndex = Math.max(clearContextIndex, memoryStartIndex);
-        const maxTokenThreshold = modelConfig.max_tokens;
+        const maxTokenThreshold = this.getMaxTokens();
 
         // get recent messages as much as possible
         const reversedRecentMessages = [];
@@ -546,7 +542,6 @@ export const useChatStore = createPersistStore(
           });
         }
 
-        const modelConfig = this.getCurrentModelConfig();
         const summarizeIndex = Math.max(
           session.lastSummarizeIndex,
           session.clearContextIndex ?? 0,
@@ -557,7 +552,7 @@ export const useChatStore = createPersistStore(
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
-        if (historyMsgLength > modelConfig?.max_tokens ?? 4000) {
+        if (historyMsgLength > this.getMaxTokens()) {
           const n = toBeSummarizedMsgs.length;
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
             Math.max(0, n - chatConfig.historyMessageCount),

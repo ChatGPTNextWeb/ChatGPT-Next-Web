@@ -6,23 +6,22 @@ export function bearer(value: string) {
   return `Bearer ${value.trim()}`;
 }
 
-export function getAuthHeaders(apiKey = "") {
+export function getAuthKey(apiKey = "") {
   const accessStore = useAccessStore.getState();
   const isApp = !!getClientConfig()?.isApp;
-
-  let headers: Record<string, string> = {};
+  let authKey = "";
 
   if (apiKey) {
     // use user's api key first
-    headers.Authorization = bearer(apiKey);
+    authKey = bearer(apiKey);
   } else if (
     accessStore.enabledAccessControl() &&
     !isApp &&
     !!accessStore.accessCode
   ) {
     // or use access code
-    headers.Authorization = bearer(ACCESS_CODE_PREFIX + accessStore.accessCode);
+    authKey = bearer(ACCESS_CODE_PREFIX + accessStore.accessCode);
   }
 
-  return headers;
+  return authKey;
 }

@@ -3,11 +3,9 @@ import { ProviderConfigProps } from "../types";
 import { ListItem, PasswordInput } from "../../ui-lib";
 import Locale from "@/app/locales";
 import { REMOTE_API_HOST } from "@/app/constant";
-import { IconButton } from "../../button";
-import ReloadIcon from "@/app/icons/reload.svg";
 
-export function OpenAIProviderConfig(
-  props: ProviderConfigProps<ProviderConfig["openai"]>,
+export function AnthropicProviderConfig(
+  props: ProviderConfigProps<ProviderConfig["anthropic"]>,
 ) {
   return (
     <>
@@ -41,6 +39,17 @@ export function OpenAIProviderConfig(
           }}
         />
       </ListItem>
+      <ListItem title={"Anthropic Version"} subTitle={"填写 API 版本号"}>
+        <PasswordInput
+          value={props.config.version}
+          type="text"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) => (config.version = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
       <ListItem
         title={Locale.Settings.CustomModel.Title}
         subTitle={Locale.Settings.CustomModel.SubTitle}
@@ -52,19 +61,6 @@ export function OpenAIProviderConfig(
           onChange={(e) =>
             props.updateConfig(
               (config) => (config.customModels = e.currentTarget.value),
-            )
-          }
-        ></input>
-      </ListItem>
-
-      <ListItem title="自动拉取可用模型" subTitle="尝试拉取所有可用模型">
-        <input
-          type="checkbox"
-          style={{ marginLeft: 10 }}
-          checked={props.config.autoFetchModels}
-          onChange={(e) =>
-            props.updateConfig(
-              (config) => (config.autoFetchModels = e.currentTarget.checked),
             )
           }
         ></input>

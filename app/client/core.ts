@@ -2,9 +2,11 @@ import { MaskConfig, ProviderConfig } from "../store";
 import { shareToShareGPT } from "./common/share";
 import { createOpenAiClient } from "./openai";
 import { ChatControllerPool } from "./common/controller";
+import { createAnthropicClient } from "./anthropic";
 
 export const LLMClients = {
   openai: createOpenAiClient,
+  anthropic: createAnthropicClient,
 };
 
 export function createLLMClient(

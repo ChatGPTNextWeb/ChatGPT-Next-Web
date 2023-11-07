@@ -1,46 +1,43 @@
+import { ModelConfig, ProviderConfig } from "@/app/store";
+import { createLogger } from "@/app/utils/log";
+import { getAuthKey } from "../common/auth";
+import { API_PREFIX, AnthropicPath, ApiPath } from "@/app/constant";
+import { getApiPath } from "@/app/utils/path";
+import { trimEnd } from "@/app/utils/string";
+import { Anthropic } from "./types";
+import { ChatOptions, LLMModel, LLMUsage, RequestMessage } from "../types";
+import { omit } from "@/app/utils/object";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
-
-import { API_PREFIX, ApiPath, OpenaiPath } from "@/app/constant";
-import { ModelConfig, ProviderConfig } from "@/app/store";
-
-import { OpenAI } from "./types";
-
-import { ChatOptions, LLMModel, LLMUsage } from "../types";
-import Locale from "@/app/locales";
-
 import { prettyObject } from "@/app/utils/format";
-import { getApiPath } from "@/app/utils/path";
-import { trimEnd } from "@/app/utils/string";
-import { omit } from "@/app/utils/object";
-import { createLogger } from "@/app/utils/log";
-import { getAuthKey } from "../common/auth";
-import { OpenAIConfig } from "./config";
+import Locale from "@/app/locales";
+import { AnthropicConfig } from "./config";
 
-export function createOpenAiClient(
+export function createAnthropicClient(
   providerConfigs: ProviderConfig,
   modelConfig: ModelConfig,
 ) {
-  const openaiConfig = { ...providerConfigs.openai };
-  const logger = createLogger("[OpenAI Client]");
-  const openaiModelConfig = { ...modelConfig.openai };
+  const anthropicConfig = { ...providerConfigs.anthropic };
+  const logger = createLogger("[Anthropic]");
+  const anthropicModelConfig = { ...modelConfig.anthropic };
 
   return {
     headers() {
       return {
         "Content-Type": "application/json",
-        Authorization: getAuthKey(),
+        "x-api-key": getAuthKey(anthropicConfig.apiKey),
+        "anthropic-version": anthropicConfig.version,
       };
     },
 
-    path(path: OpenaiPath): string {
-      let baseUrl: string = openaiConfig.endpoint;
+    path(path: AnthropicPath): string {
+      let baseUrl: string = anthropicConfig.endpoint;
 
       // if endpoint is empty, use default endpoint
       if (baseUrl.trim().length === 0) {
-        baseUrl = getApiPath(ApiPath.OpenAI);
+        baseUrl = getApiPath(ApiPath.Anthropic);
       }
 
       if (!baseUrl.startsWith("http") && !baseUrl.startsWith(API_PREFIX)) {
@@ -52,27 +49,36 @@ export function createOpenAiClient(
       return `${baseUrl}/${path}`;
     },
 
-    extractMessage(res: OpenAI.ChatCompletionResponse) {
-      return res.choices[0]?.message?.content ?? "";
+    extractMessage(res: Anthropic.ChatResponse) {
+      return res.completion;
     },
 
     beforeRequest(options: ChatOptions, stream = false) {
-      const messages = options.messages.map((v) => ({
-        role: v.role,
-        content: v.content,
-      }));
-
-      if (options.shouldSummarize) {
-        openaiModelConfig.model = openaiModelConfig.summarizeModel;
-      }
-
-      const requestBody: OpenAI.ChatCompletionRequest = {
-        messages,
-        stream,
-        ...omit(openaiModelConfig, "summarizeModel"),
+      const ClaudeMapper: Record<RequestMessage["role"], string> = {
+        assistant: "Assistant",
+        user: "Human",
+        system: "Human",
       };
 
-      const path = this.path(OpenaiPath.Chat);
+      const prompt = options.messages
+        .map((v) => ({
+          role: ClaudeMapper[v.role] ?? "Human",
+          content: v.content,
+        }))
+        .map((v) => `\n\n${v.role}: ${v.content}`)
+        .join("");
+
+      if (options.shouldSummarize) {
+        anthropicModelConfig.model = anthropicModelConfig.summarizeModel;
+      }
+
+      const requestBody: Anthropic.ChatRequest = {
+        prompt,
+        stream,
+        ...omit(anthropicModelConfig, "summarizeModel"),
+      };
+
+      const path = this.path(AnthropicPath.Chat);
 
       logger.log("path = ", path, requestBody);
 
@@ -84,6 +90,7 @@ export function createOpenAiClient(
         body: JSON.stringify(requestBody),
         signal: controller.signal,
         headers: this.headers(),
+        mode: "no-cors" as RequestMode,
       };
 
       return {
@@ -131,6 +138,8 @@ export function createOpenAiClient(
 
         controller.signal.onabort = finish;
 
+        logger.log(payload);
+
         fetchEventSource(path, {
           ...payload,
           async onopen(res) {
@@ -177,8 +186,8 @@ export function createOpenAiClient(
             try {
               const chunkJson = JSON.parse(
                 chunk,
-              ) as OpenAI.ChatCompletionStreamResponse;
-              const delta = chunkJson.choices[0].delta.content;
+              ) as Anthropic.ChatStreamResponse;
+              const delta = chunkJson.completion;
               if (delta) {
                 context.text += delta;
                 options.onUpdate?.(context.text, delta);
@@ -209,7 +218,7 @@ export function createOpenAiClient(
     },
 
     async models(): Promise<LLMModel[]> {
-      const customModels = openaiConfig.customModels
+      const customModels = anthropicConfig.customModels
         .split(",")
         .map((v) => v.trim())
         .filter((v) => !!v)
@@ -218,25 +227,7 @@ export function createOpenAiClient(
           available: true,
         }));
 
-      if (!openaiConfig.autoFetchModels) {
-        return [...OpenAIConfig.provider.models.slice(), ...customModels];
-      }
-
-      const res = await fetch(this.path(OpenaiPath.ListModel), {
-        method: "GET",
-        headers: this.headers(),
-      });
-
-      const resJson = (await res.json()) as OpenAI.ListModelResponse;
-      const chatModels =
-        resJson.data?.filter((m) => m.id.startsWith("gpt-")) ?? [];
-
-      return chatModels
-        .map((m) => ({
-          name: m.id,
-          available: true,
-        }))
-        .concat(customModels);
+      return [...AnthropicConfig.provider.models.slice(), ...customModels];
     },
   };
 }

@@ -1,7 +1,7 @@
-import { REMOTE_API_HOST, DEFAULT_MODELS, StoreKey } from "../constant";
+import { REMOTE_API_HOST, StoreKey } from "../constant";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
-import { getAuthHeaders } from "../client/common/auth";
+import { getAuthKey } from "../client/common/auth";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -39,7 +39,7 @@ export const useAccessStore = createPersistStore(
         method: "post",
         body: null,
         headers: {
-          ...getAuthHeaders(),
+          Authorization: getAuthKey(),
         },
       })
         .then((res) => res.json())
@@ -48,9 +48,7 @@ export const useAccessStore = createPersistStore(
           set(() => ({ ...res }));
 
           if (res.disableGPT4) {
-            DEFAULT_MODELS.forEach(
-              (m: any) => (m.available = !m.name.startsWith("gpt-4")),
-            );
+            // disable model
           }
         })
         .catch(() => {

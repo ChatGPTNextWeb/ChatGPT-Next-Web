@@ -11,6 +11,10 @@ import { OpenAIProviderConfig } from "./openai/provider";
 import { ListItem, Select } from "../ui-lib";
 import Locale from "@/app/locales";
 import { InputRange } from "../input-range";
+import { OpenAIConfig } from "@/app/client/openai/config";
+import { AnthropicModelConfig } from "./anthropic/model";
+import { AnthropicConfig } from "@/app/client/anthropic/config";
+import { AnthropicProviderConfig } from "./anthropic/provider";
 
 export function ModelConfigList(props: {
   provider: LLMProvider;
@@ -24,16 +28,17 @@ export function ModelConfigList(props: {
         updateConfig={(update) => {
           props.updateConfig((config) => update(config.openai));
         }}
-        models={[
-          {
-            name: "gpt-3.5-turbo",
-            available: true,
-          },
-          {
-            name: "gpt-4",
-            available: true,
-          },
-        ]}
+        models={OpenAIConfig.provider.models}
+      />
+    );
+  } else if (props.provider === "anthropic") {
+    return (
+      <AnthropicModelConfig
+        config={props.config.anthropic}
+        updateConfig={(update) => {
+          props.updateConfig((config) => update(config.anthropic));
+        }}
+        models={AnthropicConfig.provider.models}
       />
     );
   }
@@ -52,6 +57,15 @@ export function ProviderConfigList(props: {
         config={props.config.openai}
         updateConfig={(update) => {
           props.updateConfig((config) => update(config.openai));
+        }}
+      />
+    );
+  } else if (props.provider === "anthropic") {
+    return (
+      <AnthropicProviderConfig
+        config={props.config.anthropic}
+        updateConfig={(update) => {
+          props.updateConfig((config) => update(config.anthropic));
         }}
       />
     );

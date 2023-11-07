@@ -1,5 +1,3 @@
-import { COMMON_PROVIDER_CONFIG } from "../common/config";
-
 export const OpenAIConfig = {
   model: {
     model: "gpt-3.5-turbo" as string,
@@ -12,9 +10,57 @@ export const OpenAIConfig = {
     frequency_penalty: 0,
   },
   provider: {
-    name: "OpenAI",
+    name: "OpenAI" as const,
     endpoint: "https://api.openai.com",
     apiKey: "",
-    ...COMMON_PROVIDER_CONFIG,
+    customModels: "",
+    autoFetchModels: false, // fetch available models from server or not
+
+    models: [
+      {
+        name: "gpt-4",
+        available: true,
+      },
+      {
+        name: "gpt-4-0314",
+        available: true,
+      },
+      {
+        name: "gpt-4-0613",
+        available: true,
+      },
+      {
+        name: "gpt-4-32k",
+        available: true,
+      },
+      {
+        name: "gpt-4-32k-0314",
+        available: true,
+      },
+      {
+        name: "gpt-4-32k-0613",
+        available: true,
+      },
+      {
+        name: "gpt-3.5-turbo",
+        available: true,
+      },
+      {
+        name: "gpt-3.5-turbo-0301",
+        available: true,
+      },
+      {
+        name: "gpt-3.5-turbo-0613",
+        available: true,
+      },
+      {
+        name: "gpt-3.5-turbo-16k",
+        available: true,
+      },
+      {
+        name: "gpt-3.5-turbo-16k-0613",
+        available: true,
+      },
+    ],
   },
 };

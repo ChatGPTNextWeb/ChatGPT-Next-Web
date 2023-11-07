@@ -2,7 +2,6 @@ import { isMacOS } from "../utils";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
-  DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
   StoreKey,
 } from "../constant";
@@ -10,8 +9,7 @@ import { createPersistStore } from "../utils/store";
 import { OpenAIConfig } from "../client/openai/config";
 import { api } from "../client";
 import { SubmitKey, Theme } from "../typing";
-
-export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
+import { AnthropicConfig } from "../client/anthropic/config";
 
 export const DEFAULT_CHAT_CONFIG = {
   enableAutoGenerateTitle: true,
@@ -25,15 +23,11 @@ export type ChatConfig = typeof DEFAULT_CHAT_CONFIG;
 
 export const DEFAULT_PROVIDER_CONFIG = {
   openai: OpenAIConfig.provider,
+  anthropic: AnthropicConfig.provider,
   // azure: {
   //   endpoint: "https://api.openai.com",
   //   apiKey: "",
   //   version: "",
-  //   ...COMMON_PROVIDER_CONFIG,
-  // },
-  // claude: {
-  //   endpoint: "https://api.anthropic.com",
-  //   apiKey: "",
   //   ...COMMON_PROVIDER_CONFIG,
   // },
   // google: {
@@ -45,6 +39,7 @@ export const DEFAULT_PROVIDER_CONFIG = {
 
 export const DEFAULT_MODEL_CONFIG = {
   openai: OpenAIConfig.model,
+  anthropic: AnthropicConfig.model,
   // azure: {
   //   model: "gpt-3.5-turbo" as string,
   //   summarizeModel: "gpt-3.5-turbo",
@@ -54,15 +49,6 @@ export const DEFAULT_MODEL_CONFIG = {
   //   max_tokens: 2000,
   //   presence_penalty: 0,
   //   frequency_penalty: 0,
-  // },
-  // claude: {
-  //   model: "claude-2",
-  //   summarizeModel: "claude-2",
-  //
-  //   max_tokens_to_sample: 100000,
-  //   temperature: 1,
-  //   top_p: 0.7,
-  //   top_k: 1,
   // },
   // google: {
   //   model: "chat-bison-001",
@@ -125,7 +111,7 @@ export function limitNumber(
 
 export const ModalConfigValidator = {
   model(x: string) {
-    return x as ModelType;
+    return x as string;
   },
   max_tokens(x: number) {
     return limitNumber(x, 0, 100000, 2000);
