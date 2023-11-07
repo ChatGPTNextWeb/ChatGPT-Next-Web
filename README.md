@@ -47,8 +47,8 @@
     - [WebBrowser](https://js.langchain.com/docs/api/tools_webbrowser/classes/WebBrowser)
   - 其它
     - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
-    - DALL-E
-      - DALL-E 插件需要配置 R2 存储，请参考 [Cloudflare R2 服务配置指南](./docs/cloudflare-r2-cn.md) 配置
+    - DALL-E 3
+      - DALL-E 3 插件需要配置 R2 存储，请参考 [Cloudflare R2 服务配置指南](./docs/cloudflare-r2-cn.md) 配置
     - StableDiffusion
       - 本插件目前为测试版本，后续可能会有较大的变更，请谨慎使用
       - 使用本插件需要一定的专业知识，Stable Diffusion 本身的相关问题不在本项目的解答范围内，如果您确定要使用本插件请参考 [Stable Diffusion 插件配置指南](./docs/stable-diffusion-plugin-cn.md) 文档进行配置
