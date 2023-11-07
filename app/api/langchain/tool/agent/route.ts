@@ -107,7 +107,7 @@ async function handle(req: NextRequest) {
         }
       },
       async handleChainError(err, runId, parentRunId, tags) {
-        console.log(err, "writer error");
+        console.log("[handleChainError]", err, "writer error");
         var response = new ResponseBody();
         response.isSuccess = false;
         response.message = err;
@@ -118,6 +118,7 @@ async function handle(req: NextRequest) {
         await writer.close();
       },
       async handleChainEnd(outputs, runId, parentRunId, tags) {
+        console.log("[handleChainEnd]");
         await writer.ready;
         await writer.close();
       },
@@ -126,7 +127,7 @@ async function handle(req: NextRequest) {
         // await writer.close();
       },
       async handleLLMError(e: Error) {
-        console.log(e, "writer error");
+        console.log("[handleLLMError]", e, "writer error");
         var response = new ResponseBody();
         response.isSuccess = false;
         response.message = e.message;
@@ -144,11 +145,7 @@ async function handle(req: NextRequest) {
       },
       async handleAgentAction(action) {
         try {
-          console.log(
-            "agent (llm)",
-            `tool: ${action.tool} toolInput: ${action.toolInput}`,
-            { action },
-          );
+          console.log("[handleAgentAction]", action.tool);
           if (!reqBody.returnIntermediateSteps) return;
           var response = new ResponseBody();
           response.isToolMessage = true;
@@ -171,7 +168,13 @@ async function handle(req: NextRequest) {
         }
       },
       handleToolStart(tool, input) {
-        console.log("handleToolStart", { tool, input });
+        console.log("[handleToolStart]", { tool });
+      },
+      async handleToolEnd(output, runId, parentRunId, tags) {
+        console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
+      },
+      handleAgentEnd(action, runId, parentRunId, tags) {
+        console.log("[handleAgentEnd]");
       },
     });
 
@@ -228,7 +231,19 @@ async function handle(req: NextRequest) {
     ];
     const webBrowserTool = new WebBrowser({ model, embeddings });
     const calculatorTool = new Calculator();
-    const dallEAPITool = new DallEAPIWrapper(apiKey, baseUrl);
+    const dallEAPITool = new DallEAPIWrapper(
+      apiKey,
+      baseUrl,
+      async (data: string) => {
+        var response = new ResponseBody();
+        response.message = data;
+        await writer.ready;
+        await writer.write(
+          encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
+        );
+      },
+    );
+    dallEAPITool.returnDirect = true;
     const stableDiffusionTool = new StableDiffusionWrapper();
     const arxivAPITool = new ArxivAPIWrapper();
     if (useTools.includes("web-search")) tools.push(searchTool);
