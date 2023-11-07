@@ -2,6 +2,10 @@ name: Publish Docker image
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag (leave empty for automatic tagging)'
+        required: false
   release:
     types: [published]
 
@@ -29,6 +33,7 @@ jobs:
           tags: |
             type=raw,value=latest
             type=ref,event=tag
+            type=raw,value=${{ github.event.inputs.tag }},enable=${{ github.event.inputs.tag != '' }}
       
       - 
         name: Set up QEMU
