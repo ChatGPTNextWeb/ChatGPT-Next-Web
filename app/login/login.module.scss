@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  width: 100%;
+  max-width: 560px;
+  padding: 16px;
+}
+
+.headline {
+  text-align: center;
+}
+
+.subline {
+  text-align: center;
+}
+
+.sign-in-button {
+  width: 100%;
+  max-width: 260px;
+  text-decoration: none;
+}

@@ -1,16 +1,16 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 
 import styles from "./home.module.scss";
 
-import { IconButton } from "./button";
-import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
+import DragIcon from "../icons/drag.svg";
+import GithubIcon from "../icons/github.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
-import DragIcon from "../icons/drag.svg";
+import SettingsIcon from "../icons/settings.svg";
+import SignoutIcon from "../icons/signout.svg";
+import { IconButton } from "./button";
 
 import Locale from "../locales";
 
@@ -25,9 +25,10 @@ import {
   REPO_URL,
 } from "../constant";
 
+import { signOut } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
-import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
@@ -148,11 +149,17 @@ export function SideBar(props: { className?: string }) {
           AdEx<b>GPT</b> - via API
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          secure local UI for OpenAI API<br />
-          <a href="https://adexpartners.sharepoint.com/sites/AdExGPT/SitePages/AdExGPT.aspx">FAQ & Support</a>
+          secure local UI for OpenAI API
+          <br />
+          <a href="https://adexpartners.sharepoint.com/sites/AdExGPT/SitePages/AdExGPT.aspx">
+            FAQ & Support
+          </a>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <img src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg" width="60" />
+          <img
+            src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg"
+            width="60"
+          />
         </div>
       </div>
 
@@ -202,15 +209,25 @@ export function SideBar(props: { className?: string }) {
               }}
             />
           </div>
+
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
+
           <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
+          </div>
+
+          <div className={styles["sidebar-action"]}>
+            <IconButton
+              icon={<SignoutIcon />}
+              shadow
+              onClick={() => signOut()}
+            />
           </div>
         </div>
         <div>
