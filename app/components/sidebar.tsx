@@ -148,7 +148,7 @@ export function SideBar(props: { className?: string }) {
           子妍AI
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          有温度的AI助
+          有温度的AI助手.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
