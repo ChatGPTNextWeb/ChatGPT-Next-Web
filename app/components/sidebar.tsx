@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 import styles from "./home.module.scss";
 
 import AddIcon from "../icons/add.svg";
@@ -27,8 +25,9 @@ import {
 
 import { signOut } from "next-auth/react";
 import dynamic from "next/dynamic";
+import { useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useMobileScreen } from "../utils";
+import { isIOS, useMobileScreen } from "../utils";
 import { showConfirm, showToast } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
@@ -135,6 +134,11 @@ export function SideBar(props: { className?: string }) {
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const config = useAppConfig();
+  const isMobileScreen = useMobileScreen();
+  const isIOSMobile = useMemo(
+    () => isIOS() && isMobileScreen,
+    [isMobileScreen],
+  );
 
   useHotKey();
 
@@ -143,6 +147,10 @@ export function SideBar(props: { className?: string }) {
       className={`${styles.sidebar} ${props.className} ${
         shouldNarrow && styles["narrow-sidebar"]
       }`}
+      style={{
+        // #3016 disable transition on ios mobile screen
+        transition: isMobileScreen && isIOSMobile ? "none" : undefined,
+      }}
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
