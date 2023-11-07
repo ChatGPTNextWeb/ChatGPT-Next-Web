@@ -13,6 +13,7 @@ declare global {
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
       ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
+      DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
     }
   }
 }
@@ -48,5 +49,6 @@ export const getServerSideConfig = () => {
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     disableGPT4: !!process.env.DISABLE_GPT4,
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
+    disableFastLink: !!process.env.DISABLE_FAST_LINK,
   };
 };

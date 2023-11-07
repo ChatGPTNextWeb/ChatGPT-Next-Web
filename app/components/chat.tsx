@@ -975,14 +975,17 @@ function _Chat() {
       doSubmit(text);
     },
     code: (text) => {
+      if (accessStore.disableFastLink) return;
       console.log("[Command] got code from url: ", text);
       showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
         if (res) {
-          accessStore.updateCode(text);
+          accessStore.update((access) => (access.accessCode = text));
         }
       });
     },
     settings: (text) => {
+      if (accessStore.disableFastLink) return;
+
       try {
         const payload = JSON.parse(text) as {
           key?: string;
@@ -998,10 +1001,10 @@ function _Chat() {
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
-              accessStore.updateToken(payload.key);
+              accessStore.update((access) => (access.token = payload.key!));
             }
             if (payload.url) {
-              accessStore.updateOpenAiUrl(payload.url);
+              accessStore.update((access) => (access.openaiUrl = payload.url!));
             }
           });
         }

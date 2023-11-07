@@ -888,7 +888,9 @@ export function Settings() {
                 type="text"
                 placeholder={Locale.Settings.AccessCode.Placeholder}
                 onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
+                  accessStore.update(
+                    (access) => (access.accessCode = e.currentTarget.value),
+                  );
                 }}
               />
             </ListItem>
@@ -907,7 +909,9 @@ export function Settings() {
                   value={accessStore.openaiUrl}
                   placeholder="https://api.openai.com/"
                   onChange={(e) =>
-                    accessStore.updateOpenAiUrl(e.currentTarget.value)
+                    accessStore.update(
+                      (access) => (access.openaiUrl = e.currentTarget.value),
+                    )
                   }
                 ></input>
               </ListItem>
@@ -920,7 +924,9 @@ export function Settings() {
                   type="text"
                   placeholder={Locale.Settings.Token.Placeholder}
                   onChange={(e) => {
-                    accessStore.updateToken(e.currentTarget.value);
+                    accessStore.update(
+                      (access) => (access.token = e.currentTarget.value),
+                    );
                   }}
                 />
               </ListItem>
