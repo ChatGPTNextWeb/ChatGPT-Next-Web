@@ -1069,7 +1069,7 @@ function _Chat() {
               />
             </div>
           )}
-          <div className="window-action-button">
+          {/* <div className="window-action-button">
             <IconButton
               icon={<ExportIcon />}
               bordered
@@ -1078,7 +1078,7 @@ function _Chat() {
                 setShowExport(true);
               }}
             />
-          </div>
+          </div> */}
           {showMaxIcon && (
             <div className="window-action-button">
               <IconButton

@@ -437,13 +437,13 @@ export function ImagePreviewer(props: {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-  
+
     const isApp = getClientConfig()?.isApp;
-  
+
     try {
       const blob = await toPng(dom);
       if (!blob) return;
-  
+
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
           const result = await window.__TAURI__.dialog.save({
@@ -459,7 +459,7 @@ export function ImagePreviewer(props: {
               },
             ],
           });
-  
+
           if (result !== null) {
             const response = await fetch(blob);
             const buffer = await response.arrayBuffer();
@@ -514,7 +514,7 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>ChatGPT Next Web</div>
+            <div className={styles["main-title"]}>ChatGPT</div>
             <div className={styles["sub-title"]}>
               github.com/Yidadaa/ChatGPT-Next-Web
             </div>
