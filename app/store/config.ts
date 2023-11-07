@@ -23,6 +23,8 @@ export enum Theme {
   Auto = "auto",
   Dark = "dark",
   Light = "light",
+  Blue = "blue",
+  Green = "green",
 }
 
 export const DEFAULT_CONFIG = {

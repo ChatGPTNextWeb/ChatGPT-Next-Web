@@ -61,11 +61,17 @@ export function useSwitchTheme() {
   useEffect(() => {
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
+    document.body.classList.remove("blue");
+    document.body.classList.remove("green");
 
     if (config.theme === "dark") {
       document.body.classList.add("dark");
     } else if (config.theme === "light") {
       document.body.classList.add("light");
+    } else if (config.theme === "blue") {
+      document.body.classList.add("blue");
+    } else if (config.theme === "green") {
+      document.body.classList.add("green");
     }
 
     const metaDescriptionDark = document.querySelector(
@@ -128,7 +134,8 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();

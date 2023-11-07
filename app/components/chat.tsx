@@ -417,7 +417,13 @@ export function ChatActions(props: {
   // switch themes
   const theme = config.theme;
   function nextTheme() {
-    const themes = [Theme.Auto, Theme.Light, Theme.Dark];
+    const themes = [
+      Theme.Auto,
+      Theme.Light,
+      Theme.Dark,
+      Theme.Blue,
+      Theme.Green,
+    ];
     const themeIndex = themes.indexOf(theme);
     const nextIndex = (themeIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
@@ -474,6 +480,10 @@ export function ChatActions(props: {
             ) : theme === Theme.Light ? (
               <LightIcon />
             ) : theme === Theme.Dark ? (
+              <DarkIcon />
+            ) : theme === Theme.Blue ? (
+              <DarkIcon />
+            ) : theme === Theme.Green ? (
               <DarkIcon />
             ) : null}
           </>

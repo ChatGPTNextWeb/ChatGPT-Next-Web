@@ -22,6 +22,44 @@
   --border-in-light: 1px solid rgb(222, 222, 222);
 }
 
+
+// from https://coolors.co/palette/0466c8-0353a4-023e7d-002855-001845-001233-33415c-5c677d-7d8597-979dac
+@mixin blue {
+  --theme: blue;
+  /* color */
+  --white: rgb(0, 40, 85);
+  --black: rgb(151, 157, 172);
+  --gray: rgb(0, 24, 69);
+  --primary: rgb(92, 103, 125);
+  --second: rgb(2, 62, 125);
+  --hover-color: rgb(2, 62, 125);
+
+  --bar-color: rgba(255, 255, 255, 0.1);
+  --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
+  --theme-color: var(--gray);
+
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
+}
+
+// from https://coolors.co/palette/0b132b-1c2541-3a506b-5bc0be-6fffe9
+
+@mixin green {
+  --theme: green;
+  /* color */
+  --white: rgb(11, 19, 43);
+  --black: rgb(111, 255, 233);
+  --gray: rgb(58, 80, 107);
+  --primary: rgb(58, 80, 107);
+  --second: rgb(28, 37, 65);
+  --hover-color: rgb(58, 80, 107);
+
+  --bar-color: rgba(255, 255, 255, 0.1);
+  --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
+  --theme-color: var(--gray);
+}
+
 @mixin dark {
   --theme: dark;
 
@@ -50,6 +88,14 @@
 
 .dark {
   @include dark;
+}
+
+.blue {
+  @include blue;
+}
+
+.green {
+  @include green;
 }
 
 .mask {
