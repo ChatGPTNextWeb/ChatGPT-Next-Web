@@ -18,6 +18,7 @@ const DEFAULT_ACCESS_STATE = {
   hideUserApiKey: false,
   hideBalanceQuery: false,
   disableGPT4: false,
+  disableFastLink: false,
 
   openaiUrl: DEFAULT_OPENAI_URL,
 };
@@ -30,15 +31,6 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
-    },
-    updateCode(code: string) {
-      set(() => ({ accessCode: code?.trim() }));
-    },
-    updateToken(token: string) {
-      set(() => ({ token: token?.trim() }));
-    },
-    updateOpenAiUrl(url: string) {
-      set(() => ({ openaiUrl: url?.trim() }));
     },
     isAuthorized() {
       this.fetch();
