@@ -177,15 +177,6 @@ Are you ready to answer? If you understand, answer yes.
 
 export const TTEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
   [ToastmastersRoles.TableTopicsEvaluator]: [
-    // {
-    //   role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
-    //   contentWithSetting: (setting?) =>
-    //     `You are the ${ToastmastersRoles.TableTopicsEvaluator}.
-    //   1). Give me a table which presenting the keywords used in each person's speech
-    //   2). Only response the table,
-    //   3). Do not include any extra description and extra words.
-    //   `,
-    // },
     {
       role: ToastmastersRoles.TableTopicsEvaluator,
       contentWithSetting: (setting?) =>
@@ -263,22 +254,6 @@ export const TTEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
       },
     },
   ],
-  // [ToastmastersRoles.RevisedSpeech]: [
-  //   {
-  //     role: "Revised Speech",
-  //     contentWithSetting: (setting?) =>
-  //       `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
-  //     Help revise, polish and improve the speech for all speakers.
-  //     You should:
-  //     1). Don't say who you are, just provide your revised speech.
-  //     2). Bold keywords using markdown when present your answer.
-  //     3). Each speaker's evaluation should be about ${setting?.words} words.
-  //     `,
-  //     setting: {
-  //       words: 100,
-  //     },
-  //   },
-  // ],
   [ToastmastersRoles.Timer]: [
     {
       role: ToastmastersRoles.Timer,
@@ -494,6 +469,27 @@ export const ISEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
       setting: {
         words: 200,
       },
+    },
+  ],
+};
+
+export const TimerGuidance = (input: string) => `
+The Speaker-Speech pairs are:
+${input},
+Are you ready to answer? If you understand, answer yes.
+`;
+
+// TODO: make the evaluation as graph
+export const TimerRecord: Record<string, ToastmastersRolePrompt[]> = {
+  [ToastmastersRoles.Timer]: [
+    {
+      role: ToastmastersRoles.Timer,
+      contentWithSetting: (setting?) =>
+        `Now start to report speakers' time usage,
+      it's better using graph to analysis, 
+      You answer should be less than 200 words.
+      `,
+      // TODO: total words
     },
   ],
 };

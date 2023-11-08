@@ -9,8 +9,8 @@ import { List, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
 
 import {
-  TTEvaluatorGuidance as ToastmastersRoleGuidance,
-  TTEvaluatorRecord as ToastmastersRecord,
+  TimerGuidance as ToastmastersRoleGuidance,
+  TimerRecord as ToastmastersRecord,
   InputSubmitStatus,
   ToastmastersRoles,
   speakersTimeRecord,
@@ -21,6 +21,7 @@ import {
   ChatResponse,
   ChatUtility,
   ChatSubmitRadiobox,
+  BorderLine,
 } from "./chat-common";
 import { ILightsTime, InputTableRow } from "../store/chat";
 
@@ -62,6 +63,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Tooltip from "@mui/material/Tooltip";
+import Checkbox from "@mui/material/Checkbox";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Avatar from "@mui/material/Avatar";
+import { MuiCollapse, MuiStepper } from "./chat-common-mui";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -83,10 +90,9 @@ export function Chat() {
     }
 
     const isAllValid = session.input.datas.every((row) => {
-      let question = row.question.text.trim();
       let speech = row.speech.text.trim();
-      if (question === "" || speech === "") {
-        showToast(`${row.speaker}: Question or Speech is empty, please check`);
+      if (speech === "") {
+        showToast(`${row.speaker}: Speech is empty, please check`);
         return false;
       }
       return true;
@@ -104,9 +110,13 @@ export function Chat() {
     // inputTable
     const speakerInputs = session.input.datas?.map((row) => ({
       Speaker: row.speaker,
-      Question: row.question.text,
-      Speech: row.speech.text,
       SpeechTime: ChatUtility.formatTime(row.speech.time),
+      ExpectTime: {
+        GreenTime: ChatUtility.formatTimeMinutes(row.speech.timeExpect.Green),
+        YellowTime: ChatUtility.formatTimeMinutes(row.speech.timeExpect.Yellow),
+        RedTime: ChatUtility.formatTimeMinutes(row.speech.timeExpect.Red),
+        MaxTime: ChatUtility.formatTimeMinutes(row.speech.timeExpect.Red + 0.5),
+      },
     }));
     // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
     const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
@@ -122,7 +132,9 @@ export function Chat() {
 
     var newInputBlocks = [...session.input.datas, newItem];
     chatStore.updateCurrentSession(
-      (session) => (session.input.datas = newInputBlocks),
+      (session) => (
+        (session.input.datas = newInputBlocks), (session.input.activeStep = 1)
+      ),
     );
   };
 
@@ -141,7 +153,7 @@ export function Chat() {
       setAnchorState(open);
     };
 
-  const TimeSidebar = () => {
+  const TimerSidebar = () => {
     const [timeRole, setTimeRole] = React.useState("");
     const [colorGreenTime, setColorGreenTime] = React.useState(0);
     const [colorYellowTime, setColorYellowTime] = React.useState(0);
@@ -271,6 +283,29 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
+        <MuiCollapse title="Introduction" topBorderLine={false}>
+          <Typography
+            sx={{ mt: 1, mb: 1, marginLeft: "40px", marginBottom: "20px" }}
+          >
+            Timer aims to improve time management skills for speakers. See{" "}
+            <Link href="https://www.toastmasters.org/membership/club-meeting-roles/timer">
+              More Info.{" "}
+            </Link>
+            <br />
+            Here is the general flow.
+          </Typography>
+          <MuiStepper
+            steps={[
+              "Add Speaker",
+              "Select Evaluator",
+              "Generate Evaluation",
+              "Display Evaluation",
+            ]}
+            activeStep={session.input.activeStep}
+          />
+        </MuiCollapse>
+        <BorderLine />
+
         <div className={styles_tm["chat-input-button-add-row"]}>
           <React.Fragment>
             <Button
@@ -286,7 +321,7 @@ export function Chat() {
               open={anchorState}
               onClose={toggleDrawer(false)}
             >
-              {<TimeSidebar></TimeSidebar>}
+              {<TimerSidebar></TimerSidebar>}
             </Drawer>
           </React.Fragment>
         </div>
@@ -309,8 +344,6 @@ export function Chat() {
             toastmastersRecord={ToastmastersRecord}
           />
         )}
-
-        <SpeechAvatarVideoShow outputAvatar={session.output.avatar} />
       </div>
     </div>
   );
@@ -361,6 +394,14 @@ function ChatTable() {
       });
     };
 
+    function getActiveStep(speechTime: number, timeExpect: ILightsTime) {
+      // speechTime is seconeds, timeExpect is minutes
+      if (row.speech.time >= row.speech.timeExpect.Red * 60) return 3;
+      else if (row.speech.time >= row.speech.timeExpect.Yellow * 60) return 2;
+      else if (row.speech.time >= row.speech.timeExpect.Green * 60) return 1;
+      return 0;
+    }
+
     return (
       <React.Fragment>
         <TableRow
@@ -386,27 +427,59 @@ function ChatTable() {
               {row.speaker}
             </div>
           </TableCell>
-          <TableCell align="left">
+          <TableCell align="left">{row.speech.role}</TableCell>
+          {/* <TableCell align="left">
             {ChatUtility.getFirstNWords(row.question.text, 10)}
-          </TableCell>
+          </TableCell> */}
           <TableCell align="left">
             {ChatUtility.getFirstNWords(row.speech.text, 10)}
           </TableCell>
           <TableCell align="left">
             {ChatUtility.formatTime(row.speech.time)}
           </TableCell>
-          <TableCell align="left">{row.speech.role}</TableCell>
+          {/* <TableCell align="left">
+            <MuiStepper
+              steps={[
+                `${row.speech.timeExpect.Green}`,
+                `${row.speech.timeExpect.Yellow}`,
+                `${row.speech.timeExpect.Red}`
+              ]}
+              activeStep={getActiveStep(row.speech.time, row.speech.timeExpect)}
+            />
+          </TableCell> */}
+
           <TableCell align="left">
-            {"G:" +
-              row.speech.timeExpect.Green +
-              ",  Y:" +
-              row.speech.timeExpect.Yellow +
-              ",  R:" +
-              row.speech.timeExpect.Red}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={row.speech.time >= row.speech.timeExpect.Green * 60}
+                />
+              }
+              label={row.speech.timeExpect.Green}
+            />
+          </TableCell>
+          <TableCell align="left">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={row.speech.time >= row.speech.timeExpect.Yellow * 60}
+                />
+              }
+              label={row.speech.timeExpect.Yellow}
+            />
+          </TableCell>
+          <TableCell align="left">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={row.speech.time >= row.speech.timeExpect.Red * 60}
+                />
+              }
+              label={row.speech.timeExpect.Red}
+            />
           </TableCell>
           <TableCell align="left">
             <div className={styles_tm["table-actions"]}>
-              <IconButton icon={<MenuIcon />} onClick={onDetailClick} />
               <IconButton
                 icon={<CloseIcon />}
                 onClick={() => deleteItem(row_index)}
@@ -419,9 +492,9 @@ function ChatTable() {
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
                 <List>
-                  <ChatInput title="Question" inputStore={row.question} />
+                  {/* <ChatInput title="Question" inputStore={row.question} /> */}
                   <ChatInput
-                    title="Table Topics Speech"
+                    title="Speech"
                     inputStore={row.speech}
                     showTime={true}
                   />
@@ -450,9 +523,16 @@ function ChatTable() {
             >
               Speaker
             </TableCell>
-            <TableCell align="left" className={styles_tm["table-header"]}>
-              Question
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "10px" }}
+            >
+              Role
             </TableCell>
+            {/* <TableCell align="left" className={styles_tm["table-header"]}>
+              Question
+            </TableCell> */}
             <TableCell align="left" className={styles_tm["table-header"]}>
               Speech
             </TableCell>
@@ -463,19 +543,92 @@ function ChatTable() {
             >
               SpeechTime
             </TableCell>
+            {/* <TableCell
+              align="center"
+              className={styles_tm["table-header"]}
+              style={{ width: "50px" }}
+            >
+              <Box display="flex" alignItems="center" justifyContent="space-between" width="50px">
+                <Avatar
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    width: 26,
+                    height: 26,
+                  }}
+                >
+                  G
+                </Avatar>
+                <Avatar
+                  style={{
+                    backgroundColor: "yellow",
+                    color: "gray",
+                    width: 26,
+                    height: 26,
+                  }}
+                >
+                  Y
+                </Avatar>
+                <Avatar
+                  style={{
+                    backgroundColor: "red",
+                    color: "white",
+                    width: 26,
+                    height: 26,
+                  }}
+                >
+                  R
+                </Avatar>
+              </Box>
+            </TableCell> */}
+
             <TableCell
               align="left"
               className={styles_tm["table-header"]}
-              style={{ width: "10px" }}
+              style={{ width: "5px" }}
             >
-              Role
+              <Avatar
+                style={{
+                  backgroundColor: "green",
+                  color: "white",
+                  width: 26,
+                  height: 26,
+                }}
+              >
+                G
+              </Avatar>
             </TableCell>
             <TableCell
               align="left"
               className={styles_tm["table-header"]}
-              style={{ width: "100px" }}
+              style={{ width: "5px" }}
             >
-              TimeExpect
+              <Avatar
+                style={{
+                  backgroundColor: "yellow",
+                  color: "gray",
+                  width: 26,
+                  height: 26,
+                }}
+              >
+                Y
+              </Avatar>
+            </TableCell>
+            <TableCell
+              align="left"
+              className={styles_tm["table-header"]}
+              style={{ width: "5px" }}
+            >
+              <Avatar
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                  width: 26,
+                  height: 26,
+                }}
+              >
+                R
+              </Avatar>
             </TableCell>
             <TableCell
               align="left"

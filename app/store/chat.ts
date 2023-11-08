@@ -49,6 +49,7 @@ export interface ChatStat {
   charCount: number;
 }
 
+// seconds
 export interface ILightsTime {
   Green: number;
   Yellow: number;
@@ -89,7 +90,7 @@ export interface ChatSession {
 
   input: {
     data: InputTableRow;
-    datas: any[];
+    datas: InputTableRow[];
     roles: string[];
     setting: any;
     activeStep: number;

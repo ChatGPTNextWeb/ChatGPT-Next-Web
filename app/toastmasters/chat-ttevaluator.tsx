@@ -21,6 +21,7 @@ import {
   ChatResponse,
   ChatUtility,
   ChatSubmitRadiobox,
+  BorderLine,
 } from "./chat-common";
 import { InputTableRow } from "../store/chat";
 
@@ -133,7 +134,10 @@ export function Chat() {
           <Typography
             sx={{ mt: 1, mb: 1, marginLeft: "40px", marginBottom: "20px" }}
           >
-            {`This page is to evaluate the impromptu speeches given by Table Topics Speakers. Here is the general flow.`}
+            This page is to evaluate the impromptu speeches given by Table
+            Topics Speakers.
+            <br />
+            Here is the general flow.
           </Typography>
           <MuiStepper
             steps={[
@@ -145,45 +149,40 @@ export function Chat() {
             activeStep={session.input.activeStep}
           />
         </MuiCollapse>
+        <BorderLine />
 
-        <MuiCollapse title="1. Add Spaker" topBorderLine={true}>
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={addItem}
-            style={{
-              textTransform: "none",
-              marginLeft: "40px",
-              marginBottom: "10px",
-              marginTop: "10px",
-            }}
-          >
-            {"Add Speaker"}
-          </Button>
-          {session.input.activeStep >= 1 && (
-            <div style={{ padding: "0px 40px" }}>
-              <ChatTable />
-            </div>
-          )}
-        </MuiCollapse>
+        <Button
+          variant="outlined"
+          startIcon={<AddIcon />}
+          onClick={addItem}
+          style={{
+            textTransform: "none",
+            marginLeft: "40px",
+            marginBottom: "10px",
+            marginTop: "10px",
+          }}
+        >
+          {"Add Speaker"}
+        </Button>
+        {session.input.activeStep >= 1 && (
+          <div style={{ padding: "0px 40px" }}>
+            <ChatTable />
+          </div>
+        )}
 
         {session.input.activeStep >= 1 && (
-          <MuiCollapse title="2. Select Evaluator" topBorderLine={true}>
-            <ChatSubmitRadiobox
-              toastmastersRecord={ToastmastersRecord}
-              checkInput={checkInput}
-              updateAutoScroll={setAutoScroll}
-            />
-          </MuiCollapse>
+          <ChatSubmitRadiobox
+            toastmastersRecord={ToastmastersRecord}
+            checkInput={checkInput}
+            updateAutoScroll={setAutoScroll}
+          />
         )}
 
         {session.input.activeStep >= 3 && (
-          <MuiCollapse title="3. Generate Evaluation" topBorderLine={true}>
-            <ChatResponse
-              scrollRef={scrollRef}
-              toastmastersRecord={ToastmastersRecord}
-            />
-          </MuiCollapse>
+          <ChatResponse
+            scrollRef={scrollRef}
+            toastmastersRecord={ToastmastersRecord}
+          />
         )}
       </div>
     </div>
