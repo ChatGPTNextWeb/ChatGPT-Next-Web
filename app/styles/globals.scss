@@ -38,7 +38,7 @@
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
   --theme-color: var(--gray);
 
-  div:not(.no-dark) > svg {
+  div:not(.no-dark) > svg, p {
     filter: invert(0.5);
   }
 }
@@ -58,6 +58,10 @@
   --bar-color: rgba(255, 255, 255, 0.1);
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
   --theme-color: var(--gray);
+
+  div:not(.no-dark) > svg, p {
+    filter: invert(0.5);
+  }
 }
 
 @mixin dark {
@@ -77,7 +81,7 @@
 
   --theme-color: var(--gray);
 
-  div:not(.no-dark) > svg {
+  div:not(.no-dark) > svg, p {
     filter: invert(0.5);
   }
 }
@@ -129,7 +133,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    @include dark;
+    //@include dark;
   }
 }
 html {
