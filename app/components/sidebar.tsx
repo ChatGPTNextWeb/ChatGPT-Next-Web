@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useMemo } from "react";
+import { useEffect, useRef, useCallback, useMemo, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -14,7 +14,12 @@ import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
 
-import { useAppConfig, useChatStore } from "../store";
+import {
+  useAppConfig,
+  useChatStore,
+  useAccessStore,
+  useUpdateStore,
+} from "../store";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -23,6 +28,7 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   REPO_URL,
+  OPENAI_BASE_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -140,6 +146,33 @@ export function SideBar(props: { className?: string }) {
     [isMobileScreen],
   );
 
+  // 查询余额
+  const accessStore = useAccessStore();
+  const showUsage = accessStore.isAuthorized();
+  const shouldHideBalanceQuery = useMemo(() => {
+    const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
+    return accessStore.hideBalanceQuery || isOpenAiUrl;
+  }, [accessStore.hideBalanceQuery, accessStore.openaiUrl]);
+  const updateStore = useUpdateStore();
+  const usage = {
+    used: updateStore.used,
+    subscription: updateStore.subscription,
+  };
+  const [loadingUsage, setLoadingUsage] = useState(false);
+  function checkUsage(force = false) {
+    if (shouldHideBalanceQuery) {
+      return;
+    }
+    setLoadingUsage(true);
+    updateStore.updateUsage(force).finally(() => {
+      setLoadingUsage(false);
+    });
+  }
+  useEffect(() => {
+    showUsage && checkUsage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useHotKey();
 
   return (
@@ -154,9 +187,21 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT
+          ChatGPT{" "}
+          <span className={styles["sidebar-sub-title"]}>provided by Chef</span>
         </div>
-        <div className={styles["sidebar-sub-title"]}>Your AI assistant.</div>
+        <div className={`${styles["sidebar-sub-title"]} ${styles["primary"]}`}>
+          {!shouldHideBalanceQuery
+            ? showUsage
+              ? loadingUsage
+                ? Locale.Settings.Usage.IsChecking
+                : Locale.Settings.Usage.SubTitle(
+                    usage?.used ?? "[?]",
+                    usage?.subscription ?? "[?]",
+                  )
+              : Locale.Settings.Usage.NoAccess
+            : "Your AI assistant."}
+        </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>

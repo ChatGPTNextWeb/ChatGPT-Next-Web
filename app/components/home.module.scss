@@ -157,6 +157,10 @@
   animation: slide-in ease 0.3s;
 }
 
+.primary {
+  color: var(--primary);
+}
+
 .sidebar-body {
   flex: 1;
   overflow: auto;
