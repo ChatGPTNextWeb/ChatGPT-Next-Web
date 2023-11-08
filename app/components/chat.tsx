@@ -143,6 +143,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
               <ListItem
+                className="copyable"
                 title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
                 subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
               ></ListItem>
