@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -18,17 +18,17 @@ import { ErrorBoundary } from "./error";
 import { getISOLang, getLang } from "../locales";
 
 import {
+  Route,
   HashRouter as Router,
   Routes,
-  Route,
   useLocation,
 } from "react-router-dom";
-import { SideBar } from "./sidebar";
+import { api } from "../client/api";
+import { getClientConfig } from "../config/client";
+import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
-import { getClientConfig } from "../config/client";
-import { api } from "../client/api";
-import { useAccessStore } from "../store";
+import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -128,7 +128,8 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();

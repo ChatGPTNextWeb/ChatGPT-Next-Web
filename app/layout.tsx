@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-page-custom-font */
-import "./styles/globals.scss";
-import "./styles/markdown.scss";
-import "./styles/highlight.scss";
-import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
+import { getServerSession } from "next-auth";
+import SessionProvider from "./components/session-provider";
+import { getClientConfig } from "./config/client";
+import "./styles/globals.scss";
+import "./styles/highlight.scss";
+import "./styles/markdown.scss";
 
 export const metadata: Metadata = {
   title: "AdExGPT Web",
@@ -23,11 +25,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
+
   return (
     <html lang="en">
       <head>
@@ -36,7 +40,9 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
         <script src="/redirect.js" defer></script>
       </head>
-      <body>{children}</body>
+      <body>
+        <SessionProvider session={session}>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
