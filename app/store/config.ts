@@ -52,6 +52,31 @@ export const DEFAULT_CONFIG = {
     max_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
+    /**
+     * DALL·E Models
+     * Author: @H0llyW00dzZ
+     *
+     **/
+    n: 1, // The number of images to generate. Must be between 1 and 10. For dall-e-3, only n=1 is supported.
+    /** Quality Only DALL·E-3 Models
+     * Author: @H0llyW00dzZ
+     * The quality of the image that will be generated. 
+     * `hd` creates images with finer details and greater consistency across the image.
+     **/
+    quality: "hd", // Only DALL·E-3 for DALL·E-2 not not really needed
+    /** SIZE ALL·E Models
+     * Author: @H0llyW00dzZ
+     * DALL·E-2 : Must be one of `256x256`, `512x512`, or `1024x1024`.
+     * DALL-E-3 : Must be one of `1024x1024`, `1792x1024`, or `1024x1792`.
+     **/
+    size: "1024x1024",
+    /** Style DALL-E-3 Models
+     * Author: @H0llyW00dzZ
+     * Must be one of `vivid` or `natural`. 
+     * `Vivid` causes the model to lean towards generating hyper-real and dramatic images. 
+     * `Natural` causes the model to produce more natural, less hyper-real looking images. 
+     */
+    style: "vivid", // Only DALL·E-3 for DALL·E-2 not not really needed
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -132,7 +157,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.8,
+    version: 4.1, // DALL·E Models switching version to 4.1 from 3.8 (in 3.9 I am using it for tet moderation) because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -161,6 +186,16 @@ export const useAppConfig = createPersistStore(
 
       if (version < 3.8) {
         state.lastUpdate = Date.now();
+      }
+
+      if (version < 4.1) {
+        state.modelConfig = {
+          ...state.modelConfig,
+          n: 1,
+          quality: "hd",
+          size: "1024x1024",
+          style: "vivid",
+        };
       }
 
       return state as any;
