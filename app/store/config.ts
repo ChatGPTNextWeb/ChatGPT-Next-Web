@@ -128,15 +128,7 @@ export const useAppConfig = createPersistStore(
       }));
     },
 
-    allModels() {
-      const customModels = get()
-        .customModels.split(",")
-        .filter((v) => !!v && v.length > 0)
-        .map((m) => ({ name: m, available: true }));
-      const allModels = get().models.concat(customModels);
-      allModels.sort((a, b) => (a.name < b.name ? -1 : 1));
-      return allModels;
-    },
+    allModels() {},
   }),
   {
     name: StoreKey.Config,
