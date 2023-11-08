@@ -69,9 +69,13 @@ export enum ServiceProvider {
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
+  ImageCreationPath: "v1/images/generations", // WIP DALL·E Model
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
+  // marked as todo DALL·E Model
+  ImageEditPath: "v1/images/edits",
+  ImageVariationsPath: "v1/images/variations",
 };
 
 export const Azure = {
@@ -152,6 +156,17 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
+  },
+  /**
+   * DALL·E Model
+   **/
+  {
+    name: "dall-e-2",
+    available: false, // reason : WIP
+  },
+  {
+    name: "dall-e-3",
+    available: false, // reason : WIP
   },
 ] as const;
 
