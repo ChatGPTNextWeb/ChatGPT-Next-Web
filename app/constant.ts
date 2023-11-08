@@ -113,6 +113,58 @@ export const DEFAULT_MODELS = [
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
   },
+  {
+    name: "gpt-3.5-turbo-1106",
+    available: true,
+  },
+  {
+    name: "gpt-4-1106-preview",
+    available: true,
+  },
+  {
+    name: "gpt-4-all",
+    available: true,
+  },
+  {
+    name: "gpt-4-dalle",
+    available: true,
+  },
+  {
+    name: "gpt-4-v",
+    available: true,
+  },
+  {
+    name: "gpt-4-vision-preview",
+    available: true,
+  },
+  {
+    name: "net-gpt-4",
+    available: true,
+  },
+  {
+    name: "net-gpt-3.5",
+    available: true,
+  },
+  {
+    name: "ERNIE-Bot-4",
+    available: true,
+  },
+  {
+    name: "claude-2",
+    available: true,
+  },
+  {
+    name: "claude-2-100k",
+    available: true,
+  },
+  {
+    name: "dall-e-3",
+    available: true,
+  },
+  {
+    name: "SparkDesk",
+    available: true,
+  },
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
