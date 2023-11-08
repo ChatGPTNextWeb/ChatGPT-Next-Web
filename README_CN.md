@@ -98,9 +98,13 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
-### `HIDE_BALANCE_QUERY` （可选）
+### `ENABLE_BALANCE_QUERY` （可选）
 
-如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+如果你想启用余额查询功能，将此环境变量设置为 1 即可。
+
+### `DISABLE_FAST_LINK` （可选）
+
+如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
 ## 开发
 
@@ -169,7 +173,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
 
-
 ## 鸣谢
 
 ### 捐赠者
@@ -181,9 +184,9 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [见项目贡献者列表](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ### 相关项目
+
 - [one-api](https://github.com/songquanpeng/one-api): 一站式大模型额度管理平台，支持市面上所有主流大语言模型
 
 ## 开源协议
 
 [MIT](https://opensource.org/license/mit/)
-
