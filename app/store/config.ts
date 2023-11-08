@@ -55,7 +55,6 @@ export const DEFAULT_CONFIG = {
     /**
      * DALL·E Models
      * Author: @H0llyW00dzZ
-     *
      **/
     n: 1, // The number of images to generate. Must be between 1 and 10. For dall-e-3, only n=1 is supported.
     /** Quality Only DALL·E-3 Models
@@ -76,7 +75,7 @@ export const DEFAULT_CONFIG = {
      * `Vivid` causes the model to lean towards generating hyper-real and dramatic images. 
      * `Natural` causes the model to produce more natural, less hyper-real looking images. 
      */
-    style: "vivid", // Only DALL·E-3 for DALL·E-2 not not really needed
+    style: "vivid", // Only DALL·E-3 for DALL·E-2 not really needed
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -120,6 +119,20 @@ export const ModalConfigValidator = {
   },
   top_p(x: number) {
     return limitNumber(x, 0, 1, 1);
+  },
+  n(x: number) {
+    return limitNumber(x, 1, 10, 1);
+  },
+  quality(x: string) {
+    return ["hd"].includes(x) ? x : "hd";
+  },
+  size(x: string) {
+    const validSizes = ["256x256", "512x512", "1024x1024"];
+    return validSizes.includes(x) ? x : "1024x1024";
+  },
+  style(x: string) {
+    const validStyles = ["vivid", "natural"];
+    return validStyles.includes(x) ? x : "vivid";
   },
 };
 
