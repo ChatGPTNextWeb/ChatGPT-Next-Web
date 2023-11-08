@@ -170,7 +170,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1, // DALL·E Models switching version to 4.1 from 3.8 (in 3.9 I am using it for tet moderation) because in 4.0 @Yidadaa using it.
+    version: 4.1, // DALL·E Models switching version to 4.1 from 3.8 (in 3.9 I am using it for text moderation) because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
