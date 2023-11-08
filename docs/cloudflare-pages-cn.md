@@ -13,7 +13,7 @@
 7. 在 "Build Settings" 中，选择 "Framework presets" 选项并选择 "Next.js"。
 8. 由于 node:buffer 的 bug，暂时不要使用默认的 "Build command"。请使用以下命令：
    ```
-   npx https://prerelease-registry.devprod.cloudflare.dev/next-on-pages/runs/4930842298/npm-package-next-on-pages-230 --experimental-minify
+   npx @cloudflare/next-on-pages@1.5.0
    ```
 9. 对于 "Build output directory"，使用默认值并且不要修改。
 10. 不要修改 "Root Directory"。
