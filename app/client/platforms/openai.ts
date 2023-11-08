@@ -169,7 +169,6 @@ export class ChatGPTApi implements LLMApi {
               }
             } catch (e) {
               console.error("[Request] parse error", text, msg);
-              throw e;
             }
           },
           onclose() {
