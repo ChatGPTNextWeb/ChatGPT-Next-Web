@@ -332,7 +332,7 @@ export function ContextPrompts(props: {
                           onClick={() => {
                             addContextPrompt(
                               createMessage({
-                                role: "user",
+                                role: context.length === 0 ? "system" : "user",
                                 content: "",
                                 date: new Date().toLocaleString(),
                               }),
@@ -362,7 +362,7 @@ export function ContextPrompts(props: {
               onClick={() =>
                 addContextPrompt(
                   createMessage({
-                    role: "user",
+                    role: context.length === 0 ? "system" : "user",
                     content: "",
                     date: "",
                   }),
@@ -398,7 +398,7 @@ export function MaskPage() {
     setSearchText(text);
     if (text.length > 0) {
       const result = allMasks.filter((m) =>
-        m.name.toLowerCase().includes(text.toLowerCase())
+        m.name.toLowerCase().includes(text.toLowerCase()),
       );
       setSearchMasks(result);
     } else {
