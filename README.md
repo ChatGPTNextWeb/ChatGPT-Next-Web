@@ -185,11 +185,17 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
-### `HIDE_BALANCE_QUERY` (optional)
+### `ENABLE_BALANCE_QUERY` (optional)
 
 > Default: Empty
 
-If you do not want users to query balance, set this value to 1.
+If you do want users to query balance, set this value to 1, or you should set it to 0.
+
+### `DISABLE_FAST_LINK` (optional)
+
+> Default: Empty
+
+If you want to disable parse settings from url, set this to 1.
 
 ## Requirements
 

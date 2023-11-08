@@ -12,7 +12,8 @@ declare global {
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
-      HIDE_BALANCE_QUERY?: string; // allow user to query balance or not
+      ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
+      DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
     }
   }
 }
@@ -47,6 +48,7 @@ export const getServerSideConfig = () => {
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     disableGPT4: !!process.env.DISABLE_GPT4,
-    hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
+    hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
+    disableFastLink: !!process.env.DISABLE_FAST_LINK,
   };
 };
