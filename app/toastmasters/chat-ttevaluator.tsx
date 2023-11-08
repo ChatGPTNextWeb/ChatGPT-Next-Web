@@ -130,7 +130,7 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        <MuiCollapse title="Introduction" topBorderLine={false}>
+        <MuiCollapse title="Introduction">
           <Typography
             sx={{ mt: 1, mb: 1, marginLeft: "40px", marginBottom: "20px" }}
           >
@@ -149,7 +149,6 @@ export function Chat() {
             activeStep={session.input.activeStep}
           />
         </MuiCollapse>
-        <BorderLine />
 
         <Button
           variant="outlined"
@@ -225,7 +224,7 @@ function ChatTable() {
 
     const onDetailClick = () => {
       const mask = EN_MASKS.find(
-        (mask) => mask.name === ToastmastersRoles.TableTopicsEvaluator,
+        (mask) => mask.name === ToastmastersRoles.ImpromptuSpeechEvaluator,
       ) as Mask;
 
       chatStore.newSession(mask);
@@ -233,7 +232,8 @@ function ChatTable() {
 
       // new session has index 0
       chatStore.updateSession(0, (session) => {
-        session.topic = row.speaker;
+        session.topic =
+          ToastmastersRoles.ImpromptuSpeechEvaluator + "-" + row.speaker;
         session.input.data.question = { ...row.question };
         session.input.data.speech = { ...row.speech };
         return session;

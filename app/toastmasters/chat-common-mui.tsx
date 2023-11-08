@@ -42,7 +42,6 @@ export function MuiStepper(props: { steps: string[]; activeStep: number }) {
 
 export function MuiCollapse(props: {
   title: string;
-  topBorderLine: boolean;
   children?:
     | Array<JSX.Element | null | undefined | boolean>
     | JSX.Element
@@ -50,7 +49,7 @@ export function MuiCollapse(props: {
     | undefined
     | boolean;
 }) {
-  const { title, topBorderLine, children = null } = props;
+  const { title, children = null } = props;
 
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -60,7 +59,6 @@ export function MuiCollapse(props: {
 
   return (
     <>
-      {topBorderLine == true ? <BorderLine /> : null}
       <div style={{ display: "flex", alignItems: "center", marginLeft: "0px" }}>
         <IconButton onClick={toggleCollapse} color="primary">
           {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -70,6 +68,7 @@ export function MuiCollapse(props: {
         </div>
       </div>
       <Collapse in={isExpanded}>{children}</Collapse>
+      <BorderLine />
     </>
   );
 }

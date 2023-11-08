@@ -49,11 +49,13 @@ export const getServerSideConfig = () => {
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
     hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
+
     zBotServiceUrl: process.env.ZBotServiceUrl,
     zCareersPayUrl: process.env.ZCareersPayUrl,
     speechSubscriptionKey: process.env.SpeechSubscriptionKey,
     speechServiceRegion: "eastus",
     speechAvatarSubscriptionKey: "placeholder",
+    speechAvatarServiceRegion: "westus2",
   };
 
   /*
@@ -66,9 +68,9 @@ export const getServerSideConfig = () => {
   Developmer should replace these env variables here, but not submit to repo
   The env variables can get from the Azure Key Vault
   */
-  config.zBotServiceUrl = "placeholder";
-  config.zCareersPayUrl = "placeholder";
-  config.speechSubscriptionKey = "placeholder";
+  // config.zBotServiceUrl = "placeholder";
+  // config.zCareersPayUrl = "placeholder";
+  // config.speechSubscriptionKey = "placeholder";
 
   // production, development
   console.log("Running env: ", process.env.NODE_ENV);

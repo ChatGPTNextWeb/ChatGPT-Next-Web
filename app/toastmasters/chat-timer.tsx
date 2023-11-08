@@ -124,6 +124,11 @@ export function Chat() {
   };
 
   const addItem = (role: string, timeExpect: ILightsTime) => {
+    if (role === "") {
+      showToast("Must choose 1 role");
+      return;
+    }
+
     setAutoScroll(false);
     const newItem = new InputTableRow();
     newItem.speaker = `Speaker${session.input.datas.length + 1}`;
@@ -191,7 +196,16 @@ export function Chat() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <Avatar
+                    style={{
+                      backgroundColor: "green",
+                      color: "white",
+                      width: 26,
+                      height: 26,
+                    }}
+                  >
+                    G
+                  </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Green" />
                 <input
@@ -210,7 +224,16 @@ export function Chat() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <Avatar
+                    style={{
+                      backgroundColor: "yellow",
+                      color: "gray",
+                      width: 26,
+                      height: 26,
+                    }}
+                  >
+                    Y
+                  </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Yellow" />
                 <input
@@ -229,7 +252,16 @@ export function Chat() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <Avatar
+                    style={{
+                      backgroundColor: "red",
+                      color: "white",
+                      width: 26,
+                      height: 26,
+                    }}
+                  >
+                    R
+                  </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Red" />
                 <input
@@ -283,7 +315,7 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        <MuiCollapse title="Introduction" topBorderLine={false}>
+        <MuiCollapse title="Introduction">
           <Typography
             sx={{ mt: 1, mb: 1, marginLeft: "40px", marginBottom: "20px" }}
           >
@@ -304,7 +336,6 @@ export function Chat() {
             activeStep={session.input.activeStep}
           />
         </MuiCollapse>
-        <BorderLine />
 
         <div className={styles_tm["chat-input-button-add-row"]}>
           <React.Fragment>
@@ -377,31 +408,6 @@ function ChatTable() {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
 
-    const onDetailClick = () => {
-      const mask = EN_MASKS.find(
-        (mask) => mask.name === ToastmastersRoles.TableTopicsEvaluator,
-      ) as Mask;
-
-      chatStore.newSession(mask);
-      navigate(mask.pagePath as any);
-
-      // new session has index 0
-      chatStore.updateSession(0, (session) => {
-        session.topic = row.speaker;
-        session.input.data.question = { ...row.question };
-        session.input.data.speech = { ...row.speech };
-        return session;
-      });
-    };
-
-    function getActiveStep(speechTime: number, timeExpect: ILightsTime) {
-      // speechTime is seconeds, timeExpect is minutes
-      if (row.speech.time >= row.speech.timeExpect.Red * 60) return 3;
-      else if (row.speech.time >= row.speech.timeExpect.Yellow * 60) return 2;
-      else if (row.speech.time >= row.speech.timeExpect.Green * 60) return 1;
-      return 0;
-    }
-
     return (
       <React.Fragment>
         <TableRow
@@ -437,17 +443,6 @@ function ChatTable() {
           <TableCell align="left">
             {ChatUtility.formatTime(row.speech.time)}
           </TableCell>
-          {/* <TableCell align="left">
-            <MuiStepper
-              steps={[
-                `${row.speech.timeExpect.Green}`,
-                `${row.speech.timeExpect.Yellow}`,
-                `${row.speech.timeExpect.Red}`
-              ]}
-              activeStep={getActiveStep(row.speech.time, row.speech.timeExpect)}
-            />
-          </TableCell> */}
-
           <TableCell align="left">
             <FormControlLabel
               control={
@@ -543,45 +538,6 @@ function ChatTable() {
             >
               SpeechTime
             </TableCell>
-            {/* <TableCell
-              align="center"
-              className={styles_tm["table-header"]}
-              style={{ width: "50px" }}
-            >
-              <Box display="flex" alignItems="center" justifyContent="space-between" width="50px">
-                <Avatar
-                  style={{
-                    backgroundColor: "green",
-                    color: "white",
-                    width: 26,
-                    height: 26,
-                  }}
-                >
-                  G
-                </Avatar>
-                <Avatar
-                  style={{
-                    backgroundColor: "yellow",
-                    color: "gray",
-                    width: 26,
-                    height: 26,
-                  }}
-                >
-                  Y
-                </Avatar>
-                <Avatar
-                  style={{
-                    backgroundColor: "red",
-                    color: "white",
-                    width: 26,
-                    height: 26,
-                  }}
-                >
-                  R
-                </Avatar>
-              </Box>
-            </TableCell> */}
-
             <TableCell
               align="left"
               className={styles_tm["table-header"]}

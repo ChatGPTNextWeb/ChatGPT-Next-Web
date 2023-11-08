@@ -3,6 +3,9 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v5.20231108
+ - Add Timer
+
 ## v4.20230921
  - Temp comment login
 
