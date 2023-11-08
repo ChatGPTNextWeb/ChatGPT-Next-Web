@@ -271,6 +271,26 @@ const id: PartialLocaleType = {
       SubTitle:
         "Semakin tinggi nilai, semakin rendah kemungkinan penggunaan ulang baris yang sama",
     },
+    NumberOfImages: {
+      Title: "Buat Jumlah Gambar",
+      SubTitle:
+        "Sejumlah gambar yang akan dihasilkan\nHarus di antara 1 dan 10. Untuk dall-e-3, hanya 1 yang didukung.",
+    },
+    QualityOfImages: {
+      Title: "Buat Kualitas Gambar",
+      SubTitle:
+        "Kualitas gambar yang akan dihasilkan\nKonfigurasi ini hanya didukung untuk dall-e-3.",
+    },
+    SizeOfImages: {
+      Title: "Ukuran Gambar",
+      SubTitle:
+        "Ukuran gambar yang dihasilkan\nDALL·E-2: Harus menjadi salah satu dari `256x256`, `512x512`, atau `1024x1024`.\nDALL-E-3: Harus menjadi salah satu dari `1024x1024`, `1792x1024`, atau `1024x1792`.",
+    },
+    StyleOfImages: {
+      Title: "Gaya Gambar",
+      SubTitle:
+        "Gaya gambar yang dihasilkan\nHarus menjadi salah satu dari cerah atau alami\nKonfigurasi ini hanya didukung untuk dall-e-3",
+    },
   },
   Store: {
     DefaultTopic: "Percakapan Baru",

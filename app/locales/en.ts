@@ -344,6 +344,26 @@ const en: LocaleType = {
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
     },
+    NumberOfImages: {
+      Title: "Number Image Create",
+      SubTitle:
+        "A number of images to generate\nMust be between 1 and 10. For dall-e-3, only 1 is supported.",
+    },
+    QualityOfImages: {
+      Title: "Quality Image Create",
+      SubTitle:
+        "A quality of the image that will be generated\nThis Configuration is only supported for dall-e-3.",
+    },
+    SizeOfImages: {
+      Title: "Size Image",
+      SubTitle:
+        "A size of the generated images\nDALL·E-2 : Must be one of `256x256`, `512x512`, or `1024x1024`.\nDALL-E-3 : Must be one of `1024x1024`, `1792x1024`, or `1024x1792`.",
+    },
+    StyleOfImages: {
+      Title: "Style Image",
+      SubTitle:
+        "A style of the generated images\nMust be one of vivid or natural\nThis Configuration is only supported for dall-e-3",
+    },
   },
   Store: {
     DefaultTopic: "New Conversation",

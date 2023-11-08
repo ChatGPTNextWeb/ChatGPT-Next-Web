@@ -339,6 +339,26 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+    NumberOfImages: {
+      Title: "创建图片数量",
+      SubTitle:
+        "要生成的图像数量\n必须介于1和10之间。对于dall-e-3，仅支持1。",
+    },
+    QualityOfImages: {
+      Title: "创建图片质量",
+      SubTitle:
+        "将要生成的图像的质量\n此配置仅适用于dall-e-3。",
+    },
+    SizeOfImages: {
+      Title: "图片尺寸",
+      SubTitle:
+        "生成图像的尺寸\nDALL·E-2：必须是`256x256`、`512x512`或`1024x1024`之一。\nDALL-E-3：必须是`1024x1024`、`1792x1024`或`1024x1792`之一。",
+    },
+    StyleOfImages: {
+      Title: "图片风格",
+      SubTitle:
+        "生成图像的风格\n必须是生动或自然之一\n此配置仅适用于dall-e-3",
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",
