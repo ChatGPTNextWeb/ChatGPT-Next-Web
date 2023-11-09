@@ -62,6 +62,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
 - 🚀 v2.7 let's share conversations as image, or share to ShareGPT!
 - 🚀 v2.8 now we have a client that runs across all platforms!
+- 🚀 v2.9.11 you can use azure endpoint now.
 
 ## 主要功能
 
@@ -93,6 +94,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - 💡 想要更方便地随时随地使用本项目？可以试下这款桌面插件：https://github.com/mushan0x0/AI0x0.com
 - 🚀 v2.7 现在可以将会话分享为图片了，也可以分享到 ShareGPT 的在线链接。
 - 🚀 v2.8 发布了横跨 Linux/Windows/MacOS 的体积极小的客户端。
+- 🚀 v2.9.11 现在可以使用自定义 Azure 服务了。
 
 ## Get Started
 
