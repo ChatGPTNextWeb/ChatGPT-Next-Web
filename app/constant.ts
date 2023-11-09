@@ -101,6 +101,17 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 };
 
 export const DEFAULT_MODELS = [
+  /**
+   * DALL·E Model
+   **/
+    {
+      name: "dall-e-2",
+      available: false, // reason : WIP
+    },
+    {
+      name: "dall-e-3",
+      available: false, // reason : WIP
+    },
   {
     name: "gpt-4",
     available: true,
@@ -156,17 +167,6 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
-  },
-  /**
-   * DALL·E Model
-   **/
-  {
-    name: "dall-e-2",
-    available: false, // reason : WIP
-  },
-  {
-    name: "dall-e-3",
-    available: false, // reason : WIP
   },
 ] as const;
 
