@@ -88,6 +88,7 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
+import { useAllModels } from "../utils/hooks";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -143,6 +144,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
               <ListItem
+                className="copyable"
                 title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
                 subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
               ></ListItem>
@@ -429,14 +431,9 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const models = useMemo(
-    () =>
-      config
-        .allModels()
-        .filter((m) => m.available)
-        .map((m) => m.name),
-    [config],
-  );
+  const models = useAllModels()
+    .filter((m) => m.available)
+    .map((m) => m.name);
   const [showModelSelector, setShowModelSelector] = useState(false);
 
   return (
