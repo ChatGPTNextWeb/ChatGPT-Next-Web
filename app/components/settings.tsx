@@ -455,6 +455,14 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                 }}
               ></PasswordInput>
             </ListItem>
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.Tutorial}>
+              <a
+                href="https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/docs/synchronise-chat-logs-cn.md"
+                target="_blank"
+              >
+                {Locale.Settings.Sync.Config.UpStash.Tutorial}
+              </a>
+            </ListItem>
           </List>
         )}
       </Modal>

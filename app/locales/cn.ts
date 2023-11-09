@@ -213,6 +213,7 @@ const cn = {
           Endpoint: "UpStash Redis REST Url",
           UserName: "备份名称",
           Password: "UpStash Redis REST Token",
+          Tutorial: "配置指南",
         },
       },
 
