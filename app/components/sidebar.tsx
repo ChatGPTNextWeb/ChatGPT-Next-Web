@@ -210,7 +210,7 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-actions"]}>
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
-              icon={<DeleteIcon />}
+              icon={<CloseIcon />}
               onClick={async () => {
                 if (await showConfirm(Locale.Home.DeleteChat)) {
                   chatStore.deleteSession(chatStore.currentSessionIndex);
