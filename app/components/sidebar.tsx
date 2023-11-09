@@ -1,3 +1,5 @@
+import { useEffect, useRef, useMemo, useCallback } from "react";
+
 import styles from "./home.module.scss";
 
 import AddIcon from "../icons/add.svg";
@@ -209,7 +211,7 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-actions"]}>
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
             <IconButton
-              icon={<CloseIcon />}
+              icon={<DeleteIcon />}
               onClick={async () => {
                 if (await showConfirm(Locale.Home.DeleteChat)) {
                   chatStore.deleteSession(chatStore.currentSessionIndex);
