@@ -46,7 +46,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-4-1106-preview" as ModelType,
+    model: "gpt-4" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 8000,
