@@ -19,6 +19,7 @@ const DEFAULT_ACCESS_STATE = {
   hideBalanceQuery: false,
   disableGPT4: false,
   disableFastLink: false,
+  customModels: "",
 
   openaiUrl: DEFAULT_OPENAI_URL,
 };
@@ -54,12 +55,6 @@ export const useAccessStore = createPersistStore(
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));
-
-          if (res.disableGPT4) {
-            DEFAULT_MODELS.forEach(
-              (m: any) => (m.available = !m.name.startsWith("gpt-4")),
-            );
-          }
         })
         .catch(() => {
           console.error("[Config] failed to fetch config");
