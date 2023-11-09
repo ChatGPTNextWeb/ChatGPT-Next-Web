@@ -41,6 +41,14 @@ const DEFAULT_SYNC_STATE = {
     apiKey: "",
   },
 
+  redist: {
+    endpoint: "",
+    port: "",
+    username: "",
+    key: STORAGE_KEY,
+    password: "",
+  },
+
   lastSyncTime: 0,
   lastProvider: "",
 };

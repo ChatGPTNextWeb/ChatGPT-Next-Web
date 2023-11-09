@@ -190,6 +190,18 @@ const id: PartialLocaleType = {
           UserName: "User Pengguna",
           Password: "Kata Sandi",
         },
+        UpStash: {
+          Endpoint: "URL REST Redis UpStash",
+          UserName: "Nama Cadangan",
+          Password: "Token REST Redis UpStash",
+        },
+        Redist: {
+          Endpoint: "Host Redis",
+          Port: "Port",
+          Key:  "Key",
+          UserName: "User Pengguna",
+          Password: "Kata Sandi Redis",
+        },
       },
     },
     SendKey: "Kirim",
