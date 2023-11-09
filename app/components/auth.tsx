@@ -56,7 +56,7 @@ export function AuthPage() {
           <input
             className={styles["auth-input"]}
             type="password"
-            placeholder={Locale.Settings.Token.Placeholder}
+            placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
             value={accessStore.openaiApiKey}
             onChange={(e) => {
               accessStore.update(
