@@ -5,7 +5,7 @@ permissions:
 
 on:
   schedule:
-    - cron: "0 */6 * * *" # every 6 hours
+    - cron: "0 0 * * *" # every day
   workflow_dispatch:
 
 jobs:
@@ -31,3 +31,10 @@ jobs:
 
           # Set test_mode true to run tests instead of the true action!!
           test_mode: false
+
+      - name: Sync check
+        if: failure()
+        run: |
+          echo "[Error] 由于上游仓库的 workflow 文件变更，导致 GitHub 自动暂停了本次自动更新，你需要手动 Sync Fork 一次，详细教程请查看：https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E6%89%93%E5%BC%80%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0"
+          echo "[Error] Due to a change in the workflow file of the upstream repository, GitHub has automatically suspended the scheduled automatic update. You need to manually sync your fork. Please refer to the detailed tutorial for instructions: https://github.com/Yidadaa/ChatGPT-Next-Web#enable-automatic-updates"
+          exit 1
