@@ -300,7 +300,7 @@ const en: LocaleType = {
     },
     MaxTokens: {
       Title: "Max Tokens",
-      SubTitle: "Maximum length of input tokens and generated tokens",
+      SubTitle: "Maximum length of generated tokens",
     },
     PresencePenalty: {
       Title: "Presence Penalty",
