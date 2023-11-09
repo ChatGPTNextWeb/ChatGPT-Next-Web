@@ -27,7 +27,6 @@ import {
 
 import { signOut } from "next-auth/react";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import { showConfirm, showToast } from "./ui-lib";
