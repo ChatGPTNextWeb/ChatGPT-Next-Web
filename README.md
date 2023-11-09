@@ -153,13 +153,13 @@ After adding or modifying this environment variable, please redeploy the project
 
 > [简体中文 > 如何配置 api key、访问密码、接口代理](./README_CN.md#环境变量)
 
-### `OPENAI_API_KEY` (required)
-
-Your openai api key.
-
 ### `CODE` (optional)
 
 Access password, separated by comma.
+
+### `OPENAI_API_KEY` (required)
+
+Your openai api key.
 
 ### `BASE_URL` (optional)
 
@@ -172,6 +172,20 @@ Override openai api request base url.
 ### `OPENAI_ORG_ID` (optional)
 
 Specify OpenAI organization ID.
+
+### `AZURE_URL` (optional)
+
+> Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
+
+Azure deploy url.
+
+### `AZURE_API_KEY` (optional)
+
+Azure Api Key.
+
+### `AZURE_API_VERSION` (optional)
+
+Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
 
 ### `HIDE_USER_API_KEY` (optional)
 
