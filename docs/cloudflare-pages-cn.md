@@ -1,6 +1,7 @@
 # Cloudflare Pages 部署指南
 
 ## 如何新建项目
+
 在 Github 上 fork 本项目，然后登录到 dash.cloudflare.com 并进入 Pages。
 
 1. 点击 "Create a project"。
@@ -12,7 +13,7 @@
 7. 在 "Build Settings" 中，选择 "Framework presets" 选项并选择 "Next.js"。
 8. 由于 node:buffer 的 bug，暂时不要使用默认的 "Build command"。请使用以下命令：
    ```
-   npx https://prerelease-registry.devprod.cloudflare.dev/next-on-pages/runs/4930842298/npm-package-next-on-pages-230 --experimental-minify
+   npx @cloudflare/next-on-pages@1.5.0
    ```
 9. 对于 "Build output directory"，使用默认值并且不要修改。
 10. 不要修改 "Root Directory"。
@@ -30,7 +31,9 @@
     - `OPENAI_ORG_ID= 可选填，指定 OpenAI 中的组织 ID`
     - `HIDE_USER_API_KEY=1 可选，不让用户自行填入 API Key`
     - `DISABLE_GPT4=1 可选，不让用户使用 GPT-4`
-    
+    - `ENABLE_BALANCE_QUERY=1 可选，启用余额查询功能`
+    - `DISABLE_FAST_LINK=1 可选，禁用从链接解析预制设置`
+
 12. 点击 "Save and Deploy"。
 13. 点击 "Cancel deployment"，因为需要填写 Compatibility flags。
 14. 前往 "Build settings"、"Functions"，找到 "Compatibility flags"。
