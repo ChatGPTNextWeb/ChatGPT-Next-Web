@@ -190,6 +190,7 @@ Cloudflare R2 访问密钥 ID，使用 `DALL-E` 插件时需要配置。
 ### `R2_SECRET_ACCESS_KEY` （可选）
 
 Cloudflare R2 机密访问密钥，使用 `DALL-E` 插件时需要配置。
+
 ### `R2_BUCKET` （可选）
 
 Cloudflare R2 Bucket 名称，使用 `DALL-E` 插件时需要配置。
