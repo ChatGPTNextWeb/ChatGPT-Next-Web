@@ -197,6 +197,13 @@ If you do want users to query balance, set this value to 1, or you should set it
 
 If you want to disable parse settings from url, set this to 1.
 
+### `CUSTOM_MODELS` (optional)
+
+> Default: Empty
+> Example: `+llama,+claude-2,-gpt-3.5-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list.
+
+To control custom models, use `+` to add a custom model, use `-` to hide a model, separated by comma.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
