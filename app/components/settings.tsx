@@ -456,12 +456,16 @@ function SyncConfigModal(props: { onClose?: () => void }) {
               ></PasswordInput>
             </ListItem>
             <ListItem title={Locale.Settings.Sync.Config.UpStash.Tutorial}>
-              <a
-                href="https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/docs/synchronise-chat-logs-cn.md"
-                target="_blank"
+              <button
+                onClick={() =>
+                  window.open(
+                    "https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/docs/synchronise-chat-logs-cn.md",
+                  )
+                }
               >
-                {Locale.Settings.Sync.Config.UpStash.Tutorial}
-              </a>
+                {" "}
+                {Locale.Settings.Sync.Config.UpStash.Tutorial}{" "}
+              </button>
             </ListItem>
           </List>
         )}
