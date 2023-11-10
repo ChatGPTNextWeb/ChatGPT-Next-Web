@@ -96,18 +96,6 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 
 export const DEFAULT_MODELS = [
   {
-    name: "gpt-4-1106-preview",
-    available: true,
-  },
-  {
-    name: "gpt-4-vision-preview",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-1106",
-    available: true,
-  },
-  {
     name: "gpt-4",
     available: true,
   },
@@ -141,14 +129,6 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-1106",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
     available: true,
   },
   {
