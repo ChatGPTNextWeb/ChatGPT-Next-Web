@@ -147,11 +147,7 @@ const jp: PartialLocaleType = {
       SubTitle:
         "圧縮されていない履歴メッセージがこの値を超えた場合、圧縮が行われます。",
     },
-    Token: {
-      Title: "APIキー",
-      SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
-      Placeholder: "OpenAI APIキー",
-    },
+
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
@@ -161,11 +157,7 @@ const jp: PartialLocaleType = {
       Check: "再確認",
       NoAccess: "APIキーまたはアクセスパスワードを入力して残高を表示",
     },
-    AccessCode: {
-      Title: "アクセスパスワード",
-      SubTitle: "暗号化アクセスが有効になっています",
-      Placeholder: "アクセスパスワードを入力してください",
-    },
+
     Model: "モデル (model)",
     Temperature: {
       Title: "ランダム性 (temperature)",
