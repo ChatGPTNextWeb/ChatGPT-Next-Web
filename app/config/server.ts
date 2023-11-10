@@ -13,11 +13,11 @@ declare global {
       OPENAI_ORG_ID?: string; // openai only
 
       VERCEL?: "1" | undefined;
+      BUILD_MODE?: "standalone" | "export";
+      BUILD_APP?: string; // is building desktop app
 
       HIDE_USER_API_KEY?: string; // disable user's api key input
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
-      BUILD_MODE?: "standalone" | "export";
-      BUILD_APP?: string; // is building desktop app
       ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
