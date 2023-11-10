@@ -116,6 +116,25 @@ export function ModelConfigList(props: {
       {!isDalleModel && (
         <>
           <ListItem
+            title={Locale.Settings.Temperature.Title}
+            subTitle={Locale.Settings.Temperature.SubTitle}
+          >
+            <InputRange
+              value={props.modelConfig.temperature?.toFixed(1)}
+              min="0"
+              max="1" // lets limit it to 0-1
+              step="0.1"
+              onChange={(e) => {
+                props.updateConfig(
+                  (config) =>
+                  (config.temperature = ModalConfigValidator.temperature(
+                    e.currentTarget.valueAsNumber,
+                  )),
+                );
+              }}
+            ></InputRange>
+          </ListItem>
+          <ListItem
             title={Locale.Settings.TopP.Title}
             subTitle={Locale.Settings.TopP.SubTitle}
           >
