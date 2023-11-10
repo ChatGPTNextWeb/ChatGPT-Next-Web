@@ -1,10 +1,11 @@
-import { ModalConfigValidator, ModelConfig, useAppConfig } from "../store";
+import { ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select, showPrompt } from "./ui-lib";
 import { IconButton } from "./button";
 import { useState } from "react";
+import { useAllModels } from "../utils/hooks";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -12,7 +13,8 @@ export function ModelConfigList(props: {
 }) {
   const [authorizationCode, setAuthorizationCode] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const config = useAppConfig();
+  // const config = useAppConfig();
+  const allModels = useAllModels();
 
   const handleAuthorization = (code: string) => {
     // 在这里进行授权码的验证逻辑
@@ -64,7 +66,7 @@ export function ModelConfigList(props: {
           }}
           disabled={!isAuthorized}
         >
-          {config.allModels().map((v, i) => (
+          {allModels.map((v, i) => (
             <option value={v.name} key={i} disabled={!v.available}>
               {v.name}
             </option>
@@ -115,8 +117,8 @@ export function ModelConfigList(props: {
       >
         <input
           type="number"
-          min={100}
-          max={100000}
+          min={1024}
+          max={512000}
           value={props.modelConfig.max_tokens}
           onChange={(e) =>
             props.updateConfig(

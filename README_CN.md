@@ -90,6 +90,20 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 指定 OpenAI 中的组织 ID。
 
+### `AZURE_URL` （可选）
+
+> 形如：https://{azure-resource-url}/openai/deployments/{deploy-name}
+
+Azure 部署地址。
+
+### `AZURE_API_KEY` （可选）
+
+Azure 密钥。
+
+### `AZURE_API_VERSION` （可选）
+
+Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
+
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
@@ -106,6 +120,12 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
+### `CUSTOM_MODELS` （可选）
+
+> 示例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo` 表示增加 `qwen-7b-chat` 和 `glm-6b` 到模型列表，而从列表中删除 `gpt-3.5-turbo`。
+
+用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，用英文逗号隔开。
+
 ## 开发
 
 点击下方按钮，开始二次开发：
@@ -118,7 +138,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://nb.nextweb.fun/api/proxy
+BASE_URL=https://ab.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
