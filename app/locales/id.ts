@@ -4,8 +4,9 @@ import { PartialLocaleType } from "./index";
 const id: PartialLocaleType = {
   WIP: "Coming Soon...",
   Error: {
-    Unauthorized: "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/#/auth) atau di halaman [Pengaturan](/#/settings).",
-  },  
+    Unauthorized:
+      "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/#/auth) atau di halaman [Pengaturan](/#/settings).",
+  },
   Auth: {
     Title: "Diperlukan Kode Akses",
     Tips: "Masukkan kode akses di bawah",
@@ -237,11 +238,7 @@ const id: PartialLocaleType = {
       SubTitle:
         "Jika panjang pesan melebihi batas yang ditentukan, pesan tersebut akan dikompresi",
     },
-    Token: {
-      Title: "Kunci API",
-      SubTitle: "Gunakan kunci Anda untuk melewati batas kode akses",
-      Placeholder: "Kunci API OpenAI",
-    },
+
     Usage: {
       Title: "Saldo Akun",
       SubTitle(used: any, total: any) {
@@ -251,15 +248,7 @@ const id: PartialLocaleType = {
       Check: "Periksa",
       NoAccess: "Masukkan kunci API untuk memeriksa saldo",
     },
-    AccessCode: {
-      Title: "Kode Akses",
-      SubTitle: "Kontrol akses diaktifkan",
-      Placeholder: "Diperlukan kode akses",
-    },
-    Endpoint: {
-      Title: "Endpoint",
-      SubTitle: "Harus dimulai dengan http(s):// untuk endpoint kustom",
-    },
+
     Model: "Model",
     Temperature: {
       Title: "Suhu",
