@@ -70,14 +70,12 @@ export function ListItem(props: {
   );
 }
 
-export function List(props: {
-  children:
-    | Array<JSX.Element | null | undefined>
-    | JSX.Element
-    | null
-    | undefined;
-}) {
-  return <div className={styles.list}>{props.children}</div>;
+export function List(props: { children: React.ReactNode; id?: string }) {
+  return (
+    <div className={styles.list} id={props.id}>
+      {props.children}
+    </div>
+  );
 }
 
 export function Loading() {
