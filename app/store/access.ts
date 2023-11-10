@@ -1,25 +1,41 @@
-import { DEFAULT_API_HOST, DEFAULT_MODELS, StoreKey } from "../constant";
+import {
+  ApiPath,
+  DEFAULT_API_HOST,
+  ServiceProvider,
+  StoreKey,
+} from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
+import { ensure } from "../utils/clone";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export" ? DEFAULT_API_HOST : "/api/openai/";
-console.log("[API] default openai url", DEFAULT_OPENAI_URL);
+  getClientConfig()?.buildMode === "export" ? DEFAULT_API_HOST : ApiPath.OpenAI;
 
 const DEFAULT_ACCESS_STATE = {
-  token: "",
   accessCode: "",
+  useCustomConfig: false,
+
+  provider: ServiceProvider.OpenAI,
+
+  // openai
+  openaiUrl: DEFAULT_OPENAI_URL,
+  openaiApiKey: "",
+
+  // azure
+  azureUrl: "",
+  azureApiKey: "",
+  azureApiVersion: "2023-08-01-preview",
+
+  // server config
   needCode: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
-
-  openaiUrl: DEFAULT_OPENAI_URL,
 };
 
 export const useAccessStore = createPersistStore(
@@ -31,12 +47,24 @@ export const useAccessStore = createPersistStore(
 
       return get().needCode;
     },
+
+    isValidOpenAI() {
+      return ensure(get(), ["openaiUrl", "openaiApiKey"]);
+    },
+
+    isValidAzure() {
+      return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
       // has token or has code or disabled access control
       return (
-        !!get().token || !!get().accessCode || !this.enabledAccessControl()
+        this.isValidOpenAI() ||
+        this.isValidAzure() ||
+        !this.enabledAccessControl() ||
+        (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
     },
     fetch() {
@@ -64,6 +92,19 @@ export const useAccessStore = createPersistStore(
   }),
   {
     name: StoreKey.Access,
-    version: 1,
+    version: 2,
+    migrate(persistedState, version) {
+      if (version < 2) {
+        const state = persistedState as {
+          token: string;
+          openaiApiKey: string;
+          azureApiVersion: string;
+        };
+        state.openaiApiKey = state.token;
+        state.azureApiVersion = "2023-08-01-preview";
+      }
+
+      return persistedState as any;
+    },
   },
 );
