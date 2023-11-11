@@ -90,6 +90,20 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 指定 OpenAI 中的组织 ID。
 
+### `AZURE_URL` （可选）
+
+> 形如：https://{azure-resource-url}/openai/deployments/{deploy-name}
+
+Azure 部署地址。
+
+### `AZURE_API_KEY` （可选）
+
+Azure 密钥。
+
+### `AZURE_API_VERSION` （可选）
+
+Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
+
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
@@ -98,9 +112,19 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
-### `HIDE_BALANCE_QUERY` （可选）
+### `ENABLE_BALANCE_QUERY` （可选）
 
-如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+如果你想启用余额查询功能，将此环境变量设置为 1 即可。
+
+### `DISABLE_FAST_LINK` （可选）
+
+如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
+
+### `CUSTOM_MODELS` （可选）
+
+> 示例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo` 表示增加 `qwen-7b-chat` 和 `glm-6b` 到模型列表，而从列表中删除 `gpt-3.5-turbo`。
+
+用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，用英文逗号隔开。
 
 ## 开发
 
@@ -114,7 +138,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
+BASE_URL=https://a.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
@@ -135,8 +159,8 @@ BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 docker pull yidadaa/chatgpt-next-web
 
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="页面访问密码" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=页面访问密码 \
    yidadaa/chatgpt-next-web
 ```
 
@@ -144,10 +168,10 @@ docker run -d -p 3000:3000 \
 
 ```shell
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="页面访问密码" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=页面访问密码 \
    --net=host \
-   -e PROXY_URL="http://127.0.0.1:7890" \
+   -e PROXY_URL=http://127.0.0.1:7890 \
    yidadaa/chatgpt-next-web
 ```
 
@@ -179,8 +203,10 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 [见项目贡献者列表](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
+### 相关项目
+
+- [one-api](https://github.com/songquanpeng/one-api): 一站式大模型额度管理平台，支持市面上所有主流大语言模型
+
 ## 开源协议
 
-> 反对 996，从我开始。
-
-[Anti 996 License](https://github.com/kattgu7/Anti-996-License/blob/master/LICENSE_CN_EN)
+[MIT](https://opensource.org/license/mit/)

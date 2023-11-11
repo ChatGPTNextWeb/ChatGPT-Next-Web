@@ -4,7 +4,8 @@ import type { PartialLocaleType } from "./index";
 const no: PartialLocaleType = {
   WIP: "Arbeid pågår ...",
   Error: {
-    Unauthorized: "Du har ikke tilgang. Vennlig oppgi tildelt adgangskode.",
+    Unauthorized:
+      "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,
@@ -65,6 +66,11 @@ const no: PartialLocaleType = {
       Title: "Fontstørrelsen",
       SubTitle: "Juster fontstørrelsen for samtaleinnholdet.",
     },
+    InjectSystemPrompts: {
+      Title: "Sett inn systemprompter",
+      SubTitle:
+        "Tving tillegg av en simulert ChatGPT-systemprompt i begynnelsen av meldingslisten for hver forespørsel",
+    },
     Update: {
       Version: (x: string) => `Versjon: ${x}`,
       IsLatest: "Siste versjon",
@@ -100,12 +106,7 @@ const no: PartialLocaleType = {
       SubTitle:
         "Komprimer dersom ikke-komprimert lengde på meldinger overskrider denne verdien",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle:
-        "Bruk din egen API-nøkkel for å ignorere tilgangskoden begrensning",
-      Placeholder: "OpenAI API-nøkkel",
-    },
+
     Usage: {
       Title: "Saldo for konto",
       SubTitle(used: any, total: any) {
@@ -115,11 +116,7 @@ const no: PartialLocaleType = {
       Check: "Sjekk",
       NoAccess: "Skriv inn API-nøkkelen for å sjekke saldo",
     },
-    AccessCode: {
-      Title: "Tilgangskode",
-      SubTitle: "Tilgangskontroll på",
-      Placeholder: "Trenger tilgangskode",
-    },
+
     Model: "Model",
     Temperature: {
       Title: "Temperatur",

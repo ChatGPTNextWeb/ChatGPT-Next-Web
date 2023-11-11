@@ -5,7 +5,7 @@ const tr: PartialLocaleType = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
-      "Yetkisiz erişim, lütfen erişim kodunu ayarlar sayfasından giriniz.",
+      "Yetkisiz erişim, lütfen erişim kodunu ayarlar [sayfasından](/#/auth) giriniz.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mesaj`,
@@ -71,6 +71,11 @@ const tr: PartialLocaleType = {
       Title: "Yazı Boyutu",
       SubTitle: "Sohbet içeriğinin yazı boyutunu ayarlayın",
     },
+    InjectSystemPrompts: {
+      Title: "Sistem İpucu Ekleyin",
+      SubTitle:
+        "Her istek için ileti listesinin başına simüle edilmiş bir ChatGPT sistem ipucu ekleyin",
+    },
     Update: {
       Version: (x: string) => `Sürüm: ${x}`,
       IsLatest: "En son sürüm",
@@ -119,11 +124,7 @@ const tr: PartialLocaleType = {
       SubTitle:
         "Sıkıştırılmamış mesajların uzunluğu bu değeri aşarsa sıkıştırılır",
     },
-    Token: {
-      Title: "API Anahtarı",
-      SubTitle: "Erişim kodu sınırını yoksaymak için anahtarınızı kullanın",
-      Placeholder: "OpenAI API Anahtarı",
-    },
+
     Usage: {
       Title: "Hesap Bakiyesi",
       SubTitle(used: any, total: any) {
@@ -133,11 +134,7 @@ const tr: PartialLocaleType = {
       Check: "Tekrar Kontrol Et",
       NoAccess: "Bakiyeyi kontrol etmek için API anahtarını girin",
     },
-    AccessCode: {
-      Title: "Erişim Kodu",
-      SubTitle: "Erişim kontrolü etkinleştirme",
-      Placeholder: "Erişim Kodu Gerekiyor",
-    },
+
     Model: "Model",
     Temperature: {
       Title: "Gerçeklik",
@@ -185,6 +182,9 @@ const tr: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Sen bir asistansın",
   },
   Mask: {
     Name: "Mask",

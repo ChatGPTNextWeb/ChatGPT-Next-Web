@@ -10,6 +10,15 @@ import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
+import DownloadIcon from "../icons/download.svg";
+import UploadIcon from "../icons/upload.svg";
+import ConfigIcon from "../icons/config.svg";
+import ConfirmIcon from "../icons/confirm.svg";
+
+import ConnectionIcon from "../icons/connection.svg";
+import CloudSuccessIcon from "../icons/cloud-success.svg";
+import CloudFailIcon from "../icons/cloud-fail.svg";
+
 import {
   Input,
   List,
@@ -19,6 +28,7 @@ import {
   Popover,
   Select,
   showConfirm,
+  showToast,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -40,7 +50,16 @@ import Locale, {
 } from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
-import { Path, RELEASE_URL, UPDATE_URL } from "../constant";
+import {
+  Azure,
+  OPENAI_BASE_URL,
+  Path,
+  RELEASE_URL,
+  STORAGE_KEY,
+  ServiceProvider,
+  SlotID,
+  UPDATE_URL,
+} from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
@@ -48,8 +67,11 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
+import { nanoid } from "nanoid";
+import { useMaskStore } from "../store/mask";
+import { ProviderType } from "../utils/cloud";
 
-function EditPromptModal(props: { id: number; onClose: () => void }) {
+function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
   const prompt = promptStore.get(props.id);
 
@@ -74,7 +96,7 @@ function EditPromptModal(props: { id: number; onClose: () => void }) {
             readOnly={!prompt.isUser}
             className={styles["edit-prompt-title"]}
             onInput={(e) =>
-              promptStore.update(
+              promptStore.updatePrompt(
                 props.id,
                 (prompt) => (prompt.title = e.currentTarget.value),
               )
@@ -86,7 +108,7 @@ function EditPromptModal(props: { id: number; onClose: () => void }) {
             className={styles["edit-prompt-content"]}
             rows={10}
             onInput={(e) =>
-              promptStore.update(
+              promptStore.updatePrompt(
                 props.id,
                 (prompt) => (prompt.content = e.currentTarget.value),
               )
@@ -107,7 +129,7 @@ function UserPromptModal(props: { onClose?: () => void }) {
   const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
   const prompts = searchInput.length > 0 ? searchPrompts : allPrompts;
 
-  const [editingPromptId, setEditingPromptId] = useState<number>();
+  const [editingPromptId, setEditingPromptId] = useState<string>();
 
   useEffect(() => {
     if (searchInput.length > 0) {
@@ -126,12 +148,15 @@ function UserPromptModal(props: { onClose?: () => void }) {
         actions={[
           <IconButton
             key="add"
-            onClick={() =>
-              promptStore.add({
+            onClick={() => {
+              const promptId = promptStore.add({
+                id: nanoid(),
+                createdAt: Date.now(),
                 title: "Empty Prompt",
                 content: "Empty Prompt Content",
-              })
-            }
+              });
+              setEditingPromptId(promptId);
+            }}
             icon={<AddIcon />}
             bordered
             text={Locale.Settings.Prompt.Modal.Add}
@@ -238,75 +263,297 @@ function DangerItems() {
   );
 }
 
-function SyncItems() {
+function CheckButton() {
   const syncStore = useSyncStore();
-  const webdav = syncStore.webDavConfig;
 
-  // not ready: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/920#issuecomment-1609866332
-  return null;
+  const couldCheck = useMemo(() => {
+    return syncStore.coundSync();
+  }, [syncStore]);
+
+  const [checkState, setCheckState] = useState<
+    "none" | "checking" | "success" | "failed"
+  >("none");
+
+  async function check() {
+    setCheckState("checking");
+    const valid = await syncStore.check();
+    setCheckState(valid ? "success" : "failed");
+  }
+
+  if (!couldCheck) return null;
 
   return (
-    <List>
-      <ListItem
-        title={"上次同步：" + new Date().toLocaleString()}
-        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
+    <IconButton
+      text={Locale.Settings.Sync.Config.Modal.Check}
+      bordered
+      onClick={check}
+      icon={
+        checkState === "none" ? (
+          <ConnectionIcon />
+        ) : checkState === "checking" ? (
+          <LoadingIcon />
+        ) : checkState === "success" ? (
+          <CloudSuccessIcon />
+        ) : checkState === "failed" ? (
+          <CloudFailIcon />
+        ) : (
+          <ConnectionIcon />
+        )
+      }
+    ></IconButton>
+  );
+}
+
+function SyncConfigModal(props: { onClose?: () => void }) {
+  const syncStore = useSyncStore();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Sync.Config.Modal.Title}
+        onClose={() => props.onClose?.()}
+        actions={[
+          <CheckButton key="check" />,
+          <IconButton
+            key="confirm"
+            onClick={props.onClose}
+            icon={<ConfirmIcon />}
+            bordered
+            text={Locale.UI.Confirm}
+          />,
+        ]}
       >
-        <IconButton
-          icon={<ResetIcon />}
-          text="同步"
-          onClick={() => {
-            syncStore.check().then(console.log);
-          }}
-        />
-      </ListItem>
+        <List>
+          <ListItem
+            title={Locale.Settings.Sync.Config.SyncType.Title}
+            subTitle={Locale.Settings.Sync.Config.SyncType.SubTitle}
+          >
+            <select
+              value={syncStore.provider}
+              onChange={(e) => {
+                syncStore.update(
+                  (config) =>
+                    (config.provider = e.target.value as ProviderType),
+                );
+              }}
+            >
+              {Object.entries(ProviderType).map(([k, v]) => (
+                <option value={v} key={k}>
+                  {k}
+                </option>
+              ))}
+            </select>
+          </ListItem>
 
-      <ListItem
-        title={"本地备份"}
-        subTitle={"20 次对话，100 条消息，200 提示词，20 面具"}
-      ></ListItem>
+          <ListItem
+            title={Locale.Settings.Sync.Config.Proxy.Title}
+            subTitle={Locale.Settings.Sync.Config.Proxy.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={syncStore.useProxy}
+              onChange={(e) => {
+                syncStore.update(
+                  (config) => (config.useProxy = e.currentTarget.checked),
+                );
+              }}
+            ></input>
+          </ListItem>
+          {syncStore.useProxy ? (
+            <ListItem
+              title={Locale.Settings.Sync.Config.ProxyUrl.Title}
+              subTitle={Locale.Settings.Sync.Config.ProxyUrl.SubTitle}
+            >
+              <input
+                type="text"
+                value={syncStore.proxyUrl}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) => (config.proxyUrl = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+          ) : null}
+        </List>
 
-      <ListItem
-        title={"Web Dav Server"}
-        subTitle={Locale.Settings.AccessCode.SubTitle}
-      >
-        <input
-          value={webdav.server}
-          type="text"
-          placeholder={"https://example.com"}
-          onChange={(e) => {
-            syncStore.update(
-              (config) => (config.server = e.currentTarget.value),
-            );
-          }}
-        />
-      </ListItem>
+        {syncStore.provider === ProviderType.WebDAV && (
+          <>
+            <List>
+              <ListItem title={Locale.Settings.Sync.Config.WebDav.Endpoint}>
+                <input
+                  type="text"
+                  value={syncStore.webdav.endpoint}
+                  onChange={(e) => {
+                    syncStore.update(
+                      (config) =>
+                        (config.webdav.endpoint = e.currentTarget.value),
+                    );
+                  }}
+                ></input>
+              </ListItem>
 
-      <ListItem title="Web Dav User Name" subTitle="user name here">
-        <input
-          value={webdav.username}
-          type="text"
-          placeholder={"username"}
-          onChange={(e) => {
-            syncStore.update(
-              (config) => (config.username = e.currentTarget.value),
-            );
-          }}
-        />
-      </ListItem>
+              <ListItem title={Locale.Settings.Sync.Config.WebDav.UserName}>
+                <input
+                  type="text"
+                  value={syncStore.webdav.username}
+                  onChange={(e) => {
+                    syncStore.update(
+                      (config) =>
+                        (config.webdav.username = e.currentTarget.value),
+                    );
+                  }}
+                ></input>
+              </ListItem>
+              <ListItem title={Locale.Settings.Sync.Config.WebDav.Password}>
+                <PasswordInput
+                  value={syncStore.webdav.password}
+                  onChange={(e) => {
+                    syncStore.update(
+                      (config) =>
+                        (config.webdav.password = e.currentTarget.value),
+                    );
+                  }}
+                ></PasswordInput>
+              </ListItem>
+            </List>
+          </>
+        )}
 
-      <ListItem title="Web Dav Password" subTitle="password here">
-        <input
-          value={webdav.password}
-          type="text"
-          placeholder={"password"}
-          onChange={(e) => {
-            syncStore.update(
-              (config) => (config.password = e.currentTarget.value),
-            );
-          }}
-        />
-      </ListItem>
-    </List>
+        {syncStore.provider === ProviderType.UpStash && (
+          <List>
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.Endpoint}>
+              <input
+                type="text"
+                value={syncStore.upstash.endpoint}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) =>
+                      (config.upstash.endpoint = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.UserName}>
+              <input
+                type="text"
+                value={syncStore.upstash.username}
+                placeholder={STORAGE_KEY}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) =>
+                      (config.upstash.username = e.currentTarget.value),
+                  );
+                }}
+              ></input>
+            </ListItem>
+            <ListItem title={Locale.Settings.Sync.Config.UpStash.Password}>
+              <PasswordInput
+                value={syncStore.upstash.apiKey}
+                onChange={(e) => {
+                  syncStore.update(
+                    (config) => (config.upstash.apiKey = e.currentTarget.value),
+                  );
+                }}
+              ></PasswordInput>
+            </ListItem>
+          </List>
+        )}
+      </Modal>
+    </div>
+  );
+}
+
+function SyncItems() {
+  const syncStore = useSyncStore();
+  const chatStore = useChatStore();
+  const promptStore = usePromptStore();
+  const maskStore = useMaskStore();
+  const couldSync = useMemo(() => {
+    return syncStore.coundSync();
+  }, [syncStore]);
+
+  const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
+
+  const stateOverview = useMemo(() => {
+    const sessions = chatStore.sessions;
+    const messageCount = sessions.reduce((p, c) => p + c.messages.length, 0);
+
+    return {
+      chat: sessions.length,
+      message: messageCount,
+      prompt: Object.keys(promptStore.prompts).length,
+      mask: Object.keys(maskStore.masks).length,
+    };
+  }, [chatStore.sessions, maskStore.masks, promptStore.prompts]);
+
+  return (
+    <>
+      <List>
+        <ListItem
+          title={Locale.Settings.Sync.CloudState}
+          subTitle={
+            syncStore.lastProvider
+              ? `${new Date(syncStore.lastSyncTime).toLocaleString()} [${
+                  syncStore.lastProvider
+                }]`
+              : Locale.Settings.Sync.NotSyncYet
+          }
+        >
+          <div style={{ display: "flex" }}>
+            <IconButton
+              icon={<ConfigIcon />}
+              text={Locale.UI.Config}
+              onClick={() => {
+                setShowSyncConfigModal(true);
+              }}
+            />
+            {couldSync && (
+              <IconButton
+                icon={<ResetIcon />}
+                text={Locale.UI.Sync}
+                onClick={async () => {
+                  try {
+                    await syncStore.sync();
+                    showToast(Locale.Settings.Sync.Success);
+                  } catch (e) {
+                    showToast(Locale.Settings.Sync.Fail);
+                    console.error("[Sync]", e);
+                  }
+                }}
+              />
+            )}
+          </div>
+        </ListItem>
+
+        <ListItem
+          title={Locale.Settings.Sync.LocalState}
+          subTitle={Locale.Settings.Sync.Overview(stateOverview)}
+        >
+          <div style={{ display: "flex" }}>
+            <IconButton
+              icon={<UploadIcon />}
+              text={Locale.UI.Export}
+              onClick={() => {
+                syncStore.export();
+              }}
+            />
+            <IconButton
+              icon={<DownloadIcon />}
+              text={Locale.UI.Import}
+              onClick={() => {
+                syncStore.import();
+              }}
+            />
+          </div>
+        </ListItem>
+      </List>
+
+      {showSyncConfigModal && (
+        <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
+      )}
+    </>
   );
 }
 
@@ -315,7 +562,6 @@ export function Settings() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
-  const chatStore = useChatStore();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -334,13 +580,27 @@ export function Settings() {
     console.log("[Update] remote version ", updateStore.remoteVersion);
   }
 
+  const accessStore = useAccessStore();
+  const shouldHideBalanceQuery = useMemo(() => {
+    const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
+    return (
+      accessStore.hideBalanceQuery ||
+      isOpenAiUrl ||
+      accessStore.provider === ServiceProvider.Azure
+    );
+  }, [
+    accessStore.hideBalanceQuery,
+    accessStore.openaiUrl,
+    accessStore.provider,
+  ]);
+
   const usage = {
     used: updateStore.used,
     subscription: updateStore.subscription,
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage(force = false) {
-    if (accessStore.hideBalanceQuery) {
+    if (shouldHideBalanceQuery) {
       return;
     }
 
@@ -350,7 +610,6 @@ export function Settings() {
     });
   }
 
-  const accessStore = useAccessStore();
   const enabledAccessControl = useMemo(
     () => accessStore.enabledAccessControl(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -516,7 +775,7 @@ export function Settings() {
               title={`${config.fontSize ?? 14}px`}
               value={config.fontSize}
               min="12"
-              max="18"
+              max="40"
               step="1"
               onChange={(e) =>
                 updateConfig(
@@ -525,6 +784,22 @@ export function Settings() {
                 )
               }
             ></InputRange>
+          </ListItem>
+
+          <ListItem
+            title={Locale.Settings.AutoGenerateTitle.Title}
+            subTitle={Locale.Settings.AutoGenerateTitle.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.enableAutoGenerateTitle}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableAutoGenerateTitle = e.currentTarget.checked),
+                )
+              }
+            ></input>
           </ListItem>
 
           <ListItem
@@ -543,6 +818,8 @@ export function Settings() {
             ></input>
           </ListItem>
         </List>
+
+        <SyncItems />
 
         <List>
           <ListItem
@@ -580,83 +857,6 @@ export function Settings() {
         </List>
 
         <List>
-          {showAccessCode ? (
-            <ListItem
-              title={Locale.Settings.AccessCode.Title}
-              subTitle={Locale.Settings.AccessCode.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.accessCode}
-                type="text"
-                placeholder={Locale.Settings.AccessCode.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
-          ) : (
-            <></>
-          )}
-
-          {!accessStore.hideUserApiKey ? (
-            <>
-              <ListItem
-                title={Locale.Settings.Endpoint.Title}
-                subTitle={Locale.Settings.Endpoint.SubTitle}
-              >
-                <input
-                  type="text"
-                  value={accessStore.openaiUrl}
-                  placeholder="https://api.openai.com/"
-                  onChange={(e) =>
-                    accessStore.updateOpenAiUrl(e.currentTarget.value)
-                  }
-                ></input>
-              </ListItem>
-              <ListItem
-                title={Locale.Settings.Token.Title}
-                subTitle={Locale.Settings.Token.SubTitle}
-              >
-                <PasswordInput
-                  value={accessStore.token}
-                  type="text"
-                  placeholder={Locale.Settings.Token.Placeholder}
-                  onChange={(e) => {
-                    accessStore.updateToken(e.currentTarget.value);
-                  }}
-                />
-              </ListItem>
-            </>
-          ) : null}
-
-          {!accessStore.hideBalanceQuery ? (
-            <ListItem
-              title={Locale.Settings.Usage.Title}
-              subTitle={
-                showUsage
-                  ? loadingUsage
-                    ? Locale.Settings.Usage.IsChecking
-                    : Locale.Settings.Usage.SubTitle(
-                        usage?.used ?? "[?]",
-                        usage?.subscription ?? "[?]",
-                      )
-                  : Locale.Settings.Usage.NoAccess
-              }
-            >
-              {!showUsage || loadingUsage ? (
-                <div />
-              ) : (
-                <IconButton
-                  icon={<ResetIcon></ResetIcon>}
-                  text={Locale.Settings.Usage.Check}
-                  onClick={() => checkUsage(true)}
-                />
-              )}
-            </ListItem>
-          ) : null}
-        </List>
-
-        <List>
           <ListItem
             title={Locale.Settings.Prompt.Disable.Title}
             subTitle={Locale.Settings.Prompt.Disable.SubTitle}
@@ -688,7 +888,212 @@ export function Settings() {
           </ListItem>
         </List>
 
-        <SyncItems />
+        <List id={SlotID.CustomModel}>
+          {showAccessCode && (
+            <ListItem
+              title={Locale.Settings.Access.AccessCode.Title}
+              subTitle={Locale.Settings.Access.AccessCode.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.accessCode}
+                type="text"
+                placeholder={Locale.Settings.Access.AccessCode.Placeholder}
+                onChange={(e) => {
+                  accessStore.update(
+                    (access) => (access.accessCode = e.currentTarget.value),
+                  );
+                }}
+              />
+            </ListItem>
+          )}
+
+          {!accessStore.hideUserApiKey && (
+            <>
+              <ListItem
+                title={Locale.Settings.Access.CustomEndpoint.Title}
+                subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
+              >
+                <input
+                  type="checkbox"
+                  checked={accessStore.useCustomConfig}
+                  onChange={(e) =>
+                    accessStore.update(
+                      (access) =>
+                        (access.useCustomConfig = e.currentTarget.checked),
+                    )
+                  }
+                ></input>
+              </ListItem>
+              {accessStore.useCustomConfig && (
+                <>
+                  <ListItem
+                    title={Locale.Settings.Access.Provider.Title}
+                    subTitle={Locale.Settings.Access.Provider.SubTitle}
+                  >
+                    <Select
+                      value={accessStore.provider}
+                      onChange={(e) => {
+                        accessStore.update(
+                          (access) =>
+                            (access.provider = e.target
+                              .value as ServiceProvider),
+                        );
+                      }}
+                    >
+                      {Object.entries(ServiceProvider).map(([k, v]) => (
+                        <option value={v} key={k}>
+                          {k}
+                        </option>
+                      ))}
+                    </Select>
+                  </ListItem>
+
+                  {accessStore.provider === "OpenAI" ? (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.OpenAI.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.OpenAI.Endpoint.SubTitle
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.openaiUrl}
+                          placeholder={OPENAI_BASE_URL}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.openaiUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.OpenAI.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.openaiApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.OpenAI.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.openaiApiKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                    </>
+                  ) : (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.Azure.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.Azure.Endpoint.SubTitle +
+                          Azure.ExampleEndpoint
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.azureUrl}
+                          placeholder={Azure.ExampleEndpoint}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.azureUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Azure.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.azureApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.Azure.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.azureApiKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Azure.ApiVerion.Title}
+                        subTitle={
+                          Locale.Settings.Access.Azure.ApiVerion.SubTitle
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.azureApiVersion}
+                          placeholder="2023-08-01-preview"
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.azureApiVersion =
+                                  e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+
+          {!shouldHideBalanceQuery ? (
+            <ListItem
+              title={Locale.Settings.Usage.Title}
+              subTitle={
+                showUsage
+                  ? loadingUsage
+                    ? Locale.Settings.Usage.IsChecking
+                    : Locale.Settings.Usage.SubTitle(
+                        usage?.used ?? "[?]",
+                        usage?.subscription ?? "[?]",
+                      )
+                  : Locale.Settings.Usage.NoAccess
+              }
+            >
+              {!showUsage || loadingUsage ? (
+                <div />
+              ) : (
+                <IconButton
+                  icon={<ResetIcon></ResetIcon>}
+                  text={Locale.Settings.Usage.Check}
+                  onClick={() => checkUsage(true)}
+                />
+              )}
+            </ListItem>
+          ) : null}
+
+          <ListItem
+            title={Locale.Settings.Access.CustomModel.Title}
+            subTitle={Locale.Settings.Access.CustomModel.SubTitle}
+          >
+            <input
+              type="text"
+              value={config.customModels}
+              placeholder="model1,model2,model3"
+              onChange={(e) =>
+                config.update(
+                  (config) => (config.customModels = e.currentTarget.value),
+                )
+              }
+            ></input>
+          </ListItem>
+        </List>
 
         <List>
           <ModelConfigList

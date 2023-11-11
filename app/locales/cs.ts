@@ -5,7 +5,7 @@ const cs: PartialLocaleType = {
   WIP: "V přípravě...",
   Error: {
     Unauthorized:
-      "Neoprávněný přístup, zadejte přístupový kód na stránce nastavení.",
+      "Neoprávněný přístup, zadejte přístupový kód na [stránce](/#/auth) nastavení.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} zpráv`,
@@ -71,6 +71,11 @@ const cs: PartialLocaleType = {
       Title: "Velikost písma",
       SubTitle: "Nastavení velikosti písma obsahu chatu",
     },
+    InjectSystemPrompts: {
+      Title: "Vložit systémové prompty",
+      SubTitle:
+        "Vynutit přidání simulovaného systémového promptu ChatGPT na začátek seznamu zpráv každého požadavku",
+    },
     Update: {
       Version: (x: string) => `Verze: ${x}`,
       IsLatest: "Aktuální verze",
@@ -119,11 +124,7 @@ const cs: PartialLocaleType = {
       SubTitle:
         "Komprese proběhne, pokud délka nekomprimovaných zpráv přesáhne tuto hodnotu",
     },
-    Token: {
-      Title: "API klíč",
-      SubTitle: "Použitím klíče ignorujete omezení přístupového kódu",
-      Placeholder: "Klíč API OpenAI",
-    },
+
     Usage: {
       Title: "Stav účtu",
       SubTitle(used: any, total: any) {
@@ -133,11 +134,7 @@ const cs: PartialLocaleType = {
       Check: "Zkontrolovat",
       NoAccess: "Pro kontrolu zůstatku zadejte klíč API",
     },
-    AccessCode: {
-      Title: "Přístupový kód",
-      SubTitle: "Kontrola přístupu povolena",
-      Placeholder: "Potřebujete přístupový kód",
-    },
+
     Model: "Model",
     Temperature: {
       Title: "Teplota",
@@ -182,6 +179,9 @@ const cs: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Jste asistent, který",
   },
   Mask: {
     Name: "Maska",
