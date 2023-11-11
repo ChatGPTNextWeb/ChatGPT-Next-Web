@@ -433,7 +433,7 @@ export function ChatActions(props: {
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const allModels = useAllModels();
   const models = useMemo(
-    () => allModels.filter((m) => m.available).map((m) => m.name),
+    () => allModels.filter((m) => m.available),
     [allModels],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
@@ -441,9 +441,9 @@ export function ChatActions(props: {
   useEffect(() => {
     // if current model is not available
     // switch to first available model
-    const isUnavaliableModel = !models.includes(currentModel);
+    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
     if (isUnavaliableModel && models.length > 0) {
-      const nextModel = models[0] as ModelType;
+      const nextModel = models[0].name as ModelType;
       chatStore.updateCurrentSession(
         (session) => (session.mask.modelConfig.model = nextModel),
       );
@@ -531,8 +531,8 @@ export function ChatActions(props: {
         <Selector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
-            title: m,
-            value: m,
+            title: m.displayName,
+            value: m.name,
           }))}
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
