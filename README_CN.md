@@ -138,7 +138,7 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://nb.nextweb.fun/api/proxy
+BASE_URL=https://a.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
