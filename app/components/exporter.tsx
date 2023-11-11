@@ -53,7 +53,7 @@ export function ExportMessageModal(props: { onClose: () => void }) {
               opacity: 0.5,
             }}
           >
-            只有清除上下文之后的消息会被展示
+            {Locale.Exporter.Description.Title}
           </div>
         }
       >
