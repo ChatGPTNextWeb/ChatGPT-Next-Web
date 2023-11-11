@@ -78,6 +78,12 @@ const ToastmastersTimer = dynamic(
     loading: () => <Loading noLogo />,
   },
 );
+const InterviewSelfServe = dynamic(
+  async () => (await import("../interview/self-serve-interview")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
@@ -229,6 +235,10 @@ function Screen() {
               <Route
                 path={Path.ToastmastersTimer}
                 element={<ToastmastersTimer />}
+              />
+              <Route
+                path={Path.InterviewSelfServe}
+                element={<InterviewSelfServe />}
               />
             </Routes>
           </div>

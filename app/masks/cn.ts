@@ -2,6 +2,7 @@ import { BuiltinMask } from "./typing";
 
 export enum BuiltinMaskGroup {
   Toastmasters = "Speech Copilot",
+  InterviewCopilot = "Interview Copilot",
   Careers = "职业发展",
   Writers = "写手",
   Expert = "专家",
@@ -10,6 +11,7 @@ export enum BuiltinMaskGroup {
 }
 export const BuiltinMaskGroupOrder: string[] = [
   BuiltinMaskGroup.Toastmasters,
+  BuiltinMaskGroup.InterviewCopilot,
   BuiltinMaskGroup.Careers,
   BuiltinMaskGroup.Writers,
   BuiltinMaskGroup.Expert,

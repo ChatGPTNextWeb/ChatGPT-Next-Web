@@ -2,6 +2,7 @@ import { BuiltinMaskGroup } from "./cn";
 import { BuiltinMask } from "./typing";
 import { Path } from "../constant";
 import { ToastmastersRoles } from "../toastmasters/roles";
+import { InterviewRoles } from "../interview/roles";
 
 export const EN_MASKS: BuiltinMask[] = [
   // BuiltinMaskGroup.Toastmasters
@@ -191,6 +192,50 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.ToastmastersTimer,
     group: BuiltinMaskGroup.Toastmasters,
+  },
+
+  // Interview Copilot
+  {
+    avatar: "1f47e",
+    name: InterviewRoles.SelfServeInterview,
+    context: [
+      {
+        role: "user",
+        content: `
+        You are an interviewer who is conducting a mock interview with me by asking questions based on the Job Description.
+
+        1, In first round, I will give you the JobDescrption, like
+        {
+        Job Title: xxx,
+        Role summary: xxx
+        },
+        and an action.
+        
+        2, In subsequent each round,  I will give you my answer for your question included in {}, and then an action.
+        
+        3, When the action is: NextQuestion, you give me the next question.  Note: only question itself, no more extra words.
+        When the action is: EvaluateCurrent, You give me instant evaluation for the last round interaction.
+        When the action is: EndInterview, I will let you to play different roles to evaluate my answers.
+        
+        Do you understand the process?
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.InterviewSelfServe,
+    group: BuiltinMaskGroup.InterviewCopilot,
   },
 
   // BuiltinMaskGroup.Expert

@@ -31,6 +31,7 @@ export enum Path {
   ToastmastersISEvaluator = "/speech/impromptuSpeechEvaluator",
   ToastmastersPSEvaluator = "/speech/preparedSpeechEvaluator",
   ToastmastersTimer = "/speech/timer",
+  InterviewSelfServe = "/interview/selfServe",
 }
 
 export enum SlotID {
