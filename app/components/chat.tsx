@@ -431,10 +431,26 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const models = useAllModels()
-    .filter((m) => m.available)
-    .map((m) => m.name);
+  const allModels = useAllModels();
+  const models = useMemo(
+    () => allModels.filter((m) => m.available).map((m) => m.name),
+    [allModels],
+  );
   const [showModelSelector, setShowModelSelector] = useState(false);
+
+  useEffect(() => {
+    // if current model is not available
+    // switch to first available model
+    const isUnavaliableModel = !models.includes(currentModel);
+    if (isUnavaliableModel && models.length > 0) {
+      const nextModel = models[0] as ModelType;
+      chatStore.updateCurrentSession(
+        (session) => (session.mask.modelConfig.model = nextModel),
+      );
+      showToast(nextModel);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentModel, models]);
 
   return (
     <div className={styles["chat-input-actions"]}>
