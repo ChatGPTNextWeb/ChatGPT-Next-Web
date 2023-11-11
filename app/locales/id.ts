@@ -369,7 +369,7 @@ const id: PartialLocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Hanya pesan sebelum menghapus konteks yang akan ditampilkan"
+      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
     },  
     Model: "Model",
     Messages: "Pesan",
