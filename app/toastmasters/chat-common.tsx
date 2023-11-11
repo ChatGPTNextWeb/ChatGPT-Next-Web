@@ -66,7 +66,10 @@ import {
 } from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
-import { onSpeechAvatar } from "../cognitive/speech-avatar";
+import {
+  SpeechAvatarVideoShow,
+  onSpeechAvatar,
+} from "../cognitive/speech-avatar";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
@@ -666,8 +669,8 @@ export const ChatResponse = (props: {
     ChatControllerPool.stop(sessionIndex, messageId);
   };
 
-  const onVideoGenerate = async (messageContent: string) => {
-    const words = ChatUtility.getWordsNumber(messageContent);
+  const onVideoGenerate = async (message: ChatMessage) => {
+    const words = ChatUtility.getWordsNumber(message.content);
     const cost =
       config.avatarVideo.maxWords == -1
         ? words
@@ -687,17 +690,22 @@ export const ChatResponse = (props: {
       return;
     }
 
-    await onSpeechAvatar(
+    // reset to previous state and then set value
+    chatStore.updateCurrentSession(
+      (session) => (
+        (message.video = undefined), (session.input.activeStep = 3)
+      ),
+    );
+    onSpeechAvatar(
       ChatUtility.getFirstNWords(
-        messageContent,
+        message.content,
         config.avatarVideo.maxWords,
         false,
       ),
       (outputAvatar: IRequestResponse) => {
         chatStore.updateCurrentSession(
           (session) => (
-            (session.output.avatar = outputAvatar),
-            (session.input.activeStep = 4)
+            (message.video = outputAvatar), (session.input.activeStep = 4)
           ),
         );
       },
@@ -792,11 +800,11 @@ export const ChatResponse = (props: {
                           icon={<MicphoneIcon />}
                           onClick={() => onAudioGenerate(message)}
                         />
-                        {/* <ChatAction
+                        <ChatAction
                           text={Locale.Chat.Actions.VideoPlay}
                           icon={<AvatarIcon />}
-                          onClick={() => onVideoGenerate(message.content)}
-                        /> */}
+                          onClick={() => onVideoGenerate(message)}
+                        />
                       </>
                     )}
                   </div>
@@ -818,6 +826,9 @@ export const ChatResponse = (props: {
 
               {message.audio ? (
                 <SpeechAudioShow outputAvatar={message.audio} />
+              ) : null}
+              {message.video ? (
+                <SpeechAvatarVideoShow outputAvatar={message.video} />
               ) : null}
             </div>
           </div>

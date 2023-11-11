@@ -31,6 +31,7 @@ export type ChatMessage = RequestMessage & {
   // for sharing and displaying
   title?: string;
   audio?: IRequestResponse;
+  video?: IRequestResponse;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {

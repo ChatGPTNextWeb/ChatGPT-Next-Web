@@ -181,7 +181,7 @@ export function SpeechAvatarVideoShow(props: {
   if (outputAvatar.status === VideoFetchStatus.Succeeded) {
     return (
       <div className={styles_tm["video-container"]}>
-        <video controls width="800" height="600">
+        <video controls width="400" height="300">
           <source src={outputAvatar.data} type="video/webm" />
           Your browser does not support the video tag.
         </video>
