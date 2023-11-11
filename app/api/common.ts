@@ -98,7 +98,9 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
+    // console.log("[Fetch] ", fetchUrl, JSON.stringify(fetchOptions.body, null, 2));
     const res = await fetch(fetchUrl, fetchOptions);
+    // console.log("[Response] ", res.status, res.statusText, res.headers);
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
