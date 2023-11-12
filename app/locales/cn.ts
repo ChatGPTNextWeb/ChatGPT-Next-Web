@@ -8,7 +8,7 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "免费gpt账号请加[QQ群730704784](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Jk9Fe4-BpZJeZq7XZsEzfAmNY8yWMKru&authKey=M85ZHDAfnuRexu6b1%2B8ECSv1n5kWtyeNip1N5J3CfsiGXssfVjuZ3uLi2%2FKcs%2Fqz&noverify=0&group_code=730704784)获取公告免费账号与本站访问密码。之后到[登录](/#/auth)页输入访问密码，在此先放置一个4.0账号damien_833@msn.com  05291995Db。",
+      : "免费gpt账号请加[QQ群730704784](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Jk9Fe4-BpZJeZq7XZsEzfAmNY8yWMKru&authKey=M85ZHDAfnuRexu6b1%2B8ECSv1n5kWtyeNip1N5J3CfsiGXssfVjuZ3uLi2%2FKcs%2Fqz&noverify=0&group_code=730704784)获取公告免费账号与本站访问密码。之后到[登录](/#/auth)页输入访问密码。在此先放一个4.0账号damien_833@msn.com  05291995Db",
   },
   Auth: {
     Title: "需要密码",
@@ -310,7 +310,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "免费gpt账号可进[QQ群](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Jk9Fe4-BpZJeZq7XZsEzfAmNY8yWMKru&authKey=M85ZHDAfnuRexu6b1%2B8ECSv1n5kWtyeNip1N5J3CfsiGXssfVjuZ3uLi2%2FKcs%2Fqz&noverify=0&group_code=730704784)，免费使用4.0与3.5，平时也会推送一些AI之类的网站都是免费的在此先放一个4.0账号damien_833@msn.com  05291995Db",
+    BotHello: "免费gpt账号可进[QQ群](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Jk9Fe4-BpZJeZq7XZsEzfAmNY8yWMKru&authKey=M85ZHDAfnuRexu6b1%2B8ECSv1n5kWtyeNip1N5J3CfsiGXssfVjuZ3uLi2%2FKcs%2Fqz&noverify=0&group_code=730704784)，免费使用3.5，平时也会推送一些AI之类的网站都是免费的在此先放一个4.0账号damien_833@msn.com  05291995Db",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
