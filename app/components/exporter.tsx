@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { ChatMessage, useAppConfig, useChatStore } from "../store";
+import { ChatMessage, ModelType, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
 import {
@@ -275,7 +275,8 @@ export function RenderExport(props: {
     });
 
     props.onRender(renderMsgs);
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div ref={domRef}>
@@ -618,8 +619,6 @@ export function MarkdownPreviewer(props: {
     </>
   );
 }
-
-// modified by BackTrackZ now it's looks better
 
 export function JsonPreviewer(props: {
   messages: ChatMessage[];
