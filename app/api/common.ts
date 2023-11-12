@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
-import { makeAzurePath } from "../azure";
+import { makeAzurePath, makeAzureBaseUrl } from "../azure";
 
 const serverConfig = getServerSideConfig();
 
@@ -17,8 +17,40 @@ export async function requestOpenai(req: NextRequest) {
     "",
   );
 
-  let baseUrl =
-    serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
+  let requestBody: ReadableStream<Uint8Array> | string | null = req.body;
+  let azureUrl = serverConfig.azureUrl;
+  if (serverConfig.customModels && requestBody) {
+    try {
+      const modelTable = collectModelTable(
+        DEFAULT_MODELS,
+        serverConfig.customModels,
+      );
+      const clonedBody = await req.text();
+      requestBody = clonedBody;
+      const jsonBody = JSON.parse(clonedBody) as { model?: string };
+
+      const model = modelTable[jsonBody?.model ?? ""];
+      if (azureUrl && model.available === true) {
+        azureUrl = makeAzureBaseUrl(azureUrl, model.name);
+      } else if (model.available === false) {
+        // not undefined and is false
+        // #1815 try to refuse gpt4 request
+        return NextResponse.json(
+          {
+            error: true,
+            message: `you are not allowed to use ${jsonBody?.model} model`,
+          },
+          {
+            status: 403,
+          },
+        );
+      }
+    } catch (e) {
+      console.error("[OpenAI] gpt4 filter", e);
+    }
+  }
+
+  let baseUrl = azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -60,42 +92,13 @@ export async function requestOpenai(req: NextRequest) {
       }),
     },
     method: req.method,
-    body: req.body,
+    body: requestBody,
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
   };
-
-  // #1815 try to refuse gpt4 request
-  if (serverConfig.customModels && req.body) {
-    try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
-      // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""].available === false) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error("[OpenAI] gpt4 filter", e);
-    }
-  }
 
   try {
     const res = await fetch(fetchUrl, fetchOptions);
