@@ -5,7 +5,7 @@ import RemarkBreaks from "remark-breaks";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
-import { useRef, useState, RefObject, useEffect } from "react";
+import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
 
@@ -99,7 +99,29 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+function escapeDollarNumber(text: string) {
+  let escapedText = "";
+
+  for (let i = 0; i < text.length; i += 1) {
+    let char = text[i];
+    const nextChar = text[i + 1] || " ";
+
+    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
+      char = "\\$";
+    }
+
+    escapedText += char;
+  }
+
+  return escapedText;
+}
+
 function _MarkDownContent(props: { content: string }) {
+  const escapedContent = useMemo(
+    () => escapeDollarNumber(props.content),
+    [props.content],
+  );
+
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
@@ -124,7 +146,7 @@ function _MarkDownContent(props: { content: string }) {
         },
       }}
     >
-      {props.content}
+      {escapedContent}
     </ReactMarkdown>
   );
 }
