@@ -8,7 +8,7 @@ export function useAllModels() {
   const models = useMemo(() => {
     return collectModels(
       configStore.models,
-      [accessStore.customModels, configStore.customModels].join(","),
+      [configStore.customModels, accessStore.customModels].join(","),
     );
   }, [accessStore.customModels, configStore.customModels, configStore.models]);
 
