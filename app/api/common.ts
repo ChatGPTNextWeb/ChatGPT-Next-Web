@@ -30,9 +30,7 @@ export async function requestOpenai(req: NextRequest) {
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       const model = modelTable[jsonBody?.model ?? ""];
-      if (azureUrl && model.available === true) {
-        azureUrl = makeAzureBaseUrl(azureUrl, model.name);
-      } else if (model.available === false) {
+      if (!azureUrl && model.available === false) {
         // not undefined and is false
         // #1815 try to refuse gpt4 request
         return NextResponse.json(
@@ -44,6 +42,10 @@ export async function requestOpenai(req: NextRequest) {
             status: 403,
           },
         );
+      } else if (azureUrl && model.available === true) {
+        // if there is an avaliable model, update the deployment id in the url.
+        // otherwise leave the url unchanged.
+        azureUrl = makeAzureBaseUrl(azureUrl, model.name);
       }
     } catch (e) {
       console.error("[OpenAI] gpt4 filter", e);
