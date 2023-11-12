@@ -11,7 +11,7 @@ import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
-import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
 
 export function Mermaid(props: { code: string }) {
