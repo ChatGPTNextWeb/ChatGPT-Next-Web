@@ -441,6 +441,9 @@ const cn = {
     Config: "配置",
   },
   Exporter: {
+    Description : {
+      Title: "只有清除上下文之后的消息会被展示"
+    },  
     Model: "模型",
     Messages: "消息",
     Topic: "主题",
