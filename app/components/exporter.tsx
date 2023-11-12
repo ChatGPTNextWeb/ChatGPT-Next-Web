@@ -27,7 +27,7 @@ import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
-import { toBlob, toJpeg, toPng } from "html-to-image";
+import { toBlob, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
@@ -41,7 +41,22 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 export function ExportMessageModal(props: { onClose: () => void }) {
   return (
     <div className="modal-mask">
-      <Modal title={Locale.Export.Title} onClose={props.onClose}>
+      <Modal
+        title={Locale.Export.Title}
+        onClose={props.onClose}
+        footer={
+          <div
+            style={{
+              width: "100%",
+              textAlign: "center",
+              fontSize: 14,
+              opacity: 0.5,
+            }}
+          >
+            只有清除上下文之后的消息会被展示
+          </div>
+        }
+      >
         <div style={{ minHeight: "40vh" }}>
           <MessageExporter />
         </div>
@@ -149,7 +164,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id)));
+    ret.push(...session.messages.filter((m) => selection.has(m.id)));
     return ret;
   }, [
     exportConfig.includeContext,
