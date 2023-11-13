@@ -1,40 +1,28 @@
 // redisRestClient.ts
-import fetch from 'node-fetch'; // or any other fetch-compatible API
+import { Redis } from "@upstash/redis";
 
-const redisRestUrl = process.env.UPSTASH_REDIS_URL;
-const redisRestToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
-if (!redisRestUrl || !redisRestToken) {
+if (!redis.url || !redis.token) {
   console.error('The Upstash Redis URL and token must be provided.');
   // Handle the lack of Redis client here, e.g., by disabling certain features
 }
 
-const headers = {
-  Authorization: `Bearer ${redisRestToken}`,
-  'Content-Type': 'application/json',
-};
-
 export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
-    if (!email) {
-      console.error('Email is undefined, cannot increment sign-in count.');
-      return;
-    }
-  
-    const response = await fetch(`${redisRestUrl}/hincrby`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
-        key: `signin_count:${email}`,
-        field: dateKey,
-        increment: 1
-      }),
-    });
-  
-    if (!response.ok) {
-      console.error('Failed to increment sign-in count in Redis via REST API');
-    }
-  };
-  
+  if (!email) {
+    console.error('Email is undefined, cannot increment sign-in count.');
+    return;
+  }
+
+  try {
+    await redis.hincrby(`signin_count:${email}`, dateKey, 1);
+  } catch (error) {
+    console.error('Failed to increment sign-in count in Redis via Upstash', error);
+  }
+};
 
 export const incrementSessionRefreshCount = async (email: string | undefined, dateKey: string) => {
   if (!email) {
@@ -42,18 +30,10 @@ export const incrementSessionRefreshCount = async (email: string | undefined, da
     return;
   }
 
-  const response = await fetch(`${redisRestUrl}/hincrby`, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify({
-      key: `session_refreshes:${email}`,
-      field: dateKey,
-      increment: 1
-    }),
-  });
-
-  if (!response.ok) {
-    console.error('Failed to increment session refresh count in Redis via REST API');
+  try {
+    await redis.hincrby(`session_refreshes:${email}`, dateKey, 1);
+  } catch (error) {
+    console.error('Failed to increment session refresh count in Redis via Upstash', error);
   }
 };
 
@@ -68,31 +48,10 @@ export const incrementTokenCounts = async (
     return;
   }
 
-  const incrementCompletionTokensResponse = await fetch(`${redisRestUrl}/hincrby`, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify({
-      key: `tokens:${email}`,
-      field: `${dateKey}:completion_tokens`,
-      increment: completionTokens
-    }),
-  });
-
-  const incrementPromptTokensResponse = await fetch(`${redisRestUrl}/hincrby`, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify({
-      key: `tokens:${email}`,
-      field: `${dateKey}:prompt_tokens`,
-      increment: promptTokens
-    }),
-  });
-
-  if (!incrementCompletionTokensResponse.ok) {
-    console.error('Failed to increment completion token count in Redis via REST API');
-  }
-
-  if (!incrementPromptTokensResponse.ok) {
-    console.error('Failed to increment prompt token count in Redis via REST API');
+  try {
+    await redis.hincrby(`tokens:${email}`, `${dateKey}:completion_tokens`, completionTokens);
+    await redis.hincrby(`tokens:${email}`, `${dateKey}:prompt_tokens`, promptTokens);
+  } catch (error) {
+    console.error('Failed to increment token counts in Redis via Upstash', error);
   }
 };
