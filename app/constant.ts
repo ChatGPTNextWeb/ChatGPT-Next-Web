@@ -86,8 +86,6 @@ Current model: {{model}}
 Current time: {{time}}
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
-
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
   "gpt-4-1106-preview": "2023-04",
@@ -152,6 +150,24 @@ export const DEFAULT_MODELS = [
     available: true,
   },
 ] as const;
+
+type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
+
+const isValidModel = (model: string): model is ModelType => {
+  return DEFAULT_MODELS.some((m) => m.name === model);
+};
+
+export const DEFAULT_CHAT_MODEL = isValidModel(
+  process.env.NEXT_PUBLIC_DEFAULT_CHAT_MODEL || "",
+)
+  ? (process.env.NEXT_PUBLIC_DEFAULT_CHAT_MODEL as ModelType)
+  : "gpt-3.5-turbo";
+
+export const DEFAULT_SUMMARIZE_MODEL = isValidModel(
+  process.env.NEXT_PUBLIC_DEFAULT_SUMMARIZE_MODEL || "",
+)
+  ? (process.env.NEXT_PUBLIC_DEFAULT_SUMMARIZE_MODEL as ModelType)
+  : "gpt-3.5-turbo";
 
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;

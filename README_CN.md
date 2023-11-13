@@ -126,6 +126,10 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 
 用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，用英文逗号隔开。
 
+### `NEXT_PUBLIC_DEFAULT_CHAT_MODEL` (可选)
+
+> 示例:`gpt-3.5-turbo-1106` 设置默认对话模型为 `gpt-3.5-turbo-1106`
+
 ## 开发
 
 点击下方按钮，开始二次开发：
