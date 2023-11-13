@@ -431,10 +431,26 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const models = useAllModels()
-    .filter((m) => m.available)
-    .map((m) => m.name);
+  const allModels = useAllModels();
+  const models = useMemo(
+    () => allModels.filter((m) => m.available),
+    [allModels],
+  );
   const [showModelSelector, setShowModelSelector] = useState(false);
+
+  useEffect(() => {
+    // if current model is not available
+    // switch to first available model
+    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
+    if (isUnavaliableModel && models.length > 0) {
+      const nextModel = models[0].name as ModelType;
+      chatStore.updateCurrentSession(
+        (session) => (session.mask.modelConfig.model = nextModel),
+      );
+      showToast(nextModel);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentModel, models]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -515,8 +531,8 @@ export function ChatActions(props: {
         <Selector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
-            title: m,
-            value: m,
+            title: m.displayName,
+            value: m.name,
           }))}
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
@@ -1160,7 +1176,12 @@ function _Chat() {
                           {["system"].includes(message.role) ? (
                             <Avatar avatar="2699-fe0f" />
                           ) : (
-                            <MaskAvatar mask={session.mask} />
+                            <MaskAvatar
+                              avatar={session.mask.avatar}
+                              model={
+                                message.model || session.mask.modelConfig.model
+                              }
+                            />
                           )}
                         </>
                       )}
