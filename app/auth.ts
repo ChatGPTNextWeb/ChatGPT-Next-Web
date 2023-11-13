@@ -32,37 +32,6 @@ declare module "next-auth" {
   // }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
-/*
-export const authOptions: NextAuthOptions = {
-  callbacks: {
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.sub,
-      },
-    }),
-  },
-  providers: [
-    AzureADProvider({
-      clientId: process.env.AZURE_AD_CLIENT_ID ?? "",
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET ?? "",
-      tenantId: process.env.AZURE_AD_TENANT_ID ?? "",
-    }),
-  ],
-  pages: {
-    signIn: "/login",
-    signOut: "/login",
-    error: "/login",
-  },
-};
-*/
-
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {

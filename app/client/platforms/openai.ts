@@ -170,6 +170,8 @@ export class ChatGPTApi implements LLMApi {
           },
           onmessage(msg) {
             if (msg.data === "[DONE]" || finished) {
+              const usageTokens = json.usage?;
+              console.log("usageTokens:", usageTokens);
               return finish();
             }
             const text = msg.data;
