@@ -1,3 +1,6 @@
+import { GPTText } from "./utils/prompts/gpt-text";
+import { GPTVoice } from "./utils/prompts/gpt-voice";
+
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
@@ -72,6 +75,7 @@ export const OpenaiPath = {
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
+  Speech: "v1/audio/speech",
 };
 
 export const Azure = {
@@ -79,14 +83,8 @@ export const Azure = {
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
-export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by OpenAI.
-Knowledge cutoff: {{cutoff}}
-Current model: {{model}}
-Current time: {{time}}
-Latex inline: $x^2$ 
-Latex block: $$e=mc^2$$
-`;
+// export const DEFAULT_SYSTEM_TEMPLATE = GPTText;
+export const DEFAULT_SYSTEM_TEMPLATE = GPTVoice;
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
 

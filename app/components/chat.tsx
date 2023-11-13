@@ -89,6 +89,7 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
+import { VoicePage } from "./voice/voice";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -1048,6 +1049,8 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  return <VoicePage />;
 
   return (
     <div className={styles.chat} key={session.id}>

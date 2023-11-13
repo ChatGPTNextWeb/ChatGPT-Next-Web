@@ -1,0 +1,55 @@
+.voice-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.9);
+  color: white;
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .top,
+  .bottom {
+    flex: 1;
+    padding: 20px;
+    font-size: 1.5em;
+    color: rgba($color: #fff, $alpha: 0.6);
+    overflow: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .active {
+    background-color: rgba($color: #00ff00, $alpha: 0.2);
+  }
+
+  .top.active {
+    background-color: white;
+
+    &::after {
+      content: "☁️";
+      color: black;
+    }
+  }
+
+  .top:hover {
+    background-color: black;
+  }
+
+  .top {
+  }
+
+  .center {
+    height: 2px;
+    background-color: white;
+    opacity: 0.2;
+    width: 100%;
+  }
+
+  .bottom {
+  }
+}

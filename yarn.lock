@@ -1439,6 +1439,11 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/dom-speech-recognition@*":
+  version "0.0.4"
+  resolved "https://registry.npmmirror.com/@types/dom-speech-recognition/-/dom-speech-recognition-0.0.4.tgz#3ac5eddfbaa0dacf7eca3d8979ef4f3e519d8e19"
+  integrity sha512-zf2GwV/G6TdaLwpLDcGTIkHnXf8JEf/viMux+khqKQKDa8/8BAUtXXZS563GnvJ4Fg0PBLGAaFf2GekEVSZ6GQ==
+
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
   resolved "https://registry.npmmirror.com/@types/eslint-scope/-/eslint-scope-3.7.4.tgz#37fc1223f0786c39627068a12e94d6e6fc61de16"
@@ -1537,6 +1542,13 @@
   integrity sha512-AiHHXh71a2M7Z6z1wj6iA23SkiRF9r0neHUdu8zjU/cT3MyLxDefYHbcceKhV/gjDEZgF3YaiNHyPNtoGUjPvg==
   dependencies:
     "@types/react" "*"
+
+"@types/react-speech-recognition@^3.9.4":
+  version "3.9.4"
+  resolved "https://registry.npmmirror.com/@types/react-speech-recognition/-/react-speech-recognition-3.9.4.tgz#398047e8c7e90867b16ee3c698e7ace825659a4d"
+  integrity sha512-ULNTkpKRTPNl5MVBk3prnnsELLRGZMrJpuSUiEdon53B+243j0tNEzGFN+YFFH7USkLqyYG0q4REQfS+i+3OXg==
+  dependencies:
+    "@types/dom-speech-recognition" "*"
 
 "@types/react@*", "@types/react@^18.2.14":
   version "18.2.14"
@@ -5100,6 +5112,11 @@ react-router@6.15.0:
   dependencies:
     "@remix-run/router" "1.8.0"
 
+react-speech-recognition@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.npmmirror.com/react-speech-recognition/-/react-speech-recognition-3.10.0.tgz#7aa43bb28d78b92671864dabba3a70489ccad27b"
+  integrity sha512-EVSr4Ik8l9urwdPiK2r0+ADrLyDDrjB0qBRdUWO+w2MfwEBrj6NuRmy1GD3x7BU/V6/hab0pl8Lupen0zwlJyw==
+
 react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
@@ -5137,6 +5154,11 @@ regenerator-runtime@^0.13.11:
   version "0.13.11"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
   integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
+
+regenerator-runtime@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.npmmirror.com/regenerator-runtime/-/regenerator-runtime-0.14.0.tgz#5e19d68eb12d486f797e15a3c6a918f7cec5eb45"
+  integrity sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==
 
 regenerator-transform@^0.15.1:
   version "0.15.1"
