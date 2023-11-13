@@ -8,8 +8,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ChatGPT Next Web",
-    "version": "2.9.11"
+    "productName": "反 卷 总 署",
+    "version": "2.9.10"
   },
   "tauri": {
     "allowlist": {
@@ -68,7 +68,7 @@
         "icons/icon.ico"
       ],
       "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "ChatGPT Next Web is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "longDescription": "Anti-Involution-Bureau is a cross-platform Q&A client, including Web/Win/Linux/OSX/PWA.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -77,7 +77,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "ChatGPT Next Web App",
+      "shortDescription": "Anti-Involution-Bureau App",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -104,7 +104,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "ChatGPT Next Web",
+        "title": "Anti-Involution-Bureau",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
