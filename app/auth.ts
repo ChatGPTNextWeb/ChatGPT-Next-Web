@@ -7,6 +7,7 @@ import AzureADProvider from "next-auth/providers/azure-ad";
 
 import { incrementSignInCount, incrementSessionRefreshCount } from './utils/cloud/redisRestClient';
 
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
