@@ -60,19 +60,9 @@ export const authOptions: NextAuthOptions = {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log('SignIn callback');
-      console.log('User:', user);
-      console.log('Account:', account);
-      console.log('Profile:', profile);
-
-      // Your signIn logic...
       return true;
     },
     async session({ session, token }) {
-      console.log('Session callback');
-      console.log('Session:', session);
-      console.log('Token:', token);
-
       const userId = token.sub ?? 'default-sub-value';
 
       // Extend session object here
