@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
       // Extend session object here
       session.user = {
         ...session.user,
-        id: token.sub,
+        id: userId,
       };
 
       return session;
