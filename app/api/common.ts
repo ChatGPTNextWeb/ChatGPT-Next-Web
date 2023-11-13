@@ -18,7 +18,7 @@ export async function requestOpenai(req: NextRequest) {
   );
 
   let baseUrl =
-    serverConfig.azureUrl ?? serverConfig.baseUrl ?? OPENAI_BASE_URL;
+    serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -81,7 +81,7 @@ export async function requestOpenai(req: NextRequest) {
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""] === false) {
+      if (modelTable[jsonBody?.model ?? ""].available === false) {
         return NextResponse.json(
           {
             error: true,

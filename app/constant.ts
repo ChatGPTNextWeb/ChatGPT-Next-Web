@@ -8,7 +8,7 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-export const DEFAULT_CORS_HOST = "https://ab.nextweb.fun";
+export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 export const OPENAI_BASE_URL = "https://api.openai.com";
 
@@ -84,6 +84,8 @@ You are ChatGPT, a large language model trained by OpenAI.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
+Latex inline: $x^2$ 
+Latex block: $$e=mc^2$$
 `;
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
