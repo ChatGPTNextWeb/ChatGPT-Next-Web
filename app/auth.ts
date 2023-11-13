@@ -63,6 +63,11 @@ export const authOptions: NextAuthOptions = {
       console.log('Session callback');
       console.log('Session:', session);
       console.log('Token:', token);
+      console.log('User:', user);
+      console.log('Account:', account);
+      console.log('Profile:', profile);
+
+      const userId = token.sub ?? 'default-sub-value';
 
       // Extend session object here
       session.user = {
