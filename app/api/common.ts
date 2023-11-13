@@ -1,48 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSideConfig } from "../config/server";
+import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../constant";
+import { collectModelTable } from "../utils/model";
+import { makeAzurePath } from "../azure";
 
-export const OPENAI_URL = "api.openai.com";
-const DEFAULT_PROTOCOL = "https";
-const PROTOCOL = process.env.PROTOCOL || DEFAULT_PROTOCOL;
-const BASE_URL = process.env.BASE_URL || OPENAI_URL;
-const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
+const serverConfig = getServerSideConfig();
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
+
   const authValue = req.headers.get("Authorization") ?? "";
-  const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
+  const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
+
+  let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
   );
 
-  let baseUrl = BASE_URL;
+  let baseUrl =
+    serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
-    baseUrl = `${PROTOCOL}://${baseUrl}`;
+    baseUrl = `https://${baseUrl}`;
   }
 
-  if (baseUrl.endsWith('/')) {
+  if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", openaiPath);
+  console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
+  console.log("[Org ID]", serverConfig.openaiOrgId);
 
-  if (process.env.OPENAI_ORG_ID) {
-    console.log("[Org ID]", process.env.OPENAI_ORG_ID);
+  const timeoutId = setTimeout(
+    () => {
+      controller.abort();
+    },
+    10 * 60 * 1000,
+  );
+
+  if (serverConfig.isAzure) {
+    if (!serverConfig.azureApiVersion) {
+      return NextResponse.json({
+        error: true,
+        message: `missing AZURE_API_VERSION in server env vars`,
+      });
+    }
+    path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, 10 * 60 * 1000);
-
-  const fetchUrl = `${baseUrl}/${openaiPath}`;
+  const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
-      Authorization: authValue,
-      ...(process.env.OPENAI_ORG_ID && {
-        "OpenAI-Organization": process.env.OPENAI_ORG_ID,
+      [authHeaderName]: authValue,
+      ...(serverConfig.openaiOrgId && {
+        "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
     },
     method: req.method,
@@ -55,18 +69,23 @@ export async function requestOpenai(req: NextRequest) {
   };
 
   // #1815 try to refuse gpt4 request
-  if (DISABLE_GPT4 && req.body) {
+  if (serverConfig.customModels && req.body) {
     try {
+      const modelTable = collectModelTable(
+        DEFAULT_MODELS,
+        serverConfig.customModels,
+      );
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 
-      const jsonBody = JSON.parse(clonedBody);
+      const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
-      if ((jsonBody?.model ?? "").includes("gpt-4")) {
+      // not undefined and is false
+      if (modelTable[jsonBody?.model ?? ""].available === false) {
         return NextResponse.json(
           {
             error: true,
-            message: "you are not allowed to use gpt-4 model",
+            message: `you are not allowed to use ${jsonBody?.model} model`,
           },
           {
             status: 403,

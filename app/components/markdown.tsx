@@ -5,13 +5,13 @@ import RemarkBreaks from "remark-breaks";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
-import { useRef, useState, RefObject, useEffect } from "react";
+import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
-import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
 
 export function Mermaid(props: { code: string }) {
@@ -38,12 +38,6 @@ export function Mermaid(props: { code: string }) {
     if (!svg) return;
     const text = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([text], { type: "image/svg+xml" });
-    console.log(blob);
-    // const url = URL.createObjectURL(blob);
-    // const win = window.open(url);
-    // if (win) {
-    //   win.onload = () => URL.revokeObjectURL(url);
-    // }
     showImageModal(URL.createObjectURL(blob));
   }
 
@@ -105,7 +99,29 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+function escapeDollarNumber(text: string) {
+  let escapedText = "";
+
+  for (let i = 0; i < text.length; i += 1) {
+    let char = text[i];
+    const nextChar = text[i + 1] || " ";
+
+    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
+      char = "\\$";
+    }
+
+    escapedText += char;
+  }
+
+  return escapedText;
+}
+
 function _MarkDownContent(props: { content: string }) {
+  const escapedContent = useMemo(
+    () => escapeDollarNumber(props.content),
+    [props.content],
+  );
+
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
@@ -121,6 +137,7 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";
           const isInternal = /^\/#/i.test(href);
@@ -129,7 +146,7 @@ function _MarkDownContent(props: { content: string }) {
         },
       }}
     >
-      {props.content}
+      {escapedContent}
     </ReactMarkdown>
   );
 }
@@ -152,11 +169,11 @@ export function Markdown(
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
-        direction: /[\u0600-\u06FF]/.test(props.content) ? "rtl" : "ltr",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
       onDoubleClickCapture={props.onDoubleClickCapture}
+      dir="auto"
     >
       {props.loading ? (
         <LoadingIcon />

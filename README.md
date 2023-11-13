@@ -16,7 +16,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[Web App](https://chatgpt.nextweb.fun/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Discord](https://discord.gg/YCkeafCafC) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+[Web App](https://chatgpt.nextweb.fun/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/mortiest_ricky) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
 [网页版](https://chatgpt.nextweb.fun/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
@@ -47,7 +47,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - New in v2: create, share and debug your chat tools with prompt templates (mask)
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
-- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어
+- I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어, Indonesia
 
 ## Roadmap
 
@@ -64,6 +64,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
 - 🚀 v2.7 let's share conversations as image, or share to ShareGPT!
 - 🚀 v2.8 now we have a client that runs across all platforms!
+- 🚀 v2.9.11 you can use azure endpoint now.
 
 ## 主要功能
 
@@ -95,6 +96,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 - 💡 想要更方便地随时随地使用本项目？可以试下这款桌面插件：https://github.com/mushan0x0/AI0x0.com
 - 🚀 v2.7 现在可以将会话分享为图片了，也可以分享到 ShareGPT 的在线链接。
 - 🚀 v2.8 发布了横跨 Linux/Windows/MacOS 的体积极小的客户端。
+- 🚀 v2.9.11 现在可以使用自定义 Azure 服务了。
 
 ## Get Started
 
@@ -155,13 +157,13 @@ After adding or modifying this environment variable, please redeploy the project
 
 > [简体中文 > 如何配置 api key、访问密码、接口代理](./README_CN.md#环境变量)
 
+### `CODE` (optional)
+
+Access password, separated by comma.
+
 ### `OPENAI_API_KEY` (required)
 
 Your openai api key.
-
-### `CODE` (optional)
-
-Access passsword, separated by comma.
 
 ### `BASE_URL` (optional)
 
@@ -175,6 +177,20 @@ Override openai api request base url.
 
 Specify OpenAI organization ID.
 
+### `AZURE_URL` (optional)
+
+> Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
+
+Azure deploy url.
+
+### `AZURE_API_KEY` (optional)
+
+Azure Api Key.
+
+### `AZURE_API_VERSION` (optional)
+
+Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
@@ -187,11 +203,24 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
-### `HIDE_BALANCE_QUERY` (optional)
+### `ENABLE_BALANCE_QUERY` (optional)
 
 > Default: Empty
 
-If you do not want users to query balance, set this value to 1.
+If you do want users to query balance, set this value to 1, or you should set it to 0.
+
+### `DISABLE_FAST_LINK` (optional)
+
+> Default: Empty
+
+If you want to disable parse settings from url, set this to 1.
+
+### `CUSTOM_MODELS` (optional)
+
+> Default: Empty
+> Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview:gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
+
+To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name:displayName` to customize model name, separated by comma.
 
 ## Requirements
 
@@ -232,8 +261,8 @@ yarn dev
 docker pull yidadaa/chatgpt-next-web
 
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
    yidadaa/chatgpt-next-web
 ```
 
@@ -241,9 +270,9 @@ You can start service behind a proxy:
 
 ```shell
 docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
-   -e PROXY_URL="http://localhost:7890" \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
+   -e PROXY_URL=http://localhost:7890 \
    yidadaa/chatgpt-next-web
 ```
 
@@ -258,6 +287,20 @@ If your proxy needs password, use:
 ```shell
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
+
+## Synchronizing Chat Records (UpStash)
+
+| [简体中文](./docs/synchronise-chat-logs-cn.md) | [English](./docs/synchronise-chat-logs-en.md) | [Italiano](./docs/synchronise-chat-logs-es.md) | [日本語](./docs/synchronise-chat-logs-ja.md) | [한국어](./docs/synchronise-chat-logs-ko.md)
+
+## Documentation
+
+> Please go to the [docs][./docs] directory for more documentation instructions.
+
+- [Deploy with cloudflare (Deprecated)](./docs/cloudflare-pages-en.md)
+- [Frequent Ask Questions](./docs/faq-en.md)
+- [How to add a new translation](./docs/translation.md)
+- [How to use Vercel (No English)](./docs/vercel-cn.md)
+- [User Manual (Only Chinese, WIP)](./docs/user-manual-cn.md)
 
 ## Screenshots
 
@@ -301,6 +344,8 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@AnsonHyq](https://github.com/AnsonHyq)
 [@synwith](https://github.com/synwith)
 [@piksonGit](https://github.com/piksonGit)
+[@ouyangzhiping](https://github.com/ouyangzhiping)
+[@wenjiavv](https://github.com/wenjiavv)
 
 ### Contributor
 

@@ -1,6 +1,3 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
 import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
@@ -10,13 +7,16 @@ import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_SYSTEM_TEMPLATE,
+  KnowledgeCutOffDate,
   StoreKey,
+  SUMMARIZE_MODEL,
 } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
+import { createPersistStore } from "../utils/store";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -80,31 +80,9 @@ function createEmptySession(): ChatSession {
   };
 }
 
-interface ChatStore {
-  sessions: ChatSession[];
-  currentSessionIndex: number;
-  clearSessions: () => void;
-  moveSession: (from: number, to: number) => void;
-  selectSession: (index: number) => void;
-  newSession: (mask?: Mask) => void;
-  deleteSession: (index: number) => void;
-  currentSession: () => ChatSession;
-  nextSession: (delta: number) => void;
-  onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string) => Promise<void>;
-  summarizeSession: () => void;
-  updateStat: (message: ChatMessage) => void;
-  updateCurrentSession: (updater: (session: ChatSession) => void) => void;
-  updateMessage: (
-    sessionIndex: number,
-    messageIndex: number,
-    updater: (message?: ChatMessage) => void,
-  ) => void;
-  resetSession: () => void;
-  getMessagesWithMemory: () => ChatMessage[];
-  getMemoryPrompt: () => ChatMessage;
-
-  clearAllData: () => void;
+function getSummarizeModel(currentModel: string) {
+  // if it is using gpt-* models, force to use 3.5 to summarize
+  return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -112,7 +90,11 @@ function countMessages(msgs: ChatMessage[]) {
 }
 
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
+  let cutoff =
+    KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+
   const vars = {
+    cutoff,
     model: modelConfig.model,
     time: new Date().toLocaleString(),
     lang: getLang(),
@@ -134,12 +116,22 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
-export const useChatStore = create<ChatStore>()(
-  persist(
-    (set, get) => ({
-      sessions: [createEmptySession()],
-      currentSessionIndex: 0,
+const DEFAULT_CHAT_STATE = {
+  sessions: [createEmptySession()],
+  currentSessionIndex: 0,
+};
 
+export const useChatStore = createPersistStore(
+  DEFAULT_CHAT_STATE,
+  (set, _get) => {
+    function get() {
+      return {
+        ..._get(),
+        ...methods,
+      };
+    }
+
+    const methods = {
       clearSessions() {
         set(() => ({
           sessions: [createEmptySession()],
@@ -178,7 +170,7 @@ export const useChatStore = create<ChatStore>()(
         });
       },
 
-      newSession(mask) {
+      newSession(mask?: Mask) {
         const session = createEmptySession();
 
         if (mask) {
@@ -201,14 +193,14 @@ export const useChatStore = create<ChatStore>()(
         }));
       },
 
-      nextSession(delta) {
+      nextSession(delta: number) {
         const n = get().sessions.length;
         const limit = (x: number) => (x + n) % n;
         const i = get().currentSessionIndex;
         get().selectSession(limit(i + delta));
       },
 
-      deleteSession(index) {
+      deleteSession(index: number) {
         const deletingLastSession = get().sessions.length === 1;
         const deletedSession = get().sessions.at(index);
 
@@ -265,7 +257,7 @@ export const useChatStore = create<ChatStore>()(
         return session;
       },
 
-      onNewMessage(message) {
+      onNewMessage(message: ChatMessage) {
         get().updateCurrentSession((session) => {
           session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
@@ -274,7 +266,7 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async onUserInput(content) {
+      async onUserInput(content: string) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -479,6 +471,7 @@ export const useChatStore = create<ChatStore>()(
       },
 
       summarizeSession() {
+        const config = useAppConfig.getState();
         const session = get().currentSession();
 
         // remove error messages if any
@@ -487,6 +480,7 @@ export const useChatStore = create<ChatStore>()(
         // should summarize topic after chating more than 50 words
         const SUMMARIZE_MIN_LEN = 50;
         if (
+          config.enableAutoGenerateTitle &&
           session.topic === DEFAULT_TOPIC &&
           countMessages(messages) >= SUMMARIZE_MIN_LEN
         ) {
@@ -499,7 +493,7 @@ export const useChatStore = create<ChatStore>()(
           api.llm.chat({
             messages: topicMessages,
             config: {
-              model: "gpt-3.5-turbo",
+              model: getSummarizeModel(session.mask.modelConfig.model),
             },
             onFinish(message) {
               get().updateCurrentSession(
@@ -553,7 +547,11 @@ export const useChatStore = create<ChatStore>()(
                 date: "",
               }),
             ),
-            config: { ...modelConfig, stream: true, model: "gpt-3.5-turbo" },
+            config: {
+              ...modelConfig,
+              stream: true,
+              model: getSummarizeModel(session.mask.modelConfig.model),
+            },
             onUpdate(message) {
               session.memoryPrompt = message;
             },
@@ -568,14 +566,14 @@ export const useChatStore = create<ChatStore>()(
         }
       },
 
-      updateStat(message) {
+      updateStat(message: ChatMessage) {
         get().updateCurrentSession((session) => {
           session.stat.charCount += message.content.length;
           // TODO: should update chat count and word count
         });
       },
 
-      updateCurrentSession(updater) {
+      updateCurrentSession(updater: (session: ChatSession) => void) {
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
         updater(sessions[index]);
@@ -586,56 +584,60 @@ export const useChatStore = create<ChatStore>()(
         localStorage.clear();
         location.reload();
       },
-    }),
-    {
-      name: StoreKey.Chat,
-      version: 3.1,
-      migrate(persistedState, version) {
-        const state = persistedState as any;
-        const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
+    };
 
-        if (version < 2) {
-          newState.sessions = [];
+    return methods;
+  },
+  {
+    name: StoreKey.Chat,
+    version: 3.1,
+    migrate(persistedState, version) {
+      const state = persistedState as any;
+      const newState = JSON.parse(
+        JSON.stringify(state),
+      ) as typeof DEFAULT_CHAT_STATE;
 
-          const oldSessions = state.sessions;
-          for (const oldSession of oldSessions) {
-            const newSession = createEmptySession();
-            newSession.topic = oldSession.topic;
-            newSession.messages = [...oldSession.messages];
-            newSession.mask.modelConfig.sendMemory = true;
-            newSession.mask.modelConfig.historyMessageCount = 4;
-            newSession.mask.modelConfig.compressMessageLengthThreshold = 1000;
-            newState.sessions.push(newSession);
+      if (version < 2) {
+        newState.sessions = [];
+
+        const oldSessions = state.sessions;
+        for (const oldSession of oldSessions) {
+          const newSession = createEmptySession();
+          newSession.topic = oldSession.topic;
+          newSession.messages = [...oldSession.messages];
+          newSession.mask.modelConfig.sendMemory = true;
+          newSession.mask.modelConfig.historyMessageCount = 4;
+          newSession.mask.modelConfig.compressMessageLengthThreshold = 1000;
+          newState.sessions.push(newSession);
+        }
+      }
+
+      if (version < 3) {
+        // migrate id to nanoid
+        newState.sessions.forEach((s) => {
+          s.id = nanoid();
+          s.messages.forEach((m) => (m.id = nanoid()));
+        });
+      }
+
+      // Enable `enableInjectSystemPrompts` attribute for old sessions.
+      // Resolve issue of old sessions not automatically enabling.
+      if (version < 3.1) {
+        newState.sessions.forEach((s) => {
+          if (
+            // Exclude those already set by user
+            !s.mask.modelConfig.hasOwnProperty("enableInjectSystemPrompts")
+          ) {
+            // Because users may have changed this configuration,
+            // the user's current configuration is used instead of the default
+            const config = useAppConfig.getState();
+            s.mask.modelConfig.enableInjectSystemPrompts =
+              config.modelConfig.enableInjectSystemPrompts;
           }
-        }
+        });
+      }
 
-        if (version < 3) {
-          // migrate id to nanoid
-          newState.sessions.forEach((s) => {
-            s.id = nanoid();
-            s.messages.forEach((m) => (m.id = nanoid()));
-          });
-        }
-
-        // Enable `enableInjectSystemPrompts` attribute for old sessions.
-        // Resolve issue of old sessions not automatically enabling.
-        if (version < 3.1) {
-          newState.sessions.forEach((s) => {
-            if (
-              // Exclude those already set by user
-              !s.mask.modelConfig.hasOwnProperty("enableInjectSystemPrompts")
-            ) {
-              // Because users may have changed this configuration,
-              // the user's current configuration is used instead of the default
-              const config = useAppConfig.getState();
-              s.mask.modelConfig.enableInjectSystemPrompts =
-                config.modelConfig.enableInjectSystemPrompts;
-            }
-          });
-        }
-
-        return newState;
-      },
+      return newState as any;
     },
-  ),
+  },
 );
