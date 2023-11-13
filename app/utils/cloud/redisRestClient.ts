@@ -14,6 +14,28 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
+    if (!email) {
+      console.error('Email is undefined, cannot increment sign-in count.');
+      return;
+    }
+  
+    const response = await fetch(`${redisRestUrl}/hincrby`, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        key: `signin_count:${email}`,
+        field: dateKey,
+        increment: 1
+      }),
+    });
+  
+    if (!response.ok) {
+      console.error('Failed to increment sign-in count in Redis via REST API');
+    }
+  };
+  
+
 export const incrementSessionRefreshCount = async (email: string | undefined, dateKey: string) => {
   if (!email) {
     console.error('Email is undefined, cannot increment session refresh count.');

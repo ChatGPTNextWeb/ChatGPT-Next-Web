@@ -5,6 +5,8 @@ import {
 } from "next-auth";
 import AzureADProvider from "next-auth/providers/azure-ad";
 
+import { incrementSignInCount, incrementSessionRefreshCount } from '../utils/cloud/redisRestClient';
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -60,6 +62,12 @@ export const authOptions: NextAuthOptions = {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
+      if (!user?.email) {
+        console.error("Email is required for sign in");
+        return false; // Prevent sign-in
+      }
+      const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+      await incrementSignInCount(user.email, dateKey);
       return true;
     },
     async session({ session, token }) {
@@ -70,6 +78,17 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: userId,
       };
+
+      // Assuming the email is stored in the token and not directly in the session.user object
+      if (!token?.email) {
+        console.error("Email is required for session handling");
+        // Modify the session object as needed or return a modified session
+        // For example, you might want to set a flag indicating an incomplete session
+        session.error = "Email is missing";
+        return session; // Return the modified session
+      }
+      const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+      await incrementSessionRefreshCount(token.email, dateKey);
 
       return session;
     },
