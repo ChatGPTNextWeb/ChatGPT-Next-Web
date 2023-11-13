@@ -31,6 +31,7 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
+/*
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, token }) => ({
@@ -54,6 +55,40 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
 };
+*/
+
+export const authOptions: NextAuthOptions = {
+  callbacks: {
+    async session({ session, token }) {
+      console.log('Session callback');
+      console.log('Session:', session);
+      console.log('Token:', token);
+
+      // Extend session object here
+      session.user = {
+        ...session.user,
+        id: token.sub,
+      };
+
+      return session;
+    },
+    // Add other callbacks with async as needed
+  },
+  providers: [
+    AzureADProvider({
+      clientId: process.env.AZURE_AD_CLIENT_ID ?? "",
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET ?? "",
+      tenantId: process.env.AZURE_AD_TENANT_ID ?? "",
+    }),
+  ],
+  pages: {
+    signIn: "/login",
+    signOut: "/login",
+    error: "/login",
+  },
+  // ... other options if any
+};
+
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
