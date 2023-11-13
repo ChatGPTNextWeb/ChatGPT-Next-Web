@@ -14,6 +14,8 @@ import { incrementSignInCount, incrementSessionRefreshCount } from './utils/clou
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
+
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
@@ -21,6 +23,7 @@ declare module "next-auth" {
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
+    error?: string; // Optional property to handle errors
   }
 
   // interface User {
