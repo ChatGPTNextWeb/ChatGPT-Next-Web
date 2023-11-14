@@ -31,6 +31,10 @@ export const incrementSignInCount = async (email: string | undefined, dateKey: s
   }
 
   const redis = getRedisClient();
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return;
+  }
 
   try {
     await redis.hincrby(`signin_count:${email}`, dateKey, 1);
@@ -46,6 +50,10 @@ export const incrementSessionRefreshCount = async (email: string | undefined, da
   }
 
   const redis = getRedisClient();
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return;
+  }
 
   try {
     await redis.hincrby(`session_refreshes:${email}`, dateKey, 1);
@@ -66,6 +74,10 @@ export const incrementTokenCounts = async (
   }
 
   const redis = getRedisClient();
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return;
+  }
 
   try {
     await redis.hincrby(`tokens:${email}`, `${dateKey}:completion_tokens`, completionTokens);
@@ -79,6 +91,10 @@ export const incrementTokenCounts = async (
 export const getAvailableDateKeys = async (): Promise<string[]> => {
 
   const redis = getRedisClient();
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return;
+  }
 
   try {
     const keys = await redis.keys('signin_count:*');
@@ -92,6 +108,10 @@ export const getAvailableDateKeys = async (): Promise<string[]> => {
 export const getSignInCountForPeriod = async (dateKey: string): Promise<number> => {
 
   const redis = getRedisClient();
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return;
+  }
 
   try {
     const counts = await redis.hgetall(`signin_count:${dateKey}`);
@@ -117,7 +137,11 @@ export const getSignInCountForPeriod = async (dateKey: string): Promise<number> 
 export const getDetailsByUser = async (dateKey: string): Promise<Record<string, number>> => {
 
   const redis = getRedisClient();
-
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return;
+  }
+  
   try {
     const rawCounts = await redis.hgetall(`signin_count:${dateKey}`);
     const counts: Record<string, number> = {};
