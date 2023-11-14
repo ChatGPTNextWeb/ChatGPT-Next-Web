@@ -338,3 +338,18 @@
 .rtl-screen {
   direction: rtl;
 }
+
+.api-link {
+  cursor: pointer;
+  color: inherit; // Or any color that makes it blend in with the text
+  text-decoration: none; // No underline to make it look like normal text
+
+  &:hover {
+    text-decoration: underline; // Optional: underline on hover to indicate interactivity
+  }
+
+  &:focus {
+    outline: none; // Optional: custom focus style for accessibility
+    // Add your own focus styles here
+  }
+}

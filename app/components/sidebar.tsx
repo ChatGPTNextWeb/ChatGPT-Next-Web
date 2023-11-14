@@ -31,6 +31,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import { showConfirm, showToast } from "./ui-lib";
 
+import { UsageStats } from '../usage-stats/UsageStats';
+
+const [showUsageStats, setShowUsageStats] = useState(false); // State to control the visibility of the usage stats
+const toggleUsageStats = () => setShowUsageStats(!showUsageStats); // Function to toggle the usage stats UI
+
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
@@ -158,7 +163,15 @@ export function SideBar(props: { className?: string }) {
           AdEx<b>GPT</b> - via API
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          secure local UI for OpenAI API
+          secure local UI for 
+          <span 
+            className={styles["api-link"]} // You might need to define this style
+            onClick={toggleUsageStats}
+            role="button" // Accessibility improvement
+            tabIndex={0} // Accessibility improvement
+          >
+            OpenAI API
+          </span>
           <br />
           <a href="https://adexpartners.sharepoint.com/sites/AdExGPT/SitePages/AdExGPT.aspx">
             FAQ & Support
