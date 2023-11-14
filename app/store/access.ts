@@ -49,7 +49,7 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidOpenAI() {
-      return ensure(get(), ["openaiApiKey"]);
+      return ensure(get(), ["openaiUrl", "openaiApiKey"]);
     },
 
     isValidAzure() {
