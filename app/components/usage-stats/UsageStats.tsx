@@ -36,46 +36,44 @@ const UsageStats: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className={styles.usageStatsContainer}>
       <div className={styles.usageStatsModal}>
-          <h1>Usage Stats</h1>
-          <select value={selectedDateKey} onChange={handleDateChange}>
-            {dateKeys.map(dateKey => (
-              <option key={dateKey} value={dateKey}>
-                {dateKey}
-              </option>
-            ))}
-          </select>
-          <p>Number of events: {signInCount}</p>
-          <button onClick={handleDrillDown}>Drill-down</button>
-          <div>
-            {showDrillDown && (
-                  
-                    
-                    {/* ... other UI elements ... */}
-
-              <table>
-                <thead>
-                  <tr>
-                    <th>Email</th>
-                    <th>Count</th>
+        <h1>Usage Stats</h1>
+        <select value={selectedDateKey} onChange={handleDateChange}>
+          {dateKeys.map(dateKey => (
+            <option key={dateKey} value={dateKey}>
+              {dateKey}
+            </option>
+          ))}
+        </select>
+        <p>Number of events: {signInCount}</p>
+        <button onClick={handleDrillDown}>Drill-down</button>
+        {/* Wrap the conditional block and the button with a div or fragment */}
+        <div>
+          {showDrillDown && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(userDetails).map(([email, count]) => (
+                  <tr key={email}>
+                    <td>{email}</td>
+                    <td>{count}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(userDetails).map(([email, count]) => (
-                    <tr key={email}>
-                      <td>{email}</td>
-                      <td>{count}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                ))}
+              </tbody>
+            </table>
+          )}
           <button className={styles.closeButton} onClick={onClose}>
-                    Close
+            Close
           </button>
-        </div> 
+        </div>
       </div>
     </div>
   );
+  
 };
 
 export default UsageStats;
