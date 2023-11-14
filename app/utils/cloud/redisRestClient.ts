@@ -74,21 +74,18 @@ export const getAvailableDateKeys = async (): Promise<string[]> => {
 
 export const getSignInCountForPeriod = async (dateKey: string): Promise<number> => {
   try {
-    const counts = await redis.hgetall(`signin_count:${dateKey}`);
+    // Explicitly cast the result of redis.hgetall to an object with string values.
+    const counts = await redis.hgetall(`signin_count:${dateKey}`) as Record<string, string>;
     return Object.values(counts).reduce((total, count) => {
-      // Ensure that 'count' is a string before parsing it to an integer.
-      if (typeof count === 'string') {
-        return total + parseInt(count, 10);
-      } else {
-        console.error(`Count value is not a string: ${count}`);
-        return total;
-      }
+      // Now TypeScript knows that 'count' is a string.
+      return total + parseInt(count, 10);
     }, 0);
   } catch (error) {
     console.error(`Failed to get sign-in count for period ${dateKey}`, error);
     return 0;
   }
 };
+
 
 
 export const getDetailsByUser = async (dateKey: string): Promise<Record<string, number>> => {
