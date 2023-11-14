@@ -24,16 +24,19 @@ const getRedisClient = () => {
 
 
 
-export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
+export const incrementSignInCount = async (
+  email: string | undefined,
+  dateKey: string
+): Promise<void> => {
   if (!email) {
     console.error('Email is undefined, cannot increment sign-in count.');
-    return;
+    return; // This is fine for a function returning Promise<void>
   }
 
   const redis = getRedisClient();
   if (!redis) {
     console.error('Redis client is not initialized.');
-    return;
+    return; // This is fine for a function returning Promise<void>
   }
 
   try {
@@ -43,16 +46,19 @@ export const incrementSignInCount = async (email: string | undefined, dateKey: s
   }
 };
 
-export const incrementSessionRefreshCount = async (email: string | undefined, dateKey: string) => {
+export const incrementSessionRefreshCount = async (
+  email: string | undefined,
+  dateKey: string
+): Promise<void> => {
   if (!email) {
     console.error('Email is undefined, cannot increment session refresh count.');
-    return;
+    return; // This is fine for a function returning Promise<void>
   }
 
   const redis = getRedisClient();
   if (!redis) {
     console.error('Redis client is not initialized.');
-    return;
+    return; // This is fine for a function returning Promise<void>
   }
 
   try {
@@ -61,6 +67,7 @@ export const incrementSessionRefreshCount = async (email: string | undefined, da
     console.error('Failed to increment session refresh count in Redis via Upstash', error);
   }
 };
+
 
 export const incrementTokenCounts = async (
   email: string | undefined,
@@ -93,7 +100,7 @@ export const getAvailableDateKeys = async (): Promise<string[]> => {
   const redis = getRedisClient();
   if (!redis) {
     console.error('Redis client is not initialized.');
-    return;
+    return []; // Return an empty array explicitly
   }
 
   try {
@@ -139,9 +146,9 @@ export const getDetailsByUser = async (dateKey: string): Promise<Record<string, 
   const redis = getRedisClient();
   if (!redis) {
     console.error('Redis client is not initialized.');
-    return;
+    return {};
   }
-  
+
   try {
     const rawCounts = await redis.hgetall(`signin_count:${dateKey}`);
     const counts: Record<string, number> = {};
