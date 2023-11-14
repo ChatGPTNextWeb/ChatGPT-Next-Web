@@ -7,7 +7,6 @@ import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import VariantGptIcon from "../icons/robotgpt.svg";
 import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
@@ -30,6 +29,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+
+interface SidebarProps {
+  title: string;
+  subtitle: string;
+  className?: string;
+}
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -128,7 +133,7 @@ function useDragSideBar() {
   };
 }
 
-export function SideBar(props: { className?: string }) {
+export function SideBar(props: SidebarProps) {
   const chatStore = useChatStore();
 
   // drag side bar
@@ -155,9 +160,9 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          VariantGPT
+          {props.title}
         </div>
-        <div className={styles["sidebar-sub-title"]}>variant.rocks</div>
+        <div className={styles["sidebar-sub-title"]}>{props.subtitle}</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <VariantGptIcon />
         </div>
