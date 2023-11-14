@@ -32,7 +32,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import { showConfirm, showToast } from "./ui-lib";
 
-import { UsageStats } from '../usage-stats/UsageStats';
+import UsageStats from '../usage-stats/UsageStats';
 
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
