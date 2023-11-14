@@ -39,6 +39,7 @@ export const authOptions: NextAuthOptions = {
         console.error("Email is required for sign in");
         return false; // Prevent sign-in
       }
+      console.log("Sign-In: ",user.email);
       const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
       await incrementSignInCount(user.email, dateKey);
       return true;
@@ -60,6 +61,7 @@ export const authOptions: NextAuthOptions = {
         session.error = "Email is missing";
         return session; // Return the modified session
       }
+      console.log("Session-Refresh: ",token.email);
       const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
       await incrementSessionRefreshCount(token.email, dateKey);
 
