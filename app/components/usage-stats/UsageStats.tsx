@@ -46,31 +46,33 @@ const UsageStats: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </select>
           <p>Number of events: {signInCount}</p>
           <button onClick={handleDrillDown}>Drill-down</button>
-          {showDrillDown && (
-                
+          <div>
+            {showDrillDown && (
                   
-                  {/* ... other UI elements ... */}
+                    
+                    {/* ... other UI elements ... */}
 
-            <table>
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(userDetails).map(([email, count]) => (
-                  <tr key={email}>
-                    <td>{email}</td>
-                    <td>{count}</td>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Count</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {Object.entries(userDetails).map(([email, count]) => (
+                    <tr key={email}>
+                      <td>{email}</td>
+                      <td>{count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           <button className={styles.closeButton} onClick={onClose}>
                     Close
           </button>
+        </div> 
       </div>
     </div>
   );
