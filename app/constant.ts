@@ -1,5 +1,5 @@
-export const OWNER = "Yidadaa";
-export const REPO = "ChatGPT-Next-Web";
+export const OWNER = "varianter";
+export const REPO = "variant-rocks";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;
@@ -84,7 +84,7 @@ You are ChatGPT, a large language model trained by OpenAI.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
-Latex inline: $x^2$ 
+Latex inline: $x^2$
 Latex block: $$e=mc^2$$
 `;
 
