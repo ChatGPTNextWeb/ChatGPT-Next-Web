@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useCallback } from "react";
+import { useEffect, useRef, useMemo, useCallback, useState } from "react";
 import Image from 'next/image'; // Import the Image component from Next.js
 
 import styles from "./home.module.scss";
