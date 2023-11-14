@@ -43,7 +43,8 @@
         "show": true,
         "startDragging": true,
         "unmaximize": true,
-        "unminimize": true
+        "unminimize": true,
+        "setAlwaysOnTop": true
       },
       "fs": {
         "all": true
@@ -107,7 +108,8 @@
         "title": "ChatGPT Next Web",
         "width": 960,
         "hiddenTitle": true,
-        "titleBarStyle": "Overlay"
+        "titleBarStyle": "Overlay",
+        "alwaysOnTop": false
       }
     ]
   }

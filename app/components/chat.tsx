@@ -89,6 +89,7 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
+import { appWindow } from '@tauri-apps/api/window';
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -611,6 +612,26 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
+function usePinApp() {
+  const [pinApp, setPinApp] = useState(false);
+
+  const togglePinApp = async () => {
+    if (pinApp) {
+      await appWindow.setAlwaysOnTop(true);
+      showToast(Locale.Chat.Actions.PinAppContent.Pinned);
+    } else {
+      await appWindow.setAlwaysOnTop(false);
+      showToast(Locale.Chat.Actions.PinAppContent.UnPinned);
+    }
+    setPinApp(!pinApp);
+  };
+
+  return {
+    pinApp,
+    togglePinApp,
+  };
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -629,6 +650,7 @@ function _Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
+  const { pinApp, togglePinApp } = usePinApp();
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -1094,6 +1116,14 @@ function _Chat() {
               onClick={() => {
                 setShowExport(true);
               }}
+            />
+            </div>
+          <div className="window-action-button">
+            <IconButton
+              icon={<PinIcon />}
+              bordered
+              title={Locale.Chat.Actions.Pin}
+              onClick={togglePinApp} // Call the enablePinApp function
             />
           </div>
           {showMaxIcon && (
