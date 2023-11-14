@@ -1,20 +1,33 @@
 // redisRestClient.ts
 import { Redis } from "@upstash/redis";
 
-// Check if the environment variables are set
-const redisUrl = process.env.UPSTASH_REDIS_URL;
-const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+let redis: Redis | undefined;
 
-if (!redisUrl || !redisToken) {
-  throw new Error('The Upstash Redis URL and token must be provided.');
-}
+const getRedisClient = () => {
+  if (!redis) {
+    const redisUrl = process.env.UPSTASH_REDIS_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-// Create the Redis instance with the known-to-be-defined values
-const redis = new Redis({
-  url: redisUrl,
-  token: redisToken,
-});
+    if (!redisUrl || !redisToken) {
+      // Handle missing environment variables more gracefully
+      console.error('The Upstash Redis URL and token must be provided.');
+      return null; // Or throw an error if that's the desired behavior
+    }
 
+    redis = new Redis({
+      url: redisUrl,
+      token: redisToken,
+    });
+  }
+  return redis;
+};
+
+
+// Use getRedisClient() to access the Redis client in your functions
+export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
+  const redis = getRedisClient();
+  // ... rest of your function
+};
 
 export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
   if (!email) {
