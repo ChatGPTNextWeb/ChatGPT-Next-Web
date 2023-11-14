@@ -1,7 +1,7 @@
 // UsageStats.tsx
 
 import React, { useState, useEffect } from 'react';
-import { getAvailableDateKeys, getSignInCountForPeriod, getDetailsByUser } from './app/utils/cloud/redisRestClient';
+import { getAvailableDateKeys, getSignInCountForPeriod, getDetailsByUser } from './utils/cloud/redisRestClient';
 import styles from './UsageStats.module.scss'; // Assume you have a separate SCSS module for UsageStats
 
 const UsageStats: React.FC<{ onClose: () => void }> = ({ onClose }) => {
