@@ -75,20 +75,42 @@ export const getAvailableDateKeys = async (): Promise<string[]> => {
 export const getSignInCountForPeriod = async (dateKey: string): Promise<number> => {
   try {
     const counts = await redis.hgetall(`signin_count:${dateKey}`);
-    return Object.values(counts).reduce((total, count) => total + parseInt(count, 10), 0);
+    return Object.values(counts).reduce((total, count) => {
+      // Ensure that 'count' is a string before parsing it to an integer.
+      if (typeof count === 'string') {
+        return total + parseInt(count, 10);
+      } else {
+        console.error(`Count value is not a string: ${count}`);
+        return total;
+      }
+    }, 0);
   } catch (error) {
     console.error(`Failed to get sign-in count for period ${dateKey}`, error);
     return 0;
   }
 };
 
+
 export const getDetailsByUser = async (dateKey: string): Promise<Record<string, number>> => {
   try {
-    const counts = await redis.hgetall(`signin_count:${dateKey}`);
+    const rawCounts = await redis.hgetall(`signin_count:${dateKey}`);
+    const counts: Record<string, number> = {};
+
+    // Ensure that all values are numbers after parsing.
+    for (const [key, value] of Object.entries(rawCounts)) {
+      if (typeof value === 'string') {
+        counts[key] = parseInt(value, 10);
+      } else {
+        console.error(`Value for key '${key}' is not a string: ${value}`);
+        counts[key] = 0; // or handle this case as appropriate
+      }
+    }
+
     return counts;
   } catch (error) {
     console.error(`Failed to get details by user for period ${dateKey}`, error);
     return {};
   }
 };
+
 
