@@ -149,138 +149,144 @@ export function SideBar(props: { className?: string }) {
     [isMobileScreen],
   );
 
+  const usageStatsComponent = showUsageStats && <UsageStats onClose={() => setShowUsageStats(false)} />;
+
   useHotKey();
 
   return (
-    <div
-      className={`${styles.sidebar} ${props.className} ${
-        shouldNarrow && styles["narrow-sidebar"]
-      }`}
-      style={{
-        // #3016 disable transition on ios mobile screen
-        transition: isMobileScreen && isIOSMobile ? "none" : undefined,
-      }}
-    >
-      <div className={styles["sidebar-header"]} data-tauri-drag-region>
-        <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          AdEx<b>GPT</b> - via API
-        </div>
-        <div className={styles["sidebar-sub-title"]}>
-          secure local UI for 
-          <span 
-            className={styles["api-link"]} // You might need to define this style
-            onClick={toggleUsageStats}
-            role="button" // Accessibility improvement
-            tabIndex={0} // Accessibility improvement
-          >
-            OpenAI API
-          </span>
-          <br />
-          <a href="https://adexpartners.sharepoint.com/sites/AdExGPT/SitePages/AdExGPT.aspx">
-            FAQ & Support
-          </a>
-        </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          {/* Replace img with Image component and add an alt attribute */}
-          <img
-            src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg"
-            width="60"
-            height="60" // You need to add the height property as well
-            alt="AdEx Logo" // Provide a meaningful alt text or an empty string if the image is decorative
-          />
-        </div>
-      </div>
-
-      <div className={styles["sidebar-header-bar"]}>
-        <IconButton
-          icon={<MaskIcon />}
-          text={shouldNarrow ? undefined : Locale.Mask.Name}
-          className={styles["sidebar-bar-button"]}
-          onClick={() => {
-            if (config.dontShowMaskSplashScreen !== true) {
-              navigate(Path.NewChat, { state: { fromHome: true } });
-            } else {
-              navigate(Path.Masks, { state: { fromHome: true } });
-            }
-          }}
-          shadow
-        />
-        <IconButton
-          icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
-          className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
-          shadow
-        />
-      </div>
-
+    <>
+      {usageStatsComponent} {/* This is where the UsageStats component gets rendered */}
       <div
-        className={styles["sidebar-body"]}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
+        className={`${styles.sidebar} ${props.className} ${
+          shouldNarrow && styles["narrow-sidebar"]
+        }`}
+        style={{
+          // #3016 disable transition on ios mobile screen
+          transition: isMobileScreen && isIOSMobile ? "none" : undefined,
         }}
       >
-        <ChatList narrow={shouldNarrow} />
-      </div>
-
-      <div className={styles["sidebar-tail"]}>
-        <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"] + " " + styles.mobile}>
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={async () => {
-                if (await showConfirm(Locale.Home.DeleteChat)) {
-                  chatStore.deleteSession(chatStore.currentSessionIndex);
-                }
-              }}
-            />
+        <div className={styles["sidebar-header"]} data-tauri-drag-region>
+          <div className={styles["sidebar-title"]} data-tauri-drag-region>
+            AdEx<b>GPT</b> - via API
           </div>
-
-          <div className={styles["sidebar-action"]}>
-            <Link to={Path.Settings}>
-              <IconButton icon={<SettingsIcon />} shadow />
-            </Link>
-          </div>
-
-          <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-              <IconButton icon={<GithubIcon />} shadow />
+          <div className={styles["sidebar-sub-title"]}>
+            secure local UI for&nbsp;
+            <span 
+              className={styles["api-link"]} // You might need to define this style
+              onClick={toggleUsageStats}
+              role="button" // Accessibility improvement
+              tabIndex={0} // Accessibility improvement
+            >
+              OpenAI API
+            </span>
+            <br />
+            <a href="https://adexpartners.sharepoint.com/sites/AdExGPT/SitePages/AdExGPT.aspx">
+              FAQ & Support
             </a>
           </div>
-
-          <div className={styles["sidebar-action"]}>
-            <IconButton
-              icon={<SignoutIcon />}
-              shadow
-              onClick={() => signOut()}
+          <div className={styles["sidebar-logo"] + " no-dark"}>
+            {/* Replace img with Image component and add an alt attribute */}
+            <img
+              src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg"
+              width="60"
+              height="60" // You need to add the height property as well
+              alt="AdEx Logo" // Provide a meaningful alt text or an empty string if the image is decorative
             />
           </div>
         </div>
-        <div>
+
+        <div className={styles["sidebar-header-bar"]}>
           <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
+            icon={<MaskIcon />}
+            text={shouldNarrow ? undefined : Locale.Mask.Name}
+            className={styles["sidebar-bar-button"]}
             onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
+              if (config.dontShowMaskSplashScreen !== true) {
+                navigate(Path.NewChat, { state: { fromHome: true } });
               } else {
-                navigate(Path.NewChat);
+                navigate(Path.Masks, { state: { fromHome: true } });
               }
             }}
             shadow
           />
+          <IconButton
+            icon={<PluginIcon />}
+            text={shouldNarrow ? undefined : Locale.Plugin.Name}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => showToast(Locale.WIP)}
+            shadow
+          />
+        </div>
+
+        <div
+          className={styles["sidebar-body"]}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              navigate(Path.Home);
+            }
+          }}
+        >
+          <ChatList narrow={shouldNarrow} />
+        </div>
+
+        <div className={styles["sidebar-tail"]}>
+          <div className={styles["sidebar-actions"]}>
+            <div className={styles["sidebar-action"] + " " + styles.mobile}>
+              <IconButton
+                icon={<CloseIcon />}
+                onClick={async () => {
+                  if (await showConfirm(Locale.Home.DeleteChat)) {
+                    chatStore.deleteSession(chatStore.currentSessionIndex);
+                  }
+                }}
+              />
+            </div>
+
+            <div className={styles["sidebar-action"]}>
+              <Link to={Path.Settings}>
+                <IconButton icon={<SettingsIcon />} shadow />
+              </Link>
+            </div>
+
+            <div className={styles["sidebar-action"]}>
+              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+                <IconButton icon={<GithubIcon />} shadow />
+              </a>
+            </div>
+
+            <div className={styles["sidebar-action"]}>
+              <IconButton
+                icon={<SignoutIcon />}
+                shadow
+                onClick={() => signOut()}
+              />
+            </div>
+          </div>
+          <div>
+            <IconButton
+              icon={<AddIcon />}
+              text={shouldNarrow ? undefined : Locale.Home.NewChat}
+              onClick={() => {
+                if (config.dontShowMaskSplashScreen) {
+                  chatStore.newSession();
+                  navigate(Path.Chat);
+                } else {
+                  navigate(Path.NewChat);
+                }
+              }}
+              shadow
+            />
+          </div>
+        </div>
+
+        <div
+          className={styles["sidebar-drag"]}
+          onPointerDown={(e) => onDragStart(e as any)}
+        >
+          <DragIcon />
         </div>
       </div>
-
-      <div
-        className={styles["sidebar-drag"]}
-        onPointerDown={(e) => onDragStart(e as any)}
-      >
-        <DragIcon />
-      </div>
-    </div>
+    </>
+    
   );
 }
