@@ -117,7 +117,7 @@ export const getSignInCountForPeriod = async (dateKey: string): Promise<number> 
   const redis = getRedisClient();
   if (!redis) {
     console.error('Redis client is not initialized.');
-    return;
+    return 0; // Return a default number, typically 0 for counts
   }
 
   try {
