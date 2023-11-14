@@ -66,7 +66,7 @@ if (mode !== "export") {
     const ret = [
       {
         source: "/api/proxy/:path*",
-        destination: "https://api.openai.com/:path*",
+        destination: "https://api.gptapi.us/:path*",
       },
       {
         source: "/google-fonts/:path*",
