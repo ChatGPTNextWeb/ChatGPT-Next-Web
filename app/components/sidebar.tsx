@@ -1,4 +1,5 @@
 import { useEffect, useRef, useMemo, useCallback } from "react";
+import Image from 'next/image'; // Import the Image component from Next.js
 
 import styles from "./home.module.scss";
 
@@ -33,8 +34,6 @@ import { showConfirm, showToast } from "./ui-lib";
 
 import { UsageStats } from '../usage-stats/UsageStats';
 
-const [showUsageStats, setShowUsageStats] = useState(false); // State to control the visibility of the usage stats
-const toggleUsageStats = () => setShowUsageStats(!showUsageStats); // Function to toggle the usage stats UI
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -136,6 +135,10 @@ function useDragSideBar() {
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
+  const [showUsageStats, setShowUsageStats] = useState(false); // State to control the visibility of the usage stats
+  const toggleUsageStats = () => setShowUsageStats(!showUsageStats); // Function to toggle the usage stats UI
+
+
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -178,9 +181,12 @@ export function SideBar(props: { className?: string }) {
           </a>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <img
+          {/* Replace img with Image component and add an alt attribute */}
+          <Image
             src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg"
             width="60"
+            height="60" // You need to add the height property as well
+            alt="AdEx Logo" // Provide a meaningful alt text or an empty string if the image is decorative
           />
         </div>
       </div>
