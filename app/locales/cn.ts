@@ -40,6 +40,10 @@ const cn = {
       Pin: "固定",
       PinToastContent: "已将 1 条对话固定至预设提示词",
       PinToastAction: "查看",
+      PinAppContent: {
+        Pinned : "桌面应用已固定",
+        UnPinned: "桌面应用已取消固定",
+      },  
       Delete: "删除",
       Edit: "编辑",
     },

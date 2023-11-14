@@ -30,6 +30,10 @@ const id: PartialLocaleType = {
       Pin: "Pin",
       PinToastContent: "2 pesan telah ditandai",
       PinToastAction: "Lihat",
+      PinAppContent: {
+        Pinned : "Aplikasi Desktop sekarang dipasangkan",
+        UnPinned: "Aplikasi Desktop tidak lagi dipasangkan",
+      },  
       Delete: "Hapus",
       Edit: "Edit",
     },

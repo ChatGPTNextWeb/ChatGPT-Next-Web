@@ -42,6 +42,10 @@ const en: LocaleType = {
       Pin: "Pin",
       PinToastContent: "Pinned 1 messages to contextual prompts",
       PinToastAction: "View",
+      PinAppContent: {
+        Pinned : "Desktop App is now pinned",
+        UnPinned: "Desktop App is no longer pinned",
+      },
       Delete: "Delete",
       Edit: "Edit",
     },
