@@ -74,9 +74,15 @@ export const getAvailableDateKeys = async (): Promise<string[]> => {
 
 export const getSignInCountForPeriod = async (dateKey: string): Promise<number> => {
   try {
-    // Explicitly cast the result of redis.hgetall to an object with string values.
-    const counts = await redis.hgetall(`signin_count:${dateKey}`) as Record<string, string>;
-    return Object.values(counts).reduce((total, count) => {
+    const counts = await redis.hgetall(`signin_count:${dateKey}`);
+    if (counts === null) {
+      // If the key does not exist, return 0 as there are no sign-in counts.
+      return 0;
+    }
+
+    // Now we can safely cast counts because we know it's not null.
+    const stringCounts = counts as Record<string, string>;
+    return Object.values(stringCounts).reduce((total, count) => {
       // Now TypeScript knows that 'count' is a string.
       return total + parseInt(count, 10);
     }, 0);
@@ -93,13 +99,16 @@ export const getDetailsByUser = async (dateKey: string): Promise<Record<string, 
     const rawCounts = await redis.hgetall(`signin_count:${dateKey}`);
     const counts: Record<string, number> = {};
 
-    // Ensure that all values are numbers after parsing.
-    for (const [key, value] of Object.entries(rawCounts)) {
-      if (typeof value === 'string') {
-        counts[key] = parseInt(value, 10);
-      } else {
-        console.error(`Value for key '${key}' is not a string: ${value}`);
-        counts[key] = 0; // or handle this case as appropriate
+    // Check if rawCounts is not null before iterating
+    if (rawCounts) {
+      // Iterate over the entries and parse each value as an integer.
+      for (const [key, value] of Object.entries(rawCounts)) {
+        if (typeof value === 'string') {
+          counts[key] = parseInt(value, 10);
+        } else {
+          console.error(`Value for key '${key}' is not a string: ${value}`);
+          counts[key] = 0; // or handle this case as appropriate
+        }
       }
     }
 
