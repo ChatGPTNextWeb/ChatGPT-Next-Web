@@ -23,17 +23,14 @@ const getRedisClient = () => {
 };
 
 
-// Use getRedisClient() to access the Redis client in your functions
-export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
-  const redis = getRedisClient();
-  // ... rest of your function
-};
 
 export const incrementSignInCount = async (email: string | undefined, dateKey: string) => {
   if (!email) {
     console.error('Email is undefined, cannot increment sign-in count.');
     return;
   }
+
+  const redis = getRedisClient();
 
   try {
     await redis.hincrby(`signin_count:${email}`, dateKey, 1);
@@ -47,6 +44,8 @@ export const incrementSessionRefreshCount = async (email: string | undefined, da
     console.error('Email is undefined, cannot increment session refresh count.');
     return;
   }
+
+  const redis = getRedisClient();
 
   try {
     await redis.hincrby(`session_refreshes:${email}`, dateKey, 1);
@@ -66,6 +65,8 @@ export const incrementTokenCounts = async (
     return;
   }
 
+  const redis = getRedisClient();
+
   try {
     await redis.hincrby(`tokens:${email}`, `${dateKey}:completion_tokens`, completionTokens);
     await redis.hincrby(`tokens:${email}`, `${dateKey}:prompt_tokens`, promptTokens);
@@ -76,6 +77,9 @@ export const incrementTokenCounts = async (
 
 
 export const getAvailableDateKeys = async (): Promise<string[]> => {
+
+  const redis = getRedisClient();
+
   try {
     const keys = await redis.keys('signin_count:*');
     return keys.map(key => key.split(':')[1]);
@@ -86,6 +90,9 @@ export const getAvailableDateKeys = async (): Promise<string[]> => {
 };
 
 export const getSignInCountForPeriod = async (dateKey: string): Promise<number> => {
+
+  const redis = getRedisClient();
+
   try {
     const counts = await redis.hgetall(`signin_count:${dateKey}`);
     if (counts === null) {
@@ -108,6 +115,9 @@ export const getSignInCountForPeriod = async (dateKey: string): Promise<number> 
 
 
 export const getDetailsByUser = async (dateKey: string): Promise<Record<string, number>> => {
+
+  const redis = getRedisClient();
+
   try {
     const rawCounts = await redis.hgetall(`signin_count:${dateKey}`);
     const counts: Record<string, number> = {};
