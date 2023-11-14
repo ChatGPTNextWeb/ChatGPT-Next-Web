@@ -617,11 +617,11 @@ function usePinApp() {
 
   const togglePinApp = async () => {
     if (pinApp) {
-      await appWindow.setAlwaysOnTop(true);
-      showToast(Locale.Chat.Actions.PinAppContent.Pinned);
-    } else {
       await appWindow.setAlwaysOnTop(false);
       showToast(Locale.Chat.Actions.PinAppContent.UnPinned);
+    } else {
+      await appWindow.setAlwaysOnTop(true);
+      showToast(Locale.Chat.Actions.PinAppContent.Pinned);
     }
     setPinApp(!pinApp);
   };
