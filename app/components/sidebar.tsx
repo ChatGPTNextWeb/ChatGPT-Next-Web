@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo, useCallback, useState } from "react";
-import Image from 'next/image'; // Import the Image component from Next.js
+//import Image from 'next/image'; // Import the Image component from Next.js
 
 import styles from "./home.module.scss";
 
@@ -182,7 +182,7 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           {/* Replace img with Image component and add an alt attribute */}
-          <Image
+          <img
             src="https://assets.cdn.personio.de/logos/85756/default/fc91989a7a2e899e3655593e271461aa.jpg"
             width="60"
             height="60" // You need to add the height property as well
