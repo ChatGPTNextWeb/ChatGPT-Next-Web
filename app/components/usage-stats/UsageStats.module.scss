@@ -1,0 +1,76 @@
+// UsageStats.module.scss
+
+.usageStatsContainer {
+    position: fixed; // Fixed position to overlay on top of the content
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); // Semi-transparent background to obscure the content
+    z-index: 1000; // High z-index to ensure it's on top of other elements
+  }
+  
+  .usageStatsModal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px; // Maximum width of the modal
+    z-index: 1001; // Ensure the modal is above the semi-transparent background
+  }
+  
+  // ... Add more styles for headings, buttons, tables, etc.
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  .dropdown {
+    margin-bottom: 10px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+  
+  // ... Add more styles as needed
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+  
+    th {
+      background-color: #f8f8f8;
+    }
+  }
+  @media (max-width: 768px) {
+    .usageStatsModal {
+      width: 95%;
+      padding: 10px;
+    }
+  }
+          

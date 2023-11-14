@@ -60,3 +60,35 @@ export const incrementTokenCounts = async (
     console.error('Failed to increment token counts in Redis via Upstash', error);
   }
 };
+
+
+export const getAvailableDateKeys = async (): Promise<string[]> => {
+  try {
+    const keys = await redis.keys('signin_count:*');
+    return keys.map(key => key.split(':')[1]);
+  } catch (error) {
+    console.error('Failed to get keys from Redis', error);
+    return [];
+  }
+};
+
+export const getSignInCountForPeriod = async (dateKey: string): Promise<number> => {
+  try {
+    const counts = await redis.hgetall(`signin_count:${dateKey}`);
+    return Object.values(counts).reduce((total, count) => total + parseInt(count, 10), 0);
+  } catch (error) {
+    console.error(`Failed to get sign-in count for period ${dateKey}`, error);
+    return 0;
+  }
+};
+
+export const getDetailsByUser = async (dateKey: string): Promise<Record<string, number>> => {
+  try {
+    const counts = await redis.hgetall(`signin_count:${dateKey}`);
+    return counts;
+  } catch (error) {
+    console.error(`Failed to get details by user for period ${dateKey}`, error);
+    return {};
+  }
+};
+
