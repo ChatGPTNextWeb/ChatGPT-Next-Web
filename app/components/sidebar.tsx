@@ -1,6 +1,7 @@
+"use client";
 import { useEffect, useRef, useMemo } from "react";
 
-import styles from "./home.module.scss";
+import styles from "./chatHomepage.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
@@ -11,6 +12,7 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import Locale from "../locales";
 
@@ -34,6 +36,7 @@ interface SidebarProps {
   title: string;
   subtitle: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
@@ -133,7 +136,7 @@ function useDragSideBar() {
   };
 }
 
-export function SideBar(props: SidebarProps) {
+export function Sidebar(props: SidebarProps) {
   const chatStore = useChatStore();
 
   // drag side bar
@@ -141,6 +144,15 @@ export function SideBar(props: SidebarProps) {
   const navigate = useNavigate();
   const config = useAppConfig();
   const isMobileScreen = useMobileScreen();
+  const pathName = usePathname();
+  const isUrlSalesGPT = () => {
+    if (pathName.includes("salesGPT")) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const isIOSMobile = useMemo(
     () => isIOS() && isMobileScreen,
     [isMobileScreen],

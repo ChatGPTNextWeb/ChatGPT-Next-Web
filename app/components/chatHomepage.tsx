@@ -4,7 +4,7 @@ require("../polyfill");
 
 import { useState, useEffect } from "react";
 
-import styles from "./home.module.scss";
+import styles from "./chatHomepage.module.scss";
 
 import BotIcon from "../icons/robotgpt.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -23,12 +23,13 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import { SideBar } from "./sidebar";
+import { Sidebar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
+import SalesGPT from "./salesGPT";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -86,7 +87,7 @@ export function useSwitchTheme() {
   }, [config.theme]);
 }
 
-function useHtmlLang() {
+export function useHtmlLang() {
   useEffect(() => {
     const lang = getISOLang();
     const htmlLang = document.documentElement.lang;
@@ -97,7 +98,7 @@ function useHtmlLang() {
   }, []);
 }
 
-const useHasHydrated = () => {
+export const useHasHydrated = () => {
   const [hasHydrated, setHasHydrated] = useState<boolean>(false);
 
   useEffect(() => {
@@ -150,7 +151,7 @@ function Screen() {
         </>
       ) : (
         <>
-          <SideBar
+          <Sidebar
             title="variantGPT"
             subtitle="variant.rocks"
             className={isHome ? styles["sidebar-show"] : ""}
@@ -163,6 +164,7 @@ function Screen() {
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.Settings} element={<Settings />} />
+              <Route path="/salesGPT" element={<SalesGPT />} />
             </Routes>
           </div>
         </>

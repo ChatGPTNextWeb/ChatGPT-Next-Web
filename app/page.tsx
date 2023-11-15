@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 
 import { authOptions } from "./api/auth/auth-options";
-import { Home } from "./components/home";
+import { Home } from "./components/chatHomepage";
 
 export default async function App() {
   const session = await getServerSession(authOptions);

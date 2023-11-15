@@ -1,6 +1,6 @@
 import DeleteIcon from "../icons/delete.svg";
 
-import styles from "./home.module.scss";
+import styles from "./chatHomepage.module.scss";
 import {
   DragDropContext,
   Droppable,

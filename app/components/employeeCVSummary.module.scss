@@ -1,0 +1,10 @@
+@import "./window.scss";
+
+.input {
+  display: flex;
+  flex-flow: column;
+
+  .requirements {
+    min-height: 200px;
+  }
+}
