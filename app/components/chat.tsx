@@ -34,6 +34,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import ChatGptIcon from "../icons/chatgpt.png";
 
 import {
   ChatMessage,
@@ -618,9 +619,21 @@ function usePinApp() {
   const togglePinApp = async () => {
     if (pinApp) {
       await appWindow.setAlwaysOnTop(false);
+       window.__TAURI__?.notification.sendNotification({
+        title: "ChatGPT Next Web",
+        body: Locale.Chat.Actions.PinAppContent.UnPinned,
+        icon: `${ChatGptIcon.src}`,
+        sound: "Default"
+      });
       showToast(Locale.Chat.Actions.PinAppContent.UnPinned);
     } else {
       await appWindow.setAlwaysOnTop(true);
+      window.__TAURI__?.notification.sendNotification({
+        title: "ChatGPT Next Web",
+        body: Locale.Chat.Actions.PinAppContent.Pinned,
+        icon: `${ChatGptIcon.src}`,
+        sound: "Default"
+      });
       showToast(Locale.Chat.Actions.PinAppContent.Pinned);
     }
     setPinApp(!pinApp);
