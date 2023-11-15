@@ -624,11 +624,16 @@ export function JsonPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
 }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const memoryPrompt = session.memoryPrompt;
+  const sysMessage = memoryPrompt || Locale.FineTuned.Sysmessage; // Use memoryPrompt if it's not empty, otherwise use props.topic
+  const systemContent = sysMessage + " " + props.topic;
   const msgs = {
     messages: [
       {
         role: "system",
-        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
+        content: systemContent,
       },
       ...props.messages.map((m) => ({
         role: m.role,
