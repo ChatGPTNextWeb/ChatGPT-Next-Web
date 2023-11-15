@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const config = {
-  runtime: 'edge',
-}
+export const runtime = 'edge';
 
 async function handle(
   req: NextRequest,
