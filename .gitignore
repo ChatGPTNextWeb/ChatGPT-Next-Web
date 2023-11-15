@@ -36,7 +36,11 @@ yarn-error.log*
 next-env.d.ts
 dev
 
-public/prompts.json
-
 .vscode
 .idea
+
+# docker-compose env files
+.env
+
+*.key
+*.key.pub

@@ -5,101 +5,180 @@ import RemarkBreaks from "remark-breaks";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
-import { useRef, useState, RefObject, useEffect } from "react";
+import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard } from "../utils";
+import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
+import React from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { showImageModal } from "./ui-lib";
+
+export function Mermaid(props: { code: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (props.code && ref.current) {
+      mermaid
+        .run({
+          nodes: [ref.current],
+          suppressErrors: true,
+        })
+        .catch((e) => {
+          setHasError(true);
+          console.error("[Mermaid] ", e.message);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.code]);
+
+  function viewSvgInNewWindow() {
+    const svg = ref.current?.querySelector("svg");
+    if (!svg) return;
+    const text = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([text], { type: "image/svg+xml" });
+    showImageModal(URL.createObjectURL(blob));
+  }
+
+  if (hasError) {
+    return null;
+  }
+
+  return (
+    <div
+      className="no-dark mermaid"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
+      ref={ref}
+      onClick={() => viewSvgInNewWindow()}
+    >
+      {props.code}
+    </div>
+  );
+}
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const refText = ref.current?.innerText;
+  const [mermaidCode, setMermaidCode] = useState("");
+
+  const renderMermaid = useDebouncedCallback(() => {
+    if (!ref.current) return;
+    const mermaidDom = ref.current.querySelector("code.language-mermaid");
+    if (mermaidDom) {
+      setMermaidCode((mermaidDom as HTMLElement).innerText);
+    }
+  }, 600);
+
+  useEffect(() => {
+    setTimeout(renderMermaid, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refText]);
 
   return (
-    <pre ref={ref}>
-      <span
-        className="copy-code-button"
-        onClick={() => {
-          if (ref.current) {
-            const code = ref.current.innerText;
-            copyToClipboard(code);
-          }
-        }}
-      ></span>
-      {props.children}
-    </pre>
+    <>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
+          }}
+        ></span>
+        {props.children}
+      </pre>
+    </>
   );
 }
+
+function escapeDollarNumber(text: string) {
+  let escapedText = "";
+
+  for (let i = 0; i < text.length; i += 1) {
+    let char = text[i];
+    const nextChar = text[i + 1] || " ";
+
+    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
+      char = "\\$";
+    }
+
+    escapedText += char;
+  }
+
+  return escapedText;
+}
+
+function _MarkDownContent(props: { content: string }) {
+  const escapedContent = useMemo(
+    () => escapeDollarNumber(props.content),
+    [props.content],
+  );
+
+  return (
+    <ReactMarkdown
+      remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
+      rehypePlugins={[
+        RehypeKatex,
+        [
+          RehypeHighlight,
+          {
+            detect: false,
+            ignoreMissing: true,
+          },
+        ],
+      ]}
+      components={{
+        pre: PreCode,
+        p: (pProps) => <p {...pProps} dir="auto" />,
+        a: (aProps) => {
+          const href = aProps.href || "";
+          const isInternal = /^\/#/i.test(href);
+          const target = isInternal ? "_self" : aProps.target ?? "_blank";
+          return <a {...aProps} target={target} />;
+        },
+      }}
+    >
+      {escapedContent}
+    </ReactMarkdown>
+  );
+}
+
+export const MarkdownContent = React.memo(_MarkDownContent);
 
 export function Markdown(
   props: {
     content: string;
     loading?: boolean;
     fontSize?: number;
-    parentRef: RefObject<HTMLDivElement>;
+    parentRef?: RefObject<HTMLDivElement>;
+    defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
 
-  const parent = props.parentRef.current;
-  const md = mdRef.current;
-  const rendered = useRef(true); // disable lazy loading for bad ux
-  const [counter, setCounter] = useState(0);
-
-  useEffect(() => {
-    // to triggr rerender
-    setCounter(counter + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.loading]);
-
-  const inView =
-    rendered.current ||
-    (() => {
-      if (parent && md) {
-        const parentBounds = parent.getBoundingClientRect();
-        const mdBounds = md.getBoundingClientRect();
-        const isInRange = (x: number) =>
-          x <= parentBounds.bottom && x >= parentBounds.top;
-        const inView = isInRange(mdBounds.top) || isInRange(mdBounds.bottom);
-
-        if (inView) {
-          rendered.current = true;
-        }
-
-        return inView;
-      }
-    })();
-
-  const shouldLoading = props.loading || !inView;
-
   return (
     <div
       className="markdown-body"
-      style={{ fontSize: `${props.fontSize ?? 14}px` }}
+      style={{
+        fontSize: `${props.fontSize ?? 14}px`,
+      }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
       onDoubleClickCapture={props.onDoubleClickCapture}
+      dir="auto"
     >
-      {shouldLoading ? (
+      {props.loading ? (
         <LoadingIcon />
       ) : (
-        <ReactMarkdown
-          remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
-          rehypePlugins={[
-            RehypeKatex,
-            [
-              RehypeHighlight,
-              {
-                detect: false,
-                ignoreMissing: true,
-              },
-            ],
-          ]}
-          components={{
-            pre: PreCode,
-          }}
-          linkTarget={"_blank"}
-        >
-          {props.content}
-        </ReactMarkdown>
+        <MarkdownContent content={props.content} />
       )}
     </div>
   );
