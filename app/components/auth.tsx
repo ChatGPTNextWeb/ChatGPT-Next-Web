@@ -43,7 +43,7 @@ export function AuthPage() {
           access.updateCode(e.currentTarget.value);
         }}
       />
-      {!access.hideUserApiKey ? (
+      {/* {!access.hideUserApiKey ? (
         <>
           <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
           <input
@@ -56,7 +56,7 @@ export function AuthPage() {
             }}
           />
         </>
-      ) : null}
+      ) : null} */}
 
       <div className={styles["auth-actions"]}>
         <IconButton
