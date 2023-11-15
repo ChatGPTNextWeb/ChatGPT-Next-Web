@@ -1,4 +1,4 @@
-<div align="center">
+<div>
 <img src="./docs/images/icon.svg" alt="icon"/>
 
 <h1 align="center">ChatGPT</h1>
