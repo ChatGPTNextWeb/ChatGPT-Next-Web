@@ -10,7 +10,7 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
 export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
-export const OPENAI_BASE_URL = "https://api.openai.com";
+export const OPENAI_BASE_URL = "https://api.openai.com/v1";
 
 export enum Path {
   Home = "/",
@@ -68,10 +68,10 @@ export enum ServiceProvider {
 }
 
 export const OpenaiPath = {
-  ChatPath: "v1/chat/completions",
+  ChatPath: "/chat/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
-  ListModelPath: "v1/models",
+  ListModelPath: "/models",
 };
 
 export const Azure = {

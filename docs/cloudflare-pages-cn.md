@@ -2,28 +2,27 @@
 
 ## 如何新建项目
 
-在 Github 上 fork 本项目，然后登录到 dash.cloudflare.com 并进入 Pages。
+在 Github 上 fork 本项目，然后登录到 dash.cloudflare.com 并从侧边栏进入 Workers & Pages。
 
-1. 点击 "Create a project"。
+1. 点击 "Create application",然后选择"Pages"选项卡。
 2. 选择 "Connect to Git"。
 3. 关联 Cloudflare Pages 和你的 GitHub 账号。
 4. 选中你 fork 的此项目。
 5. 点击 "Begin setup"。
 6. 对于 "Project name" 和 "Production branch"，可以使用默认值，也可以根据需要进行更改。
 7. 在 "Build Settings" 中，选择 "Framework presets" 选项并选择 "Next.js"。
-8. 由于 node:buffer 的 bug，暂时不要使用默认的 "Build command"。请使用以下命令：
+8. 不要改动默认命令，默认命令显示如下：
    ```
-   npx @cloudflare/next-on-pages@1.5.0
+   npx @cloudflare/next-on-pages@1
    ```
 9. 对于 "Build output directory"，使用默认值并且不要修改。
 10. 不要修改 "Root Directory"。
 11. 对于 "Environment variables"，点击 ">" 然后点击 "Add variable"。按照以下信息填写：
 
-    - `NODE_VERSION=20.1`
+    - `NODE_VERSION=21`
     - `NEXT_TELEMETRY_DISABLE=1`
     - `OPENAI_API_KEY=你自己的API Key`
-    - `YARN_VERSION=1.22.19`
-    - `PHP_VERSION=7.4`
+    - `YARN_VERSION=1`
 
     根据实际需要，可以选择填写以下选项：
 
