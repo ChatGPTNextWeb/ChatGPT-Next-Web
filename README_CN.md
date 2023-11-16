@@ -128,7 +128,10 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 
 ### `SUMMARIZATION_MODEL` (可选)
 
-指定会话摘要的模型，例如`gpt-4`。如果`CUSTOM_MODELS`未设置，默认使用`gpt-3.5-turbo`。如果`CUSTOM_MODELS`设置了，默认使用当前会话模型。
+指定会话摘要的模型，例如`gpt-4`。
+如果不设置，会话摘要模型将根据如下条件决定
+- 如果`CUSTOM_MODELS`未设置，默认使用`gpt-3.5-turbo`。
+- 如果`CUSTOM_MODELS`设置了，默认使用当前会话模型。
 
 ## 开发
 

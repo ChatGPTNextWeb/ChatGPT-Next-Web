@@ -223,8 +223,9 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 ### `SUMMARIZATION_MODEL` (optional)
 
 Specify the model for summarization.
-If `CUSTOM_MODELS` is not set, by default `gpt-3.5-turbo` will be used for summarization. 
-If `CUSTOM_MODELS` is set, the model used for current session will be used.
+If it is not set, the summarization model will be decided on whether `CUSTOM_MODELS` is set or not
+- If `CUSTOM_MODELS` is not set, `gpt-3.5-turbo` will be used for summarization.
+- If `CUSTOM_MODELS` is set, the model used for current session will be used.
 
 ## Requirements
 
