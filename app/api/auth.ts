@@ -46,12 +46,14 @@ export function auth(req: NextRequest) {
     };
   }
 
+/*
   if (serverConfig.hideUserApiKey && !!apiKey) {
-    return {
+      return {
       error: true,
       msg: "you are not allowed to access openai with your own api key",
     };
   }
+*/
 
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
