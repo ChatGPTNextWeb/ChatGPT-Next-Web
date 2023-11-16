@@ -357,18 +357,18 @@ pre {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.footer {
+footer {
   position: absolute;
   bottom: 0;
   text-decoration: none;
   font: 12px/1.5 Microsoft YaHei,Heiti SC,tahoma,arial,Hiragino Sans GB,"\5B8B\4F53",sans-serif;
 }
 
-.footer a {
+footer a {
   color: #bbb;
   text-decoration: none;
 }
 
-.footer a:hover {
+footer a:hover {
   color: #000000;
 }
