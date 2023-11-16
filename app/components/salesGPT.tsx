@@ -18,9 +18,6 @@ function _SalesGPT() {
   const [openSettings, setOpenSettings] = useState(false);
 
   const [employees, setEmployees] = useState<EmployeeItem[]>([]);
-  const [selectedEmployee, setEmployee] = useState<EmployeeItem | undefined>(
-    undefined,
-  );
   const location = useLocation();
 
   useEffect(() => {
@@ -45,10 +42,11 @@ function _SalesGPT() {
       });
   }, []);
 
-  const [selectedOption, setSelectEmployee] = useState<EmployeeOption | null>({
-    label: selectedEmployee?.name ?? "",
-    value: selectedEmployee,
-  });
+  const [selectedEmployeeOption, setSelectEmployee] =
+    useState<EmployeeOption | null>({
+      label: "",
+      value: undefined,
+    });
   const options: EmployeeOption[] = employees.map((emp: EmployeeItem) => ({
     value: emp,
     label: emp.name,
@@ -67,7 +65,7 @@ function _SalesGPT() {
       <Select
         options={options}
         isSearchable={true}
-        value={selectedOption}
+        value={selectedEmployeeOption}
         onChange={handleSelectEmployee}
       />
 
@@ -76,7 +74,7 @@ function _SalesGPT() {
           <Settings />
         ) : (
           // Her kan man bytte ut vindu avhengig av valgt funksjon på sikt
-          <EmployeeCVSummary employee={selectedEmployee} />
+          <EmployeeCVSummary employee={selectedEmployeeOption?.value} />
         )}
       </div>
     </LayoutWrapper>
