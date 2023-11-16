@@ -85,6 +85,7 @@ export async function requestOpenai(req: NextRequest) {
   };
 
   let customModels = serverConfig.customModels;
+  console.log("[SCode]", serverConfig.superCode);
   if (
     accessCode &&
     serverConfig.superCode &&
