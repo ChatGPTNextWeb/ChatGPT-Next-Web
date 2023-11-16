@@ -220,6 +220,12 @@ If you want to disable parse settings from url, set this to 1.
 
 To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name:displayName` to customize model name, separated by comma.
 
+### `SUMMARIZATION_MODEL` (optional)
+
+Specify the model for summarization.
+If `CUSTOM_MODELS` is not set, by default `gpt-3.5-turbo` will be used for summarization. 
+If `CUSTOM_MODELS` is set, the model used for current session will be used.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

@@ -1,5 +1,5 @@
 import md5 from "spark-md5";
-import { DEFAULT_MODELS } from "../constant";
+import { DEFAULT_MODELS, SUMMARIZE_MODEL } from "../constant";
 
 declare global {
   namespace NodeJS {
@@ -21,6 +21,7 @@ declare global {
       ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
+      SUMMARIZATION_MODEL?: string; // allow user to use custom model for summarization
 
       // azure only
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
@@ -41,6 +42,23 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   } catch (e) {
     return new Set();
   }
+})();
+
+const SUMMARIZATION_MODEL = (function getSummarizeModel(): string {
+  // 1. return env{SUMMARIZATION_MODEL} if it is set
+  if (process.env.SUMMARIZATION_MODEL) {
+    return process.env.SUMMARIZATION_MODEL;
+  }
+
+  // 2. return "gpt-3.5-turbo"
+  // if both env{SUMMARIZATION_MODEL} and env{CUSTOM_MODELS} are not set
+  if (!process.env.CUSTOM_MODELS) {
+    return SUMMARIZE_MODEL;
+  }
+
+  // 3. return "" to let client use session model
+  // if env{SUMMARIZATION_MODEL} is not set but env{CUSTOM_MODELS} is set
+  return "";
 })();
 
 export const getServerSideConfig = () => {
@@ -84,5 +102,6 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+    summarizationModel: SUMMARIZATION_MODEL,
   };
 };
