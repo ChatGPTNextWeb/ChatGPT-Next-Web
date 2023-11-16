@@ -2,18 +2,18 @@ import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 
 const no: PartialLocaleType = {
-  WIP: "Arbeid pågår ...",
+  WIP: "Under arbeid…",
   Error: {
     Unauthorized:
-      "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
+      "Uautorisert tilgang. Vennligst oppgi tilgangskode under 'Innstillinger'.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} meldinger med ChatGPT`,
+    SubTitle: (count: number) => `${count} meldinger med VariantGPT`,
     Actions: {
-      ChatList: "Gå til chatlisten",
+      ChatList: "Gå til samtalelisten",
       CompressedHistory: "Komprimert historikk for instrukser",
       Export: "Eksporter alle meldinger i markdown-format",
       Copy: "Kopier",
@@ -21,7 +21,7 @@ const no: PartialLocaleType = {
       Retry: "Prøv igjen",
       Delete: "Slett",
     },
-    Rename: "Gi nytt navn",
+    Rename: "Gi samtale nytt navn",
     Typing: "Skriver …",
     Input: (submitKey: string) => {
       var inputHints = `${submitKey} for å sende`;
@@ -37,29 +37,43 @@ const no: PartialLocaleType = {
     Copy: "Kopiere alle",
     Download: "Last ned",
     MessageFromYou: "Melding fra deg",
-    MessageFromChatGPT: "Melding fra ChatGPT",
+    MessageFromChatGPT: "Melding fra VariantGPT",
   },
   Memory: {
     Title: "Minneinstruks",
-    EmptyContent: "Ingen sålant.",
+    EmptyContent: "Ingenting enda",
     Send: "Send minne",
     Copy: "Kopiere minne",
-    Reset: "Nulstill sesjon",
+    Reset: "Tilbakestill økt",
     ResetConfirm:
-      "Om du nillstiller vil du slette hele historikken. Er du sikker på at du vil nullstille?",
+      "Alle samtalehistorikk og historisk minne vil bli slettet ved tilbakestilling. Er du sikker på at du vil tilbakestille?",
   },
   Home: {
-    NewChat: "Ny chat",
-    DeleteChat: "Bekreft for å slette det valgte dialogen",
+    NewChat: "Ny samtale",
+    DeleteChat: "Bekreft for å slette den valgte samtalen",
     DeleteToast: "Samtale slettet",
     Revert: "Tilbakestill",
   },
   Settings: {
     Title: "Innstillinger",
     SubTitle: "Alle innstillinger",
-
+    Danger: {
+      Reset: {
+        Title: "Tilbakestill alle instillinger",
+        SubTitle:
+          "Tilbakestiller alle instillinger til de forhåndsvalgte innstilingene",
+        Action: "Tilbakestill",
+        Confirm: "Bekreft tilbakestill alt?",
+      },
+      Clear: {
+        Title: "Slett all nettleserdata",
+        SubTitle: "Sletter alle samtaler og innstillinger ",
+        Action: "Slett",
+        Confirm: "Bekreft for å slette all nettleserdata og innstillinger?",
+      },
+    },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Språk",
     },
     Avatar: "Avatar",
     FontSize: {
@@ -69,7 +83,7 @@ const no: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Sett inn systemprompter",
       SubTitle:
-        "Tving tillegg av en simulert ChatGPT-systemprompt i begynnelsen av meldingslisten for hver forespørsel",
+        "Tving tillegg av en simulert systemprompt i begynnelsen av meldingslisten for hver forespørsel",
     },
     Update: {
       Version: (x: string) => `Versjon: ${x}`,
@@ -79,9 +93,27 @@ const no: PartialLocaleType = {
       FoundUpdate: (x: string) => `Fant ny versjon: ${x}`,
       GoToUpdate: "Oppdater",
     },
-    SendKey: "Send nøkkel",
+    SendKey: "Send-nøkkel",
     Theme: "Tema",
     TightBorder: "Stram innramming",
+    SendPreviewBubble: {
+      Title: "Forhåndsvis tekst",
+      SubTitle: "Forhåndsvis tekst med markdown",
+    },
+    Mask: {
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Vis splash screen før en ny samtale starter",
+      },
+      Builtin: {
+        Title: "Skjul innebygde masker",
+        SubTitle: "Skjul innebygde masker fra maskelisten",
+      },
+    },
+    AutoGenerateTitle: {
+      Title: "Autogenerer samtaletittel",
+      SubTitle: "Generer en passende samtaletittel basert på samtalens innhold",
+    },
     Prompt: {
       Disable: {
         Title: "Skru av autofullfør",
@@ -117,10 +149,14 @@ const no: PartialLocaleType = {
       NoAccess: "Skriv inn API-nøkkelen for å sjekke saldo",
     },
 
-    Model: "Model",
+    Model: "Språkmodell",
     Temperature: {
       Title: "Temperatur",
       SubTitle: "Høyere verdi gir mer kreative svar",
+    },
+    TopP: {
+      Title: "Top P",
+      SubTitle: "Bør stå på 1. Ikke still ned ved temperatur over 0",
     },
     MaxTokens: {
       Title: "Maks tokens",
@@ -133,7 +169,7 @@ const no: PartialLocaleType = {
     Error: "Noe gikk galt, vennligst prøv igjen senere.",
     Prompt: {
       History: (content: string) =>
-        "Dette er et sammendrag av chatthistorikken mellom AI-en og brukeren som en oppsummering: " +
+        "Dette er et sammendrag av samtalehistorikken mellom AI-en og brukeren som en oppsummering: " +
         content,
       Topic:
         "Vennligst lag en fire til fem ords tittel som oppsummerer samtalen vår uten innledning, punktsetting, anførselstegn, punktum, symboler eller tillegg tekst. Fjern innrammende anførselstegn.",
@@ -152,7 +188,7 @@ const no: PartialLocaleType = {
   },
   Exporter: {
     Model: "Model",
-    Messages: "Meldingar",
+    Messages: "Meldinger",
     Topic: "Emne",
     Time: "Tid",
   },

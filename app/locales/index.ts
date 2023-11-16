@@ -18,6 +18,7 @@ import bn from "./bn";
 import { merge } from "../utils/merge";
 
 import type { LocaleType } from "./cn";
+import se from "./se";
 export type { LocaleType, PartialLocaleType } from "./cn";
 
 const ALL_LANGS = {
@@ -38,6 +39,7 @@ const ALL_LANGS = {
   no,
   ar,
   bn,
+  se,
 };
 
 export type Lang = keyof typeof ALL_LANGS;
@@ -59,9 +61,10 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   vi: "Tiếng Việt",
   ru: "Русский",
   cs: "Čeština",
-  no: "Nynorsk",
+  no: "norsk",
   ar: "العربية",
   bn: "বাংলা",
+  se: "svenska",
 };
 
 const LANG_KEY = "lang";
