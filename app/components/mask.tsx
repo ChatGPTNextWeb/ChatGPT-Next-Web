@@ -18,6 +18,7 @@ import {
   ChatMessage,
   createMessage,
   ModelConfig,
+  ModelType,
   useAppConfig,
   useChatStore,
 } from "../store";
@@ -58,11 +59,11 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   return result;
 }
 
-export function MaskAvatar(props: { mask: Mask }) {
-  return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
-    <Avatar avatar={props.mask.avatar} />
+export function MaskAvatar(props: { avatar: string; model?: ModelType }) {
+  return props.avatar !== DEFAULT_MASK_AVATAR ? (
+    <Avatar avatar={props.avatar} />
   ) : (
-    <Avatar model={props.mask.modelConfig.model} />
+    <Avatar model={props.model} />
   );
 }
 
@@ -123,7 +124,10 @@ export function MaskConfig(props: {
               onClick={() => setShowPicker(true)}
               style={{ cursor: "pointer" }}
             >
-              <MaskAvatar mask={props.mask} />
+              <MaskAvatar
+                avatar={props.mask.avatar}
+                model={props.mask.modelConfig.model}
+              />
             </div>
           </Popover>
         </ListItem>
@@ -398,7 +402,7 @@ export function MaskPage() {
     setSearchText(text);
     if (text.length > 0) {
       const result = allMasks.filter((m) =>
-        m.name.toLowerCase().includes(text.toLowerCase())
+        m.name.toLowerCase().includes(text.toLowerCase()),
       );
       setSearchMasks(result);
     } else {
@@ -523,7 +527,7 @@ export function MaskPage() {
               <div className={styles["mask-item"]} key={m.id}>
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-icon"]}>
-                    <MaskAvatar mask={m} />
+                    <MaskAvatar avatar={m.avatar} model={m.modelConfig.model} />
                   </div>
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
