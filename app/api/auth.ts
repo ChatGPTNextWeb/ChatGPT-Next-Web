@@ -56,7 +56,7 @@ export function auth(req: NextRequest) {
 */
 
   // if user does not provide an api key, inject system api key
-  if (!apiKey) {
+  if (!apiKey || !!serverConfig.hideUserApiKey) {
     const serverApiKey = serverConfig.isAzure
       ? serverConfig.azureApiKey
       : serverConfig.apiKey;
