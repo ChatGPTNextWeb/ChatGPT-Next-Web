@@ -23,10 +23,10 @@ function parseApiKey(bearToken: string) {
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  const authValue = req.headers.get("Authorization") ?? "";
+  let authValue = req.headers.get("Authorization") ?? "";
   const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
   // check if it is openai api key or user token
-  const { accessCode } = parseApiKey(authValue);
+  const { accessCode, apiKey } = parseApiKey(authValue);
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
@@ -65,6 +65,22 @@ export async function requestOpenai(req: NextRequest) {
     path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
+  // if user does not provide an api key, inject system api key
+  if (!apiKey) {
+    const serverApiKey = serverConfig.isAzure
+      ? serverConfig.azureApiKey
+      : serverConfig.apiKey;
+
+    if (serverApiKey) {
+      console.log("[Auth] use system api key");
+      authValue = `${serverConfig.isAzure ? "" : "Bearer "}${serverApiKey}`;
+    } else {
+      console.log("[Auth] admin did not provide an api key");
+    }
+  } else {
+    console.log("[Auth] use user api key");
+  }
+
   const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
@@ -85,8 +101,6 @@ export async function requestOpenai(req: NextRequest) {
   };
 
   let customModels = serverConfig.customModels;
-  console.log("[SCode]", serverConfig.superCode);
-  console.log("[Code]", accessCode);
   if (
     accessCode &&
     serverConfig.superCode &&
@@ -94,6 +108,7 @@ export async function requestOpenai(req: NextRequest) {
   ) {
     console.info("[OpenAI] gpt4 filter: not using super code");
     if (customModels) customModels += ",";
+
     customModels += DEFAULT_MODELS.filter((m) => m.name.startsWith("gpt-4"))
       .map((m) => "-" + m.name)
       .join(",");
