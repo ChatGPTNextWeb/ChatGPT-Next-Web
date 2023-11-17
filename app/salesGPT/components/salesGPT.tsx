@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+// import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Loading } from "@/app/components/chatHomepage";
 import { EmployeeItem, HelpOption } from "../types";
 import EmployeeCVSummary from "./employeeCVSummary";
 import { ErrorBoundary } from "../../components/error";
@@ -22,10 +23,16 @@ import MaxIcon from "../../icons/max.svg";
 import MinIcon from "../../icons/min.svg";
 import HelpSelect from "./helpSelect";
 import { useAppConfig } from "../../store";
+import SalesGPTExplanation from "./salesGPTExplanation";
+
+const availableHelp: HelpOption[] = [
+  {
+    label: Locale.SalesGPT.Help.Summary,
+    value: "summary",
+  },
+];
 
 function _SalesGPT() {
-  const router = useRouter();
-  const pathName = usePathname();
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
   const config = useAppConfig();
@@ -42,12 +49,10 @@ function _SalesGPT() {
     EmployeeItem | undefined
   >(undefined);
 
-  const availableHelp: HelpOption[] = [
-    {
-      label: Locale.SalesGPT.Help.Summary,
-      value: "summary",
-    },
-  ];
+  const [requirementText, setRequirementText] = useState("");
+  const [generatedText, setGeneratedText] = useState<string | null>(null);
+  const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
+
   const [selectedHelp, setSelectedHelp] = useState(availableHelp[0]);
 
   function handleSelectEmployee(newValue: EmployeeItem | undefined): void {
@@ -60,6 +65,11 @@ function _SalesGPT() {
     //     pathName + `?employeeAlias=${aliasFromEmail(newValue?.email)}`,
     //   );
     // }
+  }
+
+  // TODO: Dette er dårlig. Men skal fikses senere
+  function handleClearSelectedEmployee() {
+    setGeneratedText(null);
   }
 
   useEffect(() => {
@@ -79,9 +89,11 @@ function _SalesGPT() {
       });
   }, []);
 
-  const [requirementText, setRequirementText] = useState("");
-  const [generatedText, setGeneratedText] = useState("");
-  const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
+  const [showCVSummary, setshowCVSummary] = useState(false);
+
+  useEffect(() => {
+    setshowCVSummary(generatedText != null && !isAnalysisLoading);
+  }, [isAnalysisLoading, generatedText]);
 
   async function handleAnalyseButtonClick(): Promise<void> {
     setIsAnalysisLoading(true);
@@ -135,6 +147,7 @@ function _SalesGPT() {
               employees={employees}
               selectedEmployee={selectedEmployee}
               handleSelectEmployee={handleSelectEmployee}
+              handleClear={handleClearSelectedEmployee}
             />
           </div>
           <div className={styles["input-field"]}>
@@ -190,11 +203,17 @@ function _SalesGPT() {
             </div>
           </div>
         </div>
-        <EmployeeCVSummary
-          isLoading={isAnalysisLoading}
-          employee={selectedEmployee}
-          generatedText={generatedText}
-        />
+        {/* TODO: Gjør dette på en bedre måtte. Dette er ikke bra */}
+        {isAnalysisLoading ? (
+          <Loading noLogo />
+        ) : showCVSummary ? (
+          <EmployeeCVSummary
+            employee={selectedEmployee}
+            generatedText={generatedText}
+          />
+        ) : (
+          <SalesGPTExplanation />
+        )}
       </div>
     </div>
   );

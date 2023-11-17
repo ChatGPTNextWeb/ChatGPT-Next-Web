@@ -1,0 +1,41 @@
+.explanation {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .content-box {
+    box-sizing: border-box;
+    width: inherit;
+    max-width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    gap: 3.5rem;
+
+    .emoji {
+      font-size: 3.125rem;
+    }
+
+    .title {
+      font-size: 1.875rem;
+    }
+
+    .list {
+      display: flex;
+      flex-flow: column;
+      gap: 3.125rem;
+
+      .item {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        gap: 2.25rem;
+      }
+    }
+  }
+}

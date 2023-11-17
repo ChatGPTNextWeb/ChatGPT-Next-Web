@@ -12,6 +12,7 @@ interface SelectProps {
   employees: EmployeeItem[];
   selectedEmployee: EmployeeItem | undefined;
   handleSelectEmployee: (newValue: EmployeeItem | undefined) => void;
+  handleClear: () => void;
 }
 
 const SearchIndicator = ({
@@ -44,6 +45,7 @@ function EmployeeSelect({
   employees,
   selectedEmployee,
   handleSelectEmployee,
+  handleClear,
 }: SelectProps) {
   const initialValue = selectedEmployee
     ? { label: selectedEmployee?.name ?? "", value: selectedEmployee }
@@ -60,11 +62,9 @@ function EmployeeSelect({
   function onChange(newValue: EmployeeOption): void {
     setSelectEmployee(newValue);
     handleSelectEmployee(newValue?.value);
-  }
-
-  function onClear(): void {
-    setSelectEmployee(null);
-    handleSelectEmployee(undefined);
+    if (newValue == null) {
+      handleClear();
+    }
   }
 
   const placeholder = Locale.SalesGPT.SelectPlaceholder ?? "Choose employee";
@@ -79,7 +79,6 @@ function EmployeeSelect({
       id="choose-employee"
       placeholder={placeholder}
       isClearable={true}
-      clearValue={onClear}
       // @ts-ignore
       styles={selectStyles}
       components={{

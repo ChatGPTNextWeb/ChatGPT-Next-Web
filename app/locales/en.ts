@@ -471,7 +471,18 @@ const en: LocaleType = {
     SummaryPlaceholder: "Paste a summary of the employee",
     Analyse: "Analyse",
     EmployeeCVSummary: {
-      Empty: "Do an analysis to get a consise summary of the employee",
+      Explanation: {
+        Title:
+          "SalgsGPT hjelper deg med å spisse sammendraget ditt til et tilbud (og snart med å fylle ut en kompetansematrise)!",
+        First:
+          "SalgsGPT kan hente prosjekterfaringene til alle Varianter fra CV-partner!",
+        Second:
+          "I tilbudsdokumentet fra kunden står det hvilke kompetansekrav de stiller til deg som konsulent. ",
+        Third:
+          "SalgsGPT finner relevante erfaringer fra CV-en din for hvert kompetansekrav du limer inn. ",
+        Fourth:
+          "SalgsGPT skriver et tekstforslag til deg som du kan jobbe videre med.",
+      },
     },
     Consultant: "Consultant",
     ResultTitle: "Summary from SalesGPT",

@@ -203,13 +203,23 @@ const no: PartialLocaleType = {
     SelectPlaceholder: "Hvilken ansatt vil du hente CV-en til?",
     Requirements: "Krav til kompetanse",
     RequirementsPlaceholder:
-      "Kandidaten må ha erfaring med X\nKandidaten må også ha kjennskap til Y\nErfaring med Z er et pluss",
+      "Lim inn kompetansekrav fra tilbudet, f.eks:\n- Backendutvikling\n- Dyktig på å visualisere innsikt \n- Konsulenten må ha erfaring med React",
     Summary: "Sammendrag",
     SummaryPlaceholder: "Kopier inn sammendrag om den ansatte",
     Analyse: "Analyser",
     EmployeeCVSummary: {
-      Empty:
-        "Hva gjør egentlig SalgsGPT? Putt noe smart tekst her for å forklare",
+      Explanation: {
+        Title:
+          "SalgsGPT hjelper deg med å spisse sammendraget ditt til et tilbud (og snart med å fylle ut en kompetansematrise)!",
+        First:
+          "SalgsGPT kan hente prosjekterfaringene til alle Varianter fra CV-partner!",
+        Second:
+          "I tilbudsdokumentet fra kunden står det hvilke kompetansekrav de stiller til deg som konsulent. ",
+        Third:
+          "SalgsGPT finner relevante erfaringer fra CV-en din for hvert kompetansekrav du limer inn. ",
+        Fourth:
+          "SalgsGPT skriver et tekstforslag til deg som du kan jobbe videre med.",
+      },
     },
     Consultant: "Konsulent",
     ResultTitle: "Spisset sammendrag fra SalgsGPT",
