@@ -25,9 +25,11 @@ export async function requestOpenai(req: NextRequest) {
     "[Proxy] ",
     `${AZURE_OPENAI_API_BASE}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT_NAME}/${AZURE_OPENAI_PATH}`,
   );
+  const res = req.clone();
+  const { model } = await res.json();
 
   return fetch(
-    `${AZURE_OPENAI_API_BASE}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT_NAME}/${AZURE_OPENAI_PATH}`,
+    `${AZURE_OPENAI_API_BASE}/openai/deployments/${model}/${AZURE_OPENAI_PATH}`,
     {
       headers: {
         "Content-Type": "application/json",

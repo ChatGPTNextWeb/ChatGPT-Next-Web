@@ -1,15 +1,20 @@
 import { ChatCompletionRequestMessage } from "openai";
+import { ModelType } from "../store";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const AZURE_OPENAI_API_BASE = process.env.AZURE_OPENAI_API_BASE;
 
-export async function requestOpenai(input: ChatCompletionRequestMessage[]) {
-  const apiUrl = `${AZURE_OPENAI_API_BASE}/openai/deployments/variant-rocks/chat/completions?api-version=2023-07-01-preview`;
+export async function requestOpenai(
+  input: ChatCompletionRequestMessage[],
+  deployment: ModelType,
+  response_max_tokens: number,
+) {
+  const apiUrl = `${AZURE_OPENAI_API_BASE}/openai/deployments/${deployment}/chat/completions?api-version=2023-07-01-preview`;
   const apiKey: string | undefined = OPENAI_API_KEY;
 
   const requestData = {
     messages: input,
-    max_tokens: 800,
+    max_tokens: response_max_tokens,
     temperature: 0.5,
     frequency_penalty: 0,
     presence_penalty: 0,

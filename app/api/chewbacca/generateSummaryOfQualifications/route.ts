@@ -45,7 +45,7 @@ export const POST = async (
   req: NextRequest,
   res: NextResponse,
 ): Promise<Response> => {
-  const { employeeAlias, requirements } = await req.json();
+  const { employeeAlias, requirements, summaryText } = await req.json();
 
   const session = (await getServerSession(authOptions)) as CustomSession;
   if (
@@ -59,8 +59,9 @@ export const POST = async (
   const result =
     (await generateSummaryOfQualifications(
       requirements,
-      employeeAlias as string,
+      employeeAlias,
       token,
+      summaryText,
     )) ?? "";
 
   return new Response(JSON.stringify(result), { status: 200 });
@@ -70,6 +71,7 @@ async function generateSummaryOfQualifications(
   requirementText: string[],
   employeeAlias: string,
   token: string,
+  summaryText: string | undefined,
 ): Promise<string | undefined> {
   const requirements = await findRelevantRequirements(
     requirementText,
@@ -90,7 +92,10 @@ async function generateSummaryOfQualifications(
   const requirementResponses = await Promise.all(requirementResponsesPromises);
 
   console.log(requirementResponses);
-  return await generateSummaryFromRequirementResponses(requirementResponses);
+  return await generateSummaryFromRequirementResponses(
+    requirementResponses,
+    summaryText,
+  );
 }
 
 async function findRelevantRequirements(
@@ -127,8 +132,8 @@ async function generateRequirementResponse(
   const monthsOfExperience = projectExperienceResponse?.monthsOfExperience ?? 0;
   const yearsOfExperience = monthsExperienceToYears(monthsOfExperience);
   const experience = yearsOfExperience
-    ? yearsOfExperience + "års erfaring"
-    : monthsOfExperience + "måneders erfaring";
+    ? yearsOfExperience + " års erfaring"
+    : monthsOfExperience + " måneders erfaring";
   if (relevantProjects.length < 1) {
     return {
       requirement: requirement.requirement,
@@ -144,7 +149,11 @@ async function generateRequirementResponse(
     } tabell med utvalgte prosjekt: prosjektnavn,kundenavn,beskrivelse,rolle\n   ${relevantProjects
       ?.map(projectExperienceToText)
       .join("\n")}`;
-  const response = await requestOpenai([{ role: "user", content: prompt }]);
+  const response = await requestOpenai(
+    [{ role: "user", content: prompt }],
+    "variant-rocks",
+    1000,
+  );
   return {
     requirement: requirement.requirement,
     response: response,
@@ -177,7 +186,11 @@ async function generateKeywordsFromRequirements(
     role: "user",
     content: ` Glem tidligere nøkkelord. Jeg har en ny nøkkelordliste: [${competencies}] svar hvilke nøkkelord som er relevant for kravet : "${requirementText}". Svaret skal være en JSON liste som er et utvalg fra den nye nøkkelordlisten. Bare nøkkelord fra nøkkelordlisten kan bli med i svaret.`,
   };
-  const response = await requestOpenai([...example, prompt]);
+  const response = await requestOpenai(
+    [...example, prompt],
+    "variant-rocks",
+    800,
+  );
   console.log(response);
   return {
     requirement: requirementText,
@@ -185,20 +198,43 @@ async function generateKeywordsFromRequirements(
   };
 }
 
-async function generateSummaryFromRequirementResponses(
+function findSummaryPrompt(
   requirementResponses: RequirementResponse[],
-): Promise<string> {
-  const prompt: string = `Her er krav-begrunnelse tabellen. Lag et sammendrag av konsulentens 
-  erfaring som svarer på kravene.
-  Sammendraget bør være langt. 
-  Husk å referer til prosjektene og kunde i sammendraget.
+  summaryText: string | undefined,
+) {
+  const table = requirementResponsesToTable(requirementResponses);
+  if (summaryText) {
+    return `Her er det tidligere sammendraget ${summaryText}. \n
+    Ta utgangspunkt i dette sammendraget for å lage et spisset sammendrag som
+    svarer på krav-begrunnelse tabellen du vil få tildelt. Sammendraget bør være langt. 
+    Husk å referer til navn på prosjekt, kunde og års erfaring for hvert krav i sammendraget.
+    Husk å inkludere alle rader ifra tabellen i svaret.
+    Det kan hende at samme prosjekt er brukt i de ulike begrunnelsene.
+    Ikke bruk noe som ikke står i tabllen eller tidligere sammendrag. 
+    Du trenger ikke å gi noe mer enn sammendraget i svaret ditt. 
+    krav-begrunnelse tabell : ${table}
+    `;
+  }
+  return `Her er krav-begrunnelse tabellen. Lag et sammendrag av konsulentens 
+  erfaring som svarer på kravene. Sammendraget bør være langt. 
+  Husk å referer til navn på prosjekt, kunde og års erfaring for hvert krav i sammendraget.
   Husk å inkludere alle rader ifra tabellen i svaret.
   Det kan hende at samme prosjekt er brukt i de ulike begrunnelsene.
-  Ikke bruk noe som ikke er med i tabellen. 
-  Få med hvor mange års erfaring konsulenten har. ${requirementResponsesToTable(
-    requirementResponses,
-  )}`;
-  const summary = await requestOpenai([{ role: "user", content: prompt }]);
+  Ikke bruk noe som ikke står i tabllen i ditt sammendrag.
+  Du trenger ikke å gi noe mer enn sammendraget i svaret ditt.
+  krav-begrunnelse tabell : ${table}`;
+}
+
+async function generateSummaryFromRequirementResponses(
+  requirementResponses: RequirementResponse[],
+  summaryText: string | undefined,
+): Promise<string> {
+  const prompt = findSummaryPrompt(requirementResponses, summaryText);
+  const summary = await requestOpenai(
+    [{ role: "user", content: prompt }],
+    "variant-rocks-turbo-16k",
+    2000,
+  );
   return (
     summary ??
     "Feil: krav-begrunnelse tabllen ble for lang og GPT gikk over token limit"

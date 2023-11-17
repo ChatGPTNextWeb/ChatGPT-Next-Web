@@ -18,15 +18,15 @@ const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
 
-  provider: ServiceProvider.OpenAI,
+  provider: ServiceProvider.Azure,
 
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
   openaiApiKey: "",
 
   // azure
-  azureUrl: "",
-  azureApiKey: "",
+  azureUrl: process.env.AZURE_OPENAI_API_BASE ?? "",
+  azureApiKey: process.env.AZURE_API_KEY ?? "",
   azureApiVersion: "2023-08-01-preview",
 
   // server config

@@ -50,6 +50,7 @@ function _SalesGPT() {
   >(undefined);
 
   const [requirementText, setRequirementText] = useState("");
+  const [summaryText, setSummaryText] = useState("");
   const [generatedText, setGeneratedText] = useState<string | null>(null);
   const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
 
@@ -104,7 +105,7 @@ function _SalesGPT() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ employeeAlias, requirements }),
+      body: JSON.stringify({ employeeAlias, requirements, summaryText }),
     })
       .then(async (response) => {
         if (response.status === 401) {
@@ -158,6 +159,16 @@ function _SalesGPT() {
               placeholder={Locale.SalesGPT.RequirementsPlaceholder}
               value={requirementText}
               onChange={(event) => setRequirementText(event.target.value)}
+            ></textarea>
+          </div>
+          <div className={styles["input-field"]}>
+            <label htmlFor="summary">{Locale.SalesGPT.Summary}</label>
+            <textarea
+              id="requirements"
+              className={styles["text-input"]}
+              placeholder={Locale.SalesGPT.SummaryPlaceholder}
+              value={summaryText}
+              onChange={(event) => setSummaryText(event.target.value)}
             ></textarea>
           </div>
           <div className={styles["analyse-button-container"]}>
