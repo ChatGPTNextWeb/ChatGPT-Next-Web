@@ -5,7 +5,7 @@
   "en": [
     [
       "AdEx Circumvent Limit of 4k Output-Tokens (despite 128k Input-Tokens with \"GPT-4 Turbo\") ",
-      "Generate any output against below tasks by restricting yourself as follows:\n   - limit the output to a maximum of 2000 words or 4000 tokens\n   - output should, however, be without summarizing or reducing the content of the original\n   - to limit the output, no additional formatting should be done\n   - when the user messages \"continue,\" resume the output from the point where the last output ended\n   - the user should only after all individual outputs, achieve the actual, whole result by combining them, but should not have to do any further formatting\n\nYour task:\n   * Translate the following ## Text to German\n\n## Text\n\n",
+      "Generate any output against below tasks by restricting yourself as follows:\n   - limit the output to a maximum of 2000 words or 4000 tokens\n   - output should, however, be without summarizing or reducing the content of the original\n   - to limit the output, no additional formatting should be done\n   - when the user messages \"continue,\" resume the output from the point where the last output ended\n   - the user should only after all individual outputs, achieve the actual, whole result by combining them, but should not have to do any further formatting\n\nYour task:\n   * Translate the following ## Text to German\n\n## Text\n\n"
     ],
     [
       "AdEx General prompt - with AdEx Partners Background - as basis to customize responses for our context. ",
