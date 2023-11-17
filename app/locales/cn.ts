@@ -159,14 +159,14 @@ const cn = {
       SubTitle: "用户最新的一条消息会填充到此模板",
     },
 
-    Update: {
-      Version: (x: string) => `当前版本：${x}`,
-      IsLatest: "已是最新版本",
-      CheckUpdate: "检查更新",
-      IsChecking: "正在检查更新...",
-      FoundUpdate: (x: string) => `发现新版本：${x}`,
-      GoToUpdate: "前往更新",
-    },
+    // Update: {
+    //   Version: (x: string) => `当前版本：${x}`,
+    //   IsLatest: "已是最新版本",
+    //   CheckUpdate: "检查更新",
+    //   IsChecking: "正在检查更新...",
+    //   FoundUpdate: (x: string) => `发现新版本：${x}`,
+    //   GoToUpdate: "前往更新",
+    // },
     SendKey: "发送键",
     Theme: "主题",
     TightBorder: "无边框模式",
@@ -220,15 +220,15 @@ const cn = {
       Placeholder: "OpenAI API Key",
     },
 
-    Usage: {
-      Title: "余额查询",
-      SubTitle(used: 0, total: 0) {
-        return `本月已使用 $${used}，订阅总额 $${total}`;
-      },
-      IsChecking: "正在检查…",
-      Check: "重新检查",
-      NoAccess: "输入 API Key 或访问密码查看余额",
-    },
+    // Usage: {
+    //   Title: "余额查询",
+    //   SubTitle(used: 0, total: 0) {
+    //     return `本月已使用 $${used}，总额 $${total}`;
+    //   },
+    //   IsChecking: "正在检查…",
+    //   Check: "重新检查",
+    //   NoAccess: "输入 API Key 或访问密码查看余额",
+    // },
     AccessCode: {
       Title: "访问密码",
       SubTitle: "管理员已开启加密访问",
