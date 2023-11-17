@@ -98,6 +98,7 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
+    console.log("[Fetch] fetchOptions:", JSON.stringify(fetchOptions));
     const res = await fetch(fetchUrl, fetchOptions);
 
     // to prevent browser prompt for credentials
