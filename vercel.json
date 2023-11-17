@@ -8,11 +8,11 @@
             "headers": [
                 {
                     "key": "X-Real-IP",
-                    "value": "$remote_addr"
+                    "value": ""
                 },
                 {
                     "key": "X-Forwarded-For",
-                    "value": "$proxy_add_x_forwarded_for"
+                    "value": ""
                 },
                 {
                     "key": "Host",
