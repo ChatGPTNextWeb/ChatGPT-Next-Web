@@ -5,6 +5,8 @@ import { EmployeeItem } from "../types";
 import { Loading } from "@/app/components/chatHomepage";
 import Locale from "../../locales";
 import { ErrorBoundary } from "../../components/error";
+import MessageActions from "./messageActions";
+import Message from "./message";
 
 type EmployeeCVSummaryProps = {
   employee: EmployeeItem | undefined;
@@ -34,13 +36,12 @@ function _EmployeeCVSummary({
     return <Loading noLogo />;
   }
 
+  const showActions = true;
+
   if (employee && generatedText) {
     return (
       <div className={styles["results"]}>
-        <p className={styles["title"]}>{Locale.SalesGPT.ResultTitle}</p>
-        <div className={styles["content"]}>
-          <div className={styles["text"]}>{generatedText}</div>
-        </div>
+        <Message message={generatedText} />
       </div>
     );
   }

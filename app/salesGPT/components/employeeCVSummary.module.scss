@@ -22,36 +22,14 @@
     .text {
       font-size: 2rem;
       text-align: center;
-      font-family: Recoleta;
     }
   }
 }
 
 .results {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   box-sizing: border-box;
   padding: 2rem;
-
-  .title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    line-height: 144%;
-  }
-  .content {
-    border: 1px solid var(--text-light);
-    border-radius: 0.8rem;
-    padding: 1rem;
-    background-color: white;
-    margin: 0.5rem 0;
-    display: inline-block;
-
-    .text {
-      font-size: 1.125rem;
-      font-weight: 400;
-      color: var(--black);
-      white-space: pre-wrap;
-      user-select: text;
-    }
-  }
+  overflow: auto;
 }

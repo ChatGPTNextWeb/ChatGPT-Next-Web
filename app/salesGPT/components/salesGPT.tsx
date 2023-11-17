@@ -4,8 +4,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { EmployeeItem, HelpOption } from "../types";
 import EmployeeCVSummary from "./employeeCVSummary";
 import { ErrorBoundary } from "../../components/error";
-import { aliasFromEmail, sortEmployeeByName } from "../../utils";
+import {
+  aliasFromEmail,
+  sortEmployeeByName,
+  useMobileScreen,
+} from "../../utils";
 import styles from "../components/salesGPT.module.scss";
+import { getClientConfig } from "../../config/client";
 import { useNavigate } from "react-router-dom";
 import Locale from "../../locales";
 import EmployeeSelect from "./employeeSelect";
@@ -13,16 +18,29 @@ import { IconButton } from "../../components/button";
 import { SalesSidebar } from "./sales-sidebar";
 import { Path } from "../../constant";
 import ChatIcon from "../../icons/chat.svg";
+import MaxIcon from "../../icons/max.svg";
+import MinIcon from "../../icons/min.svg";
 import HelpSelect from "./helpSelect";
-import "../styles.scss";
+import { useAppConfig } from "../../store";
 
 function _SalesGPT() {
   const router = useRouter();
   const pathName = usePathname();
-  const title = Locale.SalesGPT.Title;
   const navigate = useNavigate();
+  const isMobileScreen = useMobileScreen();
+  const config = useAppConfig();
+  const title = Locale.SalesGPT.Title;
+
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   const [employees, setEmployees] = useState<EmployeeItem[]>([]);
+
+  // TODO: Select initial employee from query params?
+  // const selectedEmployeeAlias = useSearchParams().get("employeeAlias") ?? "";
+  const [selectedEmployee, setSelectedEmployee] = useState<
+    EmployeeItem | undefined
+  >(undefined);
 
   const availableHelp: HelpOption[] = [
     {
@@ -32,18 +50,16 @@ function _SalesGPT() {
   ];
   const [selectedHelp, setSelectedHelp] = useState(availableHelp[0]);
 
-  const selectedEmployeeAlias = useSearchParams().get("employeeAlias") ?? "";
-  const selectedEmployee = employees.find(
-    (emp) => aliasFromEmail(emp.email) === selectedEmployeeAlias,
-  );
   function handleSelectEmployee(newValue: EmployeeItem | undefined): void {
-    if (newValue === undefined) {
-      router.push(pathName);
-    } else {
-      router.push(
-        pathName + `?employeeAlias=${aliasFromEmail(newValue?.email)}`,
-      );
-    }
+    setSelectedEmployee(newValue);
+    // TODO: Handle query params later
+    // if (newValue === undefined) {
+    //   router.push(pathName);
+    // } else {
+    //   router.push(
+    //     pathName + `?employeeAlias=${aliasFromEmail(newValue?.email)}`,
+    //   );
+    // }
   }
 
   useEffect(() => {
@@ -95,7 +111,12 @@ function _SalesGPT() {
   }
 
   return (
-    <div className={styles.container}>
+    <div
+      className={
+        styles.container +
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container}`
+      }
+    >
       <SalesSidebar title={title} subtitle={""}>
         <div className={styles["sidebar-content"]}>
           <div className={styles["input-field"]}>
@@ -147,6 +168,28 @@ function _SalesGPT() {
         style={{ overflow: "auto" }}
         className={styles["window-content"] + " " + styles["right-pane"]}
       >
+        <div className={styles["window-header"]} data-tauri-drag-region>
+          <div className={`window-header-title ${styles["chat-body-title"]}`}>
+            <div
+              className={`window-header-main-title ${styles["chat-body-main-title"]}`}
+            >
+              {selectedHelp.value === "summary" && Locale.SalesGPT.ResultTitle}
+            </div>
+          </div>
+          <div className={styles["window-actions"]}>
+            <div className={styles["window-action-button"]}>
+              <IconButton
+                icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
+                bordered
+                onClick={() => {
+                  config.update(
+                    (config) => (config.tightBorder = !config.tightBorder),
+                  );
+                }}
+              />
+            </div>
+          </div>
+        </div>
         <EmployeeCVSummary
           isLoading={isAnalysisLoading}
           employee={selectedEmployee}
