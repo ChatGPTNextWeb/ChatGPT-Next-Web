@@ -5,11 +5,11 @@
   --theme: light;
 
   /* color */
-  --white: #FBFAF7;
+  --white: #fbfaf7;
   --black: rgb(48, 48, 48);
   --gray: rgb(250, 250, 250);
-  --primary: #E61A6B;
-  --second: #EDE8D7;
+  --primary: #e61a6b;
+  --second: #ede8d7;
   --hover-color: #f3f3f3;
   --bar-color: rgba(0, 0, 0, 0.1);
   --theme-color: var(--gray);
@@ -20,17 +20,22 @@
 
   /* stroke */
   --border-in-light: 1px solid rgb(222, 222, 222);
+
+  /* custom */
+  --third: #423d89;
+  --text-light: #a9a9a9;
 }
 
 @mixin dark {
   --theme: dark;
 
   /* color */
-  --white: #0D0C1B;
+  --white: #0d0c1b;
   --black: rgb(187, 187, 187);
   --gray: rgb(21, 21, 21);
-  --primary: #E61A6B;
-  --second: #1A1837;
+  --primary: #e61a6b;
+  --second: #1a1837;
+  --third: #423d89;
   --hover-color: #323232;
 
   --bar-color: rgba(255, 255, 255, 0.1);
@@ -38,6 +43,10 @@
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
 
   --theme-color: var(--gray);
+
+  /* custom */
+  --third: #423d89;
+  --text-light: #a9a9a9;
 
   div:not(.no-dark) > svg {
     filter: invert(0.5);
@@ -230,7 +239,6 @@ input[type="password"] {
   background: var(--white);
   color: var(--black);
   padding: 0 10px;
-  max-width: 50%;
   font-family: inherit;
 }
 

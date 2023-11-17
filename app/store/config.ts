@@ -4,6 +4,7 @@ import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
+  DEFAULT_SALES_SIDEBAR_WIDTH,
   DEFAULT_SIDEBAR_WIDTH,
   StoreKey,
 } from "../constant";
@@ -36,6 +37,7 @@ export const DEFAULT_CONFIG = {
   sendPreviewBubble: true,
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
+  salesSidebarWidth: DEFAULT_SALES_SIDEBAR_WIDTH,
 
   disablePromptHint: false,
 

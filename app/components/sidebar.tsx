@@ -196,9 +196,9 @@ export function Sidebar(props: SidebarProps) {
         />
         <IconButton
           icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          text={shouldNarrow ? undefined : Locale.SalesGPT.Title}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => navigate(Path.SalesGPT)}
           shadow
         />
       </div>

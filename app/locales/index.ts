@@ -61,14 +61,14 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   vi: "Tiếng Việt",
   ru: "Русский",
   cs: "Čeština",
-  no: "norsk",
+  no: "Norsk",
   ar: "العربية",
   bn: "বাংলা",
   se: "svenska",
 };
 
 const LANG_KEY = "lang";
-const DEFAULT_LANG = "en";
+const DEFAULT_LANG = "no";
 
 const fallbackLang = en;
 const targetLang = ALL_LANGS[getLang()] as LocaleType;

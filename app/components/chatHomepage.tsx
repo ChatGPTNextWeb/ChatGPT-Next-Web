@@ -29,7 +29,8 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
-import SalesGPT from "./salesGPT";
+import SalesGPT from "../salesGPT/components/salesGPT";
+import { Outlet } from "react-router-dom";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -158,14 +159,7 @@ function Screen() {
           />
 
           <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <Routes>
-              <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
-              <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
-              <Route path="/salesGPT" element={<SalesGPT />} />
-            </Routes>
+            <Outlet />
           </div>
         </>
       )}
@@ -202,7 +196,16 @@ export function Home() {
   return (
     <ErrorBoundary>
       <Router>
-        <Screen />
+        <Routes>
+          <Route path={Path.Home} element={<Screen />}>
+            <Route index element={<Chat />} />
+            <Route path={Path.NewChat} element={<NewChat />} />
+            <Route path={Path.Masks} element={<MaskPage />} />
+            <Route path={Path.Chat} element={<Chat />} />
+            <Route path={Path.Settings} element={<Settings />} />
+          </Route>
+          <Route path={Path.SalesGPT} element={<SalesGPT />} />
+        </Routes>
       </Router>
     </ErrorBoundary>
   );

@@ -441,13 +441,35 @@ const cn = {
     Config: "配置",
   },
   Exporter: {
-    Description : {
-      Title: "只有清除上下文之后的消息会被展示"
-    },  
+    Description: {
+      Title: "只有清除上下文之后的消息会被展示",
+    },
     Model: "模型",
     Messages: "消息",
     Topic: "主题",
     Time: "时间",
+  },
+  // NB: chinese is the default language, so every translation must be added here
+  SalesGPT: {
+    Title: "SalesGPT",
+    Help: {
+      Choose: "What do you need help with?",
+      Summary: "Create a better summary",
+      MoreToCome: " (more to come!)",
+    },
+    ChooseEmployee: "Choose employee",
+    SelectPlaceholder: "What employee do you want to get the CV for?",
+    Requirements: "Requirements",
+    RequirementsPlaceholder:
+      "The candidate must have experience with X\nThe candidate must have experience with Y\nExperience with Z is a plus",
+    Summary: "Summary",
+    SummaryPlaceholder: "Paste a summary of the employee",
+    Analyse: "Analyse",
+    EmployeeCVSummary: {
+      Empty: "Do an analysis to get a consise summary of the employee",
+    },
+    Consultant: "Consultant",
+    ResultTitle: "Summary from SalesGPT",
   },
 };
 

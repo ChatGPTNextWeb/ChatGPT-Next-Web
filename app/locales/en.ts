@@ -443,8 +443,8 @@ const en: LocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Only messages after clearing the context will be displayed"
-    },  
+      Title: "Only messages after clearing the context will be displayed",
+    },
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",
@@ -454,6 +454,27 @@ const en: LocaleType = {
   URLCommand: {
     Code: "Detected access code from url, confirm to apply? ",
     Settings: "Detected settings from url, confirm to apply?",
+  },
+  SalesGPT: {
+    Title: "SalesGPT",
+    Help: {
+      Choose: "What do you need help with?",
+      Summary: "Create a better summary",
+      MoreToCome: " (more to come!)",
+    },
+    ChooseEmployee: "Choose employee",
+    SelectPlaceholder: "What employee do you want to get the CV for?",
+    Requirements: "Requirements",
+    RequirementsPlaceholder:
+      "The candidate must have experience with X\nThe candidate must have experience with Y\nExperience with Z is a plus",
+    Summary: "Summary",
+    SummaryPlaceholder: "Paste a summary of the employee",
+    Analyse: "Analyse",
+    EmployeeCVSummary: {
+      Empty: "Do an analysis to get a consise summary of the employee",
+    },
+    Consultant: "Consultant",
+    ResultTitle: "Summary from SalesGPT",
   },
 };
 

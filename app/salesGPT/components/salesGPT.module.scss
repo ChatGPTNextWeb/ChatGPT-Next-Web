@@ -1,0 +1,67 @@
+@import "../../components/window.scss";
+
+@mixin container {
+  // --sidebar-width: 50%;
+  // --window-content-width: calc(100% - var(--sidebar-width));
+  background-color: var(--white);
+  border: var(--border-in-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  color: var(--black);
+  background-color: var(--white);
+  //min-width: 600px;
+  //min-height: 480px;
+  //max-width: 1200px;
+
+  display: flex;
+  flex-flow: row;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  width: var(--window-width);
+  height: var(--window-height);
+}
+
+.container {
+  @include container();
+}
+
+.sidebar-content {
+  margin: 3rem;
+  display: flex;
+  flex-flow: column;
+  gap: 1.75rem;
+  justify-content: space-between;
+}
+
+.input-field {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5rem;
+}
+
+.text-input {
+  min-height: 5rem;
+  font-size: 1rem;
+  border-radius: 0.8rem;
+  padding: 1rem;
+
+  border-color: var(--white);
+  background-color: var(--white);
+
+  &::placeholder {
+    color: var(--text-light);
+  }
+}
+
+.analyse-button-container {
+  margin-left: auto;
+}
+.analyse-button {
+  background-color: var(--third);
+  color: white;
+}
+
+.right-pane {
+  background-color: var(--white);
+}

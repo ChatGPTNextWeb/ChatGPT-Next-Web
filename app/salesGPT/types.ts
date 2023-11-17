@@ -68,3 +68,8 @@ export type EmployeeOption = {
   value: EmployeeItem | undefined;
   label: string;
 };
+
+export type HelpOption = {
+  label: string;
+  value: string;
+};

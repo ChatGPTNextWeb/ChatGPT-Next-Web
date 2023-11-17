@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
+import { EmployeeItem } from "./salesGPT/types";
 
 export function trimTopic(topic: string) {
   return topic.replace(/[，。！？”“"、,.!?]*$/, "");
@@ -217,4 +218,18 @@ export function isMacOS(): boolean {
 
 export function aliasFromEmail(email: string | undefined) {
   return email?.split("@")[0];
+}
+
+export function sortEmployeeByName(a: EmployeeItem, b: EmployeeItem) {
+  const nameA = a.name.toUpperCase();
+  const nameB = b.name.toUpperCase();
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+
+  // names must be equal
+  return 0;
 }

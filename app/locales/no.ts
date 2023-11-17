@@ -192,6 +192,28 @@ const no: PartialLocaleType = {
     Topic: "Emne",
     Time: "Tid",
   },
+  SalesGPT: {
+    Title: "SalgsGPT",
+    Help: {
+      Choose: "Hva trenger du hjelp til?",
+      Summary: "Spisse sammendrag",
+      MoreToCome: " (mer kommer!)",
+    },
+    ChooseEmployee: "Velg ansatt",
+    SelectPlaceholder: "Hvilken ansatt vil du hente CV-en til?",
+    Requirements: "Krav til kompetanse",
+    RequirementsPlaceholder:
+      "Kandidaten må ha erfaring med X\nKandidaten må også ha kjennskap til Y\nErfaring med Z er et pluss",
+    Summary: "Sammendrag",
+    SummaryPlaceholder: "Kopier inn sammendrag om den ansatte",
+    Analyse: "Analyser",
+    EmployeeCVSummary: {
+      Empty:
+        "Hva gjør egentlig SalgsGPT? Putt noe smart tekst her for å forklare",
+    },
+    Consultant: "Konsulent",
+    ResultTitle: "Spisset sammendrag fra SalgsGPT",
+  },
 };
 
 export default no;
