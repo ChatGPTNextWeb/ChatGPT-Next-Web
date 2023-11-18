@@ -26,7 +26,7 @@ export function collectModelTable(
       const available = !m.startsWith("-");
       const nameConfig =
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
-      const [name, displayName] = nameConfig.split(":");
+      const [name, displayName] = nameConfig.split(":") && nameConfig.split("|"); // `|` is aliases for fine-tuning model
       modelTable[name] = {
         name,
         displayName: displayName || name,
