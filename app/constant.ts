@@ -26,6 +26,7 @@ export enum Path {
   UserLoginDetail = "/user-login-detail",
   UserRegister = "/user-register",
   UserOrder = "/user-order",
+  ImpromptuSpeechCopilot = "/speech/ImpromptuSpeechCopilot",
   ToastmastersTTMaster = "/speech/tableTopicsMaster",
   ToastmastersTTEvaluator = "/speech/tableTopicsEvaluator",
   ToastmastersISEvaluator = "/speech/impromptuSpeechEvaluator",

@@ -1,0 +1,106 @@
+/* QuestionComponent.module.css */
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  background: white;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+}
+
+.questionNav {
+  display: flex;
+  gap: 10px;
+}
+
+.questionText {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.inputField {
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.timer {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.submitButton {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.retryButton {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+
+/* CapsuleButton.css */
+
+.capsuleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 1em; /* adjust padding as needed */
+  font-size: 1rem; /* adjust font size as needed */
+  border: none;
+  background-color: #f0f0f0; /* adjust background color as needed */
+  color: #333; /* adjust text color as needed */
+  border-radius: 9999px; /* this gives the pill shape */
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* adjust shadow as needed */
+  border: 1px solid #ccc; /* optional border */
+  user-select: none; /* prevent text selection */
+
+  .capsuleArrow {
+    font-weight: bold;
+    user-select: none;
+  }
+  
+  .capsuleLeft {
+    margin-right: 0.5em;
+  }
+  
+  .capsuleRight {
+    margin-left: 0.5em;
+  }
+
+}
+
+.capsuleButton:hover {
+  background-color: #e8e8e8; /* adjust hover color as needed */
+}

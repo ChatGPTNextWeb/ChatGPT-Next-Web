@@ -8,6 +8,33 @@ export const EN_MASKS: BuiltinMask[] = [
   // BuiltinMaskGroup.Toastmasters
   {
     avatar: "toastmasters",
+    name: ToastmastersRoles.ImpromptuSpeechCopilot,
+    context: [
+      {
+        role: "user",
+        content: `
+        TODO
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ImpromptuSpeechCopilot,
+    group: BuiltinMaskGroup.Toastmasters,
+  },
+  {
+    avatar: "toastmasters",
     name: ToastmastersRoles.TableTopicsMaster,
     context: [
       {

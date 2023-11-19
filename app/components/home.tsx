@@ -48,6 +48,12 @@ const Chat = dynamic(async () => (await import("./chat")).Chat, {
 const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
+const ImpromptuSpeechCopilot = dynamic(
+  async () => (await import("../toastmasters/impromptu-speech-copilot")).Chat,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 const ToastmastersTTMaster = dynamic(
   async () => (await import("../toastmasters/chat-ttmaster")).Chat,
   {
@@ -216,6 +222,10 @@ function Screen() {
               />
               <Route path={Path.UserOrder} element={<UserOrder />} />
               <Route path={Path.UserRegister} element={<UserRegister />} />
+              <Route
+                path={Path.ImpromptuSpeechCopilot}
+                element={<ImpromptuSpeechCopilot />}
+              />
               <Route
                 path={Path.ToastmastersTTMaster}
                 element={<ToastmastersTTMaster />}

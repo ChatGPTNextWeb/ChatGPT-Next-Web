@@ -7,9 +7,8 @@ export enum ToastmastersRoles {
   ImpromptuSpeechEvaluator = "Impromptu Speech Evaluator",
   PreparedSpeechEvaluator = "Prepared Speech Evaluator",
 
-  // TableTopicsEvaluators = "Table Topics Evaluators",
-  // TableTopicsSpeaker = "Table Topics Speaker",
-  // IndividualEvaluator = "Prepared Speech Evaluator",
+  ImpromptuSpeechCopilot = "Impromptu Speech Copilot",
+
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
   Timer = "Timer",
