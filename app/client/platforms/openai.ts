@@ -127,9 +127,11 @@ export class ChatGPTApi implements LLMApi {
           }
 
           if (remainText.length > 0) {
-            responseText += remainText[0];
-            remainText = remainText.slice(1);
-            options.onUpdate?.(responseText, remainText[0]);
+            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+            const fetchText = remainText.slice(0, fetchCount);
+            responseText += fetchText;
+            remainText = remainText.slice(fetchCount);
+            options.onUpdate?.(responseText, fetchText);
           }
 
           requestAnimationFrame(animateResponseText);
