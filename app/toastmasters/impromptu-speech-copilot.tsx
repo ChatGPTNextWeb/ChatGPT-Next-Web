@@ -24,11 +24,26 @@ import SixtyFpsOutlinedIcon from "@mui/icons-material/SixtyFpsOutlined";
 import { green } from "@mui/material/colors";
 
 import { ImpromptuSpeechV5Collapse } from "./impromptu-v5-collapse";
+import { speechRecognizer } from "../cognitive/speech-sdk";
+import { red } from "@material-ui/core/colors";
+import {
+  ImpromptuSpeechPromptKeys,
+  ImpromptuSpeechPrompts,
+} from "./ISpeechRoles";
+
+// TODO:
+const ToastmastersDefaultLangugage = "en";
+
+interface IChatAskResponse {
+  Ask: string;
+  Response: string;
+}
 
 class ISpeechCopilotInput {
-  activeStep: number = 0;
-  topic: string = "";
-  questions: number = 5;
+  ActiveStep: number = 0;
+  Topic: string = "";
+  Questions: number = 5;
+  MessagesDict: Record<string, IChatAskResponse> = {};
 }
 
 export function Chat() {
@@ -47,7 +62,11 @@ export function Chat() {
   // TODO: save selected job
   const config = useAppConfig();
   const [topic, setTopic] = useState(session.inputCopilot?.topic);
-  const [questions, setQuestions] = useState(session.inputCopilot?.questions);
+  const [questionNums, setQuestionNums] = useState(
+    session.inputCopilot?.questions,
+  );
+  const [submitting, setSubmitting] = useState(false);
+  const [questions, setQuestions] = useState<string[]>([]);
 
   useEffect(() => {
     if (session.inputCopilot === undefined)
@@ -56,19 +75,43 @@ export function Chat() {
       );
   }, []);
 
-  const doSubmit = () => {
-    if (topic === "") {
-      showToast(`topic is empty, please check`);
+  const doSubmit = async () => {
+    if (topic === "" || questionNums === undefined) {
+      showToast(`Topic or questions is empty, please check`);
       return;
     }
+    setSubmitting(true);
 
+    // reset status from 0
+    chatStore.resetSession();
+
+    let ask = ImpromptuSpeechPrompts.GetQuestionsPrompt(topic, questionNums);
+    chatStore.onUserInput(ask, ImpromptuSpeechPromptKeys.Questions);
+    await chatStore.getIsFinished();
+
+    const response = session.messages[session.messages.length - 1].content;
+    console.log("Questions: ", response);
+
+    let stringArray: string[] = [];
+    try {
+      stringArray = JSON.parse(response);
+    } catch (error) {
+      showToast(`Questions are not correct format, please try again.`);
+    }
+
+    setQuestions(stringArray);
     chatStore.updateCurrentSession(
       (session) => (
-        (session.inputCopilot!.topic = topic),
-        (session.inputCopilot!.questions = questions),
-        (session.inputCopilot!.activeStep = 1)
+        (session.inputCopilot!.Topic = topic),
+        (session.inputCopilot!.QuestionNums = questionNums),
+        (session.inputCopilot!.ActiveStep = 1),
+        (session.inputCopilot!.MessagesDict[
+          ImpromptuSpeechPromptKeys.Questions
+        ] = { Ask: ask, Response: response })
       ),
     );
+
+    setSubmitting(false);
   };
 
   const getInputsString = (): string => {
@@ -88,7 +131,7 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        {session.inputCopilot?.activeStep === 0 && (
+        {session.inputCopilot?.ActiveStep === 0 && (
           <List>
             <ListItem title="Topic">
               <textarea
@@ -107,40 +150,102 @@ export function Chat() {
             <ListItem title={"Questions"}>
               <input
                 type="number"
-                defaultValue={5}
+                // defaultValue={session.inputCopilot?.QuestionNums}
                 min={1}
-                value={questions}
-                onChange={(e) => setQuestions(parseInt(e.currentTarget.value))}
+                value={questionNums}
+                onChange={(e) =>
+                  setQuestionNums(parseInt(e.currentTarget.value))
+                }
               ></input>
             </ListItem>
+
+            {/* TODO: reenter */}
+            {/* {session.inputCopilot?.activeStep === 0 && ( */}
             <ListItem title="">
               <IconButton
                 icon={<SendWhiteIcon />}
-                text={"Submit"}
-                className={styles_tm["chat-input-button-submit"]}
+                text={submitting ? "Submitting" : "Submit"}
+                disabled={submitting}
+                className={
+                  submitting
+                    ? styles_tm["chat-input-button-submitting"]
+                    : styles_tm["chat-input-button-submit"]
+                }
                 onClick={doSubmit}
               />
             </ListItem>
+            {/* )} */}
           </List>
         )}
 
-        {session.inputCopilot?.activeStep === 1 && (
-          <ImpromptuSpeechQuestion></ImpromptuSpeechQuestion>
+        {session.inputCopilot?.ActiveStep === 1 && (
+          <ImpromptuSpeechQuestion
+            questions={questions}
+            questionsNums={questionNums}
+          ></ImpromptuSpeechQuestion>
         )}
       </div>
     </div>
   );
 }
 
-const ImpromptuSpeechQuestion: React.FC = () => {
+const ImpromptuSpeechQuestion = (props: {
+  questions: string[];
+  questionsNums: number;
+}) => {
   const [timeLeft, setTimeLeft] = useState(120); // assuming the timer starts with 2 minutes
   const [userResponse, setUserResponse] = useState("");
+  const [recording, setRecording] = useState(false);
+  const [speechTime, setSpeechTime] = useState(0);
+  const [userInput, setUserInput] = useState("");
+  const [currentNum, setCurrentNum] = useState(0);
+
+  const chatStore = useChatStore();
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
 
   useEffect(() => {
     const timer =
       timeLeft > 0 && setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     return () => clearTimeout(timer as NodeJS.Timeout);
   }, [timeLeft]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (recording) {
+      intervalId = setInterval(() => {
+        setSpeechTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [recording]);
+
+  const onRecord = () => {
+    if (!recording) {
+      speechRecognizer.startRecording(
+        appendUserInput,
+        ToastmastersDefaultLangugage,
+      );
+      setRecording(true);
+    } else {
+      speechRecognizer.stopRecording();
+      setRecording(false);
+    }
+  };
+
+  const appendUserInput = (newState: string): void => {
+    // 每次按下button时 换行显示
+    if (userInput === "") {
+      setUserInput(newState);
+    } else {
+      setUserInput(userInput + "\n" + newState);
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -153,17 +258,35 @@ const ImpromptuSpeechQuestion: React.FC = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
+  const onReturn = () => {
+    chatStore.updateCurrentSession(
+      (session) => (session.inputCopilot!.ActiveStep = 0),
+    );
+  };
+
+  const onPreviousQuestion = () => {
+    if (currentNum > 0) setCurrentNum(currentNum - 1);
+  };
+  const onNextQuestion = () => {
+    if (currentNum < props.questionsNums - 1) setCurrentNum(currentNum + 1);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.navigation}>
-        <button className={styles.navButton}> ← Restart</button>
+        <button className={styles.navButton} onClick={onReturn}>
+          {" "}
+          ← Return
+        </button>
         <ButtonGroup
           aria-label="radius button group"
           sx={{ "--ButtonGroup-radius": "40px" }}
         >
-          <Button>{"<"}</Button>
-          <Button>Question 1 / 5</Button>
-          <Button>{">"}</Button>
+          <Button onClick={onPreviousQuestion}>{"<"}</Button>
+          <Button>{`Question ${currentNum + 1} / ${
+            props.questionsNums
+          }`}</Button>
+          <Button onClick={onNextQuestion}>{">"}</Button>
         </ButtonGroup>
 
         <button
@@ -177,15 +300,11 @@ const ImpromptuSpeechQuestion: React.FC = () => {
       <BorderLine></BorderLine>
 
       <form onSubmit={handleSubmit}>
-        <p className={styles.questionText}>
-          Can you provide an example of a time when you had to prioritize
-          features and tasks for product development based on business and
-          customer impact?
-        </p>
+        <p className={styles.questionText}>{props.questions[currentNum]}</p>
         <div className={styles.timer}>
           <span>
-            Speech: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {formatTime(timeLeft)}{" "}
-            / 2:00
+            Speech: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
+            {formatTime(speechTime)} / 2:00
           </span>
         </div>
         <Stack
@@ -200,7 +319,11 @@ const ImpromptuSpeechQuestion: React.FC = () => {
           <IconButtonMui
             aria-label="record"
             color="primary"
-            sx={{ color: green[500], fontSize: "40px" }}
+            sx={{
+              color: recording === true ? "red" : "green",
+              fontSize: "40px",
+            }}
+            onClick={onRecord}
           >
             <MicIcon sx={{ fontSize: "inherit" }} />
           </IconButtonMui>
