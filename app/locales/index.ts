@@ -24,8 +24,8 @@ export type { LocaleType, PartialLocaleType } from "./cn";
 const ALL_LANGS = {
   cn,
   en,
-  pt,
   tw,
+  pt,
   jp,
   ko,
   id,
