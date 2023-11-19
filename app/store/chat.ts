@@ -97,6 +97,9 @@ export interface ChatSession {
     activeStep: number;
   };
   output: { avatar: IRequestResponse };
+
+  inputCopilot?: any;
+  outputCopilot?: any;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;

@@ -83,7 +83,10 @@ export const ImpromptuSpeech: React.FC = () => {
           customer impact?
         </p>
         <div className={styles.timer}>
-          <span>{formatTime(timeLeft)} / 2:00</span>
+          <span>
+            Speech: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {formatTime(timeLeft)}{" "}
+            / 2:00
+          </span>
         </div>
         <Stack
           direction="row"
@@ -109,30 +112,5 @@ export const ImpromptuSpeech: React.FC = () => {
 
       <ImpromptuSpeechV5Collapse></ImpromptuSpeechV5Collapse>
     </div>
-  );
-};
-
-const ExpandableListItem = () => {
-  const [open, setOpen] = useState(false);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  return (
-    <List component="nav" aria-labelledby="nested-list-subheader">
-      <ListItem onClick={handleClick}>
-        <ListItemText primary="Feedback" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItem>
-            <ListItemText primary="Sample Response" />
-          </ListItem>
-        </List>
-      </Collapse>
-      <Divider />
-    </List>
   );
 };
