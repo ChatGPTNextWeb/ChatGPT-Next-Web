@@ -94,7 +94,10 @@ html {
 }
 
 body {
-  background-color: var(--gray);
+  // background-color: var(--gray);
+  background-image: url(../../public/bj8.jpg);
+  background-size: cover; /* 将背景图片调整为完全覆盖盒子 */
+  background-repeat: no-repeat; /* 禁止背景图片重复 */
   color: var(--black);
   margin: 0;
   padding: 0;
