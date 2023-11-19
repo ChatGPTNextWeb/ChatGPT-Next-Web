@@ -161,7 +161,7 @@ Access password, separated by comma.
 
 ### `OPENAI_API_KEY` (required)
 
-Your openai api key.
+Your openai api key, join multiple api keys with comma.
 
 ### `BASE_URL` (optional)
 
