@@ -26,7 +26,13 @@ export function collectModelTable(
       const available = !m.startsWith("-");
       const nameConfig =
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
-      const [name, displayName] = nameConfig.split(":");
+      const [name, displayName] = nameConfig.split("=");
+
+      // enable or disable all models
+      if (name === "all") {
+        Object.values(modelTable).forEach((m) => (m.available = available));
+      }
+
       modelTable[name] = {
         name,
         displayName: displayName || name,
