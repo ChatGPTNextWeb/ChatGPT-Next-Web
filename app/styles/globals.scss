@@ -6,7 +6,7 @@
 
   /* color */
   --white: #fbfaf7;
-  --black: rgb(48, 48, 48);
+  --black: #333333;
   --gray: rgb(250, 250, 250);
   --primary: #e61a6b;
   --second: #ede8d7;
@@ -21,9 +21,22 @@
   /* stroke */
   --border-in-light: 1px solid rgb(222, 222, 222);
 
-  /* custom */
-  --third: #423d89;
-  --text-light: #a9a9a9;
+  /* Variant colors */
+  --variant-white: #fff;
+  --variant-black: black;
+  --variant-primary-default: #e61a6b;
+  --variant-primary-l-2: #f076a6;
+  --variant-primary-l-4: #fad2e2;
+  --variant-secondary-1-default: #423d89;
+  --variant-secondary-2-default: #03dac6;
+  --variant-secondary-2-l-4: #cdf8f4;
+  --variant-secondary-3-default: #ffc4bc;
+  --variant-secondary-4-l-4: #fbfaf7;
+  --variant-secondary-4-default: #ede8d7;
+  --variant-secondary-4-d-1: #f1eddf;
+  --variant-secondary-4-d-2: #8e8b81;
+  --variant-secondary-4-d-3: #5f5d56;
+  --variant-secondary-4-d-4: #2f2e2b;
 }
 
 @mixin dark {

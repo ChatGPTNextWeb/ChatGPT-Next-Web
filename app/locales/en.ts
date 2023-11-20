@@ -472,16 +472,17 @@ const en: LocaleType = {
     Analyse: "Analyse",
     EmployeeCVSummary: {
       Explanation: {
-        Title:
-          "SalgsGPT hjelper deg med å spisse sammendraget ditt til et tilbud (og snart med å fylle ut en kompetansematrise)!",
+        Title: "SalgsGPT hjelper deg med å spisse sammendrag til et tilbud!",
+        ListTitle: "Hvordan?",
         First:
-          "SalgsGPT kan hente prosjekterfaringene til alle Varianter fra CV-partner!",
+          "Ved å hente prosjekterfaringene til alle Varianter fra CV-partner",
         Second:
-          "I tilbudsdokumentet fra kunden står det hvilke kompetansekrav de stiller til deg som konsulent. ",
+          "Ved å bearbeide kompetansekravene som stilles til konsulentene våre i tilbudsdokumentet fra kunden",
         Third:
-          "SalgsGPT finner relevante erfaringer fra CV-en din for hvert kompetansekrav du limer inn. ",
-        Fourth:
-          "SalgsGPT skriver et tekstforslag til deg som du kan jobbe videre med.",
+          "Ved å finne relevante erfaringer fra CVen for hvert kompetansekrav du limer inn",
+        Fourth: "Ved å skrive tekstforslag til deg som du kan jobbe videre med",
+        AfterNote:
+          "..og snart vil den også hjelpe deg med å fylle ut en kompetansematrise!",
       },
     },
     Consultant: "Consultant",

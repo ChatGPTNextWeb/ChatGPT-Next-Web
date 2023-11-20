@@ -2,10 +2,12 @@ import Select, {
   StylesConfig,
   components,
   SingleValueProps,
+  ThemeConfig,
 } from "react-select";
 import { HelpOption } from "../types";
 import { Dispatch, SetStateAction } from "react";
 import Locale from "../../locales";
+import { selectTheme } from "./selectTheme";
 
 interface SelectProps {
   options: HelpOption[];
@@ -50,6 +52,7 @@ function HelpSelect({ options, selectedHelp, handleSelectHelp }: SelectProps) {
       id="choose-help"
       isClearable={false}
       styles={selectStyles}
+      theme={selectTheme}
       components={{
         SingleValue,
       }}

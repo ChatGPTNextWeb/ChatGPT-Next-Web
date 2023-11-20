@@ -52,25 +52,25 @@
 }
 
 .text-input {
-  min-height: 5rem;
+  min-height: 7rem;
   font-size: 1rem;
   border-radius: 0.8rem;
   padding: 1rem;
 
-  border-color: var(--white);
-  background-color: var(--white);
+  // border-color: var(--white);
+  background-color: var(--variant-white);
 
-  &::placeholder {
-    color: var(--text-light);
-  }
+  // &::placeholder {
+  //   color: var(--variant-secondary-4-d-2);
+  // }
 }
 
 .analyse-button-container {
   margin-left: auto;
 }
 .analyse-button {
-  background-color: var(--third);
-  color: white;
+  background-color: var(--variant-secondary-1-default);
+  color: var(--variant-secondary-4-default);
 }
 
 .right-pane {

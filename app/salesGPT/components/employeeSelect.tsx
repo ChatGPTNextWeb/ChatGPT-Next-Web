@@ -7,6 +7,7 @@ import { EmployeeItem, EmployeeOption } from "../types";
 import { useState } from "react";
 import Locale from "../../locales";
 import SearchIcon from "../../icons/search.svg";
+import { selectTheme } from "./selectTheme";
 
 interface SelectProps {
   employees: EmployeeItem[];
@@ -28,7 +29,7 @@ const SearchIndicator = ({
 const selectStyles: StylesConfig<EmployeeOption> = {
   placeholder: (styles) => ({
     ...styles,
-    color: "var(--text-light)",
+    color: "var(--variant-secondary-4-d-2)",
     fontSize: "1rem",
     fontWeight: "400",
   }),
@@ -38,6 +39,10 @@ const selectStyles: StylesConfig<EmployeeOption> = {
     borderRadius: "0.7rem",
     borderColor: "var(--white)",
     padding: ".4rem",
+  }),
+  option: (styles) => ({
+    ...styles,
+    color: "var(--variant-black)",
   }),
 };
 
@@ -79,12 +84,10 @@ function EmployeeSelect({
       id="choose-employee"
       placeholder={placeholder}
       isClearable={true}
-      // @ts-ignore
+      theme={selectTheme}
       styles={selectStyles}
       components={{
         DropdownIndicator: SearchIndicator,
-        // Option: OptionWithImage,
-        // SingleValue: SingleValue,
       }}
     />
   );
