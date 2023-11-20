@@ -2,6 +2,11 @@
     "github": {
         "silent": true
     },
+    "functions": {
+        "api/chewbacca/generateSummaryOfQualifications": {
+            "maxDuration": 60
+        }
+    },
     "headers": [
         {
             "source": "/(.*)",
