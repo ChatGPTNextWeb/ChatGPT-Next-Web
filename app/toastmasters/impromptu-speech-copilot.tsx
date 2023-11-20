@@ -20,30 +20,46 @@ import Button from "@mui/joy/Button";
 import ButtonGroup from "@mui/joy/ButtonGroup";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import MicIcon from "@mui/icons-material/Mic";
-import SixtyFpsOutlinedIcon from "@mui/icons-material/SixtyFpsOutlined";
-import { green } from "@mui/material/colors";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { ImpromptuSpeechV5Collapse } from "./impromptu-v5-collapse";
 import { speechRecognizer } from "../cognitive/speech-sdk";
-import { red } from "@material-ui/core/colors";
+
 import {
   ImpromptuSpeechPromptKeys,
   ImpromptuSpeechPrompts,
 } from "./ISpeechRoles";
+import { Markdown } from "../components/markdown";
+import ReactMarkdown from "react-markdown";
+// import { Markdown } from "../components/exporter";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
 
-interface IChatAskResponse {
-  Ask: string;
-  Response: string;
+interface IQuestionItem {
+  Question: string;
+  SampleSpeech: string;
+
+  Speech: string;
+  SpeechTime: number;
+  // PrapareTime: number;
+
+  Score: number;
+  Evaluations: Record<string, string>;
 }
 
 class ISpeechCopilotInput {
+  // 0: setting, 1: main page
   ActiveStep: number = 0;
   Topic: string = "";
-  Questions: number = 5;
-  MessagesDict: Record<string, IChatAskResponse> = {};
+
+  HasQuestions: boolean = false;
+  QuestionNums: number = 5;
+  QuestionItems: IQuestionItem[] = [];
 }
 
 export function Chat() {
@@ -66,7 +82,6 @@ export function Chat() {
     session.inputCopilot?.questions,
   );
   const [submitting, setSubmitting] = useState(false);
-  const [questions, setQuestions] = useState<string[]>([]);
 
   useEffect(() => {
     if (session.inputCopilot === undefined)
@@ -75,7 +90,7 @@ export function Chat() {
       );
   }, []);
 
-  const doSubmit = async () => {
+  const onSubmit = async () => {
     if (topic === "" || questionNums === undefined) {
       showToast(`Topic or questions is empty, please check`);
       return;
@@ -86,10 +101,10 @@ export function Chat() {
     chatStore.resetSession();
 
     let ask = ImpromptuSpeechPrompts.GetQuestionsPrompt(topic, questionNums);
-    chatStore.onUserInput(ask, ImpromptuSpeechPromptKeys.Questions);
+    chatStore.onUserInput(ask);
     await chatStore.getIsFinished();
 
-    const response = session.messages[session.messages.length - 1].content;
+    let response = session.messages[session.messages.length - 1].content;
     console.log("Questions: ", response);
 
     let stringArray: string[] = [];
@@ -97,21 +112,40 @@ export function Chat() {
       stringArray = JSON.parse(response);
     } catch (error) {
       showToast(`Questions are not correct format, please try again.`);
+      return;
     }
 
-    setQuestions(stringArray);
+    session.inputCopilot = new ISpeechCopilotInput();
+    for (let i = 0; i < stringArray.length; i++) {
+      let question = stringArray[i];
+      ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(i, question);
+      chatStore.onUserInput(ask);
+      await chatStore.getIsFinished();
+
+      response = session.messages[session.messages.length - 1].content;
+      session.inputCopilot!.QuestionItems.push({
+        Question: question,
+        SampleSpeech: response,
+      });
+    }
+
     chatStore.updateCurrentSession(
       (session) => (
         (session.inputCopilot!.Topic = topic),
         (session.inputCopilot!.QuestionNums = questionNums),
         (session.inputCopilot!.ActiveStep = 1),
-        (session.inputCopilot!.MessagesDict[
-          ImpromptuSpeechPromptKeys.Questions
-        ] = { Ask: ask, Response: response })
+        (session.inputCopilot!.HasQuestions = true)
       ),
     );
 
+    console.log("session.inputCopilot=", session.inputCopilot);
     setSubmitting(false);
+  };
+
+  const onContinue = async () => {
+    chatStore.updateCurrentSession(
+      (session) => (session.inputCopilot!.ActiveStep = 1),
+    );
   };
 
   const getInputsString = (): string => {
@@ -150,7 +184,7 @@ export function Chat() {
             <ListItem title={"Questions"}>
               <input
                 type="number"
-                // defaultValue={session.inputCopilot?.QuestionNums}
+                defaultValue={session.inputCopilot?.QuestionNums}
                 min={1}
                 value={questionNums}
                 onChange={(e) =>
@@ -159,9 +193,16 @@ export function Chat() {
               ></input>
             </ListItem>
 
-            {/* TODO: reenter */}
-            {/* {session.inputCopilot?.activeStep === 0 && ( */}
-            <ListItem title="">
+            <Stack
+              direction="row"
+              spacing={10}
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                marginBottom: "20px",
+                marginTop: "20px",
+              }}
+            >
               <IconButton
                 icon={<SendWhiteIcon />}
                 text={submitting ? "Submitting" : "Submit"}
@@ -171,17 +212,22 @@ export function Chat() {
                     ? styles_tm["chat-input-button-submitting"]
                     : styles_tm["chat-input-button-submit"]
                 }
-                onClick={doSubmit}
+                onClick={onSubmit}
               />
-            </ListItem>
-            {/* )} */}
+
+              {session.inputCopilot?.HasQuestions && (
+                <button className={styles.capsuleButton} onClick={onContinue}>
+                  Continue Last
+                </button>
+              )}
+            </Stack>
           </List>
         )}
 
         {session.inputCopilot?.ActiveStep === 1 && (
           <ImpromptuSpeechQuestion
-            questions={questions}
-            questionsNums={questionNums}
+            questionNums={questionNums}
+            questionItems={session.inputCopilot?.QuestionItems}
           ></ImpromptuSpeechQuestion>
         )}
       </div>
@@ -190,15 +236,17 @@ export function Chat() {
 }
 
 const ImpromptuSpeechQuestion = (props: {
-  questions: string[];
-  questionsNums: number;
+  questionNums: number;
+  questionItems: IQuestionItem[];
 }) => {
-  const [timeLeft, setTimeLeft] = useState(120); // assuming the timer starts with 2 minutes
-  const [userResponse, setUserResponse] = useState("");
   const [recording, setRecording] = useState(false);
   const [speechTime, setSpeechTime] = useState(0);
   const [userInput, setUserInput] = useState("");
   const [currentNum, setCurrentNum] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
+
+  // "", "Recording", "Pausing"
+  const [currentStage, setCurrentStage] = useState("");
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -206,11 +254,7 @@ const ImpromptuSpeechQuestion = (props: {
     state.currentSessionIndex,
   ]);
 
-  useEffect(() => {
-    const timer =
-      timeLeft > 0 && setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-    return () => clearTimeout(timer as NodeJS.Timeout);
-  }, [timeLeft]);
+  let { questionNums, questionItems } = props;
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -225,6 +269,45 @@ const ImpromptuSpeechQuestion = (props: {
     };
   }, [recording]);
 
+  const onSubmit = async () => {
+    if (userInput === "") {
+      return;
+    }
+    // setSubmitting(true);
+
+    // reset status from 0
+    chatStore.resetSessionFromIndex(2 + currentNum * 2);
+
+    let ask = ImpromptuSpeechPrompts.GetScorePrompt(
+      currentNum,
+      questionItems[currentNum].Question,
+      userInput,
+    );
+    chatStore.onUserInput(ask, ImpromptuSpeechPromptKeys.Score);
+    await chatStore.getIsFinished();
+
+    const response = session.messages[session.messages.length - 1].content;
+    console.log("Score: ", response);
+
+    setCurrentScore(parseInt(response));
+    questionItems[currentNum].Speech = userInput;
+    questionItems[currentNum].Score = currentScore;
+
+    // chatStore.updateCurrentSession(
+    //   (session) => (
+    //     (session.inputCopilot!.Topic = topic),
+    //     (session.inputCopilot!.QuestionNums = questionNums),
+    //     (session.inputCopilot!.ActiveStep = 1),
+    //     (session.inputCopilot!.MessagesDict[
+    //       ImpromptuSpeechPromptKeys.Questions
+    //     ] = { Ask: ask, Response: response })
+    //   ),
+    // );
+
+    // setSubmitting(false);
+    setCurrentStage("");
+  };
+
   const onRecord = () => {
     if (!recording) {
       speechRecognizer.startRecording(
@@ -232,10 +315,20 @@ const ImpromptuSpeechQuestion = (props: {
         ToastmastersDefaultLangugage,
       );
       setRecording(true);
-    } else {
+      setCurrentStage("Recording");
+    }
+  };
+
+  const onPause = () => {
+    if (recording) {
       speechRecognizer.stopRecording();
       setRecording(false);
+      setCurrentStage("Pausing");
     }
+  };
+
+  const onRetry = () => {
+    setCurrentStage("");
   };
 
   const appendUserInput = (newState: string): void => {
@@ -245,11 +338,6 @@ const ImpromptuSpeechQuestion = (props: {
     } else {
       setUserInput(userInput + "\n" + newState);
     }
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Implement your submit logic here
   };
 
   const formatTime = (seconds: number) => {
@@ -268,7 +356,28 @@ const ImpromptuSpeechQuestion = (props: {
     if (currentNum > 0) setCurrentNum(currentNum - 1);
   };
   const onNextQuestion = () => {
-    if (currentNum < props.questionsNums - 1) setCurrentNum(currentNum + 1);
+    if (currentNum < props.questionNums - 1) setCurrentNum(currentNum + 1);
+  };
+
+  const onSampleSpeechExpand = async () => {
+    console.log("onSampleSpeechExpand-0");
+    if (questionItems[currentNum].SampleSpeech == undefined) {
+      console.log("onSampleSpeechExpand-1");
+
+      let ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(
+        currentNum,
+        questionItems[currentNum].Question,
+      );
+      chatStore.onUserInput(ask);
+      await chatStore.getIsFinished();
+
+      chatStore.updateCurrentSession(
+        (session) =>
+          (questionItems[currentNum].SampleSpeech =
+            session.messages[session.messages.length - 1].content),
+      );
+    }
+    console.log("onSampleSpeechExpand-2");
   };
 
   return (
@@ -283,9 +392,7 @@ const ImpromptuSpeechQuestion = (props: {
           sx={{ "--ButtonGroup-radius": "40px" }}
         >
           <Button onClick={onPreviousQuestion}>{"<"}</Button>
-          <Button>{`Question ${currentNum + 1} / ${
-            props.questionsNums
-          }`}</Button>
+          <Button>{`Question ${currentNum + 1} / ${questionNums}`}</Button>
           <Button onClick={onNextQuestion}>{">"}</Button>
         </ButtonGroup>
 
@@ -299,41 +406,120 @@ const ImpromptuSpeechQuestion = (props: {
 
       <BorderLine></BorderLine>
 
-      <form onSubmit={handleSubmit}>
-        <p className={styles.questionText}>{props.questions[currentNum]}</p>
+      <form>
+        <p className={styles.questionText}>
+          {questionItems[currentNum].Question}
+        </p>
         <div className={styles.timer}>
           <span>
             Speech: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
             {formatTime(speechTime)} / 2:00
           </span>
         </div>
-        <Stack
-          direction="row"
-          spacing={5}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <IconButtonMui aria-label="play">
-            <PlayCircleIcon />
-          </IconButtonMui>
-          <IconButtonMui
-            aria-label="record"
-            color="primary"
-            sx={{
-              color: recording === true ? "red" : "green",
-              fontSize: "40px",
-            }}
-            onClick={onRecord}
+        {currentStage === "" && (
+          <Stack
+            direction="row"
+            spacing={5}
+            justifyContent="center"
+            alignItems="center"
           >
-            <MicIcon sx={{ fontSize: "inherit" }} />
-          </IconButtonMui>
-          <IconButtonMui color="secondary" aria-label="score">
-            <SixtyFpsOutlinedIcon />
-          </IconButtonMui>
-        </Stack>
+            <IconButtonMui aria-label="play">
+              <PlayCircleIcon />
+            </IconButtonMui>
+            <IconButtonMui
+              aria-label="record"
+              color="primary"
+              sx={{
+                color: "green",
+                fontSize: "40px",
+              }}
+              onClick={onRecord}
+            >
+              <MicIcon sx={{ fontSize: "inherit" }} />
+            </IconButtonMui>
+            <IconButtonMui
+              color="secondary"
+              aria-label="score"
+              sx={{
+                backgroundColor: "lightblue", // 淡蓝色背景
+                color: "white", // 图标颜色，这里选择了白色
+                "&:hover": {
+                  backgroundColor: "green", // 鼠标悬停时的背景色，这里选择了蓝色
+                },
+                borderRadius: "50%", // 圆形
+                width: 40, // 宽度
+                height: 40, // 高度
+                padding: 0, // 如果需要，调整内边距
+              }}
+            >
+              <Typography variant="subtitle1">{currentScore}</Typography>
+            </IconButtonMui>
+          </Stack>
+        )}
+        {currentStage === "Recording" && (
+          <Stack
+            direction="row"
+            spacing={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <IconButtonMui
+              aria-label="record"
+              color="primary"
+              sx={{
+                color: "red",
+                fontSize: "40px",
+              }}
+              onClick={onPause}
+            >
+              <MicIcon sx={{ fontSize: "inherit" }} />
+            </IconButtonMui>
+          </Stack>
+        )}
+        {currentStage === "Pausing" && (
+          <Stack
+            direction="row"
+            spacing={5}
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              marginBottom: "20px",
+            }}
+          >
+            <button className={styles.capsuleButton} onClick={onRetry}>
+              Retry
+            </button>
+            <button className={styles.capsuleButton} onClick={onRecord}>
+              Continue
+            </button>
+            <button className={styles.capsuleButton} onClick={onSubmit}>
+              Submit
+            </button>
+          </Stack>
+        )}
       </form>
 
-      <ImpromptuSpeechV5Collapse></ImpromptuSpeechV5Collapse>
+      <BorderLine></BorderLine>
+
+      <Accordion sx={{ backgroundColor: "#f5f5f5" }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          // onClick={onSampleSpeechExpand}
+        >
+          <Typography>Sample Speech</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <ReactMarkdown>
+              {questionItems[currentNum].SampleSpeech}
+            </ReactMarkdown>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* <ImpromptuSpeechV5Collapse></ImpromptuSpeechV5Collapse> */}
     </div>
   );
 };
