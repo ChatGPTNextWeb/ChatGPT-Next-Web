@@ -3,10 +3,9 @@
         "silent": true
     },
     "functions": {
-        "api/chewbacca/generateSummaryOfQualifications/route.js": {
-            "maxDuration": 60
-        }
-    },
+        "runtime": "vercel",
+        "maxDuration": 45
+      },
     "headers": [
         {
             "source": "/(.*)",
