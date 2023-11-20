@@ -3,9 +3,9 @@
         "silent": true
     },
     "functions": {
-        "runtime": "vercel",
-        "maxDuration": 45
-      },
+        "app/api/**/*": {
+          "maxDuration": 30 
+        },
     "headers": [
         {
             "source": "/(.*)",
