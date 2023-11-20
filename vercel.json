@@ -3,7 +3,7 @@
         "silent": true
     },
     "functions": {
-        "api/chewbacca/generateSummaryOfQualifications": {
+        "api/chewbacca/generateSummaryOfQualifications/route.js": {
             "maxDuration": 60
         }
     },
