@@ -33,9 +33,7 @@ import {
   ImpromptuSpeechPromptKeys,
   ImpromptuSpeechPrompts,
 } from "./ISpeechRoles";
-import { Markdown } from "../components/markdown";
 import ReactMarkdown from "react-markdown";
-// import { Markdown } from "../components/exporter";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
@@ -239,14 +237,22 @@ const ImpromptuSpeechQuestion = (props: {
   questionNums: number;
   questionItems: IQuestionItem[];
 }) => {
+  // 定义枚举
+  enum StageStatus {
+    Start = "",
+    Recording = "Recording",
+    Pausing = "Pausing",
+    Scoring = "Scoring",
+  }
+
   const [recording, setRecording] = useState(false);
   const [speechTime, setSpeechTime] = useState(0);
   const [userInput, setUserInput] = useState("");
   const [currentNum, setCurrentNum] = useState(0);
-  const [currentScore, setCurrentScore] = useState(0);
+  // const [questions, setQuestions] = useState(props.questionItems);
 
-  // "", "Recording", "Pausing"
-  const [currentStage, setCurrentStage] = useState("");
+  // "", "Recording", "Pausing", "Scoring"
+  const [currentStage, setCurrentStage] = useState(StageStatus.Start);
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -269,45 +275,6 @@ const ImpromptuSpeechQuestion = (props: {
     };
   }, [recording]);
 
-  const onSubmit = async () => {
-    if (userInput === "") {
-      return;
-    }
-    // setSubmitting(true);
-
-    // reset status from 0
-    chatStore.resetSessionFromIndex(2 + currentNum * 2);
-
-    let ask = ImpromptuSpeechPrompts.GetScorePrompt(
-      currentNum,
-      questionItems[currentNum].Question,
-      userInput,
-    );
-    chatStore.onUserInput(ask, ImpromptuSpeechPromptKeys.Score);
-    await chatStore.getIsFinished();
-
-    const response = session.messages[session.messages.length - 1].content;
-    console.log("Score: ", response);
-
-    setCurrentScore(parseInt(response));
-    questionItems[currentNum].Speech = userInput;
-    questionItems[currentNum].Score = currentScore;
-
-    // chatStore.updateCurrentSession(
-    //   (session) => (
-    //     (session.inputCopilot!.Topic = topic),
-    //     (session.inputCopilot!.QuestionNums = questionNums),
-    //     (session.inputCopilot!.ActiveStep = 1),
-    //     (session.inputCopilot!.MessagesDict[
-    //       ImpromptuSpeechPromptKeys.Questions
-    //     ] = { Ask: ask, Response: response })
-    //   ),
-    // );
-
-    // setSubmitting(false);
-    setCurrentStage("");
-  };
-
   const onRecord = () => {
     if (!recording) {
       speechRecognizer.startRecording(
@@ -315,7 +282,7 @@ const ImpromptuSpeechQuestion = (props: {
         ToastmastersDefaultLangugage,
       );
       setRecording(true);
-      setCurrentStage("Recording");
+      setCurrentStage(StageStatus.Recording);
     }
   };
 
@@ -323,12 +290,43 @@ const ImpromptuSpeechQuestion = (props: {
     if (recording) {
       speechRecognizer.stopRecording();
       setRecording(false);
-      setCurrentStage("Pausing");
+      setCurrentStage(StageStatus.Pausing);
     }
   };
 
-  const onRetry = () => {
-    setCurrentStage("");
+  const onReset = () => {
+    setSpeechTime(0);
+    setUserInput("");
+    questionItems[currentNum].SpeechTime = 0;
+    questionItems[currentNum].Speech = "";
+    questionItems[currentNum].Score = 0;
+    setCurrentStage(StageStatus.Start);
+  };
+
+  const onScore = (event: { preventDefault: () => void }) => {
+    if (userInput === "") {
+      event.preventDefault();
+      showToast("Speech is empty");
+      return;
+    }
+
+    let ask = ImpromptuSpeechPrompts.GetScorePrompt(
+      currentNum,
+      questionItems[currentNum].Question,
+      userInput,
+    );
+    chatStore.onUserInput(ask);
+    chatStore.getIsFinished().then(() => {
+      const response = session.messages[session.messages.length - 1].content;
+      console.log("score: ", response);
+      chatStore.updateCurrentSession(
+        (session) => (questionItems[currentNum].Score = parseInt(response)),
+      );
+      questionItems[currentNum].SpeechTime = speechTime;
+      questionItems[currentNum].Speech = userInput;
+    });
+
+    setCurrentStage(StageStatus.Scoring);
   };
 
   const appendUserInput = (newState: string): void => {
@@ -411,12 +409,9 @@ const ImpromptuSpeechQuestion = (props: {
           {questionItems[currentNum].Question}
         </p>
         <div className={styles.timer}>
-          <span>
-            Speech: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
-            {formatTime(speechTime)} / 2:00
-          </span>
+          <span>{formatTime(speechTime)} / 2:00</span>
         </div>
-        {currentStage === "" && (
+        {currentStage === StageStatus.Start && (
           <Stack
             direction="row"
             spacing={5}
@@ -437,26 +432,10 @@ const ImpromptuSpeechQuestion = (props: {
             >
               <MicIcon sx={{ fontSize: "inherit" }} />
             </IconButtonMui>
-            <IconButtonMui
-              color="secondary"
-              aria-label="score"
-              sx={{
-                backgroundColor: "lightblue", // 淡蓝色背景
-                color: "white", // 图标颜色，这里选择了白色
-                "&:hover": {
-                  backgroundColor: "green", // 鼠标悬停时的背景色，这里选择了蓝色
-                },
-                borderRadius: "50%", // 圆形
-                width: 40, // 宽度
-                height: 40, // 高度
-                padding: 0, // 如果需要，调整内边距
-              }}
-            >
-              <Typography variant="subtitle1">{currentScore}</Typography>
-            </IconButtonMui>
           </Stack>
         )}
-        {currentStage === "Recording" && (
+
+        {currentStage === StageStatus.Recording && (
           <Stack
             direction="row"
             spacing={5}
@@ -476,25 +455,81 @@ const ImpromptuSpeechQuestion = (props: {
             </IconButtonMui>
           </Stack>
         )}
-        {currentStage === "Pausing" && (
+
+        {currentStage === StageStatus.Pausing && (
           <Stack
             direction="row"
             spacing={5}
             justifyContent="center"
             alignItems="center"
-            sx={{
-              marginBottom: "20px",
-            }}
           >
-            <button className={styles.capsuleButton} onClick={onRetry}>
-              Retry
+            <button className={styles.capsuleButton} onClick={onReset}>
+              Reset
             </button>
-            <button className={styles.capsuleButton} onClick={onRecord}>
-              Continue
+
+            <IconButtonMui
+              aria-label="record"
+              color="primary"
+              sx={{
+                color: "green",
+                fontSize: "40px",
+              }}
+              onClick={onRecord}
+            >
+              <MicIcon sx={{ fontSize: "inherit" }} />
+            </IconButtonMui>
+
+            <button
+              className={styles.capsuleButton}
+              onClick={(event) => onScore(event)}
+            >
+              Score
             </button>
-            <button className={styles.capsuleButton} onClick={onSubmit}>
-              Submit
+          </Stack>
+        )}
+
+        {currentStage === StageStatus.Scoring && (
+          <Stack
+            direction="row"
+            spacing={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <button className={styles.capsuleButton} onClick={onReset}>
+              Reset
             </button>
+
+            <IconButtonMui
+              aria-label="record"
+              color="primary"
+              sx={{
+                color: "green",
+                fontSize: "40px",
+              }}
+              onClick={onRecord}
+            >
+              <MicIcon sx={{ fontSize: "inherit" }} />
+            </IconButtonMui>
+
+            <IconButtonMui
+              color="secondary"
+              aria-label="score"
+              sx={{
+                backgroundColor: "lightblue", // 淡蓝色背景
+                color: "white", // 图标颜色，这里选择了白色
+                "&:hover": {
+                  backgroundColor: "green", // 鼠标悬停时的背景色，这里选择了蓝色
+                },
+                borderRadius: "50%", // 圆形
+                width: 40, // 宽度
+                height: 40, // 高度
+                padding: 0, // 如果需要，调整内边距
+              }}
+            >
+              <Typography variant="subtitle1">
+                {questionItems[currentNum].Score}
+              </Typography>
+            </IconButtonMui>
           </Stack>
         )}
       </form>
@@ -509,6 +544,24 @@ const ImpromptuSpeechQuestion = (props: {
           // onClick={onSampleSpeechExpand}
         >
           <Typography>Sample Speech</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <ReactMarkdown>
+              {questionItems[currentNum].SampleSpeech}
+            </ReactMarkdown>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion sx={{ backgroundColor: "#f5f5f5", marginTop: "5px" }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          // onClick={onSampleSpeechExpand}
+        >
+          <Typography>Evaluation</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
