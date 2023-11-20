@@ -8,6 +8,7 @@ export async function requestOpenai(
   input: ChatCompletionRequestMessage[],
   deployment: ModelType,
   response_max_tokens: number,
+  temperature: number,
 ) {
   const apiUrl = `${AZURE_OPENAI_API_BASE}/openai/deployments/${deployment}/chat/completions?api-version=2023-07-01-preview`;
   const apiKey: string | undefined = OPENAI_API_KEY;
@@ -15,7 +16,7 @@ export async function requestOpenai(
   const requestData = {
     messages: input,
     max_tokens: response_max_tokens,
-    temperature: 0.5,
+    temperature: temperature,
     frequency_penalty: 0,
     presence_penalty: 0,
     top_p: 1,

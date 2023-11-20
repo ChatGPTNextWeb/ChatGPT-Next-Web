@@ -149,10 +149,12 @@ async function generateRequirementResponse(
     } tabell med utvalgte prosjekt: prosjektnavn,kundenavn,beskrivelse,rolle\n   ${relevantProjects
       ?.map(projectExperienceToText)
       .join("\n")}`;
+  console.log(prompt);
   const response = await requestOpenai(
     [{ role: "user", content: prompt }],
-    "variant-rocks",
+    "variant-rocks-turbo-16k",
     1000,
+    1,
   );
   return {
     requirement: requirement.requirement,
@@ -190,6 +192,7 @@ async function generateKeywordsFromRequirements(
     [...example, prompt],
     "variant-rocks",
     800,
+    0.6,
   );
   console.log(response);
   return {
@@ -204,9 +207,23 @@ function findSummaryPrompt(
 ) {
   const table = requirementResponsesToTable(requirementResponses);
   if (summaryText) {
+    return `Vi har nå fått en krav-begrunnelse tabell ${table}.
+    Her er det gamle sammendraget ${summaryText}.
+    Skriv om sammendraget slik at den svarer på alle krav
+    med begrunnelesen i tabellen. Bruk alt i tabellen og sammendraget.
+    Ikke bruk noe som ikke er i tabellen eller sammendraget. 
+    Teksten må flyte naturlig og sammenhengende så den scorer høyt i salg.
+    Du kan endre rekkefølge på svar på krav og du slipper å skrive hvert krav
+    på en egen paragraf.
+    Ettersom du vil overbevise leseren, må du bruke begrunnelseskolonnen aktivt når du svarer på krav.
+    Referer til prosjektene og få med kundenavn.
+    Det er en fordel hvis sammendraget er langt.
+    Du kan ikke regne med at brukeren har lest krav-begrunnelse tabellen.
+    `;
     return `Her er det tidligere sammendraget ${summaryText}. \n
-    Ta utgangspunkt i dette sammendraget for å lage et spisset sammendrag som
-    svarer på krav-begrunnelse tabellen du vil få tildelt. Sammendraget bør være langt. 
+    Spiss sammendraget med å ta i bruk krav-begrunnelse tabellen du får tildelt. 
+    Behold alt innhold fra det opprinnelige sammendraget. 
+    
     Husk å referer til navn på prosjekt, kunde og års erfaring for hvert krav i sammendraget.
     Husk å inkludere alle rader ifra tabellen i svaret.
     Det kan hende at samme prosjekt er brukt i de ulike begrunnelsene.
@@ -234,6 +251,7 @@ async function generateSummaryFromRequirementResponses(
     [{ role: "user", content: prompt }],
     "variant-rocks-turbo-16k",
     2000,
+    1,
   );
   return (
     summary ??
@@ -291,7 +309,7 @@ function projectExperienceToText(projectExperience: ProjectExperience): string {
 function requirementResponsesToTable(
   requirementResponses: RequirementResponse[],
 ): string {
-  const header = "Requirement,Response\n";
+  const header = "Krav,Begrunnelse,ErfaringMedKrav\n";
   const rows = requirementResponses
     .map((rr) => `${rr.requirement},${rr.response},${rr.experience}`)
     .join("\n");
