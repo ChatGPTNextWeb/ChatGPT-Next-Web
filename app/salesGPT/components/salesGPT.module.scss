@@ -57,13 +57,8 @@
   border-radius: 0.8rem;
   padding: 1rem;
 
-  // border-color: var(--white);
   background-color: var(--variant-white);
   color: var(--variant-black);
-
-  // &::placeholder {
-  //   color: var(--variant-secondary-4-d-2);
-  // }
 }
 
 .analyse-button-container {
@@ -76,4 +71,14 @@
 
 .right-pane {
   background-color: var(--white);
+}
+
+.chat-body {
+  flex: 1 1;
+  overflow: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  padding-bottom: 40px;
+  position: relative;
+  overscroll-behavior: none;
 }

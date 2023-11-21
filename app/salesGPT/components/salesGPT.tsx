@@ -246,18 +246,20 @@ function _SalesGPT() {
             </div>
           </div>
         </div>
-        {/* TODO: Gjør dette på en bedre måtte. Dette er ikke bra */}
-        {isAnalysisLoading ? (
-          <Loading noLogo />
-        ) : showCVSummary ? (
-          <EmployeeCVSummary
-            employee={selectedEmployee}
-            generatedText={generatedText}
-            requirementResponse={requirementResponse}
-          />
-        ) : (
-          <SalesGPTExplanation />
-        )}
+        <div className={styles["chat-body"]}>
+          {/* TODO: Gjør dette på en bedre måtte. Dette er ikke bra */}
+          {isAnalysisLoading ? (
+            <Loading noLogo />
+          ) : showCVSummary ? (
+            <EmployeeCVSummary
+              employee={selectedEmployee}
+              generatedText={generatedText}
+              requirementResponse={requirementResponse}
+            />
+          ) : (
+            <SalesGPTExplanation />
+          )}
+        </div>
       </div>
     </div>
   );
