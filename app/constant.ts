@@ -70,18 +70,18 @@ export const DEFAULT_MODELS = [
     name: "Azure-gpt-3.5-turbo",
     available: true,
   },
-  {
-    name: "Azure-gpt-3.5-turbo-16k",
-    available: true,
-  },
+  // {
+  //   name: "Azure-gpt-3.5-turbo-16k",
+  //   available: true,
+  // },
   {
     name: "Azure-gpt-4",
     available: true,
   },
-  {
-    name: "Azure-gpt-4-32k",
-    available: true,
-  },
+  // {
+  //   name: "Azure-gpt-4-32k",
+  //   available: true,
+  // },
   // {
   //   name: "gpt-4",
   //   available: true,
