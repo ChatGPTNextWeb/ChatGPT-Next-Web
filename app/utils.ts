@@ -217,7 +217,7 @@ export function isMacOS(): boolean {
 }
 
 export function aliasFromEmail(email: string | undefined) {
-  return email?.split("@")[0];
+  return email?.split("@")[0] ?? "";
 }
 
 export function sortEmployeeByName(a: EmployeeItem, b: EmployeeItem) {

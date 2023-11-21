@@ -24,6 +24,7 @@ import MinIcon from "../../icons/min.svg";
 import HelpSelect from "./helpSelect";
 import { useAppConfig } from "../../store";
 import SalesGPTExplanation from "./salesGPTExplanation";
+import { RequirementResponse } from "@/app/api/chewbacca/generateRequirementResponse/route";
 
 const availableHelp: HelpOption[] = [
   {
@@ -50,6 +51,9 @@ function _SalesGPT() {
   >(undefined);
 
   const [requirementText, setRequirementText] = useState("");
+  const [requirementResponse, setRequirementResponse] = useState<
+    RequirementResponse[]
+  >([]);
   const [summaryText, setSummaryText] = useState("");
   const [generatedText, setGeneratedText] = useState<string | null>(null);
   const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
@@ -96,22 +100,50 @@ function _SalesGPT() {
     setshowCVSummary(generatedText != null && !isAnalysisLoading);
   }, [isAnalysisLoading, generatedText]);
 
+  const fetchRequirements = async (
+    employeeAlias: string,
+    requirements: string[],
+  ): Promise<RequirementResponse[]> => {
+    const requirementPromises = requirements.map(async (requirement) => {
+      const response = await fetch(
+        "/api/chewbacca/generateRequirementResponse",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ employeeAlias, requirement }),
+        },
+      );
+      const data = await response.json();
+      return data;
+    });
+
+    const requirementResponses = await Promise.all(requirementPromises);
+    return requirementResponses;
+  };
+
   async function handleAnalyseButtonClick(): Promise<void> {
     setIsAnalysisLoading(true);
+    setRequirementResponse([]);
     const requirements = requirementText.split("\n").filter((s) => s.length);
     const employeeAlias = aliasFromEmail(selectedEmployee?.email);
-    await fetch("/api/chewbacca/generateSummaryOfQualifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ employeeAlias, requirements, summaryText }),
-    })
-      .then(async (response) => {
-        if (response.status === 401) {
-          window.location.href = "/api/auth/signin";
-        }
-        return await response.json();
+
+    await fetchRequirements(employeeAlias, requirements)
+      .then(async (requirementResponses) => {
+        setRequirementResponse(requirementResponses);
+        const response = await fetch(
+          "/api/chewbacca/generateSummaryOfQualifications",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ requirementResponses, summaryText }),
+          },
+        );
+        const data = await response.json();
+        return data;
       })
       .then((data) => {
         setGeneratedText(data);
@@ -221,6 +253,7 @@ function _SalesGPT() {
           <EmployeeCVSummary
             employee={selectedEmployee}
             generatedText={generatedText}
+            requirementResponse={requirementResponse}
           />
         ) : (
           <SalesGPTExplanation />
