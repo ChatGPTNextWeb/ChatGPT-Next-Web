@@ -56,9 +56,10 @@ highlighting, and more.
 ## What's New
 
 - 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
-- 🚀 v2.7 let's share conversations as image, or share to ShareGPT!
-- 🚀 v2.8 now we have a client that runs across all platforms!
-
+- 🚀 v2.7: Added ability to easily share conversations.
+- 🚀 v2.8: Added additional support for more clients.
+- 🚀 v2.9.11: Integrated Azure AI endpoint.
+- 🚀 v2.9.12: UI bugfixes and other housekeeping items.
 ## FAQ
 
 [简体中文 > 常见问题](./docs/faq-cn.md)
@@ -109,13 +110,13 @@ After adding or modifying this environment variable, please redeploy the project
 
 > [简体中文 > 如何配置 api key、访问密码、接口代理](./README_CN.md#环境变量)
 
+### `CODE` (optional)
+
+Access password, separated by comma.
+
 ### `OPENAI_API_KEY` (required)
 
 Your openai api key.
-
-### `CODE` (optional)
-
-Access passsword, separated by comma.
 
 ### `BASE_URL` (optional)
 
@@ -129,6 +130,20 @@ Override openai api request base url.
 
 Specify OpenAI organization ID.
 
+### `AZURE_URL` (optional)
+
+> Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
+
+Azure deploy url.
+
+### `AZURE_API_KEY` (optional)
+
+Azure Api Key.
+
+### `AZURE_API_VERSION` (optional)
+
+Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
@@ -141,11 +156,24 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
-### `HIDE_BALANCE_QUERY` (optional)
+### `ENABLE_BALANCE_QUERY` (optional)
 
 > Default: Empty
 
-If you do not want users to query balance, set this value to 1.
+If you do want users to query balance, set this value to 1, or you should set it to 0.
+
+### `DISABLE_FAST_LINK` (optional)
+
+> Default: Empty
+
+If you want to disable parse settings from url, set this to 1.
+
+### `CUSTOM_MODELS` (optional)
+
+> Default: Empty
+> Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview:gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
+
+To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name:displayName` to customize model name, separated by comma.
 
 ## Requirements
 
@@ -210,6 +238,10 @@ If your proxy needs password, use:
 bash <(curl -s https://raw.githubusercontent.com/yeenbean/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
+## Synchronizing Chat Records (UpStash)
+
+| [简体中文](./docs/synchronise-chat-logs-cn.md) | [English](./docs/synchronise-chat-logs-en.md) | [Italiano](./docs/synchronise-chat-logs-es.md) | [日本語](./docs/synchronise-chat-logs-ja.md) | [한국어](./docs/synchronise-chat-logs-ko.md)
+
 ## Documentation
 
 > Please go to the [docs][./docs] directory for more documentation instructions.
@@ -262,6 +294,8 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@AnsonHyq](https://github.com/AnsonHyq)
 [@synwith](https://github.com/synwith)
 [@piksonGit](https://github.com/piksonGit)
+[@ouyangzhiping](https://github.com/ouyangzhiping)
+[@wenjiavv](https://github.com/wenjiavv)
 
 ### Contributor
 

@@ -8,8 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ChatGPT Next Web[y]",
-    "version": "23.9.0"
+    "version": "23.11.0"
   },
   "tauri": {
     "allowlist": {
@@ -44,6 +43,12 @@
         "startDragging": true,
         "unmaximize": true,
         "unminimize": true
+      },
+      "fs": {
+        "all": true
+      },
+      "notification": {
+        "all": true
       }
     },
     "bundle": {
