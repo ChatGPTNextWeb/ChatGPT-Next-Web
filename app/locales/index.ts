@@ -16,7 +16,7 @@ import cs from "./cs";
 import ko from "./ko";
 import ar from "./ar";
 import bn from "./bn";
-import new from "./ms.ts";
+import ms from "./ms.ts";
 import { merge } from "../utils/merge";
 
 import type { LocaleType } from "./cn";
