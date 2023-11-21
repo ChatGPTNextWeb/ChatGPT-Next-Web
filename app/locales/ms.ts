@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
 import { PartialLocaleType } from "./index";
 
-const new: PartialLocaleType = {
+const ms: PartialLocaleType = {
   WIP: "Akan Datang...",
   Error: {
     Unauthorized:
@@ -382,4 +382,4 @@ const new: PartialLocaleType = {
     },
   };
   
-  export default new;
+  export default ms;
