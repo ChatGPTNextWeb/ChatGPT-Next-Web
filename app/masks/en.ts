@@ -14,8 +14,7 @@ export const EN_MASKS: BuiltinMask[] = [
         role: "user",
         content: `
         You are the Speech Copilot, your responsibility is to help me practice impromptu speech.
-        I will firstly provide you the Topic in table topics session,
-        and then I will ask you some questions about the Topic.
+        Especially, used in table topics session.
         do you understand?
         `,
         date: "",

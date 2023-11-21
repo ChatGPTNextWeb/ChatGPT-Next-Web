@@ -26,28 +26,25 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { ImpromptuSpeechV5Collapse } from "./impromptu-v5-collapse";
 import { speechRecognizer } from "../cognitive/speech-sdk";
 
-import {
-  ImpromptuSpeechPromptKeys,
-  ImpromptuSpeechPrompts,
-} from "./ISpeechRoles";
+import { ImpromptuSpeechPrompts } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
 
-interface IQuestionItem {
-  Question: string;
-  SampleSpeech: string;
+// need default value, so class
+class IQuestionItem {
+  Question: string = "";
+  SampleSpeech: string = "";
 
-  Speech: string;
-  SpeechTime: number;
+  Speech: string = "";
+  SpeechTime: number = 0;
   // PrapareTime: number;
 
-  Score: number;
-  Evaluations: Record<string, string>;
+  Score: number = 0;
+  Evaluations: Record<string, string> = {};
 }
 
 class ISpeechCopilotInput {
@@ -115,16 +112,19 @@ export function Chat() {
 
     session.inputCopilot = new ISpeechCopilotInput();
     for (let i = 0; i < stringArray.length; i++) {
+      // reset status from 0
+      chatStore.resetSession();
+
       let question = stringArray[i];
       ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(i, question);
       chatStore.onUserInput(ask);
       await chatStore.getIsFinished();
 
       response = session.messages[session.messages.length - 1].content;
-      session.inputCopilot!.QuestionItems.push({
-        Question: question,
-        SampleSpeech: response,
-      });
+      let questionItem = new IQuestionItem();
+      questionItem.Question = question;
+      questionItem.SampleSpeech = response;
+      session.inputCopilot!.QuestionItems.push(questionItem);
     }
 
     chatStore.updateCurrentSession(
@@ -157,7 +157,6 @@ export function Chat() {
         className={styles_chat["chat-body"]}
         ref={scrollRef}
         onMouseDown={() => inputRef.current?.blur()}
-        // onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
         onTouchStart={() => {
           inputRef.current?.blur();
           setAutoScroll(false);
@@ -237,7 +236,9 @@ const ImpromptuSpeechQuestion = (props: {
   questionNums: number;
   questionItems: IQuestionItem[];
 }) => {
-  // 定义枚举
+  let { questionNums, questionItems } = props;
+
+  // 定义状态枚举
   enum StageStatus {
     Start = "",
     Recording = "Recording",
@@ -245,14 +246,17 @@ const ImpromptuSpeechQuestion = (props: {
     Scoring = "Scoring",
   }
 
-  const [recording, setRecording] = useState(false);
-  const [speechTime, setSpeechTime] = useState(0);
-  const [userInput, setUserInput] = useState("");
+  // local state used for reder page
   const [currentNum, setCurrentNum] = useState(0);
-  // const [questions, setQuestions] = useState(props.questionItems);
 
-  // "", "Recording", "Pausing", "Scoring"
+  // 这两个状态就不保存了
+  const [recording, setRecording] = useState(false);
   const [currentStage, setCurrentStage] = useState(StageStatus.Start);
+
+  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
+  const [speechTime, setSpeechTime] = useState(
+    questionItems[currentNum].SpeechTime,
+  );
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -260,20 +264,38 @@ const ImpromptuSpeechQuestion = (props: {
     state.currentSessionIndex,
   ]);
 
-  let { questionNums, questionItems } = props;
+  // 当currentNum变化时, 更新初始值
+  useEffect(() => {
+    setSpeechTime(questionItems[currentNum].SpeechTime);
+    setCurrentStage(StageStatus.Start);
+  }, [StageStatus.Start, currentNum, questionItems]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (recording) {
       intervalId = setInterval(() => {
-        setSpeechTime((prevTime) => prevTime + 1);
+        setSpeechTime((prevTime) => prevTime + 1); // 用于刷新页面
+        questionItems[currentNum].SpeechTime = speechTime; // 用于保存状态
       }, 1000);
     }
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [recording]);
+  }, [currentNum, questionItems, recording, speechTime]);
+
+  const appendUserInput = (newState: string): void => {
+    // 每次按下button时 换行显示
+    if (
+      questionItems[currentNum].Speech === "" ||
+      questionItems[currentNum].Speech === undefined
+    ) {
+      questionItems[currentNum].Speech = newState;
+    } else {
+      questionItems[currentNum].Speech += "\n" + newState;
+    }
+    console.log("newState: ", newState);
+  };
 
   const onRecord = () => {
     if (!recording) {
@@ -295,25 +317,35 @@ const ImpromptuSpeechQuestion = (props: {
   };
 
   const onReset = () => {
-    setSpeechTime(0);
-    setUserInput("");
+    // 清存储
     questionItems[currentNum].SpeechTime = 0;
     questionItems[currentNum].Speech = "";
     questionItems[currentNum].Score = 0;
+    // 改状态
+    setSpeechTime(0);
     setCurrentStage(StageStatus.Start);
   };
 
   const onScore = (event: { preventDefault: () => void }) => {
-    if (userInput === "") {
+    // TODO:
+    questionItems[currentNum].Speech = "Yes, I think it is good";
+
+    if (
+      questionItems[currentNum].Speech === "" ||
+      questionItems[currentNum].Speech === undefined
+    ) {
       event.preventDefault();
       showToast("Speech is empty");
       return;
     }
 
+    // reset status from 0
+    chatStore.resetSession();
+
     let ask = ImpromptuSpeechPrompts.GetScorePrompt(
       currentNum,
       questionItems[currentNum].Question,
-      userInput,
+      questionItems[currentNum].Speech,
     );
     chatStore.onUserInput(ask);
     chatStore.getIsFinished().then(() => {
@@ -322,20 +354,9 @@ const ImpromptuSpeechQuestion = (props: {
       chatStore.updateCurrentSession(
         (session) => (questionItems[currentNum].Score = parseInt(response)),
       );
-      questionItems[currentNum].SpeechTime = speechTime;
-      questionItems[currentNum].Speech = userInput;
     });
 
     setCurrentStage(StageStatus.Scoring);
-  };
-
-  const appendUserInput = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (userInput === "") {
-      setUserInput(newState);
-    } else {
-      setUserInput(userInput + "\n" + newState);
-    }
   };
 
   const formatTime = (seconds: number) => {
@@ -409,6 +430,7 @@ const ImpromptuSpeechQuestion = (props: {
           {questionItems[currentNum].Question}
         </p>
         <div className={styles.timer}>
+          {/* TODO: 为啥 questionItems[currentNum].SpeechTime 也会刷新? */}
           <span>{formatTime(speechTime)} / 2:00</span>
         </div>
         {currentStage === StageStatus.Start && (
@@ -571,8 +593,6 @@ const ImpromptuSpeechQuestion = (props: {
           </Typography>
         </AccordionDetails>
       </Accordion>
-
-      {/* <ImpromptuSpeechV5Collapse></ImpromptuSpeechV5Collapse> */}
     </div>
   );
 };
