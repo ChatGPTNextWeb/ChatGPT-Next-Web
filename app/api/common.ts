@@ -34,7 +34,7 @@ export async function requestOpenai(req: NextRequest) {
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
   }
-  //req.body.
+
   let body = await req.json();
   console.log("[model name]", body["model"]);
   baseUrl = baseUrl.replace(
