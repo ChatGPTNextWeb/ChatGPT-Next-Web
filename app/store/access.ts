@@ -18,15 +18,15 @@ const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
 
-  provider: ServiceProvider.Azure,
+  provider: ServiceProvider.Variant,
 
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
   openaiApiKey: "",
 
   // azure
-  azureUrl: process.env.AZURE_OPENAI_API_BASE ?? "",
-  azureApiKey: process.env.AZURE_API_KEY ?? "",
+  azureUrl: "",
+  azureApiKey: "",
   azureApiVersion: "2023-08-01-preview",
 
   // server config
@@ -53,6 +53,10 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidAzure() {
+      const test = ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"])
+        ? "Ja dette er veldig riktig"
+        : "nei dette ble feil";
+      console.log(get().azureUrl);
       return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
     },
 

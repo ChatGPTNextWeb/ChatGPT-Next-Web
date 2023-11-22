@@ -73,6 +73,7 @@ export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 export enum ServiceProvider {
   OpenAI = "OpenAI",
   Azure = "Azure",
+  Variant = "Variant",
 }
 
 export const OpenaiPath = {
