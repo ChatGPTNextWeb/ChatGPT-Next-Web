@@ -16,7 +16,7 @@ export async function requestOpenai(req: NextRequest) {
     "/api/openai/",
     "",
   );
-
+  console.log("serverConfig::::",serverConfig)
   let baseUrl =
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
 
