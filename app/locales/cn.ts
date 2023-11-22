@@ -8,7 +8,7 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "访问密码不正确或为空，请前往登录页输入正确的访问密码，或者在设置页填入你自己的 OpenAI API Key。如没密码可以添加微信机器人：zalmanj，发送“密码”就可以获取密码（不定时更新额度，刚需建议自行购买key）。如有其他交流也可以留言，偶尔会看机器人信息",
   },
   Auth: {
     Title: "需要密码",
