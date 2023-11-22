@@ -825,7 +825,7 @@ export function Settings() {
           >
             <InputRange
               title={`${config.speed_animation ?? 60} m/s`}
-              value={(config.speed_animation ?? 60).toFixed(0)}
+              value={(config.speed_animation ?? 60)}
               min="1"
               max="200" // average max to made it very slowly like while a server lag hahaha
               step="1"
