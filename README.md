@@ -177,9 +177,14 @@ Specify OpenAI organization ID.
 
 ### `AZURE_URL` (optional)
 
-> Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
+> Example: https://{azure-resource-url}/openai/deployments/{deploy-name} 
+> 
+> Example: https://xxx.openai.azure.com/openai/deployments/{deploy-name}
 
 Azure deploy url.
+
+If `{deploy-name}` is using the template mode, then it will automatically replace the path based on the model selected by the client. 
+If your model name is different from the deployment name, then you need to set the `AZURE_OPENAI_MODEL_MAPPER` parameter.
 
 ### `AZURE_API_KEY` (optional)
 
@@ -216,11 +221,21 @@ If you want to disable parse settings from url, set this to 1.
 ### `CUSTOM_MODELS` (optional)
 
 > Default: Empty
+> 
 > Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
+>
+> Example: `-all,gpt-35-turbo,gpt-4,gpt-4-32k`. The meaning is to only display `gpt-3.5-turbo`, `gpt-4`, and `gpt-4-32k` in the model list. 
 
 To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name=displayName` to customize model name, separated by comma.
 
 User `-all` to disable all default models, `+all` to enable all default models.
+
+### `AZURE_OPENAI_MODEL_MAPPER` (optional)
+> Default: Empty
+> Example: `gpt-3.5-turbo=gpt-35-turbo` means map `gpt-3.5-turbo` to `gpt-35-turbo`
+
+If you are deploying ChatGPT using Azure OpenAI, it is recommended to set the `AZURE_OPENAI_MODEL_MAPPER`. 
+The session summarization feature relies on the `gpt-3.5-turbo` model, unless the name of your Azure deployment is the same as it.
 
 ## Requirements
 
