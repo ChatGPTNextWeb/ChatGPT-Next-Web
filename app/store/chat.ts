@@ -20,6 +20,7 @@ import { estimateTokenLength } from "../utils/token";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import { ImpromptuSpeechInput } from "../toastmasters/ISpeechRoles";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -98,7 +99,7 @@ export interface ChatSession {
   };
   output: { avatar: IRequestResponse };
 
-  inputCopilot?: any;
+  inputCopilot: ImpromptuSpeechInput;
   outputCopilot?: any;
 }
 
@@ -134,6 +135,8 @@ function createEmptySession(): ChatSession {
     output: {
       avatar: { status: "", data: "" },
     },
+
+    inputCopilot: new ImpromptuSpeechInput(),
   };
 }
 

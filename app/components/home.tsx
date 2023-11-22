@@ -49,7 +49,7 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
   loading: () => <Loading noLogo />,
 });
 const ImpromptuSpeechCopilot = dynamic(
-  async () => (await import("../toastmasters/impromptu-speech-copilot")).Chat,
+  async () => (await import("../toastmasters/ISpeech-Copilot")).Chat,
   {
     loading: () => <Loading noLogo />,
   },

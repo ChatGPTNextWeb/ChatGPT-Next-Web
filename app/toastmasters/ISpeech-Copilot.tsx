@@ -12,7 +12,7 @@ import SendWhiteIcon from "../icons/send-white.svg";
 import { ChatTitle, BorderLine } from "./chat-common";
 
 import { useScrollToBottom } from "../components/chat";
-import styles from "./impromptu-speech.module.scss";
+import styles from "./ISpeech.module.scss";
 
 import IconButtonMui from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
@@ -25,37 +25,29 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Tabs from "@mui/material/Tabs";
+// import Tab from '@mui/material/Tab';
+import PhoneIcon from "@mui/icons-material/Phone";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import PersonPinIcon from "@mui/icons-material/PersonPin";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 
 import { speechRecognizer } from "../cognitive/speech-sdk";
 
-import { ImpromptuSpeechPrompts } from "./ISpeechRoles";
+import {
+  IQuestionItem,
+  ImpromptuSpeechInput,
+  ImpromptuSpeechPrompts,
+  ImpromptuSpeechRoles,
+} from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
-
-// need default value, so class
-class IQuestionItem {
-  Question: string = "";
-  SampleSpeech: string = "";
-
-  Speech: string = "";
-  SpeechTime: number = 0;
-  // PrapareTime: number;
-
-  Score: number = 0;
-  Evaluations: Record<string, string> = {};
-}
-
-class ISpeechCopilotInput {
-  // 0: setting, 1: main page
-  ActiveStep: number = 0;
-  Topic: string = "";
-
-  HasQuestions: boolean = false;
-  QuestionNums: number = 5;
-  QuestionItems: IQuestionItem[] = [];
-}
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -72,21 +64,13 @@ export function Chat() {
 
   // TODO: save selected job
   const config = useAppConfig();
-  const [topic, setTopic] = useState(session.inputCopilot?.topic);
-  const [questionNums, setQuestionNums] = useState(
-    session.inputCopilot?.questions,
-  );
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (session.inputCopilot === undefined)
-      chatStore.updateCurrentSession(
-        (session) => (session.inputCopilot = new ISpeechCopilotInput()),
-      );
-  }, []);
-
   const onSubmit = async () => {
-    if (topic === "" || questionNums === undefined) {
+    if (
+      session.inputCopilot.Topic === "" ||
+      session.inputCopilot.QuestionNums <= 0
+    ) {
       showToast(`Topic or questions is empty, please check`);
       return;
     }
@@ -95,7 +79,10 @@ export function Chat() {
     // reset status from 0
     chatStore.resetSession();
 
-    let ask = ImpromptuSpeechPrompts.GetQuestionsPrompt(topic, questionNums);
+    let ask = ImpromptuSpeechPrompts.GetQuestionsPrompt(
+      session.inputCopilot.Topic,
+      session.inputCopilot.QuestionNums,
+    );
     chatStore.onUserInput(ask);
     await chatStore.getIsFinished();
 
@@ -110,7 +97,7 @@ export function Chat() {
       return;
     }
 
-    session.inputCopilot = new ISpeechCopilotInput();
+    session.inputCopilot.QuestionItems = [];
     for (let i = 0; i < stringArray.length; i++) {
       // reset status from 0
       chatStore.resetSession();
@@ -124,15 +111,13 @@ export function Chat() {
       let questionItem = new IQuestionItem();
       questionItem.Question = question;
       questionItem.SampleSpeech = response;
-      session.inputCopilot!.QuestionItems.push(questionItem);
+      session.inputCopilot.QuestionItems.push(questionItem);
     }
 
     chatStore.updateCurrentSession(
       (session) => (
-        (session.inputCopilot!.Topic = topic),
-        (session.inputCopilot!.QuestionNums = questionNums),
-        (session.inputCopilot!.ActiveStep = 1),
-        (session.inputCopilot!.HasQuestions = true)
+        (session.inputCopilot.ActiveStep = 1),
+        (session.inputCopilot.HasQuestions = true)
       ),
     );
 
@@ -142,7 +127,7 @@ export function Chat() {
 
   const onContinue = async () => {
     chatStore.updateCurrentSession(
-      (session) => (session.inputCopilot!.ActiveStep = 1),
+      (session) => (session.inputCopilot.ActiveStep = 1),
     );
   };
 
@@ -162,14 +147,16 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        {session.inputCopilot?.ActiveStep === 0 && (
+        {session.inputCopilot.ActiveStep === 0 && (
           <List>
             <ListItem title="Topic">
               <textarea
                 ref={inputRef}
                 className={styles_chat["chat-input"]}
-                onInput={(e) => setTopic(e.currentTarget.value)}
-                value={topic}
+                onInput={(e) => {
+                  session.inputCopilot.Topic = e.currentTarget.value;
+                }}
+                defaultValue={session.inputCopilot.Topic}
                 rows={1}
                 style={{
                   fontSize: config.fontSize,
@@ -181,12 +168,13 @@ export function Chat() {
             <ListItem title={"Questions"}>
               <input
                 type="number"
-                defaultValue={session.inputCopilot?.QuestionNums}
                 min={1}
-                value={questionNums}
-                onChange={(e) =>
-                  setQuestionNums(parseInt(e.currentTarget.value))
-                }
+                defaultValue={session.inputCopilot.QuestionNums}
+                onChange={(e) => {
+                  session.inputCopilot.QuestionNums = parseInt(
+                    e.currentTarget.value,
+                  );
+                }}
               ></input>
             </ListItem>
 
@@ -221,10 +209,10 @@ export function Chat() {
           </List>
         )}
 
-        {session.inputCopilot?.ActiveStep === 1 && (
+        {session.inputCopilot.ActiveStep > 0 && (
           <ImpromptuSpeechQuestion
-            questionNums={questionNums}
-            questionItems={session.inputCopilot?.QuestionItems}
+            activeStep={session.inputCopilot.ActiveStep}
+            questionItems={session.inputCopilot.QuestionItems}
           ></ImpromptuSpeechQuestion>
         )}
       </div>
@@ -233,10 +221,11 @@ export function Chat() {
 }
 
 const ImpromptuSpeechQuestion = (props: {
-  questionNums: number;
+  activeStep: number;
   questionItems: IQuestionItem[];
 }) => {
-  let { questionNums, questionItems } = props;
+  let { activeStep, questionItems } = props;
+  const questionNums = questionItems.length;
 
   // 定义状态枚举
   enum StageStatus {
@@ -246,16 +235,11 @@ const ImpromptuSpeechQuestion = (props: {
     Scoring = "Scoring",
   }
 
-  // local state used for reder page
-  const [currentNum, setCurrentNum] = useState(0);
-
   // 这两个状态就不保存了
   const [recording, setRecording] = useState(false);
   const [currentStage, setCurrentStage] = useState(StageStatus.Start);
-
-  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
-  const [speechTime, setSpeechTime] = useState(
-    questionItems[currentNum].SpeechTime,
+  const [evaluationRole, setEvaluationRole] = React.useState<string>(
+    ImpromptuSpeechRoles.Feedback,
   );
 
   const chatStore = useChatStore();
@@ -263,6 +247,16 @@ const ImpromptuSpeechQuestion = (props: {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+
+  // local state used for reder page
+  const [currentNum, setCurrentNum] = useState(
+    session.inputCopilot.ActiveStep - 1,
+  );
+
+  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
+  const [speechTime, setSpeechTime] = useState(
+    questionItems[currentNum].SpeechTime,
+  );
 
   // 当currentNum变化时, 更新初始值
   useEffect(() => {
@@ -318,9 +312,7 @@ const ImpromptuSpeechQuestion = (props: {
 
   const onReset = () => {
     // 清存储
-    questionItems[currentNum].SpeechTime = 0;
-    questionItems[currentNum].Speech = "";
-    questionItems[currentNum].Score = 0;
+    questionItems[currentNum].ResetCurrent();
     // 改状态
     setSpeechTime(0);
     setCurrentStage(StageStatus.Start);
@@ -359,6 +351,48 @@ const ImpromptuSpeechQuestion = (props: {
     setCurrentStage(StageStatus.Scoring);
   };
 
+  const evaluationRoles = ImpromptuSpeechPrompts.GetEvaluationRoles();
+
+  const onEvaluation = async (event: { preventDefault: () => void }) => {
+    // TODO:
+    questionItems[currentNum].Speech = questionItems[currentNum].SampleSpeech;
+
+    if (
+      questionItems[currentNum].Speech === "" ||
+      questionItems[currentNum].Speech === undefined
+    ) {
+      event.preventDefault();
+      showToast("Speech is empty");
+      return;
+    }
+
+    // reset status from 0
+    chatStore.resetSession();
+
+    let propmts = ImpromptuSpeechPrompts.GetEvaluationPrompts(
+      currentNum,
+      questionItems[currentNum].Question,
+      questionItems[currentNum].Speech,
+    );
+
+    for (const role of evaluationRoles) {
+      chatStore.onUserInput(propmts[role]);
+      await chatStore.getIsFinished();
+      const response = session.messages[session.messages.length - 1].content;
+      console.log("response: ", response);
+      chatStore.updateCurrentSession(
+        (session) => (questionItems[currentNum].Evaluations[role] = response),
+      );
+    }
+  };
+
+  const handleChangeEvaluationRole = (
+    event: React.SyntheticEvent,
+    newValue: string,
+  ) => {
+    setEvaluationRole(newValue);
+  };
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -367,15 +401,21 @@ const ImpromptuSpeechQuestion = (props: {
 
   const onReturn = () => {
     chatStore.updateCurrentSession(
-      (session) => (session.inputCopilot!.ActiveStep = 0),
+      (session) => (session.inputCopilot.ActiveStep = 0),
     );
   };
 
   const onPreviousQuestion = () => {
-    if (currentNum > 0) setCurrentNum(currentNum - 1);
+    if (currentNum > 0) {
+      setCurrentNum(currentNum - 1);
+      session.inputCopilot.ActiveStep -= 1;
+    }
   };
   const onNextQuestion = () => {
-    if (currentNum < props.questionNums - 1) setCurrentNum(currentNum + 1);
+    if (currentNum < questionNums - 1) {
+      setCurrentNum(currentNum + 1);
+      session.inputCopilot.ActiveStep += 1;
+    }
   };
 
   const onSampleSpeechExpand = async () => {
@@ -586,11 +626,40 @@ const ImpromptuSpeechQuestion = (props: {
           <Typography>Evaluation</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            <ReactMarkdown>
-              {questionItems[currentNum].SampleSpeech}
-            </ReactMarkdown>
-          </Typography>
+          <Box sx={{ width: "100%", typography: "body1" }}>
+            <TabContext value={evaluationRole}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList
+                  onChange={handleChangeEvaluationRole}
+                  aria-label="lab API tabs example"
+                >
+                  {evaluationRoles.map((role, index) => (
+                    <Tab
+                      key={index}
+                      label={role}
+                      value={role}
+                      sx={{ textTransform: "none" }}
+                    />
+                  ))}
+                </TabList>
+              </Box>
+              {evaluationRoles.map((role, index) => (
+                <TabPanel key={index} value={role}>
+                  {role in questionItems[currentNum].Evaluations ? (
+                    <Typography>
+                      <ReactMarkdown>
+                        {questionItems[currentNum].Evaluations[role]}
+                      </ReactMarkdown>
+                    </Typography>
+                  ) : (
+                    <Button onClick={(event) => onEvaluation(event)}>
+                      Start Evaluation
+                    </Button>
+                  )}
+                </TabPanel>
+              ))}
+            </TabContext>
+          </Box>
         </AccordionDetails>
       </Accordion>
     </div>
