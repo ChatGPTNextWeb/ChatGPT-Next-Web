@@ -217,7 +217,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+            <a href="https://gantanhao.vip/91haoka_platform/#/minishop?share_id=302822&shop_name=%25E5%2585%2594%25E5%25AD%2590" target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
           </div>
