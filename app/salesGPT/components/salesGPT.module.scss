@@ -68,17 +68,3 @@
   background-color: var(--variant-secondary-1-default);
   color: var(--variant-secondary-4-default);
 }
-
-.right-pane {
-  background-color: var(--white);
-}
-
-.chat-body {
-  flex: 1 1;
-  overflow: auto;
-  overflow-x: hidden;
-  padding: 20px;
-  padding-bottom: 40px;
-  position: relative;
-  overscroll-behavior: none;
-}

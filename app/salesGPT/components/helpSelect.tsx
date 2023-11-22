@@ -12,7 +12,7 @@ import { selectTheme } from "./selectTheme";
 interface SelectProps {
   options: HelpOption[];
   selectedHelp: HelpOption | undefined;
-  handleSelectHelp: Dispatch<SetStateAction<HelpOption>>;
+  handleSelectHelp: Dispatch<SetStateAction<HelpOption | undefined>>;
 }
 const SingleValue = ({ children, ...props }: SingleValueProps<HelpOption>) => (
   <components.SingleValue {...props}>

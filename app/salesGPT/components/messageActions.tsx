@@ -17,43 +17,41 @@ export default function MessageActions(props: {
 }) {
   const showActions = true;
   return (
-    <div className={styles["chat-message-header"]}>
-      {showActions && (
-        <div className={styles["chat-message-actions"]}>
-          <div className={styles["chat-input-actions"]}>
-            {props.retryAction && (
-              <MessageAction
-                text={Locale.Chat.Actions.Retry}
-                icon={<ResetIcon />}
-                onClick={props.retryAction}
-              />
-            )}
-
-            {props.deleteAction && (
-              <MessageAction
-                text={Locale.Chat.Actions.Delete}
-                icon={<DeleteIcon />}
-                onClick={props.deleteAction}
-              />
-            )}
-
-            {props.pinAction && (
-              <MessageAction
-                text={Locale.Chat.Actions.Pin}
-                icon={<PinIcon />}
-                onClick={props.pinAction}
-              />
-            )}
-
+    showActions && (
+      <div className={styles["chat-message-actions"]}>
+        <div className={styles["chat-input-actions"]}>
+          {props.retryAction && (
             <MessageAction
-              text={Locale.Chat.Actions.Copy}
-              icon={<CopyIcon />}
-              onClick={() => copyToClipboard(props.message)}
+              text={Locale.Chat.Actions.Retry}
+              icon={<ResetIcon />}
+              onClick={props.retryAction}
             />
-          </div>
+          )}
+
+          {props.deleteAction && (
+            <MessageAction
+              text={Locale.Chat.Actions.Delete}
+              icon={<DeleteIcon />}
+              onClick={props.deleteAction}
+            />
+          )}
+
+          {props.pinAction && (
+            <MessageAction
+              text={Locale.Chat.Actions.Pin}
+              icon={<PinIcon />}
+              onClick={props.pinAction}
+            />
+          )}
+
+          <MessageAction
+            text={Locale.Chat.Actions.Copy}
+            icon={<CopyIcon />}
+            onClick={() => copyToClipboard(props.message)}
+          />
         </div>
-      )}
-    </div>
+      </div>
+    )
   );
 }
 

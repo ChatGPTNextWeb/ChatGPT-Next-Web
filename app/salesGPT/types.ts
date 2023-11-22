@@ -69,7 +69,12 @@ export type EmployeeOption = {
   label: string;
 };
 
+export enum HelpOptionValue {
+  Summary = "summary",
+  RequirementList = "requirementlist",
+}
+
 export type HelpOption = {
   label: string;
-  value: string;
+  value: HelpOptionValue | undefined;
 };

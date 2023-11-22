@@ -461,6 +461,7 @@ const en: LocaleType = {
       Choose: "What do you need help with?",
       Summary: "Create a better summary",
       MoreToCome: " (more to come!)",
+      RequirementList: "Fyll ut kravliste",
     },
     ChooseEmployee: "Choose employee",
     SelectPlaceholder: "What employee do you want to get the CV for?",
@@ -471,6 +472,7 @@ const en: LocaleType = {
     SummaryPlaceholder: "Paste a summary of the employee",
     Analyse: "Analyse",
     EmployeeCVSummary: {
+      Title: "Summary from SalesGPT",
       Explanation: {
         Title: "SalgsGPT hjelper deg med å spisse sammendrag til et tilbud!",
         ListTitle: "Hvordan?",
@@ -485,8 +487,10 @@ const en: LocaleType = {
           "..og snart vil den også hjelpe deg med å fylle ut en kompetansematrise!",
       },
     },
+    RequirementList: {
+      Title: "Fyll ut kravliste",
+    },
     Consultant: "Consultant",
-    ResultTitle: "Summary from SalesGPT",
   },
 };
 

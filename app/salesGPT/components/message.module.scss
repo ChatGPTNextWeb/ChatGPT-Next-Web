@@ -142,9 +142,12 @@
 }
 
 .chat-message-header {
-  margin-top: 20px;
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  color: var(--black);
+  font-weight: 500;
 
   .chat-message-actions {
     display: flex;

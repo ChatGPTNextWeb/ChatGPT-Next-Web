@@ -207,8 +207,26 @@ const no: PartialLocaleType = {
     Summary: "Sammendrag",
     SummaryPlaceholder: "Kopier inn sammendrag om den ansatte",
     Analyse: "Analyser",
+    EmployeeCVSummary: {
+      Title: "Spisset sammendrag fra SalesGPT",
+      Explanation: {
+        Title: "SalgsGPT hjelper deg med å spisse sammendrag til et tilbud!",
+        ListTitle: "Hvordan?",
+        First:
+          "Ved å hente prosjekterfaringene til alle Varianter fra CV-partner",
+        Second:
+          "Ved å bearbeide kompetansekravene som stilles til konsulentene våre i tilbudsdokumentet fra kunden",
+        Third:
+          "Ved å finne relevante erfaringer fra CVen for hvert kompetansekrav du limer inn",
+        Fourth: "Ved å skrive tekstforslag til deg som du kan jobbe videre med",
+        AfterNote:
+          "..og snart vil den også hjelpe deg med å fylle ut en kompetansematrise!",
+      },
+    },
+    RequirementList: {
+      Title: "Fyll ut kravliste",
+    },
     Consultant: "Konsulent",
-    ResultTitle: "Spisset sammendrag fra SalgsGPT",
   },
 };
 

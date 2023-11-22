@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Loading } from "@/app/components/chatHomepage";
-import { EmployeeItem, HelpOption } from "../types";
+import { EmployeeItem, HelpOption, HelpOptionValue } from "../types";
 import EmployeeCVSummary from "./employeeCVSummary";
 import { ErrorBoundary } from "../../components/error";
 import {
@@ -19,17 +18,21 @@ import { IconButton } from "../../components/button";
 import { SalesSidebar } from "./sales-sidebar";
 import { Path } from "../../constant";
 import ChatIcon from "../../icons/chat.svg";
-import MaxIcon from "../../icons/max.svg";
-import MinIcon from "../../icons/min.svg";
 import HelpSelect from "./helpSelect";
 import { useAppConfig } from "../../store";
 import SalesGPTExplanation from "./salesGPTExplanation";
 import { RequirementResponse } from "@/app/api/chewbacca/generateRequirementResponse/route";
+import RightPane from "./rightPane";
+import RequirementsList from "./requirementsList";
 
 const availableHelp: HelpOption[] = [
   {
     label: Locale.SalesGPT.Help.Summary,
-    value: "summary",
+    value: HelpOptionValue.Summary,
+  },
+  {
+    label: Locale.SalesGPT.Help.RequirementList,
+    value: HelpOptionValue.RequirementList,
   },
 ];
 
@@ -58,7 +61,12 @@ function _SalesGPT() {
   const [generatedText, setGeneratedText] = useState<string | null>(null);
   const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
 
-  const [selectedHelp, setSelectedHelp] = useState(availableHelp[0]);
+  const [selectedHelp, setSelectedHelp] = useState<HelpOption | undefined>(
+    undefined,
+  );
+
+  const [showCVSummary, setShowCVSummary] = useState(false);
+  const [showRequirementsList, setShowRequirementsList] = useState(false);
 
   function handleSelectEmployee(newValue: EmployeeItem | undefined): void {
     setSelectedEmployee(newValue);
@@ -75,6 +83,9 @@ function _SalesGPT() {
   // TODO: Dette er dårlig. Men skal fikses senere
   function handleClearSelectedEmployee() {
     setGeneratedText(null);
+    setShowCVSummary(false);
+    setShowRequirementsList(false);
+    setIsAnalysisLoading(false);
   }
 
   useEffect(() => {
@@ -93,12 +104,6 @@ function _SalesGPT() {
         console.log(error);
       });
   }, []);
-
-  const [showCVSummary, setshowCVSummary] = useState(false);
-
-  useEffect(() => {
-    setshowCVSummary(generatedText != null && !isAnalysisLoading);
-  }, [isAnalysisLoading, generatedText]);
 
   const fetchRequirements = async (
     employeeAlias: string,
@@ -123,15 +128,13 @@ function _SalesGPT() {
     return requirementResponses;
   };
 
-  async function handleAnalyseButtonClick(): Promise<void> {
-    setIsAnalysisLoading(true);
-    setRequirementResponse([]);
-    const requirements = requirementText.split("\n").filter((s) => s.length);
-    const employeeAlias = aliasFromEmail(selectedEmployee?.email);
-
+  const runSummaryAnalysis = async (
+    employeeAlias: string,
+    requirements: string[],
+    summaryText: string,
+  ) => {
     await fetchRequirements(employeeAlias, requirements)
       .then(async (requirementResponses) => {
-        setRequirementResponse(requirementResponses);
         const response = await fetch(
           "/api/chewbacca/generateSummaryOfQualifications",
           {
@@ -147,12 +150,71 @@ function _SalesGPT() {
       })
       .then((data) => {
         setGeneratedText(data);
+        setShowCVSummary(true);
+
+        setRequirementResponse([]);
         setIsAnalysisLoading(false);
+        setShowRequirementsList(false);
       })
       .catch((error) => {
         console.error("Error:", error);
+        setRequirementResponse([]);
+        setGeneratedText(null);
         setIsAnalysisLoading(false);
+        setShowRequirementsList(false);
+        setShowCVSummary(false);
+        return;
       });
+  };
+
+  const runRequirementListAnalysis = async (
+    employeeAlias: string,
+    requirements: string[],
+  ) => {
+    await fetchRequirements(employeeAlias, requirements)
+      .then((data) => {
+        setRequirementResponse(data);
+        setShowRequirementsList(true);
+
+        setGeneratedText(null);
+        setIsAnalysisLoading(false);
+        setShowCVSummary(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setRequirementResponse([]);
+        setGeneratedText(null);
+        setIsAnalysisLoading(false);
+        setShowRequirementsList(false);
+        setShowCVSummary(false);
+        return;
+      });
+  };
+
+  async function handleAnalyseButtonClick(): Promise<void> {
+    setIsAnalysisLoading(true);
+    setRequirementResponse([]);
+    const requirements = requirementText.split("\n").filter((s) => s.length);
+    const employeeAlias = aliasFromEmail(selectedEmployee?.email);
+
+    if (selectedHelp?.value == HelpOptionValue.RequirementList) {
+      await runRequirementListAnalysis(employeeAlias, requirements);
+    } else if (selectedHelp?.value == HelpOptionValue.Summary) {
+      await runSummaryAnalysis(employeeAlias, requirements, summaryText);
+    } else {
+      return;
+    }
+  }
+
+  function getRightPaneTitle() {
+    switch (selectedHelp?.value) {
+      case HelpOptionValue.Summary:
+        return Locale.SalesGPT.EmployeeCVSummary.Title;
+      case HelpOptionValue.RequirementList:
+        return Locale.SalesGPT.RequirementList.Title;
+      default:
+        return "";
+    }
   }
 
   return (
@@ -220,47 +282,21 @@ function _SalesGPT() {
         />
       </SalesSidebar>
 
-      <div
-        style={{ overflow: "auto" }}
-        className={styles["window-content"] + " " + styles["right-pane"]}
-      >
-        <div className={styles["window-header"]} data-tauri-drag-region>
-          <div className={`window-header-title ${styles["chat-body-title"]}`}>
-            <div
-              className={`window-header-main-title ${styles["chat-body-main-title"]}`}
-            >
-              {selectedHelp.value === "summary" && Locale.SalesGPT.ResultTitle}
-            </div>
-          </div>
-          <div className={styles["window-actions"]}>
-            <div className={styles["window-action-button"]}>
-              <IconButton
-                icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
-                bordered
-                onClick={() => {
-                  config.update(
-                    (config) => (config.tightBorder = !config.tightBorder),
-                  );
-                }}
-              />
-            </div>
-          </div>
-        </div>
-        <div className={styles["chat-body"]}>
-          {/* TODO: Gjør dette på en bedre måtte. Dette er ikke bra */}
-          {isAnalysisLoading ? (
-            <Loading noLogo />
-          ) : showCVSummary ? (
-            <EmployeeCVSummary
-              employee={selectedEmployee}
-              generatedText={generatedText}
-              requirementResponse={requirementResponse}
-            />
-          ) : (
-            <SalesGPTExplanation />
-          )}
-        </div>
-      </div>
+      <RightPane title={getRightPaneTitle()}>
+        {/* TODO: Gjør dette på en bedre måtte. Dette er ikke bra */}
+        {isAnalysisLoading ? (
+          <Loading noLogo />
+        ) : showCVSummary ? (
+          <EmployeeCVSummary
+            employee={selectedEmployee}
+            generatedText={generatedText}
+          />
+        ) : showRequirementsList ? (
+          <RequirementsList requirementResponse={requirementResponse} />
+        ) : (
+          <SalesGPTExplanation />
+        )}
+      </RightPane>
     </div>
   );
 }
