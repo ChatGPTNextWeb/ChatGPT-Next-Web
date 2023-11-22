@@ -200,6 +200,10 @@ const id: PartialLocaleType = {
       Title: "Pratinjau Obrolan",
       SubTitle: "Pratinjau Obrolan dengan markdown",
     },
+    SpeedAnimation: {
+      Title: "Kecepatan Respon Animasi",
+      SubTitle: "Kecepatan Respon Animasi memungkinkan Anda mengontrol seberapa cepat teks respon ditampilkan selama animasi",
+    },
     Mask: {
       Splash: {
         Title: "Layar Pembuka Masks",
