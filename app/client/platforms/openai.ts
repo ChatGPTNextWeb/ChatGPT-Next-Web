@@ -20,11 +20,34 @@ import { makeAzurePath } from "@/app/azure";
 
 //# for AdEx custom usage tracking (calls per model per user per datekey)
 // import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerAuthSession } from '../../auth'; // Adjust the import path as necessary
+import { getServerSession } from "next-auth";
 import { incrementAPICallCount } from '../../utils/cloud/redisRestClient';
 // app\utils\cloud\redisRestClient.ts
 // app\client\platforms\openai.ts
 // app\auth.ts
+
+
+
+
+
+export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions)
+
+  if (!session) {
+    res.status(401).json({ message: "You must be logged in." });
+    return;
+  }
+
+  console.log("session within openai.ts:", session);
+
+  return res.json({
+    message: 'Success',
+  })
+}
+
+
+
+
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -106,7 +129,7 @@ export class ChatGPTApi implements LLMApi {
 
     // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
       // Retrieve the session using getServerAuthSession
-      const session = await getServerAuthSession()(req);
+      const session = await getServerSession();
 
       if (session?.user?.email) {
         // Now you have the user's email from the session
