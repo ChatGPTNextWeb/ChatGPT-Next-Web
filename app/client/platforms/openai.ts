@@ -116,7 +116,7 @@ export class ChatGPTApi implements LLMApi {
     const modelIdentifier = modelConfig.model; 
     console.log("API Call: session or email is not available - model: ", modelIdentifier);
 
-    const session = await getMyServerSession(req);
+    const session = await getMyServerSession();
 
     if (session?.user?.email) {
       // Now you have the user's email from the session
