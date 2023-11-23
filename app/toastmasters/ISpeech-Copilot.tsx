@@ -45,9 +45,11 @@ import {
   ImpromptuSpeechInput,
   ImpromptuSpeechPrompts,
   ImpromptuSpeechRoles,
+  ImpromptuSpeechStage,
 } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
+import RehearsalReport from "./impromptu-v93-Report";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
@@ -58,12 +60,57 @@ export function Chat() {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
-
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // 设置自动滑动窗口
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
-  const [hitBottom, setHitBottom] = useState(true);
+
+  // TODO: save selected job
+  const config = useAppConfig();
+
+  const getInputsString = (): string => {
+    return "";
+  };
+
+  return (
+    <div className={styles_chat.chat} key={session.id}>
+      <ChatTitle getInputsString={getInputsString}></ChatTitle>
+      <div
+        className={styles_chat["chat-body"]}
+        ref={scrollRef}
+        onMouseDown={() => inputRef.current?.blur()}
+        onTouchStart={() => {
+          inputRef.current?.blur();
+          setAutoScroll(false);
+        }}
+      >
+        {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Start && (
+          <ImpromptuSpeechSetting></ImpromptuSpeechSetting>
+        )}
+
+        {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Question && (
+          <ImpromptuSpeechQuestion
+            scrollRef={scrollRef}
+            impromptuSpeechInput={session.inputCopilot}
+          ></ImpromptuSpeechQuestion>
+        )}
+
+        {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Report && (
+          <RehearsalReport></RehearsalReport>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ImpromptuSpeechSetting() {
+  const chatStore = useChatStore();
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // TODO: save selected job
   const config = useAppConfig();
@@ -144,111 +191,83 @@ export function Chat() {
     );
   };
 
-  const getInputsString = (): string => {
-    return "";
-  };
-
   return (
-    <div className={styles_chat.chat} key={session.id}>
-      <ChatTitle getInputsString={getInputsString}></ChatTitle>
-      <div
-        className={styles_chat["chat-body"]}
-        ref={scrollRef}
-        onMouseDown={() => inputRef.current?.blur()}
-        onTouchStart={() => {
-          inputRef.current?.blur();
-          setAutoScroll(false);
-        }}
-      >
-        {session.inputCopilot.ActiveStep === 0 && (
-          <List>
-            <ListItem title="Topic">
-              <textarea
-                ref={inputRef}
-                className={styles_chat["chat-input"]}
-                onInput={(e) => {
-                  session.inputCopilot.Topic = e.currentTarget.value;
-                }}
-                defaultValue={session.inputCopilot.Topic}
-                rows={1}
-                style={{
-                  fontSize: config.fontSize,
-                  minHeight: "30px",
-                  marginLeft: "10px",
-                }}
-              />
-            </ListItem>
-            <ListItem title={"Questions"}>
-              <input
-                type="number"
-                min={1}
-                defaultValue={session.inputCopilot.QuestionNums}
-                onChange={(e) => {
-                  session.inputCopilot.QuestionNums = parseInt(
-                    e.currentTarget.value,
-                  );
-                }}
-              ></input>
-            </ListItem>
+    <List>
+      <ListItem title="Topic">
+        <textarea
+          ref={inputRef}
+          className={styles_chat["chat-input"]}
+          onInput={(e) => {
+            session.inputCopilot.Topic = e.currentTarget.value;
+          }}
+          defaultValue={session.inputCopilot.Topic}
+          rows={1}
+          style={{
+            fontSize: config.fontSize,
+            minHeight: "30px",
+            marginLeft: "10px",
+          }}
+        />
+      </ListItem>
+      <ListItem title={"Questions"}>
+        <input
+          type="number"
+          min={1}
+          defaultValue={session.inputCopilot.QuestionNums}
+          onChange={(e) => {
+            session.inputCopilot.QuestionNums = parseInt(e.currentTarget.value);
+          }}
+        ></input>
+      </ListItem>
 
-            {submitting ? (
-              <div>
-                <Stack
-                  direction="row"
-                  spacing={10}
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{
-                    marginBottom: "20px",
-                    marginTop: "20px",
-                  }}
-                >
-                  <IconButton
-                    icon={<SendWhiteIcon />}
-                    text="Submitting"
-                    disabled={true}
-                    className={styles_tm["chat-input-button-submitting"]}
-                    onClick={onSubmit}
-                  />
-                </Stack>
-                <LinearProgressWithLabel value={submitProgress} />
-              </div>
-            ) : (
-              <Stack
-                direction="row"
-                spacing={10}
-                justifyContent="center"
-                alignItems="center"
-                sx={{
-                  marginBottom: "20px",
-                  marginTop: "20px",
-                }}
-              >
-                <IconButton
-                  icon={<SendWhiteIcon />}
-                  text="Submit"
-                  disabled={submitting}
-                  className={styles_tm["chat-input-button-submit"]}
-                  onClick={onSubmit}
-                />
-                {session.inputCopilot?.HasQuestions && (
-                  <button className={styles.capsuleButton} onClick={onContinue}>
-                    Continue Last
-                  </button>
-                )}
-              </Stack>
-            )}
-          </List>
-        )}
-
-        {session.inputCopilot.ActiveStep > 0 && (
-          <ImpromptuSpeechQuestion
-            scrollRef={scrollRef}
-            impromptuSpeechInput={session.inputCopilot}
-          ></ImpromptuSpeechQuestion>
-        )}
-      </div>
-    </div>
+      {submitting ? (
+        <div>
+          <Stack
+            direction="row"
+            spacing={10}
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              marginBottom: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <IconButton
+              icon={<SendWhiteIcon />}
+              text="Submitting"
+              disabled={true}
+              className={styles_tm["chat-input-button-submitting"]}
+              onClick={onSubmit}
+            />
+          </Stack>
+          <LinearProgressWithLabel value={submitProgress} />
+        </div>
+      ) : (
+        <Stack
+          direction="row"
+          spacing={10}
+          justifyContent="center"
+          alignItems="center"
+          sx={{
+            marginBottom: "20px",
+            marginTop: "20px",
+          }}
+        >
+          <IconButton
+            icon={<SendWhiteIcon />}
+            text="Submit"
+            disabled={submitting}
+            className={styles_tm["chat-input-button-submit"]}
+            onClick={onSubmit}
+          />
+          {session.inputCopilot?.HasQuestions && (
+            <button className={styles.capsuleButton} onClick={onContinue}>
+              Continue Last
+            </button>
+          )}
+        </Stack>
+      )}
+    </List>
   );
 }
 

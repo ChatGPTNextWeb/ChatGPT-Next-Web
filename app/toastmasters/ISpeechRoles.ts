@@ -40,6 +40,8 @@ export class IQuestionItem {
 }
 
 export class ImpromptuSpeechInput {
+  ActivePage: string = ImpromptuSpeechStage.Report;
+
   // 0: setting, 1: main page
   ActiveStep: number = 0;
   Topic: string = "";
@@ -47,6 +49,13 @@ export class ImpromptuSpeechInput {
   HasQuestions: boolean = false;
   QuestionNums: number = 2;
   QuestionItems: IQuestionItem[] = [];
+}
+
+// 定义状态枚举
+export enum ImpromptuSpeechStage {
+  Start = "",
+  Question = "Question",
+  Report = "Report",
 }
 
 export class ImpromptuSpeechPrompts {
