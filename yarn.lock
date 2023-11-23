@@ -3269,7 +3269,7 @@ __metadata:
     jose: "npm:^4.14.4"
     lint-staged: "npm:^13.2.2"
     mermaid: "npm:^10.6.1"
-    million: "npm:^2.6.0-beta.4"
+    million: "npm:^2.6.4"
     nanoid: "npm:^5.0.3"
     next: "npm:^13.4.19"
     node-fetch: "npm:^3.3.2"
@@ -6585,7 +6585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"million@npm:^2.6.0-beta.4":
+"million@npm:^2.6.4":
   version: 2.6.4
   resolution: "million@npm:2.6.4"
   dependencies:
