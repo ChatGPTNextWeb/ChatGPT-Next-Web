@@ -18,6 +18,14 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
 
+//# for AdEx custom usage tracking (calls per model per user per datekey)
+// import { NextApiRequest, NextApiResponse } from 'next';
+import { getServerAuthSession } from '../../auth'; // Adjust the import path as necessary
+import { incrementAPICallCount } from '../../utils/cloud/redisRestClient';
+// app\utils\cloud\redisRestClient.ts
+// app\client\platforms\openai.ts
+// app\auth.ts
+
 export interface OpenAIListModelResponse {
   object: string;
   data: Array<{
@@ -93,6 +101,30 @@ export class ChatGPTApi implements LLMApi {
     };
 
     console.log("[Request] openai payload: ", requestPayload);
+
+
+
+    // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+      // Retrieve the session using getServerAuthSession
+      const session = await getServerAuthSession()(req);
+
+      if (session?.user?.email) {
+        // Now you have the user's email from the session
+        const userEmail = session.user.email;
+        const modelIdentifier = modelConfig.mode; 
+        const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+        console.log("API Call: ",token.email, modelIdentifier);
+
+        // Use the userEmail to increment the API call count
+        await incrementAPICallCount(userEmail, modelIdentifier, dateKey);
+
+        // ... rest of your API route logic ...
+      } else {
+        // Handle cases where the session or email is not available
+        res.status(401).json({ error: 'Unauthorized' });
+      }
+    // }
+
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();

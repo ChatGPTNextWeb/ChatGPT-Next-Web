@@ -68,6 +68,31 @@ export const incrementSessionRefreshCount = async (
   }
 };
 
+export const incrementAPICallCount = async (
+  email: string | undefined,
+  modelIdentifier: string,
+  dateKey: string
+): Promise<void> => {
+  if (!email || !modelIdentifier) {
+    console.error('Email or model identifier is undefined, cannot increment API call count.');
+    return; // This is fine for a function returning Promise<void>
+  }
+
+  const redis = getRedisClient();
+  if (!redis) {
+    console.error('Redis client is not initialized.');
+    return; // This is fine for a function returning Promise<void>
+  }
+
+  const key = `api_calls:${email}:${modelIdentifier}`;
+
+  try {
+    await redis.hincrby(key, dateKey, 1);
+  } catch (error) {
+    console.error('Failed to increment API call count in Redis via Upstash', error);
+  }
+};
+
 
 export const incrementTokenCounts = async (
   email: string | undefined,
