@@ -20,7 +20,10 @@ import { makeAzurePath } from "@/app/azure";
 
 //# for AdEx custom usage tracking (calls per model per user per datekey)
 // import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from "next-auth";
+//import { getServerSession } from "next-auth";
+
+import { getServerAuthSession } from "@/app/auth";
+//import { authOptions } from "@/app/auth";
 import { incrementAPICallCount } from '../../utils/cloud/redisRestClient';
 // app\utils\cloud\redisRestClient.ts
 // app\client\platforms\openai.ts
@@ -106,10 +109,36 @@ export class ChatGPTApi implements LLMApi {
 
 
 
+      const modelIdentifier = modelConfig.model; 
+      console.log("API Call: session or email is not available - model: ", modelIdentifier);
+
+      export default async function handler(req, res) {
+        const session = await getServerAuthSession({ req });
+
+
+        if (session?.user?.email) {
+          // Now you have the user's email from the session
+          const userEmail = session.user.email;
+      
+          const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+          console.log("API Call: ", userEmail, modelIdentifier);
+      
+          // Use the userEmail to increment the API call count
+          await incrementAPICallCount(userEmail, modelIdentifier, dateKey);
+      
+          // ... rest of your API route logic ...
+          res.status(200).json({ success: true });
+        } else {
+          // Handle cases where the session or email is not available
+          console.log("API Call: session or email is not available - model: ", modelIdentifier);
+          res.status(401).json({ error: "Unauthorized" });
+        }
+      }
+/*
     // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
       // Retrieve the session using getServerAuthSession
+
       const session = await getServerSession();
-      const modelIdentifier = modelConfig.model; 
       
       if (session?.user?.email) {
         // Now you have the user's email from the session
@@ -127,7 +156,7 @@ export class ChatGPTApi implements LLMApi {
         console.log("API Call: session or email is not available - model: ", modelIdentifier);
       }
     // }
-
+*/
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
