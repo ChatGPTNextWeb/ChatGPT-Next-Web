@@ -199,11 +199,7 @@ const bn: PartialLocaleType = {
       SubTitle:
         "নকুল বার্তা দৈর্ঘ্য সীমা অতিক্রান্ত হলে ঐ বার্তাটি সঙ্কুচিত হবে",
     },
-    Token: {
-      Title: "অ্যাপি কী",
-      SubTitle: "অ্যাক্সেস কোড সীমা উপেক্ষা করতে আপনার কীটি ব্যবহার করুন",
-      Placeholder: "OpenAI API কী",
-    },
+
     Usage: {
       Title: "একাউন্ট ব্যালেন্স",
       SubTitle(used: any, total: any) {
@@ -213,15 +209,7 @@ const bn: PartialLocaleType = {
       Check: "চেক",
       NoAccess: "ব্যালেন্স চেক করতে অ্যাপি কী ইনপুট করুন",
     },
-    AccessCode: {
-      Title: "অ্যাক্সেস কোড",
-      SubTitle: "অ্যাক্সেস নিয়ন্ত্রণ সক্রিয়",
-      Placeholder: "অ্যাক্সেস কোড প্রয়োজন",
-    },
-    Endpoint: {
-      Title: "ইনটারপয়েন্ট",
-      SubTitle: "কাস্টম এন্ডপয়েন্টটি হতে হবে http(s):// দিয়ে শুরু হতে হবে",
-    },
+
     Model: "মডেল",
     Temperature: {
       Title: "তাপমাত্রা",
