@@ -109,11 +109,12 @@ export class ChatGPTApi implements LLMApi {
     // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
       // Retrieve the session using getServerAuthSession
       const session = await getServerSession();
-
+      const modelIdentifier = modelConfig.model; 
+      
       if (session?.user?.email) {
         // Now you have the user's email from the session
         const userEmail = session.user.email;
-        const modelIdentifier = modelConfig.model; 
+
         const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
         console.log("API Call: ", userEmail, modelIdentifier);
 
