@@ -112,12 +112,11 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
 
-
-
     const modelIdentifier = modelConfig.model; 
     console.log("API Call: session or email is not available - model: ", modelIdentifier);
 
-//    const session = await getMyServerSession();
+/*
+    const session = await getMyServerSession();
 
     if (session?.user?.email) {
       // Now you have the user's email from the session
@@ -134,29 +133,6 @@ export class ChatGPTApi implements LLMApi {
       console.log("API Call: session or email is not available - model: ", modelIdentifier);
 
     }
-
-/*
-    // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-      // Retrieve the session using getServerAuthSession
-
-      const session = await getServerSession();
-      
-      if (session?.user?.email) {
-        // Now you have the user's email from the session
-        const userEmail = session.user.email;
-
-        const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
-        console.log("API Call: ", userEmail, modelIdentifier);
-
-        // Use the userEmail to increment the API call count
-        await incrementAPICallCount(userEmail, modelIdentifier, dateKey);
-
-        // ... rest of your API route logic ...
-      } else {
-        // Handle cases where the session or email is not available
-        console.log("API Call: session or email is not available - model: ", modelIdentifier);
-      }
-    // }
 */
 
     const shouldStream = !!options.config.stream;
