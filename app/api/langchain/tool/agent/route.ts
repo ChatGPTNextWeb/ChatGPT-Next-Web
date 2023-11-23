@@ -23,6 +23,7 @@ import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
 import { StableDiffusionWrapper } from "@/app/api/langchain-tools/stable_diffusion_image_generator";
 import { ArxivAPIWrapper } from "@/app/api/langchain-tools/arxiv";
+import { PDFBrowser } from "@/app/api/langchain-tools/pdf_browser";
 
 const serverConfig = getServerSideConfig();
 
@@ -253,6 +254,9 @@ async function handle(req: NextRequest) {
     if (useTools.includes(stableDiffusionTool.name))
       tools.push(stableDiffusionTool);
     if (useTools.includes(arxivAPITool.name)) tools.push(arxivAPITool);
+
+    const pdfBrowserTool = new PDFBrowser(model, embeddings);
+    tools.push(pdfBrowserTool);
 
     useTools.forEach((toolName) => {
       if (toolName) {
