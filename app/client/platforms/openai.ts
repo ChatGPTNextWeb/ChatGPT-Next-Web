@@ -115,7 +115,7 @@ export class ChatGPTApi implements LLMApi {
         const userEmail = session.user.email;
         const modelIdentifier = modelConfig.model; 
         const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
-        console.log("API Call: ",token.email, modelIdentifier);
+        console.log("API Call: ", userEmail, modelIdentifier);
 
         // Use the userEmail to increment the API call count
         await incrementAPICallCount(userEmail, modelIdentifier, dateKey);
