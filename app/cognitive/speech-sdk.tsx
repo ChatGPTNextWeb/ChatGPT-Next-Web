@@ -18,7 +18,6 @@ class SpeechSynthesizer {
   private synthesizer!: sdk.SpeechSynthesizer;
 
   public startSynthesize(text: string, language: string) {
-    console.log("startSynthesize", text, language);
     // set info
     var speechConfig = sdk.SpeechConfig.fromSubscription(
       config.speechSubscriptionKey!,

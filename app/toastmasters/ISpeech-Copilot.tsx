@@ -7,11 +7,12 @@ import styles_chat from "../components/chat.module.scss";
 import styles_tm from "../toastmasters/toastmasters.module.scss";
 import { List, ListItem, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
+import { Markdown } from "../components/exporter";
+import { useScrollToBottom } from "../components/chat";
 import SendWhiteIcon from "../icons/send-white.svg";
 
 import { ChatTitle, BorderLine } from "./chat-common";
 
-import { useScrollToBottom } from "../components/chat";
 import styles from "./ISpeech.module.scss";
 
 import IconButtonMui from "@mui/material/IconButton";
@@ -35,8 +36,9 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import CircularProgress from "@mui/material/CircularProgress";
 
-import { speechRecognizer } from "../cognitive/speech-sdk";
+import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
 
 import {
   IQuestionItem,
@@ -45,6 +47,7 @@ import {
   ImpromptuSpeechRoles,
 } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
+import { LinearProgressWithLabel } from "./ISpeech-Common";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
@@ -65,6 +68,7 @@ export function Chat() {
   // TODO: save selected job
   const config = useAppConfig();
   const [submitting, setSubmitting] = useState(false);
+  const [submitProgress, setSubmitProgress] = useState(0);
 
   const onSubmit = async () => {
     if (
@@ -75,6 +79,11 @@ export function Chat() {
       return;
     }
     setSubmitting(true);
+    setSubmitProgress(0);
+
+    const progressStep = Math.floor(
+      100 / (1 + session.inputCopilot.QuestionNums),
+    );
 
     // reset status from 0
     chatStore.resetSession();
@@ -85,6 +94,7 @@ export function Chat() {
     );
     chatStore.onUserInput(ask);
     await chatStore.getIsFinished();
+    setSubmitProgress(progressStep);
 
     let response = session.messages[session.messages.length - 1].content;
     console.log("Questions: ", response);
@@ -99,9 +109,6 @@ export function Chat() {
 
     session.inputCopilot.QuestionItems = [];
     for (let i = 0; i < stringArray.length; i++) {
-      // reset status from 0
-      chatStore.resetSession();
-
       let question = stringArray[i];
       ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(i, question);
       chatStore.onUserInput(ask);
@@ -112,7 +119,13 @@ export function Chat() {
       questionItem.Question = question;
       questionItem.SampleSpeech = response;
       session.inputCopilot.QuestionItems.push(questionItem);
+
+      setSubmitProgress(progressStep * (i + 2));
     }
+
+    // reset so not effect sequential answer
+    // but keep questions so that it has context
+    chatStore.resetSessionFromIndex(2);
 
     chatStore.updateCurrentSession(
       (session) => (
@@ -178,41 +191,60 @@ export function Chat() {
               ></input>
             </ListItem>
 
-            <Stack
-              direction="row"
-              spacing={10}
-              justifyContent="center"
-              alignItems="center"
-              sx={{
-                marginBottom: "20px",
-                marginTop: "20px",
-              }}
-            >
-              <IconButton
-                icon={<SendWhiteIcon />}
-                text={submitting ? "Submitting" : "Submit"}
-                disabled={submitting}
-                className={
-                  submitting
-                    ? styles_tm["chat-input-button-submitting"]
-                    : styles_tm["chat-input-button-submit"]
-                }
-                onClick={onSubmit}
-              />
-
-              {session.inputCopilot?.HasQuestions && (
-                <button className={styles.capsuleButton} onClick={onContinue}>
-                  Continue Last
-                </button>
-              )}
-            </Stack>
+            {submitting ? (
+              <div>
+                <Stack
+                  direction="row"
+                  spacing={10}
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{
+                    marginBottom: "20px",
+                    marginTop: "20px",
+                  }}
+                >
+                  <IconButton
+                    icon={<SendWhiteIcon />}
+                    text="Submitting"
+                    disabled={true}
+                    className={styles_tm["chat-input-button-submitting"]}
+                    onClick={onSubmit}
+                  />
+                </Stack>
+                <LinearProgressWithLabel value={submitProgress} />
+              </div>
+            ) : (
+              <Stack
+                direction="row"
+                spacing={10}
+                justifyContent="center"
+                alignItems="center"
+                sx={{
+                  marginBottom: "20px",
+                  marginTop: "20px",
+                }}
+              >
+                <IconButton
+                  icon={<SendWhiteIcon />}
+                  text="Submit"
+                  disabled={submitting}
+                  className={styles_tm["chat-input-button-submit"]}
+                  onClick={onSubmit}
+                />
+                {session.inputCopilot?.HasQuestions && (
+                  <button className={styles.capsuleButton} onClick={onContinue}>
+                    Continue Last
+                  </button>
+                )}
+              </Stack>
+            )}
           </List>
         )}
 
         {session.inputCopilot.ActiveStep > 0 && (
           <ImpromptuSpeechQuestion
-            activeStep={session.inputCopilot.ActiveStep}
-            questionItems={session.inputCopilot.QuestionItems}
+            scrollRef={scrollRef}
+            impromptuSpeechInput={session.inputCopilot}
           ></ImpromptuSpeechQuestion>
         )}
       </div>
@@ -221,10 +253,11 @@ export function Chat() {
 }
 
 const ImpromptuSpeechQuestion = (props: {
-  activeStep: number;
-  questionItems: IQuestionItem[];
+  scrollRef: React.RefObject<HTMLDivElement>;
+  impromptuSpeechInput: ImpromptuSpeechInput;
 }) => {
-  let { activeStep, questionItems } = props;
+  let { scrollRef, impromptuSpeechInput } = props;
+  const questionItems = impromptuSpeechInput.QuestionItems;
   const questionNums = questionItems.length;
 
   // 定义状态枚举
@@ -247,10 +280,14 @@ const ImpromptuSpeechQuestion = (props: {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+  const config = useAppConfig();
 
   // local state used for reder page
   const [currentNum, setCurrentNum] = useState(
-    session.inputCopilot.ActiveStep - 1,
+    impromptuSpeechInput.ActiveStep - 1,
+  );
+  const [evaluating, setEvaluating] = useState(
+    Object.keys(questionItems[currentNum].Evaluations).length > 0,
   );
 
   // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
@@ -312,10 +349,15 @@ const ImpromptuSpeechQuestion = (props: {
 
   const onReset = () => {
     // 清存储
-    questionItems[currentNum].ResetCurrent();
+    // questionItems[currentNum].ResetCurrent();  // TODO: don't know why this error
+    questionItems[currentNum].Speech = "";
+    questionItems[currentNum].SpeechTime = 0;
+    questionItems[currentNum].Score = 0;
+    questionItems[currentNum].Evaluations = {};
     // 改状态
     setSpeechTime(0);
     setCurrentStage(StageStatus.Start);
+    setEvaluating(false);
   };
 
   const onScore = (event: { preventDefault: () => void }) => {
@@ -354,6 +396,7 @@ const ImpromptuSpeechQuestion = (props: {
   const evaluationRoles = ImpromptuSpeechPrompts.GetEvaluationRoles();
 
   const onEvaluation = async (event: { preventDefault: () => void }) => {
+    setEvaluating(true);
     // TODO:
     questionItems[currentNum].Speech = questionItems[currentNum].SampleSpeech;
 
@@ -366,8 +409,7 @@ const ImpromptuSpeechQuestion = (props: {
       return;
     }
 
-    // reset status from 0
-    chatStore.resetSession();
+    chatStore.resetSessionFromIndex(2);
 
     let propmts = ImpromptuSpeechPrompts.GetEvaluationPrompts(
       currentNum,
@@ -384,6 +426,10 @@ const ImpromptuSpeechQuestion = (props: {
         (session) => (questionItems[currentNum].Evaluations[role] = response),
       );
     }
+    await chatStore.getIsFinished();
+
+    chatStore.resetSessionFromIndex(2);
+    setEvaluating(false);
   };
 
   const handleChangeEvaluationRole = (
@@ -401,20 +447,20 @@ const ImpromptuSpeechQuestion = (props: {
 
   const onReturn = () => {
     chatStore.updateCurrentSession(
-      (session) => (session.inputCopilot.ActiveStep = 0),
+      (session) => (impromptuSpeechInput.ActiveStep = 0),
     );
   };
 
   const onPreviousQuestion = () => {
     if (currentNum > 0) {
       setCurrentNum(currentNum - 1);
-      session.inputCopilot.ActiveStep -= 1;
+      impromptuSpeechInput.ActiveStep -= 1;
     }
   };
   const onNextQuestion = () => {
     if (currentNum < questionNums - 1) {
       setCurrentNum(currentNum + 1);
-      session.inputCopilot.ActiveStep += 1;
+      impromptuSpeechInput.ActiveStep += 1;
     }
   };
 
@@ -480,7 +526,15 @@ const ImpromptuSpeechQuestion = (props: {
             justifyContent="center"
             alignItems="center"
           >
-            <IconButtonMui aria-label="play">
+            <IconButtonMui
+              aria-label="play"
+              onClick={() =>
+                speechSynthesizer.startSynthesize(
+                  questionItems[currentNum].Question,
+                  session.mask.lang,
+                )
+              }
+            >
               <PlayCircleIcon />
             </IconButtonMui>
             <IconButtonMui
@@ -598,32 +652,46 @@ const ImpromptuSpeechQuestion = (props: {
 
       <BorderLine></BorderLine>
 
-      <Accordion sx={{ backgroundColor: "#f5f5f5" }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          // onClick={onSampleSpeechExpand}
-        >
+      <Accordion sx={{ backgroundColor: "#f5f5f5", userSelect: "text" }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Sample Speech</Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            <ReactMarkdown>
-              {questionItems[currentNum].SampleSpeech}
-            </ReactMarkdown>
-          </Typography>
+        <AccordionDetails style={{ textAlign: "left" }}>
+          <Markdown
+            content={questionItems[currentNum].SampleSpeech}
+            fontSize={config.fontSize}
+            parentRef={scrollRef}
+          />
+          <Stack
+            direction="row"
+            spacing={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <IconButtonMui
+              aria-label="play"
+              onClick={() =>
+                speechSynthesizer.startSynthesize(
+                  questionItems[currentNum].SampleSpeech,
+                  session.mask.lang,
+                )
+              }
+            >
+              <PlayCircleIcon />
+            </IconButtonMui>
+          </Stack>
         </AccordionDetails>
       </Accordion>
 
-      <Accordion sx={{ backgroundColor: "#f5f5f5", marginTop: "5px" }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          // onClick={onSampleSpeechExpand}
-        >
-          <Typography>Evaluation</Typography>
+      <Accordion
+        sx={{
+          backgroundColor: "#f5f5f5",
+          userSelect: "text",
+          marginTop: "5px",
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography>Evaluations</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Box sx={{ width: "100%", typography: "body1" }}>
@@ -646,14 +714,34 @@ const ImpromptuSpeechQuestion = (props: {
               {evaluationRoles.map((role, index) => (
                 <TabPanel key={index} value={role}>
                   {role in questionItems[currentNum].Evaluations ? (
-                    <Typography>
+                    <Typography style={{ textAlign: "left" }}>
                       <ReactMarkdown>
                         {questionItems[currentNum].Evaluations[role]}
                       </ReactMarkdown>
+                      <Stack
+                        direction="row"
+                        spacing={5}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <IconButtonMui
+                          aria-label="play"
+                          onClick={() =>
+                            speechSynthesizer.startSynthesize(
+                              questionItems[currentNum].Evaluations[role],
+                              session.mask.lang,
+                            )
+                          }
+                        >
+                          <PlayCircleIcon />
+                        </IconButtonMui>
+                      </Stack>
                     </Typography>
+                  ) : evaluating ? (
+                    <CircularProgress />
                   ) : (
                     <Button onClick={(event) => onEvaluation(event)}>
-                      Start Evaluation
+                      Look Evaluation
                     </Button>
                   )}
                 </TabPanel>
