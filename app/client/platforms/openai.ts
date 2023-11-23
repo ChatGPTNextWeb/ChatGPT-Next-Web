@@ -113,7 +113,7 @@ export class ChatGPTApi implements LLMApi {
       if (session?.user?.email) {
         // Now you have the user's email from the session
         const userEmail = session.user.email;
-        const modelIdentifier = modelConfig.mode; 
+        const modelIdentifier = modelConfig.model; 
         const dateKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
         console.log("API Call: ",token.email, modelIdentifier);
 
