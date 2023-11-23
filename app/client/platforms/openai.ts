@@ -29,10 +29,11 @@ import { incrementAPICallCount } from '../../utils/cloud/redisRestClient';
 // app\client\platforms\openai.ts
 // app\auth.ts
 
+/*
 export async function getMyServerSession() {
   return await getServerAuthSession();
 }
-
+*/
 
 
 export interface OpenAIListModelResponse {
@@ -116,7 +117,7 @@ export class ChatGPTApi implements LLMApi {
     const modelIdentifier = modelConfig.model; 
     console.log("API Call: session or email is not available - model: ", modelIdentifier);
 
-    const session = await getMyServerSession();
+//    const session = await getMyServerSession();
 
     if (session?.user?.email) {
       // Now you have the user's email from the session
