@@ -2424,12 +2424,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.5.6":
-  version: 20.8.10
-  resolution: "@types/node@npm:20.8.10"
+"@types/node@npm:^20.9.0":
+  version: 20.9.4
+  resolution: "@types/node@npm:20.9.4"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 7c61190e43e8074a1b571e52ff14c880bc67a0447f2fe5ed0e1a023eb8a23d5f815658edb98890f7578afe0f090433c4a635c7c87311762544e20dd78723e515
+  checksum: 619144cfee8235f692009e4268a8b80ef4ec496670273ab1cef04e4a053b471f391af6701e65f2f91a107256933d902b6caec079d551b109e981b0b706624815
   languageName: node
   linkType: hard
 
@@ -2494,10 +2494,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/spark-md5@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@types/spark-md5@npm:3.0.2"
-  checksum: daa98b1adbda0c0ba6996dbaf2472cb09d72a828d01c114f67dbab1e7f0ffc23268680c64978a88db46ee1948282d01b0ea0ecd5cfdbac0c6c4eb9c9de76a12a
+"@types/spark-md5@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@types/spark-md5@npm:3.0.4"
+  checksum: 2b15d0e114fedb271eccbe40eb5fc7e06b609ee836be264cf838b924439f564f45aca0fae9c83abdf663fce397e37df9a6421756b1353f5119f2bbe3bb221e85
   languageName: node
   linkType: hard
 
@@ -2575,6 +2575,15 @@ __metadata:
     "@typescript-eslint/types": 6.4.0
     eslint-visitor-keys: ^3.4.1
   checksum: 42eb614b9c0a49b6929e093757d772fd27fe5dda9c75f4c7820d1710012c8257eea9bd4f1c4173e2265a8a9ad86cefc1a21869893e7304f3b29b94fa1f987554
+  languageName: node
+  linkType: hard
+
+"@vercel/analytics@npm:^0.1.11":
+  version: 0.1.11
+  resolution: "@vercel/analytics@npm:0.1.11"
+  peerDependencies:
+    react: ^16.8||^17||^18
+  checksum: 05b8180ac6e23ebe7c09d74c43f8ee78c408cd0b6546e676389cbf4fba44dfeeae3648c9b52e2421be64fe3aeee8b026e6ea4bdfc0589fb5780670f2b090a167
   languageName: node
   linkType: hard
 
@@ -3241,14 +3250,15 @@ __metadata:
     "@svgr/webpack": ^6.5.1
     "@tauri-apps/cli": ^1.4.0
     "@types/cookie": ^0.5.1
-    "@types/node": ^20.5.6
+    "@types/node": ^20.9.0
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     "@types/react-katex": ^3.0.0
-    "@types/spark-md5": ^3.0.2
+    "@types/spark-md5": ^3.0.4
+    "@vercel/analytics": ^0.1.11
     cookie: ^0.5.0
     cross-env: ^7.0.3
-    emoji-picker-react: ^4.4.11
+    emoji-picker-react: ^4.5.15
     eslint: ^8.49.0
     eslint-config-next: 13.4.19
     eslint-config-prettier: ^8.8.0
@@ -3258,9 +3268,9 @@ __metadata:
     husky: ^8.0.0
     jose: ^4.14.4
     lint-staged: ^13.2.2
-    mermaid: ^10.4.0
+    mermaid: ^10.6.1
     million: ^2.6.0-beta.4
-    nanoid: ^4.0.2
+    nanoid: ^5.0.3
     next: ^13.4.19
     node-fetch: ^3.3.2
     prettier: ^3.0.2
@@ -4209,12 +4219,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-picker-react@npm:^4.4.11":
-  version: 4.5.15
-  resolution: "emoji-picker-react@npm:4.5.15"
+"emoji-picker-react@npm:^4.5.15":
+  version: 4.5.16
+  resolution: "emoji-picker-react@npm:4.5.16"
   peerDependencies:
     react: ">=16"
-  checksum: 7893a9e3755bd07e1f2a7b57233294bb09f95c001452403d8fe261a3439686cbeafbaafaff4add08a3a7c5febc622a3799524b33652ce7ee4cf191343c384405
+  checksum: 4c685b0984d88075e3ef9fcf9f7e29de5a294783b5714ba1b6deaa37c7dc80e75a5d921b0c2811336c4a80f3e35d73f0da88e7f5e100d1e7a361e1dda7819818
   languageName: node
   linkType: hard
 
@@ -6191,7 +6201,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mermaid@npm:^10.4.0":
+"mermaid@npm:^10.6.1":
   version: 10.6.1
   resolution: "mermaid@npm:10.6.1"
   dependencies:
@@ -6771,12 +6781,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "nanoid@npm:4.0.2"
+"nanoid@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "nanoid@npm:5.0.3"
   bin:
     nanoid: bin/nanoid.js
-  checksum: 747c399cea4664dd0be1d0ec498ffd1ef8f1f5221676fc8b577e3f46f66d9afcddb9595d63d19a2e78d0bc6cc33984f65e66bf1682c850b9e26288883d96b53f
+  checksum: 419f083464f91e148fa8f313d898e3271b2c148aa711d37c6251e5689b119d2e3ac766d5fa26e53214896969e9e9c6ccbce7af679c966d24490b1b5df94ffb5d
   languageName: node
   linkType: hard
 
