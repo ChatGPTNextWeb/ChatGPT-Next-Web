@@ -123,7 +123,7 @@ export class ChatGPTApi implements LLMApi {
         // ... rest of your API route logic ...
       } else {
         // Handle cases where the session or email is not available
-        res.status(401).json({ error: 'Unauthorized' });
+        console.log("API Call: session or email is not available - model: ", modelIdentifier);
       }
     // }
 
