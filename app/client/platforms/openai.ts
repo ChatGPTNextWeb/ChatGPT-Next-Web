@@ -98,10 +98,23 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
+    // Define an array with the model names that should be replaced
+    const modelsToReplace = [
+      "gpt-4",
+      "gpt-4-0314",
+      "gpt-4-0613",
+      "gpt-4-32k",
+      "gpt-4-32k-0314",
+      "gpt-4-32k-0613",
+    ];
+
+    // Check if the current model is in the list of models to replace
+    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4-1106-preview" : modelConfig.model;
+
     const requestPayload = {
       messages,
       stream: options.config.stream,
-      model: modelConfig.model,
+      model: finalModel,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
