@@ -346,6 +346,8 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@piksonGit](https://github.com/piksonGit)
 [@ouyangzhiping](https://github.com/ouyangzhiping)
 [@wenjiavv](https://github.com/wenjiavv)
+[@LeXwDeX](https://github.com/LeXwDeX)
+[@Licoy](https://github.com/Licoy)
 
 ### Contributor
 
