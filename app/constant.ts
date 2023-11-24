@@ -8,8 +8,9 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-export const DEFAULT_CORS_HOST = "https://nb.nextweb.fun";
+export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
+export const OPENAI_BASE_URL = "https://api.openai.com";
 
 export enum Path {
   Home = "/",
@@ -22,10 +23,12 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "/api/cors",
+  OpenAI = "/api/openai",
 }
 
 export enum SlotID {
   AppBody = "app-body",
+  CustomModel = "custom-model",
 }
 
 export enum FileName {
@@ -59,6 +62,11 @@ export const REQUEST_TIMEOUT_MS = 60000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
+export enum ServiceProvider {
+  OpenAI = "OpenAI",
+  Azure = "Azure",
+}
+
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
@@ -66,14 +74,27 @@ export const OpenaiPath = {
   ListModelPath: "v1/models",
 };
 
+export const Azure = {
+  ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
+};
+
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 export const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.
-Knowledge cutoff: 2021-09
+Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
-Current time: {{time}}`;
+Current time: {{time}}
+Latex inline: $x^2$ 
+Latex block: $$e=mc^2$$
+`;
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+
+export const KnowledgeCutOffDate: Record<string, string> = {
+  default: "2021-09",
+  "gpt-4-1106-preview": "2023-04",
+  "gpt-4-vision-preview": "2023-04",
+};
 
 export const DEFAULT_MODELS = [
   {
@@ -101,6 +122,14 @@ export const DEFAULT_MODELS = [
     available: true,
   },
   {
+    name: "gpt-4-1106-preview",
+    available: true,
+  },
+  {
+    name: "gpt-4-vision-preview",
+    available: true,
+  },
+  {
     name: "gpt-3.5-turbo",
     available: true,
   },
@@ -110,6 +139,10 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-3.5-turbo-0613",
+    available: true,
+  },
+  {
+    name: "gpt-3.5-turbo-1106",
     available: true,
   },
   {

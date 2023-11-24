@@ -15,6 +15,7 @@ const en: LocaleType = {
   Auth: {
     Title: "Need Access Code",
     Tips: "Please enter access code below",
+    SubTips: "Or enter your OpenAI API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
@@ -261,11 +262,7 @@ const en: LocaleType = {
       SubTitle:
         "Will compress if uncompressed messages length exceeds the value",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle: "Use your key to ignore access code limit",
-      Placeholder: "OpenAI API Key",
-    },
+
     Usage: {
       Title: "Account Balance",
       SubTitle(used: any, total: any) {
@@ -275,19 +272,55 @@ const en: LocaleType = {
       Check: "Check",
       NoAccess: "Enter API Key to check balance",
     },
-    AccessCode: {
-      Title: "Access Code",
-      SubTitle: "Access control enabled",
-      Placeholder: "Need Access Code",
+    Access: {
+      AccessCode: {
+        Title: "Access Code",
+        SubTitle: "Access control Enabled",
+        Placeholder: "Enter Code",
+      },
+      CustomEndpoint: {
+        Title: "Custom Endpoint",
+        SubTitle: "Use custom Azure or OpenAI service",
+      },
+      Provider: {
+        Title: "Model Provider",
+        SubTitle: "Select Azure or OpenAI",
+      },
+      OpenAI: {
+        ApiKey: {
+          Title: "OpenAI API Key",
+          SubTitle: "User custom OpenAI Api Key",
+          Placeholder: "sk-xxx",
+        },
+
+        Endpoint: {
+          Title: "OpenAI Endpoint",
+          SubTitle: "Must starts with http(s):// or use /api/openai as default",
+        },
+      },
+      Azure: {
+        ApiKey: {
+          Title: "Azure Api Key",
+          SubTitle: "Check your api key from Azure console",
+          Placeholder: "Azure Api Key",
+        },
+
+        Endpoint: {
+          Title: "Azure Endpoint",
+          SubTitle: "Example: ",
+        },
+
+        ApiVerion: {
+          Title: "Azure Api Version",
+          SubTitle: "Check your api version from azure console",
+        },
+      },
+      CustomModel: {
+        Title: "Custom Models",
+        SubTitle: "Custom model options, seperated by comma",
+      },
     },
-    Endpoint: {
-      Title: "Endpoint",
-      SubTitle: "Custom endpoint must start with http(s)://",
-    },
-    CustomModel: {
-      Title: "Custom Models",
-      SubTitle: "Add extra model options, separate by comma",
-    },
+
     Model: "Model",
     Temperature: {
       Title: "Temperature",
@@ -328,6 +361,10 @@ const en: LocaleType = {
   Copy: {
     Success: "Copied to clipboard",
     Failed: "Copy failed, please grant permission to access clipboard",
+  },
+  Download: {
+    Success: "Content downloaded to your directory.",
+    Failed: "Download failed.",
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
@@ -405,6 +442,9 @@ const en: LocaleType = {
     Config: "Config",
   },
   Exporter: {
+    Description: {
+      Title: "Only messages after clearing the context will be displayed"
+    },  
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",
