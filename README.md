@@ -249,6 +249,12 @@ docker run -d -p 3000:3000 \
 
 [请项目原作者喝杯咖啡](https://www.buymeacoffee.com/yidadaa)
 
+## 感谢
+
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains Logo (Main) logo." height='120'>
+
+感谢 [jetbrains](https://www.jetbrains.com/) 为本项目提供的 [开源许可证](https://www.jetbrains.com/community/opensource/)
+
 ## 开源协议
 
 [MIT](https://opensource.org/license/mit/)
