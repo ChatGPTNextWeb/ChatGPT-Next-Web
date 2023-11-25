@@ -49,7 +49,7 @@ import {
 } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
-import RehearsalReport from "./impromptu-v93-Report";
+import RehearsalReport from "./ISpeech-Report";
 
 // TODO:
 const ToastmastersDefaultLangugage = "en";
@@ -96,7 +96,9 @@ export function Chat() {
         )}
 
         {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Report && (
-          <RehearsalReport></RehearsalReport>
+          <RehearsalReport
+            impromptuSpeechInput={session.inputCopilot}
+          ></RehearsalReport>
         )}
       </div>
     </div>
@@ -176,7 +178,7 @@ function ImpromptuSpeechSetting() {
 
     chatStore.updateCurrentSession(
       (session) => (
-        (session.inputCopilot.ActiveStep = 1),
+        (session.inputCopilot.ActivePage = ImpromptuSpeechStage.Question),
         (session.inputCopilot.HasQuestions = true)
       ),
     );
@@ -187,7 +189,8 @@ function ImpromptuSpeechSetting() {
 
   const onContinue = async () => {
     chatStore.updateCurrentSession(
-      (session) => (session.inputCopilot.ActiveStep = 1),
+      (session) =>
+        (session.inputCopilot.ActivePage = ImpromptuSpeechStage.Question),
     );
   };
 
@@ -302,9 +305,7 @@ const ImpromptuSpeechQuestion = (props: {
   const config = useAppConfig();
 
   // local state used for reder page
-  const [currentNum, setCurrentNum] = useState(
-    impromptuSpeechInput.ActiveStep - 1,
-  );
+  const [currentNum, setCurrentNum] = useState(0);
   const [evaluating, setEvaluating] = useState(
     Object.keys(questionItems[currentNum].Evaluations).length > 0,
   );
@@ -466,21 +467,29 @@ const ImpromptuSpeechQuestion = (props: {
 
   const onReturn = () => {
     chatStore.updateCurrentSession(
-      (session) => (impromptuSpeechInput.ActiveStep = 0),
+      (session) =>
+        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Start),
     );
   };
 
   const onPreviousQuestion = () => {
     if (currentNum > 0) {
       setCurrentNum(currentNum - 1);
-      impromptuSpeechInput.ActiveStep -= 1;
+      // impromptuSpeechInput.ActiveStep -= 1;
     }
   };
   const onNextQuestion = () => {
     if (currentNum < questionNums - 1) {
       setCurrentNum(currentNum + 1);
-      impromptuSpeechInput.ActiveStep += 1;
+      // impromptuSpeechInput.ActiveStep += 1;
     }
+  };
+
+  const onReport = () => {
+    chatStore.updateCurrentSession(
+      (session) =>
+        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Report),
+    );
   };
 
   const onSampleSpeechExpand = async () => {
@@ -520,11 +529,8 @@ const ImpromptuSpeechQuestion = (props: {
           <Button onClick={onNextQuestion}>{">"}</Button>
         </ButtonGroup>
 
-        <button
-          className={styles.capsuleButton}
-          // onClick={onClick}
-        >
-          End & Review
+        <button className={styles.capsuleButton} onClick={onReport}>
+          End & Report
         </button>
       </div>
 

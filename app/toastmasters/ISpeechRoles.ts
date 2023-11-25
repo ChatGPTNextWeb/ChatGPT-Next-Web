@@ -40,10 +40,10 @@ export class IQuestionItem {
 }
 
 export class ImpromptuSpeechInput {
-  ActivePage: string = ImpromptuSpeechStage.Report;
+  ActivePage: string = ImpromptuSpeechStage.Start;
 
   // 0: setting, 1: main page
-  ActiveStep: number = 0;
+  // ActiveStep: number = 0;
   Topic: string = "";
 
   HasQuestions: boolean = false;
