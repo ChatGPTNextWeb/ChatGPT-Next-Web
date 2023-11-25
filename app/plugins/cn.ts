@@ -9,6 +9,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1693744292000,
     enable: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "计算器",
@@ -18,6 +19,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1693744292000,
     enable: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "网页浏览器",
@@ -28,6 +30,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1693744292000,
     enable: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "维基百科",
@@ -37,6 +40,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1694235989000,
     enable: false,
+    onlyNodeRuntime: false,
   },
   {
     name: "DALL·E",
@@ -47,6 +51,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1694703673000,
     enable: false,
+    onlyNodeRuntime: false,
   },
   {
     name: "Stable Diffusion",
@@ -57,6 +62,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1688899480510,
     enable: false,
+    onlyNodeRuntime: false,
   },
   {
     name: "Arxiv",
@@ -66,5 +72,16 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1699265115000,
     enable: false,
+    onlyNodeRuntime: false,
+  },
+  {
+    name: "PDF浏览器",
+    toolName: "pdf-browser",
+    lang: "cn",
+    description: "可以从pdf文件的url中提取信息或总结其内容。",
+    builtin: true,
+    createdAt: 1700907315000,
+    enable: false,
+    onlyNodeRuntime: true,
   },
 ];

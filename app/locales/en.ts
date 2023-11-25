@@ -409,6 +409,7 @@ const en: LocaleType = {
       Download: "Download",
       Clone: "Clone",
     },
+    RuntimeWarning: "Only available when deployed in a non-Vercel environment.",
   },
   FineTuned: {
     Sysmessage: "You are an assistant that",

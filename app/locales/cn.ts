@@ -403,6 +403,7 @@ const cn = {
       Download: "下载预设",
       Clone: "克隆预设",
     },
+    RuntimeWarning: "仅在非Vercel环境部署时可用",
   },
   FineTuned: {
     Sysmessage: "你是一个助手",

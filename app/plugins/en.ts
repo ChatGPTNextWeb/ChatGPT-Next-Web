@@ -9,6 +9,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1693744292000,
     enable: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "Calculator",
@@ -19,6 +20,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1693744292000,
     enable: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "WebBrowser",
@@ -29,6 +31,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1693744292000,
     enable: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "Wikipedia",
@@ -39,6 +42,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1694235989000,
     enable: false,
+    onlyNodeRuntime: false,
   },
   {
     name: "DALL·E",
@@ -49,6 +53,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1694703673000,
     enable: false,
+    onlyNodeRuntime: false,
   },
   {
     name: "Stable Diffusion",
@@ -59,6 +64,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1688899480510,
     enable: false,
+    onlyNodeRuntime: false,
   },
   {
     name: "Arxiv",
@@ -68,5 +74,17 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1699265115000,
     enable: false,
+    onlyNodeRuntime: false,
+  },
+  {
+    name: "PDFBrowser",
+    toolName: "pdf-browser",
+    lang: "en",
+    description:
+      "A class designed to interact with pdf file, extract information from the URL of a PDF file or summarize its content.",
+    builtin: true,
+    createdAt: 1700907315000,
+    enable: false,
+    onlyNodeRuntime: true,
   },
 ];
