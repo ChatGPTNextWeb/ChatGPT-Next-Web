@@ -10,10 +10,10 @@ const en: LocaleType = {
   Error: {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.关注微信公众号：科技秀儿，后台发送消息“密码”，即可获得最新登录密码（访问码）（永久免费使用）（偶尔会更新密码，请到科技秀儿公众号发送消息“密码”获得最新访问码）",
   },
   Auth: {
-    Title: "Need Access Code",
+    Title: "关注微信公众号：科技秀儿，后台发送消息“密码”，即可获得最新登录密码（访问码）（永久免费使用）（偶尔会更新密码，请到科技秀儿公众号发送消息“密码”获得最新访问码）",
     Tips: "Please enter access code below",
     SubTips: "Or enter your OpenAI API Key",
     Input: "access code",
