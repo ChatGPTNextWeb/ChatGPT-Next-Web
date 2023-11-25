@@ -31,7 +31,7 @@ export async function requestOpenai(req: NextRequest) {
   console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
   // this fix [Org ID] undefined in server side if not using custom point
-  if (serverConfig.openaiOrgId) {
+  if (serverConfig.openaiOrgId !== undefined) {
     console.log("[Org ID]", serverConfig.openaiOrgId);
   }
 
