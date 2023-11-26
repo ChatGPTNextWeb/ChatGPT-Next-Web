@@ -27,6 +27,7 @@ export class IQuestionItem {
 
   Speech: string = "";
   SpeechTime: number = 0;
+  SpeechAudio: Blob | null = null;
 
   Score: number = 0;
   Evaluations: Record<string, string> = {};
