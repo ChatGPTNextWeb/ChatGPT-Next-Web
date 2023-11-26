@@ -81,17 +81,6 @@ export function Chat() {
     return "";
   };
 
-  // 播放录音文件
-  // const playRecording = () => {
-  //   if (audioData) {
-  //     const audioUrl = URL.createObjectURL(audioData);
-  //     const audio = new Audio(audioUrl);
-  //     audio.play();
-  //   }
-  // };
-
-  // const { startRecording, stopRecording, downloadRecording, isRecording, audioData } = useAudioRecorder();
-
   return (
     <div className={styles_chat.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
@@ -104,14 +93,6 @@ export function Chat() {
           setAutoScroll(false);
         }}
       >
-        {/* <SpeechComponent></SpeechComponent> */}
-        {/* <div>
-          <button onClick={startRecording} disabled={isRecording}>开始录音</button>
-          <button onClick={stopRecording} disabled={!isRecording}>结束录音</button>
-          <button onClick={playRecording} disabled={!audioData}>开始播放</button>
-          <button onClick={downloadRecording} disabled={!audioData}>下载录音</button>
-        </div> */}
-
         {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Start && (
           <ImpromptuSpeechSetting></ImpromptuSpeechSetting>
         )}
@@ -310,19 +291,8 @@ const ImpromptuSpeechQuestion = (props: {
   const questionItems = impromptuSpeechInput.QuestionItems;
   const questionNums = questionItems.length;
 
-  // 定义状态枚举
-  // enum StageStatus {
-  //   Start = "",
-  //   Recording = "Recording",
-  //   Pausing = "Pausing",
-  //   Scoring = "Scoring",
-  // }
-
-  // 这两个状态就不保存了
-  // const [recording, setRecording] = useState(false);
-  // const [currentStage, setCurrentStage] = useState(StageStatus.Start);
   const [evaluationRole, setEvaluationRole] = React.useState<string>(
-    ImpromptuSpeechRoles.Feedback,
+    ImpromptuSpeechRoles.General,
   );
 
   const chatStore = useChatStore();
@@ -351,12 +321,13 @@ const ImpromptuSpeechQuestion = (props: {
   // 当currentNum变化时, 更新初始值
   useEffect(() => {
     setSpeechTime(questionItems[currentNum].SpeechTime);
-    // setCurrentStage(StageStatus.Start);
-  }, [currentNum, questionItems]);
-
-  useEffect(() => {
+    // setRecordingStatus(StageStatus.Start)
     recorder.resetRecording();
-  }, [currentNum, recorder]);
+  }, [currentNum, questionItems, recorder]);
+
+  // useEffect(() => {
+  //   recorder.resetRecording();
+  // }, [currentNum, recorder]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -392,25 +363,8 @@ const ImpromptuSpeechQuestion = (props: {
 
   const onPause = () => {
     recorder.pauseRecording();
-    // questionItems[currentNum].SpeechAudio = recorder.getAudioData();
-    // console.log("pauseRecording: ", questionItems[currentNum].SpeechAudio)
     speechRecognizer.stopRecording();
   };
-
-  const onResume = () => {
-    recorder.resumeRecording();
-    speechRecognizer.startRecording(
-      appendUserInput,
-      ToastmastersDefaultLangugage,
-    );
-  };
-
-  // const onStop = () => {
-  //   speechRecognizer.stopRecording();
-  //   recorder.stopRecording();
-  //   // questionItems[currentNum].SpeechAudio = recorder.getAudioData();
-  //   // console.log("stopRecording: ", questionItems[currentNum].SpeechAudio)
-  // };
 
   const onPlay = () => {
     questionItems[currentNum].SpeechAudio = recorder.getAudioData();
@@ -427,21 +381,27 @@ const ImpromptuSpeechQuestion = (props: {
     );
   };
 
+  // TODO: 会点击2次, 才能切换
   const onReset = () => {
     // 清存储
-    // questionItems[currentNum].ResetCurrent();  // TODO: don't know why this error
-    questionItems[currentNum].Speech = "";
-    questionItems[currentNum].SpeechTime = 0;
-    questionItems[currentNum].SpeechAudio = null;
-    questionItems[currentNum].Score = 0;
-    questionItems[currentNum].Evaluations = {};
+    questionItems[currentNum].ResetCurrent(); // TODO: don't know why this error
+    // questionItems[currentNum].Speech = "";
+    // questionItems[currentNum].SpeechTime = 0;
+    // questionItems[currentNum].SpeechAudio = null;
+    // questionItems[currentNum].Score = 0;
+    // questionItems[currentNum].Evaluations = {};
     // 改状态
     setSpeechTime(0);
-    // setCurrentStage(StageStatus.Start);
-    // setEvaluating(false);
+    setRecordingStatus(StageStatus.Start);
+    setEvaluating(false);
     recorder.resetRecording();
   };
 
+  const onStop = () => {
+    recorder.stopRecording();
+  };
+
+  // TODO: 打分还不太准确
   const onScore = () => {
     recorder.stopRecording();
 
@@ -481,72 +441,6 @@ const ImpromptuSpeechQuestion = (props: {
       return;
     }
   };
-
-  // const onTranscript = async () => {
-  //   questionItems[currentNum].SpeechAudio = recorder.getAudioData();
-  //   const audioData = questionItems[currentNum].SpeechAudio;
-  //   console.log("onPlayRecording: ", audioData)
-
-  //   if (
-  //     questionItems[currentNum].SpeechAudio === null
-  //   ) {
-  //     showToast("Speech is empty");
-  //     return;
-  //   }
-
-  //   console.log("onTranscript:");
-
-  //   // const transcript = audioSpeechToText(questionItems[currentNum].SpeechAudio!)
-  //   // console.log("Transcription:", transcript);
-
-  //   try {
-  //     const transcript = await speechRecognizer.transcribeAudio1(questionItems[currentNum].SpeechAudio!);
-  //     console.log("Transcription:", transcript);
-  //     // Do something with the transcript
-  //   } catch (error) {
-  //     console.error("Error during transcription:", error);
-  //   }
-
-  //   // const transcript = await speechRecognizer.transcribeAudio(questionItems[currentNum].SpeechAudio!);
-  //   // console.log("onScore: Transcription:", transcript);
-  // };
-
-  // const onShowSpeech = () => {
-  //   console.log("onShowSpeech:", questionItems[currentNum].Speech);
-  // }
-
-  // const onScore1 = (event: { preventDefault: () => void }) => {
-  //   // TODO:
-  //   questionItems[currentNum].Speech = "Yes, I think it is good";
-
-  //   if (
-  //     questionItems[currentNum].Speech === "" ||
-  //     questionItems[currentNum].Speech === undefined
-  //   ) {
-  //     event.preventDefault();
-  //     showToast("Speech is empty");
-  //     return;
-  //   }
-
-  //   // reset status from 0
-  //   chatStore.resetSession();
-
-  //   let ask = ImpromptuSpeechPrompts.GetScorePrompt(
-  //     currentNum,
-  //     questionItems[currentNum].Question,
-  //     questionItems[currentNum].Speech,
-  //   );
-  //   chatStore.onUserInput(ask);
-  //   chatStore.getIsFinished().then(() => {
-  //     const response = session.messages[session.messages.length - 1].content;
-  //     console.log("score: ", response);
-  //     chatStore.updateCurrentSession(
-  //       (session) => (questionItems[currentNum].Score = parseInt(response)),
-  //     );
-  //   });
-
-  //   // setCurrentStage(StageStatus.Scoring);
-  // };
 
   const evaluationRoles = ImpromptuSpeechPrompts.GetEvaluationRoles();
 
@@ -625,24 +519,8 @@ const ImpromptuSpeechQuestion = (props: {
     );
   };
 
-  // const { startRecording, pauseRecording, stopRecording, playRecording, resetRecording, status, audioData } = useAudioRecorder()
-
   return (
     <div className={styles.container}>
-      {/* <div>
-        <button onClick={onRecord} disabled={recorder.stageStatus !== StageStatus.Start}>开始录音</button>
-        <button onClick={onStop} disabled={recorder.stageStatus !== StageStatus.Recording}>结束录音</button>
-        <button onClick={onPlay} disabled={recorder.stageStatus !== StageStatus.Stopped}>开始播放</button>
-        <button onClick={onReset}>重置</button>
-      </div>
-
-      <div>
-        <button onClick={startRecording} disabled={status !== StageStatus.Start}>开始录音</button>
-        <button onClick={stopRecording} disabled={status !== StageStatus.Recording}>结束录音</button>
-        <button onClick={playRecording} disabled={status !== StageStatus.Stopped}>开始播放</button>
-        <button onClick={resetRecording}>重置</button>
-      </div> */}
-
       <div className={styles.navigation}>
         <button className={styles.navButton} onClick={onReturn}>
           {" "}
@@ -739,11 +617,11 @@ const ImpromptuSpeechQuestion = (props: {
             {/* <button className={styles.capsuleButton} onClick={onPlay} type="button">
               Play
             </button> */}
-            <button className={styles.capsuleButton} onClick={onResume}>
+            <button className={styles.capsuleButton} onClick={onRecord}>
               Resume
             </button>
-            <button className={styles.capsuleButton} onClick={onScore}>
-              Score
+            <button className={styles.capsuleButton} onClick={onStop}>
+              Stop
             </button>
           </Stack>
         )}
@@ -756,15 +634,22 @@ const ImpromptuSpeechQuestion = (props: {
             alignItems="center"
           >
             <IconButtonMui
-              aria-label="play"
-              onClick={() =>
-                speechSynthesizer.startSynthesize(
-                  questionItems[currentNum].Question,
-                  session.mask.lang,
-                )
-              }
+              color="secondary"
+              aria-label="score"
+              sx={{
+                backgroundColor: "lightblue", // 淡蓝色背景
+                color: "white", // 图标颜色，这里选择了白色
+                "&:hover": {
+                  backgroundColor: "green", // 鼠标悬停时的背景色，这里选择了蓝色
+                },
+                borderRadius: "50%", // 圆形
+                width: 40, // 宽度
+                height: 40, // 高度
+                padding: 0, // 如果需要，调整内边距
+              }}
+              onClick={onReset}
             >
-              <PlayCircleIcon />
+              <Typography variant="subtitle1">Reset</Typography>
             </IconButtonMui>
 
             <IconButtonMui
@@ -795,9 +680,7 @@ const ImpromptuSpeechQuestion = (props: {
               }}
               onClick={onPlay}
             >
-              <Typography variant="subtitle1">
-                {questionItems[currentNum].Score}
-              </Typography>
+              <Typography variant="subtitle1">Play</Typography>
             </IconButtonMui>
           </Stack>
         )}

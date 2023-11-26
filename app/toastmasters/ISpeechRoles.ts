@@ -9,7 +9,7 @@ export enum ImpromptuSpeechPromptKeys {
 export enum ImpromptuSpeechRoles {
   TableTopicsEvaluator = "Table Topics Evaluator",
 
-  Feedback = "Feedback",
+  General = "General",
 
   // Grammarian = "Grammarian",
   // AhCounter = "Ah-Counter",
@@ -35,6 +35,7 @@ export class IQuestionItem {
   ResetCurrent() {
     this.Speech = "";
     this.SpeechTime = 0;
+    this.SpeechAudio = null;
     this.Score = 0;
     this.Evaluations = {};
   }
@@ -101,7 +102,7 @@ export class ImpromptuSpeechPrompts {
   }
 
   static GetEvaluationRoles(): string[] {
-    return [ImpromptuSpeechRoles.Feedback, ImpromptuSpeechRoles.RevisedSpeech];
+    return [ImpromptuSpeechRoles.General, ImpromptuSpeechRoles.RevisedSpeech];
   }
 
   static GetEvaluationPrompts(
@@ -110,7 +111,7 @@ export class ImpromptuSpeechPrompts {
     speech: string,
   ): Record<string, string> {
     return {
-      [ImpromptuSpeechRoles.Feedback]: `The No.${currentNum} Question and Speech are:
+      [ImpromptuSpeechRoles.General]: `The No.${currentNum} Question and Speech are:
       {
         "Question": "${question}",
         "Speech": "${speech}"

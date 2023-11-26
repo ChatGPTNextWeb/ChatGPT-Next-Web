@@ -119,6 +119,7 @@ class SpeechRecognizer {
     });
   }
 
+  // TODO: not success
   public transcribeAudio1(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       // Setup the Speech SDK
