@@ -1,5 +1,8 @@
 import { ToastmastersRoles } from "./roles";
 
+// TODO:
+export const SpeechDefaultLangugage = "en";
+
 export enum ImpromptuSpeechPromptKeys {
   Questions = "Questions",
   Score = "Score",
