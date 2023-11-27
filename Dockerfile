@@ -17,6 +17,7 @@ RUN apk update && apk add --no-cache git
 
 ENV OPENAI_API_KEY=""
 ENV CODE=""
+ENV NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN=1
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

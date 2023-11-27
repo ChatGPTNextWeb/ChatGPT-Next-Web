@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "@/app/config/server";
-import { auth } from "../../../auth";
+import { auth } from "../../../../auth";
 
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { BaseCallbackHandler } from "langchain/callbacks";
@@ -23,6 +23,7 @@ import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
 import { StableDiffusionWrapper } from "@/app/api/langchain-tools/stable_diffusion_image_generator";
 import { ArxivAPIWrapper } from "@/app/api/langchain-tools/arxiv";
+import dynamic from "next/dynamic";
 import { PDFBrowser } from "@/app/api/langchain-tools/pdf_browser";
 
 const serverConfig = getServerSideConfig();
@@ -247,6 +248,7 @@ async function handle(req: NextRequest) {
     dallEAPITool.returnDirect = true;
     const stableDiffusionTool = new StableDiffusionWrapper();
     const arxivAPITool = new ArxivAPIWrapper();
+    const pdfBrowserTool = new PDFBrowser(model, embeddings);
     if (useTools.includes("web-search")) tools.push(searchTool);
     if (useTools.includes(webBrowserTool.name)) tools.push(webBrowserTool);
     if (useTools.includes(calculatorTool.name)) tools.push(calculatorTool);
@@ -254,9 +256,7 @@ async function handle(req: NextRequest) {
     if (useTools.includes(stableDiffusionTool.name))
       tools.push(stableDiffusionTool);
     if (useTools.includes(arxivAPITool.name)) tools.push(arxivAPITool);
-
-    const pdfBrowserTool = new PDFBrowser(model, embeddings);
-    tools.push(pdfBrowserTool);
+    if (useTools.includes(pdfBrowserTool.name)) tools.push(pdfBrowserTool);
 
     useTools.forEach((toolName) => {
       if (toolName) {
@@ -331,4 +331,4 @@ async function handle(req: NextRequest) {
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+export const runtime = "nodejs";

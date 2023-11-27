@@ -255,7 +255,9 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const path = "/api/langchain/tool/agent";
+      let path = "/api/langchain/tool/agent/";
+      const enableNodeJSPlugin = !!process.env.NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN;
+      path = enableNodeJSPlugin ? path + "nodejs" : path + "edge";
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),

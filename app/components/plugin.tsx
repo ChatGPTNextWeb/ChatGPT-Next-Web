@@ -218,7 +218,7 @@ export function PluginPage() {
     });
   };
 
-  const serverConfig = getServerSideConfig();
+  const enableNodeJSPlugin = !!process.env.NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN;
 
   return (
     <ErrorBoundary>
@@ -260,7 +260,7 @@ export function PluginPage() {
                 <div className={styles["plugin-header"]}>
                   <div className={styles["plugin-title"]}>
                     <div className={styles["plugin-name"]}>{m.name}</div>
-                    {m.onlyNodeRuntime && serverConfig.isVercel && (
+                    {m.onlyNodeRuntime && !enableNodeJSPlugin && (
                       <div className={styles["plugin-runtime-warning"]}>
                         {Locale.Plugin.RuntimeWarning}
                       </div>
@@ -274,7 +274,7 @@ export function PluginPage() {
                 <div className={styles["plugin-actions"]}>
                   <input
                     type="checkbox"
-                    disabled={m.onlyNodeRuntime && serverConfig.isVercel}
+                    disabled={m.onlyNodeRuntime && !enableNodeJSPlugin}
                     checked={m.enable}
                     onChange={(e) => {
                       updatePluginEnableStatus(m.id, e.currentTarget.checked);
