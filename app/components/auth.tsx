@@ -24,12 +24,8 @@ export function AuthPage() {
   }; // Reset access code to empty string
 
   useEffect(() => {
-    const clientConfig = getClientConfig();
-    if (clientConfig?.isApp) { // Force to set custom endpoint to true if it's app
+    if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
-      accessStore.update((state) => {
-        state.useCustomConfig = true;
-      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
