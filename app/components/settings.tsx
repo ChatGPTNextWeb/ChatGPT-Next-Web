@@ -635,6 +635,11 @@ export function Settings() {
         navigate(Path.Home);
       }
     };
+    if (clientConfig?.isApp) { // Force to set custom endpoint to true if it's app
+      accessStore.update((state) => {
+        state.useCustomConfig = true;
+      });
+    }
     document.addEventListener("keydown", keydownEvent);
     return () => {
       document.removeEventListener("keydown", keydownEvent);
