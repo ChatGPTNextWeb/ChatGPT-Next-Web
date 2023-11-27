@@ -466,6 +466,7 @@ const cn = {
     Summary: "Summary",
     SummaryPlaceholder: "Paste a summary of the employee",
     Analyse: "Analyse",
+    FromSalesGptToChat: "Gå til chatten med innholdet",
     EmployeeCVSummary: {
       Title: "Summary from SalesGPT",
       Explanation: {

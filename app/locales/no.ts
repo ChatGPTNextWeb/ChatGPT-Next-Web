@@ -207,6 +207,7 @@ const no: PartialLocaleType = {
     Summary: "Sammendrag",
     SummaryPlaceholder: "Kopier inn sammendrag om den ansatte",
     Analyse: "Analyser",
+    FromSalesGptToChat: "Importér teksten til chatten",
     EmployeeCVSummary: {
       Title: "Spisset sammendrag fra SalesGPT",
       Explanation: {

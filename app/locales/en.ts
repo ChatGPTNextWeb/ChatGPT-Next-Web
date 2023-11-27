@@ -471,6 +471,7 @@ const en: LocaleType = {
     Summary: "Summary",
     SummaryPlaceholder: "Paste a summary of the employee",
     Analyse: "Analyse",
+    FromSalesGptToChat: "Import the text to a chat",
     EmployeeCVSummary: {
       Title: "Summary from SalesGPT",
       Explanation: {

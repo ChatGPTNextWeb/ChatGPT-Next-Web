@@ -19,11 +19,13 @@ import { SalesSidebar } from "./sales-sidebar";
 import { Path } from "../../constant";
 import ChatIcon from "../../icons/chat.svg";
 import HelpSelect from "./helpSelect";
-import { useAppConfig } from "../../store";
+import { useAppConfig, useChatStore } from "../../store";
 import SalesGPTExplanation from "./salesGPTExplanation";
 import { RequirementResponse } from "@/app/api/chewbacca/generateRequirementResponse/route";
 import RightPane from "./rightPane";
 import RequirementsList from "./requirementsList";
+import { SALES_GPT_MASK } from "@/app/masks/no";
+import { projectExperienceToText } from "@/app/function/ProjectExperienceToText";
 
 const availableHelp: HelpOption[] = [
   {
@@ -58,7 +60,7 @@ function _SalesGPT() {
     RequirementResponse[]
   >([]);
   const [summaryText, setSummaryText] = useState("");
-  const [generatedText, setGeneratedText] = useState<string | null>(null);
+  const [generatedSummary, setGeneratedText] = useState<string | null>(null);
   const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
 
   const [selectedHelp, setSelectedHelp] = useState<HelpOption | undefined>(
@@ -135,6 +137,7 @@ function _SalesGPT() {
   ) => {
     await fetchRequirements(employeeAlias, requirements)
       .then(async (requirementResponses) => {
+        setRequirementResponse(requirementResponses);
         const response = await fetch(
           "/api/chewbacca/generateSummaryOfQualifications",
           {
@@ -151,8 +154,6 @@ function _SalesGPT() {
       .then((data) => {
         setGeneratedText(data);
         setShowCVSummary(true);
-
-        setRequirementResponse([]);
         setIsAnalysisLoading(false);
         setShowRequirementsList(false);
       })
@@ -204,6 +205,32 @@ function _SalesGPT() {
     } else {
       return;
     }
+  }
+
+  async function handleChatButtonClick(): Promise<void> {
+    const projects = [
+      ...new Set(requirementResponse.flatMap((rr) => rr.projects)),
+    ];
+    useChatStore.getState().newSession();
+    useChatStore.getState().currentSession().mask = SALES_GPT_MASK;
+    let id = 0;
+    useChatStore.getState().currentSession().messages = [
+      {
+        role: "user",
+        content: `Bruk prosjektene til å lage et sammendrag av erfaringene til ${selectedEmployee?.name} ${projects
+          .map(projectExperienceToText)
+          .join("\n")}`,
+        id: `${id++}`,
+        date: new Date().toDateString(),
+      },
+      {
+        role: "assistant",
+        content: generatedSummary ?? "",
+        id: `${id++}`,
+        date: new Date().toDateString(),
+      },
+    ];
+    navigate(Path.Home);
   }
 
   function getRightPaneTitle() {
@@ -274,6 +301,15 @@ function _SalesGPT() {
               onClick={handleAnalyseButtonClick}
             />
           </div>
+          <div className={styles["analyse-button-container"]}>
+            <IconButton
+              key="sendToChat"
+              bordered
+              className={styles["analyse-button"]}
+              text={Locale.SalesGPT.FromSalesGptToChat}
+              onClick={handleChatButtonClick}
+            />
+          </div>
         </div>
         <IconButton
           text={"Tilbake til chat"}
@@ -289,7 +325,7 @@ function _SalesGPT() {
         ) : showCVSummary ? (
           <EmployeeCVSummary
             employee={selectedEmployee}
-            generatedText={generatedText}
+            generatedSummary={generatedSummary}
           />
         ) : showRequirementsList ? (
           <RequirementsList requirementResponse={requirementResponse} />

@@ -7,12 +7,12 @@ import Message from "./message";
 
 type EmployeeCVSummaryProps = {
   employee: EmployeeItem | undefined;
-  generatedText: string | null;
+  generatedSummary: string | null;
 };
 
 function _EmployeeCVSummary({
   employee,
-  generatedText,
+  generatedSummary: generatedText,
 }: EmployeeCVSummaryProps) {
   if (employee && generatedText) {
     return (
@@ -26,13 +26,16 @@ function _EmployeeCVSummary({
 
 export default function EmployeeCVSummary({
   employee,
-  generatedText,
+  generatedSummary: generatedText,
 }: EmployeeCVSummaryProps) {
   return (
     <ErrorBoundary
       fallback={<p> Something went wrong with the EmployeeCV! </p>}
     >
-      <_EmployeeCVSummary employee={employee} generatedText={generatedText} />
+      <_EmployeeCVSummary
+        employee={employee}
+        generatedSummary={generatedText}
+      />
     </ErrorBoundary>
   );
 }
