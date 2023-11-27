@@ -1531,10 +1531,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-katex@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-katex/-/react-katex-3.0.0.tgz#119a902bff10eb52f449fac744aaed8c4909391f"
-  integrity sha512-AiHHXh71a2M7Z6z1wj6iA23SkiRF9r0neHUdu8zjU/cT3MyLxDefYHbcceKhV/gjDEZgF3YaiNHyPNtoGUjPvg==
+"@types/react-katex@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@types/react-katex/-/react-katex-3.0.3.tgz#16200f6a71a11df238fa4ece11c06f5950bed344"
+  integrity sha512-PtEe7+JAwQIyrdL2K/olyatftUh+Ks9uGotfpK+UOwW/Le97HXnNBIK+LhpQphVdLfKP9OUhhx2wJ3ws8fausw==
   dependencies:
     "@types/react" "*"
 
