@@ -348,6 +348,7 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@wenjiavv](https://github.com/wenjiavv)
 [@LeXwDeX](https://github.com/LeXwDeX)
 [@Licoy](https://github.com/Licoy)
+[@shangmin2009](https://github.com/shangmin2009)
 
 ### Contributor
 
