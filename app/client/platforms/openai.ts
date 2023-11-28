@@ -28,7 +28,7 @@ export interface OpenAIListModelResponse {
 }
 
 export class ChatGPTApi implements LLMApi {
-  private disableListModels = true;
+  // private disableListModels = true;
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
@@ -301,9 +301,9 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
-    if (this.disableListModels) {
-      return DEFAULT_MODELS.slice();
-    }
+    // if (this.disableListModels) {
+    //   return DEFAULT_MODELS.slice();
+    // }
 
     const res = await fetch(this.path(OpenaiPath.ListModelPath), {
       method: "GET",
