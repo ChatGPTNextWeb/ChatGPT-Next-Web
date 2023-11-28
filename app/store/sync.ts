@@ -60,8 +60,10 @@ export const useSyncStore = createPersistStore(
     export() {
       const state = getLocalAppState();
       const datePart = isApp
-      ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date().toLocaleTimeString().replace(/:/g, '_')}`
-      : new Date().toLocaleString();
+        ? `${new Date().toLocaleDateString().replace(/\//g, "_")} ${new Date()
+            .toLocaleTimeString()
+            .replace(/:/g, "_")}`
+        : new Date().toLocaleString();
 
       const fileName = `Backup-${datePart}.json`;
       downloadAs(JSON.stringify(state), fileName);
@@ -101,7 +103,7 @@ export const useSyncStore = createPersistStore(
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
       } catch (e) {
-        console.log("[Sync] failed to get remoate state", e);
+        console.log("[Sync] failed to get remote state", e);
       }
 
       await client.set(config.username, JSON.stringify(localState));

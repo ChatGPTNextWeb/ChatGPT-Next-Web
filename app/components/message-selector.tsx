@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import { Updater } from "../typing";
 import { IconButton } from "./button";
@@ -73,11 +73,23 @@ export function MessageSelector(props: {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const isValid = (m: ChatMessage) => m.content && !m.isError && !m.streaming;
-  const messages = session.messages.filter(
-    (m, i) =>
-      m.id && // message must have id
-      isValid(m) &&
-      (i >= session.messages.length - 1 || isValid(session.messages[i + 1])),
+  const allMessages = useMemo(() => {
+    let startIndex = Math.max(0, session.clearContextIndex ?? 0);
+    if (startIndex === session.messages.length - 1) {
+      startIndex = 0;
+    }
+    return session.messages.slice(startIndex);
+  }, [session.messages, session.clearContextIndex]);
+
+  const messages = useMemo(
+    () =>
+      allMessages.filter(
+        (m, i) =>
+          m.id && // message must have id
+          isValid(m) &&
+          (i >= allMessages.length - 1 || isValid(allMessages[i + 1])),
+      ),
+    [allMessages],
   );
   const messageCount = messages.length;
   const config = useAppConfig();
@@ -176,6 +188,8 @@ export function MessageSelector(props: {
       <div className={styles["messages"]}>
         {messages.map((m, i) => {
           if (!isInSearchResult(m.id!)) return null;
+          const id = m.id ?? i;
+          const isSelected = props.selection.has(id);
 
           return (
             <div
@@ -185,7 +199,6 @@ export function MessageSelector(props: {
               key={i}
               onClick={() => {
                 props.updateSelection((selection) => {
-                  const id = m.id ?? i;
                   selection.has(id) ? selection.delete(id) : selection.add(id);
                 });
                 onClickIndex(i);
@@ -195,7 +208,10 @@ export function MessageSelector(props: {
                 {m.role === "user" ? (
                   <Avatar avatar={config.avatar}></Avatar>
                 ) : (
-                  <MaskAvatar mask={session.mask} />
+                  <MaskAvatar
+                    avatar={session.mask.avatar}
+                    model={m.model || session.mask.modelConfig.model}
+                  />
                 )}
               </div>
               <div className={styles["body"]}>
@@ -205,6 +221,10 @@ export function MessageSelector(props: {
                 <div className={`${styles["content"]} one-line`}>
                   {m.content}
                 </div>
+              </div>
+
+              <div className={styles["checkbox"]}>
+                <input type="checkbox" checked={isSelected}></input>
               </div>
             </div>
           );
