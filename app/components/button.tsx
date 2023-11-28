@@ -4,7 +4,7 @@ import styles from "./button.module.scss";
 
 export type ButtonType = "primary" | "danger" | null;
 
-export function IconButton(props: {
+interface IconButtonProps {
   onClick?: () => void;
   icon?: JSX.Element;
   type?: ButtonType;
@@ -16,36 +16,56 @@ export function IconButton(props: {
   disabled?: boolean;
   tabIndex?: number;
   autoFocus?: boolean;
-}) {
+  role?:
+    | "button"
+    | "submit"
+    | "link"
+    | "menuitem"
+    | "checkbox"
+    | "radio"
+    | "switch";
+}
+
+export function IconButton({
+  onClick,
+  icon,
+  type,
+  text,
+  bordered,
+  shadow,
+  className,
+  title,
+  disabled,
+  tabIndex,
+  autoFocus,
+  role = "button",
+}: IconButtonProps) {
   return (
     <button
       className={
         styles["icon-button"] +
-        ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
-          props.className ?? ""
-        } clickable ${styles[props.type ?? ""]}`
+        ` ${bordered && styles.border} ${shadow && styles.shadow} ${
+          className ?? ""
+        } clickable ${styles[type ?? ""]}`
       }
-      onClick={props.onClick}
-      title={props.title}
-      disabled={props.disabled}
-      role="button"
-      tabIndex={props.tabIndex}
-      autoFocus={props.autoFocus}
+      onClick={onClick}
+      title={title}
+      disabled={disabled}
+      role={role}
+      tabIndex={tabIndex}
+      autoFocus={autoFocus}
     >
-      {props.icon && (
+      {icon && (
         <div
           className={
-            styles["icon-button-icon"] +
-            ` ${props.type === "primary" && "no-dark"}`
+            styles["icon-button-icon"] + ` ${type === "primary" && "no-dark"}`
           }
         >
-          {props.icon}
+          {icon}
         </div>
       )}
 
-      {props.text && (
-        <div className={styles["icon-button-text"]}>{props.text}</div>
-      )}
+      {text && <div className={styles["icon-button-text"]}>{text}</div>}
     </button>
   );
 }

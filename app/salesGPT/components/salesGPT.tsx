@@ -1,7 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Loading } from "@/app/components/chatHomepage";
-import { EmployeeItem, HelpOption, HelpOptionValue } from "../types";
+import {
+  EmployeeItem,
+  FormFields,
+  HelpOption,
+  HelpOptionValue,
+  Option,
+} from "../types";
 import EmployeeCVSummary from "./employeeCVSummary";
 import { ErrorBoundary } from "../../components/error";
 import {
@@ -26,6 +32,7 @@ import RightPane from "./rightPane";
 import RequirementsList from "./requirementsList";
 import { SALES_GPT_MASK } from "@/app/masks/no";
 import { projectExperienceToText } from "@/app/function/ProjectExperienceToText";
+import { Select } from "@/app/components/ui-lib";
 
 const availableHelp: HelpOption[] = [
   {
@@ -244,6 +251,32 @@ function _SalesGPT() {
     }
   }
 
+  // TODO: ADD TYPE TO LOCALES
+
+  const sammendrag: Option = {
+    label: "sammendrag",
+    value: {
+      chooseEmployee: true,
+      Requirements: false,
+      Summary: false,
+    },
+  };
+
+  const requirement: Option = {
+    label: "kravliste",
+    value: {
+      chooseEmployee: false,
+      Requirements: true,
+      Summary: true,
+    },
+  };
+
+  const [selectedValue, setSelectedValue] = useState<Option>(sammendrag);
+
+  //
+
+  const allOptions: Option[] = [sammendrag, requirement];
+
   return (
     <div
       className={
@@ -253,63 +286,92 @@ function _SalesGPT() {
     >
       <SalesSidebar title={title} subtitle={""}>
         <div className={styles["sidebar-content"]}>
-          <div className={styles["input-field"]}>
-            <label htmlFor="choose-help">{Locale.SalesGPT.Help.Choose}</label>
-            <HelpSelect
-              options={availableHelp}
-              selectedHelp={selectedHelp}
-              handleSelectHelp={setSelectedHelp}
-            />
-          </div>
-          <div className={styles["input-field"]}>
-            <label htmlFor="choose-employee">
-              {Locale.SalesGPT.ChooseEmployee}
-            </label>
-            <EmployeeSelect
-              employees={employees}
-              selectedEmployee={selectedEmployee}
-              handleSelectEmployee={handleSelectEmployee}
-              handleClear={handleClearSelectedEmployee}
-            />
-          </div>
-          <div className={styles["input-field"]}>
-            <label htmlFor="requirements">{Locale.SalesGPT.Requirements}</label>
-            <textarea
-              id="requirements"
-              className={styles["text-input"]}
-              placeholder={Locale.SalesGPT.RequirementsPlaceholder}
-              value={requirementText}
-              onChange={(event) => setRequirementText(event.target.value)}
-            ></textarea>
-          </div>
-          <div className={styles["input-field"]}>
-            <label htmlFor="summary">{Locale.SalesGPT.Summary}</label>
-            <textarea
-              id="requirements"
-              className={styles["text-input"]}
-              placeholder={Locale.SalesGPT.SummaryPlaceholder}
-              value={summaryText}
-              onChange={(event) => setSummaryText(event.target.value)}
-            ></textarea>
-          </div>
-          <div className={styles["analyse-button-container"]}>
-            <IconButton
-              key="analyse"
-              bordered
-              className={styles["analyse-button"]}
-              text={Locale.SalesGPT.Analyse}
-              onClick={handleAnalyseButtonClick}
-            />
-          </div>
-          <div className={styles["analyse-button-container"]}>
-            <IconButton
-              key="sendToChat"
-              bordered
-              className={styles["analyse-button"]}
-              text={Locale.SalesGPT.FromSalesGptToChat}
-              onClick={handleChatButtonClick}
-            />
-          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <div className={styles["input-field"]}>
+              <label htmlFor="choose-help">{Locale.SalesGPT.Help.Choose}</label>
+              <Select
+                onChange={(e) => {
+                  setSelectedValue(JSON.parse(e.target.value));
+                }}
+              >
+                {allOptions.map((option) => {
+                  return (
+                    <option
+                      key={option.label}
+                      label={option.label}
+                      value={JSON.stringify(option)}
+                    />
+                  );
+                })}
+              </Select>
+            </div>
+          </form>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAnalyseButtonClick();
+            }}
+          >
+            {selectedValue.value.chooseEmployee && (
+              <div className={styles["input-field"]}>
+                <label htmlFor="choose-employee">
+                  {Locale.SalesGPT.ChooseEmployee}
+                </label>
+                <EmployeeSelect
+                  employees={employees}
+                  selectedEmployee={selectedEmployee}
+                  handleSelectEmployee={handleSelectEmployee}
+                  handleClear={handleClearSelectedEmployee}
+                />
+              </div>
+            )}
+            <div className={styles["input-field"]}>
+              <label htmlFor="requirements">
+                {Locale.SalesGPT.Requirements}
+              </label>
+              <textarea
+                id="requirements"
+                className={styles["text-input"]}
+                placeholder={Locale.SalesGPT.RequirementsPlaceholder}
+                value={requirementText}
+                onChange={(event) => setRequirementText(event.target.value)}
+              ></textarea>
+            </div>
+            <div className={styles["input-field"]}>
+              <label htmlFor="summary">{Locale.SalesGPT.Summary}</label>
+              <textarea
+                id="requirements"
+                className={styles["text-input"]}
+                placeholder={Locale.SalesGPT.SummaryPlaceholder}
+                value={summaryText}
+                onChange={(event) => setSummaryText(event.target.value)}
+              ></textarea>
+            </div>
+            <div className={styles["analyse-button-container"]}>
+              <IconButton
+                key="analyse"
+                bordered
+                className={styles["analyse-button"]}
+                text={Locale.SalesGPT.Analyse}
+                role="submit"
+              />
+            </div>
+            <div className={styles["analyse-button-container"]}>
+              <IconButton
+                key="sendToChat"
+                bordered
+                className={styles["analyse-button"]}
+                text={Locale.SalesGPT.FromSalesGptToChat}
+                onClick={handleChatButtonClick}
+              />
+            </div>
+            <h2>{JSON.stringify(selectedValue)}</h2>
+          </form>
         </div>
         <IconButton
           text={"Tilbake til chat"}
