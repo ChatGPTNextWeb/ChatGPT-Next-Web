@@ -8,13 +8,13 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "欢迎访问沉梦小站GPT，本站基于ChatGPT-Next-Web构建，调用原生OpenAI API。\n看起来您还没有填写密码或者密码已经过期，您可以关注"沉梦小站"公众号，回复“访问码”领取最新密码，然后[点击这里](/#/auth)填写密码，即可开始使用本站的GPT\n\n通过Api调用的GPT并不是免费的，您的每一次对话都会在本站账户中消耗0.02元，因此，我们开放了捐赠渠道，您可以捐赠本站以便更长久的运营。\n\n                ————沉梦小站",
   },
   Auth: {
     Title: "需要密码",
-    Tips: "管理员开启了密码验证，请在下方填入访问码",
-    SubTips: "或者输入你的 OpenAI API 密钥",
-    Input: "在此处填写访问码",
+    Tips: "需要密码才能体验哦，请在下方密码框(注意！！！不是Api密钥那里)填入密码",
+    SubTips: "或者输入您的 OpenAI API 密钥",
+    Input: "在此处填写密码",
     Confirm: "确认",
     Later: "稍后再说",
   },
