@@ -3,8 +3,6 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { useAppConfig, useChatStore } from "../store";
 
-import styles_chat from "../components/chat.module.scss";
-import styles_tm from "../toastmasters/toastmasters.module.scss";
 import { List, ListItem, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
 import { Markdown } from "../components/exporter";
@@ -13,11 +11,14 @@ import SendWhiteIcon from "../icons/send-white.svg";
 
 import { ChatTitle, BorderLine } from "./chat-common";
 
+import styles_chat from "../components/chat.module.scss";
+import styles_tm from "../toastmasters/toastmasters.module.scss";
 import styles from "./ISpeech.module.scss";
 
 import Stack from "@mui/material/Stack";
 import {
   IQuestionItem,
+  ImpromptuSpeechModes,
   ImpromptuSpeechPrompts,
   ImpromptuSpeechStage,
 } from "./ISpeechRoles";
@@ -26,6 +27,13 @@ import {
   FreePersonalQuestionPage,
   FreePersonalReport,
 } from "./ISpeech-FreePersonal";
+
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import { InterviewPersonalQuestionPage } from "./ISpeech-InterviewPersonal";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -66,6 +74,15 @@ export function Chat() {
             scrollRef={scrollRef}
             impromptuSpeechInput={session.inputCopilot}
           ></FreePersonalQuestionPage>
+          // session.inputCopilot.Interaction === ImpromptuSpeechModes.Free ?
+          // <FreePersonalQuestionPage
+          //   scrollRef={scrollRef}
+          //   impromptuSpeechInput={session.inputCopilot}
+          // ></FreePersonalQuestionPage> :
+          // <InterviewPersonalQuestionPage
+          //   scrollRef={scrollRef}
+          //   impromptuSpeechInput={session.inputCopilot}
+          // ></InterviewPersonalQuestionPage>
         )}
 
         {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Report && (
@@ -195,6 +212,24 @@ function ImpromptuSpeechSetting() {
           }}
         ></input>
       </ListItem>
+
+      {/* TODO: further dev */}
+      {/* <ListItem title="Interaction">
+        <FormControl>
+          <RadioGroup
+            row
+            aria-labelledby="demo-controlled-radio-buttons-group"
+            name="controlled-radio-buttons-group"
+            defaultValue={session.inputCopilot.Interaction}
+            onChange={(e) => {
+              session.inputCopilot.Interaction = e.currentTarget.value;
+            }}
+          >
+            <FormControlLabel value={ImpromptuSpeechModes.Free} control={<Radio />} label={ImpromptuSpeechModes.Free} />
+            <FormControlLabel value={ImpromptuSpeechModes.Interview} control={<Radio />} label={ImpromptuSpeechModes.Interview} />
+          </RadioGroup>
+        </FormControl>
+      </ListItem> */}
 
       {submitting ? (
         <div>

@@ -53,6 +53,9 @@ export class ImpromptuSpeechInput {
 
   HasQuestions: boolean = false;
   QuestionNums: number = 2;
+  Interaction: string = ImpromptuSpeechModes.Free;
+  Mode: string = ImpromptuSpeechModes.Personal;
+
   QuestionItems: IQuestionItem[] = [];
 }
 
@@ -61,6 +64,15 @@ export enum ImpromptuSpeechStage {
   Start = "",
   Question = "Question",
   Report = "Report",
+}
+
+export enum ImpromptuSpeechModes {
+  // interaction
+  Free = "Free",
+  Interview = "Interview",
+  // mode
+  Personal = "Personal",
+  Hosting = "Hosting",
 }
 
 export class ImpromptuSpeechPrompts {

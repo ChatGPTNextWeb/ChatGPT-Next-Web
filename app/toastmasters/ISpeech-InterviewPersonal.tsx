@@ -80,7 +80,7 @@ import { ChatTitle, BorderLine } from "./chat-common";
 
 import styles from "./ISpeech.module.scss";
 
-export const FreePersonalQuestionPage = (props: {
+export const InterviewPersonalQuestionPage = (props: {
   scrollRef: React.RefObject<HTMLDivElement>;
   impromptuSpeechInput: ImpromptuSpeechInput;
 }) => {
@@ -118,8 +118,13 @@ export const FreePersonalQuestionPage = (props: {
   // 当currentNum变化时, 更新初始值
   useEffect(() => {
     setSpeechTime(questionItems[currentNum].SpeechTime);
+    // setRecordingStatus(StageStatus.Start)
     recorder.resetRecording();
   }, [currentNum, questionItems, recorder]);
+
+  // useEffect(() => {
+  //   recorder.resetRecording();
+  // }, [currentNum, recorder]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -170,15 +175,15 @@ export const FreePersonalQuestionPage = (props: {
     );
   };
 
+  // TODO: 会点击2次, 才能切换
   const onReset = () => {
     // 清存储
-    // questionItems[currentNum].ResetCurrent // TODO:Error: is not a function
-    questionItems[currentNum].Speech = "";
-    questionItems[currentNum].SpeechTime = 0;
-    questionItems[currentNum].SpeechAudio = null;
-    questionItems[currentNum].Score = 0;
-    questionItems[currentNum].Evaluations = {};
-
+    questionItems[currentNum].ResetCurrent(); // TODO: don't know why this error
+    // questionItems[currentNum].Speech = "";
+    // questionItems[currentNum].SpeechTime = 0;
+    // questionItems[currentNum].SpeechAudio = null;
+    // questionItems[currentNum].Score = 0;
+    // questionItems[currentNum].Evaluations = {};
     // 改状态
     setSpeechTime(0);
     setRecordingStatus(StageStatus.Start);
