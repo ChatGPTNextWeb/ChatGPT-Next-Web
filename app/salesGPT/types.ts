@@ -69,21 +69,6 @@ export type EmployeeOption = {
   label: string;
 };
 
-// NYTT
-
-export type Option = {
-  label: string;
-  value: FormFields;
-};
-
-export type FormFields = {
-  chooseEmployee: boolean;
-  Requirements: boolean;
-  Summary: boolean;
-};
-
-//
-
 export enum HelpOptionValue {
   Summary = "summary",
   RequirementList = "requirementlist",

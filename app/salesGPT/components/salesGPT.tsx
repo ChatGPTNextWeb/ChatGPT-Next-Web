@@ -71,7 +71,7 @@ function _SalesGPT() {
   const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
 
   const [selectedHelp, setSelectedHelp] = useState<HelpOption | undefined>(
-    undefined,
+    availableHelp[0],
   );
 
   const [showCVSummary, setShowCVSummary] = useState(false);
@@ -251,32 +251,6 @@ function _SalesGPT() {
     }
   }
 
-  // TODO: ADD TYPE TO LOCALES
-
-  const sammendrag: Option = {
-    label: "sammendrag",
-    value: {
-      chooseEmployee: true,
-      Requirements: false,
-      Summary: false,
-    },
-  };
-
-  const requirement: Option = {
-    label: "kravliste",
-    value: {
-      chooseEmployee: false,
-      Requirements: true,
-      Summary: true,
-    },
-  };
-
-  const [selectedValue, setSelectedValue] = useState<Option>(sammendrag);
-
-  //
-
-  const allOptions: Option[] = [sammendrag, requirement];
-
   return (
     <div
       className={
@@ -293,21 +267,11 @@ function _SalesGPT() {
           >
             <div className={styles["input-field"]}>
               <label htmlFor="choose-help">{Locale.SalesGPT.Help.Choose}</label>
-              <Select
-                onChange={(e) => {
-                  setSelectedValue(JSON.parse(e.target.value));
-                }}
-              >
-                {allOptions.map((option) => {
-                  return (
-                    <option
-                      key={option.label}
-                      label={option.label}
-                      value={JSON.stringify(option)}
-                    />
-                  );
-                })}
-              </Select>
+              <HelpSelect
+                options={availableHelp}
+                selectedHelp={selectedHelp}
+                handleSelectHelp={setSelectedHelp}
+              />
             </div>
           </form>
 
@@ -317,19 +281,17 @@ function _SalesGPT() {
               handleAnalyseButtonClick();
             }}
           >
-            {selectedValue.value.chooseEmployee && (
-              <div className={styles["input-field"]}>
-                <label htmlFor="choose-employee">
-                  {Locale.SalesGPT.ChooseEmployee}
-                </label>
-                <EmployeeSelect
-                  employees={employees}
-                  selectedEmployee={selectedEmployee}
-                  handleSelectEmployee={handleSelectEmployee}
-                  handleClear={handleClearSelectedEmployee}
-                />
-              </div>
-            )}
+            <div className={styles["input-field"]}>
+              <label htmlFor="choose-employee">
+                {Locale.SalesGPT.ChooseEmployee}
+              </label>
+              <EmployeeSelect
+                employees={employees}
+                selectedEmployee={selectedEmployee}
+                handleSelectEmployee={handleSelectEmployee}
+                handleClear={handleClearSelectedEmployee}
+              />
+            </div>
             <div className={styles["input-field"]}>
               <label htmlFor="requirements">
                 {Locale.SalesGPT.Requirements}
@@ -342,16 +304,20 @@ function _SalesGPT() {
                 onChange={(event) => setRequirementText(event.target.value)}
               ></textarea>
             </div>
-            <div className={styles["input-field"]}>
-              <label htmlFor="summary">{Locale.SalesGPT.Summary}</label>
-              <textarea
-                id="requirements"
-                className={styles["text-input"]}
-                placeholder={Locale.SalesGPT.SummaryPlaceholder}
-                value={summaryText}
-                onChange={(event) => setSummaryText(event.target.value)}
-              ></textarea>
-            </div>
+
+            {/* TODO: Kanskje dele opp koden så vi har en getField som rendrer basert på selectedHelp. lettere hvis vi endrer på value */}
+            {selectedHelp?.value !== "requirementlist" && (
+              <div className={styles["input-field"]}>
+                <label htmlFor="summary">{Locale.SalesGPT.Summary}</label>
+                <textarea
+                  id="requirements"
+                  className={styles["text-input"]}
+                  placeholder={Locale.SalesGPT.SummaryPlaceholder}
+                  value={summaryText}
+                  onChange={(event) => setSummaryText(event.target.value)}
+                ></textarea>
+              </div>
+            )}
             <div className={styles["analyse-button-container"]}>
               <IconButton
                 key="analyse"
@@ -370,7 +336,6 @@ function _SalesGPT() {
                 onClick={handleChatButtonClick}
               />
             </div>
-            <h2>{JSON.stringify(selectedValue)}</h2>
           </form>
         </div>
         <IconButton
