@@ -45,6 +45,8 @@
     - [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator)
   - 网络请求
     - [WebBrowser](https://js.langchain.com/docs/api/tools_webbrowser/classes/WebBrowser)
+    - PDFBrowser
+      - ⚠ 仅在非vercel环境部署时可用 ⚠
   - 其它
     - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
     - DALL-E 3
