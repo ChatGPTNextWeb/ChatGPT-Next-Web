@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { AgentApi, RequestBody, ResponseBody } from "../agentapi";
 import { auth } from "@/app/api/auth";
 import { EdgeTool } from "../../../../langchain-tools/edge_tools";
-import { ACCESS_CODE_PREFIX } from "@/app/constant";
-import { getServerSideConfig } from "@/app/config/server";
 import { OpenAI } from "langchain/llms/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { NodeJSTool } from "@/app/api/langchain-tools/nodejs_tools";
@@ -20,33 +18,17 @@ async function handle(req: NextRequest) {
       });
     }
 
-    const serverConfig = getServerSideConfig();
-
     const encoder = new TextEncoder();
     const transformStream = new TransformStream();
     const writer = transformStream.writable.getWriter();
+    const agentApi = new AgentApi(encoder, transformStream, writer);
 
     const reqBody: RequestBody = await req.json();
     const authToken = req.headers.get("Authorization") ?? "";
     const token = authToken.trim().replaceAll("Bearer ", "").trim();
-    const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 
-    let apiKey = serverConfig.apiKey;
-    if (isOpenAiKey && token) {
-      apiKey = token;
-    }
-
-    // support base url
-    let baseUrl = "https://api.openai.com/v1";
-    if (serverConfig.baseUrl) baseUrl = serverConfig.baseUrl;
-    if (
-      reqBody.baseUrl?.startsWith("http://") ||
-      reqBody.baseUrl?.startsWith("https://")
-    )
-      baseUrl = reqBody.baseUrl;
-    if (!baseUrl.endsWith("/v1"))
-      baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
-    console.log("[baseUrl]", baseUrl);
+    const apiKey = await agentApi.getOpenAIApiKey(token);
+    const baseUrl = await agentApi.getOpenAIBaseUrl(reqBody.baseUrl);
 
     const model = new OpenAI(
       {
@@ -88,9 +70,8 @@ async function handle(req: NextRequest) {
     );
     var edgeTools = await edgeTool.getCustomTools();
     var nodejsTools = await nodejsTool.getCustomTools();
-    edgeTools.push(nodejsTools);
-    var agentApi = new AgentApi(encoder, transformStream, writer);
-    return await agentApi.getApiHandler(req, reqBody, nodejsTools);
+    var tools = [...edgeTools, ...nodejsTools];
+    return await agentApi.getApiHandler(req, reqBody, tools);
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as any).message }), {
       status: 500,

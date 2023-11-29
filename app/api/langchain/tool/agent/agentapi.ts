@@ -9,21 +9,13 @@ import { AIMessage, HumanMessage, SystemMessage } from "langchain/schema";
 import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { ACCESS_CODE_PREFIX } from "@/app/constant";
-import { OpenAI } from "langchain/llms/openai";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
 import * as langchainTools from "langchain/tools";
 import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
 import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
-import { WebBrowser } from "langchain/tools/webbrowser";
-import { Calculator } from "langchain/tools/calculator";
 import { DynamicTool, Tool } from "langchain/tools";
-import { DallEAPIWrapper } from "@/app/api/langchain-tools/dalle_image_generator";
 import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
-import { StableDiffusionWrapper } from "@/app/api/langchain-tools/stable_diffusion_image_generator";
-import { ArxivAPIWrapper } from "@/app/api/langchain-tools/arxiv";
-import { PDFBrowser } from "@/app/api/langchain-tools/pdf_browser";
 
 export interface RequestMessage {
   role: string;
@@ -156,6 +148,29 @@ export class AgentApi {
         console.log("[handleAgentEnd]");
       },
     });
+  }
+
+  async getOpenAIApiKey(token: string) {
+    const serverConfig = getServerSideConfig();
+    const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+
+    let apiKey = serverConfig.apiKey;
+    if (isOpenAiKey && token) {
+      apiKey = token;
+    }
+    return apiKey;
+  }
+
+  async getOpenAIBaseUrl(reqBaseUrl: string | undefined) {
+    const serverConfig = getServerSideConfig();
+    let baseUrl = "https://api.openai.com/v1";
+    if (serverConfig.baseUrl) baseUrl = serverConfig.baseUrl;
+    if (reqBaseUrl?.startsWith("http://") || reqBaseUrl?.startsWith("https://"))
+      baseUrl = reqBaseUrl;
+    if (!baseUrl.endsWith("/v1"))
+      baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
+    console.log("[baseUrl]", baseUrl);
+    return baseUrl;
   }
 
   async getApiHandler(
