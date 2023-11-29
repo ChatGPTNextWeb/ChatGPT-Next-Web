@@ -1,13 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Loading } from "@/app/components/chatHomepage";
-import {
-  EmployeeItem,
-  FormFields,
-  HelpOption,
-  HelpOptionValue,
-  Option,
-} from "../types";
+import { EmployeeItem, HelpOption, HelpOptionValue } from "../types";
 import EmployeeCVSummary from "./employeeCVSummary";
 import { ErrorBoundary } from "../../components/error";
 import {
@@ -32,7 +26,7 @@ import RightPane from "./rightPane";
 import RequirementsList from "./requirementsList";
 import { SALES_GPT_MASK } from "@/app/masks/no";
 import { projectExperienceToText } from "@/app/function/ProjectExperienceToText";
-import { Select } from "@/app/components/ui-lib";
+import InputList from "./inputLIst/inputList";
 
 const availableHelp: HelpOption[] = [
   {
@@ -76,6 +70,8 @@ function _SalesGPT() {
 
   const [showCVSummary, setShowCVSummary] = useState(false);
   const [showRequirementsList, setShowRequirementsList] = useState(false);
+
+  const [values, setValues] = useState<Record<number, string>[]>([{ 0: "" }]);
 
   function handleSelectEmployee(newValue: EmployeeItem | undefined): void {
     setSelectedEmployee(newValue);
@@ -303,6 +299,13 @@ function _SalesGPT() {
                 value={requirementText}
                 onChange={(event) => setRequirementText(event.target.value)}
               ></textarea>
+            </div>
+
+            <div className={styles["input-field"]}>
+              <label htmlFor="requirements">
+                {Locale.SalesGPT.Requirements}
+              </label>
+              <InputList values={values} setValues={setValues} />
             </div>
 
             {/* TODO: Kanskje dele opp koden så vi har en getField som rendrer basert på selectedHelp. lettere hvis vi endrer på value */}
