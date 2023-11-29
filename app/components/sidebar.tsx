@@ -161,7 +161,7 @@ export function SideBar(props: { className?: string }) {
           Deep Dream Blog Ai Chat Bot.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon style={{ transform: 'scale(0.5, 0.5)' }} />
+        <ChatGptIcon style={{ transform: 'scale(0.48, 0.45)', transformOrigin: 'center center' }} />
         </div>
       </div>
 
