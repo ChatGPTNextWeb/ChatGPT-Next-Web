@@ -342,7 +342,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "欢迎访问AEsir' ChatGPT。 =>若无特殊需求请使用GPT3.5，使用GPT4请向管理员申请权限。 如果聊新话题，为了更好体验请新建对话，或者点击聊天输入框上方'清除聊天'按钮(不会删除内容)",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
