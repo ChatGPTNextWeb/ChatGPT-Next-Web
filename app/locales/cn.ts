@@ -12,7 +12,7 @@ const cn = {
   },
   Auth: {
     Title: "需要密码",
-    Tips: "需要密码才能体验哦，请在下方密码框  (注意！！！不是Api密钥那里)  填入密码",
+    Tips: "需要密码才能体验哦，请在下方密码框  (注意！！！不是Api密钥那里)  填入密码\n您可以关注公众号 《[沉梦小站](https://cdn.cmxz.top/images/wechat.webp)》，回复  '访问码'  领取最新密码",
     SubTips: "如果您有密码， OpenAI API 密钥则无需填写",
     Input: "在此处填写密码",
     Confirm: "即刻体验",
