@@ -339,6 +339,16 @@ pre {
   }
 }
 
+.search-input-container {
+  display: flex;
+  justify-content: center;
+
+  .search-input {
+    min-width: 99%;
+    text-align: left;
+  }
+}
+
 .user-avatar {
   height: 30px;
   min-height: 30px;
