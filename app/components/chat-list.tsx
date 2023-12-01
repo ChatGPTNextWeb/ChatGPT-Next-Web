@@ -9,15 +9,15 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 
-import { useChatStore } from "../store";
+import { ChatSession, useChatStore } from "../store";
 
 import Locale from "../locales";
 import { Link, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
-import { useRef, useEffect } from "react";
-import { showConfirm } from "./ui-lib";
+import { useRef, useEffect, useState } from "react";
+import { showConfirm, SearchInput } from "./ui-lib";
 import { useMobileScreen } from "../utils";
 
 export function ChatItem(props: {
@@ -127,6 +127,26 @@ export function ChatList(props: { narrow?: boolean }) {
     moveSession(source.index, destination.index);
   };
 
+  const [chatListSearch, setChatListSearch] = useState("");
+
+  function haveSearchKeyword(item: ChatSession): boolean {
+    if (chatListSearch.length === 0) {
+      return true;
+    }
+
+    let foundKeyword = false;
+
+    item.messages.forEach((message) => {
+      // console.log(chatListSearch, message.content, message.content.includes(chatListSearch))
+      if (message.content.includes(chatListSearch)) {
+        foundKeyword = true;
+        return;
+      }
+    });
+
+    return foundKeyword;
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="chat-list">
@@ -136,31 +156,44 @@ export function ChatList(props: { narrow?: boolean }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {sessions.map((item, i) => (
-              <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
-                index={i}
-                selected={i === selectedIndex}
-                onClick={() => {
-                  navigate(Path.Chat);
-                  selectSession(i);
+            <div className={styles["chat-list-search"]}>
+              <SearchInput
+                value={chatListSearch}
+                onChange={(e) => {
+                  setChatListSearch(e.currentTarget.value);
                 }}
-                onDelete={async () => {
-                  if (
-                    (!props.narrow && !isMobileScreen) ||
-                    (await showConfirm(Locale.Home.DeleteChat))
-                  ) {
-                    chatStore.deleteSession(i);
-                  }
-                }}
-                narrow={props.narrow}
-                mask={item.mask}
-              />
-            ))}
+                placeholder={Locale.Home.Search}
+              ></SearchInput>
+            </div>
+
+            {sessions.map(
+              (item, i) =>
+                haveSearchKeyword(item) && (
+                  <ChatItem
+                    title={item.topic}
+                    time={new Date(item.lastUpdate).toLocaleString()}
+                    count={item.messages.length}
+                    key={item.id}
+                    id={item.id}
+                    index={i}
+                    selected={i === selectedIndex}
+                    onClick={() => {
+                      navigate(Path.Chat);
+                      selectSession(i);
+                    }}
+                    onDelete={async () => {
+                      if (
+                        (!props.narrow && !isMobileScreen) ||
+                        (await showConfirm(Locale.Home.DeleteChat))
+                      ) {
+                        chatStore.deleteSession(i);
+                      }
+                    }}
+                    narrow={props.narrow}
+                    mask={item.mask}
+                  />
+                ),
+            )}
             {provided.placeholder}
           </div>
         )}
