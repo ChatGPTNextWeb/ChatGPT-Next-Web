@@ -98,7 +98,7 @@ export function ChatItem(props: {
   );
 }
 
-export function ChatList(props: { narrow?: boolean }) {
+export function ChatList(props: { narrow?: boolean; search: string }) {
   const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
     (state) => [
       state.sessions,
@@ -127,10 +127,8 @@ export function ChatList(props: { narrow?: boolean }) {
     moveSession(source.index, destination.index);
   };
 
-  const [chatListSearch, setChatListSearch] = useState("");
-
   function haveSearchKeyword(item: ChatSession): boolean {
-    if (chatListSearch.length === 0) {
+    if (props.search.length === 0) {
       return true;
     }
 
@@ -138,7 +136,7 @@ export function ChatList(props: { narrow?: boolean }) {
 
     item.messages.forEach((message) => {
       // console.log(chatListSearch, message.content, message.content.includes(chatListSearch))
-      if (message.content.includes(chatListSearch)) {
+      if (message.content.includes(props.search)) {
         foundKeyword = true;
         return;
       }
@@ -156,16 +154,6 @@ export function ChatList(props: { narrow?: boolean }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            <div className={styles["chat-list-search"]}>
-              <SearchInput
-                value={chatListSearch}
-                onChange={(e) => {
-                  setChatListSearch(e.currentTarget.value);
-                }}
-                placeholder={Locale.Home.Search}
-              ></SearchInput>
-            </div>
-
             {sessions.map(
               (item, i) =>
                 haveSearchKeyword(item) && (
