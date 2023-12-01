@@ -91,7 +91,7 @@ Latex block: $$e=mc^2$$
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
-  default: "2023-04",
+  default: "2021-09",
   "gpt-4-1106-preview": "2023-04",
   "gpt-4-vision-preview": "2023-04",
 };
