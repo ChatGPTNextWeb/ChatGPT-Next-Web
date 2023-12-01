@@ -116,7 +116,7 @@ export class AgentApi {
       },
       async handleAgentAction(action) {
         try {
-          console.log("[handleAgentAction]", action.tool);
+          // console.log("[handleAgentAction]", action.tool);
           if (!reqBody.returnIntermediateSteps) return;
           var response = new ResponseBody();
           response.isToolMessage = true;
@@ -139,13 +139,13 @@ export class AgentApi {
         }
       },
       handleToolStart(tool, input) {
-        console.log("[handleToolStart]", { tool });
+        // console.log("[handleToolStart]", { tool });
       },
       async handleToolEnd(output, runId, parentRunId, tags) {
-        console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
+        // console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
       },
       handleAgentEnd(action, runId, parentRunId, tags) {
-        console.log("[handleAgentEnd]");
+        // console.log("[handleAgentEnd]");
       },
     });
   }
@@ -178,17 +178,7 @@ export class AgentApi {
     reqBody: RequestBody,
     customTools: any[],
   ) {
-    if (req.method === "OPTIONS") {
-      return NextResponse.json({ body: "OK" }, { status: 200 });
-    }
     try {
-      const authResult = auth(req);
-      if (authResult.error) {
-        return NextResponse.json(authResult, {
-          status: 401,
-        });
-      }
-
       const serverConfig = getServerSideConfig();
 
       // const reqBody: RequestBody = await req.json();
@@ -249,7 +239,7 @@ export class AgentApi {
       const tools = [];
 
       if (useTools.includes("web-search")) tools.push(searchTool);
-      console.log(customTools);
+      // console.log(customTools);
 
       customTools.forEach((customTool) => {
         if (customTool) {
