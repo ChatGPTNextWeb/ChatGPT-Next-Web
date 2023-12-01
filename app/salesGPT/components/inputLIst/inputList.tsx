@@ -1,49 +1,66 @@
+import styles from "./inputList.module.scss";
+import { IconButton } from "@/app/components/button";
+import AddIcon from "../../../icons/add.svg";
+import { useEffect } from "react";
+import { InputListValue } from "../../types";
 import InputListItem from "./inputListItem/inputListItem";
 
 type InputListProps = {
-  values: Record<number, string>[];
-  setValues: React.Dispatch<React.SetStateAction<Record<number, string>[]>>;
+  inputListValues: InputListValue[];
+  setInputListValues: React.Dispatch<React.SetStateAction<InputListValue[]>>;
 };
 
-const InputList = ({ values, setValues }: InputListProps) => {
+const InputList = ({ inputListValues, setInputListValues }: InputListProps) => {
   function addValue(value: string) {
-    const updatedValues: Record<number, string>[] = [
-      ...values,
-      { [values.length]: value },
+    const updatedValues: InputListValue[] = [
+      ...inputListValues,
+      { index: inputListValues.length, value },
     ];
-    setValues(updatedValues);
+    setInputListValues(updatedValues);
   }
 
   function updateValue(index: number, newValue: string) {
-    const updatedValues = [...values];
-    updatedValues[index] = { [index]: newValue };
-    setValues(updatedValues);
+    const updatedValues = [...inputListValues];
+    updatedValues[index] = { index, value: newValue };
+    setInputListValues(updatedValues);
   }
 
-  function deleteValue(index: number) {
-    if (index > 0) {
-      const updatedValues = [...values];
-      updatedValues.splice(index, 1);
-      setValues(updatedValues);
-    }
+  function deleteValue(valueToDelete: string) {
+    let updatedValues: InputListValue[] = [];
+    inputListValues.map((value) => {
+      if (value.value !== valueToDelete) {
+        updatedValues.push(value);
+      }
+    });
+    updateIndex(updatedValues);
+  }
+
+  function updateIndex(listToUpdate: InputListValue[]) {
+    let updatedIndexValues: InputListValue[] = [];
+    listToUpdate.map((inputListValue, index) => {
+      updatedIndexValues.push({ index: index, value: inputListValue.value });
+    });
+    setInputListValues(updatedIndexValues);
   }
 
   return (
     <>
-      {values.map((value, index) => {
+      {inputListValues.map((inputListValue) => {
         return (
           <InputListItem
-            key={index}
-            index={index}
-            value={value[index]}
+            key={inputListValue.index}
             updateValue={updateValue}
             deleteValue={deleteValue}
+            InputListValue={inputListValue}
           />
         );
       })}
-      <button type="button" onClick={() => addValue("")}>
-        Legg til kompetanse
-      </button>
+      <IconButton
+        className={styles["button-add"]}
+        text={""}
+        icon={<AddIcon />}
+        onClick={() => addValue("")}
+      />
     </>
   );
 };

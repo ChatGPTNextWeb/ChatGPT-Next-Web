@@ -1,0 +1,37 @@
+.input-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.label-input {
+  padding-right: 6px;
+}
+
+@mixin sharedStyle {
+  font-size: 1rem;
+
+  border-radius: 4px;
+  border: 0.5px solid var(--black);
+  padding: 1rem;
+
+  min-height: 48px;
+
+  color: var(--black);
+  background-color: var(--white);
+}
+
+input[type="text"].input {
+  @include sharedStyle();
+
+  width: 100%;
+
+  text-align: left;
+
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.button-remove {
+  @include sharedStyle();
+}

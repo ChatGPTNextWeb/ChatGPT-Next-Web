@@ -78,3 +78,8 @@ export type HelpOption = {
   label: string;
   value: HelpOptionValue | undefined;
 };
+
+export type InputListValue = {
+  index: number;
+  value: string;
+};

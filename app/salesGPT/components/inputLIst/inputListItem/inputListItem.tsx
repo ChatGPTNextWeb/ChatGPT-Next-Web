@@ -1,29 +1,37 @@
+import { InputListValue } from "@/app/salesGPT/types";
 import Locale from "../../../../locales";
+import styles from "./inputListItem.module.scss";
 
 type ListInputProps = {
-  index: number;
-  value: string;
+  InputListValue: InputListValue;
   updateValue: Function;
   deleteValue: Function;
 };
 
 const ListInput = ({
-  index,
-  value,
+  InputListValue,
   updateValue,
   deleteValue,
 }: ListInputProps) => {
   return (
-    <div>
+    <div className={styles["input-list-item"]}>
+      <label className={styles["label-input"]} htmlFor="requirements">
+        {InputListValue.index + 1}:
+      </label>
+
       <input
+        className={styles["input"]}
         type="text"
         id="requirements"
-        // className={styles["text-input"]}
-        placeholder={Locale.SalesGPT.RequirementsPlaceholder}
-        value={value}
-        onChange={(e) => updateValue(index, e.target.value)}
+        placeholder={""}
+        value={InputListValue.value}
+        onChange={(e) => updateValue(InputListValue.index, e.target.value)}
       />
-      <button type="button" onClick={() => deleteValue(index)}>
+      <button
+        className={styles["button-remove"]}
+        type="button"
+        onClick={() => deleteValue(InputListValue.value)}
+      >
         X
       </button>
     </div>

@@ -1,7 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Loading } from "@/app/components/chatHomepage";
-import { EmployeeItem, HelpOption, HelpOptionValue } from "../types";
+import {
+  EmployeeItem,
+  HelpOption,
+  HelpOptionValue,
+  InputListValue,
+} from "../types";
 import EmployeeCVSummary from "./employeeCVSummary";
 import { ErrorBoundary } from "../../components/error";
 import {
@@ -71,7 +76,9 @@ function _SalesGPT() {
   const [showCVSummary, setShowCVSummary] = useState(false);
   const [showRequirementsList, setShowRequirementsList] = useState(false);
 
-  const [values, setValues] = useState<Record<number, string>[]>([{ 0: "" }]);
+  const [inputListValues, setInputListValues] = useState<InputListValue[]>([
+    { index: 0, value: "" },
+  ]);
 
   function handleSelectEmployee(newValue: EmployeeItem | undefined): void {
     setSelectedEmployee(newValue);
@@ -305,7 +312,10 @@ function _SalesGPT() {
               <label htmlFor="requirements">
                 {Locale.SalesGPT.Requirements}
               </label>
-              <InputList values={values} setValues={setValues} />
+              <InputList
+                inputListValues={inputListValues}
+                setInputListValues={setInputListValues}
+              />
             </div>
 
             {/* TODO: Kanskje dele opp koden så vi har en getField som rendrer basert på selectedHelp. lettere hvis vi endrer på value */}
