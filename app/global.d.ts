@@ -20,7 +20,7 @@ declare interface Window {
     fs: {
       writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
     };
-    notification:{
+    notification: {
       requestPermission(): Promise<Permission>;
       isPermissionGranted(): Promise<boolean>;
       sendNotification(options: string | Options): void;

@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+*.env
 
 # vercel
 .vercel
@@ -44,3 +45,11 @@ dev
 
 *.key
 *.key.pub
+
+# logs
+logs/
+
+# python ignore files
+__pycache__/
+*.py[cod]
+*$py.class

@@ -1,36 +1,32 @@
 version: "3.9"
 services:
-  chatgpt-next-web:
-    profiles: ["no-proxy"]
-    container_name: chatgpt-next-web
-    image: yidadaa/chatgpt-next-web
+  chatgse:
+    build:
+      context: ./
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
+    env_file:
+      - .env
+    depends_on:
+      - flask-app
+    networks:
+      - biochat
     environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - CODE=$CODE
-      - BASE_URL=$BASE_URL
-      - OPENAI_ORG_ID=$OPENAI_ORG_ID
-      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
-      - DISABLE_GPT4=$DISABLE_GPT4
-      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
-      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
-      - OPENAI_SB=$OPENAI_SB
+      - BASE_URL=http://flask-app:5000
 
-  chatgpt-next-web-proxy:
-    profiles: ["proxy"]
-    container_name: chatgpt-next-web-proxy
-    image: yidadaa/chatgpt-next-web
+  flask-app:
+    build:
+      context: ./biochatter-server/
+      dockerfile: Dockerfile
+    env_file:
+      - .bioserver.env
     ports:
-      - 3000:3000
-    environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - CODE=$CODE
-      - PROXY_URL=$PROXY_URL
-      - BASE_URL=$BASE_URL
-      - OPENAI_ORG_ID=$OPENAI_ORG_ID
-      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
-      - DISABLE_GPT4=$DISABLE_GPT4
-      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
-      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
-      - OPENAI_SB=$OPENAI_SB
+      - 5000:5000
+    networks:
+      - biochat
+    volumes:
+      - ./logs:/app/logs
+
+networks:
+  biochat:
