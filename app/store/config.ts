@@ -1,4 +1,5 @@
 import { LLMModel } from "../client/api";
+import { isMacOS } from "../utils";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -27,7 +28,7 @@ export enum Theme {
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
@@ -48,7 +49,7 @@ export const DEFAULT_CONFIG = {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 2000,
+    max_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
@@ -69,7 +70,7 @@ export function limitNumber(
   max: number,
   defaultValue: number,
 ) {
-  if (typeof x !== "number" || isNaN(x)) {
+  if (isNaN(x)) {
     return defaultValue;
   }
 
@@ -81,7 +82,7 @@ export const ModalConfigValidator = {
     return x as ModelType;
   },
   max_tokens(x: number) {
-    return limitNumber(x, 0, 100000, 2000);
+    return limitNumber(x, 0, 512000, 1024);
   },
   presence_penalty(x: number) {
     return limitNumber(x, -2, 2, 0);
@@ -127,15 +128,7 @@ export const useAppConfig = createPersistStore(
       }));
     },
 
-    allModels() {
-      const customModels = get()
-        .customModels.split(",")
-        .filter((v) => !!v && v.length > 0)
-        .map((m) => ({ name: m, available: true }));
-
-      const models = get().models.concat(customModels);
-      return models;
-    },
+    allModels() {},
   }),
   {
     name: StoreKey.Config,
