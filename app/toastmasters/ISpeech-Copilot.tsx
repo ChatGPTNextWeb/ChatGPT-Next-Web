@@ -62,7 +62,7 @@ export function Chat() {
         onMouseDown={() => inputRef.current?.blur()}
         onTouchStart={() => {
           inputRef.current?.blur();
-          setAutoScroll(false);
+          // setAutoScroll(false);
         }}
       >
         {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Start && (
@@ -169,7 +169,8 @@ function ImpromptuSpeechSetting() {
     chatStore.updateCurrentSession(
       (session) => (
         (session.inputCopilot.ActivePage = ImpromptuSpeechStage.Question),
-        (session.inputCopilot.HasQuestions = true)
+        (session.inputCopilot.HasQuestions = true),
+        (session.inputCopilot.StartTime = new Date().getTime())
       ),
     );
 

@@ -63,6 +63,10 @@ export class ImpromptuSpeechInput {
 
   HasQuestions: boolean = false;
   QuestionNums: number = 2;
+  StartTime: number = new Date().getTime();
+  EndTime: number = new Date().getTime();
+  TotalEvaluations: string = ""; // TODO: might be Record<string, string>
+
   Interaction: string = ImpromptuSpeechModes.Free;
   Mode: string = ImpromptuSpeechModes.Personal;
 
@@ -208,41 +212,30 @@ export class ImpromptuSpeechPrompts {
     };
   }
 
-  static GetEvaluationPrompt1(
-    currentNum: number,
-    question: string,
-    speech: string,
-  ): { role: string; content: string }[] {
-    return [
-      {
-        role: "Feedback",
-        content: `The No.${currentNum} Question and Speech are:
-        {
-          "Question": "${question}",
-          "Speech": "${speech}"
-        },
-        
-        You are the ${ToastmastersRoles.TableTopicsEvaluator}, to evaluate my speech.
-        Your evaluation should:
-        1). Don't make things up, all your quoted sentence must from my speech.
-        2). Bold keywords using markdown when present your answer.
-        3). Provide addvice to me based on my speech.
-        4). About 100 words.
-        `,
-      },
-      {
-        role: "Revised Speech",
-        content: `
-        To the No.${currentNum} Question and Speech.
+  static GetTotalEvaluationPrompt(questionItems: IQuestionItem[]): string {
+    const speakerInputs = [];
+    for (const item of questionItems) {
+      if (item.Speech !== "") {
+        speakerInputs.push({
+          Question: item.Question,
+          Speech: item.Speech,
+        });
+      }
+    }
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
 
-        You are an teacher of Table Topics.
-        Help revise, polish and improve my speech,
-        You should:
-        1). Don't say who you are, just provide your revised speech.
-        2). Bold keywords using markdown when present your answer.
-        3). 150 Words.
-        `,
-      },
-    ];
+    return `
+    The Question-Speech pairs are:
+    ${speakerInputsString},
+
+    You are the ${ToastmastersRoles.TableTopicsEvaluator}, to give me an total evaluation for my speeches.
+    Your evaluation should:
+    1). Don't evaluate one by one, just the final total evaluation.
+    2). Don't make things up, you can quote sentence from my speech.
+    3). To bold keywords using markdown when present your answer.
+    4). Provide addvice to me based on my speech.
+    5). About 200 words.
+    `;
   }
 }
