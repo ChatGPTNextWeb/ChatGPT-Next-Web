@@ -26,9 +26,17 @@ declare global {
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
+
+      // clerk only. // provide api keys to enable clerk authentication.
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?: string;
+      CLERK_SECRET_KEY: string;
     }
   }
 }
+
+const isClerkEnabled =
+  !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+  !!process.env.CLERK_SECRET_KEY;
 
 const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   const code = process.env.CODE;
@@ -92,5 +100,7 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+
+    isClerkEnabled,
   };
 };

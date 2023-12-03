@@ -222,6 +222,16 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 
 User `-all` to disable all default models, `+all` to enable all default models.
 
+### `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (optional)
+
+> Default: Empty
+
+### `CLERK_SECRET_KEY` (optional)
+
+> Default: Empty
+
+If you want to use clerk authentication, please set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY. Find it at [Clerk Documentation](https://clerk.com/docs/quickstarts/nextjs)
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

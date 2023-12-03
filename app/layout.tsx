@@ -3,7 +3,9 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
+import { getServerSideConfig } from "./config/server";
 import { type Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "ChatGPT Next Web",
@@ -23,12 +25,25 @@ export const metadata: Metadata = {
   },
 };
 
+const serverConfig = getServerSideConfig();
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
+  return serverConfig.isClerkEnabled ? (
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          <meta name="config" content={JSON.stringify(getClientConfig())} />
+          <link rel="manifest" href="/site.webmanifest"></link>
+          <script src="/serviceWorkerRegister.js" defer></script>
+        </head>
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
+  ) : (
     <html lang="en">
       <head>
         <meta name="config" content={JSON.stringify(getClientConfig())} />
