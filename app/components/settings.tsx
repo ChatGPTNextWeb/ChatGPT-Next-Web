@@ -635,6 +635,11 @@ export function Settings() {
         navigate(Path.Home);
       }
     };
+    if (clientConfig?.isApp) { // Force to set custom endpoint to true if it's app
+      accessStore.update((state) => {
+        state.useCustomConfig = true;
+      });
+    }
     document.addEventListener("keydown", keydownEvent);
     return () => {
       document.removeEventListener("keydown", keydownEvent);
@@ -909,21 +914,26 @@ export function Settings() {
 
           {!accessStore.hideUserApiKey && (
             <>
-              <ListItem
-                title={Locale.Settings.Access.CustomEndpoint.Title}
-                subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
-              >
-                <input
-                  type="checkbox"
-                  checked={accessStore.useCustomConfig}
-                  onChange={(e) =>
-                    accessStore.update(
-                      (access) =>
-                        (access.useCustomConfig = e.currentTarget.checked),
-                    )
-                  }
-                ></input>
-              </ListItem>
+              {
+                // Conditionally render the following ListItem based on clientConfig.isApp
+                !clientConfig?.isApp && ( // only show if isApp is false
+                  <ListItem
+                    title={Locale.Settings.Access.CustomEndpoint.Title}
+                    subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={accessStore.useCustomConfig}
+                      onChange={(e) =>
+                        accessStore.update(
+                          (access) =>
+                            (access.useCustomConfig = e.currentTarget.checked),
+                        )
+                      }
+                    ></input>
+                  </ListItem>
+                )
+              }
               {accessStore.useCustomConfig && (
                 <>
                   <ListItem
