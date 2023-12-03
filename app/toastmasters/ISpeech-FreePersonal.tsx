@@ -17,18 +17,29 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  LabelList,
   ResponsiveContainer,
   LineChart,
   Line,
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  LabelList,
 } from "recharts";
 import { useAppConfig, useChatStore } from "../store";
+import Locale from "../locales";
+
+import ResetIcon from "../icons/reload.svg";
 
 import IconButtonMui from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import ButtonGroup from "@mui/joy/ButtonGroup";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import MicIcon from "@mui/icons-material/Mic";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import ReplayCircleFilledIcon from "@mui/icons-material/ReplayCircleFilled";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -73,7 +84,7 @@ import styles_tm from "../toastmasters/toastmasters.module.scss";
 import { List, ListItem, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
 import { Markdown } from "../components/exporter";
-import { useScrollToBottom } from "../components/chat";
+import { ChatAction, useScrollToBottom } from "../components/chat";
 import SendWhiteIcon from "../icons/send-white.svg";
 
 import { ChatTitle, BorderLine } from "./chat-common";
@@ -89,7 +100,7 @@ export const FreePersonalQuestionPage = (props: {
   const questionNums = questionItems.length;
 
   const [evaluationRole, setEvaluationRole] = React.useState<string>(
-    ImpromptuSpeechRoles.General,
+    ImpromptuSpeechRoles.Scores,
   );
 
   const chatStore = useChatStore();
@@ -99,17 +110,15 @@ export const FreePersonalQuestionPage = (props: {
   ]);
   const config = useAppConfig();
 
+  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
   // local state used for reder page
   const [currentNum, setCurrentNum] = useState(0);
   const [evaluating, setEvaluating] = useState(
     Object.keys(questionItems[currentNum].Evaluations).length > 0,
   );
-
-  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
   const [speechTime, setSpeechTime] = useState(
     questionItems[currentNum].SpeechTime,
   );
-
   const [recordingStatus, setRecordingStatus] = useState(StageStatus.Start);
   const [recorder, setRecorder] = useState(
     new AudioRecorder(setRecordingStatus),
@@ -117,7 +126,11 @@ export const FreePersonalQuestionPage = (props: {
 
   // 当currentNum变化时, 更新初始值
   useEffect(() => {
+    setEvaluating(
+      Object.keys(questionItems[currentNum].Evaluations).length > 0,
+    );
     setSpeechTime(questionItems[currentNum].SpeechTime);
+    setRecordingStatus(StageStatus.Start);
     recorder.resetRecording();
   }, [currentNum, questionItems, recorder]);
 
@@ -158,16 +171,11 @@ export const FreePersonalQuestionPage = (props: {
   const onPlay = () => {
     questionItems[currentNum].SpeechAudio = recorder.getAudioData();
     const audioData = questionItems[currentNum].SpeechAudio;
-    console.log("onPlayRecording: ", audioData);
     if (audioData) {
       const audioUrl = URL.createObjectURL(audioData);
       const audio = new Audio(audioUrl);
       audio.play();
     }
-    console.log(
-      "questionItems[currentNum].Speech:",
-      questionItems[currentNum].Speech,
-    );
   };
 
   const onReset = () => {
@@ -177,6 +185,7 @@ export const FreePersonalQuestionPage = (props: {
     questionItems[currentNum].SpeechTime = 0;
     questionItems[currentNum].SpeechAudio = null;
     questionItems[currentNum].Score = 0;
+    questionItems[currentNum].Scores = [];
     questionItems[currentNum].Evaluations = {};
 
     // 改状态
@@ -191,13 +200,17 @@ export const FreePersonalQuestionPage = (props: {
   };
 
   // TODO: 打分还不太准确
-  const onScore = () => {
+  const onScore = async () => {
     recorder.stopRecording();
 
+    // questionItems[currentNum].Speech = questionItems[currentNum].SampleSpeech
+    // questionItems[currentNum].Speech = "it is nothing, uh, um, oh change to another questions"
+    // questionItems[currentNum].Speech = "things have change a lot by internet, uh, um, oh a lot"
+    // questionItems[currentNum].Speech = "The internet has revolutionized communication and connectivity, uh, um, oh in ways we could have never imagined. "
     console.log("onScore: Speech: ", questionItems[currentNum].Speech);
 
     // reset status from 0
-    // chatStore.resetSessionFromIndex(2);
+    chatStore.resetSessionFromIndex(2);
 
     let ask = ImpromptuSpeechPrompts.GetScorePrompt(
       currentNum,
@@ -205,39 +218,96 @@ export const FreePersonalQuestionPage = (props: {
       questionItems[currentNum].Speech,
     );
     chatStore.onUserInput(ask);
-    chatStore.getIsFinished().then(() => {
-      const response = session.messages[session.messages.length - 1].content;
-      console.log("score: ", response);
-      chatStore.updateCurrentSession(
-        (session) => (questionItems[currentNum].Score = parseInt(response)),
-      );
-    });
-    // await chatStore.getIsFinished();
-    // const response = session.messages[session.messages.length - 1].content;
-    // console.log("score: ", response);
-    // chatStore.updateCurrentSession(
-    //   (session) => (questionItems[currentNum].Score = parseInt(response)),
-    // );
 
-    // finilly get the audio, so it not missing any sentence
-    questionItems[currentNum].SpeechAudio = recorder.getAudioData();
-    console.log(
-      "onScore: SpeechAudio: ",
-      questionItems[currentNum].SpeechAudio,
-    );
-    if (questionItems[currentNum].SpeechAudio === null) {
-      showToast("Speech is empty");
+    await chatStore.getIsFinished();
+    const response = session.messages[session.messages.length - 1].content;
+    let scores: number[] = [];
+    try {
+      scores = JSON.parse(response);
+    } catch (error) {
+      showToast(`score are not correct format, please try again.`);
       return;
     }
+
+    scores.push(getTimeScore(speechTime));
+    console.log("all scores: ", scores);
+    const averageScore = Math.round(
+      scores.reduce((acc, val) => acc + val, 0) / scores.length,
+    );
+
+    const scoreRoles = ImpromptuSpeechPrompts.GetScoreRoles();
+    const scoresRecord: { subject: string; score: number }[] = [];
+    for (let i = 0; i < scoreRoles.length; i++) {
+      scoresRecord.push({ subject: scoreRoles[i], score: scores[i] });
+    }
+
+    chatStore.updateCurrentSession(
+      (session) => (
+        (questionItems[currentNum].Score = averageScore),
+        (questionItems[currentNum].Scores = scoresRecord)
+      ),
+    );
+  };
+
+  const getTimeScore = (timeSeconds: number): number => {
+    /*
+      the time and score has below relations: 
+      (0,0), (60,60), (90,80), (120,100), (150, 0)
+      So we can get linear time model
+    */
+    if (timeSeconds <= 60) return timeSeconds;
+
+    if (timeSeconds <= 90) return (2 / 3) * timeSeconds + 20;
+
+    if (timeSeconds <= 120) return (2 / 3) * timeSeconds + 20;
+
+    if (timeSeconds <= 150) return ((150 - timeSeconds) * 10) / 3;
+
+    return 0;
   };
 
   const evaluationRoles = ImpromptuSpeechPrompts.GetEvaluationRoles();
 
-  const onEvaluation = async (event: { preventDefault: () => void }) => {
-    setEvaluating(true);
-    // TODO:
-    questionItems[currentNum].Speech = questionItems[currentNum].SampleSpeech;
+  const onRegenerateSampleSpeech = async () => {
+    chatStore.updateCurrentSession(
+      (session) => (questionItems[currentNum].SampleSpeech = ""),
+    );
+    const ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(
+      currentNum,
+      questionItems[currentNum].Question,
+    );
+    chatStore.onUserInput(ask);
+    await chatStore.getIsFinished();
+    const response = session.messages[session.messages.length - 1].content;
+    chatStore.updateCurrentSession(
+      (session) => (questionItems[currentNum].SampleSpeech = response),
+    );
+    chatStore.resetSessionFromIndex(2);
+  };
 
+  const onRegenerateEvaluation = async (role: string) => {
+    setEvaluating(true);
+
+    chatStore.updateCurrentSession(
+      (session) => delete questionItems[currentNum].Evaluations[role],
+    );
+    let propmts = ImpromptuSpeechPrompts.GetEvaluationPrompts(
+      currentNum,
+      questionItems[currentNum].Question,
+      questionItems[currentNum].Speech,
+    );
+
+    chatStore.onUserInput(propmts[role]);
+    await chatStore.getIsFinished();
+    const response = session.messages[session.messages.length - 1].content;
+    chatStore.updateCurrentSession(
+      (session) => (questionItems[currentNum].Evaluations[role] = response),
+    );
+    chatStore.resetSessionFromIndex(2);
+    setEvaluating(false);
+  };
+
+  const onEvaluation = async (event: { preventDefault: () => void }) => {
     if (
       questionItems[currentNum].Speech === "" ||
       questionItems[currentNum].Speech === undefined
@@ -247,7 +317,7 @@ export const FreePersonalQuestionPage = (props: {
       return;
     }
 
-    chatStore.resetSessionFromIndex(2);
+    setEvaluating(true);
 
     let propmts = ImpromptuSpeechPrompts.GetEvaluationPrompts(
       currentNum,
@@ -255,11 +325,16 @@ export const FreePersonalQuestionPage = (props: {
       questionItems[currentNum].Speech,
     );
 
+    // reset
+    chatStore.updateCurrentSession(
+      (session) => (questionItems[currentNum].Evaluations = {}),
+    );
+
     for (const role of evaluationRoles) {
       chatStore.onUserInput(propmts[role]);
       await chatStore.getIsFinished();
       const response = session.messages[session.messages.length - 1].content;
-      console.log("response: ", response);
+      // console.log("response: ", response);
       chatStore.updateCurrentSession(
         (session) => (questionItems[currentNum].Evaluations[role] = response),
       );
@@ -308,6 +383,16 @@ export const FreePersonalQuestionPage = (props: {
     );
   };
 
+  const onQuestionEdit = async () => {
+    const newMessage = await showPrompt(
+      Locale.Chat.Actions.Edit,
+      questionItems[currentNum].Question,
+    );
+    chatStore.updateCurrentSession((session) => {
+      questionItems[currentNum].Question = newMessage;
+    });
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.navigation}>
@@ -316,8 +401,16 @@ export const FreePersonalQuestionPage = (props: {
           ← Return
         </button>
         <ButtonGroup
+          variant="outlined"
           aria-label="radius button group"
-          sx={{ "--ButtonGroup-radius": "40px" }}
+          sx={{
+            "--ButtonGroup-radius": "40px",
+            border: "1px solid #ccc", // 添加这行来直接设置边框
+            "& button": {
+              // 添加这个样式来改变按钮内的文本样式
+              textTransform: "none",
+            },
+          }}
         >
           <Button onClick={onPreviousQuestion}>{"<"}</Button>
           <Button>{`Question ${currentNum + 1} / ${questionNums}`}</Button>
@@ -331,14 +424,15 @@ export const FreePersonalQuestionPage = (props: {
 
       <BorderLine></BorderLine>
 
+      <p className={styles.questionText} onClick={onQuestionEdit}>
+        {questionItems[currentNum].Question}
+      </p>
+      <div className={styles.timer}>
+        {/* TODO: 为啥 questionItems[currentNum].SpeechTime 也会刷新? */}
+        <span>{formatTime(speechTime)} / 2:00</span>
+      </div>
+
       <form onSubmit={(event) => event.preventDefault()}>
-        <p className={styles.questionText}>
-          {questionItems[currentNum].Question}
-        </p>
-        <div className={styles.timer}>
-          {/* TODO: 为啥 questionItems[currentNum].SpeechTime 也会刷新? */}
-          <span>{formatTime(speechTime)} / 2:00</span>
-        </div>
         {recordingStatus === StageStatus.Start && (
           <Stack
             direction="row"
@@ -347,7 +441,7 @@ export const FreePersonalQuestionPage = (props: {
             alignItems="center"
           >
             <IconButtonMui
-              aria-label="play"
+              title="Play"
               onClick={() =>
                 speechSynthesizer.startSynthesize(
                   questionItems[currentNum].Question,
@@ -358,7 +452,7 @@ export const FreePersonalQuestionPage = (props: {
               <PlayCircleIcon />
             </IconButtonMui>
             <IconButtonMui
-              aria-label="record"
+              title="Record"
               color="primary"
               sx={{
                 color: "green",
@@ -379,7 +473,7 @@ export const FreePersonalQuestionPage = (props: {
             alignItems="center"
           >
             <IconButtonMui
-              aria-label="record"
+              title="Recording"
               color="primary"
               sx={{
                 color: "red",
@@ -399,19 +493,42 @@ export const FreePersonalQuestionPage = (props: {
             justifyContent="center"
             alignItems="center"
           >
-            <button className={styles.capsuleButton} onClick={onReset}>
-              Reset
-            </button>
-            {/* TODO: 总是会丢掉当前最新的录音, 不知如何解决 */}
-            {/* <button className={styles.capsuleButton} onClick={onPlay} type="button">
-              Play
-            </button> */}
-            <button className={styles.capsuleButton} onClick={onRecord}>
-              Resume
-            </button>
-            <button className={styles.capsuleButton} onClick={onStop}>
-              Stop
-            </button>
+            <IconButtonMui
+              title="Reset"
+              color="primary"
+              sx={{
+                color: "red",
+              }}
+              onClick={onReset}
+            >
+              <ResetIcon />
+            </IconButtonMui>
+
+            <IconButtonMui
+              title="Resume"
+              aria-label="record"
+              color="primary"
+              sx={{
+                color: "green",
+                fontSize: "40px",
+              }}
+              onClick={onRecord}
+            >
+              <MicOffIcon sx={{ fontSize: "inherit" }} />
+            </IconButtonMui>
+
+            <IconButtonMui
+              title="Score"
+              aria-label="record"
+              color="primary"
+              sx={{
+                color: "green",
+                fontSize: "40px",
+              }}
+              onClick={onScore}
+            >
+              <VerifiedIcon sx={{ fontSize: "inherit" }} />
+            </IconButtonMui>
           </Stack>
         )}
 
@@ -423,25 +540,18 @@ export const FreePersonalQuestionPage = (props: {
             alignItems="center"
           >
             <IconButtonMui
-              color="secondary"
-              aria-label="score"
+              title="Reset"
+              color="primary"
               sx={{
-                backgroundColor: "lightblue", // 淡蓝色背景
-                color: "white", // 图标颜色，这里选择了白色
-                "&:hover": {
-                  backgroundColor: "green", // 鼠标悬停时的背景色，这里选择了蓝色
-                },
-                borderRadius: "50%", // 圆形
-                width: 40, // 宽度
-                height: 40, // 高度
-                padding: 0, // 如果需要，调整内边距
+                color: "red",
               }}
               onClick={onReset}
             >
-              <Typography variant="subtitle1">Reset</Typography>
+              <ResetIcon />
             </IconButtonMui>
 
             <IconButtonMui
+              title="Continue Recording"
               aria-label="record"
               color="primary"
               sx={{
@@ -450,17 +560,18 @@ export const FreePersonalQuestionPage = (props: {
               }}
               onClick={onRecord}
             >
-              <MicIcon sx={{ fontSize: "inherit" }} />
+              <MicOffIcon sx={{ fontSize: "inherit" }} />
             </IconButtonMui>
 
             <IconButtonMui
+              title="Play Speech"
               color="secondary"
               aria-label="score"
               sx={{
                 backgroundColor: "lightblue", // 淡蓝色背景
                 color: "white", // 图标颜色，这里选择了白色
                 "&:hover": {
-                  backgroundColor: "green", // 鼠标悬停时的背景色，这里选择了蓝色
+                  backgroundColor: "blue", // 鼠标悬停时的背景色，这里选择了蓝色
                 },
                 borderRadius: "50%", // 圆形
                 width: 40, // 宽度
@@ -469,7 +580,9 @@ export const FreePersonalQuestionPage = (props: {
               }}
               onClick={onPlay}
             >
-              <Typography variant="subtitle1">Play</Typography>
+              <Typography variant="subtitle1">
+                {questionItems[currentNum].Score}
+              </Typography>
             </IconButtonMui>
           </Stack>
         )}
@@ -494,7 +607,7 @@ export const FreePersonalQuestionPage = (props: {
             alignItems="center"
           >
             <IconButtonMui
-              aria-label="play"
+              title="play"
               onClick={() =>
                 speechSynthesizer.startSynthesize(
                   questionItems[currentNum].SampleSpeech,
@@ -503,6 +616,12 @@ export const FreePersonalQuestionPage = (props: {
               }
             >
               <PlayCircleIcon />
+            </IconButtonMui>
+            <IconButtonMui
+              title="Regenerage"
+              onClick={onRegenerateSampleSpeech}
+            >
+              <ReplayCircleFilledIcon />
             </IconButtonMui>
           </Stack>
         </AccordionDetails>
@@ -526,6 +645,11 @@ export const FreePersonalQuestionPage = (props: {
                   onChange={handleChangeEvaluationRole}
                   aria-label="lab API tabs example"
                 >
+                  <Tab
+                    label={"Scores"}
+                    value={"Scores"}
+                    sx={{ textTransform: "none" }}
+                  />
                   {evaluationRoles.map((role, index) => (
                     <Tab
                       key={index}
@@ -536,6 +660,50 @@ export const FreePersonalQuestionPage = (props: {
                   ))}
                 </TabList>
               </Box>
+              <TabPanel value="Scores">
+                {questionItems[currentNum].Scores.length > 0 && (
+                  <RadarChart
+                    cx={250}
+                    cy={150}
+                    outerRadius={100}
+                    width={500}
+                    height={300}
+                    data={questionItems[currentNum].Scores}
+                  >
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="subject" />
+                    <PolarRadiusAxis domain={[0, 100]} />
+                    <Radar
+                      name="Mike"
+                      dataKey="score"
+                      stroke="#8884d8"
+                      fill="#8884d8"
+                      fillOpacity={0.6}
+                    >
+                      <LabelList dataKey="score" position="inside" angle={0} />
+                    </Radar>
+                    <text
+                      x={250}
+                      y={150}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fill="green"
+                      style={{ fontSize: 50 }} // 设置字体大小为 30
+                    >
+                      {questionItems[currentNum].Score}
+                    </text>
+                  </RadarChart>
+                )}
+                {/* <Typography style={{ textAlign: "left" }}>
+                  {ImpromptuSpeechPrompts.GetScoreRolesDescription().map(
+                    (description, index) => (
+                      <ReactMarkdown  key={index}>
+                        {description}
+                      </ReactMarkdown>
+                    )
+                  )}
+                </Typography> */}
+              </TabPanel>
               {evaluationRoles.map((role, index) => (
                 <TabPanel key={index} value={role}>
                   {role in questionItems[currentNum].Evaluations ? (
@@ -560,13 +728,26 @@ export const FreePersonalQuestionPage = (props: {
                         >
                           <PlayCircleIcon />
                         </IconButtonMui>
+                        <IconButtonMui
+                          title="Regenerage"
+                          onClick={(event) => onRegenerateEvaluation(role)}
+                        >
+                          <ReplayCircleFilledIcon />
+                        </IconButtonMui>
                       </Stack>
                     </Typography>
                   ) : evaluating ? (
                     <CircularProgress />
                   ) : (
-                    <Button onClick={(event) => onEvaluation(event)}>
-                      Look Evaluation
+                    <Button
+                      onClick={(event) => onEvaluation(event)}
+                      variant="outlined"
+                      sx={{
+                        textTransform: "none", // 防止文本大写
+                        borderColor: "primary.main", // 设置边框颜色，如果需要
+                      }}
+                    >
+                      Look
                     </Button>
                   )}
                 </TabPanel>

@@ -35,6 +35,12 @@
   margin-bottom: 20px;
 }
 
+.questionText:hover {
+  cursor: pointer; /* 改变鼠标样式 */
+  color: blue; /* 可选: 改变文字颜色 */
+  /* 你可以添加更多样式来指示可编辑性 */
+}
+
 .inputField {
   margin-bottom: 20px;
   width: 100%;
