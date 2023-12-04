@@ -29,6 +29,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
 import EnablePluginIcon from "../icons/plugin_enable.svg";
 import DisablePluginIcon from "../icons/plugin_disable.svg";
+import UploadIcon from "../icons/upload.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -92,6 +93,7 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
+import Image from "next/image";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -331,8 +333,10 @@ function ClearContextDivider() {
 
 function ChatAction(props: {
   text: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
+  innerNode?: JSX.Element;
   onClick: () => void;
+  style?: React.CSSProperties;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -357,23 +361,29 @@ function ChatAction(props: {
       className={`${styles["chat-input-action"]} clickable`}
       onClick={() => {
         props.onClick();
-        setTimeout(updateWidth, 1);
+        iconRef ? setTimeout(updateWidth, 1) : undefined;
       }}
-      onMouseEnter={updateWidth}
-      onTouchStart={updateWidth}
+      onMouseEnter={props.icon ? updateWidth : undefined}
+      onTouchStart={props.icon ? updateWidth : undefined}
       style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
+        props.icon
+          ? ({
+              "--icon-width": `${width.icon}px`,
+              "--full-width": `${width.full}px`,
+              ...props.style,
+            } as React.CSSProperties)
+          : props.style
       }
     >
-      <div ref={iconRef} className={styles["icon"]}>
-        {props.icon}
-      </div>
-      <div className={styles["text"]} ref={textRef}>
+      {props.icon ? (
+        <div ref={iconRef} className={styles["icon"]}>
+          {props.icon}
+        </div>
+      ) : null}
+      <div className={props.icon ? styles["text"] : undefined} ref={textRef}>
         {props.text}
       </div>
+      {props.innerNode}
     </div>
   );
 }
@@ -412,6 +422,7 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  imageSelected: (img: any) => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
@@ -439,6 +450,25 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
+
+  function selectImage() {
+    document.getElementById("chat-image-file-select-upload")?.click();
+  }
+
+  const onImageSelected = (e: any) => {
+    const file = e.target.files[0];
+    const filename = file.name;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64 = reader.result;
+      props.imageSelected({
+        filename,
+        base64,
+      });
+    };
+    e.target.value = null;
+  };
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
@@ -535,6 +565,21 @@ export function ChatActions(props: {
               icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
             />
           )}
+
+        <ChatAction
+          onClick={selectImage}
+          text="选择图片"
+          icon={<UploadIcon />}
+          innerNode={
+            <input
+              type="file"
+              accept=".png,.jpg,.webp,.jpeg"
+              id="chat-image-file-select-upload"
+              style={{ display: "none" }}
+              onChange={onImageSelected}
+            />
+          }
+        />
 
         {showModelSelector && (
           <Selector
@@ -649,6 +694,7 @@ function _Chat() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [userImage, setUserImage] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
@@ -722,7 +768,7 @@ function _Chat() {
     }
   };
 
-  const doSubmit = (userInput: string) => {
+  const doSubmit = (userInput: string, userImage?: any) => {
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -736,6 +782,7 @@ function _Chat() {
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
+    setUserImage(null);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
   };
@@ -937,6 +984,7 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
+                  image_url: userImage?.base64,
                 }),
                 preview: true,
               },
@@ -949,6 +997,7 @@ function _Chat() {
     isLoading,
     session.messages,
     userInput,
+    userImage?.base64,
   ]);
 
   const [msgRenderIndex, _setMsgRenderIndex] = useState(
@@ -1074,6 +1123,8 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const textareaMinHeight = userImage ? 121 : 68;
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -1280,6 +1331,7 @@ function _Chat() {
                   )}
                   <div className={styles["chat-message-item"]}>
                     <Markdown
+                      imageBase64={isUser && userImage && userImage.base64}
                       content={message.content}
                       loading={
                         (message.preview || message.streaming) &&
@@ -1296,7 +1348,19 @@ function _Chat() {
                       defaultShow={i >= messages.length - 6}
                     />
                   </div>
-
+                  {!isUser && message.model == "gpt-4-vision-preview" && (
+                    <div
+                      className={[
+                        styles["chat-message-actions"],
+                        styles["column-flex"],
+                      ].join(" ")}
+                    >
+                      <div
+                        style={{ marginTop: "6px" }}
+                        className={styles["chat-input-actions"]}
+                      ></div>
+                    </div>
+                  )}
                   <div className={styles["chat-message-action-date"]}>
                     {isContext
                       ? Locale.Chat.IsContext
@@ -1328,6 +1392,9 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          imageSelected={(img: any) => {
+            setUserImage(img);
+          }}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
@@ -1343,14 +1410,39 @@ function _Chat() {
             autoFocus={autoFocus}
             style={{
               fontSize: config.fontSize,
+              minHeight: textareaMinHeight,
             }}
           />
+          {userImage && (
+            <div className={styles["chat-input-image"]}>
+              <div
+                style={{ position: "relative", width: "48px", height: "48px" }}
+              >
+                <Image
+                  src={userImage.base64}
+                  alt={userImage.filename}
+                  title={userImage.filename}
+                  layout="fill"
+                  objectFit="cover"
+                  objectPosition="center"
+                />
+              </div>
+              <button
+                className={styles["chat-input-image-close"]}
+                onClick={() => {
+                  setUserImage(null);
+                }}
+              >
+                X
+              </button>
+            </div>
+          )}
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             type="primary"
-            onClick={() => doSubmit(userInput)}
+            onClick={() => doSubmit(userInput, userImage)}
           />
         </div>
       </div>
