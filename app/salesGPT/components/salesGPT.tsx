@@ -61,7 +61,6 @@ function _SalesGPT() {
     EmployeeItem | undefined
   >(undefined);
 
-  const [requirementText, setRequirementText] = useState("");
   const [requirementResponse, setRequirementResponse] = useState<
     RequirementResponse[]
   >([]);
@@ -205,7 +204,9 @@ function _SalesGPT() {
   async function handleAnalyseButtonClick(): Promise<void> {
     setIsAnalysisLoading(true);
     setRequirementResponse([]);
-    const requirements = requirementText.split("\n").filter((s) => s.length);
+    const requirements = inputListValues.map(
+      (requirement) => requirement.value,
+    );
     const employeeAlias = aliasFromEmail(selectedEmployee?.email);
 
     if (selectedHelp?.value == HelpOptionValue.RequirementList) {
@@ -294,18 +295,6 @@ function _SalesGPT() {
                 handleSelectEmployee={handleSelectEmployee}
                 handleClear={handleClearSelectedEmployee}
               />
-            </div>
-            <div className={styles["input-field"]}>
-              <label htmlFor="requirements">
-                {Locale.SalesGPT.Requirements}
-              </label>
-              <textarea
-                id="requirements"
-                className={styles["text-input"]}
-                placeholder={Locale.SalesGPT.RequirementsPlaceholder}
-                value={requirementText}
-                onChange={(event) => setRequirementText(event.target.value)}
-              ></textarea>
             </div>
 
             <div className={styles["input-field"]}>
