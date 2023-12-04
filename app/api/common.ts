@@ -102,8 +102,8 @@ export async function requestOpenai(req: NextRequest) {
   // Extract the OpenAI-Organization header from the response
   const openaiOrganizationHeader = res.headers.get("OpenAI-Organization");
 
-  // Check if serverConfig.openaiOrgId is defined
-  if (serverConfig.openaiOrgId !== undefined) {
+  // Check if serverConfig.openaiOrgId is defined and not an empty string
+  if (serverConfig.openaiOrgId && serverConfig.openaiOrgId.trim() !== "") {
     // If openaiOrganizationHeader is present, log it; otherwise, log that the header is not present
     console.log("[Org ID]", openaiOrganizationHeader);
   } else {
@@ -116,9 +116,9 @@ export async function requestOpenai(req: NextRequest) {
     // to disable nginx buffering
     newHeaders.set("X-Accel-Buffering", "no");
 
-    // Conditionally delete the OpenAI-Organization header from the response if [Org ID] is undefined (not setup in ENV)
-    // Also This one is to prevent the header from being sent to the client
-    if (!serverConfig.openaiOrgId) {
+    // Conditionally delete the OpenAI-Organization header from the response if [Org ID] is undefined or empty (not setup in ENV)
+    // Also, this is to prevent the header from being sent to the client
+    if (!serverConfig.openaiOrgId || serverConfig.openaiOrgId.trim() === "") {
       newHeaders.delete("OpenAI-Organization");
     }
 
