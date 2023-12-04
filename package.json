@@ -51,7 +51,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.49.0",
     "eslint-config-next": "13.4.19",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
