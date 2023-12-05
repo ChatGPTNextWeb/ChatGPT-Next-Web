@@ -63,6 +63,8 @@ export const incrementSessionRefreshCount = async (
 
   try {
     await redis.hincrby(`session_refreshes:${email}`, dateKey, 1);
+    const timeValue = new Date().toISOString(); // full date
+    await redis.hset(`monitoring`, `last_sessionInc`, timeValue);
   } catch (error) {
     console.error('Failed to increment session refresh count in Redis via Upstash', error);
   }
