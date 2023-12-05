@@ -1,3 +1,4 @@
+import { StageStatus } from "../cognitive/speech-audioRecorderClass";
 import { ToastmastersRoles } from "./roles";
 
 // TODO:
@@ -39,6 +40,7 @@ export class IQuestionItem {
   Speech: string = "";
   SpeechTime: number = 0;
   SpeechAudio: Blob | null = null;
+  StageStatus = StageStatus.Start;
 
   Score: number = 0;
   Scores: { subject: string; score: number }[] = [];
@@ -124,6 +126,59 @@ export class ImpromptuSpeechPrompts {
   }
 
   static GetScorePrompt(
+    currentNum: number,
+    question: string,
+    speech: string,
+  ): string {
+    return `The No.${currentNum} Question and Speech are:
+    {
+    "Question": "${question}",
+    "Speech": "${speech}"
+    },
+    
+    As a highly objective and strict Table Topics Evaluator, provide a detailed score for my speech. The score list should include values between 0 to 100 for each criterion, with significant penalties for speeches that are significantly shorter than the expected length. The criteria are:
+    
+    1). Relevance and Depth of Content: Evaluate how well the speech addresses the question and explores the subject. Significantly short speeches that do not adequately cover the topic should receive very low scores.
+    
+    2). Organization and Structure: Assess the clarity and coherence of the speech. A speech that is too short to have a clear introduction, development, and conclusion should be penalized heavily in scoring.
+    
+    3). Language Use: Consider the choice of vocabulary, grammar correctness, and rhetorical devices. Speeches that are too brief to demonstrate effective language use should receive low scores.
+    
+    4). Delivery Skills: Evaluate the fluency, clarity, and speaking pace, along with filler words usage. Speeches that are significantly shorter than the expected 2-minute length should be scored lower, as they fail to demonstrate sustained delivery skills.
+    
+    The scoring format should be a JSON list with the scores for each criterion, with no additional comments. For example: [20, 40, 30, 50].
+    
+    Note: Please maintain strict and professional standards in your evaluation. The length of the speech should be a significant factor in scoring, with very short speeches receiving lower scores to reflect their limited content and delivery.`;
+  }
+
+  static GetScorePrompt2(
+    currentNum: number,
+    question: string,
+    speech: string,
+  ): string {
+    return `The No.${currentNum} Question and Speech are:
+    {
+    "Question": "${question}",
+    "Speech": "${speech}"
+    },
+    
+    As a highly objective and strict Table Topics Evaluator, please provide a detailed score for my speech, considering both the quality and the length of the speech. The score list should consist of values between 0 to 100 for each of the following criteria. Speeches significantly shorter than the expected 2 minutes or 200 words should receive lower scores. The criteria are:
+    
+    1). Relevance and Depth of Content: Evaluate the speech's relevance to the question and the depth of subject exploration. Off-topic, superficial, or overly brief content should be scored low.
+    
+    2). Organization and Structure: Assess the speech's organization and clarity. Disorganized, unclear, or excessively brief speeches that fail to adequately develop ideas should be penalized.
+    
+    3). Language Use: Consider the choice of vocabulary, grammar correctness, and rhetorical devices. Penalize poor language use, grammatical errors, and speeches that are too short to demonstrate language proficiency.
+    
+    4). Delivery Skills: Evaluate fluency, clarity, speaking pace, and the use of filler words. Also, consider the overall duration of the speech. Frequent use of filler words, pauses, or speeches that are too brief to demonstrate effective delivery skills should result in a lower score.
+    
+    The scoring format should be a JSON list with the scores for each criterion, with no additional comments. For example: [20, 40, 30, 50].
+    
+    Note: Please maintain strict and professional standards in your evaluation. Scores should be given based on the actual content, delivery, and length of the speech, with a critical and unbiased approach.
+    `;
+  }
+
+  static GetScorePrompt1(
     currentNum: number,
     question: string,
     speech: string,

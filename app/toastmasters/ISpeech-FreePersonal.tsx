@@ -120,7 +120,14 @@ export const FreePersonalQuestionPage = (props: {
   const [speechTime, setSpeechTime] = useState(
     questionItems[currentNum].SpeechTime,
   );
+
   const [recordingStatus, setRecordingStatus] = useState(StageStatus.Start);
+  // const [recordingStatus, setRecordingStatus] = useState(questionItems[currentNum].StageStatus);
+  // const onStageStatusChange = (newStatus: StageStatus): void => {
+  //   setRecordingStatus(newStatus)
+  //   questionItems[currentNum].StageStatus = newStatus;
+  // };
+
   const [recorder, setRecorder] = useState(
     new AudioRecorder(setRecordingStatus),
   );
@@ -797,6 +804,7 @@ export function FreePersonalReport(props: {
     SpeechTime: number = 0;
     Score: number = 0;
     Pace: number = 0;
+    Scores: { subject: string; score: number }[] = [];
   }
   const [barDatas, setBarDatas] = useState<IQuestionItemBarData[]>([]);
   const [averageData, setAverageData] = useState<IQuestionItemBarData>(
@@ -808,11 +816,10 @@ export function FreePersonalReport(props: {
       onRegenerateTotalEvaluation();
     }
 
-    if (barDatas.length === 0) {
-      const newBarDatas = getQuestionItemsBarData();
-      setBarDatas(newBarDatas);
-      calculateAndSetAverage(newBarDatas);
-    }
+    const newBarDatas = getQuestionItemsBarData();
+    setBarDatas(newBarDatas);
+    calculateAndSetAverage(newBarDatas);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const calculateAndSetAverage = (data: IQuestionItemBarData[]) => {
@@ -826,6 +833,27 @@ export function FreePersonalReport(props: {
     newAverage.Pace = Math.round(
       data.reduce((acc, current) => acc + current.Pace, 0) / data.length,
     );
+
+    const scoreRoles = ImpromptuSpeechPrompts.GetScoreRoles();
+    newAverage.Scores = [];
+    for (let i = 0; i < scoreRoles.length; i++) {
+      newAverage.Scores.push({ subject: scoreRoles[i], score: 0 });
+    }
+
+    for (let i = 0; i < questionItems.length; i++) {
+      const questionItem = questionItems[i];
+
+      for (let j = 0; j < questionItem.Scores.length; j++) {
+        newAverage.Scores[j].score += questionItem.Scores[j].score;
+      }
+    }
+
+    for (let j = 0; j < newAverage.Scores.length; j++) {
+      newAverage.Scores[j].score = Math.round(
+        newAverage.Scores[j].score / questionItems.length,
+      );
+    }
+
     setAverageData(newAverage);
   };
 
@@ -900,32 +928,6 @@ export function FreePersonalReport(props: {
       </Typography>
 
       {/* Summary Card */}
-      {/* <RehearsalReportCard title="Summary">
-        <CardContent>
-          <Typography variant="h5" component="div">
-            Congratulation! Great Job!
-          </Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-            <Typography variant="h6" color="text.primary">
-              {ChatUtility.formatTime(getTotalTime())}
-            </Typography>
-            <Typography variant="h6" color="text.primary">
-              {getQuestionAnswered()} /{" "}
-              {props.impromptuSpeechInput.QuestionNums}
-            </Typography>
-            <Typography variant="h6" color="text.primary">
-              {getAverageScore()}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography color="text.secondary">TotalTime</Typography>
-            <Typography color="text.secondary">Questions</Typography>
-            <Typography color="text.secondary">AverageScore</Typography>
-          </Box>
-        </CardContent>
-      </RehearsalReportCard> */}
-
-      {/* Summary Card */}
       <RehearsalReportCard title="Summary">
         <Typography
           variant="h5"
@@ -949,7 +951,7 @@ export function FreePersonalReport(props: {
             outerRadius={RadarOuterRadius}
             width={RadarWidth}
             height={RadarHeight}
-            data={questionItems[0].Scores}
+            data={averageData.Scores}
           >
             <PolarGrid />
             <PolarAngleAxis dataKey="subject" />
