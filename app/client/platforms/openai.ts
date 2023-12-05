@@ -74,10 +74,28 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
-      role: v.role,
-      content: v.content,
-    }));
+    const messages = options.messages.map((v) => {
+      let message: {
+        role: string;
+        content: { type: string; text?: string; image_url?: { url: string } }[];
+      } = {
+        role: v.role,
+        content: [],
+      };
+      message.content.push({
+        type: "text",
+        text: v.content,
+      });
+      if (v.image_url) {
+        message.content.push({
+          type: "image_url",
+          image_url: {
+            url: v.image_url,
+          },
+        });
+      }
+      return message;
+    });
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -95,6 +113,10 @@ export class ChatGPTApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
+      max_tokens:
+        modelConfig.model == "gpt-4-vision-preview"
+          ? modelConfig.max_tokens
+          : null,
       // max_tokens: Math.max(modelConfig.max_tokens, 1024),
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };

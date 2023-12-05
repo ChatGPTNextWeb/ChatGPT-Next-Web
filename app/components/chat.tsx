@@ -80,6 +80,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
+  LAST_INPUT_IMAGE_KEY,
   LAST_INPUT_KEY,
   Path,
   REQUEST_TIMEOUT_MS,
@@ -554,7 +555,8 @@ export function ChatActions(props: {
         />
 
         {config.pluginConfig.enable &&
-          /^gpt(?!.*03\d{2}$).*$/.test(currentModel) && (
+          /^gpt(?!.*03\d{2}$).*$/.test(currentModel) &&
+          currentModel != "gpt-4-vision-preview" && (
             <ChatAction
               onClick={switchUsePlugins}
               text={
@@ -778,8 +780,11 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(userInput, userImage.base64)
+      .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
+    localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
     setUserInput("");
     setPromptHints([]);
     setUserImage(null);
@@ -847,6 +852,7 @@ function _Chat() {
       !(e.metaKey || e.altKey || e.ctrlKey)
     ) {
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
+      setUserImage(localStorage.getItem(LAST_INPUT_IMAGE_KEY));
       e.preventDefault();
       return;
     }
@@ -1331,7 +1337,7 @@ function _Chat() {
                   )}
                   <div className={styles["chat-message-item"]}>
                     <Markdown
-                      imageBase64={isUser && userImage && userImage.base64}
+                      imageBase64={message.image_url}
                       content={message.content}
                       loading={
                         (message.preview || message.streaming) &&

@@ -274,7 +274,7 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string) {
+      async onUserInput(content: string, image_url?: string) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -284,8 +284,8 @@ export const useChatStore = createPersistStore(
         const userMessage: ChatMessage = createMessage({
           role: "user",
           content: userContent,
+          image_url: image_url,
         });
-
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
           streaming: true,
@@ -319,11 +319,11 @@ export const useChatStore = createPersistStore(
           session.messages.push(savedUserMessage);
           session.messages.push(botMessage);
         });
-
         if (
           config.pluginConfig.enable &&
           session.mask.usePlugins &&
-          allPlugins.length > 0
+          allPlugins.length > 0 &&
+          modelConfig.model != "gpt-4-vision-preview"
         ) {
           console.log("[ToolAgent] start");
           const pluginToolNames = allPlugins.map((m) => m.toolName);
