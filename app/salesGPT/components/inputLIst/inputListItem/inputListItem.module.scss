@@ -11,13 +11,13 @@
 @mixin sharedStyle {
   font-size: 1rem;
 
-  border: 0.5px solid var(--black);
+  border: 0.5px solid white;
   padding: 1rem;
 
   height: 48px;
 
-  color: var(--black);
-  background-color: var(--white);
+  color: black;
+  background-color: white;
 }
 
 input[type="text"].input {
@@ -29,8 +29,8 @@ input[type="text"].input {
 
   text-align: left;
 
-  background-color: var(--white);
-  color: var(--black);
+  background-color: white;
+  color: black;
 }
 
 .button-remove {
