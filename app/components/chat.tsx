@@ -35,8 +35,8 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 
-import FavoriteIcon from "../icons/Star.svg";
-import FavoriteBlackIcon from "../icons/Star2.svg";
+import FavoriteIcon from "../icons/star.svg";
+import FavoriteBlackIcon from "../icons/star2.svg";
 
 import {
   ChatMessage,
