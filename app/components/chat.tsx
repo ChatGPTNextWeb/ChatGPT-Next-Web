@@ -783,7 +783,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, userImage.base64)
+      .onUserInput(userInput, userImage?.base64)
       .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
