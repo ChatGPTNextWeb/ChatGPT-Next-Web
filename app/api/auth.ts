@@ -24,6 +24,12 @@ function parseApiKey(bearToken: string) {
   };
 }
 
+// New function to hash the hashedCode again for display purposes
+// Note: This add an extra layer of obfuscation to the console output
+function doubleHashForDisplay(hashedCode: string): string {
+  return md5.hash(hashedCode);
+}
+
 export function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
 
@@ -31,10 +37,11 @@ export function auth(req: NextRequest) {
   const { accessCode, apiKey } = parseApiKey(authToken);
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
+  const displayHashedCode = doubleHashForDisplay(hashedCode); // Hash the hashedCode again for display
 
   const serverConfig = getServerSideConfig();
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
-  console.log("[Auth] got access code:", hashedCode);
+  console.log("[Auth] got access code:", displayHashedCode);
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
 
