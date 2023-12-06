@@ -114,54 +114,46 @@ export const FreePersonalQuestionPage = (props: {
   // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
   // local state used for reder page
   const [currentNum, setCurrentNum] = useState(0);
+  const [questionItem, setQuestionItem] = useState<IQuestionItem>(
+    questionItems[currentNum],
+  );
+
   const [evaluating, setEvaluating] = useState(
-    Object.keys(questionItems[currentNum].Evaluations).length > 0,
+    Object.keys(questionItem.Evaluations).length > 0,
   );
-  const [speechTime, setSpeechTime] = useState(
-    questionItems[currentNum].SpeechTime,
+  const [speechTime, setSpeechTime] = useState(questionItem.SpeechTime);
+  const [recordingStatus, setRecordingStatus] = useState(
+    questionItem.StageStatus,
   );
-
-  const [recordingStatus, setRecordingStatus] = useState(StageStatus.Start);
-  // const [recordingStatus, setRecordingStatus] = useState(questionItems[currentNum].StageStatus);
-  // const onStageStatusChange = (newStatus: StageStatus): void => {
-  //   setRecordingStatus(newStatus)
-  //   questionItems[currentNum].StageStatus = newStatus;
-  // };
-
   const [recorder, setRecorder] = useState(
     new AudioRecorder(setRecordingStatus),
   );
 
-  // 当currentNum变化时, 更新初始值
-  useEffect(() => {
-    setEvaluating(
-      Object.keys(questionItems[currentNum].Evaluations).length > 0,
-    );
-    setSpeechTime(questionItems[currentNum].SpeechTime);
-    setRecordingStatus(StageStatus.Start);
-    recorder.resetRecording();
-  }, [currentNum, questionItems, recorder]);
+  // const [recorder, setRecorder] = useState(questionItem.Recorder);
+  // useEffect(() => {
+  //   recorder.setStatusChangeFunction(setRecordingStatus);
+  // }, [recorder])
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (recordingStatus === StageStatus.Recording) {
       intervalId = setInterval(() => {
         setSpeechTime((prevTime) => prevTime + 1); // 用于刷新页面
-        questionItems[currentNum].SpeechTime = speechTime; // 用于保存状态
+        questionItem.SpeechTime = speechTime; // 用于保存状态
       }, 1000);
     }
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [currentNum, questionItems, recordingStatus, speechTime]);
+  }, [currentNum, questionItem, recordingStatus, speechTime]);
 
   const appendUserInput = (newState: string): void => {
     // 每次按下button时 换行显示
-    if (questionItems[currentNum].Speech === "") {
-      questionItems[currentNum].Speech = newState;
+    if (questionItem.Speech === "") {
+      questionItem.Speech = newState;
     } else {
-      questionItems[currentNum].Speech += "\n" + newState;
+      questionItem.Speech += "\n" + newState;
     }
     console.log("newState: ", newState);
   };
@@ -177,8 +169,7 @@ export const FreePersonalQuestionPage = (props: {
   };
 
   const onPlay = () => {
-    questionItems[currentNum].SpeechAudio = recorder.getAudioData();
-    const audioData = questionItems[currentNum].SpeechAudio;
+    const audioData = questionItem.SpeechAudio;
     if (audioData) {
       const audioUrl = URL.createObjectURL(audioData);
       const audio = new Audio(audioUrl);
@@ -188,13 +179,13 @@ export const FreePersonalQuestionPage = (props: {
 
   const onReset = () => {
     // 清存储
-    // questionItems[currentNum].ResetCurrent // TODO:Error: is not a function
-    questionItems[currentNum].Speech = "";
-    questionItems[currentNum].SpeechTime = 0;
-    questionItems[currentNum].SpeechAudio = null;
-    questionItems[currentNum].Score = 0;
-    questionItems[currentNum].Scores = [];
-    questionItems[currentNum].Evaluations = {};
+    // questionItem.ResetCurrent // TODO:Error: is not a function
+    questionItem.Speech = "";
+    questionItem.SpeechTime = 0;
+    questionItem.SpeechAudio = null;
+    questionItem.Score = 0;
+    questionItem.Scores = [];
+    questionItem.Evaluations = {};
 
     // 改状态
     setSpeechTime(0);
@@ -210,20 +201,21 @@ export const FreePersonalQuestionPage = (props: {
   // TODO: 打分还不太准确
   const onScore = async () => {
     recorder.stopRecording();
+    questionItem.SpeechAudio = recorder.getAudioData();
 
-    // questionItems[currentNum].Speech = questionItems[currentNum].SampleSpeech
-    // questionItems[currentNum].Speech = "it is nothing, uh, um, oh change to another questions"
-    // questionItems[currentNum].Speech = "things have change a lot by internet, uh, um, oh a lot"
-    // questionItems[currentNum].Speech = "The internet has revolutionized communication and connectivity, uh, um, oh in ways we could have never imagined. "
-    console.log("onScore: Speech: ", questionItems[currentNum].Speech);
+    // questionItem.Speech = questionItem.SampleSpeech
+    // questionItem.Speech = "it is nothing, uh, um, oh change to another questions"
+    // questionItem.Speech = "things have change a lot by internet, uh, um, oh a lot"
+    // questionItem.Speech = "The internet has revolutionized communication and connectivity, uh, um, oh in ways we could have never imagined. "
+    console.log("onScore: Speech: ", questionItem.Speech);
 
     // reset status from 0
     chatStore.resetSessionFromIndex(2);
 
     let ask = ImpromptuSpeechPrompts.GetScorePrompt(
       currentNum,
-      questionItems[currentNum].Question,
-      questionItems[currentNum].Speech,
+      questionItem.Question,
+      questionItem.Speech,
     );
     chatStore.onUserInput(ask);
 
@@ -251,8 +243,8 @@ export const FreePersonalQuestionPage = (props: {
 
     chatStore.updateCurrentSession(
       (session) => (
-        (questionItems[currentNum].Score = averageScore),
-        (questionItems[currentNum].Scores = scoresRecord)
+        (questionItem.Score = averageScore),
+        (questionItem.Scores = scoresRecord)
       ),
     );
   };
@@ -264,13 +256,9 @@ export const FreePersonalQuestionPage = (props: {
       So we can get linear time model
     */
     if (timeSeconds <= 60) return timeSeconds;
-
-    if (timeSeconds <= 90) return (2 / 3) * timeSeconds + 20;
-
-    if (timeSeconds <= 120) return (2 / 3) * timeSeconds + 20;
-
-    if (timeSeconds <= 150) return ((150 - timeSeconds) * 10) / 3;
-
+    if (timeSeconds <= 90) return Math.round((2 / 3) * timeSeconds + 20);
+    if (timeSeconds <= 120) return Math.round((2 / 3) * timeSeconds + 20);
+    if (timeSeconds <= 150) return Math.round(((150 - timeSeconds) * 10) / 3);
     return 0;
   };
 
@@ -278,17 +266,17 @@ export const FreePersonalQuestionPage = (props: {
 
   const onRegenerateSampleSpeech = async () => {
     chatStore.updateCurrentSession(
-      (session) => (questionItems[currentNum].SampleSpeech = ""),
+      (session) => (questionItem.SampleSpeech = ""),
     );
     const ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(
       currentNum,
-      questionItems[currentNum].Question,
+      questionItem.Question,
     );
     chatStore.onUserInput(ask);
     await chatStore.getIsFinished();
     const response = session.messages[session.messages.length - 1].content;
     chatStore.updateCurrentSession(
-      (session) => (questionItems[currentNum].SampleSpeech = response),
+      (session) => (questionItem.SampleSpeech = response),
     );
     chatStore.resetSessionFromIndex(2);
   };
@@ -297,29 +285,26 @@ export const FreePersonalQuestionPage = (props: {
     setEvaluating(true);
 
     chatStore.updateCurrentSession(
-      (session) => delete questionItems[currentNum].Evaluations[role],
+      (session) => delete questionItem.Evaluations[role],
     );
     let propmts = ImpromptuSpeechPrompts.GetEvaluationPrompts(
       currentNum,
-      questionItems[currentNum].Question,
-      questionItems[currentNum].Speech,
+      questionItem.Question,
+      questionItem.Speech,
     );
 
     chatStore.onUserInput(propmts[role]);
     await chatStore.getIsFinished();
     const response = session.messages[session.messages.length - 1].content;
     chatStore.updateCurrentSession(
-      (session) => (questionItems[currentNum].Evaluations[role] = response),
+      (session) => (questionItem.Evaluations[role] = response),
     );
     chatStore.resetSessionFromIndex(2);
     setEvaluating(false);
   };
 
   const onEvaluation = async (event: { preventDefault: () => void }) => {
-    if (
-      questionItems[currentNum].Speech === "" ||
-      questionItems[currentNum].Speech === undefined
-    ) {
+    if (questionItem.Speech === "" || questionItem.Speech === undefined) {
       event.preventDefault();
       showToast("Speech is empty");
       return;
@@ -329,13 +314,13 @@ export const FreePersonalQuestionPage = (props: {
 
     let propmts = ImpromptuSpeechPrompts.GetEvaluationPrompts(
       currentNum,
-      questionItems[currentNum].Question,
-      questionItems[currentNum].Speech,
+      questionItem.Question,
+      questionItem.Speech,
     );
 
     // reset
     chatStore.updateCurrentSession(
-      (session) => (questionItems[currentNum].Evaluations = {}),
+      (session) => (questionItem.Evaluations = {}),
     );
 
     for (const role of evaluationRoles) {
@@ -344,7 +329,7 @@ export const FreePersonalQuestionPage = (props: {
       const response = session.messages[session.messages.length - 1].content;
       // console.log("response: ", response);
       chatStore.updateCurrentSession(
-        (session) => (questionItems[currentNum].Evaluations[role] = response),
+        (session) => (questionItem.Evaluations[role] = response),
       );
     }
     await chatStore.getIsFinished();
@@ -375,13 +360,30 @@ export const FreePersonalQuestionPage = (props: {
 
   const onPreviousQuestion = () => {
     if (currentNum > 0) {
+      // then transform to next
       setCurrentNum(currentNum - 1);
+      updateQuestionItem(currentNum - 1);
     }
   };
   const onNextQuestion = () => {
     if (currentNum < questionNums - 1) {
       setCurrentNum(currentNum + 1);
+      updateQuestionItem(currentNum + 1);
     }
+  };
+
+  const updateQuestionItem = (nextNum: number) => {
+    // 1st save current status
+    questionItem.StageStatus = recordingStatus;
+    // questionItem.SpeechAudio = recorder.getAudioData();
+    recorder.resetRecording();
+
+    // 当currentNum变化时, 更新初始值
+    setQuestionItem(questionItems[nextNum]);
+    setEvaluating(Object.keys(questionItems[nextNum].Evaluations).length > 0);
+    setSpeechTime(questionItems[nextNum].SpeechTime);
+
+    setRecordingStatus(questionItems[nextNum].StageStatus);
   };
 
   const onReport = () => {
@@ -395,10 +397,20 @@ export const FreePersonalQuestionPage = (props: {
   const onQuestionEdit = async () => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
-      questionItems[currentNum].Question,
+      questionItem.Question,
     );
     chatStore.updateCurrentSession((session) => {
-      questionItems[currentNum].Question = newMessage;
+      questionItem.Question = newMessage;
+    });
+  };
+
+  const onSampleSpeechEdit = async () => {
+    const newMessage = await showPrompt(
+      Locale.Chat.Actions.Edit,
+      questionItem.SampleSpeech,
+    );
+    chatStore.updateCurrentSession((session) => {
+      questionItem.SampleSpeech = newMessage;
     });
   };
 
@@ -434,10 +446,10 @@ export const FreePersonalQuestionPage = (props: {
       <BorderLine></BorderLine>
 
       <p className={styles.questionText} onClick={onQuestionEdit}>
-        {questionItems[currentNum].Question}
+        {questionItem.Question}
       </p>
       <div className={styles.timer}>
-        {/* TODO: 为啥 questionItems[currentNum].SpeechTime 也会刷新? */}
+        {/* TODO: 为啥 questionItem.SpeechTime 也会刷新? */}
         <span>{formatTime(speechTime)} / 2:00</span>
       </div>
 
@@ -453,7 +465,7 @@ export const FreePersonalQuestionPage = (props: {
               title="Play"
               onClick={() =>
                 speechSynthesizer.startSynthesize(
-                  questionItems[currentNum].Question,
+                  questionItem.Question,
                   session.mask.lang,
                 )
               }
@@ -589,9 +601,7 @@ export const FreePersonalQuestionPage = (props: {
               }}
               onClick={onPlay}
             >
-              <Typography variant="subtitle1">
-                {questionItems[currentNum].Score}
-              </Typography>
+              <Typography variant="subtitle1">{questionItem.Score}</Typography>
             </IconButtonMui>
           </Stack>
         )}
@@ -605,9 +615,10 @@ export const FreePersonalQuestionPage = (props: {
         </AccordionSummary>
         <AccordionDetails style={{ textAlign: "left" }}>
           <Markdown
-            content={questionItems[currentNum].SampleSpeech}
+            content={questionItem.SampleSpeech}
             fontSize={config.fontSize}
             parentRef={scrollRef}
+            onClick={onSampleSpeechEdit}
           />
           <Stack
             direction="row"
@@ -619,7 +630,7 @@ export const FreePersonalQuestionPage = (props: {
               title="play"
               onClick={() =>
                 speechSynthesizer.startSynthesize(
-                  questionItems[currentNum].SampleSpeech,
+                  questionItem.SampleSpeech,
                   session.mask.lang,
                 )
               }
@@ -670,14 +681,14 @@ export const FreePersonalQuestionPage = (props: {
                 </TabList>
               </Box>
               <TabPanel value="Scores">
-                {questionItems[currentNum].Scores.length > 0 && (
+                {questionItem.Scores.length > 0 && (
                   <RadarChart
                     cx={250}
                     cy={150}
                     outerRadius={100}
                     width={500}
                     height={300}
-                    data={questionItems[currentNum].Scores}
+                    data={questionItem.Scores}
                   >
                     <PolarGrid />
                     <PolarAngleAxis dataKey="subject" />
@@ -699,7 +710,7 @@ export const FreePersonalQuestionPage = (props: {
                       fill="green"
                       style={{ fontSize: 50 }} // 设置字体大小为 30
                     >
-                      {questionItems[currentNum].Score}
+                      {questionItem.Score}
                     </text>
                   </RadarChart>
                 )}
@@ -715,10 +726,10 @@ export const FreePersonalQuestionPage = (props: {
               </TabPanel>
               {evaluationRoles.map((role, index) => (
                 <TabPanel key={index} value={role}>
-                  {role in questionItems[currentNum].Evaluations ? (
+                  {role in questionItem.Evaluations ? (
                     <Typography style={{ textAlign: "left" }}>
                       <ReactMarkdown>
-                        {questionItems[currentNum].Evaluations[role]}
+                        {questionItem.Evaluations[role]}
                       </ReactMarkdown>
                       <Stack
                         direction="row"
@@ -730,7 +741,7 @@ export const FreePersonalQuestionPage = (props: {
                           aria-label="play"
                           onClick={() =>
                             speechSynthesizer.startSynthesize(
-                              questionItems[currentNum].Evaluations[role],
+                              questionItem.Evaluations[role],
                               session.mask.lang,
                             )
                           }

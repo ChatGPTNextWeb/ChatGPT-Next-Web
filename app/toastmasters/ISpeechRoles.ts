@@ -1,4 +1,7 @@
-import { StageStatus } from "../cognitive/speech-audioRecorderClass";
+import {
+  AudioRecorder,
+  StageStatus,
+} from "../cognitive/speech-audioRecorderClass";
 import { ToastmastersRoles } from "./roles";
 
 // TODO:
@@ -40,7 +43,9 @@ export class IQuestionItem {
   Speech: string = "";
   SpeechTime: number = 0;
   SpeechAudio: Blob | null = null;
+
   StageStatus = StageStatus.Start;
+  // Recorder: AudioRecorder = new AudioRecorder();
 
   Score: number = 0;
   Scores: { subject: string; score: number }[] = [];

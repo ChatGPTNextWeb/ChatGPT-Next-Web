@@ -3,6 +3,12 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v5.20231206-2
+ - Time score fix
+
+## v5.20231206
+ - Add Impromptu Speech Copilot to zcareers
+
 ## v5.20231204
  - Add Impromptu Speech Copilot
 

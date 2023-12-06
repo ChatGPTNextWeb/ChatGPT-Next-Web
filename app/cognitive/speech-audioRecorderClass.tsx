@@ -21,9 +21,16 @@ export class AudioRecorder {
     this.onStatusChange = onStatusChange;
   }
 
+  // recorder.setStatusChangeFunction is not a function
+  // public setStatusChangeFunction = (
+  //   onStatusChange: (status: StageStatus) => void,
+  // ) => {
+  //   this.onStatusChange = onStatusChange;
+  // };
+
   private setStageStatus = (newStatus: StageStatus): void => {
     this.stageStatus = newStatus;
-    this.onStatusChange(newStatus);
+    this.onStatusChange!(newStatus);
   };
 
   public startRecording = async (): Promise<void> => {
