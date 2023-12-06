@@ -22,7 +22,8 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
-import DeleteIcon from "../icons/clear.svg";
+import ClearIcon from "../icons/clear.svg";
+import CloseIcon from "../icons/close.svg";
 import PinIcon from "../icons/pin.svg";
 import EditIcon from "../icons/rename.svg";
 import ConfirmIcon from "../icons/confirm.svg";
@@ -567,21 +568,22 @@ export function ChatActions(props: {
               icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
             />
           )}
-
-        <ChatAction
-          onClick={selectImage}
-          text="选择图片"
-          icon={<UploadIcon />}
-          innerNode={
-            <input
-              type="file"
-              accept=".png,.jpg,.webp,.jpeg"
-              id="chat-image-file-select-upload"
-              style={{ display: "none" }}
-              onChange={onImageSelected}
-            />
-          }
-        />
+        {currentModel == "gpt-4-vision-preview" && (
+          <ChatAction
+            onClick={selectImage}
+            text="选择图片"
+            icon={<UploadIcon />}
+            innerNode={
+              <input
+                type="file"
+                accept=".png,.jpg,.webp,.jpeg"
+                id="chat-image-file-select-upload"
+                style={{ display: "none" }}
+                onChange={onImageSelected}
+              />
+            }
+          />
+        )}
 
         {showModelSelector && (
           <Selector
@@ -1289,7 +1291,7 @@ function _Chat() {
 
                               <ChatAction
                                 text={Locale.Chat.Actions.Delete}
-                                icon={<DeleteIcon />}
+                                icon={<ClearIcon />}
                                 onClick={() => onDelete(message.id ?? i)}
                               />
 
@@ -1439,7 +1441,7 @@ function _Chat() {
                   setUserImage(null);
                 }}
               >
-                X
+                <CloseIcon />
               </button>
             </div>
           )}

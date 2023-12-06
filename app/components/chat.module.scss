@@ -556,6 +556,7 @@
 }
 
 .chat-input-image-close {
+  background-color: white;
   fill: black;
   border: none;
   align-items: center;
@@ -563,9 +564,12 @@
   display: flex;
   margin: 0px;
   padding: 0px;
-  background-color: white;
   width: 22px;
   height: 48px;
+}
+
+.chat-input-image-close:hover {
+  background-color: #f3f3f3;
 }
 
 @media only screen and (max-width: 600px) {
