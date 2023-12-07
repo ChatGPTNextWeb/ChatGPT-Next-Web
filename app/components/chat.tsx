@@ -859,7 +859,7 @@ function _Chat() {
       return;
     }
     if (shouldSubmit(e) && promptHints.length === 0) {
-      doSubmit(userInput);
+      doSubmit(userInput, userImage);
       e.preventDefault();
     }
   };
