@@ -99,15 +99,8 @@ class SpeechRecognizer {
     this.recognizer.startContinuousRecognitionAsync();
     this.recognizer.recognized = (s, e) => {
       if (e.result.reason === sdk.ResultReason.RecognizedSpeech) {
-        // console.log(`Recognized: ${e.result.text}`);
-        // 每句停顿 加一个换行
-        if (this.recognizedText === "") {
-          this.recognizedText = e.result.text;
-        } else {
-          this.recognizedText += "\n" + e.result.text;
-        }
-
-        updateParentState(this.recognizedText);
+        // console.log(`${e.result.text}`);
+        updateParentState(e.result.text);
       }
     };
   }

@@ -148,6 +148,23 @@ export const FreePersonalQuestionPage = (props: {
     };
   }, [currentNum, questionItem, recordingStatus, speechTime]);
 
+  // useEffect(() => {
+  //   let intervalId: NodeJS.Timeout;
+  //   if (recordingStatus === StageStatus.Recording) {
+  //     intervalId = setInterval(() => {
+  //       chatStore.updateCurrentSession(
+  //         (session) => (
+  //           (questionItem.SpeechTime += 1)
+  //         ),
+  //       );
+  //     }, 1000);
+  //   }
+
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [chatStore, questionItem, recordingStatus]);
+
   const appendUserInput = (newState: string): void => {
     // 每次按下button时 换行显示
     if (questionItem.Speech === "") {
@@ -155,7 +172,6 @@ export const FreePersonalQuestionPage = (props: {
     } else {
       questionItem.Speech += "\n" + newState;
     }
-    console.log("newState: ", newState);
   };
 
   const onRecord = () => {
@@ -169,8 +185,8 @@ export const FreePersonalQuestionPage = (props: {
   };
 
   const onPlay = () => {
-    const audioData = questionItem.SpeechAudio;
-    if (audioData) {
+    const audioData = questionItem.SpeechAudio as Blob;
+    if (audioData && audioData.size > 0) {
       const audioUrl = URL.createObjectURL(audioData);
       const audio = new Audio(audioUrl);
       audio.play();
@@ -186,6 +202,7 @@ export const FreePersonalQuestionPage = (props: {
     questionItem.Score = 0;
     questionItem.Scores = [];
     questionItem.Evaluations = {};
+    // questionItem.StageStatus = StageStatus.Start;
 
     // 改状态
     setSpeechTime(0);
@@ -230,7 +247,7 @@ export const FreePersonalQuestionPage = (props: {
     }
 
     scores.push(getTimeScore(speechTime));
-    console.log("all scores: ", scores);
+    console.log("onScore: all scores: ", scores);
     const averageScore = Math.round(
       scores.reduce((acc, val) => acc + val, 0) / scores.length,
     );
