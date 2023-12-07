@@ -123,7 +123,7 @@ function _MarkDownContent(props: { content: string; imageBase64?: string }) {
   );
 
   return (
-    <div>
+    <div style={{ fontSize: "inherit" }}>
       {props.imageBase64 && <img src={props.imageBase64} alt="" />}
       <ReactMarkdown
         remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
@@ -167,7 +167,7 @@ export function Markdown(
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
-
+  console.log("[fontSize]", props.fontSize);
   return (
     <div
       className="markdown-body"
