@@ -167,7 +167,6 @@ export function Markdown(
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
-  console.log("[fontSize]", props.fontSize);
   return (
     <div
       className="markdown-body"
