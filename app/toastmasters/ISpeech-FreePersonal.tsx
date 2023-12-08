@@ -62,6 +62,7 @@ import {
 
 import {
   IQuestionItem,
+  StageStatus,
   ImpromptuSpeechInput,
   ImpromptuSpeechPrompts,
   ImpromptuSpeechRoles,
@@ -70,10 +71,7 @@ import {
 } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
-import {
-  AudioRecorder,
-  StageStatus,
-} from "../cognitive/speech-audioRecorderClass";
+import { AudioRecorder } from "../cognitive/speech-audioRecorderClass";
 import { useAudioRecorder } from "../cognitive/speech-audioRecorder";
 
 import _ from "lodash";
@@ -93,15 +91,116 @@ import styles from "./ISpeech.module.scss";
 import GaugeChart from "./ISpeech-Common";
 
 export const FreePersonalQuestionPage = (props: {
-  scrollRef: React.RefObject<HTMLDivElement>;
   impromptuSpeechInput: ImpromptuSpeechInput;
 }) => {
-  let { scrollRef, impromptuSpeechInput } = props;
+  let { impromptuSpeechInput } = props;
   const questionItems = impromptuSpeechInput.QuestionItems;
   const questionNums = questionItems.length;
 
+  const chatStore = useChatStore();
+
+  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
+  // local state used for reder page
+  const [currentNum, setCurrentNum] = useState(0);
+  const [questionItem, setQuestionItem] = useState<IQuestionItem>(
+    questionItems[currentNum],
+  );
+
+  // put recorder here, so that it can be reset when change question
+  const [recorder, setRecorder] = useState<AudioRecorder>(new AudioRecorder());
+  const onPreviousQuestion = () => {
+    if (currentNum > 0) {
+      setCurrentNum((prevNum) => {
+        const newNum = prevNum - 1;
+        setQuestionItem(questionItems[newNum]);
+        recorder.resetRecording();
+        setRecorder(new AudioRecorder());
+        return newNum;
+      });
+    }
+  };
+
+  const onNextQuestion = () => {
+    if (currentNum < questionNums - 1) {
+      setCurrentNum((prevNum) => {
+        const newNum = prevNum + 1;
+        setQuestionItem(questionItems[newNum]);
+        recorder.resetRecording();
+        setRecorder(new AudioRecorder());
+        return newNum;
+      });
+    }
+  };
+
+  const onReturn = () => {
+    chatStore.updateCurrentSession(
+      (session) =>
+        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Start),
+    );
+  };
+
+  const onReport = () => {
+    chatStore.updateCurrentSession(
+      (session) =>
+        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Report),
+    );
+    impromptuSpeechInput.EndTime = new Date().getTime();
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.navigation}>
+        <button className={styles.navButton} onClick={onReturn}>
+          {" "}
+          ← Return
+        </button>
+        <ButtonGroup
+          variant="outlined"
+          aria-label="radius button group"
+          sx={{
+            "--ButtonGroup-radius": "40px",
+            border: "1px solid #ccc", // 添加这行来直接设置边框
+            "& button": {
+              // 添加这个样式来改变按钮内的文本样式
+              textTransform: "none",
+            },
+          }}
+        >
+          <Button onClick={onPreviousQuestion}>{"<"}</Button>
+          <Button>{`Question ${currentNum + 1} / ${questionNums}`}</Button>
+          <Button onClick={onNextQuestion}>{">"}</Button>
+        </ButtonGroup>
+
+        <button className={styles.capsuleButton} onClick={onReport}>
+          End & Report
+        </button>
+      </div>
+
+      <BorderLine></BorderLine>
+
+      <FreePersonalQuestionPageBody
+        impromptuSpeechInput={impromptuSpeechInput}
+        currentNum={currentNum}
+        questionItem={questionItem}
+        recorder={recorder}
+      ></FreePersonalQuestionPageBody>
+    </div>
+  );
+};
+
+export const FreePersonalQuestionPageBody = (props: {
+  impromptuSpeechInput: ImpromptuSpeechInput;
+  currentNum: number;
+  questionItem: IQuestionItem;
+  recorder: AudioRecorder;
+}) => {
+  let { impromptuSpeechInput, currentNum, questionItem, recorder } = props;
+
   const [evaluationRole, setEvaluationRole] = React.useState<string>(
     ImpromptuSpeechRoles.Scores,
+  );
+  const [evaluating, setEvaluating] = useState(
+    Object.keys(questionItem.Evaluations).length > 0,
   );
 
   const chatStore = useChatStore();
@@ -111,120 +210,95 @@ export const FreePersonalQuestionPage = (props: {
   ]);
   const config = useAppConfig();
 
-  // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
-  // local state used for reder page
-  const [currentNum, setCurrentNum] = useState(0);
-  const [questionItem, setQuestionItem] = useState<IQuestionItem>(
-    questionItems[currentNum],
-  );
-
-  const [evaluating, setEvaluating] = useState(
-    Object.keys(questionItem.Evaluations).length > 0,
-  );
-  const [speechTime, setSpeechTime] = useState(questionItem.SpeechTime);
-  const [recordingStatus, setRecordingStatus] = useState(
-    questionItem.StageStatus,
-  );
-  const [recorder, setRecorder] = useState(
-    new AudioRecorder(setRecordingStatus),
-  );
-
-  // const [recorder, setRecorder] = useState(questionItem.Recorder);
-  // useEffect(() => {
-  //   recorder.setStatusChangeFunction(setRecordingStatus);
-  // }, [recorder])
+  const onStatusChange = (status: StageStatus) => {
+    chatStore.updateCurrentSession(
+      (session) => (questionItem.StageStatus = status),
+    );
+  };
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
-    if (recordingStatus === StageStatus.Recording) {
+    if (questionItem.StageStatus === StageStatus.Recording) {
       intervalId = setInterval(() => {
-        setSpeechTime((prevTime) => prevTime + 1); // 用于刷新页面
-        questionItem.SpeechTime = speechTime; // 用于保存状态
+        chatStore.updateCurrentSession(
+          (session) => (questionItem.SpeechTime += 1),
+        );
       }, 1000);
     }
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [currentNum, questionItem, recordingStatus, speechTime]);
-
-  // useEffect(() => {
-  //   let intervalId: NodeJS.Timeout;
-  //   if (recordingStatus === StageStatus.Recording) {
-  //     intervalId = setInterval(() => {
-  //       chatStore.updateCurrentSession(
-  //         (session) => (
-  //           (questionItem.SpeechTime += 1)
-  //         ),
-  //       );
-  //     }, 1000);
-  //   }
-
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, [chatStore, questionItem, recordingStatus]);
+  }, [chatStore, questionItem, questionItem.StageStatus]);
 
   const appendUserInput = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (questionItem.Speech === "") {
-      questionItem.Speech = newState;
-    } else {
-      questionItem.Speech += "\n" + newState;
-    }
+    chatStore.updateCurrentSession(
+      (session) => (questionItem.Speech += newState + " "),
+    );
   };
 
-  const onRecord = () => {
-    recorder.startRecording();
+  const onRecord = async () => {
+    await recorder.startRecording();
     speechRecognizer.startRecording(appendUserInput, SpeechDefaultLangugage);
+    onStatusChange(StageStatus.Recording);
   };
 
   const onPause = () => {
     recorder.pauseRecording();
     speechRecognizer.stopRecording();
+    onStatusChange(StageStatus.Paused);
   };
 
   const onPlay = () => {
-    const audioData = questionItem.SpeechAudio as Blob;
-    if (audioData && audioData.size > 0) {
-      const audioUrl = URL.createObjectURL(audioData);
-      const audio = new Audio(audioUrl);
-      audio.play();
+    if (questionItem.SpeechAudio == "") {
+      showToast("SpeechAudio is empty");
+      return;
     }
+    const audio = new Audio(questionItem.SpeechAudio);
+    audio.play();
   };
 
-  const onReset = () => {
+  const onReset = async () => {
     // 清存储
-    // questionItem.ResetCurrent // TODO:Error: is not a function
-    questionItem.Speech = "";
-    questionItem.SpeechTime = 0;
-    questionItem.SpeechAudio = null;
-    questionItem.Score = 0;
-    questionItem.Scores = [];
-    questionItem.Evaluations = {};
-    // questionItem.StageStatus = StageStatus.Start;
+    questionItem.reset();
+
+    recorder.resetRecording();
+    onStatusChange(StageStatus.Start);
 
     // 改状态
-    setSpeechTime(0);
-    setRecordingStatus(StageStatus.Start);
     setEvaluating(false);
-    recorder.resetRecording();
   };
 
-  const onStop = () => {
-    recorder.stopRecording();
+  const onRestartRecord = async () => {
+    // 清存储
+    questionItem.reset();
+    recorder.resetRecording();
+
+    onRecord();
   };
 
   // TODO: 打分还不太准确
   const onScore = async () => {
-    recorder.stopRecording();
-    questionItem.SpeechAudio = recorder.getAudioData();
+    await recorder.stopRecording();
+    onStatusChange(StageStatus.Stopped);
 
     // questionItem.Speech = questionItem.SampleSpeech
     // questionItem.Speech = "it is nothing, uh, um, oh change to another questions"
     // questionItem.Speech = "things have change a lot by internet, uh, um, oh a lot"
     // questionItem.Speech = "The internet has revolutionized communication and connectivity, uh, um, oh in ways we could have never imagined. "
     console.log("onScore: Speech: ", questionItem.Speech);
+
+    if (questionItem.Speech === "") {
+      showToast("Speech is empty");
+      return;
+    }
+
+    const audioData = recorder.getAudioData();
+    if (audioData.size <= 0) {
+      showToast("audioData is empty");
+      return;
+    }
+    const audioUrl = URL.createObjectURL(audioData);
 
     // reset status from 0
     chatStore.resetSessionFromIndex(2);
@@ -246,7 +320,7 @@ export const FreePersonalQuestionPage = (props: {
       return;
     }
 
-    scores.push(getTimeScore(speechTime));
+    scores.push(getTimeScore(questionItem.SpeechTime));
     console.log("onScore: all scores: ", scores);
     const averageScore = Math.round(
       scores.reduce((acc, val) => acc + val, 0) / scores.length,
@@ -261,7 +335,8 @@ export const FreePersonalQuestionPage = (props: {
     chatStore.updateCurrentSession(
       (session) => (
         (questionItem.Score = averageScore),
-        (questionItem.Scores = scoresRecord)
+        (questionItem.Scores = scoresRecord),
+        (questionItem.SpeechAudio = audioUrl)
       ),
     );
   };
@@ -368,110 +443,30 @@ export const FreePersonalQuestionPage = (props: {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const onReturn = () => {
-    chatStore.updateCurrentSession(
-      (session) =>
-        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Start),
-    );
-  };
-
-  const onPreviousQuestion = () => {
-    if (currentNum > 0) {
-      // then transform to next
-      setCurrentNum(currentNum - 1);
-      updateQuestionItem(currentNum - 1);
-    }
-  };
-  const onNextQuestion = () => {
-    if (currentNum < questionNums - 1) {
-      setCurrentNum(currentNum + 1);
-      updateQuestionItem(currentNum + 1);
-    }
-  };
-
-  const updateQuestionItem = (nextNum: number) => {
-    // 1st save current status
-    questionItem.StageStatus = recordingStatus;
-    // questionItem.SpeechAudio = recorder.getAudioData();
-    recorder.resetRecording();
-
-    // 当currentNum变化时, 更新初始值
-    setQuestionItem(questionItems[nextNum]);
-    setEvaluating(Object.keys(questionItems[nextNum].Evaluations).length > 0);
-    setSpeechTime(questionItems[nextNum].SpeechTime);
-
-    setRecordingStatus(questionItems[nextNum].StageStatus);
-  };
-
-  const onReport = () => {
-    chatStore.updateCurrentSession(
-      (session) =>
-        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Report),
-    );
-    impromptuSpeechInput.EndTime = new Date().getTime();
-  };
-
-  const onQuestionEdit = async () => {
-    const newMessage = await showPrompt(
-      Locale.Chat.Actions.Edit,
-      questionItem.Question,
-    );
-    chatStore.updateCurrentSession((session) => {
-      questionItem.Question = newMessage;
-    });
-  };
-
-  const onSampleSpeechEdit = async () => {
-    const newMessage = await showPrompt(
-      Locale.Chat.Actions.Edit,
-      questionItem.SampleSpeech,
-    );
-    chatStore.updateCurrentSession((session) => {
-      questionItem.SampleSpeech = newMessage;
-    });
-  };
-
   return (
-    <div className={styles.container}>
-      <div className={styles.navigation}>
-        <button className={styles.navButton} onClick={onReturn}>
-          {" "}
-          ← Return
-        </button>
-        <ButtonGroup
-          variant="outlined"
-          aria-label="radius button group"
-          sx={{
-            "--ButtonGroup-radius": "40px",
-            border: "1px solid #ccc", // 添加这行来直接设置边框
-            "& button": {
-              // 添加这个样式来改变按钮内的文本样式
-              textTransform: "none",
-            },
-          }}
-        >
-          <Button onClick={onPreviousQuestion}>{"<"}</Button>
-          <Button>{`Question ${currentNum + 1} / ${questionNums}`}</Button>
-          <Button onClick={onNextQuestion}>{">"}</Button>
-        </ButtonGroup>
-
-        <button className={styles.capsuleButton} onClick={onReport}>
-          End & Report
-        </button>
-      </div>
-
-      <BorderLine></BorderLine>
-
-      <p className={styles.questionText} onClick={onQuestionEdit}>
+    <div>
+      <p
+        className={styles.questionText}
+        onClick={async () => {
+          const newMessage = await showPrompt(
+            Locale.Chat.Actions.Edit,
+            questionItem.Question,
+          );
+          chatStore.updateCurrentSession((session) => {
+            questionItem.Question = newMessage;
+          });
+        }}
+      >
         {questionItem.Question}
       </p>
       <div className={styles.timer}>
         {/* TODO: 为啥 questionItem.SpeechTime 也会刷新? */}
-        <span>{formatTime(speechTime)} / 2:00</span>
+        <span>{formatTime(questionItem.SpeechTime)} / 2:00</span>
       </div>
 
-      <form onSubmit={(event) => event.preventDefault()}>
-        {recordingStatus === StageStatus.Start && (
+      {/* <form onSubmit={(event) => event.preventDefault()}> */}
+      <form>
+        {questionItem.StageStatus === StageStatus.Start && (
           <Stack
             direction="row"
             spacing={5}
@@ -503,7 +498,7 @@ export const FreePersonalQuestionPage = (props: {
           </Stack>
         )}
 
-        {recordingStatus === StageStatus.Recording && (
+        {questionItem.StageStatus === StageStatus.Recording && (
           <Stack
             direction="row"
             spacing={5}
@@ -524,7 +519,7 @@ export const FreePersonalQuestionPage = (props: {
           </Stack>
         )}
 
-        {recordingStatus === StageStatus.Paused && (
+        {questionItem.StageStatus === StageStatus.Paused && (
           <Stack
             direction="row"
             spacing={5}
@@ -570,7 +565,7 @@ export const FreePersonalQuestionPage = (props: {
           </Stack>
         )}
 
-        {recordingStatus === StageStatus.Stopped && (
+        {questionItem.StageStatus === StageStatus.Stopped && (
           <Stack
             direction="row"
             spacing={5}
@@ -578,29 +573,27 @@ export const FreePersonalQuestionPage = (props: {
             alignItems="center"
           >
             <IconButtonMui
-              title="Reset"
-              color="primary"
-              sx={{
-                color: "red",
-              }}
-              onClick={onReset}
+              title="Play"
+              onClick={() =>
+                speechSynthesizer.startSynthesize(
+                  questionItem.Question,
+                  session.mask.lang,
+                )
+              }
             >
-              <ResetIcon />
+              <PlayCircleIcon />
             </IconButtonMui>
-
             <IconButtonMui
-              title="Continue Recording"
-              aria-label="record"
+              title="Record"
               color="primary"
               sx={{
                 color: "green",
                 fontSize: "40px",
               }}
-              onClick={onRecord}
+              onClick={onRestartRecord}
             >
-              <MicOffIcon sx={{ fontSize: "inherit" }} />
+              <MicIcon sx={{ fontSize: "inherit" }} />
             </IconButtonMui>
-
             <IconButtonMui
               title="Play Speech"
               color="secondary"
@@ -631,12 +624,24 @@ export const FreePersonalQuestionPage = (props: {
           <Typography>Sample Speech</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ textAlign: "left" }}>
-          <Markdown
-            content={questionItem.SampleSpeech}
-            fontSize={config.fontSize}
-            parentRef={scrollRef}
-            onClick={onSampleSpeechEdit}
-          />
+          <p
+            className={styles.questionText}
+            onClick={async () => {
+              const newMessage = await showPrompt(
+                Locale.Chat.Actions.Edit,
+                questionItem.SampleSpeech,
+              );
+              chatStore.updateCurrentSession((session) => {
+                questionItem.SampleSpeech = newMessage;
+              });
+            }}
+          >
+            <Markdown
+              content={questionItem.SampleSpeech}
+              fontSize={config.fontSize}
+              defaultShow={true}
+            />
+          </p>
           <Stack
             direction="row"
             spacing={5}
@@ -661,6 +666,45 @@ export const FreePersonalQuestionPage = (props: {
               <ReplayCircleFilledIcon />
             </IconButtonMui>
           </Stack>
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion
+        sx={{
+          backgroundColor: "#f5f5f5",
+          userSelect: "text",
+          marginTop: "5px",
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography>User Speech</Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ textAlign: "left" }}>
+          <p
+            className={styles.questionText}
+            onClick={async () => {
+              const newMessage = await showPrompt(
+                Locale.Chat.Actions.Edit,
+                questionItem.Speech,
+              );
+              chatStore.updateCurrentSession((session) => {
+                questionItem.Speech = newMessage;
+              });
+            }}
+          >
+            <Markdown
+              content={questionItem.Speech}
+              fontSize={config.fontSize}
+              defaultShow={true}
+            />
+          </p>
+          {questionItem.SpeechAudio != "" && (
+            <div className={styles_tm["video-container"]}>
+              <audio controls style={{ width: "60%" }}>
+                <source src={questionItem.SpeechAudio} type="audio/mpeg" />
+              </audio>
+            </div>
+          )}
         </AccordionDetails>
       </Accordion>
 

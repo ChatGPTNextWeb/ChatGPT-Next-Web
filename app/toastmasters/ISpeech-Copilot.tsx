@@ -41,14 +41,6 @@ export function Chat() {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // 设置自动滑动窗口
-  const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
-
-  // TODO: save selected job
-  const config = useAppConfig();
-
   const getInputsString = (): string => {
     return "";
   };
@@ -56,22 +48,13 @@ export function Chat() {
   return (
     <div className={styles_chat.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
-      <div
-        className={styles_chat["chat-body"]}
-        ref={scrollRef}
-        onMouseDown={() => inputRef.current?.blur()}
-        onTouchStart={() => {
-          inputRef.current?.blur();
-          // setAutoScroll(false);
-        }}
-      >
+      <div className={styles_chat["chat-body"]}>
         {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Start && (
           <ImpromptuSpeechSetting></ImpromptuSpeechSetting>
         )}
 
         {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Question && (
           <FreePersonalQuestionPage
-            scrollRef={scrollRef}
             impromptuSpeechInput={session.inputCopilot}
           ></FreePersonalQuestionPage>
           // session.inputCopilot.Interaction === ImpromptuSpeechModes.Free ?

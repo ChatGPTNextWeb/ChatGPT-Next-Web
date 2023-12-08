@@ -1,7 +1,4 @@
-import {
-  AudioRecorder,
-  StageStatus,
-} from "../cognitive/speech-audioRecorderClass";
+import { AudioRecorder } from "../cognitive/speech-audioRecorderClass";
 import { ToastmastersRoles } from "./roles";
 
 // TODO:
@@ -17,7 +14,7 @@ export enum ImpromptuSpeechRoles {
   TableTopicsEvaluator = "Table Topics Evaluator",
 
   Scores = "Scores",
-  General = "General",
+  General = "Feedback",
 
   // Grammarian = "Grammarian",
   // AhCounter = "Ah-Counter",
@@ -35,6 +32,13 @@ export enum ImpromptuSpeechRoles {
   TimeManagement = "Time",
 }
 
+export enum StageStatus {
+  Start = "",
+  Recording = "Recording",
+  Paused = "Paused",
+  Stopped = "Stopped",
+}
+
 // need default value, so class
 export class IQuestionItem {
   Question: string = "";
@@ -42,23 +46,25 @@ export class IQuestionItem {
 
   Speech: string = "";
   SpeechTime: number = 0;
-  SpeechAudio: Blob | null = null;
+  SpeechAudio: string = "";
 
   StageStatus = StageStatus.Start;
-  // Recorder: AudioRecorder = new AudioRecorder();
 
   Score: number = 0;
   Scores: { subject: string; score: number }[] = [];
   Evaluations: Record<string, string> = {};
 
-  ResetCurrent() {
+  constructor() {}
+
+  public reset = (): void => {
     this.Speech = "";
     this.SpeechTime = 0;
-    this.SpeechAudio = null;
+    this.SpeechAudio = "";
+    // this.StageStatus = StageStatus.Start;  // change at outside
     this.Score = 0;
     this.Scores = [];
     this.Evaluations = {};
-  }
+  };
 }
 
 export class ImpromptuSpeechInput {
