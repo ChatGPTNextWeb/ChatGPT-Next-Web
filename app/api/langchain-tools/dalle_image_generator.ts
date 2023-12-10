@@ -1,6 +1,6 @@
 import { StructuredTool } from "langchain/tools";
 import { z } from "zod";
-import S3FileStorage from "../../utils/r2_file_storage";
+import S3FileStorage from "../../utils/s3_file_storage";
 
 export class DallEAPIWrapper extends StructuredTool {
   name = "dalle_image_generator";

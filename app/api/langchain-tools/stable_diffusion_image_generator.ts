@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools";
-import S3FileStorage from "../../utils/r2_file_storage";
+import S3FileStorage from "../../utils/s3_file_storage";
 
 export class StableDiffusionWrapper extends Tool {
   name = "stable_diffusion_image_generator";

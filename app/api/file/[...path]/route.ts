@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth";
-import S3FileStorage from "../../../utils/r2_file_storage";
+import S3FileStorage from "../../../utils/s3_file_storage";
 
 async function handle(
   req: NextRequest,
@@ -9,13 +8,6 @@ async function handle(
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
-
-  // const authResult = auth(req);
-  // if (authResult.error) {
-  //   return NextResponse.json(authResult, {
-  //     status: 401,
-  //   });
-  // }
 
   try {
     var file = await S3FileStorage.get(params.path[0]);
@@ -34,3 +26,4 @@ async function handle(
 export const GET = handle;
 
 export const runtime = "edge";
+export const revalidate = 0;

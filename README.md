@@ -37,6 +37,8 @@
 
 - 除插件工具外，与原项目保持一致 [ChatGPT-Next-Web 主要功能](https://github.com/Yidadaa/ChatGPT-Next-Web#主要功能)
 - 支持 GPT-4V(视觉) 模型
+  - 需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
+
 - 基于 [LangChain](https://github.com/hwchase17/langchainjs) 实现的插件功能，目前支持以下插件，未来会添加更多
   - 搜索
     - [SerpAPI](https://js.langchain.com/docs/api/tools/classes/SerpAPI)
@@ -51,11 +53,11 @@
   - 其它
     - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
     - DALL-E 3
-      - DALL-E 3 插件需要配置 R2 存储，请参考 [Cloudflare R2 服务配置指南](./docs/cloudflare-r2-cn.md) 配置
+      - DALL-E 3 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
     - StableDiffusion
       - 本插件目前为测试版本，后续可能会有较大的变更，请谨慎使用
       - 使用本插件需要一定的专业知识，Stable Diffusion 本身的相关问题不在本项目的解答范围内，如果您确定要使用本插件请参考 [Stable Diffusion 插件配置指南](./docs/stable-diffusion-plugin-cn.md) 文档进行配置
-      - StableDiffusion 插件需要配置 R2 存储，请参考 [Cloudflare R2 服务配置指南](./docs/cloudflare-r2-cn.md) 配置
+      - StableDiffusion 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
     - Arxiv
 
 ## 开发计划
@@ -180,22 +182,6 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 ### `HIDE_BALANCE_QUERY` （可选）
 
 如果你不想让用户查询余额，将此环境变量设置为 1 即可。
-
-### `R2_ACCOUNT_ID` （可选）
-
-Cloudflare R2 帐户 ID，使用 `DALL-E` 插件时需要配置。
-
-### `R2_ACCESS_KEY_ID` （可选）
-
-Cloudflare R2 访问密钥 ID，使用 `DALL-E` 插件时需要配置。
-
-### `R2_SECRET_ACCESS_KEY` （可选）
-
-Cloudflare R2 机密访问密钥，使用 `DALL-E` 插件时需要配置。
-
-### `R2_BUCKET` （可选）
-
-Cloudflare R2 Bucket 名称，使用 `DALL-E` 插件时需要配置。
 
 ## 部署
 
