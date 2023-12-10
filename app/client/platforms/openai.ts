@@ -74,7 +74,8 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => {
+    const messages: any[] = [];
+    for (const v of options.messages) {
       let message: {
         role: string;
         content: { type: string; text?: string; image_url?: { url: string } }[];
@@ -87,15 +88,25 @@ export class ChatGPTApi implements LLMApi {
         text: v.content,
       });
       if (v.image_url) {
-        message.content.push({
-          type: "image_url",
-          image_url: {
-            url: v.image_url,
-          },
-        });
+        await fetch(v.image_url)
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => {
+            const base64Data = btoa(
+              String.fromCharCode(...new Uint8Array(buffer)),
+            );
+            message.content.push({
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${base64Data}`,
+              },
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
-      return message;
-    });
+      messages.push(message);
+    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -104,7 +115,6 @@ export class ChatGPTApi implements LLMApi {
         model: options.config.model,
       },
     };
-
     const requestPayload = {
       messages,
       stream: options.config.stream,
@@ -177,7 +187,6 @@ export class ChatGPTApi implements LLMApi {
         };
 
         controller.signal.onabort = finish;
-
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {

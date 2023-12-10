@@ -2,6 +2,7 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { FileApi } from "./platforms/utils";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -97,9 +98,11 @@ export abstract class ToolApi {
 
 export class ClientApi {
   public llm: LLMApi;
+  public file: FileApi;
 
   constructor() {
     this.llm = new ChatGPTApi();
+    this.file = new FileApi();
   }
 
   config() {}
@@ -149,6 +152,32 @@ export class ClientApi {
 }
 
 export const api = new ClientApi();
+
+export function getAuthHeaders() {
+  const accessStore = useAccessStore.getState();
+  const headers: Record<string, string> = {};
+
+  const isAzure = accessStore.provider === ServiceProvider.Azure;
+  const authHeader = isAzure ? "api-key" : "Authorization";
+  const apiKey = isAzure ? accessStore.azureApiKey : accessStore.openaiApiKey;
+
+  const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
+
+  // use user's api key first
+  if (validString(apiKey)) {
+    headers[authHeader] = makeBearer(apiKey);
+  } else if (
+    accessStore.enabledAccessControl() &&
+    validString(accessStore.accessCode)
+  ) {
+    headers[authHeader] = makeBearer(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
+    );
+  }
+
+  return headers;
+}
 
 export function getHeaders() {
   const accessStore = useAccessStore.getState();

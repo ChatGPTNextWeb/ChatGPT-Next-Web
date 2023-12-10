@@ -8,9 +8,11 @@
 
 这边以 `又拍云` 做为演示，其它运营商请查询对应文档。
 
+参考: https://help.upyun.com/knowledge-base/aws-s3%E5%85%BC%E5%AE%B9/#e585bce5aeb9e5b7a5e585b7e7a4bae4be8b
+
 1. 登录 [又拍云 - 加速在线业务 - CDN加速 - 云存储 (upyun.com)](https://www.upyun.com/)
 2. 注册账户
-3. 进入”云存储“控制台[又拍云控制台 (upyun.com)](https://console.upyun.com/services/file/)
+3. 进入"云存储"控制台[又拍云控制台 (upyun.com)](https://console.upyun.com/services/file/)
 4. 创建一个服务，记录你的服务名
 5. 进入"用户管理"，"操作员"创建一个"操作员"并赋予相应权限
 6. 编辑"操作员"复制"AccessKey"和"SecretAccessKey"

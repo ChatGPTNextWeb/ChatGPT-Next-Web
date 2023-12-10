@@ -96,6 +96,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import Image from "next/image";
+import { api } from "../client/api";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -457,18 +458,13 @@ export function ChatActions(props: {
     document.getElementById("chat-image-file-select-upload")?.click();
   }
 
-  const onImageSelected = (e: any) => {
+  const onImageSelected = async (e: any) => {
     const file = e.target.files[0];
-    const filename = file.name;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64 = reader.result;
-      props.imageSelected({
-        filename,
-        base64,
-      });
-    };
+    const fileName = await api.file.upload(file);
+    props.imageSelected({
+      fileName,
+      fileUrl: `/api/file/${fileName}`,
+    });
     e.target.value = null;
   };
 
@@ -783,7 +779,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, userImage?.base64)
+      .onUserInput(userInput, userImage?.fileUrl)
       .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
@@ -935,7 +931,9 @@ function _Chat() {
 
     // resend the message
     setIsLoading(true);
-    chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(userMessage.content, userMessage.image_url)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -992,7 +990,7 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
-                  image_url: userImage?.base64,
+                  image_url: userImage?.fileUrl,
                 }),
                 preview: true,
               },
@@ -1005,7 +1003,7 @@ function _Chat() {
     isLoading,
     session.messages,
     userInput,
-    userImage?.base64,
+    userImage?.fileUrl,
   ]);
 
   const [msgRenderIndex, _setMsgRenderIndex] = useState(
@@ -1427,7 +1425,7 @@ function _Chat() {
                 style={{ position: "relative", width: "48px", height: "48px" }}
               >
                 <Image
-                  src={userImage.base64}
+                  src={userImage.fileUrl}
                   alt={userImage.filename}
                   title={userImage.filename}
                   layout="fill"
