@@ -16,8 +16,9 @@ export enum ImpromptuSpeechRoles {
 
   RevisedSpeech = "Revised Speech",
   Samplepeech = "Sample Speech",
+}
 
-  // Scores
+export enum ESpeechScores {
   RelevanceDepth = "Relevance & Depth",
   OrganizationStructure = "Structure",
   LanguageUse = "Language",
@@ -57,7 +58,7 @@ export class IQuestionItem {
   SpeechAudio: string = "";
 
   Score: number = 0;
-  Scores: { subject: string; score: number }[] = [];
+  Scores: IScoreMetric[] = [];
   Evaluations: Record<string, string> = {};
 
   // these 2 should not be reset
@@ -75,6 +76,12 @@ export class IQuestionItem {
     this.Scores = [];
     this.Evaluations = {};
   };
+}
+
+export interface IScoreMetric {
+  Subject: string;
+  Score: number;
+  Reason: string;
 }
 
 export class ImpromptuSpeechInput {
@@ -111,22 +118,22 @@ export class ImpromptuSpeechPrompts {
 
   static GetScoreRoles(): string[] {
     return [
-      ImpromptuSpeechRoles.RelevanceDepth,
-      ImpromptuSpeechRoles.OrganizationStructure,
-      ImpromptuSpeechRoles.LanguageUse,
-      ImpromptuSpeechRoles.DeliverySkills,
-      ImpromptuSpeechRoles.TimeManagement,
+      ESpeechScores.RelevanceDepth,
+      ESpeechScores.OrganizationStructure,
+      ESpeechScores.LanguageUse,
+      ESpeechScores.DeliverySkills,
+      ESpeechScores.TimeManagement,
     ];
   }
 
   // TODO: when anything is ready, will add this.
   static GetScoreRolesDescription(): string[] {
     return [
-      `***${ImpromptuSpeechRoles.RelevanceDepth}***: Assess whether the content is relevant to the topic, whether the information is accurate, and if there is a thorough exploration of the subject`,
-      ImpromptuSpeechRoles.OrganizationStructure,
-      ImpromptuSpeechRoles.LanguageUse,
-      ImpromptuSpeechRoles.DeliverySkills,
-      ImpromptuSpeechRoles.TimeManagement,
+      `***${ESpeechScores.RelevanceDepth}***: Assess whether the content is relevant to the topic, whether the information is accurate, and if there is a thorough exploration of the subject`,
+      ESpeechScores.OrganizationStructure,
+      ESpeechScores.LanguageUse,
+      ESpeechScores.DeliverySkills,
+      ESpeechScores.TimeManagement,
     ];
   }
 
@@ -142,68 +149,38 @@ export class ImpromptuSpeechPrompts {
     },
     
     As a highly objective and strict Table Topics Evaluator, provide a detailed score for my speech. The score list should include values between 0 to 100 for each criterion, with significant penalties for speeches that are significantly shorter than the expected length. The criteria are:
+    1). ${ESpeechScores.RelevanceDepth}: Evaluate how well the speech addresses the question and explores the subject. Significantly short speeches that do not adequately cover the topic should receive very low scores.
+    2). ${ESpeechScores.OrganizationStructure}: Assess the clarity and coherence of the speech. A speech that is too short to have a clear introduction, development, and conclusion should be penalized heavily in scoring.
+    3). ${ESpeechScores.LanguageUse}: Consider the choice of vocabulary, grammar correctness, and rhetorical devices. Speeches that are too brief to demonstrate effective language use should receive low scores.
+    4). ${ESpeechScores.DeliverySkills}: Evaluate the fluency, clarity, and speaking pace, along with filler words usage. Speeches that are significantly shorter than the expected 2-minute length should be scored lower, as they fail to demonstrate sustained delivery skills.
     
-    1). Relevance and Depth of Content: Evaluate how well the speech addresses the question and explores the subject. Significantly short speeches that do not adequately cover the topic should receive very low scores.
+    Your response should be a strict JSON list, with no additional comments, like:
+    [
+      {
+        "Subject": ${ESpeechScores.RelevanceDepth},
+        "Score": 80,
+        "Reason": "xxx"
+      },
+      {
+        "Subject": ${ESpeechScores.OrganizationStructure},
+        "Score": 40,
+        "Reason": "xxx"
+      },
+      {
+        "Subject": ${ESpeechScores.LanguageUse},
+        "Score": 40,
+        "Reason": "xxx"
+      },
+      {
+        "Subject": ${ESpeechScores.DeliverySkills},
+        "Score": 40,
+        "Reason": "xxx"
+      },
+    ]
     
-    2). Organization and Structure: Assess the clarity and coherence of the speech. A speech that is too short to have a clear introduction, development, and conclusion should be penalized heavily in scoring.
-    
-    3). Language Use: Consider the choice of vocabulary, grammar correctness, and rhetorical devices. Speeches that are too brief to demonstrate effective language use should receive low scores.
-    
-    4). Delivery Skills: Evaluate the fluency, clarity, and speaking pace, along with filler words usage. Speeches that are significantly shorter than the expected 2-minute length should be scored lower, as they fail to demonstrate sustained delivery skills.
-    
-    The scoring format should be a JSON list with the scores for each criterion, with no additional comments. For example: [20, 40, 30, 50].
-    
-    Note: Please maintain strict and professional standards in your evaluation. The length of the speech should be a significant factor in scoring, with very short speeches receiving lower scores to reflect their limited content and delivery.`;
-  }
-
-  static GetScorePrompt2(
-    currentNum: number,
-    question: string,
-    speech: string,
-  ): string {
-    return `The No.${currentNum} Question and Speech are:
-    {
-    "Question": "${question}",
-    "Speech": "${speech}"
-    },
-    
-    As a highly objective and strict Table Topics Evaluator, please provide a detailed score for my speech, considering both the quality and the length of the speech. The score list should consist of values between 0 to 100 for each of the following criteria. Speeches significantly shorter than the expected 2 minutes or 200 words should receive lower scores. The criteria are:
-    
-    1). Relevance and Depth of Content: Evaluate the speech's relevance to the question and the depth of subject exploration. Off-topic, superficial, or overly brief content should be scored low.
-    
-    2). Organization and Structure: Assess the speech's organization and clarity. Disorganized, unclear, or excessively brief speeches that fail to adequately develop ideas should be penalized.
-    
-    3). Language Use: Consider the choice of vocabulary, grammar correctness, and rhetorical devices. Penalize poor language use, grammatical errors, and speeches that are too short to demonstrate language proficiency.
-    
-    4). Delivery Skills: Evaluate fluency, clarity, speaking pace, and the use of filler words. Also, consider the overall duration of the speech. Frequent use of filler words, pauses, or speeches that are too brief to demonstrate effective delivery skills should result in a lower score.
-    
-    The scoring format should be a JSON list with the scores for each criterion, with no additional comments. For example: [20, 40, 30, 50].
-    
-    Note: Please maintain strict and professional standards in your evaluation. Scores should be given based on the actual content, delivery, and length of the speech, with a critical and unbiased approach.
-    `;
-  }
-
-  static GetScorePrompt1(
-    currentNum: number,
-    question: string,
-    speech: string,
-  ): string {
-    return `The No.${currentNum} Question and Speech are:
-    {
-      "Question": "${question}",
-      "Speech": "${speech}"
-    },
-
-    You are the strict Table Topics Evaluator, give me a score list to my speech.
-    The score list is consist of below values, each score value is a number between 0 to 100.
-    1). Relevance and Depth of Content: Assess whether the content is relevant to the topic, whether the information is accurate, and if there is a thorough exploration of the subject.
-    2). Organization and Structure: Evaluate whether the introduction, development, and conclusion of the speech are clear and logically coherent.
-    3). Language Use: Consider the choice of vocabulary, the correctness of grammar, and the appropriate use of metaphors or other rhetorical devices.
-    4). Delivery Skills: Assess the fluency, clarity, and appropriateness of the speaking pace, It involves monitoring the usage of filler words (like "ah", "um", "er") and unnecessary pauses.
-
-    Note, 
-    1). You are so objective, strict and prefessional evaluator, not completed answer should have low score.
-    2). you answer should only be a json list with these scores, no any extra words. like: [20, 40, 30, 50]    
+    Note: 
+    1). Please maintain strict and professional standards in your evaluation. 
+    2). The Reason should be a brief 1-2 sentences about your score.    
     `;
   }
 
@@ -213,17 +190,6 @@ export class ImpromptuSpeechPrompts {
 语言使用：考察词汇选择、语法结构的正确性，以及是否恰当地使用比喻或其他修辞手法。
 表达能力：评价说话的流畅性、清晰度和语速是否适宜。
 */
-  //     1. The Relevance Score: Evaluate the relevance between the Question and Speech.
-  // 2. The Fluency Score: you play the Ah-Counter to assess the fluency of my speech and identify the use of filler words (e.g., 'um,' 'uh').
-  // 3. The Content Score: you play the Grammarian to evaluate the overall quality of my speech, including grammar, vocabulary, and logical flow.
-  // You should:
-  // 1). Your answer should only be a number between 0 to 100, no any extra words.
-  // 2). You score should be objective and linear, you should fully consider
-  // the relevance between Question and Speech,
-  // the fluency (like the Ah-Counter),
-  // the content and expression (like the Grammarian),
-  // the completeness (like the timer, standard impromptu speech is 2 minutes).
-  // 3). You final score is the weighted average for above indexes.
 
   static GetSampleSpeechPrompt(currentNum: number, question: string): string {
     return `The No.${currentNum} Question is:
@@ -257,7 +223,7 @@ export class ImpromptuSpeechPrompts {
       Your evaluation should:
       1). Don't make things up, all your quoted sentence must from my speech.
       2). Bold keywords using markdown when present your answer.
-      3). Provide addvice to me based on my speech.
+      3). Provide addvice to my lowest scores you provided.
       4). About 100 words.
       `,
       [ImpromptuSpeechRoles.RevisedSpeech]: `To the No.${currentNum} Question and Speech.

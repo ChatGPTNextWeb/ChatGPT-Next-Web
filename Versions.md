@@ -3,6 +3,9 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v5.20231211
+ - HostingMode & Score Reason
+
 ## v5.20231206-2
  - Time score fix
 

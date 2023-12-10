@@ -69,10 +69,12 @@ import {
   ESpeechStage,
   SpeechDefaultLangugage,
   ESpeechModes,
+  IScoreMetric,
+  ESpeechScores,
 } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
-import { AudioRecorder } from "../cognitive/speech-audioRecorderClass";
+import { recorder } from "../cognitive/speech-audioRecorderClass";
 import { useAudioRecorder } from "../cognitive/speech-audioRecorder";
 
 import _ from "lodash";
@@ -108,8 +110,6 @@ export const FreePersonalQuestionPage = (props: {
     questionItems[currentNum],
   );
 
-  // put recorder here, so that it can be reset when change question
-  const [recorder, setRecorder] = useState<AudioRecorder>(new AudioRecorder());
   const onPreviousQuestion = () => {
     if (currentNum > 0) {
       setCurrentNum((prevNum) => {
@@ -204,7 +204,6 @@ export const FreePersonalQuestionPage = (props: {
         impromptuSpeechInput={impromptuSpeechInput}
         currentNum={currentNum}
         questionItem={questionItem}
-        recorder={recorder}
       ></FreePersonalQuestionPageBody>
     </div>
   );
@@ -214,9 +213,8 @@ export const FreePersonalQuestionPageBody = (props: {
   impromptuSpeechInput: ImpromptuSpeechInput;
   currentNum: number;
   questionItem: IQuestionItem;
-  recorder: AudioRecorder;
 }) => {
-  let { impromptuSpeechInput, currentNum, questionItem, recorder } = props;
+  let { impromptuSpeechInput, currentNum, questionItem } = props;
 
   const [evaluationRole, setEvaluationRole] = React.useState<string>(
     ImpromptuSpeechRoles.Scores,
@@ -334,33 +332,34 @@ export const FreePersonalQuestionPageBody = (props: {
 
     await chatStore.getIsFinished();
     const response = session.messages[session.messages.length - 1].content;
-    let scores: number[] = [];
+
+    let scores: IScoreMetric[] = [];
     try {
       scores = JSON.parse(response);
     } catch (error) {
       showToast(`score are not correct format, please try again.`);
       return;
     }
+    scores.push({
+      Subject: ESpeechScores.TimeManagement,
+      Score: getTimeScore(questionItem.SpeechTime),
+      Reason: "Linear regression by Green-Yellow-Red rule.",
+    });
 
-    scores.push(getTimeScore(questionItem.SpeechTime));
     console.log("onScore: all scores: ", scores);
     const averageScore = Math.round(
-      scores.reduce((acc, val) => acc + val, 0) / scores.length,
+      scores.reduce((acc, val) => acc + val.Score, 0) / scores.length,
     );
-
-    const scoreRoles = ImpromptuSpeechPrompts.GetScoreRoles();
-    const scoresRecord: { subject: string; score: number }[] = [];
-    for (let i = 0; i < scoreRoles.length; i++) {
-      scoresRecord.push({ subject: scoreRoles[i], score: scores[i] });
-    }
 
     chatStore.updateCurrentSession(
       (session) => (
         (questionItem.Score = averageScore),
-        (questionItem.Scores = scoresRecord),
+        (questionItem.Scores = scores),
         (questionItem.SpeechAudio = audioUrl)
       ),
     );
+
+    onEvaluation();
   };
 
   const getTimeScore = (timeSeconds: number): number => {
@@ -378,7 +377,7 @@ export const FreePersonalQuestionPageBody = (props: {
 
   const evaluationRoles = ImpromptuSpeechPrompts.GetEvaluationRoles();
 
-  const onRegenerateSampleSpeech = async () => {
+  const onReGenerateSampleSpeech = async () => {
     chatStore.updateCurrentSession(
       (session) => (questionItem.SampleSpeech = ""),
     );
@@ -395,7 +394,7 @@ export const FreePersonalQuestionPageBody = (props: {
     chatStore.resetSessionFromIndex(2);
   };
 
-  const onRegenerateEvaluation = async (role: string) => {
+  const onReGenerateEvaluation = async (role: string) => {
     setEvaluating(true);
 
     chatStore.updateCurrentSession(
@@ -413,13 +412,12 @@ export const FreePersonalQuestionPageBody = (props: {
     chatStore.updateCurrentSession(
       (session) => (questionItem.Evaluations[role] = response),
     );
-    chatStore.resetSessionFromIndex(2);
+    chatStore.resetSessionFromIndex(4); // to keep scores as history
     setEvaluating(false);
   };
 
-  const onEvaluation = async (event: { preventDefault: () => void }) => {
-    if (questionItem.Speech === "" || questionItem.Speech === undefined) {
-      event.preventDefault();
+  const onEvaluation = async () => {
+    if (questionItem.Speech === "") {
       showToast("Speech is empty");
       return;
     }
@@ -448,7 +446,7 @@ export const FreePersonalQuestionPageBody = (props: {
     }
     await chatStore.getIsFinished();
 
-    chatStore.resetSessionFromIndex(2);
+    chatStore.resetSessionFromIndex(4);
     setEvaluating(false);
   };
 
@@ -686,7 +684,7 @@ export const FreePersonalQuestionPageBody = (props: {
             </IconButtonMui>
             <IconButtonMui
               title="Regenerage"
-              onClick={onRegenerateSampleSpeech}
+              onClick={onReGenerateSampleSpeech}
             >
               <ReplayCircleFilledIcon />
             </IconButtonMui>
@@ -780,16 +778,15 @@ export const FreePersonalQuestionPageBody = (props: {
                     data={questionItem.Scores}
                   >
                     <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" />
+                    <PolarAngleAxis dataKey="Subject" />
                     <PolarRadiusAxis domain={[0, 100]} />
                     <Radar
-                      name="Mike"
-                      dataKey="score"
+                      dataKey="Score"
                       stroke="#8884d8"
                       fill="#8884d8"
                       fillOpacity={0.6}
                     >
-                      <LabelList dataKey="score" position="inside" angle={0} />
+                      <LabelList dataKey="Score" position="inside" angle={0} />
                     </Radar>
                     <text
                       x={250}
@@ -803,15 +800,13 @@ export const FreePersonalQuestionPageBody = (props: {
                     </text>
                   </RadarChart>
                 )}
-                {/* <Typography style={{ textAlign: "left" }}>
-                  {ImpromptuSpeechPrompts.GetScoreRolesDescription().map(
-                    (description, index) => (
-                      <ReactMarkdown  key={index}>
-                        {description}
-                      </ReactMarkdown>
-                    )
-                  )}
-                </Typography> */}
+                <Typography style={{ textAlign: "left" }}>
+                  {questionItem.Scores.map((item, index) => (
+                    <ReactMarkdown key={index}>
+                      {`***${item.Subject}***: ${item.Reason}`}
+                    </ReactMarkdown>
+                  ))}
+                </Typography>
               </TabPanel>
               {evaluationRoles.map((role, index) => (
                 <TabPanel key={index} value={role}>
@@ -845,7 +840,7 @@ export const FreePersonalQuestionPageBody = (props: {
                         </IconButtonMui>
                         <IconButtonMui
                           title="Regenerage"
-                          onClick={(event) => onRegenerateEvaluation(role)}
+                          onClick={(event) => onReGenerateEvaluation(role)}
                         >
                           <ReplayCircleFilledIcon />
                         </IconButtonMui>
@@ -855,7 +850,8 @@ export const FreePersonalQuestionPageBody = (props: {
                     <CircularProgress />
                   ) : (
                     <Button
-                      onClick={(event) => onEvaluation(event)}
+                      // onClick={(event) => onEvaluation(event)}
+                      onClick={onEvaluation}
                       variant="outlined"
                       sx={{
                         textTransform: "none", // 防止文本大写
@@ -950,7 +946,7 @@ export function FreePersonalReport(props: {
       const questionItem = questionItems[i];
 
       for (let j = 0; j < questionItem.Scores.length; j++) {
-        newAverage.Scores[j].score += questionItem.Scores[j].score;
+        newAverage.Scores[j].score += questionItem.Scores[j].Score;
       }
     }
 
@@ -1010,7 +1006,13 @@ export function FreePersonalReport(props: {
       let _barItem = new IQuestionItemBarData();
       _barItem.SpeechTime = questionItem.SpeechTime;
       _barItem.Score = questionItem.Score;
-      _barItem.TickName = `Question${i + 1}`;
+
+      if (props.impromptuSpeechInput.Mode === ESpeechModes.Hosting) {
+        _barItem.TickName = questionItem.Speaker;
+      } else {
+        _barItem.TickName = `Question${i + 1}`;
+      }
+
       if (questionItem.SpeechTime !== 0) {
         _barItem.Pace = Math.round(
           (ChatUtility.getWordsNumber(questionItem.Speech) /

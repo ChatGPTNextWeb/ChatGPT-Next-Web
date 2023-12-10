@@ -1,4 +1,4 @@
-export class AudioRecorder {
+class AudioRecorder {
   private mediaRecorder: MediaRecorder | null;
   private audioChunks: Blob[];
 
@@ -67,3 +67,6 @@ export class AudioRecorder {
     return new Blob(this.audioChunks, { type: "audio/wav" });
   }
 }
+
+// this should be a global object, so that change pages, it can still recording
+export const recorder = new AudioRecorder();
