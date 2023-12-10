@@ -62,12 +62,13 @@ import {
 
 import {
   IQuestionItem,
-  StageStatus,
+  ESpeechStageStatus,
   ImpromptuSpeechInput,
   ImpromptuSpeechPrompts,
   ImpromptuSpeechRoles,
-  ImpromptuSpeechStage,
+  ESpeechStage,
   SpeechDefaultLangugage,
+  ESpeechModes,
 } from "./ISpeechRoles";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
@@ -79,6 +80,8 @@ import { useNavigate } from "react-router-dom";
 
 import styles_chat from "../components/chat.module.scss";
 import styles_tm from "../toastmasters/toastmasters.module.scss";
+import styles from "./ISpeech.module.scss";
+
 import { List, ListItem, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
 import { Markdown } from "../components/exporter";
@@ -87,7 +90,6 @@ import SendWhiteIcon from "../icons/send-white.svg";
 
 import { ChatTitle, BorderLine, ChatUtility } from "./chat-common";
 
-import styles from "./ISpeech.module.scss";
 import GaugeChart from "./ISpeech-Common";
 
 export const FreePersonalQuestionPage = (props: {
@@ -113,8 +115,6 @@ export const FreePersonalQuestionPage = (props: {
       setCurrentNum((prevNum) => {
         const newNum = prevNum - 1;
         setQuestionItem(questionItems[newNum]);
-        recorder.resetRecording();
-        setRecorder(new AudioRecorder());
         return newNum;
       });
     }
@@ -125,8 +125,6 @@ export const FreePersonalQuestionPage = (props: {
       setCurrentNum((prevNum) => {
         const newNum = prevNum + 1;
         setQuestionItem(questionItems[newNum]);
-        recorder.resetRecording();
-        setRecorder(new AudioRecorder());
         return newNum;
       });
     }
@@ -134,17 +132,25 @@ export const FreePersonalQuestionPage = (props: {
 
   const onReturn = () => {
     chatStore.updateCurrentSession(
-      (session) =>
-        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Start),
+      (session) => (impromptuSpeechInput.ActivePage = ESpeechStage.Start),
     );
   };
 
   const onReport = () => {
     chatStore.updateCurrentSession(
-      (session) =>
-        (impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Report),
+      (session) => (impromptuSpeechInput.ActivePage = ESpeechStage.Report),
     );
     impromptuSpeechInput.EndTime = new Date().getTime();
+  };
+
+  const onRameSpeaker = async () => {
+    const newMessage = await showPrompt(
+      Locale.Chat.Actions.Edit,
+      questionItem.Speaker,
+    );
+    chatStore.updateCurrentSession((session) => {
+      questionItem.Speaker = newMessage;
+    });
   };
 
   return (
@@ -154,6 +160,7 @@ export const FreePersonalQuestionPage = (props: {
           {" "}
           ← Return
         </button>
+
         <ButtonGroup
           variant="outlined"
           aria-label="radius button group"
@@ -167,7 +174,22 @@ export const FreePersonalQuestionPage = (props: {
           }}
         >
           <Button onClick={onPreviousQuestion}>{"<"}</Button>
-          <Button>{`Question ${currentNum + 1} / ${questionNums}`}</Button>
+
+          {impromptuSpeechInput.Mode == ESpeechModes.Personal ? (
+            <Button className={`${styles_tm["chat-input-speaker"]}`}>
+              {`Question ${currentNum + 1} / ${questionNums}`}
+            </Button>
+          ) : (
+            <Button
+              className={`${styles_tm["chat-input-speaker"]}`}
+              onClick={onRameSpeaker}
+            >
+              {`Question ${currentNum + 1} / ${questionNums}: ${
+                questionItem.Speaker
+              }`}
+            </Button>
+          )}
+
           <Button onClick={onNextQuestion}>{">"}</Button>
         </ButtonGroup>
 
@@ -210,7 +232,7 @@ export const FreePersonalQuestionPageBody = (props: {
   ]);
   const config = useAppConfig();
 
-  const onStatusChange = (status: StageStatus) => {
+  const onStatusChange = (status: ESpeechStageStatus) => {
     chatStore.updateCurrentSession(
       (session) => (questionItem.StageStatus = status),
     );
@@ -218,7 +240,7 @@ export const FreePersonalQuestionPageBody = (props: {
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
-    if (questionItem.StageStatus === StageStatus.Recording) {
+    if (questionItem.StageStatus === ESpeechStageStatus.Recording) {
       intervalId = setInterval(() => {
         chatStore.updateCurrentSession(
           (session) => (questionItem.SpeechTime += 1),
@@ -240,13 +262,13 @@ export const FreePersonalQuestionPageBody = (props: {
   const onRecord = async () => {
     await recorder.startRecording();
     speechRecognizer.startRecording(appendUserInput, SpeechDefaultLangugage);
-    onStatusChange(StageStatus.Recording);
+    onStatusChange(ESpeechStageStatus.Recording);
   };
 
   const onPause = () => {
     recorder.pauseRecording();
     speechRecognizer.stopRecording();
-    onStatusChange(StageStatus.Paused);
+    onStatusChange(ESpeechStageStatus.Paused);
   };
 
   const onPlay = () => {
@@ -263,7 +285,7 @@ export const FreePersonalQuestionPageBody = (props: {
     questionItem.reset();
 
     recorder.resetRecording();
-    onStatusChange(StageStatus.Start);
+    onStatusChange(ESpeechStageStatus.Start);
 
     // 改状态
     setEvaluating(false);
@@ -280,7 +302,7 @@ export const FreePersonalQuestionPageBody = (props: {
   // TODO: 打分还不太准确
   const onScore = async () => {
     await recorder.stopRecording();
-    onStatusChange(StageStatus.Stopped);
+    onStatusChange(ESpeechStageStatus.Stopped);
 
     // questionItem.Speech = questionItem.SampleSpeech
     // questionItem.Speech = "it is nothing, uh, um, oh change to another questions"
@@ -466,7 +488,7 @@ export const FreePersonalQuestionPageBody = (props: {
 
       {/* <form onSubmit={(event) => event.preventDefault()}> */}
       <form>
-        {questionItem.StageStatus === StageStatus.Start && (
+        {questionItem.StageStatus === ESpeechStageStatus.Start && (
           <Stack
             direction="row"
             spacing={5}
@@ -498,7 +520,7 @@ export const FreePersonalQuestionPageBody = (props: {
           </Stack>
         )}
 
-        {questionItem.StageStatus === StageStatus.Recording && (
+        {questionItem.StageStatus === ESpeechStageStatus.Recording && (
           <Stack
             direction="row"
             spacing={5}
@@ -519,7 +541,7 @@ export const FreePersonalQuestionPageBody = (props: {
           </Stack>
         )}
 
-        {questionItem.StageStatus === StageStatus.Paused && (
+        {questionItem.StageStatus === ESpeechStageStatus.Paused && (
           <Stack
             direction="row"
             spacing={5}
@@ -565,7 +587,7 @@ export const FreePersonalQuestionPageBody = (props: {
           </Stack>
         )}
 
-        {questionItem.StageStatus === StageStatus.Stopped && (
+        {questionItem.StageStatus === ESpeechStageStatus.Stopped && (
           <Stack
             direction="row"
             spacing={5}
@@ -600,16 +622,16 @@ export const FreePersonalQuestionPageBody = (props: {
               aria-label="score"
               sx={{
                 backgroundColor: "lightblue", // 淡蓝色背景
-                color: "white", // 图标颜色，这里选择了白色
-                "&:hover": {
-                  backgroundColor: "blue", // 鼠标悬停时的背景色，这里选择了蓝色
-                },
+                color: "blue", // 图标颜色，这里选择了白色
+                // "&:hover": {
+                //   backgroundColor: "blue", // 鼠标悬停时的背景色，这里选择了蓝色
+                // },
                 borderRadius: "50%", // 圆形
                 width: 40, // 宽度
                 height: 40, // 高度
                 padding: 0, // 如果需要，调整内边距
               }}
-              onClick={onPlay}
+              // onClick={onPlay}
             >
               <Typography variant="subtitle1">{questionItem.Score}</Typography>
             </IconButtonMui>
@@ -642,6 +664,9 @@ export const FreePersonalQuestionPageBody = (props: {
               defaultShow={true}
             />
           </p>
+          <div className={styles["chat-input-words"]}>
+            {ChatUtility.getWordsNumber(questionItem.SampleSpeech)} words
+          </div>
           <Stack
             direction="row"
             spacing={5}
@@ -698,6 +723,9 @@ export const FreePersonalQuestionPageBody = (props: {
               defaultShow={true}
             />
           </p>
+          <div className={styles["chat-input-words"]}>
+            {ChatUtility.getWordsNumber(questionItem.Speech)} words
+          </div>
           {questionItem.SpeechAudio != "" && (
             <div className={styles_tm["video-container"]}>
               <audio controls style={{ width: "60%" }}>
@@ -792,6 +820,12 @@ export const FreePersonalQuestionPageBody = (props: {
                       <ReactMarkdown>
                         {questionItem.Evaluations[role]}
                       </ReactMarkdown>
+                      <div className={styles["chat-input-words"]}>
+                        {ChatUtility.getWordsNumber(
+                          questionItem.Evaluations[role],
+                        )}{" "}
+                        words
+                      </div>
                       <Stack
                         direction="row"
                         spacing={5}
@@ -948,7 +982,7 @@ export function FreePersonalReport(props: {
   const onReturn = () => {
     chatStore.updateCurrentSession(
       (session) =>
-        (props.impromptuSpeechInput.ActivePage = ImpromptuSpeechStage.Question),
+        (props.impromptuSpeechInput.ActivePage = ESpeechStage.Question),
     );
   };
 

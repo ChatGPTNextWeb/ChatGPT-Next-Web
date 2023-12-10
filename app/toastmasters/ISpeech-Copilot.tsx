@@ -18,9 +18,9 @@ import styles from "./ISpeech.module.scss";
 import Stack from "@mui/material/Stack";
 import {
   IQuestionItem,
-  ImpromptuSpeechModes,
+  ESpeechModes,
   ImpromptuSpeechPrompts,
-  ImpromptuSpeechStage,
+  ESpeechStage,
 } from "./ISpeechRoles";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
 import {
@@ -33,7 +33,6 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { InterviewPersonalQuestionPage } from "./ISpeech-InterviewPersonal";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -49,11 +48,11 @@ export function Chat() {
     <div className={styles_chat.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
       <div className={styles_chat["chat-body"]}>
-        {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Start && (
+        {session.inputCopilot.ActivePage === ESpeechStage.Start && (
           <ImpromptuSpeechSetting></ImpromptuSpeechSetting>
         )}
 
-        {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Question && (
+        {session.inputCopilot.ActivePage === ESpeechStage.Question && (
           <FreePersonalQuestionPage
             impromptuSpeechInput={session.inputCopilot}
           ></FreePersonalQuestionPage>
@@ -68,7 +67,7 @@ export function Chat() {
           // ></InterviewPersonalQuestionPage>
         )}
 
-        {session.inputCopilot.ActivePage === ImpromptuSpeechStage.Report && (
+        {session.inputCopilot.ActivePage === ESpeechStage.Report && (
           <FreePersonalReport
             impromptuSpeechInput={session.inputCopilot}
           ></FreePersonalReport>
@@ -87,19 +86,31 @@ function ImpromptuSpeechSetting() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const [topic, setTopic] = useState(session.inputCopilot.Topic);
+  const [questionNums, setQuestionNums] = useState(
+    session.inputCopilot.QuestionNums,
+  );
+  const [mode, setMode] = useState(session.inputCopilot.Mode);
+
   // TODO: save selected job
   const config = useAppConfig();
   const [submitting, setSubmitting] = useState(false);
   const [submitProgress, setSubmitProgress] = useState(0);
 
   const onSubmit = async () => {
-    if (
-      session.inputCopilot.Topic === "" ||
-      session.inputCopilot.QuestionNums <= 0
-    ) {
-      showToast(`Topic or questions is empty, please check`);
+    if (topic === "") {
+      showToast(`Topic is empty, please check`);
       return;
     }
+    if (questionNums <= 0) {
+      showToast(`questions <= 0, please check`);
+      return;
+    }
+
+    session.inputCopilot.Topic = topic;
+    session.inputCopilot.QuestionNums = questionNums;
+    session.inputCopilot.Mode = mode;
+
     setSubmitting(true);
     setSubmitProgress(0);
 
@@ -138,6 +149,7 @@ function ImpromptuSpeechSetting() {
 
       response = session.messages[session.messages.length - 1].content;
       let questionItem = new IQuestionItem();
+      questionItem.Speaker = "Speaker" + (i + 1).toString();
       questionItem.Question = question;
       questionItem.SampleSpeech = response;
       session.inputCopilot.QuestionItems.push(questionItem);
@@ -151,20 +163,19 @@ function ImpromptuSpeechSetting() {
 
     chatStore.updateCurrentSession(
       (session) => (
-        (session.inputCopilot.ActivePage = ImpromptuSpeechStage.Question),
+        (session.inputCopilot.ActivePage = ESpeechStage.Question),
         (session.inputCopilot.HasQuestions = true),
         (session.inputCopilot.StartTime = new Date().getTime())
       ),
     );
 
-    console.log("session.inputCopilot=", session.inputCopilot);
+    // console.log("session.inputCopilot=", session.inputCopilot);
     setSubmitting(false);
   };
 
   const onContinue = async () => {
     chatStore.updateCurrentSession(
-      (session) =>
-        (session.inputCopilot.ActivePage = ImpromptuSpeechStage.Question),
+      (session) => (session.inputCopilot.ActivePage = ESpeechStage.Question),
     );
   };
 
@@ -175,9 +186,9 @@ function ImpromptuSpeechSetting() {
           ref={inputRef}
           className={styles_chat["chat-input"]}
           onInput={(e) => {
-            session.inputCopilot.Topic = e.currentTarget.value;
+            setTopic(e.currentTarget.value);
           }}
-          defaultValue={session.inputCopilot.Topic}
+          defaultValue={topic}
           rows={1}
           style={{
             fontSize: config.fontSize,
@@ -190,30 +201,37 @@ function ImpromptuSpeechSetting() {
         <input
           type="number"
           min={1}
-          defaultValue={session.inputCopilot.QuestionNums}
+          defaultValue={questionNums}
           onChange={(e) => {
-            session.inputCopilot.QuestionNums = parseInt(e.currentTarget.value);
+            setQuestionNums(parseInt(e.currentTarget.value));
           }}
         ></input>
       </ListItem>
 
       {/* TODO: further dev */}
-      {/* <ListItem title="Interaction">
+      <ListItem title="Mode">
         <FormControl>
           <RadioGroup
             row
-            aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
-            defaultValue={session.inputCopilot.Interaction}
+            defaultValue={mode}
             onChange={(e) => {
-              session.inputCopilot.Interaction = e.currentTarget.value;
+              setMode(e.currentTarget.value);
             }}
           >
-            <FormControlLabel value={ImpromptuSpeechModes.Free} control={<Radio />} label={ImpromptuSpeechModes.Free} />
-            <FormControlLabel value={ImpromptuSpeechModes.Interview} control={<Radio />} label={ImpromptuSpeechModes.Interview} />
+            <FormControlLabel
+              value={ESpeechModes.Personal}
+              control={<Radio />}
+              label={ESpeechModes.Personal}
+            />
+            <FormControlLabel
+              value={ESpeechModes.Hosting}
+              control={<Radio />}
+              label={ESpeechModes.Hosting}
+            />
           </RadioGroup>
         </FormControl>
-      </ListItem> */}
+      </ListItem>
 
       {submitting ? (
         <div>

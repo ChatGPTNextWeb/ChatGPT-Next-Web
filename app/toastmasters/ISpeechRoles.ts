@@ -1,14 +1,7 @@
-import { AudioRecorder } from "../cognitive/speech-audioRecorderClass";
 import { ToastmastersRoles } from "./roles";
 
 // TODO:
 export const SpeechDefaultLangugage = "en";
-
-export enum ImpromptuSpeechPromptKeys {
-  Questions = "Questions",
-  Score = "Score",
-  SampleSpeech = "Score",
-}
 
 export enum ImpromptuSpeechRoles {
   TableTopicsEvaluator = "Table Topics Evaluator",
@@ -32,7 +25,22 @@ export enum ImpromptuSpeechRoles {
   TimeManagement = "Time",
 }
 
-export enum StageStatus {
+export enum ESpeechModes {
+  // interaction
+  Free = "Free",
+  Interview = "Interview",
+  // mode
+  Personal = "Personal",
+  Hosting = "Hosting",
+}
+
+export enum ESpeechStage {
+  Start = "",
+  Question = "Question",
+  Report = "Report",
+}
+
+export enum ESpeechStageStatus {
   Start = "",
   Recording = "Recording",
   Paused = "Paused",
@@ -48,11 +56,13 @@ export class IQuestionItem {
   SpeechTime: number = 0;
   SpeechAudio: string = "";
 
-  StageStatus = StageStatus.Start;
-
   Score: number = 0;
   Scores: { subject: string; score: number }[] = [];
   Evaluations: Record<string, string> = {};
+
+  // these 2 should not be reset
+  Speaker: string = "";
+  StageStatus = ESpeechStageStatus.Start;
 
   constructor() {}
 
@@ -60,7 +70,7 @@ export class IQuestionItem {
     this.Speech = "";
     this.SpeechTime = 0;
     this.SpeechAudio = "";
-    // this.StageStatus = StageStatus.Start;  // change at outside
+    // this.StageStatus = ESpeechStageStatus.Start;  // change at outside
     this.Score = 0;
     this.Scores = [];
     this.Evaluations = {};
@@ -68,7 +78,7 @@ export class IQuestionItem {
 }
 
 export class ImpromptuSpeechInput {
-  ActivePage: string = ImpromptuSpeechStage.Start;
+  ActivePage: string = ESpeechStage.Start;
 
   // 0: setting, 1: main page
   // ActiveStep: number = 0;
@@ -80,26 +90,10 @@ export class ImpromptuSpeechInput {
   EndTime: number = new Date().getTime();
   TotalEvaluations: string = ""; // TODO: might be Record<string, string>
 
-  Interaction: string = ImpromptuSpeechModes.Free;
-  Mode: string = ImpromptuSpeechModes.Personal;
+  Interaction: string = ESpeechModes.Free;
+  Mode: string = ESpeechModes.Personal;
 
   QuestionItems: IQuestionItem[] = [];
-}
-
-// 定义状态枚举
-export enum ImpromptuSpeechStage {
-  Start = "",
-  Question = "Question",
-  Report = "Report",
-}
-
-export enum ImpromptuSpeechModes {
-  // interaction
-  Free = "Free",
-  Interview = "Interview",
-  // mode
-  Personal = "Personal",
-  Hosting = "Hosting",
 }
 
 export class ImpromptuSpeechPrompts {
