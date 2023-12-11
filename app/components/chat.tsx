@@ -1425,6 +1425,7 @@ function _Chat() {
                 style={{ position: "relative", width: "48px", height: "48px" }}
               >
                 <Image
+                  loader={() => userImage.fileUrl}
                   src={userImage.fileUrl}
                   alt={userImage.filename}
                   title={userImage.filename}
