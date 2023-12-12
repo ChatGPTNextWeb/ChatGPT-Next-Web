@@ -223,13 +223,14 @@ export function PluginPage() {
   return (
     <ErrorBoundary>
       <div className={styles["plugin-page"]}>
-        <div className={styles["plugin-header"]}>
+        {/* <div className={styles["plugin-header"]}>
           <IconButton
             icon={<LeftIcon />}
             text={Locale.NewChat.Return}
             onClick={() => navigate(Path.Home)}
           ></IconButton>
-        </div>
+        </div> */}
+
         <div className="window-header">
           <div className="window-header-title">
             <div className="window-header-main-title">
@@ -240,7 +241,15 @@ export function PluginPage() {
             </div>
           </div>
 
-          <div className="window-actions"></div>
+          <div className="window-actions">
+            <div className="window-action-button">
+              <IconButton
+                icon={<CloseIcon />}
+                onClick={() => navigate(Path.Home)}
+                bordered
+              />
+            </div>
+          </div>
         </div>
 
         <div className={styles["plugin-page-body"]}>
