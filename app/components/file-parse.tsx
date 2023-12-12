@@ -9,6 +9,7 @@ import StopIcon from "../icons/pause.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import ResetIcon from "../icons/reload.svg";
+import { useChatStore } from "../store";
 
 interface FileParseSettingsProps {
   children?: React.ReactNode;
@@ -195,6 +196,7 @@ export function FileParseToast(props: {
   doSubmit: (message: string) => void;
   setShowModal: (_: boolean) => void;
 }) {
+  const chatStore = useChatStore();
   const onSubmitConversation: Options["onSubmitConversation"] = async (
     value,
     context,
@@ -211,6 +213,21 @@ export function FileParseToast(props: {
         return Promise.reject();
       }
     } else {
+      await new Promise((resolve) => {
+        const step = () => {
+          const session = chatStore.currentSession();
+          const lastMessage = session.messages[session.messages.length - 1];
+          const needWaiting =
+            lastMessage.role === "user" ||
+            (lastMessage.role === "assistant" && lastMessage.streaming);
+          if (needWaiting) {
+            requestAnimationFrame(step);
+          } else {
+            resolve("");
+          }
+        };
+        step();
+      });
       props.doSubmit(value);
     }
   };
