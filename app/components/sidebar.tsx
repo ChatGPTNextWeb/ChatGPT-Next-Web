@@ -158,7 +158,7 @@ export function SideBar(props: { className?: string }) {
           Pingtao-ChatGPT
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          广告位招租, 一天只要1块钱!
+          为防止滥用，本站会定期修改登录密码，请私聊pingtaougie获取最新密码。
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
