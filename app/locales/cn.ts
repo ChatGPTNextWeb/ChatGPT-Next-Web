@@ -8,7 +8,7 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "免费gpt账号请加[QQ](https://qm.qq.com/q/fVr8LpzgUo)获取免费账号与本站访问密码。之后到[登录](/#/auth)页输入访问密码。[机场推荐11元一年很稳](https://jxfast.akkfast.com/auth/register?code=tn8Grm)。在此先放一个4.0账号账号: qf39cj@spitve.com  密码: 4xD5@928WI6-。",
+      : "欢迎小曾猪头来到，请到[登录](/#/auth)页输入访问密码（xiaozengshizhutou)。",
   },
   Auth: {
     Title: "需要密码",
@@ -342,7 +342,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "免费gpt账号可加[QQ](https://qm.qq.com/q/fVr8LpzgUo)，免费使用3.5平时也会推送一些AI之类的网站都是免费的在此先放一个4.0账号，账号: qf39cj@spitve.com  密码: 4xD5@928WI6-。[机场推荐11元一年很稳](https://jxfast.akkfast.com/auth/register?code=tn8Grm)",
+    BotHello: "小曾猪头请问答吧",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
