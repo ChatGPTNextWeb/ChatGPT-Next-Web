@@ -266,7 +266,8 @@ export function PluginPage() {
                       </div>
                     )}
                     {/* 描述 */}
-                    <div className={styles["plugin-info"] + " one-line"}>
+                    {/* Fix: descriptions do not wrap */}
+                    <div className={styles["plugin-info"]}>
                       {`${m.description}`}
                     </div>
                   </div>
