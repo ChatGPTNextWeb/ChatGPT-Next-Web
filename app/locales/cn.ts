@@ -258,7 +258,8 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "有什么可以帮你的吗"<p node="[object Object]" dir="auto">本站点无限免费使用gpt-3.5版本，如果需要使用更聪明的gpt-4版本，请到<a href="https://nekoapi.com/" node="[object Object]" target="_blank">https://uiuiapi.com/</a> 购买<br>
+购买后请打开<a href="/#/settings" node="[object Object]" target="_self">设置</a>填写您的key</p></div></div>,
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
