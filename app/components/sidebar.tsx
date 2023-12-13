@@ -118,10 +118,10 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT Next
+          uiuiapi ChatGPT 公益站
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          <br><span>GPT-3.5无限制使用，购买Key可用GPT-4</span><br><a href="https://uiuiapi.com" target="_blank" rel="noreferrer">点击购买 https://uiuiapi.com</a><br><br><span>购买后在下方点击设置按钮，填写你的API Key即可使用全部模型</span></div>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
