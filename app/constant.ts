@@ -88,7 +88,7 @@ Latex inline: $x^2$
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+export const SUMMARIZE_MODEL = "gpt-4-1106-preview";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
