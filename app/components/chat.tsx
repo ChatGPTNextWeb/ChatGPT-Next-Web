@@ -453,7 +453,7 @@ export function ChatActions(props: {
 
   return (
     <div className={styles["chat-input-actions"]}>
-      {couldStop && (
+      {/* {couldStop && (
         <ChatAction
           onClick={stopAll}
           text={Locale.Chat.InputActions.Stop}
@@ -466,14 +466,14 @@ export function ChatActions(props: {
           text={Locale.Chat.InputActions.ToBottom}
           icon={<BottomIcon />}
         />
-      )}
-      {props.hitBottom && (
+      )} */}
+      {/* {props.hitBottom && (
         <ChatAction
           onClick={props.showPromptModal}
           text={Locale.Chat.InputActions.Settings}
           icon={<SettingsIcon />}
         />
-      )}
+      )} */}
 
       <ChatAction
         onClick={nextTheme}
@@ -497,15 +497,15 @@ export function ChatActions(props: {
         icon={<PromptIcon />}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => {
           navigate(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
         icon={<MaskIcon />}
-      />
+      /> */}
 
-      <ChatAction
+      {/* <ChatAction
         text={Locale.Chat.InputActions.Clear}
         icon={<BreakIcon />}
         onClick={() => {
@@ -518,13 +518,13 @@ export function ChatActions(props: {
             }
           });
         }}
-      />
+      /> */}
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
-      />
+      /> */}
 
       {showModelSelector && (
         <Selector
@@ -642,13 +642,13 @@ function _Chat() {
   );
 
   // auto grow input
-  const [inputRows, setInputRows] = useState(2);
+  const [inputRows, setInputRows] = useState(3);
   const measure = useDebouncedCallback(
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
         20,
-        Math.max(2 + Number(!isMobileScreen), rows),
+        Math.max(4 + Number(!isMobileScreen), rows),
       );
       setInputRows(inputRows);
     },
@@ -1067,7 +1067,7 @@ function _Chat() {
         <div className={`window-header-title ${styles["chat-body-title"]}`}>
           <div
             className={`window-header-main-title ${styles["chat-body-main-title"]}`}
-            onClickCapture={() => setIsEditingMessage(true)}
+            // onClickCapture={() => setIsEditingMessage(true)}
           >
             {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
@@ -1076,7 +1076,7 @@ function _Chat() {
           </div>
         </div>
         <div className="window-actions">
-          {!isMobileScreen && (
+          {/* {!isMobileScreen && (
             <div className="window-action-button">
               <IconButton
                 icon={<RenameIcon />}
@@ -1094,7 +1094,7 @@ function _Chat() {
                 setShowExport(true);
               }}
             />
-          </div>
+          </div> */}
           {showMaxIcon && (
             <div className="window-action-button">
               <IconButton
