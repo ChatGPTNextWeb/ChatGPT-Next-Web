@@ -8,6 +8,8 @@ export class DallEAPIWrapper extends StructuredTool {
   apiKey: string;
   baseURL?: string;
 
+  noStorage: boolean;
+
   callback?: (data: string) => Promise<void>;
 
   constructor(
@@ -22,6 +24,8 @@ export class DallEAPIWrapper extends StructuredTool {
     this.apiKey = apiKey;
     this.baseURL = baseURL;
     this.callback = callback;
+
+    this.noStorage = !!process.env.DALLE_NO_IMAGE_STORAGE;
   }
 
   async saveImageFromUrl(url: string) {
@@ -45,7 +49,7 @@ export class DallEAPIWrapper extends StructuredTool {
 
   /** @ignore */
   async _call({ prompt, size }: z.infer<typeof this.schema>) {
-    let image_url;
+    let imageUrl;
     const apiUrl = `${this.baseURL}/images/generations`;
     try {
       const requestOptions = {
@@ -64,21 +68,24 @@ export class DallEAPIWrapper extends StructuredTool {
       const response = await fetch(apiUrl, requestOptions);
       const json = await response.json();
       console.log("[DALL-E]", json);
-      image_url = json.data[0].url;
+      imageUrl = json.data[0].url;
     } catch (e) {
       console.error("[DALL-E]", e);
     }
-    if (!image_url) return "No image was generated";
+    if (!imageUrl) return "No image was generated";
     try {
-      let filePath = await this.saveImageFromUrl(image_url);
+      let filePath = imageUrl;
+      if (!this.noStorage) {
+        filePath = await this.saveImageFromUrl(imageUrl);
+      }
       console.log("[DALL-E]", filePath);
       var imageMarkdown = `![img](${filePath})`;
       if (this.callback != null) await this.callback(imageMarkdown);
       return imageMarkdown;
     } catch (e) {
       if (this.callback != null)
-        await this.callback("Image upload to R2 storage failed");
-      return "Image upload to R2 storage failed";
+        await this.callback("Image upload to OSS failed");
+      return "Image upload to OSS failed";
     }
   }
 
