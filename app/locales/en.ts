@@ -65,6 +65,53 @@ const en: LocaleType = {
       Masks: "Masks",
       Clear: "Clear Context",
       Settings: "Settings",
+      FileUpload: "Attachment",
+    },
+    FileUploadActions: {
+      Title: "Attachment settings",
+      Reset: "Reset",
+      ResetConfim: "Confirm reset attachment upload settings?",
+      SendConfirm: (count: number) => `Confirm sending ${count} conversations`,
+      Settings: {
+        General: {
+          ChunkSize: {
+            Title: "Chunk Size",
+            SubTitle:
+              "The character count of each part. If your document is too long, you can split it into multiple parts",
+          },
+          OverlapSize: {
+            Title: "Overlap Size",
+            SubTitle:
+              "The character count of the overlap between each part. It is used to make the generated text more coherent",
+          },
+        },
+        Prompt: {
+          BasePrompt: {
+            Title: "Base Prompt",
+            SubTitle: "This prompt will be used for the first part",
+          },
+          SinglePartPrompt: {
+            Title: "Single Part Prompt",
+            SubTitle:
+              "This prompt will be used for the only single part documents",
+          },
+          MultiPartFirstPrompt: {
+            Title: "Multi Part First Prompt",
+            SubTitle:
+              "This prompt will be used for the first part of the multi part documents",
+          },
+          MultiPartConsecutivePrompts: {
+            Title: "Multi Part Consecutive Prompts",
+            SubTitle:
+              "This prompt will be used for the each parts of the multi part documents",
+          },
+          LastPartPrompt: {
+            Title: "Last Part Prompt",
+            SubTitle:
+              "This prompt will be used for the last part of the multi part documents",
+          },
+        },
+      },
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -443,8 +490,8 @@ const en: LocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Only messages after clearing the context will be displayed"
-    },  
+      Title: "Only messages after clearing the context will be displayed",
+    },
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",

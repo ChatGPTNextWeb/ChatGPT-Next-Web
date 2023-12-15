@@ -34,6 +34,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import UploadIcon from "../icons/upload.svg";
 
 import {
   ChatMessage,
@@ -89,6 +90,7 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
+import { FileParseToast } from "./file-parse";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -406,6 +408,7 @@ function useScrollToBottom() {
 }
 
 export function ChatActions(props: {
+  showFileUploadModal: () => void;
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
@@ -474,7 +477,11 @@ export function ChatActions(props: {
           icon={<SettingsIcon />}
         />
       )}
-
+      <ChatAction
+        onClick={props.showFileUploadModal}
+        text={Locale.Chat.InputActions.FileUpload}
+        icon={<UploadIcon />}
+      />
       <ChatAction
         onClick={nextTheme}
         text={Locale.Chat.InputActions.Theme[theme]}
@@ -1048,6 +1055,9 @@ function _Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // control FileUpload modal
+  const [showFileUploadModal, setShowFileUploadModal] = useState(false);
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1114,6 +1124,12 @@ function _Chat() {
           showToast={!hitBottom}
           showModal={showPromptModal}
           setShowModal={setShowPromptModal}
+        />
+
+        <FileParseToast
+          showModal={showFileUploadModal}
+          setShowModal={setShowFileUploadModal}
+          doSubmit={doSubmit}
         />
       </div>
 
@@ -1266,6 +1282,7 @@ function _Chat() {
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
         <ChatActions
+          showFileUploadModal={() => setShowFileUploadModal(true)}
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
