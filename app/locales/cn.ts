@@ -8,7 +8,7 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "本站已开启授权访问模式，请前往[登录](/#/auth)页输入正确的访问密码方可使用。",
   },
   Auth: {
     Title: "需要密码",
@@ -153,7 +153,7 @@ const cn = {
     },
     InjectSystemPrompts: {
       Title: "注入系统级提示信息",
-      SubTitle: "强制给每次请求的消息列表开头添加一个模拟 ChatGPT 的系统提示",
+      SubTitle: "强制给每次请求的消息列表开头添加一个模拟 StarAI 的系统提示",
     },
     InputTemplate: {
       Title: "用户输入预处理",
@@ -266,7 +266,7 @@ const cn = {
       },
       IsChecking: "正在检查…",
       Check: "重新检查",
-      NoAccess: "输入 API Key 或访问密码查看余额",
+      NoAccess: "输入访问密码后可查看当月用量",
     },
 
     Access: {
