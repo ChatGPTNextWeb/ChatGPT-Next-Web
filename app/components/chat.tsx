@@ -552,6 +552,7 @@ export function EditMessageModal(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const [messages, setMessages] = useState(session.messages.slice());
+  const [topic, setTopic] = useState(session.topic);
 
   return (
     <div className="modal-mask">
@@ -573,9 +574,10 @@ export function EditMessageModal(props: { onClose: () => void }) {
             icon={<ConfirmIcon />}
             key="ok"
             onClick={() => {
-              chatStore.updateCurrentSession(
-                (session) => (session.messages = messages),
-              );
+              chatStore.updateCurrentSession((session) => {
+                session.messages = messages;
+                session.topic = topic;
+              });
               props.onClose();
             }}
           />,
@@ -588,11 +590,9 @@ export function EditMessageModal(props: { onClose: () => void }) {
           >
             <input
               type="text"
-              value={session.topic}
+              value={topic}
               onInput={(e) =>
-                chatStore.updateCurrentSession(
-                  (session) => (session.topic = e.currentTarget.value),
-                )
+                setTopic((e.currentTarget as HTMLInputElement).value)
               }
             ></input>
           </ListItem>
