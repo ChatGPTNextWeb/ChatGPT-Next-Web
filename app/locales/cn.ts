@@ -342,7 +342,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "除gpt-4-32k系列模型，其他模型均可用",
+    BotHello: "建议使用gpt4-1106-preview，最新的GPT4模型，知识库为23年4月",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
