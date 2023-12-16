@@ -8,6 +8,15 @@
 2. 选择 "Connect to Git"。
 3. 关联 Cloudflare Pages 和你的 GitHub 账号。
 4. 选中你 fork 的此项目。
+
+>**在cloudflare部署前需要修改下面三个文件的runtime才能完成部署**
+   - `/app/api/config/route.ts`
+   - `/app/cors/[...path]/route.ts`
+   - `/app/openai/[...path]/route.ts`
+>将这三个文件内容的export const runtime值修改成edge
+
+   - `例如：export const runtime = "edge";`
+
 5. 点击 "Begin setup"。
 6. 对于 "Project name" 和 "Production branch"，可以使用默认值，也可以根据需要进行更改。
 7. 在 "Build Settings" 中，选择 "Framework presets" 选项并选择 "Next.js"。
