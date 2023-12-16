@@ -6,7 +6,7 @@ export function collectModelTable(
 ) {
   const modelTable: Record<
     string,
-    { available: boolean; name: string; displayName: string }
+    { available: boolean; name: string; displayName: string; describe: string }
   > = {};
 
   // default models
@@ -37,6 +37,7 @@ export function collectModelTable(
         name,
         displayName: displayName || name,
         available,
+        describe: "",
       };
     });
   return modelTable;

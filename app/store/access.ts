@@ -27,13 +27,15 @@ const DEFAULT_ACCESS_STATE = {
   // azure
   azureUrl: "",
   azureApiKey: "",
-  azureApiVersion: "2023-08-01-preview",
+  azureApiVersion: "2023-05-15",
 
   // server config
   needCode: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,
   disableGPT4: false,
+  midjourneyProxyUrl: "",
+  useMjImgSelfProxy: false,
   disableFastLink: false,
   customModels: "",
 };
@@ -53,7 +55,8 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidAzure() {
-      return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
+      return true;
+      // return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
     },
 
     isAuthorized() {
@@ -70,24 +73,15 @@ export const useAccessStore = createPersistStore(
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
-      fetch("/api/config", {
-        method: "post",
-        body: null,
-        headers: {
-          ...getHeaders(),
-        },
-      })
-        .then((res) => res.json())
-        .then((res: DangerConfig) => {
-          console.log("[Config] got config from server", res);
-          set(() => ({ ...res }));
-        })
-        .catch(() => {
-          console.error("[Config] failed to fetch config");
-        })
-        .finally(() => {
-          fetchState = 2;
-        });
+
+      const res = {
+        needCode: false,
+        hideUserApiKey: true,
+        disableGPT4: false,
+        hideBalanceQuery: true,
+      };
+      set(() => ({ ...res }));
+      fetchState = 2; // 设置 fetchState 值为 "获取已完成"
     },
   }),
   {
@@ -101,7 +95,7 @@ export const useAccessStore = createPersistStore(
           azureApiVersion: string;
         };
         state.openaiApiKey = state.token;
-        state.azureApiVersion = "2023-08-01-preview";
+        state.azureApiVersion = "2023-05-15";
       }
 
       return persistedState as any;

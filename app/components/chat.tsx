@@ -34,6 +34,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import UploadIcon from "../icons/upload.svg";
 
 import {
   ChatMessage,
@@ -50,6 +51,7 @@ import {
 
 import {
   copyToClipboard,
+  downloadAs,
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
@@ -88,6 +90,8 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
+import { Button } from "emoji-picker-react/src/components/atoms/Button";
+import Image from "next/image";
 import { useAllModels } from "../utils/hooks";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
@@ -337,6 +341,10 @@ function ChatAction(props: {
     full: 16,
     icon: 16,
   });
+  const allModels = useAllModels().map((item) => item.displayName);
+  const customModelClassName = allModels.includes(props.text)
+    ? "chat-input-action-long-weight"
+    : "";
 
   function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
@@ -349,9 +357,15 @@ function ChatAction(props: {
     });
   }
 
+  useEffect(() => {
+    if (customModelClassName !== "") {
+      updateWidth();
+    }
+  }, [props.text, customModelClassName]);
+
   return (
     <div
-      className={`${styles["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} ${styles[customModelClassName]} clickable`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
@@ -409,6 +423,7 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  imageSelected: (img: any) => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
@@ -428,6 +443,25 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
+
+  function selectImage() {
+    document.getElementById("chat-image-file-select-upload")?.click();
+  }
+
+  const onImageSelected = (e: any) => {
+    const file = e.target.files[0];
+    const filename = file.name;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64 = reader.result;
+      props.imageSelected({
+        filename,
+        base64,
+      });
+    };
+    e.target.value = null;
+  };
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
@@ -467,13 +501,13 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
-      {props.hitBottom && (
-        <ChatAction
-          onClick={props.showPromptModal}
-          text={Locale.Chat.InputActions.Settings}
-          icon={<SettingsIcon />}
-        />
-      )}
+      {/*{props.hitBottom && (*/}
+      {/*  <ChatAction*/}
+      {/*    onClick={props.showPromptModal}*/}
+      {/*    text={Locale.Chat.InputActions.Settings}*/}
+      {/*    icon={<SettingsIcon />}*/}
+      {/*  />*/}
+      {/*)}*/}
 
       <ChatAction
         onClick={nextTheme}
@@ -491,19 +525,19 @@ export function ChatActions(props: {
         }
       />
 
-      <ChatAction
-        onClick={props.showPromptHints}
-        text={Locale.Chat.InputActions.Prompt}
-        icon={<PromptIcon />}
-      />
+      {/*<ChatAction*/}
+      {/*  onClick={props.showPromptHints}*/}
+      {/*  text={Locale.Chat.InputActions.Prompt}*/}
+      {/*  icon={<PromptIcon />}*/}
+      {/*/>*/}
 
-      <ChatAction
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
-        text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
-      />
+      {/*<ChatAction*/}
+      {/*  onClick={() => {*/}
+      {/*    navigate(Path.Masks);*/}
+      {/*  }}*/}
+      {/*  text={Locale.Chat.InputActions.Masks}*/}
+      {/*  icon={<MaskIcon />}*/}
+      {/*/>*/}
 
       <ChatAction
         text={Locale.Chat.InputActions.Clear}
@@ -526,11 +560,25 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
+      <ChatAction
+        onClick={selectImage}
+        text={Locale.Chat.InputActions.UploadImage}
+        icon={<UploadIcon />}
+      />
+      <input
+        type="file"
+        accept=".png,.jpg,.webp,.jpeg"
+        id="chat-image-file-select-upload"
+        style={{ display: "none" }}
+        onChange={onImageSelected}
+      />
+
       {showModelSelector && (
         <Selector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
             title: m.displayName,
+            subTitle: m.describe,
             value: m.name,
           }))}
           onClose={() => setShowModelSelector(false)}
@@ -622,6 +670,8 @@ function _Chat() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [useImages, setUseImages] = useState<any[]>([]);
+  const [mjImageMode, setMjImageMode] = useState<string>("IMAGINE");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
@@ -697,17 +747,33 @@ function _Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
-    const matchCommand = chatCommands.match(userInput);
-    if (matchCommand.matched) {
-      setUserInput("");
-      setPromptHints([]);
-      matchCommand.invoke();
-      return;
+    if (useImages.length > 0) {
+      if (mjImageMode === "IMAGINE" && userInput == "") {
+        alert(Locale.Midjourney.NeedInputUseImgPrompt);
+        return;
+      }
+    } else {
+      const matchCommand = chatCommands.match(userInput);
+      if (matchCommand.matched) {
+        setUserInput("");
+        setPromptHints([]);
+        matchCommand.invoke();
+        return;
+      }
     }
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+
+    chatStore
+      .onUserInput(userInput, {
+        useImages,
+        mjImageMode,
+        setAutoScroll,
+      })
+      .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
+    setUseImages([]);
+    setMjImageMode("IMAGINE");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
@@ -1031,6 +1097,12 @@ function _Chat() {
   // edit / insert message modal
   const [isEditingMessage, setIsEditingMessage] = useState(false);
 
+  messages?.forEach((msg) => {
+    if (msg.model === "midjourney" && msg.attr.taskId) {
+      chatStore.fetchMidjourneyStatus(msg);
+    }
+  });
+
   // remember unfinished input
   useEffect(() => {
     // try to load from local storage
@@ -1238,16 +1310,108 @@ function _Chat() {
                         message.content.length === 0 &&
                         !isUser
                       }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
+                      // onContextMenu={(e) => onRightClick(e, message)}
+                      // onDoubleClickCapture={() => {
+                      //   if (!isMobileScreen) return;
+                      //   setUserInput(message.content);
+                      // }}
                       fontSize={fontSize}
                       parentRef={scrollRef}
                       defaultShow={i >= messages.length - 6}
                     />
                   </div>
+
+                  {!isUser &&
+                    message.model == "midjourney" &&
+                    message.attr?.finished &&
+                    ["VARIATION", "IMAGINE", "BLEND"].includes(
+                      message.attr?.action,
+                    ) && (
+                      <div
+                        className={[
+                          styles["chat-message-actions"],
+                          styles["column-flex"],
+                        ].join(" ")}
+                      >
+                        <div>
+                          <button
+                            onClick={() =>
+                              doSubmit(`/mj UPSCALE::1::${message.attr.taskId}`)
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            U1
+                          </button>
+                          <button
+                            onClick={() =>
+                              doSubmit(`/mj UPSCALE::2::${message.attr.taskId}`)
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            U2
+                          </button>
+                          <button
+                            onClick={() =>
+                              doSubmit(`/mj UPSCALE::3::${message.attr.taskId}`)
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            U3
+                          </button>
+                          <button
+                            onClick={() =>
+                              doSubmit(`/mj UPSCALE::4::${message.attr.taskId}`)
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            U4
+                          </button>
+                          {/*<button onClick={() => doSubmit(`/mj REROLL::0::${message.attr.taskId}`)} className={`${styles["chat-message-action-btn"]} clickable`}>RESET</button>*/}
+                        </div>
+                        <div>
+                          <button
+                            onClick={() =>
+                              doSubmit(
+                                `/mj VARIATION::1::${message.attr.taskId}`,
+                              )
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            V1
+                          </button>
+                          <button
+                            onClick={() =>
+                              doSubmit(
+                                `/mj VARIATION::2::${message.attr.taskId}`,
+                              )
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            V2
+                          </button>
+                          <button
+                            onClick={() =>
+                              doSubmit(
+                                `/mj VARIATION::3::${message.attr.taskId}`,
+                              )
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            V3
+                          </button>
+                          <button
+                            onClick={() =>
+                              doSubmit(
+                                `/mj VARIATION::4::${message.attr.taskId}`,
+                              )
+                            }
+                            className={`${styles["chat-message-action-btn"]} clickable`}
+                          >
+                            V4
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                   <div className={styles["chat-message-action-date"]}>
                     {isContext
@@ -1280,12 +1444,65 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          imageSelected={(img: any) => {
+            if (useImages.length >= 5) {
+              alert(Locale.Midjourney.SelectImgMax(5));
+              return;
+            }
+            setUseImages([...useImages, img]);
+          }}
         />
+        {useImages.length > 0 && (
+          <div className={styles["chat-select-images"]}>
+            {useImages.map((img: any, i) => (
+              <Image
+                src={img.base64}
+                key={i}
+                onClick={() => {
+                  setUseImages(useImages.filter((_, ii) => ii != i));
+                }}
+                title={img.filename}
+                alt={img.filename}
+                width={20}
+                height={20}
+              />
+            ))}
+            <div style={{ fontSize: "12px", marginBottom: "5px" }}>
+              {[
+                { name: Locale.Midjourney.ModeImagineUseImg, value: "IMAGINE" },
+                // { name: Locale.Midjourney.ModeBlend, value: "BLEND" },
+                // { name: Locale.Midjourney.ModeDescribe, value: "DESCRIBE" },
+              ].map((item, i) => (
+                <label key={i}>
+                  <input
+                    type="radio"
+                    name="mj-img-mode"
+                    checked={mjImageMode == item.value}
+                    value={item.value}
+                    onChange={(e) => {
+                      setMjImageMode(e.target.value);
+                    }}
+                  />
+                  <span>{item.name}</span>
+                </label>
+              ))}
+            </div>
+            <div style={{ fontSize: "12px" }}>
+              <small>{Locale.Midjourney.HasImgTip}</small>
+            </div>
+          </div>
+        )}
+
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
             ref={inputRef}
             className={styles["chat-input"]}
-            placeholder={Locale.Chat.Input(submitKey)}
+            // placeholder={Locale.Chat.Input(submitKey)}
+            placeholder={
+              useImages.length > 0 && mjImageMode != "IMAGINE"
+                ? Locale.Midjourney.InputDisabled
+                : Locale.Chat.Input(submitKey)
+            }
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}

@@ -37,7 +37,7 @@ export const createEmptyMask = () =>
     lang: getLang(),
     builtin: false,
     createdAt: Date.now(),
-  }) as Mask;
+  } as Mask);
 
 export const useMaskStore = createPersistStore(
   { ...DEFAULT_MASK_STATE },
@@ -92,7 +92,7 @@ export const useMaskStore = createPersistStore(
               ...config.modelConfig,
               ...m.modelConfig,
             },
-          }) as Mask,
+          } as Mask),
       );
       return userMasks.concat(buildinMasks);
     },

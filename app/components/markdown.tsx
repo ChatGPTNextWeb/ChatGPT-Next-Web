@@ -136,7 +136,7 @@ function _MarkDownContent(props: { content: string }) {
         ],
       ]}
       components={{
-        pre: PreCode,
+        pre: PreCode as any,
         p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";

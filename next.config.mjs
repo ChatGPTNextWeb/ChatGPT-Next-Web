@@ -1,12 +1,14 @@
 import webpack from "webpack";
-
+// import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
 
 const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
-console.log("[Next] build with chunk: ", !disableChunk);
+console.log("[Next] build with chunk: ", disableChunk);
 
 /** @type {import('next').NextConfig} */
+// const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
   webpack(config) {
     config.module.rules.push({
@@ -17,8 +19,15 @@ const nextConfig = {
     if (disableChunk) {
       config.plugins.push(
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
-      );
+      )
     }
+
+    config.optimization.minimize = true
+    config.optimization.splitChunks = {
+      minSize: 1024 * 300
+    }
+    // console.log('=======', config.optimization)
+
 
     config.resolve.fallback = {
       child_process: false,
@@ -27,12 +36,28 @@ const nextConfig = {
     return config;
   },
   output: mode,
+  // 不影响public，https://www.nextjs.cn/docs/api-reference/next.config.js/cdn-support-with-asset-prefix
+  // assetPrefix: isProd ? "https://cos.xiaosi.cc" : "",
   images: {
     unoptimized: mode === "export",
+    // domains: ["cos.xiaosi.cc"],
+    remotePatterns: [
+      { hostname: "**.xiaosi.cc" },
+      { hostname: "public.blob.vercel-storage.com" },
+      { hostname: "res.cloudinary.com" },
+      { hostname: "abs.twimg.com" },
+      { hostname: "pbs.twimg.com" },
+      { hostname: "avatar.vercel.sh" },
+      { hostname: "avatars.githubusercontent.com" },
+      { hostname: "www.google.com" },
+      { hostname: "flag.vercel.app" },
+      { hostname: "illustrations.popsy.co" },
+    ]
   },
   experimental: {
     forceSwcTransforms: true,
   },
+  swcMinify: true,
 };
 
 const CorsHeaders = [
@@ -51,6 +76,9 @@ const CorsHeaders = [
     value: "86400",
   },
 ];
+const IndexHeaders = [
+  { key: "Cache-Control", value: "public, max-age=86400"}
+]
 
 if (mode !== "export") {
   nextConfig.headers = async () => {
@@ -59,6 +87,10 @@ if (mode !== "export") {
         source: "/api/:path*",
         headers: CorsHeaders,
       },
+      // {
+      //   source: "/",
+      //   headers: IndexHeaders,
+      // },
     ];
   };
 

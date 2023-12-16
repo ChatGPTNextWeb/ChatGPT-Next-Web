@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.signin input[type=text] {
+  display: block;
+  margin-left: auto;
+  margin-right: auto
+}
+
+.signin hr {
+  text-align: center;
+  border: 0;
+  border-top: 1px solid var(--color-separator);
+  display: block;
+  margin: 2rem auto 1rem;
+  overflow: visible
+}
+
+.signin hr:before {
+  background: var(--color-background-card);
+  color: #888;
+  content: "or";
+  padding: 0 .4rem;
+  position: relative;
+  top: -.7rem
+}
+
+.signin .error {
+  background: #f5f5f5;
+  background: var(--color-error);
+  border-radius: .3rem;
+  font-weight: 500
+}
+
+.signin .error p {
+  color: var(--color-info-text);
+  font-size: .9rem;
+  line-height: 1.2rem;
+  padding: .5rem 1rem;
+  text-align: left
+}
+
+.signin form,.signin>div {
+  display: block
+}
+
+.signin form input[type],.signin>div input[type] {
+  margin-bottom: .5rem
+}
+
+.signin form button,.signin>div button {
+  width: 100%
+}
+
+.signin .provider+.provider {
+  margin-top: 1rem
+}

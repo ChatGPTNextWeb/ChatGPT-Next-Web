@@ -5,9 +5,11 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
+  DISABLE_MODELS,
   StoreKey,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
+import { get } from "immutable";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 
@@ -26,35 +28,38 @@ export enum Theme {
 }
 
 export const DEFAULT_CONFIG = {
+  submitKey: SubmitKey.Enter as SubmitKey,
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
+  // submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
   tightBorder: !!getClientConfig()?.isApp,
-  sendPreviewBubble: true,
+  sendPreviewBubble: false,
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
   disablePromptHint: false,
 
-  dontShowMaskSplashScreen: false, // dont show splash screen when create chat
-  hideBuiltinMasks: false, // dont add builtin masks
+  dontShowMaskSplashScreen: true,
+  hideBuiltinMasks: false, // don't add builtin masks
 
   customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
 
+  dontUseModel: DISABLE_MODELS,
+
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
-    temperature: 0.5,
+    model: "gpt-3.5-turbo-1106" as ModelType,
+    temperature: 0.8,
     top_p: 1,
-    max_tokens: 4000,
+    max_tokens: 2000,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
     historyMessageCount: 4,
-    compressMessageLengthThreshold: 1000,
+    compressMessageLengthThreshold: 2000,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
   },
@@ -132,7 +137,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.8,
+    version: 3.88,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -148,7 +153,8 @@ export const useAppConfig = createPersistStore(
       }
 
       if (version < 3.5) {
-        state.customModels = "claude,claude-100k";
+        // state.customModels = "claude,claude-100k";
+        state.customModels = "";
       }
 
       if (version < 3.6) {
@@ -161,6 +167,10 @@ export const useAppConfig = createPersistStore(
 
       if (version < 3.8) {
         state.lastUpdate = Date.now();
+      }
+      if (version < 3.88) {
+        state.lastUpdate = Date.now();
+        return { ...DEFAULT_CONFIG };
       }
 
       return state as any;

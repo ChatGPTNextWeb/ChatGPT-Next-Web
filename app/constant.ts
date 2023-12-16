@@ -19,6 +19,7 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Auth = "/auth",
+  Reward = "/reward",
 }
 
 export enum ApiPath {
@@ -58,7 +59,7 @@ export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
 
 export const STORAGE_KEY = "chatgpt-next-web";
 
-export const REQUEST_TIMEOUT_MS = 60000;
+export const REQUEST_TIMEOUT_MS = 120000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
@@ -69,6 +70,9 @@ export enum ServiceProvider {
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
+  // Azure32kPath:
+  //   "openai/deployments/gpt-4-32k/chat/completions?api-version=2023-05-15",
+  // Azure32kPathCheck: "openai/deployments/gpt-4-32k/chat/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
@@ -88,7 +92,7 @@ Latex inline: $x^2$
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+export const SUMMARIZE_MODEL = "gpt-3.5-turbo-16k";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
@@ -97,63 +101,73 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 };
 
 export const DEFAULT_MODELS = [
+  // {
+  //   name: "gpt-4",
+  //   available: true,
+  // },
+  {
+    name: "gpt-3.5-turbo-16k",
+    describe: "GPT-3,最快,笨",
+    available: false,
+  },
+  {
+    name: "gpt-3.5-turbo-1106",
+    describe: "GPT-3,最快,笨,最便宜",
+    available: true,
+  },
   {
     name: "gpt-4",
-    available: true,
+    describe: "GPT-4,聪明,贵,慢",
+    available: false,
   },
   {
-    name: "gpt-4-0314",
-    available: true,
-  },
-  {
-    name: "gpt-4-0613",
+    name: "gpt-4-1106-preview",
+    describe: "GPT-4,又强又快,推荐",
     available: true,
   },
   {
     name: "gpt-4-32k",
-    available: true,
+    describe: "GPT-4,聪明,慢,但是白嫖",
+    available: false,
   },
   {
-    name: "gpt-4-32k-0314",
+    name: "gpt-4-all",
+    describe: "GPT-4全能版,联网绘图多模态,又慢又贵",
     available: true,
   },
+  // {
+  //   name: "gpt-4v",
+  //   describe: "GPT-4,官方网页版,最聪明,贵且慢",
+  //   available: true,
+  // },
+  // {
+  //   name: "net-gpt-4",
+  //   describe: "GPT-4,联网版,最慢",
+  //   available: true,
+  // },
   {
-    name: "gpt-4-32k-0613",
-    available: true,
-  },
-  {
-    name: "gpt-4-1106-preview",
-    available: true,
-  },
-  {
-    name: "gpt-4-vision-preview",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0613",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-1106",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-16k",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-16k-0613",
-    available: true,
+    name: "midjourney",
+    describe: "绘图用,不用选",
+    available: false,
   },
 ] as const;
 
+export const AZURE_MODELS: string[] = ["gpt-4-1106-preview"];
+// export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
+// export const AZURE_PATH = AZURE_MODELS.map((m) => ({ m: `openai/deployments/${m}/chat/completions`} ));
+export const AZURE_PATH = AZURE_MODELS.reduce(
+  (acc, item) => ({
+    ...acc,
+    [item]: `openai/deployments/${item}/chat/completions`,
+  }),
+  {},
+);
+// console.log(AZURE_PATH);
+
+export const DISABLE_MODELS = DEFAULT_MODELS.filter(
+  (item) => !item.available,
+).map((item2) => item2.name);
+
+// console.log('========', DISABLE_MODELS)
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;

@@ -3,12 +3,13 @@ import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
 
-function getIP(req: NextRequest) {
-  let ip = req.ip ?? req.headers.get("x-real-ip");
+export function getIP(req: NextRequest) {
+  let ip = req.headers.get("x-real-ip") ?? req.ip;
+
   const forwardedFor = req.headers.get("x-forwarded-for");
 
-  if (!ip && forwardedFor) {
-    ip = forwardedFor.split(",").at(0) ?? "";
+  if (forwardedFor) {
+    ip = forwardedFor.split(",").at(0) ?? ip;
   }
 
   return ip;
@@ -24,7 +25,7 @@ function parseApiKey(bearToken: string) {
   };
 }
 
-export function auth(req: NextRequest) {
+export function auth(req: NextRequest, isAzure?: boolean) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
@@ -33,11 +34,11 @@ export function auth(req: NextRequest) {
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
   const serverConfig = getServerSideConfig();
-  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
-  console.log("[Auth] got access code:", accessCode);
-  console.log("[Auth] hashed access code:", hashedCode);
-  console.log("[User IP] ", getIP(req));
-  console.log("[Time] ", new Date().toLocaleString());
+  // console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
+  // console.log("[Auth] got access code:", accessCode);
+  // console.log("[Auth] hashed access code:", hashedCode);
+  // console.log("[User IP] ", getIP(req));
+  // console.log("[Time]", new Date().toLocaleString());
 
   if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !apiKey) {
     return {
@@ -55,7 +56,7 @@ export function auth(req: NextRequest) {
 
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
-    const serverApiKey = serverConfig.isAzure
+    const serverApiKey = isAzure
       ? serverConfig.azureApiKey
       : serverConfig.apiKey;
 
@@ -63,7 +64,7 @@ export function auth(req: NextRequest) {
       console.log("[Auth] use system api key");
       req.headers.set(
         "Authorization",
-        `${serverConfig.isAzure ? "" : "Bearer "}${serverApiKey}`,
+        `${isAzure ? "" : "Bearer "}${serverApiKey}`,
       );
     } else {
       console.log("[Auth] admin did not provide an api key");

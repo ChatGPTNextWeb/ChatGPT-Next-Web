@@ -4,9 +4,17 @@ import { Home } from "./components/home";
 
 import { getServerSideConfig } from "./config/server";
 
+import { getSession, isName } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
 const serverConfig = getServerSideConfig();
 
 export default async function App() {
+  const session = await getSession();
+  if (!session || !(session?.user?.name && isName(session.user.name))) {
+    redirect("/login");
+  }
+
   return (
     <>
       <Home />

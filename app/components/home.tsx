@@ -24,7 +24,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
-import { useAppConfig } from "../store/config";
+import { useAppConfig } from "@/app/store";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
@@ -52,6 +52,10 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 });
 
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
+  loading: () => <Loading noLogo />,
+});
+
+const Reward = dynamic(async () => (await import("./reward")).RewardPage, {
   loading: () => <Loading noLogo />,
 });
 
@@ -108,18 +112,18 @@ const useHasHydrated = () => {
 };
 
 const loadAsyncGoogleFont = () => {
-  const linkEl = document.createElement("link");
-  const proxyFontUrl = "/google-fonts";
-  const remoteFontUrl = "https://fonts.googleapis.com";
-  const googleFontUrl =
-    getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
-  linkEl.rel = "stylesheet";
-  linkEl.href =
-    googleFontUrl +
-    "/css2?family=" +
-    encodeURIComponent("Noto Sans:wght@300;400;700;900") +
-    "&display=swap";
-  document.head.appendChild(linkEl);
+  // const linkEl = document.createElement("link");
+  // const proxyFontUrl = "/google-fonts";
+  // const remoteFontUrl = "https://fonts.googleapis.com";
+  // const googleFontUrl =
+  //   getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
+  // linkEl.rel = "stylesheet";
+  // linkEl.href =
+  //   googleFontUrl +
+  //   "/css2?family=" +
+  //   encodeURIComponent("Noto Sans:wght@300;400;700;900") +
+  //   "&display=swap";
+  // document.head.appendChild(linkEl);
 };
 
 function Screen() {
@@ -128,7 +132,8 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
-  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -138,9 +143,7 @@ function Screen() {
     <div
       className={
         styles.container +
-        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
-          getLang() === "ar" ? styles["rtl-screen"] : ""
-        }`
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} `
       }
     >
       {isAuth ? (
@@ -158,6 +161,7 @@ function Screen() {
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.Settings} element={<Settings />} />
+              <Route path={Path.Reward} element={<Reward />} />
             </Routes>
           </div>
         </>

@@ -1,12 +1,22 @@
 import { getClientConfig } from "../config/client";
-import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
+import {
+  ACCESS_CODE_PREFIX,
+  Azure,
+  AZURE_MODELS,
+  ServiceProvider,
+} from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
-export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
+export const Models = [
+  "gpt-3.5-turbo-16k",
+  "gpt-4-0613",
+  "gpt-4-32k",
+  "midjourney",
+] as const;
 export type ChatModel = ModelType;
 
 export interface RequestMessage {
@@ -40,6 +50,7 @@ export interface LLMUsage {
 
 export interface LLMModel {
   name: string;
+  describe: string;
   available: boolean;
 }
 
@@ -125,14 +136,15 @@ export class ClientApi {
 
 export const api = new ClientApi();
 
-export function getHeaders() {
+export function getHeaders(isAzure?: boolean) {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
   };
+  // const isAzure = AZURE_MODELS.includes(jsonBody?.model as string)
+  // const isAzure = accessStore.provider === ServiceProvider.Azure;
 
-  const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
   const apiKey = isAzure ? accessStore.azureApiKey : accessStore.openaiApiKey;
 
@@ -151,5 +163,14 @@ export function getHeaders() {
     );
   }
 
+  if (validString(accessStore.midjourneyProxyUrl)) {
+    headers["midjourney-proxy-url"] = accessStore.midjourneyProxyUrl;
+  }
   return headers;
+}
+
+export function useGetMidjourneySelfProxyUrl(url: string) {
+  const accessStore = useAccessStore.getState();
+  console.log("useMjImgSelfProxy", accessStore.useMjImgSelfProxy);
+  return url;
 }

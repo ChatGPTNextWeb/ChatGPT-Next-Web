@@ -1,36 +1,52 @@
 version: "3.9"
 services:
   chatgpt-next-web:
-    profiles: ["no-proxy"]
     container_name: chatgpt-next-web
-    image: yidadaa/chatgpt-next-web
+#    image: yidadaa/chatgpt-next-web
+    image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web
+#    image: registry.cn-hangzhou.aliyuncs.com/sijinhui/chatgpt-next-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+#    depends_on:
+#      db:
+#        condition: service_healthy
     ports:
-      - 3000:3000
+      - "127.0.0.1:23000:3000"
     environment:
+      - TZ=Asia/Shanghai
       - OPENAI_API_KEY=$OPENAI_API_KEY
       - CODE=$CODE
       - BASE_URL=$BASE_URL
       - OPENAI_ORG_ID=$OPENAI_ORG_ID
       - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
       - DISABLE_GPT4=$DISABLE_GPT4
+      - GPT_4_BASE_URL=$GPT_4_BASE_URL
+      - GPT_4_KEY=$GPT_4_KEY
+      - MIDJOURNEY_PROXY_KEY=$MIDJOURNEY_PROXY_KEY
+      - MIDJOURNEY_PROXY_URL=$MIDJOURNEY_PROXY_URL
       - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
       - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
       - OPENAI_SB=$OPENAI_SB
+      - AZURE_URL=$AZURE_URL
+      - AZURE_API_KEY=$AZURE_API_KEY
+      - AZURE_API_VERSION=$AZURE_API_VERSION
+      - NEXTAUTH_URL=$NEXTAUTH_URL
+      - POSTGRES_PRISMA_URL=$POSTGRES_PRISMA_URL
+      - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+      - AUTH_GITHUB_ID=$AUTH_GITHUB_ID
+      - AUTH_GITHUB_SECRET=$AUTH_GITHUB_SECRET
+      - SECURE_COOKIES=$SECURE_COOKIES
+    volumes:
+      - /etc/localtime:/etc/localtime
+    networks:
+      - chatgpt-ns
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "1"
 
-  chatgpt-next-web-proxy:
-    profiles: ["proxy"]
-    container_name: chatgpt-next-web-proxy
-    image: yidadaa/chatgpt-next-web
-    ports:
-      - 3000:3000
-    environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - CODE=$CODE
-      - PROXY_URL=$PROXY_URL
-      - BASE_URL=$BASE_URL
-      - OPENAI_ORG_ID=$OPENAI_ORG_ID
-      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
-      - DISABLE_GPT4=$DISABLE_GPT4
-      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
-      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
-      - OPENAI_SB=$OPENAI_SB
+networks:
+  chatgpt-ns:
+    external: true

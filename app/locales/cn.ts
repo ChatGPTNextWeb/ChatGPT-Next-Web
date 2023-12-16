@@ -8,7 +8,9 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "访问密码不正确或为空，请前往[登录](/login)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+    NOT_FOUND_ERR: "404 not found. 页面有错误，可以尝试多刷新几次",
+    BACKEND_ERR: "后端请求错误，更换 **模型** 试一下吧。",
   },
   Auth: {
     Title: "需要密码",
@@ -17,6 +19,44 @@ const cn = {
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
+  },
+  Midjourney: {
+    SelectImgMax: (max: number) => `最多可选择 ${max} 张图片`,
+    InputDisabled: "该模式下不支持输入内容",
+    HasImgTip: "提示：垫图模式/识图(describe)模式只会使用第一张图片",
+    // "提示：垫图模式/识图(describe)模式只会使用第一张图片，混图(blend)模式会按顺序使用选中的5张图片（点击图片可以移除）",
+    ModeImagineUseImg: "垫图（图生图）模式",
+    ModeBlend: "混图模式",
+    ModeDescribe: "识图（图生文）模式",
+    NeedInputUseImgPrompt:
+      "垫图模式下需要输入内容才能使用图片，请以“/mj”开头输入内容",
+    BlendMinImg: (min: number, max: number) =>
+      `混图模式下至少需要 ${min} 张图片，至多 ${max} 张图片`,
+    TaskErrUnknownType: "任务提交失败：未知的任务类型",
+    TaskErrNotSupportType: (type: string) =>
+      `任务提交失败：不支持的任务类型 -> ${type}`,
+    StatusCode: (code: number) => `状态码：${code}`,
+    TaskSubmitErr: (err: string) => `任务提交失败：${err}`,
+    RespBody: (body: string) => `响应体：${body}`,
+    None: "无",
+    UnknownError: "未知错误",
+    UnknownReason: "未知原因",
+    TaskPrefix: (prompt: string, taskId: string) =>
+      `**画面描述:** ${prompt}\n**任务ID:** ${taskId}\n`,
+    PleaseWait: "请稍等片刻",
+    TaskSubmitOk: "任务提交成功",
+    TaskStatusFetchFail: "任务状态获取失败",
+    TaskStatus: "任务状态",
+    TaskRemoteSubmit: "任务已提交至Midjourney服务器",
+    TaskProgressTip: (progress: number | undefined) =>
+      `任务正在运行${progress ? `，当前进度：${progress}` : ""}`,
+    TaskNotStart: "任务尚未开始",
+    Url: "地址",
+    SettingProxyCoverTip:
+      "在此处定义的MidjourneyProxy地址会覆盖环境变量中的MIDJOURNEY_PROXY_URL",
+    ImageAgent: "图像代理",
+    ImageAgentOpenTip:
+      "开启之后，返回的Midjourney图片将会通过本程序自身代理，所以本程序需要处于可以访问cdn.discordapp.com的网络环境中才有效",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -62,6 +102,7 @@ const cn = {
       Prompt: "快捷指令",
       Masks: "所有面具",
       Clear: "清除聊天",
+      UploadImage: "上传图片",
       Settings: "对话设置",
     },
     Rename: "重命名对话",
@@ -342,7 +383,8 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello:
+      "有什么可以帮你的吗\n\n1.模型选择：点击下方机器人图标**查看说明后**选择合适的模型\n2.尽量不要用`gpt-4-all`，太贵了遭不住",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
@@ -441,9 +483,9 @@ const cn = {
     Config: "配置",
   },
   Exporter: {
-    Description : {
-      Title: "只有清除上下文之后的消息会被展示"
-    },  
+    Description: {
+      Title: "只有清除上下文之后的消息会被展示",
+    },
     Model: "模型",
     Messages: "消息",
     Topic: "主题",

@@ -4,13 +4,12 @@ import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
-import PluginIcon from "../icons/plugin.svg";
+import CoffeeIcon from "../icons/coffee.svg";
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -155,10 +154,17 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT Next
+          这里开始……
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          选择一个你自己的助理
+          <br />
+          <br />
+          1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
+          <br />
+          2. 绘图：“/mj 提示词” 的格式生成图片
+          <br />
+          3. 如果觉得还不错，可以给作者赏杯咖啡
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -180,12 +186,19 @@ export function SideBar(props: { className?: string }) {
           shadow
         />
         <IconButton
-          icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          icon={<CoffeeIcon />}
+          text={shouldNarrow ? undefined : "赏杯咖啡️"}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => navigate(Path.Reward)}
           shadow
         />
+        {/*<IconButton*/}
+        {/*  icon={<PluginIcon />}*/}
+        {/*  text={shouldNarrow ? undefined : Locale.Plugin.Name}*/}
+        {/*  className={styles["sidebar-bar-button"]}*/}
+        {/*  onClick={() => showToast(Locale.WIP)}*/}
+        {/*  shadow*/}
+        {/*/>*/}
       </div>
 
       <div
@@ -215,11 +228,6 @@ export function SideBar(props: { className?: string }) {
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
-          </div>
-          <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-              <IconButton icon={<GithubIcon />} shadow />
-            </a>
           </div>
         </div>
         <div>

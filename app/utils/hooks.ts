@@ -9,8 +9,13 @@ export function useAllModels() {
     return collectModels(
       configStore.models,
       [configStore.customModels, accessStore.customModels].join(","),
-    );
-  }, [accessStore.customModels, configStore.customModels, configStore.models]);
+    ).filter((m) => !configStore.dontUseModel.includes(m.name as any));
+  }, [
+    accessStore.customModels,
+    configStore.customModels,
+    configStore.models,
+    configStore.dontUseModel,
+  ]);
 
   return models;
 }

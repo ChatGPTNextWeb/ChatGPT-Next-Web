@@ -10,7 +10,9 @@ const en: LocaleType = {
   Error: {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      : "Unauthorized access, please enter access code in [auth](/login) page, or enter your OpenAI API Key.",
+    NOT_FOUND_ERR: "Not Found.",
+    BACKEND_ERR: "后端请求错误，更换 **模型** 试一下吧。",
   },
   Auth: {
     Title: "Need Access Code",
@@ -19,6 +21,44 @@ const en: LocaleType = {
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
+  },
+  Midjourney: {
+    SelectImgMax: (max: number) => `Select up to ${max} images`,
+    InputDisabled: "Input is disabled in this mode",
+    HasImgTip:
+      "Tip: In the mask mode, only the first image will be used. In the blend mode, the five selected images will be used in order (click the image to remove it)",
+    ModeImagineUseImg: "Mask Mode",
+    ModeBlend: "Blend Mode",
+    ModeDescribe: "Describe Mode",
+    NeedInputUseImgPrompt:
+      'You need to enter content to use the image in the mask mode, please enter the content starting with "/mj"',
+    BlendMinImg: (min: number, max: number) =>
+      `At least ${min} images are required in the mixed image mode, and up to ${max} images are required`,
+    TaskErrUnknownType: "Task submission failed: unknown task type",
+    TaskErrNotSupportType: (type: string) =>
+      `Task submission failed: unsupported task type -> ${type}`,
+    StatusCode: (code: number) => `Status code: ${code}`,
+    TaskSubmitErr: (err: string) => `Task submission failed: ${err}`,
+    RespBody: (body: string) => `Response body: ${body}`,
+    None: "None",
+    UnknownError: "Unknown error",
+    UnknownReason: "Unknown reason",
+    TaskPrefix: (prompt: string, taskId: string) =>
+      `**Prompt:** ${prompt}\n**Task ID:** ${taskId}\n`,
+    PleaseWait: "Please wait a moment",
+    TaskSubmitOk: "Task submitted successfully",
+    TaskStatusFetchFail: "Failed to get task status",
+    TaskStatus: "Task status",
+    TaskRemoteSubmit: "Task has been submitted to Midjourney server",
+    TaskProgressTip: (progress: number | undefined) =>
+      `Task is running${progress ? `, current progress: ${progress}` : ""}`,
+    TaskNotStart: "Task has not started",
+    Url: "URL",
+    SettingProxyCoverTip:
+      "The MidjourneyProxy address defined here will override the MIDJOURNEY_PROXY_URL in the environment variables",
+    ImageAgent: "Image Agent",
+    ImageAgentOpenTip:
+      "After turning it on, the returned Midjourney image will be proxied by this program itself, so this program needs to be in a network environment that can access cdn.discordapp.com to be effective",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -64,6 +104,7 @@ const en: LocaleType = {
       Prompt: "Prompts",
       Masks: "Masks",
       Clear: "Clear Context",
+      UploadImage: "Upload Image",
       Settings: "Settings",
     },
     Rename: "Rename Chat",
@@ -347,7 +388,8 @@ const en: LocaleType = {
   },
   Store: {
     DefaultTopic: "New Conversation",
-    BotHello: "Hello! How can I assist you today?",
+    BotHello:
+      "Hello! How can I assist you today?\n\n1.Model selection: Click on the robot icon below to **view the instructions** and select the appropriate model\n2.Try not to use `gpt-4-all` as it is too expensive to withstand",
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
@@ -443,8 +485,8 @@ const en: LocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Only messages after clearing the context will be displayed"
-    },  
+      Title: "Only messages after clearing the context will be displayed",
+    },
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",

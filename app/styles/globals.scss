@@ -361,3 +361,32 @@ pre {
 .copyable {
   user-select: text;
 }
+
+/* noto-sans-regular */
+//@font-face {
+//  font-family: 'Noto Sans';
+//  font-style: normal;
+//  font-weight: regular;
+//  src: url('//lib.baomitu.com/fonts/noto-sans/noto-sans-regular.eot'); /* IE9 Compat Modes */
+//  src: local('Noto Sans'), local('NotoSans-Normal'),
+//       url('//lib.baomitu.com/fonts/noto-sans/noto-sans-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+//       url('//lib.baomitu.com/fonts/noto-sans/noto-sans-regular.woff2') format('woff2'), /* Super Modern Browsers */
+//       url('//lib.baomitu.com/fonts/noto-sans/noto-sans-regular.woff') format('woff'), /* Modern Browsers */
+//       url('//lib.baomitu.com/fonts/noto-sans/noto-sans-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+//       url('//lib.baomitu.com/fonts/noto-sans/noto-sans-regular.svg#NotoSans') format('svg'); /* Legacy iOS */
+//}
+
+/* https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.svg */
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: normal;  /* regular; */
+  src: url('https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.eot'); /* IE9 Compat Modes */
+  src: local('Noto Sans'), local('NotoSans-Normal'),
+       url('https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.woff') format('woff'), /* Modern Browsers */
+       url('https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('https://cos.xiaosi.cc/fonts/noto-sans/noto-sans-regular.svg#NotoSans') format('svg'); /* Legacy iOS */
+}

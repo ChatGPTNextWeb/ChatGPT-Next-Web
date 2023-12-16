@@ -1,26 +1,35 @@
+#FROM registry.cn-hangzhou.aliyuncs.com/sijinhui/node:18-alpine AS base
 FROM node:18-alpine AS base
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk update && apk add --no-cache git tzdata
+# 设置时区环境变量
+ENV TZ=Asia/Chongqing
+# 更新并安装时区工具
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 FROM base AS deps
-
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat g++ make
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 RUN yarn config set registry 'https://registry.npmmirror.com/'
+RUN yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
+RUN yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+RUN # 清理遗留的缓存
+RUN yarn cache clean
 RUN yarn install
 
 FROM base AS builder
-
-RUN apk update && apk add --no-cache git
 
 ENV OPENAI_API_KEY=""
 ENV CODE=""
 
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN rm -rf ./node_modules
+COPY --from=deps /app/node_modules ./node_modules
 
 RUN yarn build
 
@@ -38,7 +47,10 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
 
+RUN rm -f .env
+
 EXPOSE 3000
+ENV KEEP_ALIVE_TIMEOUT=30
 
 CMD if [ -n "$PROXY_URL" ]; then \
         export HOSTNAME="127.0.0.1"; \

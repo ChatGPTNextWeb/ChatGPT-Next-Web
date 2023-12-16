@@ -1,5 +1,6 @@
 import {
   ApiPath,
+  AZURE_MODELS,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
   OpenaiPath,
@@ -30,10 +31,10 @@ export interface OpenAIListModelResponse {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string): string {
+  path(path: string, isAzure?: boolean, azureModel?: string): string {
     const accessStore = useAccessStore.getState();
 
-    const isAzure = accessStore.provider === ServiceProvider.Azure;
+    // const isAzure = accessStore.provider === ServiceProvider.Azure;
 
     if (isAzure && !accessStore.isValidAzure()) {
       throw Error(
@@ -56,7 +57,7 @@ export class ChatGPTApi implements LLMApi {
     }
 
     if (isAzure) {
-      path = makeAzurePath(path, accessStore.azureApiVersion);
+      path = makeAzurePath(path, accessStore.azureApiVersion, azureModel);
     }
 
     return [baseUrl, path].join("/");
@@ -79,7 +80,7 @@ export class ChatGPTApi implements LLMApi {
         model: options.config.model,
       },
     };
-
+    const is_azure = AZURE_MODELS.includes(modelConfig.model);
     const requestPayload = {
       messages,
       stream: options.config.stream,
@@ -92,21 +93,24 @@ export class ChatGPTApi implements LLMApi {
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] openai payload: ", requestPayload);
+    // console.log("[Request] openai payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      let chatPath = this.path(
+        OpenaiPath.ChatPath,
+        is_azure,
+        modelConfig.model,
+      );
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: getHeaders(is_azure),
       };
-
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
@@ -154,10 +158,10 @@ export class ChatGPTApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
+            // console.log(
+            //   "[OpenAI] request response content type: ",
+            //   contentType,
+            // );
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
@@ -172,19 +176,25 @@ export class ChatGPTApi implements LLMApi {
               res.status !== 200
             ) {
               const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
+              // let extraInfo = await res.clone().text();
               try {
                 const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
+                responseTexts.push(prettyObject(resJson));
+              } catch {
+                responseTexts.push(Locale.Error.BACKEND_ERR);
               }
 
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
+              // if (res.status === 401) {
+              //   responseTexts.push(Locale.Error.Unauthorized);
+              // } else if (res.status === 404) {
+              //   responseTexts.push(Locale.Error.NOT_FOUND_ERR);
+              // }
+              // if (res.status > 400) {
+              //   responseTexts.push(Locale.Error.BACKEND_ERR);
+              // }
+              // else if (extraInfo) {
+              //   responseTexts.push(extraInfo);
+              // }
 
               responseText = responseTexts.join("\n\n");
 
@@ -314,7 +324,7 @@ export class ChatGPTApi implements LLMApi {
 
     const resJson = (await res.json()) as OpenAIListModelResponse;
     const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
-    console.log("[Models]", chatModels);
+    // console.log("[Models]", chatModels);
 
     if (!chatModels) {
       return [];
@@ -323,6 +333,7 @@ export class ChatGPTApi implements LLMApi {
     return chatModels.map((m) => ({
       name: m.id,
       available: true,
+      describe: "",
     }));
   }
 }

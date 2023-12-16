@@ -12,6 +12,7 @@ declare global {
       BASE_URL?: string;
       OPENAI_ORG_ID?: string; // openai only
 
+      // @ts-ignore
       VERCEL?: string;
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
@@ -60,7 +61,10 @@ export const getServerSideConfig = () => {
       .join(",");
   }
 
-  const isAzure = !!process.env.AZURE_URL;
+  // 需要一个函数来判断请求中模型是否为微软的。
+  // 当前逻辑，gpt-4-32k模型为微软，别的不是
+  // const isAzure = !!process.env.AZURE_URL;
+  const hasAzure = !!process.env.AZURE_URL;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -75,10 +79,11 @@ export const getServerSideConfig = () => {
     apiKey,
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
-    isAzure,
-    azureUrl: process.env.AZURE_URL,
-    azureApiKey: process.env.AZURE_API_KEY,
-    azureApiVersion: process.env.AZURE_API_VERSION,
+    // isAzure,
+    // hasAzure,
+    azureUrl: process.env.AZURE_URL ?? "",
+    azureApiKey: process.env.AZURE_API_KEY ?? "",
+    azureApiVersion: process.env.AZURE_API_VERSION ?? "",
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,
