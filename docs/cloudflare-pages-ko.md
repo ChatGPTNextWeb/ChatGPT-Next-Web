@@ -8,6 +8,13 @@
 3. Cloudflare 페이지를 GitHub 계정과 연결합니다.
 4. 포크한 프로젝트를 선택합니다.
 5. "설정 시작"을 클릭합니다.
+>**Cloudflare에 배포하기 전에 다음 세 파일의 런타임을 수정하여 배포를 완료해야 합니다**
+   - `/app/api/config/route.ts`
+   - `/app/cors/[...path]/route.ts`
+   - `/app/openai/[...path]/route.ts`
+>이 세 파일의 export const runtime 값을 edge로 변경하십시오
+
+   - `예: export const runtime = "edge";`
 6. "프로젝트 이름" 및 "프로덕션 브랜치"의 기본값을 사용하거나 필요에 따라 변경합니다.
 7. "빌드 설정"에서 "프레임워크 프리셋" 옵션을 선택하고 "Next.js"를 선택합니다.
 8. node:buffer 버그로 인해 지금은 기본 "빌드 명령어"를 사용하지 마세요. 다음 명령을 사용하세요:

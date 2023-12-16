@@ -9,6 +9,13 @@ Fork this project on GitHub, then log in to dash.cloudflare.com and go to Pages.
 3. Connect Cloudflare Pages to your GitHub account.
 4. Select the forked project.
 5. Click "Begin setup".
+>**Before deploying on Cloudflare, you need to modify the runtime in the following three files to complete the deployment**
+   - `/app/api/config/route.ts`
+   - `/app/cors/[...path]/route.ts`
+   - `/app/openai/[...path]/route.ts`
+>Change the value of export const runtime in these three files to edge
+
+   - `For example: export const runtime = "edge";`
 6. For "Project name" and "Production branch", use the default values or change them as needed.
 7. In "Build Settings", choose the "Framework presets" option and select "Next.js".
 8. Do not use the default "Build command" due to a node:buffer bug. Instead, use the following command:

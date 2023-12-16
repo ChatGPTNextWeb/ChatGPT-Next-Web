@@ -9,6 +9,13 @@ Bifurca el proyecto en Github, luego inicia sesión en dash.cloudflare.com y ve 
 3.  Vincula páginas de Cloudflare a tu cuenta de GitHub.
 4.  Seleccione este proyecto que bifurcó.
 5.  Haga clic en "Comenzar configuración".
+>**Antes de desplegar en Cloudflare, es necesario modificar el runtime en los siguientes tres archivos para completar el despliegue**
+   - `/app/api/config/route.ts`
+   - `/app/cors/[...path]/route.ts`
+   - `/app/openai/[...path]/route.ts`
+>Cambiar el valor de export const runtime en estos tres archivos a edge
+
+   - `Por ejemplo: export const runtime = "edge";`
 6.  Para "Nombre del proyecto" y "Rama de producción", puede utilizar los valores predeterminados o cambiarlos según sea necesario.
 7.  En Configuración de compilación, seleccione la opción Ajustes preestablecidos de Framework y seleccione Siguiente.js.
 8.  Debido a los errores de node:buffer, no use el "comando Construir" predeterminado por ahora. Utilice el siguiente comando:

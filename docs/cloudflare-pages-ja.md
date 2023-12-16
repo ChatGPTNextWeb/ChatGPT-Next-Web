@@ -8,6 +8,13 @@ GitHub でこのプロジェクトをフォークし、dash.cloudflare.com に�
 3. Cloudflare Pages を GitHub アカウントに接続します。
 4. フォークしたプロジェクトを選択します。
 5. "Begin setup" をクリックする。
+>**Cloudflareにデプロイする前に、デプロイを完了するために以下の3つのファイルのruntimeを変更する必要があります**
+   - `/app/api/config/route.ts`
+   - `/app/cors/[...path]/route.ts`
+   - `/app/openai/[...path]/route.ts`
+>これら3つのファイルのexport const runtimeの値をedgeに変更します
+
+   - `例：export const runtime = "edge";`
 6. "Project name" と "Production branch" はデフォルト値を使用するか、必要に応じて変更してください。
 7. "Build Settings" で、"Framework presets" オプションを選択し、"Next.js" を選択します。
 8. node:buffer のバグのため、デフォルトの "Build command" は使用しないでください。代わりに、以下のコマンドを使用してください:
