@@ -75,7 +75,6 @@ import {
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
 import { recorder } from "../cognitive/speech-audioRecorderClass";
-import { useAudioRecorder } from "../cognitive/speech-audioRecorder";
 
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
@@ -98,23 +97,18 @@ export const FreePersonalQuestionPage = (props: {
   impromptuSpeechInput: ImpromptuSpeechInput;
 }) => {
   let { impromptuSpeechInput } = props;
-  const questionItems = impromptuSpeechInput.QuestionItems;
-  const questionNums = questionItems.length;
+  const questionNums = impromptuSpeechInput.QuestionItems.length;
 
   const chatStore = useChatStore();
 
   // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
   // local state used for reder page
   const [currentNum, setCurrentNum] = useState(0);
-  const [questionItem, setQuestionItem] = useState<IQuestionItem>(
-    questionItems[currentNum],
-  );
 
   const onPreviousQuestion = () => {
     if (currentNum > 0) {
       setCurrentNum((prevNum) => {
         const newNum = prevNum - 1;
-        setQuestionItem(questionItems[newNum]);
         return newNum;
       });
     }
@@ -124,13 +118,13 @@ export const FreePersonalQuestionPage = (props: {
     if (currentNum < questionNums - 1) {
       setCurrentNum((prevNum) => {
         const newNum = prevNum + 1;
-        setQuestionItem(questionItems[newNum]);
         return newNum;
       });
     }
   };
 
   const onReturn = () => {
+    setCurrentNum(0);
     chatStore.updateCurrentSession(
       (session) => (impromptuSpeechInput.ActivePage = ESpeechStage.Start),
     );
@@ -146,10 +140,10 @@ export const FreePersonalQuestionPage = (props: {
   const onRameSpeaker = async () => {
     const newMessage = await showPrompt(
       Locale.Chat.Actions.Edit,
-      questionItem.Speaker,
+      impromptuSpeechInput.QuestionItems[currentNum].Speaker,
     );
     chatStore.updateCurrentSession((session) => {
-      questionItem.Speaker = newMessage;
+      impromptuSpeechInput.QuestionItems[currentNum].Speaker = newMessage;
     });
   };
 
@@ -185,7 +179,7 @@ export const FreePersonalQuestionPage = (props: {
               onClick={onRameSpeaker}
             >
               {`Question ${currentNum + 1} / ${questionNums}: ${
-                questionItem.Speaker
+                impromptuSpeechInput.QuestionItems[currentNum].Speaker
               }`}
             </Button>
           )}
@@ -203,7 +197,6 @@ export const FreePersonalQuestionPage = (props: {
       <FreePersonalQuestionPageBody
         impromptuSpeechInput={impromptuSpeechInput}
         currentNum={currentNum}
-        questionItem={questionItem}
       ></FreePersonalQuestionPageBody>
     </div>
   );
@@ -212,9 +205,9 @@ export const FreePersonalQuestionPage = (props: {
 export const FreePersonalQuestionPageBody = (props: {
   impromptuSpeechInput: ImpromptuSpeechInput;
   currentNum: number;
-  questionItem: IQuestionItem;
 }) => {
-  let { impromptuSpeechInput, currentNum, questionItem } = props;
+  let { impromptuSpeechInput, currentNum } = props;
+  const questionItem = impromptuSpeechInput.QuestionItems[currentNum];
 
   const [evaluationRole, setEvaluationRole] = React.useState<string>(
     ImpromptuSpeechRoles.Scores,
@@ -256,6 +249,10 @@ export const FreePersonalQuestionPageBody = (props: {
       (session) => (questionItem.Speech += newState + " "),
     );
   };
+
+  useEffect(() => {
+    recorder.resetRecording();
+  }, [currentNum]);
 
   const onRecord = async () => {
     await recorder.startRecording();
@@ -319,6 +316,9 @@ export const FreePersonalQuestionPageBody = (props: {
       return;
     }
     const audioUrl = URL.createObjectURL(audioData);
+    chatStore.updateCurrentSession(
+      (session) => (questionItem.SpeechAudio = audioUrl),
+    );
 
     // reset status from 0
     chatStore.resetSessionFromIndex(2);
@@ -353,13 +353,11 @@ export const FreePersonalQuestionPageBody = (props: {
 
     chatStore.updateCurrentSession(
       (session) => (
-        (questionItem.Score = averageScore),
-        (questionItem.Scores = scores),
-        (questionItem.SpeechAudio = audioUrl)
+        (questionItem.Score = averageScore), (questionItem.Scores = scores)
       ),
     );
 
-    onEvaluation();
+    // onEvaluation();
   };
 
   const getTimeScore = (timeSeconds: number): number => {
@@ -726,7 +724,11 @@ export const FreePersonalQuestionPageBody = (props: {
           </div>
           {questionItem.SpeechAudio != "" && (
             <div className={styles_tm["video-container"]}>
-              <audio controls style={{ width: "60%" }}>
+              <audio
+                controls
+                key={questionItem.SpeechAudio}
+                style={{ width: "60%" }}
+              >
                 <source src={questionItem.SpeechAudio} type="audio/mpeg" />
               </audio>
             </div>

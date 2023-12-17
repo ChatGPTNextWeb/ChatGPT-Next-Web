@@ -199,12 +199,16 @@ export class ImpromptuSpeechPrompts {
     You should:
       1). Bold keywords using markdown when present your answer.
       2). Note, your answer should only include speech content, no any extra words.
-      3). About 100 words.
+      3). About 200 words.
     `;
   }
 
   static GetEvaluationRoles(): string[] {
-    return [ImpromptuSpeechRoles.General, ImpromptuSpeechRoles.RevisedSpeech];
+    return [
+      ImpromptuSpeechRoles.General,
+      ToastmastersRoles.Grammarian,
+      ImpromptuSpeechRoles.RevisedSpeech,
+    ];
   }
 
   static GetEvaluationPrompts(
@@ -226,6 +230,14 @@ export class ImpromptuSpeechPrompts {
       3). Provide addvice to my lowest scores you provided.
       4). About 100 words.
       `,
+      [ToastmastersRoles.Grammarian]: `You are the ${ToastmastersRoles.Grammarian}, to evaluate the speech by 
+      considering the choice of vocabulary, grammar correctness, and rhetorical devices.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from my speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice.
+      4). About 100 words.
+      `,
       [ImpromptuSpeechRoles.RevisedSpeech]: `To the No.${currentNum} Question and Speech.
 
       You are an teacher of Table Topics.
@@ -233,7 +245,7 @@ export class ImpromptuSpeechPrompts {
       You should:
       1). Don't say who you are, just provide your revised speech.
       2). Bold keywords using markdown when present your answer.
-      3). 150 Words.
+      3). 200 Words.
       `,
     };
   }
