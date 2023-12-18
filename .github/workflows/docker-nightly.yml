@@ -3,6 +3,7 @@ name: Docker Nightly Image CI
 on:
   schedule:
     - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   push_to_registry:
