@@ -1306,7 +1306,11 @@ function _Chat() {
           />
         </div>
       </div>
-
+      <div className={styles["chat-footer-gov"]}>
+        <a href="https://beian.miit.gov.cn/" target="_blank">
+          京ICP备20019065号-1
+        </a>
+      </div>
       {showExport && (
         <ExportMessageModal onClose={() => setShowExport(false)} />
       )}
