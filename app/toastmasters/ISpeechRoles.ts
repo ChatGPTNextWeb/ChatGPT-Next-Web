@@ -67,14 +67,15 @@ export class IQuestionItem {
 
   constructor() {}
 
-  public reset = (): void => {
-    this.Speech = "";
-    this.SpeechTime = 0;
-    this.SpeechAudio = "";
-    // this.StageStatus = ESpeechStageStatus.Start;  // change at outside
-    this.Score = 0;
-    this.Scores = [];
-    this.Evaluations = {};
+  // using static method so that it will not lose when refresh page
+  public static reset = (item: IQuestionItem): void => {
+    item.Speech = "";
+    item.SpeechTime = 0;
+    item.SpeechAudio = "";
+    // item.StageStatus = ESpeechStageStatus.Start;  // change at outside
+    item.Score = 0;
+    item.Scores = [];
+    item.Evaluations = {};
   };
 }
 

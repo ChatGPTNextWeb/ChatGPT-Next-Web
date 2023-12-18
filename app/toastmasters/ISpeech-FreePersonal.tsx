@@ -175,7 +175,7 @@ export const FreePersonalQuestionPage = (props: {
             </Button>
           ) : (
             <Button
-              className={`${styles_tm["chat-input-speaker"]}`}
+              className={`${styles_tm["chat-input-speaker-hover"]}`}
               onClick={onRameSpeaker}
             >
               {`Question ${currentNum + 1} / ${questionNums}: ${
@@ -277,7 +277,7 @@ export const FreePersonalQuestionPageBody = (props: {
 
   const onReset = async () => {
     // 清存储
-    questionItem.reset();
+    IQuestionItem.reset(questionItem);
 
     recorder.resetRecording();
     onStatusChange(ESpeechStageStatus.Start);
@@ -288,7 +288,8 @@ export const FreePersonalQuestionPageBody = (props: {
 
   const onRestartRecord = async () => {
     // 清存储
-    questionItem.reset();
+    IQuestionItem.reset(questionItem);
+
     recorder.resetRecording();
 
     onRecord();
@@ -303,7 +304,6 @@ export const FreePersonalQuestionPageBody = (props: {
     // questionItem.Speech = "it is nothing, uh, um, oh change to another questions"
     // questionItem.Speech = "things have change a lot by internet, uh, um, oh a lot"
     // questionItem.Speech = "The internet has revolutionized communication and connectivity, uh, um, oh in ways we could have never imagined. "
-    console.log("onScore: Speech: ", questionItem.Speech);
 
     if (questionItem.Speech === "") {
       showToast("Speech is empty");

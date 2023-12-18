@@ -29,6 +29,10 @@
 
 
 .chat-input-speaker {
+  color: blue;
+}
+
+.chat-input-speaker-hover {
   cursor: pointer;
   color: blue;
   &:hover {
