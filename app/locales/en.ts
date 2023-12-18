@@ -32,8 +32,8 @@ const en: LocaleType = {
       Delete: "Delete",
       Edit: "Edit",
       Play: "Play",
-      AudioPlay: "VoicePlay",
-      VideoPlay: "AvatarVideoPlay",
+      AudioPlay: "AudioPlay",
+      VideoPlay: "VideoPlay",
     },
     Commands: {
       new: "Start a new chat",

@@ -1,12 +1,19 @@
+import { ILightsTime } from "../store";
+
 export enum ToastmastersRoles {
-  TableTopicsEvaluators = "Table Topics Evaluators",
-  TableTopicsEvaluator = "Table Topics Evaluator",
+  Toastmasters = "Toastmasters",
   TableTopicsMaster = "Table Topics Master",
-  TableTopicsSpeaker = "Table Topics Speaker",
-  IndividualEvaluator = "Prepared Speech Evaluator",
+  TableTopicsEvaluator = "Table Topics Evaluator",
+  ImpromptuSpeechEvaluator = "Impromptu Speech Evaluator",
+  PreparedSpeechEvaluator = "Prepared Speech Evaluator",
+
+  ImpromptuSpeechCopilot = "Impromptu Speech Copilot",
+
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
+  Timer = "Timer",
   GeneralEvaluator = "General Evaluator",
+
   RevisedSpeech = "Revised Speech",
   DemoSpeech = "Demo Speech",
   Guidance = "Guidance",
@@ -16,11 +23,18 @@ export enum ToastmastersRoles {
   Top10Questions = "Top 10 Questions",
 }
 
+export const speakersTimeRecord: Record<string, ILightsTime> = {
+  ["TableTopicsSpeaker(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+  ["TableTopicsEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
+  ["PreparedSpeaker(5-7min)"]: { Green: 5, Yellow: 6, Red: 7 },
+  ["PreparedSpeechEvaluator(2-3min)"]: { Green: 2, Yellow: 2.5, Red: 3 },
+  ["GeneralEvaluator(4-6min)"]: { Green: 4, Yellow: 5, Red: 6 },
+  ["Grammarian(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+  ["Ah-Counter(1-2min)"]: { Green: 1, Yellow: 1.5, Red: 2 },
+  ["CustomTime"]: { Green: 0, Yellow: 0, Red: 0 },
+};
+
 export const ToastmastersRolesResponsibilities: Record<string, string> = {
-  [ToastmastersRoles.TableTopicsEvaluators]: `
-  - Evaluate the impromptu speeches given by Table Topics Speakers.
-  - Provide constructive feedback on the speaker's ability to think on their feet, coherence, and communication skills during impromptu speeches.
-  `,
   [ToastmastersRoles.TableTopicsEvaluator]: `
   - ***Evaluate*** the impromptu speeches given by Table Topics Speakers.
   - ***Provide constructive feedback*** on the speaker's ability to think on their feet, coherence, and communication skills during impromptu speeches.
@@ -30,11 +44,11 @@ export const ToastmastersRolesResponsibilities: Record<string, string> = {
   - Ensure that Table Topics Speakers have a chance to respond to the topics.
   - May offer brief commentary or insights on the Table Topics session.
   `,
-  [ToastmastersRoles.TableTopicsSpeaker]: `
-  - Respond to impromptu speaking topics or questions posed by the Table Topics Master.
-  - Deliver a short, unprepared speech (usually 1-2 minutes) on the given topic.
-  `,
-  [ToastmastersRoles.IndividualEvaluator]: `
+  // [ToastmastersRoles.TableTopicsSpeaker]: `
+  // - Respond to impromptu speaking topics or questions posed by the Table Topics Master.
+  // - Deliver a short, unprepared speech (usually 1-2 minutes) on the given topic.
+  // `,
+  [ToastmastersRoles.PreparedSpeechEvaluator]: `
   - Evaluate the prepared speeches given by members based on specific criteria and objectives for each speech project.
   - Offer constructive feedback on speech content, organization, and delivery.
   `,
@@ -73,6 +87,7 @@ export const ToastmastersRolesResponsibilities: Record<string, string> = {
 
 export interface ToastmastersRoleSetting {
   words: number;
+  // guidance?: string
 }
 
 export interface ToastmastersRolePrompt {
@@ -112,15 +127,12 @@ export const ToastmastersSettings = (
 1 words => 0.7 Coins
 */
 
-export const ToastmastersTTMasterGuidance = (topic: string) => `
+export const TTMasterGuidance = (topic: string) => `
 The topic is: "${topic}",
 Are you ready?
 `;
 
-export const ToastmastersTTMasterRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
+export const TTMasterRecord: Record<string, ToastmastersRolePrompt[]> = {
   [ToastmastersRoles.Introduction]: [
     {
       role: ToastmastersRoles.Introduction,
@@ -156,21 +168,127 @@ export const ToastmastersTTMasterRecord: Record<
   ],
 };
 
-export const ToastmastersIEvaluatorGuidance = (input: string) => `
+export const TTEvaluatorGuidance = (input: string) => `
+The Question-Speech pairs are:
+${input},
+Are you ready to answer? If you understand, answer yes.
+`;
+
+export const TTEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
+  [ToastmastersRoles.TableTopicsEvaluator]: [
+    {
+      role: ToastmastersRoles.TableTopicsEvaluator,
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
+      Evaluate the speech for all speakers.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Refer some of the keywords in the table in your evaluation.
+      3). Bold keywords using markdown when present your answer.
+      4). Provide addvice to the speaker based on his speech.
+      5). Each speaker's evaluation should be about ${setting?.words} words.
+      `,
+      setting: {
+        words: 50,
+      },
+    },
+  ],
+  [ToastmastersRoles.Grammarian]: [
+    {
+      role: ToastmastersRoles.Grammarian + "-Count",
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.Grammarian}.
+      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech.
+      2). Only response the table, the Speaker in your table should be equal to the number of input i provide you.
+      3). Do not include any extra description and extra words.
+      `,
+      // contentWithSetting: (setting?) =>
+      // `
+      // You are the ${ToastmastersRoles.Grammarian}.
+      // 1). For each speaker, list the number of his grammar errors first.
+      // 2). Then list out an error list table for each speaker.
+      // 3). List all of the specific errors you find in the speaker's speech followed by the corresponding right format. List errors using the complete sentence where the error appears.
+      // 4). Don't appear Unknown Error. The number of rows should be equal to the number of grammar errors.
+      // `,
+    },
+    {
+      role: ToastmastersRoles.Grammarian + "-Evaluation",
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.Grammarian}.
+      Evaluate the speech for all speakers and to analysis your stats in your table.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to the speaker based on his speech.
+      4). Each speaker's evaluation should be about ${setting?.words} words.
+      `,
+      setting: {
+        words: 50,
+      },
+    },
+  ],
+  [ToastmastersRoles.AhCounter]: [
+    {
+      role: ToastmastersRoles.AhCounter + "-Count",
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
+      2). Only response the table,
+      3). Do not include any extra description and extra words.
+      `,
+    },
+    {
+      role: ToastmastersRoles.AhCounter + "-Evaluation",
+      contentWithSetting: (setting?) =>
+        `You are the ${ToastmastersRoles.AhCounter}.
+      To analysis your stats in your table.
+      You should:
+      1). Generate a summary with the Ah-Counter's tone according to the table
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to the speaker based on his speech.
+      4). Each speaker's evaluation should be about ${setting?.words} words.
+      `,
+      setting: {
+        words: 50,
+      },
+    },
+  ],
+  [ToastmastersRoles.Timer]: [
+    {
+      role: ToastmastersRoles.Timer,
+      contentWithSetting: (setting?) =>
+        `You are the an teacher of ${ToastmastersRoles.Timer}.
+      Help evaluate all apekers' time usage. And give addvice for his/her speech.
+      For each speaker, GreenTime=01:00, YellowTime=01:30, RedTime=02:00, MaxTime=02:30.
+      You should:
+      1). if (SpeechTime > MaxTime): it's overtime, to list where can be shorten down.
+          else if (SpeechTime > RedTime): it's a little overtime, to list where can be enhanced.
+          else if (SpeechTime > YellowTime): it's just within time, to list where can be enhanced.
+          else if (SpeechTime > GreenTime): it just meets minimum requirement, to list where can be enhanced.
+          else if (SpeechTime <= GreenTime): it didn't meet the minimum requirement, to list where can be expanded.
+      2). Any suggestion or evaluaton should contain example from his/her speech
+      3). To Bold keywords using markdown in your answer.
+      3). Each speaker's evaluation should be about ${setting?.words} words.
+      `,
+      setting: {
+        words: 50,
+      },
+    },
+  ],
+};
+
+export const PSEvaluatorGuidance = (input: string) => `
 My input is:
 ${input},
 Are you ready to play an Evaluator role with my guidance?
 `;
 
-export const ToastmastersIEvaluatorRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
-  [ToastmastersRoles.IndividualEvaluator]: [
+export const PSEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
+  [ToastmastersRoles.PreparedSpeechEvaluator]: [
     {
-      role: ToastmastersRoles.IndividualEvaluator,
+      role: ToastmastersRoles.PreparedSpeechEvaluator,
       contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.IndividualEvaluator}. 
+        `You are the ${ToastmastersRoles.PreparedSpeechEvaluator}. 
       Evaluate my prepared speech.
       Your evaluation should:
       1). Include the relevance between the Speech and the Topic.
@@ -220,7 +338,7 @@ export const ToastmastersIEvaluatorRecord: Record<
     {
       role: ToastmastersRoles.RevisedSpeech,
       contentWithSetting: (setting?) =>
-        `You are the an teacher of ${ToastmastersRoles.IndividualEvaluator}.
+        `You are the an teacher of ${ToastmastersRoles.Toastmasters}.
       Help revise, polish and improve my speech.
       You should:
       1). Don't say who you are, just provide your revised speech.
@@ -234,131 +352,13 @@ export const ToastmastersIEvaluatorRecord: Record<
   ],
 };
 
-export const ToastmastersTTEvaluatorsGuidance = (input: string) => `
-The Question-Speech pairs are:
-${input},
-Are you ready to answer? If you understand, answer yes.
-`;
-
-export const ToastmastersTTEvaluatorsRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
-  [ToastmastersRoles.TableTopicsEvaluator]: [
-    {
-      role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      1). Give me a table which presenting the keywords used in each person's speech
-      2). Only response the table, 
-      3). Do not include any extra description and extra words. 
-      `,
-    },
-    {
-      role: ToastmastersRoles.TableTopicsEvaluator + "-Evaluation",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.TableTopicsEvaluator}. 
-      Evaluate the speech for all speakers.
-      Your evaluation should:
-      1). Don't make things up, all your quoted sentence must from the speaker's speech.
-      2). Refer some of the keywords in the table in your evaluation.
-      3). Bold keywords using markdown when present your answer.
-      4). Provide addvice to the speaker based on his speech.
-      5). Each speaker's evaluation should be about ${setting?.words} words.
-      `,
-      setting: {
-        words: 100,
-      },
-    },
-  ],
-  [ToastmastersRoles.Grammarian]: [
-    {
-      role: ToastmastersRoles.Grammarian + "-Count",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.Grammarian}.
-      1). Give me a table which presenting the accurate number of grammar errors used in each person's speech.
-      2). Only response the table, the Speaker in your table should be equal to the number of input i provide you.
-      3). Do not include any extra description and extra words.
-      `,
-      // contentWithSetting: (setting?) =>
-      // `
-      // You are the ${ToastmastersRoles.Grammarian}.
-      // 1). For each speaker, list the number of his grammar errors first.
-      // 2). Then list out an error list table for each speaker.
-      // 3). List all of the specific errors you find in the speaker's speech followed by the corresponding right format. List errors using the complete sentence where the error appears.
-      // 4). Don't appear Unknown Error. The number of rows should be equal to the number of grammar errors.
-      // `,
-    },
-    {
-      role: ToastmastersRoles.Grammarian + "-Evaluation",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.Grammarian}.
-      Evaluate the speech for all speakers and to analysis your stats in your table.
-      Your evaluation should:
-      1). Don't make things up, all your quoted sentence must from the speaker's speech.
-      2). Bold keywords using markdown when present your answer.
-      3). Provide addvice to the speaker based on his speech.
-      4). Each speaker's evaluation should be about ${setting?.words} words.
-      `,
-      setting: {
-        words: 80,
-      },
-    },
-  ],
-  [ToastmastersRoles.AhCounter]: [
-    {
-      role: ToastmastersRoles.AhCounter + "-Count",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.AhCounter}.
-      1). Give me a table which presenting the accurate number of filler words and pauses used in each person's speech,
-      2). Only response the table,
-      3). Do not include any extra description and extra words.
-      `,
-    },
-    {
-      role: ToastmastersRoles.AhCounter + "-Evaluation",
-      contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.AhCounter}.
-      To analysis your stats in your table.
-      You should:
-      1). Generate a summary with the Ah-Counter's tone according to the table
-      2). Bold keywords using markdown when present your answer.
-      3). Provide addvice to the speaker based on his speech.
-      4). Each speaker's evaluation should be about ${setting?.words} words.
-      `,
-      setting: {
-        words: 80,
-      },
-    },
-  ],
-  [ToastmastersRoles.RevisedSpeech]: [
-    {
-      role: "Revised Speech",
-      contentWithSetting: (setting?) =>
-        `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
-      Help revise, polish and improve the speech for all speakers.
-      You should:
-      1). Don't say who you are, just provide your revised speech.
-      2). Bold keywords using markdown when present your answer.
-      3). Each speaker's evaluation should be about ${setting?.words} words.
-      `,
-      setting: {
-        words: 100,
-      },
-    },
-  ],
-};
-
-export const ToastmastersTTEvaluatorGuidance = (input: string) => `
+export const ISEvaluatorGuidance = (input: string) => `
 My input is:
 ${input},
 Are you ready to answer? If you understand, answer yes.
 `;
 
-export const ToastmastersTTEvaluatorRecord: Record<
-  string,
-  ToastmastersRolePrompt[]
-> = {
+export const ISEvaluatorRecord: Record<string, ToastmastersRolePrompt[]> = {
   [ToastmastersRoles.TableTopicsEvaluator]: [
     {
       role: ToastmastersRoles.TableTopicsEvaluator + "-Count",
@@ -442,7 +442,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role: "Revised Speech",
       contentWithSetting: (setting?) =>
-        `You are the an teacher of ${ToastmastersRoles.TableTopicsSpeaker}.
+        `You are an teacher of ${ToastmastersRoles.Toastmasters}.
       Help revise, polish and improve my speech from my 1st ask input,
       You should:
       1). Don't say who you are, just provide your revised speech.
@@ -458,7 +458,7 @@ export const ToastmastersTTEvaluatorRecord: Record<
     {
       role: ToastmastersRoles.DemoSpeech,
       contentWithSetting: (setting?) =>
-        `You are the ${ToastmastersRoles.TableTopicsSpeaker}. 
+        `You are an teacher of ${ToastmastersRoles.Toastmasters}. 
       Give me a demo impromptu speech according to the Question from my 1st ask input,
       You should:
       1). Bold keywords using markdown when present your answer.
@@ -468,6 +468,27 @@ export const ToastmastersTTEvaluatorRecord: Record<
       setting: {
         words: 200,
       },
+    },
+  ],
+};
+
+export const TimerGuidance = (input: string) => `
+The Speaker-Speech pairs are:
+${input},
+Are you ready to answer? If you understand, answer yes.
+`;
+
+// TODO: make the evaluation as graph
+export const TimerRecord: Record<string, ToastmastersRolePrompt[]> = {
+  [ToastmastersRoles.Timer]: [
+    {
+      role: ToastmastersRoles.Timer,
+      contentWithSetting: (setting?) =>
+        `Now start to report speakers' time usage,
+      it's better using graph to analysis, 
+      You answer should be less than 200 words.
+      `,
+      // TODO: total words
     },
   ],
 };

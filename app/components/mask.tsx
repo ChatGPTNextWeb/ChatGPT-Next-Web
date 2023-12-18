@@ -354,9 +354,9 @@ export function MaskPage() {
   );
 
   // 仅显示Toastmasters面具: TODO: for hackathon
-  sortedGroupedMasks = sortedGroupedMasks.filter(
-    ([group, masks]) => group === BuiltinMaskGroup.Toastmasters || group === "",
-  );
+  // sortedGroupedMasks = sortedGroupedMasks.filter(
+  //   ([group, masks]) => group === BuiltinMaskGroup.Toastmasters || group === "",
+  // );
 
   return (
     <ErrorBoundary>

@@ -20,6 +20,7 @@ import { estimateTokenLength } from "../utils/token";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import { ImpromptuSpeechInput } from "../toastmasters/ISpeechRoles";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -27,7 +28,11 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+
+  // for sharing and displaying
   title?: string;
+  audio?: IRequestResponse;
+  video?: IRequestResponse;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -46,32 +51,28 @@ export interface ChatStat {
   charCount: number;
 }
 
+// seconds
+export interface ILightsTime {
+  Green: number;
+  Yellow: number;
+  Red: number;
+}
+
 export class InputStore {
+  role = "";
   text: string = "";
   time: number = 0;
+  timeExpect: ILightsTime = { Green: 0, Yellow: 0, Red: 0 };
 }
 
 export class InputTableRow {
   speaker = "";
   question = new InputStore();
   speech = new InputStore();
-
-  constructor(
-    speaker: string = "",
-    question: string = "",
-    speech: string = "",
-  ) {
-    this.speaker = speaker;
-    this.question.text = question;
-    this.speech.text = speech;
-  }
-}
-
-export class InputSettingStore {
-  words: number = 0;
 }
 
 export interface IRequestResponse {
+  // type: string; // video or audio
   status: any;
   data: any;
 }
@@ -91,11 +92,15 @@ export interface ChatSession {
 
   input: {
     data: InputTableRow;
-    datas: any[];
+    datas: InputTableRow[];
     roles: string[];
     setting: any;
+    activeStep: number;
   };
   output: { avatar: IRequestResponse };
+
+  inputCopilot: ImpromptuSpeechInput;
+  outputCopilot?: any;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -120,8 +125,18 @@ function createEmptySession(): ChatSession {
 
     mask: createEmptyMask(),
 
-    input: { data: new InputTableRow(), datas: [], roles: [], setting: {} },
-    output: { avatar: { status: "", data: "" } },
+    input: {
+      data: new InputTableRow(),
+      datas: [],
+      roles: [],
+      setting: {},
+      activeStep: 0,
+    },
+    output: {
+      avatar: { status: "", data: "" },
+    },
+
+    inputCopilot: new ImpromptuSpeechInput(),
   };
 }
 
@@ -341,37 +356,37 @@ export const useChatStore = create<ChatStore>()(
       },
 
       async isEnoughCoins(requiredCoins: number): Promise<boolean> {
-        return true;
-        // let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-        // if (userEmail === null) {
-        //   showToast("您尚未登录, 请前往设置中心登录");
-        //   return false;
-        // }
+        // return true;
+        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        if (userEmail === null) {
+          showToast("您尚未登录, 请前往设置中心登录");
+          return false;
+        }
 
-        // let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
-        //   userEmail,
-        // );
-        // if (
-        //   userRequestInfoVO !== null &&
-        //   userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
-        //     requiredCoins
-        // ) {
-        //   return true;
-        // }
+        let userRequestInfoVO = await zBotServiceClient.getRequestInfo(
+          userEmail,
+        );
+        if (
+          userRequestInfoVO !== null &&
+          userRequestInfoVO.thisDayCoins + userRequestInfoVO.baseCoins >=
+            requiredCoins
+        ) {
+          return true;
+        }
 
-        // showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
-        // return false;
+        showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
+        return false;
       },
 
       async onUserInput(content, title?) {
         // check user login
-        // let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-        // if (userEmail === null) {
-        //   showToast("您尚未登录, 请前往设置中心登录");
-        //   return;
-        // }
-        // // update db
-        // zBotServiceClient.updateRequest(userEmail, 1);
+        let userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        if (userEmail === null) {
+          showToast("您尚未登录, 请前往设置中心登录");
+          return;
+        }
+        // update db
+        zBotServiceClient.updateRequest(userEmail, 1);
 
         set(() => ({ isFinished: false }));
 

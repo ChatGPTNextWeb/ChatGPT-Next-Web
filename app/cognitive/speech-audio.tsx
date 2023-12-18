@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+import JSZip from "jszip";
 import axios from "axios";
 import { getServerSideConfig } from "../config/server";
 
@@ -14,29 +16,22 @@ import Box from "@mui/material/Box";
 import { IRequestResponse } from "../store/chat";
 
 import styles_tm from "../toastmasters/toastmasters.module.scss";
+import { VideoFetchStatus } from "./speech-avatar";
 
 const config = getServerSideConfig();
 
-export enum VideoFetchStatus {
-  Empty = "",
-  Succeeded = "Succeeded",
-  Failed = "Failed",
-  Loading = "Loading",
-  Error = "Error",
-}
-
-// pure function
-export const onSpeechAvatar = async (
+export const submitSpeechAudio = async (
   inputText: string,
   setOutputAvatar: (outputAvatar: IRequestResponse) => void,
 ) => {
   setOutputAvatar({ status: VideoFetchStatus.Empty, data: "" });
 
   const subscriptionKey = config.speechAvatarSubscriptionKey;
-  const urlBase = "https://westus2.customvoice.api.speech.microsoft.com/api";
+  const serviceRegion = config.speechAvatarServiceRegion;
+  const urlBase = `https://${serviceRegion}.customvoice.api.speech.microsoft.com/api`; // TODO: region should be in
 
   const payload = {
-    displayName: "speech avatar speaking",
+    displayName: "speech audio synthesis",
     description: "",
     textType: "PlainText",
     inputs: [
@@ -48,18 +43,14 @@ export const onSpeechAvatar = async (
       voice: "en-US-JennyNeural", // # set voice name for plain text; ignored for ssml
     },
     properties: {
-      talkingAvatarCharacter: "lisa", // # currently only one platform character (lisa)
-      talkingAvatarStyle: "casual-sitting", // # chosen from 5 styles (casual-sitting, graceful-sitting, graceful-standing, technical-sitting, technical-standing)
-      videoFormat: "webm", // # mp4 or webm, webm is required for transparent background
-      videoCodec: "vp9", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
-      subtitleType: "soft_embedded",
-      backgroundColor: "white", // # white or transparent
+      outputFormat: "audio-24khz-160kbitrate-mono-mp3",
+      // destinationContainerUrl: "https://github.com/xinglin-yu/TestRepo/tree/master/Doc/"
     },
   };
 
   try {
     const response = await axios.post(
-      `${urlBase}/texttospeech/3.1-preview1/batchsynthesis/talkingavatar`,
+      `${urlBase}/texttospeech/3.1-preview1/batchsynthesis`,
       payload,
       {
         headers: {
@@ -79,15 +70,18 @@ export const onSpeechAvatar = async (
       const pollStatus = async () => {
         try {
           const result = await axios.get(
-            `${urlBase}/texttospeech/3.1-preview1/batchsynthesis/talkingavatar/${jobId}`,
+            `${urlBase}/texttospeech/3.1-preview1/batchsynthesis/${jobId}`,
             {
               headers: {
                 "Ocp-Apim-Subscription-Key": subscriptionKey,
               },
             },
           );
-
           if (result.data.status === VideoFetchStatus.Succeeded) {
+            console.log(
+              "result.data.outputs.result: ",
+              result.data.outputs.result,
+            );
             setOutputAvatar({
               status: VideoFetchStatus.Succeeded,
               data: result.data.outputs.result,
@@ -113,46 +107,48 @@ export const onSpeechAvatar = async (
   }
 };
 
-export function SpeechAvatarVideoSetting() {
-  const config = useAppConfig();
-  const updateConfig = config.update;
-
-  return (
-    <List>
-      <ListItem title={Locale.Settings.AvatarVideo.Title}></ListItem>
-      <ListItem
-        title={Locale.Settings.AvatarVideo.MaxWords.Title}
-        subTitle={Locale.Settings.AvatarVideo.MaxWords.SubTitle}
-      >
-        <input
-          type="number"
-          defaultValue={config.avatarVideo.maxWords}
-          onChange={(e) =>
-            updateConfig(
-              (config) =>
-                (config.avatarVideo.maxWords = parseInt(e.currentTarget.value)),
-            )
-          }
-        ></input>
-      </ListItem>
-      <ListItem
-        title={Locale.Settings.AvatarVideo.PreviewCost.Title}
-        subTitle={Locale.Settings.AvatarVideo.PreviewCost.SubTitle}
-      >
-        <Switch
-          defaultChecked={config.avatarVideo.previewCost}
-          onChange={(e) => (config.avatarVideo.previewCost = e.target.checked)}
-          inputProps={{ "aria-label": "controlled" }}
-        />
-      </ListItem>
-    </List>
-  );
+interface SpeechAudioShowProps {
+  outputAvatar: IRequestResponse;
 }
 
-export function SpeechAvatarVideoShow(props: {
-  outputAvatar: IRequestResponse;
-}) {
-  const { outputAvatar } = props;
+// TODO: this might be more easy when geting status when show
+export const SpeechAudioShow: React.FC<SpeechAudioShowProps> = ({
+  outputAvatar,
+}) => {
+  const [mp3Url, setMp3Url] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (outputAvatar.status === VideoFetchStatus.Succeeded) {
+      // 当状态为Succeeded时，outputAvatar.data应该包含.zip文件的URL
+      const zipUrl = outputAvatar.data;
+
+      // 下载.zip文件并解压展示其中的.mp3文件
+      const fetchAndUnzipMP3 = async () => {
+        try {
+          const response = await axios.get(zipUrl, { responseType: "blob" });
+          const zipBlob = response.data;
+
+          const jszip = new JSZip();
+          const zip = await jszip.loadAsync(zipBlob);
+
+          // 假定.zip文件中只有一个.mp3文件
+          const mp3File = Object.keys(zip.files).find((fileName) =>
+            fileName.endsWith(".mp3"),
+          );
+
+          if (mp3File) {
+            const mp3Blob = await zip.files[mp3File].async("blob");
+            const mp3Url = URL.createObjectURL(mp3Blob);
+            setMp3Url(mp3Url);
+          }
+        } catch (error) {
+          console.error("Error fetching or unzipping MP3:", error);
+        }
+      };
+
+      fetchAndUnzipMP3();
+    }
+  }, [outputAvatar]);
 
   if (outputAvatar.status === VideoFetchStatus.Empty) {
     return <></>;
@@ -168,9 +164,7 @@ export function SpeechAvatarVideoShow(props: {
   if (outputAvatar.status === VideoFetchStatus.Loading) {
     return (
       <div>
-        <h3 className={styles_tm["video-container"]}>
-          Avatar Video is generating...
-        </h3>
+        <h3 className={styles_tm["video-container"]}>Audio is generating...</h3>
         <Box sx={{ width: "100%" }}>
           <LinearProgress />
         </Box>
@@ -178,16 +172,16 @@ export function SpeechAvatarVideoShow(props: {
     );
   }
 
-  if (outputAvatar.status === VideoFetchStatus.Succeeded) {
+  if (mp3Url) {
     return (
       <div className={styles_tm["video-container"]}>
-        <video controls width="400" height="300">
-          <source src={outputAvatar.data} type="video/webm" />
-          Your browser does not support the video tag.
-        </video>
+        <audio controls style={{ width: "60%" }}>
+          <source src={mp3Url} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
       </div>
     );
   }
 
   return <></>;
-}
+};

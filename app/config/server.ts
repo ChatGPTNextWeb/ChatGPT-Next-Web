@@ -49,11 +49,13 @@ export const getServerSideConfig = () => {
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
     hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
+
     zBotServiceUrl: process.env.ZBotServiceUrl,
     zCareersPayUrl: process.env.ZCareersPayUrl,
     speechSubscriptionKey: process.env.SpeechSubscriptionKey,
     speechServiceRegion: "eastus",
     speechAvatarSubscriptionKey: "placeholder",
+    speechAvatarServiceRegion: "westus2",
   };
 
   /*

@@ -35,6 +35,7 @@ import {
   DEFAULT_TOPIC,
   InputStore,
   IRequestResponse,
+  ILightsTime,
 } from "../store";
 
 import { useNavigate } from "react-router-dom";
@@ -65,7 +66,10 @@ import {
 } from "./roles";
 
 import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
-import { onSpeechAvatar } from "../cognitive/speech-avatar";
+import {
+  SpeechAvatarVideoShow,
+  onSpeechAvatar,
+} from "../cognitive/speech-avatar";
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
@@ -80,6 +84,9 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Tooltip from "@mui/material/Tooltip";
 import ReactMarkdown from "react-markdown";
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
+import { SpeechAudioShow, submitSpeechAudio } from "../cognitive/speech-audio";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -200,7 +207,13 @@ export function ChatTitle(props: { getInputsString: () => string }) {
   );
 }
 
-export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
+export const ChatInput = (props: {
+  title: string;
+  inputStore: InputStore;
+  showTime?: boolean;
+}) => {
+  const { title, inputStore, showTime = false } = props;
+
   const config = useAppConfig();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -211,8 +224,8 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   when userInput is changed, show userInput
   when Send button is clicked, show session.messages[session.messages.length-1].content
   */
-  const [userInput, setUserInput] = useState(props.inputStore.text);
-  const [time, setTime] = useState(props.inputStore.time);
+  const [userInput, setUserInput] = useState(inputStore.text);
+  const [time, setTime] = useState(inputStore.time);
 
   // 计时器
   useEffect(() => {
@@ -221,11 +234,12 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
       intervalId = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
+      inputStore.time = time;
     }
 
     return () => {
       // save to store
-      props.inputStore.time = time;
+      inputStore.time = time;
       clearInterval(intervalId);
     };
   }, [recording]);
@@ -255,7 +269,7 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
   // set parent value
   useEffect(() => {
     // save to store
-    props.inputStore.text = userInput;
+    inputStore.text = userInput;
 
     // set the focus to the input at the end of textarea
     inputRef.current?.focus();
@@ -285,7 +299,7 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
 
   return (
     <div className={styles_tm["chat-input-panel-noborder"]}>
-      <div className={styles_tm["chat-input-panel-title"]}>{props.title}</div>
+      <div className={styles_tm["chat-input-panel-title"]}>{title}</div>
       <div className={styles_tm["chat-input-panel-textarea"]}>
         <textarea
           ref={inputRef}
@@ -317,6 +331,15 @@ export const ChatInput = (props: { title: string; inputStore: InputStore }) => {
           {ChatUtility.formatTime(time)}
         </div>
       </div>
+
+      {showTime == true ? (
+        <ChatTimeSlider
+          time={time}
+          timeExpect={inputStore.timeExpect}
+        ></ChatTimeSlider>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
@@ -450,6 +473,11 @@ export const ChatSubmitRadiobox = (props: {
 
   const onInputRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputRole((event.target as HTMLInputElement).value);
+    // Math.max to avoid user select after submit
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.input.activeStep = Math.max(2, session.input.activeStep)),
+    );
   };
 
   const doSubmit = async () => {
@@ -472,6 +500,7 @@ export const ChatSubmitRadiobox = (props: {
     // 保存输入: 于是ChatResponse可以使用
     session.input.roles[0] = inputRole;
     session.input.setting = ToastmastersSettings(props.toastmastersRecord);
+    chatStore.updateCurrentSession((session) => (session.input.activeStep = 3));
 
     // reset status from 0
     chatStore.resetSession();
@@ -640,8 +669,8 @@ export const ChatResponse = (props: {
     ChatControllerPool.stop(sessionIndex, messageId);
   };
 
-  const onVideoGenerate = async (messageContent: string) => {
-    const words = ChatUtility.getWordsNumber(messageContent);
+  const onVideoGenerate = async (message: ChatMessage) => {
+    const words = ChatUtility.getWordsNumber(message.content);
     const cost =
       config.avatarVideo.maxWords == -1
         ? words
@@ -661,21 +690,59 @@ export const ChatResponse = (props: {
       return;
     }
 
-    await onSpeechAvatar(
+    // reset to previous state and then set value
+    chatStore.updateCurrentSession(
+      (session) => (
+        (message.video = undefined), (session.input.activeStep = 3)
+      ),
+    );
+    onSpeechAvatar(
       ChatUtility.getFirstNWords(
-        messageContent,
+        message.content,
         config.avatarVideo.maxWords,
         false,
       ),
       (outputAvatar: IRequestResponse) => {
         chatStore.updateCurrentSession(
-          (session) => (session.output.avatar = outputAvatar),
+          (session) => (
+            (message.video = outputAvatar), (session.input.activeStep = 4)
+          ),
         );
       },
     );
 
-    // const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
-    // zBotServiceClient.updateRequest(userEmail ?? "", cost);
+    const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    zBotServiceClient.updateRequest(userEmail ?? "", cost);
+  };
+
+  const onAudioGenerate = async (message: ChatMessage) => {
+    const words = ChatUtility.getWordsNumber(message.content);
+
+    // 1 audio => 1 AI coin
+    const cost = 1;
+
+    const isEnoughCoins = await chatStore.isEnoughCoins(cost);
+
+    if (!isEnoughCoins) {
+      return;
+    }
+
+    // reset to previous state and then set value
+    chatStore.updateCurrentSession(
+      (session) => (
+        (message.audio = undefined), (session.input.activeStep = 3)
+      ),
+    );
+    submitSpeechAudio(message.content, (outputAudio: IRequestResponse) => {
+      chatStore.updateCurrentSession(
+        (session) => (
+          (message.audio = outputAudio), (session.input.activeStep = 4)
+        ),
+      );
+    });
+
+    const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+    zBotServiceClient.updateRequest(userEmail ?? "", cost);
   };
 
   return (
@@ -731,17 +798,12 @@ export const ChatResponse = (props: {
                         <ChatAction
                           text={Locale.Chat.Actions.AudioPlay}
                           icon={<MicphoneIcon />}
-                          onClick={() =>
-                            speechSynthesizer.startSynthesize(
-                              message.content,
-                              session.mask.lang,
-                            )
-                          }
+                          onClick={() => onAudioGenerate(message)}
                         />
                         <ChatAction
                           text={Locale.Chat.Actions.VideoPlay}
                           icon={<AvatarIcon />}
-                          onClick={() => onVideoGenerate(message.content)}
+                          onClick={() => onVideoGenerate(message)}
                         />
                       </>
                     )}
@@ -761,6 +823,13 @@ export const ChatResponse = (props: {
                   : 0}{" "}
                 words
               </div>
+
+              {message.audio ? (
+                <SpeechAudioShow outputAvatar={message.audio} />
+              ) : null}
+              {message.video ? (
+                <SpeechAvatarVideoShow outputAvatar={message.video} />
+              ) : null}
             </div>
           </div>
         );
@@ -768,6 +837,91 @@ export const ChatResponse = (props: {
     </div>
   );
 };
+
+export const BorderLine = () => {
+  const lineStyle = {
+    borderBottom: "var(--border-in-light)",
+    width: "100%", // 横跨整个父容器
+    margin: "10px 0", // 设置上下边距
+  };
+
+  return <div style={lineStyle}></div>;
+};
+
+function ChatTimeSlider(props: { time: number; timeExpect: ILightsTime }) {
+  // time is seconds, timeExpect is minutes
+  const { time, timeExpect } = props;
+  const timeExpectSecond: ILightsTime = {
+    Green: timeExpect.Green * 60,
+    Yellow: timeExpect.Yellow * 60,
+    Red: timeExpect.Red * 60,
+  };
+
+  const centerContainerStyle = {
+    display: "flex",
+    flexDirection: "column" as const, // 使用 'column' 来确保类型匹配
+    justifyContent: "center", // 水平居中
+    alignItems: "center", // 垂直居中
+    width: "100%", // 使容器占满可用宽度
+    marginTop: "20px", // 设置子组件距离上边缘的距离
+  };
+
+  // 最多可超时1min
+  const maxValue = (timeExpect.Red + 1) * 60;
+  const sliderColor = () => {
+    if (time >= timeExpectSecond.Red) return "red";
+    else if (time >= timeExpectSecond.Yellow) return "yellow";
+    else if (time >= timeExpectSecond.Green) return "green";
+
+    return "";
+  };
+
+  const marks: { value: number; label: string }[] = [];
+  marks.push({
+    value: timeExpectSecond.Green,
+    label: "G:" + ChatUtility.formatTime(timeExpectSecond.Green),
+  });
+  marks.push({
+    value: timeExpectSecond.Yellow,
+    label: "Y:" + ChatUtility.formatTime(timeExpectSecond.Yellow),
+  });
+  marks.push({
+    value: timeExpectSecond.Red,
+    label: "R:" + ChatUtility.formatTime(timeExpectSecond.Red),
+  });
+
+  return (
+    <div style={centerContainerStyle}>
+      <div>Speech Time </div>
+      <Box sx={{ width: "80%" }}>
+        <Slider
+          aria-label="Always visible"
+          value={props.time}
+          getAriaValueText={ChatUtility.formatTime}
+          valueLabelFormat={ChatUtility.formatTime}
+          step={1}
+          marks={marks}
+          valueLabelDisplay="on"
+          size="medium"
+          max={maxValue}
+          sx={{
+            fontSize: "100px", // 在这里设置字体大小
+            color: sliderColor,
+          }}
+        />
+        {/* {
+          orderedDict.map((d) => (
+            props.time >= d.value && (
+              <IconButton key={d.label} color="primary">
+                <LightbulbIcon />
+              </IconButton>
+            )
+          ))
+        } */}
+      </Box>
+    </div>
+  );
+}
 
 export class ChatUtility {
   static getWordsNumber(text: string): number {
@@ -797,6 +951,14 @@ export class ChatUtility {
   static formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  static formatTimeMinutes = (timeMinutes: number): string => {
+    const minutes = Math.floor(timeMinutes);
+    const seconds = (timeMinutes - minutes) * 60;
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
       .padStart(2, "0")}`;

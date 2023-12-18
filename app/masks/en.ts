@@ -2,12 +2,70 @@ import { BuiltinMaskGroup } from "./cn";
 import { BuiltinMask } from "./typing";
 import { Path } from "../constant";
 import { ToastmastersRoles } from "../toastmasters/roles";
+import { InterviewRoles } from "../interview/roles";
 
 export const EN_MASKS: BuiltinMask[] = [
   // BuiltinMaskGroup.Toastmasters
   {
     avatar: "toastmasters",
-    name: ToastmastersRoles.TableTopicsEvaluators,
+    name: ToastmastersRoles.ImpromptuSpeechCopilot,
+    context: [
+      {
+        role: "user",
+        content: `
+        You are the Speech Copilot, your responsibility is to help me practice impromptu speech.
+        Especially, used in table topics session.
+        do you understand?
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ImpromptuSpeechCopilot,
+    group: BuiltinMaskGroup.Toastmasters,
+  },
+  {
+    avatar: "toastmasters",
+    name: ToastmastersRoles.TableTopicsMaster,
+    context: [
+      {
+        role: "user",
+        content: `You are the Export of Toastmasters. 
+        I will firstly provide you the Topic in table topics session,
+        and then I will ask you some questions about the Topic.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersTTMaster,
+    group: BuiltinMaskGroup.Toastmasters,
+  },
+  {
+    avatar: "toastmasters",
+    name: ToastmastersRoles.TableTopicsEvaluator,
     context: [
       {
         role: "user",
@@ -19,13 +77,9 @@ export const EN_MASKS: BuiltinMask[] = [
           {
             "Speaker": "Speaker1"
             "Question": "xxx",
-            "Speech": "xxx"
-          },
-          {
-            "Speaker": "Speaker2"
-            "Question": "xxx",
-            "Speech": "xxx"
-          },
+            "Speech": "xxx",
+            "SpeechTime": "yyy",
+          }
         ]
         In our each interaction round, I will let you play an Toastmasters Role and give you the request, you answer my ask in that Role's tone.
         `,
@@ -44,12 +98,12 @@ export const EN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersTTEvaluators,
+    pagePath: Path.ToastmastersTTEvaluator,
     group: BuiltinMaskGroup.Toastmasters,
   },
   {
     avatar: "toastmasters",
-    name: ToastmastersRoles.TableTopicsEvaluator,
+    name: ToastmastersRoles.ImpromptuSpeechEvaluator,
     context: [
       {
         role: "user",
@@ -85,79 +139,12 @@ export const EN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersTTEvaluator,
+    pagePath: Path.ToastmastersISEvaluator,
     group: BuiltinMaskGroup.Toastmasters,
   },
   {
     avatar: "toastmasters",
-    name: ToastmastersRoles.TableTopicsMaster,
-    context: [
-      {
-        role: "user",
-        content: `You are the Export of Toastmasters. 
-        I will firstly provide you the Topic in table topics session,
-        and then I will ask you some questions about the Topic.
-        `,
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 0.5,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "en",
-    builtin: true,
-    pagePath: Path.ToastmastersTTMaster,
-    group: BuiltinMaskGroup.Toastmasters,
-  },
-  // TODO: move into TTEvaluator
-  // {
-  //   avatar: "toastmasters",
-  //   name: ToastmastersRoles.TableTopicsSpeaker,
-  //   context: [
-  //     {
-  //       role: "user",
-  //       content: `You are the Export of Toastmasters.
-  //       In our each interaction, I will let you play an Toastmasters Role, you answer my ask in that Role's tone.
-  //       The Toastmasters Roles you will act are:
-  //       1, Table Topics Speaker
-  //       2, Table Topics Evaluator
-  //       3, Grammarian
-  //       4, Ah-Counter
-  //       5, General Evaluator
-
-  //       In my each ask, I will provide the role one by one.
-  //       In your each speech, your answer must:
-  //       1). Within 100 words.
-  //       2). Include examples by quoting and analyzing your speech.
-  //       `,
-  //       date: "",
-  //     },
-  //   ],
-  //   modelConfig: {
-  //     model: "gpt-3.5-turbo",
-  //     temperature: 0.5,
-  //     max_tokens: 2000,
-  //     presence_penalty: 0,
-  //     frequency_penalty: 0,
-  //     sendMemory: true,
-  //     historyMessageCount: 4,
-  //     compressMessageLengthThreshold: 1000,
-  //   },
-  //   lang: "en",
-  //   builtin: true,
-  //   pagePath: Path.ToastmastersTTSpeaker, // If not defined, will use Path.Chat
-  //   group: BuiltinMaskGroup.Toastmasters,
-  // },
-  {
-    avatar: "toastmasters",
-    name: ToastmastersRoles.IndividualEvaluator,
+    name: ToastmastersRoles.PreparedSpeechEvaluator,
     context: [
       {
         role: "user",
@@ -193,8 +180,91 @@ export const EN_MASKS: BuiltinMask[] = [
     },
     lang: "en",
     builtin: true,
-    pagePath: Path.ToastmastersIEvaluator,
+    pagePath: Path.ToastmastersPSEvaluator,
     group: BuiltinMaskGroup.Toastmasters,
+  },
+  {
+    avatar: "toastmasters",
+    name: ToastmastersRoles.Timer,
+    context: [
+      {
+        role: "user",
+        content: `
+        You are the Timer of Toastmasters, give me a report all apekers' time usage. And give addvice for speakers who are not qualified.
+        I will give you a list of Speaker-Speech pairs in json schema, like:
+        [
+          {
+            "Speaker": "Speaker1"
+            "SpeechTime": real_speech_time,
+            "ExpectTime": {"GreenTime": g_time, "YellowTime": y_time, "RedTime": r_time, "MaxTime": max_time}
+          }
+        ],
+        For each speaker, compare his SpeechTime and ExpectTime,
+        if (SpeechTime > max_time): it's not qualified for overtime, to suggest how to short down.
+        else if (SpeechTime < g_time): it not qualified for less time, to suggest how to expand.
+        else if (max_time >= SpeechTime >= g_time): it's qualified for right within time, to praise him.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersTimer,
+    group: BuiltinMaskGroup.Toastmasters,
+  },
+
+  // Interview Copilot
+  {
+    avatar: "1f47e",
+    name: InterviewRoles.SelfServeInterview,
+    context: [
+      {
+        role: "user",
+        content: `
+        You are an interviewer who is conducting a mock interview with me by asking questions based on the Job Description.
+
+        1, In first round, I will give you the JobDescrption, like
+        {
+        Job Title: xxx,
+        Role summary: xxx
+        },
+        and an action.
+        
+        2, In subsequent each round,  I will give you my answer for your question included in {}, and then an action.
+        
+        3, When the action is: NextQuestion, you give me the next question.  Note: only question itself, no more extra words.
+        When the action is: EvaluateCurrent, You give me instant evaluation for the last round interaction.
+        When the action is: EndInterview, I will let you to play different roles to evaluate my answers.
+        
+        Do you understand the process?
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.InterviewSelfServe,
+    group: BuiltinMaskGroup.InterviewCopilot,
   },
 
   // BuiltinMaskGroup.Expert

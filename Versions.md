@@ -3,6 +3,27 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v5.20231211
+ - HostingMode & Score Reason
+
+## v5.20231206-2
+ - Time score fix
+
+## v5.20231206
+ - Add Impromptu Speech Copilot to zcareers
+
+## v5.20231204
+ - Add Impromptu Speech Copilot
+
+## v5.20231116
+ - Enable Pay
+
+## v5.20231111
+ - Add Self-Interview
+
+## v5.20231108
+ - Add Timer
+
 ## v4.20230921
  - Temp comment login
 
