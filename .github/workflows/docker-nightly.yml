@@ -39,7 +39,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: nightly
+          tags: ${{ secrets.DOCKER_USERNAME }}/chatgpt-next-web-langchain:${{ github.event.inputs.tag || 'nightly' }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
