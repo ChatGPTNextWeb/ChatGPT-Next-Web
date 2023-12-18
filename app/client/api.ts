@@ -174,6 +174,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
     headers = {
       "Content-Type": "application/json",
       "x-requested-with": "XMLHttpRequest",
+      "Accept": "application/json",
     };
   }
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
