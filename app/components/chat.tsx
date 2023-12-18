@@ -73,6 +73,9 @@ import {
   showPrompt,
   showToast,
 } from "./ui-lib";
+
+import { Cat } from "./cat";
+
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
@@ -1263,6 +1266,7 @@ function _Chat() {
       </div>
 
       <div className={styles["chat-input-panel"]}>
+        <Cat></Cat>
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
         <ChatActions

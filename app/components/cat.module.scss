@@ -1,0 +1,20 @@
+@import "../styles/animation.scss";
+
+.ha {
+  position: absolute;
+  bottom: 50px;
+  right: 100px;
+  width: 400px;
+  height: 200px;
+  margin: 0 auto;
+  z-index: 1;
+  pointer-events: none;
+}
+@media screen and (max-width: 999px) {
+  .ha {
+    bottom: auto;
+ 
+    width: 300px;
+    height: 300px;
+  }
+}
