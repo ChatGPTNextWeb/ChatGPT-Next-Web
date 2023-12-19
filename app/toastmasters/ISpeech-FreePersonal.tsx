@@ -278,10 +278,8 @@ export const FreePersonalQuestionPageBody = (props: {
   const onReset = async () => {
     // 清存储
     IQuestionItem.reset(questionItem);
-
     recorder.resetRecording();
     onStatusChange(ESpeechStageStatus.Start);
-
     // 改状态
     setEvaluating(false);
   };
@@ -289,9 +287,7 @@ export const FreePersonalQuestionPageBody = (props: {
   const onRestartRecord = async () => {
     // 清存储
     IQuestionItem.reset(questionItem);
-
     recorder.resetRecording();
-
     onRecord();
   };
 
@@ -895,7 +891,8 @@ function RehearsalReportCard({
 export function FreePersonalReport(props: {
   impromptuSpeechInput: ImpromptuSpeechInput;
 }) {
-  const questionItems = props.impromptuSpeechInput.QuestionItems;
+  const { impromptuSpeechInput } = props;
+  const questionItems = impromptuSpeechInput.QuestionItems;
 
   const chatStore = useChatStore();
   const [session, sessionIndex] = useChatStore((state) => [
@@ -916,10 +913,6 @@ export function FreePersonalReport(props: {
   );
 
   useEffect(() => {
-    if (props.impromptuSpeechInput.TotalEvaluations === "") {
-      onRegenerateTotalEvaluation();
-    }
-
     const newBarDatas = getQuestionItemsBarData();
     setBarDatas(newBarDatas);
     calculateAndSetAverage(newBarDatas);
@@ -959,22 +952,6 @@ export function FreePersonalReport(props: {
     }
 
     setAverageData(newAverage);
-  };
-
-  const onRegenerateTotalEvaluation = () => {
-    chatStore.resetSessionFromIndex(2);
-    chatStore.updateCurrentSession(
-      (session) => (props.impromptuSpeechInput.TotalEvaluations = ""),
-    );
-    const ask = ImpromptuSpeechPrompts.GetTotalEvaluationPrompt(questionItems);
-    chatStore.onUserInput(ask);
-    chatStore.getIsFinished().then(() => {
-      const response = session.messages[session.messages.length - 1].content;
-      chatStore.updateCurrentSession(
-        (session) => (props.impromptuSpeechInput.TotalEvaluations = response),
-      );
-      chatStore.resetSessionFromIndex(2);
-    });
   };
 
   const onReturn = () => {
@@ -1027,6 +1004,153 @@ export function FreePersonalReport(props: {
     return barData;
   };
 
+  function EvaluationCard() {
+    const [evaluationRole, setEvaluationRole] = React.useState<string>(
+      ImpromptuSpeechRoles.General,
+    );
+
+    const [evaluating, setEvaluating] = useState(
+      Object.keys(impromptuSpeechInput.TotalEvaluations).length > 0,
+    );
+
+    const evaluationRoles = ImpromptuSpeechPrompts.GetTotalEvaluationRoles();
+
+    const onReEvaluation = async (role: string) => {
+      setEvaluating(true);
+      const propmts =
+        impromptuSpeechInput.Mode == ESpeechModes.Personal
+          ? ImpromptuSpeechPrompts.GetPersonalTotalEvaluationPrompts(
+              questionItems,
+            )
+          : ImpromptuSpeechPrompts.GetHostingTotalEvaluationPrompts(
+              questionItems,
+            );
+
+      chatStore.updateCurrentSession(
+        (session) => delete impromptuSpeechInput.TotalEvaluations[role],
+      );
+
+      chatStore.onUserInput(propmts[role]);
+      await chatStore.getIsFinished();
+      const response = session.messages[session.messages.length - 1].content;
+      chatStore.updateCurrentSession(
+        (session) => (impromptuSpeechInput.TotalEvaluations[role] = response),
+      );
+      chatStore.resetSessionFromIndex(4); // to keep scores as history
+      setEvaluating(false);
+    };
+
+    const onEvaluation = async () => {
+      setEvaluating(true);
+      const propmts =
+        impromptuSpeechInput.Mode == ESpeechModes.Personal
+          ? ImpromptuSpeechPrompts.GetPersonalTotalEvaluationPrompts(
+              questionItems,
+            )
+          : ImpromptuSpeechPrompts.GetHostingTotalEvaluationPrompts(
+              questionItems,
+            );
+
+      // reset
+      chatStore.updateCurrentSession(
+        (session) => (impromptuSpeechInput.TotalEvaluations = {}),
+      );
+
+      for (const role of evaluationRoles) {
+        chatStore.onUserInput(propmts[role]);
+        await chatStore.getIsFinished();
+        const response = session.messages[session.messages.length - 1].content;
+        chatStore.updateCurrentSession(
+          (session) => (impromptuSpeechInput.TotalEvaluations[role] = response),
+        );
+      }
+      await chatStore.getIsFinished();
+
+      chatStore.resetSessionFromIndex(4);
+      setEvaluating(false);
+    };
+
+    return (
+      <AccordionDetails>
+        <Box sx={{ width: "100%", typography: "body1" }}>
+          <TabContext value={evaluationRole}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={(event, newValue) => {
+                  setEvaluationRole(newValue);
+                }}
+                aria-label="lab API tabs example"
+              >
+                {evaluationRoles.map((role, index) => (
+                  <Tab
+                    key={index}
+                    label={role}
+                    value={role}
+                    sx={{ textTransform: "none" }}
+                  />
+                ))}
+              </TabList>
+            </Box>
+            {evaluationRoles.map((role, index) => (
+              <TabPanel key={index} value={role}>
+                {role in impromptuSpeechInput.TotalEvaluations ? (
+                  <Typography style={{ textAlign: "left" }}>
+                    <ReactMarkdown>
+                      {impromptuSpeechInput.TotalEvaluations[role]}
+                    </ReactMarkdown>
+                    <div className={styles["chat-input-words"]}>
+                      {ChatUtility.getWordsNumber(
+                        impromptuSpeechInput.TotalEvaluations[role],
+                      )}{" "}
+                      words
+                    </div>
+                    <Stack
+                      direction="row"
+                      spacing={5}
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <IconButtonMui
+                        aria-label="play"
+                        onClick={() =>
+                          speechSynthesizer.startSynthesize(
+                            impromptuSpeechInput.TotalEvaluations[role],
+                            session.mask.lang,
+                          )
+                        }
+                      >
+                        <PlayCircleIcon />
+                      </IconButtonMui>
+                      <IconButtonMui
+                        title="Regenerage"
+                        onClick={(event) => onReEvaluation(role)}
+                      >
+                        <ReplayCircleFilledIcon />
+                      </IconButtonMui>
+                    </Stack>
+                  </Typography>
+                ) : evaluating ? (
+                  <CircularProgress />
+                ) : (
+                  <Button
+                    onClick={onEvaluation}
+                    variant="outlined"
+                    sx={{
+                      textTransform: "none", // 防止文本大写
+                      borderColor: "primary.main", // 设置边框颜色，如果需要
+                    }}
+                  >
+                    Look
+                  </Button>
+                )}
+              </TabPanel>
+            ))}
+          </TabContext>
+        </Box>
+      </AccordionDetails>
+    );
+  }
+
   const RadarOuterRadius = 150;
   const RadarWidth = RadarOuterRadius * 3;
   const RadarHeight = RadarOuterRadius * 2.4;
@@ -1034,7 +1158,7 @@ export function FreePersonalReport(props: {
   return (
     <Box sx={{ padding: 3, maxWidth: "100%", margin: "auto" }}>
       <Typography variant="h5" gutterBottom>
-        Impromptu Speech Report
+        {impromptuSpeechInput.Topic}
       </Typography>
 
       {/* Summary Card */}
@@ -1202,43 +1326,8 @@ export function FreePersonalReport(props: {
         </ResponsiveContainer>
       </RehearsalReportCard>
 
-      {/* Evaluation Card */}
-      <RehearsalReportCard title="Evaluation">
-        {props.impromptuSpeechInput.TotalEvaluations !== "" ? (
-          <Typography style={{ textAlign: "left" }}>
-            <ReactMarkdown>
-              {props.impromptuSpeechInput.TotalEvaluations}
-            </ReactMarkdown>
-            <Stack
-              direction="row"
-              spacing={5}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <IconButtonMui
-                aria-label="play"
-                onClick={() =>
-                  speechSynthesizer.startSynthesize(
-                    props.impromptuSpeechInput.TotalEvaluations,
-                    session.mask.lang,
-                  )
-                }
-              >
-                <PlayCircleIcon />
-              </IconButtonMui>
-              <IconButtonMui
-                title="Regenerage"
-                onClick={onRegenerateTotalEvaluation}
-              >
-                <ReplayCircleFilledIcon />
-              </IconButtonMui>
-            </Stack>
-          </Typography>
-        ) : (
-          <Typography style={{ textAlign: "center" }}>
-            <CircularProgress />
-          </Typography>
-        )}
+      <RehearsalReportCard title="Evaluations">
+        <EvaluationCard></EvaluationCard>
       </RehearsalReportCard>
 
       <Button

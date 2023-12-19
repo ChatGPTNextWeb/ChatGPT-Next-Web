@@ -96,7 +96,7 @@ export class ImpromptuSpeechInput {
   QuestionNums: number = 2;
   StartTime: number = new Date().getTime();
   EndTime: number = new Date().getTime();
-  TotalEvaluations: string = ""; // TODO: might be Record<string, string>
+  TotalEvaluations: Record<string, string> = {};
 
   Interaction: string = ESpeechModes.Free;
   Mode: string = ESpeechModes.Personal;
@@ -246,12 +246,55 @@ export class ImpromptuSpeechPrompts {
       You should:
       1). Don't say who you are, just provide your revised speech.
       2). Bold keywords using markdown when present your answer.
-      3). 200 Words.
+      3). About 200 Words.
       `,
     };
   }
 
-  static GetTotalEvaluationPrompt(questionItems: IQuestionItem[]): string {
+  static GetTotalEvaluationRoles(): string[] {
+    return [ImpromptuSpeechRoles.General, ToastmastersRoles.Grammarian];
+  }
+
+  static GetHostingTotalEvaluationPrompts(
+    questionItems: IQuestionItem[],
+  ): Record<string, string> {
+    const speakerInputs = [];
+    for (const item of questionItems) {
+      if (item.Speech !== "") {
+        speakerInputs.push({
+          Speaker: item.Speaker,
+          Question: item.Question,
+          Speech: item.Speech,
+        });
+      }
+    }
+    // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
+    const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
+
+    return {
+      [ImpromptuSpeechRoles.General]: `The Question-Speech pairs are:
+      ${speakerInputsString},
+  
+      You are the ${ToastmastersRoles.TableTopicsEvaluator}, Evaluate the speech for all speakers.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Bold keywords using markdown when present your answer.
+      4). Provide addvice to the speaker based on his speech.
+      5). Each speaker's evaluation should be about 50 words.
+      `,
+      [ToastmastersRoles.Grammarian]: `You are the ${ToastmastersRoles.Grammarian}, Evaluate the speech for all speakers.
+      Your evaluation should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Bold keywords using markdown when present your answer.
+      3). Provide addvice to the speaker based on his speech.
+      4). Each speaker's evaluation should be about 50 words.
+      `,
+    };
+  }
+
+  static GetPersonalTotalEvaluationPrompts(
+    questionItems: IQuestionItem[],
+  ): Record<string, string> {
     const speakerInputs = [];
     for (const item of questionItems) {
       if (item.Speech !== "") {
@@ -264,17 +307,26 @@ export class ImpromptuSpeechPrompts {
     // 4 是可选的缩进参数，它表示每一层嵌套的缩进空格数
     const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
 
-    return `
-    The Question-Speech pairs are:
-    ${speakerInputsString},
-
-    You are the ${ToastmastersRoles.TableTopicsEvaluator}, to give me an total evaluation for my speeches.
-    Your evaluation should:
-    1). Don't evaluate one by one, just the final total evaluation.
-    2). Don't make things up, you can quote sentence from my speech.
-    3). To bold keywords using markdown when present your answer.
-    4). Provide addvice to me based on my speech.
-    5). About 200 words.
-    `;
+    return {
+      [ImpromptuSpeechRoles.General]: `The Question-Speech pairs are:
+      ${speakerInputsString},
+  
+      You are the ${ToastmastersRoles.TableTopicsEvaluator}, to give me an total evaluation for my speeches.
+      Your evaluation should:
+      1). Don't evaluate one by one, just the final total evaluation.
+      2). Don't make things up, you can quote sentence from my speech.
+      3). To bold keywords using markdown when present your answer.
+      4). Provide addvice to me based on my speech.
+      5). About 200 words.
+      `,
+      [ToastmastersRoles.Grammarian]: `You are the ${ToastmastersRoles.Grammarian}, to evaluate my speeches.
+      Your evaluation should:
+      1). Don't evaluate one by one, just the final total grammarian evaluation.
+      2). Don't make things up, all your quoted sentence must be from my speech.
+      3). Bold keywords using markdown when present your answer.
+      4). Provide addvice to me based on my speech.
+      5). About 200 words.
+      `,
+    };
   }
 }

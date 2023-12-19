@@ -3,6 +3,9 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v5.20231219
+ - Add grammarian into TotalEvaluations
+
 ## v5.20231218
  - Fix recording bug
 
