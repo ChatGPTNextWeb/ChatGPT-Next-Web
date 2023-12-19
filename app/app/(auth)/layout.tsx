@@ -1,4 +1,4 @@
-import "@/app/styles/login.scss";
+import "@/app/app/login.scss";
 import { Metadata } from "next";
 import { ReactNode } from "react";
 // import { useEffect } from "react";

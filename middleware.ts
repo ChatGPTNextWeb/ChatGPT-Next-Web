@@ -29,6 +29,11 @@ export default async function middleware(req: NextRequest) {
             new URL(`/app${path}`, req.url),
         );
     }
+    if (path == "/admin") {
+        return NextResponse.rewrite(
+            new URL(`/app${path}`, req.url),
+        );
+    }
 
     if (req.method == 'POST' && (path.startsWith("/api/openai/") || path.startsWith("/api/midjourney"))) {
         // 重写header，添加用户名
