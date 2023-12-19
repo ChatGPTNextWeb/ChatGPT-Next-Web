@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { insertUser } from "@/lib/auth";
 
+function cleanObjectKeys(input: { [key: string]: string }): {
+  [key: string]: string;
+} {
+  const cleanedObj: { [key: string]: string } = {};
+  Object.keys(input).forEach((key) => {
+    cleanedObj[key] = input[key].trim();
+  });
+  return cleanedObj;
+}
+
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
@@ -13,7 +23,7 @@ async function handle(
     }
     // console.log("===========4", request_data);
     await prisma.logEntry.create({
-      data: request_data,
+      data: cleanObjectKeys(request_data),
     });
   } catch (e) {
     return NextResponse.json({ status: 0 });
