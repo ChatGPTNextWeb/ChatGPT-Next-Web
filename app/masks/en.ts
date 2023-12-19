@@ -3,6 +3,7 @@ import { BuiltinMask } from "./typing";
 import { Path } from "../constant";
 import { ToastmastersRoles } from "../toastmasters/roles";
 import { InterviewRoles } from "../interview/roles";
+import { EToeflRoles } from "../toefl/ToeflRoles";
 
 export const EN_MASKS: BuiltinMask[] = [
   // BuiltinMaskGroup.Toastmasters
@@ -265,6 +266,40 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.InterviewSelfServe,
     group: BuiltinMaskGroup.InterviewCopilot,
+  },
+
+  // Toefl Copilot
+  {
+    avatar: "1f47e",
+    name: EToeflRoles.IntegratedWriting,
+    context: [
+      {
+        role: "user",
+        content: `
+        You are a toefl write teacher, to revise student's Integrated Writing.
+
+        Here is the Integrated writing Directions：
+        You have 20 minutes to plan and write your response. 
+        Your response will be judged on the basis of the quality of your writing and on how well your response presents the points in the lecture and their relationship to the reading passage. 
+        Typically an effective response will be 150 to 225 words.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToeflIntegratedWriting,
+    group: BuiltinMaskGroup.ToeflCopilot,
   },
 
   // BuiltinMaskGroup.Expert

@@ -32,6 +32,7 @@ export enum Path {
   ToastmastersISEvaluator = "/speech/impromptuSpeechEvaluator",
   ToastmastersPSEvaluator = "/speech/preparedSpeechEvaluator",
   ToastmastersTimer = "/speech/timer",
+  ToeflIntegratedWriting = "/toefl/integratedWriting",
   InterviewSelfServe = "/interview/selfServe",
 }
 
