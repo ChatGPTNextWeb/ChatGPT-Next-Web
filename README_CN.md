@@ -139,7 +139,7 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://a.nextweb.fun/api/proxy
+BASE_URL=https://b.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
@@ -205,7 +205,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [见项目贡献者列表](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ### 相关项目
-
 - [one-api](https://github.com/songquanpeng/one-api): 一站式大模型额度管理平台，支持市面上所有主流大语言模型
 
 ## 开源协议
