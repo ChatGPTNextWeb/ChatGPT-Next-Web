@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
-    "@hello-pangea/dnd": "^16.3.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.7.0",
+    "@hello-pangea/dnd": "^16.5.0",
     "@svgr/webpack": "^8.1.0",
     "@tremor/react": "^3.12.1",
     "@vercel/analytics": "^1.1.1",
@@ -51,7 +51,8 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
-    "@tauri-apps/cli": "^1.4.0",
+    "@tauri-apps/cli": "^1.5.8",
+    "@types/node": "^20.9.0",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.7",
     "@types/react-katex": "^3.0.0",
