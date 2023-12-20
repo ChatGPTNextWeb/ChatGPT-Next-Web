@@ -251,6 +251,12 @@ function isPinYin(input: string): boolean {
 
 
 export function isName(input: string): boolean {
+    const denyList = [
+        "suibian",
+    ]
+    if (denyList.includes(input)) {
+        return false;
+    }
     return isEmail(input) || isHanZi(input) || isPinYin(input);
 }
 

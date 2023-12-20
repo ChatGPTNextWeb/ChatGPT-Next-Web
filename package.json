@@ -3,7 +3,7 @@
   "private": false,
   "license": "mit",
   "scripts": {
-    "dev": "npx prisma generate && npx prisma db push  && next dev",
+    "dev": "npx prisma generate && npx prisma db push && next dev",
     "build": "npx next telemetry disable && npx prisma generate && cross-env BUILD_MODE=standalone next build",
     "start": "next start",
     "lint": "next lint",
