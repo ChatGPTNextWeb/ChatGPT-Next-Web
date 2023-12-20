@@ -123,7 +123,7 @@ export class PDFBrowser extends Tool {
         undefined,
         runManager?.getChild("vectorstore"),
       );
-      context = formatDocumentsAsString(results, "\n");
+      context = formatDocumentsAsString(results);
     }
 
     const input = `Text:${context}\n\nI need ${

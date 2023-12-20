@@ -11,6 +11,7 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 export const OPENAI_BASE_URL = "https://api.openai.com";
+export const GOOGLE_BASE_URL = "https://generativelanguage.googleapis.com";
 
 export enum Path {
   Home = "/",
@@ -25,6 +26,7 @@ export enum Path {
 export enum ApiPath {
   Cors = "/api/cors",
   OpenAI = "/api/openai",
+  GoogleAI = "/api/google",
 }
 
 export enum SlotID {
@@ -75,6 +77,11 @@ export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
+  ListModelPath: "v1/models",
+};
+
+export const GooglePath = {
+  ChatPath: "v1/models/{{model}}:streamGenerateContent",
   ListModelPath: "v1/models",
 };
 
@@ -143,6 +150,10 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-3.5-turbo-16k-0613",
+    available: true,
+  },
+  {
+    name: "gemini-pro",
     available: true,
   },
 ] as const;

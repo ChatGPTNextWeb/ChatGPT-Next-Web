@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../constant";
+import { DEFAULT_MODELS, GOOGLE_BASE_URL, OPENAI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
 
@@ -99,6 +99,76 @@ export async function requestOpenai(req: NextRequest) {
       console.error("[OpenAI] gpt4 filter", e);
     }
   }
+
+  try {
+    const res = await fetch(fetchUrl, fetchOptions);
+
+    // to prevent browser prompt for credentials
+    const newHeaders = new Headers(res.headers);
+    newHeaders.delete("www-authenticate");
+    // to disable nginx buffering
+    newHeaders.set("X-Accel-Buffering", "no");
+
+    return new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: newHeaders,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+export async function requestGoogleGemini(req: NextRequest) {
+  const controller = new AbortController();
+
+  const authValue =
+    req.headers.get("Authorization")?.replace("Bearer ", "") ?? "";
+  const authHeaderName = "x-goog-api-key";
+
+  console.log(req.nextUrl);
+
+  let path = `${req.nextUrl.pathname}`.replaceAll("/api/google/", "");
+
+  let baseUrl = serverConfig.googleBaseUrl || GOOGLE_BASE_URL;
+
+  if (!baseUrl.startsWith("http")) {
+    baseUrl = `https://${baseUrl}`;
+  }
+
+  if (baseUrl.endsWith("/")) {
+    baseUrl = baseUrl.slice(0, -1);
+  }
+
+  console.log("[Proxy] ", path);
+  console.log("[Base Url]", baseUrl);
+  // this fix [Org ID] undefined in server side if not using custom point
+  if (serverConfig.openaiOrgId !== undefined) {
+    console.log("[Org ID]", serverConfig.openaiOrgId);
+  }
+
+  const timeoutId = setTimeout(
+    () => {
+      controller.abort();
+    },
+    10 * 60 * 1000,
+  );
+
+  const fetchUrl = `${baseUrl}/${path}?alt=sse`;
+  const fetchOptions: RequestInit = {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      [authHeaderName]: authValue,
+    },
+    method: req.method,
+    body: req.body,
+    // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
+    redirect: "manual",
+    // @ts-ignore
+    duplex: "half",
+    signal: controller.signal,
+  };
 
   try {
     const res = await fetch(fetchUrl, fetchOptions);

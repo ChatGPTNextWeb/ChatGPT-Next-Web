@@ -323,6 +323,7 @@ export const useChatStore = createPersistStore(
           config.pluginConfig.enable &&
           session.mask.usePlugins &&
           allPlugins.length > 0 &&
+          modelConfig.model.startsWith("gpt") &&
           modelConfig.model != "gpt-4-vision-preview"
         ) {
           console.log("[ToolAgent] start");
@@ -392,6 +393,7 @@ export const useChatStore = createPersistStore(
           });
         } else {
           // make request
+          api.switch(modelConfig.model);
           api.llm.chat({
             messages: sendMessages,
             config: { ...modelConfig, stream: true },
@@ -581,6 +583,7 @@ export const useChatStore = createPersistStore(
               content: Locale.Store.Prompt.Topic,
             }),
           );
+          api.switch(session.mask.modelConfig.model);
           api.llm.chat({
             messages: topicMessages,
             config: {
@@ -630,6 +633,7 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
+          api.switch(modelConfig.model);
           api.llm.chat({
             messages: toBeSummarizedMsgs.concat(
               createMessage({

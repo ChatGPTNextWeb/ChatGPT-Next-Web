@@ -1,3 +1,4 @@
+import Image from "next/image";
 import EmojiPicker, {
   Emoji,
   EmojiStyle,
@@ -29,6 +30,19 @@ export function AvatarPicker(props: {
 }
 
 export function Avatar(props: { model?: ModelType; avatar?: string }) {
+  if (props.model?.startsWith("gemini")) {
+    return (
+      <div className="no-dark">
+        <Image
+          src="/gemini-bot.gif"
+          alt="Gemini Bot Icon"
+          width={30}
+          height={30}
+          className="user-avatar"
+        />
+      </div>
+    );
+  }
   if (props.model) {
     return (
       <div className="no-dark">

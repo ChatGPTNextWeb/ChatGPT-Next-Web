@@ -29,6 +29,9 @@ const DEFAULT_ACCESS_STATE = {
   azureApiKey: "",
   azureApiVersion: "2023-08-01-preview",
 
+  // google
+  googleApiKey: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -99,9 +102,11 @@ export const useAccessStore = createPersistStore(
           token: string;
           openaiApiKey: string;
           azureApiVersion: string;
+          googleApiKey: string;
         };
         state.openaiApiKey = state.token;
         state.azureApiVersion = "2023-08-01-preview";
+        state.googleApiKey = state.token;
       }
 
       return persistedState as any;
