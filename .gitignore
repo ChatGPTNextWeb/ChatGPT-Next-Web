@@ -46,3 +46,4 @@ dev
 *.key.pub
 
 /public/uploads
+.vercel

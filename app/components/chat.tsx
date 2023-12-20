@@ -458,6 +458,10 @@ export function ChatActions(props: {
     document.getElementById("chat-image-file-select-upload")?.click();
   }
 
+  function closeImageButton() {
+    document.getElementById("chat-input-image-close")?.click();
+  }
+
   const onImageSelected = async (e: any) => {
     const file = e.target.files[0];
     const fileName = await api.file.upload(file);
@@ -488,7 +492,28 @@ export function ChatActions(props: {
       );
       showToast(nextModel);
     }
-  }, [chatStore, currentModel, models]);
+    const onPaste = (event: ClipboardEvent) => {
+      const items = event.clipboardData?.items || [];
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") === -1) continue;
+        const file = items[i].getAsFile();
+        if (file !== null) {
+          api.file.upload(file).then((fileName) => {
+            props.imageSelected({
+              fileName,
+              fileUrl: `/api/file/${fileName}`,
+            });
+          });
+        }
+      }
+    };
+    if (currentModel === "gpt-4-vision-preview") {
+      window.addEventListener("paste", onPaste);
+      return () => {
+        window.removeEventListener("paste", onPaste);
+      };
+    }
+  }, [chatStore, currentModel, models, props]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -594,6 +619,7 @@ export function ChatActions(props: {
               chatStore.updateCurrentSession((session) => {
                 session.mask.modelConfig.model = s[0] as ModelType;
                 session.mask.syncGlobalConfig = false;
+                closeImageButton();
               });
               showToast(s[0]);
             }}
@@ -1436,6 +1462,7 @@ function _Chat() {
               </div>
               <button
                 className={styles["chat-input-image-close"]}
+                id="chat-input-image-close"
                 onClick={() => {
                   setUserImage(null);
                 }}

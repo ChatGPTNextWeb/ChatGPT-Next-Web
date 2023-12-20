@@ -24,6 +24,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import axios from "axios";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -75,6 +76,12 @@ export class ChatGPTApi implements LLMApi {
 
   async chat(options: ChatOptions) {
     const messages: any[] = [];
+
+    const getImageBase64Data = async (url: string) => {
+      const response = await axios.get(url, { responseType: "arraybuffer" });
+      const base64 = Buffer.from(response.data, "binary").toString("base64");
+      return base64;
+    };
     for (const v of options.messages) {
       let message: {
         role: string;
@@ -88,22 +95,13 @@ export class ChatGPTApi implements LLMApi {
         text: v.content,
       });
       if (v.image_url) {
-        await fetch(v.image_url)
-          .then((response) => response.arrayBuffer())
-          .then((buffer) => {
-            const base64Data = btoa(
-              String.fromCharCode(...new Uint8Array(buffer)),
-            );
-            message.content.push({
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${base64Data}`,
-              },
-            });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        var base64Data = await getImageBase64Data(v.image_url);
+        message.content.push({
+          type: "image_url",
+          image_url: {
+            url: `data:image/jpeg;base64,${base64Data}`,
+          },
+        });
       }
       messages.push(message);
     }
