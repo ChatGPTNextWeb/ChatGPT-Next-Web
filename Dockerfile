@@ -28,7 +28,6 @@ ENV CODE=""
 
 WORKDIR /app
 COPY . .
-RUN rm -rf ./node_modules
 COPY --from=deps /app/node_modules ./node_modules
 
 RUN yarn build

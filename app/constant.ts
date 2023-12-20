@@ -92,7 +92,7 @@ Latex inline: $x^2$
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo-16k";
+export const SUMMARIZE_MODEL = "gpt-3.5-turbo-1106";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
@@ -133,7 +133,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-all",
     describe: "GPT-4全能版,联网绘图多模态,又慢又贵",
-    available: true,
+    available: false,
   },
   // {
   //   name: "gpt-4v",

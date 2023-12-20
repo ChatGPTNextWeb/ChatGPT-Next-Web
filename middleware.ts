@@ -22,9 +22,22 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/login", req.url));
     } else if (session) {
         if (path.startsWith("/login") || path.startsWith('/app/login')) return NextResponse.redirect(new URL("/", req.url));
+        // admin 认证
+        const admin_user = ["sijinhui", "司金辉"]
+        // @ts-ignore
+        if ((path.startsWith("/admin") || path.startsWith("/app/admin")) && !admin_user.includes(session?.user?.name)) {
+            return NextResponse.redirect(new URL("/", req.url));
+        } else {
+            console.log('[admin]', session?.user)
+        }
     }
 
     if (path == '/login') {
+        return NextResponse.rewrite(
+            new URL(`/app${path}`, req.url),
+        );
+    }
+    if (path == "/admin") {
         return NextResponse.rewrite(
             new URL(`/app${path}`, req.url),
         );

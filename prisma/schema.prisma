@@ -65,10 +65,10 @@ model Session {
 
 model LogEntry {
   id        Int      @id @default(autoincrement())
-  ip        String?  @db.Char(25)
+  ip        String?  @db.VarChar(25)
   path      String?  @db.Text
-  model     String?  @db.Char(25)
-  userName  String?  @db.Char(50)
+  model     String?  @db.VarChar(25)
+  userName  String?  @db.VarChar(50)
   createdAt DateTime @default(now())
   logEntry  String?  @db.Text
   user      User?    @relation(fields: [userName], references: [name], onDelete: NoAction)

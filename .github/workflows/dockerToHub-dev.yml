@@ -56,7 +56,7 @@ jobs:
         with:
           host: tx.xiaosi.cc #服务器地址
           username: root #用户名
-          password: ${{ secrets.SERVER_PASSWORD }} #私钥 安全问题一定都以变量的方式传递！！！
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
           envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
           script: |
             cd $SERVER_WORKDIR #进入到工作目录
