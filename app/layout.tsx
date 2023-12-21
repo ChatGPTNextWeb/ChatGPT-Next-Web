@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "AdExGPT iOS",
+    title: "AdExGPT App iOS",
     statusBarStyle: "default",
   },
 };
