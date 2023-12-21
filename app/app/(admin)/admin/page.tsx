@@ -5,13 +5,15 @@ import EchartsComponent from "./testchart";
 
 export default function AdminPage() {
   return (
-    <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-2">
-      <Col numColSpan={2} numColSpanLg={2}>
-        <UsageAnalysis />
-      </Col>
-      <Col numColSpan={1} numColSpanLg={1}>
-        <EchartsComponent />
-      </Col>
-    </Grid>
+    <>
+      <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-2">
+        <Col numColSpan={1} numColSpanLg={1}>
+          <UsageAnalysis />
+        </Col>
+        <Col numColSpan={1} numColSpanLg={2}>
+          <EchartsComponent />
+        </Col>
+      </Grid>
+    </>
   );
 }

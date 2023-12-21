@@ -12,14 +12,15 @@ export default async function AdminLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="container mx-auto">
-      <div className="relative h-32 w-32"></div>
-      <div className="absolute inset-x-0 top-0 h-16">
-        <h1 className="font-cal text-3xl font-bold dark:text-white mx-auto">
+    <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8 w-full">
+      <div className="w-full">
+        <h1 className="mt-6 text-center font-cal text-3xl dark:text-white">
           Admin Page
         </h1>
+        <div className="mx-auto mt-4 w-11/12 max-w-screen-lg sm:w-full">
+          {children}
+        </div>
       </div>
-      {children}
     </div>
   );
 }
