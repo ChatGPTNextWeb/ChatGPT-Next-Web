@@ -54,6 +54,7 @@
     - DALL-E 3
       - DALL-E 3 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
       - 如无需图像转存则可以配置  `DALLE_NO_IMAGE_STORAGE=1` ，此时将直接将 DALL-E 服务返回的临时 URL 用于图像显示，注意：该链接具有时效性
+      - 默认使用 `dall-e-3` 模型，如果想使用 `dall-e-2` ，可以配置环境变量 `DALLE_MODEL=dall-e-2`
     - StableDiffusion
       - 本插件目前为测试版本，后续可能会有较大的变更，请谨慎使用
       - 使用本插件需要一定的专业知识，Stable Diffusion 本身的相关问题不在本项目的解答范围内，如果您确定要使用本插件请参考 [Stable Diffusion 插件配置指南](./docs/stable-diffusion-plugin-cn.md) 文档进行配置

@@ -7,6 +7,7 @@ export class DallEAPIWrapper extends StructuredTool {
   n = 1;
   apiKey: string;
   baseURL?: string;
+  model: string;
 
   noStorage: boolean;
 
@@ -26,6 +27,7 @@ export class DallEAPIWrapper extends StructuredTool {
     this.callback = callback;
 
     this.noStorage = !!process.env.DALLE_NO_IMAGE_STORAGE;
+    this.model = process.env.DALLE_MODEL ?? "dall-e-3";
   }
 
   async saveImageFromUrl(url: string) {
@@ -59,18 +61,25 @@ export class DallEAPIWrapper extends StructuredTool {
           Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify({
-          model: "dall-e-3",
+          model: this.model,
           prompt: prompt,
           n: this.n,
           size: size,
         }),
       };
+      console.log(requestOptions);
       const response = await fetch(apiUrl, requestOptions);
       const json = await response.json();
-      console.log("[DALL-E]", json);
-      imageUrl = json.data[0].url;
+      try {
+        console.log("[DALL-E]", json);
+        imageUrl = json.data[0].url;
+      } catch (e) {
+        if (this.callback != null) await this.callback(JSON.stringify(json));
+        throw e;
+      }
     } catch (e) {
       console.error("[DALL-E]", e);
+      return (e as Error).message;
     }
     if (!imageUrl) return "No image was generated";
     try {
