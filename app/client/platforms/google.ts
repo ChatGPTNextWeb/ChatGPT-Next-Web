@@ -24,8 +24,6 @@ import {
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
-import { makeAzurePath } from "@/app/azure";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -41,16 +39,6 @@ export class GeminiApi implements LLMApi {
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
-
-    // const isAzure = accessStore.provider === ServiceProvider.Azure;
-
-    // if (isAzure && !accessStore.isValidAzure()) {
-    //   throw Error(
-    //     "incomplete azure config, please check it in your settings page",
-    //   );
-    // }
-
-    // let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
     let baseUrl = ApiPath.GoogleAI;
     // if (baseUrl.length === 0) {
     //   const isApp = !!getClientConfig()?.isApp;
@@ -176,7 +164,7 @@ export class GeminiApi implements LLMApi {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log(
-              "[OpenAI] request response content type: ",
+              "[Google] request response content type: ",
               contentType,
             );
 
