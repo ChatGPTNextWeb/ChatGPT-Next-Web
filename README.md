@@ -60,6 +60,16 @@
       - 使用本插件需要一定的专业知识，Stable Diffusion 本身的相关问题不在本项目的解答范围内，如果您确定要使用本插件请参考 [Stable Diffusion 插件配置指南](./docs/stable-diffusion-plugin-cn.md) 文档进行配置
       - StableDiffusion 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
     - Arxiv
+- ⚠ 实验性支持 Gemini-Pro 模型
+  - 以下功能目前还不支持
+    -  `temperature` 等参数配置
+    - **面具**和**系统提示词**功能（google 的相关接口不支持，后续支持会跟进）
+    - **插件功能**
+  - 如何启用
+    - 配置 `CUSTOM_MODELS` 添加 `gemini-pro` 模型，如：`CUSTOM_MODELS=gemini-pro`
+    - 配置密钥 `GOOGLE_API_KEY` ，key 可以在这里获取：https://ai.google.dev/tutorials/setup
+    - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目来使用 vercel 搭建一个中专服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
+  - 常见问题参考：[Gemini Prompting FAQs](https://js.langchain.com/docs/integrations/chat/google_generativeai#gemini-prompting-faqs)
 
 ## 开发计划
 
