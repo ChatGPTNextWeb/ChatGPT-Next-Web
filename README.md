@@ -68,7 +68,7 @@
   - 如何启用
     - 配置 `CUSTOM_MODELS` 添加 `gemini-pro` 模型，如：`CUSTOM_MODELS=gemini-pro`
     - 配置密钥 `GOOGLE_API_KEY` ，key 可以在这里获取：https://ai.google.dev/tutorials/setup
-    - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目来使用 vercel 搭建一个中专服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
+    - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目搭建一个基于 vercel 的代理服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
   - 常见问题参考：[Gemini Prompting FAQs](https://js.langchain.com/docs/integrations/chat/google_generativeai#gemini-prompting-faqs)
 
 ## 开发计划
