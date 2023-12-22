@@ -28,9 +28,14 @@ const nextConfig = {
     }
     // console.log('=======', config.optimization)
 
-
     config.resolve.fallback = {
       child_process: false,
+    };
+
+    // tiktoken
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
     };
 
     return config;

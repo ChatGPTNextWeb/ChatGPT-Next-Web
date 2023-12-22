@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
+    "@hello-pangea/dnd": "^16.5.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.7.0",
-    "@hello-pangea/dnd": "^16.5.0",
     "@svgr/webpack": "^8.1.0",
     "@tremor/react": "^3.12.1",
     "@vercel/analytics": "^1.1.1",
@@ -46,6 +46,7 @@
     "sonner": "^1.2.0",
     "spark-md5": "^3.0.2",
     "tailwind-merge": "^2.0.0",
+    "tiktoken": "^1.0.11",
     "use-debounce": "^10.0.0",
     "zustand": "^4.3.8"
   },
