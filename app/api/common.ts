@@ -10,6 +10,7 @@ export async function requestOpenai(
   req: NextRequest,
   cloneBody: any,
   isAzure: boolean,
+  current_model: string,
 ) {
   const controller = new AbortController();
 
@@ -65,26 +66,20 @@ export async function requestOpenai(
     signal: controller.signal,
   };
 
-  // #1815 try to refuse gpt4 request
-  if (serverConfig.customModels && cloneBody) {
+  // #1815 try to refuse some model request
+  if (current_model) {
     try {
       const modelTable = collectModelTable(
         DEFAULT_MODELS,
         serverConfig.customModels,
       );
-      // const clonedBody = await req.text();
-      fetchOptions.body = cloneBody;
-
-      const jsonBody = JSON.parse(cloneBody) as {
-        model?: string;
-      };
 
       // not undefined and is false
-      if (!modelTable[jsonBody?.model ?? ""].available) {
+      if (!modelTable[current_model ?? ""].available) {
         return NextResponse.json(
           {
             error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
+            message: `you are not allowed to use ${current_model} model`,
           },
           {
             status: 403,
@@ -92,7 +87,7 @@ export async function requestOpenai(
         );
       }
     } catch (e) {
-      console.error("[OpenAI] gpt4 filter", e);
+      console.error("[OpenAI] gpt model filter", e);
     }
   }
 

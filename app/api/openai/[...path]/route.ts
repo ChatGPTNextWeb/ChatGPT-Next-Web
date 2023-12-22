@@ -27,7 +27,6 @@ function getModels(remoteModelRes: OpenAIListModelResponse) {
       m.id === "gpt-3.5-turbo-16k" ||
       m.id === "gpt-4-32k",
   );
-
   return remoteModelRes;
 }
 
@@ -105,7 +104,12 @@ async function handle(
   // }
 
   try {
-    const response = await requestOpenai(req, cloneBody, isAzure);
+    const response = await requestOpenai(
+      req,
+      cloneBody,
+      isAzure,
+      jsonBody?.model ?? "",
+    );
 
     // list models
     if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
