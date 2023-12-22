@@ -2,6 +2,8 @@ import * as echarts from "echarts";
 import { EChartsOption } from "echarts";
 import dynamic from "next/dynamic";
 import prisma from "@/lib/prisma";
+import { addHours } from "date-fns";
+
 // import { getTokenLength } from "@/app/utils/token";
 
 const UsageByModelChart = dynamic(() => import("./usage-by-model-chart"), {
@@ -53,16 +55,32 @@ function HandleLogData(
 
 export default async function UsageByModel() {
   // 今天日期的开始和结束
-  const startDate = new Date();
-  startDate.setHours(0, 0, 0, 0);
-
-  const endDate = new Date();
-  endDate.setHours(23, 59, 59, 999);
+  var today = new Date();
+  today = addHours(today, +8);
+  const startOfTheDayInTimeZone = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0,
+    0,
+    0,
+  );
+  const endOfTheDayInTimeZone = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    23,
+    59,
+    59,
+  ); // 当天的结束时间
+  // const startDate = addHours(startOfTheDayInTimeZone, -8);
+  // const endDate = addHours(endOfTheDayInTimeZone, -8);
+  console.log("===", today, startOfTheDayInTimeZone, endOfTheDayInTimeZone);
   const todayLog = await prisma.logEntry.findMany({
     where: {
       createdAt: {
-        gte: startDate, // gte 表示 '大于等于'
-        lte: endDate, // lte 表示 '小于等于'
+        gte: startOfTheDayInTimeZone, // gte 表示 '大于等于'
+        lte: endOfTheDayInTimeZone, // lte 表示 '小于等于'
       },
     },
     include: {
@@ -70,6 +88,7 @@ export default async function UsageByModel() {
     },
   });
 
+  console.log("========", todayLog[todayLog.length - 1]);
   // @ts-ignore
   const log_data = HandleLogData(todayLog);
 
