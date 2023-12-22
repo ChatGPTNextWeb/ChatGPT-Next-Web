@@ -1,7 +1,12 @@
 // "use client";
 import { Grid, Col, Card, Text, AreaChart, Metric } from "@tremor/react";
 import UsageAnalysis from "./usage-analysis";
-import EchartsComponent from "./testchart";
+// import EchartsComponent from "./testchart";
+import dynamic from "next/dynamic";
+
+const UsageByModelChart = dynamic(() => import("./usage-by-model"), {
+  ssr: false,
+});
 
 export default function AdminPage() {
   return (
@@ -11,7 +16,7 @@ export default function AdminPage() {
           <UsageAnalysis />
         </Col>
         <Col numColSpan={1} numColSpanLg={2}>
-          <EchartsComponent />
+          <UsageByModelChart />
         </Col>
       </Grid>
     </>

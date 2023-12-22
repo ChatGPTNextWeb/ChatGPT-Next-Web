@@ -2,9 +2,14 @@
 import React, { useEffect } from "react";
 import * as echarts from "echarts"; // 导入 echarts
 
+// const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
+
 const EchartsComponent: React.FC = () => {
   useEffect(() => {
-    var chartDom = document.getElementById("charts");
+    // if (!isBrowser()) return;
+    var chartDom = document.getElementById("usage-by-model-chart");
+    // if (!chartDiv.current) return;
+    // var myChart = echarts.init(chartDiv.current)
     var myChart = echarts.init(chartDom);
     var option;
 
@@ -47,7 +52,12 @@ const EchartsComponent: React.FC = () => {
     option && myChart.setOption(option);
   }, []); // 空数组作为第二个参数，表示仅在组件挂载和卸载时执行
 
-  return <div id="charts" style={{ width: "100%", height: "400px" }}></div>;
+  return (
+    <div
+      id="usage-by-model-chart"
+      style={{ width: "100%", height: "400px" }}
+    ></div>
+  );
 };
 
 export default EchartsComponent;
