@@ -2,17 +2,19 @@ import * as echarts from "echarts";
 import { EChartsOption } from "echarts";
 import dynamic from "next/dynamic";
 import prisma from "@/lib/prisma";
-import { estimateTokenLength } from "@/app/utils/token";
+// import { getTokenLength } from "@/app/utils/token";
 
 const UsageByModelChart = dynamic(() => import("./usage-by-model-chart"), {
   ssr: false,
 });
 
-function HandleLogData(todayLog: [{ userName: string; logEntry: string }]) {
+function HandleLogData(
+  todayLog: [{ userName: string; logEntry: string; logToken: number }],
+) {
   const data1 = todayLog.map((log) => {
     return {
       name: log.userName ?? "unknown",
-      value: estimateTokenLength(log.logEntry ?? ""),
+      value: log.logToken,
     };
   });
 

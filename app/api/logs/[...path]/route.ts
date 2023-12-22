@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { insertUser } from "@/lib/auth";
-
-// function cleanObjectKeys(input: { [key: string]: string }): {
-//   [key: string]: string;
-// } {
-//   const cleanedObj: { [key: string]: string } = {};
-//   Object.keys(input).forEach((key) => {
-//     cleanedObj[key] = input[key].trim();
-//   });
-//   console.log('========', input, cleanedObj)
-//   return cleanedObj;
-// }
+import { getTokenLength } from "@/app/utils/token";
 
 async function handle(
   req: NextRequest,
@@ -23,12 +13,22 @@ async function handle(
       await insertUser({ name: request_data?.userName });
     }
     // console.log("===========4", request_data);
+    if (request_data?.logEntry) {
+      const regex = /\[(.*)]/g;
+      const matchResponse = request_data.logEntry.match(regex);
+      if (matchResponse.length > 0) {
+        request_data.logToken = getTokenLength(matchResponse[0]);
+      }
+      // console.log('=======', request_data.logEntry, '=====', matchResponse);
+    }
+
     await prisma.logEntry.create({
       data: request_data,
     });
   } catch (e) {
+    console.log("[LOG]", e);
+
     return NextResponse.json({ status: 0 });
-    // console.log("[LOG]", e);
   }
 
   return NextResponse.json({ status: 1 });
