@@ -43,9 +43,8 @@ async function handle(
     10 * 60 * 1000,
   );
 
-  const fetchUrl = `${baseUrl}/${path}?key=${req.nextUrl.searchParams.get(
-    "key",
-  )}`;
+  const key = req.nextUrl.searchParams.get("key") ?? serverConfig.googleApiKey;
+  const fetchUrl = `${baseUrl}/${path}?key=${key}`;
 
   const fetchOptions: RequestInit = {
     headers: {
