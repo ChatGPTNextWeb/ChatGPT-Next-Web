@@ -43,7 +43,9 @@ async function handle(
     10 * 60 * 1000,
   );
 
-  const key = req.nextUrl.searchParams.get("key") ?? serverConfig.googleApiKey;
+  const bearToken = req.headers.get("Authorization") ?? "";
+  const token = bearToken.trim().replaceAll("Bearer ", "").trim();
+  const key = token ?? serverConfig.googleApiKey;
   const fetchUrl = `${baseUrl}/${path}?key=${key}`;
 
   const fetchOptions: RequestInit = {
