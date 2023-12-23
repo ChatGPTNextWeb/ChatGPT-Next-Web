@@ -49,7 +49,6 @@ export class GeminiApi implements LLMApi {
     const shouldStream = false;
     const controller = new AbortController();
     options.onController?.(controller);
-
     try {
       const chatPath = this.path(Google.ChatPath);
       const chatPayload = {
