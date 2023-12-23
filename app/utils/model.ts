@@ -4,7 +4,15 @@ export function collectModelTable(
   models: readonly LLMModel[],
   customModels: string,
 ) {
-  const modelTable: { [key: string]: LLMModel } = {};
+  const modelTable: Record<
+    string,
+    {
+      available: boolean;
+      name: string;
+      displayName: string;
+      provider: LLMModel["provider"];
+    }
+  > = {};
 
   // default models
   models.forEach(
