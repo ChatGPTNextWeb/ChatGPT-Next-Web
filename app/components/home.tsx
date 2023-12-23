@@ -171,8 +171,8 @@ export function useLoadData() {
   const config = useAppConfig();
 
   var api: ClientApi;
-  if (config.modelConfig.model === "gemini") {
-    api = new ClientApi(ModelProvider.Gemini);
+  if (config.modelConfig.model === "gemini-pro") {
+    api = new ClientApi(ModelProvider.GeminiPro);
   } else {
     api = new ClientApi(ModelProvider.GPT);
   }

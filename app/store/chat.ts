@@ -303,8 +303,8 @@ export const useChatStore = createPersistStore(
         });
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini") {
-          api = new ClientApi(ModelProvider.Gemini);
+        if (modelConfig.model === "gemini-pro") {
+          api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -389,7 +389,7 @@ export const useChatStore = createPersistStore(
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
 
         var systemPrompts: ChatMessage[] = [];
-        if (modelConfig.model !== "gemini") {
+        if (modelConfig.model !== "gemini-pro") {
           systemPrompts = shouldInjectSystemPrompts
             ? [
                 createMessage({
@@ -488,8 +488,8 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini") {
-          api = new ClientApi(ModelProvider.Gemini);
+        if (modelConfig.model === "gemini-pro") {
+          api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }

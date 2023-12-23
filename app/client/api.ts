@@ -7,7 +7,7 @@ import {
 } from "../constant";
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import { GeminiApi } from "./platforms/google";
+import { GeminiProApi } from "./platforms/google";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -86,8 +86,8 @@ export class ClientApi {
   public llm: LLMApi;
 
   constructor(provider: ModelProvider = ModelProvider.GPT) {
-    if (provider === ModelProvider.Gemini) {
-      this.llm = new GeminiApi();
+    if (provider === ModelProvider.GeminiPro) {
+      this.llm = new GeminiProApi();
       return;
     }
     this.llm = new ChatGPTApi();
@@ -147,7 +147,7 @@ export function getHeaders() {
     "Accept": "application/json",
   };
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isGoogle = modelConfig.model === "gemini";
+  const isGoogle = modelConfig.model === "gemini-pro";
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
   const apiKey = isGoogle
