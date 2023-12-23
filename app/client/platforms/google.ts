@@ -8,6 +8,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
+import { getServerSideConfig } from "@/app/config/server";
 export class GeminiApi implements LLMApi {
   extractMessage(res: any) {
     console.log("[Response] gemini response: ", res);
@@ -30,8 +31,6 @@ export class GeminiApi implements LLMApi {
         model: options.config.model,
       },
     };
-    const accessStore = useAccessStore.getState();
-
     const requestPayload = {
       contents: messages,
       // stream: options.config.stream,
@@ -44,7 +43,7 @@ export class GeminiApi implements LLMApi {
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] openai payload: ", requestPayload);
+    console.log("[Request] google payload: ", requestPayload);
 
     // todo: support stream later
     const shouldStream = false;
@@ -52,8 +51,7 @@ export class GeminiApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath =
-        this.path(Google.ChatPath) + `?key=${accessStore.googleApiKey}`;
+      const chatPath = this.path(Google.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
