@@ -12,6 +12,7 @@ import { getServerSideConfig } from "@/app/config/server";
 export class GeminiProApi implements LLMApi {
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
+
     return (
       res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
       res?.error?.message ||
@@ -176,6 +177,16 @@ export class GeminiProApi implements LLMApi {
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
+
+        if (resJson?.promptFeedback?.blockReason) {
+          // being blocked
+          options.onError?.(
+            new Error(
+              "Message is being blocked for reason: " +
+                resJson.promptFeedback.blockReason,
+            ),
+          );
+        }
         const message = this.extractMessage(resJson);
         options.onFinish(message);
       }
