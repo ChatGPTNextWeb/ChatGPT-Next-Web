@@ -333,7 +333,7 @@ const en: LocaleType = {
         },
 
         ApiVerion: {
-          Title: "API Version (gemini api version)",
+          Title: "API Version (gemini-pro api version)",
           SubTitle: "Select a specific part version",
         },
       },

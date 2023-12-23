@@ -72,7 +72,7 @@ export enum ServiceProvider {
 
 export enum ModelProvider {
   GPT = "GPT",
-  Gemini = "Gemini",
+  GeminiPro = "GeminiPro",
 }
 
 export const OpenaiPath = {
@@ -240,7 +240,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gemini",
+    name: "gemini-pro",
     available: true,
     provider: {
       id: "google",

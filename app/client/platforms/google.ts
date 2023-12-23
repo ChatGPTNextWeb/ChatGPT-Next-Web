@@ -9,9 +9,9 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
-export class GeminiApi implements LLMApi {
+export class GeminiProApi implements LLMApi {
   extractMessage(res: any) {
-    console.log("[Response] gemini response: ", res);
+    console.log("[Response] gemini-pro response: ", res);
     return (
       res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
       res?.error?.message ||
