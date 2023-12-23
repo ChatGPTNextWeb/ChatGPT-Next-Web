@@ -45,7 +45,20 @@ async function handle(
 
   const bearToken = req.headers.get("Authorization") ?? "";
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const key = token ?? serverConfig.googleApiKey;
+
+  const key = token ? token : serverConfig.googleApiKey;
+  if (!key) {
+    return NextResponse.json(
+      {
+        error: true,
+        message: `missing GOOGLE_API_KEY in server env vars`,
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
   const fetchUrl = `${baseUrl}/${path}?key=${key}`;
 
   const fetchOptions: RequestInit = {
