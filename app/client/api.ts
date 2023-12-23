@@ -145,8 +145,8 @@ export function getHeaders() {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
   };
-
-  const isGoogle = accessStore.provider === ServiceProvider.Google;
+  const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
+  const isGoogle = modelConfig.model === "gemini";
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
   const apiKey = isGoogle
