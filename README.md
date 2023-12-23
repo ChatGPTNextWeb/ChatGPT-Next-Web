@@ -27,6 +27,8 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBUEFA)
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
 ![cover](./docs/images/cover.png)
@@ -37,8 +39,8 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 - **Deploy for free with one-click** on Vercel in under 1 minute
 - Compact client (~5MB) on Linux/Windows/MacOS, [download it now](https://github.com/Yidadaa/ChatGPT-Next-Web/releases)
-- Fully compatible with self-deployed llms, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
-- Privacy first, all data stored locally in the browser
+- Fully compatible with self-deployed LLMs, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
+- Privacy first, all data is stored locally in the browser
 - Markdown support: LaTex, mermaid, code highlight, etc.
 - Responsive design, dark mode and PWA
 - Fast first screen loading speed (~100kb), support streaming response
