@@ -325,7 +325,7 @@ const cn = {
         },
 
         ApiVerion: {
-          Title: "接口版本 (gemini api version)",
+          Title: "接口版本 (gemini-pro api version)",
           SubTitle: "选择指定的部分版本",
         },
       },
