@@ -319,6 +319,24 @@ const en: LocaleType = {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",
       },
+      Google: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle:
+            "Bypass password access restrictions using a custom Google AI Studio API Key",
+          Placeholder: "Google AI Studio API Key",
+        },
+
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example:",
+        },
+
+        ApiVerion: {
+          Title: "API Version (gemini api version)",
+          SubTitle: "Select a specific part version",
+        },
+      },
     },
 
     Model: "Model",
@@ -443,8 +461,8 @@ const en: LocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Only messages after clearing the context will be displayed"
-    },  
+      Title: "Only messages after clearing the context will be displayed",
+    },
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",
