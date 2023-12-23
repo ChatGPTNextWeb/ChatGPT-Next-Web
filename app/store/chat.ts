@@ -99,7 +99,7 @@ export interface ChatSession {
   };
   output: { avatar: IRequestResponse };
 
-  inputCopilot: ImpromptuSpeechInput;
+  inputCopilot?: any;
   outputCopilot?: any;
 }
 
@@ -136,7 +136,7 @@ function createEmptySession(): ChatSession {
       avatar: { status: "", data: "" },
     },
 
-    inputCopilot: new ImpromptuSpeechInput(),
+    // inputCopilot: new ImpromptuSpeechInput(),
   };
 }
 

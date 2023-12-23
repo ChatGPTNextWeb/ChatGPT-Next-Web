@@ -21,6 +21,7 @@ import {
   ESpeechModes,
   ImpromptuSpeechPrompts,
   ESpeechStage,
+  ImpromptuSpeechInput,
 } from "./ISpeechRoles";
 import { LinearProgressWithLabel } from "./ISpeech-Common";
 import {
@@ -43,6 +44,21 @@ export function Chat() {
   const getInputsString = (): string => {
     return "";
   };
+
+  useEffect(() => {
+    // 在组件加载时初始化 inputCopilot
+    if (!session.inputCopilot) {
+      chatStore.updateCurrentSession((session) => {
+        session.inputCopilot = new ImpromptuSpeechInput();
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 空依赖数组表示这个 effect 只在组件挂载时运行一次
+
+  // 检查 inputCopilot 是否已初始化
+  if (!session || !session.inputCopilot) {
+    return <div>Loading...</div>; // 或其他的加载指示
+  }
 
   return (
     <div className={styles_chat.chat} key={session.id}>

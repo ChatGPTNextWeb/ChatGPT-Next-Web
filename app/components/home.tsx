@@ -43,9 +43,15 @@ interface IRoutePath {
 }
 
 const RoutePaths: IRoutePath[] = [
+  // {
+  //   Path: Path.Home,
+  //   Element: dynamic(async () => (await import("./mask")).MaskPage, {
+  //     loading: () => <Loading noLogo />,
+  //   }),
+  // },
   {
     Path: Path.Home,
-    Element: dynamic(async () => (await import("./mask")).MaskPage, {
+    Element: dynamic(async () => (await import("./chat")).Chat, {
       loading: () => <Loading noLogo />,
     }),
   },
