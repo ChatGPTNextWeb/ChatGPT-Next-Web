@@ -1,8 +1,13 @@
 import { getClientConfig } from "../config/client";
-import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
-import { ChatMessage, ModelType, useAccessStore } from "../store";
+import {
+  ACCESS_CODE_PREFIX,
+  Azure,
+  ModelProvider,
+  ServiceProvider,
+} from "../constant";
+import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-
+import { GeminiApi } from "./platforms/google";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -40,7 +45,15 @@ export interface LLMUsage {
 
 export interface LLMModel {
   name: string;
+  displayName: string;
   available: boolean;
+  provider: LLMModelProvider;
+}
+
+export interface LLMModelProvider {
+  id: string;
+  providerName: string;
+  providerType: string;
 }
 
 export abstract class LLMApi {
@@ -73,7 +86,11 @@ interface ChatProvider {
 export class ClientApi {
   public llm: LLMApi;
 
-  constructor() {
+  constructor(provider: ModelProvider = ModelProvider.GPT) {
+    if (provider === ModelProvider.Gemini) {
+      this.llm = new GeminiApi();
+      return;
+    }
     this.llm = new ChatGPTApi();
   }
 
@@ -123,8 +140,6 @@ export class ClientApi {
   }
 }
 
-export const api = new ClientApi();
-
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
@@ -132,9 +147,14 @@ export function getHeaders() {
     "x-requested-with": "XMLHttpRequest",
   };
 
+  const isGoogle = accessStore.provider === ServiceProvider.Google;
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
-  const apiKey = isAzure ? accessStore.azureApiKey : accessStore.openaiApiKey;
+  const apiKey = isGoogle
+    ? accessStore.googleApiKey
+    : isAzure
+    ? accessStore.azureApiKey
+    : accessStore.openaiApiKey;
 
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;

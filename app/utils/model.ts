@@ -4,10 +4,7 @@ export function collectModelTable(
   models: readonly LLMModel[],
   customModels: string,
 ) {
-  const modelTable: Record<
-    string,
-    { available: boolean; name: string; displayName: string }
-  > = {};
+  const modelTable: { [key: string]: LLMModel } = {};
 
   // default models
   models.forEach(
@@ -37,6 +34,7 @@ export function collectModelTable(
         name,
         displayName: displayName || name,
         available,
+        provider: modelTable[name].provider,
       };
     });
   return modelTable;
