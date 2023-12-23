@@ -584,6 +584,7 @@ export function Settings() {
   const accessStore = useAccessStore();
   const shouldHideBalanceQuery = useMemo(() => {
     const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
+
     return (
       accessStore.hideBalanceQuery ||
       isOpenAiUrl ||
