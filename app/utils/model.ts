@@ -6,7 +6,12 @@ export function collectModelTable(
 ) {
   const modelTable: Record<
     string,
-    { available: boolean; name: string; displayName: string }
+    {
+      available: boolean;
+      name: string;
+      displayName: string;
+      provider: LLMModel["provider"];
+    }
   > = {};
 
   // default models
@@ -37,6 +42,7 @@ export function collectModelTable(
         name,
         displayName: displayName || name,
         available,
+        provider: modelTable[name].provider,
       };
     });
   return modelTable;
