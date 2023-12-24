@@ -191,6 +191,14 @@ Azure Api Key.
 
 Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
 
+### `GOOGLE_API_KEY` (optional)
+
+Google Gemini Pro Api Key.
+
+### `GOOGLE_URL` (optional)
+
+Google Gemini Pro Api Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
