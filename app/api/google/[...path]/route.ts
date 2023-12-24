@@ -49,12 +49,6 @@ async function handle(
   const bearToken = req.headers.get("Authorization") ?? "";
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
 
-  console.log(
-    bearToken,
-    serverConfig.googleApiKey,
-    token ? token : serverConfig.googleApiKey,
-  );
-
   const key = token ? token : serverConfig.googleApiKey;
   if (!key) {
     return NextResponse.json(
