@@ -57,12 +57,6 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   if (!apiKey) {
     const serverConfig = getServerSideConfig();
 
-    // const systemApiKey = serverConfig.isAzure
-    //   ? serverConfig.azureApiKey
-    //   : serverConfig.isGoogle
-    //   ? serverConfig.googleApiKey
-    //   : serverConfig.apiKey;
-
     const systemApiKey =
       modelProvider === ModelProvider.GeminiPro
         ? serverConfig.googleApiKey
