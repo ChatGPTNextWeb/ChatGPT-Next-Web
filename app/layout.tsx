@@ -34,6 +34,7 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
+        <script async src="https://umami.kierankihn.com/script.js" data-website-id="0c74ed5e-aa2a-4d95-8182-770148b434c1"></script>
       </head>
       <body>{children}</body>
     </html>
