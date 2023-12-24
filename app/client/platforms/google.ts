@@ -21,9 +21,23 @@ export class GeminiProApi implements LLMApi {
   }
   async chat(options: ChatOptions): Promise<void> {
     const messages = options.messages.map((v) => ({
-      role: v.role.replace("assistant", "model").replace("system", "model"),
+      role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
     }));
+
+    // google requires that role in neighboring messages must not be the same
+    for (let i = 0; i < messages.length - 1; ) {
+      // Check if current and next item both have the role "model"
+      if (messages[i].role === messages[i + 1].role) {
+        // Concatenate the 'parts' of the current and next item
+        messages[i].parts = messages[i].parts.concat(messages[i + 1].parts);
+        // Remove the next item
+        messages.splice(i + 1, 1);
+      } else {
+        // Move to the next item
+        i++;
+      }
+    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -43,14 +57,6 @@ export class GeminiProApi implements LLMApi {
         topP: modelConfig.top_p,
         // "topK": modelConfig.top_k,
       },
-      // stream: options.config.stream,
-      // model: modelConfig.model,
-      // temperature: modelConfig.temperature,
-      // presence_penalty: modelConfig.presence_penalty,
-      // frequency_penalty: modelConfig.frequency_penalty,
-      // top_p: modelConfig.top_p,
-      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
-      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
     console.log("[Request] google payload: ", requestPayload);
