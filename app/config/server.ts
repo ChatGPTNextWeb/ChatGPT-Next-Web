@@ -65,7 +65,7 @@ export const getServerSideConfig = () => {
   }
 
   const isAzure = !!process.env.AZURE_URL;
-  const isGoogle = !!process.env.GOOGLE_URL;
+  const isGoogle = !!process.env.GOOGLE_API_KEY;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
