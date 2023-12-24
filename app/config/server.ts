@@ -26,6 +26,10 @@ declare global {
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
+
+      // google only
+      GOOGLE_API_KEY?: string;
+      GOOGLE_URL?: string;
     }
   }
 }
