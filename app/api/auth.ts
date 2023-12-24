@@ -16,11 +16,11 @@ function getIP(req: NextRequest) {
 
 function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+  const isApiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 
   return {
-    accessCode: isOpenAiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
-    apiKey: isOpenAiKey ? token : "",
+    accessCode: isApiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
+    apiKey: isApiKey ? token : "",
   };
 }
 
@@ -49,7 +49,7 @@ export function auth(req: NextRequest) {
   if (serverConfig.hideUserApiKey && !!apiKey) {
     return {
       error: true,
-      msg: "you are not allowed to access openai with your own api key",
+      msg: "you are not allowed to access with your own api key",
     };
   }
 
@@ -64,10 +64,7 @@ export function auth(req: NextRequest) {
 
     if (systemApiKey) {
       console.log("[Auth] use system api key");
-      req.headers.set(
-        "Authorization",
-        `Bearer ${systemApiKey}`,
-      );
+      req.headers.set("Authorization", `Bearer ${systemApiKey}`);
     } else {
       console.log("[Auth] admin did not provide an api key");
     }
