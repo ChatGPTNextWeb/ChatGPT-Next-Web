@@ -389,24 +389,22 @@ export const useChatStore = createPersistStore(
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
 
         var systemPrompts: ChatMessage[] = [];
-        if (modelConfig.model !== "gemini-pro") {
-          systemPrompts = shouldInjectSystemPrompts
-            ? [
-                createMessage({
-                  role: "system",
-                  content: fillTemplateWith("", {
-                    ...modelConfig,
-                    template: DEFAULT_SYSTEM_TEMPLATE,
-                  }),
+        systemPrompts = shouldInjectSystemPrompts
+          ? [
+              createMessage({
+                role: "system",
+                content: fillTemplateWith("", {
+                  ...modelConfig,
+                  template: DEFAULT_SYSTEM_TEMPLATE,
                 }),
-              ]
-            : [];
-          if (shouldInjectSystemPrompts) {
-            console.log(
-              "[Global System Prompt] ",
-              systemPrompts.at(0)?.content ?? "empty",
-            );
-          }
+              }),
+            ]
+          : [];
+        if (shouldInjectSystemPrompts) {
+          console.log(
+            "[Global System Prompt] ",
+            systemPrompts.at(0)?.content ?? "empty",
+          );
         }
 
         // long term memory
