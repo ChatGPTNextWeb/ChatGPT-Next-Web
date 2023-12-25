@@ -9,9 +9,16 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  const authValue =
-    req.headers.get("Authorization")?.trim().replaceAll("Bearer ", "").trim() ??
-    "";
+  if (serverConfig.isAzure) {
+    const authValue =
+      req.headers
+        .get("Authorization")
+        ?.trim()
+        .replaceAll("Bearer ", "")
+        .trim() ?? "";
+  } else {
+    const authValue = req.headers.get("Authorization") ?? "";
+  }
   const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
