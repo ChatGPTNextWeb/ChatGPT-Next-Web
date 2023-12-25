@@ -1,5 +1,12 @@
 import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import {
+  AgentChatOptions,
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+} from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import {
   EventStreamContentType,
@@ -10,6 +17,9 @@ import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
 export class GeminiProApi implements LLMApi {
+  toolAgentChat(options: AgentChatOptions): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 
@@ -62,7 +72,7 @@ export class GeminiProApi implements LLMApi {
     console.log("[Request] google payload: ", requestPayload);
 
     // todo: support stream later
-    const shouldStream = false;
+    const shouldStream = true;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
@@ -121,7 +131,7 @@ export class GeminiProApi implements LLMApi {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log(
-              "[OpenAI] request response content type: ",
+              "[Google] request response content type: ",
               contentType,
             );
 
@@ -164,13 +174,15 @@ export class GeminiProApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text) as {
-                choices: Array<{
-                  delta: {
-                    content: string;
+                candidates: Array<{
+                  content: {
+                    parts: Array<{
+                      text: string;
+                    }>;
                   };
                 }>;
               };
-              const delta = json.choices[0]?.delta?.content;
+              const delta = json.candidates[0]?.content?.parts[0]?.text;
               if (delta) {
                 remainText += delta;
               }

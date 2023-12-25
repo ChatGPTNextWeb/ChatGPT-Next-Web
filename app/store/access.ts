@@ -30,7 +30,7 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: "",
+  googleBaseUrl: "",
   googleApiKey: "",
   googleApiVersion: "v1",
 

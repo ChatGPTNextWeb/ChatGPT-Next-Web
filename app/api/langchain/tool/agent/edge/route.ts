@@ -4,13 +4,14 @@ import { auth } from "@/app/api/auth";
 import { EdgeTool } from "../../../../langchain-tools/edge_tools";
 import { OpenAI } from "langchain/llms/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { ModelProvider } from "@/app/constant";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
   try {
-    const authResult = auth(req);
+    const authResult = auth(req, ModelProvider.GPT);
     if (authResult.error) {
       return NextResponse.json(authResult, {
         status: 401,

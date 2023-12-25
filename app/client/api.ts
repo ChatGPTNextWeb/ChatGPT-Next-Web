@@ -115,9 +115,9 @@ export class ClientApi {
   constructor(provider: ModelProvider = ModelProvider.GPT) {
     if (provider === ModelProvider.GeminiPro) {
       this.llm = new GeminiProApi();
-      return;
+    } else {
+      this.llm = new ChatGPTApi();
     }
-    this.llm = new ChatGPTApi();
     this.file = new FileApi();
   }
 

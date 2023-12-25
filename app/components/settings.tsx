@@ -1071,12 +1071,12 @@ export function Settings() {
                       >
                         <input
                           type="text"
-                          value={accessStore.googleUrl}
+                          value={accessStore.googleBaseUrl}
                           placeholder={Google.ExampleEndpoint}
                           onChange={(e) =>
                             accessStore.update(
                               (access) =>
-                                (access.googleUrl = e.currentTarget.value),
+                                (access.googleBaseUrl = e.currentTarget.value),
                             )
                           }
                         ></input>

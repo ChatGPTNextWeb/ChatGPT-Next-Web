@@ -96,7 +96,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import Image from "next/image";
-import { api } from "../client/api";
+import { ClientApi } from "../client/api";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -464,6 +464,7 @@ export function ChatActions(props: {
 
   const onImageSelected = async (e: any) => {
     const file = e.target.files[0];
+    const api = new ClientApi();
     const fileName = await api.file.upload(file);
     props.imageSelected({
       fileName,
@@ -494,6 +495,7 @@ export function ChatActions(props: {
     }
     const onPaste = (event: ClipboardEvent) => {
       const items = event.clipboardData?.items || [];
+      const api = new ClientApi();
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf("image") === -1) continue;
         const file = items[i].getAsFile();
