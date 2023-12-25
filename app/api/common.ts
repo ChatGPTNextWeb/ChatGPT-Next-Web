@@ -9,7 +9,8 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  let authValue = req.headers.get("Authorization") ?? "";
+  var authValue,
+    authHeaderName = "";
   if (serverConfig.isAzure) {
     authValue =
       req.headers
@@ -17,8 +18,12 @@ export async function requestOpenai(req: NextRequest) {
         ?.trim()
         .replaceAll("Bearer ", "")
         .trim() ?? "";
+
+    authHeaderName = "api-key";
+  } else {
+    authValue = req.headers.get("Authorization") ?? "";
+    authHeaderName = "Authorization";
   }
-  const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
