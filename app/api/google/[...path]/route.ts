@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { getServerSideConfig } from "@/app/config/server";
-import { GEMINI_BASE_URL, Google } from "@/app/constant";
+import { GEMINI_BASE_URL, Google, ModelProvider } from "@/app/constant";
 
 async function handle(
   req: NextRequest,
@@ -39,10 +39,18 @@ async function handle(
     10 * 60 * 1000,
   );
 
+  const authResult = auth(req, ModelProvider.GeminiPro);
+  if (authResult.error) {
+    return NextResponse.json(authResult, {
+      status: 401,
+    });
+  }
+
   const bearToken = req.headers.get("Authorization") ?? "";
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
 
   const key = token ? token : serverConfig.googleApiKey;
+
   if (!key) {
     return NextResponse.json(
       {
@@ -56,7 +64,6 @@ async function handle(
   }
 
   const fetchUrl = `${baseUrl}/${path}?key=${key}`;
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
