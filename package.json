@@ -56,7 +56,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
     "prettier": "^3.0.2",
-    "typescript": "5.2.2",
+    "typescript": "5.3.3",
     "webpack": "^5.88.1"
   },
   "resolutions": {
