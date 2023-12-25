@@ -38,7 +38,7 @@ export interface OpenAIListModelResponse {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string): string {
+  path(path: string, model?: string): string {
     const accessStore = useAccessStore.getState();
 
     const isAzure = accessStore.provider === ServiceProvider.Azure;
@@ -65,6 +65,7 @@ export class ChatGPTApi implements LLMApi {
 
     if (isAzure) {
       path = makeAzurePath(path, accessStore.azureApiVersion);
+      return [baseUrl, model, path].join("/");
     }
 
     return [baseUrl, path].join("/");
@@ -136,7 +137,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      const chatPath = this.path(OpenaiPath.ChatPath, modelConfig.model);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -284,16 +285,20 @@ export class ChatGPTApi implements LLMApi {
         model: options.config.model,
       },
     };
-
+    const accessStore = useAccessStore.getState();
+    const isAzure = accessStore.provider === ServiceProvider.Azure;
+    let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
     const requestPayload = {
       messages,
+      isAzure,
+      azureApiVersion: accessStore.azureApiVersion,
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
-      baseUrl: useAccessStore.getState().openaiUrl,
+      baseUrl: baseUrl,
       maxIterations: options.agentConfig.maxIterations,
       returnIntermediateSteps: options.agentConfig.returnIntermediateSteps,
       useTools: options.agentConfig.useTools,
@@ -321,7 +326,7 @@ export class ChatGPTApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-      console.log("shouldStream", shouldStream);
+      // console.log("shouldStream", shouldStream);
 
       if (shouldStream) {
         let responseText = "";

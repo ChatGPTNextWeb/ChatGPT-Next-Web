@@ -60,7 +60,6 @@ export async function requestOpenai(req: NextRequest) {
     path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
-  const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -78,6 +77,12 @@ export async function requestOpenai(req: NextRequest) {
     duplex: "half",
     signal: controller.signal,
   };
+  const clonedBody = await req.text();
+  const jsonBody = JSON.parse(clonedBody) as { model?: string };
+  if (serverConfig.isAzure) {
+    baseUrl = `${baseUrl}/${jsonBody.model}`;
+  }
+  const fetchUrl = `${baseUrl}/${path}`;
 
   // #1815 try to refuse gpt4 request
   if (serverConfig.customModels && req.body) {
@@ -86,10 +91,9 @@ export async function requestOpenai(req: NextRequest) {
         DEFAULT_MODELS,
         serverConfig.customModels,
       );
-      const clonedBody = await req.text();
+      // const clonedBody = await req.text();
+      // const jsonBody = JSON.parse(clonedBody) as { model?: string };
       fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
       if (modelTable[jsonBody?.model ?? ""].available === false) {

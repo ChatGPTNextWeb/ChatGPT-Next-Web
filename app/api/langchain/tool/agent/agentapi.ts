@@ -8,7 +8,7 @@ import { BaseCallbackHandler } from "langchain/callbacks";
 import { AIMessage, HumanMessage, SystemMessage } from "langchain/schema";
 import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
-import { ACCESS_CODE_PREFIX } from "@/app/constant";
+import { ACCESS_CODE_PREFIX, ServiceProvider } from "@/app/constant";
 
 import * as langchainTools from "langchain/tools";
 import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
@@ -16,6 +16,7 @@ import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
 import { DynamicTool, Tool } from "langchain/tools";
 import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
+import { useAccessStore } from "@/app/store";
 
 export interface RequestMessage {
   role: string;
@@ -24,6 +25,8 @@ export interface RequestMessage {
 
 export interface RequestBody {
   messages: RequestMessage[];
+  isAzure: boolean;
+  azureApiVersion?: string;
   model: string;
   stream?: boolean;
   temperature: number;
@@ -152,10 +155,10 @@ export class AgentApi {
 
   async getOpenAIApiKey(token: string) {
     const serverConfig = getServerSideConfig();
-    const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+    const isApiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 
     let apiKey = serverConfig.apiKey;
-    if (isOpenAiKey && token) {
+    if (isApiKey && token) {
       apiKey = token;
     }
     return apiKey;
@@ -179,27 +182,31 @@ export class AgentApi {
     customTools: any[],
   ) {
     try {
+      let useTools = reqBody.useTools ?? [];
       const serverConfig = getServerSideConfig();
 
       // const reqBody: RequestBody = await req.json();
-      const authToken = req.headers.get("Authorization") ?? "";
+      const isAzure = reqBody.isAzure || serverConfig.isAzure;
+      const authHeaderName = isAzure ? "api-key" : "Authorization";
+      const authToken = req.headers.get(authHeaderName) ?? "";
       const token = authToken.trim().replaceAll("Bearer ", "").trim();
-      const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
-      let useTools = reqBody.useTools ?? [];
-      let apiKey = serverConfig.apiKey;
-      if (isOpenAiKey && token) {
-        apiKey = token;
-      }
 
+      let apiKey = await this.getOpenAIApiKey(token);
+      if (isAzure) apiKey = token;
       let baseUrl = "https://api.openai.com/v1";
       if (serverConfig.baseUrl) baseUrl = serverConfig.baseUrl;
       if (
         reqBody.baseUrl?.startsWith("http://") ||
         reqBody.baseUrl?.startsWith("https://")
-      )
+      ) {
         baseUrl = reqBody.baseUrl;
-      if (!baseUrl.endsWith("/v1"))
+      }
+      if (!isAzure && !baseUrl.endsWith("/v1")) {
         baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
+      }
+      if (!reqBody.isAzure && serverConfig.isAzure) {
+        baseUrl = serverConfig.azureUrl || baseUrl;
+      }
       console.log("[baseUrl]", baseUrl);
 
       var handler = await this.getHandler(reqBody);
@@ -281,7 +288,7 @@ export class AgentApi {
         chatHistory: new ChatMessageHistory(pastMessages),
       });
 
-      const llm = new ChatOpenAI(
+      let llm = new ChatOpenAI(
         {
           modelName: reqBody.model,
           openAIApiKey: apiKey,
@@ -293,6 +300,23 @@ export class AgentApi {
         },
         { basePath: baseUrl },
       );
+
+      if (reqBody.isAzure || serverConfig.isAzure) {
+        llm = new ChatOpenAI({
+          temperature: reqBody.temperature,
+          streaming: reqBody.stream,
+          topP: reqBody.top_p,
+          presencePenalty: reqBody.presence_penalty,
+          frequencyPenalty: reqBody.frequency_penalty,
+          azureOpenAIApiKey: apiKey,
+          azureOpenAIApiVersion: reqBody.isAzure
+            ? reqBody.azureApiVersion
+            : serverConfig.azureApiVersion,
+          azureOpenAIApiDeploymentName: reqBody.model,
+          azureOpenAIBasePath: baseUrl,
+        });
+      }
+
       const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "openai-functions",
         returnIntermediateSteps: reqBody.returnIntermediateSteps,

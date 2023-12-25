@@ -199,6 +199,25 @@ Google Gemini Pro Api Key.
 
 Google Gemini Pro Api Url.
 
+### `AZURE_URL` （可选）
+
+> 形如：https://{azure-resource-url}/openai/deployments
+>
+> ⚠️ 注意：这里与原项目配置不同，不需要指定 {deploy-name}，将模型名修改为 {deploy-name} 即可切换不同的模型
+>
+> ⚠️ DALL-E 等需要 openai 密钥的插件暂不支持 Azure
+
+Azure 部署地址。
+
+### `AZURE_API_KEY` （可选）
+
+Azure 密钥。
+
+### `AZURE_API_VERSION` （可选）
+
+Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
+
+
 ## 部署
 
 ### 容器部署 （推荐）

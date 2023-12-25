@@ -23,7 +23,7 @@ declare global {
       CUSTOM_MODELS?: string; // to control custom models
 
       // azure only
-      AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
+      AZURE_URL?: string; // https://{azure-url}/openai/deployments
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
 

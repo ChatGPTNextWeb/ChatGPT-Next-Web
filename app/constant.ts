@@ -88,13 +88,8 @@ export const OpenaiPath = {
   ListModelPath: "v1/models",
 };
 
-export const GooglePath = {
-  ChatPath: "v1/models/{{model}}:streamGenerateContent",
-  ListModelPath: "v1/models",
-};
-
 export const Azure = {
-  ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
+  ExampleEndpoint: "https://{resource-url}/openai/deployments",
 };
 
 export const Google = {

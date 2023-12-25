@@ -94,7 +94,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 ### `AZURE_URL` （可选）
 
-> 形如：https://{azure-resource-url}/openai/deployments/{deploy-name}
+> 形如：https://{azure-resource-url}/openai/deployments
 
 Azure 部署地址。
 
