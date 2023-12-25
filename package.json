@@ -19,7 +19,7 @@
     "@aws-sdk/client-s3": "^3.414.0",
     "@aws-sdk/s3-request-presigner": "^3.414.0",
     "@fortaine/fetch-event-source": "^3.0.6",
-    "@hello-pangea/dnd": "^16.3.0",
+    "@hello-pangea/dnd": "^16.5.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "axios": "^1.4.0",
@@ -27,8 +27,8 @@
     "duck-duck-scrape": "^2.2.4",
     "emoji-picker-react": "^4.5.15",
     "encoding": "^0.1.13",
-    "fuse.js": "^6.6.2",
     "html-entities": "^2.4.0",
+    "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",
@@ -54,8 +54,8 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.4.0",
     "@types/html-to-text": "^9.0.1",
+    "@tauri-apps/cli": "^1.5.8",
     "@types/node": "^20.9.0",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.7",

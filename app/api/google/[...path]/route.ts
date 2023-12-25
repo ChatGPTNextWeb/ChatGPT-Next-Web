@@ -1,46 +1,98 @@
-import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth, googleAuth } from "../../auth";
-import { requestGoogleGemini } from "../../common";
+import { auth } from "../../auth";
+import { getServerSideConfig } from "@/app/config/server";
+import { GEMINI_BASE_URL, Google, ModelProvider } from "@/app/constant";
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[OpenAI Route] params ", params);
+  console.log("[Google Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const subpath = params.path.join("/");
+  const controller = new AbortController();
 
-  // if (!ALLOWD_PATH.has(subpath)) {
-  //   console.log("[OpenAI Route] forbidden path ", subpath);
-  //   return NextResponse.json(
-  //     {
-  //       error: true,
-  //       msg: "you are not allowed to request " + subpath,
-  //     },
-  //     {
-  //       status: 403,
-  //     },
-  //   );
-  // }
+  const serverConfig = getServerSideConfig();
 
-  const authResult = googleAuth(req);
+  let baseUrl = serverConfig.googleUrl || GEMINI_BASE_URL;
+
+  if (!baseUrl.startsWith("http")) {
+    baseUrl = `https://${baseUrl}`;
+  }
+
+  if (baseUrl.endsWith("/")) {
+    baseUrl = baseUrl.slice(0, -1);
+  }
+
+  let path = `${req.nextUrl.pathname}`.replaceAll("/api/google/", "");
+
+  console.log("[Proxy] ", path);
+  console.log("[Base Url]", baseUrl);
+
+  const timeoutId = setTimeout(
+    () => {
+      controller.abort();
+    },
+    10 * 60 * 1000,
+  );
+
+  const authResult = auth(req, ModelProvider.GeminiPro);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
     });
   }
 
+  const bearToken = req.headers.get("Authorization") ?? "";
+  const token = bearToken.trim().replaceAll("Bearer ", "").trim();
+
+  const key = token ? token : serverConfig.googleApiKey;
+
+  if (!key) {
+    return NextResponse.json(
+      {
+        error: true,
+        message: `missing GOOGLE_API_KEY in server env vars`,
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
+  const fetchUrl = `${baseUrl}/${path}?key=${key}`;
+  const fetchOptions: RequestInit = {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+    },
+    method: req.method,
+    body: req.body,
+    // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
+    redirect: "manual",
+    // @ts-ignore
+    duplex: "half",
+    signal: controller.signal,
+  };
+
   try {
-    const response = await requestGoogleGemini(req);
-    return response;
-  } catch (e) {
-    console.error("[OpenAI] ", e);
-    return NextResponse.json(prettyObject(e));
+    const res = await fetch(fetchUrl, fetchOptions);
+    // to prevent browser prompt for credentials
+    const newHeaders = new Headers(res.headers);
+    newHeaders.delete("www-authenticate");
+    // to disable nginx buffering
+    newHeaders.set("X-Accel-Buffering", "no");
+
+    return new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: newHeaders,
+    });
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
