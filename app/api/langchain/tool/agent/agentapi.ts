@@ -242,6 +242,15 @@ export class AgentApi {
           func: async (input: string) => serpAPITool.call(input),
         });
       }
+      if (process.env.GOOGLE_CSE_ID && process.env.GOOGLE_API_KEY) {
+        console.log("use googleCustomSearchTool");
+        let googleCustomSearchTool = new langchainTools["GoogleCustomSearch"]();
+        searchTool = new DynamicTool({
+          name: "google_custom_search",
+          description: googleCustomSearchTool.description,
+          func: async (input: string) => googleCustomSearchTool.call(input),
+        });
+      }
 
       const tools = [];
 
