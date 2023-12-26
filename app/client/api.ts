@@ -167,12 +167,15 @@ export class ClientApi {
   }
 }
 
-export function getHeaders() {
+export function getHeaders(ignoreHeaders?: boolean) {
   const accessStore = useAccessStore.getState();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    "x-requested-with": "XMLHttpRequest",
-  };
+  let headers: Record<string, string> = {};
+  if (!ignoreHeaders) {
+    headers = {
+      "Content-Type": "application/json",
+      "x-requested-with": "XMLHttpRequest",
+    };
+  }
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
   const isGoogle = modelConfig.model === "gemini-pro";
   const isAzure = accessStore.provider === ServiceProvider.Azure;
