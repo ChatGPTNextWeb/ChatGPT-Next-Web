@@ -59,37 +59,6 @@ const Plugins = dynamic(async () => (await import("./plugin")).PluginPage, {
   loading: () => <Loading noLogo />,
 });
 
-export function useSwitchTheme() {
-  const config = useAppConfig();
-
-  useEffect(() => {
-    document.body.classList.remove("light");
-    document.body.classList.remove("dark");
-
-    if (config.theme === "dark") {
-      document.body.classList.add("dark");
-    } else if (config.theme === "light") {
-      document.body.classList.add("light");
-    }
-
-    const metaDescriptionDark = document.querySelector(
-      'meta[name="theme-color"][media*="dark"]',
-    );
-    const metaDescriptionLight = document.querySelector(
-      'meta[name="theme-color"][media*="light"]',
-    );
-
-    if (config.theme === "auto") {
-      metaDescriptionDark?.setAttribute("content", "#151515");
-      metaDescriptionLight?.setAttribute("content", "#fafafa");
-    } else {
-      const themeColor = getCSSVar("--theme-color");
-      metaDescriptionDark?.setAttribute("content", themeColor);
-      metaDescriptionLight?.setAttribute("content", themeColor);
-    }
-  }, [config.theme]);
-}
-
 function useHtmlLang() {
   useEffect(() => {
     const lang = getISOLang();
@@ -138,6 +107,42 @@ function Screen() {
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+
+  // SwitchThemeColor
+  // Adapting Safari's theme-color and changing it according to the path
+  useEffect(() => {
+    document.body.classList.remove("light");
+    document.body.classList.remove("dark");
+
+    if (config.theme === "dark") {
+      document.body.classList.add("dark");
+    } else if (config.theme === "light") {
+      document.body.classList.add("light");
+    }
+
+    const metaDescriptionDark = document.querySelector(
+      'meta[name="theme-color"][media*="dark"]',
+    );
+    const metaDescriptionLight = document.querySelector(
+      'meta[name="theme-color"][media*="light"]',
+    );
+
+    if (isHome) {
+      if (config.theme === "auto") {
+        const themeColor = getCSSVar("--theme-color");
+        metaDescriptionDark?.setAttribute("content", themeColor);
+        metaDescriptionLight?.setAttribute("content", themeColor);
+      } else {
+        const themeColor = getCSSVar("--theme-color");
+        metaDescriptionDark?.setAttribute("content", themeColor);
+        metaDescriptionLight?.setAttribute("content", themeColor);
+      }
+    } else {
+      const themeColor = getCSSVar("--white");
+      metaDescriptionDark?.setAttribute("content", themeColor);
+      metaDescriptionLight?.setAttribute("content", themeColor);
+    }
+  }, [config.theme, isHome]);
 
   return (
     <div
@@ -191,7 +196,6 @@ export function useLoadData() {
 }
 
 export function Home() {
-  useSwitchTheme();
   useLoadData();
   useHtmlLang();
 
