@@ -4,8 +4,36 @@ import { Path } from "../constant";
 import { ToastmastersRoles } from "../toastmasters/roles";
 import { InterviewRoles } from "../interview/roles";
 import { EToeflRoles } from "../toefl/ToeflRoles";
+import { AzureRoles } from "../azure-speech/AzureRoles";
 
 export const EN_MASKS: BuiltinMask[] = [
+  {
+    avatar: "toastmasters",
+    name: AzureRoles.TTSAvatar,
+    context: [
+      {
+        role: "user",
+        content: `
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.AzureAvatar,
+    group: BuiltinMaskGroup.AzureSpeech,
+  },
+
   // BuiltinMaskGroup.Toastmasters
   {
     avatar: "toastmasters",

@@ -191,3 +191,16 @@ export function SpeechAvatarVideoShow(props: {
 
   return <></>;
 }
+
+/*
+Public preview: 2023/12
+100 words = 40s video => GenerateTime: 40 seconds
+1 word => 0.4 seconds
+
+Previous private preview: 2023/09
+100 words = 48s video => GenerateTime: 4 miniutes = 240 seconds
+1 word => 2.4 seconds
+
+100 words = 1$ = 7.2 RMB = 72 Coins
+1 words => 0.7 Coins
+*/

@@ -119,14 +119,6 @@ export const ToastmastersSettings = (
   return settings;
 };
 
-/*
-100 words = 48s speech => AvatarVideoGeneratingTime = 4 miniutes = 240 seconds
-1 word => 2.4 seconds
-
-100 words = 1$ = 7.2 RMB = 72 Coins
-1 words => 0.7 Coins
-*/
-
 export const TTMasterGuidance = (topic: string) => `
 The topic is: "${topic}",
 Are you ready?

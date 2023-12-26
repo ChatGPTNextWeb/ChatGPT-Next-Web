@@ -188,6 +188,15 @@ const RoutePaths: IRoutePath[] = [
       },
     ),
   },
+  {
+    Path: Path.AzureAvatar,
+    Element: dynamic(
+      async () => (await import("../azure-speech/tts-avatar")).Chat,
+      {
+        loading: () => <Loading noLogo />,
+      },
+    ),
+  },
 ];
 
 export function useSwitchTheme() {
