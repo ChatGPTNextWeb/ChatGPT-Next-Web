@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import JSZip from "jszip";
 import axios from "axios";
 import { getServerSideConfig } from "../config/server";
 
@@ -14,34 +16,37 @@ import Box from "@mui/material/Box";
 import { IRequestResponse } from "../store/chat";
 
 import styles_tm from "../toastmasters/toastmasters.module.scss";
-import { useEffect, useState } from "react";
 
 const config = getServerSideConfig();
 
 export enum VideoFetchStatus {
-  Empty = "",
+  // Empty = "",
   Succeeded = "Succeeded",
   Failed = "Failed",
   Loading = "Loading",
-  Error = "Error",
+  // Error = "Error",
 }
 
-const SUBSCRIPTION_KEY = config.speechAvatarSubscriptionKey;
-const URL = `https://${config.speechAvatarServiceRegion}.customvoice.api.speech.microsoft.com/api/texttospeech/3.1-preview1/batchsynthesis/talkingavatar`;
+const subscriptionKey = config.speechAvatarSubscriptionKey;
+const serviceRegion = config.speechAvatarServiceRegion;
 
-const NAME = "Simple avatar synthesis";
-const DESCRIPTION = "Simple avatar synthesis description";
+export interface ISubmitAvatarSetting {
+  Voice: string;
+}
 
-// pure function
-export const onSubmitSynthesisAvatar = async (inputText: string) => {
+export const onSynthesisAvatar = async (
+  inputText: string,
+  setting: ISubmitAvatarSetting,
+): Promise<IRequestResponse> => {
   const header = {
     // Accept: "application/json",
-    "Ocp-Apim-Subscription-Key": config.speechAvatarSubscriptionKey,
+    "Ocp-Apim-Subscription-Key": subscriptionKey,
     "Content-Type": "application/json",
   };
+  const url = `https://${serviceRegion}.customvoice.api.speech.microsoft.com/api/texttospeech/3.1-preview1/batchsynthesis/talkingavatar`;
 
   const payload = {
-    displayName: "speech avatar speaking",
+    displayName: "speech avatar speaking", // TODO: add user email
     description: "",
     textType: "PlainText",
     inputs: [
@@ -50,7 +55,7 @@ export const onSubmitSynthesisAvatar = async (inputText: string) => {
       },
     ],
     synthesisConfig: {
-      voice: "en-US-JennyNeural", // # set voice name for plain text; ignored for ssml
+      voice: setting.Voice,
     },
     properties: {
       talkingAvatarCharacter: "lisa", // # currently only one platform character (lisa)
@@ -63,124 +68,154 @@ export const onSubmitSynthesisAvatar = async (inputText: string) => {
   };
 
   try {
-    const response = await axios.post(URL, payload, {
+    const response = await axios.post(url, payload, {
       headers: header,
     });
 
-    if (response.status < 400) {
-      console.log("Batch avatar synthesis job submitted successfully");
-
-      const job_id = response.data.id;
-      console.log(`Job ID: ${job_id}`);
-      return job_id;
-    } else {
+    if (response.status >= 400) {
       console.error(`Failed to submit batch avatar synthesis job: ${response}`);
+      return { status: VideoFetchStatus.Failed, data: response.data };
+    }
+
+    const job_id = response.data.id;
+    console.log(`Job ID: ${job_id}`);
+
+    while (true) {
+      const response = await axios.get(`${url}/${job_id}`, {
+        headers: header,
+      });
+      const currentStatus = response.data.status;
+      if (currentStatus >= 400) {
+        console.error(`Failed to get batch avatar synthesis job: ${response}`);
+      }
+      if (currentStatus === "Succeeded") {
+        return {
+          status: VideoFetchStatus.Succeeded,
+          data: response.data.outputs.result,
+        };
+      }
+      if (currentStatus === "Failed") {
+        return {
+          status: VideoFetchStatus.Failed,
+          data: response.data,
+        };
+      } else {
+        // console.log(
+        //   `batch avatar synthesis job is still running, status [${currentStatus}]`,
+        // );
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // 等待1秒
+      }
     }
   } catch (error) {
     console.error(`Failed to submit batch avatar synthesis job: ${error}`);
+    return {
+      status: VideoFetchStatus.Failed,
+      data: error,
+    };
   }
 };
 
-// pure function
-export const getSynthesisAvatar = async (job_id: string) => {
+export const onSynthesisAudio = async (
+  inputText: string,
+  setting: ISubmitAvatarSetting,
+): Promise<IRequestResponse> => {
   const header = {
-    // Accept: "application/json",
-    "Ocp-Apim-Subscription-Key": config.speechAvatarSubscriptionKey,
-    // 'Content-Type': 'application/json'
+    Accept: "application/json",
+    "Ocp-Apim-Subscription-Key": subscriptionKey,
+    "Content-Type": "application/json",
   };
+  const url = `https://${serviceRegion}.customvoice.api.speech.microsoft.com/api/texttospeech/3.1-preview1/batchsynthesis`;
+
+  const payload = {
+    displayName: "speech audio synthesis",
+    description: "",
+    textType: "PlainText",
+    inputs: [
+      {
+        text: inputText,
+      },
+    ],
+    synthesisConfig: {
+      voice: setting.Voice,
+    },
+    properties: {
+      outputFormat: "audio-24khz-160kbitrate-mono-mp3",
+    },
+  };
+
   try {
-    const response = await axios.get(`${URL}/${job_id}`, {
+    const response = await axios.post(url, payload, {
       headers: header,
     });
 
-    if (response.status < 400) {
-      return response.data.status;
-    } else {
+    if (response.status >= 400) {
       console.error(`Failed to submit batch avatar synthesis job: ${response}`);
+      return { status: VideoFetchStatus.Failed, data: response.data };
+    }
+
+    const job_id = response.data.id;
+    console.log(`Job ID: ${job_id}`);
+
+    while (true) {
+      const response = await axios.get(`${url}/${job_id}`, {
+        headers: header,
+      });
+      const currentStatus = response.data.status;
+      if (currentStatus >= 400) {
+        console.error(`Failed to get batch avatar synthesis job: ${response}`);
+      }
+      if (currentStatus === "Succeeded") {
+        // 下载.zip文件并解压展示其中的.mp3文件
+        const fetchAndUnzipMP3 = async (zipUrl: string) => {
+          try {
+            const response = await axios.get(zipUrl, { responseType: "blob" });
+            const zipBlob = response.data;
+
+            const jszip = new JSZip();
+            const zip = await jszip.loadAsync(zipBlob);
+
+            // 假定.zip文件中只有一个.mp3文件
+            const mp3File = Object.keys(zip.files).find((fileName) =>
+              fileName.endsWith(".mp3"),
+            );
+
+            if (mp3File) {
+              const mp3Blob = await zip.files[mp3File].async("blob");
+              const mp3Url = URL.createObjectURL(mp3Blob);
+              console.log("mp3Url: ", mp3Url);
+              return mp3Url;
+            }
+          } catch (error) {
+            console.error("Error fetching or unzipping MP3:", error);
+          }
+        };
+
+        const mp3Url = await fetchAndUnzipMP3(response.data.outputs.result);
+        return {
+          status: VideoFetchStatus.Succeeded,
+          data: mp3Url,
+        };
+      }
+      if (currentStatus === "Failed") {
+        return {
+          status: VideoFetchStatus.Failed,
+          data: response.data,
+        };
+      } else {
+        // console.log(
+        //   `batch avatar synthesis job is still running, status [${currentStatus}]`,
+        // );
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // 等待1秒
+      }
     }
   } catch (error) {
-    console.error(`Failed to get batch avatar synthesis job: ${error}`);
+    console.error(`Failed to submit batch avatar synthesis job: ${error}`);
+    return {
+      status: VideoFetchStatus.Failed,
+      data: error,
+    };
   }
 };
-
-export function ShowAvatar(props: { job_id: string }) {
-  const { job_id } = props;
-  const [status, setStatus] = useState("");
-  const [avatarVideo, setAvatarVideo] = useState("");
-
-  useEffect(() => {
-    let isSubscribed = true;
-    const header = {
-      // Accept: "application/json",
-      "Ocp-Apim-Subscription-Key": config.speechAvatarSubscriptionKey,
-      // 'Content-Type': 'application/json'
-    };
-
-    const checkStatus = async () => {
-      while (isSubscribed) {
-        const response = await axios.get(`${URL}/${job_id}`, {
-          headers: header,
-        });
-        const currentStatus = response.data.status;
-        if (currentStatus >= 400) {
-          console.error(
-            `Failed to get batch avatar synthesis job: ${response}`,
-          );
-        }
-        if (currentStatus === "Succeeded") {
-          setStatus(currentStatus);
-          setAvatarVideo(response.data.outputs.result);
-          break;
-        }
-        if (currentStatus === "Failed") {
-          setStatus(currentStatus);
-          setAvatarVideo(response.data);
-          break;
-        } else {
-          console.log(
-            `batch avatar synthesis job is still running, status [${currentStatus}]`,
-          );
-          await new Promise((resolve) => setTimeout(resolve, 5000)); // 等待5秒
-        }
-      }
-    };
-
-    if (job_id) {
-      checkStatus();
-    }
-
-    // 清理函数
-    return () => {
-      isSubscribed = false;
-    };
-  }, [job_id]);
-
-  if (status === "Succeeded") {
-    return (
-      <div className={styles_tm["video-container"]}>
-        <video controls width="400" height="300">
-          <source src={avatarVideo} type="video/webm" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    );
-  }
-
-  if (status === "Failed") {
-    return <div>{avatarVideo}</div>;
-  }
-
-  return (
-    <div>
-      <h3 className={styles_tm["video-container"]}>
-        Avatar Video is generating...
-      </h3>
-      <Box sx={{ width: "100%" }}>
-        <LinearProgress />
-      </Box>
-    </div>
-  );
-}
 
 /*
 Public preview: 2023/12
