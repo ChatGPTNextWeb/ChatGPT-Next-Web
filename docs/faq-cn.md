@@ -23,7 +23,7 @@ Docker 版本相当于稳定版，latest Docker 总是与 latest release version
 ## 如何修改 Vercel 环境变量
 
 - 进入 vercel 的控制台页面；
-- 选中你的 chatgpt next web 项目；
+- 选中你的 NextChat 项目；
 - 点击页面头部的 Settings 选项；
 - 找到侧边栏的 Environment Variables 选项；
 - 修改对应的值即可。
@@ -39,7 +39,7 @@ Docker 版本相当于稳定版，latest Docker 总是与 latest release version
 
 > 相关讨论：[#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
 
-如果你使用 ngnix 反向代理，需要在配置文件中增加下列代码：
+如果你使用 nginx 反向代理，需要在配置文件中增加下列代码：
 
 ```
 # 不缓存，支持流式输出
@@ -101,9 +101,29 @@ keepalive_timeout 300;  # 设定keep-alive超时时间为65秒
 
 项目通过环境变量 CODE 设置了访问密码。第一次使用时，需要到设置中，输入访问码才可以使用。
 
-## 使用时提示"You exceeded your current quota, ..."
+## 使用时提示 "You exceeded your current quota, ..."
 
 API KEY 有问题。余额不足。
+
+## 使用时遇到 "Error: Loading CSS chunk xxx failed..."
+
+为了减少首屏白屏时间，默认启用了分块编译，技术原理见下：
+
+- https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading
+- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
+- https://github.com/vercel/next.js/issues/38507
+- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
+
+然而 NextJS 的兼容性比较差，在比较老的浏览器上会导致此报错，可以在编译时关闭分块编译。
+
+对于 Vercel 平台，在环境变量中增加 `DISABLE_CHUNK=1`，然后重新部署即可；
+对于自行编译部署的项目，在构建时使用 `DISABLE_CHUNK=1 yarn build` 构建即可；
+对于 Docker 用户，由于 Docker 打包时已经构建完毕，所以暂不支持关闭此特性。
+
+注意，关闭此特性后，用户会在第一次访问网站时加载所有资源，如果用户网络状况较差，可能会引起较长时间的白屏，从而影响用户使用体验，所以自行考虑。
+
+## 使用时遇到 "NotFoundError: Failed to execute 'removeChild' on 'Node': The node...."
+请关闭浏览器自身的自动翻译功能，并关闭所有自动翻译插件。
 
 # 网络服务相关问题
 
@@ -195,7 +215,8 @@ OpenAI 网站计费说明：https://openai.com/pricing#language-models
 OpenAI 根据 token 数收费，1000 个 token 通常可代表 750 个英文单词，或 500 个汉字。输入（Prompt）和输出（Completion）分别统计费用。  
 |模型|用户输入（Prompt）计费|模型输出（Completion）计费|每次交互最大 token 数|
 |----|----|----|----|
-|gpt-3.5|$0.002 / 1 千 tokens|$0.002 / 1 千 tokens|4096|
+|gpt-3.5-turbo|$0.0015 / 1 千 tokens|$0.002 / 1 千 tokens|4096|
+|gpt-3.5-turbo-16K|$0.003 / 1 千 tokens|$0.004 / 1 千 tokens|16384|
 |gpt-4|$0.03 / 1 千 tokens|$0.06 / 1 千 tokens|8192|
 |gpt-4-32K|$0.06 / 1 千 tokens|$0.12 / 1 千 tokens|32768|
 

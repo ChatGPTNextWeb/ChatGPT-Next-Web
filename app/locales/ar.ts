@@ -10,6 +10,7 @@ const ar: PartialLocaleType = {
   Auth: {
     Title: "تحتاج إلى رمز الوصول",
     Tips: "يرجى إدخال رمز الوصول أدناه",
+    SubTips: "أو أدخل مفتاح واجهة برمجة تطبيقات OpenAI الخاص بك",
     Input: "رمز الوصول",
     Confirm: "تأكيد",
     Later: "لاحقًا",
@@ -110,6 +111,11 @@ const ar: PartialLocaleType = {
       Title: "حجم الخط",
       SubTitle: "ضبط حجم الخط لمحتوى الدردشة",
     },
+    InjectSystemPrompts: {
+      Title: "حقن تلميحات النظام",
+      SubTitle:
+        "قم بإضافة تلميحة نظام محاكاة ChatGPT إلى بداية قائمة الرسائل المُطلَبة في كل طلب",
+    },
     InputTemplate: {
       Title: "نموذج الإدخال",
       SubTitle: "سيتم ملء أحدث رسالة في هذا النموذج",
@@ -130,8 +136,10 @@ const ar: PartialLocaleType = {
       SubTitle: "معاينة Markdown في فقاعة",
     },
     Mask: {
-      Title: "شاشة تظهر الأقنعة",
-      SubTitle: "عرض شاشة تظهر الأقنعة قبل بدء الدردشة الجديدة",
+      Splash: {
+        Title: "شاشة تظهر الأقنعة",
+        SubTitle: "عرض شاشة تظهر الأقنعة قبل بدء الدردشة الجديدة",
+      },
     },
     Prompt: {
       Disable: {
@@ -159,11 +167,7 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
       Title: "حد الضغط للتاريخ",
       SubTitle: "سيتم الضغط إذا تجاوزت طول الرسائل غير المضغوطة الحد المحدد",
     },
-    Token: {
-      Title: "مفتاح API",
-      SubTitle: "استخدم مفتاحك لتجاوز حد رمز الوصول",
-      Placeholder: "مفتاح OpenAI API",
-    },
+
     Usage: {
       Title: "رصيد الحساب",
       SubTitle(used: any, total: any) {
@@ -173,15 +177,7 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
       Check: "التحقق",
       NoAccess: "أدخل مفتاح API للتحقق من الرصيد",
     },
-    AccessCode: {
-      Title: "رمز الوصول",
-      SubTitle: "تم تمكين التحكم في الوصول",
-      Placeholder: "رمز الوصول المطلوب",
-    },
-    Endpoint: {
-      Title: "نقطة النهاية",
-      SubTitle: "يجب أن تبدأ نقطة النهاية المخصصة بـ http(s)://",
-    },
+
     Model: "النموذج",
     Temperature: {
       Title: "الحرارة",
@@ -225,6 +221,9 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
   },
   Plugin: {
     Name: "المكوّن الإضافي",
+  },
+  FineTuned: {
+    Sysmessage: "أنت مساعد ي",
   },
   Mask: {
     Name: "الأقنعة",

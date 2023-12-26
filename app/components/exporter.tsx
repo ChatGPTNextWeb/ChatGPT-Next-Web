@@ -1,7 +1,16 @@
-import { ChatMessage, useAppConfig, useChatStore } from "../store";
+/* eslint-disable @next/next/no-img-element */
+import { ChatMessage, ModelType, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
-import { List, ListItem, Modal, Select, showToast } from "./ui-lib";
+import {
+  List,
+  ListItem,
+  Modal,
+  Select,
+  showImageModal,
+  showModal,
+  showToast,
+} from "./ui-lib";
 import { IconButton } from "./button";
 import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
 
@@ -18,11 +27,13 @@ import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
-import { toBlob, toJpeg, toPng } from "html-to-image";
+import { toBlob, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
-import { api } from "../client/api";
+
 import { prettyObject } from "../utils/format";
-import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
+import { EXPORT_MESSAGE_CLASS_NAME, ModelProvider } from "../constant";
+import { getClientConfig } from "../config/client";
+import { ClientApi } from "../client/api";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -31,7 +42,22 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 export function ExportMessageModal(props: { onClose: () => void }) {
   return (
     <div className="modal-mask">
-      <Modal title={Locale.Export.Title} onClose={props.onClose}>
+      <Modal
+        title={Locale.Export.Title}
+        onClose={props.onClose}
+        footer={
+          <div
+            style={{
+              width: "100%",
+              textAlign: "center",
+              fontSize: 14,
+              opacity: 0.5,
+            }}
+          >
+            {Locale.Exporter.Description.Title}
+          </div>
+        }
+      >
         <div style={{ minHeight: "40vh" }}>
           <MessageExporter />
         </div>
@@ -117,7 +143,7 @@ export function MessageExporter() {
   ];
   const { currentStep, setCurrentStepIndex, currentStepIndex } =
     useSteps(steps);
-  const formats = ["text", "image"] as const;
+  const formats = ["text", "image", "json"] as const;
   type ExportFormat = (typeof formats)[number];
 
   const [exportConfig, setExportConfig] = useState({
@@ -139,7 +165,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id ?? i)));
+    ret.push(...session.messages.filter((m) => selection.has(m.id)));
     return ret;
   }, [
     exportConfig.includeContext,
@@ -147,7 +173,21 @@ export function MessageExporter() {
     session.mask.context,
     selection,
   ]);
-
+  function preview() {
+    if (exportConfig.format === "text") {
+      return (
+        <MarkdownPreviewer messages={selectedMessages} topic={session.topic} />
+      );
+    } else if (exportConfig.format === "json") {
+      return (
+        <JsonPreviewer messages={selectedMessages} topic={session.topic} />
+      );
+    } else {
+      return (
+        <ImagePreviewer messages={selectedMessages} topic={session.topic} />
+      );
+    }
+  }
   return (
     <>
       <Steps
@@ -202,16 +242,7 @@ export function MessageExporter() {
         />
       </div>
       {currentStep.value === "preview" && (
-        <div className={styles["message-exporter-body"]}>
-          {exportConfig.format === "text" ? (
-            <MarkdownPreviewer
-              messages={selectedMessages}
-              topic={session.topic}
-            />
-          ) : (
-            <ImagePreviewer messages={selectedMessages} topic={session.topic} />
-          )}
-        </div>
+        <div className={styles["message-exporter-body"]}>{preview()}</div>
       )}
     </>
   );
@@ -234,17 +265,19 @@ export function RenderExport(props: {
       return;
     }
 
-    const renderMsgs = messages.map((v) => {
-      const [_, role] = v.id.split(":");
+    const renderMsgs = messages.map((v, i) => {
+      const [role, _] = v.id.split(":");
       return {
+        id: i.toString(),
         role: role as any,
-        content: v.innerHTML,
+        content: role === "user" ? v.textContent ?? "" : v.innerHTML,
         date: "",
       };
     });
 
     props.onRender(renderMsgs);
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div ref={domRef}>
@@ -269,15 +302,45 @@ export function PreviewActions(props: {
 }) {
   const [loading, setLoading] = useState(false);
   const [shouldExport, setShouldExport] = useState(false);
-
+  const config = useAppConfig();
   const onRenderMsgs = (msgs: ChatMessage[]) => {
     setShouldExport(false);
+
+    var api: ClientApi;
+    if (config.modelConfig.model === "gemini-pro") {
+      api = new ClientApi(ModelProvider.GeminiPro);
+    } else {
+      api = new ClientApi(ModelProvider.GPT);
+    }
 
     api
       .share(msgs)
       .then((res) => {
         if (!res) return;
-        copyToClipboard(res);
+        showModal({
+          title: Locale.Export.Share,
+          children: [
+            <input
+              type="text"
+              value={res}
+              key="input"
+              style={{
+                width: "100%",
+                maxWidth: "unset",
+              }}
+              readOnly
+              onClick={(e) => e.currentTarget.select()}
+            ></input>,
+          ],
+          actions: [
+            <IconButton
+              icon={<CopyIcon />}
+              text={Locale.Chat.Actions.Copy}
+              key="copy"
+              onClick={() => copyToClipboard(res)}
+            />,
+          ],
+        });
         setTimeout(() => {
           window.open(res, "_blank");
         }, 800);
@@ -344,7 +407,7 @@ export function PreviewActions(props: {
 function ExportAvatar(props: { avatar: string }) {
   if (props.avatar === DEFAULT_MASK_AVATAR) {
     return (
-      <NextImage
+      <img
         src={BotIcon.src}
         width={30}
         height={30}
@@ -354,7 +417,7 @@ function ExportAvatar(props: { avatar: string }) {
     );
   }
 
-  return <Avatar avatar={props.avatar}></Avatar>;
+  return <Avatar avatar={props.avatar} />;
 }
 
 export function ImagePreviewer(props: {
@@ -369,6 +432,7 @@ export function ImagePreviewer(props: {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const copy = () => {
+    showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
     toBlob(dom).then((blob) => {
@@ -382,6 +446,7 @@ export function ImagePreviewer(props: {
           ])
           .then(() => {
             showToast(Locale.Copy.Success);
+            refreshPreview();
           });
       } catch (e) {
         console.error("[Copy Image] ", e);
@@ -392,26 +457,62 @@ export function ImagePreviewer(props: {
 
   const isMobile = useMobileScreen();
 
-  const download = () => {
+  const download = async () => {
+    showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-    toPng(dom)
-      .then((blob) => {
-        if (!blob) return;
 
-        if (isMobile) {
-          const image = new Image();
-          image.src = blob;
-          const win = window.open("");
-          win?.document.write(image.outerHTML);
+    const isApp = getClientConfig()?.isApp;
+
+    try {
+      const blob = await toPng(dom);
+      if (!blob) return;
+
+      if (isMobile || (isApp && window.__TAURI__)) {
+        if (isApp && window.__TAURI__) {
+          const result = await window.__TAURI__.dialog.save({
+            defaultPath: `${props.topic}.png`,
+            filters: [
+              {
+                name: "PNG Files",
+                extensions: ["png"],
+              },
+              {
+                name: "All Files",
+                extensions: ["*"],
+              },
+            ],
+          });
+
+          if (result !== null) {
+            const response = await fetch(blob);
+            const buffer = await response.arrayBuffer();
+            const uint8Array = new Uint8Array(buffer);
+            await window.__TAURI__.fs.writeBinaryFile(result, uint8Array);
+            showToast(Locale.Download.Success);
+          } else {
+            showToast(Locale.Download.Failed);
+          }
         } else {
-          const link = document.createElement("a");
-          link.download = `${props.topic}.png`;
-          link.href = blob;
-          link.click();
+          showImageModal(blob);
         }
-      })
-      .catch((e) => console.log("[Export Image] ", e));
+      } else {
+        const link = document.createElement("a");
+        link.download = `${props.topic}.png`;
+        link.href = blob;
+        link.click();
+        refreshPreview();
+      }
+    } catch (error) {
+      showToast(Locale.Download.Failed);
+    }
+  };
+
+  const refreshPreview = () => {
+    const dom = previewRef.current;
+    if (dom) {
+      dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+    }
   };
 
   return (
@@ -437,7 +538,7 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>ChatGPT Next Web</div>
+            <div className={styles["main-title"]}>NextChat</div>
             <div className={styles["sub-title"]}>
               github.com/Yidadaa/ChatGPT-Next-Web
             </div>
@@ -512,16 +613,57 @@ export function MarkdownPreviewer(props: {
   const download = () => {
     downloadAs(mdText, `${props.topic}.md`);
   };
+  return (
+    <>
+      <PreviewActions
+        copy={copy}
+        download={download}
+        showCopy={true}
+        messages={props.messages}
+      />
+      <div className="markdown-body">
+        <pre className={styles["export-content"]}>{mdText}</pre>
+      </div>
+    </>
+  );
+}
+
+export function JsonPreviewer(props: {
+  messages: ChatMessage[];
+  topic: string;
+}) {
+  const msgs = {
+    messages: [
+      {
+        role: "system",
+        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
+      },
+      ...props.messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+    ],
+  };
+  const mdText = "```json\n" + JSON.stringify(msgs, null, 2) + "\n```";
+  const minifiedJson = JSON.stringify(msgs);
+
+  const copy = () => {
+    copyToClipboard(minifiedJson);
+  };
+  const download = () => {
+    downloadAs(JSON.stringify(msgs), `${props.topic}.json`);
+  };
 
   return (
     <>
       <PreviewActions
         copy={copy}
         download={download}
+        showCopy={false}
         messages={props.messages}
       />
-      <div className="markdown-body">
-        <pre className={styles["export-content"]}>{mdText}</pre>
+      <div className="markdown-body" onClick={copy}>
+        <Markdown content={mdText} />
       </div>
     </>
   );
