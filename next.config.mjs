@@ -9,6 +9,9 @@ console.log("[Next] build with chunk: ", disableChunk);
 /** @type {import('next').NextConfig} */
 // const isProd = process.env.NODE_ENV === 'production'
 
+// 为了修复tiktoken的插件问题
+import CopyPlugin from "copy-webpack-plugin";
+
 const nextConfig = {
   webpack(config) {
     config.module.rules.push({
@@ -21,6 +24,17 @@ const nextConfig = {
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       )
     }
+    config.plugins.push(
+        new CopyPlugin({
+          patterns: [
+            {
+              from: ".//node_modules/tiktoken/tiktoken_bg.wasm",
+              to: "tiktoken_bg.wasm",
+              toType: "file",
+            }
+          ]
+        })
+    )
 
     config.optimization.minimize = true
     config.optimization.splitChunks = {
