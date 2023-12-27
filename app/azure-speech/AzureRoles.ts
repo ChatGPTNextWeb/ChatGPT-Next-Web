@@ -37,9 +37,9 @@ export const AzureAvatarLanguageVoices: Record<
 export const AvatarDefaultLanguage = Object.keys(AzureAvatarLanguageVoices)[0];
 
 export class AzureTTSAvatarInput {
-  Text: string = "";
+  InputText: string = "";
   VideoSrc: string = "";
   AudioSrc: string = "";
-  // Language: string = AvatarDefaultLanguage;
-  // Voice: string =
+  Language: string = AvatarDefaultLanguage;
+  VoiceNumber: number = 0;
 }

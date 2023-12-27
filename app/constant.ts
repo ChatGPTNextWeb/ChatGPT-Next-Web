@@ -34,7 +34,7 @@ export enum Path {
   ToastmastersTimer = "/speech/timer",
   ToeflIntegratedWriting = "/toefl/integratedWriting",
   InterviewSelfServe = "/interview/selfServe",
-  AzureAvatar = "avatar",
+  AzureAvatar = "/avatar",
 }
 
 export enum SlotID {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, ChangeEvent } from "react";
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -93,38 +93,6 @@ export function Chat() {
     state.currentSessionIndex,
   ]);
 
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
-  const [hitBottom, setHitBottom] = useState(true);
-
-  const [submitting, setSubmitting] = useState(false);
-  const [videoSrc, setVideoSrc] = useState(session.inputCopilot?.VideoSrc);
-
-  const [playAudio, setPlayAudio] = useState(false);
-  const [audioSrc, setAudioSrc] = useState(session.inputCopilot?.AudioSrc);
-
-  const [language, setLanguage] = useState(AvatarDefaultLanguage);
-  const [voiceList, setVoiceList] = useState(
-    AzureAvatarLanguageVoices[language],
-  );
-  const [voiceNumber, setVoiceNumber] = useState(0);
-  const [tabValue, setTabValue] = React.useState("1");
-
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      // 检查 audio 是否为 null
-      if (audio.paused) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
-    }
-  };
-
   useEffect(() => {
     // 在组件加载时初始化 inputCopilot
     if (!session.inputCopilot) {
@@ -140,13 +108,50 @@ export function Chat() {
     return <div>Loading...</div>; // 或其他的加载指示
   }
 
+  return <ChatCore inputCopilot={session.inputCopilot}></ChatCore>;
+}
+
+export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
+  const { inputCopilot } = props;
+  const chatStore = useChatStore();
+  const [session, sessionIndex] = useChatStore((state) => [
+    state.currentSession(),
+    state.currentSessionIndex,
+  ]);
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
+  const [hitBottom, setHitBottom] = useState(true);
+  const [previewVideo, setPreviewVideo] = useState(false);
+  const [previewAudio, setPreviewAudio] = useState(false);
+
+  // from input
+  const [inputText, setInputText] = useState(inputCopilot.InputText);
+  const [videoSrc, setVideoSrc] = useState(inputCopilot.VideoSrc);
+  const [audioSrc, setAudioSrc] = useState(inputCopilot.AudioSrc);
+  const [language, setLanguage] = useState(inputCopilot.Language);
+  const [voiceNumber, setVoiceNumber] = useState(inputCopilot.VoiceNumber);
+  const [tabValue, setTabValue] = React.useState("1");
+
   const handleLanguageChange = (event: SelectChangeEvent) => {
-    setLanguage(event.target.value);
-    setVoiceList(AzureAvatarLanguageVoices[event.target.value]);
+    const newValue = event.target.value;
+    setLanguage(newValue);
+    inputCopilot.Language = newValue;
     setVoiceNumber(0);
+    inputCopilot.VoiceNumber = 0;
   };
   const handleVoiceChange = (event: SelectChangeEvent) => {
-    setVoiceNumber(parseInt(event.target.value));
+    const newValue = parseInt(event.target.value);
+    setVoiceNumber(newValue);
+    inputCopilot.VoiceNumber = newValue;
+  };
+  const handleInputTextChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const newValue = event.target.value;
+    setInputText(newValue);
+    inputCopilot.InputText = newValue;
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -158,54 +163,52 @@ export function Chat() {
   };
 
   const onPreviewVideo = async () => {
-    if (session.inputCopilot.Text === "") {
-      showToast(`Text could not be empty`);
+    if (inputText === "") {
+      showToast(`Input Text could not be empty`);
       return;
     }
 
-    setSubmitting(true);
+    setPreviewVideo(true);
     setVideoSrc("");
 
     const setting: ISubmitAvatarSetting = {
-      Voice: voiceList[voiceNumber].Voice,
+      Voice: AzureAvatarLanguageVoices[language][voiceNumber].Voice,
     };
-    const response = await onSynthesisAvatar(
-      session.inputCopilot.Text,
-      setting,
-    );
+    const response = await onSynthesisAvatar(inputText, setting);
     if (response.status !== VideoFetchStatus.Succeeded) {
       showToast(`Failed: status=${response.status}, data=${response.data}`);
-      setPlayAudio(false);
+      setPreviewVideo(false);
       return;
     }
 
-    session.inputCopilot.VideoSrc = response.data;
+    console.log("onPreviewVideo: videoSrc: ", response.data);
+    inputCopilot.VideoSrc = response.data;
     setVideoSrc(response.data);
-    setSubmitting(false);
+    setPreviewVideo(false);
   };
 
-  const onPlayAudio = async () => {
-    if (session.inputCopilot.Text === "") {
-      showToast(`Text could not be empty`);
+  const onPreviewAudio = async () => {
+    if (inputText === "") {
+      showToast(`Input Text could not be empty`);
       return;
     }
 
-    setPlayAudio(true);
+    setPreviewAudio(true);
     setAudioSrc("");
 
     const setting: ISubmitAvatarSetting = {
-      Voice: voiceList[voiceNumber].Voice,
+      Voice: AzureAvatarLanguageVoices[language][voiceNumber].Voice,
     };
-    const response = await onSynthesisAudio(session.inputCopilot.Text, setting);
+    const response = await onSynthesisAudio(inputText, setting);
     if (response.status !== VideoFetchStatus.Succeeded) {
       showToast(`Failed: status=${response.status}, data=${response.data}`);
-      setPlayAudio(false);
+      setPreviewAudio(false);
       return;
     }
 
-    session.inputCopilot.AudioUrl = response.data;
+    inputCopilot.AudioSrc = response.data;
     setAudioSrc(response.data);
-    setPlayAudio(false);
+    setPreviewAudio(false);
   };
 
   return (
@@ -230,23 +233,25 @@ export function Chat() {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
+                // width: "100%",
               }}
             >
               {videoSrc === "" ? (
                 <img
                   src="lisa-casual-sitting-transparent-bg.png"
                   alt="lisa-casual-sitting-transparent-background"
-                  width="100%"
+                  width="80%"
                 />
               ) : (
                 <div className={styles_tm["video-container"]}>
-                  <video controls width="100%" preload="metadata">
+                  <video controls width="80%" preload="metadata">
                     <source src={videoSrc} type="video/webm" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
               )}
               <h4>Microsoft Azure AI Avatar</h4>
+              {/* TODO: 字幕 */}
             </div>
 
             {/* <Box sx={{ typography: 'body1' }}>
@@ -264,20 +269,20 @@ export function Chat() {
           </div>
         </List>
 
-        <Stack spacing={2} direction="row">
+        <Stack spacing={2} direction="row" justifyContent="center">
           <LoadingButton
             size="small"
             onClick={onPreviewVideo}
-            loading={submitting}
+            loading={previewVideo}
             variant="contained"
             loadingPosition="start"
             style={{ textTransform: "none" }}
           >
             <span>Preview video</span>
           </LoadingButton>
-          <Button variant="outlined" style={{ textTransform: "none" }}>
+          {/* <Button variant="outlined" style={{ textTransform: "none" }}>
             Export video
-          </Button>
+          </Button> */}
         </Stack>
 
         <div style={{ marginBottom: "20px" }}></div>
@@ -314,7 +319,7 @@ export function Chat() {
                 onChange={handleVoiceChange}
                 autoWidth
               >
-                {voiceList.map((item, index) => (
+                {AzureAvatarLanguageVoices[language].map((item, index) => (
                   <MenuItem key={index} value={index.toString()}>
                     {item.Name}
                   </MenuItem>
@@ -323,8 +328,8 @@ export function Chat() {
             </FormControl>
             <LoadingButton
               size="small"
-              onClick={onPlayAudio}
-              loading={playAudio}
+              onClick={onPreviewAudio}
+              loading={previewAudio}
               variant="outlined"
               startIcon={<PlayCircleOutlineOutlined />}
               loadingPosition="start"
@@ -341,15 +346,29 @@ export function Chat() {
             )}
           </Stack>
           <BorderLine></BorderLine>
-          <TextField
-            label="Input Text"
-            defaultValue={session.inputCopilot.Text}
-            onChange={(e) => (session.inputCopilot.Text = e.target.value)}
-            multiline
-            sx={{
-              width: "100%",
-            }}
-          />
+          <div style={{ position: "relative", display: "flex", flex: 1 }}>
+            <TextField
+              label="Input Text"
+              value={inputText}
+              onChange={handleInputTextChange}
+              multiline
+              sx={{
+                width: "100%",
+                marginTop: "10px",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: "20px",
+                top: "-10px",
+                opacity: 0.5,
+                fontSize: "12px",
+              }}
+            >
+              {ChatUtility.getWordsNumber(inputText)} words
+            </div>
+          </div>
         </List>
       </div>
     </div>
