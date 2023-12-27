@@ -60,6 +60,12 @@ export async function requestOpenai(req: NextRequest) {
     path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
+  const clonedBody = await req.text();
+  const jsonBody = JSON.parse(clonedBody) as { model?: string };
+  if (serverConfig.isAzure) {
+    baseUrl = `${baseUrl}/${jsonBody.model}`;
+  }
+  const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -70,22 +76,16 @@ export async function requestOpenai(req: NextRequest) {
       }),
     },
     method: req.method,
-    body: req.body,
+    body: clonedBody,
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
   };
-  const clonedBody = await req.text();
-  const jsonBody = JSON.parse(clonedBody) as { model?: string };
-  if (serverConfig.isAzure) {
-    baseUrl = `${baseUrl}/${jsonBody.model}`;
-  }
-  const fetchUrl = `${baseUrl}/${path}`;
 
   // #1815 try to refuse gpt4 request
-  if (serverConfig.customModels && req.body) {
+  if (serverConfig.customModels && clonedBody) {
     try {
       const modelTable = collectModelTable(
         DEFAULT_MODELS,
