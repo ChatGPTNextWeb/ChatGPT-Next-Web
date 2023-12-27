@@ -243,7 +243,6 @@ export class AgentApi {
         });
       }
       if (process.env.GOOGLE_CSE_ID && process.env.GOOGLE_API_KEY) {
-        console.log("use googleCustomSearchTool");
         let googleCustomSearchTool = new langchainTools["GoogleCustomSearch"]();
         searchTool = new DynamicTool({
           name: "google_custom_search",
