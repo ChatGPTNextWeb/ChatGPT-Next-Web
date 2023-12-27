@@ -1,22 +1,22 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
-<h1 align="center">ChatGPT Next Web</h1>
+<h1 align="center">NextChat (ChatGPT Next Web)</h1>
 
 English / [简体中文](./README_CN.md)
 
-One-Click to get well-designed cross-platform ChatGPT web UI.
+One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 & Gemini Pro support.
 
-一键免费部署你的跨平台私人 ChatGPT 应用。
+一键免费部署你的跨平台私人 ChatGPT 应用, 支持 GPT3, GPT4 & Gemini Pro 模型。
 
 [![Web][Web-image]][web-url]
 [![Windows][Windows-image]][download-url]
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[Web App](https://chatgpt.nextweb.fun/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/mortiest_ricky) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+[Web App](https://app.nextchat.dev/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/mortiest_ricky) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
-[网页版](https://chatgpt.nextweb.fun/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
+[网页版](https://app.nextchat.dev/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [web-url]: https://chatgpt.nextweb.fun
 [download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
@@ -25,7 +25,9 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 [MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&env=GOOGLE_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBUEFA)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
@@ -37,8 +39,8 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 - **Deploy for free with one-click** on Vercel in under 1 minute
 - Compact client (~5MB) on Linux/Windows/MacOS, [download it now](https://github.com/Yidadaa/ChatGPT-Next-Web/releases)
-- Fully compatible with self-deployed llms, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
-- Privacy first, all data stored locally in the browser
+- Fully compatible with self-deployed LLMs, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
+- Privacy first, all data is stored locally in the browser
 - Markdown support: LaTex, mermaid, code highlight, etc.
 - Responsive design, dark mode and PWA
 - Fast first screen loading speed (~100kb), support streaming response
@@ -188,6 +190,14 @@ Azure Api Key.
 ### `AZURE_API_VERSION` (optional)
 
 Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
+
+### `GOOGLE_API_KEY` (optional)
+
+Google Gemini Pro Api Key.
+
+### `GOOGLE_URL` (optional)
+
+Google Gemini Pro Api Url.
 
 ### `HIDE_USER_API_KEY` (optional)
 
