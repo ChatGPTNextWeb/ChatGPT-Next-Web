@@ -9,7 +9,7 @@ import styles from "./home.module.scss";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
-import { getCSSVar, useMobileScreen } from "../utils";
+import { useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
 import { ModelProvider, Path, SlotID } from "../constant";
@@ -127,22 +127,19 @@ function Screen() {
       'meta[name="theme-color"][media*="light"]',
     );
 
-    if (isHome) {
-      if (config.theme === "auto") {
-        const themeColor = getCSSVar("--theme-color");
-        metaDescriptionDark?.setAttribute("content", themeColor);
-        metaDescriptionLight?.setAttribute("content", themeColor);
+    if (shouldTightBorder || isMobileScreen) {
+      if (isHome) {
+        metaDescriptionDark?.setAttribute("content", "#1b262a");
+        metaDescriptionLight?.setAttribute("content", "#e7f8ff");
       } else {
-        const themeColor = getCSSVar("--theme-color");
-        metaDescriptionDark?.setAttribute("content", themeColor);
-        metaDescriptionLight?.setAttribute("content", themeColor);
+        metaDescriptionDark?.setAttribute("content", "#1e1e1e");
+        metaDescriptionLight?.setAttribute("content", "white");
       }
     } else {
-      const themeColor = getCSSVar("--white");
-      metaDescriptionDark?.setAttribute("content", themeColor);
-      metaDescriptionLight?.setAttribute("content", themeColor);
+      metaDescriptionDark?.setAttribute("content", "#151515");
+      metaDescriptionLight?.setAttribute("content", "#fafafa");
     }
-  }, [config.theme, isHome]);
+  }, [config.theme, isHome, shouldTightBorder, isMobileScreen]);
 
   return (
     <div
