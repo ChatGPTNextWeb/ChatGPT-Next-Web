@@ -83,28 +83,41 @@ export class ChatGPTApi implements LLMApi {
       const base64 = Buffer.from(response.data, "binary").toString("base64");
       return base64;
     };
-    for (const v of options.messages) {
-      let message: {
-        role: string;
-        content: { type: string; text?: string; image_url?: { url: string } }[];
-      } = {
-        role: v.role,
-        content: [],
-      };
-      message.content.push({
-        type: "text",
-        text: v.content,
-      });
-      if (v.image_url) {
-        var base64Data = await getImageBase64Data(v.image_url);
+    if (options.config.model === "gpt-4-vision-preview") {
+      for (const v of options.messages) {
+        let message: {
+          role: string;
+          content: {
+            type: string;
+            text?: string;
+            image_url?: { url: string };
+          }[];
+        } = {
+          role: v.role,
+          content: [],
+        };
         message.content.push({
-          type: "image_url",
-          image_url: {
-            url: `data:image/jpeg;base64,${base64Data}`,
-          },
+          type: "text",
+          text: v.content,
         });
+        if (v.image_url) {
+          var base64Data = await getImageBase64Data(v.image_url);
+          message.content.push({
+            type: "image_url",
+            image_url: {
+              url: `data:image/jpeg;base64,${base64Data}`,
+            },
+          });
+        }
+        messages.push(message);
       }
-      messages.push(message);
+    } else {
+      options.messages.map((v) =>
+        messages.push({
+          role: v.role,
+          content: v.content,
+        }),
+      );
     }
 
     const modelConfig = {
