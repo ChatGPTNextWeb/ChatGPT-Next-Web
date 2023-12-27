@@ -14,8 +14,8 @@ export const metadata: Metadata = {
     maximumScale: 1,
   },
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+    { media: "(prefers-color-scheme: light)", color: "#e7f8ff" },
+    { media: "(prefers-color-scheme: dark)", color: "#1b262a" },
   ],
   appleWebApp: {
     title: "NextChat",
