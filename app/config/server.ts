@@ -27,6 +27,10 @@ declare global {
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
+
+      // google only
+      GOOGLE_API_KEY?: string;
+      GOOGLE_URL?: string;
     }
   }
 }
@@ -61,6 +65,8 @@ export const getServerSideConfig = () => {
       .join(",");
   }
 
+  // const isAzure = !!process.env.AZURE_URL;
+  const isGoogle = !!process.env.GOOGLE_API_KEY;
   // 需要一个函数来判断请求中模型是否为微软的。
   // 当前逻辑，gpt-4-32k模型为微软，别的不是
   // const isAzure = !!process.env.AZURE_URL;
@@ -84,6 +90,10 @@ export const getServerSideConfig = () => {
     azureUrl: process.env.AZURE_URL ?? "",
     azureApiKey: process.env.AZURE_API_KEY ?? "",
     azureApiVersion: process.env.AZURE_API_VERSION ?? "",
+
+    isGoogle,
+    googleApiKey: process.env.GOOGLE_API_KEY,
+    googleUrl: process.env.GOOGLE_URL,
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,
