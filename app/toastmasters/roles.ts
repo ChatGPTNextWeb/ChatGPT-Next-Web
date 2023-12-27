@@ -11,7 +11,7 @@ export enum ToastmastersRoles {
 
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",
-  Timer = "Timer",
+  Timer = "Toastmasters Timer",
   GeneralEvaluator = "General Evaluator",
 
   RevisedSpeech = "Revised Speech",

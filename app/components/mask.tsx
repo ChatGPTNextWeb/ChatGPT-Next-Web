@@ -39,6 +39,13 @@ import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
 import { BuiltinMaskGroup, BuiltinMaskGroupOrder } from "../masks/cn";
 
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import { CardActionArea } from "@mui/material";
+import AvatarMui from "@mui/material/Avatar";
+
 export function MaskAvatar(props: { mask: Mask }) {
   return props.mask.avatar !== DEFAULT_MASK_AVATAR ? (
     <Avatar avatar={props.mask.avatar} />
@@ -339,6 +346,10 @@ export function MaskPage() {
 
   // 对面具角色 分组并排序
   const groupedMasks = masks.reduce((groups: Record<string, any[]>, item) => {
+    // 过滤
+    if (!BuiltinMaskGroupOrder.includes(item.group)) {
+      return groups;
+    }
     if (!groups[item.group]) {
       groups[item.group] = [];
     }
@@ -352,11 +363,6 @@ export function MaskPage() {
       return indexA - indexB;
     },
   );
-
-  // 仅显示Toastmasters面具: TODO: for hackathon
-  // sortedGroupedMasks = sortedGroupedMasks.filter(
-  //   ([group, masks]) => group === BuiltinMaskGroup.Toastmasters || group === "",
-  // );
 
   return (
     <ErrorBoundary>
@@ -396,14 +402,14 @@ export function MaskPage() {
           </div>
         </div>
 
-        {/* <div className={styles_newchat["new-chat-unset-height"]}>
-          <div className={styles_newchat["title"]}>{Locale.NewChat.Title}</div>
+        <div className={styles_newchat["new-chat-unset-height"]}>
+          {/* <div className={styles_newchat["title"]}>{Locale.NewChat.Title}</div>
           <div className={styles_newchat["sub-title"]}>
             {Locale.NewChat.SubTitle}
-          </div>
+          </div> */}
           <div className={styles_newchat["actions-margin-top"]}>
             <IconButton
-              text={Locale.NewChat.Skip}
+              text={Locale.Home.NewChat}
               onClick={() => startChat()}
               icon={<LightningIcon />}
               type="primary"
@@ -411,12 +417,12 @@ export function MaskPage() {
               className={styles_newchat["skip"]}
             />
           </div>
-        </div> */}
+        </div>
 
         <div className={styles_newchat["border-bottom"]}></div>
 
         <div className={styles["mask-page-body"]}>
-          <div className={styles["mask-filter"]}>
+          {/* <div className={styles["mask-filter"]}>
             <input
               type="text"
               className={styles["search-bar"]}
@@ -456,74 +462,52 @@ export function MaskPage() {
                 setEditingMaskId(createdMask.id);
               }}
             />
-          </div>
+          </div> */}
 
           <div>
             {sortedGroupedMasks.map(([groupName, items]) => (
               <div key={groupName}>
                 <h2>{groupName}</h2>
-                <div>
-                  {items.map((m) => (
-                    <div className={styles["mask-item"]} key={m.id}>
-                      <div className={styles["mask-header"]}>
-                        <div className={styles["mask-icon"]}>
-                          <MaskAvatar mask={m} />
-                        </div>
-                        <div className={styles["mask-title"]}>
-                          <div className={styles["mask-name"]}>{m.name}</div>
-                          <div className={styles["mask-info"] + " one-line"}>
-                            {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                              ALL_LANG_OPTIONS[m.lang as Lang]
-                            } / ${m.modelConfig.model}`}
-                          </div>
-                        </div>
-                      </div>
-                      <div className={styles["mask-actions"]}>
-                        <IconButton
-                          icon={<AddIcon />}
-                          text={Locale.Mask.Item.Chat}
-                          onClick={() => {
-                            chatStore.newSession(m);
-                            navigate(m.pagePath ?? Path.Chat); // If m.pagePath is undefined, navigate to Path.Chat
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap", // 允许子项换行
+                  }}
+                >
+                  {items.map((m: Mask) => (
+                    <Card sx={{ width: "30%", margin: "1%" }} key={m.id}>
+                      <CardActionArea
+                        onClick={() => {
+                          chatStore.newSession(m);
+                          navigate(m.pagePath ?? Path.Chat);
+                        }}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center", // 水平居中
+                          justifyContent: "center", // 垂直居中
+                        }}
+                      >
+                        <CardMedia
+                          component="img"
+                          image={m.avatar}
+                          sx={{
+                            width: "100%", // 图片宽度占满容器宽度
+                            aspectRatio: "4 / 3", // 设置宽高比
                           }}
                         />
-                        {/* {m.builtin ? (  // Richard: Comment out this block to hide the view button
-                          <IconButton
-                            icon={<EyeIcon />}
-                            text={Locale.Mask.Item.View}
-                            onClick={() => setEditingMaskId(m.id)}
-                          />
-                        ) : (
-                          <IconButton
-                            icon={<EditIcon />}
-                            text={Locale.Mask.Item.Edit}
-                            onClick={() => setEditingMaskId(m.id)}
-                          />
-                        )} */}
-                        {!m.builtin && (
-                          <IconButton
-                            icon={<EditIcon />}
-                            text={Locale.Mask.Item.Edit}
-                            onClick={() => setEditingMaskId(m.id)}
-                          />
-                        )}
-                        {!m.builtin && (
-                          <IconButton
-                            icon={<DeleteIcon />}
-                            text={Locale.Mask.Item.Delete}
-                            onClick={async () => {
-                              if (
-                                await showConfirm(
-                                  Locale.Mask.Item.DeleteConfirm,
-                                )
-                              ) {
-                                maskStore.delete(m.id);
-                              }
-                            }}
-                          />
-                        )}
-                      </div>
-                    </div>
+                        {/* <AvatarMui alt="Remy Sharp" src={m.avatar}  sx={{ width: "50%", height: "50%"  }} /> */}
+                        <CardContent>
+                          <Typography gutterBottom variant="h6" component="div">
+                            {m.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {m.description}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
                   ))}
                 </div>
               </div>

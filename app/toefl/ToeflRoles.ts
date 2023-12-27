@@ -5,7 +5,7 @@ import { IScoreMetric } from "../toastmasters/ISpeechRoles";
 export const SpeechDefaultLangugage = "en";
 
 export enum EToeflRoles {
-  IntegratedWriting = "Integrated Writing",
+  IntegratedWriting = "Integrated Writing Master",
   AcademicDiscussion = "Academic Discussion",
 
   // Evaluations

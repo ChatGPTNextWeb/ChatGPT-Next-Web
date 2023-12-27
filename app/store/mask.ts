@@ -18,6 +18,7 @@ export type Mask = {
   builtin: boolean;
   pagePath?: Path;
   group: string;
+  description?: string;
 };
 
 export const DEFAULT_MASK_STATE = {

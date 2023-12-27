@@ -1,9 +1,10 @@
 import { BuiltinMask } from "./typing";
 
 export enum BuiltinMaskGroup {
-  AzureSpeech = "Azure Speech",
+  OpenAI = "OpenAI Product",
+  AzureSpeech = "Microsoft Azure Speech",
   Toastmasters = "Speech Copilot",
-  ToeflCopilot = "Toefl Copilot",
+  ToeflCopilot = "TOEFL Copilot",
   InterviewCopilot = "Interview Copilot",
   Careers = "职业发展",
   Writers = "写手",
@@ -12,15 +13,17 @@ export enum BuiltinMaskGroup {
   Others = "其它",
 }
 export const BuiltinMaskGroupOrder: string[] = [
+  // BuiltinMaskGroup.OpenAI,
   BuiltinMaskGroup.AzureSpeech,
   BuiltinMaskGroup.Toastmasters,
   BuiltinMaskGroup.ToeflCopilot,
-  BuiltinMaskGroup.InterviewCopilot,
-  BuiltinMaskGroup.Careers,
-  BuiltinMaskGroup.Writers,
-  BuiltinMaskGroup.Expert,
-  BuiltinMaskGroup.Imagination,
-  BuiltinMaskGroup.Others,
+
+  // BuiltinMaskGroup.InterviewCopilot,
+  // BuiltinMaskGroup.Careers,
+  // BuiltinMaskGroup.Writers,
+  // BuiltinMaskGroup.Expert,
+  // BuiltinMaskGroup.Imagination,
+  // BuiltinMaskGroup.Others,
 ]; // 指定Group的显示顺序
 
 export const CN_MASKS: BuiltinMask[] = [

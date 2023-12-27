@@ -8,7 +8,28 @@ import { AzureRoles } from "../azure-speech/AzureRoles";
 
 export const EN_MASKS: BuiltinMask[] = [
   {
-    avatar: "toastmasters",
+    avatar: "OpenAI-FreeChat.png",
+    name: "Free Chat",
+    context: [],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 20,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.Chat,
+    group: BuiltinMaskGroup.OpenAI,
+    description: "Free chat witn OpenAI GPT",
+  },
+
+  {
+    avatar: "lisa-casual-sitting-transparent-bg.png",
     name: AzureRoles.TTSAvatar,
     context: [
       {
@@ -32,11 +53,12 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.AzureAvatar,
     group: BuiltinMaskGroup.AzureSpeech,
+    description: "Create photorealistic avatar talking video with text input",
   },
 
   // BuiltinMaskGroup.Toastmasters
   {
-    avatar: "toastmasters",
+    avatar: "SpeechCopilot-ImpromptuSpeechCopilot.png",
     name: ToastmastersRoles.ImpromptuSpeechCopilot,
     context: [
       {
@@ -63,9 +85,10 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.ImpromptuSpeechCopilot,
     group: BuiltinMaskGroup.Toastmasters,
+    description: "Help score and evaluate user's Impromptu Speech",
   },
   {
-    avatar: "toastmasters",
+    avatar: "SpeechCopilot-TableTopicsMaster.png",
     name: ToastmastersRoles.TableTopicsMaster,
     context: [
       {
@@ -91,129 +114,130 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.ToastmastersTTMaster,
     group: BuiltinMaskGroup.Toastmasters,
+    description: "Help prepare and host a table topics session",
   },
+  // {
+  //   avatar: "toastmasters",
+  //   name: ToastmastersRoles.TableTopicsEvaluator,
+  //   context: [
+  //     {
+  //       role: "user",
+  //       content: `
+  //       You are an role of Toastmasters, to evaluate people's speech.
+  //       I will give you a list of Question-Speech pairs,
+  //       The Question-Speech pairs I give you are json schema, like:
+  //       [
+  //         {
+  //           "Speaker": "Speaker1"
+  //           "Question": "xxx",
+  //           "Speech": "xxx",
+  //           "SpeechTime": "yyy",
+  //         }
+  //       ]
+  //       In our each interaction round, I will let you play an Toastmasters Role and give you the request, you answer my ask in that Role's tone.
+  //       `,
+  //       date: "",
+  //     },
+  //   ],
+  //   modelConfig: {
+  //     model: "gpt-3.5-turbo",
+  //     temperature: 0.5,
+  //     max_tokens: 2000,
+  //     presence_penalty: 0,
+  //     frequency_penalty: 0,
+  //     sendMemory: true,
+  //     historyMessageCount: 4,
+  //     compressMessageLengthThreshold: 1000,
+  //   },
+  //   lang: "en",
+  //   builtin: true,
+  //   pagePath: Path.ToastmastersTTEvaluator,
+  //   group: BuiltinMaskGroup.Toastmasters,
+  // },
+  // {
+  //   avatar: "toastmasters",
+  //   name: ToastmastersRoles.ImpromptuSpeechEvaluator,
+  //   context: [
+  //     {
+  //       role: "user",
+  //       content: `
+  //       You are the Evaluator of Toastmasters, Including
+  //       Table Topics Evaluator, Grammarian, Ah-Counter, and so on.
+  //       I will firstly provide you the Question and Speech,
+  //       which is formatted as json like:
+  //       {
+  //         "Question": "xxx",
+  //         "Speech": "xxx"
+  //       },
+  //       And in each interaction, I will let you play an Evaluator Role,
+  //       you answer my ask in that Role's tone.
+
+  //       In my each ask, I will provide the role one by one.
+  //       Your answer must:
+  //       1). Briefly answer within my request max words.
+  //       2). Include examples by quoting and analyzing my speech.
+  //       `,
+  //       date: "",
+  //     },
+  //   ],
+  //   modelConfig: {
+  //     model: "gpt-3.5-turbo",
+  //     temperature: 0.5,
+  //     max_tokens: 2000,
+  //     presence_penalty: 0,
+  //     frequency_penalty: 0,
+  //     sendMemory: true,
+  //     historyMessageCount: 4,
+  //     compressMessageLengthThreshold: 1000,
+  //   },
+  //   lang: "en",
+  //   builtin: true,
+  //   pagePath: Path.ToastmastersISEvaluator,
+  //   group: BuiltinMaskGroup.Toastmasters,
+  // },
+  // {
+  //   avatar: "toastmasters",
+  //   name: ToastmastersRoles.PreparedSpeechEvaluator,
+  //   context: [
+  //     {
+  //       role: "user",
+  //       content: `
+  //       You are the Evaluator of Toastmasters, Including
+  //       Individual Evaluator, Grammarian, Ah-Counter,
+  //       and the General Evaluator.
+  //       I will firstly provide you the Topic and Speech,
+  //       which is formatted as json like:
+  //       {
+  //         "Topic": "xxx",
+  //         "Speech": "xxx"
+  //       },
+  //       And in each interaction, I will let you play an Evaluator Role,
+  //       you answer my ask in that Role's tone.
+
+  //       In my each ask, I will provide the role one by one.
+  //       Your answer must:
+  //       1). Include examples by quoting and analyzing your speech.
+  //       `,
+  //       date: "",
+  //     },
+  //   ],
+  //   modelConfig: {
+  //     model: "gpt-3.5-turbo",
+  //     temperature: 0.5,
+  //     max_tokens: 2000,
+  //     presence_penalty: 0,
+  //     frequency_penalty: 0,
+  //     sendMemory: true,
+  //     historyMessageCount: 4,
+  //     compressMessageLengthThreshold: 1000,
+  //   },
+  //   lang: "en",
+  //   builtin: true,
+  //   pagePath: Path.ToastmastersPSEvaluator,
+  //   group: BuiltinMaskGroup.Toastmasters,
+  // },
   {
-    avatar: "toastmasters",
-    name: ToastmastersRoles.TableTopicsEvaluator,
-    context: [
-      {
-        role: "user",
-        content: `
-        You are an role of Toastmasters, to evaluate people's speech.
-        I will give you a list of Question-Speech pairs, 
-        The Question-Speech pairs I give you are json schema, like:
-        [
-          {
-            "Speaker": "Speaker1"
-            "Question": "xxx",
-            "Speech": "xxx",
-            "SpeechTime": "yyy",
-          }
-        ]
-        In our each interaction round, I will let you play an Toastmasters Role and give you the request, you answer my ask in that Role's tone.
-        `,
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 0.5,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "en",
-    builtin: true,
-    pagePath: Path.ToastmastersTTEvaluator,
-    group: BuiltinMaskGroup.Toastmasters,
-  },
-  {
-    avatar: "toastmasters",
-    name: ToastmastersRoles.ImpromptuSpeechEvaluator,
-    context: [
-      {
-        role: "user",
-        content: `
-        You are the Evaluator of Toastmasters, Including 
-        Table Topics Evaluator, Grammarian, Ah-Counter, and so on.
-        I will firstly provide you the Question and Speech, 
-        which is formatted as json like:
-        {
-          "Question": "xxx",
-          "Speech": "xxx"
-        },
-        And in each interaction, I will let you play an Evaluator Role, 
-        you answer my ask in that Role's tone.
-        
-        In my each ask, I will provide the role one by one. 
-        Your answer must:
-        1). Briefly answer within my request max words.
-        2). Include examples by quoting and analyzing my speech.
-        `,
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 0.5,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "en",
-    builtin: true,
-    pagePath: Path.ToastmastersISEvaluator,
-    group: BuiltinMaskGroup.Toastmasters,
-  },
-  {
-    avatar: "toastmasters",
-    name: ToastmastersRoles.PreparedSpeechEvaluator,
-    context: [
-      {
-        role: "user",
-        content: `
-        You are the Evaluator of Toastmasters, Including 
-        Individual Evaluator, Grammarian, Ah-Counter, 
-        and the General Evaluator.
-        I will firstly provide you the Topic and Speech, 
-        which is formatted as json like:
-        {
-          "Topic": "xxx",
-          "Speech": "xxx"
-        },
-        And in each interaction, I will let you play an Evaluator Role, 
-        you answer my ask in that Role's tone.
-        
-        In my each ask, I will provide the role one by one. 
-        Your answer must:
-        1). Include examples by quoting and analyzing your speech.
-        `,
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-3.5-turbo",
-      temperature: 0.5,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "en",
-    builtin: true,
-    pagePath: Path.ToastmastersPSEvaluator,
-    group: BuiltinMaskGroup.Toastmasters,
-  },
-  {
-    avatar: "toastmasters",
+    avatar: "SpeechCopilot-Timer.png",
     name: ToastmastersRoles.Timer,
     context: [
       {
@@ -250,6 +274,7 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.ToastmastersTimer,
     group: BuiltinMaskGroup.Toastmasters,
+    description: "Help to record time usage in Toastmasters meeting",
   },
 
   // Interview Copilot
@@ -298,7 +323,7 @@ export const EN_MASKS: BuiltinMask[] = [
 
   // Toefl Copilot
   {
-    avatar: "1f47e",
+    avatar: "ToeflCopilot-IntegrateWriting4.png",
     name: EToeflRoles.IntegratedWriting,
     context: [
       {
@@ -328,6 +353,7 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     pagePath: Path.ToeflIntegratedWriting,
     group: BuiltinMaskGroup.ToeflCopilot,
+    description: "Help score and revise user's TOEFL integrated writing",
   },
 
   // BuiltinMaskGroup.Expert
