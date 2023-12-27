@@ -31,6 +31,7 @@ import { useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 
 import ResetIcon from "../icons/reload.svg";
+import AvatarIcon from "../icons/avatar36.svg";
 
 import IconButtonMui from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
@@ -92,6 +93,9 @@ import SendWhiteIcon from "../icons/send-white.svg";
 import { ChatTitle, BorderLine, ChatUtility } from "./chat-common";
 
 import GaugeChart from "./ISpeech-Common";
+import { EN_MASKS } from "../masks/en";
+import { AzureRoles, AzureTTSAvatarInput } from "../azure-speech/AzureRoles";
+import { Mask } from "../store/mask";
 
 export const FreePersonalQuestionPage = (props: {
   impromptuSpeechInput: ImpromptuSpeechInput;
@@ -1012,6 +1016,7 @@ export function FreePersonalReport(props: {
     const [evaluating, setEvaluating] = useState(
       Object.keys(impromptuSpeechInput.TotalEvaluations).length > 0,
     );
+    const navigate = useNavigate();
 
     const evaluationRoles = ImpromptuSpeechPrompts.GetTotalEvaluationRoles();
 
@@ -1070,6 +1075,22 @@ export function FreePersonalReport(props: {
       setEvaluating(false);
     };
 
+    const onTTSAvatar = (text: string) => {
+      const mask = EN_MASKS.find(
+        (mask) => mask.name === AzureRoles.TTSAvatar,
+      ) as Mask;
+
+      chatStore.newSession(mask);
+      navigate(mask.pagePath as any);
+
+      // new session has index 0
+      chatStore.updateSession(0, (session) => {
+        session.inputCopilot = new AzureTTSAvatarInput();
+        session.inputCopilot.InputText = text;
+        return session;
+      });
+    };
+
     return (
       <AccordionDetails>
         <Box sx={{ width: "100%", typography: "body1" }}>
@@ -1104,30 +1125,43 @@ export function FreePersonalReport(props: {
                       )}{" "}
                       words
                     </div>
-                    <Stack
-                      direction="row"
-                      spacing={5}
-                      justifyContent="center"
-                      alignItems="center"
+
+                    <div
+                      className={styles_chat["chat-input-actions"]}
+                      style={{
+                        justifyContent: "center",
+                        gap: "20px",
+                      }}
                     >
-                      <IconButtonMui
-                        aria-label="play"
+                      <ChatAction
+                        text={Locale.Chat.Actions.Play}
+                        icon={<PlayCircleIcon />}
                         onClick={() =>
                           speechSynthesizer.startSynthesize(
                             impromptuSpeechInput.TotalEvaluations[role],
                             session.mask.lang,
                           )
                         }
-                      >
-                        <PlayCircleIcon />
-                      </IconButtonMui>
-                      <IconButtonMui
-                        title="Regenerage"
-                        onClick={(event) => onReEvaluation(role)}
-                      >
-                        <ReplayCircleFilledIcon />
-                      </IconButtonMui>
-                    </Stack>
+                      />
+                      <ChatAction
+                        text={Locale.Chat.Actions.Retry}
+                        icon={<ResetIcon />}
+                        onClick={() => onReEvaluation(role)}
+                      />
+                      <ChatAction
+                        text={Locale.Chat.Actions.VideoPlay}
+                        icon={
+                          <AvatarIcon
+                            style={{ width: "24px", height: "24px" }}
+                          />
+                        }
+                        onClick={() => {
+                          onTTSAvatar(
+                            impromptuSpeechInput.TotalEvaluations[role],
+                          );
+                        }}
+                      />
+                    </div>
                   </Typography>
                 ) : evaluating ? (
                   <CircularProgress />
