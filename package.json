@@ -60,6 +60,7 @@
     "@types/react-katex": "^3.0.0",
     "@types/spark-md5": "^3.0.4",
     "autoprefixer": "^10.4.16",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.55.0",
     "eslint-config-next": "^14.0.3",

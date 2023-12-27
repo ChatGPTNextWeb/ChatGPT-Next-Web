@@ -88,11 +88,11 @@ export default async function UsageByModel() {
     },
   });
 
-  console.log("========", todayLog[todayLog.length - 1]);
+  // console.log("========", todayLog[todayLog.length - 1]);
   // @ts-ignore
   const log_data = HandleLogData(todayLog);
 
-  // console.log('[log_data]====---==', log_data)
+  console.log("[log_data]====---==", todayLog);
 
   const usageByModelOption: EChartsOption = {
     tooltip: {
