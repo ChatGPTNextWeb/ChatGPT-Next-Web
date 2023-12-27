@@ -62,12 +62,13 @@ export class ArxivAPIWrapper extends StructuredTool {
       );
     }
     try {
-      let url = `http://export.arxiv.org/api/query?search_query=${searchQuery}&start=${start}&max_results=${maxResults}${
+      let url = `https://export.arxiv.org/api/query?search_query=${searchQuery}&start=${start}&max_results=${maxResults}${
         sortBy ? `&sortBy=${sortBy}` : ""
       }${sortOrder ? `&sortOrder=${sortOrder}` : ""}`;
-      console.error("[arxiv]", url);
+      console.log("[arxiv]", url);
       const response = await fetch(url);
       const data = await response.text();
+      console.log("[arxiv]", data);
       return data;
     } catch (e) {
       console.error("[arxiv]", e);
