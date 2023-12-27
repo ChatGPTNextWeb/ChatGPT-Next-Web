@@ -1,6 +1,11 @@
 import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
 import { getServerSideConfig } from "@/app/config/server";
-import { OpenaiPath, AZURE_PATH, AZURE_MODELS } from "@/app/constant";
+import {
+  ModelProvider,
+  OpenaiPath,
+  AZURE_PATH,
+  AZURE_MODELS,
+} from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth, getIP } from "../../auth";
@@ -54,6 +59,13 @@ async function handle(
       },
     );
   }
+
+  // const authResult = auth(req, ModelProvider.GPT);
+  // if (authResult.error) {
+  //   return NextResponse.json(authResult, {
+  //     status: 401,
+  //   });
+  // }
   let cloneBody, jsonBody;
 
   try {
@@ -96,7 +108,7 @@ async function handle(
 
   const isAzure = AZURE_MODELS.includes(jsonBody?.model as string);
   // console.log("[Models]", jsonBody?.model);
-  const authResult = auth(req, isAzure);
+  const authResult = auth(req, ModelProvider.GPT, isAzure);
   // if (authResult.error) {
   //   return NextResponse.json(authResult, {
   //     status: 401,

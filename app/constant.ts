@@ -12,6 +12,8 @@ export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 export const OPENAI_BASE_URL = "https://api.openai.com";
 
+export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -66,6 +68,12 @@ export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 export enum ServiceProvider {
   OpenAI = "OpenAI",
   Azure = "Azure",
+  Google = "Google",
+}
+
+export enum ModelProvider {
+  GPT = "GPT",
+  GeminiPro = "GeminiPro",
 }
 
 export const OpenaiPath = {
@@ -80,6 +88,14 @@ export const OpenaiPath = {
 
 export const Azure = {
   ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
+};
+
+export const Google = {
+  ExampleEndpoint:
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+  ChatPath: "v1beta/models/gemini-pro:generateContent",
+
+  // /api/openai/v1/chat/completions
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -105,36 +121,56 @@ export const DEFAULT_MODELS = [
   //   name: "gpt-4",
   //   available: true,
   // },
-  {
-    name: "gpt-3.5-turbo-16k",
-    describe: "GPT-3,最快,笨",
-    available: false,
-  },
+  // {
+  //   name: "gpt-3.5-turbo-16k",
+  //   describe: "GPT-3,最快,笨",
+  //   available: false,
+  // },
   {
     name: "gpt-3.5-turbo-1106",
     describe: "GPT-3,最快,笨,最便宜",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
-  {
-    name: "gpt-4",
-    describe: "GPT-4,聪明,贵,慢",
-    available: false,
-  },
+  // {
+  //   name: "gpt-4",
+  //   describe: "GPT-4,聪明,贵,慢",
+  //   available: false,
+  // },
   {
     name: "gpt-4-1106-preview",
     describe: "GPT-4,又强又快,推荐",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
-    name: "gpt-4-32k",
-    describe: "GPT-4,聪明,慢,但是白嫖",
+    name: "gemini-pro",
     available: false,
+    describe: "谷歌的，不知道杂用",
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
   },
-  {
-    name: "gpt-4-all",
-    describe: "GPT-4全能版,联网绘图多模态,又慢又贵",
-    available: false,
-  },
+  // {
+  //   name: "gpt-4-32k",
+  //   describe: "GPT-4,聪明,慢,但是白嫖",
+  //   available: false,
+  // },
+  // {
+  //   name: "gpt-4-all",
+  //   describe: "GPT-4全能版,联网绘图多模态,又慢又贵",
+  //   available: false,
+  // },
   // {
   //   name: "gpt-4v",
   //   describe: "GPT-4,官方网页版,最聪明,贵且慢",
@@ -149,6 +185,11 @@ export const DEFAULT_MODELS = [
     name: "midjourney",
     describe: "绘图用,不用选",
     available: false,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
 ] as const;
 

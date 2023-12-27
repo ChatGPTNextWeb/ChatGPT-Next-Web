@@ -16,6 +16,7 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - OPENAI_API_KEY=$OPENAI_API_KEY
+      - GOOGLE_API_KEY=$GOOGLE_API_KEY
       - CODE=$CODE
       - BASE_URL=$BASE_URL
       - OPENAI_ORG_ID=$OPENAI_ORG_ID
