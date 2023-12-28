@@ -15,7 +15,7 @@ jobs:
   build:
     name: build image to aly
     # runs-on: "103.200"
-    runs-on: z4
+    runs-on: thinkpad
     #    runs-on: ubuntu-latest
     #    runs-on: self-hosted
     steps:
@@ -34,7 +34,7 @@ jobs:
   deploy:
     name: 部署到dev服务器
     needs: build
-    runs-on: z4
+    runs-on: thinkpad
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3

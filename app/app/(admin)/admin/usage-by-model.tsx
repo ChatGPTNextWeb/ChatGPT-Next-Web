@@ -65,14 +65,16 @@ export default async function UsageByModel() {
     0,
     0,
   );
-  const endOfTheDayInTimeZone = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    23,
-    59,
-    59,
-  ); // 当天的结束时间
+  // const endOfTheDayInTimeZone = new Date(
+  //   today.getFullYear(),
+  //   today.getMonth(),
+  //   today.getDate(),
+  //   23,
+  //   59,
+  //   59,
+  // ); // 当天的结束时间
+  const endOfTheDayInTimeZone = addHours(startOfTheDayInTimeZone, +24); // 当天的结束时间
+
   // const startDate = addHours(startOfTheDayInTimeZone, -8);
   // const endDate = addHours(endOfTheDayInTimeZone, -8);
   console.log("===", today, startOfTheDayInTimeZone, endOfTheDayInTimeZone);

@@ -1,7 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { insertUser } from "@/lib/auth";
-import { getTokenLength } from "@/app/utils/token";
+// import { getTokenLength } from "@/app/utils/token";
+// import { Tiktoken } from "tiktoken/lite"
+// import cl100k_base from "tiktoken/encoders/cl100k_base.json"
+import "tiktoken";
+import { get_encoding } from "tiktoken";
+
+function getTokenLength(input: string): number {
+  // const { Tiktoken } = require("tiktoken/lite");
+  // const cl100k_base = require("tiktoken/encoders/cl100k_base.json");
+  // const encoding = new Tiktoken(
+  //     cl100k_base.bpe_ranks,
+  //     cl100k_base.special_tokens,
+  //     cl100k_base.pat_str,
+  // );
+  const encoding = get_encoding("cl100k_base");
+
+  const tokenLength = encoding.encode(input).length;
+  // console.log('[TOKEN],=========', input, tokenLength)
+
+  return tokenLength;
+}
 
 async function handle(
   req: NextRequest,
@@ -13,13 +33,17 @@ async function handle(
       await insertUser({ name: request_data?.userName });
     }
     // console.log("===========4", request_data);
-    if (request_data?.logEntry) {
-      const regex = /\[(.*)]/g;
-      const matchResponse = request_data.logEntry.match(regex);
-      if (matchResponse.length > 0) {
-        request_data.logToken = getTokenLength(matchResponse[0]);
+    try {
+      if (request_data?.logEntry) {
+        const regex = /\[(.*)]/g;
+        const matchResponse = request_data.logEntry.match(regex);
+        if (matchResponse.length > 0) {
+          request_data.logToken = getTokenLength(matchResponse[0]);
+        }
       }
-      // console.log('=======', request_data.logEntry, '=====', matchResponse);
+    } catch (e) {
+      console.log("[LOG]", "logToken", e);
+      request_data.logToken = 0;
     }
 
     await prisma.logEntry.create({
