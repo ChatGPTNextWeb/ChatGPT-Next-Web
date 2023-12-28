@@ -88,7 +88,34 @@ export class GeminiProApi implements LLMApi {
           "generateContent",
           "streamGenerateContent",
         );
+        let finished = false;
+        const finish = () => {
+          finished = true;
+          options.onFinish(responseText + remainText);
+        };
 
+        // animate response to make it looks smooth
+        function animateResponseText() {
+          if (finished || controller.signal.aborted) {
+            responseText += remainText;
+            console.log("[Response Animation] finished");
+            finish();
+            return;
+          }
+
+          if (remainText.length > 0) {
+            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+            const fetchText = remainText.slice(0, fetchCount);
+            responseText += fetchText;
+            remainText = remainText.slice(fetchCount);
+            options.onUpdate?.(responseText, fetchText);
+          }
+
+          requestAnimationFrame(animateResponseText);
+        }
+
+        // start animaion
+        animateResponseText();
         fetch(streamChatPath, chatPayload)
           .then((response) => {
             const reader = response?.body?.getReader();
@@ -101,7 +128,9 @@ export class GeminiProApi implements LLMApi {
             }): Promise<any> {
               if (done) {
                 console.log("Stream complete");
-                options.onFinish(responseText + remainText);
+                // options.onFinish(responseText + remainText);
+                finished = true;
+                return Promise.resolve();
               }
 
               partialData += decoder.decode(value, { stream: true });
@@ -110,9 +139,9 @@ export class GeminiProApi implements LLMApi {
                 let data = JSON.parse(ensureProperEnding(partialData));
                 console.log(data);
                 let fetchText = apiClient.extractMessage(data[data.length - 1]);
-                responseText += fetchText;
-                options.onUpdate?.(responseText, fetchText);
-                debugger;
+                // responseText += fetchText;
+                remainText += fetchText;
+                // options.onUpdate?.(responseText, fetchText);
               } catch (error) {
                 // skip error message when parsing json
               }
@@ -123,114 +152,6 @@ export class GeminiProApi implements LLMApi {
           .catch((error) => {
             console.error("Error:", error);
           });
-
-        // // animate response to make it looks smooth
-        // function animateResponseText() {
-        //   if (finished || controller.signal.aborted) {
-        //     responseText += remainText;
-        //     console.log("[Response Animation] finished");
-        //     return;
-        //   }
-
-        //   if (remainText.length > 0) {
-        //     const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-        //     const fetchText = remainText.slice(0, fetchCount);
-        //     responseText += fetchText;
-        //     remainText = remainText.slice(fetchCount);
-        //     options.onUpdate?.(responseText, fetchText);
-        //   }
-
-        //   requestAnimationFrame(animateResponseText);
-        // }
-
-        // // start animaion
-        // animateResponseText();
-
-        // const finish = () => {
-        //   if (!finished) {
-        //     finished = true;
-        //     options.onFinish(responseText + remainText);
-        //   }
-        // };
-
-        // controller.signal.onabort = finish;
-
-        // fetchEventSource(streamChatPath, {
-        //   ...chatPayload,
-        //   async onopen(res) {
-        //     clearTimeout(requestTimeoutId);
-        //     const contentType = res.headers.get("content-type");
-        //     console.log(
-        //       "[Google] request response content type: ",
-        //       contentType,
-        //     );
-
-        //     if (contentType?.startsWith("text/plain")) {
-        //       responseText = await res.clone().text();
-        //       debugger
-        //       return finish();
-        //     }
-
-        //     if (
-        //       !res.ok ||
-        //       !res.headers
-        //         .get("content-type")
-        //         ?.startsWith(EventStreamContentType) ||
-        //       res.status !== 200
-        //     ) {
-        //       const responseTexts = [responseText];
-        //       debugger
-        //       let extraInfo = await res.clone().text();
-        //       try {
-        //         const resJson = await res.clone().json();
-        //         extraInfo = resJson;
-        //       } catch {}
-
-        //       if (res.status === 401) {
-        //         responseTexts.push(Locale.Error.Unauthorized);
-        //       }
-
-        //       if (extraInfo) {
-        //         debugger
-        //         responseTexts.push(apiClient.extractMessage(extraInfo));
-        //       }
-
-        //       responseText = responseTexts.join("\n\n");
-        //       debugger
-        //       return finish();
-        //     }
-        //   },
-        //   onmessage(msg) {
-        //     if (msg.data === "[DONE]" || finished) {
-        //       return finish();
-        //     }
-        //     const text = msg.data;
-        //     console.log("msg",msg)
-        //     try {
-        //       const json = JSON.parse(text) as {
-        //         choices: Array<{
-        //           delta: {
-        //             content: string;
-        //           };
-        //         }>;
-        //       };
-        //       const delta = json.choices[0]?.delta?.content;
-        //       if (delta) {
-        //         remainText += delta;
-        //       }
-        //     } catch (e) {
-        //       console.error("[Request] parse error", text);
-        //     }
-        //   },
-        //   onclose() {
-        //     finish();
-        //   },
-        //   onerror(e) {
-        //     options.onError?.(e);
-        //     throw e;
-        //   },
-        //   openWhenHidden: true,
-        // });
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
