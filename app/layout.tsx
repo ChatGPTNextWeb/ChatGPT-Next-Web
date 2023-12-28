@@ -6,8 +6,10 @@ import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
+
   title: "AI对话机器人-chatkore",
   description: "您的私人AI助理。可用于高品质翻译，知识库问答，AI客服等领域。",
+
   viewport: {
     width: "device-width",
     initialScale: 1,
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "ChatGPT Next Web",
+    title: "NextChat",
     statusBarStyle: "default",
   },
 };

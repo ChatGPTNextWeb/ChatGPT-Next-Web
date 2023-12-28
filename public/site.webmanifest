@@ -1,4 +1,5 @@
 {
+
     "name": "ChatKore Next Web",
     "short_name": "ChatKore",
     "icons": [
@@ -17,5 +18,4 @@
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
     "display": "standalone"
-  }
-  
+}
