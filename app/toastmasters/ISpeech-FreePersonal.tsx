@@ -723,7 +723,7 @@ export const FreePersonalQuestionPageBody = (props: {
             {ChatUtility.getWordsNumber(questionItem.Speech)} words
           </div>
           {questionItem.SpeechAudio != "" && (
-            <div className={styles_tm["video-container"]}>
+            <div className={styles_tm["flex-column-center"]}>
               <audio
                 controls
                 key={questionItem.SpeechAudio}

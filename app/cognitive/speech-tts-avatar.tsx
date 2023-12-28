@@ -191,6 +191,7 @@ export const onSynthesisAudio = async (
         };
 
         const mp3Url = await fetchAndUnzipMP3(response.data.outputs.result);
+        // const mp3Url = response.data.outputs.result;
         return {
           status: VideoFetchStatus.Succeeded,
           data: mp3Url,

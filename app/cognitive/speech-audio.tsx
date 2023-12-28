@@ -164,7 +164,9 @@ export const SpeechAudioShow: React.FC<SpeechAudioShowProps> = ({
   if (outputAvatar.status === VideoFetchStatus.Loading) {
     return (
       <div>
-        <h3 className={styles_tm["video-container"]}>Audio is generating...</h3>
+        <h3 className={styles_tm["flex-column-center"]}>
+          Audio is generating...
+        </h3>
         <Box sx={{ width: "100%" }}>
           <LinearProgress />
         </Box>
@@ -174,7 +176,7 @@ export const SpeechAudioShow: React.FC<SpeechAudioShowProps> = ({
 
   if (mp3Url) {
     return (
-      <div className={styles_tm["video-container"]}>
+      <div className={styles_tm["flex-column-center"]}>
         <audio controls style={{ width: "60%" }}>
           <source src={mp3Url} type="audio/mpeg" />
           Your browser does not support the audio element.

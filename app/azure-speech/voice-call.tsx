@@ -27,6 +27,8 @@ import { autoGrowTextArea } from "../utils";
 import { IScoreMetric } from "../toastmasters/ISpeechRoles";
 import { IconButton } from "../components/button";
 import SendWhiteIcon from "../icons/send-white.svg";
+import ResetIcon from "../icons/reload.svg";
+import MenuIcon from "../icons/menu.svg";
 
 import {
   Box,
@@ -77,12 +79,18 @@ import StopCircleIcon from "@mui/icons-material/StopCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
 import AvatarMui from "@mui/material/Avatar";
 import { PlayCircleOutlineOutlined } from "@mui/icons-material";
+import Skeleton from "@mui/material/Skeleton";
+
+import ReactLoading from "react-loading";
+import { Section, Title, Article, Prop } from "./react-loading";
 
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import {
   AvatarDefaultLanguage,
-  AzureAvatarLanguageVoices,
+  AzureAvatarLanguageToVoiceMap,
+  AzureLanguageToCountryMap,
+  AzureLanguageToWelcomeMap,
   AzureRoles,
   AzureTTSAvatarInput,
 } from "./AzureRoles";
@@ -92,7 +100,9 @@ import {
   onSynthesisAudio,
   onSynthesisAvatar,
 } from "../cognitive/speech-tts-avatar";
-import { speechRecognizer } from "../cognitive/speech-sdk";
+import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
+import { Path } from "../constant";
+import { useNavigate } from "react-router-dom";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -126,15 +136,30 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+  const navigate = useNavigate();
 
   enum SpeakTurnRoles {
     User = "user",
     GPT = "GPT",
   }
 
+  enum SpeakTurnStage {
+    UserSpeaking = "Listening...",
+    GPTThinking = "GPT Thinking...",
+    GPTSpeaking = "GPT Speaking...",
+  }
+
   const [calling, setCalling] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState("");
-  const [currentTurn, setCurrentTurn] = useState(SpeakTurnRoles.GPT); // user or ai
+  const callingRef = useRef(calling);
+  /* 使用 useRef 来存储 calling 的引用。useRef 创建的引用对象在值发生变化时，不会重新触发渲染，但能确保在整个组件生命周期内保持同一个引用。
+  这样，在 onStopVoiceCall 中改变 calling 的值后，callingRef.current 的值也会立即更新。
+  */
+  const [currentTurn, setCurrentTurn] = useState("");
+  const [currentStage, setCurrentStage] = useState("");
+  const [userMessage, setUserMessage] = useState("");
+  const [gptMessage, setGptMessage] = useState("");
+  const [audioSrc, setAudioSrc] = useState("");
+  const audioRef = useRef<HTMLAudioElement>();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
@@ -148,11 +173,6 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     if (calling === true) {
       onConversation();
     }
-
-    // return () => {
-    //   // 在组件卸载或 calling 状态变为 false 时停止循环
-    //   setCalling(false);
-    // };
   }, [calling, currentTurn]);
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
@@ -175,53 +195,130 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   const onConversation = async () => {
     if (currentTurn === SpeakTurnRoles.User) {
       let i = 0;
-      for (; i < 10; i++) {
+      const maxSeconds = 60;
+      for (; i < maxSeconds; i++) {
+        if (!callingRef.current) {
+          break; // 提前结束循环 for user Stop Calling
+        }
+
         try {
-          const userAsk = await speechRecognizer.recognizeOnceAsync("en");
-          console.log("userAsk: ", userAsk);
-          setCurrentMessage(userAsk);
+          setCurrentStage(SpeakTurnStage.UserSpeaking);
+          setUserMessage("");
+          const userAsk = await speechRecognizer.recognizeOnceAsync(
+            AzureLanguageToCountryMap[language],
+          );
+          // const userAsk = "who are you";
+          // console.log("userAsk: ", userAsk);
+          setUserMessage(userAsk);
           setCurrentTurn(SpeakTurnRoles.GPT);
+          break;
         } catch (error) {
-          console.error("Error recognizing user speech:", error);
+          // showToast(`Error recognizing in ${i} seconds`);
           // 模拟间隔
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
-      if (i >= 10) {
-        showToast(`Error recognizing user speech after waiting  ${i} seconds`);
-        setCalling(false);
+      if (i >= maxSeconds) {
+        showToast(`After waiting ${i} seconds, user speech lost`);
+        onStopVoiceCall();
       }
-    } else {
+    } else if (currentTurn === SpeakTurnRoles.GPT) {
       try {
-        chatStore.onUserInput(currentMessage);
-        // let response = "";
-        // while (!chatStore.getIsFinished()) // will stuck the page, should not use
-        // {
-        //   response = session.messages[session.messages.length - 1].content;
-        //   setCurrentMessage(response);
-        // }
-        // console.log("AI response: ", response);
+        setCurrentStage(SpeakTurnStage.GPTThinking);
+        setGptMessage("");
 
-        await chatStore.waitFinished();
-        let response = session.messages[session.messages.length - 1].content;
-        console.log("AI response: ", response);
-        setCurrentMessage(response);
-        setCurrentTurn(SpeakTurnRoles.User);
+        let gptResponse = "";
+        if (userMessage === "") {
+          // first welcome
+          gptResponse = AzureLanguageToWelcomeMap[language];
+        } else {
+          chatStore.onUserInput(userMessage);
+          await chatStore.waitFinished();
+          gptResponse = session.messages[session.messages.length - 1].content;
+        }
+        // console.log("AI response: ", gptResponse);
+        setGptMessage(gptResponse);
+
+        const setting: ISubmitAvatarSetting = {
+          Voice: AzureAvatarLanguageToVoiceMap[language][voiceNumber].Voice,
+        };
+        const audioResponse = await onSynthesisAudio(gptResponse, setting);
+
+        if (audioResponse.status !== VideoFetchStatus.Succeeded) {
+          showToast(
+            `Failed: status=${audioResponse.status}, data=${audioResponse.data}`,
+          );
+          onStopVoiceCall();
+          return;
+        }
+
+        setAudioSrc(audioResponse.data);
+        setCurrentStage(SpeakTurnStage.GPTSpeaking);
+        // await playAudio(audioResponse.data);
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        // setCurrentTurn(SpeakTurnRoles.User);
       } catch (error) {
         console.error("Error fetching AI response:", error);
         showToast(`Error fetching AI response: ${error}`);
-        setCalling(false);
+        onStopVoiceCall();
       }
     }
   };
 
-  const onStartVoiceCall = async () => {
-    setCalling(true);
+  async function handleAudioEnded() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setCurrentTurn(SpeakTurnRoles.User);
+  }
+
+  const playAudio = async (mp3url: string) => {
+    try {
+      const audio = new Audio(mp3url);
+      audioRef.current = audio;
+
+      await new Promise<void>((resolve, reject) => {
+        audio.onended = () => {
+          resolve(); // 在音频播放结束时 resolve Promise
+        };
+
+        audio.onerror = (error) => {
+          reject(error); // 如果出现播放错误，则 reject Promise
+        };
+
+        audio.play();
+      });
+    } catch (error) {
+      console.error("Error playing audio:", error);
+    }
   };
 
-  const onStopVoiceCall = async () => {
+  const onStartVoiceCall = () => {
+    setCalling(true);
+    callingRef.current = true; // 同步更新 useRef 的值
+    setCurrentTurn(SpeakTurnRoles.GPT);
+  };
+
+  const onStopVoiceCall = () => {
     setCalling(false);
+    callingRef.current = false; // 同步更新 useRef 的值
+
+    const audio = audioRef.current;
+    if (currentStage === SpeakTurnStage.GPTSpeaking && audio !== undefined) {
+      // 这两中方法效果一样
+      // audio.src = ''; // 将音频源设置为空字符串
+      // audio.load(); // 重新加载音频，停止并重置播放位置
+      audio.pause();
+      audio.currentTime = 0;
+    }
+
+    setCurrentTurn("");
+    setCurrentStage("");
+    setUserMessage("");
+    setGptMessage("");
+  };
+
+  const onReset = () => {
+    chatStore.resetSession();
+    onStopVoiceCall();
   };
 
   return (
@@ -239,24 +336,62 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         }}
       >
         <List>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AvatarMui
-              src="Azure/VoiceCall4.png"
-              sx={{ width: "25%", height: "25%", marginTop: "20px" }}
-            />
-            <h4>{`${
-              currentTurn === SpeakTurnRoles.User
-                ? SpeakTurnRoles.GPT
-                : SpeakTurnRoles.User
-            }: ${currentMessage}`}</h4>
-          </div>
+          <>
+            {currentStage === "" && (
+              <div className={styles_tm["flex-column-center"]}>
+                <AvatarMui
+                  src="Azure/VoiceCall4.png"
+                  sx={{ width: "25%", height: "25%", marginTop: "20px" }}
+                />
+              </div>
+            )}
+            {currentStage === SpeakTurnStage.UserSpeaking && (
+              <div className={styles_tm["flex-column-center"]}>
+                <h3>{currentStage}</h3>
+                <Article>
+                  <ReactLoading type={"cylon"} color="blue" />
+                </Article>
+                <h5 style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  {userMessage}
+                </h5>
+              </div>
+            )}
+            {currentStage === SpeakTurnStage.GPTThinking && (
+              <div className={styles_tm["flex-column-center"]}>
+                <h3>{currentStage}</h3>
+                <Article>
+                  <ReactLoading type={"spinningBubbles"} color="green" />
+                </Article>
+                <h5 style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  {userMessage}
+                </h5>
+              </div>
+            )}
+            {currentStage === SpeakTurnStage.GPTSpeaking && (
+              <div className={styles_tm["flex-column-center"]}>
+                <h3>{currentStage}</h3>
+                <Article>
+                  <ReactLoading type={"bars"} color="green" />
+                </Article>
+                <h5 style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  {gptMessage}
+                </h5>
+                {audioSrc !== "" && (
+                  <audio
+                    controls
+                    autoPlay
+                    style={{ width: "80%", height: "40px" }}
+                    onEnded={handleAudioEnded}
+                  >
+                    <source src={audioSrc} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                )}
+              </div>
+            )}
+          </>
+
+          <div style={{ marginBottom: "10px" }}></div>
         </List>
 
         <div style={{ marginBottom: "20px" }}></div>
@@ -277,11 +412,13 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleLanguageChange}
                 autoWidth
               >
-                {Object.keys(AzureAvatarLanguageVoices).map((item, index) => (
-                  <MenuItem key={index} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
+                {Object.keys(AzureAvatarLanguageToVoiceMap).map(
+                  (item, index) => (
+                    <MenuItem key={index} value={item}>
+                      {item}
+                    </MenuItem>
+                  ),
+                )}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -293,7 +430,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleVoiceChange}
                 autoWidth
               >
-                {AzureAvatarLanguageVoices[language].map((item, index) => (
+                {AzureAvatarLanguageToVoiceMap[language].map((item, index) => (
                   <MenuItem key={index} value={index.toString()}>
                     {item.Name}
                   </MenuItem>
@@ -302,12 +439,32 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
             </FormControl>
 
             {calling === false ? (
-              <IconButton
-                icon={<PhoneIcon />}
-                text="Call Me"
-                className={styles_tm["chat-input-button-submit"]}
-                onClick={onStartVoiceCall}
-              />
+              <>
+                <IconButton
+                  icon={<PhoneIcon />}
+                  text="Call Me"
+                  className={styles_tm["chat-input-button-submit"]}
+                  onClick={onStartVoiceCall}
+                />
+                <Button
+                  component="label"
+                  variant="outlined"
+                  startIcon={<ResetIcon />}
+                  style={{ textTransform: "none" }}
+                  onClick={onReset}
+                >
+                  Reset
+                </Button>
+                <Button
+                  component="label"
+                  variant="outlined"
+                  startIcon={<MenuIcon />}
+                  style={{ textTransform: "none" }}
+                  onClick={() => navigate(Path.Chat)}
+                >
+                  To chat
+                </Button>
+              </>
             ) : (
               <IconButton
                 icon={<PhoneIcon />}

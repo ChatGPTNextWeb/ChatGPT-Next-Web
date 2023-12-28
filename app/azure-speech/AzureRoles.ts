@@ -4,16 +4,33 @@ export enum AzureRoles {
   VoiceCall = "Voice Call",
 }
 
+export enum EAzureLanguages {
+  EnglishUnitedStates = "English (United States)",
+  ChineseMandarinSimplified = "Chinese (Mandarin, Simplified)",
+}
+
+export const AzureLanguageToCountryMap: Record<string, string> = {
+  [EAzureLanguages.ChineseMandarinSimplified]: "zh-CN",
+  [EAzureLanguages.EnglishUnitedStates]: "en-US",
+};
+
+export const AzureLanguageToWelcomeMap: Record<string, string> = {
+  [EAzureLanguages.ChineseMandarinSimplified]:
+    "您好, 我是Speech Copilot, 您可以问我任何问题",
+  [EAzureLanguages.EnglishUnitedStates]:
+    "Hello, I'm Speech Copilot. What can i do for you.",
+};
+
 interface IAzureLanguageVoiceItem {
   Name: string;
   Voice: string;
 }
 
-export const AzureAvatarLanguageVoices: Record<
+export const AzureAvatarLanguageToVoiceMap: Record<
   string,
   IAzureLanguageVoiceItem[]
 > = {
-  "English (United States)": [
+  [EAzureLanguages.EnglishUnitedStates]: [
     {
       Name: "Jenny(Female)",
       Voice: "en-US-JennyNeural",
@@ -23,7 +40,7 @@ export const AzureAvatarLanguageVoices: Record<
       Voice: "en-US-AndrewNeural",
     },
   ],
-  "Chinese (Mandarin, Simplified)": [
+  [EAzureLanguages.ChineseMandarinSimplified]: [
     {
       Name: "Xiaoxiao(Female)",
       Voice: "zh-CN-XiaoxiaoNeural",
@@ -35,7 +52,9 @@ export const AzureAvatarLanguageVoices: Record<
   ],
 };
 
-export const AvatarDefaultLanguage = Object.keys(AzureAvatarLanguageVoices)[0];
+export const AvatarDefaultLanguage = Object.keys(
+  AzureAvatarLanguageToVoiceMap,
+)[0];
 
 export class AzureTTSAvatarInput {
   InputText: string = "";

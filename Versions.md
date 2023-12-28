@@ -3,7 +3,10 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
-## v5.20231228
+## v6.20231229
+ - SpeechCopilot with Voice-call
+
+## v6.20231228
  - SpeechCopilot with Avatar
 
 ## v5.20231219

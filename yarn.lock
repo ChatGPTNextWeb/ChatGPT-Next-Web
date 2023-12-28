@@ -5969,6 +5969,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-loading@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-2.0.3.tgz#e8138fb0c3e4674e481b320802ac7048ae14ffb9"
+  integrity sha512-Vdqy79zq+bpeWJqC+xjltUjuGApyoItPgL0vgVfcJHhqwU7bAMKzysfGW/ADu6i0z0JiOCRJjo+IkFNkRNbA3A==
+
 react-markdown@^8.0.7:
   version "8.0.7"
   resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-8.0.7.tgz#c8dbd1b9ba5f1c5e7e5f2a44de465a3caafdf89b"
@@ -6724,6 +6729,11 @@ synckit@^0.8.5:
   dependencies:
     "@pkgr/utils" "^2.3.1"
     tslib "^2.5.0"
+
+tachyons-components@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/tachyons-components/-/tachyons-components-1.0.1.tgz#97c0d20e6d022b9b99a8b5d5f68579e2423d77a4"
+  integrity sha512-GiKXffqY01EQ8WWLecofD6uSYss8MbnlXmcishG5M7IbUyctytMVK8SK9jzmsXhwzFpXHOn48C2Ax9Y2r+BKew==
 
 tapable@^2.1.1, tapable@^2.2.0:
   version "2.2.1"

@@ -28,6 +28,27 @@ class SpeechSynthesizer {
     this.synthesizer.speakTextAsync(text);
   }
 
+  public startSynthesizeAsync(text: string, voiceName: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // set info
+      const speechConfig = sdk.SpeechConfig.fromSubscription(
+        config.speechSubscriptionKey!,
+        config.speechServiceRegion!,
+      );
+      speechConfig.speechSynthesisVoiceName = voiceName;
+      const synthesizer = new sdk.SpeechSynthesizer(speechConfig);
+
+      // 添加 SynthesisCompleted 事件监听器
+      synthesizer.synthesisCompleted = (s, e) => {
+        // 在语音合成完成后执行需要的操作
+        resolve(); // 语音合成完成，解析 Promise
+      };
+
+      // 开始语音合成
+      synthesizer.speakTextAsync(text);
+    });
+  }
+
   public stopSynthesize() {
     // TODO: this not work
     // we should take other way to stop recognizer
@@ -112,27 +133,79 @@ class SpeechRecognizer {
     });
   }
 
-  public recognizeOnceAsync(language: string): Promise<string> {
+  // eg. countryLanguage: en-us, zh-cn
+  public recognizeOnceAsync(countryLanguage: string): Promise<string> {
     return new Promise((resolve, reject) => {
+      // const speechConfig = sdk.SpeechConfig.fromSubscription(
+      //   config.speechSubscriptionKey!,
+      //   config.speechServiceRegion!,
+      // );
       const speechConfig = sdk.SpeechConfig.fromSubscription(
-        config.speechSubscriptionKey!,
-        config.speechServiceRegion!,
+        config.speechAvatarSubscriptionKey!,
+        config.speechAvatarServiceRegion!,
       );
-      speechConfig.speechRecognitionLanguage = RecondLanguages[language];
+      speechConfig.speechRecognitionLanguage = countryLanguage;
 
       const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
       const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
       // Start the transcription
-      recognizer.recognizeOnceAsync((result) => {
-        if (result.reason === sdk.ResultReason.RecognizedSpeech) {
-          resolve(result.text);
-        } else {
-          reject(`Transcription failed: ${result.reason}`);
-        }
-        recognizer.close();
-      });
+      recognizer.recognizeOnceAsync(
+        (result) => {
+          if (result.reason === sdk.ResultReason.RecognizedSpeech) {
+            resolve(result.text);
+          } else {
+            reject(`Transcription failed: ${result.reason}`);
+          }
+          recognizer.close();
+        },
+        (error) => {
+          recognizer.close();
+          reject(`Error in recognition: ${error}`);
+        },
+      );
     });
+  }
+
+  public initial(language: string): void {
+    // const speechConfig = sdk.SpeechConfig.fromSubscription(
+    //   config.speechSubscriptionKey!,
+    //   config.speechServiceRegion!,
+    // );
+    const speechConfig = sdk.SpeechConfig.fromSubscription(
+      config.speechAvatarSubscriptionKey!,
+      config.speechAvatarServiceRegion!,
+    );
+    speechConfig.speechRecognitionLanguage = RecondLanguages[language];
+
+    const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
+    this.recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+  }
+
+  public recognizeOnceAsync1(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      // Start the transcription
+      this.recognizer.recognizeOnceAsync(
+        (result) => {
+          if (result.reason === sdk.ResultReason.RecognizedSpeech) {
+            // recognizer.close();
+            resolve(result.text);
+          } else {
+            // recognizer.close();
+            reject(`Transcription failed: ${result.reason}`);
+          }
+        },
+        (error) => {
+          this.recognizer.close();
+          reject(`Error in recognition: ${error}`);
+        },
+      );
+    });
+  }
+
+  public colse(): void {
+    // TODO: the object is already disposed
+    this.recognizer.close();
   }
 
   private blobToFile(theBlob: Blob, fileName: string): File {
