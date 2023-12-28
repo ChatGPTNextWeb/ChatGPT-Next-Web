@@ -21,6 +21,9 @@ RUN # 清理遗留的缓存
 RUN yarn cache clean
 RUN yarn install
 
+# 避免下面那个报错
+RUN mkdir -p "/app/node_modules/tiktoken"
+
 FROM base AS builder
 
 ENV OPENAI_API_KEY=""
@@ -47,6 +50,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
+
+# 一个插件一直有问题。
+COPY --from=deps /app/node_modules/tiktoken ./node_modules/tiktoken
 
 RUN rm -f .env
 

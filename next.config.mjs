@@ -11,8 +11,8 @@ console.log("[Next] build with chunk: ", disableChunk);
 
 // 为了修复tiktoken的插件问题
 import CopyPlugin from "copy-webpack-plugin";
-
 const nextConfig = {
+  // transpilePackages: ['tiktoken'],
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -24,17 +24,22 @@ const nextConfig = {
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       )
     }
-    config.plugins.push(
-        new CopyPlugin({
-          patterns: [
-            {
-              from: ".//node_modules/tiktoken/tiktoken_bg.wasm",
-              to: "tiktoken_bg.wasm",
-              toType: "file",
-            }
-          ]
-        })
-    )
+    // turn off static file serving of WASM files
+    // we need to let Webpack handle WASM import
+    // config.module.rules
+    //   .find((i) => "oneOf" in i)
+    //   .oneOf.find((i) => i.type === "asset/resource")
+    //   .exclude.push(/\.wasm$/);
+    // config.plugins.push(
+    //     new CopyPlugin({
+    //       patterns: [
+    //         {
+    //           from: ".//node_modules/tiktoken/,
+    //           to: "",
+    //         }
+    //       ]
+    //     })
+    // )
 
     config.optimization.minimize = true
     config.optimization.splitChunks = {
