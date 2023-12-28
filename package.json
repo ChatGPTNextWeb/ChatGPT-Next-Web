@@ -25,6 +25,7 @@
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
     "duck-duck-scrape": "^2.2.4",
+    "@vercel/speed-insights": "^1.0.2",
     "emoji-picker-react": "^4.5.15",
     "encoding": "^0.1.13",
     "html-entities": "^2.4.0",
