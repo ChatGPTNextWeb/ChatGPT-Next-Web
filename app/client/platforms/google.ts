@@ -62,8 +62,6 @@ export class GeminiProApi implements LLMApi {
 
     console.log("[Request] google payload: ", requestPayload);
 
-    // todo: support stream later
-    // const shouldStream = false;
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
@@ -98,7 +96,6 @@ export class GeminiProApi implements LLMApi {
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
-            console.log("[Response Animation] finished");
             finish();
             return;
           }
@@ -139,9 +136,8 @@ export class GeminiProApi implements LLMApi {
                 let data = JSON.parse(ensureProperEnding(partialData));
                 console.log(data);
                 let fetchText = apiClient.extractMessage(data[data.length - 1]);
-                // responseText += fetchText;
+                console.log("[Response Animation] fetchText: ", fetchText);
                 remainText += fetchText;
-                // options.onUpdate?.(responseText, fetchText);
               } catch (error) {
                 // skip error message when parsing json
               }
