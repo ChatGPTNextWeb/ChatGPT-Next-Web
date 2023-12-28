@@ -58,8 +58,8 @@ export const DEFAULT_CONFIG = {
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
-    historyMessageCount: 4,
-    compressMessageLengthThreshold: 2000,
+    historyMessageCount: 5,
+    compressMessageLengthThreshold: 4000,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
   },
@@ -137,7 +137,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.891,
+    version: 3.892,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -168,7 +168,7 @@ export const useAppConfig = createPersistStore(
       if (version < 3.8) {
         state.lastUpdate = Date.now();
       }
-      if (version < 3.891) {
+      if (version < 3.892) {
         state.lastUpdate = Date.now();
         return { ...DEFAULT_CONFIG };
       }

@@ -70,7 +70,7 @@ async function handle(
     },
     cache: "no-store",
     method: req.method,
-    body: cloneBody,
+    body: cloneBody == "" ? null : cloneBody,
     signal: controller.signal,
     //@ts-ignore
     // duplex: "half",
