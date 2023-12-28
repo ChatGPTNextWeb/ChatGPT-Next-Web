@@ -162,7 +162,8 @@ export function SideBar(props: { className?: string }) {
           <br />
           1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
           <br />
-          2. 绘图：“/mj 提示词” 的格式生成图片
+          2. 绘图：“/mj 提示词”
+          的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
           <br />
           3. 如果觉得还不错，可以给作者赏杯咖啡
         </div>
