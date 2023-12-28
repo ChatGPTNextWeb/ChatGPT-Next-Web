@@ -7,6 +7,7 @@ import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_SYSTEM_TEMPLATE,
+  CHATGPT_SYSTEM_TEMPLATE,
   KnowledgeCutOffDate,
   ModelProvider,
   StoreKey,
@@ -386,9 +387,7 @@ export const useChatStore = createPersistStore(
         const contextPrompts = session.mask.context.slice();
 
         // system prompts, to get close to OpenAI Web ChatGPT
-        const shouldInjectSystemPrompts =
-          modelConfig.enableInjectSystemPrompts &&
-          session.mask.modelConfig.model.startsWith("gpt-");
+        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
 
         var systemPrompts: ChatMessage[] = [];
         systemPrompts = shouldInjectSystemPrompts
@@ -397,7 +396,7 @@ export const useChatStore = createPersistStore(
                 role: "system",
                 content: fillTemplateWith("", {
                   ...modelConfig,
-                  template: DEFAULT_SYSTEM_TEMPLATE,
+                  template: modelConfig.model.startsWith('gpt') ? CHATGPT_SYSTEM_TEMPLATE : DEFAULT_SYSTEM_TEMPLATE,
                 }),
               }),
             ]
