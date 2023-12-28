@@ -197,6 +197,15 @@ const RoutePaths: IRoutePath[] = [
       },
     ),
   },
+  {
+    Path: Path.AzureVoiceCall,
+    Element: dynamic(
+      async () => (await import("../azure-speech/voice-call")).Chat,
+      {
+        loading: () => <Loading noLogo />,
+      },
+    ),
+  },
 ];
 
 export function useSwitchTheme() {

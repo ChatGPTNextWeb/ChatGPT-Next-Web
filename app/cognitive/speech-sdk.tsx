@@ -112,47 +112,26 @@ class SpeechRecognizer {
     });
   }
 
-  // TODO: not success
-  public transcribeAudio1(blob: Blob): Promise<string> {
+  public recognizeOnceAsync(language: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      // Setup the Speech SDK
-      const audioFile = this.blobToFile(blob, "audio.wav");
-      const audioConfig = sdk.AudioConfig.fromWavFileInput(audioFile);
       const speechConfig = sdk.SpeechConfig.fromSubscription(
         config.speechSubscriptionKey!,
         config.speechServiceRegion!,
       );
-      speechConfig.speechRecognitionLanguage = RecondLanguages["en"];
+      speechConfig.speechRecognitionLanguage = RecondLanguages[language];
 
-      // Create the Speech Recognizer
+      const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
       const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
+      // Start the transcription
       recognizer.recognizeOnceAsync((result) => {
         if (result.reason === sdk.ResultReason.RecognizedSpeech) {
-          console.log(`Recognized: ${result.text}`);
-        } else if (result.reason === sdk.ResultReason.NoMatch) {
-          console.log("No speech could be recognized.");
-        } else if (result.reason === sdk.ResultReason.Canceled) {
-          const cancellation = sdk.CancellationDetails.fromResult(result);
-          console.log(`CANCELED: Reason=${cancellation.reason}`);
-
-          if (cancellation.reason === sdk.CancellationReason.Error) {
-            console.log(`CANCELED: ErrorCode=${cancellation.ErrorCode}`);
-            console.log(`CANCELED: ErrorDetails=${cancellation.errorDetails}`);
-            console.log("CANCELED: Did you update the subscription info?");
-          }
+          resolve(result.text);
+        } else {
+          reject(`Transcription failed: ${result.reason}`);
         }
+        recognizer.close();
       });
-
-      // // Start the transcription
-      // recognizer.recognizeOnceAsync(result => {
-      //   if (result.reason === sdk.ResultReason.RecognizedSpeech) {
-      //     resolve(result.text);
-      //   } else {
-      //     reject(`Transcription failed: ${result.reason}`);
-      //   }
-      //   recognizer.close();
-      // });
     });
   }
 

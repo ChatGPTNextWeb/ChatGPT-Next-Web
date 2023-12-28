@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  ChangeEvent,
+  useCallback,
+} from "react";
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -69,10 +75,11 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
+import AvatarMui from "@mui/material/Avatar";
+import { PlayCircleOutlineOutlined } from "@mui/icons-material";
 
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
-import { PlayCircleOutlineOutlined } from "@mui/icons-material";
 import {
   AvatarDefaultLanguage,
   AzureAvatarLanguageVoices,
@@ -85,6 +92,7 @@ import {
   onSynthesisAudio,
   onSynthesisAvatar,
 } from "../cognitive/speech-tts-avatar";
+import { speechRecognizer } from "../cognitive/speech-sdk";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -119,20 +127,33 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     state.currentSessionIndex,
   ]);
 
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  enum SpeakTurnRoles {
+    User = "user",
+    GPT = "GPT",
+  }
 
+  const [calling, setCalling] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [currentTurn, setCurrentTurn] = useState(SpeakTurnRoles.GPT); // user or ai
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
-  const [previewVideo, setPreviewVideo] = useState(false);
-  const [previewAudio, setPreviewAudio] = useState(false);
 
   // from input
-  const [inputText, setInputText] = useState(inputCopilot.InputText);
-  const [videoSrc, setVideoSrc] = useState(inputCopilot.VideoSrc);
-  const [audioSrc, setAudioSrc] = useState(inputCopilot.AudioSrc);
   const [language, setLanguage] = useState(inputCopilot.Language);
   const [voiceNumber, setVoiceNumber] = useState(inputCopilot.VoiceNumber);
-  const [tabValue, setTabValue] = React.useState("1");
+
+  useEffect(() => {
+    if (calling === true) {
+      onConversation();
+    }
+
+    // return () => {
+    //   // 在组件卸载或 calling 状态变为 false 时停止循环
+    //   setCalling(false);
+    // };
+  }, [calling, currentTurn]);
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
     const newValue = event.target.value;
@@ -146,69 +167,61 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     setVoiceNumber(newValue);
     inputCopilot.VoiceNumber = newValue;
   };
-  const handleInputTextChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const newValue = event.target.value;
-    setInputText(newValue);
-    inputCopilot.InputText = newValue;
-  };
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-  };
 
   const getInputsString = (): string => {
     return "";
   };
 
-  const onPreviewVideo = async () => {
-    if (inputText === "") {
-      showToast(`Input Text could not be empty`);
-      return;
+  const onConversation = async () => {
+    if (currentTurn === SpeakTurnRoles.User) {
+      let i = 0;
+      for (; i < 10; i++) {
+        try {
+          const userAsk = await speechRecognizer.recognizeOnceAsync("en");
+          console.log("userAsk: ", userAsk);
+          setCurrentMessage(userAsk);
+          setCurrentTurn(SpeakTurnRoles.GPT);
+        } catch (error) {
+          console.error("Error recognizing user speech:", error);
+          // 模拟间隔
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+      if (i >= 10) {
+        showToast(`Error recognizing user speech after waiting  ${i} seconds`);
+        setCalling(false);
+      }
+    } else {
+      try {
+        chatStore.onUserInput(currentMessage);
+        // let response = "";
+        // while (!chatStore.getIsFinished()) // will stuck the page, should not use
+        // {
+        //   response = session.messages[session.messages.length - 1].content;
+        //   setCurrentMessage(response);
+        // }
+        // console.log("AI response: ", response);
+
+        await chatStore.waitFinished();
+        let response = session.messages[session.messages.length - 1].content;
+        console.log("AI response: ", response);
+        setCurrentMessage(response);
+        setCurrentTurn(SpeakTurnRoles.User);
+      } catch (error) {
+        console.error("Error fetching AI response:", error);
+        showToast(`Error fetching AI response: ${error}`);
+        setCalling(false);
+      }
     }
-
-    setPreviewVideo(true);
-    setVideoSrc("");
-
-    const setting: ISubmitAvatarSetting = {
-      Voice: AzureAvatarLanguageVoices[language][voiceNumber].Voice,
-    };
-    const response = await onSynthesisAvatar(inputText, setting);
-    if (response.status !== VideoFetchStatus.Succeeded) {
-      showToast(`Failed: status=${response.status}, data=${response.data}`);
-      setPreviewVideo(false);
-      return;
-    }
-
-    console.log("onPreviewVideo: videoSrc: ", response.data);
-    inputCopilot.VideoSrc = response.data;
-    setVideoSrc(response.data);
-    setPreviewVideo(false);
   };
 
-  const onPreviewAudio = async () => {
-    if (inputText === "") {
-      showToast(`Input Text could not be empty`);
-      return;
-    }
+  const onStartVoiceCall = async () => {
+    setCalling(true);
+    setCurrentTurn(SpeakTurnRoles.User);
+  };
 
-    setPreviewAudio(true);
-    setAudioSrc("");
-
-    const setting: ISubmitAvatarSetting = {
-      Voice: AzureAvatarLanguageVoices[language][voiceNumber].Voice,
-    };
-    const response = await onSynthesisAudio(inputText, setting);
-    if (response.status !== VideoFetchStatus.Succeeded) {
-      showToast(`Failed: status=${response.status}, data=${response.data}`);
-      setPreviewAudio(false);
-      return;
-    }
-
-    inputCopilot.AudioSrc = response.data;
-    setAudioSrc(response.data);
-    setPreviewAudio(false);
+  const onStopVoiceCall = async () => {
+    setCalling(false);
   };
 
   return (
@@ -226,63 +239,25 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         }}
       >
         <List>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                // width: "100%",
-              }}
-            >
-              {videoSrc === "" ? (
-                <img
-                  src="Azure/lisa-casual-sitting-transparent-bg.png"
-                  width="80%"
-                />
-              ) : (
-                <div className={styles_tm["video-container"]}>
-                  <video controls width="80%" preload="metadata">
-                    <source src={videoSrc} type="video/webm" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              )}
-              <h4>Microsoft Azure AI Avatar</h4>
-              {/* TODO: 字幕 */}
-            </div>
-
-            {/* <Box sx={{ typography: 'body1' }}>
-              <TabContext value={tabValue}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <TabList onChange={handleTabChange} aria-label="lab API tabs example">
-                    <Tab label="Avatar" value="1" />
-                    <Tab label="Background" value="2" />
-                  </TabList>
-                </Box>
-                <TabPanel value="1">Item One</TabPanel>
-                <TabPanel value="2">Item Two</TabPanel>
-              </TabContext>
-            </Box> */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <AvatarMui
+              src="Azure/VoiceCall4.png"
+              sx={{ width: "25%", height: "25%", marginTop: "20px" }}
+            />
+            <h4>{`${
+              currentTurn === SpeakTurnRoles.User
+                ? SpeakTurnRoles.GPT
+                : SpeakTurnRoles.User
+            }: ${currentMessage}`}</h4>
           </div>
         </List>
-
-        <Stack spacing={2} direction="row" justifyContent="center">
-          <LoadingButton
-            size="small"
-            onClick={onPreviewVideo}
-            loading={previewVideo}
-            variant="contained"
-            loadingPosition="start"
-            style={{ textTransform: "none" }}
-          >
-            <span>Preview video</span>
-          </LoadingButton>
-          {/* <Button variant="outlined" style={{ textTransform: "none" }}>
-            Export video
-          </Button> */}
-        </Stack>
 
         <div style={{ marginBottom: "20px" }}></div>
 
@@ -325,49 +300,24 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 ))}
               </Select>
             </FormControl>
-            <LoadingButton
-              size="small"
-              onClick={onPreviewAudio}
-              loading={previewAudio}
-              variant="outlined"
-              startIcon={<PlayCircleOutlineOutlined />}
-              loadingPosition="start"
-              style={{ textTransform: "none" }}
-            >
-              <span>Preview audio</span>
-            </LoadingButton>
 
-            {audioSrc !== "" && (
-              <audio controls style={{ width: "30%", height: "40px" }}>
-                <source src={audioSrc} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio>
+            {calling === false ? (
+              <IconButton
+                icon={<PhoneIcon />}
+                text="Call Me"
+                className={styles_tm["chat-input-button-submit"]}
+                onClick={onStartVoiceCall}
+              />
+            ) : (
+              <IconButton
+                icon={<PhoneIcon />}
+                text="Stop Calling"
+                className={styles_tm["chat-input-button-submitting"]}
+                onClick={onStopVoiceCall}
+              />
             )}
           </Stack>
-          <BorderLine></BorderLine>
-          <div style={{ position: "relative", display: "flex", flex: 1 }}>
-            <TextField
-              label="Input Text"
-              value={inputText}
-              onChange={handleInputTextChange}
-              multiline
-              sx={{
-                width: "100%",
-                marginTop: "10px",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                right: "20px",
-                top: "-10px",
-                opacity: 0.5,
-                fontSize: "12px",
-              }}
-            >
-              {ChatUtility.getWordsNumber(inputText)} words
-            </div>
-          </div>
+          <div style={{ marginBottom: "10px" }}></div>
         </List>
       </div>
     </div>

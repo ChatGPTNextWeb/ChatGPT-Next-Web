@@ -8,7 +8,7 @@ import { AzureRoles } from "../azure-speech/AzureRoles";
 
 export const EN_MASKS: BuiltinMask[] = [
   {
-    avatar: "OpenAI-FreeChat.png",
+    avatar: "OpenAI/FreeChat.png",
     name: "Free Chat",
     context: [],
     modelConfig: {
@@ -29,16 +29,9 @@ export const EN_MASKS: BuiltinMask[] = [
   },
 
   {
-    avatar: "lisa-casual-sitting-transparent-bg.png",
+    avatar: "Azure/lisa-casual-sitting-transparent-bg.png",
     name: AzureRoles.TTSAvatar,
-    context: [
-      {
-        role: "user",
-        content: `
-        `,
-        date: "",
-      },
-    ],
+    context: [],
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 0.5,
@@ -55,10 +48,30 @@ export const EN_MASKS: BuiltinMask[] = [
     group: BuiltinMaskGroup.AzureSpeech,
     description: "Create photorealistic avatar talking video with text input",
   },
+  {
+    avatar: "Azure/VoiceCall3.png",
+    name: AzureRoles.VoiceCall,
+    context: [],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.AzureVoiceCall,
+    group: BuiltinMaskGroup.AzureSpeech,
+    description: "Voice communication with GPT using Azure Speech Service",
+  },
 
   // BuiltinMaskGroup.Toastmasters
   {
-    avatar: "SpeechCopilot-ImpromptuSpeechCopilot.png",
+    avatar: "SpeechCopilot/ImpromptuSpeechCopilot.png",
     name: ToastmastersRoles.ImpromptuSpeechCopilot,
     context: [
       {
@@ -88,7 +101,7 @@ export const EN_MASKS: BuiltinMask[] = [
     description: "Help score and evaluate user's Impromptu Speech",
   },
   {
-    avatar: "SpeechCopilot-TableTopicsMaster.png",
+    avatar: "SpeechCopilot/TableTopicsMaster.png",
     name: ToastmastersRoles.TableTopicsMaster,
     context: [
       {
@@ -237,7 +250,7 @@ export const EN_MASKS: BuiltinMask[] = [
   //   group: BuiltinMaskGroup.Toastmasters,
   // },
   {
-    avatar: "SpeechCopilot-Timer.png",
+    avatar: "SpeechCopilot/Timer.png",
     name: ToastmastersRoles.Timer,
     context: [
       {
@@ -323,7 +336,7 @@ export const EN_MASKS: BuiltinMask[] = [
 
   // Toefl Copilot
   {
-    avatar: "ToeflCopilot-IntegrateWriting4.png",
+    avatar: "Toefl/IntegrateWriting4.png",
     name: EToeflRoles.IntegratedWriting,
     context: [
       {

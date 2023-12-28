@@ -142,7 +142,7 @@ function ImpromptuSpeechSetting() {
       session.inputCopilot.QuestionNums,
     );
     chatStore.onUserInput(ask);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
     setSubmitProgress(progressStep);
 
     let response = session.messages[session.messages.length - 1].content;
@@ -161,7 +161,7 @@ function ImpromptuSpeechSetting() {
       let question = stringArray[i];
       ask = ImpromptuSpeechPrompts.GetSampleSpeechPrompt(i, question);
       chatStore.onUserInput(ask);
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
 
       response = session.messages[session.messages.length - 1].content;
       let questionItem = new IQuestionItem();

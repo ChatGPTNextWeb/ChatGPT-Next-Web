@@ -147,7 +147,7 @@ export function Chat() {
     // chatStore.resetSessionFromIndex(2 + length);
 
     chatStore.onUserInput(ask, "Guidance");
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
 
     const newItem = new InputTableRow();
     newItem.speaker = `Question${session.input.datas.length + 1}`;

@@ -410,11 +410,11 @@ export const ChatSubmitCheckbox = (props: {
     for (const selectItem of selectItems) {
       const _RolePrompts = props.toastmastersRecord[selectItem.name];
       for (const item of _RolePrompts) {
-        await chatStore.getIsFinished();
+        await chatStore.waitFinished();
         let ask = item.contentWithSetting(session.input.setting[item.role]);
         chatStore.onUserInput(ask, item.role);
       }
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
     }
     setSubmitting(false);
 
@@ -508,13 +508,13 @@ export const ChatSubmitRadiobox = (props: {
     let ask = checkInputResult.guidance;
     chatStore.onUserInput(ask, ToastmastersRoles.Guidance);
     for (const item of toastmastersRolePrompts) {
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
 
       // TODO: move setting into item, but when retry, it will lose
       ask = item.contentWithSetting(session.input.setting[item.role]);
       chatStore.onUserInput(ask, item.role);
     }
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
 
     setSubmitting(false);
 
@@ -647,7 +647,7 @@ export const ChatResponse = (props: {
       let item = toastmastersRolePrompts[i];
       let ask = item.contentWithSetting(session.input.setting[item.role]);
       chatStore.onUserInput(ask, item.role);
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
     }
   };
 

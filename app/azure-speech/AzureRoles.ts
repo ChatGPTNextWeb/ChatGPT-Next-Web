@@ -1,6 +1,7 @@
 export enum AzureRoles {
   TTSAvatar = "Text-to-Speech Avatar",
   LiveChatAvatar = "Live chat Avatar",
+  VoiceCall = "Voice Call",
 }
 
 interface IAzureLanguageVoiceItem {

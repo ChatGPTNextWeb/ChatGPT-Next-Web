@@ -171,8 +171,8 @@ interface ChatStore {
   resetSessionFromIndex: (index: number) => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
-  getIsFinished: () => Promise<boolean>;
-
+  waitFinished: () => Promise<boolean>;
+  getIsFinished: () => boolean;
   clearAllData: () => void;
 }
 
@@ -348,10 +348,14 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async getIsFinished() {
+      async waitFinished() {
         while (!get().isFinished) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
+        return get().isFinished;
+      },
+
+      getIsFinished() {
         return get().isFinished;
       },
 

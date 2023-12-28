@@ -136,7 +136,7 @@ export function SideBar(props: { className?: string }) {
           onClick={() => navigate(Path.Masks)}
           shadow
         />
-        <IconButton
+        {/* <IconButton
           icon={<AddIcon />}
           text={shouldNarrow ? undefined : Locale.Home.NewChat}
           onClick={() => {
@@ -144,7 +144,7 @@ export function SideBar(props: { className?: string }) {
             setTimeout(() => navigate(Path.Chat), 1);
           }}
           shadow
-        />
+        /> */}
 
         {/* TODO: 该功能仍正在开发中 */}
         {/* <IconButton

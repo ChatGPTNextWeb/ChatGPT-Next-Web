@@ -155,13 +155,13 @@ export function Chat() {
     setSubmitProgressInfo("Get Guidance...");
     let ask = ToeflWritingPrompts.GetGuidance(reading, listening, writing);
     chatStore.onUserInput(ask);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
 
     // (2) Scores
     setSubmitProgressInfo("Get Scores...");
     ask = ToeflWritingPrompts.GetScorePrompt();
     chatStore.onUserInput(ask);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
 
     let response = session.messages[session.messages.length - 1].content;
     console.log("Scores: ", response);
@@ -194,7 +194,7 @@ export function Chat() {
     setSubmitProgressInfo(`Get ${EToeflRoles.GeneralFeedback}...`);
     ask = ToeflWritingPrompts.GetGeneralFeedbackPrompt();
     chatStore.onUserInput(ask);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
     response = session.messages[session.messages.length - 1].content;
     // console.log("response: ", response);
     chatStore.updateCurrentSession(
@@ -216,14 +216,14 @@ export function Chat() {
     for (const role of evaluationRoles) {
       setSubmitProgressInfo(`Get ${role}...`);
       chatStore.onUserInput(evaluationPropmts[role]);
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
       const response = session.messages[session.messages.length - 1].content;
       // console.log("response: ", response);
       chatStore.updateCurrentSession(
         (session) => (inputCopilot.Evaluations[role] = response),
       );
     }
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
 
     // setEvaluating(false);
   };
@@ -238,7 +238,7 @@ export function Chat() {
 
     const evaluationPropmts = ToeflWritingPrompts.GetEvaluationPrompts();
     chatStore.onUserInput(evaluationPropmts[role]);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
     const response = session.messages[session.messages.length - 1].content;
     chatStore.updateCurrentSession(
       (session) => (inputCopilot.Evaluations[role] = response),

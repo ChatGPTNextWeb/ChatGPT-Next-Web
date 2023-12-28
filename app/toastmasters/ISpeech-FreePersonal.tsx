@@ -330,7 +330,7 @@ export const FreePersonalQuestionPageBody = (props: {
     );
     chatStore.onUserInput(ask);
 
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
     const response = session.messages[session.messages.length - 1].content;
 
     let scores: IScoreMetric[] = [];
@@ -384,7 +384,7 @@ export const FreePersonalQuestionPageBody = (props: {
       questionItem.Question,
     );
     chatStore.onUserInput(ask);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
     const response = session.messages[session.messages.length - 1].content;
     chatStore.updateCurrentSession(
       (session) => (questionItem.SampleSpeech = response),
@@ -405,7 +405,7 @@ export const FreePersonalQuestionPageBody = (props: {
     );
 
     chatStore.onUserInput(propmts[role]);
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
     const response = session.messages[session.messages.length - 1].content;
     chatStore.updateCurrentSession(
       (session) => (questionItem.Evaluations[role] = response),
@@ -435,14 +435,14 @@ export const FreePersonalQuestionPageBody = (props: {
 
     for (const role of evaluationRoles) {
       chatStore.onUserInput(propmts[role]);
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
       const response = session.messages[session.messages.length - 1].content;
       // console.log("response: ", response);
       chatStore.updateCurrentSession(
         (session) => (questionItem.Evaluations[role] = response),
       );
     }
-    await chatStore.getIsFinished();
+    await chatStore.waitFinished();
 
     chatStore.resetSessionFromIndex(4);
     setEvaluating(false);
@@ -1036,7 +1036,7 @@ export function FreePersonalReport(props: {
       );
 
       chatStore.onUserInput(propmts[role]);
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
       const response = session.messages[session.messages.length - 1].content;
       chatStore.updateCurrentSession(
         (session) => (impromptuSpeechInput.TotalEvaluations[role] = response),
@@ -1063,13 +1063,13 @@ export function FreePersonalReport(props: {
 
       for (const role of evaluationRoles) {
         chatStore.onUserInput(propmts[role]);
-        await chatStore.getIsFinished();
+        await chatStore.waitFinished();
         const response = session.messages[session.messages.length - 1].content;
         chatStore.updateCurrentSession(
           (session) => (impromptuSpeechInput.TotalEvaluations[role] = response),
         );
       }
-      await chatStore.getIsFinished();
+      await chatStore.waitFinished();
 
       chatStore.resetSessionFromIndex(4);
       setEvaluating(false);

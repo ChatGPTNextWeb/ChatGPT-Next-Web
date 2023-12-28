@@ -610,7 +610,7 @@ export function Chat() {
 
     // voice
     autoPlay &&
-      chatStore.getIsFinished().then(() => {
+      chatStore.waitFinished().then(() => {
         var text = session.messages[session.messages.length - 1].content;
         speechSynthesizer.startSynthesize(text, speechLanguage);
       });
