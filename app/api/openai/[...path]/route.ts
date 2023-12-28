@@ -77,7 +77,8 @@ async function handle(
 
   try {
     const protocol = req.headers.get("x-forwarded-proto") || "http";
-    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+    //const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+    const baseUrl = "http://localhost:3000";
     const ip = getIP(req);
     // 对其进行 Base64 解码
     let h_userName = req.headers.get("x-request-name");

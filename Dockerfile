@@ -52,6 +52,7 @@ RUN rm -f .env
 
 EXPOSE 3000
 ENV KEEP_ALIVE_TIMEOUT=30
+ENV HOSTNAME=""
 
 CMD if [ -n "$PROXY_URL" ]; then \
     export HOSTNAME="127.0.0.1"; \

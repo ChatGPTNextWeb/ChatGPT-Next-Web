@@ -13,13 +13,17 @@ async function handle(
       await insertUser({ name: request_data?.userName });
     }
     // console.log("===========4", request_data);
-    if (request_data?.logEntry) {
-      const regex = /\[(.*)]/g;
-      const matchResponse = request_data.logEntry.match(regex);
-      if (matchResponse.length > 0) {
-        request_data.logToken = getTokenLength(matchResponse[0]);
+    try {
+      if (request_data?.logEntry) {
+        const regex = /\[(.*)]/g;
+        const matchResponse = request_data.logEntry.match(regex);
+        if (matchResponse.length > 0) {
+          request_data.logToken = getTokenLength(matchResponse[0]);
+        }
       }
-      // console.log('=======', request_data.logEntry, '=====', matchResponse);
+    } catch (e) {
+      console.log("[LOG]", "logToken", e);
+      request_data.logToken = 0;
     }
 
     await prisma.logEntry.create({
