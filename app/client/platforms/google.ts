@@ -187,7 +187,9 @@ export class GeminiProApi implements LLMApi {
   }
   path(path: string): string {
     const accessStore = useAccessStore.getState();
-    const isGoogle = accessStore.provider === ServiceProvider.Google;
+    const isGoogle =
+      accessStore.useCustomConfig &&
+      accessStore.provider === ServiceProvider.Google;
 
     if (isGoogle && !accessStore.isValidGoogle()) {
       throw Error(
