@@ -174,20 +174,25 @@ export function getHeaders(ignoreHeaders?: boolean) {
     headers = {
       "Content-Type": "application/json",
       "x-requested-with": "XMLHttpRequest",
-      "Accept": "application/json",
+      Accept: "application/json",
     };
   }
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
   const isGoogle = modelConfig.model === "gemini-pro";
   const isAzure = accessStore.provider === ServiceProvider.Azure;
-  const authHeader = isAzure ? "api-key" : "Authorization";
+  const authHeader = isGoogle
+    ? "x-goog-api-key"
+    : isAzure
+    ? "api-key"
+    : "Authorization";
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
     ? accessStore.azureApiKey
     : accessStore.openaiApiKey;
 
-  const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
+  const makeBearer = (s: string) =>
+    `${isGoogle || isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;
 
   // use user's api key first

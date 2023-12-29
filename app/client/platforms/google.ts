@@ -1,4 +1,9 @@
-import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  ApiPath,
+  Google,
+  REQUEST_TIMEOUT_MS,
+  ServiceProvider,
+} from "@/app/constant";
 import {
   AgentChatOptions,
   ChatOptions,
@@ -8,14 +13,7 @@ import {
   LLMUsage,
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
-import Locale from "../../locales";
-import { getServerSideConfig } from "@/app/config/server";
+
 export class GeminiProApi implements LLMApi {
   toolAgentChat(options: AgentChatOptions): Promise<void> {
     throw new Error("Method not implemented.");
@@ -188,7 +186,28 @@ export class GeminiProApi implements LLMApi {
     return [];
   }
   path(path: string): string {
-    return "/api/google/" + path;
+    const accessStore = useAccessStore.getState();
+    const isGoogle = accessStore.provider === ServiceProvider.Google;
+
+    if (isGoogle && !accessStore.isValidGoogle()) {
+      throw Error(
+        "incomplete google config, please check it in your settings page",
+      );
+    }
+
+    let baseUrl = isGoogle ? accessStore.googleBaseUrl : ApiPath.GoogleAI;
+
+    if (baseUrl.length === 0) {
+      baseUrl = ApiPath.GoogleAI;
+    }
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
+    }
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.GoogleAI)) {
+      baseUrl = "https://" + baseUrl;
+    }
+
+    return [baseUrl, path].join("/");
   }
 }
 

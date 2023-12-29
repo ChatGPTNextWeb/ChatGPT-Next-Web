@@ -46,7 +46,7 @@ async function handle(
     });
   }
 
-  const bearToken = req.headers.get("Authorization") ?? "";
+  const bearToken = req.headers.get("x-goog-api-key") ?? "";
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
 
   const key = token ? token : serverConfig.googleApiKey;
@@ -63,7 +63,7 @@ async function handle(
     );
   }
 
-  const fetchUrl = `${baseUrl}/${path}?key=${key}&alt=sse`;
+  const fetchUrl = `${baseUrl}/${path}?key=${key}`;
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
