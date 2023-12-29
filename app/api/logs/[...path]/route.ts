@@ -6,6 +6,7 @@ import { insertUser } from "@/lib/auth";
 // import cl100k_base from "tiktoken/encoders/cl100k_base.json"
 import "tiktoken";
 import { get_encoding } from "tiktoken";
+import { addHours, subMinutes } from "date-fns";
 
 function getTokenLength(input: string): number {
   // const { Tiktoken } = require("tiktoken/lite");
@@ -45,6 +46,10 @@ async function handle(
       console.log("[LOG]", "logToken", e);
       request_data.logToken = 0;
     }
+    // 默认时间不准，还是手动获取一下吧。
+    // 转换时区太麻烦，我还是直接减去时差
+    // const current_time = new Date();
+    // request_data.createdAt = subMinutes(current_time, current_time.getTimezoneOffset())
 
     await prisma.logEntry.create({
       data: request_data,

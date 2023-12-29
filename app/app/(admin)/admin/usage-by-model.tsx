@@ -2,7 +2,9 @@ import * as echarts from "echarts";
 import { EChartsOption } from "echarts";
 import dynamic from "next/dynamic";
 import prisma from "@/lib/prisma";
-import { addHours } from "date-fns";
+import { addHours, subMinutes } from "date-fns";
+import { log } from "util";
+import { use } from "react";
 
 // import { getTokenLength } from "@/app/utils/token";
 
@@ -10,53 +12,60 @@ const UsageByModelChart = dynamic(() => import("./usage-by-model-chart"), {
   ssr: false,
 });
 
+interface StringKeyedObject {
+  [key: string]: { [key: string]: number };
+}
+// interface StringArray {
+//   strings: string[];
+// }
+
+type StringSet = Set<string>;
+type StringArray = string[];
+
 function HandleLogData(
-  todayLog: [{ userName: string; logEntry: string; logToken: number }],
+  todayLog: [{ userName: string; logToken: number; model: string }],
 ) {
-  const data1 = todayLog.map((log) => {
+  // 先遍历一遍，获取所有的模型和名字。
+  let all_models: StringSet = new Set();
+  let all_names: StringSet = new Set();
+  // 拼接数据结构
+  let data_by_name: StringKeyedObject = {};
+  todayLog.map((log) => {
+    all_models.add(log.model);
+    all_names.add(log.userName);
+    data_by_name[log.userName] = data_by_name[log.userName] ?? {};
+    data_by_name[log.userName][log.model] =
+      (data_by_name[log.userName][log.model] || 0) + log.logToken;
+    // 这么顺利，顺便加个总数吧。
+    data_by_name[log.userName]["all_token"] =
+      (data_by_name[log.userName]["all_token"] || 0) + log.logToken;
+  });
+  //
+  // 然后遍历并以all_token，排序。
+  const userNameList: StringArray = Array.from(all_names).sort((a, b) => {
+    return data_by_name[a]["all_token"] - data_by_name[b]["all_token"];
+  });
+  // 将值按模型分为两个序列
+  const modelNameList = Array.from(all_models).map((model) => {
     return {
-      name: log.userName ?? "unknown",
-      value: log.logToken,
+      name: model,
+      data: userNameList.map((userName) => {
+        return data_by_name[userName][model] ?? null;
+      }),
     };
   });
-
-  type Accumulator = {
-    [key: string]: number;
+  console.log("看看", modelNameList);
+  return {
+    modelNameList,
+    userNameList,
+    data_by_name,
   };
-  const data2 = data1.reduce<Accumulator>((acc, item) => {
-    if (acc[item.name]) {
-      acc[item.name] += item.value;
-    } else {
-      acc[item.name] = item.value;
-    }
-    return acc;
-  }, {});
-  const data3 = Object.entries(data2)
-    .map(([name, value]) => ({
-      name,
-      value,
-    }))
-    .sort((a, b) => {
-      return a.value - b.value;
-    });
-
-  const data4 = data3.reduce(
-    (acc, cur) => {
-      // @ts-ignore
-      acc.name.push(cur.name);
-      // @ts-ignore
-      acc.value.push(cur.value);
-      return acc;
-    },
-    { name: [], value: [] },
-  );
-  return data4;
 }
 
 export default async function UsageByModel() {
   // 今天日期的开始和结束
   var today = new Date();
-  today = addHours(today, +8);
+  // today = subMinutes(today, today.getTimezoneOffset())
   const startOfTheDayInTimeZone = new Date(
     today.getFullYear(),
     today.getMonth(),
@@ -65,19 +74,7 @@ export default async function UsageByModel() {
     0,
     0,
   );
-  // const endOfTheDayInTimeZone = new Date(
-  //   today.getFullYear(),
-  //   today.getMonth(),
-  //   today.getDate(),
-  //   23,
-  //   59,
-  //   59,
-  // ); // 当天的结束时间
   const endOfTheDayInTimeZone = addHours(startOfTheDayInTimeZone, +24); // 当天的结束时间
-
-  // const startDate = addHours(startOfTheDayInTimeZone, -8);
-  // const endDate = addHours(endOfTheDayInTimeZone, -8);
-  console.log("===", today, startOfTheDayInTimeZone, endOfTheDayInTimeZone);
   const todayLog = await prisma.logEntry.findMany({
     where: {
       createdAt: {
@@ -89,12 +86,8 @@ export default async function UsageByModel() {
       user: true,
     },
   });
-
-  // console.log("========", todayLog[todayLog.length - 1]);
   // @ts-ignore
   const log_data = HandleLogData(todayLog);
-
-  console.log("[log_data]====---==", todayLog);
 
   const usageByModelOption: EChartsOption = {
     tooltip: {
@@ -122,12 +115,12 @@ export default async function UsageByModel() {
     yAxis: [
       {
         type: "category",
-        data: log_data.name,
+        data: log_data.userNameList,
       },
     ],
-    series: [
-      {
-        name: "总量",
+    series: log_data.modelNameList.map((item) => {
+      return {
+        ...item,
         type: "bar",
         emphasis: {
           focus: "series",
@@ -136,91 +129,107 @@ export default async function UsageByModel() {
           show: true,
           position: "right",
         },
-        colorBy: "data",
-        // progress: {
-        //   show: true
-        // },
-        data: log_data.value,
-      },
-      // {
-      //   name: 'Email',
-      //   type: 'bar',
-      //   stack: 'Ad',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [120, 132, 101, 134, 90, 230, 210]
-      // },
-      // {
-      //   name: 'Union Ads',
-      //   type: 'bar',
-      //   stack: 'Ad',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [220, 182, 191, 234, 290, 330, 310]
-      // },
-      // {
-      //   name: 'Video Ads',
-      //   type: 'bar',
-      //   stack: 'Ad',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [150, 232, 201, 154, 190, 330, 410]
-      // },
-      // {
-      //   name: 'Search Engine',
-      //   type: 'bar',
-      //   data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   // markLine: {
-      //   //   lineStyle: {
-      //   //     type: 'dashed'
-      //   //   },
-      //   //   data: [[{ type: 'min' }, { type: 'max' }]]
-      //   // }
-      // },
-      // {
-      //   name: 'Baidu',
-      //   type: 'bar',
-      //   barWidth: 5,
-      //   stack: 'Search Engine',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [620, 732, 701, 734, 1090, 1130, 1120]
-      // },
-      // {
-      //   name: 'Google',
-      //   type: 'bar',
-      //   stack: 'Search Engine',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [120, 132, 101, 134, 290, 230, 220]
-      // },
-      // {
-      //   name: 'Bing',
-      //   type: 'bar',
-      //   stack: 'Search Engine',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [60, 72, 71, 74, 190, 130, 110]
-      // },
-      // {
-      //   name: 'Others',
-      //   type: 'bar',
-      //   stack: 'Search Engine',
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [62, 82, 91, 84, 109, 110, 120]
-      // }
-    ],
+        colorBy: "series",
+        stack: "model",
+      };
+    }),
+
+    // [
+    // {
+    //   name: "总量",
+    //   type: "bar",
+    //   emphasis: {
+    //     focus: "series",
+    //   },
+    //   label: {
+    //     show: true,
+    //     position: "right",
+    //   },
+    //   colorBy: "data",
+    //   // progress: {
+    //   //   show: true
+    //   // },
+    //   data: log_data.value,
+    // },
+    // {
+    //   name: 'Email',
+    //   type: 'bar',
+    //   stack: 'Ad',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [120, 132, 101, 134, 90, 230, 210]
+    // },
+    // {
+    //   name: 'Union Ads',
+    //   type: 'bar',
+    //   stack: 'Ad',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [220, 182, 191, 234, 290, 330, 310]
+    // },
+    // {
+    //   name: 'Video Ads',
+    //   type: 'bar',
+    //   stack: 'Ad',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [150, 232, 201, 154, 190, 330, 410]
+    // },
+    // {
+    //   name: 'Search Engine',
+    //   type: 'bar',
+    //   data: [862, 1018, 964, 1026, 1679, 1600, 1570],
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   // markLine: {
+    //   //   lineStyle: {
+    //   //     type: 'dashed'
+    //   //   },
+    //   //   data: [[{ type: 'min' }, { type: 'max' }]]
+    //   // }
+    // },
+    // {
+    //   name: 'Baidu',
+    //   type: 'bar',
+    //   barWidth: 5,
+    //   stack: 'Search Engine',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [620, 732, 701, 734, 1090, 1130, 1120]
+    // },
+    // {
+    //   name: 'Google',
+    //   type: 'bar',
+    //   stack: 'Search Engine',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [120, 132, 101, 134, 290, 230, 220]
+    // },
+    // {
+    //   name: 'Bing',
+    //   type: 'bar',
+    //   stack: 'Search Engine',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [60, 72, 71, 74, 190, 130, 110]
+    // },
+    // {
+    //   name: 'Others',
+    //   type: 'bar',
+    //   stack: 'Search Engine',
+    //   emphasis: {
+    //     focus: 'series'
+    //   },
+    //   data: [62, 82, 91, 84, 109, 110, 120]
+    // }
+    // ],
   };
   return (
     <>

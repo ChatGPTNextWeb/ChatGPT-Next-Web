@@ -252,7 +252,7 @@ function isPinYin(input: string): boolean {
 
 export function isName(input: string): boolean {
     const denyList = [
-        "suibian",
+        "suibian", "某某", "张三", "李四"
     ]
     if (denyList.includes(input)) {
         return false;
