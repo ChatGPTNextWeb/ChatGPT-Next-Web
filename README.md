@@ -61,10 +61,11 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 
 
 ## What's New
 
-- 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
-- 🚀 v2.7 let's share conversations as image, or share to ShareGPT!
-- 🚀 v2.8 now we have a client that runs across all platforms!
+- 🚀 v2.10.1 support Google Gemini Pro model.
 - 🚀 v2.9.11 you can use azure endpoint now.
+- 🚀 v2.8 now we have a client that runs across all platforms!
+- 🚀 v2.7 let's share conversations as image, or share to ShareGPT!
+- 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
 
 ## 主要功能
 
