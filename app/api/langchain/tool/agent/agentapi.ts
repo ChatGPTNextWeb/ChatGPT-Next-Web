@@ -16,7 +16,7 @@ import { ACCESS_CODE_PREFIX, ServiceProvider } from "@/app/constant";
 import * as langchainTools from "langchain/tools";
 import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
 import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
-import { DynamicTool, Tool } from "langchain/tools";
+import { DynamicTool, Tool, WolframAlphaTool } from "langchain/tools";
 import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
 import { useAccessStore } from "@/app/store";
@@ -282,6 +282,16 @@ export class AgentApi {
           var tool = langchainTools[
             toolName as keyof typeof langchainTools
           ] as any;
+          if (
+            toolName === "wolfram_alpha" &&
+            process.env.WOLFRAM_ALPHA_APP_ID
+          ) {
+            const tool = new WolframAlphaTool({
+              appid: process.env.WOLFRAM_ALPHA_APP_ID,
+            });
+            tools.push(tool);
+            return;
+          }
           if (tool) {
             tools.push(new tool());
           }
@@ -387,7 +397,6 @@ export class AgentApi {
         [handler],
       );
 
-      console.log("returning response");
       return new Response(this.transformStream.readable, {
         headers: { "Content-Type": "text/event-stream" },
       });

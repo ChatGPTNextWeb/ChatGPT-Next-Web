@@ -84,4 +84,15 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     enable: false,
     onlyNodeRuntime: true,
   },
+  {
+    name: "WolframAlphaTool",
+    toolName: "wolfram_alpha",
+    lang: "cn",
+    description:
+      "在需要回答有关数学、科学、技术、文化、社会和日常生活的问题时非常有用。",
+    builtin: true,
+    createdAt: 1703846656000,
+    enable: false,
+    onlyNodeRuntime: false,
+  },
 ];
