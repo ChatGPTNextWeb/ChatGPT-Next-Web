@@ -16,6 +16,7 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
+
 export class GeminiProApi implements LLMApi {
   toolAgentChat(options: AgentChatOptions): Promise<void> {
     throw new Error("Method not implemented.");
