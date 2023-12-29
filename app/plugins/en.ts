@@ -87,4 +87,15 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     enable: false,
     onlyNodeRuntime: true,
   },
+  {
+    name: "WolframAlphaTool",
+    toolName: "wolfram_alpha",
+    lang: "en",
+    description:
+      "Useful for when you need to answer questions about Math, Science, Technology, Culture, Society and Everyday Life.",
+    builtin: true,
+    createdAt: 1703846656000,
+    enable: false,
+    onlyNodeRuntime: false,
+  },
 ];

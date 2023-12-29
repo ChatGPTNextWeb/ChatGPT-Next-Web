@@ -76,15 +76,18 @@
     - DuckDuckGo
   
   - 计算
-    - [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator)
-  
+    - [Calculator](https://api.js.langchain.com/classes/langchain_tools_calculator.Calculator.html)
+    - [WolframAlpha](https://api.js.langchain.com/classes/langchain_tools.WolframAlphaTool.html)
+      - 环境变量：`WOLFRAM_ALPHA_APP_ID`
+      - 申请地址：[Wolfram|Alpha Developer Portal](https://developer.wolframalpha.com/)
+    
   - 网络请求
-    - [WebBrowser](https://js.langchain.com/docs/api/tools_webbrowser/classes/WebBrowser)
+    - [WebBrowser](https://api.js.langchain.com/classes/langchain_tools_webbrowser.WebBrowser.html)
     - PDFBrowser
       - ⚠ 仅在非 vercel 环境部署时可用 ⚠
   
   - 其它
-    - [Wiki](https://js.langchain.com/docs/api/tools/classes/WikipediaQueryRun)
+    - [Wiki](https://api.js.langchain.com/classes/langchain_tools.WikipediaQueryRun.html)
     - DALL-E 3
       - DALL-E 3 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
       - 如无需图像转存则可以配置  `DALLE_NO_IMAGE_STORAGE=1` ，此时将直接将 DALL-E 服务返回的临时 URL 用于图像显示，注意：该链接具有时效性
