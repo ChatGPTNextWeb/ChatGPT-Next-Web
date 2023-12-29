@@ -20,7 +20,6 @@ export class GeminiProApi implements LLMApi {
     );
   }
   async chat(options: ChatOptions): Promise<void> {
-    const apiClient = this;
     const messages = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
@@ -62,7 +61,8 @@ export class GeminiProApi implements LLMApi {
 
     console.log("[Request] google payload: ", requestPayload);
 
-    const shouldStream = !!options.config.stream;
+    // todo: support stream later
+    const shouldStream = false;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
@@ -82,21 +82,13 @@ export class GeminiProApi implements LLMApi {
       if (shouldStream) {
         let responseText = "";
         let remainText = "";
-        let streamChatPath = chatPath.replace(
-          "generateContent",
-          "streamGenerateContent",
-        );
         let finished = false;
-        const finish = () => {
-          finished = true;
-          options.onFinish(responseText + remainText);
-        };
 
         // animate response to make it looks smooth
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
-            finish();
+            console.log("[Response Animation] finished");
             return;
           }
 
@@ -113,41 +105,88 @@ export class GeminiProApi implements LLMApi {
 
         // start animaion
         animateResponseText();
-        fetch(streamChatPath, chatPayload)
-          .then((response) => {
-            const reader = response?.body?.getReader();
-            const decoder = new TextDecoder();
-            let partialData = "";
 
-            return reader?.read().then(function processText({
-              done,
-              value,
-            }): Promise<any> {
-              if (done) {
-                console.log("Stream complete");
-                // options.onFinish(responseText + remainText);
-                finished = true;
-                return Promise.resolve();
-              }
+        const finish = () => {
+          if (!finished) {
+            finished = true;
+            options.onFinish(responseText + remainText);
+          }
+        };
 
-              partialData += decoder.decode(value, { stream: true });
+        controller.signal.onabort = finish;
 
+        fetchEventSource(chatPath, {
+          ...chatPayload,
+          async onopen(res) {
+            clearTimeout(requestTimeoutId);
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
+
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
+              return finish();
+            }
+
+            if (
+              !res.ok ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
               try {
-                let data = JSON.parse(ensureProperEnding(partialData));
-                console.log(data);
-                let fetchText = apiClient.extractMessage(data[data.length - 1]);
-                console.log("[Response Animation] fetchText: ", fetchText);
-                remainText += fetchText;
-              } catch (error) {
-                // skip error message when parsing json
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
+              } catch {}
+
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
               }
 
-              return reader.read().then(processText);
-            });
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
+
+              responseText = responseTexts.join("\n\n");
+
+              return finish();
+            }
+          },
+          onmessage(msg) {
+            if (msg.data === "[DONE]" || finished) {
+              return finish();
+            }
+            const text = msg.data;
+            try {
+              const json = JSON.parse(text) as {
+                choices: Array<{
+                  delta: {
+                    content: string;
+                  };
+                }>;
+              };
+              const delta = json.choices[0]?.delta?.content;
+              if (delta) {
+                remainText += delta;
+              }
+            } catch (e) {
+              console.error("[Request] parse error", text);
+            }
+          },
+          onclose() {
+            finish();
+          },
+          onerror(e) {
+            options.onError?.(e);
+            throw e;
+          },
+          openWhenHidden: true,
+        });
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
@@ -180,11 +219,4 @@ export class GeminiProApi implements LLMApi {
   path(path: string): string {
     return "/api/google/" + path;
   }
-}
-
-function ensureProperEnding(str: string) {
-  if (str.startsWith("[") && !str.endsWith("]")) {
-    return str + "]";
-  }
-  return str;
 }
