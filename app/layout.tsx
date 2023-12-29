@@ -4,6 +4,10 @@ import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getServerSideConfig } from "./config/server";
+
+const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
   title: "NextChat",
@@ -40,7 +44,14 @@ export default function RootLayout({
           data-website-id="503934c4-1431-4473-8f33-1e2eed851bae"
         ></script>
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {serverConfig?.isVercel && (
+          <>
+            <SpeedInsights />
+          </>
+        )}
+      </body>
     </html>
   );
 }
