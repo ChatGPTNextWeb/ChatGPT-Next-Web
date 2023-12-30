@@ -1,21 +1,11 @@
-import * as echarts from "echarts";
-import { EChartsOption } from "echarts";
-import dynamic from "next/dynamic";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { addHours, subMinutes } from "date-fns";
-import { log } from "util";
-import { use } from "react";
-
-// import { getTokenLength } from "@/app/utils/token";
-
-const UsageByModelChart = dynamic(() => import("./usage-by-model-chart"), {
-  ssr: false,
-});
+import { EChartsOption } from "echarts";
 
 interface StringKeyedObject {
   [key: string]: { [key: string]: number };
 }
-
 type StringSet = Set<string>;
 type StringArray = string[];
 
@@ -58,9 +48,11 @@ function HandleLogData(
   };
 }
 
-export default async function UsageByModel() {
-  // 今天日期的开始和结束
-  let currentTime = new Date();
+async function handle(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const date = searchParams.get("date") ?? "";
+  // 当天日期的开始和结束
+  let currentTime = new Date(date);
   // today = subMinutes(today, today.getTimezoneOffset())
   const startOfTheDayInTimeZone = new Date(
     currentTime.getFullYear(),
@@ -84,6 +76,7 @@ export default async function UsageByModel() {
   });
   // @ts-ignore
   const log_data = HandleLogData(todayLog);
+  // console.log('log_data', log_data)
 
   const usageByModelOption: EChartsOption = {
     tooltip: {
@@ -130,9 +123,8 @@ export default async function UsageByModel() {
       };
     }),
   };
-  return (
-    <>
-      <UsageByModelChart option={usageByModelOption} />
-    </>
-  );
+  return NextResponse.json(usageByModelOption);
 }
+
+export const GET = handle;
+// export const POST = handle;
