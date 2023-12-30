@@ -28,7 +28,12 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
-  const { accessCode, apiKey } = parseApiKey(authToken);
+  let { accessCode, apiKey } = parseApiKey(authToken);
+
+  if (modelProvider === ModelProvider.GeminiPro) {
+    const googleAuthToken = req.headers.get("x-goog-api-key") ?? "";
+    apiKey = googleAuthToken.trim().replaceAll("Bearer ", "").trim();
+  }
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
