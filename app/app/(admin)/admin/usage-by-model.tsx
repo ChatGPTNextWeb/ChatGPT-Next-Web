@@ -15,9 +15,6 @@ const UsageByModelChart = dynamic(() => import("./usage-by-model-chart"), {
 interface StringKeyedObject {
   [key: string]: { [key: string]: number };
 }
-// interface StringArray {
-//   strings: string[];
-// }
 
 type StringSet = Set<string>;
 type StringArray = string[];
@@ -54,7 +51,6 @@ function HandleLogData(
       }),
     };
   });
-  console.log("看看", modelNameList);
   return {
     modelNameList,
     userNameList,
@@ -64,12 +60,12 @@ function HandleLogData(
 
 export default async function UsageByModel() {
   // 今天日期的开始和结束
-  var today = new Date();
+  let currentTime = new Date();
   // today = subMinutes(today, today.getTimezoneOffset())
   const startOfTheDayInTimeZone = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
+    currentTime.getFullYear(),
+    currentTime.getMonth(),
+    currentTime.getDate(),
     0,
     0,
     0,
@@ -133,103 +129,6 @@ export default async function UsageByModel() {
         stack: "model",
       };
     }),
-
-    // [
-    // {
-    //   name: "总量",
-    //   type: "bar",
-    //   emphasis: {
-    //     focus: "series",
-    //   },
-    //   label: {
-    //     show: true,
-    //     position: "right",
-    //   },
-    //   colorBy: "data",
-    //   // progress: {
-    //   //   show: true
-    //   // },
-    //   data: log_data.value,
-    // },
-    // {
-    //   name: 'Email',
-    //   type: 'bar',
-    //   stack: 'Ad',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [120, 132, 101, 134, 90, 230, 210]
-    // },
-    // {
-    //   name: 'Union Ads',
-    //   type: 'bar',
-    //   stack: 'Ad',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [220, 182, 191, 234, 290, 330, 310]
-    // },
-    // {
-    //   name: 'Video Ads',
-    //   type: 'bar',
-    //   stack: 'Ad',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [150, 232, 201, 154, 190, 330, 410]
-    // },
-    // {
-    //   name: 'Search Engine',
-    //   type: 'bar',
-    //   data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   // markLine: {
-    //   //   lineStyle: {
-    //   //     type: 'dashed'
-    //   //   },
-    //   //   data: [[{ type: 'min' }, { type: 'max' }]]
-    //   // }
-    // },
-    // {
-    //   name: 'Baidu',
-    //   type: 'bar',
-    //   barWidth: 5,
-    //   stack: 'Search Engine',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [620, 732, 701, 734, 1090, 1130, 1120]
-    // },
-    // {
-    //   name: 'Google',
-    //   type: 'bar',
-    //   stack: 'Search Engine',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [120, 132, 101, 134, 290, 230, 220]
-    // },
-    // {
-    //   name: 'Bing',
-    //   type: 'bar',
-    //   stack: 'Search Engine',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [60, 72, 71, 74, 190, 130, 110]
-    // },
-    // {
-    //   name: 'Others',
-    //   type: 'bar',
-    //   stack: 'Search Engine',
-    //   emphasis: {
-    //     focus: 'series'
-    //   },
-    //   data: [62, 82, 91, 84, 109, 110, 120]
-    // }
-    // ],
   };
   return (
     <>

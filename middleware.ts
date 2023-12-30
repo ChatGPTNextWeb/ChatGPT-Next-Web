@@ -8,6 +8,10 @@ export default async function middleware(req: NextRequest) {
     const path = `${url.pathname}${
         searchParams.length > 0 ? `?${searchParams}` : ""
     }`;
+    // 直接将/app/下面路由重定向到顶层
+    if (path.startsWith('/app')) {
+        return NextResponse.redirect(new URL(path.replace('/app', ''), req.url), 301);
+    }
 
     const session = await getToken({ req });
 
@@ -21,15 +25,7 @@ export default async function middleware(req: NextRequest) {
         }
         return NextResponse.redirect(new URL("/login", req.url));
     } else if (session) {
-        if (path.startsWith("/login") || path.startsWith('/app/login')) return NextResponse.redirect(new URL("/", req.url));
-        // admin 认证
-        const admin_user = ["sijinhui", "司金辉"]
-        // @ts-ignore
-        if ((path.startsWith("/admin") || path.startsWith("/app/admin")) && !admin_user.includes(session?.user?.name)) {
-            return NextResponse.redirect(new URL("/", req.url));
-        } else {
-            console.log('[admin]', session?.user)
-        }
+        if (path.startsWith("/login")) return NextResponse.redirect(new URL("/", req.url));
     }
 
     if (path == '/login') {

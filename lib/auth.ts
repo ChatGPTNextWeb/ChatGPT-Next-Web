@@ -7,7 +7,12 @@ import prisma from "@/lib/prisma";
 
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
-
+export const DENY_LIST: string[] = [
+    "suibian", "某某", "张三", "李四"
+]
+export const ADMIN_LIST: string[] = [
+    "司金辉", "sijinhui", "sijinhui@qq.com"
+]
 
 export const authOptions: NextAuthOptions = {
     // debug: !VERCEL_DEPLOYMENT,
@@ -251,10 +256,7 @@ function isPinYin(input: string): boolean {
 
 
 export function isName(input: string): boolean {
-    const denyList = [
-        "suibian", "某某", "张三", "李四"
-    ]
-    if (denyList.includes(input)) {
+    if (DENY_LIST.includes(input)) {
         return false;
     }
     return isEmail(input) || isHanZi(input) || isPinYin(input);
