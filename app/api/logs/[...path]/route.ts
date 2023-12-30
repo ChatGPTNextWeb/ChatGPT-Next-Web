@@ -9,19 +9,8 @@ import { get_encoding } from "tiktoken";
 import { addHours, subMinutes } from "date-fns";
 
 function getTokenLength(input: string): number {
-  // const { Tiktoken } = require("tiktoken/lite");
-  // const cl100k_base = require("tiktoken/encoders/cl100k_base.json");
-  // const encoding = new Tiktoken(
-  //     cl100k_base.bpe_ranks,
-  //     cl100k_base.special_tokens,
-  //     cl100k_base.pat_str,
-  // );
   const encoding = get_encoding("cl100k_base");
-
-  const tokenLength = encoding.encode(input).length;
-  // console.log('[TOKEN],=========', input, tokenLength)
-
-  return tokenLength;
+  return encoding.encode(input).length;
 }
 
 async function handle(

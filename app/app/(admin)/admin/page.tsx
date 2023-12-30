@@ -1,13 +1,13 @@
 import {
   Grid,
   Col,
-  Card,
-  Text,
-  AreaChart,
-  Metric,
-  DatePicker,
+  // Card,
+  // Text,
+  // AreaChart,
+  // Metric,
+  // DatePicker,
 } from "@tremor/react";
-import UsageByModel from "./usage-by-model";
+import UsageByModel from "./usage-by-model-chart";
 import { getSession, ADMIN_LIST, isName } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
