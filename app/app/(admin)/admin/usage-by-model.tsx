@@ -1,10 +1,11 @@
-import * as echarts from "echarts";
+// import * as echarts from "echarts";
 import { EChartsOption } from "echarts";
 import dynamic from "next/dynamic";
 import prisma from "@/lib/prisma";
 import { addHours, subMinutes } from "date-fns";
 import { log } from "util";
 import { use } from "react";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 // import { getTokenLength } from "@/app/utils/token";
 
@@ -85,6 +86,21 @@ export default async function UsageByModel() {
   // @ts-ignore
   const log_data = HandleLogData(todayLog);
 
+  // const usageByModelTimelineOption : EChartsOption = {
+  //   timeline: {
+  //     // ...,
+  //     axisType: "time",
+  //     autoPlay: false,
+  //
+  //     data: ['2023/12/32', '2023/12/32'],
+  //     // label: {
+  //     //   formatter: ((s) => {
+  //     //     return new Date(s).getDate().toString()
+  //     //   })
+  //     // }
+  //   }
+  // }
+
   const usageByModelOption: EChartsOption = {
     tooltip: {
       trigger: "axis",
@@ -136,3 +152,11 @@ export default async function UsageByModel() {
     </>
   );
 }
+
+export const getServerSideProps = async () => {
+  // Fetch data from external API
+  const data = {};
+
+  // Pass data to the page via props
+  return { props: { data } };
+};
