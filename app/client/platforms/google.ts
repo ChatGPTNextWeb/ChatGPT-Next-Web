@@ -138,12 +138,17 @@ export class GeminiProApi implements LLMApi {
               try {
                 let data = JSON.parse(ensureProperEnding(partialData));
 
-                const textArray = data.reduce((acc, item) => {
-                  const texts = item.candidates.map((candidate) =>
-                    candidate.content.parts.map((part) => part.text).join(""),
-                  );
-                  return acc.concat(texts);
-                }, []);
+                const textArray = data.reduce(
+                  (acc: string[], item: { candidates: any[] }) => {
+                    const texts = item.candidates.map((candidate) =>
+                      candidate.content.parts
+                        .map((part: { text: any }) => part.text)
+                        .join(""),
+                    );
+                    return acc.concat(texts);
+                  },
+                  [],
+                );
 
                 if (textArray.length > existingTexts.length) {
                   const deltaArray = textArray.slice(existingTexts.length);
