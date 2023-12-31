@@ -153,10 +153,10 @@ export class AgentApi {
         }
       },
       async handleToolStart(tool, input) {
-        console.log("[handleToolStart]", { tool, input });
+        // console.log("[handleToolStart]", { tool, input });
       },
       async handleToolEnd(output, runId, parentRunId, tags) {
-        console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
+        // console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
       },
       async handleAgentEnd(action, runId, parentRunId, tags) {
         console.log("[handleAgentEnd]");
