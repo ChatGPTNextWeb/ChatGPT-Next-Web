@@ -52,7 +52,7 @@ const cn = {
       },
       Prompt: "快捷指令",
       Masks: "所有面具",
-      Clear: "清除聊天",
+      Clear: "清除上下文",
       Settings: "对话设置",
     },
     Rename: "重命名对话",
@@ -62,7 +62,8 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全，: 触发命令";
+      // return inputHints + "，/ 触发补全，: 触发命令";
+      return inputHints + "，/ 快捷指令，: 触发命令";
     },
     Send: "发送",
     Config: {

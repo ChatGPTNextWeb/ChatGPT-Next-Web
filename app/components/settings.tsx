@@ -520,6 +520,18 @@ export function Settings() {
             </Select>
           </ListItem>
 
+          <ListItem title={Locale.Settings.TightBorder}>
+            <input
+              type="checkbox"
+              checked={config.tightBorder}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.tightBorder = !config.tightBorder),
+                )
+              }
+            ></input>
+          </ListItem>
+
           <ListItem
             title={Locale.Settings.Lang.Name}
             subTitle={Locale.Settings.Lang.SubName}

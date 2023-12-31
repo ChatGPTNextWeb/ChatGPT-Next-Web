@@ -18,11 +18,13 @@ export enum Theme {
 }
 
 export const DEFAULT_CONFIG = {
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  // submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: !!getClientConfig()?.isApp,
+  // tightBorder: !!getClientConfig()?.isApp,  // TODO: futher debug phone app
+  tightBorder: true,
   sendPreviewBubble: true,
   sidebarWidth: 300,
 
@@ -61,30 +63,6 @@ export type ModelConfig = ChatConfig["modelConfig"];
 const ENABLE_GPT4 = true;
 
 export const ALL_MODELS = [
-  // {
-  //   name: "gpt-4",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-0314",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-0613",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-32k",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-32k-0314",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-32k-0613",
-  //   available: ENABLE_GPT4,
-  // },
   {
     name: "gpt-3.5-turbo",
     available: true,
@@ -104,6 +82,30 @@ export const ALL_MODELS = [
   // {
   //   name: "gpt-3.5-turbo-16k-0613",
   //   available: true,
+  // },
+  {
+    name: "gpt-4",
+    available: ENABLE_GPT4,
+  },
+  // {
+  //   name: "gpt-4-0314",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-0613",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k-0314",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k-0613",
+  //   available: ENABLE_GPT4,
   // },
   // {
   //   name: "qwen-v1", // 通义千问

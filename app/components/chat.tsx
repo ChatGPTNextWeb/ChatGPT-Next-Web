@@ -54,6 +54,7 @@ import {
   useAppConfig,
   DEFAULT_TOPIC,
   ALL_MODELS,
+  ModelType,
 } from "../store";
 
 import {
@@ -389,7 +390,7 @@ function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
-  setLanguage: (language: typeof EAuzureLanguages) => void;
+  setLanguage: (language: EAzureLanguages) => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
@@ -409,19 +410,6 @@ function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
-
-  // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  function nextModel() {
-    const models = ALL_MODELS.filter((m) => m.available).map((m) => m.name);
-    const modelIndex = models.indexOf(currentModel);
-    const nextIndex = (modelIndex + 1) % models.length;
-    const nextModel = models[nextIndex];
-    chatStore.updateCurrentSession((session) => {
-      session.mask.modelConfig.model = nextModel;
-      session.mask.syncGlobalConfig = false;
-    });
-  }
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -447,7 +435,7 @@ function ChatActions(props: {
         />
       )}
 
-      <ChatAction
+      {/* <ChatAction
         onClick={nextTheme}
         text={Locale.Chat.InputActions.Theme[theme]}
         icon={
@@ -461,7 +449,7 @@ function ChatActions(props: {
             ) : null}
           </>
         }
-      />
+      /> */}
 
       <ChatAction
         onClick={props.showPromptHints}
@@ -469,13 +457,13 @@ function ChatActions(props: {
         icon={<PromptIcon />}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => {
           navigate(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
         icon={<MaskIcon />}
-      />
+      /> */}
 
       <ChatAction
         text={Locale.Chat.InputActions.Clear}
@@ -492,16 +480,16 @@ function ChatActions(props: {
         }}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={nextModel}
         text={currentModel}
         icon={<RobotIcon />}
-      />
+      /> */}
 
       <Select
         defaultValue={EAzureLanguages.EnglishUnitedStates}
         onChange={(e) => {
-          props.setLanguage(e.target.value);
+          props.setLanguage(e.target.value as EAzureLanguages);
         }}
       >
         {Object.keys(AzureLanguageToCountryMap).map((lang) => (
@@ -582,14 +570,14 @@ export function Chat() {
   // chat commands shortcuts
   const chatCommands = useChatCommand({
     new: () => chatStore.newSession(),
-    newm: () => navigate(Path.NewChat),
-    prev: () => chatStore.nextSession(-1),
-    next: () => chatStore.nextSession(1),
+    // newm: () => navigate(Path.NewChat),
+    // prev: () => chatStore.nextSession(-1),
+    // next: () => chatStore.nextSession(1),
     clear: () =>
       chatStore.updateCurrentSession(
         (session) => (session.clearContextIndex = session.messages.length),
       ),
-    del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
+    // del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
   });
 
   // only search prompts when user input is short
@@ -615,6 +603,7 @@ export function Chat() {
   const doSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return;
 
+    // TODO: futher fine-select
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
       setUserInput("");
@@ -871,6 +860,18 @@ export function Chat() {
     },
   });
 
+  // switch model
+  const allModels = ALL_MODELS.filter((m) => m.available).map((m) => m.name);
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const onModelChange = (event: string) => {
+    const modelIndex = allModels.indexOf(event as ModelType);
+    const newModel = allModels[modelIndex];
+    chatStore.updateCurrentSession((session) => {
+      session.mask.modelConfig.model = newModel;
+      session.mask.syncGlobalConfig = false;
+    });
+  };
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -898,6 +899,20 @@ export function Chat() {
             {Locale.Chat.SubTitle(session.messages.length)}
           </div>
         </div>
+
+        <Select
+          defaultValue={currentModel}
+          onChange={(e) => {
+            onModelChange(e.target.value);
+          }}
+        >
+          {allModels.map((model, index) => (
+            <option value={model} key={model}>
+              {model}
+            </option>
+          ))}
+        </Select>
+
         <div className="window-actions">
           {!isMobileScreen && (
             <div className="window-action-button">

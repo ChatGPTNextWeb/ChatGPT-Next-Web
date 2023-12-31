@@ -3,6 +3,9 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v6.20240101
+ - Enable GPT4
+
 ## v6.20231229
  - SpeechCopilot with Voice-call
 
