@@ -9,6 +9,7 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
+import de from "@/app/locales/de";
 export class GeminiProApi implements LLMApi {
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
@@ -87,9 +88,11 @@ export class GeminiProApi implements LLMApi {
           "streamGenerateContent",
         );
         let finished = false;
+
+        let existingTexts: string[] = [];
         const finish = () => {
           finished = true;
-          options.onFinish(responseText + remainText);
+          options.onFinish(existingTexts.join(""));
         };
 
         // animate response to make it looks smooth
@@ -134,11 +137,26 @@ export class GeminiProApi implements LLMApi {
 
               try {
                 let data = JSON.parse(ensureProperEnding(partialData));
-                console.log(data);
-                let fetchText = apiClient.extractMessage(data[data.length - 1]);
-                console.log("[Response Animation] fetchText: ", fetchText);
-                remainText += fetchText;
+
+                const textArray = data.reduce(
+                  (acc: string[], item: { candidates: any[] }) => {
+                    const texts = item.candidates.map((candidate) =>
+                      candidate.content.parts
+                        .map((part: { text: any }) => part.text)
+                        .join(""),
+                    );
+                    return acc.concat(texts);
+                  },
+                  [],
+                );
+
+                if (textArray.length > existingTexts.length) {
+                  const deltaArray = textArray.slice(existingTexts.length);
+                  existingTexts = textArray;
+                  remainText += deltaArray.join("");
+                }
               } catch (error) {
+                // console.log("[Response Animation] error: ", error,partialData);
                 // skip error message when parsing json
               }
 
