@@ -16,7 +16,7 @@ import { ACCESS_CODE_PREFIX, ServiceProvider } from "@/app/constant";
 import * as langchainTools from "langchain/tools";
 import { HttpGetTool } from "@/app/api/langchain-tools/http_get";
 import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
-import { DynamicTool, Tool, WolframAlphaTool } from "langchain/tools";
+import { DynamicTool, Tool } from "langchain/tools";
 import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
 import { useAccessStore } from "@/app/store";
@@ -130,7 +130,7 @@ export class AgentApi {
       },
       async handleAgentAction(action) {
         try {
-          // console.log("[handleAgentAction]", action.tool);
+          // console.log("[handleAgentAction]", { action });
           if (!reqBody.returnIntermediateSteps) return;
           var response = new ResponseBody();
           response.isToolMessage = true;
@@ -153,10 +153,10 @@ export class AgentApi {
         }
       },
       async handleToolStart(tool, input) {
-        // console.log("[handleToolStart]", { tool });
+        console.log("[handleToolStart]", { tool, input });
       },
       async handleToolEnd(output, runId, parentRunId, tags) {
-        // console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
+        console.log("[handleToolEnd]", { output, runId, parentRunId, tags });
       },
       async handleAgentEnd(action, runId, parentRunId, tags) {
         console.log("[handleAgentEnd]");
@@ -282,16 +282,6 @@ export class AgentApi {
           var tool = langchainTools[
             toolName as keyof typeof langchainTools
           ] as any;
-          if (
-            toolName === "wolfram_alpha" &&
-            process.env.WOLFRAM_ALPHA_APP_ID
-          ) {
-            const tool = new WolframAlphaTool({
-              appid: process.env.WOLFRAM_ALPHA_APP_ID,
-            });
-            tools.push(tool);
-            return;
-          }
           if (tool) {
             tools.push(new tool());
           }

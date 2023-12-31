@@ -89,7 +89,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
   },
   {
     name: "WolframAlphaTool",
-    toolName: "wolfram_alpha",
+    toolName: "wolfram_alpha_llm",
     lang: "en",
     description:
       "Useful for when you need to answer questions about Math, Science, Technology, Culture, Society and Everyday Life.",

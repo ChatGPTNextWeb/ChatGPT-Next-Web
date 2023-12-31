@@ -10,7 +10,7 @@ import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
 import { Tool, DynamicTool } from "langchain/tools";
 import * as langchainTools from "langchain/tools";
 import { Embeddings } from "langchain/dist/embeddings/base.js";
-import { promises } from "dns";
+import { WolframAlphaTool } from "./wolframalpha";
 
 export class EdgeTool {
   private apiKey: string | undefined;
@@ -50,13 +50,16 @@ export class EdgeTool {
     );
     const stableDiffusionTool = new StableDiffusionWrapper();
     const arxivAPITool = new ArxivAPIWrapper();
-    return [
+    const wolframAlphaTool = new WolframAlphaTool();
+    let tools = [
       // searchTool,
       calculatorTool,
       webBrowserTool,
       dallEAPITool,
       stableDiffusionTool,
       arxivAPITool,
+      wolframAlphaTool,
     ];
+    return tools;
   }
 }

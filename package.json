@@ -33,7 +33,7 @@
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",
-    "langchain": "^0.0.212",
+    "langchain": "^0.0.213",
     "mermaid": "^10.6.1",
     "nanoid": "^5.0.3",
     "next": "^13.4.9",

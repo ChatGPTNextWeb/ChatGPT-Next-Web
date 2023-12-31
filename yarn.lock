@@ -1813,22 +1813,22 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@langchain/community@~0.0.8":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@langchain/community/-/community-0.0.11.tgz#5e1dce3e1ec636e015c503593fdf7383d4478159"
-  integrity sha512-8L19AyzBueHrRtawxU4JstRtmzqsHK2jDJtSg/bv9ivto0kDKlILnauIDijcb09V/4mql2XolaS9r7eGe99yGA==
+"@langchain/community@~0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@langchain/community/-/community-0.0.12.tgz#95b5ddfaef47db6a1f665959e417a706cf56057f"
+  integrity sha512-mcm6FxxnLxSx9PiYvehGGwvcHjsVR5WXfYOwymojf/6d0apyewjOLzKsR3xx0HJVtCs8pff7NZSdDoE+jj8OcA==
   dependencies:
-    "@langchain/core" "~0.1.3"
-    "@langchain/openai" "~0.0.7"
+    "@langchain/core" "~0.1.5"
+    "@langchain/openai" "~0.0.9"
     flat "^5.0.2"
     langsmith "~0.0.48"
     uuid "^9.0.0"
     zod "^3.22.3"
 
-"@langchain/core@~0.1.3":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.4.tgz#f923c0d844faf6de2069d86d785e4ef3b1381257"
-  integrity sha512-Y3/mQLEiQ78ZbsTGYvPRj5bpvrhpTAcsbdyEtlYEvjMLbehEADfjQ41G9zc7U/emkrGtHRmxWO1ISmoeXeDmyQ==
+"@langchain/core@~0.1.5":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.6.tgz#4b1dfc361379d6bd45c6652418a05f051488e6d9"
+  integrity sha512-mBXsHHAWgDYJPzPNwOLWXJob3DAlO1tXBybu9cJ+zcVzixiSh/oxQ5eonTK6nlFwO6kGpaIcCD9l9+yq/WCMBg==
   dependencies:
     ansi-styles "^5.0.0"
     camelcase "6"
@@ -1841,12 +1841,12 @@
     uuid "^9.0.0"
     zod "^3.22.3"
 
-"@langchain/openai@~0.0.7":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-0.0.8.tgz#77e4a216f9ba5a347ee24b7f28a526fd57c24c8d"
-  integrity sha512-F8DD6vs5BvMAHiDprINWCVf7jyNaYHp2zAqHwYij3+YAKsgIORm2EQvI6YtT3qPnGghpE3qz8H3DKjTNPywIzQ==
+"@langchain/openai@~0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-0.0.9.tgz#e84b7db0554de75fdd4a8fe12914fdc2b2d2d1f6"
+  integrity sha512-Py7rJijOjNtb9pj5He+E9uAj9d8PCX+8Ix4LvY7cUTMCDlfkhngw2DhJ8wlk23u1IvunakdnnN74pfbO2JJBrw==
   dependencies:
-    "@langchain/core" "~0.1.3"
+    "@langchain/core" "~0.1.5"
     js-tiktoken "^1.0.7"
     openai "^4.19.0"
     zod "^3.22.3"
@@ -5492,15 +5492,15 @@ kleur@^4.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-langchain@^0.0.212:
-  version "0.0.212"
-  resolved "https://registry.yarnpkg.com/langchain/-/langchain-0.0.212.tgz#68ddeb6bb83bc7714a6b8d97ace464951d10ea6d"
-  integrity sha512-zPcnAX3t1RuyWkbEkyqlIdR29j51Eylz7rcDcqET1baquR/r9xuk7P/HAJ6TFowiXDUg10d5YBD6VBvjwF/WDA==
+langchain@^0.0.213:
+  version "0.0.213"
+  resolved "https://registry.yarnpkg.com/langchain/-/langchain-0.0.213.tgz#52fd367d5f1a100a1cdb775ffbb98eaa5793307b"
+  integrity sha512-nQDOJXvtIAIuUzamCiF1AWyi2GH9FSDPR+3XulJUEpdU60aSFPZ9GBiWdu+dVHXeAmm8C0iCVi0+3GWLJrUoXA==
   dependencies:
     "@anthropic-ai/sdk" "^0.9.1"
-    "@langchain/community" "~0.0.8"
-    "@langchain/core" "~0.1.3"
-    "@langchain/openai" "~0.0.7"
+    "@langchain/community" "~0.0.12"
+    "@langchain/core" "~0.1.5"
+    "@langchain/openai" "~0.0.9"
     binary-extensions "^2.2.0"
     expr-eval "^2.0.2"
     js-tiktoken "^1.0.7"
