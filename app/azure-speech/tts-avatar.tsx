@@ -74,7 +74,6 @@ import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import { PlayCircleOutlineOutlined } from "@mui/icons-material";
 import {
-  AvatarDefaultLanguage,
   AzureAvatarLanguageToVoiceMap,
   AzureRoles,
   AzureTTSAvatarInput,

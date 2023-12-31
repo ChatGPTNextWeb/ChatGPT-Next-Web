@@ -5,20 +5,20 @@ export enum AzureRoles {
 }
 
 export enum EAzureLanguages {
-  EnglishUnitedStates = "English (United States)",
-  ChineseMandarinSimplified = "Chinese (Mandarin, Simplified)",
+  EnglishUnitedStates = "English(US)",
+  ChineseMandarinSimplified = "中文(普通话)",
 }
 
 export const AzureLanguageToCountryMap: Record<string, string> = {
-  [EAzureLanguages.ChineseMandarinSimplified]: "zh-CN",
   [EAzureLanguages.EnglishUnitedStates]: "en-US",
+  [EAzureLanguages.ChineseMandarinSimplified]: "zh-CN",
 };
 
 export const AzureLanguageToWelcomeMap: Record<string, string> = {
-  [EAzureLanguages.ChineseMandarinSimplified]:
-    "您好, 我是Speech Copilot, 您可以问我任何问题",
   [EAzureLanguages.EnglishUnitedStates]:
     "Hello, I'm Speech Copilot. What can i do for you.",
+  [EAzureLanguages.ChineseMandarinSimplified]:
+    "您好, 我是Speech Copilot, 您可以问我任何问题",
 };
 
 interface IAzureLanguageVoiceItem {
@@ -52,14 +52,10 @@ export const AzureAvatarLanguageToVoiceMap: Record<
   ],
 };
 
-export const AvatarDefaultLanguage = Object.keys(
-  AzureAvatarLanguageToVoiceMap,
-)[0];
-
 export class AzureTTSAvatarInput {
   InputText: string = "";
   VideoSrc: string = "";
   AudioSrc: string = "";
-  Language: string = AvatarDefaultLanguage;
+  Language: string = EAzureLanguages.EnglishUnitedStates;
   VoiceNumber: number = 0;
 }

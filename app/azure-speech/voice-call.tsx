@@ -87,7 +87,6 @@ import { Section, Title, Article, Prop } from "./react-loading";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import {
-  AvatarDefaultLanguage,
   AzureAvatarLanguageToVoiceMap,
   AzureLanguageToCountryMap,
   AzureLanguageToWelcomeMap,

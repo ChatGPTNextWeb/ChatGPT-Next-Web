@@ -105,15 +105,20 @@ class SpeechRecognizer {
   private recognizer!: sdk.SpeechRecognizer;
   public recognizedText: string = "";
 
+  // eg. countryLanguage: en-us, zh-cn
   public startRecording(
     updateParentState: UpdateParentStateType,
-    language: string,
+    countryLanguage: string,
   ) {
+    // const speechConfig = sdk.SpeechConfig.fromSubscription(
+    //   config.speechSubscriptionKey!,
+    //   config.speechServiceRegion!,
+    // );
     const speechConfig = sdk.SpeechConfig.fromSubscription(
-      config.speechSubscriptionKey!,
-      config.speechServiceRegion!,
+      config.speechAvatarSubscriptionKey!,
+      config.speechAvatarServiceRegion!,
     );
-    speechConfig.speechRecognitionLanguage = RecondLanguages[language];
+    speechConfig.speechRecognitionLanguage = countryLanguage;
 
     const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
     this.recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);

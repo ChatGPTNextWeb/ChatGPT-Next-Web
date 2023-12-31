@@ -33,6 +33,16 @@ import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 import MicphoneIcon from "../icons/Micphone.svg";
 
+import PhoneIcon from "@mui/icons-material/Phone";
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import MicIcon from "@mui/icons-material/Mic";
+import SettingsVoiceIcon from "@mui/icons-material/SettingsVoice";
+
 import {
   ChatMessage,
   SubmitKey,
@@ -83,6 +93,10 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 
 import { speechSynthesizer, speechRecognizer } from "../cognitive/speech-sdk";
+import {
+  AzureLanguageToCountryMap,
+  EAzureLanguages,
+} from "../azure-speech/AzureRoles";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -371,10 +385,11 @@ export function useScrollToBottom() {
   };
 }
 
-export function ChatActions(props: {
+function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  setLanguage: (language: typeof EAuzureLanguages) => void;
   hitBottom: boolean;
 }) {
   const config = useAppConfig();
@@ -482,6 +497,19 @@ export function ChatActions(props: {
         text={currentModel}
         icon={<RobotIcon />}
       />
+
+      <Select
+        defaultValue={EAzureLanguages.EnglishUnitedStates}
+        onChange={(e) => {
+          props.setLanguage(e.target.value);
+        }}
+      >
+        {Object.keys(AzureLanguageToCountryMap).map((lang) => (
+          <option value={AzureLanguageToCountryMap[lang]} key={lang}>
+            {lang}
+          </option>
+        ))}
+      </Select>
     </div>
   );
 }
@@ -537,7 +565,7 @@ export function Chat() {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
         20,
-        Math.max(2 + Number(!isMobileScreen), rows),
+        Math.max(1 + Number(!isMobileScreen), rows),
       );
       setInputRows(inputRows);
     },
@@ -607,17 +635,11 @@ export function Chat() {
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
-
-    // voice
-    autoPlay &&
-      chatStore.waitFinished().then(() => {
-        var text = session.messages[session.messages.length - 1].content;
-        speechSynthesizer.startSynthesize(text, speechLanguage);
-      });
   };
 
-  const [autoPlay, setAutoPlay] = useState(false);
-  const [speechLanguage, setSpeechLanguage] = useState(DEFAULT_LANG);
+  const [speechLanguage, setSpeechLanguage] = useState(
+    EAzureLanguages.EnglishUnitedStates,
+  );
   const [recording, setRecording] = useState(false);
 
   const onRecord = () => {
@@ -631,12 +653,7 @@ export function Chat() {
   };
 
   const appendUserInput = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (userInput === "") {
-      setUserInput(newState);
-    } else {
-      setUserInput(userInput + "\n" + newState);
-    }
+    setUserInput((prevInput) => prevInput + " " + newState);
   };
 
   const onPromptSelect = (prompt: Prompt) => {
@@ -800,34 +817,32 @@ export function Chat() {
       : -1;
 
   // preview messages
-  const messages = context
-    .concat(session.messages as RenderMessage[])
-    .concat(
-      isLoading
-        ? [
-            {
-              ...createMessage({
-                role: "assistant",
-                content: "……",
-              }),
-              preview: true,
-            },
-          ]
-        : [],
-    )
-    .concat(
-      userInput.length > 0 && config.sendPreviewBubble
-        ? [
-            {
-              ...createMessage({
-                role: "user",
-                content: userInput,
-              }),
-              preview: true,
-            },
-          ]
-        : [],
-    );
+  const messages = context.concat(session.messages as RenderMessage[]).concat(
+    isLoading
+      ? [
+          {
+            ...createMessage({
+              role: "assistant",
+              content: "……",
+            }),
+            preview: true,
+          },
+        ]
+      : [],
+  );
+  // .concat(
+  //   userInput.length > 0 && config.sendPreviewBubble
+  //     ? [
+  //         {
+  //           ...createMessage({
+  //             role: "user",
+  //             content: userInput,
+  //           }),
+  //           preview: true,
+  //         },
+  //       ]
+  //     : [],
+  // );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
@@ -1092,6 +1107,7 @@ export function Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          setLanguage={setSpeechLanguage}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
@@ -1109,56 +1125,58 @@ export function Chat() {
               fontSize: config.fontSize,
             }}
           />
-          <IconButton
-            icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
-            className={styles["chat-input-send"]}
-            type="primary"
-            onClick={() => doSubmit(userInput)}
-          />
-        </div>
-      </div>
 
-      <div>
-        <div>
-          <div className={styles["chat-voice-input"]}>
-            <IconButton
-              icon={<MicphoneIcon />}
-              text={recording ? "录音中" : "开始语音"}
-              bordered
-              className={
-                recording
-                  ? styles["chat-voice-input-send-pressed"]
-                  : styles["chat-voice-input-send"]
-              }
-              onClick={onRecord}
-            />
-            <label>
-              <input
-                type="checkbox"
-                defaultChecked={false}
-                className={styles["chat-voice-input-setting"]}
-                onChange={(e) => {
-                  setAutoPlay(e.currentTarget.checked);
-                }}
-              ></input>
-              自动播放结果
-            </label>
-
-            {/* TODO: here language only for speech */}
-            <Select
-              defaultValue={DEFAULT_LANG}
-              onChange={(e) => {
-                setSpeechLanguage(e.target.value);
-              }}
-            >
-              {AllLangs.map((lang) => (
-                <option value={lang} key={lang}>
-                  {ALL_LANG_OPTIONS[lang]}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <Box
+            sx={{
+              transform: "translateZ(0px)",
+              flexGrow: 1,
+              position: "absolute",
+              right: "30px",
+              bottom: "32px",
+              width: "16",
+              height: "16",
+            }}
+          >
+            {recording === true && (
+              <Fab
+                color="primary"
+                size="small"
+                aria-label="Submit"
+                onClick={onRecord}
+              >
+                <SettingsVoiceIcon style={{ color: "red" }} />
+              </Fab>
+            )}
+            {recording === false && userInput === "" && (
+              <SpeedDial
+                ariaLabel="Recording or Call"
+                icon={<SpeedDialIcon />}
+                FabProps={{ size: "small" }} // 设置小号Fab
+              >
+                <SpeedDialAction
+                  icon={<PhoneIcon style={{ color: "red" }} />}
+                  tooltipTitle={"Voice Call"}
+                  onClick={() => navigate(Path.AzureVoiceCall)}
+                />
+                <SpeedDialAction
+                  icon={<MicIcon style={{ color: "green" }} />}
+                  tooltipTitle={"Recording"}
+                  color="green"
+                  onClick={onRecord}
+                />
+              </SpeedDial>
+            )}
+            {recording === false && userInput !== "" && (
+              <Fab
+                color="secondary"
+                size="small"
+                aria-label="Submit"
+                onClick={() => doSubmit(userInput)}
+              >
+                <SendWhiteIcon />
+              </Fab>
+            )}
+          </Box>
         </div>
       </div>
 
