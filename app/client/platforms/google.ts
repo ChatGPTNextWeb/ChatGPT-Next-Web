@@ -147,14 +147,6 @@ export class GeminiProApi implements LLMApi {
 
                 if (textArray.length > existingTexts.length) {
                   const deltaArray = textArray.slice(existingTexts.length);
-                  console.log(
-                    "existingTexts",
-                    existingTexts,
-                    "textArray",
-                    textArray,
-                    "deltaArray",
-                    deltaArray,
-                  );
                   existingTexts = textArray;
                   remainText += deltaArray.join("");
                 }
