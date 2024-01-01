@@ -2851,10 +2851,10 @@ elkjs@^0.8.2:
   resolved "https://registry.npmmirror.com/elkjs/-/elkjs-0.8.2.tgz#c37763c5a3e24e042e318455e0147c912a7c248e"
   integrity sha512-L6uRgvZTH+4OF5NE/MBbzQx/WYpru1xCBE9respNj6qznEewGUIfhzmm7horWWxbNO2M0WckQypGctR8lH79xQ==
 
-emoji-picker-react@^4.5.15:
-  version "4.5.15"
-  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.5.15.tgz#e12797c50584cb8af8aee7eb6c7c8fd953e41f7e"
-  integrity sha512-BTqo+pNUE8kqX8BKFTbD4fhlxcA69qfie5En4PerReLaaPfXVyRlDJ1uf85nKj2u5esUQ999iUf8YyqcPsM2Qw==
+emoji-picker-react@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.6.0.tgz#bb520e50bb56370ce6f4efcac79b1219fff173e5"
+  integrity sha512-HKrKVt9B3FBd2vecIVJcMo7ubA03MfqrfeKjXVKkrncf0nSuWlNyXT9hVt07bxdjr4t2tkqVz/BMVYi34ajl4A==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
