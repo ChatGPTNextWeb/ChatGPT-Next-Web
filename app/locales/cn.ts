@@ -321,7 +321,7 @@ const cn = {
 
         Endpoint: {
           Title: "接口地址",
-          SubTitle: "样例：",
+          SubTitle: "不包含请求路径，样例：",
         },
 
         ApiVerion: {
