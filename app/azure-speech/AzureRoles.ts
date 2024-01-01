@@ -36,6 +36,22 @@ export const AzureAvatarLanguageToVoiceMap: Record<
       Voice: "en-US-JennyNeural",
     },
     {
+      Name: "GuyNeural(Male)",
+      Voice: "en-US-GuyNeural",
+    },
+    {
+      Name: "AriaNeural(Female)",
+      Voice: "en-US-AriaNeural",
+    },
+    {
+      Name: "DavisNeural(Male)",
+      Voice: "en-US-DavisNeural",
+    },
+    {
+      Name: "AmberNeural(Female)",
+      Voice: "en-US-AmberNeural",
+    },
+    {
       Name: "Andrew(Male)",
       Voice: "en-US-AndrewNeural",
     },
@@ -48,6 +64,22 @@ export const AzureAvatarLanguageToVoiceMap: Record<
     {
       Name: "Yunxi(Male)",
       Voice: "zh-CN-YunxiNeural",
+    },
+    {
+      Name: "YunjianNeural(Male)",
+      Voice: "zh-CN-YunjianNeural",
+    },
+    {
+      Name: "XiaoyiNeural(Female)",
+      Voice: "zh-CN-XiaoyiNeural",
+    },
+    {
+      Name: "YunyangNeural(Male)",
+      Voice: "zh-CN-YunyangNeural",
+    },
+    {
+      Name: "XiaochenNeural(Female)",
+      Voice: "zh-CN-XiaochenNeural",
     },
   ],
 };

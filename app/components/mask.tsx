@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
 import { useEffect, useState } from "react";
-import { downloadAs, readFromFile } from "../utils";
+import { downloadAs, readFromFile, useMobileScreen } from "../utils";
 import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
@@ -298,6 +298,7 @@ export function MaskPage() {
   const [searchMasks, setSearchMasks] = useState<Mask[]>([]);
   const [searchText, setSearchText] = useState("");
   const masks = searchText.length > 0 ? searchMasks : allMasks;
+  const isMobileScreen = useMobileScreen();
 
   // simple search, will refactor later
   const onSearch = (text: string) => {
@@ -476,7 +477,13 @@ export function MaskPage() {
                   }}
                 >
                   {items.map((m: Mask) => (
-                    <Card sx={{ width: "30%", margin: "1%" }} key={m.id}>
+                    <Card
+                      sx={{
+                        width: isMobileScreen ? "100%" : "30%",
+                        margin: "1%",
+                      }}
+                      key={m.id}
+                    >
                       <CardActionArea
                         onClick={() => {
                           chatStore.newSession(m);
