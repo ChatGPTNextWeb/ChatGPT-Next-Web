@@ -8,7 +8,7 @@ import prisma from "@/lib/prisma";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 export const DENY_LIST: string[] = [
-    "suibian", "某某", "张三", "李四"
+    "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话"
 ]
 export const ADMIN_LIST: string[] = [
     "司金辉", "sijinhui", "sijinhui@qq.com"
