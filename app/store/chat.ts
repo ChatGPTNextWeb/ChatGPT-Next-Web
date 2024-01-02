@@ -71,10 +71,12 @@ export class InputTableRow {
   speech = new InputStore();
 }
 
+// TODO: make it a class and remove to tts-avatar
 export interface IRequestResponse {
   // type: string; // video or audio
   status: any;
   data: any;
+  duration?: string;
 }
 
 export interface ChatSession {

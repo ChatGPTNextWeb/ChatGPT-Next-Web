@@ -124,10 +124,13 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   const [hitBottom, setHitBottom] = useState(true);
   const [previewVideo, setPreviewVideo] = useState(false);
   const [previewAudio, setPreviewAudio] = useState(false);
+  const [currentVideoSegment, setCurrentVideoSegment] = useState(0);
+  const [currentVideoText, setCurrentVideoText] = useState("");
+  const [currentVideoFirst, setCurrentVideoFirst] = useState(true);
 
   // from input
   const [inputText, setInputText] = useState(inputCopilot.InputText);
-  const [videoSrc, setVideoSrc] = useState(inputCopilot.VideoSrc);
+  const [videoSrc, setVideoSrc] = useState(inputCopilot.VideoSrc.data);
   const [audioSrc, setAudioSrc] = useState(inputCopilot.AudioSrc);
   const [language, setLanguage] = useState(inputCopilot.Language);
   const [voiceNumber, setVoiceNumber] = useState(inputCopilot.VoiceNumber);
@@ -151,6 +154,40 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     const newValue = event.target.value;
     setInputText(newValue);
     inputCopilot.InputText = newValue;
+  };
+
+  const handleCurrentVideoTimeUpdate = (event: any) => {
+    const segmentLength = 5; // interval seconds
+    const newSegment = Math.floor(
+      parseInt(event.target.currentTime) / segmentLength,
+    );
+
+    if (!currentVideoFirst && newSegment == currentVideoSegment) return;
+
+    let _segment: number;
+    if (currentVideoFirst) {
+      // first time
+      _segment = 0;
+      setCurrentVideoFirst(false);
+    } else if (newSegment == currentVideoSegment) {
+      return;
+    } else {
+      _segment = newSegment;
+      setCurrentVideoSegment(newSegment);
+    }
+
+    const inputTexts = inputText.split(/\s+/);
+    const startIndex = Math.round(
+      (_segment * segmentLength * inputTexts.length) /
+        parseInt(inputCopilot.VideoSrc.duration!),
+    );
+    const endIndex = Math.round(
+      ((_segment + 1) * segmentLength * inputTexts.length) /
+        parseInt(inputCopilot.VideoSrc.duration!),
+    );
+
+    const subStr = inputTexts.slice(startIndex, endIndex).join(" ");
+    setCurrentVideoText(subStr);
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -179,9 +216,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
       setPreviewVideo(false);
       return;
     }
-
-    console.log("onPreviewVideo: videoSrc: ", response.data);
-    inputCopilot.VideoSrc = response.data;
+    inputCopilot.VideoSrc = response;
     setVideoSrc(response.data);
     setPreviewVideo(false);
   };
@@ -255,14 +290,19 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 />
               ) : (
                 <div className={styles_tm["flex-column-center"]}>
-                  <video controls width="80%" preload="metadata">
+                  <video
+                    controls
+                    width="80%"
+                    preload="metadata"
+                    onTimeUpdate={handleCurrentVideoTimeUpdate}
+                  >
                     <source src={videoSrc} type="video/webm" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
               )}
               <h4>Microsoft Azure AI Avatar</h4>
-              {/* TODO: 字幕 */}
+              <p>{currentVideoText}</p>
             </div>
 
             {/* <Box sx={{ typography: 'body1' }}>

@@ -89,9 +89,26 @@ export const onSynthesisAvatar = async (
         console.error(`Failed to get batch avatar synthesis job: ${response}`);
       }
       if (currentStatus === "Succeeded") {
+        // Get duration
+        const summaryResponse = await axios.get(
+          `${response.data.outputs.summary}`,
+          {
+            headers: header,
+          },
+        );
+        if (summaryResponse.data.status !== "Succeeded") {
+          return {
+            status: VideoFetchStatus.Failed,
+            data: summaryResponse.data,
+          };
+        }
+
         return {
           status: VideoFetchStatus.Succeeded,
           data: response.data.outputs.result,
+          duration:
+            summaryResponse.data.results[0].billingDetails
+              .TalkingAvatarDuration,
         };
       }
       if (currentStatus === "Failed") {

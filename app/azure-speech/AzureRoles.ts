@@ -1,3 +1,5 @@
+import { IRequestResponse } from "../store";
+
 export enum AzureRoles {
   TTSAvatar = "Text-to-Speech Avatar",
   LiveChatAvatar = "Live chat Avatar",
@@ -91,7 +93,8 @@ export const AzureLanguageToVoicesMap: Record<
 
 export class AzureTTSAvatarInput {
   InputText: string = "";
-  VideoSrc: string = "";
+  VideoSrc: IRequestResponse = { status: "", data: "", duration: "" };
+
   AudioSrc: string = "";
   Language: string = EAzureLanguages.EnglishUnitedStates;
   VoiceNumber: number = 0;
