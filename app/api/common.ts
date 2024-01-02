@@ -1,10 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
+import {
+  DEFAULT_MODELS,
+  OPENAI_BASE_URL,
+  ACCESS_CODE_PREFIX,
+  GEMINI_BASE_URL,
+} from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
 
 const serverConfig = getServerSideConfig();
+
+function parseApiKey(bearToken: string) {
+  const token = bearToken.trim().replaceAll("Bearer ", "").trim();
+  const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+
+  return {
+    accessCode: isOpenAiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
+    apiKey: isOpenAiKey ? token : "",
+  };
+}
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
@@ -24,6 +39,8 @@ export async function requestOpenai(req: NextRequest) {
     authValue = req.headers.get("Authorization") ?? "";
     authHeaderName = "Authorization";
   }
+  // check if it is openai api key or user token
+  const { accessCode, apiKey } = parseApiKey(authValue);
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
@@ -65,6 +82,22 @@ export async function requestOpenai(req: NextRequest) {
     path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
+  // if user does not provide an api key, inject system api key
+  if (!apiKey) {
+    const serverApiKey = serverConfig.isAzure
+      ? serverConfig.azureApiKey
+      : serverConfig.apiKey;
+
+    if (serverApiKey) {
+      console.log("[Auth] use system api key");
+      authValue = `${serverConfig.isAzure ? "" : "Bearer "}${serverApiKey}`;
+    } else {
+      console.log("[Auth] admin did not provide an api key");
+    }
+  } else {
+    console.log("[Auth] use user api key");
+  }
+
   const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
@@ -84,13 +117,24 @@ export async function requestOpenai(req: NextRequest) {
     signal: controller.signal,
   };
 
+  let customModels = serverConfig.customModels;
+  if (
+    accessCode &&
+    serverConfig.superCode &&
+    serverConfig.superCode !== accessCode
+  ) {
+    console.info("[OpenAI] gpt4 filter: not using super code");
+    if (customModels) customModels += ",";
+
+    customModels += DEFAULT_MODELS.filter((m) => m.name.startsWith("gpt-4"))
+      .map((m) => "-" + m.name)
+      .join(",");
+  }
+
   // #1815 try to refuse gpt4 request
-  if (serverConfig.customModels && req.body) {
+  if (customModels && req.body) {
     try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
+      const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 

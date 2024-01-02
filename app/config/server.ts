@@ -8,6 +8,7 @@ declare global {
 
       OPENAI_API_KEY?: string;
       CODE?: string;
+      SUPER_CODE?: string;
 
       BASE_URL?: string;
       OPENAI_ORG_ID?: string; // openai only
@@ -91,6 +92,7 @@ export const getServerSideConfig = () => {
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,
+    superCode: process.env.SUPER_CODE,
     codes: ACCESS_CODES,
 
     proxyUrl: process.env.PROXY_URL,
