@@ -157,7 +157,7 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
         </div>
         <div className={styles["sidebar-sub-title"]}>
-        © ai.xvua.chat
+        ©xvua.xvua.chat
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
