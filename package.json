@@ -24,6 +24,7 @@
     "@tremor/react": "^3.12.1",
     "@vercel/analytics": "^1.1.1",
     "echarts": "^5.4.3",
+    "@vercel/speed-insights": "^1.0.2",
     "emoji-picker-react": "^4.5.15",
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",

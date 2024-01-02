@@ -4,6 +4,10 @@ import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getServerSideConfig } from "./config/server";
+
+const serverConfig = getServerSideConfig();
 import { Providers } from "@/app/providers";
 import { Viewport } from "next";
 
@@ -43,6 +47,11 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>{children}</Providers>
+        {serverConfig?.isVercel && (
+          <>
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );
