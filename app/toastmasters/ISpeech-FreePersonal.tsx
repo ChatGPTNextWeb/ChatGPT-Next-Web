@@ -55,11 +55,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import {
-  audioSpeechToText,
-  speechRecognizer,
-  speechSynthesizer,
-} from "../cognitive/speech-sdk";
+import { speechRecognizer, speechSynthesizer } from "../cognitive/speech-sdk";
 
 import {
   IQuestionItem,
@@ -68,7 +64,6 @@ import {
   ImpromptuSpeechPrompts,
   ImpromptuSpeechRoles,
   ESpeechStage,
-  SpeechDefaultLangugage,
   ESpeechModes,
   IScoreMetric,
   ESpeechScores,
@@ -94,7 +89,12 @@ import { ChatTitle, BorderLine, ChatUtility } from "./chat-common";
 
 import GaugeChart from "./ISpeech-Common";
 import { EN_MASKS } from "../masks/en";
-import { AzureRoles, AzureTTSAvatarInput } from "../azure-speech/AzureRoles";
+import {
+  AzureDefaultEnglishVoiceName,
+  AzureRoles,
+  AzureTTSAvatarInput,
+  ELocaleLanguages,
+} from "../azure-speech/AzureRoles";
 import { Mask } from "../store/mask";
 
 export const FreePersonalQuestionPage = (props: {
@@ -260,7 +260,7 @@ export const FreePersonalQuestionPageBody = (props: {
 
   const onRecord = async () => {
     await recorder.startRecording();
-    speechRecognizer.startRecording(appendUserInput, SpeechDefaultLangugage);
+    speechRecognizer.startRecording(appendUserInput, ELocaleLanguages.EnUs);
     onStatusChange(ESpeechStageStatus.Recording);
   };
 
@@ -496,7 +496,7 @@ export const FreePersonalQuestionPageBody = (props: {
               onClick={() =>
                 speechSynthesizer.startSynthesize(
                   questionItem.Question,
-                  session.mask.lang,
+                  AzureDefaultEnglishVoiceName,
                 )
               }
             >
@@ -595,7 +595,7 @@ export const FreePersonalQuestionPageBody = (props: {
               onClick={() =>
                 speechSynthesizer.startSynthesize(
                   questionItem.Question,
-                  session.mask.lang,
+                  AzureDefaultEnglishVoiceName,
                 )
               }
             >
@@ -674,7 +674,7 @@ export const FreePersonalQuestionPageBody = (props: {
               onClick={() =>
                 speechSynthesizer.startSynthesize(
                   questionItem.SampleSpeech,
-                  session.mask.lang,
+                  AzureDefaultEnglishVoiceName,
                 )
               }
             >
@@ -834,7 +834,7 @@ export const FreePersonalQuestionPageBody = (props: {
                           onClick={() =>
                             speechSynthesizer.startSynthesize(
                               questionItem.Evaluations[role],
-                              session.mask.lang,
+                              AzureDefaultEnglishVoiceName,
                             )
                           }
                         >
@@ -1139,7 +1139,7 @@ export function FreePersonalReport(props: {
                         onClick={() =>
                           speechSynthesizer.startSynthesize(
                             impromptuSpeechInput.TotalEvaluations[role],
-                            session.mask.lang,
+                            AzureDefaultEnglishVoiceName,
                           )
                         }
                       />

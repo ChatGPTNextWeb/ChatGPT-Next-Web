@@ -87,10 +87,9 @@ import { Section, Title, Article, Prop } from "./react-loading";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import {
-  AzureAvatarLanguageToVoiceMap,
-  AzureLanguageToCountryMap,
+  AzureLanguageToVoicesMap,
+  AzureLanguageToLocaleMap,
   AzureLanguageToWelcomeMap,
-  AzureRoles,
   AzureTTSAvatarInput,
 } from "./AzureRoles";
 import {
@@ -204,7 +203,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
           setCurrentStage(SpeakTurnStage.UserSpeaking);
           setUserMessage("");
           const userAsk = await speechRecognizer.recognizeOnceAsync(
-            AzureLanguageToCountryMap[language],
+            AzureLanguageToLocaleMap[language],
           );
           // const userAsk = "who are you";
           // console.log("userAsk: ", userAsk);
@@ -239,7 +238,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         setGptMessage(gptResponse);
 
         const setting: ISubmitAvatarSetting = {
-          Voice: AzureAvatarLanguageToVoiceMap[language][voiceNumber].Voice,
+          Voice: AzureLanguageToVoicesMap[language][voiceNumber].Voice,
         };
         const audioResponse = await onSynthesisAudio(gptResponse, setting);
 
@@ -411,13 +410,11 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleLanguageChange}
                 autoWidth
               >
-                {Object.keys(AzureAvatarLanguageToVoiceMap).map(
-                  (item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ),
-                )}
+                {Object.keys(AzureLanguageToVoicesMap).map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -429,7 +426,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleVoiceChange}
                 autoWidth
               >
-                {AzureAvatarLanguageToVoiceMap[language].map((item, index) => (
+                {AzureLanguageToVoicesMap[language].map((item, index) => (
                   <MenuItem key={index} value={index.toString()}>
                     {item.Name}
                   </MenuItem>

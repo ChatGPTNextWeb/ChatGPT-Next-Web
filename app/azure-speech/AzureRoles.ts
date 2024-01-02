@@ -9,9 +9,14 @@ export enum EAzureLanguages {
   ChineseMandarinSimplified = "中文(普通话)",
 }
 
-export const AzureLanguageToCountryMap: Record<string, string> = {
-  [EAzureLanguages.EnglishUnitedStates]: "en-US",
-  [EAzureLanguages.ChineseMandarinSimplified]: "zh-CN",
+export enum ELocaleLanguages {
+  EnUs = "en-US",
+  ZhCn = "zh-CN",
+}
+
+export const AzureLanguageToLocaleMap: Record<string, ELocaleLanguages> = {
+  [EAzureLanguages.EnglishUnitedStates]: ELocaleLanguages.EnUs,
+  [EAzureLanguages.ChineseMandarinSimplified]: ELocaleLanguages.ZhCn,
 };
 
 export const AzureLanguageToWelcomeMap: Record<string, string> = {
@@ -26,7 +31,7 @@ interface IAzureLanguageVoiceItem {
   Voice: string;
 }
 
-export const AzureAvatarLanguageToVoiceMap: Record<
+export const AzureLanguageToVoicesMap: Record<
   string,
   IAzureLanguageVoiceItem[]
 > = {
@@ -91,3 +96,5 @@ export class AzureTTSAvatarInput {
   Language: string = EAzureLanguages.EnglishUnitedStates;
   VoiceNumber: number = 0;
 }
+
+export const AzureDefaultEnglishVoiceName = "en-US-JennyNeural";

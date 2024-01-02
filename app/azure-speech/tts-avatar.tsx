@@ -74,7 +74,7 @@ import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import { PlayCircleOutlineOutlined } from "@mui/icons-material";
 import {
-  AzureAvatarLanguageToVoiceMap,
+  AzureLanguageToVoicesMap,
   AzureRoles,
   AzureTTSAvatarInput,
 } from "./AzureRoles";
@@ -171,7 +171,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     setVideoSrc("");
 
     const setting: ISubmitAvatarSetting = {
-      Voice: AzureAvatarLanguageToVoiceMap[language][voiceNumber].Voice,
+      Voice: AzureLanguageToVoicesMap[language][voiceNumber].Voice,
     };
     const response = await onSynthesisAvatar(inputText, setting);
     if (response.status !== VideoFetchStatus.Succeeded) {
@@ -196,7 +196,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     setAudioSrc("");
 
     const setting: ISubmitAvatarSetting = {
-      Voice: AzureAvatarLanguageToVoiceMap[language][voiceNumber].Voice,
+      Voice: AzureLanguageToVoicesMap[language][voiceNumber].Voice,
     };
     const response = await onSynthesisAudio(inputText, setting);
     if (response.status !== VideoFetchStatus.Succeeded) {
@@ -314,13 +314,11 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleLanguageChange}
                 autoWidth
               >
-                {Object.keys(AzureAvatarLanguageToVoiceMap).map(
-                  (item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ),
-                )}
+                {Object.keys(AzureLanguageToVoicesMap).map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -332,7 +330,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleVoiceChange}
                 autoWidth
               >
-                {AzureAvatarLanguageToVoiceMap[language].map((item, index) => (
+                {AzureLanguageToVoicesMap[language].map((item, index) => (
                   <MenuItem key={index} value={index.toString()}>
                     {item.Name}
                   </MenuItem>

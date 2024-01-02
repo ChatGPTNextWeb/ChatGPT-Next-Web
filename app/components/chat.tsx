@@ -95,7 +95,8 @@ import { getClientConfig } from "../config/client";
 
 import { speechSynthesizer, speechRecognizer } from "../cognitive/speech-sdk";
 import {
-  AzureLanguageToCountryMap,
+  AzureLanguageToVoicesMap,
+  AzureLanguageToLocaleMap,
   EAzureLanguages,
 } from "../azure-speech/AzureRoles";
 
@@ -492,8 +493,8 @@ function ChatActions(props: {
           props.setLanguage(e.target.value as EAzureLanguages);
         }}
       >
-        {Object.keys(AzureLanguageToCountryMap).map((lang) => (
-          <option value={AzureLanguageToCountryMap[lang]} key={lang}>
+        {Object.keys(AzureLanguageToVoicesMap).map((lang) => (
+          <option value={lang} key={lang}>
             {lang}
           </option>
         ))}
@@ -633,7 +634,10 @@ export function Chat() {
 
   const onRecord = () => {
     if (!recording) {
-      speechRecognizer.startRecording(appendUserInput, speechLanguage);
+      speechRecognizer.startRecording(
+        appendUserInput,
+        AzureLanguageToLocaleMap[speechLanguage],
+      );
       setRecording(true);
     } else {
       speechRecognizer.stopRecording();
@@ -1064,7 +1068,8 @@ export function Chat() {
                                 onClick={() => {
                                   speechSynthesizer.startSynthesize(
                                     message.content,
-                                    speechLanguage,
+                                    AzureLanguageToVoicesMap[speechLanguage][0]
+                                      .Voice,
                                   );
                                 }}
                               />
