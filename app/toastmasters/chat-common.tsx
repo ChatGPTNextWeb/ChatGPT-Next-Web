@@ -87,7 +87,7 @@ import ReactMarkdown from "react-markdown";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { SpeechAudioShow, submitSpeechAudio } from "../cognitive/speech-audio";
-import { ELocaleLanguages } from "../azure-speech/AzureRoles";
+import { EAzureLanguages, ELocaleLanguages } from "../azure-speech/AzureRoles";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -798,11 +798,11 @@ export const ChatResponse = (props: {
                           icon={<MicphoneIcon />}
                           onClick={() => onAudioGenerate(message)}
                         />
-                        <ChatAction
+                        {/* <ChatAction
                           text={Locale.Chat.Actions.VideoPlay}
                           icon={<AvatarIcon />}
                           onClick={() => onVideoGenerate(message)}
-                        />
+                        /> */}
                       </>
                     )}
                   </div>
@@ -924,6 +924,21 @@ function ChatTimeSlider(props: { time: number; timeExpect: ILightsTime }) {
 export class ChatUtility {
   static getWordsNumber(text: string): number {
     return text.length > 0 ? text.split(/\s+/).length : 0;
+  }
+
+  static getWordsNumberChinese(text: string): number {
+    const chineseRegex = /[\u4e00-\u9fff]/g; // 匹配中文字符的正则表达式
+    const chineseMatches = text.match(chineseRegex); // 获取所有匹配的中文字符数组
+    return chineseMatches ? chineseMatches.length : 0; // 返回中文字符的数量
+  }
+
+  static getWordsNumberByLanguage(text: string, language: string): number {
+    if (language === EAzureLanguages.EnglishUnitedStates) {
+      return this.getWordsNumber(text);
+    } else if (language === EAzureLanguages.ChineseMandarinSimplified) {
+      return this.getWordsNumberChinese(text);
+    }
+    return 0;
   }
 
   static getFirstNWords(

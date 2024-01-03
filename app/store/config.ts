@@ -83,10 +83,10 @@ export const ALL_MODELS = [
   //   name: "gpt-3.5-turbo-16k-0613",
   //   available: true,
   // },
-  {
-    name: "gpt-4",
-    available: ENABLE_GPT4,
-  },
+  // {
+  //   name: "gpt-4",
+  //   available: ENABLE_GPT4,
+  // },
   // {
   //   name: "gpt-4-0314",
   //   available: ENABLE_GPT4,

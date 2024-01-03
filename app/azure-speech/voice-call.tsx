@@ -192,6 +192,8 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
 
   const onConversation = async () => {
     if (currentTurn === SpeakTurnRoles.User) {
+      // TODO: price
+
       let i = 0;
       const maxSeconds = 60;
       for (; i < maxSeconds; i++) {
@@ -223,6 +225,14 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     } else if (currentTurn === SpeakTurnRoles.GPT) {
       try {
         setCurrentStage(SpeakTurnStage.GPTThinking);
+
+        // at least 2 coins
+        const isEnoughCoins = await chatStore.isEnoughCoins(2);
+        if (!isEnoughCoins) {
+          onStopVoiceCall();
+          return;
+        }
+
         setGptMessage("");
 
         let gptResponse = "";
@@ -338,7 +348,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
             {currentStage === "" && (
               <div className={styles_tm["flex-column-center"]}>
                 <AvatarMui
-                  src="Azure/VoiceCall4.png"
+                  src="Azure/VoiceCall3.png"
                   sx={{ width: "25%", height: "25%", marginTop: "20px" }}
                 />
               </div>

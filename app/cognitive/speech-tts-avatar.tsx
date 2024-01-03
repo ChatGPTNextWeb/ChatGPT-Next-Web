@@ -16,6 +16,10 @@ import Box from "@mui/material/Box";
 import { IRequestResponse } from "../store/chat";
 
 import styles_tm from "../toastmasters/toastmasters.module.scss";
+import zBotServiceClient, {
+  LocalStorageKeys,
+} from "../zbotservice/ZBotServiceClient";
+import { EAzureSpeechPrice } from "../azure-speech/AzureRoles";
 
 const config = getServerSideConfig();
 
@@ -89,26 +93,22 @@ export const onSynthesisAvatar = async (
         console.error(`Failed to get batch avatar synthesis job: ${response}`);
       }
       if (currentStatus === "Succeeded") {
-        // Get duration
-        const summaryResponse = await axios.get(
-          `${response.data.outputs.summary}`,
-          {
-            headers: header,
-          },
+        const duration = Math.ceil(
+          response.data.properties.durationInTicks / 10000000,
         );
-        if (summaryResponse.data.status !== "Succeeded") {
-          return {
-            status: VideoFetchStatus.Failed,
-            data: summaryResponse.data,
-          };
-        }
+
+        // 扣费
+        const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        const realCost = Math.ceil(duration * EAzureSpeechPrice.TTSAvatar);
+        zBotServiceClient.updateRequest(userEmail ?? "", realCost);
+        console.log(
+          `onPreviewVideo: duration=${duration}, realCost=${realCost}`,
+        );
 
         return {
           status: VideoFetchStatus.Succeeded,
           data: response.data.outputs.result,
-          duration:
-            summaryResponse.data.results[0].billingDetails
-              .TalkingAvatarDuration,
+          duration: duration,
         };
       }
       if (currentStatus === "Failed") {
@@ -208,10 +208,22 @@ export const onSynthesisAudio = async (
         };
 
         const mp3Url = await fetchAndUnzipMP3(response.data.outputs.result);
-        // const mp3Url = response.data.outputs.result;
+        const duration = Math.ceil(
+          response.data.properties.durationInTicks / 10000000,
+        );
+
+        // 扣费
+        const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        const realCost = Math.ceil(duration * EAzureSpeechPrice.TTSVoice);
+        zBotServiceClient.updateRequest(userEmail ?? "", realCost);
+        console.log(
+          `onSynthesisAudio: duration=${duration}, realCost=${realCost}`,
+        );
+
         return {
           status: VideoFetchStatus.Succeeded,
           data: mp3Url,
+          duration: duration,
         };
       }
       if (currentStatus === "Failed") {

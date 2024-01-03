@@ -8,6 +8,7 @@ export enum ImpromptuSpeechRoles {
 
   Scores = "Scores",
   General = "Feedback",
+  Report = "Report",
 
   // Grammarian = "Grammarian",
   // AhCounter = "Ah-Counter",
@@ -252,7 +253,11 @@ export class ImpromptuSpeechPrompts {
   }
 
   static GetTotalEvaluationRoles(): string[] {
-    return [ImpromptuSpeechRoles.General, ToastmastersRoles.Grammarian];
+    return [
+      ImpromptuSpeechRoles.Report,
+      ImpromptuSpeechRoles.General,
+      ToastmastersRoles.Grammarian,
+    ];
   }
 
   static GetHostingTotalEvaluationPrompts(
@@ -272,6 +277,17 @@ export class ImpromptuSpeechPrompts {
     const speakerInputsString = JSON.stringify(speakerInputs, null, 4);
 
     return {
+      [ImpromptuSpeechRoles.Report]: `The Question-Speech pairs are:
+      ${speakerInputsString},
+
+      You are the ${ToastmastersRoles.TableTopicsEvaluator}, Give me a summary report for the Table Topics Session.
+      Your should:
+      1). Don't make things up, all your quoted sentence must from the speaker's speech.
+      2). Not evaluate one by one. Just highlight the good or bad usage of sentence or words.
+      3). Bold keywords using markdown when present your answer.
+      4). Provide addvice to the speaker if he has bad usage.
+      5). Total report should be about 200 words.
+      `,
       [ImpromptuSpeechRoles.General]: `The Question-Speech pairs are:
       ${speakerInputsString},
   

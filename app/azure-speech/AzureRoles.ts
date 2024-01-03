@@ -1,4 +1,4 @@
-import { IRequestResponse } from "../store";
+import { IRequestResponse, initRequestResponse } from "../store";
 
 export enum AzureRoles {
   TTSAvatar = "Text-to-Speech Avatar",
@@ -31,6 +31,11 @@ export const AzureLanguageToWelcomeMap: Record<string, string> = {
 interface IAzureLanguageVoiceItem {
   Name: string;
   Voice: string;
+}
+
+export enum EAzureSpeechPrice {
+  TTSAvatar = 5, // coins / s
+  TTSVoice = 5 / 60, // coins / s
 }
 
 export const AzureLanguageToVoicesMap: Record<
@@ -93,9 +98,10 @@ export const AzureLanguageToVoicesMap: Record<
 
 export class AzureTTSAvatarInput {
   InputText: string = "";
-  VideoSrc: IRequestResponse = { status: "", data: "", duration: "" };
+  VideoSrc: IRequestResponse = initRequestResponse;
+  AudioSrc: IRequestResponse = initRequestResponse;
 
-  AudioSrc: string = "";
+  // AudioSrc: string = "";
   Language: string = EAzureLanguages.EnglishUnitedStates;
   VoiceNumber: number = 0;
 }

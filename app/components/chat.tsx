@@ -1175,7 +1175,7 @@ export function Chat() {
               >
                 <SpeedDialAction
                   icon={<PhoneIcon style={{ color: "red" }} />}
-                  tooltipTitle={"Voice Call"}
+                  tooltipTitle={"To Voice Call"}
                   onClick={() => navigate(Path.AzureVoiceCall)}
                 />
                 <SpeedDialAction

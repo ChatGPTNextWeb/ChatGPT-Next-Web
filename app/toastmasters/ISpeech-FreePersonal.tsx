@@ -1009,16 +1009,15 @@ export function FreePersonalReport(props: {
   };
 
   function EvaluationCard() {
+    const evaluationRoles = ImpromptuSpeechPrompts.GetTotalEvaluationRoles();
     const [evaluationRole, setEvaluationRole] = React.useState<string>(
-      ImpromptuSpeechRoles.General,
+      evaluationRoles[0],
     );
 
     const [evaluating, setEvaluating] = useState(
       Object.keys(impromptuSpeechInput.TotalEvaluations).length > 0,
     );
     const navigate = useNavigate();
-
-    const evaluationRoles = ImpromptuSpeechPrompts.GetTotalEvaluationRoles();
 
     const onReEvaluation = async (role: string) => {
       setEvaluating(true);

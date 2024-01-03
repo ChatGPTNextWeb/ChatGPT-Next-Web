@@ -2,7 +2,7 @@ import { BuiltinMask } from "./typing";
 
 export enum BuiltinMaskGroup {
   OpenAI = "OpenAI Product",
-  AzureSpeech = "Microsoft Azure Speech",
+  AzureSpeech = "Speech Base Service",
   Toastmasters = "Speech Evaluator",
   ToeflCopilot = "TOEFL Assistant",
   InterviewCopilot = "Interview Copilot",

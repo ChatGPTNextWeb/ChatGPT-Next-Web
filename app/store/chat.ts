@@ -76,9 +76,18 @@ export interface IRequestResponse {
   // type: string; // video or audio
   status: any;
   data: any;
-  duration?: string;
+  duration?: number;
   caption?: string;
+  lastSegment?: number;
+  submitting?: boolean;
 }
+export const initRequestResponse: IRequestResponse = {
+  status: "",
+  data: "",
+  duration: 0,
+  lastSegment: -1,
+  submitting: false,
+};
 
 export interface ChatSession {
   id: number;
@@ -381,7 +390,7 @@ export const useChatStore = create<ChatStore>()(
           return true;
         }
 
-        showToast("您的AI币余额不足, 请前往 设置-个人中心 查看");
+        showToast(`您的AI币不足 ${requiredCoins}, 请前往 设置-余额中心 查看`);
         return false;
       },
 
