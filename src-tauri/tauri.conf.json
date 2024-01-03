@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "TimoChat",
-    "version": "2.9.12"
+    "version": "2.10.1"
   },
   "tauri": {
     "allowlist": {

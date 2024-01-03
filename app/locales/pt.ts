@@ -1,10 +1,10 @@
 import { SubmitKey } from "../store/config";
-import { LocaleType } from "../locales/index";
+import { PartialLocaleType } from "../locales/index";
 import { getClientConfig } from "../config/client";
 
 const isApp = !!getClientConfig()?.isApp;
 
-const pt: LocaleType = {
+const pt: PartialLocaleType = {
   WIP: "Em breve...",
   Error: {
     Unauthorized: isApp

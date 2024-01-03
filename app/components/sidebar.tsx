@@ -153,9 +153,10 @@ export function SideBar(props: { className?: string }) {
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
       }}
     >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>Timo Chat</div>
-
+      <div className={styles["sidebar-header"]} data-tauri-drag-region>
+        <div className={styles["sidebar-title"]} data-tauri-drag-region>
+        Timo Chat
+        </div>
         <div className={styles["sidebar-sub-title"]}>
           Chat with your AI assistant.
         </div>
