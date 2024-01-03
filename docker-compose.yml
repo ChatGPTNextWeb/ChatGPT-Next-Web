@@ -3,6 +3,7 @@ services:
   chatgpt-next-web:
     container_name: chatgpt-next-web
 #    image: yidadaa/chatgpt-next-web
+    restart: always
     image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web
 #    image: registry.cn-hangzhou.aliyuncs.com/sijinhui/chatgpt-next-web
     build:
