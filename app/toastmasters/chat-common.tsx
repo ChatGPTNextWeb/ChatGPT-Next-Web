@@ -87,6 +87,7 @@ import ReactMarkdown from "react-markdown";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { SpeechAudioShow, submitSpeechAudio } from "../cognitive/speech-audio";
+import { ELocaleLanguages } from "../azure-speech/AzureRoles";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -277,10 +278,7 @@ export const ChatInput = (props: {
 
   const onRecord = () => {
     if (!recording) {
-      speechRecognizer.startRecording(
-        appendUserInput,
-        ToastmastersDefaultLangugage,
-      );
+      speechRecognizer.startRecording(appendUserInput, ELocaleLanguages.EnUs);
       setRecording(true);
     } else {
       speechRecognizer.stopRecording();

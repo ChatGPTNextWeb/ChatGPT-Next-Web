@@ -77,6 +77,7 @@ export interface IRequestResponse {
   status: any;
   data: any;
   duration?: string;
+  caption?: string;
 }
 
 export interface ChatSession {

@@ -9,69 +9,20 @@ import { List, showToast } from "../components/ui-lib";
 
 import {
   ChatTitle,
-  ChatInput,
-  ChatResponse,
-  ChatSubmitCheckbox,
   ChatUtility,
   BorderLine,
 } from "../toastmasters/chat-common";
-import { useScrollToBottom } from "../components/chat";
-import { useDebouncedCallback } from "use-debounce";
-import { autoGrowTextArea } from "../utils";
-import { IScoreMetric } from "../toastmasters/ISpeechRoles";
-import { IconButton } from "../components/button";
-import SendWhiteIcon from "../icons/send-white.svg";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Button,
-  LinearProgress,
-} from "@mui/material";
 import "react-circular-progressbar/dist/styles.css";
 import IconButtonMui from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
-import ButtonGroup from "@mui/joy/ButtonGroup";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import MicIcon from "@mui/icons-material/Mic";
-import MicOffIcon from "@mui/icons-material/MicOff";
-import VerifiedIcon from "@mui/icons-material/Verified";
-import ReplayCircleFilledIcon from "@mui/icons-material/ReplayCircleFilled";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Tabs from "@mui/material/Tabs";
-import PhoneIcon from "@mui/icons-material/Phone";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import PersonPinIcon from "@mui/icons-material/PersonPin";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import CircularProgress from "@mui/material/CircularProgress";
-import Rating from "@mui/material/Rating";
 
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import StopCircleIcon from "@mui/icons-material/StopCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
-
-import ReactMarkdown from "react-markdown";
-import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import { PlayCircleOutlineOutlined } from "@mui/icons-material";
 import {
   AzureLanguageToVoicesMap,
@@ -118,76 +69,60 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     state.currentSessionIndex,
   ]);
 
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
-  const [hitBottom, setHitBottom] = useState(true);
   const [previewVideo, setPreviewVideo] = useState(false);
   const [previewAudio, setPreviewAudio] = useState(false);
-  const [currentVideoSegment, setCurrentVideoSegment] = useState(0);
-  const [currentVideoText, setCurrentVideoText] = useState("");
-  const [currentVideoFirst, setCurrentVideoFirst] = useState(true);
 
-  // from input
-  const [inputText, setInputText] = useState(inputCopilot.InputText);
-  const [videoSrc, setVideoSrc] = useState(inputCopilot.VideoSrc.data);
-  const [audioSrc, setAudioSrc] = useState(inputCopilot.AudioSrc);
-  const [language, setLanguage] = useState(inputCopilot.Language);
-  const [voiceNumber, setVoiceNumber] = useState(inputCopilot.VoiceNumber);
+  // Notes: should not use local useState from input, since when change session, the useState will not update
+  // const [inputText, setInputText] = useState(inputCopilot.InputText);
   const [tabValue, setTabValue] = React.useState("1");
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
     const newValue = event.target.value;
-    setLanguage(newValue);
-    inputCopilot.Language = newValue;
-    setVoiceNumber(0);
-    inputCopilot.VoiceNumber = 0;
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.Language = newValue;
+      inputCopilot.VoiceNumber = 0;
+    });
   };
   const handleVoiceChange = (event: SelectChangeEvent) => {
     const newValue = parseInt(event.target.value);
-    setVoiceNumber(newValue);
-    inputCopilot.VoiceNumber = newValue;
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.VoiceNumber = newValue;
+    });
   };
   const handleInputTextChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const newValue = event.target.value;
-    setInputText(newValue);
-    inputCopilot.InputText = newValue;
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.InputText = newValue;
+    });
   };
 
   const handleCurrentVideoTimeUpdate = (event: any) => {
     const segmentLength = 5; // interval seconds
+    const newTime = event.target.currentTime;
+
+    // 只在分段的起点处显示字幕一次
+    if (newTime % segmentLength !== 0) return;
+
     const newSegment = Math.floor(
       parseInt(event.target.currentTime) / segmentLength,
     );
 
-    if (!currentVideoFirst && newSegment == currentVideoSegment) return;
-
-    let _segment: number;
-    if (currentVideoFirst) {
-      // first time
-      _segment = 0;
-      setCurrentVideoFirst(false);
-    } else if (newSegment == currentVideoSegment) {
-      return;
-    } else {
-      _segment = newSegment;
-      setCurrentVideoSegment(newSegment);
-    }
-
-    const inputTexts = inputText.split(/\s+/);
+    const inputTexts = inputCopilot.InputText.split(/\s+/);
     const startIndex = Math.round(
-      (_segment * segmentLength * inputTexts.length) /
+      (newSegment * segmentLength * inputTexts.length) /
         parseInt(inputCopilot.VideoSrc.duration!),
     );
     const endIndex = Math.round(
-      ((_segment + 1) * segmentLength * inputTexts.length) /
+      ((newSegment + 1) * segmentLength * inputTexts.length) /
         parseInt(inputCopilot.VideoSrc.duration!),
     );
 
     const subStr = inputTexts.slice(startIndex, endIndex).join(" ");
-    setCurrentVideoText(subStr);
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.VideoSrc.caption = subStr;
+    });
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -199,49 +134,61 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   };
 
   const onPreviewVideo = async () => {
-    if (inputText === "") {
+    if (inputCopilot.InputText === "") {
       showToast(`Input Text could not be empty`);
       return;
     }
 
     setPreviewVideo(true);
-    setVideoSrc("");
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.VideoSrc = { status: "", data: "", duration: "" };
+    });
 
     const setting: ISubmitAvatarSetting = {
-      Voice: AzureLanguageToVoicesMap[language][voiceNumber].Voice,
+      Voice:
+        AzureLanguageToVoicesMap[inputCopilot.Language][
+          inputCopilot.VoiceNumber
+        ].Voice,
     };
-    const response = await onSynthesisAvatar(inputText, setting);
+    const response = await onSynthesisAvatar(inputCopilot.InputText, setting);
     if (response.status !== VideoFetchStatus.Succeeded) {
       showToast(`Failed: status=${response.status}, data=${response.data}`);
       setPreviewVideo(false);
       return;
     }
-    inputCopilot.VideoSrc = response;
-    setVideoSrc(response.data);
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.VideoSrc = response;
+    });
     setPreviewVideo(false);
   };
 
   const onPreviewAudio = async () => {
-    if (inputText === "") {
+    if (inputCopilot.InputText === "") {
       showToast(`Input Text could not be empty`);
       return;
     }
 
     setPreviewAudio(true);
-    setAudioSrc("");
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.AudioSrc = "";
+    });
 
     const setting: ISubmitAvatarSetting = {
-      Voice: AzureLanguageToVoicesMap[language][voiceNumber].Voice,
+      Voice:
+        AzureLanguageToVoicesMap[inputCopilot.Language][
+          inputCopilot.VoiceNumber
+        ].Voice,
     };
-    const response = await onSynthesisAudio(inputText, setting);
+    const response = await onSynthesisAudio(inputCopilot.InputText, setting);
     if (response.status !== VideoFetchStatus.Succeeded) {
       showToast(`Failed: status=${response.status}, data=${response.data}`);
       setPreviewAudio(false);
       return;
     }
 
-    inputCopilot.AudioSrc = response.data;
-    setAudioSrc(response.data);
+    chatStore.updateCurrentSession((session) => {
+      inputCopilot.AudioSrc = response.data;
+    });
     setPreviewAudio(false);
   };
 
@@ -255,23 +202,14 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
       }
     }, []);
 
-    return <audio ref={audioRef} src={audioSrc} />;
+    return <audio ref={audioRef} src={inputCopilot.AudioSrc} />;
   };
 
   return (
     <div className={styles.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
 
-      <div
-        className={styles["chat-body"]}
-        ref={scrollRef}
-        onMouseDown={() => inputRef.current?.blur()}
-        onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
-        onTouchStart={() => {
-          inputRef.current?.blur();
-          setAutoScroll(false);
-        }}
-      >
+      <div className={styles["chat-body"]}>
         <List>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div
@@ -283,7 +221,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 // width: "100%",
               }}
             >
-              {videoSrc === "" ? (
+              {inputCopilot.VideoSrc.data === "" ? (
                 <img
                   src="Azure/lisa-casual-sitting-transparent-bg.png"
                   width="80%"
@@ -296,13 +234,16 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                     preload="metadata"
                     onTimeUpdate={handleCurrentVideoTimeUpdate}
                   >
-                    <source src={videoSrc} type="video/webm" />
+                    <source
+                      src={inputCopilot.VideoSrc.data}
+                      type="video/webm"
+                    />
                     Your browser does not support the video tag.
                   </video>
                 </div>
               )}
               <h4>Microsoft Azure AI Avatar</h4>
-              <p>{currentVideoText}</p>
+              <p>{inputCopilot.VideoSrc.caption}</p>
             </div>
 
             {/* <Box sx={{ typography: 'body1' }}>
@@ -350,7 +291,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 Language
               </InputLabel>
               <Select
-                value={language}
+                value={inputCopilot.Language}
                 onChange={handleLanguageChange}
                 autoWidth
               >
@@ -366,15 +307,17 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 Voice
               </InputLabel>
               <Select
-                value={voiceNumber.toString()}
+                value={inputCopilot.VoiceNumber.toString()}
                 onChange={handleVoiceChange}
                 autoWidth
               >
-                {AzureLanguageToVoicesMap[language].map((item, index) => (
-                  <MenuItem key={index} value={index.toString()}>
-                    {item.Name}
-                  </MenuItem>
-                ))}
+                {AzureLanguageToVoicesMap[inputCopilot.Language].map(
+                  (item, index) => (
+                    <MenuItem key={index} value={index.toString()}>
+                      {item.Name}
+                    </MenuItem>
+                  ),
+                )}
               </Select>
             </FormControl>
             <LoadingButton
@@ -389,9 +332,9 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
               <span>Preview audio</span>
             </LoadingButton>
 
-            {audioSrc !== "" && (
+            {inputCopilot.AudioSrc !== "" && (
               <audio controls style={{ width: "30%", height: "40px" }}>
-                <source src={audioSrc} type="audio/mpeg" />
+                <source src={inputCopilot.AudioSrc} type="audio/mpeg" />
                 Your browser does not support the audio element.
               </audio>
             )}
@@ -400,7 +343,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
           <div style={{ position: "relative", display: "flex", flex: 1 }}>
             <TextField
               label="Input Text"
-              value={inputText}
+              value={inputCopilot.InputText}
               onChange={handleInputTextChange}
               multiline
               sx={{
@@ -417,7 +360,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 fontSize: "12px",
               }}
             >
-              {ChatUtility.getWordsNumber(inputText)} words
+              {ChatUtility.getWordsNumber(inputCopilot.InputText)} words
             </div>
           </div>
         </List>
