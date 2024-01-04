@@ -33,8 +33,8 @@ jobs:
 #          yes | docker system prune --filter "until=168h"
   deploy:
     name: 部署到dev服务器
-    needs: z4
-    runs-on: thinkpad
+    #needs: z4
+    runs-on: z4
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
