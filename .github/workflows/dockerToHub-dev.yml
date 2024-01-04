@@ -64,6 +64,9 @@ jobs:
             #echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             #docker-compose pull && docker-compose up -d
             #yes | docker image prune
+            yarn config set registry 'https://registry.npmmirror.com/'
+            yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
+            yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
             yarn install && yarn run build
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
