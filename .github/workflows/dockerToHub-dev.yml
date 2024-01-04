@@ -45,7 +45,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Sync repository to ty
+      - name: Sync repository to tx
         run: |
           yes | docker image prune
           rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
@@ -61,13 +61,7 @@ jobs:
           script: |
             cd $SERVER_WORKDIR #进入到工作目录
             echo "${{ secrets.DOCKER_ENV }}" > .env
-            #echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
-            #docker-compose pull && docker-compose up -d
-            #yes | docker image prune
-            yarn config set registry 'https://registry.npmmirror.com/'
-            yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-            yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
-            yarn install && yarn run build
+            bash ./start.sh
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
