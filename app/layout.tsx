@@ -34,7 +34,7 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         {/* <link rel="stylesheet" href="/google-fonts.css"></link> */}
-        {/* <script src="/serviceWorkerRegister.js" defer></script> */}
+        <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>{children}</body>
     </html>
