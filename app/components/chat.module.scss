@@ -518,9 +518,14 @@
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
+    padding: 10px 145px 10px 14px;
   }
 
   .chat-input-send {
+    bottom: 30px;
+  }
+  .chat-input-send2 {
+    right: 113px;
     bottom: 30px;
   }
 }
