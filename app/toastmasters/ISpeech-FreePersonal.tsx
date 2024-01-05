@@ -77,7 +77,7 @@ import { useNavigate } from "react-router-dom";
 
 import styles_chat from "../components/chat.module.scss";
 import styles_tm from "../toastmasters/toastmasters.module.scss";
-import styles from "./ISpeech.module.scss";
+import styles_ispeech from "./ISpeech.module.scss";
 
 import { List, ListItem, showPrompt, showToast } from "../components/ui-lib";
 import { IconButton } from "../components/button";
@@ -152,9 +152,9 @@ export const FreePersonalQuestionPage = (props: {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.navigation}>
-        <button className={styles.navButton} onClick={onReturn}>
+    <div className={styles_ispeech.container}>
+      <div className={styles_ispeech.navigation}>
+        <button className={styles_ispeech.navButton} onClick={onReturn}>
           {" "}
           ← Return
         </button>
@@ -191,7 +191,7 @@ export const FreePersonalQuestionPage = (props: {
           <Button onClick={onNextQuestion}>{">"}</Button>
         </ButtonGroup>
 
-        <button className={styles.capsuleButton} onClick={onReport}>
+        <button className={styles_ispeech.capsuleButton} onClick={onReport}>
           End & Report
         </button>
       </div>
@@ -464,7 +464,7 @@ export const FreePersonalQuestionPageBody = (props: {
   return (
     <div>
       <p
-        className={styles.questionText}
+        className={styles_ispeech.questionText}
         onClick={async () => {
           const newMessage = await showPrompt(
             Locale.Chat.Actions.Edit,
@@ -477,7 +477,7 @@ export const FreePersonalQuestionPageBody = (props: {
       >
         {questionItem.Question}
       </p>
-      <div className={styles.timer}>
+      <div className={styles_ispeech.timer}>
         {/* TODO: 为啥 questionItem.SpeechTime 也会刷新? */}
         <span>{formatTime(questionItem.SpeechTime)} / 2:00</span>
       </div>
@@ -643,7 +643,7 @@ export const FreePersonalQuestionPageBody = (props: {
         </AccordionSummary>
         <AccordionDetails style={{ textAlign: "left" }}>
           <p
-            className={styles.questionText}
+            className={styles_ispeech.questionText}
             onClick={async () => {
               const newMessage = await showPrompt(
                 Locale.Chat.Actions.Edit,
@@ -660,7 +660,7 @@ export const FreePersonalQuestionPageBody = (props: {
               defaultShow={true}
             />
           </p>
-          <div className={styles["chat-input-words"]}>
+          <div className={styles_ispeech["chat-input-words"]}>
             {ChatUtility.getWordsNumber(questionItem.SampleSpeech)} words
           </div>
           <Stack
@@ -702,7 +702,7 @@ export const FreePersonalQuestionPageBody = (props: {
         </AccordionSummary>
         <AccordionDetails style={{ textAlign: "left" }}>
           <p
-            className={styles.questionText}
+            className={styles_ispeech.questionText}
             onClick={async () => {
               const newMessage = await showPrompt(
                 Locale.Chat.Actions.Edit,
@@ -719,7 +719,7 @@ export const FreePersonalQuestionPageBody = (props: {
               defaultShow={true}
             />
           </p>
-          <div className={styles["chat-input-words"]}>
+          <div className={styles_ispeech["chat-input-words"]}>
             {ChatUtility.getWordsNumber(questionItem.Speech)} words
           </div>
           {questionItem.SpeechAudio != "" && (
@@ -817,7 +817,7 @@ export const FreePersonalQuestionPageBody = (props: {
                       <ReactMarkdown>
                         {questionItem.Evaluations[role]}
                       </ReactMarkdown>
-                      <div className={styles["chat-input-words"]}>
+                      <div className={styles_ispeech["chat-input-words"]}>
                         {ChatUtility.getWordsNumber(
                           questionItem.Evaluations[role],
                         )}{" "}
@@ -1118,7 +1118,7 @@ export function FreePersonalReport(props: {
                     <ReactMarkdown>
                       {impromptuSpeechInput.TotalEvaluations[role]}
                     </ReactMarkdown>
-                    <div className={styles["chat-input-words"]}>
+                    <div className={styles_ispeech["chat-input-words"]}>
                       {ChatUtility.getWordsNumber(
                         impromptuSpeechInput.TotalEvaluations[role],
                       )}{" "}

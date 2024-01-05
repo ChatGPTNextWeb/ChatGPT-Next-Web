@@ -1,27 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { useChatStore } from "../store";
+import { useAppConfig, useChatStore } from "../store";
 
+import styles_tm from "../toastmasters/toastmasters.module.scss";
 import styles_chat from "../components/chat.module.scss";
-import styles from "../components/chat.module.scss";
+import styles_ispeech from "./ISpeech.module.scss";
+
 import {
   List,
   ListItem,
   showConfirmWithProps,
+  showPrompt,
   showToast,
 } from "../components/ui-lib";
 import SendWhiteIcon from "../icons/send-white.svg";
 import ResetIcon from "../icons/reload.svg";
 import AvatarIcon from "../icons/avatar36.svg";
 
-import {
-  PSEvaluatorGuidance as ToastmastersRoleGuidance,
-  InputSubmitStatus,
-  PreparedSpeechInput,
-} from "./roles";
+import { PreparedSpeechInput } from "./PreparedSpeechRoles";
+import Locale from "../locales";
 import { ChatTitle, ChatInput, ChatUtility } from "./chat-common";
 import { ChatAction, useScrollToBottom } from "../components/chat";
-import Locale from "../locales";
+import { IconButton } from "../components/button";
+import { Markdown } from "../components/exporter";
 
 import Checkbox from "@mui/material/Checkbox";
 import { FormControlLabel } from "@mui/material";
@@ -76,27 +77,20 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
   ]);
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
+  const config = useAppConfig();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [evaluationRoles, setEvaluationRoles] = useState<string[]>(
-    Object.keys(PreparedSpeechInput.GetCheckedRoles(sessionInput.RolesSetting)),
-  );
   const [evaluationRole, setEvaluationRole] = useState<string>(
-    evaluationRoles[0],
+    Object.keys(
+      PreparedSpeechInput.GetCheckedRoles(sessionInput.RolesSetting),
+    )[0],
   );
 
-  const handleRoleChange = (selectValue: string) => {
-    chatStore.updateCurrentSession((session) => {
-      sessionInput.RolesSetting[selectValue].Checked =
-        !sessionInput.RolesSetting[selectValue].Checked;
-    });
-  };
-
-  const doSubmit = async () => {
+  const onEvaluation = async (role: string) => {
     const topic = sessionInput.Topic.text.trim();
     const speech = sessionInput.Speech.text.trim();
     if (topic === "") {
@@ -124,34 +118,6 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
       return;
     }
 
-    setSubmitting(true);
-    setEvaluationRoles(checkRolesKeys);
-    setEvaluationRole(checkRolesKeys[0]);
-    PreparedSpeechInput.ResetEvaluation(sessionInput.RolesSetting);
-
-    // reset status from 0
-    chatStore.resetSession();
-
-    let ask = PreparedSpeechInput.GetEvaluateGuidance(getInputsString());
-    chatStore.onUserInput(ask);
-    await chatStore.waitFinished();
-
-    for (const role of checkRolesKeys) {
-      const ask = PreparedSpeechInput.GetEvaluateRolesPrompt(
-        role,
-        checkRoles[role].Setting,
-      );
-      chatStore.onUserInput(ask);
-      await chatStore.waitFinished();
-      chatStore.updateCurrentSession((session) => {
-        sessionInput.RolesSetting[role].Evaluation =
-          session.messages[session.messages.length - 1].content;
-      });
-    }
-    setSubmitting(false);
-  };
-
-  const onReEvaluation = async (role: string) => {
     const currentSetting = sessionInput.RolesSetting[role].Setting;
     const setting = _.cloneDeep(currentSetting);
 
@@ -159,7 +125,7 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
       const ContentComponent = () => {
         return (
           <List>
-            <ListItem title="Evaluation Words">
+            <ListItem title="Words">
               <input
                 type="number"
                 min={0}
@@ -175,18 +141,13 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
 
       const isConfirmed = await showConfirmWithProps({
         children: <ContentComponent />,
-        title: `Retry Settings`,
+        title: `Evaluation Settings`,
         cancelText: "Cancel",
         confirmText: "Confirm",
       });
       if (!isConfirmed) return;
 
       sessionInput.RolesSetting[role].Setting = _.cloneDeep(setting);
-    }
-
-    let isEnoughCoins = await chatStore.isEnoughCoins(1 + 1);
-    if (!isEnoughCoins) {
-      return;
     }
 
     setSubmitting(true);
@@ -238,11 +199,11 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
   };
 
   return (
-    <div className={styles.chat} key={session.id}>
+    <div className={styles_chat.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
 
       <div
-        className={styles["chat-body"]}
+        className={styles_chat["chat-body"]}
         ref={scrollRef}
         onMouseDown={() => inputRef.current?.blur()}
         onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
@@ -255,7 +216,7 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
           <ChatInput title="Topic" inputStore={sessionInput.Topic} />
           <ChatInput title="Speech" inputStore={sessionInput.Speech} />
 
-          <div
+          {/* <div
             style={{
               display: "flex",
               flexDirection: "row" as const, // 使用 'column' 来确保类型匹配
@@ -295,7 +256,7 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
             >
               <span>Submit</span>
             </LoadingButton>
-          </div>
+          </div> */}
 
           {/* <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             {[0, 1, 2, 3].map((value) => {
@@ -327,18 +288,6 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
               );
             })}
           </List> */}
-
-          {/* <ChatSubmitCheckbox
-            toastmastersRecord={ToastmastersRecord}
-            checkInput={checkInput}
-          /> */}
-
-          {/* <ChatResponse
-            scrollRef={scrollRef}
-            toastmastersRecord={ToastmastersRecord}
-          /> */}
-
-          {/* <SpeechAvatarVideoShow outputAvatar={session.output.avatar} /> */}
         </List>
 
         <List>
@@ -352,30 +301,58 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
                     }}
                     aria-label="lab API tabs example"
                   >
-                    {evaluationRoles.map((role, index) => (
-                      <Tab
-                        key={index}
-                        label={role}
-                        value={role}
-                        sx={{ textTransform: "none" }}
-                      />
-                    ))}
+                    {Object.keys(sessionInput.RolesSetting).map(
+                      (role, index) => (
+                        <Tab
+                          key={index}
+                          label={role}
+                          value={role}
+                          sx={{ textTransform: "none" }}
+                        />
+                      ),
+                    )}
                   </TabList>
                 </Box>
-                {evaluationRoles.map((role, index) => (
+                {Object.keys(sessionInput.RolesSetting).map((role, index) => (
                   <TabPanel key={index} value={role}>
-                    {sessionInput.RolesSetting[role].Evaluation === "" &&
-                      submitting && (
+                    {sessionInput.RolesSetting[role].Evaluation === "" ? (
+                      submitting ? (
                         <Box sx={{ display: "flex", justifyContent: "center" }}>
                           <CircularProgress />
                         </Box>
-                      )}
-                    {sessionInput.RolesSetting[role].Evaluation !== "" && (
+                      ) : (
+                        <Box sx={{ display: "flex", justifyContent: "center" }}>
+                          <IconButton
+                            icon={<SendWhiteIcon />}
+                            text="Submit"
+                            disabled={submitting}
+                            className={styles_tm["chat-input-button-submit"]}
+                            onClick={() => onEvaluation(role)}
+                          />
+                        </Box>
+                      )
+                    ) : (
                       <Typography style={{ textAlign: "left" }}>
-                        <ReactMarkdown>
-                          {sessionInput.RolesSetting[role].Evaluation}
-                        </ReactMarkdown>
-                        <div className={styles["chat-input-words"]}>
+                        <p
+                          className={styles_ispeech.questionText}
+                          onClick={async () => {
+                            const newMessage = await showPrompt(
+                              Locale.Chat.Actions.Edit,
+                              sessionInput.RolesSetting[role].Evaluation,
+                            );
+                            chatStore.updateCurrentSession((session) => {
+                              sessionInput.RolesSetting[role].Evaluation =
+                                newMessage;
+                            });
+                          }}
+                        >
+                          <Markdown
+                            content={sessionInput.RolesSetting[role].Evaluation}
+                            fontSize={config.fontSize}
+                            defaultShow={true}
+                          />
+                        </p>
+                        <div className={styles_chat["chat-input-words"]}>
                           {ChatUtility.getWordsNumber(
                             sessionInput.RolesSetting[role].Evaluation,
                           )}{" "}
@@ -390,19 +367,19 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
                           }}
                         >
                           {/* <ChatAction
-                            text={Locale.Chat.Actions.Play}
-                            icon={<PlayCircleIcon />}
-                            // onClick={() =>
-                            //   speechSynthesizer.startSynthesize(
-                            //     impromptuSpeechInput.TotalEvaluations[role],
-                            //     AzureDefaultEnglishVoiceName,
-                            //   )
-                            // }
-                          /> */}
+                              text={Locale.Chat.Actions.Play}
+                              icon={<PlayCircleIcon />}
+                              // onClick={() =>
+                              //   speechSynthesizer.startSynthesize(
+                              //     impromptuSpeechInput.TotalEvaluations[role],
+                              //     AzureDefaultEnglishVoiceName,
+                              //   )
+                              // }
+                            /> */}
                           <ChatAction
                             text={Locale.Chat.Actions.Retry}
                             icon={<ResetIcon />}
-                            onClick={() => onReEvaluation(role)}
+                            onClick={() => onEvaluation(role)}
                           />
                           <ChatAction
                             text={Locale.Chat.Actions.VideoPlay}
