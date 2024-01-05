@@ -31,6 +31,8 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -39,11 +41,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { EN_MASKS } from "../masks/en";
-import { AzureRoles, AzureTTSAvatarInput } from "../azure-speech/AzureRoles";
+import {
+  AzureDefaultEnglishVoiceName,
+  AzureRoles,
+  AzureTTSAvatarInput,
+} from "../azure-speech/AzureRoles";
 import { Mask } from "../store/mask";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { useMobileScreen } from "../utils";
+import { speechSynthesizer } from "../cognitive/speech-sdk";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -232,16 +239,16 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
             gap: "20px",
           }}
         >
-          {/* <ChatAction
-              text={Locale.Chat.Actions.Play}
-              icon={<PlayCircleIcon />}
-              // onClick={() =>
-              //   speechSynthesizer.startSynthesize(
-              //     impromptuSpeechInput.TotalEvaluations[role],
-              //     AzureDefaultEnglishVoiceName,
-              //   )
-              // }
-            /> */}
+          <ChatAction
+            text={Locale.Chat.Actions.Play}
+            icon={<PlayCircleIcon />}
+            onClick={() =>
+              speechSynthesizer.startSynthesize(
+                sessionInput.RolesSetting[role].Evaluation,
+                AzureDefaultEnglishVoiceName,
+              )
+            }
+          />
           <ChatAction
             text={Locale.Chat.Actions.Retry}
             icon={<ResetIcon />}

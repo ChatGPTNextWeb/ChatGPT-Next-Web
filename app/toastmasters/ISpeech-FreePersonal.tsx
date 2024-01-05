@@ -41,6 +41,10 @@ import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import ReplayCircleFilledIcon from "@mui/icons-material/ReplayCircleFilled";
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -96,6 +100,7 @@ import {
   ELocaleLanguages,
 } from "../azure-speech/AzureRoles";
 import { Mask } from "../store/mask";
+import { useMobileScreen } from "../utils";
 
 export const FreePersonalQuestionPage = (props: {
   impromptuSpeechInput: ImpromptuSpeechInput;
@@ -104,6 +109,7 @@ export const FreePersonalQuestionPage = (props: {
   const questionNums = impromptuSpeechInput.QuestionItems.length;
 
   const chatStore = useChatStore();
+  const isMobileScreen = useMobileScreen();
 
   // 需要实时刷新页面的, 就用useState, 否则直接用内部状态
   // local state used for reder page
@@ -152,12 +158,17 @@ export const FreePersonalQuestionPage = (props: {
   };
 
   return (
-    <div className={styles_ispeech.container}>
-      <div className={styles_ispeech.navigation}>
-        <button className={styles_ispeech.navButton} onClick={onReturn}>
-          {" "}
-          ← Return
-        </button>
+    <div style={{ width: "100%", textAlign: "center", background: "white" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "20px",
+        }}
+      >
+        <IconButtonMui onClick={onReturn}>
+          <ArrowCircleLeftIcon></ArrowCircleLeftIcon>
+        </IconButtonMui>
 
         <ButtonGroup
           variant="outlined"
@@ -166,34 +177,37 @@ export const FreePersonalQuestionPage = (props: {
             "--ButtonGroup-radius": "40px",
             border: "1px solid #ccc", // 添加这行来直接设置边框
             "& button": {
-              // 添加这个样式来改变按钮内的文本样式
-              textTransform: "none",
+              textTransform: "none", // 添加这个样式来改变按钮内的文本样式
             },
           }}
         >
-          <Button onClick={onPreviousQuestion}>{"<"}</Button>
+          <Button onClick={onPreviousQuestion}>
+            <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>
+          </Button>
 
           {impromptuSpeechInput.Mode == ESpeechModes.Personal ? (
             <Button className={`${styles_tm["chat-input-speaker"]}`}>
-              {`Question ${currentNum + 1} / ${questionNums}`}
+              {`Q${currentNum + 1}/${questionNums}`}
             </Button>
           ) : (
             <Button
               className={`${styles_tm["chat-input-speaker-hover"]}`}
               onClick={onRameSpeaker}
             >
-              {`Question ${currentNum + 1} / ${questionNums}: ${
+              {`Q${currentNum + 1}/${questionNums}: ${
                 impromptuSpeechInput.QuestionItems[currentNum].Speaker
               }`}
             </Button>
           )}
 
-          <Button onClick={onNextQuestion}>{">"}</Button>
+          <Button onClick={onNextQuestion}>
+            <KeyboardArrowRightIcon />
+          </Button>
         </ButtonGroup>
 
-        <button className={styles_ispeech.capsuleButton} onClick={onReport}>
-          End & Report
-        </button>
+        <IconButtonMui onClick={onReport}>
+          <TrendingUpIcon />
+        </IconButtonMui>
       </div>
 
       <BorderLine></BorderLine>
@@ -212,6 +226,7 @@ export const FreePersonalQuestionPageBody = (props: {
 }) => {
   let { impromptuSpeechInput, currentNum } = props;
   const questionItem = impromptuSpeechInput.QuestionItems[currentNum];
+  const isMobileScreen = useMobileScreen();
 
   const [evaluationRole, setEvaluationRole] = React.useState<string>(
     ImpromptuSpeechRoles.Scores,
@@ -772,10 +787,10 @@ export const FreePersonalQuestionPageBody = (props: {
               <TabPanel value="Scores">
                 {questionItem.Scores.length > 0 && (
                   <RadarChart
-                    cx={250}
+                    cx={isMobileScreen ? 100 : 250}
                     cy={150}
                     outerRadius={100}
-                    width={500}
+                    width={isMobileScreen ? 200 : 500}
                     height={300}
                     data={questionItem.Scores}
                   >
@@ -791,7 +806,7 @@ export const FreePersonalQuestionPageBody = (props: {
                       <LabelList dataKey="Score" position="inside" angle={0} />
                     </Radar>
                     <text
-                      x={250}
+                      x={isMobileScreen ? 100 : 250}
                       y={150}
                       textAnchor="middle"
                       dominantBaseline="middle"
@@ -903,6 +918,7 @@ export function FreePersonalReport(props: {
     state.currentSession(),
     state.currentSessionIndex,
   ]);
+  const isMobileScreen = useMobileScreen();
 
   class IQuestionItemBarData {
     TickName: string = "";
@@ -911,29 +927,18 @@ export function FreePersonalReport(props: {
     Pace: number = 0;
     Scores: { subject: string; score: number }[] = [];
   }
-  const [barDatas, setBarDatas] = useState<IQuestionItemBarData[]>([]);
   const [averageData, setAverageData] = useState<IQuestionItemBarData>(
     new IQuestionItemBarData(),
   );
 
   useEffect(() => {
-    const newBarDatas = getQuestionItemsBarData();
-    setBarDatas(newBarDatas);
-    calculateAndSetAverage(newBarDatas);
+    calculateAndSetAverage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const calculateAndSetAverage = (data: IQuestionItemBarData[]) => {
+  const calculateAndSetAverage = () => {
     let newAverage = new IQuestionItemBarData();
-    newAverage.Score = Math.round(
-      data.reduce((acc, current) => acc + current.Score, 0) / data.length,
-    );
-    newAverage.SpeechTime = Math.round(
-      data.reduce((acc, current) => acc + current.SpeechTime, 0) / data.length,
-    );
-    newAverage.Pace = Math.round(
-      data.reduce((acc, current) => acc + current.Pace, 0) / data.length,
-    );
+    let validCount = 0;
 
     const scoreRoles = ImpromptuSpeechPrompts.GetScoreRoles();
     newAverage.Scores = [];
@@ -944,17 +949,33 @@ export function FreePersonalReport(props: {
     for (let i = 0; i < questionItems.length; i++) {
       const questionItem = questionItems[i];
 
+      if (questionItem.Speech == "") {
+        continue;
+      }
+
+      validCount += 1;
+      newAverage.Score += questionItem.Score;
+      newAverage.SpeechTime += questionItem.SpeechTime;
+      newAverage.Pace += Math.round(
+        (ChatUtility.getWordsNumber(questionItem.Speech) /
+          questionItem.SpeechTime) *
+          60,
+      );
+
       for (let j = 0; j < questionItem.Scores.length; j++) {
         newAverage.Scores[j].score += questionItem.Scores[j].Score;
       }
     }
+    if (validCount == 0) return;
 
+    newAverage.Score = Math.round(newAverage.Score / validCount);
+    newAverage.SpeechTime = Math.round(newAverage.SpeechTime / validCount);
+    newAverage.Pace = Math.round(newAverage.Pace / validCount);
     for (let j = 0; j < newAverage.Scores.length; j++) {
       newAverage.Scores[j].score = Math.round(
-        newAverage.Scores[j].score / questionItems.length,
+        newAverage.Scores[j].score / validCount,
       );
     }
-
     setAverageData(newAverage);
   };
 
@@ -1189,74 +1210,29 @@ export function FreePersonalReport(props: {
   const RadarHeight = RadarOuterRadius * 2.4;
 
   return (
-    <Box sx={{ padding: 3, maxWidth: "100%", margin: "auto" }}>
+    <Box sx={{ maxWidth: "100%" }}>
       <Typography variant="h5" gutterBottom>
         {impromptuSpeechInput.Topic}
       </Typography>
 
       {/* Summary Card */}
-      <RehearsalReportCard title="Summary">
-        <Typography
-          variant="h5"
-          component="div"
-          display="flex"
-          justifyContent={"center"}
-        >
-          Congratulation! Great Job!
-        </Typography>
-        <CardContent
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            height: RadarHeight * 0.9,
-          }}
-        >
-          <RadarChart
-            cx={RadarWidth / 2}
-            cy={RadarHeight / 2}
-            outerRadius={RadarOuterRadius}
-            width={RadarWidth}
-            height={RadarHeight}
-            data={averageData.Scores}
+      {isMobileScreen ? (
+        <RehearsalReportCard title="Summary">
+          <Typography
+            variant="h5"
+            component="div"
+            display="flex"
+            justifyContent={"center"}
           >
-            <PolarGrid />
-            <PolarAngleAxis dataKey="subject" />
-            <PolarRadiusAxis domain={[0, 100]} />
-            <Radar
-              dataKey="score"
-              stroke="#8884d8"
-              fill="#8884d8"
-              fillOpacity={0.6}
-            >
-              <LabelList dataKey="score" position="inside" angle={0} />
-            </Radar>
-            <text
-              x={RadarWidth / 2}
-              y={RadarHeight / 2}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="green"
-              style={{ fontSize: 50 }} // 设置字体大小为 30
-            >
-              {averageData.Score}
-            </text>
-            <text
-              x={RadarWidth / 2}
-              y={RadarHeight - 30}
-              fill="black"
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontSize="20px"
-            >
-              {"Average Score"}
-            </text>
-          </RadarChart>
-          <Box
-            sx={{
+            Congratulation! Great Job!
+          </Typography>
+
+          <div
+            style={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
               alignItems: "center",
+              justifyContent: "space-around",
             }}
           >
             <Box
@@ -1270,31 +1246,10 @@ export function FreePersonalReport(props: {
               <Typography variant="h4" color="text.primary">
                 {ChatUtility.formatTime(getTotalTime())}
               </Typography>
-              <Typography fontSize="20px" color="text.secondary">
+              <Typography fontSize="14px" color="text.secondary">
                 Total Time
               </Typography>
             </Box>
-            <GaugeChart
-              data={[
-                { name: "0", value: 60, color: "gray" },
-                { name: "60", value: 30, color: "green" },
-                { name: "90", value: 30, color: "yellow" },
-                { name: "120", value: 30, color: "red" },
-                { name: "150", value: 0, color: "red" },
-              ]}
-              outerRadius={100}
-              value={averageData.SpeechTime}
-              unit="seconds"
-              title="Average Time"
-            ></GaugeChart>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
             <Box
               sx={{
                 display: "flex",
@@ -1307,25 +1262,186 @@ export function FreePersonalReport(props: {
                 {getQuestionAnswered()} /{" "}
                 {props.impromptuSpeechInput.QuestionNums}
               </Typography>
-              <Typography fontSize="20px" color="text.secondary">
+              <Typography fontSize="14px" color="text.secondary">
                 Questions
               </Typography>
             </Box>
-            <GaugeChart
-              data={[
-                { name: "slow", value: 100, color: "gray" },
-                { name: "100", value: 50, color: "green" },
-                { name: "150", value: 50, color: "yellow" },
-                { name: "fast", value: 0, color: "red" },
-              ]}
-              outerRadius={100}
-              value={averageData.Pace}
-              unit="words/min"
-              title="Average Pace"
-            ></GaugeChart>
-          </Box>
-        </CardContent>
-      </RehearsalReportCard>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mt: 2,
+              }}
+            >
+              <Typography variant="h4" color="text.primary">
+                {averageData.Score}
+              </Typography>
+              <Typography fontSize="14px" color="text.secondary">
+                Average Score
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mt: 2,
+              }}
+            >
+              <Typography variant="h4" color="text.primary">
+                {averageData.Pace}
+              </Typography>
+              <Typography fontSize="14px" color="text.secondary">
+                Average Pace
+              </Typography>
+            </Box>
+          </div>
+        </RehearsalReportCard>
+      ) : (
+        <RehearsalReportCard title="Summary">
+          <Typography
+            variant="h5"
+            component="div"
+            display="flex"
+            justifyContent={"center"}
+          >
+            Congratulation! Great Job!
+          </Typography>
+          <CardContent
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              height: RadarHeight * 0.9,
+            }}
+          >
+            <RadarChart
+              cx={RadarWidth / 2}
+              cy={RadarHeight / 2}
+              outerRadius={RadarOuterRadius}
+              width={RadarWidth}
+              height={RadarHeight}
+              data={averageData.Scores}
+            >
+              <PolarGrid />
+              <PolarAngleAxis dataKey="subject" />
+              <PolarRadiusAxis domain={[0, 100]} />
+              <Radar
+                dataKey="score"
+                stroke="#8884d8"
+                fill="#8884d8"
+                fillOpacity={0.6}
+              >
+                <LabelList dataKey="score" position="inside" angle={0} />
+              </Radar>
+              <text
+                x={RadarWidth / 2}
+                y={RadarHeight / 2}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="green"
+                style={{ fontSize: 50 }} // 设置字体大小为 30
+              >
+                {averageData.Score}
+              </text>
+              <text
+                x={RadarWidth / 2}
+                y={RadarHeight - 30}
+                fill="black"
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize="20px"
+              >
+                {"Average Score"}
+              </text>
+            </RadarChart>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  mt: 2,
+                }}
+              >
+                <Typography variant="h4" color="text.primary">
+                  {ChatUtility.formatTime(getTotalTime())}
+                </Typography>
+                <Typography fontSize="20px" color="text.secondary">
+                  Total Time
+                </Typography>
+              </Box>
+              <GaugeChart
+                data={[
+                  { name: "0", value: 60, color: "gray" },
+                  { name: "60", value: 30, color: "green" },
+                  { name: "90", value: 30, color: "yellow" },
+                  { name: "120", value: 30, color: "red" },
+                  { name: "150", value: 0, color: "red" },
+                ]}
+                outerRadius={100}
+                value={averageData.SpeechTime}
+                unit="seconds"
+                title="Average Time"
+              ></GaugeChart>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  mt: 2,
+                }}
+              >
+                <Typography variant="h4" color="text.primary">
+                  {getQuestionAnswered()} /{" "}
+                  {props.impromptuSpeechInput.QuestionNums}
+                </Typography>
+                <Typography fontSize="20px" color="text.secondary">
+                  Questions
+                </Typography>
+              </Box>
+              <GaugeChart
+                data={[
+                  { name: "slow", value: 100, color: "gray" },
+                  { name: "100", value: 50, color: "green" },
+                  { name: "150", value: 50, color: "yellow" },
+                  { name: "fast", value: 0, color: "red" },
+                ]}
+                outerRadius={100}
+                value={averageData.Pace}
+                unit="words/min"
+                title="Average Pace"
+              ></GaugeChart>
+            </Box>
+          </CardContent>
+        </RehearsalReportCard>
+      )}
 
       {/* Bar Card */}
       <RehearsalReportCard title="Distribution">

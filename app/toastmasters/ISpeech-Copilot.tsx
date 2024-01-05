@@ -134,6 +134,16 @@ function ImpromptuSpeechSetting() {
       100 / (1 + session.inputCopilot.QuestionNums),
     );
 
+    // TODO: more accurate
+    const cost =
+      1 + // questions
+      questionNums + // Sample Speech
+      questionNums; // Score
+    const isEnoughCoins = await chatStore.isEnoughCoins(cost);
+    if (!isEnoughCoins) {
+      return;
+    }
+
     // reset status from 0
     chatStore.resetSession();
 
