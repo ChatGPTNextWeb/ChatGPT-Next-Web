@@ -38,10 +38,9 @@ export default function UsageByModelChart() {
             let sum: number = 0;
             for (let i = 0; i < params.length; i++) {
               if (params[i].value) {
-                //@ts-ignore
                 tooltipHtml +=
-                  params[i].marker +
-                  params[i].seriesName +
+                  (params[i].marker ?? "") +
+                  (params[i].seriesName ?? "") +
                   ": " +
                   params[i].value +
                   "<br>";
