@@ -1,6 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
 // if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 
@@ -103,7 +104,8 @@ const sk: PartialLocaleType = {
     },
     Image: {
       Toast: "Snímanie obrázka...",
-      Modal: "Dlhým stlačením alebo kliknutím pravým tlačidlom myši uložte obrázok",
+      Modal:
+        "Dlhým stlačením alebo kliknutím pravým tlačidlom myši uložte obrázok",
     },
   },
   Select: {
@@ -202,8 +204,7 @@ const sk: PartialLocaleType = {
         },
         ProxyUrl: {
           Title: "Koncový bod Proxy",
-          SubTitle:
-            "Platné len pre vstavaný CORS proxy tohto projektu",
+          SubTitle: "Platné len pre vstavaný CORS proxy tohto projektu",
         },
 
         WebDav: {
@@ -295,7 +296,8 @@ const sk: PartialLocaleType = {
 
         Endpoint: {
           Title: "Koncový bod OpenAI",
-          SubTitle: "Musí začínať http(s):// alebo použiť /api/openai ako predvolený",
+          SubTitle:
+            "Musí začínať http(s):// alebo použiť /api/openai ako predvolený",
         },
       },
       Azure: {
@@ -378,7 +380,8 @@ const sk: PartialLocaleType = {
   },
   Copy: {
     Success: "Skopírované do schránky",
-    Failed: "Kopírovanie zlyhalo, prosím udeľte povolenie na prístup k schránke",
+    Failed:
+      "Kopírovanie zlyhalo, prosím udeľte povolenie na prístup k schránke",
   },
   Download: {
     Success: "Obsah stiahnutý do vášho adresára.",
@@ -445,7 +448,8 @@ const sk: PartialLocaleType = {
     SubTitle: "Chatovať s dušou za maskou",
     More: "Nájsť viac",
     NotShow: "Už nezobrazovať",
-    ConfirmNoShow: "Potvrdiť deaktiváciu? Môžete ju neskôr znova povoliť v nastaveniach.",
+    ConfirmNoShow:
+      "Potvrdiť deaktiváciu? Môžete ju neskôr znova povoliť v nastaveniach.",
   },
 
   UI: {
