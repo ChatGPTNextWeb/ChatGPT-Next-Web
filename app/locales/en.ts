@@ -52,6 +52,8 @@ const en: LocaleType = {
       prev: "Previous Chat",
       clear: "Clear Context",
       del: "Delete Chat",
+      save: "Save a current session chat",
+      load: "Load a session chat",
     },
     InputActions: {
       Stop: "Stop",
