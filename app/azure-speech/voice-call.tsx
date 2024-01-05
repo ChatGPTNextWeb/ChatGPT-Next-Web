@@ -23,7 +23,7 @@ import {
 } from "../toastmasters/chat-common";
 import { useScrollToBottom } from "../components/chat";
 import { useDebouncedCallback } from "use-debounce";
-import { autoGrowTextArea } from "../utils";
+import { autoGrowTextArea, useMobileScreen } from "../utils";
 import { IScoreMetric } from "../toastmasters/ISpeechRoles";
 import { IconButton } from "../components/button";
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -166,6 +166,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   // from input
   const [language, setLanguage] = useState(inputCopilot.Language);
   const [voiceNumber, setVoiceNumber] = useState(inputCopilot.VoiceNumber);
+  const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
     if (calling === true) {
@@ -407,9 +408,13 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         <List>
           <Stack
             display="flex"
-            direction="row"
+            direction={isMobileScreen ? "column" : "row"}
             spacing={2}
-            style={{ marginTop: "10px", marginLeft: "10px" }}
+            style={{
+              marginTop: "10px",
+              marginLeft: "10px",
+              marginRight: "10px",
+            }}
           >
             <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
               <InputLabel sx={{ background: "white", paddingRight: "4px" }}>

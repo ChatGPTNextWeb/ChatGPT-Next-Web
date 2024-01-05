@@ -904,7 +904,8 @@ export function Chat() {
           </div>
         </div>
 
-        <Select
+        {/* TODO: when GPT4 available, to enable this */}
+        {/* <Select
           defaultValue={currentModel}
           onChange={(e) => {
             onModelChange(e.target.value);
@@ -915,7 +916,7 @@ export function Chat() {
               {model}
             </option>
           ))}
-        </Select>
+        </Select> */}
 
         <div className="window-actions">
           {!isMobileScreen && (

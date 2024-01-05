@@ -41,6 +41,7 @@ import {
 import zBotServiceClient, {
   LocalStorageKeys,
 } from "../zbotservice/ZBotServiceClient";
+import { useMobileScreen } from "../utils";
 
 export function Chat() {
   const chatStore = useChatStore();
@@ -76,6 +77,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   ]);
   const config = useAppConfig();
   const updateConfig = config.update;
+  const isMobileScreen = useMobileScreen();
 
   // Notes: should not use local useState from input, since when change session, the useState will not update
   // const [inputText, setInputText] = useState(inputCopilot.InputText);
@@ -414,9 +416,13 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         <List>
           <Stack
             display="flex"
-            direction="row"
+            direction={isMobileScreen ? "column" : "row"}
             spacing={2}
-            style={{ marginTop: "10px", marginLeft: "10px" }}
+            style={{
+              marginTop: "10px",
+              marginLeft: "10px",
+              marginRight: "10px",
+            }}
           >
             <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
               <InputLabel sx={{ background: "white", paddingRight: "4px" }}>
@@ -465,7 +471,13 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
             </LoadingButton>
 
             {inputCopilot.AudioSrc.data !== "" && (
-              <audio controls style={{ width: "30%", height: "40px" }}>
+              <audio
+                controls
+                style={{
+                  width: isMobileScreen ? "100%" : "30%",
+                  height: "40px",
+                }}
+              >
                 <source src={inputCopilot.AudioSrc.data} type="audio/mpeg" />
                 Your browser does not support the audio element.
               </audio>
