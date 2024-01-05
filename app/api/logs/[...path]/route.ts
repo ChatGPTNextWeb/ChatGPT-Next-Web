@@ -10,6 +10,7 @@ import { addHours, subMinutes } from "date-fns";
 
 function getTokenLength(input: string): number {
   const encoding = get_encoding("cl100k_base");
+  // console.log('tokens: ', input, encoding.countTokens())
   return encoding.encode(input).length;
 }
 
@@ -25,10 +26,15 @@ async function handle(
     // console.log("===========4", request_data);
     try {
       if (request_data?.logEntry) {
-        const regex = /\[(.*)]/g;
-        const matchResponse = request_data.logEntry.match(regex);
-        if (matchResponse.length > 0) {
-          request_data.logToken = getTokenLength(matchResponse[0]);
+        // const regex = /\[(.*)]/g;
+        // const matchResponse = request_data.logEntry.match(regex);
+        const regex_message = /(?<="content":")(.*?)(?="}[,\]])/g;
+        const matchAllMessage = request_data.logEntry.match(regex_message);
+        console.log(matchAllMessage, "=====");
+        if (matchAllMessage.length > 0) {
+          request_data.logToken =
+            getTokenLength(matchAllMessage.join(" ")) +
+            matchAllMessage.length * 3;
         }
       }
     } catch (e) {
