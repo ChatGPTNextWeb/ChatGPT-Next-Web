@@ -64,9 +64,12 @@ export const onSynthesisAvatar = async (
     properties: {
       talkingAvatarCharacter: "lisa", // # currently only one platform character (lisa)
       talkingAvatarStyle: "casual-sitting", // # chosen from 5 styles (casual-sitting, graceful-sitting, graceful-standing, technical-sitting, technical-standing)
-      videoFormat: "webm", // # mp4 or webm, webm is required for transparent background
-      videoCodec: "vp9", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
-      subtitleType: "soft_embedded",
+      // videoFormat: "webm", // # mp4 or webm, webm is required for transparent background
+      // videoCodec: "vp9", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
+      // subtitleType: "soft_embedded",
+      videoFormat: "mp4", // # mp4 or webm, webm is required for transparent background
+      videoCodec: "h264", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
+      subtitleType: "hard_embedded",
       backgroundColor: "white", // # white or transparent
     },
   };

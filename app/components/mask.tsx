@@ -479,7 +479,7 @@ export function MaskPage() {
                   {items.map((m: Mask) => (
                     <Card
                       sx={{
-                        width: isMobileScreen ? "100%" : "30%",
+                        width: isMobileScreen ? "100%" : "23%",
                         margin: "1%",
                       }}
                       key={m.id}

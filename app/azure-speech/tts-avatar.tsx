@@ -104,6 +104,8 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   };
 
   const handleCurrentVideoTimeUpdate = (event: any) => {
+    // No need, since MP4 Video has caption
+
     const segmentLength = 5; // interval seconds
     const newSegment = Math.floor(
       parseInt(event.target.currentTime) / segmentLength,
@@ -362,7 +364,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                     controls
                     width="80%"
                     preload="metadata"
-                    onTimeUpdate={handleCurrentVideoTimeUpdate}
+                    // onTimeUpdate={handleCurrentVideoTimeUpdate}
                   >
                     <source
                       src={inputCopilot.VideoSrc.data}
@@ -371,7 +373,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                     Your browser does not support the video tag.
                   </video>
                   <h4>Microsoft Azure AI Avatar</h4>
-                  <p>{inputCopilot.VideoSrc.caption}</p>
+                  {/* <p>{inputCopilot.VideoSrc.caption}</p> */}
                 </div>
               )}
             </div>
