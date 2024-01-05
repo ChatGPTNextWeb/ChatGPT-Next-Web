@@ -7,9 +7,9 @@ const serverConfig = getServerSideConfig();
 
 
 import fetch from 'node-fetch';
-const fs = require('fs');
+
 const tunnel = require('tunnel');
-import path from 'path';
+
 
 const agent = tunnel.httpsOverHttp({
   proxy: {
@@ -24,10 +24,10 @@ async function handle(req:NextRequest) {
   const authValue = req.headers.get("Authorization") ?? "";
   const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
 
-  // let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
-  //   "/api/openai/",
-  //   "",
-  // );
+  let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
+    "/api/openai/",
+    "",
+  );
 
   let baseUrl =
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
@@ -41,7 +41,7 @@ async function handle(req:NextRequest) {
   }
 
   // const fetchUrl = `${baseUrl}/${path}`;
-  const fetchUrl = 'https://api.openai.com/v1/audio/speech';
+  const fetchUrl = `${baseUrl}/v1/audio/speech`;
  
   const requestData = {
     model: 'tts-1',
@@ -75,7 +75,7 @@ async function handle(req:NextRequest) {
     },
     body: JSON.stringify(requestData),
     method: req.method,
-    agent: agent,
+    // agent: agent,
  
   })) as any
 

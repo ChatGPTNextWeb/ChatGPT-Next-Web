@@ -97,7 +97,7 @@ export async function requestOpenai(req: NextRequest) {
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
-    agent
+    // agent
   };
 
 
@@ -196,8 +196,8 @@ export async function requestWhisperConversion(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  // const fetchUrl = `${baseUrl}/${path}`;
-  const fetchUrl = 'https://api.openai.com/v1/audio/transcriptions';
+  const fetchUrl = `${baseUrl}/${path}`;
+  // const fetchUrl = 'https://api.openai.com/v1/audio/transcriptions';
  
 
   // formData.append('model', 'whisper-1');
@@ -213,7 +213,7 @@ export async function requestWhisperConversion(req: NextRequest) {
     },
     body:formData,
     method: req.method,
-    agent: agent,
+    // agent: agent,
  
   }))  as any
 
