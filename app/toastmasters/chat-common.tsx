@@ -88,6 +88,9 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { SpeechAudioShow, submitSpeechAudio } from "../cognitive/speech-audio";
 import { EAzureLanguages, ELocaleLanguages } from "../azure-speech/AzureRoles";
+import { Fab } from "@mui/material";
+import MicIcon from "@mui/icons-material/Mic";
+import SettingsVoiceIcon from "@mui/icons-material/SettingsVoice";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -276,23 +279,22 @@ export const ChatInput = (props: {
     inputRef.current?.focus();
   }, [userInput]); // should not depend props in case auto focus expception
 
-  const onRecord = () => {
+  const onStartRecord = () => {
     if (!recording) {
       speechRecognizer.startRecording(appendUserInput, ELocaleLanguages.EnUs);
       setRecording(true);
-    } else {
+    }
+  };
+
+  const onStopRecord = () => {
+    if (recording) {
       speechRecognizer.stopRecording();
       setRecording(false);
     }
   };
 
   const appendUserInput = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (userInput === "") {
-      setUserInput(newState);
-    } else {
-      setUserInput(userInput + "\n" + newState);
-    }
+    setUserInput((prevInput) => prevInput + " " + newState);
   };
 
   return (
@@ -302,7 +304,7 @@ export const ChatInput = (props: {
         <textarea
           ref={inputRef}
           className={styles["chat-input"]}
-          placeholder={"Enter To wrap"}
+          // placeholder={"Enter To wrap"}
           onInput={(e) => setUserInput(e.currentTarget.value)}
           value={userInput}
           // onFocus={() => setAutoScroll(true)}
@@ -313,17 +315,32 @@ export const ChatInput = (props: {
             fontSize: config.fontSize,
           }}
         />
-        <IconButton
-          icon={<MicphoneIcon />}
-          text={recording ? "Recording" : "Record"}
-          bordered
-          className={
-            recording
-              ? styles_tm["chat-input-send-recording"]
-              : styles_tm["chat-input-send-record"]
-          }
-          onClick={onRecord}
-        />
+        <Box
+          sx={{
+            transform: "translateZ(0px)",
+            flexGrow: 1,
+            position: "absolute",
+            right: "5px",
+            bottom: "5px",
+          }}
+        >
+          {recording ? (
+            <SettingsVoiceIcon
+              sx={{
+                color: "red",
+              }}
+              onClick={onStopRecord}
+            />
+          ) : (
+            <MicIcon
+              sx={{
+                color: "green",
+              }}
+              onClick={onStartRecord}
+            />
+          )}
+        </Box>
+
         <div className={styles_tm["chat-input-words"]}>
           {ChatUtility.getWordsNumber(userInput)} words,{" "}
           {ChatUtility.formatTime(time)}

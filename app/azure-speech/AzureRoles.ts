@@ -98,12 +98,11 @@ export const AzureLanguageToVoicesMap: Record<
 
 export class AzureTTSAvatarInput {
   InputText: string = "";
-  VideoSrc: IRequestResponse = initRequestResponse;
-  AudioSrc: IRequestResponse = initRequestResponse;
-
-  // AudioSrc: string = "";
   Language: string = EAzureLanguages.EnglishUnitedStates;
   VoiceNumber: number = 0;
+
+  VideoSrc: IRequestResponse = initRequestResponse;
+  AudioSrc: IRequestResponse = initRequestResponse;
 }
 
 export const AzureDefaultEnglishVoiceName = "en-US-JennyNeural";
