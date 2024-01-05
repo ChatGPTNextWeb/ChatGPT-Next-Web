@@ -12,29 +12,29 @@ on:
 #      - 'package.json'
 
 jobs:
-  build:
-    name: build image to aly
-    # runs-on: "103.200"
-    runs-on: thinkpad
-    #    runs-on: ubuntu-latest
-    #    runs-on: self-hosted
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-        with:
-          clean: true
-          ref: 'dev'
-      - name: build and deploy to Docker Hub
-        run: |
-          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
-          echo "${{ secrets.DOCKER_ENV }}" > .env
-          docker-compose build
-          docker-compose push
-          yes | docker system prune --filter "until=168h"
+#  build:
+#    name: build image to aly
+#    # runs-on: "103.200"
+#    runs-on: thinkpad
+#    #    runs-on: ubuntu-latest
+#    #    runs-on: self-hosted
+#    steps:
+#      - name: Check out the repo
+#        uses: actions/checkout@v3
+#        with:
+#          clean: true
+#          ref: 'dev'
+#      - name: build and deploy to Docker Hub
+#        run: |
+#          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+#          echo "${{ secrets.DOCKER_ENV }}" > .env
+#          docker-compose build
+#          docker-compose push
+#          yes | docker system prune --filter "until=168h"
   deploy:
     name: 部署到dev服务器
-    needs: build
-    runs-on: thinkpad
+    #needs: z4
+    runs-on: z4
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -45,7 +45,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Sync repository to ty
+      - name: Sync repository to tx
         run: |
           yes | docker image prune
           rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
@@ -61,9 +61,7 @@ jobs:
           script: |
             cd $SERVER_WORKDIR #进入到工作目录
             echo "${{ secrets.DOCKER_ENV }}" > .env
-            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
-            docker-compose pull && docker-compose up -d
-            yes | docker image prune
+            bash ./start.sh
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
