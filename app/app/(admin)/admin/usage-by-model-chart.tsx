@@ -68,7 +68,7 @@ export default function UsageByModelChart() {
     return () => {
       ignore = true;
     };
-  }, [currentDate]); // 空数组作为第二个参数，表示仅在组件挂载和卸载时执行
+  }, [currentDate, searchDate]); // 空数组作为第二个参数，表示仅在组件挂载和卸载时执行
 
   return (
     <div>
