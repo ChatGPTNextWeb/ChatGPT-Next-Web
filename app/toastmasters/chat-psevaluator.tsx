@@ -19,7 +19,7 @@ import AvatarIcon from "../icons/avatar36.svg";
 
 import { PreparedSpeechInput } from "./PreparedSpeechRoles";
 import Locale from "../locales";
-import { ChatTitle, ChatInput, ChatUtility } from "./chat-common";
+import { ChatTitle, ChatInput, ChatUtility, BorderLine } from "./chat-common";
 import { ChatAction, useScrollToBottom } from "../components/chat";
 import { IconButton } from "../components/button";
 import { Markdown } from "../components/exporter";
@@ -27,7 +27,10 @@ import { Markdown } from "../components/exporter";
 import Checkbox from "@mui/material/Checkbox";
 import { FormControlLabel } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -78,11 +81,6 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
   const config = useAppConfig();
-
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
-  const [hitBottom, setHitBottom] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [evaluationRole, setEvaluationRole] = useState<string>(
     Object.keys(
@@ -198,211 +196,170 @@ export function ChatCore(props: { sessionInput: PreparedSpeechInput }) {
     return speakerInputsString;
   };
 
+  const ResponseBody = (props: { role: string }) => {
+    const { role } = props;
+    return (
+      <Typography style={{ textAlign: "left" }}>
+        <p
+          className={styles_ispeech.questionText}
+          onClick={async () => {
+            const newMessage = await showPrompt(
+              Locale.Chat.Actions.Edit,
+              sessionInput.RolesSetting[role].Evaluation,
+            );
+            chatStore.updateCurrentSession((session) => {
+              sessionInput.RolesSetting[role].Evaluation = newMessage;
+            });
+          }}
+        >
+          <Markdown
+            content={sessionInput.RolesSetting[role].Evaluation}
+            fontSize={config.fontSize}
+            defaultShow={true}
+          />
+        </p>
+        <div className={styles_chat["chat-input-words"]}>
+          {ChatUtility.getWordsNumber(
+            sessionInput.RolesSetting[role].Evaluation,
+          )}{" "}
+          words
+        </div>
+
+        <div
+          className={styles_chat["chat-input-actions"]}
+          style={{
+            justifyContent: "center",
+            gap: "20px",
+          }}
+        >
+          {/* <ChatAction
+              text={Locale.Chat.Actions.Play}
+              icon={<PlayCircleIcon />}
+              // onClick={() =>
+              //   speechSynthesizer.startSynthesize(
+              //     impromptuSpeechInput.TotalEvaluations[role],
+              //     AzureDefaultEnglishVoiceName,
+              //   )
+              // }
+            /> */}
+          <ChatAction
+            text={Locale.Chat.Actions.Retry}
+            icon={<ResetIcon />}
+            onClick={() => onEvaluation(role)}
+          />
+          <ChatAction
+            text={Locale.Chat.Actions.VideoPlay}
+            icon={<AvatarIcon style={{ width: "24px", height: "24px" }} />}
+            onClick={() => {
+              onTTSAvatar(sessionInput.RolesSetting[role].Evaluation);
+            }}
+          />
+        </div>
+      </Typography>
+    );
+  };
+
   return (
     <div className={styles_chat.chat} key={session.id}>
       <ChatTitle getInputsString={getInputsString}></ChatTitle>
 
-      <div
-        className={styles_chat["chat-body"]}
-        ref={scrollRef}
-        onMouseDown={() => inputRef.current?.blur()}
-        onWheel={(e) => setAutoScroll(hitBottom && e.deltaY > 0)}
-        onTouchStart={() => {
-          inputRef.current?.blur();
-          setAutoScroll(false);
-        }}
-      >
+      <div className={styles_chat["chat-body"]}>
         <List>
           <ChatInput title="Topic" inputStore={sessionInput.Topic} />
           <ChatInput title="Speech" inputStore={sessionInput.Speech} />
-
-          {/* <div
-            style={{
-              display: "flex",
-              flexDirection: "row" as const, // 使用 'column' 来确保类型匹配
-              justifyContent: "space-around", // 水平居中
-              alignItems: "center", // 垂直居中
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row" as const, // 使用 'column' 来确保类型匹配
-                justifyContent: "center", // 水平居中
-                alignItems: "center", // 垂直居中
-              }}
-            >
-              {Object.keys(sessionInput.RolesSetting).map((value, index) => (
-                <FormControlLabel
-                  key={value}
-                  control={
-                    <Checkbox
-                      checked={sessionInput.RolesSetting[value].Checked}
-                      onChange={() => handleRoleChange(value)}
-                    />
-                  }
-                  label={value}
-                />
-              ))}
-            </div>
-            <LoadingButton
-              size="small"
-              onClick={doSubmit}
-              loading={submitting}
-              variant="outlined"
-              startIcon={<SendWhiteIcon />}
-              loadingPosition="start"
-              style={{ textTransform: "none", backgroundColor: "primary" }}
-            >
-              <span>Submit</span>
-            </LoadingButton>
-          </div> */}
-
-          {/* <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {[0, 1, 2, 3].map((value) => {
-              const labelId = `checkbox-list-label-${value}`;
-
-              return (
-                <ListItem
-                  key={value}
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="comments">
-                      <CommentIcon />
-                    </IconButton>
-                  }
-                  disablePadding
-                >
-                  <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={checked.indexOf(value) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                        inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List> */}
+          <div style={{ paddingBottom: "10px" }}></div>
         </List>
 
-        <List>
-          <AccordionDetails>
-            <Box sx={{ width: "100%", typography: "body1" }}>
-              <TabContext value={evaluationRole}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <TabList
-                    onChange={(event, newValue) => {
-                      setEvaluationRole(newValue);
-                    }}
-                    aria-label="lab API tabs example"
-                  >
-                    {Object.keys(sessionInput.RolesSetting).map(
-                      (role, index) => (
-                        <Tab
-                          key={index}
-                          label={role}
-                          value={role}
-                          sx={{ textTransform: "none" }}
-                        />
-                      ),
-                    )}
-                  </TabList>
-                </Box>
-                {Object.keys(sessionInput.RolesSetting).map((role, index) => (
-                  <TabPanel key={index} value={role}>
-                    {sessionInput.RolesSetting[role].Evaluation === "" ? (
-                      submitting ? (
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <CircularProgress />
-                        </Box>
-                      ) : (
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <IconButton
-                            icon={<SendWhiteIcon />}
-                            text="Submit"
-                            disabled={submitting}
-                            className={styles_tm["chat-input-button-submit"]}
-                            onClick={() => onEvaluation(role)}
-                          />
-                        </Box>
-                      )
+        {isMobileScreen ? (
+          <>
+            {Object.keys(sessionInput.RolesSetting).map((role, index) => (
+              <Accordion
+                key={role}
+                sx={{ backgroundColor: "#f5f5f5", userSelect: "text" }}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>{role}</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ textAlign: "left" }}>
+                  {sessionInput.RolesSetting[role].Evaluation === "" ? (
+                    submitting ? (
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <CircularProgress />
+                      </Box>
                     ) : (
-                      <Typography style={{ textAlign: "left" }}>
-                        <p
-                          className={styles_ispeech.questionText}
-                          onClick={async () => {
-                            const newMessage = await showPrompt(
-                              Locale.Chat.Actions.Edit,
-                              sessionInput.RolesSetting[role].Evaluation,
-                            );
-                            chatStore.updateCurrentSession((session) => {
-                              sessionInput.RolesSetting[role].Evaluation =
-                                newMessage;
-                            });
-                          }}
-                        >
-                          <Markdown
-                            content={sessionInput.RolesSetting[role].Evaluation}
-                            fontSize={config.fontSize}
-                            defaultShow={true}
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <IconButton
+                          icon={<SendWhiteIcon />}
+                          text="Submit"
+                          disabled={submitting}
+                          className={styles_tm["chat-input-button-submit"]}
+                          onClick={() => onEvaluation(role)}
+                        />
+                      </Box>
+                    )
+                  ) : (
+                    <ResponseBody role={role}></ResponseBody>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </>
+        ) : (
+          <List>
+            <AccordionDetails>
+              <Box sx={{ width: "100%", typography: "body1" }}>
+                <TabContext value={evaluationRole}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList
+                      onChange={(event, newValue) => {
+                        setEvaluationRole(newValue);
+                      }}
+                      aria-label="lab API tabs example"
+                    >
+                      {Object.keys(sessionInput.RolesSetting).map(
+                        (role, index) => (
+                          <Tab
+                            key={index}
+                            label={role}
+                            value={role}
+                            sx={{ textTransform: "none" }}
                           />
-                        </p>
-                        <div className={styles_chat["chat-input-words"]}>
-                          {ChatUtility.getWordsNumber(
-                            sessionInput.RolesSetting[role].Evaluation,
-                          )}{" "}
-                          words
-                        </div>
-
-                        <div
-                          className={styles_chat["chat-input-actions"]}
-                          style={{
-                            justifyContent: "center",
-                            gap: "20px",
-                          }}
-                        >
-                          {/* <ChatAction
-                              text={Locale.Chat.Actions.Play}
-                              icon={<PlayCircleIcon />}
-                              // onClick={() =>
-                              //   speechSynthesizer.startSynthesize(
-                              //     impromptuSpeechInput.TotalEvaluations[role],
-                              //     AzureDefaultEnglishVoiceName,
-                              //   )
-                              // }
-                            /> */}
-                          <ChatAction
-                            text={Locale.Chat.Actions.Retry}
-                            icon={<ResetIcon />}
-                            onClick={() => onEvaluation(role)}
-                          />
-                          <ChatAction
-                            text={Locale.Chat.Actions.VideoPlay}
-                            icon={
-                              <AvatarIcon
-                                style={{ width: "24px", height: "24px" }}
-                              />
-                            }
-                            onClick={() => {
-                              onTTSAvatar(
-                                sessionInput.RolesSetting[role].Evaluation,
-                              );
-                            }}
-                          />
-                        </div>
-                      </Typography>
-                    )}
-                  </TabPanel>
-                ))}
-              </TabContext>
-            </Box>
-          </AccordionDetails>
-        </List>
+                        ),
+                      )}
+                    </TabList>
+                  </Box>
+                  {Object.keys(sessionInput.RolesSetting).map((role, index) => (
+                    <TabPanel key={index} value={role}>
+                      {sessionInput.RolesSetting[role].Evaluation === "" ? (
+                        submitting ? (
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <CircularProgress />
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <IconButton
+                              icon={<SendWhiteIcon />}
+                              text="Submit"
+                              disabled={submitting}
+                              className={styles_tm["chat-input-button-submit"]}
+                              onClick={() => onEvaluation(role)}
+                            />
+                          </Box>
+                        )
+                      ) : (
+                        <ResponseBody role={role}></ResponseBody>
+                      )}
+                    </TabPanel>
+                  ))}
+                </TabContext>
+              </Box>
+            </AccordionDetails>
+          </List>
+        )}
       </div>
     </div>
   );
