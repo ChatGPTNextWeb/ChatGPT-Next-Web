@@ -39,7 +39,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
         with:
-          clean: true
+          clean: false
           ref: 'dev'
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.8.0

@@ -22,7 +22,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
         with:
-          clean: true
+          clean: false
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
