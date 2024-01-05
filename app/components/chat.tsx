@@ -465,10 +465,10 @@ export function ChatActions(props: {
   const onImageSelected = async (e: any) => {
     const file = e.target.files[0];
     const api = new ClientApi();
-    const fileName = await api.file.upload(file);
+    const uploadFile = await api.file.upload(file);
     props.imageSelected({
-      fileName,
-      fileUrl: `/api/file/${fileName}`,
+      fileName: uploadFile.fileName,
+      fileUrl: uploadFile.filePath,
     });
     e.target.value = null;
   };

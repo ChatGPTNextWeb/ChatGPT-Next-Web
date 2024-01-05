@@ -1,11 +1,12 @@
 import { getHeaders } from "../api";
 
 export class FileApi {
-  async upload(file: any): Promise<void> {
+  async upload(file: any): Promise<any> {
     const formData = new FormData();
     formData.append("file", file);
     var headers = getHeaders(true);
-    var res = await fetch("/api/file/upload", {
+    const api = "/api/file/upload";
+    var res = await fetch(api, {
       method: "POST",
       body: formData,
       headers: {
@@ -14,6 +15,9 @@ export class FileApi {
     });
     const resJson = await res.json();
     console.log(resJson);
-    return resJson.fileName;
+    return {
+      fileName: resJson.fileName,
+      filePath: resJson.filePath,
+    };
   }
 }

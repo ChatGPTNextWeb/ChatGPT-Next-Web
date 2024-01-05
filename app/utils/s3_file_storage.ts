@@ -55,7 +55,7 @@ export default class S3FileStorage {
       { expiresIn: 60 },
     );
 
-    console.log(signedUrl);
+    console.log("[S3]", signedUrl);
 
     try {
       await fetch(signedUrl, {

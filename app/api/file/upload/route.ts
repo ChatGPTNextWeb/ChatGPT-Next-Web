@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth";
-import S3FileStorage from "../../../utils/s3_file_storage";
 import { ModelProvider } from "@/app/constant";
+import { auth } from "@/app/api/auth";
+import LocalFileStorage from "@/app/utils/local_file_storage";
+import { getServerSideConfig } from "@/app/config/server";
+import S3FileStorage from "@/app/utils/s3_file_storage";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
@@ -31,10 +33,17 @@ async function handle(req: NextRequest) {
     const buffer = Buffer.from(imageData);
 
     var fileName = `${Date.now()}.png`;
-    await S3FileStorage.put(fileName, buffer);
+    var filePath = "";
+    const serverConfig = getServerSideConfig();
+    if (serverConfig.isStoreFileToLocal) {
+      filePath = await LocalFileStorage.put(fileName, buffer);
+    } else {
+      filePath = await S3FileStorage.put(fileName, buffer);
+    }
     return NextResponse.json(
       {
         fileName: fileName,
+        filePath: filePath,
       },
       {
         status: 200,
@@ -55,4 +64,4 @@ async function handle(req: NextRequest) {
 
 export const POST = handle;
 
-export const runtime = "edge";
+export const runtime = "nodejs";

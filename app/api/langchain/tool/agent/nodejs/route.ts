@@ -55,13 +55,6 @@ async function handle(req: NextRequest) {
       );
     };
 
-    var edgeTool = new EdgeTool(
-      apiKey,
-      baseUrl,
-      model,
-      embeddings,
-      dalleCallback,
-    );
     var nodejsTool = new NodeJSTool(
       apiKey,
       baseUrl,
@@ -69,9 +62,8 @@ async function handle(req: NextRequest) {
       embeddings,
       dalleCallback,
     );
-    var edgeTools = await edgeTool.getCustomTools();
     var nodejsTools = await nodejsTool.getCustomTools();
-    var tools = [...edgeTools, ...nodejsTools];
+    var tools = [...nodejsTools];
     return await agentApi.getApiHandler(req, reqBody, tools);
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as any).message }), {

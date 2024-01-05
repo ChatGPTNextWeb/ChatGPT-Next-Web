@@ -105,6 +105,11 @@
     - 配置密钥 `GOOGLE_API_KEY` ，key 可以在这里获取：https://ai.google.dev/tutorials/setup
     - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目搭建一个基于 vercel 的代理服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
   - 常见问题参考：[Gemini Prompting FAQs](https://js.langchain.com/docs/integrations/chat/google_generativeai#gemini-prompting-faqs)
+  
+- 非 Vercel 运行环境下支持本地存储
+
+  - 如果你的程序运行在非 Vercel 环境，不配置 `S3_ENDPOINT` 和 `R2_ACCOUNT_ID` 参数，默认上传的文件将存储在 `/app/uploads` 文件夹中
+
 
 ## 开发计划
 
@@ -113,25 +118,16 @@
   不配置时默认使用 `DuckDuckGo` 作为搜索插件。
 
 - [x] 插件列表页面开发
+
 - [x] 支持开关指定插件
-- [ ] 支持添加自定义插件
+
 - [x] 支持 Agent 参数配置（ ~~agentType~~, maxIterations, returnIntermediateSteps 等）
+
 - [x] 支持 ChatSession 级别插件功能开关
 
   仅在使用非 `0301` 和 `0314` 版本模型时会出现插件开关，其它模型默认为关闭状态，开关也不会显示。
-
-## 已知问题
-- [x] ~~使用插件时需将模型切换为 `0613` 版本模型，如：`gpt-3.5-turbo-0613`~~
-
-  尝试使用 `chat-conversational-react-description` 等类型的 `agent` 使用插件时效果并不理想，不再考虑支持其它版本的模型。
-
-  限制修改为非 `0301` 和 `0314` 模型均可调用插件。 [#10](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/10)
-- [x] `SERPAPI_API_KEY` 目前为必填，后续会支持使用 DuckDuckGo 替换搜索插件
-- [x] Agent 不支持自定义接口地址
-- [x] ~~部分场景下插件会调用失败~~
-
-  问题出现在使用 [Calculator](https://js.langchain.com/docs/api/tools_calculator/classes/Calculator) 进行计算时的参数错误，暂时无法干预。
-- [x] 插件调用失败后无反馈
+  
+- [ ] 支持添加自定义插件
 
 ## 最新动态
 

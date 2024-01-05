@@ -8,6 +8,13 @@ export class StableDiffusionWrapper extends Tool {
     super();
   }
 
+  async saveImage(imageBase64: string) {
+    const buffer = Buffer.from(imageBase64, "base64");
+    var fileName = `${Date.now()}.png`;
+    const filePath = await S3FileStorage.put(fileName, buffer);
+    return filePath;
+  }
+
   /** @ignore */
   async _call(prompt: string) {
     let url = process.env.STABLE_DIFFUSION_API_URL;
@@ -40,8 +47,7 @@ export class StableDiffusionWrapper extends Tool {
     const json = await response.json();
     let imageBase64 = json.images[0];
     if (!imageBase64) return "No image was generated";
-    const buffer = Buffer.from(imageBase64, "base64");
-    const filePath = await S3FileStorage.put(`${Date.now()}.png`, buffer);
+    const filePath = await this.saveImage(imageBase64);
     console.log(`[${this.name}]`, filePath);
     return filePath;
   }

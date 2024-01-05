@@ -4,13 +4,8 @@ import { StableDiffusionWrapper } from "@/app/api/langchain-tools/stable_diffusi
 import { BaseLanguageModel } from "langchain/dist/base_language";
 import { Calculator } from "langchain/tools/calculator";
 import { WebBrowser } from "langchain/tools/webbrowser";
-import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
-import { DuckDuckGo } from "@/app/api/langchain-tools/duckduckgo_search";
-import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
-import { Tool, DynamicTool } from "langchain/tools";
-import * as langchainTools from "langchain/tools";
 import { Embeddings } from "langchain/dist/embeddings/base.js";
-import { WolframAlphaTool } from "./wolframalpha";
+import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
 
 export class EdgeTool {
   private apiKey: string | undefined;
@@ -52,7 +47,6 @@ export class EdgeTool {
     const arxivAPITool = new ArxivAPIWrapper();
     const wolframAlphaTool = new WolframAlphaTool();
     let tools = [
-      // searchTool,
       calculatorTool,
       webBrowserTool,
       dallEAPITool,

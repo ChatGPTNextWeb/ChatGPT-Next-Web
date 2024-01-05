@@ -4,6 +4,8 @@ services:
     profiles: [ "no-proxy" ]
     container_name: chatgpt-next-web
     image: gosuto/chatgpt-next-web-langchain
+    volumes:
+      - next_chat_upload:/app/uploads
     ports:
       - 3000:3000
     environment:
@@ -22,6 +24,8 @@ services:
     profiles: [ "proxy" ]
     container_name: chatgpt-next-web-proxy
     image: gosuto/chatgpt-next-web-langchain
+    volumes:
+      - next_chat_upload:/app/uploads
     ports:
       - 3000:3000
     environment:
@@ -36,3 +40,6 @@ services:
       - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
       - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
       - OPENAI_SB=$OPENAI_SB
+
+volumes:
+   next_chat_upload:
