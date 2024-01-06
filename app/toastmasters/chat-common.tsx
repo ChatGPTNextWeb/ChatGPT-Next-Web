@@ -87,6 +87,10 @@ import ReactMarkdown from "react-markdown";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { SpeechAudioShow, submitSpeechAudio } from "../cognitive/speech-audio";
+import { EAzureLanguages, ELocaleLanguages } from "../azure-speech/AzureRoles";
+import { Fab } from "@mui/material";
+import MicIcon from "@mui/icons-material/Mic";
+import SettingsVoiceIcon from "@mui/icons-material/SettingsVoice";
 
 const ToastmastersDefaultLangugage = "en";
 
@@ -275,26 +279,22 @@ export const ChatInput = (props: {
     inputRef.current?.focus();
   }, [userInput]); // should not depend props in case auto focus expception
 
-  const onRecord = () => {
+  const onStartRecord = () => {
     if (!recording) {
-      speechRecognizer.startRecording(
-        appendUserInput,
-        ToastmastersDefaultLangugage,
-      );
+      speechRecognizer.startRecording(appendUserInput, ELocaleLanguages.EnUs);
       setRecording(true);
-    } else {
+    }
+  };
+
+  const onStopRecord = () => {
+    if (recording) {
       speechRecognizer.stopRecording();
       setRecording(false);
     }
   };
 
   const appendUserInput = (newState: string): void => {
-    // 每次按下button时 换行显示
-    if (userInput === "") {
-      setUserInput(newState);
-    } else {
-      setUserInput(userInput + "\n" + newState);
-    }
+    setUserInput((prevInput) => prevInput + " " + newState);
   };
 
   return (
@@ -304,7 +304,7 @@ export const ChatInput = (props: {
         <textarea
           ref={inputRef}
           className={styles["chat-input"]}
-          placeholder={"Enter To wrap"}
+          // placeholder={"Enter To wrap"}
           onInput={(e) => setUserInput(e.currentTarget.value)}
           value={userInput}
           // onFocus={() => setAutoScroll(true)}
@@ -315,17 +315,32 @@ export const ChatInput = (props: {
             fontSize: config.fontSize,
           }}
         />
-        <IconButton
-          icon={<MicphoneIcon />}
-          text={recording ? "Recording" : "Record"}
-          bordered
-          className={
-            recording
-              ? styles_tm["chat-input-send-recording"]
-              : styles_tm["chat-input-send-record"]
-          }
-          onClick={onRecord}
-        />
+        <Box
+          sx={{
+            transform: "translateZ(0px)",
+            flexGrow: 1,
+            position: "absolute",
+            right: "5px",
+            bottom: "5px",
+          }}
+        >
+          {recording ? (
+            <SettingsVoiceIcon
+              sx={{
+                color: "red",
+              }}
+              onClick={onStopRecord}
+            />
+          ) : (
+            <MicIcon
+              sx={{
+                color: "green",
+              }}
+              onClick={onStartRecord}
+            />
+          )}
+        </Box>
+
         <div className={styles_tm["chat-input-words"]}>
           {ChatUtility.getWordsNumber(userInput)} words,{" "}
           {ChatUtility.formatTime(time)}
@@ -800,11 +815,11 @@ export const ChatResponse = (props: {
                           icon={<MicphoneIcon />}
                           onClick={() => onAudioGenerate(message)}
                         />
-                        <ChatAction
+                        {/* <ChatAction
                           text={Locale.Chat.Actions.VideoPlay}
                           icon={<AvatarIcon />}
                           onClick={() => onVideoGenerate(message)}
-                        />
+                        /> */}
                       </>
                     )}
                   </div>
@@ -926,6 +941,21 @@ function ChatTimeSlider(props: { time: number; timeExpect: ILightsTime }) {
 export class ChatUtility {
   static getWordsNumber(text: string): number {
     return text.length > 0 ? text.split(/\s+/).length : 0;
+  }
+
+  static getWordsNumberChinese(text: string): number {
+    const chineseRegex = /[\u4e00-\u9fff]/g; // 匹配中文字符的正则表达式
+    const chineseMatches = text.match(chineseRegex); // 获取所有匹配的中文字符数组
+    return chineseMatches ? chineseMatches.length : 0; // 返回中文字符的数量
+  }
+
+  static getWordsNumberByLanguage(text: string, language: string): number {
+    if (language === EAzureLanguages.EnglishUnitedStates) {
+      return this.getWordsNumber(text);
+    } else if (language === EAzureLanguages.ChineseMandarinSimplified) {
+      return this.getWordsNumberChinese(text);
+    }
+    return 0;
   }
 
   static getFirstNWords(

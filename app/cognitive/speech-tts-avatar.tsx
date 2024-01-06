@@ -16,6 +16,10 @@ import Box from "@mui/material/Box";
 import { IRequestResponse } from "../store/chat";
 
 import styles_tm from "../toastmasters/toastmasters.module.scss";
+import zBotServiceClient, {
+  LocalStorageKeys,
+} from "../zbotservice/ZBotServiceClient";
+import { EAzureSpeechPrice } from "../azure-speech/AzureRoles";
 
 const config = getServerSideConfig();
 
@@ -60,9 +64,12 @@ export const onSynthesisAvatar = async (
     properties: {
       talkingAvatarCharacter: "lisa", // # currently only one platform character (lisa)
       talkingAvatarStyle: "casual-sitting", // # chosen from 5 styles (casual-sitting, graceful-sitting, graceful-standing, technical-sitting, technical-standing)
-      videoFormat: "webm", // # mp4 or webm, webm is required for transparent background
-      videoCodec: "vp9", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
-      subtitleType: "soft_embedded",
+      // videoFormat: "webm", // # mp4 or webm, webm is required for transparent background
+      // videoCodec: "vp9", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
+      // subtitleType: "soft_embedded",
+      videoFormat: "mp4", // # mp4 or webm, webm is required for transparent background
+      videoCodec: "h264", // # hevc, h264 or vp9, vp9 is required for transparent background; default is hevc
+      subtitleType: "hard_embedded",
       backgroundColor: "white", // # white or transparent
     },
   };
@@ -89,9 +96,22 @@ export const onSynthesisAvatar = async (
         console.error(`Failed to get batch avatar synthesis job: ${response}`);
       }
       if (currentStatus === "Succeeded") {
+        const duration = Math.ceil(
+          response.data.properties.durationInTicks / 10000000,
+        );
+
+        // 扣费
+        const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        const realCost = Math.ceil(duration * EAzureSpeechPrice.TTSAvatar);
+        zBotServiceClient.updateRequest(userEmail ?? "", realCost);
+        console.log(
+          `onPreviewVideo: duration=${duration}, realCost=${realCost}`,
+        );
+
         return {
           status: VideoFetchStatus.Succeeded,
           data: response.data.outputs.result,
+          duration: duration,
         };
       }
       if (currentStatus === "Failed") {
@@ -191,10 +211,22 @@ export const onSynthesisAudio = async (
         };
 
         const mp3Url = await fetchAndUnzipMP3(response.data.outputs.result);
-        // const mp3Url = response.data.outputs.result;
+        const duration = Math.ceil(
+          response.data.properties.durationInTicks / 10000000,
+        );
+
+        // 扣费
+        const userEmail = localStorage.getItem(LocalStorageKeys.userEmail);
+        const realCost = Math.ceil(duration * EAzureSpeechPrice.TTSVoice);
+        zBotServiceClient.updateRequest(userEmail ?? "", realCost);
+        console.log(
+          `onSynthesisAudio: duration=${duration}, realCost=${realCost}`,
+        );
+
         return {
           status: VideoFetchStatus.Succeeded,
           data: mp3Url,
+          duration: duration,
         };
       }
       if (currentStatus === "Failed") {

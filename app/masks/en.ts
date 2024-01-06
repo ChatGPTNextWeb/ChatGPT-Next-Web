@@ -71,7 +71,7 @@ export const EN_MASKS: BuiltinMask[] = [
 
   // BuiltinMaskGroup.Toastmasters
   {
-    avatar: "SpeechCopilot/ImpromptuSpeechCopilot.png",
+    avatar: "SpeechEvaluator/TableTopicsEvaluator.png",
     name: ToastmastersRoles.ImpromptuSpeechCopilot,
     context: [
       {
@@ -101,7 +101,7 @@ export const EN_MASKS: BuiltinMask[] = [
     description: "Help score and evaluate user's Impromptu Speech",
   },
   {
-    avatar: "SpeechCopilot/TableTopicsMaster.png",
+    avatar: "SpeechEvaluator/TableTopicsMaster.png",
     name: ToastmastersRoles.TableTopicsMaster,
     context: [
       {
@@ -208,49 +208,50 @@ export const EN_MASKS: BuiltinMask[] = [
   //   pagePath: Path.ToastmastersISEvaluator,
   //   group: BuiltinMaskGroup.Toastmasters,
   // },
-  // {
-  //   avatar: "toastmasters",
-  //   name: ToastmastersRoles.PreparedSpeechEvaluator,
-  //   context: [
-  //     {
-  //       role: "user",
-  //       content: `
-  //       You are the Evaluator of Toastmasters, Including
-  //       Individual Evaluator, Grammarian, Ah-Counter,
-  //       and the General Evaluator.
-  //       I will firstly provide you the Topic and Speech,
-  //       which is formatted as json like:
-  //       {
-  //         "Topic": "xxx",
-  //         "Speech": "xxx"
-  //       },
-  //       And in each interaction, I will let you play an Evaluator Role,
-  //       you answer my ask in that Role's tone.
-
-  //       In my each ask, I will provide the role one by one.
-  //       Your answer must:
-  //       1). Include examples by quoting and analyzing your speech.
-  //       `,
-  //       date: "",
-  //     },
-  //   ],
-  //   modelConfig: {
-  //     model: "gpt-3.5-turbo",
-  //     temperature: 0.5,
-  //     max_tokens: 2000,
-  //     presence_penalty: 0,
-  //     frequency_penalty: 0,
-  //     sendMemory: true,
-  //     historyMessageCount: 4,
-  //     compressMessageLengthThreshold: 1000,
-  //   },
-  //   lang: "en",
-  //   builtin: true,
-  //   pagePath: Path.ToastmastersPSEvaluator,
-  //   group: BuiltinMaskGroup.Toastmasters,
-  // },
   {
-    avatar: "SpeechCopilot/Timer.png",
+    avatar: "SpeechEvaluator/PreparedSpeechEvaluator.png",
+    name: ToastmastersRoles.PreparedSpeechEvaluator,
+    context: [
+      {
+        role: "user",
+        content: `
+        You are the Evaluator of Toastmasters, Including
+        Individual Evaluator, Grammarian, Ah-Counter,
+        and the General Evaluator.
+        I will firstly provide you the Topic and Speech,
+        which is formatted as json like:
+        {
+          "Topic": "xxx",
+          "Speech": "xxx"
+        },
+        And in each interaction, I will let you play an Evaluator Role,
+        you answer my ask in that Role's tone.
+
+        In my each ask, I will provide the role one by one.
+        Your answer must:
+        1). Include examples by quoting and analyzing your speech.
+        `,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "en",
+    builtin: true,
+    pagePath: Path.ToastmastersPSEvaluator,
+    group: BuiltinMaskGroup.Toastmasters,
+    description: "Help evaluate user's Prepared Speech",
+  },
+  {
+    avatar: "SpeechEvaluator/Timer.png",
     name: ToastmastersRoles.Timer,
     context: [
       {

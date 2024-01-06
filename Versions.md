@@ -3,6 +3,12 @@
 And ZBotService, ZBotPortal better has same version define in case roll back
 */
 
+## v6.20240106
+ - Adapt Mobile
+
+## v6.20240103
+ - Price for TTS-Avatar & Voice-Call
+
 ## v6.20240101
  - Enable GPT4
 

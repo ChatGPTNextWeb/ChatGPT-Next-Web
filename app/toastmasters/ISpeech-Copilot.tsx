@@ -134,6 +134,16 @@ function ImpromptuSpeechSetting() {
       100 / (1 + session.inputCopilot.QuestionNums),
     );
 
+    // TODO: more accurate
+    const cost =
+      1 + // questions
+      questionNums + // Sample Speech
+      questionNums; // Score
+    const isEnoughCoins = await chatStore.isEnoughCoins(cost);
+    if (!isEnoughCoins) {
+      return;
+    }
+
     // reset status from 0
     chatStore.resetSession();
 
@@ -179,7 +189,7 @@ function ImpromptuSpeechSetting() {
 
     chatStore.updateCurrentSession(
       (session) => (
-        (session.inputCopilot.ActivePage = ESpeechStage.Question),
+        // (session.inputCopilot.ActivePage = ESpeechStage.Question),
         (session.inputCopilot.HasQuestions = true),
         (session.inputCopilot.StartTime = new Date().getTime())
       ),
@@ -291,7 +301,7 @@ function ImpromptuSpeechSetting() {
           />
           {session.inputCopilot?.HasQuestions && (
             <button className={styles.capsuleButton} onClick={onContinue}>
-              Continue Last
+              Start Questions
             </button>
           )}
         </Stack>

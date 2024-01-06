@@ -13,6 +13,7 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 import LightningIcon from "../icons/lightning.svg";
+import ReturnIcon from "../icons/return.svg";
 
 import { DEFAULT_MASK_AVATAR, Mask, useMaskStore } from "../store/mask";
 import { ChatMessage, ModelConfig, useAppConfig, useChatStore } from "../store";
@@ -369,6 +370,19 @@ export function MaskPage() {
     <ErrorBoundary>
       <div className={styles["mask-page"]}>
         <div className="window-header">
+          {isMobileScreen && (
+            <div className="window-actions">
+              <div className={"window-action-button"}>
+                <IconButton
+                  icon={<ReturnIcon />}
+                  bordered
+                  title={Locale.Chat.Actions.ChatList}
+                  onClick={() => navigate(Path.Home)}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="window-header-title">
             <div className="window-header-main-title">
               {Locale.Mask.Page.Title}
@@ -479,7 +493,7 @@ export function MaskPage() {
                   {items.map((m: Mask) => (
                     <Card
                       sx={{
-                        width: isMobileScreen ? "100%" : "30%",
+                        width: isMobileScreen ? "48%" : "23%",
                         margin: "1%",
                       }}
                       key={m.id}

@@ -731,7 +731,24 @@ export function Settings() {
 
         <SyncItems />
 
-        <SpeechAvatarVideoSetting></SpeechAvatarVideoSetting>
+        <List>
+          <ListItem title={Locale.Settings.AvatarVideo.Title}></ListItem>
+          <ListItem
+            title={Locale.Settings.AvatarVideo.PreviewCost.Title}
+            subTitle={Locale.Settings.AvatarVideo.PreviewCost.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.avatarVideo.previewCost}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.avatarVideo.previewCost = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+        </List>
 
         <List>
           <ModelConfigListSimple

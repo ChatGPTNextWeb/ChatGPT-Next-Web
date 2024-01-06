@@ -1,3 +1,5 @@
+import { IRequestResponse, initRequestResponse } from "../store";
+
 export enum AzureRoles {
   TTSAvatar = "Text-to-Speech Avatar",
   LiveChatAvatar = "Live chat Avatar",
@@ -9,9 +11,14 @@ export enum EAzureLanguages {
   ChineseMandarinSimplified = "中文(普通话)",
 }
 
-export const AzureLanguageToCountryMap: Record<string, string> = {
-  [EAzureLanguages.EnglishUnitedStates]: "en-US",
-  [EAzureLanguages.ChineseMandarinSimplified]: "zh-CN",
+export enum ELocaleLanguages {
+  EnUs = "en-US",
+  ZhCn = "zh-CN",
+}
+
+export const AzureLanguageToLocaleMap: Record<string, ELocaleLanguages> = {
+  [EAzureLanguages.EnglishUnitedStates]: ELocaleLanguages.EnUs,
+  [EAzureLanguages.ChineseMandarinSimplified]: ELocaleLanguages.ZhCn,
 };
 
 export const AzureLanguageToWelcomeMap: Record<string, string> = {
@@ -26,7 +33,12 @@ interface IAzureLanguageVoiceItem {
   Voice: string;
 }
 
-export const AzureAvatarLanguageToVoiceMap: Record<
+export enum EAzureSpeechPrice {
+  TTSAvatar = 5, // coins / s
+  TTSVoice = 5 / 60, // coins / s
+}
+
+export const AzureLanguageToVoicesMap: Record<
   string,
   IAzureLanguageVoiceItem[]
 > = {
@@ -86,8 +98,11 @@ export const AzureAvatarLanguageToVoiceMap: Record<
 
 export class AzureTTSAvatarInput {
   InputText: string = "";
-  VideoSrc: string = "";
-  AudioSrc: string = "";
   Language: string = EAzureLanguages.EnglishUnitedStates;
   VoiceNumber: number = 0;
+
+  VideoSrc: IRequestResponse = initRequestResponse;
+  AudioSrc: IRequestResponse = initRequestResponse;
 }
+
+export const AzureDefaultEnglishVoiceName = "en-US-JennyNeural";

@@ -120,7 +120,7 @@ export function SpeechAvatarVideoSetting() {
   return (
     <List>
       <ListItem title={Locale.Settings.AvatarVideo.Title}></ListItem>
-      <ListItem
+      {/* <ListItem
         title={Locale.Settings.AvatarVideo.MaxWords.Title}
         subTitle={Locale.Settings.AvatarVideo.MaxWords.SubTitle}
       >
@@ -134,7 +134,7 @@ export function SpeechAvatarVideoSetting() {
             )
           }
         ></input>
-      </ListItem>
+      </ListItem> */}
       <ListItem
         title={Locale.Settings.AvatarVideo.PreviewCost.Title}
         subTitle={Locale.Settings.AvatarVideo.PreviewCost.SubTitle}
@@ -193,7 +193,11 @@ export function SpeechAvatarVideoShow(props: {
 }
 
 /*
-Public preview: 2023/12
+Public preview: 2024/01/03 中文
+100 字 = 23s video => GenerateTime:  120seconds
+1 word => 12 seconds
+
+Public preview: 2023/12/26 English
 100 words = 40s video => GenerateTime: 40 seconds
 1 word => 0.4 seconds
 

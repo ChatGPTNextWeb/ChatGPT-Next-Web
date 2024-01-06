@@ -1,4 +1,4 @@
-import { ILightsTime } from "../store";
+import { ILightsTime, InputStore } from "../store";
 
 export enum ToastmastersRoles {
   Toastmasters = "Toastmasters",
@@ -7,7 +7,7 @@ export enum ToastmastersRoles {
   ImpromptuSpeechEvaluator = "Impromptu Speech Evaluator",
   PreparedSpeechEvaluator = "Prepared Speech Evaluator",
 
-  ImpromptuSpeechCopilot = "Impromptu Speech Copilot",
+  ImpromptuSpeechCopilot = "Table Topics Evaluator", // TODO: will rename to TableTopicsEvaluator
 
   Grammarian = "Grammarian",
   AhCounter = "Ah-Counter",

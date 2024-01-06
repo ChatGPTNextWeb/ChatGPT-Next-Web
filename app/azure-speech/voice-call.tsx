@@ -23,7 +23,7 @@ import {
 } from "../toastmasters/chat-common";
 import { useScrollToBottom } from "../components/chat";
 import { useDebouncedCallback } from "use-debounce";
-import { autoGrowTextArea } from "../utils";
+import { autoGrowTextArea, useMobileScreen } from "../utils";
 import { IScoreMetric } from "../toastmasters/ISpeechRoles";
 import { IconButton } from "../components/button";
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -87,10 +87,9 @@ import { Section, Title, Article, Prop } from "./react-loading";
 import ReactMarkdown from "react-markdown";
 import { LinearProgressWithLabel } from "../toastmasters/ISpeech-Common";
 import {
-  AzureAvatarLanguageToVoiceMap,
-  AzureLanguageToCountryMap,
+  AzureLanguageToVoicesMap,
+  AzureLanguageToLocaleMap,
   AzureLanguageToWelcomeMap,
-  AzureRoles,
   AzureTTSAvatarInput,
 } from "./AzureRoles";
 import {
@@ -167,6 +166,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
   // from input
   const [language, setLanguage] = useState(inputCopilot.Language);
   const [voiceNumber, setVoiceNumber] = useState(inputCopilot.VoiceNumber);
+  const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
     if (calling === true) {
@@ -193,6 +193,8 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
 
   const onConversation = async () => {
     if (currentTurn === SpeakTurnRoles.User) {
+      // TODO: price
+
       let i = 0;
       const maxSeconds = 60;
       for (; i < maxSeconds; i++) {
@@ -204,7 +206,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
           setCurrentStage(SpeakTurnStage.UserSpeaking);
           setUserMessage("");
           const userAsk = await speechRecognizer.recognizeOnceAsync(
-            AzureLanguageToCountryMap[language],
+            AzureLanguageToLocaleMap[language],
           );
           // const userAsk = "who are you";
           // console.log("userAsk: ", userAsk);
@@ -224,6 +226,14 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
     } else if (currentTurn === SpeakTurnRoles.GPT) {
       try {
         setCurrentStage(SpeakTurnStage.GPTThinking);
+
+        // at least 2 coins
+        const isEnoughCoins = await chatStore.isEnoughCoins(2);
+        if (!isEnoughCoins) {
+          onStopVoiceCall();
+          return;
+        }
+
         setGptMessage("");
 
         let gptResponse = "";
@@ -239,7 +249,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         setGptMessage(gptResponse);
 
         const setting: ISubmitAvatarSetting = {
-          Voice: AzureAvatarLanguageToVoiceMap[language][voiceNumber].Voice,
+          Voice: AzureLanguageToVoicesMap[language][voiceNumber].Voice,
         };
         const audioResponse = await onSynthesisAudio(gptResponse, setting);
 
@@ -339,7 +349,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
             {currentStage === "" && (
               <div className={styles_tm["flex-column-center"]}>
                 <AvatarMui
-                  src="Azure/VoiceCall4.png"
+                  src="Azure/VoiceCall3.png"
                   sx={{ width: "25%", height: "25%", marginTop: "20px" }}
                 />
               </div>
@@ -398,9 +408,13 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
         <List>
           <Stack
             display="flex"
-            direction="row"
+            direction={isMobileScreen ? "column" : "row"}
             spacing={2}
-            style={{ marginTop: "10px", marginLeft: "10px" }}
+            style={{
+              marginTop: "10px",
+              marginLeft: "10px",
+              marginRight: "10px",
+            }}
           >
             <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
               <InputLabel sx={{ background: "white", paddingRight: "4px" }}>
@@ -411,13 +425,11 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleLanguageChange}
                 autoWidth
               >
-                {Object.keys(AzureAvatarLanguageToVoiceMap).map(
-                  (item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ),
-                )}
+                {Object.keys(AzureLanguageToVoicesMap).map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -429,7 +441,7 @@ export function ChatCore(props: { inputCopilot: AzureTTSAvatarInput }) {
                 onChange={handleVoiceChange}
                 autoWidth
               >
-                {AzureAvatarLanguageToVoiceMap[language].map((item, index) => (
+                {AzureLanguageToVoicesMap[language].map((item, index) => (
                   <MenuItem key={index} value={index.toString()}>
                     {item.Name}
                   </MenuItem>
