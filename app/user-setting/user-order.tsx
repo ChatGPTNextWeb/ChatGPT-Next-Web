@@ -11,6 +11,7 @@ import { IconButton } from "../components/button";
 import { ErrorBoundary } from "../components/error";
 import { useNavigate } from "react-router-dom";
 import { UserInfoWindowHeader } from "./user-common";
+import QRCode from "qrcode.react";
 
 import {
   zCareersPayClient,
@@ -30,6 +31,7 @@ import zBotServiceClient, {
 const pricingPackage = [
   { amount: 10, base_coins: 100, requests: 100 },
   { amount: 30, base_coins: 500, requests: 500 },
+  { amount: 60, base_coins: 2000, requests: 2000 },
 ];
 
 export function UserOrder() {
@@ -112,12 +114,12 @@ function UserbalanceInfo(userEmail: string) {
                 .Title
             }
           </div>
-          <div>
+          {/* <div>
             {
               Locale.Settings.UserBalance.BalanceCenter.AccountBalance.BaseCoins
                 .SubTitle
             }
-          </div>
+          </div> */}
         </div>
         <div className={styles_user["user-order-balance-item"]}>
           <div className={styles_user["user-order-balance-num"]}>
@@ -146,12 +148,12 @@ function UserbalanceInfo(userEmail: string) {
                 .TotalDialogs.Title
             }
           </div>
-          <div>
+          {/* <div>
             {
               Locale.Settings.UserBalance.BalanceCenter.AccountBalance
                 .TotalDialogs.SubTitle
             }
-          </div>
+          </div> */}
         </div>
         <div className={styles_user["user-order-balance-item"]}>
           <div className={styles_user["user-order-balance-num"]}>
@@ -289,7 +291,7 @@ function UserOrderInfo(userEmail: string) {
                 className={styles_user["user-order-balance-num"]}
               >{`${item.amount}元套餐`}</div>
               <div className={styles_user["user-order-balance-title-padding"]}>
-                {`${item.base_coins}个AI币, ${item.requests}次问答`}{" "}
+                {`${item.base_coins}个AI币, 约${item.requests}次问答`}{" "}
               </div>
             </label>
           );
@@ -325,15 +327,32 @@ function UserOrderInfo(userEmail: string) {
               className={styles_user["user-order-qrcode"]}
               ref={messagesEndRef}
             >
-              <img
-                src={`${QrCodeAdress}?size=200x200&data=${qrCodeUrl}`}
-                alt="QR Code"
+              {/* Replace the img tag with the QRCode component */}
+              <QRCode
+                value={qrCodeUrl}
+                size={200} // Set the size of the QR Code
+                level="Q" // Set the error correction level (optional)
+                // Include other styling if needed
               />
             </div>
             <text className={styles_user["user-order-qrcode"]}>
               {`请用微信扫一扫支付`}
             </text>
           </div>
+          // <div className={styles_user["user-order-qrcode-desc"]}>
+          //   <div
+          //     className={styles_user["user-order-qrcode"]}
+          //     ref={messagesEndRef}
+          //   >
+          //     <img
+          //       src={`${QrCodeAdress}?size=200x200&data=${qrCodeUrl}`}
+          //       alt="QR Code"
+          //     />
+          //   </div>
+          //   <text className={styles_user["user-order-qrcode"]}>
+          //     {`请用微信扫一扫支付`}
+          //   </text>
+          // </div>
         )
       ) : null}
     </List>

@@ -216,22 +216,24 @@ const en: LocaleType = {
         AccountBalance: {
           Title: "Account Balance",
           BaseCoins: {
-            Title: "Base AI Coins",
-            SubTitle: "(Not clear)",
+            // Title: "Base AI Coins",
+            Title: "AI Coins",
+            // SubTitle: "(Not clear)",
           },
           LimitCoins: {
-            Title: "Time AI Coins",
-            SubTitle: "(1 day clear)",
+            Title: "Today-only AI Coins",
+            // Title: "Time AI Coins",
+            SubTitle: "(cleared at 24:00)",
           },
           TotalDialogs: {
             Title: "Total Dialogs",
-            SubTitle:
-              "(Each conversation costs 1 AI coin, time coins first, then base coins)",
+            // SubTitle:
+            //   "(Each conversation costs 1 AI coin, time coins first, then base coins)",
           },
           TotalSignDays: {
             Title: "Total Sign Days",
             SubTitle: (baseCoins: number, limitCoins: number) =>
-              `Sign in daily to receive ${baseCoins} basic AI coins and ${limitCoins} time AI coins`,
+              `Sign in daily to receive ${baseCoins} basic AI coins and ${limitCoins} today-only AI coins`,
           },
         },
         SignState: {
@@ -254,9 +256,14 @@ const en: LocaleType = {
         },
         CoinDescription: {
           Title: "AI Coins Description",
-          Rule1: "- New users are given 20 base AI coins when they sign up",
+          Rule1: "- New users are given 50 base AI coins when they sign up",
+          // Rule1: "- New users are given 20 base AI coins when they sign up",
           Rule2:
             "- When inviting users, both the inviter and the invitee are given 5 base AI coins",
+          Rule3: "- Chat: 1 AI coin/interaction",
+          Rule4: "- AI voice: 5 AI coins/min(Text to speech)",
+          Rule5: "- AI listening: 15 AI coins/min(Speech to text)",
+          Rule6: "- AI Avatar: 300 AI coins/min",
         },
       },
     },
