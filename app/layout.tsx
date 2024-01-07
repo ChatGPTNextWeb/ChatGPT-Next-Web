@@ -1,3 +1,11 @@
+/*
+ * @Author: liujiarong godisljr@163.com
+ * @Date: 2024-01-07 17:55:59
+ * @LastEditors: liujiarong godisljr@163.com
+ * @LastEditTime: 2024-01-07 18:14:01
+ * @FilePath: /ChatGPT-Next-Web/app/layout.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 /* eslint-disable @next/next/no-page-custom-font */
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
@@ -40,8 +48,8 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
         <script
           async
-          src="https://site.liujiarong.top/script.js"
-          data-website-id="503934c4-1431-4473-8f33-1e2eed851bae"
+          src="https://umami.liujiarong.top/script.js"
+          data-website-id="ddb42937-a358-488d-bf87-39c31aacfc10"
         ></script>
       </head>
       <body>
