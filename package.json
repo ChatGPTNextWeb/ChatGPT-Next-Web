@@ -22,12 +22,14 @@
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
     "emoji-picker-react": "^4.5.15",
+    "form-data": "^4.0.0",
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.6.1",
     "nanoid": "^5.0.3",
     "next": "^13.4.9",
-    "node-fetch": "^3.3.1",
+    "next-multiparty": "^0.7.0",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
@@ -39,11 +41,14 @@
     "remark-math": "^5.1.1",
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
+    "stream": "^0.0.2",
+    "streamifier": "^0.1.1",
+    "tunnel": "^0.0.6",
     "use-debounce": "^9.0.4",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "1.5.7",
+    "@tauri-apps/cli": "^1.4.0",
     "@types/node": "^20.9.0",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.7",
@@ -59,8 +64,5 @@
     "prettier": "^3.0.2",
     "typescript": "5.2.2",
     "webpack": "^5.88.1"
-  },
-  "resolutions": {
-    "lint-staged/yaml": "^2.2.2"
   }
 }

@@ -59,6 +59,8 @@ export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
+  abstract whisper(file: any): Promise<any>;
+  abstract speech(text: string): Promise<any>;
 }
 
 type ProviderName = "openai" | "azure" | "claude" | "palm";
@@ -100,18 +102,17 @@ export class ClientApi {
   masks() {}
 
   async share(messages: ChatMessage[], avatarUrl: string | null = null) {
-    const msgs = messages
-      .map((m) => ({
-        from: m.role === "user" ? "human" : "gpt",
-        value: m.content,
-      }))
-      .concat([
-        {
-          from: "human",
-          value:
-            "Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web",
-        },
-      ]);
+    const msgs = messages.map((m) => ({
+      from: m.role === "user" ? "human" : "gpt",
+      value: m.content,
+    }));
+    // .concat([
+    //   {
+    //     from: "human",
+    //     value:
+    //       "Share from [ChatGPT Next Web]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+    //   },
+    // ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
     // Please do not modify this message
 
@@ -139,12 +140,14 @@ export class ClientApi {
   }
 }
 
+export const api = new ClientApi();
+
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
-    "Accept": "application/json",
+    Accept: "application/json",
   };
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
   const isGoogle = modelConfig.model === "gemini-pro";
@@ -153,8 +156,8 @@ export function getHeaders() {
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
-    ? accessStore.azureApiKey
-    : accessStore.openaiApiKey;
+      ? accessStore.azureApiKey
+      : accessStore.openaiApiKey;
 
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;

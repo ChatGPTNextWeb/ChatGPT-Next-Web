@@ -80,6 +80,7 @@ export const OpenaiPath = {
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
+  WhisperConversion: "v1/audio/transcriptions",
 };
 
 export const Azure = {

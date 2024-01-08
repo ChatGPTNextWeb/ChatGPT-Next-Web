@@ -17,7 +17,6 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
-
 export interface OpenAIListModelResponse {
   object: string;
   data: Array<{
@@ -329,6 +328,45 @@ export class ChatGPTApi implements LLMApi {
         providerType: "openai",
       },
     }));
+  }
+
+  async whisper(file: any): Promise<any> {
+    // if (this.disableListModels) {
+    //   return DEFAULT_MODELS.slice();
+    // }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("model", "whisper-1");
+    formData.append("language", "zh");
+    const headers = getHeaders();
+    const res = await fetch(this.path(OpenaiPath.WhisperConversion), {
+      // const res = await fetch('/api/whisper', {
+      method: "POST",
+      headers: {
+        Authorization: headers.Authorization,
+      },
+      body: formData,
+    });
+    // console.log(1111111112223333);
+
+    const resJson = await res.json();
+
+    // console.log("[Whisper]", resJson);
+
+    return resJson;
+  }
+
+  async speech(text: string): Promise<any> {
+    const res = await fetch("/api/openSpeech", {
+      // const res = await fetch('/api/whisper', {
+      method: "POST",
+      headers: {
+        ...getHeaders(),
+      },
+      body: JSON.stringify({ text }),
+    });
+
+    return res;
   }
 }
 export { OpenaiPath };

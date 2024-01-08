@@ -9,6 +9,8 @@ import React, {
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
+import SpeechIcon from "../icons/speech.svg";
+// import SpeechIcon from "../icons/speech.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
@@ -34,6 +36,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import SpeakIcon from "../icons/speak.svg";
 
 import {
   ChatMessage,
@@ -53,6 +56,7 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  playSoundBuffer,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -63,6 +67,8 @@ import Locale from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
+
+import { api } from "../client/api";
 
 import {
   List,
@@ -626,6 +632,19 @@ function _Chat() {
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(true);
+
+  //音频录制
+  const [recording, setRecording] = useState(false);
+  //音频加载
+  const [isWhisperLoad, setisWhisperLoad] = useState(false);
+
+  // const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  let audioChunks: Blob[] = [];
+  let mediaRecorder: MediaRecorder | null = null;
+
+  //音频是否加载
+  const [isSpeedLoading, setisSpeedLoading] = useState(false);
+
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
@@ -661,6 +680,109 @@ function _Chat() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
+
+  //音频
+  useEffect(() => {
+    if (recording) {
+      startRecording();
+    } else {
+      stopRecording();
+    }
+
+    return () => {
+      if (mediaRecorder) {
+        mediaRecorder.stop();
+        mediaRecorder = null;
+      }
+    };
+  }, [recording]);
+
+  const startRecording = () => {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            // setAudioChunks((prevChunks) => [...prevChunks, e.data]);
+            // console.log(audioChunks,[e.data]);
+            audioChunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+          setisWhisperLoad(true);
+          const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+          // const audioUrl = URL.createObjectURL(audioBlob);
+          // console.log(audioUrl);
+          const audioFile = new File([audioBlob], "audioFile.webm", {
+            type: "audio/webm",
+          });
+
+          stopRecording();
+          const res = await api.llm.whisper(audioFile);
+
+          console.log(res);
+          if (res.code == 200) {
+            setUserInput((prevUserInput) => prevUserInput + res.text);
+            setisWhisperLoad(false);
+          } else {
+            setisWhisperLoad(false);
+          }
+
+          // 这里可以将 audioUrl 存储或传递给其他组件，以便播放或上传
+          // setAudioChunks([]);
+          audioChunks = [];
+        };
+
+        mediaRecorder.start();
+
+        function stopRecording() {
+          if (mediaRecorder) {
+            // 停止录制
+            mediaRecorder.stop();
+
+            // 停止音频流
+            if (mediaRecorder.stream) {
+              mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+            }
+
+            // 销毁 MediaRecorder 对象
+            mediaRecorder = null;
+          }
+        }
+      })
+      .catch((error) => console.error("Error accessing microphone:", error));
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+    }
+  };
+
+  const handleRecordClick = () => {
+    setRecording((prevRecording) => !prevRecording);
+  };
+
+  const onSpeak = async (content: string) => {
+    console.log(content);
+    if (isSpeedLoading) {
+      return;
+    }
+    setisSpeedLoading(true);
+    const res = await api.llm.speech(content);
+    console.log(res);
+    if (res.ok) {
+      // const response = await fetch(res.path);
+      const arrayBuffer = await res.arrayBuffer();
+      playSoundBuffer(arrayBuffer);
+      setisSpeedLoading(false);
+    } else {
+      setisSpeedLoading(false);
+    }
+  };
 
   // chat commands shortcuts
   const chatCommands = useChatCommand({
@@ -1219,6 +1341,17 @@ function _Chat() {
                                 icon={<CopyIcon />}
                                 onClick={() => copyToClipboard(message.content)}
                               />
+                              <ChatAction
+                                text="发音"
+                                icon={
+                                  isSpeedLoading ? (
+                                    <LoadingIcon />
+                                  ) : (
+                                    <SpeakIcon />
+                                  )
+                                }
+                                onClick={() => onSpeak(message.content)}
+                              />
                             </>
                           )}
                         </div>
@@ -1296,6 +1429,14 @@ function _Chat() {
             style={{
               fontSize: config.fontSize,
             }}
+          />
+
+          <IconButton
+            icon={recording ? <StopIcon /> : <SpeechIcon />}
+            type={recording ? "danger" : "primary"}
+            disabled={isWhisperLoad}
+            className={styles["chat-input-send2"]}
+            onClick={handleRecordClick}
           />
           <IconButton
             icon={<SendWhiteIcon />}

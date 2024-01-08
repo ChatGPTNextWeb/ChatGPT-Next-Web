@@ -11,6 +11,13 @@ import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
 import de from "@/app/locales/de";
 export class GeminiProApi implements LLMApi {
+  whisper(file: any): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
+  speech(text: string): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
+
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 

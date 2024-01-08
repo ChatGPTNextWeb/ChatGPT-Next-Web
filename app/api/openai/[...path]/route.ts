@@ -1,10 +1,11 @@
 import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
 import { getServerSideConfig } from "@/app/config/server";
-import { ModelProvider, OpenaiPath } from "@/app/constant";
+
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
-import { requestOpenai } from "../../common";
+import { requestOpenai, requestWhisperConversion } from "../../common";
+import { ModelProvider, OpenaiPath } from "@/app/constant";
 
 const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
 
@@ -25,6 +26,8 @@ async function handle(
   { params }: { params: { path: string[] } },
 ) {
   console.log("[OpenAI Route] params ", params);
+
+  // console.log(req);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
@@ -53,15 +56,36 @@ async function handle(
   }
 
   try {
-    const response = await requestOpenai(req);
-
-    // list models
-    if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
-      const resJson = (await response.json()) as OpenAIListModelResponse;
-      const availableModels = getModels(resJson);
-      return NextResponse.json(availableModels, {
-        status: response.status,
-      });
+    let response;
+    if (subpath === OpenaiPath.WhisperConversion) {
+      // const formData = await req.formData()
+      // // const model = formData.get('model')
+      // const file = formData.get('file')
+      response = await requestWhisperConversion(req);
+      const { text, error } = await response.json();
+      console.log(text, error);
+      if (error) {
+        return NextResponse.json(error, {
+          status: 401,
+        });
+      } else {
+        return NextResponse.json(
+          { text, code: 200 },
+          {
+            status: 200,
+          },
+        );
+      }
+    } else {
+      response = await requestOpenai(req);
+      // list models
+      if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
+        const resJson = (await response.json()) as OpenAIListModelResponse;
+        const availableModels = getModels(resJson);
+        return NextResponse.json(availableModels, {
+          status: response.status,
+        });
+      }
     }
 
     return response;
@@ -74,7 +98,7 @@ async function handle(
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+export const runtime = "nodejs"; // 'nodejs' (default) | 'edge'
 export const preferredRegion = [
   "arn1",
   "bom1",
@@ -94,3 +118,9 @@ export const preferredRegion = [
   "sin1",
   "syd1",
 ];
+
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// }
