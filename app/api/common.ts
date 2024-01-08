@@ -11,7 +11,7 @@ import { makeAzurePath } from "../azure";
 import nodefetch from 'node-fetch';
 import FormData from 'form-data';
 
-const tunnel = require('tunnel');
+// const tunnel = require('tunnel');
 // const fs = require('fs');
 // const nodepath = require('path');
 
@@ -23,20 +23,32 @@ const tunnel = require('tunnel');
 
 const serverConfig = getServerSideConfig();
 
-const agent = tunnel.httpsOverHttp({
-  proxy: {
-    host: '127.0.0.1',
-    port: process.env.PROXY_PORT,
-  },
-});
-
+// const agent = tunnel.httpsOverHttp({
+//   proxy: {
+//     host: '127.0.0.1',
+//     port: process.env.PROXY_PORT,
+//   },
+// });
 
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  const authValue = req.headers.get("Authorization") ?? "";
-  const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
+  var authValue,
+    authHeaderName = "";
+  if (serverConfig.isAzure) {
+    authValue =
+      req.headers
+        .get("Authorization")
+        ?.trim()
+        .replaceAll("Bearer ", "")
+        .trim() ?? "";
+
+    authHeaderName = "api-key";
+  } else {
+    authValue = req.headers.get("Authorization") ?? "";
+    authHeaderName = "Authorization";
+  }
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
@@ -79,8 +91,6 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   const fetchUrl = `${baseUrl}/${path}`;
-
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -97,9 +107,7 @@ export async function requestOpenai(req: NextRequest) {
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
-    // agent
   };
-
 
   // #1815 try to refuse gpt4 request
   if (serverConfig.customModels && req.body) {
@@ -139,6 +147,12 @@ export async function requestOpenai(req: NextRequest) {
     // to disable nginx buffering
     newHeaders.set("X-Accel-Buffering", "no");
 
+    // The latest version of the OpenAI API forced the content-encoding to be "br" in json response
+    // So if the streaming is disabled, we need to remove the content-encoding header
+    // Because Vercel uses gzip to compress the response, if we don't remove the content-encoding header
+    // The browser will try to decode the response with brotli and fail
+    newHeaders.delete("content-encoding");
+
     return new Response(res.body, {
       status: res.status,
       statusText: res.statusText,
@@ -149,15 +163,14 @@ export async function requestOpenai(req: NextRequest) {
   }
 }
 
-
 //目前只针对WhisperConversion
 export async function requestWhisperConversion(req: NextRequest) {
 
-  
 
-  
 
-  const reqformData = await (req.formData()  as any )
+
+
+  const reqformData = await (req.formData() as any)
 
   const formData = new FormData();
 
@@ -172,7 +185,7 @@ export async function requestWhisperConversion(req: NextRequest) {
   formData.append('model', 'whisper-1');
   // const formData = new FormData();  // formData.append('file', (reqformData.get('file')),'adiou.webm');
   // formData.append('model', 'whisper-1');
-  formData.append('file', Buffer.from(await fileObject.arrayBuffer()),'audio.webm');
+  formData.append('file', Buffer.from(await fileObject.arrayBuffer()), 'audio.webm');
   // formData.append('language', "zh");
 
 
@@ -198,10 +211,10 @@ export async function requestWhisperConversion(req: NextRequest) {
 
   const fetchUrl = `${baseUrl}/${path}`;
   // const fetchUrl = 'https://api.openai.com/v1/audio/transcriptions';
- 
+
 
   // formData.append('model', 'whisper-1');
-  const res = (await nodefetch(fetchUrl,{
+  const res = (await nodefetch(fetchUrl, {
     headers: {
       // ...formData.getHeaders(),
       // "Content-Type": "multipart/form-data",
@@ -211,19 +224,19 @@ export async function requestWhisperConversion(req: NextRequest) {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
     },
-    body:formData,
+    body: formData,
     method: req.method,
     // agent: agent,
- 
-  }))  as any
+
+  })) as any
 
 
   // const { text, error } = await res.json();
   // console.log(text, error);
-  
 
-  
-  
+
+
+
   const newHeaders = new Headers(res.headers);
   newHeaders.delete("www-authenticate");
   // // to disable nginx buffering

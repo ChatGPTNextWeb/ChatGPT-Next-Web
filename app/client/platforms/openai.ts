@@ -358,7 +358,6 @@ export class ChatGPTApi implements LLMApi {
 
   async speech(text: string): Promise<any> {
 
-
     const res = await fetch('/api/openSpeech', {
     // const res = await fetch('/api/whisper', {
       method: "POST",

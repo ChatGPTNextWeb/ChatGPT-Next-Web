@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getServerSideConfig } from "../../config/server";
 import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../../constant";
-
+import { auth } from "../auth";
 const serverConfig = getServerSideConfig();
 
 
@@ -19,9 +19,17 @@ const agent = tunnel.httpsOverHttp({
 });
 
 async function handle(req:NextRequest) {
-
+  
+  const authResult = auth(req);
+  if (authResult.error) {
+    return NextResponse.json(authResult, {
+      status: 401,
+    });
+  }
   
   const authValue = req.headers.get("Authorization") ?? "";
+  console.log('authValue',authValue);
+  
   const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
@@ -68,7 +76,8 @@ async function handle(req:NextRequest) {
   const res = (await fetch(fetchUrl,{
     headers: {
       'Content-Type': 'application/json',
-      [authHeaderName]: 'Bearer ' +serverConfig.apiKey,
+
+      [authHeaderName]: authValue,
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
