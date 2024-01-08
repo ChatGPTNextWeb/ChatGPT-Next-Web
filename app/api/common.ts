@@ -92,6 +92,7 @@ export async function requestOpenai(req: NextRequest) {
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
+    timeout: 10 * 120 * 1000,
   };
 
   // #1815 try to refuse gpt4 request
@@ -155,12 +156,6 @@ export async function requestWhisperConversion(req: NextRequest) {
   const formData = new FormData();
 
   const fileObject = reqformData.get("file");
-
-  // fs.writeFileSync(tempFilePath, fileObject.stream());
-  // fileObject.pipe(fs.createWriteStream(tempFilePath));
-  // const stream = fs.createReadStream(tempFilePath);
-  // const fileBuffer = await fileObject;
-  // const stream = streamifier.createReadStream(fileObject);
 
   formData.append("model", "whisper-1");
   // const formData = new FormData();  // formData.append('file', (reqformData.get('file')),'adiou.webm');
