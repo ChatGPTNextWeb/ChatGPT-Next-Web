@@ -56,7 +56,7 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
-  playSoundBuffer
+  playSoundBuffer,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -349,7 +349,6 @@ function ChatAction(props: {
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
     const textWidth = getWidth(textRef.current);
     const iconWidth = getWidth(iconRef.current);
-    // const iconWidth = 16;
     setWidth({
       full: textWidth + iconWidth,
       icon: iconWidth,
@@ -646,8 +645,6 @@ function _Chat() {
   //音频是否加载
   const [isSpeedLoading, setisSpeedLoading] = useState(false);
 
-
-
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
@@ -684,8 +681,6 @@ function _Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
-
-
   //音频
   useEffect(() => {
     if (recording) {
@@ -703,7 +698,8 @@ function _Chat() {
   }, [recording]);
 
   const startRecording = () => {
-    navigator.mediaDevices.getUserMedia({ audio: true })
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
       .then((stream) => {
         mediaRecorder = new MediaRecorder(stream);
 
@@ -712,30 +708,29 @@ function _Chat() {
             // setAudioChunks((prevChunks) => [...prevChunks, e.data]);
             // console.log(audioChunks,[e.data]);
             audioChunks.push(e.data);
-            
           }
         };
 
         mediaRecorder.onstop = async () => {
-          setisWhisperLoad(true)
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          setisWhisperLoad(true);
+          const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
           // const audioUrl = URL.createObjectURL(audioBlob);
           // console.log(audioUrl);
-          const audioFile = new File([audioBlob], 'audioFile.webm', { type: 'audio/webm' });
+          const audioFile = new File([audioBlob], "audioFile.webm", {
+            type: "audio/webm",
+          });
 
-    
-
-          stopRecording()
-          const res  =  await  api.llm.whisper(audioFile);
+          stopRecording();
+          const res = await api.llm.whisper(audioFile);
 
           console.log(res);
-          if(res.code == 200){
+          if (res.code == 200) {
             setUserInput((prevUserInput) => prevUserInput + res.text);
-            setisWhisperLoad(false)
-          }else{
-            setisWhisperLoad(false)
+            setisWhisperLoad(false);
+          } else {
+            setisWhisperLoad(false);
           }
-          
+
           // 这里可以将 audioUrl 存储或传递给其他组件，以便播放或上传
           // setAudioChunks([]);
           audioChunks = [];
@@ -747,18 +742,18 @@ function _Chat() {
           if (mediaRecorder) {
             // 停止录制
             mediaRecorder.stop();
-        
+
             // 停止音频流
             if (mediaRecorder.stream) {
-              mediaRecorder.stream.getTracks().forEach(track => track.stop());
+              mediaRecorder.stream.getTracks().forEach((track) => track.stop());
             }
-        
+
             // 销毁 MediaRecorder 对象
             mediaRecorder = null;
           }
-        };
+        }
       })
-      .catch((error) => console.error('Error accessing microphone:', error));
+      .catch((error) => console.error("Error accessing microphone:", error));
   };
 
   const stopRecording = () => {
@@ -771,26 +766,23 @@ function _Chat() {
     setRecording((prevRecording) => !prevRecording);
   };
 
-
-  const onSpeak =async (content: string)=>{
+  const onSpeak = async (content: string) => {
     console.log(content);
-    if(isSpeedLoading){
+    if (isSpeedLoading) {
       return;
     }
-    setisSpeedLoading(true)
-    const res  =  await  api.llm.speech(content);
+    setisSpeedLoading(true);
+    const res = await api.llm.speech(content);
     console.log(res);
-    if(res.ok){
+    if (res.ok) {
       // const response = await fetch(res.path);
       const arrayBuffer = await res.arrayBuffer();
-      playSoundBuffer(arrayBuffer)
-      setisSpeedLoading(false)
-    }else{
-      setisSpeedLoading(false)
+      playSoundBuffer(arrayBuffer);
+      setisSpeedLoading(false);
+    } else {
+      setisSpeedLoading(false);
     }
-    
-  }
-
+  };
 
   // chat commands shortcuts
   const chatCommands = useChatCommand({
@@ -1350,8 +1342,14 @@ function _Chat() {
                                 onClick={() => copyToClipboard(message.content)}
                               />
                               <ChatAction
-                                text='发音'
-                                icon={isSpeedLoading  ?<LoadingIcon/> :<SpeakIcon />  }
+                                text="发音"
+                                icon={
+                                  isSpeedLoading ? (
+                                    <LoadingIcon />
+                                  ) : (
+                                    <SpeakIcon />
+                                  )
+                                }
                                 onClick={() => onSpeak(message.content)}
                               />
                             </>
@@ -1432,12 +1430,12 @@ function _Chat() {
               fontSize: config.fontSize,
             }}
           />
-      
-            <IconButton
+
+          <IconButton
             icon={recording ? <StopIcon /> : <SpeechIcon />}
-            type={recording ? 'danger' : 'primary'}
+            type={recording ? "danger" : "primary"}
             disabled={isWhisperLoad}
-            className={styles['chat-input-send2']}
+            className={styles["chat-input-send2"]}
             onClick={handleRecordClick}
           />
           <IconButton

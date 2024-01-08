@@ -1,25 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../constant";
+import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
-// import { Readable } from 'stream'
-// const streamifier = require('streamifier');
 
-
-
-import nodefetch from 'node-fetch';
-import FormData from 'form-data';
-
-// const tunnel = require('tunnel');
-// const fs = require('fs');
-// const nodepath = require('path');
-
-// const FormData = require('form-data');
-
-
-
-
+import nodefetch from "node-fetch";
+import FormData from "form-data";
 
 const serverConfig = getServerSideConfig();
 
@@ -29,7 +15,6 @@ const serverConfig = getServerSideConfig();
 //     port: process.env.PROXY_PORT,
 //   },
 // });
-
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
@@ -165,16 +150,11 @@ export async function requestOpenai(req: NextRequest) {
 
 //目前只针对WhisperConversion
 export async function requestWhisperConversion(req: NextRequest) {
-
-
-
-
-
-  const reqformData = await (req.formData() as any)
+  const reqformData = await (req.formData() as any);
 
   const formData = new FormData();
 
-  const fileObject = reqformData.get('file');
+  const fileObject = reqformData.get("file");
 
   // fs.writeFileSync(tempFilePath, fileObject.stream());
   // fileObject.pipe(fs.createWriteStream(tempFilePath));
@@ -182,13 +162,15 @@ export async function requestWhisperConversion(req: NextRequest) {
   // const fileBuffer = await fileObject;
   // const stream = streamifier.createReadStream(fileObject);
 
-  formData.append('model', 'whisper-1');
+  formData.append("model", "whisper-1");
   // const formData = new FormData();  // formData.append('file', (reqformData.get('file')),'adiou.webm');
   // formData.append('model', 'whisper-1');
-  formData.append('file', Buffer.from(await fileObject.arrayBuffer()), 'audio.webm');
+  formData.append(
+    "file",
+    Buffer.from(await fileObject.arrayBuffer()),
+    "audio.webm",
+  );
   // formData.append('language', "zh");
-
-
 
   const authValue = req.headers.get("Authorization") ?? "";
   const authHeaderName = serverConfig.isAzure ? "api-key" : "Authorization";
@@ -212,7 +194,6 @@ export async function requestWhisperConversion(req: NextRequest) {
   const fetchUrl = `${baseUrl}/${path}`;
   // const fetchUrl = 'https://api.openai.com/v1/audio/transcriptions';
 
-
   // formData.append('model', 'whisper-1');
   const res = (await nodefetch(fetchUrl, {
     headers: {
@@ -227,15 +208,10 @@ export async function requestWhisperConversion(req: NextRequest) {
     body: formData,
     method: req.method,
     // agent: agent,
-
-  })) as any
-
+  })) as any;
 
   // const { text, error } = await res.json();
   // console.log(text, error);
-
-
-
 
   const newHeaders = new Headers(res.headers);
   newHeaders.delete("www-authenticate");
@@ -247,5 +223,4 @@ export async function requestWhisperConversion(req: NextRequest) {
     statusText: res.statusText,
     headers: newHeaders,
   });
-
 }

@@ -6,7 +6,9 @@ export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
   // This will remove the specified punctuation from the end of the string
   // and also trim quotes from both the start and end if they exist.
-  return topic.replace(/^["“”]+|["“”]+$/g, "").replace(/[，。！？”“"、,.!?]*$/, "");
+  return topic
+    .replace(/^["“”]+|["“”]+$/g, "")
+    .replace(/[，。！？”“"、,.!?]*$/, "");
 }
 
 export async function copyToClipboard(text: string) {
@@ -40,8 +42,8 @@ export async function downloadAs(text: string, filename: string) {
       defaultPath: `${filename}`,
       filters: [
         {
-          name: `${filename.split('.').pop()} files`,
-          extensions: [`${filename.split('.').pop()}`],
+          name: `${filename.split(".").pop()} files`,
+          extensions: [`${filename.split(".").pop()}`],
         },
         {
           name: "All Files",
@@ -54,7 +56,7 @@ export async function downloadAs(text: string, filename: string) {
       try {
         await window.__TAURI__.fs.writeBinaryFile(
           result,
-          new Uint8Array([...text].map((c) => c.charCodeAt(0)))
+          new Uint8Array([...text].map((c) => c.charCodeAt(0))),
         );
         showToast(Locale.Download.Success);
       } catch (error) {
@@ -69,15 +71,15 @@ export async function downloadAs(text: string, filename: string) {
       "href",
       "data:text/plain;charset=utf-8," + encodeURIComponent(text),
     );
-  element.setAttribute("download", filename);
+    element.setAttribute("download", filename);
 
-  element.style.display = "none";
-  document.body.appendChild(element);
+    element.style.display = "none";
+    document.body.appendChild(element);
 
-  element.click();
+    element.click();
 
-  document.body.removeChild(element);
-}
+    document.body.removeChild(element);
+  }
 }
 export function readFromFile() {
   return new Promise<string>((res, rej) => {
@@ -212,17 +214,16 @@ export function getCSSVar(varName: string) {
 export function isMacOS(): boolean {
   if (typeof window !== "undefined") {
     let userAgent = window.navigator.userAgent.toLocaleLowerCase();
-    const macintosh = /iphone|ipad|ipod|macintosh/.test(userAgent)
-    return !!macintosh
+    const macintosh = /iphone|ipad|ipod|macintosh/.test(userAgent);
+    return !!macintosh;
   }
-  return false
+  return false;
 }
 
-
 export async function playSoundBuffer(audioBuffer: ArrayBuffer) {
-    const audioContext = new AudioContext();
-    const bufferSource = audioContext.createBufferSource();
-    bufferSource.buffer = await audioContext.decodeAudioData(audioBuffer);
-    bufferSource.connect(audioContext.destination);
-    bufferSource.start();
-  }
+  const audioContext = new AudioContext();
+  const bufferSource = audioContext.createBufferSource();
+  bufferSource.buffer = await audioContext.decodeAudioData(audioBuffer);
+  bufferSource.connect(audioContext.destination);
+  bufferSource.start();
+}

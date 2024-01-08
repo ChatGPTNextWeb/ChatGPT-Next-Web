@@ -1,8 +1,13 @@
 import { getClientConfig } from "../config/client";
-import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
-import { ChatMessage, ModelType, useAccessStore } from "../store";
+import {
+  ACCESS_CODE_PREFIX,
+  Azure,
+  ModelProvider,
+  ServiceProvider,
+} from "../constant";
+import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-
+import { GeminiProApi } from "./platforms/google";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -41,14 +46,21 @@ export interface LLMUsage {
 export interface LLMModel {
   name: string;
   available: boolean;
+  provider: LLMModelProvider;
+}
+
+export interface LLMModelProvider {
+  id: string;
+  providerName: string;
+  providerType: string;
 }
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
-  abstract whisper(file:any): Promise<any>;
-  abstract speech(text:string): Promise<any>;
+  abstract whisper(file: any): Promise<any>;
+  abstract speech(text: string): Promise<any>;
 }
 
 type ProviderName = "openai" | "azure" | "claude" | "palm";
@@ -75,7 +87,11 @@ interface ChatProvider {
 export class ClientApi {
   public llm: LLMApi;
 
-  constructor() {
+  constructor(provider: ModelProvider = ModelProvider.GPT) {
+    if (provider === ModelProvider.GeminiPro) {
+      this.llm = new GeminiProApi();
+      return;
+    }
     this.llm = new ChatGPTApi();
   }
 
@@ -86,18 +102,17 @@ export class ClientApi {
   masks() {}
 
   async share(messages: ChatMessage[], avatarUrl: string | null = null) {
-    const msgs = messages
-      .map((m) => ({
-        from: m.role === "user" ? "human" : "gpt",
-        value: m.content,
-      }))
-      // .concat([
-      //   {
-      //     from: "human",
-      //     value:
-      //       "Share from [ChatGPT Next Web]: https://github.com/Yidadaa/ChatGPT-Next-Web",
-      //   },
-      // ]);
+    const msgs = messages.map((m) => ({
+      from: m.role === "user" ? "human" : "gpt",
+      value: m.content,
+    }));
+    // .concat([
+    //   {
+    //     from: "human",
+    //     value:
+    //       "Share from [ChatGPT Next Web]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+    //   },
+    // ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
     // Please do not modify this message
 
@@ -132,11 +147,17 @@ export function getHeaders() {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
+    Accept: "application/json",
   };
-
+  const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
+  const isGoogle = modelConfig.model === "gemini-pro";
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
-  const apiKey = isAzure ? accessStore.azureApiKey : accessStore.openaiApiKey;
+  const apiKey = isGoogle
+    ? accessStore.googleApiKey
+    : isAzure
+      ? accessStore.azureApiKey
+      : accessStore.openaiApiKey;
 
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;

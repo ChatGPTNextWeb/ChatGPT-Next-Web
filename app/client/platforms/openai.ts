@@ -17,8 +17,6 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
-import axios from "axios";
-// import FormData from 'form-data';
 export interface OpenAIListModelResponse {
   object: string;
   data: Array<{
@@ -324,59 +322,51 @@ export class ChatGPTApi implements LLMApi {
     return chatModels.map((m) => ({
       name: m.id,
       available: true,
+      provider: {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
     }));
   }
-  
+
   async whisper(file: any): Promise<any> {
     // if (this.disableListModels) {
     //   return DEFAULT_MODELS.slice();
     // }
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('model', 'whisper-1');
-    formData.append('language', "zh");
-    const headers = getHeaders()
+    formData.append("file", file);
+    formData.append("model", "whisper-1");
+    formData.append("language", "zh");
+    const headers = getHeaders();
     const res = await fetch(this.path(OpenaiPath.WhisperConversion), {
-    // const res = await fetch('/api/whisper', {
+      // const res = await fetch('/api/whisper', {
       method: "POST",
       headers: {
-    
-        Authorization: headers.Authorization
+        Authorization: headers.Authorization,
       },
       body: formData,
     });
     // console.log(1111111112223333);
-    
-    const resJson = (await res.json())
-  
+
+    const resJson = await res.json();
+
     // console.log("[Whisper]", resJson);
 
-   
-
-    return resJson
+    return resJson;
   }
 
   async speech(text: string): Promise<any> {
-
-    const res = await fetch('/api/openSpeech', {
-    // const res = await fetch('/api/whisper', {
+    const res = await fetch("/api/openSpeech", {
+      // const res = await fetch('/api/whisper', {
       method: "POST",
       headers: {
         ...getHeaders(),
       },
-      body: JSON.stringify({text}),
+      body: JSON.stringify({ text }),
     });
-    // console.log(1111111112223333);
-    
-    // const resJson = (await res.json())
-  
-    // console.log("[Whisper]", resJson);
 
-   
-
-    return res
+    return res;
   }
-
-
 }
 export { OpenaiPath };

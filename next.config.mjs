@@ -31,9 +31,8 @@ const nextConfig = {
     unoptimized: mode === "export",
   },
   experimental: {
-    forceSwcTransforms: false,
+    forceSwcTransforms: true,
   },
-  
 };
 
 const CorsHeaders = [

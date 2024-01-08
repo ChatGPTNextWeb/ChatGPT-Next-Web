@@ -1,11 +1,12 @@
 import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
 import { getServerSideConfig } from "@/app/config/server";
-import { OpenaiPath } from "@/app/constant";
+
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
-import { requestOpenai,requestWhisperConversion } from "../../common";
- 
+import { requestOpenai, requestWhisperConversion } from "../../common";
+import { ModelProvider, OpenaiPath } from "@/app/constant";
+
 const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
 
 function getModels(remoteModelRes: OpenAIListModelResponse) {
@@ -26,9 +27,7 @@ async function handle(
 ) {
   console.log("[OpenAI Route] params ", params);
 
-// console.log(req);
-
-
+  // console.log(req);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
@@ -49,7 +48,7 @@ async function handle(
     );
   }
 
-  const authResult = auth(req);
+  const authResult = auth(req, ModelProvider.GPT);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -57,28 +56,29 @@ async function handle(
   }
 
   try {
-    let response
-    if(subpath === OpenaiPath.WhisperConversion){
+    let response;
+    if (subpath === OpenaiPath.WhisperConversion) {
       // const formData = await req.formData()
       // // const model = formData.get('model')
       // const file = formData.get('file')
       response = await requestWhisperConversion(req);
       const { text, error } = await response.json();
-      console.log(text, error );
-      if(error){
-        return  NextResponse.json(error, {
-          status:  401,
+      console.log(text, error);
+      if (error) {
+        return NextResponse.json(error, {
+          status: 401,
         });
-      }else{
-        return  NextResponse.json({text,code:200}, {
-          status:  200,
-        });
+      } else {
+        return NextResponse.json(
+          { text, code: 200 },
+          {
+            status: 200,
+          },
+        );
       }
-      
-      
-    }else{
+    } else {
       response = await requestOpenai(req);
-          // list models
+      // list models
       if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
         const resJson = (await response.json()) as OpenAIListModelResponse;
         const availableModels = getModels(resJson);
@@ -86,12 +86,7 @@ async function handle(
           status: response.status,
         });
       }
-
     }
-
-
-
-   
 
     return response;
   } catch (e) {
@@ -104,7 +99,25 @@ export const GET = handle;
 export const POST = handle;
 
 export const runtime = "nodejs"; // 'nodejs' (default) | 'edge'
-export const preferredRegion = ['arn1', 'bom1', 'cdg1', 'cle1', 'cpt1', 'dub1', 'fra1', 'gru1', 'hnd1', 'iad1', 'icn1', 'kix1', 'lhr1', 'pdx1', 'sfo1', 'sin1', 'syd1'];
+export const preferredRegion = [
+  "arn1",
+  "bom1",
+  "cdg1",
+  "cle1",
+  "cpt1",
+  "dub1",
+  "fra1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "lhr1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];
 
 // export const config = {
 //   api: {
