@@ -441,10 +441,11 @@ const en: LocaleType = {
   NewChat: {
     Return: "Return",
     Skip: "Just Start",
-    Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
+    Title: "Welcome to support this APP",
+    SubTitle:
+      "Using the ChatGPT API comes with costs💲. Feel free to tip and support us! ❤️",
     More: "Find More",
-    NotShow: "Never Show Again",
+    NotShow: "",
     ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
   },
 

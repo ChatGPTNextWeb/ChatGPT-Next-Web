@@ -434,10 +434,10 @@ const cn = {
   NewChat: {
     Return: "返回",
     Skip: "直接开始",
-    NotShow: "不再展示",
+    NotShow: "",
     ConfirmNoShow: "确认禁用？禁用后可以随时在设置中重新启用。",
-    Title: "挑选一个面具",
-    SubTitle: "现在开始，与面具背后的灵魂思维碰撞",
+    Title: "欢迎资助这个网站",
+    SubTitle: "调用ChatGPT接口需要成本费用💲，欢迎打赏支持❤️",
     More: "查看全部",
   },
 

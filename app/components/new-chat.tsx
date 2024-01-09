@@ -134,18 +134,32 @@ export function NewChat() {
       </div>
       <div className={styles["mask-cards"]}>
         <div className={styles["mask-card"]}>
-          <EmojiAvatar avatar="1f606" size={24} />
+          <EmojiAvatar avatar="1f4b5" size={24} />
         </div>
         <div className={styles["mask-card"]}>
-          <EmojiAvatar avatar="1f916" size={24} />
+          <EmojiAvatar avatar="1f497" size={24} />
         </div>
         <div className={styles["mask-card"]}>
-          <EmojiAvatar avatar="1f479" size={24} />
+          <EmojiAvatar avatar="1f9e7" size={24} />
         </div>
       </div>
 
       <div className={styles["title"]}>{Locale.NewChat.Title}</div>
       <div className={styles["sub-title"]}>{Locale.NewChat.SubTitle}</div>
+      <div className={styles["sub-title"]}>
+        <img
+          src={"https://yisi-1253291586.cos.ap-guangzhou.myqcloud.com/ali.jpg"}
+          width={160}
+          height={160}
+          alt="ali"
+        />
+        <img
+          src={"https://yisi-1253291586.cos.ap-guangzhou.myqcloud.com/wx.jpg"}
+          width={160}
+          height={160}
+          alt="wx"
+        />
+      </div>
 
       <div className={styles["actions"]}>
         <IconButton
