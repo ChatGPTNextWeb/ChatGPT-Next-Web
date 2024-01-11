@@ -179,7 +179,7 @@ const pt: PartialLocaleType = {
     },
     AutoScrollMessage: {
       Title: "Resposta com Auto-Scroll",
-      SubTitle: "Rolar a mensagem automaticamente durante a resposta",
+      SubTitle: "Deslize a mensagem durante a resposta",
     },
     AutoGenerateTitle: {
       Title: "Gerar Título Automaticamente",

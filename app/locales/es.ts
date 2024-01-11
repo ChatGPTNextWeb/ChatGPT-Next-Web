@@ -91,6 +91,10 @@ const es: PartialLocaleType = {
       Title: "Enviar burbuja de vista previa",
       SubTitle: "Preview markdown in bubble",
     },
+    AutoScrollMessage: {
+      Title: "Respuesta con Auto-Desplazamiento",
+      SubTitle: "Desplazar el mensaje durante la respuesta",
+    },
     Mask: {
       Splash: {
         Title: "Mask Splash Screen",

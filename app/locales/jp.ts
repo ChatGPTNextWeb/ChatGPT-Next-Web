@@ -113,6 +113,10 @@ const jp: PartialLocaleType = {
       Title: "プレビューバブルの送信",
       SubTitle: "プレビューバブルでマークダウンコンテンツをプレビュー",
     },
+    AutoScrollMessage: {
+      Title: "オートスクロール返信",
+      SubTitle: "返信中にメッセージをスクロール",
+    },
     Mask: {
       Splash: {
         Title: "キャラクターページ",

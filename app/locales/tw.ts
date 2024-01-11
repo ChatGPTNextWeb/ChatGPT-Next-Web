@@ -88,6 +88,10 @@ const tw: PartialLocaleType = {
       Title: "預覽氣泡",
       SubTitle: "在預覽氣泡中預覽 Markdown 內容",
     },
+    AutoScrollMessage: {
+      Title: "自動滾動回覆",
+      SubTitle: "回覆時滾動訊息",
+    },
     Mask: {
       Splash: {
         Title: "面具啟動頁面",
