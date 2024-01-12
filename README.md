@@ -1,5 +1,5 @@
 <div>
-<img src="./docs/images/icon.svg" alt="icon"/>
+<img src="./docs/images/head-cover.png" alt="icon"/>
 
 <h1 align="center">ChatGPT</h1>
 
@@ -26,6 +26,5 @@ Forked from [Yidadaa/ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-W
 - 隐藏：检查更新设置
 - 隐藏：聊天消息取消Pin
 
-![cover](./docs/images/cover.png)
 
 </div>
