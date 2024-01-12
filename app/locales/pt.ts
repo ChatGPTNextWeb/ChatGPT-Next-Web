@@ -178,8 +178,8 @@ const pt: PartialLocaleType = {
       SubTitle: "Pré-visualizar markdown na bolha",
     },
     AutoScrollMessage: {
-      Title: "Resposta com Auto-Scroll",
-      SubTitle: "Deslize a mensagem durante a resposta",
+      Title: "Resposta de rolagem automática",
+      SubTitle: "Rolar a mensagem enquanto responde",
     },
     AutoGenerateTitle: {
       Title: "Gerar Título Automaticamente",
