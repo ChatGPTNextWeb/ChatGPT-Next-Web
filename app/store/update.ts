@@ -1,9 +1,16 @@
-import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
-import { api } from "../client/api";
+import {
+  FETCH_COMMIT_URL,
+  FETCH_TAG_URL,
+  ModelProvider,
+  StoreKey,
+} from "../constant";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import ChatGptIcon from "../icons/chatgpt.png";
 import Locale from "../locales";
+import { use } from "react";
+import { useAppConfig } from ".";
+import { ClientApi } from "../client/api";
 
 const ONE_MINUTE = 60 * 1000;
 const isApp = !!getClientConfig()?.isApp;
@@ -127,6 +134,7 @@ export const useUpdateStore = createPersistStore(
     },
 
     async updateUsage(force = false) {
+      // only support openai for now
       const overOneMinute = Date.now() - get().lastUpdateUsage >= ONE_MINUTE;
       if (!overOneMinute && !force) return;
 
@@ -135,6 +143,7 @@ export const useUpdateStore = createPersistStore(
       }));
 
       try {
+        const api = new ClientApi(ModelProvider.GPT);
         const usage = await api.llm.usage();
 
         if (usage) {
