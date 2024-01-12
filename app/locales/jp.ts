@@ -19,7 +19,12 @@ const jp: PartialLocaleType = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Pin: "ピン",
+      PinToastContent:
+        "コンテキストプロンプトに1つのメッセージをピン留めしました",
+      PinToastAction: "表示",
       Delete: "削除",
+      Edit: "編集",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -33,7 +38,7 @@ const jp: PartialLocaleType = {
     Send: "送信",
     Config: {
       Reset: "リセット",
-      SaveAs: "另存为面具",
+      SaveAs: "保存",
     },
   },
   Export: {
@@ -142,11 +147,7 @@ const jp: PartialLocaleType = {
       SubTitle:
         "圧縮されていない履歴メッセージがこの値を超えた場合、圧縮が行われます。",
     },
-    Token: {
-      Title: "APIキー",
-      SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
-      Placeholder: "OpenAI APIキー",
-    },
+
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
@@ -156,11 +157,7 @@ const jp: PartialLocaleType = {
       Check: "再確認",
       NoAccess: "APIキーまたはアクセスパスワードを入力して残高を表示",
     },
-    AccessCode: {
-      Title: "アクセスパスワード",
-      SubTitle: "暗号化アクセスが有効になっています",
-      Placeholder: "アクセスパスワードを入力してください",
-    },
+
     Model: "モデル (model)",
     Temperature: {
       Title: "ランダム性 (temperature)",

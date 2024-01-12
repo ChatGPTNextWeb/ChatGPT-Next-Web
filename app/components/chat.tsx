@@ -73,11 +73,10 @@ import {
   showPrompt,
   showToast,
 } from "./ui-lib";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
   LAST_INPUT_KEY,
-  MAX_RENDER_MSG_COUNT,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
@@ -89,6 +88,7 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
+import { useAllModels } from "../utils/hooks";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -144,6 +144,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
           extraListItems={
             session.mask.modelConfig.sendMemory ? (
               <ListItem
+                className="copyable"
                 title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
                 subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
               ></ListItem>
@@ -430,15 +431,25 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const allModels = useAllModels();
   const models = useMemo(
-    () =>
-      config
-        .allModels()
-        .filter((m) => m.available)
-        .map((m) => m.name),
-    [config],
+    () => allModels.filter((m) => m.available),
+    [allModels],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
+
+  useEffect(() => {
+    // if current model is not available
+    // switch to first available model
+    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
+    if (isUnavaliableModel && models.length > 0) {
+      const nextModel = models[0].name as ModelType;
+      chatStore.updateCurrentSession(
+        (session) => (session.mask.modelConfig.model = nextModel),
+      );
+      showToast(nextModel);
+    }
+  }, [chatStore, currentModel, models]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -519,8 +530,8 @@ export function ChatActions(props: {
         <Selector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
-            title: m,
-            value: m,
+            title: m.displayName,
+            value: m.name,
           }))}
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
@@ -937,7 +948,7 @@ function _Chat() {
     const isTouchTopEdge = e.scrollTop <= edgeThreshold;
     const isTouchBottomEdge = bottomHeight >= e.scrollHeight - edgeThreshold;
     const isHitBottom =
-      bottomHeight >= e.scrollHeight - (isMobileScreen ? 0 : 10);
+      bottomHeight >= e.scrollHeight - (isMobileScreen ? 4 : 10);
 
     const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
     const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
@@ -976,14 +987,17 @@ function _Chat() {
       doSubmit(text);
     },
     code: (text) => {
+      if (accessStore.disableFastLink) return;
       console.log("[Command] got code from url: ", text);
       showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
         if (res) {
-          accessStore.updateCode(text);
+          accessStore.update((access) => (access.accessCode = text));
         }
       });
     },
     settings: (text) => {
+      if (accessStore.disableFastLink) return;
+
       try {
         const payload = JSON.parse(text) as {
           key?: string;
@@ -999,10 +1013,12 @@ function _Chat() {
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
-              accessStore.updateToken(payload.key);
+              accessStore.update(
+                (access) => (access.openaiApiKey = payload.key!),
+              );
             }
             if (payload.url) {
-              accessStore.updateOpenAiUrl(payload.url);
+              accessStore.update((access) => (access.openaiUrl = payload.url!));
             }
           });
         }
@@ -1155,7 +1171,18 @@ function _Chat() {
                       {isUser ? (
                         <Avatar avatar={config.avatar} />
                       ) : (
-                        <MaskAvatar mask={session.mask} />
+                        <>
+                          {["system"].includes(message.role) ? (
+                            <Avatar avatar="2699-fe0f" />
+                          ) : (
+                            <MaskAvatar
+                              avatar={session.mask.avatar}
+                              model={
+                                message.model || session.mask.modelConfig.model
+                              }
+                            />
+                          )}
+                        </>
                       )}
                     </div>
 
