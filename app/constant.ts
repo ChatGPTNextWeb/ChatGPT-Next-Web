@@ -98,8 +98,6 @@ export const DEFAULT_SYSTEM_TEMPLATE = `
 You are a helpful assistant.
 Current model: {{model}}
 Current time: {{time}}
-Latex inline: $x^2$ 
-Latex block: $$e=mc^2$$
 `;
 export const CHATGPT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.
