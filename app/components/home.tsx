@@ -9,7 +9,7 @@ import styles from "./home.module.scss";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
-import { getCSSVar, useMobileScreen } from "../utils";
+import { useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
 import { ModelProvider, Path, SlotID } from "../constant";
@@ -55,36 +55,9 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
-export function useSwitchTheme() {
-  const config = useAppConfig();
-
-  useEffect(() => {
-    document.body.classList.remove("light");
-    document.body.classList.remove("dark");
-
-    if (config.theme === "dark") {
-      document.body.classList.add("dark");
-    } else if (config.theme === "light") {
-      document.body.classList.add("light");
-    }
-
-    const metaDescriptionDark = document.querySelector(
-      'meta[name="theme-color"][media*="dark"]',
-    );
-    const metaDescriptionLight = document.querySelector(
-      'meta[name="theme-color"][media*="light"]',
-    );
-
-    if (config.theme === "auto") {
-      metaDescriptionDark?.setAttribute("content", "#151515");
-      metaDescriptionLight?.setAttribute("content", "#fafafa");
-    } else {
-      const themeColor = getCSSVar("--theme-color");
-      metaDescriptionDark?.setAttribute("content", themeColor);
-      metaDescriptionLight?.setAttribute("content", themeColor);
-    }
-  }, [config.theme]);
-}
+const Plugins = dynamic(async () => (await import("./plugin")).PluginPage, {
+  loading: () => <Loading noLogo />,
+});
 
 function useHtmlLang() {
   useEffect(() => {
@@ -135,6 +108,39 @@ function Screen() {
     loadAsyncGoogleFont();
   }, []);
 
+  // SwitchThemeColor
+  // Adapting Safari's theme-color and changing it according to the path
+  useEffect(() => {
+    document.body.classList.remove("light");
+    document.body.classList.remove("dark");
+
+    if (config.theme === "dark") {
+      document.body.classList.add("dark");
+    } else if (config.theme === "light") {
+      document.body.classList.add("light");
+    }
+
+    const metaDescriptionDark = document.querySelector(
+      'meta[name="theme-color"][media*="dark"]',
+    );
+    const metaDescriptionLight = document.querySelector(
+      'meta[name="theme-color"][media*="light"]',
+    );
+
+    if (shouldTightBorder || isMobileScreen) {
+      if (isHome) {
+        metaDescriptionDark?.setAttribute("content", "#1b262a");
+        metaDescriptionLight?.setAttribute("content", "#e7f8ff");
+      } else {
+        metaDescriptionDark?.setAttribute("content", "#1e1e1e");
+        metaDescriptionLight?.setAttribute("content", "white");
+      }
+    } else {
+      metaDescriptionDark?.setAttribute("content", "#151515");
+      metaDescriptionLight?.setAttribute("content", "#fafafa");
+    }
+  }, [config.theme, isHome, shouldTightBorder, isMobileScreen]);
+
   return (
     <div
       className={
@@ -157,6 +163,7 @@ function Screen() {
               <Route path={Path.Home} element={<Chat />} />
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
+              <Route path={Path.Plugins} element={<Plugins />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.Settings} element={<Settings />} />
             </Routes>
@@ -186,7 +193,6 @@ export function useLoadData() {
 }
 
 export function Home() {
-  useSwitchTheme();
   useLoadData();
   useHtmlLang();
 

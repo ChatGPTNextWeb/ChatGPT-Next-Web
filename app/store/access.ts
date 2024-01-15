@@ -30,7 +30,7 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: "",
+  googleBaseUrl: "",
   googleApiKey: "",
   googleApiVersion: "v1",
 
@@ -113,6 +113,7 @@ export const useAccessStore = createPersistStore(
         };
         state.openaiApiKey = state.token;
         state.azureApiVersion = "2023-08-01-preview";
+        state.googleApiKey = state.token;
       }
 
       return persistedState as any;

@@ -23,13 +23,13 @@ declare global {
       CUSTOM_MODELS?: string; // to control custom models
 
       // azure only
-      AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
+      AZURE_URL?: string; // https://{azure-url}/openai/deployments
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
 
       // google only
       GOOGLE_API_KEY?: string;
-      GOOGLE_URL?: string;
+      GOOGLE_BASE_URL?: string;
     }
   }
 }
@@ -87,7 +87,7 @@ export const getServerSideConfig = () => {
 
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,
-    googleUrl: process.env.GOOGLE_URL,
+    googleBaseUrl: process.env.GOOGLE_BASE_URL,
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,
@@ -101,5 +101,10 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+
+    isStoreFileToLocal:
+      !!process.env.NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN &&
+      !process.env.R2_ACCOUNT_ID &&
+      !process.env.S3_ENDPOINT,
   };
 };

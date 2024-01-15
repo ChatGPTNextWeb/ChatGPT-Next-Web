@@ -28,7 +28,12 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
-  const { accessCode, apiKey } = parseApiKey(authToken);
+  let { accessCode, apiKey } = parseApiKey(authToken);
+
+  if (modelProvider === ModelProvider.GeminiPro) {
+    const googleAuthToken = req.headers.get("x-goog-api-key") ?? "";
+    apiKey = googleAuthToken.trim().replaceAll("Bearer ", "").trim();
+  }
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
@@ -66,6 +71,57 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
     if (systemApiKey) {
       console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${systemApiKey}`);
+    } else {
+      console.log("[Auth] admin did not provide an api key");
+    }
+  } else {
+    console.log("[Auth] use user api key");
+  }
+
+  return {
+    error: false,
+  };
+}
+
+export function googleAuth(req: NextRequest) {
+  const authToken = req.headers.get("Authorization") ?? "";
+
+  // check if it is openai api key or user token
+  const { accessCode, apiKey } = parseApiKey(authToken);
+
+  const hashedCode = md5.hash(accessCode ?? "").trim();
+
+  const serverConfig = getServerSideConfig();
+  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
+  console.log("[Auth] got access code:", accessCode);
+  console.log("[Auth] hashed access code:", hashedCode);
+  console.log("[User IP] ", getIP(req));
+  console.log("[Time] ", new Date().toLocaleString());
+
+  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !apiKey) {
+    return {
+      error: true,
+      msg: !accessCode ? "empty access code" : "wrong access code",
+    };
+  }
+
+  if (serverConfig.hideUserApiKey && !!apiKey) {
+    return {
+      error: true,
+      msg: "you are not allowed to access openai with your own api key",
+    };
+  }
+
+  // if user does not provide an api key, inject system api key
+  if (!apiKey) {
+    const serverApiKey = serverConfig.googleApiKey;
+
+    if (serverApiKey) {
+      console.log("[Auth] use system api key");
+      req.headers.set(
+        "Authorization",
+        `${serverConfig.isAzure ? "" : "Bearer "}${serverApiKey}`,
+      );
     } else {
       console.log("[Auth] admin did not provide an api key");
     }

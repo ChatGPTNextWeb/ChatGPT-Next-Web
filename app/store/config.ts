@@ -58,11 +58,18 @@ export const DEFAULT_CONFIG = {
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
   },
+
+  pluginConfig: {
+    enable: true,
+    maxIterations: 10,
+    returnIntermediateSteps: true,
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
 
 export type ModelConfig = ChatConfig["modelConfig"];
+export type PluginConfig = ChatConfig["pluginConfig"];
 
 export function limitNumber(
   x: number,
