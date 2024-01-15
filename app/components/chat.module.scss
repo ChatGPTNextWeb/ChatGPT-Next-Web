@@ -3,6 +3,7 @@
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 
   .chat-input-action {
     display: inline-flex;
@@ -359,6 +360,37 @@
   }
 }
 
+.chat-message-checkmark {
+  display: inline-block;
+  margin-right: 5px;
+  height: 12px;
+  width: 12px;
+  color: #13a10e;
+  fill: #13a10e;
+  user-select: none;
+  backface-visibility: hidden;
+  transform: translateZ(0px);
+}
+
+.chat-message-tools-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.chat-message-tools-name {
+  color: #aaa;
+}
+
+.chat-message-tools-details {
+  margin-left: 5px;
+  font-weight: bold;
+  color: #999;
+}
+
 .chat-message-status {
   font-size: 12px;
   color: #aaa;
@@ -507,6 +539,39 @@
   bottom: 32px;
 }
 
+.chat-input-image {
+  background-color: var(--primary);
+  color: white;
+
+  position: absolute;
+  right: 28px;
+  bottom: 78px;
+
+  display: flex;
+  align-items: flex-start;
+
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-input-image-close {
+  background-color: white;
+  fill: black;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin: 0px;
+  padding: 0px;
+  width: 22px;
+  height: 48px;
+}
+
+.chat-input-image-close:hover {
+  background-color: #f3f3f3;
+}
+
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
@@ -514,5 +579,10 @@
 
   .chat-input-send {
     bottom: 30px;
+  }
+
+  .chat-input-image {
+    bottom: 84px;
+    right: 32px;
   }
 }

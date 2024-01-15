@@ -166,7 +166,7 @@ export const usePromptStore = createPersistStore(
                   title,
                   content,
                   createdAt: Date.now(),
-                }) as Prompt,
+                } as Prompt),
             );
           });
 

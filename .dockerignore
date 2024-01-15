@@ -6,3 +6,6 @@
 
 *.key
 *.key.pub
+
+# upload files
+/uploads
