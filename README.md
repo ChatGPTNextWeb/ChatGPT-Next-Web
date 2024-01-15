@@ -79,7 +79,7 @@
     - [Calculator](https://api.js.langchain.com/classes/langchain_tools_calculator.Calculator.html)
     - [WolframAlpha](https://api.js.langchain.com/classes/langchain_tools.WolframAlphaTool.html)
       - 环境变量：`WOLFRAM_ALPHA_APP_ID`
-      - 申请地址：[Wolfram|Alpha Developer Portal](https://developer.wolframalpha.com/)
+      - 申请地址：[Wolfram LLM API](https://developer.wolframalpha.com/)
     
   - 网络请求
     - [WebBrowser](https://api.js.langchain.com/classes/langchain_tools_webbrowser.WebBrowser.html)
