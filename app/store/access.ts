@@ -96,9 +96,9 @@ export const useAccessStore = createPersistStore(
   }),
   {
     name: StoreKey.Access,
-    version: 2,
+    version: 2.1,
     migrate(persistedState, version) {
-      if (version < 2) {
+      if (version < 2.1) {
         const state = persistedState as {
           token: string;
           openaiApiKey: string;

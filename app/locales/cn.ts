@@ -401,7 +401,7 @@ const cn = {
   Store: {
     DefaultTopic: "新的聊天",
     BotHello:
-      "有什么可以帮你的吗\n\n1.模型选择：点击下方机器人图标**查看说明后**选择合适的模型\n2.尽量不要用`gpt-4-all`，太贵了遭不住",
+      "有什么可以帮你的吗\n\n1.模型选择：点击下方机器人图标**查看说明后**选择合适的模型\n2.可以试试`gemini-pro`.",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,

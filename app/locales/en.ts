@@ -407,7 +407,7 @@ const en: LocaleType = {
   Store: {
     DefaultTopic: "New Conversation",
     BotHello:
-      "Hello! How can I assist you today?\n\n1.Model selection: Click on the robot icon below to **view the instructions** and select the appropriate model\n2.Try not to use `gpt-4-all` as it is too expensive to withstand",
+      "Hello! How can I assist you today?\n\n1.Model selection: Click on the robot icon below to **view the instructions** and select the appropriate model\n2.Try to use `gemini-pro`",
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
