@@ -1,6 +1,7 @@
 import { Plugin } from "../store/plugin";
 import { CN_PLUGINS } from "./cn";
 import { EN_PLUGINS } from "./en";
+import { RU_PLUGINS } from "./ru";
 
 import { type BuiltinPlugin } from "./typing";
 export { type BuiltinPlugin } from "./typing";
@@ -24,4 +25,5 @@ export const BUILTIN_PLUGIN_STORE = {
 export const BUILTIN_PLUGINS: BuiltinPlugin[] = [
   ...CN_PLUGINS,
   ...EN_PLUGINS,
+  ...RU_PLUGINS,
 ].map((m) => BUILTIN_PLUGIN_STORE.add(m));
