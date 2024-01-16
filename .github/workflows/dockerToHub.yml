@@ -67,6 +67,10 @@ jobs:
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
             tccli cdn PurgePathCache --cli-unfold-argument --Paths 'https://chat.xiaosi.cc/' --FlushType delete
+      - name: Sync repository to tx
+        run: |
+          yes | docker image prune
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
       - name: deploy-to-tx
         uses: appleboy/ssh-action@master
         env:
