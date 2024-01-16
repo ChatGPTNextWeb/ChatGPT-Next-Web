@@ -1,5 +1,6 @@
 name: PRO DEPLOY TO TY
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
