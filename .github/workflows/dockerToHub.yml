@@ -67,3 +67,22 @@ jobs:
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
             tccli cdn PurgePathCache --cli-unfold-argument --Paths 'https://chat.xiaosi.cc/' --FlushType delete
+      - name: deploy-to-tx
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
+        with:
+          host: tx.xiaosi.cc #服务器地址
+          username: root #用户名
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
+          envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
+          script: |
+            cd $SERVER_WORKDIR #进入到工作目录
+            echo "${{ secrets.DOCKER_ENV }}" > .env
+            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker-compose pull && docker-compose up -d
+            yes | docker image prune
+            rm -rf /www/server/nginx/proxy_cache_dir/*
+            rm -rf /www/server/nginx/proxy_temp_dir/*
+            sleep 2
+            tccli cdn PurgePathCache --cli-unfold-argument --Paths 'https://chat.xiaosi.cc/' --FlushType delete
