@@ -158,7 +158,7 @@ export function SideBar(props: { className?: string }) {
           GBPIChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own GBPIAI assistant.
+          建立自己的 GBPI AI 助手。
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
