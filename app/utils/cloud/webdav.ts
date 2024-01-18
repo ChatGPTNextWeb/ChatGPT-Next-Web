@@ -20,8 +20,15 @@ export function createWebDavClient(store: SyncStore) {
           headers: this.headers(),
           proxyUrl,
         });
-        console.log("[WebDav] check", res.status, res.statusText);
-        return [201, 200, 404, 301, 302, 307, 308].includes(res.status);
+        const success = [201, 200, 404, 405, 301, 302, 307, 308].includes(
+          res.status,
+        );
+        console.log(
+          `[WebDav] check ${success ? "success" : "failed"}, ${res.status} ${
+            res.statusText
+          }`,
+        );
+        return success;
       } catch (e) {
         console.error("[WebDav] failed to check", e);
       }
