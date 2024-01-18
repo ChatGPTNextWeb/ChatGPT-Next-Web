@@ -162,10 +162,12 @@ export function PluginPage() {
   const pluginStore = usePluginStore();
   const chatStore = useChatStore();
 
+  const currentLang = getLang();
+  const supportedLangs = ['cn', 'ru'];
   const allPlugins = pluginStore
     .getAll()
     .filter(
-      (m) => !getLang() || m.lang === (getLang() == "cn" ? getLang() : "en"),
+      (m) => supportedLangs.includes(currentLang) ? m.lang === currentLang : m.lang === 'en'
     );
 
   const [searchPlugins, setSearchPlugins] = useState<Plugin[]>([]);
