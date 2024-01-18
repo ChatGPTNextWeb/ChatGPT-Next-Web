@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/images/head-cover-dark.png">
-  <img alt="github-banner" src="./docs/images/head-cover.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/images/head-cover-dark.svg">
+  <img alt="github-banner" src="./docs/images/head-cover.svg">
 </picture>
 
 <h2 align="center">A cross-platform AI assistant</h2>
