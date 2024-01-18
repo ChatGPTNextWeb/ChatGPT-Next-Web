@@ -6,6 +6,9 @@
 </picture>
 
 <h1 align="center">A cross-platform AI assistant</h1>
+
+![cover](./docs/images/cover.png)
+
 </div>
 
 ## Features
