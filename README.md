@@ -5,7 +5,7 @@
   <img alt="github-banner" src="./docs/images/head-cover.png">
 </picture>
 
-<h1 align="center">A cross-platform AI assistant</h1>
+<h2 align="center">A cross-platform AI assistant</h2>
 
 ![cover](./docs/images/cover.png)
 
