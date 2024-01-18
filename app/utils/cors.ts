@@ -25,12 +25,16 @@ export function corsFetch(
     throw Error("[CORS Fetch] url must starts with http/https");
   }
 
-  let proxyUrl = options.proxyUrl ?? corsPath(ApiPath.Cors);
-  if (!proxyUrl.endsWith("/")) {
-    proxyUrl += "/";
-  }
+  let corsUrl = url;
+  if (options.proxyUrl) {
+    let proxyUrl = options.proxyUrl;
+    if (!proxyUrl.endsWith("/")) {
+      proxyUrl += "/";
+    }
 
-  url = url.replace("://", "/");
+    url = url.replace("://", "/");
+    corsUrl = proxyUrl + url;
+  }
 
   const corsOptions = {
     ...options,
@@ -43,8 +47,6 @@ export function corsFetch(
       : options.headers,
   };
 
-  const corsUrl = proxyUrl + url;
   console.info("[CORS] target = ", corsUrl);
-
   return fetch(corsUrl, corsOptions);
 }
