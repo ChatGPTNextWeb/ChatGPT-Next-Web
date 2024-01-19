@@ -2,7 +2,6 @@ import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
   {
-    "id":"jOP4wrnfcO_uzF4i0ofg0",
     "avatar":"1fae1",
     "name":"小标",
     "context":[
