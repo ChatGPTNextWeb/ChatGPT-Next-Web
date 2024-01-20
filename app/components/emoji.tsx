@@ -20,7 +20,7 @@ export function AvatarPicker(props: {
     <EmojiPicker
       lazyLoadEmojis
       theme={EmojiTheme.AUTO}
-      getEmojiUrl={getEmojiUrl}
+//      getEmojiUrl={getEmojiUrl}
       onEmojiClick={(e) => {
         props.onEmojiClick(e.unified);
       }}
@@ -53,7 +53,7 @@ export function EmojiAvatar(props: { avatar: string; size?: number }) {
     <Emoji
       unified={props.avatar}
       size={props.size ?? 18}
-      getEmojiUrl={getEmojiUrl}
+//      getEmojiUrl={getEmojiUrl}
     />
   );
 }
