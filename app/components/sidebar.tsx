@@ -147,7 +147,7 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          AILA ChatGPT
+          Avvia Intelligence ChatGPT
         </div>
         <div className={styles["sidebar-sub-title"]}>by Arvato Systems</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
@@ -155,8 +155,7 @@ export function SideBar(props: { className?: string }) {
         </div>
       </div>
 
-      <div className={styles["sidebar-header-bar"]}>
-      </div>
+      <div className={styles["sidebar-header-bar"]}></div>
 
       <div
         className={styles["sidebar-body"]}
@@ -187,7 +186,13 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <IconButton icon={<LogoutIcon />} onClick={() => { signOut(); }}  shadow />
+            <IconButton
+              icon={<LogoutIcon />}
+              onClick={() => {
+                signOut();
+              }}
+              shadow
+            />
           </div>
         </div>
         <div>

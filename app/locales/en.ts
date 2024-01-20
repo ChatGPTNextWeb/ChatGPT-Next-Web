@@ -297,6 +297,10 @@ const en = {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
     },
+    ModelUser: {
+      Title: "Project ID",
+      SubTitle: "ID of the Avvia Intelligence project to use for RAG requests",
+    },
     TopP: {
       Title: "Top P",
       SubTitle: "Do not alter this value together with temperature",

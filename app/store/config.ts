@@ -47,6 +47,7 @@ export const DEFAULT_CONFIG = {
 
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
+    user: -1,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,
@@ -96,6 +97,9 @@ export const ModalConfigValidator = {
   top_p(x: number) {
     return limitNumber(x, 0, 1, 1);
   },
+  model_user(x: number) {
+    return limitNumber(x, -1, 1000000, -1);
+  }
 };
 
 export const useAppConfig = createPersistStore(
@@ -167,6 +171,7 @@ export const useAppConfig = createPersistStore(
 
       if (version < 3.8) {
         state.lastUpdate = Date.now();
+        state.modelConfig.user = -1;
       }
 
       return state as any;

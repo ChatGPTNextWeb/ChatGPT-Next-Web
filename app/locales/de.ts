@@ -245,6 +245,10 @@ const de: PartialLocaleType = {
         "Hinzufügen von eigenen, fine-getunten Modellen. Modellnamen sind durch Komma getrennt.",
     },
     Model: "Modell",
+    ModelUser: {
+      Title: "Projekt ID",
+      SubTitle: "ID des Avvia Intelligence Projekts",
+    },
     Temperature: {
       Title: "Temperatur",
       SubTitle: "Ein größerer Wert führt zu zufälligeren Antworten",

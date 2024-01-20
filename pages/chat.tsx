@@ -20,7 +20,7 @@ export default function Chat() {
     return (
       <>
         <Head>
-          <title>AILA ChatGPT</title>
+          <title>Avvia Intelligence ChatGPT</title>
         </Head>
         <Home />
       </>
@@ -29,7 +29,7 @@ export default function Chat() {
   return (
     <>
       <Head>
-        <title>AILA ChatGPT</title>
+        <title>Avvia Intelligence ChatGPT</title>
       </Head>
       <style jsx>{`
         button {

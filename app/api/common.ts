@@ -35,7 +35,7 @@ export async function requestOpenai(req: NextRequest) {
 
   const timeoutId = setTimeout(() => {
     controller.abort();
-  }, 10 * 60 * 1000);
+  }, 10 * 180 * 1000);
 
   let fetchUrl: string;
   if (config.openaiOnAzure === "1") {

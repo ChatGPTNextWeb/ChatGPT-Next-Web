@@ -13,6 +13,25 @@ export function ModelConfigList(props: {
   return (
     <>
       <ListItem
+        title={Locale.Settings.ModelUser.Title}
+        subTitle={Locale.Settings.ModelUser.SubTitle}
+      >
+        <input
+          type="number"
+          min={100}
+          max={100000}
+          value={props.modelConfig.user}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) =>
+                (config.user = ModalConfigValidator.model_user(
+                  e.currentTarget.valueAsNumber,
+                )),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}
       >

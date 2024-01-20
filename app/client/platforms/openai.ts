@@ -14,6 +14,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
+import { request } from "http";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -66,6 +67,7 @@ export class ChatGPTApi implements LLMApi {
       messages,
       stream: options.config.stream,
       model: modelConfig.model,
+      user: modelConfig.user,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
@@ -74,8 +76,8 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
 
-    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
+    var shouldStream = !!options.config.stream;
     options.onController?.(controller);
 
     try {
@@ -92,6 +94,12 @@ export class ChatGPTApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
+
+      // FIXME: if user is specified, we currently can't stream
+      if (requestPayload.user > 0) {
+        shouldStream = false;
+        requestPayload.stream = false;
+      }
 
       if (shouldStream) {
         let responseText = "";
