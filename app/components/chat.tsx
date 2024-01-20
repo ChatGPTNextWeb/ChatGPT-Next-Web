@@ -961,7 +961,8 @@ function _Chat() {
     }
 
     setHitBottom(isHitBottom);
-    setAutoScroll(isHitBottom);
+    let isAutoScrollEnabled: boolean = config.autoScrollMessage;
+    setAutoScroll(isAutoScrollEnabled);
   };
 
   function scrollToBottom() {
