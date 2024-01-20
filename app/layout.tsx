@@ -10,19 +10,19 @@ import { getServerSideConfig } from "./config/server";
 const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
-  title: "NextChat",
-  description: "Your personal ChatGPT Chat Bot.",
+  title: "Sparkle Chat",
+  description: "Your personal AI assistant",
   viewport: {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
   },
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+    { media: "(prefers-color-scheme: light)", color: "#111111" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
   appleWebApp: {
-    title: "NextChat",
+    title: "Sparkle Chat",
     statusBarStyle: "default",
   },
 };
