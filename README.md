@@ -6,6 +6,7 @@
 </picture>
 
 <h2 align="center">A cross-platform AI assistant</h2>
+A fork of [NextChat](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web) with some improvements and a focus on Persian language.
 
 ![cover](./docs/images/cover.png)
 
