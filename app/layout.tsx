@@ -6,6 +6,7 @@ import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const serverConfig = getServerSideConfig();
 
@@ -38,6 +39,8 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6765970453610684" crossOrigin="anonymous"></script>
+        <GoogleAnalytics gaId="G-MGLH4CL608" />
       </head>
       <body>
         {children}

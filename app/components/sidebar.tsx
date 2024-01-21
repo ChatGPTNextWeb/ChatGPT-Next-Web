@@ -12,6 +12,8 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
+import NotionIcon from "../icons/notion.svg";
+import OneApiIcon from "../icons/oneapi.svg";
 
 import Locale from "../locales";
 
@@ -158,7 +160,7 @@ export function SideBar(props: { className?: string }) {
           NextChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          你的私人 ChatGPT 聊天机器人。
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -219,6 +221,16 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
+            </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href={'https://notion.doiiars.com'} target="_blank" rel="noopener noreferrer">
+              <IconButton icon={<NotionIcon />} shadow />
+            </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href={'https://oneapi.doiiars.com/'} target="_blank" rel="noopener noreferrer">
+              <IconButton icon={<OneApiIcon />} shadow />
             </a>
           </div>
         </div>
