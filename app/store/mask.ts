@@ -26,7 +26,7 @@ export const DEFAULT_MASK_STATE = {
 export type MaskState = typeof DEFAULT_MASK_STATE;
 
 export const DEFAULT_MASK_AVATAR = "gpt-bot";
-export const createEmptyMask = () =>
+
   {/*    ({
     id: nanoid(),
     avatar: DEFAULT_MASK_AVATAR,
@@ -39,7 +39,10 @@ export const createEmptyMask = () =>
     createdAt: Date.now(),
   }) as Mask;
  */}
-  ({
+
+export const createEmptyMask = () =>
+
+  ({id: nanoid(),
     avatar: "1fae1",
     name: "小标",
     context: [
@@ -66,7 +69,7 @@ export const createEmptyMask = () =>
     },
     lang: "cn",
     builtin: false,
-    createdAt: 1688899480509,
+    createdAt: Date.now(),
     hideContext:true,
   })as Mask;
   
