@@ -19,7 +19,7 @@ export const CN_MASKS: BuiltinMask[] = [
       enableInjectSystemPrompts:true,
       template:"{{input}}"
     }
-    lang: getLang(),
+    lang: "cn",
     builtin: false,
     createdAt: Date.now(),
   
