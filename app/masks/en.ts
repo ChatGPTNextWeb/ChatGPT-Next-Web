@@ -192,7 +192,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"GPT-4-1106-preview",
+         "model":"gpt-4-1106-preview",
          "temperature":0.5,
          "top_p":1,
          "max_tokens":10000,
