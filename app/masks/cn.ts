@@ -4,7 +4,7 @@ import { BuiltinMask } from "./typing";
 export const CN_MASKS: BuiltinMask[] = [
     {   
     avatar: DEFAULT_MASK_AVATAR,
-    name: DEFAULT_TOPIC,
+    name: 普通聊天,
     context: [],
     syncGlobalConfig: true,
      modelConfig: {
