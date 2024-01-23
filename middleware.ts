@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import {DENY_LIST, isName} from "@/lib/auth_list";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -16,6 +17,7 @@ export default async function middleware(req: NextRequest) {
     const session = await getToken({ req });
 
     // console.log('==============,认证，', path, session)
+    // 认证有点多此一举，页面中的认证应该已经够了
     if (!session && path !== "/login") {
         // 给关键请求特殊待遇
         if (path.startsWith('/api/openai/')) {
@@ -25,7 +27,9 @@ export default async function middleware(req: NextRequest) {
         }
         return NextResponse.redirect(new URL("/login", req.url));
     } else if (session) {
-        if (path.startsWith("/login")) return NextResponse.redirect(new URL("/", req.url));
+      // console.log('referer=====', DENY_LIST.includes(session?.name ?? ""))
+      if (isName(session?.name ?? "") && path.startsWith("/login"))
+        return NextResponse.redirect(new URL("/", req.url));
     }
 
     if (path == '/login') {

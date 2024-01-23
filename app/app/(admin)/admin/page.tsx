@@ -8,7 +8,8 @@ import {
   // DatePicker,
 } from "@tremor/react";
 import UsageByModel from "./usage-by-model-chart";
-import { getSession, ADMIN_LIST, isName } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
+import { isName, ADMIN_LIST } from "@/lib/auth_list";
 import { redirect } from "next/navigation";
 
 export default async function AdminPage() {

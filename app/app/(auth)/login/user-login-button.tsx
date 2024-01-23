@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import React, { useState, useEffect, useRef } from "react";
-import { isName } from "@/lib/auth";
+import { isName } from "@/lib/auth_list";
 
 export default function UserLoginButton() {
   const [loading, setLoading] = useState(false);

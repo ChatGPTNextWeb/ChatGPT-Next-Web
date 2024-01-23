@@ -4,7 +4,8 @@ import { Home } from "./components/home";
 
 import { getServerSideConfig } from "./config/server";
 
-import { getSession, isName } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
+import { isName } from "@/lib/auth_list";
 import { redirect } from "next/navigation";
 
 const serverConfig = getServerSideConfig();
