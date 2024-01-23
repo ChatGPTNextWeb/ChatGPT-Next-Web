@@ -23,7 +23,7 @@ export const CN_MASKS: BuiltinMask[] = [
     builtin: false,
     createdAt: Date.now(),
   
-   ,},{
+   },{
     avatar: "1fae1",
     name: "小标",
     context: [
