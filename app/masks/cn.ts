@@ -18,7 +18,7 @@ export const CN_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000,
       enableInjectSystemPrompts:true,
       template:"{{input}}"
-    }
+    },
     lang: "cn",
     builtin: false,
     createdAt: Date.now(),
