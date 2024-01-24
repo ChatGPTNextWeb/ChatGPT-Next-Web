@@ -1,5 +1,11 @@
 name: VercelPreviewDeployment
 
+on:
+  workflow_dispatch:
+    inputs:
+      branchName:
+        description: 'Branch to deploy'
+        required: true
 env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -11,18 +17,14 @@ permissions:
   statuses: write
   pull-requests: write
 
-on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
+        with:
+          ref: ${{ github.event.inputs.branchName }}
+          
       - name: Extract branch name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
