@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 import json
 
 SERP_KEY = ""
-OPENAI_API_KEY = "sk-"
+OPENAI_API_KEY = "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"
 
 
 def clean_string(text):
