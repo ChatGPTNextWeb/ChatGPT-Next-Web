@@ -1,4 +1,4 @@
-import { StructuredTool } from "langchain/tools";
+import { StructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import S3FileStorage from "../../utils/s3_file_storage";
 

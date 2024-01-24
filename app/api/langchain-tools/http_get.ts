@@ -1,5 +1,5 @@
 import { htmlToText } from "html-to-text";
-import { Tool } from "langchain/tools";
+import { Tool } from "@langchain/core/tools";
 
 export interface Headers {
   [key: string]: string;
