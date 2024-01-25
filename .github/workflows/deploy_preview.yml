@@ -1,11 +1,11 @@
 name: VercelPreviewDeployment
 
 on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
   workflow_dispatch:
-    inputs:
-      branchName:
-        description: 'Branch to deploy'
-        required: true
 
 env:
   VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
