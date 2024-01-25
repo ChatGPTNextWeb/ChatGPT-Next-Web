@@ -5,7 +5,6 @@ on:
     types:
       - opened
       - synchronize
-  workflow_dispatch:
 
 env:
   VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
@@ -24,8 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.branchName }}
 
       - name: Extract branch name
         shell: bash
@@ -70,7 +67,6 @@ jobs:
           vercel deploy --prebuilt --archive=tgz --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }}
 
           DEFAULT_URL=$(vercel ls --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }})
-          echo "preview URL:${DEFAULT_URL} , alias URL:${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }}"
           ALIAS_URL=$(vercel alias set ${DEFAULT_URL} ${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }} --token=${VERCEL_TOKEN} --scope ${VERCEL_TEAM}| awk '{print $3}')
 
           echo "New preview URL: ${DEFAULT_URL}"
