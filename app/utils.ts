@@ -52,10 +52,14 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeBinaryFile(
-          result,
-          new Uint8Array([...text].map((c) => c.charCodeAt(0)))
-        );
+        // await window.__TAURI__.fs.writeBinaryFile(
+        //     result,
+        //     new Uint8Array([...text].map((c) => c.charCodeAt(0)))
+        // );
+	// 修复客户端导出json时的乱码现象
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        await window.__TAURI__.fs.writeBinaryFile(result, new Uint8Array(data));
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);

@@ -45,6 +45,14 @@ export const useMaskStore = createPersistStore(
   (set, get) => ({
     create(mask?: Partial<Mask>) {
       const masks = get().masks;
+      // 检查要导入的项目是否重复
+      for (let existingMask of Object.values(masks)) {
+        if (existingMask.name === mask?.name &&
+          JSON.stringify(existingMask.context) === JSON.stringify(mask?.context)) {
+          console.log("A mask with the same name and context already exists.");
+          return;
+        }
+      }
       const id = nanoid();
       masks[id] = {
         ...createEmptyMask(),
