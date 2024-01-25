@@ -41,7 +41,7 @@ jobs:
 
       - name: Set Environment Variables
         id: set_env
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         run: |
           echo "VERCEL_ALIAS_DOMAIN=${{ github.event.pull_request.number }}-${{ github.workflow }}.${VERCEL_PR_DOMAIN_SUFFIX}" >> $GITHUB_OUTPUT
 
