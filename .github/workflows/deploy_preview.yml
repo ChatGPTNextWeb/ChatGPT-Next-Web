@@ -12,7 +12,7 @@ env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_DOMAIN_SUFFIX: ".pr.nextchat.dev"
+  VERCEL_PR_DOMAIN_SUFFIX: ${{ secrets.VERCEL_PR_DOMAIN_SUFFIX }}
 
 permissions:
   contents: read
@@ -43,7 +43,7 @@ jobs:
         id: set_env
         if: github.event_name == 'pull_request'
         run: |
-          echo "VERCEL_ALIAS_DOMAIN=${{ github.event.pull_request.number }}-${{ github.workflow }}.${VERCEL_DOMAIN_SUFFIX}" >> $GITHUB_OUTPUT
+          echo "VERCEL_ALIAS_DOMAIN=${{ github.event.pull_request.number }}-${{ github.workflow }}.${VERCEL_PR_DOMAIN_SUFFIX}" >> $GITHUB_OUTPUT
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
