@@ -69,7 +69,6 @@ jobs:
           DEFAULT_URL=$(vercel ls --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }})
           ALIAS_URL=$(vercel alias set ${DEFAULT_URL} ${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }} --token=${VERCEL_TOKEN} --scope ${VERCEL_TEAM}| awk '{print $3}')
 
-          echo "New preview URL: ${DEFAULT_URL}"
           echo "New alias URL: ${ALIAS_URL}"
           echo "VERCEL_URL=${ALIAS_URL}" >> "$GITHUB_OUTPUT"
 
