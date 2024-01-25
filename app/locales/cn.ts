@@ -119,7 +119,7 @@ const cn = {
     ResetConfirm: "确认清空历史摘要？",
   },
   Home: {
-    NewChat: "新的聊天",
+    NewChat: "新的聊天-test2",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
