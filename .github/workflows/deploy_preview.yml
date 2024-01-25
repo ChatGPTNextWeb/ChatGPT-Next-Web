@@ -64,17 +64,17 @@ jobs:
         env:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
+          set -e
           vercel pull --yes --environment=preview --token=${VERCEL_TOKEN}
           vercel build --token=${VERCEL_TOKEN}
           vercel deploy --prebuilt --archive=tgz --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }}
 
-          vercel ls --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }} &> vercel-output
-          DEFAULT_URL=$(cat vercel-output | grep http | awk '{print $2}')
+          DEFAULT_URL=$(vercel ls --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }})
+          echo "preview URL:${DEFAULT_URL} , alias URL:${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }}"
           ALIAS_URL=$(vercel alias set ${DEFAULT_URL} ${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }} --token=${VERCEL_TOKEN} --scope ${VERCEL_TEAM}| awk '{print $3}')
 
           echo "New preview URL: ${DEFAULT_URL}"
           echo "New alias URL: ${ALIAS_URL}"
-          echo "META_TAG=${META_TAG}"
           echo "VERCEL_URL=${ALIAS_URL}" >> "$GITHUB_OUTPUT"
 
       - uses: mshick/add-pr-comment@v2
