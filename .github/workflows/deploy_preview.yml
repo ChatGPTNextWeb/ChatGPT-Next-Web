@@ -1,17 +1,18 @@
 name: VercelPreviewDeployment
 
 on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
   workflow_dispatch:
-    inputs:
-      branchName:
-        description: 'Branch to deploy'
-        required: true
 
 env:
+  VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_DOMAIN_SUFFIX: ".pr.nextchat.dev"
+  VERCEL_PR_DOMAIN_SUFFIX: ${{ secrets.VERCEL_PR_DOMAIN_SUFFIX }}
 
 permissions:
   contents: read
@@ -42,7 +43,7 @@ jobs:
         id: set_env
         if: github.event_name == 'pull_request'
         run: |
-          echo "VERCEL_ALIAS_DOMAIN=${{ github.event.pull_request.number }}-${{ github.workflow }}.${VERCEL_DOMAIN_SUFFIX}" >> $GITHUB_OUTPUT
+          echo "VERCEL_ALIAS_DOMAIN=${{ github.event.pull_request.number }}-${{ github.workflow }}.${VERCEL_PR_DOMAIN_SUFFIX}" >> $GITHUB_OUTPUT
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
@@ -63,14 +64,13 @@ jobs:
         env:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
-          env
           vercel pull --yes --environment=preview --token=${VERCEL_TOKEN}
           vercel build --token=${VERCEL_TOKEN}
           vercel deploy --prebuilt --archive=tgz --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }}
 
           vercel ls --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }} &> vercel-output
           DEFAULT_URL=$(cat vercel-output | grep http | awk '{print $2}')
-          ALIAS_URL=$(vercel alias set ${DEFAULT_URL} ${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }} --token=${VERCEL_TOKEN} | awk '{print $3}')
+          ALIAS_URL=$(vercel alias set ${DEFAULT_URL} ${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }} --token=${VERCEL_TOKEN} --scope ${VERCEL_TEAM}| awk '{print $3}')
 
           echo "New preview URL: ${DEFAULT_URL}"
           echo "New alias URL: ${ALIAS_URL}"
