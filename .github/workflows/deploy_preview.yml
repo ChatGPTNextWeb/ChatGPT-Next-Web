@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branchName:
-        description: 'Branch to deploy .'
+        description: 'Branch to deploy'
         required: true
 
 env:
