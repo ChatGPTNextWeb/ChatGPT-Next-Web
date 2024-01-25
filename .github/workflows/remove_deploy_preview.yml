@@ -11,7 +11,7 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
 
