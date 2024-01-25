@@ -50,7 +50,7 @@ export const useMaskStore = createPersistStore(
         if (existingMask.name === mask?.name &&
           JSON.stringify(existingMask.context) === JSON.stringify(mask?.context)) {
           console.log("A mask with the same name and context already exists.");
-          return;
+          return mask;
         }
       }
       const id = nanoid();
