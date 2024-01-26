@@ -70,6 +70,8 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   sk: "Slovensky",
 };
 
+export const SPEECH_LANG_OPTIONS: Record<Lang, string> = {};
+
 const LANG_KEY = "lang";
 const DEFAULT_LANG = "en";
 

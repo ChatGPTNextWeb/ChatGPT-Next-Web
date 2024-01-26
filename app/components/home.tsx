@@ -2,6 +2,8 @@
 
 require("../polyfill");
 
+import "regenerator-runtime/runtime";
+
 import { useState, useEffect } from "react";
 
 import styles from "./home.module.scss";
