@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { AgentApi, RequestBody, ResponseBody } from "../agentapi";
 import { auth } from "@/app/api/auth";
 import { EdgeTool } from "../../../../langchain-tools/edge_tools";
-import { OpenAI } from "langchain/llms/openai";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ModelProvider } from "@/app/constant";
+import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
@@ -21,7 +20,8 @@ async function handle(req: NextRequest) {
     const encoder = new TextEncoder();
     const transformStream = new TransformStream();
     const writer = transformStream.writable.getWriter();
-    const agentApi = new AgentApi(encoder, transformStream, writer);
+    const controller = new AbortController();
+    const agentApi = new AgentApi(encoder, transformStream, writer, controller);
 
     const reqBody: RequestBody = await req.json();
     const authToken = req.headers.get("Authorization") ?? "";
@@ -52,6 +52,9 @@ async function handle(req: NextRequest) {
       await writer.write(
         encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
       );
+      controller.abort({
+        reason: "dall-e tool abort",
+      });
     };
 
     var edgeTool = new EdgeTool(

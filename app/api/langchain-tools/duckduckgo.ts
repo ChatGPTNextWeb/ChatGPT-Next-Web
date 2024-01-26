@@ -1,6 +1,6 @@
 import { SafeSearchType, search } from "duck-duck-scrape";
 import { convert as htmlToText } from "html-to-text";
-import { Tool } from "langchain/tools";
+import { Tool } from "@langchain/core/tools";
 
 export class DuckDuckGo extends Tool {
   name = "duckduckgo_search";

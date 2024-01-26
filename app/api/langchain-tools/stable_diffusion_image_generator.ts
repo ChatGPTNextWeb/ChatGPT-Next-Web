@@ -1,4 +1,4 @@
-import { Tool } from "langchain/tools";
+import { Tool } from "@langchain/core/tools";
 import S3FileStorage from "../../utils/s3_file_storage";
 
 export class StableDiffusionWrapper extends Tool {

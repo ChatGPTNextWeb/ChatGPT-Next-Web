@@ -1,6 +1,6 @@
 import { decode } from "html-entities";
 import { convert as htmlToText } from "html-to-text";
-import { Tool } from "langchain/tools";
+import { Tool } from "@langchain/core/tools";
 
 const SEARCH_REGEX =
   /DDG\.pageLayout\.load\('d',(\[.+\])\);DDG\.duckbar\.load\('images'/;

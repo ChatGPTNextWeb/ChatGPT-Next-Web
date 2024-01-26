@@ -1,4 +1,4 @@
-import { StructuredTool } from "langchain/tools";
+import { StructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 
 export class ArxivAPIWrapper extends StructuredTool {

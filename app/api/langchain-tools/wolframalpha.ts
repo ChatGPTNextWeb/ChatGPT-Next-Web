@@ -1,4 +1,4 @@
-import { Tool } from "langchain/tools";
+import { Tool } from "@langchain/core/tools";
 
 export class WolframAlphaTool extends Tool {
   name = "wolfram_alpha_llm";

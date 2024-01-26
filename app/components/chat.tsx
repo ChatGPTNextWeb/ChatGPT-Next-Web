@@ -337,6 +337,7 @@ function ClearContextDivider() {
 function ChatAction(props: {
   text: string;
   icon?: JSX.Element;
+  loding?: boolean;
   innerNode?: JSX.Element;
   onClick: () => void;
   style?: React.CSSProperties;
@@ -363,16 +364,23 @@ function ChatAction(props: {
     <div
       className={`${styles["chat-input-action"]} clickable`}
       onClick={() => {
+        if (props.loding) return;
         props.onClick();
         iconRef ? setTimeout(updateWidth, 1) : undefined;
       }}
       onMouseEnter={props.icon ? updateWidth : undefined}
       onTouchStart={props.icon ? updateWidth : undefined}
       style={
-        props.icon
+        props.icon && !props.loding
           ? ({
               "--icon-width": `${width.icon}px`,
               "--full-width": `${width.full}px`,
+              ...props.style,
+            } as React.CSSProperties)
+          : props.loding
+          ? ({
+              "--icon-width": `30px`,
+              "--full-width": `30px`,
               ...props.style,
             } as React.CSSProperties)
           : props.style
@@ -380,11 +388,14 @@ function ChatAction(props: {
     >
       {props.icon ? (
         <div ref={iconRef} className={styles["icon"]}>
-          {props.icon}
+          {props.loding ? <LoadingIcon /> : props.icon}
         </div>
       ) : null}
-      <div className={props.icon ? styles["text"] : undefined} ref={textRef}>
-        {props.text}
+      <div
+        className={props.icon && !props.loding ? styles["text"] : undefined}
+        ref={textRef}
+      >
+        {!props.loding && props.text}
       </div>
       {props.innerNode}
     </div>
@@ -432,6 +443,8 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
 
+  const [uploadLoading, setUploadLoading] = useState(false);
+
   // switch Plugins
   const usePlugins = chatStore.currentSession().mask.usePlugins;
   function switchUsePlugins() {
@@ -464,8 +477,16 @@ export function ChatActions(props: {
 
   const onImageSelected = async (e: any) => {
     const file = e.target.files[0];
+    if (!file) return;
     const api = new ClientApi();
-    const uploadFile = await api.file.upload(file);
+    setUploadLoading(true);
+    const uploadFile = await api.file
+      .upload(file)
+      .catch((e) => {
+        console.error("[Upload]", e);
+        showToast(prettyObject(e));
+      })
+      .finally(() => setUploadLoading(false));
     props.imageSelected({
       fileName: uploadFile.fileName,
       fileUrl: uploadFile.filePath,
@@ -595,6 +616,7 @@ export function ChatActions(props: {
           <ChatAction
             onClick={selectImage}
             text="选择图片"
+            loding={uploadLoading}
             icon={<UploadIcon />}
             innerNode={
               <input

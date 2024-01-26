@@ -1,4 +1,4 @@
-import { StructuredTool } from "langchain/tools";
+import { StructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import S3FileStorage from "../../utils/s3_file_storage";
 
@@ -119,7 +119,7 @@ export class DallEAPIWrapper extends StructuredTool {
       console.log("[DALL-E]", filePath);
       var imageMarkdown = `![img](${filePath})`;
       if (this.callback != null) await this.callback(imageMarkdown);
-      return imageMarkdown;
+      return "Generated success";
     } catch (e) {
       if (this.callback != null)
         await this.callback("Image upload to OSS failed");
