@@ -158,7 +158,7 @@ export function SideBar(props: { className?: string }) {
           ImagineChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          始于兴趣是最好的学习方式！
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
