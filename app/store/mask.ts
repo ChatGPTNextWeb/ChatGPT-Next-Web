@@ -47,10 +47,23 @@ export const useMaskStore = createPersistStore(
       const masks = get().masks;
       // 检查要导入的项目是否重复
       for (let existingMask of Object.values(masks)) {
-        if (existingMask.name === mask?.name &&
-          JSON.stringify(existingMask.context) === JSON.stringify(mask?.context)) {
-          console.log("A mask with the same name and context already exists.");
-          return existingMask;
+        if (existingMask.name === mask?.name) {
+          if (
+            JSON.stringify(existingMask.context) ===
+            JSON.stringify(mask?.context)
+          ) {
+            console.log(
+              "A mask with the same name and context already exists.",
+            );
+            return existingMask;
+          } else {
+            // 只有name重复，给name加上今天的日期和时间
+            let now = new Date();
+            let year = String(now.getFullYear()).slice(-2); // 获取年份的最后两位
+            mask.name = `${mask.name}@${year}-${
+              now.getMonth() + 1
+            }-${now.getDate()}@${now.getHours()}:${now.getMinutes()}`;
+          }
         }
       }
       const id = nanoid();
