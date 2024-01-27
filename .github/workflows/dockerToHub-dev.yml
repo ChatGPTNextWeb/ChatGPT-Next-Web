@@ -17,6 +17,7 @@ jobs:
         with:
           ref: 'dev'
           clean: false
+          github-server-url: 'https://mirror.ghproxy.com/https://github.com'
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
@@ -25,6 +26,7 @@ jobs:
           bash ./start.sh
           # 替换测试镜像
           sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
+          sed -i 's|23000:|23001:|g' docker-compose.yml
           docker-compose build
           docker-compose push
           yes | docker system prune --filter "until=168h"
@@ -37,6 +39,7 @@ jobs:
         with:
           clean: true
           ref: 'dev'
+          github-server-url: 'https://mirror.ghproxy.com/https://github.com'
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.8.0
         with:
@@ -61,6 +64,7 @@ jobs:
             echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" > .env
             sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            sed -i 's|23000:|23001:|g' docker-compose.yml
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
