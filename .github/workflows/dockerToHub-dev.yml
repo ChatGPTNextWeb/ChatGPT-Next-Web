@@ -33,6 +33,7 @@ jobs:
   deploy:
     name: 部署到dev服务器
     runs-on: z4
+    needs: build
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
