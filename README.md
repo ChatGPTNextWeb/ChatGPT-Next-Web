@@ -316,8 +316,9 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ## Build it yourself
 
 Install Node.js and Yarn (if not already installed). You can download Node.js from the official website: https://nodejs.org/. Yarn can be installed using npm:
-
+```shell
 npm install -g yarn
+```
 Install Rust and its build tools. You can install Rust by following the instructions on the official Rust website: https://www.rust-lang.org/tools/install.
 
 Install additional system dependencies (for Ubuntu only):
