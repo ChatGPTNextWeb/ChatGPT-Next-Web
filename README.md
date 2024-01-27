@@ -324,7 +324,7 @@ Install Rust and its build tools. You can install Rust by following the instruct
 Install additional system dependencies (for Ubuntu only):
 ```shell
 sudo apt-get update
-sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libsoup2.4-dev
+sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libsoup2.4-dev libpango1.0-dev
 ```
 Install frontend dependencies:
 ```shell
