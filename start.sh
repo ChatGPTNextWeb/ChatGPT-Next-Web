@@ -20,4 +20,4 @@ rsync -az --delete ./.next/server/ ${OUT_DIR}/.next/server
 rsync -az --delete ./.next/server/ ${OUT_DIR}/.next/server
 rsync -az --delete "./node_modules/tiktoken/" ${OUT_DIR}/node_modules/tiktoken
 
-docker network create chatgpt-ns &> /dev/null
+docker network create chatgpt-ns
