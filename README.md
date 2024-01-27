@@ -313,6 +313,27 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 - [How to use Vercel (No English)](./docs/vercel-cn.md)
 - [User Manual (Only Chinese, WIP)](./docs/user-manual-cn.md)
 
+## Build it yourself
+
+Install Node.js and Yarn (if not already installed). You can download Node.js from the official website: https://nodejs.org/. Yarn can be installed using npm:
+
+npm install -g yarn
+Install Rust and its build tools. You can install Rust by following the instructions on the official Rust website: https://www.rust-lang.org/tools/install.
+
+Install additional system dependencies (for Ubuntu only):
+```shell
+sudo apt-get update
+sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+```
+Install frontend dependencies:
+```shell
+yarn install
+```
+Build the app using Tauri:
+```shell
+yarn tauri build
+```
+
 ## Screenshots
 
 ![Settings](./docs/images/settings.png)
