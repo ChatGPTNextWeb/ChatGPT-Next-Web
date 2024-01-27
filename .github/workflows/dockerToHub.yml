@@ -16,7 +16,7 @@ jobs:
   build:
     name: build image to aly
     # runs-on: "103.200"
-    runs-on: aws
+    runs-on: ty
     #    runs-on: ubuntu-latest
     #    runs-on: self-hosted
     steps:

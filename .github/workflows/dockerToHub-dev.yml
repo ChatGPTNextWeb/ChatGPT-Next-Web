@@ -4,43 +4,38 @@ on:
   push:
     branches:
       - dev
-#    paths:
-#      - 'app/**'
-#      - 'public/**'
-#      - '.github/**'
-#      - 'docker-compose.yml'
-#      - 'Dockerfile'
-#      - 'package.json'
 
 jobs:
-#  build:
-#    name: build image to aly
-#    # runs-on: "103.200"
-#    runs-on: thinkpad
-#    #    runs-on: ubuntu-latest
-#    #    runs-on: self-hosted
-#    steps:
-#      - name: Check out the repo
-#        uses: actions/checkout@v3
-#        with:
-#          clean: true
-#          ref: 'dev'
-#      - name: build and deploy to Docker Hub
-#        run: |
-#          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
-#          echo "${{ secrets.DOCKER_ENV }}" > .env
-#          docker-compose build
-#          docker-compose push
-#          yes | docker system prune --filter "until=168h"
+  build:
+    name: build test image to aly
+    runs-on: ty
+    #    runs-on: ubuntu-latest
+    #    runs-on: self-hosted
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+        with:
+          ref: 'dev'
+          clean: false
+      - name: build and deploy to Docker Hub
+        run: |
+          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKER_ENV }}" > .env
+          echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" > .env
+          bash ./start.sh
+          # 替换测试镜像
+          sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
+          docker-compose build
+          docker-compose push
+          yes | docker system prune --filter "until=168h"
   deploy:
     name: 部署到dev服务器
-    #needs: z4
     runs-on: z4
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
         with:
-          clean: false
+          clean: true
           ref: 'dev'
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.8.0
@@ -49,8 +44,8 @@ jobs:
       - name: Sync repository to tx
         run: |
           yes | docker image prune
-          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
-      - name: deploy-to-ty
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/test/ChatGPT-Next-Web
+      - name: deploy-to-tx
         uses: appleboy/ssh-action@master
         env:
          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
@@ -60,9 +55,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
           envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
           script: |
-            cd $SERVER_WORKDIR #进入到工作目录
+            cd /data/test/ChatGPT-Next-Web
             echo "${{ secrets.DOCKER_ENV }}" > .env
-            bash ./start.sh
+            # 测试分支,
+            echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" > .env
+            sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
+            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker-compose pull && docker-compose up -d
+            yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
-            sleep 2
