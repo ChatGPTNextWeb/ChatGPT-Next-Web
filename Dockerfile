@@ -1,5 +1,5 @@
 #FROM registry.cn-hangzhou.aliyuncs.com/sijinhui/node:18-alpine AS base
-FROM node:20-alpine AS base
+FROM hub.siji.ci/library/node:20-alpine AS base
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk add --no-cache git tzdata
 # 设置时区环境变量
