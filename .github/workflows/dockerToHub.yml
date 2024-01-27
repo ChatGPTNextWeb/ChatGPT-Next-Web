@@ -50,7 +50,8 @@ jobs:
       - name: Sync repository to ty
         run: |
           yes | docker image prune
-          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@ty.xiaosi.cc:/data/ChatGPT-Next-Web
+          ssh root@ty.xiaosi.cc 'mkdir -p /data/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@ty.xiaosi.cc:/data/ChatGPT-Next-Web/
       - name: deploy-to-ty
         uses: appleboy/ssh-action@master
         env:
@@ -73,6 +74,7 @@ jobs:
       - name: Sync repository to tx
         run: |
           yes | docker image prune
+          ssh root@tx.xiaosi.cc 'mkdir -p /data/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
       - name: deploy-to-tx
         uses: appleboy/ssh-action@master
