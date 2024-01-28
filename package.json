@@ -2,6 +2,7 @@
   "name": "chatgpt-next-web",
   "private": false,
   "license": "mit",
+  "homepage": "https://nextchat.maurodruwel.tech", 
   "scripts": {
     "dev": "next dev",
     "build": "cross-env BUILD_MODE=standalone next build",
