@@ -70,7 +70,7 @@ model LogEntry {
   model     String?  @db.VarChar(25)
   userName  String?  @db.VarChar(50)
   createdAt DateTime @default(now())
-  logEntry  String?  @db.Text
+  // logEntry  String?  @db.Text
   logToken  Int?     @default(0)
   user      User?    @relation(fields: [userName], references: [name], onDelete: NoAction)
 }
