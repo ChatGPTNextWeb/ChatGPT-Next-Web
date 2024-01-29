@@ -152,9 +152,19 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "gpt-4-0125-preview",
+    describe: "GPT-4,修复懒惰,目前挺贵",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
     name: "gemini-pro",
     available: true,
-    describe: "谷歌的，不要钱",
+    describe: "谷歌的,不要钱,但质量一般",
     provider: {
       id: "google",
       providerName: "Google",
