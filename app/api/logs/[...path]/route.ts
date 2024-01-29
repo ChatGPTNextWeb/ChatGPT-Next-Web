@@ -30,12 +30,13 @@ async function handle(
         // const matchResponse = request_data.logEntry.match(regex);
         const regex_message = /(?<="content":")(.*?)(?="}[,\]])/g;
         const matchAllMessage = request_data.logEntry.match(regex_message);
-        console.log(matchAllMessage, "=====");
+        // console.log(matchAllMessage, "=====");
         if (matchAllMessage.length > 0) {
           request_data.logToken =
             getTokenLength(matchAllMessage.join(" ")) +
             matchAllMessage.length * 3;
         }
+        delete request_data["logEntry"];
       }
     } catch (e) {
       console.log("[LOG]", "logToken", e);

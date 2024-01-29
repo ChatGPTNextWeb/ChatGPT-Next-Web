@@ -5,14 +5,11 @@ import * as echarts from "echarts";
 import { DatePicker, DatePickerValue } from "@tremor/react";
 import { zhCN } from "date-fns/locale";
 import { EChartsOption } from "echarts";
-import { OptionDataItem, OptionDataValue } from "echarts/types/src/util/types";
-// import { param } from "ts-interface-checker"; // 导入 echarts
+import { essos, walden } from "@/lib/charts_theme";
 
 export default function UsageByModelChart() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [searchDate, setSearchDate] = useState("");
-
-  const [clientSide, setClientSide] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -57,7 +54,8 @@ export default function UsageByModelChart() {
       fetchData().then((option) => {
         if (!ignore && option && typeof window !== "undefined") {
           let chartDom = document.getElementById("usage-by-model-chart");
-          let myChart = echarts.init(chartDom);
+          echarts.registerTheme("default", essos);
+          let myChart = echarts.init(chartDom, "default");
           option && myChart.setOption(option);
           setSearchDate(currentDateString);
           console.log("option计数", 1);
