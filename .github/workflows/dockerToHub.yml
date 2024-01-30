@@ -23,7 +23,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
         with:
-          clean: false
+          clean: true
           github-server-url: 'https://gh.siji.ci'
       - name: build and deploy to Docker Hub
         run: |
