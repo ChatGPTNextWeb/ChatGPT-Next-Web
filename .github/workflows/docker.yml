@@ -24,7 +24,7 @@ jobs:
         with:
           images: axe9527/chat-web
           tags: |
-            type=raw,value=latest
+            type=raw,value=gemini
             type=ref,event=tag
 
       - name: Set up QEMU
