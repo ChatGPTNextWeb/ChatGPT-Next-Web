@@ -22,7 +22,7 @@ ENV CODE=""
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
+RUN yarn set version latest
 RUN yarn build
 
 FROM base AS runner
