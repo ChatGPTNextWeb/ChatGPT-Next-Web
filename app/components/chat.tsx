@@ -521,12 +521,20 @@ export function ChatActions(props: {
         if (items[i].type.indexOf("image") === -1) continue;
         const file = items[i].getAsFile();
         if (file !== null) {
-          api.file.upload(file).then((fileName) => {
-            props.imageSelected({
-              fileName,
-              fileUrl: `/api/file/${fileName}`,
-            });
-          });
+          setUploadLoading(true);
+          api.file
+            .upload(file)
+            .then((uploadFile) => {
+              props.imageSelected({
+                fileName: uploadFile.fileName,
+                fileUrl: uploadFile.filePath,
+              });
+            })
+            .catch((e) => {
+              console.error("[Upload]", e);
+              showToast(prettyObject(e));
+            })
+            .finally(() => setUploadLoading(false));
         }
       }
     };
