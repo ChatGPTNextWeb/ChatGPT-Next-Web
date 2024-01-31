@@ -23,6 +23,7 @@
     "@langchain/community": "^0.0.20",
     "@langchain/core": "^0.1.17",
     "@langchain/openai": "^0.0.12",
+    "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",

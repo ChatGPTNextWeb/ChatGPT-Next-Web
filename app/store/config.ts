@@ -28,7 +28,7 @@ export enum Theme {
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
+  submitKey: SubmitKey.Enter,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
