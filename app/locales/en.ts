@@ -365,7 +365,7 @@ const en: LocaleType = {
   },
   Store: {
     DefaultTopic: "New Conversation",
-    BotHello: "Hello! How can I assist you today?",
+    BotHello: "Hello! How can I assist you today?（Tip: The website offers free testing for the 3.5 model. If you need other models, please visit https://aioff.net/. The site does not retain any records, so please back up any necessary content locally. If there is an error with the model, please clear your browser cache first. The preset word window will only prompt once!.)",
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>

@@ -359,7 +359,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "有什么可以帮你的吗? ( Tip:  网站免费提供3.5模型测试，如需其他模型，请访问 https://aioff.net/ 。网站不保留任何记录，请自行在本地备份所需内容。若模型出现错误，请先清理浏览器缓存。预设词窗口仅提示一次！) ",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
@@ -385,7 +385,7 @@ const cn = {
     Revert: "恢复上下文",
   },
   Plugin: {
-    Name: "插件",
+    Name: "探索更多好玩 ！！",
   },
   FineTuned: {
     Sysmessage: "你是一个助手",

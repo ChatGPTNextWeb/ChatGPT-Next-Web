@@ -38,6 +38,8 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/no2y/jslib@main/lanterns/lanterns.min.js"></script>
+        <script async src="https://sy.952727.xyz/script.js" data-website-id="f79a6ab5-d844-4b3a-bdc1-967887001820"></script>
       </head>
       <body>
         {children}
