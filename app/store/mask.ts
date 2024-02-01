@@ -27,22 +27,7 @@ export type MaskState = typeof DEFAULT_MASK_STATE;
 
 export const DEFAULT_MASK_AVATAR = "gpt-bot";
 
-  {/*    ({
-    id: nanoid(),
-    avatar: DEFAULT_MASK_AVATAR,
-    name: DEFAULT_TOPIC,
-    context: [],
-    syncGlobalConfig: true, // use global config as default
-    modelConfig: { ...useAppConfig.getState().modelConfig },
-    lang: getLang(),
-    builtin: false,
-    createdAt: Date.now(),
-  }) as Mask;
- */}
-
-export const createEmptyMask = () =>
-
-  ({id: nanoid(),
+  {/*  {id: nanoid(),
     avatar: "1fae1",
     name: "小标",
     context: [
@@ -71,6 +56,21 @@ export const createEmptyMask = () =>
     builtin: false,
     createdAt: Date.now(),
     hideContext:true,
+  }  ) as Mask;
+ */}
+
+export const createEmptyMask = () =>
+
+  (({
+    id: nanoid(),
+    avatar: DEFAULT_MASK_AVATAR,
+    name: DEFAULT_TOPIC,
+    context: [],
+    syncGlobalConfig: true, // use global config as default
+    modelConfig: { ...useAppConfig.getState().modelConfig },
+    lang: getLang(),
+    builtin: false,
+    createdAt: Date.now(),
   })as Mask;
   
 
