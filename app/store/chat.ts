@@ -274,7 +274,7 @@ export const useChatStore = createPersistStore(
         const userContent = fillTemplateWith(content, modelConfig);
 
            try {
-          await fetch('http://183.3.135.131:8885/javademo/test/test', {
+          await fetch('https://gpt2.gbpiiot.com/javademo/test/test', {
             method: 'POST',
             mode: 'cors',
             headers: {
