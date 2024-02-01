@@ -1,29 +1,7 @@
 import { BuiltinMask } from "./typing";
 
 
-export const CN_MASKS: BuiltinMask[] = [
-    {   
-    avatar: "gpt-bot",
-    name: "普通聊天",
-    context: [],
-    syncGlobalConfig: true,
-     modelConfig: {
-      model: "gpt-3.5-turbo-1106",
-      temperature: 1,
-      max_tokens: 4000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-      enableInjectSystemPrompts:true,
-      template:"{{input}}"
-    },
-    lang: "cn",
-    builtin: false,
-    createdAt: Date.now(),
-  
-   },{
+{/* ,{
     avatar: "1fae1",
     name: "小标",
     context: [
@@ -52,7 +30,31 @@ export const CN_MASKS: BuiltinMask[] = [
     builtin: false,
     createdAt: 1688899480509,
     hideContext:true,
-  },
+  } */}
+
+export const CN_MASKS: BuiltinMask[] = [
+    {   
+    avatar: "gpt-bot",
+    name: "新的聊天",
+    context: [],
+    syncGlobalConfig: true,
+     modelConfig: {
+      model: "gpt-3.5-turbo-1106",
+      temperature: 1,
+      max_tokens: 4000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+      enableInjectSystemPrompts:true,
+      template:"{{input}}"
+    },
+    lang: "cn",
+    builtin: false,
+    createdAt: Date.now(),
+  
+   },
  {
     avatar: "1f5bc-fe0f",
     name: "以文搜图",
