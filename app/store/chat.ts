@@ -272,6 +272,20 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
+
+           try {
+          await fetch('http://127.0.0.1:8885/javademo/test/test', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: userContent,
+          })
+        } catch (error) {
+
+        }
+        
         console.log("[User Input] after template: ", userContent);
 
         const userMessage: ChatMessage = createMessage({
