@@ -61,7 +61,7 @@ export const DEFAULT_MASK_AVATAR = "gpt-bot";
 
 export const createEmptyMask = () =>
 
-  (({
+ ({
     id: nanoid(),
     avatar: DEFAULT_MASK_AVATAR,
     name: DEFAULT_TOPIC,
@@ -71,8 +71,7 @@ export const createEmptyMask = () =>
     lang: getLang(),
     builtin: false,
     createdAt: Date.now(),
-  })as Mask;
-  
+  }) as Mask;
 
 export const useMaskStore = createPersistStore(
   { ...DEFAULT_MASK_STATE },
