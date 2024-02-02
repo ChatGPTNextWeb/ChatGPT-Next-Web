@@ -8,7 +8,7 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "访问密码不正确或为空，请前往[登录](/#/auth)，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
   },
   Auth: {
     Title: "需要密码",
@@ -66,13 +66,13 @@ const cn = {
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
-    Input: (submitKey: string) => {
-      var inputHints = `${submitKey} 发送`;
-      if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += "，Shift + Enter 换行";
-      }
-      return inputHints + "，/ 触发补全，: 触发命令";
-    },
+    // Input: (submitKey: string) => {
+    //   var inputHints = `${submitKey} 发送`;
+    //   if (submitKey === String(SubmitKey.Enter)) {
+    //     inputHints += "，Shift + Enter 换行";
+    //   }
+    //   return inputHints + "，/ 触发补全，: 触发命令";
+    // },
     Send: "发送",
     Config: {
       Reset: "清除记忆",
