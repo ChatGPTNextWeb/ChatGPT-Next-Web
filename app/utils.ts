@@ -52,9 +52,9 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeBinaryFile(
+        await window.__TAURI__.fs.writeTextFile(
           result,
-          new Uint8Array([...text].map((c) => c.charCodeAt(0)))
+          text
         );
         showToast(Locale.Download.Success);
       } catch (error) {
