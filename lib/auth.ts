@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         error: "/login", // Error code passed in query string as ?error=
     },
     adapter: PrismaAdapter(prisma),
-    session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
+    session: { strategy: "jwt", maxAge: 3 * 24 * 60 * 60 },
     cookies: {
         sessionToken: {
             name: `${SECURE_COOKIES ? "__Secure-" : ""}next-auth.session-token`,
@@ -109,7 +109,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 export function getSession() {
-    // console.log('in........',)
+    console.log('in........',)
     return getServerSession(authOptions) as Promise<{
         user: {
             id: string;
