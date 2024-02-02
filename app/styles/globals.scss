@@ -61,8 +61,8 @@
 :root {
   @include light;
 
-  --window-width: 100%;//90vw
-  --window-height: 100%;//90vh
+  --window-width: 90vw;//90vw
+  --window-height: 90vh;//90vh
   --sidebar-width: 300px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 80%;
