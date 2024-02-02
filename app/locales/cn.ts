@@ -78,7 +78,7 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
-    IsContext: "预设提示词",
+    IsContext: "NextChat",
   },
   Export: {
     Title: "分享聊天记录",
@@ -359,7 +359,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "Hello，Ryuichi",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
