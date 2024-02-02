@@ -216,7 +216,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href="https://ai.xvua.chat/" rel="noopener noreferrer">
+            <a href="https://xvua.xvua.chat/" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
           </div>
