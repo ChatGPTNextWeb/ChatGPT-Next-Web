@@ -113,7 +113,7 @@ export async function requestOpenai(req: NextRequest) {
       const isMatchFastRoute = serverConfig.fastModels.split(",").includes(jsonBody?.model ?? "");
       if (isMatchFastRoute) {
         fetchUrl = `${serverConfig.fastBaseUrl}/${path}`;
-        fetchOptions.headers["Authorization"] = serverConfig.fastApiKey;
+        (fetchOptions.headers as Record<string, string>)[authHeaderName] = serverConfig.fastApiKey;
         console.log("[Fast API] ", fetchUrl);
       }
     } catch (e) {
