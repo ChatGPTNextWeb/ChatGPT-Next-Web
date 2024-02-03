@@ -96,7 +96,7 @@ export async function requestOpenai(req: NextRequest) {
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
+      console.log("[Requset Model] ", jsonBody?.model ?? "");
       // not undefined and is false
       if (modelTable[jsonBody?.model ?? ""].available === false) {
         return NextResponse.json(
@@ -115,7 +115,7 @@ export async function requestOpenai(req: NextRequest) {
         fetchUrl = `${serverConfig.fastBaseUrl}/${path}`;
         (fetchOptions.headers as Record<string, string>)[authHeaderName] = serverConfig.fastApiKey;
         // console.log("[Fast API] ", fetchUrl);
-        console.log("[Match Fast model] ", jsonBody?.model ?? "");
+        console.log("[Fast Model Match] ", isMatchFastRoute);
       }
     } catch (e) {
       console.error("[OpenAI] gpt4 filter", e);
