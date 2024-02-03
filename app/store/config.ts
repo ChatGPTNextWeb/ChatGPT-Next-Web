@@ -39,7 +39,7 @@ export const DEFAULT_CONFIG = {
 
   disablePromptHint: false,
 
-  dontShowMaskSplashScreen: true, // dont show splash screen when create chat
+  dontShowMaskSplashScreen: false, // dont show splash screen when create chat
   hideBuiltinMasks: false, // dont add builtin masks
 
   customModels: "",
