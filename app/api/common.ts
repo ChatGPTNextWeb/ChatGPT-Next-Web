@@ -42,7 +42,7 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  // console.log("[Base Url]", baseUrl);
   // this fix [Org ID] undefined in server side if not using custom point
   if (serverConfig.openaiOrgId !== undefined) {
     console.log("[Org ID]", serverConfig.openaiOrgId);
@@ -114,7 +114,8 @@ export async function requestOpenai(req: NextRequest) {
       if (isMatchFastRoute) {
         fetchUrl = `${serverConfig.fastBaseUrl}/${path}`;
         (fetchOptions.headers as Record<string, string>)[authHeaderName] = serverConfig.fastApiKey;
-        console.log("[Fast API] ", fetchUrl);
+        // console.log("[Fast API] ", fetchUrl);
+        console.log("[Match Fast model] ", jsonBody?.model ?? "");
       }
     } catch (e) {
       console.error("[OpenAI] gpt4 filter", e);
@@ -122,6 +123,7 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
+    console.log("[Fetch Url]", fetchUrl);
     const res = await fetch(fetchUrl, fetchOptions);
 
     // to prevent browser prompt for credentials
