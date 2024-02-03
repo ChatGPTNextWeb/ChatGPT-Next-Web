@@ -65,7 +65,8 @@ export async function requestOpenai(req: NextRequest) {
     path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
-  const fetchUrl = `${baseUrl}/${path}`;
+  // const fetchUrl = `${baseUrl}/${path}`;
+  let fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -107,6 +108,13 @@ export async function requestOpenai(req: NextRequest) {
             status: 403,
           },
         );
+      }
+      // 增加fast api连接
+      const isMatchFastRoute = serverConfig.fastModels.split(",").includes(jsonBody?.model ?? "");
+      if (isMatchFastRoute) {
+        fetchUrl = `${serverConfig.fastBaseUrl}/${path}`;
+        fetchOptions.headers["Authorization"] = serverConfig.fastApiKey;
+        console.log("[Fast API] ", fetchUrl);
       }
     } catch (e) {
       console.error("[OpenAI] gpt4 filter", e);

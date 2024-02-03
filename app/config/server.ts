@@ -30,6 +30,11 @@ declare global {
       // google only
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
+
+      // fast only
+      FAST_API_KEY?: string;
+      FAST_BASE_URL?: string;
+      FAST_MODELS?: string;
     }
   }
 }
@@ -71,6 +76,10 @@ export const getServerSideConfig = () => {
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   const randomIndex = Math.floor(Math.random() * apiKeys.length);
   const apiKey = apiKeys[randomIndex];
+
+  const fastApiKey = process.env.FAST_API_KEY ?? "";
+  const fastBaseUrl = process.env.FAST_BASE_URL ?? "";
+  const fastModels = process.env.FAST_MODELS ?? "";
   console.log(
     `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
   );
@@ -103,5 +112,9 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+
+    fastApiKey,
+    fastBaseUrl,
+    fastModels,
   };
 };
