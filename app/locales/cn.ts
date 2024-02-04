@@ -78,7 +78,7 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
-    IsContext: "NextChat",
+    IsContext: "RyuichiChat",
   },
   Export: {
     Title: "分享聊天记录",
