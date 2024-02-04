@@ -21,6 +21,11 @@
         flex-grow: 1;
         max-width: 100%;
         min-width: 0;
+        outline: none;
+      }
+
+      .search-bar:focus {
+        border: 1px solid var(--primary);
       }
 
       .plugin-filter-lang {

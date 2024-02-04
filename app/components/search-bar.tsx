@@ -16,6 +16,7 @@ import CloseIcon from "../icons/close.svg";
 import { Markdown } from "./markdown";
 import { useNavigate } from "react-router-dom";
 import { Path } from "@/app/constant";
+import Locale from "../locales";
 
 interface SearchResult {
   sessionId: string;
@@ -209,12 +210,14 @@ function SearchBarComponent(
       <div className={styles["sidebar-search-bar-input"]}>
         <SearchIcon className={styles["search-icon"]} />
         <input
+          className={styles["search-input"]}
           ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => handleChange(e.target.value)}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          placeholder={Locale.Home.Search}
         />
         {input.trim().length > 0 && (
           <IconButton

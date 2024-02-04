@@ -65,12 +65,11 @@
   .sidebar-search-bar {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 
     .sidebar-search-bar-input {
       position: relative;
       width: 100%;
-      margin-bottom: 5px;
 
       .search-icon {
         position: absolute;
@@ -90,12 +89,17 @@
         height: 16px;
       }
 
-      input {
+      .search-input {
         text-align: left;
         max-width: 100%;
         width: inherit;
         padding-left: 35px;
         padding-right: 35px;
+        outline: none;
+      }
+      
+      .search-input:focus {
+        border: 1px solid var(--primary);
       }
     }
 
