@@ -16,13 +16,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'dev'
-          clean: true
+          clean: false
           github-server-url: 'https://gh.siji.ci'
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
           echo "${{ secrets.DOCKER_ENV }}" > .env
-          echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" > .env
+          echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" >> .env
           bash ./start.sh
           # 替换测试镜像
           sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
@@ -63,7 +63,7 @@ jobs:
             cd /data/test/ChatGPT-Next-Web
             echo "${{ secrets.DOCKER_ENV }}" > .env
             # 测试分支,
-            echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" > .env
+            echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" >> .env
             sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             sed -i 's|23000:|23001:|g' docker-compose.yml

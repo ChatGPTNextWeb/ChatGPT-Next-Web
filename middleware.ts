@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import {DENY_LIST, isName} from "@/lib/auth_list";
+import { DENY_LIST, isName } from "@/lib/auth_list";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;

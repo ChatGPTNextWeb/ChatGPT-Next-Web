@@ -56,6 +56,7 @@
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@tauri-apps/cli": "^1.5.8",
+    "@types/cookie": "^0.6.0",
     "@types/node": "^20.11.10",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.7",
