@@ -1044,10 +1044,14 @@ function _Chat() {
       localStorage.removeItem(key);
     }
 
-    // This function will be called when the component unmounts.
+    // Capture the current value of the input reference.
+    const currentInputRef = inputRef.current;
+
+    // This function will be called when the component unmounts or dependencies change.
     return () => {
       // Save the current input to local storage only if it is not a command.
-      const currentInputValue = inputRef.current?.value ?? "";
+      // Use the captured value from the input reference.
+      const currentInputValue = currentInputRef?.value ?? "";
       if (!currentInputValue.startsWith(ChatCommandPrefix)) {
         localStorage.setItem(key, currentInputValue);
       }
