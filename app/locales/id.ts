@@ -283,7 +283,7 @@ const id: PartialLocaleType = {
         "Buat judul berisi empat hingga lima kata untuk percakapan kita yang tidak akan disertakan dalam ringkasan percakapan, seperti instruksi, format, kutipan, tanda baca awal, tanda kutip pendahuluan, atau karakter tambahan. Silakan coba dengan kutipan berakhir.",
       Summarize: // Ditingkatkan oleh H0llyW00dzZ Ref: https://github.com/H0llyW00dzZ/GoGenAI-Terminal-Chat
         "Dalam 200 kata atau kurang, sediakan ringkasan singkat tentang diskusi yang sedang berlangsung.\n" +
-        "Ringkasan ini akan dijadikan sebagai petunjuk kontekstual untuk referensi di interaksi masa depan\n\n",
+        "Ringkasan ini akan dijadikan sebagai petunjuk kontekstual untuk referensi di interaksi masa depan",
     },
   },
   Copy: {
