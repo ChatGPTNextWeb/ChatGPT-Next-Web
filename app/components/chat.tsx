@@ -1033,20 +1033,28 @@ function _Chat() {
 
   // remember unfinished input
   useEffect(() => {
-    // try to load from local storage
+    // Define the key for storing unfinished input based on the session ID.
     const key = UNFINISHED_INPUT(session.id);
+
+    // Attempt to load unfinished input from local storage.
     const mayBeUnfinishedInput = localStorage.getItem(key);
     if (mayBeUnfinishedInput && userInput.length === 0) {
       setUserInput(mayBeUnfinishedInput);
+      // Clear the unfinished input from local storage after loading it.
       localStorage.removeItem(key);
     }
 
-    const dom = inputRef.current;
+    // This function will be called when the component unmounts.
     return () => {
-      localStorage.setItem(key, dom?.value ?? "");
+      // Save the current input to local storage only if it is not a command.
+      const currentInputValue = inputRef.current?.value ?? "";
+      if (!currentInputValue.startsWith(ChatCommandPrefix)) {
+        localStorage.setItem(key, currentInputValue);
+      }
     };
+    // The effect should depend on the session ID to ensure it runs when the session changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [session.id]);
 
   return (
     <div className={styles.chat} key={session.id}>
