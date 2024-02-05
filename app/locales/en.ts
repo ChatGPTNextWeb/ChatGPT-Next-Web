@@ -372,8 +372,9 @@ const en: LocaleType = {
         "This is a summary of the chat history as a recap: " + content,
       Topic:
         "Please generate a four to five word title summarizing our conversation without any lead-in, punctuation, quotation marks, periods, symbols, bold text, or additional text. Remove enclosing quotation marks.",
-      Summarize:
-        "Summarize the discussion briefly in 200 words or less to use as a prompt for future context.",
+      Summarize: // Improved By H0llyW00dzZ Ref : https://github.com/H0llyW00dzZ/GoGenAI-Terminal-Chat
+        "In 200 words or less, provide a brief summary of the ongoing discussion.\n" +
+        "This summary will serve as a prompt for contextual reference in future interactions\n\n",
     },
   },
   Copy: {
