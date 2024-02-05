@@ -1052,8 +1052,12 @@ function _Chat() {
       // Save the current input to local storage only if it is not a command.
       // Use the captured value from the input reference.
       const currentInputValue = currentInputRef?.value ?? "";
-      if (!currentInputValue.startsWith(ChatCommandPrefix)) {
+      // Save the input to local storage only if it's not empty and not a command.
+      if (currentInputValue && !currentInputValue.startsWith(ChatCommandPrefix)) {
         localStorage.setItem(key, currentInputValue);
+      } else {
+        // If there's no value, ensure we don't create an empty key in local storage.
+        localStorage.removeItem(key);
       }
     };
     // The effect should depend on the session ID to ensure it runs when the session changes.
