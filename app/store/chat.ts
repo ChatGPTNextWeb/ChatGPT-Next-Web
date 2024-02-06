@@ -92,11 +92,14 @@ function countMessages(msgs: ChatMessage[]) {
 }
 
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
-  const cutoff = KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+  const cutoff =
+    KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
   // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
-  const modelInfo = DEFAULT_MODELS.find(m => m.name === modelConfig.model);
+  const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
   if (!modelInfo) {
-    throw new Error(`Model ${modelConfig.model} not found in DEFAULT_MODELS array.`);
+    throw new Error(
+      `Model ${modelConfig.model} not found in DEFAULT_MODELS array.`,
+    );
   }
   // Directly use the providerName from the modelInfo
   const serviceProvider = modelInfo.provider.providerName;
@@ -119,7 +122,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   }
 
   Object.entries(vars).forEach(([name, value]) => {
-    const regex = new RegExp(`{{${name}}}`, 'g');
+    const regex = new RegExp(`{{${name}}}`, "g");
     output = output.replace(regex, value.toString()); // Ensure value is a string
   });
 
@@ -312,7 +315,7 @@ export const useChatStore = createPersistStore(
         });
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
@@ -497,7 +500,7 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
