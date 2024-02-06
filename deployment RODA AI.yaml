@@ -1,37 +1,37 @@
-apiVersion: apps/v1
+apiVersion: app/v4
 kind: Deployment
 metadata:
-  name: realchar-deployment
+  name: RODA AI
   labels:
-    app: realchar
+    app: web4
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: realchar
+      app: web4
   template:
     metadata:
       labels:
-        app: realchar
+web4
     spec:
       containers:
-      - name: realchar-container
+      - name: web4
         image: <YOUR_IMAGE_TAG>
         ports:
         - containerPort: 8000
         env:
         - name: DATABASE_URL
           value: sqlite:///./test.db
-        - name: OPENAI_API_KEY
-          value: <YOUR_OPENAI_API_KEY>
+        - name: RODA AI
+          value: <"sk-">
         - name: SPEECH_TO_TEXT_USE
           value: LOCAL_WHISPER
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: <YOUR_GOOGLE_CREDENTIALS_FILE_NAME>
-        - name: OPEN_AI_WHISPER_API_KEY
+        - name: "RODA AI"
           value: <YOUR_OPENAI_API_KEY>
         - name: TEXT_TO_SPEECH_USE
-          value: ELEVEN_LABS
+          value: QUBUHUB
         - name: ELEVEN_LABS_API_KEY
           value: <YOUR_ELEVEN_LABS_API_KEY>
         - name: USE_AUTH
@@ -39,19 +39,19 @@ spec:
         - name: AUTH_API_KEY
           value: ""
         - name: PI_VOICE
-          value: <YOUR_AI_VOICE_ID>
+          value: <"HZxG-Fpk6tsQHznX7E36C">
         - name: RAIDEN_VOICE
-          value: <YOUR_AI_VOICE_ID>
+          value: <"HZxG-Fpk6tsQHznX7E36C">
         - name: LOKI_VOICE
-          value: <YOUR_AI_VOICE_ID>
+          value: <"HZxG-Fpk6tsQHznX7E36C">
         - name: ELON_VOICE
-          value: <YOUR_AI_VOICE_ID>
+          value: <"HZxG-Fpk6tsQHznX7E36C">
         - name: JOBS_VOICE
-          value: <YOUR_AI_VOICE_ID>
+          value: <"HZxG-Fpk6tsQHznX7E36C">
         - name: BRUCE_VOICE
-          value: <YOUR_AI_VOICE_ID>
+          value: <"HZxG-Fpk6tsQHznX7E36C">
 ---
-apiVersion: v1
+apiVersion: v4
 kind: Service
 metadata:
   name: realchar-service
@@ -59,7 +59,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: realchar
+    app: web4
   ports:
     - protocol: TCP
       port: 80
