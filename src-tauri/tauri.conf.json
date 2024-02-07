@@ -86,8 +86,8 @@
       }
     },
     "security": {
-      "dangerousUseHttpScheme": true,
-      "csp": null
+      "csp": null,
+      "dangerousUseHttpScheme": true
     },
     "updater": {
       "active": true,
