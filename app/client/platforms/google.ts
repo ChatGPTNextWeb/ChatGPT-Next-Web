@@ -74,7 +74,7 @@ export class GeminiProApi implements LLMApi {
 
     const isApp = !!getClientConfig()?.isApp;
 
-    const shouldStream = !!options.config.stream && !isApp;
+    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
     const accessStore = useAccessStore.getState();
