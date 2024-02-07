@@ -1,10 +1,6 @@
 import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
-import {
-  // useAccessStore,
-  useAppConfig,
-  useChatStore,
-} from "@/app/store";
+import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
 export class GeminiProApi implements LLMApi {
@@ -76,23 +72,23 @@ export class GeminiProApi implements LLMApi {
       ],
     };
 
-    console.log("[Request] google payload: ", requestPayload);
+    const isApp = !!getClientConfig()?.isApp;
 
-    const shouldStream = !!options.config.stream;
+    const shouldStream = !!options.config.stream && !isApp;
     const controller = new AbortController();
     options.onController?.(controller);
-    // const accessStore = useAccessStore.getState();
+    const accessStore = useAccessStore.getState();
     try {
       let chatPath = this.path(Google.ChatPath);
 
       // let baseUrl = accessStore.googleUrl;
 
-      if (chatPath.length === 0) {
-        const isApp = !!getClientConfig()?.isApp;
-        chatPath = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google" + chatPath
-          : chatPath;
-      }
+      chatPath = isApp
+        ? DEFAULT_API_HOST +
+          "/api/proxy/google/" +
+          Google.ChatPath +
+          `?key=${accessStore.googleApiKey}`
+        : chatPath;
 
       const chatPayload = {
         method: "POST",
@@ -100,7 +96,7 @@ export class GeminiProApi implements LLMApi {
         signal: controller.signal,
         headers: getHeaders(),
       };
-
+      console.log("[Request] google chatPath: ", chatPath, isApp);
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
@@ -195,13 +191,9 @@ export class GeminiProApi implements LLMApi {
             console.error("Error:", error);
           });
       } else {
-        console.log("[Proxy Endpoint] ", chatPath);
-
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
-
         const resJson = await res.json();
-
         if (resJson?.promptFeedback?.blockReason) {
           // being blocked
           options.onError?.(
