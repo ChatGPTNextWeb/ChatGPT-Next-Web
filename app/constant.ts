@@ -8,9 +8,6 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-// export const DEFAULT_CORS_HOST = "https://api.nextchat.dev";
-// export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
-
 export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
 
