@@ -82,9 +82,10 @@ function createEmptySession(): ChatSession {
   };
 }
 
-function getSummarizeModel(currentModel: string) {
-  // if it is using gpt-* models, force to use 3.5 to summarize
-  return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
+// fix known issue where summarize is not using the current model selected
+function getSummarizeModel(currentModel: string, modelConfig: ModelConfig) {
+  // should be depends of user selected
+  return currentModel ? modelConfig.model : currentModel;
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -523,10 +524,14 @@ export const useChatStore = createPersistStore(
               content: Locale.Store.Prompt.Topic,
             }),
           );
+          // this summarizing method should be depends of user selected
+          const sessionModelConfig = this.currentSession().mask.modelConfig;
+          const topicModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
+
           api.llm.chat({
             messages: topicMessages,
             config: {
-              model: getSummarizeModel(session.mask.modelConfig.model),
+              model: topicModel,
             },
             onFinish(message) {
               get().updateCurrentSession(
@@ -570,6 +575,9 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
+          // this summarizing method should be depends of user selected
+          const sessionModelConfig = this.currentSession().mask.modelConfig;
+          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
           api.llm.chat({
             messages: toBeSummarizedMsgs.concat(
               createMessage({
@@ -581,7 +589,7 @@ export const useChatStore = createPersistStore(
             config: {
               ...modelConfig,
               stream: true,
-              model: getSummarizeModel(session.mask.modelConfig.model),
+              model: summarizeModel,
             },
             onUpdate(message) {
               session.memoryPrompt = message;
