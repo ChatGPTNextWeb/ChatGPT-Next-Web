@@ -96,13 +96,14 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
     KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
   // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
   const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
-  if (!modelInfo) {
-    throw new Error(
-      `Model ${modelConfig.model} not found in DEFAULT_MODELS array.`,
-    );
+
+  var serviceProvider = "OpenAI";
+  if (modelInfo) {
+    // TODO: auto detect the providerName from the modelConfig.model
+
+    // Directly use the providerName from the modelInfo
+    serviceProvider = modelInfo.provider.providerName;
   }
-  // Directly use the providerName from the modelInfo
-  const serviceProvider = modelInfo.provider.providerName;
 
   const vars = {
     ServiceProvider: serviceProvider,
