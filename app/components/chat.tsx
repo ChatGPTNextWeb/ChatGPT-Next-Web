@@ -383,10 +383,8 @@ function useScrollToBottom() {
   function scrollDomToBottom() {
     const dom = scrollRef.current;
     if (dom) {
-      requestAnimationFrame(() => {
-        setAutoScroll(true);
-        dom.scrollTo(0, dom.scrollHeight);
-      });
+      // Improve Use smooth scrolling behavior
+      dom.scrollTo({ top: dom.scrollHeight, behavior: 'smooth' });
     }
   }
 
