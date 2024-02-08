@@ -65,10 +65,14 @@ export async function requestOpenai(req: NextRequest) {
     path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
-  const clonedBody = await req.text();
-  const jsonBody = JSON.parse(clonedBody) as { model?: string };
+  let jsonBody;
+  let clonedBody;
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    clonedBody = await req.text();
+    jsonBody = JSON.parse(clonedBody) as { model?: string };
+  }
   if (serverConfig.isAzure) {
-    baseUrl = `${baseUrl}/${jsonBody.model}`;
+    baseUrl = `${baseUrl}/${jsonBody?.model}`;
   }
   const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
