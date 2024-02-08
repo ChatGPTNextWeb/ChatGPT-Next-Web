@@ -155,7 +155,7 @@ export function getHeaders(isAzure?: boolean) {
     Accept: "application/json",
   };
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isGoogle = modelConfig.model === "gemini-pro";
+  const isGoogle = modelConfig.model.startsWith("gemini");
   // const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
   const apiKey = isGoogle
@@ -163,20 +163,23 @@ export function getHeaders(isAzure?: boolean) {
     : isAzure
       ? accessStore.azureApiKey
       : accessStore.openaiApiKey;
-
+  const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;
 
-  // use user's api key first
-  if (validString(apiKey)) {
-    headers[authHeader] = makeBearer(apiKey);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    validString(accessStore.accessCode)
-  ) {
-    headers[authHeader] = makeBearer(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
-    );
+  // when using google api in app, not set auth header
+  if (!(isGoogle && clientConfig?.isApp)) {
+    // use user's api key first
+    if (validString(apiKey)) {
+      headers[authHeader] = makeBearer(apiKey);
+    } else if (
+      accessStore.enabledAccessControl() &&
+      validString(accessStore.accessCode)
+    ) {
+      headers[authHeader] = makeBearer(
+        ACCESS_CODE_PREFIX + accessStore.accessCode,
+      );
+    }
   }
 
   if (validString(accessStore.midjourneyProxyUrl)) {

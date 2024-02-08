@@ -104,13 +104,14 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
     KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
   // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
   const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
-  if (!modelInfo) {
-    throw new Error(
-      `Model ${modelConfig.model} not found in DEFAULT_MODELS array.`,
-    );
+
+  var serviceProvider = "OpenAI";
+  if (modelInfo) {
+    // TODO: auto detect the providerName from the modelConfig.model
+
+    // Directly use the providerName from the modelInfo
+    serviceProvider = modelInfo.provider.providerName;
   }
-  // Directly use the providerName from the modelInfo
-  const serviceProvider = modelInfo.provider.providerName;
 
   const vars = {
     ServiceProvider: serviceProvider,
@@ -617,7 +618,7 @@ export const useChatStore = createPersistStore(
           extAttr?.setAutoScroll(true);
         } else {
           var api: ClientApi;
-          if (modelConfig.model === "gemini-pro") {
+          if (modelConfig.model.startsWith("gemini")) {
             api = new ClientApi(ModelProvider.GeminiPro);
           } else {
             api = new ClientApi(ModelProvider.GPT);
@@ -803,7 +804,7 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
