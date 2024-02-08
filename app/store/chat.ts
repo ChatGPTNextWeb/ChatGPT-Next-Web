@@ -4,6 +4,7 @@ import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
+import convertTextToSpeech from "../components/tts";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
@@ -338,6 +339,10 @@ export const useChatStore = createPersistStore(
           onFinish(message) {
             botMessage.streaming = false;
             if (message) {
+              // 判断message中以http开头 就忽略转语音的操作
+              if (!message.startsWith("http")) {
+                convertTextToSpeech(message);
+              }
               botMessage.content = message;
               get().onNewMessage(botMessage);
             }

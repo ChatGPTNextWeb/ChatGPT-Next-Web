@@ -30,6 +30,8 @@ declare global {
       // google only
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
+
+      AZURE_SUBSCRIPTION_KEY?: string;
     }
   }
 }
@@ -77,6 +79,7 @@ export const getServerSideConfig = () => {
 
   return {
     baseUrl: process.env.BASE_URL,
+    azurekey: process.env.AZURE_SUBSCRIPTION_KEY,
     apiKey,
     openaiOrgId: process.env.OPENAI_ORG_ID,
 

@@ -506,6 +506,15 @@
   right: 30px;
   bottom: 32px;
 }
+.chat-input-voice {
+  background-color: var(--primary);
+  color: white;
+
+  position: absolute;
+  // right: 100px;
+  right: 30px;
+  bottom: 32px;
+}
 
 @media only screen and (max-width: 600px) {
   .chat-input {
