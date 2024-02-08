@@ -217,7 +217,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-           <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备20009881号-1</a>
+           <a href="https://beian.miit.gov.cn/" target="_blank">沪ICP备16025972号-1</a>
           </div>
         </div>
         <div>
