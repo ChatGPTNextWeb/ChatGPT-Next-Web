@@ -1,9 +1,14 @@
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
-let subscriptionKey = process.env.AZURE_SUBSCRIPTION_KEY;
+import { getServerSideConfig } from "@/app/config/server";
+const config = getServerSideConfig();
+
+let subscriptionKey = config.azurekey;
 
 // 这些信息应该从环境变量或配置文件中获取，不应硬编码在脚本中。
 const serviceRegion = "eastus"; // 例如 "westus"
-
+if (typeof subscriptionKey !== "string") {
+  throw new Error("The SUBSCRIPTION_KEY environment variable is not set.");
+}
 // 创建语音识别器
 const speechConfig = sdk.SpeechConfig.fromSubscription(
   subscriptionKey,
