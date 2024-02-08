@@ -11,7 +11,7 @@ const serviceRegion = "eastus"; // 例如 "westus"
 // 创建语音识别器
 
 export default function recognizeSpeech(): Promise<string> {
-  let subscriptionKey = process.env.OPENAI_ORG_ID;
+  let subscriptionKey = process.env.OPENAI_ORG_ID || "";
   const speechConfig = sdk.SpeechConfig.fromSubscription(
     subscriptionKey,
     serviceRegion,
