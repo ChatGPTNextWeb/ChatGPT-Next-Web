@@ -171,7 +171,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isGoogle = modelConfig.model === "gemini-pro";
+  const isGoogle = modelConfig.model.startsWith("gemini");
   if (!ignoreHeaders && !isGoogle) {
     headers = {
       "Content-Type": "application/json",

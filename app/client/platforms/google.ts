@@ -13,15 +13,8 @@ import {
   LLMUsage,
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import Locale from "../../locales";
-import { getServerSideConfig } from "@/app/config/server";
-import de from "@/app/locales/de";
+import { DEFAULT_API_HOST } from "@/app/constant";
 export class GeminiProApi implements LLMApi {
   toolAgentChat(options: AgentChatOptions): Promise<void> {
     throw new Error("Method not implemented.");
@@ -36,7 +29,7 @@ export class GeminiProApi implements LLMApi {
     );
   }
   async chat(options: ChatOptions): Promise<void> {
-    const apiClient = this;
+    // const apiClient = this;
     const messages = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
@@ -94,13 +87,27 @@ export class GeminiProApi implements LLMApi {
       ],
     };
 
-    console.log("[Request] google payload: ", requestPayload);
+    const accessStore = useAccessStore.getState();
+    let baseUrl = accessStore.googleUrl;
+    const isApp = !!getClientConfig()?.isApp;
 
-    const shouldStream = !!options.config.stream;
+    let shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      const chatPath = this.path(Google.ChatPath);
+      let chatPath = this.path(Google.ChatPath);
+
+      // let baseUrl = accessStore.googleUrl;
+
+      if (!baseUrl) {
+        baseUrl = isApp
+          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath
+          : chatPath;
+      }
+
+      if (isApp) {
+        baseUrl += `?key=${accessStore.googleApiKey}`;
+      }
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -116,10 +123,6 @@ export class GeminiProApi implements LLMApi {
       if (shouldStream) {
         let responseText = "";
         let remainText = "";
-        let streamChatPath = chatPath.replace(
-          "generateContent",
-          "streamGenerateContent",
-        );
         let finished = false;
 
         let existingTexts: string[] = [];
@@ -149,7 +152,11 @@ export class GeminiProApi implements LLMApi {
 
         // start animaion
         animateResponseText();
-        fetch(streamChatPath, chatPayload)
+
+        fetch(
+          baseUrl.replace("generateContent", "streamGenerateContent"),
+          chatPayload,
+        )
           .then((response) => {
             const reader = response?.body?.getReader();
             const decoder = new TextDecoder();
@@ -200,11 +207,9 @@ export class GeminiProApi implements LLMApi {
             console.error("Error:", error);
           });
       } else {
-        const res = await fetch(chatPath, chatPayload);
+        const res = await fetch(baseUrl, chatPayload);
         clearTimeout(requestTimeoutId);
-
         const resJson = await res.json();
-
         if (resJson?.promptFeedback?.blockReason) {
           // being blocked
           options.onError?.(

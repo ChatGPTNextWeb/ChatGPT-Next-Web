@@ -100,14 +100,18 @@ function countMessages(msgs: ChatMessage[]) {
 }
 
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
-  const cutoff = KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+  const cutoff =
+    KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
   // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
-  const modelInfo = DEFAULT_MODELS.find(m => m.name === modelConfig.model);
-  if (!modelInfo) {
-    throw new Error(`Model ${modelConfig.model} not found in DEFAULT_MODELS array.`);
+  const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
+
+  var serviceProvider = "OpenAI";
+  if (modelInfo) {
+    // TODO: auto detect the providerName from the modelConfig.model
+
+    // Directly use the providerName from the modelInfo
+    serviceProvider = modelInfo.provider.providerName;
   }
-  // Directly use the providerName from the modelInfo
-  const serviceProvider = modelInfo.provider.providerName;
 
   const vars = {
     ServiceProvider: serviceProvider,
@@ -127,7 +131,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   }
 
   Object.entries(vars).forEach(([name, value]) => {
-    const regex = new RegExp(`{{${name}}}`, 'g');
+    const regex = new RegExp(`{{${name}}}`, "g");
     output = output.replace(regex, value.toString()); // Ensure value is a string
   });
 
@@ -404,7 +408,7 @@ export const useChatStore = createPersistStore(
             },
           });
         } else {
-          if (modelConfig.model === "gemini-pro") {
+          if (modelConfig.model.startsWith("gemini")) {
             api = new ClientApi(ModelProvider.GeminiPro);
           }
           // make request
@@ -587,7 +591,7 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
