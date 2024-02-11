@@ -6,6 +6,7 @@ import {
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
   StoreKey,
+  DEFAULT_CHAT_MODEL,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 
@@ -46,7 +47,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
+    model: DEFAULT_CHAT_MODEL as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 4000,
