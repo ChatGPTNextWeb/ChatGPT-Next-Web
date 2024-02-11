@@ -515,6 +515,17 @@ export function ImagePreviewer(props: {
     }
   };
 
+  const markdownImageUrlCorsProcess = (markdownContent: string) => {
+    const updatedContent = markdownContent.replace(
+      /!\[.*?\]\((.*?)\)/g,
+      (match, url) => {
+        const updatedURL = `/api/cors?url=${encodeURIComponent(url)}`;
+        return `![image](${updatedURL})`;
+      },
+    );
+    return updatedContent;
+  };
+
   return (
     <div className={styles["image-previewer"]}>
       <PreviewActions
@@ -580,7 +591,7 @@ export function ImagePreviewer(props: {
 
               <div className={styles["body"]}>
                 <Markdown
-                  content={m.content}
+                  content={markdownImageUrlCorsProcess(m.content)}
                   imageBase64={m.image_url}
                   fontSize={config.fontSize}
                   defaultShow
