@@ -11,6 +11,8 @@ import { CallbackManagerForToolRun } from "@langchain/core/callbacks/manager";
 import { BaseLanguageModel } from "langchain/dist/base_language";
 import { formatDocumentsAsString } from "langchain/util/document";
 import { Embeddings } from "langchain/dist/embeddings/base.js";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 
 export const parseInputs = (inputs: string): [string, string] => {
   const [baseUrl, task] = inputs.split(",").map((input) => {
@@ -131,7 +133,10 @@ export class PDFBrowser extends Tool {
       doSummary ? "a summary" : task
     } from the above text.`;
 
-    return this.model.predict(input, undefined, runManager?.getChild());
+    console.log("[pdf-browser]", input);
+
+    const chain = RunnableSequence.from([this.model, new StringOutputParser()]);
+    return chain.invoke(input, runManager?.getChild());
   }
 
   name = "pdf-browser";
