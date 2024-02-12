@@ -783,6 +783,7 @@ function _Chat() {
   };
   const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
+    /* Disable right click copy as it is disturbing.
     if (selectOrCopy(e.currentTarget, message.content)) {
       if (userInput.length === 0) {
         setUserInput(message.content);
@@ -790,6 +791,7 @@ function _Chat() {
 
       e.preventDefault();
     }
+    */
   };
 
   const deleteMessage = (msgId?: string) => {

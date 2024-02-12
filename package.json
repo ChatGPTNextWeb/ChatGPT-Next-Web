@@ -2,6 +2,9 @@
   "name": "nextchat",
   "private": false,
   "license": "mit",
+  "engines": {
+    "node": "18.17.1"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "cross-env BUILD_MODE=standalone next build",
