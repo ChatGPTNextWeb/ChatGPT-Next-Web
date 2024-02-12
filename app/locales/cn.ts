@@ -314,19 +314,20 @@ const cn = {
       },
       Google: {
         ApiKey: {
-          Title: "接口密钥",
-          SubTitle: "使用自定义 Google AI Studio API Key 绕过密码访问限制",
-          Placeholder: "Google AI Studio API Key",
+          Title: "API 密钥",
+          SubTitle:
+            "从 Google AI 获取您的 API 密钥",
+          Placeholder: "输入您的 Google AI Studio API 密钥",
         },
 
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不包含请求路径，样例：",
+          Title: "终端地址",
+          SubTitle: "示例：",
         },
 
-        ApiVerion: {
-          Title: "接口版本 (gemini-pro api version)",
-          SubTitle: "选择指定的部分版本",
+        ApiVersion: {
+          Title: "API 版本（仅适用于 gemini-pro）",
+          SubTitle: "选择一个特定的 API 版本",
         },
       },
       CustomModel: {
