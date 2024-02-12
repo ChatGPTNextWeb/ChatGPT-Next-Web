@@ -67,10 +67,9 @@ const MergeStates: StateMerger = {
     // merge sessions
     const localSessions: Record<string, ChatSession> = {};
     localState.sessions.forEach((s) => (localSessions[s.id] = s));
-
-    remoteState.sessions.forEach((remoteSession) => {
+    remoteState?.sessions?.forEach((remoteSession) => {
       // skip empty chats
-      if (remoteSession.messages.length === 0) return;
+      if (!remoteSession || remoteSession?.messages?.length === 0) return;
 
       const localSession = localSessions[remoteSession.id];
       if (!localSession) {
@@ -102,16 +101,34 @@ const MergeStates: StateMerger = {
   },
   [StoreKey.Prompt]: (localState, remoteState) => {
     localState.prompts = {
-      ...remoteState.prompts,
       ...localState.prompts,
     };
+
+    if (remoteState?.prompts) {
+      localState.prompts = {
+        ...remoteState.prompts,
+        ...localState.prompts,
+      };
+    } else {
+      localState.prompts = {
+        ...localState.prompts,
+      };
+    }
+
     return localState;
   },
   [StoreKey.Mask]: (localState, remoteState) => {
-    localState.masks = {
-      ...remoteState.masks,
-      ...localState.masks,
-    };
+    if (remoteState?.masks) {
+      localState.masks = {
+        ...localState.masks,
+        ...remoteState.masks,
+      };
+    } else {
+      localState.masks = {
+        ...localState.masks,
+      };
+    }
+
     return localState;
   },
   [StoreKey.Config]: mergeWithUpdate<AppState[StoreKey.Config]>,

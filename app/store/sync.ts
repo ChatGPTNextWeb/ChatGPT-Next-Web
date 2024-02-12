@@ -70,10 +70,10 @@ export const useSyncStore = createPersistStore(
     },
 
     async import() {
-      const rawContent = await readFromFile();
-
       try {
-        const remoteState = JSON.parse(rawContent) as AppState;
+        const rawContent = await readFromFile();
+        let sanitizedOutput = rawContent.replace(/[\u0000-\u0019]+/g, ""); // Replace control characters
+        const remoteState = JSON.parse(sanitizedOutput) as AppState;
         const localState = getLocalAppState();
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
