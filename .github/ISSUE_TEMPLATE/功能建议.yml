@@ -1,0 +1,53 @@
+name: 功能请求
+description: 为这个项目提出一个想法
+title: "[Feature Request]: "
+labels: ["enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: "## 您的功能请求是否与问题有关？请描述。"
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: 问题描述
+      description: "关于问题的清晰而简洁的描述。例如：当[...]时，我总是很沮丧。"
+      placeholder: "解释您面临的问题..."
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## 描述您想要的解决方案"
+  - type: textarea
+    id: desired-solution
+    attributes:
+      label: 解决方案描述
+      description: 清晰而简洁地描述您想要发生的事情。
+      placeholder: "描述您想要的解决方案..."
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## 描述您考虑过的替代方案"
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: 考虑过的替代方案
+      description: 清晰而简洁地描述您考虑过的任何替代解决方案或功能。
+      placeholder: "描述您考虑过的任何替代解决方案或功能..."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: "## 其他上下文"
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 其他上下文
+      description: 在此处添加关于功能请求的任何其他上下文或截图。
+      placeholder: "在此处添加关于功能请求的任何其他上下文或截图..."
+    validations:
+      required: false
