@@ -519,6 +519,7 @@ export function ImagePreviewer(props: {
     const updatedContent = markdownContent.replace(
       /!\[.*?\]\((.*?)\)/g,
       (match, url) => {
+        if (!url.startsWith("http")) return `![image](${url})`;
         const updatedURL = `/api/cors?url=${encodeURIComponent(url)}`;
         return `![image](${updatedURL})`;
       },
