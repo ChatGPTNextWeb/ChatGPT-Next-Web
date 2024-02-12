@@ -1,8 +1,8 @@
 import { getClientConfig } from "../config/client";
-import { ApiPath, DEFAULT_CORS_HOST } from "../constant";
+import { ApiPath, DEFAULT_API_HOST } from "../constant";
 
 export function corsPath(path: string) {
-  const baseUrl = getClientConfig()?.isApp ? `${DEFAULT_CORS_HOST}` : "";
+  const baseUrl = getClientConfig()?.isApp ? `${DEFAULT_API_HOST}` : "";
 
   if (!path.startsWith("/")) {
     path = "/" + path;
