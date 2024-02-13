@@ -1,15 +1,10 @@
 {
-  "name": "NextChat",
-  "short_name": "NextChat",
+  "name": "SEC-Chat",
+  "short_name": "SEC-Chat",
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
+      "src": "/icon-180x180.png",
+      "sizes": "180x180",
       "type": "image/png"
     }
   ],
