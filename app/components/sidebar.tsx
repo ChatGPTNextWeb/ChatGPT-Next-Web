@@ -165,6 +165,7 @@ export function SideBar(props: { className?: string }) {
         </div>
       </div>
 
+      {/*
       <div className={styles["sidebar-header-bar"]}>
         <IconButton
           icon={<MaskIcon />}
@@ -187,7 +188,7 @@ export function SideBar(props: { className?: string }) {
           shadow
         />
       </div>
-
+       */}
       <div
         className={styles["sidebar-body"]}
         onClick={(e) => {
