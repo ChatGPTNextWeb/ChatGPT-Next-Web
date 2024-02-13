@@ -3,7 +3,7 @@
   "short_name": "SEC-Chat",
   "icons": [
     {
-      "src": "/icon-180x180.png",
+      "src": "/favicon-32x32.png",
       "sizes": "180x180",
       "type": "image/png"
     }
