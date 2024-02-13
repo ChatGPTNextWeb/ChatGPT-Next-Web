@@ -80,7 +80,9 @@
     
   - 网络请求
     - [WebBrowser](https://api.js.langchain.com/classes/langchain_tools_webbrowser.WebBrowser.html)
+      - 需要使用 `text-embedding-ada-002` 嵌入模型
     - PDFBrowser
+      - 需要使用 `text-embedding-ada-002` 嵌入模型
       - ⚠ 仅在非 vercel 环境部署时可用 ⚠
   
   - 其它
