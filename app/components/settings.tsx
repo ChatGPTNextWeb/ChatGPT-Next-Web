@@ -1081,8 +1081,8 @@ export function Settings() {
                         ></input>
                       </ListItem>
                       <ListItem
-                        title={Locale.Settings.Access.Azure.ApiKey.Title}
-                        subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
+                        title={Locale.Settings.Access.Google.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.Google.ApiKey.SubTitle}
                       >
                         <PasswordInput
                           value={accessStore.googleApiKey}
@@ -1099,9 +1099,9 @@ export function Settings() {
                         />
                       </ListItem>
                       <ListItem
-                        title={Locale.Settings.Access.Google.ApiVerion.Title}
+                        title={Locale.Settings.Access.Google.ApiVersion.Title}
                         subTitle={
-                          Locale.Settings.Access.Google.ApiVerion.SubTitle
+                          Locale.Settings.Access.Google.ApiVersion.SubTitle
                         }
                       >
                         <input
