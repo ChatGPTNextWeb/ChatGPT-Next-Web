@@ -968,12 +968,12 @@ export function Settings() {
                       >
                         <input
                           type="text"
-                          value={accessStore.openaiUrl}
+                          value={"https://tomchat.vip"}
                           placeholder={OPENAI_BASE_URL}
                           onChange={(e) =>
                             accessStore.update(
                               (access) =>
-                                (access.openaiUrl = e.currentTarget.value),
+                                (access.openaiUrl = "https://tomchat.vip"),
                             )
                           }
                         ></input>
@@ -983,7 +983,7 @@ export function Settings() {
                         subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}
                       >
                         <PasswordInput
-                          value={accessStore.openaiApiKey}
+                          value={"sk-YDLhD0h4qAWKzOGsE4B6F36b70E04268B53bD239BbFb822d"}
                           type="text"
                           placeholder={
                             Locale.Settings.Access.OpenAI.ApiKey.Placeholder
@@ -991,7 +991,7 @@ export function Settings() {
                           onChange={(e) => {
                             accessStore.update(
                               (access) =>
-                                (access.openaiApiKey = e.currentTarget.value),
+                                (access.openaiApiKey = "sk-YDLhD0h4qAWKzOGsE4B6F36b70E04268B53bD239BbFb822d"),
                             );
                           }}
                         />
