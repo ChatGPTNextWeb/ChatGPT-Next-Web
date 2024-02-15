@@ -1,11 +1,13 @@
 "use client";
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
 
 import * as echarts from "echarts";
 import { DatePicker, DatePickerValue } from "@tremor/react";
 import { zhCN } from "date-fns/locale";
 import { EChartsOption } from "echarts";
 import { essos, walden } from "@/lib/charts_theme";
+import { Path } from "@/app/constant";
+import { subDays, addDays } from "date-fns";
 
 interface ComponentProps {
   currentDate: Date;
@@ -13,6 +15,36 @@ interface ComponentProps {
 }
 
 function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
+  const maxDate = new Date();
+  // 增加键盘监听修改日期
+  useEffect(() => {
+    const keydownEvent = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowLeft":
+          if (currentDate) {
+            setCurrentDate(subDays(currentDate, 1));
+          }
+          // console.log(currentDate)
+          break;
+        case "ArrowRight":
+          if (currentDate) {
+            const temp_date = addDays(currentDate, 1);
+            if (temp_date < maxDate) {
+              setCurrentDate(temp_date);
+            }
+          }
+          // console.log(currentDate)
+          break;
+        default:
+          break;
+      }
+    };
+    document.addEventListener("keydown", keydownEvent);
+    return () => {
+      document.removeEventListener("keydown", keydownEvent);
+    };
+  }, [currentDate, setCurrentDate]);
+
   return (
     <DatePicker
       className="max-w-sm mx-auto justify-center"
@@ -20,7 +52,7 @@ function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
       locale={zhCN}
       defaultValue={new Date()}
       onValueChange={(d) => d && setCurrentDate(d)}
-      maxDate={new Date()}
+      maxDate={maxDate}
     />
   );
 }
@@ -31,7 +63,7 @@ function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
   useEffect(() => {
     let ignore = false;
     // console.log('windows', window.location.href)
-    console.log("init", currentDate, searchDate);
+    // console.log("init", currentDate, searchDate);
     const currentDateString = currentDate.toLocaleDateString();
     if (searchDate != currentDateString) {
       async function fetchData() {
@@ -75,10 +107,10 @@ function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
           let myChart = echarts.init(chartDom, "default");
           option && myChart.setOption(option);
           setSearchDate(currentDateString);
-          console.log("option计数", 1);
+          // console.log("option计数", 1);
         }
       });
-      console.log("搜索开始计数", 1, searchDate, currentDateString);
+      // console.log("搜索开始计数", 1, searchDate, currentDateString);
     }
     return () => {
       ignore = true;
