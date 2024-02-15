@@ -923,7 +923,7 @@ export function Settings() {
                   >
                     <input
                       type="checkbox"
-                      checked={accessStore.useCustomConfig}
+                      checked={true}
                       onChange={(e) =>
                         accessStore.update(
                           (access) =>
@@ -969,7 +969,7 @@ export function Settings() {
                         <input
                           type="text"
                           value={"https://tomchat.vip"}
-                          placeholder={OPENAI_BASE_URL}
+                          placeholder={"https://tomchat.vip"}
                           onChange={(e) =>
                             accessStore.update(
                               (access) =>
