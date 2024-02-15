@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 
 import * as echarts from "echarts";
 import { DatePicker, DatePickerValue } from "@tremor/react";
@@ -7,8 +7,25 @@ import { zhCN } from "date-fns/locale";
 import { EChartsOption } from "echarts";
 import { essos, walden } from "@/lib/charts_theme";
 
-export default function UsageByModelChart() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+interface ComponentProps {
+  currentDate: Date;
+  setCurrentDate: Dispatch<SetStateAction<Date>>;
+}
+
+function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
+  return (
+    <DatePicker
+      className="max-w-sm mx-auto justify-center"
+      value={currentDate}
+      locale={zhCN}
+      defaultValue={new Date()}
+      onValueChange={(d) => d && setCurrentDate(d)}
+      maxDate={new Date()}
+    />
+  );
+}
+
+function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
   const [searchDate, setSearchDate] = useState("");
 
   useEffect(() => {
@@ -69,19 +86,26 @@ export default function UsageByModelChart() {
   }, [currentDate, searchDate]); // 空数组作为第二个参数，表示仅在组件挂载和卸载时执行
 
   return (
+    <div
+      id="usage-by-model-chart"
+      style={{ width: "100%", height: "400px" }}
+    ></div>
+  );
+}
+
+export default function UsageByModelChart() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  return (
     <div>
-      <DatePicker
-        className="max-w-sm mx-auto justify-center"
-        value={currentDate}
-        locale={zhCN}
-        defaultValue={new Date()}
-        onValueChange={(d) => d && setCurrentDate(d)}
-        maxDate={new Date()}
+      <DateSelectComponent
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
       />
-      <div
-        id="usage-by-model-chart"
-        style={{ width: "100%", height: "400px" }}
-      ></div>
+      <EchartsComponent
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
+      />
     </div>
   );
 }
