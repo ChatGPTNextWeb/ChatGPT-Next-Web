@@ -1,9 +1,9 @@
 name: DEV DEPLOY TO TX
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
+#  push:
+#    branches:
+#      - dev
 
 jobs:
   build:
