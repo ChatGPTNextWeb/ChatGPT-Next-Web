@@ -1258,44 +1258,11 @@ function _Chat() {
                       )}
                     </div>
 
-                    {showActions && (
-                      <div className={styles["chat-message-actions"]}>
-                        <div className={styles["chat-input-actions"]}>
-                          {message.streaming ? (
-                            <ChatAction
-                              text={Locale.Chat.Actions.Stop}
-                              icon={<StopIcon />}
-                              onClick={() => onUserStop(message.id ?? i)}
-                            />
-                          ) : (
-                            <>
-                              <ChatAction
-                                text={Locale.Chat.Actions.Retry}
-                                icon={<ResetIcon />}
-                                onClick={() => onResend(message)}
-                              />
-
-                              <ChatAction
-                                text={Locale.Chat.Actions.Delete}
-                                icon={<DeleteIcon />}
-                                onClick={() => onDelete(message.id ?? i)}
-                              />
-
-                              <ChatAction
-                                text={Locale.Chat.Actions.Pin}
-                                icon={<PinIcon />}
-                                onClick={() => onPinMessage(message)}
-                              />
-                              <ChatAction
-                                text={Locale.Chat.Actions.Copy}
-                                icon={<CopyIcon />}
-                                onClick={() => copyToClipboard(message.content)}
-                              />
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    <div className={styles["chat-message-action-date"]}>
+                      {isContext
+                        ? Locale.Chat.IsContext
+                        : message.date.toLocaleString()}
+                    </div>
                   </div>
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>
@@ -1413,11 +1380,50 @@ function _Chat() {
                       </div>
                     )}
 
-                  <div className={styles["chat-message-action-date"]}>
-                    {isContext
-                      ? Locale.Chat.IsContext
-                      : message.date.toLocaleString()}
-                  </div>
+                  {showActions && (
+                    <div
+                      className={styles["chat-message-actions"]}
+                      style={{
+                        marginTop: "10px",
+                        marginBottom: "0px",
+                      }}
+                    >
+                      <div className={styles["chat-input-actions"]}>
+                        {message.streaming ? (
+                          <ChatAction
+                            text={Locale.Chat.Actions.Stop}
+                            icon={<StopIcon />}
+                            onClick={() => onUserStop(message.id ?? i)}
+                          />
+                        ) : (
+                          <>
+                            <ChatAction
+                              text={Locale.Chat.Actions.Retry}
+                              icon={<ResetIcon />}
+                              onClick={() => onResend(message)}
+                            />
+
+                            <ChatAction
+                              text={Locale.Chat.Actions.Delete}
+                              icon={<DeleteIcon />}
+                              onClick={() => onDelete(message.id ?? i)}
+                            />
+
+                            <ChatAction
+                              text={Locale.Chat.Actions.Pin}
+                              icon={<PinIcon />}
+                              onClick={() => onPinMessage(message)}
+                            />
+                            <ChatAction
+                              text={Locale.Chat.Actions.Copy}
+                              icon={<CopyIcon />}
+                              onClick={() => copyToClipboard(message.content)}
+                            />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
