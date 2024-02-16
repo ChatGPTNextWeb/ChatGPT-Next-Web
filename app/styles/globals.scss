@@ -67,7 +67,7 @@
   --full-height: 100%;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 800px) {
   :root {
     --window-width: 100vw;
     --window-height: var(--full-height);
