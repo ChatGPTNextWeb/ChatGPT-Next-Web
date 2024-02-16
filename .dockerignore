@@ -3,10 +3,7 @@ node_modules
 .next
 out
 .cache
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
 
 # Ignore build artifacts
 .DS_Store
@@ -19,3 +16,6 @@ yarn-error.log*
 venv/
 .env
 *.env
+
+*.key
+*.key.pub
