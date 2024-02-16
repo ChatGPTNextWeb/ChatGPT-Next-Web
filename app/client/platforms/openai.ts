@@ -1,3 +1,4 @@
+"use client";
 import {
   ApiPath,
   DEFAULT_API_HOST,
@@ -45,7 +46,9 @@ export class ChatGPTApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp ? DEFAULT_API_HOST : ApiPath.OpenAI;
+      baseUrl = isApp
+        ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
+        : ApiPath.OpenAI;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -58,6 +61,8 @@ export class ChatGPTApi implements LLMApi {
     if (isAzure) {
       path = makeAzurePath(path, accessStore.azureApiVersion);
     }
+
+    console.log("[Proxy Endpoint] ", baseUrl, path);
 
     return [baseUrl, path].join("/");
   }
@@ -115,12 +120,35 @@ export class ChatGPTApi implements LLMApi {
 
       if (shouldStream) {
         let responseText = "";
+        let remainText = "";
         let finished = false;
+
+        // animate response to make it looks smooth
+        function animateResponseText() {
+          if (finished || controller.signal.aborted) {
+            responseText += remainText;
+            console.log("[Response Animation] finished");
+            return;
+          }
+
+          if (remainText.length > 0) {
+            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+            const fetchText = remainText.slice(0, fetchCount);
+            responseText += fetchText;
+            remainText = remainText.slice(fetchCount);
+            options.onUpdate?.(responseText, fetchText);
+          }
+
+          requestAnimationFrame(animateResponseText);
+        }
+
+        // start animaion
+        animateResponseText();
 
         const finish = () => {
           if (!finished) {
-            options.onFinish(responseText);
             finished = true;
+            options.onFinish(responseText + remainText);
           }
         };
 
@@ -183,8 +211,7 @@ export class ChatGPTApi implements LLMApi {
               };
               const delta = json.choices[0]?.delta?.content;
               if (delta) {
-                responseText += delta;
-                options.onUpdate?.(responseText, delta);
+                remainText += delta;
               }
             } catch (e) {
               console.error("[Request] parse error", text);
@@ -301,6 +328,11 @@ export class ChatGPTApi implements LLMApi {
     return chatModels.map((m) => ({
       name: m.id,
       available: true,
+      provider: {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
     }));
   }
 }
