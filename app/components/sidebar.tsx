@@ -230,6 +230,16 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
+          <IconButton
+            text={Locale.Settings.Danger.Clear.Title}
+            onClick={async () => {
+              if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
+                chatStore.clearAllData();
+              }
+            }}
+            type="danger"
+            className={styles["custom-sidebar-clear-button"]}
+          />
         </div>
         <div>
           <IconButton
@@ -247,16 +257,6 @@ export function SideBar(props: { className?: string }) {
           />
         </div>
       </div>
-      <IconButton
-        text={Locale.Settings.Danger.Clear.Title}
-        onClick={async () => {
-          if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
-            chatStore.clearAllData();
-          }
-        }}
-        type="danger"
-        className={styles["custom-sidebar-clear-button"]}
-      />
 
       <div
         className={styles["sidebar-drag"]}
