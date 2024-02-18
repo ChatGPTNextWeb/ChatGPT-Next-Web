@@ -1,6 +1,6 @@
 
 export const DENY_LIST: string[] = [
-  "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话", "笑死"
+  "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话", "笑死", "观化听风"
 ]
 export const ADMIN_LIST: string[] = [
   "司金辉", "sijinhui", "sijinhui@qq.com"
@@ -81,5 +81,5 @@ export function isName(input: string): boolean {
   if (DENY_LIST.includes(input)) {
     return false;
   }
-  return isEmail(input) || isHanZi(input) || isPinYin(input);
+  return isEmail(input) || (input.length >= 2 && isHanZi(input)) || (input.length >= 4 && isPinYin(input));
 }
