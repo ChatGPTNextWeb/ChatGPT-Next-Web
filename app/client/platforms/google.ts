@@ -13,6 +13,13 @@ import {
   LLMUsage,
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
+import axios from "axios";
+
+const getImageBase64Data = async (url: string) => {
+  const response = await axios.get(url, { responseType: "arraybuffer" });
+  const base64 = Buffer.from(response.data, "binary").toString("base64");
+  return base64;
+};
 
 export class GeminiProApi implements LLMApi {
   toolAgentChat(options: AgentChatOptions): Promise<void> {
@@ -28,11 +35,32 @@ export class GeminiProApi implements LLMApi {
     );
   }
   async chat(options: ChatOptions): Promise<void> {
-    const apiClient = this;
-    const messages = options.messages.map((v) => ({
-      role: v.role.replace("assistant", "model").replace("system", "user"),
-      parts: [{ text: v.content }],
-    }));
+    const messages: any[] = [];
+    if (options.config.model.includes("vision")) {
+      for (const v of options.messages) {
+        let message: any = {
+          role: v.role.replace("assistant", "model").replace("system", "user"),
+          parts: [{ text: v.content }],
+        };
+        if (v.image_url) {
+          var base64Data = await getImageBase64Data(v.image_url);
+          message.parts.push({
+            inline_data: {
+              mime_type: "image/jpeg",
+              data: base64Data,
+            },
+          });
+        }
+        messages.push(message);
+      }
+    } else {
+      options.messages.map((v) =>
+        messages.push({
+          role: v.role.replace("assistant", "model").replace("system", "user"),
+          parts: [{ text: v.content }],
+        }),
+      );
+    }
 
     // google requires that role in neighboring messages must not be the same
     for (let i = 0; i < messages.length - 1; ) {
@@ -92,7 +120,9 @@ export class GeminiProApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      const chatPath = this.path(Google.ChatPath);
+      const chatPath = this.path(
+        Google.ChatPath.replace("{{model}}", options.config.model),
+      );
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),

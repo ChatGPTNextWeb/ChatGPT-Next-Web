@@ -91,7 +91,7 @@ export const Azure = {
 
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
-  ChatPath: "v1beta/models/gemini-pro:generateContent",
+  ChatPath: "v1beta/models/{{model}}:generateContent",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -246,6 +246,15 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gemini-pro",
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
+  {
+    name: "gemini-pro-vision",
     available: true,
     provider: {
       id: "google",
