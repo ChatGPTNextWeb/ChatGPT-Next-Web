@@ -146,7 +146,7 @@ export const DEFAULT_MODELS = [
   // },
   {
     name: "gpt-4-1106-preview",
-    describe: "GPT-4,又强又快,推荐",
+    describe: "GPT-4",
     available: true,
     provider: {
       id: "openai",
@@ -156,7 +156,7 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-4-0125-preview",
-    describe: "GPT-4,修复懒惰,目前挺贵",
+    describe: "GPT-4,最新版,推荐",
     available: true,
     provider: {
       id: "openai",
@@ -206,7 +206,7 @@ export const DEFAULT_MODELS = [
   },
 ] as const;
 
-export const AZURE_MODELS: string[] = ["gpt-4-1106-preview"];
+export const AZURE_MODELS: string[] = ["gpt-4-0125-preview"];
 // export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
 // export const AZURE_PATH = AZURE_MODELS.map((m) => ({ m: `openai/deployments/${m}/chat/completions`} ));
 export const AZURE_PATH = AZURE_MODELS.reduce(
