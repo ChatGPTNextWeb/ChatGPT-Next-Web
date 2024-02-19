@@ -1,3 +1,6 @@
+@import "./animation.scss";
+@import "./window.scss";
+
 @mixin light {
   --theme: light;
 
@@ -85,6 +88,9 @@
 }
 html {
   height: var(--full-height);
+
+  font-family: "Noto Sans", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 body {
@@ -98,8 +104,8 @@ body {
   justify-content: center;
   align-items: center;
   user-select: none;
-  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
-    "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  touch-action: pan-x pan-y;
+  overflow: hidden;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
@@ -140,6 +146,7 @@ label {
 
 input {
   text-align: center;
+  font-family: inherit;
 }
 
 input[type="checkbox"] {
@@ -224,6 +231,7 @@ input[type="password"] {
   color: var(--black);
   padding: 0 10px;
   max-width: 50%;
+  font-family: inherit;
 }
 
 div.math {
@@ -241,6 +249,10 @@ div.math {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 600px) {
+    align-items: flex-end;
+  }
 }
 
 .link {
@@ -293,6 +305,9 @@ pre {
   &:hover {
     filter: brightness(0.9);
   }
+  &:focus {
+    filter: brightness(0.95);
+  }
 }
 
 .error {
@@ -308,4 +323,41 @@ pre {
   pre {
     overflow: auto;
   }
+}
+
+.password-input-container {
+  max-width: 50%;
+  display: flex;
+  justify-content: flex-end;
+
+  .password-eye {
+    margin-right: 4px;
+  }
+
+  .password-input {
+    min-width: 80%;
+  }
+}
+
+.user-avatar {
+  height: 30px;
+  min-height: 30px;
+  width: 30px;
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  border-radius: 11px;
+}
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copyable {
+  user-select: text;
 }
