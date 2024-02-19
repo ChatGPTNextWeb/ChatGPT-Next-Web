@@ -20,14 +20,14 @@
     "@aws-sdk/s3-request-presigner": "^3.414.0",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
-    "@langchain/community": "^0.0.20",
-    "@langchain/core": "^0.1.17",
-    "@langchain/openai": "^0.0.12",
+    "langchain": "0.1.20",
+    "@langchain/community": "0.0.30",
+    "@langchain/openai": "0.0.14",
     "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
-    "axios": "^1.4.0",
+    "axios": "^0.26.0",
     "cheerio": "^1.0.0-rc.12",
     "duck-duck-scrape": "^2.2.4",
     "emoji-picker-react": "^4.5.15",
@@ -37,7 +37,6 @@
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",
-    "langchain": "^0.1.6",
     "mermaid": "^10.6.1",
     "nanoid": "^5.0.3",
     "next": "^13.4.9",
@@ -78,6 +77,7 @@
     "webpack": "^5.88.1"
   },
   "resolutions": {
-    "lint-staged/yaml": "^2.2.2"
+    "lint-staged/yaml": "^2.2.2",
+    "@langchain/core": "0.1.30"
   }
 }
