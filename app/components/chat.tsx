@@ -27,6 +27,8 @@ import PinIcon from "../icons/pin.svg";
 import EditIcon from "../icons/rename.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
+import DownloadIcon from "../icons/download.svg";
+import UploadIcon from "../icons/upload.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -53,6 +55,8 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  downloadAs,
+  readFromFile,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -100,12 +104,60 @@ export function SessionConfigModel(props: { onClose: () => void }) {
   const maskStore = useMaskStore();
   const navigate = useNavigate();
 
+  const [exporting, setExporting] = useState(false);
+  const isApp = !!getClientConfig()?.isApp;
+
+  const handleExport = async () => {
+    if (exporting) return;
+    setExporting(true);
+    const currentDate = new Date();
+    const currentSession = chatStore.currentSession();
+    const messageCount = currentSession.messages.length;
+    const datePart = isApp
+      ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
+      : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
+  
+    const formattedMessageCount = Locale.ChatItem.ChatItemCount(messageCount); // Format the message count using the translation function
+    const fileName = `${session.topic}-(${formattedMessageCount})-${datePart}.json`;
+    await downloadAs(JSON.stringify(session), fileName);
+    setExporting(false);
+  };
+
+  const importchat = async () => {
+    await readFromFile().then((content) => {
+      try {
+        const importedData = JSON.parse(content);
+        chatStore.updateCurrentSession((session) => {
+          Object.assign(session, importedData);
+        });
+      } catch (e) {
+        console.error("[Import] Failed to import JSON file:", e);
+        showToast(Locale.Settings.Sync.ImportFailed);
+      }
+    });
+  };
+
   return (
     <div className="modal-mask">
       <Modal
         title={Locale.Context.Edit}
         onClose={() => props.onClose()}
         actions={[
+          <IconButton
+          key="export"
+          icon={<DownloadIcon />}
+          bordered
+          text={Locale.UI.Export}
+          onClick={handleExport}
+          disabled={exporting}
+        />,
+        <IconButton
+          key="import"
+          icon={<UploadIcon />}
+          bordered
+          text={Locale.UI.Import}
+          onClick={importchat}
+        />,
           <IconButton
             key="reset"
             icon={<ResetIcon />}
@@ -870,21 +922,25 @@ function _Chat() {
     });
   };
 
-  const context: RenderMessage[] = useMemo(() => {
-    return session.mask.hideContext ? [] : session.mask.context.slice();
-  }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
+  const isAuthorized = accessStore.isAuthorized();
+  const context: RenderMessage[] = useMemo(() => {
+    const contextMessages = session.mask.hideContext ? [] : session.mask.context.slice();
 
-  if (
-    context.length === 0 &&
-    session.messages.at(0)?.content !== BOT_HELLO.content
-  ) {
-    const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
+    if (
+      contextMessages.length === 0 &&
+      session.messages.at(0)?.role !== "system"
+    ) {
+      const copiedHello = Object.assign({}, BOT_HELLO);
+      if (!isAuthorized) {
+        copiedHello.role = "system";
+        copiedHello.content = Locale.Error.Unauthorized;
+      }
+      contextMessages.push(copiedHello);
     }
-    context.push(copiedHello);
-  }
+
+    return contextMessages;
+  }, [session.mask.context, session.mask.hideContext, session.messages, isAuthorized]);
 
   // preview messages
   const renderMessages = useMemo(() => {
