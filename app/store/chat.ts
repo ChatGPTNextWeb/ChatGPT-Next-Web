@@ -8,6 +8,7 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
+  GOOGLE_SUMMARIZE_MODEL,
   KnowledgeCutOffDate,
   ModelProvider,
   StoreKey,
@@ -96,6 +97,7 @@ function getSummarizeModel(currentModel: string) {
   const model = DEFAULT_MODELS.find((m) => m.name === currentModel);
   console.log("model", model);
   if (!model) return currentModel;
+  if (model.provider.providerType === "google") return GOOGLE_SUMMARIZE_MODEL;
   // if it is using gpt-* models, force to use 3.5 to summarize
   return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
 }

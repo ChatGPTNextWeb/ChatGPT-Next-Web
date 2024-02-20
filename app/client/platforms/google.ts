@@ -172,7 +172,10 @@ export class GeminiProApi implements LLMApi {
         // start animaion
         animateResponseText();
         fetch(streamChatPath, chatPayload)
-          .then((response) => {
+          .then(async (response) => {
+            if (!response.ok) {
+              throw new Error(await response?.text());
+            }
             const reader = response?.body?.getReader();
             const decoder = new TextDecoder();
             let partialData = "";
@@ -220,6 +223,7 @@ export class GeminiProApi implements LLMApi {
           })
           .catch((error) => {
             console.error("Error:", error);
+            options.onError?.(error as Error);
           });
       } else {
         const res = await fetch(chatPath, chatPayload);
