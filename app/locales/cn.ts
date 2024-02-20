@@ -63,6 +63,7 @@ const cn = {
       Masks: "所有面具",
       Clear: "清除聊天",
       Settings: "对话设置",
+      UploadImage: "上传图片",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -315,8 +316,7 @@ const cn = {
       Google: {
         ApiKey: {
           Title: "API 密钥",
-          SubTitle:
-            "从 Google AI 获取您的 API 密钥",
+          SubTitle: "从 Google AI 获取您的 API 密钥",
           Placeholder: "输入您的 Google AI Studio API 密钥",
         },
 
