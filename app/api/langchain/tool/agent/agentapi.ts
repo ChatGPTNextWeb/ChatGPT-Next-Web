@@ -225,7 +225,8 @@ export class AgentApi {
       const serverConfig = getServerSideConfig();
 
       // const reqBody: RequestBody = await req.json();
-      const isAzure = reqBody.isAzure || serverConfig.isAzure;
+      // ui set azure model provider
+      const isAzure = reqBody.isAzure;
       const authHeaderName = isAzure ? "api-key" : "Authorization";
       const authToken = req.headers.get(authHeaderName) ?? "";
       const token = authToken.trim().replaceAll("Bearer ", "").trim();

@@ -91,6 +91,11 @@ function createEmptySession(): ChatSession {
 }
 
 function getSummarizeModel(currentModel: string) {
+  // if the current model does not exist in the default model
+  // example azure services cannot use SUMMARIZE_MODEL
+  const model = DEFAULT_MODELS.find((m) => m.name === currentModel);
+  console.log("model", model);
+  if (!model) return currentModel;
   // if it is using gpt-* models, force to use 3.5 to summarize
   return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
 }
