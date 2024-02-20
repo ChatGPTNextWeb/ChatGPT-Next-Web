@@ -1,8 +1,6 @@
 import "@/app/app/login.scss";
 import { Metadata } from "next";
 import { ReactNode } from "react";
-// import { useEffect } from "react";
-// import {useSession} from "next-auth/react";
 import { getSession } from "@/lib/auth";
 import { isName } from "@/lib/auth_list";
 import { redirect } from "next/navigation";

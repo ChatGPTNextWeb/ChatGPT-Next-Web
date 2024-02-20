@@ -1,12 +1,12 @@
 "use client";
+
 import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
 
 import * as echarts from "echarts";
-import { DatePicker, DatePickerValue } from "@tremor/react";
+import { DatePicker } from "@tremor/react";
 import { zhCN } from "date-fns/locale";
 import { EChartsOption } from "echarts";
-import { essos, walden } from "@/lib/charts_theme";
-import { Path } from "@/app/constant";
+import { essos } from "@/lib/charts_theme";
 import { subDays, addDays } from "date-fns";
 
 interface ComponentProps {

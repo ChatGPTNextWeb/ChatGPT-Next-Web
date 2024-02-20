@@ -1,12 +1,4 @@
-import {
-  Grid,
-  Col,
-  // Card,
-  // Text,
-  // AreaChart,
-  // Metric,
-  // DatePicker,
-} from "@tremor/react";
+import { Grid, Col } from "@tremor/react";
 import UsageByModel from "./usage-by-model-chart";
 import { getSession } from "@/lib/auth";
 import { isName, ADMIN_LIST } from "@/lib/auth_list";
