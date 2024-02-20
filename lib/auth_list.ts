@@ -19,11 +19,13 @@ export function isHanZi(input: string): boolean {
 /**
  * 判断输入的一个字符串是不是拼音
  * @param input 需要测试的字符串
- * @returns {boolean}
+ * @returns {number} 几个拼音
  */
-export function isPinYin(input: string): boolean {
-
-  var list = ['a', 'ai', 'an', 'ang', 'ao', 'ba', 'bai', 'ban', 'bang', 'bao', 'bei', 'ben',
+export function isPinYin(input: string): number {
+  if (!input) {
+    return 0;
+  }
+  const list = ['a', 'ai', 'an', 'ang', 'ao', 'ba', 'bai', 'ban', 'bang', 'bao', 'bei', 'ben',
     'beng', 'bi', 'bian', 'biao', 'bie', 'bin', 'bing', 'bo', 'bu', 'ca', 'cai', 'can', 'cang',
     'cao', 'ce', 'cen', 'ceng', 'cha', 'chai', 'chan', 'chang', 'chao', 'che', 'chen', 'cheng', 'chi',
     'chong', 'chou', 'chu', 'chua', 'chuai', 'chuan', 'chuang', 'chui', 'chun', 'chuo', 'ci', 'cong',
@@ -52,28 +54,34 @@ export function isPinYin(input: string): boolean {
     'you', 'yu', 'yuan', 'yue', 'yun', 'za', 'zai', 'zan', 'zang', 'zao', 'ze', 'zei', 'zen', 'zeng', 'zha',
     'zhai', 'zhan', 'zhang', 'zhao', 'zhe', 'zhei', 'zhen', 'zheng', 'zhi', 'zhong', 'zhou', 'zhu', 'zhua',
     'zhuai', 'zhuan', 'zhuang', 'zhui', 'zhun', 'zhuo', 'zi', 'zong', 'zou', 'zu', 'zuan', 'zui', 'zun', 'zuo'];
-  var lowerString = input.toLowerCase();
-  var length = lowerString.length;
-  var index = -1;
+  let lowerString = input.toLowerCase();
+  let length = lowerString.length;
+  let index = -1;
 
   for (var i=0; i<length; i++) {
     var name = lowerString.substring(0, i+1);
     index = list.lastIndexOf(name) > index ? list.lastIndexOf(name) : index;
   }
-
+  let result = 0
   // 判断当前 lowerString 是不是拼音(lowerString 在 list 中就是;不在就不是)
   if (index >= 0) {
+    result += 1
     var item = list[index];
+    // 继续处理剩余字符串
     lowerString = lowerString.substring(item.length);
     if (lowerString.length == 0) {
-      return true;
     } else {
-      return isPinYin(lowerString);
-      // return arguments.callee(lowerString);
+      const sub_py = isPinYin(lowerString)
+      if (sub_py) {
+        result += sub_py
+      } else {
+        result = 0
+      }
     }
   } else {
-    return false;
+    result = 0
   }
+  return result;
 }
 
 
@@ -81,5 +89,5 @@ export function isName(input: string): boolean {
   if (DENY_LIST.includes(input)) {
     return false;
   }
-  return isEmail(input) || (input.length >= 2 && isHanZi(input)) || (input.length >= 4 && isPinYin(input));
+  return isEmail(input) || (input.length >= 2 && isHanZi(input)) || (isPinYin(input) >= 2);
 }

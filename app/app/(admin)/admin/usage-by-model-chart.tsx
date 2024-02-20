@@ -14,8 +14,9 @@ interface ComponentProps {
   setCurrentDate: Dispatch<SetStateAction<Date>>;
 }
 
+const maxDate = new Date();
+
 function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
-  const maxDate = new Date();
   // 增加键盘监听修改日期
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
