@@ -107,7 +107,7 @@
   - gemini-pro-vision 模型需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
   - ⚠ gemini-pro-vision 注意事项 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/203 ：
     - 每次对话必须包含图像数据，不然会出现 `Add an image to use models/gemini-pro-vision, or switch your model to a text model.` 错误。
-    - 只支持单轮对话，多轮对话话出现 `Multiturn chat is not enabled for models/gemini-pro-vision` 错误。
+    - 只支持单轮对话，多轮对话会出现 `Multiturn chat is not enabled for models/gemini-pro-vision` 错误。
   
 - 非 Vercel 运行环境下支持本地存储
 
