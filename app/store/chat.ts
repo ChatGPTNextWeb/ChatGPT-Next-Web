@@ -608,6 +608,7 @@ export const useChatStore = createPersistStore(
         // should summarize topic after chating more than 50 words
         const SUMMARIZE_MIN_LEN = 50;
         if (
+          !process.env.NEXT_PUBLIC_DISABLE_AUTOGENERATETITLE &&
           config.enableAutoGenerateTitle &&
           session.topic === DEFAULT_TOPIC &&
           countMessages(messages) >= SUMMARIZE_MIN_LEN
@@ -662,6 +663,7 @@ export const useChatStore = createPersistStore(
         );
 
         if (
+          !process.env.NEXT_PUBLIC_DISABLE_SENDMEMORY &&
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {

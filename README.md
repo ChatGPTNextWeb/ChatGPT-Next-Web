@@ -232,6 +232,13 @@ Azure 密钥。
 
 Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
 
+### `NEXT_PUBLIC_DISABLE_AUTOGENERATETITLE` （可选）
+
+如果你不想让用户使用自动生成标题功能，将此环境变量设置为 1 即可。
+
+### `NEXT_PUBLIC_DISABLE_SENDMEMORY` （可选）
+
+如果你不想让用户使用历史摘要功能，将此环境变量设置为 1 即可。
 
 ## 部署
 

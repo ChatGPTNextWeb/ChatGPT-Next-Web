@@ -801,7 +801,11 @@ export function Settings() {
           >
             <input
               type="checkbox"
-              checked={config.enableAutoGenerateTitle}
+              disabled={!!process.env.NEXT_PUBLIC_DISABLE_AUTOGENERATETITLE}
+              checked={
+                !process.env.NEXT_PUBLIC_DISABLE_AUTOGENERATETITLE &&
+                config.enableAutoGenerateTitle
+              }
               onChange={(e) =>
                 updateConfig(
                   (config) =>

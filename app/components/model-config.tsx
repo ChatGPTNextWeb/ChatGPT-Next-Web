@@ -208,7 +208,11 @@ export function ModelConfigList(props: {
       <ListItem title={Locale.Memory.Title} subTitle={Locale.Memory.Send}>
         <input
           type="checkbox"
-          checked={props.modelConfig.sendMemory}
+          disabled={!!process.env.NEXT_PUBLIC_DISABLE_SENDMEMORY}
+          checked={
+            !process.env.NEXT_PUBLIC_DISABLE_SENDMEMORY &&
+            props.modelConfig.sendMemory
+          }
           onChange={(e) =>
             props.updateConfig(
               (config) => (config.sendMemory = e.currentTarget.checked),
