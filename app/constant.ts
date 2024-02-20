@@ -145,9 +145,9 @@ export const DEFAULT_MODELS = [
   //   available: false,
   // },
   {
-    name: "gpt-4-1106-preview",
-    describe: "GPT-4",
-    available: false,
+    name: "gpt-4-0125-preview",
+    describe: "GPT-4,最新版,推荐",
+    available: true,
     provider: {
       id: "openai",
       providerName: "OpenAI",
@@ -155,8 +155,8 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4-0125-preview",
-    describe: "GPT-4,最新版,推荐",
+    name: "gpt-4-1106-preview",
+    describe: "GPT-4,备用",
     available: true,
     provider: {
       id: "openai",
