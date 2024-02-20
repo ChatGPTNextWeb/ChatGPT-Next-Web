@@ -29,7 +29,7 @@ const DEFAULT_ACCESS_STATE = {
   // azure
   azureUrl: "",
   azureApiKey: "",
-  azureApiVersion: "2023-08-01-preview",
+  azureApiVersion: "2024-02-15-preview",
 
   // google ai studio
   googleBaseUrl: "",
@@ -114,7 +114,7 @@ export const useAccessStore = createPersistStore(
           googleApiKey: string;
         };
         state.openaiApiKey = state.token;
-        state.azureApiVersion = "2023-08-01-preview";
+        state.azureApiVersion = "2024-02-15-preview";
         state.googleApiKey = state.token;
       }
 

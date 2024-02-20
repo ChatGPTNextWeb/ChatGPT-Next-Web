@@ -180,7 +180,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
     };
   }
   const isAzure = accessStore.provider === ServiceProvider.Azure;
-  let authHeader = isAzure ? "api-key" : "Authorization";
+  let authHeader = "Authorization";
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
@@ -195,6 +195,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
   if (validString(apiKey)) {
     authHeader = isGoogle ? "x-goog-api-key" : authHeader;
     headers[authHeader] = makeBearer(apiKey);
+    if (isAzure) headers["api-key"] = makeBearer(apiKey);
   } else if (
     accessStore.enabledAccessControl() &&
     validString(accessStore.accessCode)
