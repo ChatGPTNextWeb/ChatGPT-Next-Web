@@ -30,7 +30,7 @@ function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
         case "ArrowRight":
           if (currentDate) {
             const temp_date = addDays(currentDate, 1);
-            if (temp_date < maxDate) {
+            if (temp_date <= maxDate) {
               setCurrentDate(temp_date);
             }
           }
