@@ -167,6 +167,16 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "gpt-4-vision-preview",
+    available: true,
+    describe: "GPT-4多模态,图像识别",
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
     name: "gemini-pro",
     available: true,
     describe: "谷歌的,不要钱,但质量一般",
@@ -178,7 +188,7 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gemini-pro-vision",
-    available: true,
+    available: false,
     describe: "谷歌多模态,图像识别",
     provider: {
       id: "google",

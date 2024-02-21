@@ -31,12 +31,17 @@ async function handle(
         const regex_message = /(?<="content":")(.*?)(?="}[,\]])/g;
         const matchAllMessage = request_data.logEntry.match(regex_message);
         // console.log(matchAllMessage, "=====");
-        if (matchAllMessage.length > 0) {
+        if (matchAllMessage && matchAllMessage.length > 0) {
           request_data.logToken =
             getTokenLength(matchAllMessage.join(" ")) +
             matchAllMessage.length * 3;
+        } else {
+          request_data.logToken = 0;
         }
         delete request_data["logEntry"];
+      }
+      if (request_data?.model == "midjourney") {
+        request_data.logToken = 1000;
       }
     } catch (e) {
       console.log("[LOG]", "logToken", e);

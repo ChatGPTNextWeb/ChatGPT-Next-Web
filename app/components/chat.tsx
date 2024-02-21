@@ -36,7 +36,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
-import UploadIcon from "../icons/upload.svg";
+// import UploadIcon from "../icons/upload.svg";
 
 import {
   ChatMessage,
@@ -433,7 +433,6 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
-  imageSelected: (img: any) => void;
   hitBottom: boolean;
   uploading: boolean;
 }) {
@@ -454,25 +453,6 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
-
-  function selectImage() {
-    document.getElementById("chat-image-file-select-upload")?.click();
-  }
-
-  const onImageSelected = (e: any) => {
-    const file = e.target.files[0];
-    const filename = file.name;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64 = reader.result;
-      props.imageSelected({
-        filename,
-        base64,
-      });
-    };
-    e.target.value = null;
-  };
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
@@ -529,13 +509,13 @@ export function ChatActions(props: {
       {/*  />*/}
       {/*)}*/}
 
-      {showUploadImage && (
-        <ChatAction
-          onClick={props.uploadImage}
-          text={Locale.Chat.InputActions.UploadImage}
-          icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
-        />
-      )}
+      {/*{showUploadImage && (*/}
+      <ChatAction
+        onClick={props.uploadImage}
+        text={Locale.Chat.InputActions.UploadImage}
+        icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
+      />
+      {/*)}*/}
       <ChatAction
         onClick={nextTheme}
         text={Locale.Chat.InputActions.Theme[theme]}
@@ -587,18 +567,18 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
-      <ChatAction
-        onClick={selectImage}
-        text={Locale.Chat.InputActions.UploadImage}
-        icon={<UploadIcon />}
-      />
-      <input
-        type="file"
-        accept=".png,.jpg,.webp,.jpeg"
-        id="chat-image-file-select-upload"
-        style={{ display: "none" }}
-        onChange={onImageSelected}
-      />
+      {/*<ChatAction*/}
+      {/*  onClick={selectImage}*/}
+      {/*  text={Locale.Chat.InputActions.UploadImage}*/}
+      {/*  icon={<UploadIcon />}*/}
+      {/*/>*/}
+      {/*<input*/}
+      {/*  type="file"*/}
+      {/*  accept=".png,.jpg,.webp,.jpeg"*/}
+      {/*  id="chat-image-file-select-upload"*/}
+      {/*  style={{ display: "none" }}*/}
+      {/*  onChange={onImageSelected}*/}
+      {/*/>*/}
 
       {showModelSelector && (
         <Selector
@@ -705,7 +685,6 @@ function _Chat() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
-  const [useImages, setUseImages] = useState<any[]>([]);
   const [mjImageMode, setMjImageMode] = useState<string>("IMAGINE");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -784,36 +763,23 @@ function _Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
-    if (useImages.length > 0) {
-      if (mjImageMode === "IMAGINE" && userInput == "") {
-        alert(Locale.Midjourney.NeedInputUseImgPrompt);
-        return;
-      }
-    } else {
-      const matchCommand = chatCommands.match(userInput);
-      if (matchCommand.matched) {
-        setUserInput("");
-        setPromptHints([]);
-        matchCommand.invoke();
-        return;
-      }
+    const matchCommand = chatCommands.match(userInput);
+    if (matchCommand.matched) {
+      setUserInput("");
+      setPromptHints([]);
+      matchCommand.invoke();
+      return;
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(
-        userInput,
-        {
-          useImages,
-          mjImageMode,
-          setAutoScroll,
-        },
-        attachImages,
-      )
+      .onUserInput(userInput, attachImages, {
+        mjImageMode,
+        setAutoScroll,
+      })
       .then(() => setIsLoading(false));
     setAttachImages([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
-    setUseImages([]);
     setMjImageMode("IMAGINE");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
@@ -1393,6 +1359,8 @@ function _Chat() {
                         className={styles["chat-message-item-image"]}
                         src={getMessageImages(message)[0]}
                         alt=""
+                        width={100}
+                        height={100}
                       />
                     )}
                     {getMessageImages(message).length > 1 && (
@@ -1413,6 +1381,8 @@ function _Chat() {
                               key={index}
                               src={image}
                               alt=""
+                              width={20}
+                              height={20}
                             />
                           );
                         })}
@@ -1588,54 +1558,7 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
-          imageSelected={(img: any) => {
-            if (useImages.length >= 5) {
-              alert(Locale.Midjourney.SelectImgMax(5));
-              return;
-            }
-            setUseImages([...useImages, img]);
-          }}
         />
-        {useImages.length > 0 && (
-          <div className={styles["chat-select-images"]}>
-            {useImages.map((img: any, i) => (
-              <Image
-                src={img.base64}
-                key={i}
-                onClick={() => {
-                  setUseImages(useImages.filter((_, ii) => ii != i));
-                }}
-                title={img.filename}
-                alt={img.filename}
-                width={20}
-                height={20}
-              />
-            ))}
-            <div style={{ fontSize: "12px", marginBottom: "5px" }}>
-              {[
-                { name: Locale.Midjourney.ModeImagineUseImg, value: "IMAGINE" },
-                // { name: Locale.Midjourney.ModeBlend, value: "BLEND" },
-                // { name: Locale.Midjourney.ModeDescribe, value: "DESCRIBE" },
-              ].map((item, i) => (
-                <label key={i}>
-                  <input
-                    type="radio"
-                    name="mj-img-mode"
-                    checked={mjImageMode == item.value}
-                    value={item.value}
-                    onChange={(e) => {
-                      setMjImageMode(e.target.value);
-                    }}
-                  />
-                  <span>{item.name}</span>
-                </label>
-              ))}
-            </div>
-            <div style={{ fontSize: "12px" }}>
-              <small>{Locale.Midjourney.HasImgTip}</small>
-            </div>
-          </div>
-        )}
         <label
           className={`${styles["chat-input-panel-inner"]} ${
             attachImages.length != 0
@@ -1648,12 +1571,7 @@ function _Chat() {
             id="chat-input"
             ref={inputRef}
             className={styles["chat-input"]}
-            // placeholder={Locale.Chat.Input(submitKey)}
-            placeholder={
-              useImages.length > 0 && mjImageMode != "IMAGINE"
-                ? Locale.Midjourney.InputDisabled
-                : Locale.Chat.Input(submitKey)
-            }
+            placeholder={Locale.Chat.Input(submitKey)}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}

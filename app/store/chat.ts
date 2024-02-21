@@ -412,20 +412,21 @@ export const useChatStore = createPersistStore(
       // async onUserInput(content: string, extAttr?: any) {
       async onUserInput(
         content: string,
-        extAttr?: any,
         attachImages?: string[],
+        extAttr?: any,
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         let userContent: string = "";
         if (
           extAttr?.mjImageMode &&
-          (extAttr?.useImages?.length ?? 0) > 0 &&
+          attachImages &&
+          attachImages.length > 0 &&
           extAttr.mjImageMode !== "IMAGINE"
         ) {
           if (
             extAttr.mjImageMode === "BLEND" &&
-            (extAttr.useImages.length < 2 || extAttr.useImages.length > 5)
+            (attachImages.length < 2 || attachImages.length > 5)
           ) {
             alert(Locale.Midjourney.BlendMinImg(2, 5));
             return new Promise((resolve: any, reject) => {
@@ -433,7 +434,7 @@ export const useChatStore = createPersistStore(
             });
           }
           userContent = `/mj ${extAttr?.mjImageMode}`;
-          extAttr.useImages.forEach((img: any, index: number) => {
+          attachImages.forEach((img: any, index: number) => {
             userContent += `::[${index + 1}]${img.filename}`;
           });
         } else {
@@ -546,10 +547,10 @@ export const useChatStore = createPersistStore(
                     "POST",
                     JSON.stringify({
                       prompt: prompt,
-                      // base64Array: extAttr?.useImages?.[0]?.base64 ?? null,
-                      base64Array: extAttr?.useImages?.[0]?.base64
-                        ? [extAttr?.useImages?.[0]?.base64]
-                        : null,
+                      base64Array:
+                        attachImages && attachImages.length > 0
+                          ? [attachImages?.[0]]
+                          : null,
                     }),
                   );
                   break;
@@ -559,15 +560,13 @@ export const useChatStore = createPersistStore(
                     "submit/describe",
                     "POST",
                     JSON.stringify({
-                      base64: extAttr.useImages[0].base64,
+                      base64: attachImages?.[0],
                     }),
                   );
                   break;
                 }
                 case "BLEND": {
-                  const base64Array = extAttr.useImages.map(
-                    (ui: any) => ui.base64,
-                  );
+                  const base64Array = attachImages;
                   res = await reqFn(
                     "submit/blend",
                     "POST",
