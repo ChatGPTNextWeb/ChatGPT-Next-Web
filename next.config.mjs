@@ -64,7 +64,7 @@ if (mode !== "export") {
 
   nextConfig.rewrites = async () => {
     const ret = [
-      // adjust for previous verison directly using "/api/proxy/" as proxy base route
+      // adjust for previous version directly using "/api/proxy/" as proxy base route
       {
         source: "/api/proxy/v1/:path*",
         destination: "https://api.openai.com/v1/:path*",
