@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: build test image to aly
-    runs-on: ty
+    runs-on: thinkpad
     #    runs-on: ubuntu-latest
     #    runs-on: self-hosted
     steps:
