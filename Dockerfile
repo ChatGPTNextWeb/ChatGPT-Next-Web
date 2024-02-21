@@ -15,9 +15,12 @@ FROM base AS builder
 
 RUN apk update && apk add --no-cache git
 
-ENV OPENAI_API_KEY=""
+ENV OPENAI_API_KEY="sk-VC6xja2o0mrxPp209bE7Fc4e9f254aFdBdD36eAe72E5C5B2"
 ENV GOOGLE_API_KEY=""
-ENV CODE=""
+ENV CODE="aaaa1111"
+ENV BASE_URL="https://chatapi.a3e.top"
+ENV DISABLE_FAST_LINK=1
+ENV HIDE_USER_API_KEY=1
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
