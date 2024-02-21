@@ -10,7 +10,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth, getIP } from "../../auth";
 import { getToken } from "next-auth/jwt";
-import { requestOpenai } from "../../common";
+import { requestLog, requestOpenai } from "../../common";
 import { headers } from "next/headers";
 
 const ALLOWD_PATH = new Set(Object.values({ ...OpenaiPath, ...AZURE_PATH }));
@@ -75,37 +75,7 @@ async function handle(
     jsonBody = {};
   }
 
-  try {
-    const protocol = req.headers.get("x-forwarded-proto") || "http";
-    //const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-    const baseUrl = "http://localhost:3000";
-    const ip = getIP(req);
-    // 对其进行 Base64 解码
-    let h_userName = req.headers.get("x-request-name");
-    if (h_userName) {
-      const buffer = Buffer.from(h_userName, "base64");
-      h_userName = decodeURIComponent(buffer.toString("utf-8"));
-    }
-    console.log("[中文]", h_userName, baseUrl);
-    const logData = {
-      ip: ip,
-      path: subpath,
-      logEntry: JSON.stringify(jsonBody),
-      model: jsonBody?.model,
-      userName: h_userName,
-    };
-
-    await fetch(`${baseUrl}/api/logs/openai`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // ...req.headers,
-      },
-      body: JSON.stringify(logData),
-    });
-  } catch (e) {
-    console.log("[LOG]", e, "==========");
-  }
+  await requestLog(req, jsonBody, subpath);
 
   const isAzure = AZURE_MODELS.includes(jsonBody?.model as string);
   // console.log("[Models]", jsonBody?.model);

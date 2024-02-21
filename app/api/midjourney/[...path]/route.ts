@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/app/api/auth";
+import { auth, getIP } from "@/app/api/auth";
 import { ModelProvider } from "@/app/constant";
+import { requestLog } from "@/app/api/common";
 
 const BASE_URL = process.env.MIDJOURNEY_PROXY_URL ?? null;
 const MIDJOURNEY_PROXY_KEY = process.env.MIDJOURNEY_PROXY_KEY ?? null;
@@ -52,6 +53,10 @@ async function handle(
     "/api/midjourney/",
     "",
   );
+
+  if (reqPath.startsWith("mj/submit/")) {
+    await requestLog(req, jsonBody, reqPath);
+  }
 
   let fetchUrl = `${mjProxyUrl}/${reqPath}`;
 
