@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
 import * as echarts from "echarts";
 import { DatePicker } from "@tremor/react";
@@ -17,24 +23,35 @@ interface ComponentProps {
 const maxDate = new Date();
 
 function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
+  const changeCurrentDate = useCallback(
+    (d: Date) => {
+      const new_d = new Date(
+        d.getFullYear(),
+        d.getMonth(),
+        d.getDate(),
+        0,
+        0,
+        0,
+      );
+      if (new_d <= maxDate) {
+        setCurrentDate(d);
+      }
+    },
+    [setCurrentDate],
+  );
   // 增加键盘监听修改日期
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowLeft":
           if (currentDate) {
-            setCurrentDate(subDays(currentDate, 1));
+            changeCurrentDate(subDays(currentDate, 1));
           }
-          // console.log(currentDate)
           break;
         case "ArrowRight":
           if (currentDate) {
-            const temp_date = addDays(currentDate, 1);
-            if (temp_date <= maxDate) {
-              setCurrentDate(temp_date);
-            }
+            changeCurrentDate(addDays(currentDate, 1));
           }
-          // console.log(currentDate)
           break;
         default:
           break;
@@ -44,7 +61,7 @@ function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
     return () => {
       document.removeEventListener("keydown", keydownEvent);
     };
-  }, [currentDate, setCurrentDate]);
+  }, [changeCurrentDate, currentDate]);
 
   return (
     <DatePicker
@@ -52,7 +69,7 @@ function DateSelectComponent({ currentDate, setCurrentDate }: ComponentProps) {
       value={currentDate}
       locale={zhCN}
       defaultValue={new Date()}
-      onValueChange={(d) => d && setCurrentDate(d)}
+      onValueChange={(d) => d && changeCurrentDate(d)}
       maxDate={maxDate}
     />
   );
