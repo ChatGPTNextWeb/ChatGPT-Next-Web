@@ -104,6 +104,7 @@ const cn = {
       Clear: "清除聊天",
       UploadImage: "上传图片",
       Settings: "对话设置",
+      UploadImage: "上传图片",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
