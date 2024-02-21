@@ -494,15 +494,15 @@ export function ChatActions(props: {
 
     // if current model is not available
     // switch to first available model
-    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
-    if (isUnavaliableModel && models.length > 0) {
+    const isUnavailableModel = !models.some((m) => m.name === currentModel);
+    if (isUnavailableModel && models.length > 0) {
       const nextModel = models[0].name as ModelType;
       chatStore.updateCurrentSession(
         (session) => (session.mask.modelConfig.model = nextModel),
       );
       showToast(nextModel);
     }
-  }, [chatStore, currentModel, models]);
+  }, [chatStore, currentModel, models, props]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -1552,7 +1552,7 @@ function _Chat() {
                     defaultShow={i >= messages.length - 6}
                   />
                   {getMessageImages(message).length == 1 && (
-                    <img
+                    <Image
                       className={styles["chat-message-item-image"]}
                       src={getMessageImages(message)[0]}
                       alt=""
@@ -1569,7 +1569,7 @@ function _Chat() {
                     >
                       {getMessageImages(message).map((image, index) => {
                         return (
-                          <img
+                          <Image
                             className={styles["chat-message-item-image-multi"]}
                             key={index}
                             src={image}
