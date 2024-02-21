@@ -502,7 +502,8 @@ export function ChatActions(props: {
       );
       showToast(nextModel);
     }
-  }, [chatStore, currentModel, models, props]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatStore, currentModel, models]);
 
   return (
     <div className={styles["chat-input-actions"]}>
