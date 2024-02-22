@@ -146,7 +146,7 @@ function Screen() {
   }, []);
 
   return (
-    {tbdsCode !== 'lab.ourtbds.com' ? (<div>验证码错误！</div>):(
+    {tbdsCode != 'lab.ourtbds.com' ? (<div>验证码错误！</div>):(
       <div
         className={
           styles.container +
