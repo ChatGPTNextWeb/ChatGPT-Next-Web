@@ -146,21 +146,22 @@ function Screen() {
   }, []);
 
   return (
-    <div
-      className={
-        styles.container +
-        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
-          getLang() === "ar" ? styles["rtl-screen"] : ""
-        }`
-      }
-    >
-      {isAuth ? (
-        <>
-          <AuthPage />
-        </>
-      ) : (
-        <>
-          { tbdsCode === 'lab.ourtbds.com' && (<SideBar className={isHome ? styles["sidebar-show"] : ""} />
+    {tbdsCode !== 'lab.ourtbds.com' ? (<div>验证码错误！</div>):(
+      <div
+        className={
+          styles.container +
+          ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
+            getLang() === "ar" ? styles["rtl-screen"] : ""
+          }`
+        }
+      >
+        {isAuth ? (
+          <>
+            <AuthPage />
+          </>
+        ) : (
+          <>
+            <SideBar className={isHome ? styles["sidebar-show"] : ""} />
             <div className={styles["window-content"]} id={SlotID.AppBody}>
                   <Routes>
                     <Route path={Path.Home} element={<Chat />} />
@@ -170,10 +171,10 @@ function Screen() {
                     <Route path={Path.Settings} element={<Settings />} />
                   </Routes>
             </div>
-          )}
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    )}
   );
 }
 
