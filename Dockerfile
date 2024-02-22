@@ -28,7 +28,7 @@ RUN yarn build
 FROM base AS runner
 WORKDIR /app
 
-RUN apk add --no-cache proxychains
+RUN apk add proxychains-ng
 
 ENV PROXY_URL=""
 ENV OPENAI_API_KEY=""
