@@ -137,6 +137,8 @@ function Screen() {
     var code:any = prompt("请输入授权码");
     if(code == 'lab.ourtbds.com') {
       localStorage.setItem('tbdsCode', code);
+    } else {
+      localStorage.setItem('tbdsCode', '');
     }
   }
   useEffect(() => {
@@ -162,12 +164,12 @@ function Screen() {
 
           <div className={styles["window-content"]} id={SlotID.AppBody}>
             <Routes>
-              { tbdsCode && (
+              { tbdsCode === 'lab.ourtbds.com' && (
                 <Route path={Path.Home} element={<Chat />} />
               )}
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
-              { tbdsCode && (
+              { tbdsCode === 'lab.ourtbds.com' && (
                 <Route path={Path.Chat} element={<Chat />} />
               )}
               <Route path={Path.Settings} element={<Settings />} />
