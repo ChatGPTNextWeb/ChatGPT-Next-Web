@@ -922,14 +922,7 @@ function _Chat() {
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
-      var code = prompt("请输入授权码");
-      	if(code != null) {
-			    accessStore.update(
-            	(access:any) => (access.accessCode = code),
-          	);
-  	    } else {
-  	      copiedHello.content = Locale.Error.Unauthorized;
-  	    }
+      copiedHello.content = Locale.Error.Unauthorized;
     }
     context.push(copiedHello);
   }
