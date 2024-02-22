@@ -12,7 +12,7 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
-
+import { Stream } from "./stream-ai";
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
@@ -244,6 +244,11 @@ export function SideBar(props: { className?: string }) {
         onPointerDown={(e) => onDragStart(e as any)}
       >
         <DragIcon />
+      </div>
+
+      {/* stream */}
+      <div className="custom-style-web-stream">
+        <Stream />
       </div>
     </div>
   );
