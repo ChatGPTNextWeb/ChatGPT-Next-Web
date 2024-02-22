@@ -28,8 +28,7 @@ import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
-import { useAccessStore, BOT_HELLO } from "../store";
-import Locale from "../locales";
+import { useAccessStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -134,22 +133,12 @@ function Screen() {
   const tbdsCode = localStorage.getItem('tbdsCode');
   const accessStore = useAccessStore();
   const copiedHello = Object.assign({}, BOT_HELLO);
-  /* 未授权，检查是否有缓存code， */
-  if (!accessStore.isAuthorized()) {
-    // 有缓存code，则更新code
-    if(tbdsCode){
-      accessStore.update(
-        (access:any) => (access.accessCode = tbdsCode),
-      );
-    } else if(!tbdsCode){
-      // 无缓存，则弹窗提示，重新输入
-      var code:any = prompt("请输入授权码");
-      accessStore.update(
-        (access:any) => (access.accessCode = code),
-      );
-     localStorage.setItem('tbdsCode', code)
-    } else{
-      copiedHello.content = Locale.Error.Unauthorized;
+  // 有缓存code，则更新code
+  if(tbdsCode != 'lab.ourtbds.com'){
+    // 无缓存，则弹窗提示，重新输入
+    var code:any = prompt("请输入授权码");
+    if(code == 'lab.ourtbds.com') {
+      localStorage.setItem('tbdsCode', code);
     }
   }
   useEffect(() => {
