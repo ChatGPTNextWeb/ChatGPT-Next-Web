@@ -145,38 +145,38 @@ function Screen() {
     loadAsyncGoogleFont();
   }, []);
 
-  return (
-    {tbdsCode === 'lab.ourtbds.com' ? (
+  return {
+    tbdsCode === 'lab.ourtbds.com' ? (
       <div
-        className={
-          styles.container +
-          ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
-            getLang() === "ar" ? styles["rtl-screen"] : ""
-          }`
-        }
-      >
-        {isAuth ? (
-          <>
-            <AuthPage />
-          </>
-        ) : (
-          <>
-            <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-            <div className={styles["window-content"]} id={SlotID.AppBody}>
-                  <Routes>
-                    <Route path={Path.Home} element={<Chat />} />
-                    <Route path={Path.NewChat} element={<NewChat />} />
-                    <Route path={Path.Masks} element={<MaskPage />} />
-                    <Route path={Path.Chat} element={<Chat />} />
-                    <Route path={Path.Settings} element={<Settings />} />
-                  </Routes>
-            </div>
-          </>
-        )}
-      </div>) : (
-      <div>验证码错误！</div>
-    )}
-  );
+      className={
+        styles.container +
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
+          getLang() === "ar" ? styles["rtl-screen"] : ""
+        }`
+      }
+    >
+      {isAuth ? (
+        <>
+          <AuthPage />
+        </>
+      ) : (
+        <>
+          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+
+          <div className={styles["window-content"]} id={SlotID.AppBody}>
+            <Routes>
+              <Route path={Path.Home} element={<Chat />} />
+              <Route path={Path.NewChat} element={<NewChat />} />
+              <Route path={Path.Masks} element={<MaskPage />} />
+              <Route path={Path.Chat} element={<Chat />} />
+              <Route path={Path.Settings} element={<Settings />} />
+            </Routes>
+          </div>
+        </>
+      )}
+    </div>
+    ) : (<div>验证码错误！</div>)
+  };
 }
 
 export function useLoadData() {
