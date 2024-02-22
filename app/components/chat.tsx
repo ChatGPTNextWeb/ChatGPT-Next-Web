@@ -924,7 +924,7 @@ function _Chat() {
     if (!accessStore.isAuthorized()) {
       var code = prompt("请输入授权码");
       if(code != null) {
-        accessStore.updateCode(code);
+        accessStore.updateToken(code);
       } else {
         copiedHello.content = Locale.Error.Unauthorized;
       }
