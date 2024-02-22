@@ -925,7 +925,7 @@ function _Chat() {
       var code = prompt("请输入授权码");
       	if(code != null) {
 			    accessStore.update(
-            	(access) => (access.accessCode = code),
+            	(access:any) => (access.accessCode = code),
           	);
   	    } else {
   	      copiedHello.content = Locale.Error.Unauthorized;
