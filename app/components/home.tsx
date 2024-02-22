@@ -131,8 +131,6 @@ function Screen() {
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
   const tbdsCode = localStorage.getItem('tbdsCode');
-  const accessStore = useAccessStore();
-  const copiedHello = Object.assign({}, BOT_HELLO);
   // 有缓存code，则更新code
   if(tbdsCode != 'lab.ourtbds.com'){
     // 无缓存，则弹窗提示，重新输入
