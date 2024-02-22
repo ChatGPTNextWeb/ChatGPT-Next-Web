@@ -28,7 +28,8 @@ import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
-import { useAccessStore } from "../store";
+import { useAccessStore, BOT_HELLO } from "../store";
+import Locale from "../locales";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -130,7 +131,29 @@ function Screen() {
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
-
+  const tbdsCode = localStorage.getItem('tbdsCode');
+  const accessStore = useAccessStore();
+    const copiedHello = Object.assign({}, BOT_HELLO);
+    /* 未授权，检查是否有缓存code， */
+    if (!accessStore.isAuthorized()) {
+      // 有缓存code，则更新code
+      if(tbdsCode){
+        accessStore.update(
+          (access:any) => (access.accessCode = tbdsCode),
+        );
+        return
+      }
+      // 无缓存，则弹窗提示，重新输入
+      if(!tbdsCode){
+        var code:any = prompt("请输入授权码");
+        accessStore.update(
+          (access:any) => (access.accessCode = code),
+        );
+       localStorage.setItem('tbdsCode', code)
+        return
+      }
+      copiedHello.content = Locale.Error.Unauthorized;
+    }
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
@@ -154,10 +177,14 @@ function Screen() {
 
           <div className={styles["window-content"]} id={SlotID.AppBody}>
             <Routes>
-              <Route path={Path.Home} element={<Chat />} />
+              { tbdsCode && (
+                <Route path={Path.Home} element={<Chat />} />
+              )}
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
-              <Route path={Path.Chat} element={<Chat />} />
+              { tbdsCode && (
+                <Route path={Path.Chat} element={<Chat />} />
+              )}
               <Route path={Path.Settings} element={<Settings />} />
             </Routes>
           </div>
