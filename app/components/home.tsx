@@ -146,7 +146,7 @@ function Screen() {
   }, []);
 
   return {
-    tbdsCode === 'lab.ourtbds.com' ? (
+    isAuth ? (
       <div
       className={
         styles.container +
