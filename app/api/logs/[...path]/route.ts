@@ -26,8 +26,6 @@ async function handle(
     // console.log("===========4", request_data);
     try {
       if (request_data?.logEntry) {
-        // const regex = /\[(.*)]/g;
-        // const matchResponse = request_data.logEntry.match(regex);
         const regex_message = /(?<="content":")(.*?)(?="}[,\]])/g;
         const matchAllMessage = request_data.logEntry.match(regex_message);
         // console.log(matchAllMessage, "=====");
@@ -35,8 +33,6 @@ async function handle(
           request_data.logToken =
             getTokenLength(matchAllMessage.join(" ")) +
             matchAllMessage.length * 3;
-        } else {
-          request_data.logToken = 0;
         }
         delete request_data["logEntry"];
       }

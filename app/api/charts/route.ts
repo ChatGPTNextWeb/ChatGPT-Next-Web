@@ -66,8 +66,8 @@ async function handle(req: NextRequest) {
   const todayLog = await prisma.logEntry.findMany({
     where: {
       createdAt: {
-        gte: startOfTheDayInTimeZone, // gte 表示 '大于等于'
-        lte: endOfTheDayInTimeZone, // lte 表示 '小于等于'
+        gte: startOfTheDayInTimeZone.toISOString(), // gte 表示 '大于等于'
+        lte: endOfTheDayInTimeZone.toISOString(), // lte 表示 '小于等于'
       },
     },
     include: {

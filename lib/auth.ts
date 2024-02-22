@@ -10,7 +10,7 @@ const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 export const authOptions: NextAuthOptions = {
     // debug: !VERCEL_DEPLOYMENT,
-    debug: SECURE_COOKIES,
+    debug: !SECURE_COOKIES,
     useSecureCookies: SECURE_COOKIES,
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
