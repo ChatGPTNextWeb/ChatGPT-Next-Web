@@ -146,7 +146,7 @@ function Screen() {
   }, []);
 
   return (
-    {tbdsCode != 'lab.ourtbds.com' ? (<div>验证码错误！</div>):(
+    {tbdsCode === 'lab.ourtbds.com' ? (
       <div
         className={
           styles.container +
@@ -173,7 +173,8 @@ function Screen() {
             </div>
           </>
         )}
-      </div>
+      </div>) : (
+      <div>验证码错误！</div>
     )}
   );
 }
