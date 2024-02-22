@@ -65,6 +65,7 @@ const en: LocaleType = {
       Masks: "Masks",
       Clear: "Clear Context",
       Settings: "Settings",
+      UploadImage: "Upload Images",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -322,8 +323,7 @@ const en: LocaleType = {
       Google: {
         ApiKey: {
           Title: "API Key",
-          SubTitle:
-            "Obtain your API Key from Google AI",
+          SubTitle: "Obtain your API Key from Google AI",
           Placeholder: "Enter your Google AI Studio API Key",
         },
 
