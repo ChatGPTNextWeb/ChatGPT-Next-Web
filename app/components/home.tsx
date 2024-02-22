@@ -160,19 +160,17 @@ function Screen() {
         </>
       ) : (
         <>
-          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
-          <div className={styles["window-content"]} id={SlotID.AppBody}>
-              { tbdsCode === 'lab.ourtbds.com' && (
-                <Routes>
-                  <Route path={Path.Home} element={<Chat />} />
-                  <Route path={Path.NewChat} element={<NewChat />} />
-                  <Route path={Path.Masks} element={<MaskPage />} />
-                  <Route path={Path.Chat} element={<Chat />} />
-                  <Route path={Path.Settings} element={<Settings />} />
-                </Routes>
-              )}
-          </div>
+          { tbdsCode === 'lab.ourtbds.com' && (<SideBar className={isHome ? styles["sidebar-show"] : ""} />
+            <div className={styles["window-content"]} id={SlotID.AppBody}>
+                  <Routes>
+                    <Route path={Path.Home} element={<Chat />} />
+                    <Route path={Path.NewChat} element={<NewChat />} />
+                    <Route path={Path.Masks} element={<MaskPage />} />
+                    <Route path={Path.Chat} element={<Chat />} />
+                    <Route path={Path.Settings} element={<Settings />} />
+                  </Routes>
+            </div>
+          )}
         </>
       )}
     </div>
