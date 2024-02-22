@@ -137,6 +137,7 @@ function Screen() {
     var code:any = prompt("请输入授权码");
     if(code == 'lab.ourtbds.com') {
       localStorage.setItem('tbdsCode', code);
+      window.reload();
     } else {
       localStorage.setItem('tbdsCode', '');
     }
