@@ -133,27 +133,25 @@ function Screen() {
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
   const tbdsCode = localStorage.getItem('tbdsCode');
   const accessStore = useAccessStore();
-    const copiedHello = Object.assign({}, BOT_HELLO);
-    /* 未授权，检查是否有缓存code， */
-    if (!accessStore.isAuthorized()) {
-      // 有缓存code，则更新code
-      if(tbdsCode){
-        accessStore.update(
-          (access:any) => (access.accessCode = tbdsCode),
-        );
-        return
-      }
+  const copiedHello = Object.assign({}, BOT_HELLO);
+  /* 未授权，检查是否有缓存code， */
+  if (!accessStore.isAuthorized()) {
+    // 有缓存code，则更新code
+    if(tbdsCode){
+      accessStore.update(
+        (access:any) => (access.accessCode = tbdsCode),
+      );
+    } else if(!tbdsCode){
       // 无缓存，则弹窗提示，重新输入
-      if(!tbdsCode){
-        var code:any = prompt("请输入授权码");
-        accessStore.update(
-          (access:any) => (access.accessCode = code),
-        );
-       localStorage.setItem('tbdsCode', code)
-        return
-      }
+      var code:any = prompt("请输入授权码");
+      accessStore.update(
+        (access:any) => (access.accessCode = code),
+      );
+     localStorage.setItem('tbdsCode', code)
+    } else{
       copiedHello.content = Locale.Error.Unauthorized;
     }
+  }
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
