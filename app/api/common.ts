@@ -156,7 +156,7 @@ export async function requestLog(
     const logData = {
       ip: ip,
       path: url_path,
-      // logEntry: JSON.stringify(jsonBody),
+      logEntry: JSON.stringify(jsonBody),
       model: url_path.startsWith("mj/") ? "midjourney" : jsonBody?.model, // 后面尝试请求是添加到参数
       userName: h_userName,
     };

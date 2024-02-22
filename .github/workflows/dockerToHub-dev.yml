@@ -48,7 +48,7 @@ jobs:
       - name: Sync repository to tx
         run: |
           yes | docker image prune
-          ssh root@tx.xiaosi.cc 'mkdir -p /data/test/ChatGPT-Next-Web'
+          ssh -o StrictHostKeyChecking=no root@tx.xiaosi.cc 'mkdir -p /data/test/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/test/ChatGPT-Next-Web
       - name: deploy-to-tx
         uses: appleboy/ssh-action@master
