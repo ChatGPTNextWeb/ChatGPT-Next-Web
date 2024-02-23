@@ -1,0 +1,14 @@
+services:
+  chat:
+    profiles: ["no-proxy"]
+    build: .
+    image: arvatosystems/knowledgeai-chat
+    ports:
+      - 3000:3000
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - BASE_URL=$BASE_URL
+      - OPENAI_ORG_ID=
+      - CODE=
+      - HIDE_USER_API_KEY=1
+      - DISABLE_GPT4=1

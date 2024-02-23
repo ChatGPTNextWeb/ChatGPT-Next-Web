@@ -16,7 +16,7 @@ export interface RequestMessage {
 
 export interface LLMConfig {
   model: string;
-  user?: string;
+  user?: number;
   temperature?: number;
   top_p?: number;
   stream?: boolean;

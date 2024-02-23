@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";

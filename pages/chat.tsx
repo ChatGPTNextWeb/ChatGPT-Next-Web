@@ -51,7 +51,7 @@ export default function Chat() {
       `}</style>
       <div className={styles["auth-page"]}>
         <div className={`no-dark ${styles["auth-logo"]}`}>
-          <Image src="/aila-logo-round@2x.png" width="48" height="48" />
+          <Image src="/aila-logo-round@2x.png" width="48" height="48" alt="logo" />
           <p>&nbsp;</p>
         </div>
         <div className={styles["auth-title"]}>{Locale.Home.LoginMessage}</div>

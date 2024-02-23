@@ -32,7 +32,6 @@ export const DE_MASKS: BuiltinMask[] = [
     createdAt: 1689686861175,
   },
   {
-    id: "b4JEW-zPTN0ZkgJ2E-wNh",
     avatar: "1f5bc-fe0f",
     name: "AI Bildgenerator - Prompt Experte",
     context: [
@@ -63,7 +62,6 @@ export const DE_MASKS: BuiltinMask[] = [
     createdAt: 1698676715747,
   },
   {
-    id: "5Upu8PDV-B9wxoFh7HaHk",
     avatar: "1f916",
     name: "Landingpage",
     context: [
