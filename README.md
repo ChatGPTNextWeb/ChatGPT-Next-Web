@@ -94,6 +94,16 @@ yarn install
 yarn dev
 ```
 
+### Build Docker Image
+
+Docker credentials can be found in the keypass file.
+
+```shell
+docker buildx build . -t avviaintelligence/knowledgeai-chat:<version>
+docker push avviaintelligence/knowledgeai-chat:<version>
+```
+
+
 ## Deployment
 
 ### Docker (Recommended)
