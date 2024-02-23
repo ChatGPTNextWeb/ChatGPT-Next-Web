@@ -2,7 +2,7 @@ services:
   chat:
     profiles: ["no-proxy"]
     build: .
-    image: arvatosystems/knowledgeai-chat
+    image: avviaintelligence/knowledgeai-chat
     ports:
       - 3000:3000
     environment:

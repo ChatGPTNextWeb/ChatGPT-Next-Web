@@ -1,9 +1,7 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
-<h1 align="center">Avvia Intelligence ChatGPT</h1>
-
-One-Click to get well-designed cross-platform ChatGPT web UI.
+<h1 align="center">Avvia Intelligence - Knowledge AI Chat</h1>
 
 ![cover](./docs/images/cover.png)
 
@@ -11,8 +9,6 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 ## Features
 
-- Compact client (~5MB) on Linux/Windows/MacOS
-- Fully compatible with self-deployed llms, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
 - Privacy first, all data stored locally in the browser
 - Markdown support: LaTex, mermaid, code highlight, etc.
 - Responsive design, dark mode and PWA
@@ -48,7 +44,7 @@ After adding or modifying this environment variable, please redeploy the project
 
 ### `OPENAI_API_KEY` (required)
 
-Your openai api key.
+Your openai or Avvia Intelligence api key.
 
 ### `CODE` (optional)
 
@@ -103,75 +99,18 @@ yarn dev
 ### Docker (Recommended)
 
 ```shell
-docker pull arvato-systems-aila-solutions/AILA-ChatGPT-Client
+docker pull avviaintelligence/knowledgeai-chat
 
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
-   arvato-systems-aila-solutions/AILA-ChatGPT-Client
-```
-
-You can start service behind a proxy:
-
-```shell
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
-   -e PROXY_URL="http://localhost:7890" \
-   arvato-systems-aila-solutions/AILA-ChatGPT-Client
-```
-
-If your proxy needs password, use:
-
-```shell
--e PROXY_URL="http://127.0.0.1:7890 user pass"
-```
-
-### Shell
-
-```shell
-bash <(curl -s https://raw.githubusercontent.com/arvato-systems-aila-solutions/AILA-ChatGPT-Client/main/scripts/setup.sh)
+docker run -d -p 80:3000 \
+   -e OPENAI_API_KEY="xxxx" \
+   -e BASE_URL="your base url" \
+   avviaintelligence/knowledgeai-chat
 ```
 
 ## Translation
 
 If you want to add a new translation, read this [document](./docs/translation.md).
 
-## Donation
-
-[Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
-
-## Special Thanks
-
-### Sponsor
-
-[@mushan0x0](https://github.com/mushan0x0)
-[@ClarenceDan](https://github.com/ClarenceDan)
-[@zhangjia](https://github.com/zhangjia)
-[@hoochanlon](https://github.com/hoochanlon)
-[@relativequantum](https://github.com/relativequantum)
-[@desenmeng](https://github.com/desenmeng)
-[@webees](https://github.com/webees)
-[@chazzhou](https://github.com/chazzhou)
-[@hauy](https://github.com/hauy)
-[@Corwin006](https://github.com/Corwin006)
-[@yankunsong](https://github.com/yankunsong)
-[@ypwhs](https://github.com/ypwhs)
-[@fxxxchao](https://github.com/fxxxchao)
-[@hotic](https://github.com/hotic)
-[@WingCH](https://github.com/WingCH)
-[@jtung4](https://github.com/jtung4)
-[@micozhu](https://github.com/micozhu)
-[@jhansion](https://github.com/jhansion)
-[@Sha1rholder](https://github.com/Sha1rholder)
-[@AnsonHyq](https://github.com/AnsonHyq)
-[@synwith](https://github.com/synwith)
-[@piksonGit](https://github.com/piksonGit)
-[@ouyangzhiping](https://github.com/ouyangzhiping)
-
-### Contributor
-
-[Contributors](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ## LICENSE
 
