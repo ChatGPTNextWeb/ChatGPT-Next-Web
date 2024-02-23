@@ -101,9 +101,9 @@ export class ChatGPTApi implements LLMApi {
     // Define an array with the model names that should be replaced
     const modelsToReplace = [
       "gpt-4",
+      "gpt-4-32k",
       "gpt-4-0314",
       "gpt-4-0613",
-      "gpt-4-turbo-preview",
       "gpt-4-32k-0314",
       "gpt-4-32k-0613",
     ];
