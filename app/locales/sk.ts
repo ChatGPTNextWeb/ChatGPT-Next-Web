@@ -334,7 +334,7 @@ const sk: PartialLocaleType = {
           SubTitle: "Príklad:",
         },
 
-        ApiVerion: {
+        ApiVersion: {
           Title: "Verzia API (gemini-pro verzia API)",
           SubTitle: "Vyberte špecifickú verziu časti",
         },
