@@ -8,6 +8,10 @@ console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    TOKENHIPPO: "hippoToken",
+    STREAMBOT: "https://comfy2.hippopenny.com/api/streambotchat",
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

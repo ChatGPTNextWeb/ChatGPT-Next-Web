@@ -3,7 +3,7 @@
   "private": false,
   "license": "mit",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 7862",
     "build": "cross-env BUILD_MODE=standalone next build",
     "start": "next start",
     "lint": "next lint",
@@ -22,6 +22,7 @@
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
+    "axios": "^1.6.7",
     "emoji-picker-react": "^4.5.15",
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
