@@ -160,14 +160,14 @@ export function Markdown(
     fontSize?: number;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
-    openImageBox: (src: string) => void;
+    openImageBox?: (src: string) => void;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
   const { parentRef, openImageBox } = props;
 
   useEffect(() => {
-    if (!parentRef) {
+    if (!parentRef || !openImageBox) {
       return;
     }
     const imgs = mdRef.current?.querySelectorAll("img");
