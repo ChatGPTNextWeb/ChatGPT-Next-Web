@@ -8,7 +8,7 @@
 }
 
 .attach-image {
-  cursor: default;
+  cursor: pointer;
   width: 64px;
   height: 64px;
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
@@ -39,6 +39,12 @@
     border-radius: 5px;
     float: right;
     background-color: var(--white);
+    opacity: 0.8;
+    transition: all ease 0.3s;
+  }
+
+  .delete-image:hover {
+    opacity: 1;
   }
 }
 
@@ -422,6 +428,10 @@
   transition: all ease 0.3s;
 }
 
+.chat-message-item img {
+  cursor: pointer;
+}
+
 .chat-message-item-image {
   width: 100%;
   margin-top: 10px;
@@ -624,4 +634,55 @@
   .chat-input-send {
     bottom: 30px;
   }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.image-box {
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+.image-box>img {
+  animation: slide-in ease 0.3s;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.image-box-close-button {
+  cursor: pointer;
+  box-sizing: border-box;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: rgba($color: #888, $alpha: 0.2) 1px solid;
+  background-color: var(--white);
+  transition: all ease 0.3s;
+}
+
+.image-box-close-button:hover {
+  border-color: var(--primary);
+  filter: brightness(0.9);
 }

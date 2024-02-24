@@ -62,9 +62,7 @@ export class GeminiProApi implements LLMApi {
         i++;
       }
     }
-    // if (visionModel && messages.length > 1) {
-    //   options.onError?.(new Error("Multiturn chat is not enabled for models/gemini-pro-vision"));
-    // }
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -111,9 +109,7 @@ export class GeminiProApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      let googleChatPath = visionModel
-        ? Google.VisionChatPath
-        : Google.ChatPath;
+      let googleChatPath = multimodal ? Google.VisionChatPath : Google.ChatPath;
       let chatPath = this.path(googleChatPath);
 
       // let baseUrl = accessStore.googleUrl;
