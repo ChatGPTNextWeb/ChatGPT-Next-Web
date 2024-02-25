@@ -107,7 +107,7 @@ export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
-  default: "2021-09",
+  default: "2022-01",
   "gpt-4-turbo-preview": "2023-04",
   "gpt-4-1106-preview": "2023-04",
   "gpt-4-0125-preview": "2023-04",
