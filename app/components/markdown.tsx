@@ -100,17 +100,33 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string) {
+  let inCodeBlock = false;
   let escapedText = "";
 
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
     const nextChar = text[i + 1] || " ";
 
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
+    // Check for code blocks
+    if (char === "`" && text.slice(i, i + 3) === "```") {
+      inCodeBlock = !inCodeBlock;
+      escapedText += "```";
+      i += 2;
+      continue;
     }
 
-    escapedText += char;
+    if (char === "`") {
+      inCodeBlock = !inCodeBlock;
+      escapedText += "`";
+      continue;
+    }
+
+    // Check for $ followed by a number
+    if (!inCodeBlock && char === "$" && /^[0-9]$/.test(nextChar)) {
+      escapedText += "\\$";
+    } else {
+      escapedText += char;
+    }
   }
 
   return escapedText;
