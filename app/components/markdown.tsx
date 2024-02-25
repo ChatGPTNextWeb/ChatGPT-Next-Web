@@ -160,7 +160,7 @@ export function Markdown(
     fontSize?: number;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
-    openImageBox?: (src: string) => void;
+    openImageBox?: (src: string, alt: string) => void;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
@@ -173,10 +173,11 @@ export function Markdown(
     const imgs = mdRef.current?.querySelectorAll("img");
     if (imgs) {
       imgs.forEach((img) => {
-        img.addEventListener("click", (e) => {
-          e.preventDefault();
-          openImageBox(img.getAttribute("src") ?? "");
-        });
+        const src = img.getAttribute("src");
+        const alt = img.getAttribute("alt") ?? "";
+        if (src) {
+          img.onclick = () => openImageBox(src, alt);
+        }
       });
     }
   }, [mdRef, parentRef, openImageBox]);

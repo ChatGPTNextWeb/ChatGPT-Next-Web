@@ -654,7 +654,7 @@ export function DeleteImageButton(props: { deleteImage: () => void }) {
 
 export function ImageBox(props: {
   showImageBox: boolean;
-  src: string;
+  data: { src: string; alt: string };
   closeImageBox: () => void;
 }) {
   return (
@@ -663,7 +663,7 @@ export function ImageBox(props: {
       style={{ display: props.showImageBox ? "block" : "none" }}
       onClick={props.closeImageBox}
     >
-      <img src={props.src} alt="img" />
+      <img src={props.data.src} alt={props.data.alt} />
       <div className={styles["image-box-close-button"]}>
         <CloseIcon />
       </div>
@@ -692,7 +692,7 @@ function _Chat() {
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [showImageBox, setShowImageBox] = useState(false);
-  const [imageBoxSrc, setImageBoxSrc] = useState("");
+  const [imageBoxData, setImageBoxData] = useState({ src: "", alt: "" });
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -1167,8 +1167,9 @@ function _Chat() {
       });
   }
 
-  function openImageBox(src: string) {
-    setImageBoxSrc(src);
+  function openImageBox(src: string, alt?: string) {
+    alt = alt ?? "";
+    setImageBoxData({ src, alt });
     setShowImageBox(true);
   }
 
@@ -1176,7 +1177,7 @@ function _Chat() {
     <div className={styles.chat} key={session.id}>
       <ImageBox
         showImageBox={showImageBox}
-        src={imageBoxSrc}
+        data={imageBoxData}
         closeImageBox={() => setShowImageBox(false)}
       ></ImageBox>
       <div className="window-header" data-tauri-drag-region>
