@@ -92,6 +92,10 @@ const ko: PartialLocaleType = {
       Title: "미리 보기 버블 전송",
       SubTitle: "버블에서 마크다운 미리 보기",
     },
+    AutoScrollMessage: {
+      Title: "자동 스크롤 답장",
+      SubTitle: "답장하는 동안 메시지 스크롤",
+    },
     Mask: {
       Splash: {
         Title: "마스크 시작 화면",

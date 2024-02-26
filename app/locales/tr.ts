@@ -91,6 +91,10 @@ const tr: PartialLocaleType = {
       Title: "Mesaj Önizleme Balonu",
       SubTitle: "Preview markdown in bubble",
     },
+    AutoScrollMessage: {
+      Title: "Otomatik Kaydırma Yanıtı",
+      SubTitle: "Yanıt verirken mesajı kaydır",
+    },
     Mask: {
       Splash: {
         Title: "Mask Splash Screen",

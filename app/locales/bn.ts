@@ -161,6 +161,10 @@ const bn: PartialLocaleType = {
       Title: "প্রিভিউ বুলবুল প্রেরণ করুন",
       SubTitle: "বুলবুলে মার্কডাউন প্রিভিউ করুন",
     },
+    AutoScrollMessage: {
+      Title: "অটো-স্ক্রল উত্তর",
+      SubTitle: "উত্তর দেওয়ার সময় বার্তা স্ক্রল করুন",
+    },
     Mask: {
       Splash: {
         Title: "মাস্ক স্প্ল্যাশ স্ক্রিন",

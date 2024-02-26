@@ -91,6 +91,10 @@ const cs: PartialLocaleType = {
       Title: "Odesílat chatovací bublinu s náhledem",
       SubTitle: "Zobrazit v náhledu bubliny",
     },
+    AutoScrollMessage: {
+      Title: "Automatické rolování odpovědi",
+      SubTitle: "Rolovat zprávu při odpovídání",
+    },
     Mask: {
       Splash: {
         Title: "Úvodní obrazovka Masek",
