@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ chatgpt_next_web.project_name }}"
+  labels:
+    app: "{{ chatgpt_next_web.project_name }}"
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /chat-with-docs-api/health
+    alb.ingress.kubernetes.io/healthcheck-port: '3000'
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: "{{ chatgpt_next_web.project_name }}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ chatgpt_next_web.project_name }}"
+  labels:
+    app: "{{ chatgpt_next_web.project_name }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ chatgpt_next_web.project_name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ chatgpt_next_web.project_name }}"
+    spec:
+      hostAliases:
+        - ip: 192.168.3.58
+          hostnames:
+            - cloud.google.com
+            - api.openai.com
+            - github.com
+      containers:
+        - name: "{{ chatgpt_next_web.project_name }}"
+          image: "{{ chatgpt_next_web.main_docker_image }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: "{{ chatgpt_next_web.project_name }}"
+            - secretRef:
+                name: "{{ chatgpt_next_web.project_name }}"
