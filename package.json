@@ -22,7 +22,7 @@
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
-    "emoji-picker-react": "^4.5.15",
+    "emoji-picker-react": "^4.8.0",
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.6.1",
