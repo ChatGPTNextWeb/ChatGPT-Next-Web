@@ -100,54 +100,46 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string): string {
-  let escapedText = "";
+  const escapedTextParts: string[] = [];
 
-  // Use regular expressions for matching and splitting to handle standalone formulas, line code,
-  // code blocks, and new lines
-  const pattern = /(\$\$.+?\$\$|`.*?`|```.*?```|\n)/gs;
-
-  // Check if it's a digit
+  const pattern = /(\$\$.+?\$\$|`[^`]*`|\n)/gs;
   const isDigit = (char: string) => /^\d$/.test(char);
 
-  // Track if within a code block or inline code
-  let isInCode = false;
+  let inCodeBlock = false;
+  let inInlineCode = false;
 
-  // Split text with regex to handle standalone formulas, line code, code blocks, and new lines
   const parts = text.split(pattern);
 
-  parts.forEach((part) => {
-    // Check if the current part is a standalone formula, line code, or a code block
-    if (part.startsWith("```") || part.startsWith("`")) {
-      isInCode = !isInCode; // Toggle the code status flag for code blocks, ignore for inline code
-      escapedText += part; // Add directly, no processing
-      return;
+  for (const part of parts) {
+    if (part.startsWith("```")) {
+      inCodeBlock = !inCodeBlock;
+      escapedTextParts.push(part);
+    } else if (part.startsWith("`") && part.endsWith("`") && !inCodeBlock) {
+      inInlineCode = !inInlineCode;
+      escapedTextParts.push(part);
     } else if (part.startsWith("$$") && part.endsWith("$$") && part !== "\n") {
-      // For standalone formulas, add directly
-      escapedText += part;
-      return;
-    } else if (part === "\n") {
-      // Handle newline
-      escapedText += part;
-      return;
-    }
-
-    // Process text content outside of code
-    if (!isInCode) {
+      escapedTextParts.push(part);
+    } else if (part === "\n" || inCodeBlock || inInlineCode) {
+      escapedTextParts.push(part);
+    } else {
+      const chars = [];
       for (let i = 0; i < part.length; i++) {
         const char = part[i];
-        // Handle the case of "$" followed by a digit
         if (char === "$" && i < part.length - 1 && isDigit(part[i + 1])) {
-          escapedText += "\\$"; // Escape the current character
-          continue;
+          let j = i + 1;
+          while (j < part.length && part[j] !== "$") j++;
+          if (j < part.length && isDigit(part[j + 1])) {
+            chars.push("\\$");
+            continue;
+          }
         }
-        escapedText += char; // Add the current character
+        chars.push(char);
       }
-    } else {
-      escapedText += part; // In code (blocks or inline), add directly
+      escapedTextParts.push(chars.join(""));
     }
-  });
+  }
 
-  return escapedText;
+  return escapedTextParts.join("");
 }
 
 function _MarkDownContent(props: { content: string }) {
