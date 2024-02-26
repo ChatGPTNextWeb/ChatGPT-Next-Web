@@ -102,53 +102,53 @@ export function PreCode(props: { children: any }) {
 function escapeDollarNumber(text: string): string {
   let escapedText = "";
 
-  // 使用正则表达式进行匹配和分割来处理独行公式和代码块
+  // Use regular expressions for matching and splitting to handle standalone formulas and code blocks
   const pattern = /(\$\$.+?\$\$|```.*?```|\n)/gs;
 
-  // 检查是否为数字
+  // Check if it's a digit
   const isDigit = (char: string) => /^\d$/.test(char);
 
-  // 记录是否在代码块内
+  // Track if within a code block
   let isCodeBlock = false;
 
-  // 正则分割文本，以处理独立公式和代码块
+  // Split text with regex to handle standalone formulas and code blocks
   const parts = text.split(pattern);
 
   parts.forEach((part) => {
-    // 检查当前部分是否是独行公式或代码块
+    // Check if the current part is a standalone formula or a code block
     if (part.startsWith("```")) {
-      isCodeBlock = !isCodeBlock; // 反转代码块状态标志
-      escapedText += part; // 直接添加，不处理
+      isCodeBlock = !isCodeBlock; // Toggle the code block status flag
+      escapedText += part; // Add directly, no processing
       return;
     } else if (part.startsWith("$$") && part.endsWith("$$") && part !== "\n") {
-      // 对于独行公式，直接添加
+      // For standalone formulas, add directly
       escapedText += part;
       return;
     } else if (part === "\n") {
-      // 处理换行符
+      // Handle newline
       escapedText += part;
       return;
     }
 
-    // 处理非代码块的文本内容
+    // Process text content outside of code blocks
     if (!isCodeBlock) {
-      // 预扫描，避免在代码块内转义
+      // Pre-scan to avoid escaping inside code blocks
       for (let i = 0; i < part.length; i++) {
         const char = part[i];
-        // 处理"$"加数字情况
+        // Handle the case of "$" followed by a digit
         if (char === "$" && i < part.length - 1 && isDigit(part[i + 1])) {
-          // 检查是否成对出现且下一个字符依然是数字
+          // Check for pair occurrence and if the next character is still a digit
           let j = i + 1;
           while (j < part.length && part[j] !== "$") j++;
           if (j < part.length && isDigit(part[j + 1])) {
-            escapedText += "\\$"; // 转义当前字符
+            escapedText += "\\$"; // Escape the current character
             continue;
           }
         }
-        escapedText += char; // 添加当前字符
+        escapedText += char; // Add the current character
       }
     } else {
-      escapedText += part; // 在代码块中，直接添加
+      escapedText += part; // In code blocks, add directly
     }
   });
 
