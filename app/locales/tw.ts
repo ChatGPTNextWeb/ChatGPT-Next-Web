@@ -475,4 +475,4 @@ export type LocaleType = typeof tw;
 export type PartialLocaleType = DeepPartial<typeof tw>;
 
 export default tw;
-// Translated by @chunkiuuu, feel free the submit new pr if there are typo/incorect translations :D
+// Translated by @chunkiuuu, feel free the submit new pr if there are typo/incorrect translations :D
