@@ -100,41 +100,59 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string): string {
-    let inCodeBlock = false;
-    let inMathMode = false;
-    let escapedText = "";
+  let escapedText = "";
 
-    // Helper function to check if a character is a digit
-    const isDigit = (char: string) => /^\d$/.test(char);
+  // 使用正则表达式进行匹配和分割来处理独行公式和代码块
+  const pattern = /(\$\$.+?\$\$|```.*?```|\n)/gs;
 
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
+  // 检查是否为数字
+  const isDigit = (char: string) => /^\d$/.test(char);
 
-        // Check for code block
-        if (char === "`") {
-            if (text.substr(i, 3) === "```") {
-                escapedText += "```";
-                i += 2;
-            } else {
-                escapedText += "`";
-            }
-            inCodeBlock = !inCodeBlock;
-        }
-        // Check for math mode (ignoring the code blocks)
-        else if (!inCodeBlock && char === "$") {
-            inMathMode = !inMathMode;
-            escapedText += "$";
-        } 
-        // Check for dollar-sign followed by a number (ignoring code blocks or math mode)
-        else if (!inCodeBlock && !inMathMode && char === "$" && i < text.length - 1 && isDigit(text[i + 1])) {
-            escapedText += "\\$";
-        } else {
-            // Capture all other characters
-            escapedText += char;
-        }
+  // 记录是否在代码块内
+  let isCodeBlock = false;
+
+  // 正则分割文本，以处理独立公式和代码块
+  const parts = text.split(pattern);
+
+  parts.forEach((part) => {
+    // 检查当前部分是否是独行公式或代码块
+    if (part.startsWith("```")) {
+      isCodeBlock = !isCodeBlock; // 反转代码块状态标志
+      escapedText += part; // 直接添加，不处理
+      return;
+    } else if (part.startsWith("$$") && part.endsWith("$$") && part !== "\n") {
+      // 对于独行公式，直接添加
+      escapedText += part;
+      return;
+    } else if (part === "\n") {
+      // 处理换行符
+      escapedText += part;
+      return;
     }
 
-    return escapedText;
+    // 处理非代码块的文本内容
+    if (!isCodeBlock) {
+      // 预扫描，避免在代码块内转义
+      for (let i = 0; i < part.length; i++) {
+        const char = part[i];
+        // 处理"$"加数字情况
+        if (char === "$" && i < part.length - 1 && isDigit(part[i + 1])) {
+          // 检查是否成对出现且下一个字符依然是数字
+          let j = i + 1;
+          while (j < part.length && part[j] !== "$") j++;
+          if (j < part.length && isDigit(part[j + 1])) {
+            escapedText += "\\$"; // 转义当前字符
+            continue;
+          }
+        }
+        escapedText += char; // 添加当前字符
+      }
+    } else {
+      escapedText += part; // 在代码块中，直接添加
+    }
+  });
+
+  return escapedText;
 }
 
 function _MarkDownContent(props: { content: string }) {
