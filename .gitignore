@@ -36,7 +36,7 @@ yarn-error.log*
 next-env.d.ts
 dev
 
-.vscode
+# .vscode
 .idea
 
 # docker-compose env files
