@@ -99,37 +99,42 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let inCodeBlock = false;
-  let escapedText = "";
+function escapeDollarNumber(text: string): string {
+    let inCodeBlock = false;
+    let inMathMode = false;
+    let escapedText = "";
 
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const nextChar = text[i + 1] || " ";
+    // Helper function to check if a character is a digit
+    const isDigit = (char: string) => /^\d$/.test(char);
 
-    // Check for code blocks
-    if (char === "`" && text.slice(i, i + 3) === "```") {
-      inCodeBlock = !inCodeBlock;
-      escapedText += "```";
-      i += 2;
-      continue;
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+
+        // Check for code block
+        if (char === "`") {
+            if (text.substr(i, 3) === "```") {
+                escapedText += "```";
+                i += 2;
+            } else {
+                escapedText += "`";
+            }
+            inCodeBlock = !inCodeBlock;
+        }
+        // Check for math mode (ignoring the code blocks)
+        else if (!inCodeBlock && char === "$") {
+            inMathMode = !inMathMode;
+            escapedText += "$";
+        } 
+        // Check for dollar-sign followed by a number (ignoring code blocks or math mode)
+        else if (!inCodeBlock && !inMathMode && char === "$" && i < text.length - 1 && isDigit(text[i + 1])) {
+            escapedText += "\\$";
+        } else {
+            // Capture all other characters
+            escapedText += char;
+        }
     }
 
-    if (char === "`") {
-      inCodeBlock = !inCodeBlock;
-      escapedText += "`";
-      continue;
-    }
-
-    // Check for $ followed by a number
-    if (!inCodeBlock && char === "$" && /^[0-9]$/.test(nextChar)) {
-      escapedText += "\\$";
-    } else {
-      escapedText += char;
-    }
-  }
-
-  return escapedText;
+    return escapedText;
 }
 
 function _MarkDownContent(props: { content: string }) {
