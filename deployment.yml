@@ -32,12 +32,6 @@ spec:
       labels:
         app: "{{ chatgpt_next_web.project_name }}"
     spec:
-      hostAliases:
-        - ip: 192.168.3.58
-          hostnames:
-            - cloud.google.com
-            - api.openai.com
-            - github.com
       containers:
         - name: "{{ chatgpt_next_web.project_name }}"
           image: "{{ chatgpt_next_web.main_docker_image }}"

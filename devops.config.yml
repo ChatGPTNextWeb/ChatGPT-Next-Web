@@ -1,4 +1,1 @@
 project_name: chatgpt-next-web
-
-docker_host_aliases:
-  - 'registry.npmmirror.com:192.168.3.58'
