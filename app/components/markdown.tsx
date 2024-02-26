@@ -102,22 +102,23 @@ export function PreCode(props: { children: any }) {
 function escapeDollarNumber(text: string): string {
   let escapedText = "";
 
-  // Use regular expressions for matching and splitting to handle standalone formulas and code blocks
-  const pattern = /(\$\$.+?\$\$|```.*?```|\n)/gs;
+  // Use regular expressions for matching and splitting to handle standalone formulas, line code,
+  // code blocks, and new lines
+  const pattern = /(\$\$.+?\$\$|`.*?`|```.*?```|\n)/gs;
 
   // Check if it's a digit
   const isDigit = (char: string) => /^\d$/.test(char);
 
-  // Track if within a code block
-  let isCodeBlock = false;
+  // Track if within a code block or inline code
+  let isInCode = false;
 
-  // Split text with regex to handle standalone formulas and code blocks
+  // Split text with regex to handle standalone formulas, line code, code blocks, and new lines
   const parts = text.split(pattern);
 
   parts.forEach((part) => {
-    // Check if the current part is a standalone formula or a code block
-    if (part.startsWith("```")) {
-      isCodeBlock = !isCodeBlock; // Toggle the code block status flag
+    // Check if the current part is a standalone formula, line code, or a code block
+    if (part.startsWith("```") || part.startsWith("`")) {
+      isInCode = !isInCode; // Toggle the code status flag for code blocks, ignore for inline code
       escapedText += part; // Add directly, no processing
       return;
     } else if (part.startsWith("$$") && part.endsWith("$$") && part !== "\n") {
@@ -130,25 +131,19 @@ function escapeDollarNumber(text: string): string {
       return;
     }
 
-    // Process text content outside of code blocks
-    if (!isCodeBlock) {
-      // Pre-scan to avoid escaping inside code blocks
+    // Process text content outside of code
+    if (!isInCode) {
       for (let i = 0; i < part.length; i++) {
         const char = part[i];
         // Handle the case of "$" followed by a digit
         if (char === "$" && i < part.length - 1 && isDigit(part[i + 1])) {
-          // Check for pair occurrence and if the next character is still a digit
-          let j = i + 1;
-          while (j < part.length && part[j] !== "$") j++;
-          if (j < part.length && isDigit(part[j + 1])) {
-            escapedText += "\\$"; // Escape the current character
-            continue;
-          }
+          escapedText += "\\$"; // Escape the current character
+          continue;
         }
         escapedText += char; // Add the current character
       }
     } else {
-      escapedText += part; // In code blocks, add directly
+      escapedText += part; // In code (blocks or inline), add directly
     }
   });
 
