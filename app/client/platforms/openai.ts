@@ -112,6 +112,17 @@ export class ChatGPTApi implements LLMApi {
     };
 
     // console.log("[Request] openai payload: ", requestPayload);
+    // add max_tokens to vision model
+    if (visionModel) {
+      Object.defineProperty(requestPayload, "max_tokens", {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: Math.max(modelConfig.max_tokens, 4096),
+      });
+    }
+
+    console.log("[Request] openai payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
