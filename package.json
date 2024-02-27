@@ -24,6 +24,7 @@
     "@vercel/speed-insights": "^1.0.2",
     "axios": "^1.6.7",
     "emoji-picker-react": "^4.5.15",
+    "fs-extra": "^11.2.0",
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.6.1",

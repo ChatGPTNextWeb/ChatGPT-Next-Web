@@ -14,6 +14,7 @@ import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
 import { Stream } from "./stream-ai";
 import Locale from "../locales";
+import "../custom-style-web.scss";
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -140,6 +141,19 @@ export function SideBar(props: { className?: string }) {
     () => isIOS() && isMobileScreen,
     [isMobileScreen],
   );
+  const setupColorButtonRag = () => {
+    const button = document.getElementById("colorButtonRag");
+    const value = localStorage.getItem("statusRag");
+    if (value === "0") {
+      button.classList.remove("off");
+      button.classList.add("on");
+      localStorage.setItem("statusRag", "1");
+    } else {
+      button.classList.remove("on");
+      button.classList.add("off");
+      localStorage.setItem("statusRag", "0");
+    }
+  };
 
   useHotKey();
 
@@ -216,11 +230,17 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
+          <div>
+            <button id="colorButtonRag" onClick={setupColorButtonRag}>
+              Search
+            </button>
+          </div>
+
+          {/* <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
-          </div>
+          </div> */}
         </div>
         <div>
           <IconButton

@@ -19,6 +19,7 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { saveToVectorDatabase } from "../../configfunc";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -495,7 +496,7 @@ export const useChatStore = createPersistStore(
         });
       },
 
-      summarizeSession() {
+      async summarizeSession() {
         const config = useAppConfig.getState();
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
@@ -559,12 +560,16 @@ export const useChatStore = createPersistStore(
 
         const lastSummarizeIndex = session.messages.length;
 
-        console.log(
-          "[Chat History] ",
-          toBeSummarizedMsgs,
-          historyMsgLength,
-          modelConfig.compressMessageLengthThreshold,
+        console.log("[Chat History] ", toBeSummarizedMsgs);
+
+        const lastMsgAssistant =
+          toBeSummarizedMsgs[toBeSummarizedMsgs.length - 1];
+        const responseSaveToDb = await saveToVectorDatabase(
+          lastMsgAssistant.content,
         );
+        responseSaveToDb === "ok"
+          ? console.log("save to vectordb success")
+          : console.log("save to vectordb error");
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&

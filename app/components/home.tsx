@@ -29,6 +29,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
+import { generateRandomToken } from "../../configfunc";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -193,6 +194,19 @@ export function Home() {
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
+    const userId = localStorage.getItem("userId");
+
+    // add status rag
+    localStorage.setItem("statusRag", "0");
+
+    // add UserId to localStore
+    if (userId) {
+      console.log("userId:", userId);
+    } else {
+      const userId = generateRandomToken(20);
+      console.log("userId", userId);
+      localStorage.setItem("userId", `collection_${userId}`);
+    }
   }, []);
 
   if (!useHasHydrated()) {

@@ -21,3 +21,25 @@
   height: 100%;
   border-radius: 4%;
 }
+
+// button rag
+#colorButtonRag {
+  margin: 0 4px;
+  padding: 10px 6px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 20%;
+  color: black;
+}
+
+#colorButtonRag.off {
+  background-color: white;
+  color: black;
+}
+
+#colorButtonRag.on {
+  background-color: rgb(62, 219, 219);
+  color: black;
+}

@@ -18,6 +18,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import { searchFromVectorDatabase } from "../../../configfunc";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -99,6 +100,9 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
 
+    // check statusRag ? new_requestPayload : requestPayload
+    const handleRequestPayload = await searchFromVectorDatabase(requestPayload);
+
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
@@ -107,7 +111,7 @@ export class ChatGPTApi implements LLMApi {
       const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
         method: "POST",
-        body: JSON.stringify(requestPayload),
+        body: JSON.stringify(handleRequestPayload),
         signal: controller.signal,
         headers: getHeaders(),
       };

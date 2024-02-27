@@ -1,0 +1,59 @@
+{
+  "3": {
+    "inputs": {
+      "scheduler": "normal",
+      "negative": ["7", 0],
+      "denoise": 1,
+      "latent_image": ["5", 0],
+      "seed": 969786836389111,
+      "cfg": 8,
+      "sampler_name": "euler",
+      "model": ["4", 0],
+      "positive": ["6", 0],
+      "steps": 20
+    },
+    "class_type": "KSampler"
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "hellof3_V10a_2.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "clip": ["4", 1],
+      "text": "Random Natural landscapes such as volcano, lightning, swimming pool, overhead, outdoor, field, girl, boy, devil, angel, sky, ground, beach, house, 2 girls beautiful, 2 boys with 6 packs"
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "clip": ["4", 1],
+      "text": "Square ratio, average quality"
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": ["3", 0],
+      "vae": ["4", 2]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": ["8", 0]
+    },
+    "class_type": "SaveImage"
+  }
+}
