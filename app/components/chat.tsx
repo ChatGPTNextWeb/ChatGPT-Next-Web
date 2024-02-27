@@ -1163,13 +1163,6 @@ function _Chat() {
         )}
 
         <div className={`window-header-title ${styles["chat-body-title"]}`}>
-          <p>
-            {JSON.stringify({
-              scrollHeight: scrollRef?.current?.scrollHeight,
-              scrollTop: scrollRef?.current?.scrollTop,
-              clientHeight: scrollRef?.current?.clientHeight,
-            })}
-          </p>
           <div
             className={`window-header-main-title ${styles["chat-body-main-title"]}`}
             onClickCapture={() => setIsEditingMessage(true)}
