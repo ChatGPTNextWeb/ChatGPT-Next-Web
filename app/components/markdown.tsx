@@ -99,21 +99,47 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
+function escapeDollarNumber(text: string): string {
+  const escapedTextParts: string[] = [];
 
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
+  const pattern = /(\$\$.+?\$\$|`[^`]*`|\n)/gs;
+  const isDigit = (char: string) => /^\d$/.test(char);
 
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
+  let inCodeBlock = false;
+  let inInlineCode = false;
+
+  const parts = text.split(pattern);
+
+  for (const part of parts) {
+    if (part.startsWith("```")) {
+      inCodeBlock = !inCodeBlock;
+      escapedTextParts.push(part);
+    } else if (part.startsWith("`") && part.endsWith("`") && !inCodeBlock) {
+      inInlineCode = !inInlineCode;
+      escapedTextParts.push(part);
+    } else if (part.startsWith("$$") && part.endsWith("$$") && part !== "\n") {
+      escapedTextParts.push(part);
+    } else if (part === "\n" || inCodeBlock || inInlineCode) {
+      escapedTextParts.push(part);
+    } else {
+      const chars = [];
+      for (let i = 0; i < part.length; i++) {
+        const char = part[i];
+        if (char === "$" && i < part.length - 1 && isDigit(part[i + 1])) {
+          let j = i + 1;
+          while (j < part.length && part[j] !== "$") j++;
+          if (j < part.length && isDigit(part[j + 1])) {
+            chars.push("\\$");
+            continue;
+          }
+        }
+        chars.push(char);
+      }
+      escapedTextParts.push(chars.join(""));
     }
-
-    escapedText += char;
   }
 
-  return escapedText;
+  return escapedTextParts.join("");
 }
 
 function _MarkDownContent(props: { content: string }) {
