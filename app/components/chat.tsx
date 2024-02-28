@@ -1102,6 +1102,8 @@ function _Chat() {
   }, []);
   
   const handlePaste = useCallback(
+    const currentModel = chatStore.currentSession().mask.modelConfig.model;
+    if(!isVisionModel(currentModel)){return;}
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
@@ -1137,7 +1139,7 @@ function _Chat() {
         }
       }
     },
-    [attachImages],
+    [attachImages, chatStore],
   );
 
   async function uploadImage() {
