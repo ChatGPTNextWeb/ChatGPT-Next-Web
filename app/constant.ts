@@ -108,9 +108,9 @@ export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
-  "gpt-4-turbo-preview": "2023-04",
+  "gpt-4-turbo-preview": "2023-12",
   "gpt-4-1106-preview": "2023-04",
-  "gpt-4-0125-preview": "2023-04",
+  "gpt-4-0125-preview": "2023-12",
   "gpt-4-vision-preview": "2023-04",
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
