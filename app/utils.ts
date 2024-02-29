@@ -292,8 +292,8 @@ export function getMessageImages(message: RequestMessage): string[] {
 
 export function isVisionModel(model: string) {
   return (
-    model.startsWith("gpt-4-vision") ||
-    model.startsWith("gemini-pro-vision") ||
-    !DEFAULT_MODELS.find((m) => m.name == model)
+    // model.startsWith("gpt-4-vision") ||
+    // model.startsWith("gemini-pro-vision") ||
+    model.includes("vision")
   );
 }
