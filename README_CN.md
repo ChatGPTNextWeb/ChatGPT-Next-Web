@@ -125,6 +125,7 @@ Google Gemini Pro Api Url.
 ### `ENABLE_BALANCE_QUERY` （可选）
 
 如果你想启用余额查询功能，将此环境变量设置为 1 即可。
+官方openai api很久以前就关闭了简单的余额查询方法。现在您需要提供session key来检查余额，因此 nextweb 的默认余额检查通道不再有效。如果是对接中转的，查余额通道仍然有效。
 
 ### `DISABLE_FAST_LINK` （可选）
 
