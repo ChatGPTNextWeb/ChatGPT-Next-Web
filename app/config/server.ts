@@ -54,7 +54,7 @@ export const getServerSideConfig = () => {
     );
   }
 
-  const disableGPT4 = !!process.env.DISABLE_GPT4;
+  const disableGPT4 = process.env.DISABLE_GPT4 === "1";
   let customModels = process.env.CUSTOM_MODELS ?? "";
 
   if (disableGPT4) {
@@ -98,10 +98,10 @@ export const getServerSideConfig = () => {
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
 
-    hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
+    hideUserApiKey: process.env.HIDE_USER_API_KEY === "1",
     disableGPT4,
-    hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
-    disableFastLink: !!process.env.DISABLE_FAST_LINK,
+    hideBalanceQuery: process.env.ENABLE_BALANCE_QUERY === "0",
+    disableFastLink: process.env.DISABLE_FAST_LINK === "1",
     customModels,
   };
 };
