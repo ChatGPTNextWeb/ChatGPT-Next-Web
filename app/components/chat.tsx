@@ -50,6 +50,7 @@ import {
   useAppConfig,
   DEFAULT_TOPIC,
   ModelType,
+  ChatSession,
 } from "../store";
 
 import {
@@ -101,6 +102,7 @@ import { Button } from "emoji-picker-react/src/components/atoms/Button";
 import Image from "next/image";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { getTokenLength } from "@/lib/utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -350,9 +352,10 @@ function ChatAction(props: {
     icon: 16,
   });
   const allModels = useAllModels().map((item) => item.displayName);
-  const customModelClassName = allModels.includes(props.text)
-    ? "chat-input-action-long-weight"
-    : "";
+  let customModelClassName = "";
+  if (props.text.includes("使用") || allModels.includes(props.text)) {
+    customModelClassName = "chat-input-action-long-weight";
+  }
 
   function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
@@ -466,6 +469,7 @@ export function ChatActions(props: {
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
+  const current_day_token = localStorage.getItem("current_day_token") ?? "";
 
   useEffect(() => {
     const show = isVisionModel(currentModel);
@@ -602,6 +606,22 @@ export function ChatActions(props: {
           }}
         />
       )}
+
+      {/*<ChatAction*/}
+      {/*  onClick={() => false}*/}
+      {/*  text={"使用 " + current_day_token}*/}
+      {/*  icon={*/}
+      {/*    <img*/}
+      {/*      alt="😀"*/}
+      {/*      loading="lazy"*/}
+      {/*      width="20"*/}
+      {/*      height="20"*/}
+      {/*      decoding="async"*/}
+      {/*      srcSet="/grinning-face.webp"*/}
+      {/*      style={{ color: "transparent" }}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
     </div>
   );
 }
@@ -1141,6 +1161,49 @@ function _Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handlePaste = useCallback(
+    async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const currentModel = chatStore.currentSession().mask.modelConfig.model;
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
+      const items = (event.clipboardData || window.clipboardData).items;
+      for (const item of items) {
+        if (item.kind === "file" && item.type.startsWith("image/")) {
+          event.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            const images: string[] = [];
+            images.push(...attachImages);
+            images.push(
+              ...(await new Promise<string[]>((res, rej) => {
+                setUploading(true);
+                const imagesData: string[] = [];
+                compressImage(file, 256 * 1024)
+                  .then((dataUrl) => {
+                    imagesData.push(dataUrl);
+                    setUploading(false);
+                    res(imagesData);
+                  })
+                  .catch((e) => {
+                    setUploading(false);
+                    rej(e);
+                  });
+              })),
+            );
+            const imagesLength = images.length;
+
+            if (imagesLength > 3) {
+              images.splice(3, imagesLength - 3);
+            }
+            setAttachImages(images);
+          }
+        }
+      }
+    },
+    [attachImages, chatStore],
+  );
+
   async function uploadImage() {
     const images: string[] = [];
     images.push(...attachImages);
@@ -1211,6 +1274,10 @@ function _Chat() {
           </div>
           <div className="window-header-sub-title">
             {Locale.Chat.SubTitle(session.messages.length)}
+            <span>
+              &nbsp;&nbsp;当天使用：
+              {localStorage.getItem("current_day_token") ?? 0}
+            </span>
           </div>
         </div>
         <div className="window-actions">
@@ -1589,6 +1656,7 @@ function _Chat() {
             onKeyDown={onInputKeyDown}
             onFocus={scrollToBottom}
             onClick={scrollToBottom}
+            onPaste={handlePaste}
             rows={inputRows}
             autoFocus={autoFocus}
             style={{
@@ -1643,8 +1711,45 @@ function _Chat() {
   );
 }
 
+function getCurrentDayToken(sessions: ChatSession[]): number {
+  try {
+    const currentTime = new Date();
+    const startOfTheDayInTimeZone = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      0,
+      0,
+      0,
+    );
+    const current_day_message = sessions
+      .reduce((acc, item) => {
+        // @ts-ignore
+        return acc.concat(item.messages);
+      }, [])
+      .filter((item1) => {
+        // @ts-ignore
+        const dateToCheck = new Date(item1.date);
+        return startOfTheDayInTimeZone < dateToCheck;
+      });
+    const all_current_day_content = current_day_message
+      // @ts-ignore
+      .map((item) => item.content)
+      .join(" ");
+    // 获取会话之后，再整合content，
+    return getTokenLength(all_current_day_content);
+  } catch (e) {
+    return 0;
+  }
+}
+
 export function Chat() {
   const chatStore = useChatStore();
   const sessionIndex = chatStore.currentSessionIndex;
+  // 这里计先计算一下当天总token数。
+  localStorage.setItem(
+    "current_day_token",
+    String(getCurrentDayToken(chatStore.sessions)),
+  );
   return <_Chat key={sessionIndex}></_Chat>;
 }

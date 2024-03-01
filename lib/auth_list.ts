@@ -4,7 +4,8 @@ export const DENY_LIST: string[] = [
 ]
 export const ADMIN_LIST: string[] = [
   "司金辉", "sijinhui", "sijinhui@qq.com",
-  "yuchuan", "于川"
+  "yuchuan", "于川",
+  "jujujujuju",
 ]
 
 
