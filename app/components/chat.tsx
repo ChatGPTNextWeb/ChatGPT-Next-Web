@@ -1684,8 +1684,8 @@ function getCurrentDayToken(sessions: ChatSession[]): number {
         const dateToCheck = new Date(item1.date);
         return startOfTheDayInTimeZone < dateToCheck;
       });
-    // @ts-ignore
     const all_current_day_content = current_day_message
+      // @ts-ignore
       .map((item) => item.content)
       .join(" ");
     // 获取会话之后，再整合content，
