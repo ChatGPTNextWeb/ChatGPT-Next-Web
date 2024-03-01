@@ -1,9 +1,13 @@
-// import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 
-// export function cn(...inputs: ClassValue[]) {
-//   return twMerge(clsx(inputs));
-// }
+import {get_encoding} from "tiktoken";
+
+
+export function getTokenLength(input: string): number {
+  const encoding = get_encoding("cl100k_base");
+  // console.log('tokens: ', input, encoding.countTokens())
+  return encoding.encode(input).length;
+}
+
 export async function fetcher<JSON = any>(
   input: RequestInfo,
   init?: RequestInit,
