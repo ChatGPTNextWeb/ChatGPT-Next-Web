@@ -607,21 +607,21 @@ export function ChatActions(props: {
         />
       )}
 
-      <ChatAction
-        onClick={() => false}
-        text={"使用 " + current_day_token}
-        icon={
-          <img
-            alt="😀"
-            loading="lazy"
-            width="20"
-            height="20"
-            decoding="async"
-            srcSet="/grinning-face.webp"
-            style={{ color: "transparent" }}
-          />
-        }
-      />
+      {/*<ChatAction*/}
+      {/*  onClick={() => false}*/}
+      {/*  text={"使用 " + current_day_token}*/}
+      {/*  icon={*/}
+      {/*    <img*/}
+      {/*      alt="😀"*/}
+      {/*      loading="lazy"*/}
+      {/*      width="20"*/}
+      {/*      height="20"*/}
+      {/*      decoding="async"*/}
+      {/*      srcSet="/grinning-face.webp"*/}
+      {/*      style={{ color: "transparent" }}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
     </div>
   );
 }
@@ -1160,11 +1160,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
@@ -1272,6 +1274,10 @@ function _Chat() {
           </div>
           <div className="window-header-sub-title">
             {Locale.Chat.SubTitle(session.messages.length)}
+            <span>
+              &nbsp;&nbsp;当天使用：
+              {localStorage.getItem("current_day_token") ?? 0}
+            </span>
           </div>
         </div>
         <div className="window-actions">
