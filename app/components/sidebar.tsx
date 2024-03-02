@@ -166,6 +166,7 @@ function useGlobalShortcut() {
     handleMasks();
     handleSettings();
     handleNewChat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
