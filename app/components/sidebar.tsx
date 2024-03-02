@@ -7,7 +7,7 @@ import SettingsIcon from "../icons/settings.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
-import DeleteIcon from "../icons/delete.svg";
+import DeleteIcon from "../icons/clear.svg";
 import MaskIcon from "../icons/mask.svg";
 import CoffeeIcon from "../icons/coffee.svg";
 import DragIcon from "../icons/drag.svg";
@@ -230,16 +230,20 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <IconButton
-            text={Locale.Settings.Danger.Clear.Title}
-            onClick={async () => {
-              if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
-                chatStore.clearAllData();
-              }
-            }}
-            type="danger"
-            className={styles["custom-sidebar-clear-button"]}
-          />
+          <div className={styles["sidebar-action"]}>
+            <IconButton
+              // text={Locale.Settings.Danger.Clear.Title}
+              onClick={async () => {
+                if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
+                  chatStore.clearAllData();
+                }
+              }}
+              title={Locale.Settings.Danger.Clear.Title}
+              icon={<DeleteIcon />}
+              // type="danger"
+              className={styles["custom-sidebar-clear-button"]}
+            />
+          </div>
         </div>
         <div>
           <IconButton
