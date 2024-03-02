@@ -131,6 +131,10 @@ function useDragSideBar() {
 }
 
 function useGlobalShortcut() {
+  if (!window.__TAURI__) {
+    return;
+  }
+  
   const chatStore = useChatStore();
   const navigate = useNavigate();
   const config = useAppConfig();
@@ -185,9 +189,7 @@ export function SideBar(props: { className?: string }) {
 
   useHotKey();
 
-  if (window.__TAURI__) {
-    useGlobalShortcut();
-  }
+  useGlobalShortcut();
 
   return (
     <div
