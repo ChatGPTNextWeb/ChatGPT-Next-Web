@@ -7,8 +7,8 @@ const tw = {
   WIP: "該功能仍在開發中……",
   Error: {
     Unauthorized: isApp
-      ? "檢測到無效 API Key，請前往[設定](/#/settings)頁檢查 API Key 是否配置正確。"
-      : "訪問密碼不正確或為空，請前往[登錄](/#/auth)頁輸入正確的訪問密碼，或者在[設定](/#/settings)頁填入你自己的 OpenAI API Key。",
+      ? "檢測到無效 API Key，請前往[設定](/#/settings)頁檢查 API Key 是否設定正確。"
+      : "訪問密碼不正確或為空，請前往[登入](/#/auth)頁輸入正確的訪問密碼，或者在[設定](/#/settings)頁填入你自己的 OpenAI API Key。",
   },
 
   Auth: {
@@ -17,7 +17,7 @@ const tw = {
     SubTips: "或者輸入你的 OpenAI 或 Google API 密鑰",
     Input: "在此處填寫訪問碼",
     Confirm: "確認",
-    Later: "稍後再說",
+    Later: "稍候再說",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
@@ -53,8 +53,8 @@ const tw = {
       del: "刪除聊天",
     },
     InputActions: {
-      Stop: "停止響應",
-      ToBottom: "滾到最新",
+      Stop: "停止回應",
+      ToBottom: "移至最新",
       Theme: {
         auto: "自動主題",
         light: "亮色模式",
@@ -107,7 +107,7 @@ const tw = {
     },
   },
   Select: {
-    Search: "搜索消息",
+    Search: "查詢消息",
     All: "選取全部",
     Latest: "最近幾條",
     Clear: "清除選中",
@@ -133,15 +133,15 @@ const tw = {
     Danger: {
       Reset: {
         Title: "重置所有設定",
-        SubTitle: "重置所有設定項回默認值",
+        SubTitle: "重置所有設定項回預設值",
         Action: "立即重置",
         Confirm: "確認重置所有設定？",
       },
       Clear: {
-        Title: "清除所有數據",
-        SubTitle: "清除所有聊天、設定數據",
+        Title: "清除所有資料",
+        SubTitle: "清除所有聊天、設定資料",
         Action: "立即清除",
-        Confirm: "確認清除所有聊天、設定數據？",
+        Confirm: "確認清除所有聊天、設定資料？",
       },
     },
     Lang: {
@@ -182,14 +182,14 @@ const tw = {
       SubTitle: "根據對話內容生成合適的標題",
     },
     Sync: {
-      CloudState: "雲端數據",
+      CloudState: "雲端資料",
       NotSyncYet: "還沒有進行過同步",
       Success: "同步成功",
       Fail: "同步失敗",
 
       Config: {
         Modal: {
-          Title: "配置雲端同步",
+          Title: "設定雲端同步",
           Check: "檢查可用性",
         },
         SyncType: {
@@ -218,7 +218,7 @@ const tw = {
         },
       },
 
-      LocalState: "本地數據",
+      LocalState: "本地資料",
       Overview: (overview: any) => {
         return `${overview.chat} 次對話，${overview.message} 條消息，${overview.prompt} 條提示詞，${overview.mask} 個面具`;
       },
@@ -440,8 +440,8 @@ const tw = {
     More: "搜尋更多",
   },
   URLCommand: {
-    Code: "檢測到鏈接中已經包含訪問碼，是否自動填入？",
-    Settings: "檢測到鏈接中包含了預制設置，是否自動填入？",
+    Code: "檢測到連結中已經包含訪問碼，是否自動填入？",
+    Settings: "檢測到連結中包含了預設設定，是否自動填入？",
   },
   UI: {
     Confirm: "確認",
@@ -452,7 +452,7 @@ const tw = {
     Export: "導出",
     Import: "導入",
     Sync: "同步",
-    Config: "配置",
+    Config: "設定",
   },
   Exporter: {
     Description: {
