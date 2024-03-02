@@ -323,7 +323,7 @@
 }
 
 .sidebar-action:not(:last-child) {
-  margin-right: 15px;
+  margin-right: 10px;
 }
 
 .loading-content {
@@ -340,12 +340,12 @@
 }
 
 .custom-sidebar-clear-button {
-  background-color: transparent !important;
+  //background-color: rgb(255 255 255);
   display: flex;
   align-items: flex-end;
 
-  border-radius: 0;
-  padding: 0;
-  height: 20px;
-  margin-top: 15px;
+  //border-radius: 0;
+  //padding: 0;
+  //height: 20px;
+  //margin-top: 15px;
 }
