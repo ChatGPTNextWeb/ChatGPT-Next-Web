@@ -31,6 +31,8 @@ import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
 
+import { register } from "@tauri-apps/api/globalShortcut";
+
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
@@ -128,6 +130,45 @@ function useDragSideBar() {
   };
 }
 
+function useGlobalShortcut() {
+  const chatStore = useChatStore();
+  const navigate = useNavigate();
+  const config = useAppConfig();
+
+  const handleMasks = async () => {
+    await register("CommandOrControl+Shift+M", () => {
+      if (config.dontShowMaskSplashScreen !== true) {
+        navigate(Path.NewChat, { state: { fromHome: true } });
+      } else {
+        navigate(Path.Masks, { state: { fromHome: true } });
+      }
+    });
+  };
+
+  const handleSettings = async () => {
+    await register("CommandOrControl+,", () => {
+      navigate(Path.Settings);
+    });
+  };
+
+  const handleNewChat = async () => {
+    await register("CommandOrControl+N", () => {
+      if (config.dontShowMaskSplashScreen) {
+        chatStore.newSession();
+        navigate(Path.Chat);
+      } else {
+        navigate(Path.NewChat);
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleMasks();
+    handleSettings();
+    handleNewChat();
+  }, []);
+}
+
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
@@ -142,6 +183,10 @@ export function SideBar(props: { className?: string }) {
   );
 
   useHotKey();
+
+  if (window.__TAURI__) {
+    useGlobalShortcut();
+  }
 
   return (
     <div
