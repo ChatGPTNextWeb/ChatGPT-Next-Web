@@ -131,10 +131,6 @@ function useDragSideBar() {
 }
 
 function useGlobalShortcut() {
-  if (!window.__TAURI__) {
-    return;
-  }
-  
   const chatStore = useChatStore();
   const navigate = useNavigate();
   const config = useAppConfig();
@@ -167,10 +163,11 @@ function useGlobalShortcut() {
   };
 
   useEffect(() => {
-    handleMasks();
-    handleSettings();
-    handleNewChat();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (window.__TAURI__) {
+      handleMasks();
+      handleSettings();
+      handleNewChat();
+    }
   }, []);
 }
 
