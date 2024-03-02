@@ -385,7 +385,7 @@ const tw = {
     Edit: "前置上下文和歷史記憶",
     Add: "新增一條",
     Clear: "上下文已清除",
-    Revert: "恢覆上下文",
+    Revert: "恢復上下文",
   },
   Plugin: { Name: "外掛" },
   FineTuned: { Sysmessage: "你是一個助手" },
