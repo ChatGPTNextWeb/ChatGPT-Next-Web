@@ -39,8 +39,28 @@ export function createPersistStore<T extends object, M>(
           lastUpdateTime: 0,
         },
         (set, get) => {
+          // Custom set function with inspection log
+          const customSet: SetStoreState<T & MakeUpdater<T>> = (newState) => {
+            // console.log("Typeof newState:", typeof newState);
+            // console.log("Updating state:", newState);
+            set(newState);
+          };
+
+          // Custom get function with inspection log
+          const customGet: () => T & MakeUpdater<T> = () => {
+            const currentState = get();
+            // console.log("Typeof Current state:", typeof currentState);
+            // console.log("Current state:", currentState);
+            return {
+              ...currentState,
+              markUpdate: () => {},
+              update: () => {},
+            };
+          };
+
           return {
-            ...methods(set, get as any),
+            // ...methods(set, get as any),
+            ...methods(customSet, customGet as any),
 
             markUpdate() {
               set({ lastUpdateTime: Date.now() } as Partial<
@@ -48,9 +68,9 @@ export function createPersistStore<T extends object, M>(
               >);
             },
             update(updater) {
-              const state = deepClone(get());
+              const state = deepClone(customGet());
               updater(state);
-              set({
+              customSet({
                 ...state,
                 lastUpdateTime: Date.now(),
               });

@@ -71,9 +71,14 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
 };
 
 const LANG_KEY = "lang";
-const DEFAULT_LANG = "en";
 
-const fallbackLang = en;
+// Change the default language to cn here
+// const DEFAULT_LANG = "en";
+// const fallbackLang = en;
+
+const DEFAULT_LANG = "cn";
+const fallbackLang = cn;
+
 const targetLang = ALL_LANGS[getLang()] as LocaleType;
 
 // if target lang missing some fields, it will use fallback lang string
@@ -97,7 +102,9 @@ function setItem(key: string, value: string) {
 
 function getLanguage() {
   try {
-    return navigator.language.toLowerCase();
+    // Change the default language to cn here
+    // return navigator.language.toLowerCase();
+    return DEFAULT_LANG;
   } catch {
     return DEFAULT_LANG;
   }
