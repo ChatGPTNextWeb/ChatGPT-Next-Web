@@ -42,7 +42,7 @@ const cn = {
       PinToastAction: "查看",
       Delete: "删除",
       Edit: "编辑",
-      Speech: "播放",
+      Speech: "朗读",
       StopSpeech: "停止",
     },
     Commands: {
@@ -381,7 +381,7 @@ const cn = {
         SubTitle: "启用基于 OpenAI 的文本生成语音服务",
       },
       Autoplay: {
-        Title: "启用自动播放",
+        Title: "启用自动朗读",
         SubTitle: "自动生成语音并播放，需先开启文本转语音开关",
       },
       Model: "模型",
