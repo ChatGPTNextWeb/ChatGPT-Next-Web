@@ -11,6 +11,7 @@ import {
   LLMApi,
   LLMModel,
   LLMUsage,
+  SpeechOptions,
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import axios from "axios";
@@ -22,6 +23,9 @@ const getImageBase64Data = async (url: string) => {
 };
 
 export class GeminiProApi implements LLMApi {
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
   toolAgentChat(options: AgentChatOptions): Promise<void> {
     throw new Error("Method not implemented.");
   }
