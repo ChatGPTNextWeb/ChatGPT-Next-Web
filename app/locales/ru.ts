@@ -85,6 +85,11 @@ const ru: PartialLocaleType = {
       GoToUpdate: "Обновить",
     },
     SendKey: "Клавиша отправки",
+    DisableCodeBlockAutoCompletion: {
+      Title: "Отключить автоматическое дополнение блока кода",
+      SubTitle:
+        "Если не отключено, ввод блока кода ``` будет автоматически дополнен",
+    },
     Theme: "Тема",
     TightBorder: "Узкая граница",
     SendPreviewBubble: {

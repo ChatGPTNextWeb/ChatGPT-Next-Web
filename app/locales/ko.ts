@@ -86,6 +86,10 @@ const ko: PartialLocaleType = {
       GoToUpdate: "업데이트",
     },
     SendKey: "전송 키",
+    DisableCodeBlockAutoCompletion: {
+      Title: "코드 블록 자동 완성 비활성화",
+      SubTitle: "비활성화하지 않으면 코드 블록 ``` 입력이 자동으로 완성됩니다",
+    },
     Theme: "테마",
     TightBorder: "조밀한 테두리",
     SendPreviewBubble: {

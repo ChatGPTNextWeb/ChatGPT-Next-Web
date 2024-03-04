@@ -743,6 +743,23 @@ export function Settings() {
             </Select>
           </ListItem>
 
+          <ListItem
+            title={Locale.Settings.DisableCodeBlockAutoCompletion.Title}
+            subTitle={Locale.Settings.DisableCodeBlockAutoCompletion.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.disableCodeBlockCompletion}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.disableCodeBlockCompletion =
+                      e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+
           <ListItem title={Locale.Settings.Theme}>
             <Select
               value={config.theme}

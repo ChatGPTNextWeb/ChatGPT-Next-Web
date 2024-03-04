@@ -85,6 +85,11 @@ const vi: PartialLocaleType = {
       GoToUpdate: "Cập nhật",
     },
     SendKey: "Phím gửi",
+    DisableCodeBlockAutoCompletion: {
+      Title: "Vô hiệu hóa tự động hoàn thiện khối mã",
+      SubTitle:
+        "Khi không bị vô hiệu hóa, việc nhập khối mã ``` sẽ tự động hoàn thiện",
+    },
     Theme: "Theme",
     TightBorder: "Chế độ không viền",
     SendPreviewBubble: {

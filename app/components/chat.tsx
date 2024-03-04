@@ -659,6 +659,7 @@ function _Chat() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
+  const [lastKeyDownKey, setLastKeyDownKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -729,12 +730,31 @@ function _Chat() {
   const onInput = (text: string) => {
     setUserInput(text);
     const n = text.trim().length;
+    const inputCurrent = inputRef.current;
 
     // clear search results
     if (n === 0) {
       setPromptHints([]);
     } else if (text.startsWith(ChatCommandPrefix)) {
       setPromptHints(chatCommands.search(text));
+    } else if (inputCurrent) {
+      // auto complete code block
+      if (!config.disableCodeBlockCompletion) {
+        const endWithCodeBlockSign = text.endsWith("```");
+        const cursorPositionAtEnd =
+          inputCurrent.selectionStart === text.length &&
+          inputCurrent.selectionEnd === text.length;
+        const isNotFromDelete = lastKeyDownKey !== "Backspace";
+        if (endWithCodeBlockSign && cursorPositionAtEnd && isNotFromDelete) {
+          const newText = text + "\n\n```";
+          setUserInput(newText);
+          // set cursor position
+          const cursorPos = newText.length - 4;
+          setTimeout(() => {
+            inputCurrent.setSelectionRange(cursorPos, cursorPos);
+          });
+        }
+      }
     } else if (!config.disablePromptHint && n < SEARCH_TEXT_LIMIT) {
       // check if need to trigger auto completion
       if (text.startsWith("/")) {
@@ -818,6 +838,7 @@ function _Chat() {
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    setLastKeyDownKey(e.key);
     // if ArrowUp and no userInput, fill with last input
     if (
       e.key === "ArrowUp" &&
@@ -1100,11 +1121,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {

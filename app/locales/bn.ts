@@ -155,6 +155,10 @@ const bn: PartialLocaleType = {
       GoToUpdate: "Update",
     },
     SendKey: "প্রেরণ চাবি",
+    DisableCodeBlockAutoCompletion: {
+      Title: "কোড ব্লক অটো পূরণ নিষ্ক্রিয় করুন",
+      SubTitle: "নিষ্ক্রিয় না করলে, কোড ব্লক ``` স্বয়ংক্রিয়ভাবে পূরণ হবে",
+    },
     Theme: "থিম",
     TightBorder: "সঙ্গতি সীমা",
     SendPreviewBubble: {

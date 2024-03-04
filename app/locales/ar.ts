@@ -129,6 +129,10 @@ const ar: PartialLocaleType = {
       GoToUpdate: "التحديث",
     },
     SendKey: "مفتاح الإرسال",
+    DisableCodeBlockAutoCompletion: {
+      Title: "تعطيل الإكمال التلقائي لكتلة الكود",
+      SubTitle: "عند عدم التعطيل، سيكمل كتلة الكود ``` تلقائيًا",
+    },
     Theme: "السمة",
     TightBorder: "حدود ضيقة",
     SendPreviewBubble: {

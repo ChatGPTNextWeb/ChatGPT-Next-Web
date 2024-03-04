@@ -171,6 +171,10 @@ const tw = {
       GoToUpdate: "前往更新",
     },
     SendKey: "傳送鍵",
+    DisableCodeBlockAutoCompletion: {
+      Title: "禁用程式碼區塊自動完成",
+      SubTitle: "未禁用時，輸入程式碼區塊 ``` 會自動完成",
+    },
     Theme: "主題",
     TightBorder: "緊湊邊框",
     SendPreviewBubble: {
@@ -467,8 +471,8 @@ const tw = {
 
 type DeepPartial<T> = T extends object
   ? {
-    [P in keyof T]?: DeepPartial<T[P]>;
-  }
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
   : T;
 
 export type LocaleType = typeof tw;

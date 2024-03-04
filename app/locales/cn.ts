@@ -170,6 +170,10 @@ const cn = {
       GoToUpdate: "前往更新",
     },
     SendKey: "发送键",
+    DisableCodeBlockAutoCompletion: {
+      Title: "禁用代码块自动补全",
+      SubTitle: "未禁用时，输入代码块 ``` 会自动补全",
+    },
     Theme: "主题",
     TightBorder: "无边框模式",
     SendPreviewBubble: {

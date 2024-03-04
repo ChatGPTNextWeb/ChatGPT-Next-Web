@@ -173,6 +173,11 @@ const sk: PartialLocaleType = {
       GoToUpdate: "Aktualizovať",
     },
     SendKey: "Odoslať kľúč",
+    DisableCodeBlockAutoCompletion: {
+      Title: "Vypnúť automatické dopĺňanie kódového bloku",
+      SubTitle:
+        "Ak nie je vypnuté, zadanie kódového bloku ``` sa automaticky doplní",
+    },
     Theme: "Motív",
     TightBorder: "Tesný okraj",
     SendPreviewBubble: {

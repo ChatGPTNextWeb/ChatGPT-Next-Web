@@ -136,6 +136,11 @@ const jp: PartialLocaleType = {
       GoToUpdate: "更新する",
     },
     SendKey: "送信キー",
+    DisableCodeBlockAutoCompletion: {
+      Title: "コードブロックの自動補完を無効にする",
+      SubTitle:
+        "無効にしない場合、コードブロック ``` の入力は自動的に補完されます",
+    },
     Theme: "テーマ",
     TightBorder: "ボーダーレスモード",
     SendPreviewBubble: {
