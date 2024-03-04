@@ -14,9 +14,17 @@ export type MessageRole = (typeof ROLES)[number];
 export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
 export type ChatModel = ModelType;
 
+export interface MultimodalContent {
+  type: "text" | "image_url";
+  text?: string;
+  image_url?: {
+    url: string;
+  };
+}
+
 export interface RequestMessage {
   role: MessageRole;
-  content: string;
+  content: string | MultimodalContent[];
 }
 
 export interface LLMConfig {
@@ -143,7 +151,6 @@ export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "x-requested-with": "XMLHttpRequest",
     Accept: "application/json",
   };
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
