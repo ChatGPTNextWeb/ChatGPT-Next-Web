@@ -20,6 +20,8 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { produce } from "immer";
+import next from "next";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -357,33 +359,67 @@ export const useChatStore = createPersistStore(
           messages: sendMessages,
           config: { ...modelConfig, stream: true },
           onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
             get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
+              session.messages = produce(session.messages, (draft) => {
+                const nextMessage = draft.find(
+                  (message) => message.id === botMessage.id,
+                );
+                if (nextMessage) {
+                  nextMessage.streaming = true;
+                  nextMessage.content = message;
+                }
+              });
             });
           },
           onFinish(message) {
-            botMessage.streaming = false;
+            get().updateCurrentSession((session) => {
+              if (message)
+                session.messages = produce(session.messages, (draft) => {
+                  const nextMessage = draft.find(
+                    (message) => message.id === botMessage.id,
+                  );
+                  if (nextMessage) {
+                    nextMessage.streaming = false;
+                    nextMessage.content = message;
+                  }
+                });
+            });
+
             if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
+              get().onNewMessage({
+                ...botMessage,
+                streaming: false,
+                content: message,
+              });
             }
             ChatControllerPool.remove(session.id, botMessage.id);
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
-            botMessage.content +=
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
-              });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
+
+            session.messages = produce(session.messages, (draft) => {
+              const nextMessage = draft.find(
+                (message) => message.id === botMessage.id,
+              );
+              if (nextMessage) {
+                nextMessage.streaming = false;
+                nextMessage.content =
+                  "\n\n" +
+                  prettyObject({
+                    error: true,
+                    message: error.message,
+                  });
+                nextMessage.isError = !isAborted;
+              }
+
+              const nextUserMessage = draft.find(
+                (message) => message.id === userMessage.id,
+              );
+              if (nextUserMessage) {
+                nextUserMessage.isError = !isAborted;
+              }
+            });
+
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
             });
@@ -391,7 +427,6 @@ export const useChatStore = createPersistStore(
               session.id,
               botMessage.id ?? messageIndex,
             );
-
             console.error("[Chat] failed ", error);
           },
           onController(controller) {
