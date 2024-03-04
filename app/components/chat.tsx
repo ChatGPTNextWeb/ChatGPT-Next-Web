@@ -422,6 +422,7 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  setUserInput: (text: string) => void;
   hitBottom: boolean;
   uploading: boolean;
 }) {
@@ -453,6 +454,15 @@ export function ChatActions(props: {
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
+  const [speechRecognition, setSpeechRecognition] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  useEffect(() => {
+    if ("SpeechRecognition" in window) {
+      setSpeechRecognition(new window.SpeechRecognition());
+    } else if ("webkitSpeechRecognition" in window) {
+      setSpeechRecognition(new window.webkitSpeechRecognition());
+    }
+  }, []);
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
@@ -475,6 +485,30 @@ export function ChatActions(props: {
 
   return (
     <div className={styles["chat-input-actions"]}>
+      {speechRecognition && (
+        <ChatAction
+          onClick={() => {
+            if (!isRecording) {
+              speechRecognition.continuous = true; // 连续识别
+              speechRecognition.lang = "zh-CN"; // 设置识别的语言为中文
+              speechRecognition.interimResults = true; // 返回临时结果
+              speechRecognition.start();
+              speechRecognition.onresult = function (event) {
+                console.log(event);
+                var transcript = event.results[0][0].transcript; // 获取识别结果
+                console.log(transcript);
+                props.setUserInput(transcript);
+              };
+              setIsRecording(true);
+            } else {
+              speechRecognition.stop();
+              setIsRecording(false);
+            }
+          }}
+          text="Speech"
+          icon={<BrainIcon />}
+        ></ChatAction>
+      )}
       {couldStop && (
         <ChatAction
           onClick={stopAll}
@@ -1419,6 +1453,7 @@ function _Chat() {
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           uploading={uploading}
+          setUserInput={setUserInput}
           showPromptHints={() => {
             // Click again to close
             if (promptHints.length > 0) {
