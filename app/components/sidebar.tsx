@@ -2,13 +2,8 @@ import { useEffect, useRef, useMemo } from "react";
 
 import styles from "./home.module.scss";
 
-import { IconButton } from "./button";
-import ChatGptIcon from "../icons/chatgpt.svg";
-import AddIcon from "../icons/add.svg";
-import DeleteIcon from "../icons/delete.svg";
-import DragIcon from "../icons/drag.svg";
 import { Stream } from "./stream-ai";
-import Locale from "../locales";
+import HippoIcron from "../icons/hippo.svg";
 import "../custom-style-web.scss";
 
 import { useAppConfig, useChatStore } from "../store";
@@ -136,19 +131,6 @@ export function SideBar(props: { className?: string }) {
     () => isIOS() && isMobileScreen,
     [isMobileScreen],
   );
-  const setupColorButtonRag = () => {
-    const button = document.getElementById("colorButtonRag");
-    const value = localStorage.getItem("statusRag");
-    if (value === "0") {
-      button.classList.remove("off");
-      button.classList.add("on");
-      localStorage.setItem("statusRag", "1");
-    } else {
-      button.classList.remove("on");
-      button.classList.add("off");
-      localStorage.setItem("statusRag", "0");
-    }
-  };
 
   useHotKey();
 
@@ -164,70 +146,14 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          NextChat
+          Hippo Penny
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          Hippo Penny AI assistant.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          <HippoIcron />
         </div>
-      </div>
-
-      <div className={styles["sidebar-header-bar"]}></div>
-
-      <div
-        className={styles["sidebar-body"]}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
-        }}
-      >
-        <ChatList narrow={shouldNarrow} />
-      </div>
-
-      <div className={styles["sidebar-tail"]}>
-        <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"] + " " + styles.mobile}>
-            <IconButton
-              icon={<DeleteIcon />}
-              onClick={async () => {
-                if (await showConfirm(Locale.Home.DeleteChat)) {
-                  chatStore.deleteSession(chatStore.currentSessionIndex);
-                }
-              }}
-            />
-          </div>
-
-          <div>
-            <button id="colorButtonRag" onClick={setupColorButtonRag}>
-              Search
-            </button>
-          </div>
-        </div>
-        <div>
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                navigate(Path.NewChat);
-              }
-            }}
-            shadow
-          />
-        </div>
-      </div>
-
-      <div
-        className={styles["sidebar-drag"]}
-        onPointerDown={(e) => onDragStart(e as any)}
-      >
-        <DragIcon />
       </div>
 
       {/* stream */}

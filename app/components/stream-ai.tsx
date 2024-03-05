@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { handleComfyui } from "../../configfunc";
 
 export function Stream() {
-  const [allPathStream, setAllPathStream] = useState([]);
   const [selectPathStream, setSelectPathStream] = useState("");
   const [typeStream, setTypeStream] = useState(1);
 
@@ -23,12 +22,6 @@ export function Stream() {
       console.log(e);
     }
   };
-  const handleCallComfyui = async () => {
-    setSelectPathStream(null);
-    setTypeStream(0);
-    const pathImage = await handleComfyui();
-    setSelectPathStream(pathImage);
-  };
 
   useEffect(() => {
     const headers = {
@@ -41,11 +34,6 @@ export function Stream() {
 
   return (
     <>
-      <button onClick={handleCallComfyui}>Image from comfy</button>
-      <button onClick={() => setStreambot(allPathStream)}>
-        Vid from server
-      </button>
-
       {selectPathStream &&
         (typeStream ? (
           <div className="cam-stream">

@@ -197,7 +197,7 @@ export function Home() {
     const userId = localStorage.getItem("userId");
 
     // add status rag
-    localStorage.setItem("statusRag", "0");
+    localStorage.setItem("statusRag", "1"); // deafult use rag
 
     // add UserId to localStore
     if (userId) {
