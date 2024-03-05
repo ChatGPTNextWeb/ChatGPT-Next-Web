@@ -41,7 +41,11 @@ export async function copyToClipboard(text: string) {
   }
 }
 
-export async function downloadAs(text: string, filename: string) {
+export async function downloadAs(
+  text: string,
+  filename: string,
+  isText = true,
+) {
   if (window.__TAURI__) {
     const result = await window.__TAURI__.dialog.save({
       defaultPath: `${filename}`,
@@ -59,9 +63,18 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(text);
-        await window.__TAURI__.fs.writeBinaryFile(result, data);
+        if (isText) {
+          // text file download
+          const encoder = new TextEncoder();
+          const data = encoder.encode(text);
+          await window.__TAURI__.fs.writeBinaryFile(result, data);
+        } else {
+          // other fallback
+          await window.__TAURI__.fs.writeBinaryFile(
+            result,
+            new Uint8Array([...text].map((c) => c.charCodeAt(0))),
+          );
+        }
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);
