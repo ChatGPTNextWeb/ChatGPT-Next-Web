@@ -16,6 +16,9 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
+    "@capacitor/android": "^5.7.1",
+    "@capacitor/core": "^5.7.1",
+    "@capacitor/ios": "^5.7.1",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@next/third-parties": "^14.1.0",
@@ -44,6 +47,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@capacitor/cli": "^5.7.1",
     "@tauri-apps/cli": "1.5.7",
     "@types/node": "^20.9.0",
     "@types/react": "^18.2.14",
