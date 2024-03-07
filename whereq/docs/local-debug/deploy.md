@@ -6,6 +6,7 @@
 - nvm install v20.11.1
 - npm install --global yarn
 - npm install --global cross-env
+- npm install --global next # just in case if want to use npx or next CLI
 
 # Build
 - yarn install

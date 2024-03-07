@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-page-custom-font */
+
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
@@ -7,6 +8,8 @@ import { type Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
 import { GoogleTagManager } from "@next/third-parties/google";
+import Navbar from "./components/navbar";
+import ResponsiveAppBar from "./components/navigation/navbar";
 const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
@@ -42,6 +45,7 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
+        <ResponsiveAppBar />
         {children}
         {serverConfig?.isVercel && (
           <>
