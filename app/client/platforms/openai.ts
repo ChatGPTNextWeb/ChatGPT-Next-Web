@@ -1,3 +1,4 @@
+"use client";
 import {
   ApiPath,
   DEFAULT_API_HOST,
@@ -8,7 +9,14 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import {
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+  MultimodalContent,
+} from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -17,6 +25,11 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import {
+  getMessageTextContent,
+  getMessageImages,
+  isVisionModel,
+} from "@/app/utils";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -45,7 +58,9 @@ export class ChatGPTApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp ? DEFAULT_API_HOST : ApiPath.OpenAI;
+      baseUrl = isApp
+        ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
+        : ApiPath.OpenAI;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -59,6 +74,8 @@ export class ChatGPTApi implements LLMApi {
       path = makeAzurePath(path, accessStore.azureApiVersion);
     }
 
+    console.log("[Proxy Endpoint] ", baseUrl, path);
+
     return [baseUrl, path].join("/");
   }
 
@@ -67,9 +84,10 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const visionModel = isVisionModel(options.config.model);
     const messages = options.messages.map((v) => ({
       role: v.role,
-      content: v.content,
+      content: visionModel ? v.content : getMessageTextContent(v),
     }));
 
     const modelConfig = {
@@ -91,6 +109,16 @@ export class ChatGPTApi implements LLMApi {
       // max_tokens: Math.max(modelConfig.max_tokens, 1024),
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
+
+    // add max_tokens to vision model
+    if (visionModel) {
+      Object.defineProperty(requestPayload, "max_tokens", {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: modelConfig.max_tokens,
+      });
+    }
 
     console.log("[Request] openai payload: ", requestPayload);
 
