@@ -16,6 +16,8 @@ const DEFAULT_OPENAI_URL =
     ? DEFAULT_API_HOST + "/api/proxy/openai"
     : ApiPath.OpenAI;
 
+    console.log(DEFAULT_OPENAI_URL,'ddd')
+
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
