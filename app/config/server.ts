@@ -30,6 +30,9 @@ declare global {
       // google only
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
+
+      // google tag manager
+      GTM_ID?: string;
     }
   }
 }
