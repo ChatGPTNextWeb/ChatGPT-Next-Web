@@ -206,9 +206,9 @@ export class ClaudeApi implements LLMApi {
 
     const requestPayload = {
       messages: new_messages,
-      top_p: 0.9,
-      temperature: 0.2,
-      max_tokens: 2048,
+      top_p: modelConfig.top_p,
+      temperature: modelConfig.temperature,
+      max_tokens: modelConfig.max_tokens,
       anthropic_version: "bedrock-2023-05-31",
     };
     // } else {

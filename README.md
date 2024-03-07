@@ -1,39 +1,18 @@
 <div align="center">
 <img src="./docs/images/head-cover.png" alt="icon"/>
 
-<h1 align="center">NextChat (ChatGPT Next Web)</h1>
+<h1 align="center">BRClient</h1>
 
 English / [简体中文](./README_CN.md)
 
-One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 & Gemini Pro support.
+It is a Bedrock client forked from https://github.com/Yidadaa/ChatGPT-Next-Web/
 
-一键免费部署你的跨平台私人 ChatGPT 应用, 支持 GPT3, GPT4 & Gemini Pro 模型。
+And it was simplified to support AWS Bedrock only.
 
-[![Web][Web-image]][web-url]
-[![Windows][Windows-image]][download-url]
-[![MacOS][MacOS-image]][download-url]
-[![Linux][Linux-image]][download-url]
-
-[Web App](https://app.nextchat.dev/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/NextChatDev)
-
-[网页版](https://app.nextchat.dev/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
-
-[web-url]: https://chatgpt.nextweb.fun
-[download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
-[Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=microsoftedge
-[Windows-image]: https://img.shields.io/badge/-Windows-blue?logo=windows
-[MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
-[Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&env=GOOGLE_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
-
-[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBUEFA)
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
-
-![cover](./docs/images/cover.png)
 
 </div>
+
+# The following information is from original ChatGPT-Next-Web project:
 
 ## Features
 
