@@ -49,96 +49,55 @@ export class ClaudeApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    const isAzure = accessStore.provider === ServiceProvider.Azure;
-
-    if (isAzure && !accessStore.isValidAzure()) {
-      throw Error(
-        "incomplete azure config, please check it in your settings page",
-      );
-    }
-
-    let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
-
-    if (baseUrl.length === 0) {
-      const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
-        : ApiPath.OpenAI;
-    }
-
-    if (baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
-    }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.OpenAI)) {
-      baseUrl = "https://" + baseUrl;
-    }
-
-    if (isAzure) {
-      path = makeAzurePath(path, accessStore.azureApiVersion);
-    }
-
-    console.log("[Proxy Endpoint] ", baseUrl, path);
-
-    return [baseUrl, path].join("/");
+    return "https://facked-url.bedrock.com";
   }
 
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
-  async chat(options: ChatOptions) {
-    const visionModel = isVisionModel(options.config.model);
-
-    console.log("is vision model", visionModel);
-
-    const messages = options.messages.map((v) => ({
-      role: v.role,
-      content: visionModel ? v.content : getMessageTextContent(v),
-    }));
-
-    const modelConfig = {
-      ...useAppConfig.getState().modelConfig,
-      ...useChatStore.getState().currentSession().mask.modelConfig,
-      ...{
-        model: options.config.model,
-      },
-    };
-
-    const accessStore = useAccessStore.getState();
-
-    const aws_config_data = {
-      region: accessStore.awsRegion,
-      credentials: {
-        accessKeyId: accessStore.awsAccessKeyId,
-        secretAccessKey: accessStore.awsSecretAccessKey,
-      },
-    };
-
-    console.log("aws_config_data", aws_config_data);
-
-    const client = new BedrockClient(aws_config_data);
-
-    var new_messages = [];
-
-    // if (visionModel){
-    // if it is a vision model, need to get the images metadata and real image data from original message
-    // as the format of the original message playload is different from the format of the payload format of Bedrock API
+  convertMessagePayload(messages: any, modelConfig: any): any {
+    // converting the message payload, as the format of the original message playload is different from the format of the payload format of Bedrock API
     // define a new variable to store the new message payload,
-    // scan all the messages in the original message payload, if the message is from user, then scan the content of the message
-    // if the content type is image_url, then get the image data and store it in the new message payload
-    // if the content type is not image_url, then store the content in the new message payload
-
-    console.log("vision model, convert image_url to image data");
+    // scan all the messages in the original message payload,
+    //      if the message is a system prompt, then need to remove it from the message payload, and store the system prompt content in "system parameter" as Bedrock API required.
+    //      if the message is from user, then scan the content of the message
+    //          if the content type is image_url, then get the image data and store it in the new message payload
+    //          if the content type is not image_url, then store the content in the new message payload
 
     console.log("original messages", messages);
 
-    new_messages = [];
+    var new_messages: any = [];
+
+    var has_system_prompt = false;
+    var system_prompt = "";
+    var prev_role = "";
 
     for (var i = 0; i < messages.length; i++) {
-      if (messages[i].role === "user") {
+      if (messages[i].role === "system") {
+        if (typeof messages[i].content === "string") {
+          has_system_prompt = true;
+          system_prompt = messages[i].content;
+        }
+
+        prev_role = messages[i].role;
+      } else if (messages[i].role === "user") {
         // check the value type of the content
 
         var new_contents = [];
+
+        if (prev_role === messages[i].role) {
+          // continued user message
+          // need to get back the previous user message, and append the current message to the previous message
+
+          const last_message = new_messages.pop();
+
+          // put the contents in the last message to the new contents
+
+          for (var k = 0; k < last_message.content.length; k++) {
+            new_contents.push(last_message.content[k]);
+          }
+        }
 
         if (typeof messages[i].content === "string") {
           // the message content is not an array, it is a text message
@@ -189,9 +148,44 @@ export class ClaudeApi implements LLMApi {
 
         new_messages.push({ role: messages[i].role, content: new_contents });
 
-        console.log("now , new message is:", new_messages);
+        prev_role = messages[i].role;
+
+        // console.log("now , new message is:", new_messages);
+      } else if (messages[i].role === "assistant") {
+        var new_contents = [];
+
+        if (prev_role === messages[i].role) {
+          // continued assistant message
+          // need to get back the previous assistant message, and append the current message to the previous message
+
+          const last_message = new_messages.pop();
+
+          // put the contents in the last message to the new contents
+
+          for (var k = 0; k < last_message.content.length; k++) {
+            new_contents.push(last_message.content[k]);
+          }
+        }
+
+        if (typeof messages[i].content === "string") {
+          // the message content is not an array, it is a text message
+
+          const text_playload = { type: "text", text: messages[i].content };
+
+          new_contents.push(text_playload);
+        } else {
+          for (var j = 0; j < messages[i].content.length; j++) {
+            new_contents.push(messages[i].content[j]);
+          }
+        }
+
+        new_messages.push({ role: messages[i].role, content: new_contents });
+
+        prev_role = messages[i].role;
       } else {
         new_messages.push(messages[i]);
+
+        prev_role = messages[i].role;
       }
     }
     // }
@@ -205,21 +199,54 @@ export class ClaudeApi implements LLMApi {
     // if (visionModel) {
 
     const requestPayload = {
+      ...(has_system_prompt ? { system: system_prompt } : {}),
       messages: new_messages,
       top_p: modelConfig.top_p,
       temperature: modelConfig.temperature,
       max_tokens: modelConfig.max_tokens,
       anthropic_version: "bedrock-2023-05-31",
     };
-    // } else {
-    //   requestPayload = {
-    //     "messages" : messages,
-    //     top_p: 0.9,
-    //     temperature: 0.2,
-    //     max_tokens:2048,
-    //     anthropic_version:"bedrock-2023-05-31"
-    //   }
-    // }
+
+    return requestPayload;
+  }
+
+  async chat(options: ChatOptions) {
+    const visionModel = isVisionModel(options.config.model);
+
+    const modelConfig = {
+      ...useAppConfig.getState().modelConfig,
+      ...useChatStore.getState().currentSession().mask.modelConfig,
+      ...{
+        model: options.config.model,
+      },
+    };
+
+    const accessStore = useAccessStore.getState();
+
+    const aws_config_data = {
+      region: accessStore.awsRegion,
+      credentials: {
+        accessKeyId: accessStore.awsAccessKeyId,
+        secretAccessKey: accessStore.awsSecretAccessKey,
+      },
+    };
+
+    console.log("aws_config_data", aws_config_data);
+
+    const client = new BedrockClient(aws_config_data);
+
+    console.log("is vision model", visionModel);
+
+    console.log("options.messages", options.messages);
+
+    const messages = options.messages.map((v) => ({
+      role: v.role,
+      content: visionModel ? v.content : getMessageTextContent(v),
+    }));
+
+    const requestPayload = this.convertMessagePayload(messages, modelConfig);
+
+    console.log("requestPayload", requestPayload);
 
     // add max_tokens to vision model
     if (visionModel) {
