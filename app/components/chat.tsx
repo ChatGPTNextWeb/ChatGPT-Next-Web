@@ -459,10 +459,6 @@ export function ChatActions(props: {
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
-    } else {
-      // 为visionModel时不附带历史消息
-      const newModelConfig = chatStore.currentSession().mask.modelConfig;
-      newModelConfig.historyMessageCount = 0;
     }
 
     // if current model is not available
