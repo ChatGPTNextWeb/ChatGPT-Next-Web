@@ -467,6 +467,14 @@ const cn = {
     Topic: "主题",
     Time: "时间",
   },
+  Navbar: {
+    Products: "产品",
+    Pricing: "价格",
+    Blog: "博客",
+    About: "关于",
+    Help: "帮助",
+    Logout: "登出",
+  },
 };
 
 type DeepPartial<T> = T extends object

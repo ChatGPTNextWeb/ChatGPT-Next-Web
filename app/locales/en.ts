@@ -468,7 +468,14 @@ const en: LocaleType = {
     Topic: "Topic",
     Time: "Time",
   },
-
+  Navbar: {
+    Products: "Products",
+    Pricing: "Pricing",
+    Blog: "Blog",
+    About: "About",
+    Help: "Help",
+    Logout: "Logout",
+  },
   URLCommand: {
     Code: "Detected access code from url, confirm to apply? ",
     Settings: "Detected settings from url, confirm to apply?",

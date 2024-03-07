@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -15,12 +16,18 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 // import AdbIcon from '@mui/icons-material/Adb';
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
-import Link from "next/link";
+
+// Using router to navigate to different pages instead of Link
+// import Link from "next/link";
+
+import Locale from "../../locales";
 
 const pages = ["Products", "Pricing", "Blog", "About"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
+  const router = useRouter();
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -37,6 +44,8 @@ function ResponsiveAppBar() {
 
   const handleCloseNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(null);
+    const target = event.currentTarget as HTMLAnchorElement;
+    router.push(target.href);
   };
 
   const handleCloseUserMenu = () => {
@@ -155,16 +164,53 @@ function ResponsiveAppBar() {
             WhereQ
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {/* {pages.map((page) => ( */}
-            {/* <Button */}
-            {/* key={page} */}
-            {/* onClick={handleCloseNavMenu} */}
-            {/* sx={{ my: 2, color: 'white', display: 'block' }} */}
-            {/* > */}
-            {/* {page} */}
-            {/* </Button> */}
-            {/* ))} */}
+            {/*
+            {pages.map((page) => (
+              <Button
+                key={page}
+                name={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            ))} 
+            */}
 
+            <Button
+              name="Products"
+              onClick={handleCloseNavMenu}
+              href="/products"
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              {Locale.Navbar.Products}
+            </Button>
+            <Button
+              name="Pricing"
+              onClick={handleCloseNavMenu}
+              href="/pricing"
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              {Locale.Navbar.Pricing}
+            </Button>
+            <Button
+              name="Blog"
+              onClick={handleCloseNavMenu}
+              href="/blog"
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              {Locale.Navbar.Blog}
+            </Button>
+            <Button
+              name="About"
+              onClick={handleCloseNavMenu}
+              href="/about"
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              {Locale.Navbar.About}
+            </Button>
+
+            {/*
             <Link href="/products" style={{ textDecoration: "none" }}>
               <Button sx={{ my: 2, color: "white", display: "block" }}>
                 Products
@@ -185,6 +231,7 @@ function ResponsiveAppBar() {
                 About
               </Button>
             </Link>
+            */}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
