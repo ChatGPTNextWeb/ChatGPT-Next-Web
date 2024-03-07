@@ -7,6 +7,8 @@ import { useAccessStore } from "../store";
 import Locale from "../locales";
 
 import BotIcon from "../icons/bot.svg";
+import BedrockBotIcon from "../icons/bedrock_16.svg";
+
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
 
@@ -33,7 +35,7 @@ export function AuthPage() {
   return (
     <div className={styles["auth-page"]}>
       <div className={`no-dark ${styles["auth-logo"]}`}>
-        <BotIcon />
+        <BedrockBotIcon />
       </div>
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>

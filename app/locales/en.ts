@@ -285,7 +285,26 @@ const en: LocaleType = {
       },
       Provider: {
         Title: "Model Provider",
-        SubTitle: "Select Azure or OpenAI",
+        SubTitle: "Select a model provider",
+      },
+      AWS: {
+        Region: {
+          Title: "AWS Region",
+          SubTitle: "Setting the service Region",
+          Placeholder: "do input the region, such as us-west-2",
+        },
+
+        AccessKey: {
+          Title: "Access Key",
+          SubTitle: "Config Access Key",
+          Placeholder: "input access key, xxxxxxxxxxxxxx",
+        },
+
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "Config Secret Key",
+          Placeholder: "input secret key, xxxxxxxxxxxxxxxxxxxxxxxxxx",
+        },
       },
       OpenAI: {
         ApiKey: {

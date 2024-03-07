@@ -284,6 +284,25 @@ const cn = {
         Title: "模型服务商",
         SubTitle: "切换不同的服务商",
       },
+      AWS: {
+        Region: {
+          Title: "AWS Region",
+          SubTitle: "指定希望使用的Region",
+          Placeholder: "输入Region名，如us-west-2",
+        },
+
+        AccessKey: {
+          Title: "Access Key",
+          SubTitle: "配置Access Key",
+          Placeholder: "输入access key, xxxxxxxxxxxxxx",
+        },
+
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "配置Secret Key",
+          Placeholder: "输入 secret key, xxxxxxxxxxxxxxxxxxxxxxxxxx",
+        },
+      },
       OpenAI: {
         ApiKey: {
           Title: "API Key",

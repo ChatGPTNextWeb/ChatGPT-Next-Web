@@ -961,7 +961,65 @@ export function Settings() {
                     </Select>
                   </ListItem>
 
-                  {accessStore.provider === "OpenAI" ? (
+                  {accessStore.provider === "AWS" ? (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.AWS.Region.Title}
+                        subTitle={Locale.Settings.Access.AWS.Region.SubTitle}
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.awsRegion}
+                          placeholder={
+                            Locale.Settings.Access.AWS.Region.Placeholder
+                          }
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.awsRegion = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.AWS.AccessKey.Title}
+                        subTitle={Locale.Settings.Access.AWS.AccessKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.awsAccessKeyId}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.AWS.AccessKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.awsAccessKeyId = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.AWS.SecretKey.Title}
+                        subTitle={Locale.Settings.Access.AWS.SecretKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.awsSecretAccessKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.AWS.SecretKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.awsSecretAccessKey =
+                                  e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                    </>
+                  ) : accessStore.provider === "OpenAI" ? (
                     <>
                       <ListItem
                         title={Locale.Settings.Access.OpenAI.Endpoint.Title}

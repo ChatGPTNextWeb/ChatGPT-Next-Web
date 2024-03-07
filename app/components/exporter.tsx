@@ -22,8 +22,10 @@ import {
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
+import BedrockIcon from "../icons/bedrock.png";
 import ShareIcon from "../icons/share.svg";
 import BotIcon from "../icons/bot.png";
+import BedrockBotIcon from "../icons/bedrock_16.png";
 
 import DownloadIcon from "../icons/download.svg";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -414,7 +416,7 @@ function ExportAvatar(props: { avatar: string }) {
   if (props.avatar === DEFAULT_MASK_AVATAR) {
     return (
       <img
-        src={BotIcon.src}
+        src={BedrockBotIcon.src}
         width={30}
         height={30}
         alt="bot"
@@ -536,7 +538,7 @@ export function ImagePreviewer(props: {
         <div className={styles["chat-info"]}>
           <div className={styles["logo"] + " no-dark"}>
             <NextImage
-              src={ChatGptIcon.src}
+              src={BedrockIcon.src}
               alt="logo"
               width={50}
               height={50}

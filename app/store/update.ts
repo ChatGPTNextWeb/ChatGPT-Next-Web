@@ -7,6 +7,7 @@ import {
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import ChatGptIcon from "../icons/chatgpt.png";
+import BedrockIcon from "../icons/bedrock.png";
 import Locale from "../locales";
 import { use } from "react";
 import { useAppConfig } from ".";
@@ -108,7 +109,7 @@ export const useUpdateStore = createPersistStore(
                         window.__TAURI__?.notification.sendNotification({
                           title: "NextChat",
                           body: `${Locale.Settings.Update.IsLatest}`,
-                          icon: `${ChatGptIcon.src}`,
+                          icon: `${BedrockIcon.src}`,
                           sound: "Default",
                         });
                       } else {
@@ -118,7 +119,7 @@ export const useUpdateStore = createPersistStore(
                         window.__TAURI__?.notification.sendNotification({
                           title: "NextChat",
                           body: updateMessage,
-                          icon: `${ChatGptIcon.src}`,
+                          icon: `${BedrockIcon.src}`,
                           sound: "Default",
                         });
                       }

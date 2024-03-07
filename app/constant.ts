@@ -67,11 +67,15 @@ export enum ServiceProvider {
   OpenAI = "OpenAI",
   Azure = "Azure",
   Google = "Google",
+  AWS = "AWS",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
+  Anthropic = "Anthropic",
+  Claude = "Claude",
+  AWS = "AWS",
 }
 
 export const OpenaiPath = {
@@ -287,6 +291,15 @@ export const DEFAULT_MODELS = [
       id: "google",
       providerName: "Google",
       providerType: "google",
+    },
+  },
+  {
+    name: "claude-3",
+    available: true,
+    provider: {
+      id: "aws",
+      providerName: "AWS",
+      providerType: "aws",
     },
   },
 ] as const;
