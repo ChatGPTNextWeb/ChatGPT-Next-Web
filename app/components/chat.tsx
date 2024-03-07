@@ -220,7 +220,7 @@ function useSubmitHandler() {
 
   const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key !== "Enter") return false;
-    if (e.key === "Enter" && (e.nativeEvent.isComposing || isComposing.current))
+    if (e.nativeEvent.isComposing || isComposing.current)
       return false;
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
