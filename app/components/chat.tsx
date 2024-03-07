@@ -7,7 +7,7 @@ import React, {
   useCallback,
   Fragment,
 } from "react";
-
+import { Stream } from "./stream-ai";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -20,7 +20,7 @@ import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
-import BreakIcon from "../icons/break.svg";
+import BreakIcon from "../icons/bot.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import DeleteIcon from "../icons/clear.svg";
 import PinIcon from "../icons/pin.svg";
@@ -326,9 +326,10 @@ function ClearContextDivider() {
   );
 }
 
-function ChatAction(props: {
-  text: string;
+export function ChatAction(props: {
+  text?: string;
   icon: JSX.Element;
+  style?: string;
   onClick: () => void;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
@@ -414,6 +415,10 @@ export function ChatActions(props: {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
+  const maskStore = useMaskStore();
+
+  //
+  const allMasks = maskStore.getAll();
 
   // switch themes
   const theme = config.theme;
@@ -467,35 +472,6 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
-      {/* {props.hitBottom && (
-        <ChatAction
-          onClick={props.showPromptModal}
-          text={Locale.Chat.InputActions.Settings}
-          icon={<SettingsIcon />}
-        />
-      )} */}
-      {/* 
-      <ChatAction
-        onClick={nextTheme}
-        text={Locale.Chat.InputActions.Theme[theme]}
-        icon={
-          <>
-            {theme === Theme.Auto ? (
-              <AutoIcon />
-            ) : theme === Theme.Light ? (
-              <LightIcon />
-            ) : theme === Theme.Dark ? (
-              <DarkIcon />
-            ) : null}
-          </>
-        }
-      /> */}
-
-      {/* <ChatAction
-        onClick={props.showPromptHints}
-        text={Locale.Chat.InputActions.Prompt}
-        icon={<PromptIcon />}
-      /> */}
 
       <ChatAction
         onClick={() => {
@@ -509,22 +485,10 @@ export function ChatActions(props: {
         text={Locale.Chat.InputActions.Clear}
         icon={<BreakIcon />}
         onClick={() => {
-          chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
-              session.clearContextIndex = undefined;
-            } else {
-              session.clearContextIndex = session.messages.length;
-              session.memoryPrompt = ""; // will clear memory
-            }
-          });
+          chatStore.newSession(allMasks[0]);
+          navigate(Path.Chat);
         }}
       />
-
-      {/* <ChatAction
-        onClick={() => setShowModelSelector(true)}
-        text={currentModel}
-        icon={<RobotIcon />}
-      /> */}
 
       {showModelSelector && (
         <Selector
@@ -1085,16 +1049,7 @@ function _Chat() {
               />
             </div>
           )}
-          <div className="window-action-button">
-            <IconButton
-              icon={<ExportIcon />}
-              bordered
-              title={Locale.Chat.Actions.Export}
-              onClick={() => {
-                setShowExport(true);
-              }}
-            />
-          </div>
+
           {showMaxIcon && (
             <div className="window-action-button">
               <IconButton
@@ -1115,6 +1070,9 @@ function _Chat() {
           showModal={showPromptModal}
           setShowModal={setShowPromptModal}
         />
+      </div>
+      <div className="stream-chat">
+        <Stream />
       </div>
 
       <div

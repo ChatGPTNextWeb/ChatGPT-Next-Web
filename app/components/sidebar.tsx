@@ -1,12 +1,17 @@
 import { useEffect, useRef, useMemo } from "react";
 
 import styles from "./home.module.scss";
+import stylesChat from "./chat.module.scss";
 
 import { Stream } from "./stream-ai";
 import HippoIcron from "../icons/hippo.svg";
 import "../custom-style-web.scss";
 
 import { useAppConfig, useChatStore } from "../store";
+import { useMaskStore } from "../store/mask";
+import { ChatAction } from "../components/chat";
+import Locale from "../locales";
+import BreakIcon from "../icons/bot.svg";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -121,6 +126,10 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
+  const maskStore = useMaskStore();
+
+  //
+  const allMasks = maskStore.getAll();
 
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -157,8 +166,18 @@ export function SideBar(props: { className?: string }) {
       </div>
 
       {/* stream */}
-      <div className="custom-style-web-stream">
+      <div className="stream-sidebar">
         <Stream />
+      </div>
+
+      <div
+        className="chatwithme"
+        onClick={() => {
+          chatStore.newSession(allMasks[0]);
+          navigate(Path.Chat);
+        }}
+      >
+        <BreakIcon className="icon" /> Chat with me
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { handleComfyui } from "../../configfunc";
 
 export function Stream() {
   const [selectPathStream, setSelectPathStream] = useState("");

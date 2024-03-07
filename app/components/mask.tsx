@@ -453,7 +453,7 @@ export function MaskPage() {
           </div>
 
           <div className="window-actions">
-            <div className="window-action-button">
+            {/* <div className="window-action-button">
               <IconButton
                 icon={<DownloadIcon />}
                 bordered
@@ -468,7 +468,7 @@ export function MaskPage() {
                 bordered
                 onClick={() => importFromFile()}
               />
-            </div>
+            </div> */}
             <div className="window-action-button">
               <IconButton
                 icon={<CloseIcon />}
@@ -488,7 +488,7 @@ export function MaskPage() {
               autoFocus
               onInput={(e) => onSearch(e.currentTarget.value)}
             />
-            <Select
+            {/* <Select
               className={styles["mask-filter-lang"]}
               value={filterLang ?? Locale.Settings.Lang.All}
               onChange={(e) => {
@@ -508,9 +508,9 @@ export function MaskPage() {
                   {ALL_LANG_OPTIONS[lang]}
                 </option>
               ))}
-            </Select>
+            </Select> */}
 
-            <IconButton
+            {/* <IconButton
               className={styles["mask-create"]}
               icon={<AddIcon />}
               text={Locale.Mask.Page.Create}
@@ -519,7 +519,7 @@ export function MaskPage() {
                 const createdMask = maskStore.create();
                 setEditingMaskId(createdMask.id);
               }}
-            />
+            /> */}
           </div>
 
           <div>
@@ -538,11 +538,13 @@ export function MaskPage() {
                     </div>
                   </div>
                 </div>
+
                 <div className={styles["mask-actions"]}>
                   <IconButton
                     icon={<AddIcon />}
                     text={Locale.Mask.Item.Chat}
                     onClick={() => {
+                      console.log(m, "data mask");
                       chatStore.newSession(m);
                       navigate(Path.Chat);
                     }}

@@ -1,6 +1,7 @@
 import { BuiltinMask } from "./typing";
 
 export const EN_MASKS: BuiltinMask[] = [
+  // If added, add it at the end
   {
     avatar: "gpt-bot",
     name: "Chat with me",
@@ -51,7 +52,7 @@ export const EN_MASKS: BuiltinMask[] = [
   ///
   {
     avatar: "1f5bc-fe0f",
-    name: "demo-test  ",
+    name: "Draw with me",
     context: [
       {
         id: "text-to-pic-0",

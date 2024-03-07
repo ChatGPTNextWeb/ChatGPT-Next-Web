@@ -1,45 +1,63 @@
-.home_sidebar-body__9zbei {
-  // custom style list chat
-  max-height: 45%;
+.stream-sidebar {
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.custom-style-web-stream {
-  // add style : stream
-  margin-top: 10px;
-  width: 100%;
-  height: 30%;
-  overflow: hidden;
-}
-.cam-stream {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
 .cam-stream video {
   object-fit: cover;
   width: 100%;
   height: 100%;
-  border-radius: 4%;
 }
-
-// button rag
-#colorButtonRag {
-  margin: 0 4px;
-  padding: 10px 6px;
-  font-size: 14px;
-  border: none;
-  cursor: pointer;
-  background-color: white;
-  border-radius: 20%;
-  color: black;
+// screen pc
+@media only screen and (min-width: 600px) {
+  .stream-sidebar {
+  }
+  .cam-stream {
+    width: 100%;
+    background-color: black;
+  }
+  .chatwithme {
+    display: none;
+  }
+  .stream-chat {
+    display: none;
+  }
 }
-
-#colorButtonRag.off {
-  background-color: white;
-  color: black;
-}
-
-#colorButtonRag.on {
-  background-color: rgb(62, 219, 219);
-  color: black;
+// screen moibile
+@media only screen and (max-width: 600px) {
+  .stream-sidebar {
+    height: 60%;
+    width: 100%;
+  }
+  .cam-stream {
+    height: 100%;
+  }
+  .cam-stream video {
+    height: 100%;
+  }
+  .chatwithme {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .chatwithme .icon {
+    width: 20%;
+    height: 100%;
+  }
+  .chat {
+    margin-top: 10%;
+    height: 90%;
+  }
+  .stream-chat {
+    display: block;
+    height: 20%;
+    .cam-stream video {
+      height: 100%;
+      border-radius: 2%;
+    }
+  }
 }
