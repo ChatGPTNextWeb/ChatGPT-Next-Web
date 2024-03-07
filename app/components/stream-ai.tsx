@@ -16,9 +16,15 @@ export function Stream() {
       const res = await axios.get(process.env.STREAMBOT, { headers });
       const data = res.data.message;
       setStreambot(data);
-      setAllPathStream(data);
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleChanglePathVid = () => {
+    const pathVidOnClient = localStorage.getItem("pathVidStream");
+    if (pathVidOnClient && pathVidOnClient !== selectPathStream) {
+      setSelectPathStream(pathVidOnClient);
     }
   };
 
@@ -27,33 +33,28 @@ export function Stream() {
       "Content-Type": "application/json",
       Authorization: process.env.TOKENHIPPO,
     };
+    localStorage.setItem("pathVidStream", "");
 
     getPathVidStream(headers);
   }, []);
 
   return (
     <>
-      {selectPathStream &&
-        (typeStream ? (
-          <div className="cam-stream">
-            <video autoPlay muted loop>
-              <source src={selectPathStream} type="video/mp4" />
-            </video>
-          </div>
-        ) : (
-          <div className="cam-stream">
-            <img
-              src={selectPathStream}
-              alt="Image Stream"
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          </div>
-        ))}
+      {selectPathStream ? (
+        <div className="cam-stream">
+          <video
+            key={selectPathStream}
+            autoPlay
+            muted
+            loop
+            onTimeUpdate={handleChanglePathVid}
+          >
+            <source src={selectPathStream} type="video/mp4" />
+          </video>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </>
   );
 }
