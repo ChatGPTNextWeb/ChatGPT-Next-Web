@@ -564,12 +564,7 @@ export const useChatStore = createPersistStore(
 
         const lastMsgAssistant =
           toBeSummarizedMsgs[toBeSummarizedMsgs.length - 1];
-        const responseSaveToDb = await saveToVectorDatabase(
-          lastMsgAssistant.content,
-        );
-        responseSaveToDb === "ok"
-          ? console.log("save to vectordb success")
-          : console.log("save to vectordb error");
+        await saveToVectorDatabase(lastMsgAssistant.content);
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&

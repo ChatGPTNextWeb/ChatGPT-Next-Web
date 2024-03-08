@@ -29,6 +29,21 @@ export async function saveToVectorDatabase(text) {
 }
 export async function searchFromVectorDatabase(requestPayload) {
   try {
+    // search pathVidTream
+    if (1) {
+      const data = {
+        collection_name: "collection_video_test",
+        collect_data: true,
+      };
+      const result = await axios.post(
+        process.env.SEARCHFROMVECTORDATABASE,
+        data,
+      );
+      console.log("result::", result);
+      localStorage.setItem("pathVidStream", "");
+    }
+
+    // search data to query
     const userId = localStorage.getItem("userId");
     const statusRag = localStorage.getItem("statusRag");
 
@@ -70,8 +85,7 @@ export async function searchFromVectorDatabase(requestPayload) {
       Answer:
       """
       `;
-
-      console.log("requestPayload::::", requestPayload);
+      //
 
       return requestPayload;
     } else {
