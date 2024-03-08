@@ -843,6 +843,23 @@ function _Chat() {
       e.preventDefault();
     }
   };
+  const onPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.kind === 'file') {
+        const blob = item.getAsFile();
+        if (blob && blob.type.startsWith('image/')) {
+          e.preventDefault();
+          const imageFile = new File([blob], 'image.png', { type: blob.type });
+          uploadImage([imageFile]);
+          break;
+        }
+      }
+    }
+  };
 
   const deleteMessage = (msgId?: string) => {
     chatStore.updateCurrentSession(
@@ -1142,43 +1159,53 @@ function _Chat() {
     [attachImages, chatStore],
   );
 
-  async function uploadImage() {
+  async function uploadImage(clipboardImages: File[] = []) {
     const images: string[] = [];
     images.push(...attachImages);
-
-    images.push(
-      ...(await new Promise<string[]>((res, rej) => {
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept =
-          "image/png, image/jpeg, image/webp, image/heic, image/heif";
-        fileInput.multiple = true;
-        fileInput.onchange = (event: any) => {
-          setUploading(true);
-          const files = event.target.files;
-          const imagesData: string[] = [];
-          for (let i = 0; i < files.length; i++) {
-            const file = event.target.files[i];
-            compressImage(file, 256 * 1024)
-              .then((dataUrl) => {
-                imagesData.push(dataUrl);
-                if (
-                  imagesData.length === 3 ||
-                  imagesData.length === files.length
-                ) {
+  
+    if(clipboardImages.length > 0)
+    {
+      for (const clipboardImage of clipboardImages) {
+        const dataUrl = await compressImage(clipboardImage, 256 * 1024);
+        images.push(dataUrl);
+      }
+    }
+    else
+    {
+      images.push(
+        ...(await new Promise<string[]>((res, rej) => {
+          const fileInput = document.createElement("input");
+          fileInput.type = "file";
+          fileInput.accept =
+            "image/png, image/jpeg, image/webp, image/heic, image/heif";
+          fileInput.multiple = true;
+          fileInput.onchange = (event: any) => {
+            setUploading(true);
+            const files = event.target.files;
+            const imagesData: string[] = [];
+            for (let i = 0; i < files.length; i++) {
+              const file = event.target.files[i];
+              compressImage(file, 256 * 1024)
+                .then((dataUrl) => {
+                  imagesData.push(dataUrl);
+                  if (
+                    imagesData.length === 3 ||
+                    imagesData.length === files.length
+                  ) {
+                    setUploading(false);
+                    res(imagesData);
+                  }
+                })
+                .catch((e) => {
                   setUploading(false);
-                  res(imagesData);
-                }
-              })
-              .catch((e) => {
-                setUploading(false);
-                rej(e);
-              });
-          }
-        };
-        fileInput.click();
-      })),
-    );
+                  rej(e);
+                });
+            }
+          };
+          fileInput.click();
+        })),
+      );
+    }
 
     const imagesLength = images.length;
     if (imagesLength > 3) {
@@ -1488,6 +1515,7 @@ function _Chat() {
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}
+            onPaste={onPaste}
             onFocus={scrollToBottom}
             onClick={scrollToBottom}
             onPaste={handlePaste}
