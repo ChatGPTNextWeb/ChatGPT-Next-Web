@@ -90,7 +90,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  LAST_INPUT_IMAGE_KEY,
   LAST_INPUT_KEY,
   ModelProvider,
   Path,
@@ -105,7 +104,6 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
-import Image from "next/image";
 import { ClientApi } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
 import { MultimodalContent } from "../client/api";
@@ -455,7 +453,6 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
-  imageSelected: (img: any) => void;
   hitBottom: boolean;
   uploading: boolean;
 }) {
@@ -717,7 +714,6 @@ function _Chat() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
-  const [userImage, setUserImage] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -803,7 +799,7 @@ function _Chat() {
     }
   };
 
-  const doSubmit = (userInput: string, userImage?: any) => {
+  const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -818,10 +814,8 @@ function _Chat() {
       .then(() => setIsLoading(false));
     setAttachImages([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
-    localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
     setUserInput("");
     setPromptHints([]);
-    setUserImage(null);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
   };
@@ -886,12 +880,11 @@ function _Chat() {
       !(e.metaKey || e.altKey || e.ctrlKey)
     ) {
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
-      setUserImage(localStorage.getItem(LAST_INPUT_IMAGE_KEY));
       e.preventDefault();
       return;
     }
     if (shouldSubmit(e) && promptHints.length === 0) {
-      doSubmit(userInput, userImage);
+      doSubmit(userInput);
       e.preventDefault();
     }
   };
@@ -1069,7 +1062,6 @@ function _Chat() {
     isLoading,
     session.messages,
     userInput,
-    userImage?.fileUrl,
   ]);
 
   const [msgRenderIndex, _setMsgRenderIndex] = useState(
@@ -1282,8 +1274,6 @@ function _Chat() {
     }
     setAttachImages(images);
   }
-
-  const textareaMinHeight = userImage ? 121 : 68;
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -1574,19 +1564,6 @@ function _Chat() {
                       </div>
                     )}
                   </div>
-                  {!isUser && message.model?.includes("vision") && (
-                    <div
-                      className={[
-                        styles["chat-message-actions"],
-                        styles["column-flex"],
-                      ].join(" ")}
-                    >
-                      <div
-                        style={{ marginTop: "6px" }}
-                        className={styles["chat-input-actions"]}
-                      ></div>
-                    </div>
-                  )}
                   <div className={styles["chat-message-action-date"]}>
                     {isContext
                       ? Locale.Chat.IsContext
@@ -1622,9 +1599,6 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
-          imageSelected={(img: any) => {
-            setUserImage(img);
-          }}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
@@ -1649,7 +1623,6 @@ function _Chat() {
             autoFocus={autoFocus}
             style={{
               fontSize: config.fontSize,
-              minHeight: textareaMinHeight,
             }}
           />
           {attachImages.length != 0 && (
@@ -1680,7 +1653,7 @@ function _Chat() {
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             type="primary"
-            onClick={() => doSubmit(userInput, userImage)}
+            onClick={() => doSubmit(userInput)}
           />
         </label>
       </div>

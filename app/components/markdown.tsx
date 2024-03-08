@@ -116,41 +116,38 @@ function escapeDollarNumber(text: string) {
   return escapedText;
 }
 
-function _MarkDownContent(props: { content: string; imageBase64?: string }) {
+function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(
     () => escapeDollarNumber(props.content),
     [props.content],
   );
 
   return (
-    <div style={{ fontSize: "inherit" }}>
-      {props.imageBase64 && <img src={props.imageBase64} alt="" />}
-      <ReactMarkdown
-        remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
-        rehypePlugins={[
-          RehypeKatex,
-          [
-            RehypeHighlight,
-            {
-              detect: false,
-              ignoreMissing: true,
-            },
-          ],
-        ]}
-        components={{
-          pre: PreCode,
-          p: (pProps) => <p {...pProps} dir="auto" />,
-          a: (aProps) => {
-            const href = aProps.href || "";
-            const isInternal = /^\/#/i.test(href);
-            const target = isInternal ? "_self" : aProps.target ?? "_blank";
-            return <a {...aProps} target={target} />;
+    <ReactMarkdown
+      remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
+      rehypePlugins={[
+        RehypeKatex,
+        [
+          RehypeHighlight,
+          {
+            detect: false,
+            ignoreMissing: true,
           },
-        }}
-      >
-        {escapedContent}
-      </ReactMarkdown>
-    </div>
+        ],
+      ]}
+      components={{
+        pre: PreCode,
+        p: (pProps) => <p {...pProps} dir="auto" />,
+        a: (aProps) => {
+          const href = aProps.href || "";
+          const isInternal = /^\/#/i.test(href);
+          const target = isInternal ? "_self" : aProps.target ?? "_blank";
+          return <a {...aProps} target={target} />;
+        },
+      }}
+    >
+      {escapedContent}
+    </ReactMarkdown>
   );
 }
 
@@ -163,10 +160,10 @@ export function Markdown(
     fontSize?: number;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
-    imageBase64?: string;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
       className="markdown-body"
@@ -181,10 +178,7 @@ export function Markdown(
       {props.loading ? (
         <LoadingIcon />
       ) : (
-        <MarkdownContent
-          content={props.content}
-          imageBase64={props.imageBase64}
-        />
+        <MarkdownContent content={props.content} />
       )}
     </div>
   );

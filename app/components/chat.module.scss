@@ -648,39 +648,6 @@
   bottom: 32px;
 }
 
-.chat-input-image {
-  background-color: var(--primary);
-  color: white;
-
-  position: absolute;
-  right: 28px;
-  bottom: 78px;
-
-  display: flex;
-  align-items: flex-start;
-
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.chat-input-image-close {
-  background-color: white;
-  fill: black;
-  border: none;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  margin: 0px;
-  padding: 0px;
-  width: 22px;
-  height: 48px;
-}
-
-.chat-input-image-close:hover {
-  background-color: #f3f3f3;
-}
-
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
