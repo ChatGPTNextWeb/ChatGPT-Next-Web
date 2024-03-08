@@ -131,6 +131,9 @@
   .mobile {
     display: block;
   }
+  .sidebar-logo {
+    right: 50% !important;
+  }
 }
 
 .sidebar-header {
@@ -141,7 +144,7 @@
 
 .sidebar-logo {
   position: absolute;
-  right: 0;
+  right: 35%;
   bottom: 18px;
 }
 
@@ -149,12 +152,14 @@
   font-size: 20px;
   font-weight: bold;
   animation: slide-in ease 0.3s;
+  padding-left: 25%;
 }
 
 .sidebar-sub-title {
   font-size: 12px;
   font-weight: 400;
   animation: slide-in ease 0.3s;
+  padding-left: 25%;
 }
 
 .sidebar-body {
@@ -236,6 +241,7 @@
     display: none;
   }
   .sidebar-logo {
+    right: 35%;
     position: relative;
     display: flex;
     justify-content: center;

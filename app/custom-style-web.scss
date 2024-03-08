@@ -10,6 +10,7 @@
   object-fit: cover;
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 // screen pc
 @media only screen and (min-width: 600px) {
@@ -29,7 +30,6 @@
 // screen moibile
 @media only screen and (max-width: 600px) {
   .stream-sidebar {
-    height: 60%;
     width: 100%;
   }
   .cam-stream {

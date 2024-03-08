@@ -27,22 +27,21 @@ export async function saveToVectorDatabase(text) {
     console.log(error);
   }
 }
+async function searchPathVid() {
+  const lastinput = localStorage.getItem("last-input");
+  const data = {
+    collection_name: "collection_video_test",
+    data: lastinput,
+    collect_meta: "true",
+  };
+  const result = await axios.post(process.env.SEARCHFROMVECTORDATABASE, data);
+  const dataPathResult = result.data.collection[0].metadata.url;
+  localStorage.setItem("pathVidStream", dataPathResult);
+}
 export async function searchFromVectorDatabase(requestPayload) {
   try {
     // search pathVidTream
-    if (1) {
-      const data = {
-        collection_name: "collection_video_test",
-        collect_data: true,
-      };
-      const result = await axios.post(
-        process.env.SEARCHFROMVECTORDATABASE,
-        data,
-      );
-      console.log("result::", result);
-      localStorage.setItem("pathVidStream", "");
-    }
-
+    await searchPathVid();
     // search data to query
     const userId = localStorage.getItem("userId");
     const statusRag = localStorage.getItem("statusRag");

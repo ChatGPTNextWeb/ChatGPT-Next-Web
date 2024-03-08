@@ -49,6 +49,7 @@ export const EN_MASKS: BuiltinMask[] = [
     builtin: true,
     createdAt: 1709659573726,
   },
+
   ///
   {
     avatar: "1f5bc-fe0f",

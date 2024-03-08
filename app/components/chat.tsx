@@ -328,7 +328,7 @@ function ClearContextDivider() {
 
 export function ChatAction(props: {
   text?: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
   style?: string;
   onClick: () => void;
 }) {
@@ -359,19 +359,11 @@ export function ChatAction(props: {
       }}
       onMouseEnter={updateWidth}
       onTouchStart={updateWidth}
-      style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
-      }
     >
-      <div ref={iconRef} className={styles["icon"]}>
+      {/* <div ref={iconRef} className={styles["icon"]}>
         {props.icon}
-      </div>
-      <div className={styles["text"]} ref={textRef}>
-        {props.text}
-      </div>
+      </div> */}
+      <div>{props.text}</div>
     </div>
   );
 }
@@ -478,12 +470,10 @@ export function ChatActions(props: {
           navigate(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
       />
 
       <ChatAction
         text={Locale.Chat.InputActions.Clear}
-        icon={<BreakIcon />}
         onClick={() => {
           chatStore.newSession(allMasks[0]);
           navigate(Path.Chat);
