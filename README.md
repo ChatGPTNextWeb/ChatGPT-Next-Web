@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./app/client/icons/bedrock_32.svg" alt="icon"/>
+<img src="./app/icons/bedrock_32.svg" alt="icon"/>
 
 <h1 align="center">BRClient</h1>
 
