@@ -60,6 +60,14 @@ export const useAccessStore = createPersistStore(
       return get().needCode;
     },
 
+    hasAWSConfig() {
+      return ensure(get(), [
+        "awsAccessKeyId",
+        "awsSecretAccessKey",
+        "awsRegion",
+      ]);
+    },
+
     isValidOpenAI() {
       return ensure(get(), ["openaiApiKey"]);
     },

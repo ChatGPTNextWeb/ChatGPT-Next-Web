@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/images/icon.svg" alt="预览"/>
+<img src="./app/client/icons/bedrock_32.svg" alt="预览"/>
 
 <h1 align="center">BRClient</h1>
 
@@ -7,6 +7,7 @@
 
 很快会提供发布的测试程序，打开程序以后在“配置”界面配置AWS Region, AK/SK 就可以开始使用。
 
+</div>
 
 ## 安装使用：
 

@@ -223,6 +223,20 @@ export class ClaudeApi implements LLMApi {
 
     const accessStore = useAccessStore.getState();
 
+    if (
+      accessStore.awsRegion === "" ||
+      accessStore.awsAccessKeyId === "" ||
+      accessStore.awsSecretAccessKey === ""
+    ) {
+      console.log("AWS credentials are not set");
+      options.onError?.(
+        new Error(
+          "AWS credentials are not set, go to settings page to set AWS credentials",
+        ),
+      );
+      return;
+    }
+
     const aws_config_data = {
       region: accessStore.awsRegion,
       credentials: {
@@ -334,7 +348,7 @@ export class ClaudeApi implements LLMApi {
               );
               const responseBody = JSON.parse(decodedResponseBody);
 
-              // console.log('streaming response:', responseBody);
+              console.log("streaming response:", responseBody);
 
               if (responseBody.delta?.type === "text_delta") {
                 // console.log('delta', responseBody.delta.text);
