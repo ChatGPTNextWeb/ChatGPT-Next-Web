@@ -1,3 +1,5 @@
+// copied from Su Wei's code coach project
+
 import {
   BedrockRuntimeClient,
   InvokeModelWithResponseStreamCommand,
