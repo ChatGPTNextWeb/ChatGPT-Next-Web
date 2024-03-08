@@ -122,28 +122,36 @@ function ResponsiveAppBar() {
                 <MenuItem
                   component={"a"}
                   href={"/products"}
-                  onClick={handleCloseNavMenu}
+                  onClick={
+                    handleCloseNavMenu as unknown as React.MouseEventHandler<HTMLAnchorElement>
+                  }
                 >
                   <Typography textAlign="center">Products</Typography>
                 </MenuItem>
                 <MenuItem
                   component={"a"}
                   href={"/pricing"}
-                  onClick={handleCloseNavMenu}
+                  onClick={
+                    handleCloseNavMenu as unknown as React.MouseEventHandler<HTMLAnchorElement>
+                  }
                 >
                   <Typography textAlign="center">Pricing</Typography>
                 </MenuItem>
                 <MenuItem
                   component={"a"}
                   href={"/blog"}
-                  onClick={handleCloseNavMenu}
+                  onClick={
+                    handleCloseNavMenu as unknown as React.MouseEventHandler<HTMLAnchorElement>
+                  }
                 >
                   <Typography textAlign="center">Blog</Typography>
                 </MenuItem>
                 <MenuItem
                   component={"a"}
                   href={"/about"}
-                  onClick={handleCloseNavMenu}
+                  onClick={
+                    handleCloseNavMenu as unknown as React.MouseEventHandler<HTMLAnchorElement>
+                  }
                 >
                   <Typography textAlign="center">About</Typography>
                 </MenuItem>
