@@ -104,6 +104,8 @@ function getLanguage() {
   try {
     // Change the default language to cn here
     // return navigator.language.toLowerCase();
+    // return DEFAULT_LANG;
+
     return DEFAULT_LANG;
   } catch {
     return DEFAULT_LANG;
