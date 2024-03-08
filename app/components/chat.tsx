@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useCallback,
   Fragment,
+  RefObject,
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -17,6 +18,7 @@ import CopyIcon from "../icons/copy.svg";
 import SpeakIcon from "../icons/speak.svg";
 import SpeakStopIcon from "../icons/speak-stop.svg";
 import LoadingIcon from "../icons/three-dots.svg";
+import LoadingButtonIcon from "../icons/loading.svg";
 import PromptIcon from "../icons/prompt.svg";
 import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
@@ -24,7 +26,7 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
-import ClearIcon from "../icons/clear.svg";
+import DeleteIcon from "../icons/clear.svg";
 import CloseIcon from "../icons/close.svg";
 import PinIcon from "../icons/pin.svg";
 import EditIcon from "../icons/rename.svg";
@@ -33,6 +35,7 @@ import CancelIcon from "../icons/cancel.svg";
 import EnablePluginIcon from "../icons/plugin_enable.svg";
 import DisablePluginIcon from "../icons/plugin_disable.svg";
 import UploadIcon from "../icons/upload.svg";
+import ImageIcon from "../icons/image.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -60,6 +63,10 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  getMessageTextContent,
+  getMessageImages,
+  isVisionModel,
+  compressImage,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -101,6 +108,7 @@ import { useAllModels } from "../utils/hooks";
 import Image from "next/image";
 import { ClientApi } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
+import { MultimodalContent } from "../client/api";
 
 const ttsPlayer = createTTSPlayer();
 
@@ -408,11 +416,13 @@ function ChatAction(props: {
   );
 }
 
-function useScrollToBottom() {
+function useScrollToBottom(
+  scrollRef: RefObject<HTMLDivElement>,
+  detach: boolean = false,
+) {
   // for auto-scroll
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [autoScroll, setAutoScroll] = useState(true);
 
+  const [autoScroll, setAutoScroll] = useState(true);
   function scrollDomToBottom() {
     const dom = scrollRef.current;
     if (dom) {
@@ -425,7 +435,7 @@ function useScrollToBottom() {
 
   // auto scroll
   useEffect(() => {
-    if (autoScroll) {
+    if (autoScroll && !detach) {
       scrollDomToBottom();
     }
   });
@@ -439,17 +449,19 @@ function useScrollToBottom() {
 }
 
 export function ChatActions(props: {
+  uploadImage: () => void;
+  setAttachImages: (images: string[]) => void;
+  setUploading: (uploading: boolean) => void;
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
   imageSelected: (img: any) => void;
   hitBottom: boolean;
+  uploading: boolean;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
-
-  const [uploadLoading, setUploadLoading] = useState(false);
 
   // switch Plugins
   const usePlugins = chatStore.currentSession().mask.usePlugins;
@@ -473,33 +485,6 @@ export function ChatActions(props: {
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
-  function selectImage() {
-    document.getElementById("chat-image-file-select-upload")?.click();
-  }
-
-  function closeImageButton() {
-    document.getElementById("chat-input-image-close")?.click();
-  }
-
-  const onImageSelected = async (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const api = new ClientApi();
-    setUploadLoading(true);
-    const uploadFile = await api.file
-      .upload(file)
-      .catch((e) => {
-        console.error("[Upload]", e);
-        showToast(prettyObject(e));
-      })
-      .finally(() => setUploadLoading(false));
-    props.imageSelected({
-      fileName: uploadFile.fileName,
-      fileUrl: uploadFile.filePath,
-    });
-    e.target.value = null;
-  };
-
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const allModels = useAllModels();
@@ -508,8 +493,16 @@ export function ChatActions(props: {
     [allModels],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
+  const [showUploadImage, setShowUploadImage] = useState(false);
 
   useEffect(() => {
+    const show = isVisionModel(currentModel);
+    setShowUploadImage(show);
+    if (!show) {
+      props.setAttachImages([]);
+      props.setUploading(false);
+    }
+
     // if current model is not available
     // switch to first available model
     const isUnavaliableModel = !models.some((m) => m.name === currentModel);
@@ -520,37 +513,7 @@ export function ChatActions(props: {
       );
       showToast(nextModel);
     }
-    const onPaste = (event: ClipboardEvent) => {
-      const items = event.clipboardData?.items || [];
-      const api = new ClientApi();
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf("image") === -1) continue;
-        const file = items[i].getAsFile();
-        if (file !== null) {
-          setUploadLoading(true);
-          api.file
-            .upload(file)
-            .then((uploadFile) => {
-              props.imageSelected({
-                fileName: uploadFile.fileName,
-                fileUrl: uploadFile.filePath,
-              });
-            })
-            .catch((e) => {
-              console.error("[Upload]", e);
-              showToast(prettyObject(e));
-            })
-            .finally(() => setUploadLoading(false));
-        }
-      }
-    };
-    if (currentModel.includes("vision")) {
-      window.addEventListener("paste", onPaste);
-      return () => {
-        window.removeEventListener("paste", onPaste);
-      };
-    }
-  }, [chatStore, currentModel, models, props]);
+  }, [chatStore, currentModel, models]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -577,6 +540,13 @@ export function ChatActions(props: {
           />
         )}
 
+        {showUploadImage && (
+          <ChatAction
+            onClick={props.uploadImage}
+            text={Locale.Chat.InputActions.UploadImage}
+            icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
+          />
+        )}
         <ChatAction
           onClick={nextTheme}
           text={Locale.Chat.InputActions.Theme[theme]}
@@ -592,7 +562,6 @@ export function ChatActions(props: {
             </>
           }
         />
-
         <ChatAction
           onClick={props.showPromptHints}
           text={Locale.Chat.InputActions.Prompt}
@@ -626,23 +595,6 @@ export function ChatActions(props: {
               icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
             />
           )}
-        {currentModel.includes("vision") && (
-          <ChatAction
-            onClick={selectImage}
-            text="选择图片"
-            loding={uploadLoading}
-            icon={<UploadIcon />}
-            innerNode={
-              <input
-                type="file"
-                accept=".png,.jpg,.webp,.jpeg"
-                id="chat-image-file-select-upload"
-                style={{ display: "none" }}
-                onChange={onImageSelected}
-              />
-            }
-          />
-        )}
 
         {showModelSelector && (
           <Selector
@@ -657,7 +609,6 @@ export function ChatActions(props: {
               chatStore.updateCurrentSession((session) => {
                 session.mask.modelConfig.model = s[0] as ModelType;
                 session.mask.syncGlobalConfig = false;
-                closeImageButton();
               });
               showToast(s[0]);
             }}
@@ -746,6 +697,14 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
+export function DeleteImageButton(props: { deleteImage: () => void }) {
+  return (
+    <div className={styles["delete-image"]} onClick={props.deleteImage}>
+      <DeleteIcon />
+    </div>
+  );
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -761,10 +720,22 @@ function _Chat() {
   const [userImage, setUserImage] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
-  const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isScrolledToBottom = scrollRef?.current
+    ? Math.abs(
+        scrollRef.current.scrollHeight -
+          (scrollRef.current.scrollTop + scrollRef.current.clientHeight),
+      ) <= 1
+    : false;
+  const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
+    scrollRef,
+    isScrolledToBottom,
+  );
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
+  const [attachImages, setAttachImages] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -843,8 +814,9 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, userImage?.fileUrl)
+      .onUserInput(userInput, attachImages)
       .then(() => setIsLoading(false));
+    setAttachImages([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
     setUserInput("");
@@ -925,9 +897,9 @@ function _Chat() {
   };
   const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
-    if (selectOrCopy(e.currentTarget, message.content)) {
+    if (selectOrCopy(e.currentTarget, getMessageTextContent(message))) {
       if (userInput.length === 0) {
-        setUserInput(message.content);
+        setUserInput(getMessageTextContent(message));
       }
 
       e.preventDefault();
@@ -995,9 +967,9 @@ function _Chat() {
 
     // resend the message
     setIsLoading(true);
-    chatStore
-      .onUserInput(userMessage.content, userMessage.image_url)
-      .then(() => setIsLoading(false));
+    const textContent = getMessageTextContent(userMessage);
+    const images = getMessageImages(userMessage);
+    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -1085,7 +1057,6 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
-                  image_url: userImage?.fileUrl,
                 }),
                 preview: true,
               },
@@ -1139,7 +1110,6 @@ function _Chat() {
     setHitBottom(isHitBottom);
     setAutoScroll(isHitBottom);
   };
-
   function scrollToBottom() {
     setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
     scrollDomToBottom();
@@ -1224,6 +1194,94 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handlePaste = useCallback(
+    async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const currentModel = chatStore.currentSession().mask.modelConfig.model;
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
+      const items = (event.clipboardData || window.clipboardData).items;
+      for (const item of items) {
+        if (item.kind === "file" && item.type.startsWith("image/")) {
+          event.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            const images: string[] = [];
+            images.push(...attachImages);
+            images.push(
+              ...(await new Promise<string[]>((res, rej) => {
+                setUploading(true);
+                const imagesData: string[] = [];
+                compressImage(file, 256 * 1024)
+                  .then((dataUrl) => {
+                    imagesData.push(dataUrl);
+                    setUploading(false);
+                    res(imagesData);
+                  })
+                  .catch((e) => {
+                    setUploading(false);
+                    rej(e);
+                  });
+              })),
+            );
+            const imagesLength = images.length;
+
+            if (imagesLength > 3) {
+              images.splice(3, imagesLength - 3);
+            }
+            setAttachImages(images);
+          }
+        }
+      }
+    },
+    [attachImages, chatStore],
+  );
+
+  async function uploadImage() {
+    const images: string[] = [];
+    images.push(...attachImages);
+
+    images.push(
+      ...(await new Promise<string[]>((res, rej) => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept =
+          "image/png, image/jpeg, image/webp, image/heic, image/heif";
+        fileInput.multiple = true;
+        fileInput.onchange = (event: any) => {
+          setUploading(true);
+          const files = event.target.files;
+          const imagesData: string[] = [];
+          for (let i = 0; i < files.length; i++) {
+            const file = event.target.files[i];
+            compressImage(file, 256 * 1024)
+              .then((dataUrl) => {
+                imagesData.push(dataUrl);
+                if (
+                  imagesData.length === 3 ||
+                  imagesData.length === files.length
+                ) {
+                  setUploading(false);
+                  res(imagesData);
+                }
+              })
+              .catch((e) => {
+                setUploading(false);
+                rej(e);
+              });
+          }
+        };
+        fileInput.click();
+      })),
+    );
+
+    const imagesLength = images.length;
+    if (imagesLength > 3) {
+      images.splice(3, imagesLength - 3);
+    }
+    setAttachImages(images);
+  }
 
   const textareaMinHeight = userImage ? 121 : 68;
 
@@ -1333,15 +1391,29 @@ function _Chat() {
                           onClick={async () => {
                             const newMessage = await showPrompt(
                               Locale.Chat.Actions.Edit,
-                              message.content,
+                              getMessageTextContent(message),
                               10,
                             );
+                            let newContent: string | MultimodalContent[] =
+                              newMessage;
+                            const images = getMessageImages(message);
+                            if (images.length > 0) {
+                              newContent = [{ type: "text", text: newMessage }];
+                              for (let i = 0; i < images.length; i++) {
+                                newContent.push({
+                                  type: "image_url",
+                                  image_url: {
+                                    url: images[i],
+                                  },
+                                });
+                              }
+                            }
                             chatStore.updateCurrentSession((session) => {
                               const m = session.mask.context
                                 .concat(session.messages)
                                 .find((m) => m.id === message.id);
                               if (m) {
-                                m.content = newMessage;
+                                m.content = newContent;
                               }
                             });
                           }}
@@ -1384,7 +1456,7 @@ function _Chat() {
 
                               <ChatAction
                                 text={Locale.Chat.Actions.Delete}
-                                icon={<ClearIcon />}
+                                icon={<DeleteIcon />}
                                 onClick={() => onDelete(message.id ?? i)}
                               />
 
@@ -1396,7 +1468,11 @@ function _Chat() {
                               <ChatAction
                                 text={Locale.Chat.Actions.Copy}
                                 icon={<CopyIcon />}
-                                onClick={() => copyToClipboard(message.content)}
+                                onClick={() =>
+                                  copyToClipboard(
+                                    getMessageTextContent(message),
+                                  )
+                                }
                               />
                               {config.ttsConfig.enable && (
                                 <ChatAction
@@ -1413,7 +1489,9 @@ function _Chat() {
                                       <SpeakIcon />
                                     )
                                   }
-                                  onClick={() => openaiSpeech(message.content)}
+                                  onClick={() =>
+                                    openaiSpeech(getMessageTextContent(message))
+                                  }
                                 />
                               )}
                             </>
@@ -1450,8 +1528,7 @@ function _Chat() {
                   )}
                   <div className={styles["chat-message-item"]}>
                     <Markdown
-                      imageBase64={message.image_url}
-                      content={message.content}
+                      content={getMessageTextContent(message)}
                       loading={
                         (message.preview || message.streaming) &&
                         message.content.length === 0 &&
@@ -1460,12 +1537,42 @@ function _Chat() {
                       onContextMenu={(e) => onRightClick(e, message)}
                       onDoubleClickCapture={() => {
                         if (!isMobileScreen) return;
-                        setUserInput(message.content);
+                        setUserInput(getMessageTextContent(message));
                       }}
                       fontSize={fontSize}
                       parentRef={scrollRef}
                       defaultShow={i >= messages.length - 6}
                     />
+                    {getMessageImages(message).length == 1 && (
+                      <img
+                        className={styles["chat-message-item-image"]}
+                        src={getMessageImages(message)[0]}
+                        alt=""
+                      />
+                    )}
+                    {getMessageImages(message).length > 1 && (
+                      <div
+                        className={styles["chat-message-item-images"]}
+                        style={
+                          {
+                            "--image-count": getMessageImages(message).length,
+                          } as React.CSSProperties
+                        }
+                      >
+                        {getMessageImages(message).map((image, index) => {
+                          return (
+                            <img
+                              className={
+                                styles["chat-message-item-image-multi"]
+                              }
+                              key={index}
+                              src={image}
+                              alt=""
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                   {!isUser && message.model?.includes("vision") && (
                     <div
@@ -1497,9 +1604,13 @@ function _Chat() {
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
         <ChatActions
+          uploadImage={uploadImage}
+          setAttachImages={setAttachImages}
+          setUploading={setUploading}
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
+          uploading={uploading}
           showPromptHints={() => {
             // Click again to close
             if (promptHints.length > 0) {
@@ -1515,8 +1626,16 @@ function _Chat() {
             setUserImage(img);
           }}
         />
-        <div className={styles["chat-input-panel-inner"]}>
+        <label
+          className={`${styles["chat-input-panel-inner"]} ${
+            attachImages.length != 0
+              ? styles["chat-input-panel-inner-attach"]
+              : ""
+          }`}
+          htmlFor="chat-input"
+        >
           <textarea
+            id="chat-input"
             ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
@@ -1525,6 +1644,7 @@ function _Chat() {
             onKeyDown={onInputKeyDown}
             onFocus={scrollToBottom}
             onClick={scrollToBottom}
+            onPaste={handlePaste}
             rows={inputRows}
             autoFocus={autoFocus}
             style={{
@@ -1532,30 +1652,27 @@ function _Chat() {
               minHeight: textareaMinHeight,
             }}
           />
-          {userImage && (
-            <div className={styles["chat-input-image"]}>
-              <div
-                style={{ position: "relative", width: "48px", height: "48px" }}
-              >
-                <Image
-                  loader={() => userImage.fileUrl}
-                  src={userImage.fileUrl}
-                  alt={userImage.filename}
-                  title={userImage.filename}
-                  layout="fill"
-                  objectFit="cover"
-                  objectPosition="center"
-                />
-              </div>
-              <button
-                className={styles["chat-input-image-close"]}
-                id="chat-input-image-close"
-                onClick={() => {
-                  setUserImage(null);
-                }}
-              >
-                <CloseIcon />
-              </button>
+          {attachImages.length != 0 && (
+            <div className={styles["attach-images"]}>
+              {attachImages.map((image, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={styles["attach-image"]}
+                    style={{ backgroundImage: `url("${image}")` }}
+                  >
+                    <div className={styles["attach-image-mask"]}>
+                      <DeleteImageButton
+                        deleteImage={() => {
+                          setAttachImages(
+                            attachImages.filter((_, i) => i !== index),
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
           <IconButton
@@ -1565,7 +1682,7 @@ function _Chat() {
             type="primary"
             onClick={() => doSubmit(userInput, userImage)}
           />
-        </div>
+        </label>
       </div>
 
       {showExport && (

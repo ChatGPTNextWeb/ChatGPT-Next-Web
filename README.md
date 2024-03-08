@@ -20,6 +20,9 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain)
 
+> [!WARNING]
+> 本项目插件功能基于 [OpenAI API 函数调用](https://platform.openai.com/docs/guides/function-calling) 功能实现，转发 GitHub Copilot 接口或类似实现的模拟接口并不能正常调用插件功能！
+
 ![cover](./docs/images/gpt-vision-example.jpg)
 
 ![plugin-example](./docs/images/plugin-example.png)
@@ -37,7 +40,8 @@
 - 支持 OpenAI TTS（文本转语音）https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/208
 
 - 支持 GPT-4V(视觉) 模型
-  - 需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
+  - ~~需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置~~
+  - 已同步上游仓库视觉模型调用方式（压缩图片），不过这里还是会有撑爆 localstorage 的风险（https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/77#issuecomment-1846410078），后续会兼容两种形式的图片本地存储，如果配置了对象存储会优先使用对象存储。
   
 - 基于 [LangChain](https://github.com/hwchase17/langchainjs) 实现的插件功能，目前支持以下插件，未来会添加更多
   - 搜索（优先级：`GoogleCustomSearch > SerpAPI > BingSerpAPI > ChooseSearchEngine > DuckDuckGo`）
@@ -106,7 +110,7 @@
     - 配置密钥 `GOOGLE_API_KEY` ，key 可以在这里获取：https://ai.google.dev/tutorials/setup
     - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目搭建一个基于 vercel 的代理服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
   - 常见问题参考：[Gemini Prompting FAQs](https://js.langchain.com/docs/integrations/chat/google_generativeai#gemini-prompting-faqs)
-  - gemini-pro-vision 模型需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
+  - ~~gemini-pro-vision 模型需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置~~
   - ⚠ gemini-pro-vision 注意事项 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/203 ：
     - 每次对话必须包含图像数据，不然会出现 `Add an image to use models/gemini-pro-vision, or switch your model to a text model.` 错误。
     - 只支持单轮对话，多轮对话会出现 `Multiturn chat is not enabled for models/gemini-pro-vision` 错误。
@@ -134,12 +138,17 @@
 
   最新版本中已经移除上面两个模型。
 
-- [ ] 支持添加自定义插件
+- [ ] ~~支持添加自定义插件~~
 
-## 最新动态
+- [ ] 支持其他类型文件上传 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/77
 
-- 🚀 v2.9.5 正式版本发布
-- 🚀 v2.9.1-plugin-preview 预览版发布。
+- [ ] 支持 Azure Storage https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/217
+
+- [ ] 支持语音输入 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/208
+
+- [ ] 支持 Fooocus-API 插件 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/58
+
+- [ ] 支持在 UI 配置插件需要的 Key https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/70
 
 ## 开始使用
 

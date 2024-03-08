@@ -29,7 +29,10 @@ declare global {
 
       // google only
       GOOGLE_API_KEY?: string;
-      GOOGLE_BASE_URL?: string;
+      GOOGLE_URL?: string;
+
+      // google tag manager
+      GTM_ID?: string;
     }
   }
 }
@@ -87,7 +90,7 @@ export const getServerSideConfig = () => {
 
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,
-    googleBaseUrl: process.env.GOOGLE_BASE_URL,
+    googleUrl: process.env.GEMINI_BASE_URL ?? process.env.GOOGLE_URL,
 
     gtmId: process.env.GTM_ID,
 

@@ -17,6 +17,7 @@ import { Markdown } from "./markdown";
 import { useNavigate } from "react-router-dom";
 import { Path } from "@/app/constant";
 import Locale from "../locales";
+import { getMessageTextContent } from "../utils";
 
 interface SearchResult {
   sessionId: string;
@@ -65,8 +66,8 @@ function HighlightedMessage({
   search: string;
 }) {
   const highlightedMessage = useMemo(
-    () => highlightAndShorten(message.content, search),
-    [message.content, search],
+    () => highlightAndShorten(getMessageTextContent(message), search),
+    [getMessageTextContent(message), search],
   );
   const ref = useRef<HTMLDivElement>(null);
 
@@ -185,7 +186,11 @@ function SearchBarComponent(
       const matchingMessages: ChatMessage[] = [];
 
       for (const message of session.messages) {
-        if (message.content.toLowerCase().includes(input.toLowerCase())) {
+        if (
+          getMessageTextContent(message)
+            .toLowerCase()
+            .includes(input.toLowerCase())
+        ) {
           matchingMessages.push(message!);
         }
       }

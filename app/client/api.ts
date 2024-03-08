@@ -16,10 +16,17 @@ export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
 export const TTSModels = ["tts-1", "tts-1-hd"] as const;
 export type ChatModel = ModelType;
 
+export interface MultimodalContent {
+  type: "text" | "image_url";
+  text?: string;
+  image_url?: {
+    url: string;
+  };
+}
+
 export interface RequestMessage {
   role: MessageRole;
-  content: string;
-  image_url?: string;
+  content: string | MultimodalContent[];
 }
 
 export interface LLMConfig {

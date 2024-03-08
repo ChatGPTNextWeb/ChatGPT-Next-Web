@@ -17,7 +17,7 @@ async function handle(
 
   const serverConfig = getServerSideConfig();
 
-  let baseUrl = serverConfig.googleBaseUrl || GOOGLE_BASE_URL;
+  let baseUrl = serverConfig.googleUrl || GOOGLE_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;

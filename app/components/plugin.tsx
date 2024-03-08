@@ -37,7 +37,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
 import { useEffect, useState } from "react";
-import { copyToClipboard, downloadAs, readFromFile } from "../utils";
+import {
+  copyToClipboard,
+  downloadAs,
+  getMessageTextContent,
+  readFromFile,
+} from "../utils";
 import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
@@ -74,7 +79,7 @@ function ContextPromptItem(props: {
         </Select>
       )}
       <Input
-        value={props.prompt.content}
+        value={getMessageTextContent(props.prompt)}
         type="text"
         className={chatStyle["context-content"]}
         rows={focusingInput ? 5 : 1}
