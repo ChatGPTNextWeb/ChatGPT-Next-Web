@@ -388,7 +388,7 @@ function useScrollToBottom(
   detach: boolean = false,
 ) {
   // for auto-scroll
-  
+
   const [autoScroll, setAutoScroll] = useState(true);
   function scrollDomToBottom() {
     if (!autoScroll) {
@@ -399,7 +399,7 @@ function useScrollToBottom(
       dom.scrollTo(0, dom.scrollHeight);
     }
   }
-  
+
   // auto scroll
   useEffect(() => {
     if (autoScroll && !detach) {
