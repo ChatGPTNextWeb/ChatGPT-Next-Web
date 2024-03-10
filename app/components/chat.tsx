@@ -387,28 +387,28 @@ function useScrollToBottom(
   scrollRef: RefObject<HTMLDivElement>,
   detach: boolean = false,
 ) {
+  // for auto-scroll
+  
   const [autoScroll, setAutoScroll] = useState(true);
-
+  function scrollDomToBottom() {
+    if (!autoScroll) {
+      setAutoScroll(true);
+    }
+    const dom = scrollRef.current;
+    if (dom) {
+      dom.scrollTo(0, dom.scrollHeight);
+    }
+  }
+  
+  // auto scroll
   useEffect(() => {
     if (autoScroll && !detach) {
       const dom = scrollRef.current;
       if (dom) {
-        requestAnimationFrame(() => {
-          dom.scrollTo(0, dom.scrollHeight);
-        });
+        dom.scrollTo(0, dom.scrollHeight);
       }
     }
   }, [autoScroll, detach, scrollRef]);
-
-  function scrollDomToBottom() {
-    setAutoScroll(true);
-    const dom = scrollRef.current;
-    if (dom) {
-      requestAnimationFrame(() => {
-        dom.scrollTo(0, dom.scrollHeight);
-      });
-    }
-  }
 
   return {
     scrollRef,
