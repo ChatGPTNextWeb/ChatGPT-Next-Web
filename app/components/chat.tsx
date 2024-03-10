@@ -398,7 +398,7 @@ function useScrollToBottom(
         });
       }
     }
-  }, [autoScroll, detach]);
+  }, [autoScroll, detach, scrollRef]);
 
   function scrollDomToBottom() {
     setAutoScroll(true);
