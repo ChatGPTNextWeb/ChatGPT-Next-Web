@@ -205,7 +205,6 @@ function useSubmitHandler() {
     const onCompositionStart = () => {
       isComposing.current = true;
     };
-
     window.addEventListener("compositionstart", onCompositionStart);
 
     return () => {
