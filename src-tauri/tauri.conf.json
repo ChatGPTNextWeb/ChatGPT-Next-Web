@@ -14,6 +14,9 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "globalShortcut": {
+        "all":true
+      },
       "shell": {
         "all": false,
         "open": true

@@ -178,6 +178,7 @@ const en: LocaleType = {
       Title: "Send Preview Bubble",
       SubTitle: "Preview markdown in bubble",
     },
+    ShortcutQuickChat:"Shortcut-QuickChat",
     AutoGenerateTitle: {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",

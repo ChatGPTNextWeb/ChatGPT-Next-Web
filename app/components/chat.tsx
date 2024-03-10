@@ -97,6 +97,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { listen } from '@tauri-apps/api/event';
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -710,6 +711,16 @@ function _Chat() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
+
+  useEffect(() => {
+    const unlisten = listen('activate_input_field', () => {
+      inputRef.current?.focus();
+    });
+    
+    return () => {
+      unlisten.then((f) => f());;
+    };
+  }, []);
 
   // chat commands shortcuts
   const chatCommands = useChatCommand({

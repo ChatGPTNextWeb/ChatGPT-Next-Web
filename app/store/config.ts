@@ -34,6 +34,7 @@ export const DEFAULT_CONFIG = {
   theme: Theme.Auto as Theme,
   tightBorder: !!getClientConfig()?.isApp,
   sendPreviewBubble: true,
+  shortcutQuickChat: "Alt+B",
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 

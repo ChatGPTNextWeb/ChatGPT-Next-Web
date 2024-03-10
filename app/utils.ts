@@ -295,6 +295,7 @@ export function isVisionModel(model: string) {
   return (
     // model.startsWith("gpt-4-vision") ||
     // model.startsWith("gemini-pro-vision") ||
+    model.startsWith("claude-3-opus-20240229") ||
     model.includes("vision")
   );
 }

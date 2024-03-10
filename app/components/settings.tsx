@@ -71,6 +71,7 @@ import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
+import { invoke } from '@tauri-apps/api/tauri';
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -557,6 +558,9 @@ function SyncItems() {
     </>
   );
 }
+async function updateShortcut(newShortcut: string) {
+  await invoke('update_shortcut', { shortcut: newShortcut });
+}
 
 export function Settings() {
   const navigate = useNavigate();
@@ -649,6 +653,8 @@ export function Settings() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  updateShortcut(config.shortcutQuickChat);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
@@ -823,6 +829,23 @@ export function Settings() {
                     (config.sendPreviewBubble = e.currentTarget.checked),
                 )
               }
+            ></input>
+          </ListItem>
+
+          <ListItem
+            title={Locale.Settings.ShortcutQuickChat}
+          >
+            <input
+                type="text"
+                value={config.shortcutQuickChat}
+                onChange={(e) =>{
+                  updateConfig(
+                    (config) =>
+                      (config.shortcutQuickChat = e.currentTarget.value),
+                  );
+                  updateShortcut(config.shortcutQuickChat);
+                }
+                }
             ></input>
           </ListItem>
         </List>
