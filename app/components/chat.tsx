@@ -393,7 +393,9 @@ function useScrollToBottom(
     if (autoScroll && !detach) {
       const dom = scrollRef.current;
       if (dom) {
-        dom.scrollTo(0, dom.scrollHeight);
+        requestAnimationFrame(() => {
+          dom.scrollTo(0, dom.scrollHeight);
+        });
       }
     }
   }, [autoScroll, detach]);
@@ -402,7 +404,9 @@ function useScrollToBottom(
     setAutoScroll(true);
     const dom = scrollRef.current;
     if (dom) {
-      dom.scrollTo(0, dom.scrollHeight);
+      requestAnimationFrame(() => {
+        dom.scrollTo(0, dom.scrollHeight);
+      });
     }
   }
 
