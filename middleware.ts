@@ -37,7 +37,7 @@ export default async function middleware(req: NextRequest) {
             new URL(`/app${path}`, req.url),
         );
     }
-    if (path == "/admin") {
+    if (path.startsWith("/admin")) {
         return NextResponse.rewrite(
             new URL(`/app${path}`, req.url),
         );
