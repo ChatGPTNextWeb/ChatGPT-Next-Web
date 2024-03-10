@@ -117,7 +117,6 @@ export class ClientApi {
         {
           from: "human",
           value:
-            //"Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web",
              "Share from [NextChat]: https://www.7li7li.cn",
         },
       ]);
