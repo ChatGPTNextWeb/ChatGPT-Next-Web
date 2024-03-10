@@ -396,7 +396,7 @@ function useScrollToBottom(
         dom.scrollTo(0, dom.scrollHeight);
       }
     }
-  }, [autoScroll, detach, scrollRef]);
+  }, [autoScroll, detach]);
 
   function scrollDomToBottom() {
     setAutoScroll(true);
