@@ -205,23 +205,29 @@ function useSubmitHandler() {
     const onCompositionStart = () => {
       isComposing.current = true;
     };
-    const onCompositionEnd = () => {
-      isComposing.current = false;
-    };
 
     window.addEventListener("compositionstart", onCompositionStart);
-    window.addEventListener("compositionend", onCompositionEnd);
 
     return () => {
       window.removeEventListener("compositionstart", onCompositionStart);
-      window.removeEventListener("compositionend", onCompositionEnd);
     };
   }, []);
 
   const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key !== "Enter") return false;
-    if (e.key === "Enter" && (e.nativeEvent.isComposing || isComposing.current))
+    if (e.key !== "Enter") {
+      if (e.key === " ") {
+        // bugfix 中文输入法按空格后填充字符到输入框，此时 isComposing 为 false，否则后面按下回车不会提交
+        isComposing.current = false;
+      }
       return false;
+    }
+    if (
+      e.key === "Enter" &&
+      (e.nativeEvent.isComposing || isComposing.current)
+    ) {
+      isComposing.current = false;
+      return false;
+    }
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
       (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
@@ -1100,11 +1106,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
