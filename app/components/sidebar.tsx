@@ -31,6 +31,8 @@ import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
 
+import { register } from "@tauri-apps/api/globalShortcut";
+
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
@@ -128,6 +130,52 @@ function useDragSideBar() {
   };
 }
 
+function useGlobalShortcut() {
+  const chatStore = useChatStore();
+  const navigate = useNavigate();
+  const config = useAppConfig();
+
+  useEffect(() => {
+    // Early return if not in a Tauri environment
+    if (!window.__TAURI__) {
+      return;
+    }
+
+    const handleMasks = async () => {
+      await register("CommandOrControl+Shift+M", () => {
+        if (config.dontShowMaskSplashScreen !== true) {
+          navigate(Path.NewChat, { state: { fromHome: true } });
+        } else {
+          navigate(Path.Masks, { state: { fromHome: true } });
+        }
+      });
+    };
+
+    const handleSettings = async () => {
+      await register("CommandOrControl+,", () => {
+        navigate(Path.Settings);
+      });
+    };
+
+    const handleNewChat = async () => {
+      await register("CommandOrControl+N", () => {
+        if (config.dontShowMaskSplashScreen) {
+          chatStore.newSession();
+          navigate(Path.Chat);
+        } else {
+          navigate(Path.NewChat);
+        }
+      });
+    };
+
+    // Shortcut registration
+    handleMasks();
+    handleSettings();
+    handleNewChat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatStore, navigate, config]);
+}
+
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
@@ -142,6 +190,8 @@ export function SideBar(props: { className?: string }) {
   );
 
   useHotKey();
+
+  useGlobalShortcut();
 
   return (
     <div
