@@ -75,36 +75,36 @@ yarn dev
 
 
 ## Check screen aspect ratio
-+ ip se
-+ ip xr
-+ ip 12 pro 
-+ ip 14 pro max
-+ pixel 7
-+ ss s8 +
-+ ss s20 ult
-+ ipad mini
-+ ipad air
-+ ipad pro
-+ surface pro 7
-+ surface duo ( err)
-+ glx fold (err) 
-+ asus zenbook fold
-+ ss a51/71
-+ nest hub
-+ nest hub max
-+ blackberry z30
-+ blackberry playbook (err)
-+ glx note 3
-+ glx s9+ (err)
-+ glx tap s4
-+ lg l 70
-+ lumia 950
-+ nexus 7 (err)
-+ pixel 3 sl
-+ pixel 2
-+ glx s5
-+ ip x
-+ facebook on android
++ 375 x 667
++ 414 x 896
++ 390 x 844 
++ 430 x 932 
++ 412 x 915
++ 360 x 740
++ 412 x 915
++ 768 x 1024
++ 820 x 1180
++ 1024 x 1366
++ 912 x 1368
++ 540 x 720 ( err)
++ 280 x 653 (err) 
++ 853 x 1280 
++ 412 x 914
++ 1024 x 600
++ 1280 x 800
++ 360 x 640
++ 600 x 1020  (err)
++ 360 x 640 
++ 320 x 658 (err)
++ 712 x 1138
++ 384 x 640
++ 360 x 640 
++ 600 x 960  (err)
++ 393 x 786
++ 411 x 731
++ 360 x 640 
++ 375 x 812
++ 412 x 982 
 
 
 
