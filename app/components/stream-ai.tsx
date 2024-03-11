@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { getPathVidStream } from "../api/hippo/config";
 
 export function Stream() {
   const [selectPathStream, setSelectPathStream] = useState("");
@@ -11,31 +11,20 @@ export function Stream() {
     setTypeStream(1);
   };
 
-  const getPathVidStream = async (headers) => {
-    try {
-      const res = await axios.get(process.env.STREAMBOT, { headers });
-      const data = res.data.message;
-      setStreambot(data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const handleChanglePathVid = () => {
     const pathVidOnClient = localStorage.getItem("pathVidStream");
     if (pathVidOnClient && pathVidOnClient !== selectPathStream) {
       setSelectPathStream(pathVidOnClient);
     }
   };
+  const getData = async () => {
+    const result = await getPathVidStream();
+    setStreambot(result);
+  };
 
   useEffect(() => {
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: process.env.TOKENHIPPO,
-    };
     localStorage.setItem("pathVidStream", "");
-
-    getPathVidStream(headers);
+    getData();
   }, []);
 
   return (

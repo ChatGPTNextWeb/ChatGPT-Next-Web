@@ -18,7 +18,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
-import { searchFromVectorDatabase } from "../../../configfunc";
+import { searchFromVectorDatabase } from "../../api/hippo/config";
 
 export interface OpenAIListModelResponse {
   object: string;

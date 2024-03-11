@@ -13,7 +13,6 @@ const nextConfig = {
     STREAMBOT: "https://comfy2.hippopenny.com/api/streambotchat",
     SAVETOVECTORDATABASE: "http://localhost:8080/embedchain/add",
     SEARCHFROMVECTORDATABASE: "http://localhost:8080/embedchain/search",
-    POSTQUEUECOMFYUI: "https://comfy2.hippopenny.com/api/postqueue",
   },
   webpack(config) {
     config.module.rules.push({

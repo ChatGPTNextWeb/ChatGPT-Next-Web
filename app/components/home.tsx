@@ -29,7 +29,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
-import { generateRandomToken } from "../../configfunc";
+import { generateRandomToken } from "../api/hippo/config";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -197,7 +197,7 @@ export function Home() {
     const userId = localStorage.getItem("userId");
 
     // add status rag
-    localStorage.setItem("statusRag", "0"); // deafult use rag
+    localStorage.setItem("statusRag", "1"); // deafult use rag
 
     // add UserId to localStore
     if (userId) {

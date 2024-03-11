@@ -19,7 +19,7 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
-import { saveToVectorDatabase } from "../../configfunc";
+import { saveToVectorDatabase } from "../api/hippo/config";
 
 export type ChatMessage = RequestMessage & {
   date: string;
