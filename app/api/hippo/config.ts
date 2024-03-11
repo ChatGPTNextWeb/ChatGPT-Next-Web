@@ -13,7 +13,7 @@ export function generateRandomToken(length: number): string {
 }
 export async function getPathVidStream(): Promise<any> {
   try {
-    const res = await axios.get("/api/hippo/stream");
+    const res = await axios.get(process.env.STREAMBOT_BOT);
     return res.data;
   } catch (e) {
     console.error(e);
@@ -26,7 +26,7 @@ export async function saveToVectorDatabase(text) {
     await searchPathVid(text);
     //
     const userId = localStorage.getItem("userId");
-    const res = await axios.post("/api/hippo/save", {
+    const res = await axios.post(process.env.SAVETOVECTORDATABASE_BOT, {
       text: text,
       userId: userId,
     });
@@ -49,7 +49,7 @@ export async function searchFromVectorDatabase(requestPayload) {
     const userId = localStorage.getItem("userId");
     const statusRag = localStorage.getItem("statusRag");
 
-    const res = await axios.post("/api/hippo/search/content", {
+    const res = await axios.post(process.env.SEARCHFROMVECTORDATABASE_BOT, {
       requestPayload: requestPayloads,
       userId: userId,
       statusRag: statusRag,

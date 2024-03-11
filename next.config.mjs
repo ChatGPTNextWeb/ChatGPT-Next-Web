@@ -13,6 +13,9 @@ const nextConfig = {
     STREAMBOT: "https://comfy2.hippopenny.com/api/streambotchat",
     SAVETOVECTORDATABASE: "http://localhost:8080/embedchain/add",
     SEARCHFROMVECTORDATABASE: "http://localhost:8080/embedchain/search",
+    STREAMBOT_BOT: "/api/hippo/stream",
+    SAVETOVECTORDATABASE_BOT: "/api/hippo/save",
+    SEARCHFROMVECTORDATABASE_BOT: "/api/hippo/search/content",
   },
   webpack(config) {
     config.module.rules.push({
