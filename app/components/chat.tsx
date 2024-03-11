@@ -990,6 +990,7 @@ function _Chat() {
       api = new ClientApi(ModelProvider.GPT);
       const config = useAppConfig.getState();
       setSpeechLoading(true);
+      ttsPlayer.init();
       const audioBuffer = await api.llm.speech({
         model: config.ttsConfig.model,
         input: text,
