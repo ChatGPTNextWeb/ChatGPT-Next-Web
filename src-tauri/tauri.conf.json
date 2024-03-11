@@ -55,6 +55,10 @@
         "all": true
       }
     },
+    "systemTray": {
+      "iconPath": "../public/favicon-16x16.png",
+      "iconAsTemplate": true
+    },
     "bundle": {
       "active": true,
       "category": "DeveloperTool",

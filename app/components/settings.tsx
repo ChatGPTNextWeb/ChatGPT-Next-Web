@@ -71,7 +71,7 @@ import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from "@tauri-apps/api/tauri";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -558,8 +558,12 @@ function SyncItems() {
     </>
   );
 }
-async function updateShortcut(newShortcut: string) {
-  await invoke('update_shortcut', { shortcut: newShortcut });
+async function useUpdateShortcut(newShortcut: string) {
+  useEffect(() => {
+    (async () => {
+      await invoke("update_shortcut", { shortcut: newShortcut });
+    })();
+  }, []);
 }
 
 export function Settings() {
@@ -654,7 +658,7 @@ export function Settings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  updateShortcut(config.shortcutQuickChat);
+  useUpdateShortcut(config.shortcutQuickChat);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
@@ -832,20 +836,19 @@ export function Settings() {
             ></input>
           </ListItem>
 
-          <ListItem
-            title={Locale.Settings.ShortcutQuickChat}
-          >
+          <ListItem title={Locale.Settings.ShortcutQuickChat}>
             <input
-                type="text"
-                value={config.shortcutQuickChat}
-                onChange={(e) =>{
-                  updateConfig(
-                    (config) =>
-                      (config.shortcutQuickChat = e.currentTarget.value),
-                  );
-                  updateShortcut(config.shortcutQuickChat);
-                }
-                }
+              type="text"
+              value={config.shortcutQuickChat}
+              onChange={(e) => {
+                updateConfig(
+                  (config) =>
+                    (config.shortcutQuickChat = e.currentTarget.value),
+                );
+                invoke("update_shortcut", {
+                  shortcut: config.shortcutQuickChat,
+                });
+              }}
             ></input>
           </ListItem>
         </List>

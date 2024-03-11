@@ -29,7 +29,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from "@tauri-apps/api/tauri";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -184,7 +184,12 @@ export function useLoadData() {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  invoke('update_shortcut', { shortcut: config.shortcutQuickChat });
+
+  useEffect(() => {
+    (async () => {
+      await invoke("update_shortcut", { shortcut: config.shortcutQuickChat });
+    })();
+  }, []);
 }
 
 export function Home() {
