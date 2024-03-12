@@ -44,7 +44,7 @@ export interface AWSListModelResponse {
 }
 
 export class ClaudeApi implements LLMApi {
-  private disableListModels = true;
+  // private disableListModels = true;
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
@@ -324,6 +324,7 @@ export class ClaudeApi implements LLMApi {
         const finish = () => {
           if (!finished) {
             finished = true;
+
             options.onFinish(responseText + remainText);
           }
         };
@@ -348,7 +349,7 @@ export class ClaudeApi implements LLMApi {
               );
               const responseBody = JSON.parse(decodedResponseBody);
 
-              console.log("streaming response:", responseBody);
+              // console.log("streaming response:", responseBody);
 
               if (responseBody.delta?.type === "text_delta") {
                 // console.log('delta', responseBody.delta.text);
@@ -460,34 +461,7 @@ export class ClaudeApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
-    if (this.disableListModels) {
-      return DEFAULT_MODELS.slice();
-    }
-
-    const res = await fetch(this.path(OpenaiPath.ListModelPath), {
-      method: "GET",
-      headers: {
-        ...getHeaders(),
-      },
-    });
-
-    const resJson = (await res.json()) as AWSListModelResponse;
-    const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
-    console.log("[Models]", chatModels);
-
-    if (!chatModels) {
-      return [];
-    }
-
-    return chatModels.map((m) => ({
-      name: m.id,
-      available: true,
-      provider: {
-        id: "openai",
-        providerName: "OpenAI",
-        providerType: "openai",
-      },
-    }));
+    return [];
   }
 }
-export { OpenaiPath };
+// export { OpenaiPath };
