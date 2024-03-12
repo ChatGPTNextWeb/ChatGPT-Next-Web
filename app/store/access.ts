@@ -81,16 +81,19 @@ export const useAccessStore = createPersistStore(
     },
 
     isAuthorized() {
-      this.fetch();
+      // this.fetch();
 
-      // has token or has code or disabled access control
-      return (
-        this.isValidOpenAI() ||
-        this.isValidAzure() ||
-        this.isValidGoogle() ||
-        !this.enabledAccessControl() ||
-        (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
-      );
+      // // has token or has code or disabled access control
+      // return (
+      //   this.isValidOpenAI() ||
+      //   this.isValidAzure() ||
+      //   this.isValidGoogle() ||
+      //   !this.enabledAccessControl() ||
+      //   (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
+      // );
+
+      // do not check whether it is authorized now, check it when chat is started
+      return true;
     },
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
