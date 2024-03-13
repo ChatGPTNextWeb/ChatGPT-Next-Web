@@ -39,6 +39,8 @@
 
 - 支持 OpenAI TTS（文本转语音）https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/208
 
+- 支持语音输入，需要使用 HTTPS 访问 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/208
+
 - 支持 GPT-4V(视觉) 模型
   - ~~需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置~~
   - 已同步上游仓库视觉模型调用方式（压缩图片），这里还是会有撑爆 LocalStorage 的风险 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/77#issuecomment-1846410078 ，后面如果出现类似问题会再适配对象存储来存储图像。
