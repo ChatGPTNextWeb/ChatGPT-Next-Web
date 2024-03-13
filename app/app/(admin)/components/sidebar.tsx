@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import {
   AppstoreOutlined,
@@ -55,10 +55,10 @@ const items: MenuItem[] = [
 
 const SideBar: React.FC = () => {
   const [theme, setTheme] = useState<MenuTheme>("dark");
-  const [current, setCurrent] = useState("1");
+  const [current, setCurrent] = useState("/admin/ana");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  const pathname = usePathname();
   // const changeTheme = (value: boolean) => {
   //     setTheme(value ? 'dark' : 'light');
   // };
@@ -68,7 +68,12 @@ const SideBar: React.FC = () => {
     setCurrent(e.key);
     router.push(e.key);
   };
-
+  useEffect(() => {
+    // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
+    if (current != pathname) {
+      router.push(current);
+    }
+  }, []);
   // useEffect(() => {
   //     const handleStart = () => setLoading(true)
   //     const handleComplete = () => setLoading(false);

@@ -7,7 +7,6 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import type { MenuProps, MenuTheme } from "antd";
-import { Menu, Switch } from "antd";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
