@@ -9,13 +9,13 @@ console.log("[Next] build with chunk: ", !disableChunk);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    TOKENHIPPO: "hippoToken",
-    STREAMBOT: "https://comfy2.hippopenny.com/api/streambotchat",
-    SAVETOVECTORDATABASE: "http://localhost:8080/embedchain/add",
-    SEARCHFROMVECTORDATABASE: "http://localhost:8080/embedchain/search",
-    STREAMBOT_BOT: "/api/hippo/stream",
-    SAVETOVECTORDATABASE_BOT: "/api/hippo/save",
-    SEARCHFROMVECTORDATABASE_BOT: "/api/hippo/search/content",
+    TOKENHIPPO: process.env.TOKENHIPPO,
+    STREAMBOT: process.env.STREAMBOT,
+    SAVETOVECTORDATABASE: process.env.SAVETOVECTORDATABASE,
+    SEARCHFROMVECTORDATABASE: process.env.SEARCHFROMVECTORDATABASE,
+    STREAMBOT_BOT: process.env.STREAMBOT_BOT,
+    SAVETOVECTORDATABASE_BOT: process.env.SAVETOVECTORDATABASE_BOT,
+    SEARCHFROMVECTORDATABASE_BOT: process.env.SEARCHFROMVECTORDATABASE_BOT,
   },
   webpack(config) {
     config.module.rules.push({
