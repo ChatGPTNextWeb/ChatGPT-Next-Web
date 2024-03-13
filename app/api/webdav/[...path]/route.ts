@@ -80,7 +80,7 @@ async function handle(
 
   const targetUrl = `${protocol}://${endpoint + endpointPath}`;
 
-  const method = req.headers.get("method") ?? undefined;
+  const method = req.method;
   const shouldNotHaveBody = ["get", "head"].includes(
     method?.toLowerCase() ?? "",
   );

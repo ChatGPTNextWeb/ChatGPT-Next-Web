@@ -92,12 +92,16 @@ export function createUpstashClient(store: SyncStore) {
         proxyUrl += "/";
       }
 
-      let url = new URL(proxyUrl + "/api/upstash/" + path);
-
-      // add query params
-      url.searchParams.append("endpoint", config.endpoint);
-
-      return url.toString();
+      let url;
+      if (proxyUrl.length > 0 || proxyUrl === "/") {
+        let u = new URL(proxyUrl + "/api/upstash/" + path);
+        // add query params
+        u.searchParams.append("endpoint", config.endpoint);
+        url = u.toString();
+      } else {
+        url = "/api/upstash/" + path + "?endpoint=" + config.endpoint;
+      }
+      return url;
     },
   };
 }

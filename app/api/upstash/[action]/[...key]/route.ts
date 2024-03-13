@@ -10,7 +10,7 @@ async function handle(
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
-  const [action, ...key] = params.key;
+  const [...key] = params.key;
   // only allow to request to *.upstash.io
   if (!endpoint || !new URL(endpoint).hostname.endsWith(".upstash.io")) {
     return NextResponse.json(
@@ -25,7 +25,8 @@ async function handle(
   }
 
   // only allow upstash get and set method
-  if (action !== "get" && action !== "set") {
+  if (params.action !== "get" && params.action !== "set") {
+    console.log("[Upstash Route] forbidden action ", params.action);
     return NextResponse.json(
       {
         error: true,
@@ -37,10 +38,9 @@ async function handle(
     );
   }
 
-  const [protocol, ...subpath] = params.key;
-  const targetUrl = `${protocol}://${subpath.join("/")}`;
+  const targetUrl = `${endpoint}/${params.action}/${params.key.join("/")}`;
 
-  const method = req.headers.get("method") ?? undefined;
+  const method = req.method;
   const shouldNotHaveBody = ["get", "head"].includes(
     method?.toLowerCase() ?? "",
   );
@@ -55,6 +55,7 @@ async function handle(
     duplex: "half",
   };
 
+  console.log("[Upstash Proxy]", targetUrl, fetchOptions);
   const fetchResult = await fetch(targetUrl, fetchOptions);
 
   console.log("[Any Proxy]", targetUrl, {
