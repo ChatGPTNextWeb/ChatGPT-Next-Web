@@ -94,7 +94,7 @@ export function createUpstashClient(store: SyncStore) {
         path = path.slice(1);
       }
 
-      let url = new URL("/api/" + path);
+      let url = new URL("/api/upstash/" + path);
 
       // add query params
       url.searchParams.append("endpoint", config.endpoint);

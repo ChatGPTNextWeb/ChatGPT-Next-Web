@@ -1,0 +1,103 @@
+import { NextRequest, NextResponse } from "next/server";
+import { STORAGE_KEY } from "../../../constant";
+async function handle(
+  req: NextRequest,
+  { params }: { params: { path: string[] } },
+) {
+  if (req.method === "OPTIONS") {
+    return NextResponse.json({ body: "OK" }, { status: 200 });
+  }
+  const folder = STORAGE_KEY;
+  const fileName = `${folder}/backup.json`;
+
+  const requestUrl = new URL(req.url);
+  const endpoint = requestUrl.searchParams.get("endpoint");
+
+  const [protocol, ...subpath] = params.path;
+
+  const endpointPath = subpath.join("/");
+
+  // only allow MKCOL, GET, PUT
+  if (req.method !== "MKCOL" && req.method !== "GET" && req.method !== "PUT") {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "you are not allowed to request " + params.path.join("/"),
+      },
+      {
+        status: 403,
+      },
+    );
+  }
+
+  // for MKCOL request, only allow request ${folder}
+  if (req.method == "MKCOL" && !endpointPath.endsWith(folder)) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "you are not allowed to request " + params.path.join("/"),
+      },
+      {
+        status: 403,
+      },
+    );
+  }
+
+  // for GET request, only allow request ending with fileName
+  if (req.method == "GET" && !endpointPath.endsWith(fileName)) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "you are not allowed to request " + params.path.join("/"),
+      },
+      {
+        status: 403,
+      },
+    );
+  }
+
+  //   for PUT request, only allow request ending with fileName
+  if (req.method == "PUT" && !endpointPath.endsWith(fileName)) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "you are not allowed to request " + params.path.join("/"),
+      },
+      {
+        status: 403,
+      },
+    );
+  }
+
+  const targetUrl = `${protocol}://${endpoint + endpointPath}`;
+
+  const method = req.headers.get("method") ?? undefined;
+  const shouldNotHaveBody = ["get", "head"].includes(
+    method?.toLowerCase() ?? "",
+  );
+
+  const fetchOptions: RequestInit = {
+    headers: {
+      authorization: req.headers.get("authorization") ?? "",
+    },
+    body: shouldNotHaveBody ? null : req.body,
+    method,
+    // @ts-ignore
+    duplex: "half",
+  };
+
+  const fetchResult = await fetch(targetUrl, fetchOptions);
+
+  console.log("[Any Proxy]", targetUrl, {
+    status: fetchResult.status,
+    statusText: fetchResult.statusText,
+  });
+
+  return fetchResult;
+}
+
+export const POST = handle;
+export const GET = handle;
+export const OPTIONS = handle;
+
+export const runtime = "edge";

@@ -60,15 +60,17 @@ export function createWebDavClient(store: SyncStore) {
       };
     },
     path(path: string) {
-      let url = config.endpoint;
-
-      if (!url.endsWith("/")) {
-        url += "/";
+      if (!path.endsWith("/")) {
+        path += "/";
       }
-
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
+
+      let url = new URL("/api/webdav/" + path);
+
+      // add query params
+      url.searchParams.append("endpoint", config.endpoint);
 
       return url + path;
     },
