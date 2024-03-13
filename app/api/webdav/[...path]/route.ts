@@ -31,7 +31,10 @@ async function handle(
   }
 
   // for MKCOL request, only allow request ${folder}
-  if (req.method == "MKCOL" && !endpointPath.endsWith(folder)) {
+  if (
+    req.method == "MKCOL" &&
+    !new URL(endpointPath).pathname.endsWith(folder)
+  ) {
     return NextResponse.json(
       {
         error: true,
@@ -44,7 +47,10 @@ async function handle(
   }
 
   // for GET request, only allow request ending with fileName
-  if (req.method == "GET" && !endpointPath.endsWith(fileName)) {
+  if (
+    req.method == "GET" &&
+    !new URL(endpointPath).pathname.endsWith(fileName)
+  ) {
     return NextResponse.json(
       {
         error: true,
@@ -57,7 +63,10 @@ async function handle(
   }
 
   //   for PUT request, only allow request ending with fileName
-  if (req.method == "PUT" && !endpointPath.endsWith(fileName)) {
+  if (
+    req.method == "PUT" &&
+    !new URL(endpointPath).pathname.endsWith(fileName)
+  ) {
     return NextResponse.json(
       {
         error: true,

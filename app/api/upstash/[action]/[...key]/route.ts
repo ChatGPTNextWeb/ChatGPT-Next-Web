@@ -12,7 +12,7 @@ async function handle(
   }
   const [action, ...key] = params.key;
   // only allow to request to *.upstash.io
-  if (!endpoint || !endpoint.endsWith("upstash.io")) {
+  if (!endpoint || !new URL(endpoint).hostname.endsWith(".upstash.io")) {
     return NextResponse.json(
       {
         error: true,
