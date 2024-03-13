@@ -2,6 +2,7 @@ import "@/app/app/login.scss";
 import { Metadata } from "next";
 import { ReactNode } from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+// import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Admin | 管理页面",
