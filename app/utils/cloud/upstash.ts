@@ -81,8 +81,6 @@ export function createUpstashClient(store: SyncStore) {
       };
     },
     path(path: string, proxyUrl: string = "") {
-      // let url = config.endpoint;
-
       if (!path.endsWith("/")) {
         path += "/";
       }
