@@ -78,6 +78,10 @@ export const DEFAULT_CONFIG = {
     voice: DEFAULT_TTS_VOICE,
     speed: 1.0,
   },
+
+  sttConfig: {
+    enable: false,
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -85,6 +89,7 @@ export type ChatConfig = typeof DEFAULT_CONFIG;
 export type ModelConfig = ChatConfig["modelConfig"];
 export type PluginConfig = ChatConfig["pluginConfig"];
 export type TTSConfig = ChatConfig["ttsConfig"];
+export type STTConfig = ChatConfig["sttConfig"];
 
 export function limitNumber(
   x: number,

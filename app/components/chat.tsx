@@ -10,6 +10,7 @@ import React, {
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
+import VoiceWhiteIcon from "../icons/voice-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
@@ -73,7 +74,7 @@ import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
 import { Prompt, usePromptStore } from "../store/prompt";
-import Locale from "../locales";
+import Locale, { getLang, getSTTLang } from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
@@ -799,6 +800,27 @@ function _Chat() {
     }
   };
 
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+  const startListening = () => {
+    if (recognition) {
+      recognition.start();
+      setIsListening(true);
+    }
+  };
+
+  const stopListening = () => {
+    if (recognition) {
+      recognition.stop();
+      setIsListening(false);
+    }
+  };
+
+  const onRecognitionEnd = (finalTranscript: string) => {
+    console.log(finalTranscript);
+    if (finalTranscript) setUserInput(finalTranscript);
+  };
+
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
@@ -869,6 +891,26 @@ function _Chat() {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (typeof window !== "undefined") {
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = true;
+      recognitionInstance.interimResults = true;
+      let lang = getSTTLang();
+      recognitionInstance.lang = lang;
+      recognitionInstance.onresult = (event: any) => {
+        const result = event.results[event.results.length - 1];
+        if (result.isFinal) {
+          if (!isListening) {
+            onRecognitionEnd(result[0].transcript);
+          }
+        }
+      };
+
+      setRecognition(recognitionInstance);
+    }
   }, []);
 
   // check if should send message
@@ -1649,13 +1691,26 @@ function _Chat() {
               })}
             </div>
           )}
-          <IconButton
-            icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
-            className={styles["chat-input-send"]}
-            type="primary"
-            onClick={() => doSubmit(userInput)}
-          />
+
+          {config.sttConfig.enable ? (
+            <IconButton
+              icon={<VoiceWhiteIcon />}
+              text={
+                isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak
+              }
+              className={styles["chat-input-send"]}
+              type="primary"
+              onClick={() => (isListening ? stopListening() : startListening())}
+            />
+          ) : (
+            <IconButton
+              icon={<SendWhiteIcon />}
+              text={Locale.Chat.Send}
+              className={styles["chat-input-send"]}
+              type="primary"
+              onClick={() => doSubmit(userInput)}
+            />
+          )}
         </label>
       </div>
 

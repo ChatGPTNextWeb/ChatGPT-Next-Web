@@ -79,6 +79,8 @@ const cn = {
       return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
+    StartSpeak: "开始说话",
+    StopSpeak: "停止说话",
     Config: {
       Reset: "清除记忆",
       SaveAs: "存为面具",
@@ -393,6 +395,12 @@ const cn = {
       Speed: {
         Title: "速度",
         SubTitle: "生成语音的速度",
+      },
+    },
+    STT: {
+      Enable: {
+        Title: "启用语音转文本",
+        SubTitle: "启用语音转文本",
       },
     },
   },

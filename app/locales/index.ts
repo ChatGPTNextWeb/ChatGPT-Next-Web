@@ -103,6 +103,36 @@ function getLanguage() {
   }
 }
 
+const DEFAULT_STT_LANG = "zh-CN";
+export const STT_LANG_MAP: Record<Lang, string> = {
+  cn: "zh-CN",
+  en: "en-US",
+  pt: "pt-BR",
+  tw: "zh-TW",
+  jp: "ja-JP",
+  ko: "ko-KR",
+  id: "id-ID",
+  fr: "fr-FR",
+  es: "es-ES",
+  it: "it-IT",
+  tr: "tr-TR",
+  de: "de-DE",
+  vi: "vi-VN",
+  ru: "ru-RU",
+  cs: "cs-CZ",
+  no: "no-NO",
+  ar: "ar-SA",
+  bn: "bn-BD",
+  sk: "sk-SK",
+};
+export function getSTTLang(): string {
+  try {
+    return STT_LANG_MAP[getLang()];
+  } catch {
+    return DEFAULT_STT_LANG;
+  }
+}
+
 export function getLang(): Lang {
   const savedLang = getItem(LANG_KEY);
 
