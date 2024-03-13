@@ -85,17 +85,21 @@ export function createUpstashClient(store: SyncStore) {
       };
     },
     path(path: string) {
-      let url = config.endpoint;
+      // let url = config.endpoint;
 
-      if (!url.endsWith("/")) {
-        url += "/";
+      if (!path.endsWith("/")) {
+        path += "/";
       }
-
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
 
-      return url + path;
+      let url = new URL("/api/" + path);
+
+      // add query params
+      url.searchParams.append("endpoint", config.endpoint);
+
+      return url.toString();
     },
   };
 }
