@@ -15,10 +15,9 @@ export function createWebDavClient(store: SyncStore) {
   return {
     async check() {
       try {
-        const res = await corsFetch(this.path(folder), {
+        const res = await fetch(this.path(folder, proxyUrl), {
           method: "MKCOL",
           headers: this.headers(),
-          proxyUrl,
         });
         console.log("[WebDav] check", res.status, res.statusText);
         return [201, 200, 404, 301, 302, 307, 308].includes(res.status);
@@ -30,10 +29,9 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async get(key: string) {
-      const res = await corsFetch(this.path(fileName), {
+      const res = await fetch(this.path(fileName, proxyUrl), {
         method: "GET",
         headers: this.headers(),
-        proxyUrl,
       });
 
       console.log("[WebDav] get key = ", key, res.status, res.statusText);
@@ -42,11 +40,10 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async set(key: string, value: string) {
-      const res = await corsFetch(this.path(fileName), {
+      const res = await fetch(this.path(fileName, proxyUrl), {
         method: "PUT",
         headers: this.headers(),
         body: value,
-        proxyUrl,
       });
 
       console.log("[WebDav] set key = ", key, res.status, res.statusText);
@@ -59,7 +56,7 @@ export function createWebDavClient(store: SyncStore) {
         authorization: `Basic ${auth}`,
       };
     },
-    path(path: string) {
+    path(path: string, proxyUrl: string = "") {
       if (!path.endsWith("/")) {
         path += "/";
       }
@@ -67,7 +64,11 @@ export function createWebDavClient(store: SyncStore) {
         path = path.slice(1);
       }
 
-      let url = new URL("/api/webdav/" + path);
+      if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
+        proxyUrl += "/";
+      }
+
+      let url = new URL(proxyUrl + "/api/webdav/" + path);
 
       // add query params
       url.searchParams.append("endpoint", config.endpoint);
