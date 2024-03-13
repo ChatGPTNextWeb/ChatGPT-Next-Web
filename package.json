@@ -50,6 +50,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/react-katex": "^3.0.0",
     "@types/spark-md5": "^3.0.4",
+    "autoprefixer": "^10.4.18",
     "cross-env": "^7.0.3",
     "eslint": "^8.49.0",
     "eslint-config-next": "13.4.19",
@@ -57,7 +58,9 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
+    "postcss": "^8.4.35",
     "prettier": "^3.0.2",
+    "tailwindcss": "^3.4.1",
     "typescript": "5.2.2",
     "webpack": "^5.88.1"
   },

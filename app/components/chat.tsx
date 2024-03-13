@@ -97,7 +97,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
-
+import SpeechRecorder from "./chat/speechRecorder";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -345,7 +345,7 @@ function ChatAction(props: {
     full: 16,
     icon: 16,
   });
-
+  const [isActive, setIsActive] = useState(false);
   function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
@@ -359,25 +359,22 @@ function ChatAction(props: {
 
   return (
     <div
-      className={`${styles["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} clickable group`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
       }}
-      onMouseEnter={updateWidth}
-      onTouchStart={updateWidth}
-      style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
-      }
     >
-      <div ref={iconRef} className={styles["icon"]}>
-        {props.icon}
-      </div>
-      <div className={styles["text"]} ref={textRef}>
-        {props.text}
+      <div className="flex">
+        <div ref={iconRef} className={styles["icon"]}>
+          {props.icon}
+        </div>
+        <div
+          className={`${styles["text"]} transition-all duration-1000 w-0 group-hover:w-[60px]`}
+          ref={textRef}
+        >
+          {props.text}
+        </div>
       </div>
     </div>
   );
@@ -454,15 +451,6 @@ export function ChatActions(props: {
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
-  const [speechRecognition, setSpeechRecognition] = useState(null);
-  const [isRecording, setIsRecording] = useState(false);
-  useEffect(() => {
-    if ("SpeechRecognition" in window) {
-      setSpeechRecognition(new window.SpeechRecognition());
-    } else if ("webkitSpeechRecognition" in window) {
-      setSpeechRecognition(new window.webkitSpeechRecognition());
-    }
-  }, []);
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
@@ -485,30 +473,6 @@ export function ChatActions(props: {
 
   return (
     <div className={styles["chat-input-actions"]}>
-      {speechRecognition && (
-        <ChatAction
-          onClick={() => {
-            if (!isRecording) {
-              speechRecognition.continuous = true; // 连续识别
-              speechRecognition.lang = "zh-CN"; // 设置识别的语言为中文
-              speechRecognition.interimResults = true; // 返回临时结果
-              speechRecognition.start();
-              speechRecognition.onresult = function (event) {
-                console.log(event);
-                var transcript = event.results[0][0].transcript; // 获取识别结果
-                console.log(transcript);
-                props.setUserInput(transcript);
-              };
-              setIsRecording(true);
-            } else {
-              speechRecognition.stop();
-              setIsRecording(false);
-            }
-          }}
-          text="Speech"
-          icon={<BrainIcon />}
-        ></ChatAction>
-      )}
       {couldStop && (
         <ChatAction
           onClick={stopAll}
@@ -1513,13 +1477,16 @@ function _Chat() {
               })}
             </div>
           )}
-          <IconButton
-            icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
-            className={styles["chat-input-send"]}
-            type="primary"
-            onClick={() => doSubmit(userInput)}
-          />
+          <div className="flex gap-2 absolute right-[30px] bottom-[32px]">
+            <SpeechRecorder textUpdater={setUserInput}></SpeechRecorder>
+            <IconButton
+              icon={<SendWhiteIcon />}
+              text={Locale.Chat.Send}
+              className={styles["chat-input-send"]}
+              type="primary"
+              onClick={() => doSubmit(userInput)}
+            />
+          </div>
         </label>
       </div>
 
