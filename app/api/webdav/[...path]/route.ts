@@ -11,11 +11,11 @@ async function handle(
   const fileName = `${folder}/backup.json`;
 
   const requestUrl = new URL(req.url);
-  const endpoint = requestUrl.searchParams.get("endpoint");
-
-  const [protocol, ...subpath] = params.path;
-
-  const endpointPath = subpath.join("/");
+  let endpoint = requestUrl.searchParams.get("endpoint");
+  if (!endpoint?.endsWith("/")) {
+    endpoint += "/";
+  }
+  const endpointPath = params.path.join("/");
 
   // only allow MKCOL, GET, PUT
   if (req.method !== "MKCOL" && req.method !== "GET" && req.method !== "PUT") {
@@ -78,7 +78,7 @@ async function handle(
     );
   }
 
-  const targetUrl = `${protocol}://${endpoint + endpointPath}`;
+  const targetUrl = `${endpoint + endpointPath}`;
 
   const method = req.method;
   const shouldNotHaveBody = ["get", "head"].includes(
