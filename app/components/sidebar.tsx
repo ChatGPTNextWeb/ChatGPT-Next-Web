@@ -3,9 +3,8 @@ import { useEffect, useRef, useMemo } from "react";
 import styles from "./home.module.scss";
 import stylesChat from "./chat.module.scss";
 
-import { Stream } from "./stream-ai";
+import { Stream } from "./hippo/stream-ai";
 import HippoIcron from "../icons/hippo.svg";
-import "../custom-style-web.scss";
 
 import { useAppConfig, useChatStore } from "../store";
 import { useMaskStore } from "../store/mask";

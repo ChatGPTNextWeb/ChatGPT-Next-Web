@@ -26,7 +26,7 @@ export async function saveToVectorDatabase(text) {
     await searchPathVid(text);
     //
     const userId = localStorage.getItem("userId");
-    const res = await axios.post(process.env.SAVETOVECTORDATABASE_BOT, {
+    const res = axios.post(process.env.SAVETOVECTORDATABASE_BOT, {
       text: text,
       userId: userId,
     });
