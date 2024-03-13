@@ -429,7 +429,7 @@ export default function UserByMap() {
       trigger: "item",
     },
     bmap: {
-      center: [104.114129, 37.550339],
+      center: [108.95, 34.27],
       zoom: 5,
       roam: true,
       mapStyle: {
@@ -637,7 +637,7 @@ export default function UserByMap() {
 
       <div
         id="userByMapChart"
-        style={{ width: "600px", height: "400px" }}
+        style={{ width: "960px", height: "500px" }}
       ></div>
       <Script
         src="https://api.map.baidu.com/api?v=3.0&ak=19e9FKQC49u5uQe4CBqan9ER2mYhQ3ip&callback=onBMapCallback"
