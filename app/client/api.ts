@@ -55,8 +55,8 @@ export interface LLMUsage {
 export interface LLMModel {
   name: string;
   available: boolean;
-  modelId: string;
-  anthropic_version: string;
+  modelId?: string;
+  anthropic_version?: string;
   provider: LLMModelProvider;
 }
 
