@@ -597,7 +597,7 @@ export const useChatStore = createPersistStore(
             },
             onFinish(message) {
               message = modelConfig.model.startsWith("claude")
-                ? message[0]["text"]
+                ? (message[0] as any)["text"]
                 : message;
               get().updateCurrentSession(
                 (session) =>

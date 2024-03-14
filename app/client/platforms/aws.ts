@@ -56,7 +56,41 @@ export class ClaudeApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
-  convertMessagePayload(messages: any, modelConfig: any): any {
+  get_model_id(model: string): string {
+    // get the model id from the model name
+    // go through all the models in DEFAULT_MODELS, and find the model id by the model name
+
+    var model_id = "";
+    for (var i = 0; i < DEFAULT_MODELS.length; i++) {
+      if (DEFAULT_MODELS[i].name === model) {
+        model_id = DEFAULT_MODELS[i].modelId;
+        break;
+      }
+    }
+
+    return model_id;
+  }
+
+  get_model_version(model: string): string {
+    // get the model version from the model name
+    // go through all the models in DEFAULT_MODELS, and find the model version by the model name
+
+    var model_version = "";
+    for (var i = 0; i < DEFAULT_MODELS.length; i++) {
+      if (DEFAULT_MODELS[i].name === model) {
+        model_version = DEFAULT_MODELS[i].anthropic_version;
+        break;
+      }
+    }
+
+    return model_version;
+  }
+
+  convertMessagePayload(
+    messages: any,
+    modelConfig: any,
+    model_version: string,
+  ): any {
     // converting the message payload, as the format of the original message playload is different from the format of the payload format of Bedrock API
     // define a new variable to store the new message payload,
     // scan all the messages in the original message payload,
@@ -65,7 +99,7 @@ export class ClaudeApi implements LLMApi {
     //          if the content type is image_url, then get the image data and store it in the new message payload
     //          if the content type is not image_url, then store the content in the new message payload
 
-    console.log("original messages", messages);
+    // console.log("original messages", messages);
 
     var new_messages: any = [];
 
@@ -102,11 +136,11 @@ export class ClaudeApi implements LLMApi {
         if (typeof messages[i].content === "string") {
           // the message content is not an array, it is a text message
 
-          console.log("text message", messages[i].content);
+          // console.log("text message", messages[i].content);
 
           const text_playload = { type: "text", text: messages[i].content };
 
-          console.log("text_playload", text_playload);
+          // console.log("text_playload", text_playload);
 
           new_contents.push(text_playload);
         } else {
@@ -204,7 +238,7 @@ export class ClaudeApi implements LLMApi {
       top_p: modelConfig.top_p,
       temperature: modelConfig.temperature,
       max_tokens: modelConfig.max_tokens,
-      anthropic_version: "bedrock-2023-05-31",
+      anthropic_version: model_version,
     };
 
     return requestPayload;
@@ -245,22 +279,29 @@ export class ClaudeApi implements LLMApi {
       },
     };
 
-    console.log("aws_config_data", aws_config_data);
+    // console.log("aws_config_data", aws_config_data);
 
     const client = new BedrockClient(aws_config_data);
 
-    console.log("is vision model", visionModel);
+    // console.log("is vision model", visionModel);
 
-    console.log("options.messages", options.messages);
+    // console.log("options.messages", options.messages);
 
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: visionModel ? v.content : getMessageTextContent(v),
     }));
 
-    const requestPayload = this.convertMessagePayload(messages, modelConfig);
+    var modelID = this.get_model_id(modelConfig.model);
+    var modelVersion = this.get_model_version(modelConfig.model);
 
-    console.log("requestPayload", requestPayload);
+    const requestPayload = this.convertMessagePayload(
+      messages,
+      modelConfig,
+      modelVersion,
+    );
+
+    // console.log("requestPayload", requestPayload);
 
     // add max_tokens to vision model
     if (visionModel) {
@@ -278,16 +319,9 @@ export class ClaudeApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
 
-    try {
-      // const chatPath = this.path(OpenaiPath.ChatPath);
-      // const chatPayload = {
-      //   method: "POST",
-      //   body: JSON.stringify(requestPayload),
-      //   signal: controller.signal,
-      //   headers: getHeaders(),
-      // };
+    // modelID = modelConfig.model.
 
-      // make a fetch request
+    try {
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
@@ -333,7 +367,7 @@ export class ClaudeApi implements LLMApi {
 
         const response = await client.invokeModelWithStream(
           requestPayload,
-          "anthropic.claude-3-sonnet-20240229-v1:0",
+          modelID,
         );
 
         // console.log('response of streaming request:', response);
@@ -369,17 +403,14 @@ export class ClaudeApi implements LLMApi {
       } else {
         console.log("not streaming");
 
-        const res = await client.invokeModel(
-          requestPayload,
-          "anthropic.claude-3-sonnet-20240229-v1:0",
-        );
+        const res = await client.invokeModel(requestPayload, modelID);
 
         clearTimeout(requestTimeoutId);
 
         const decodedResponseBody = new TextDecoder().decode(res.body);
         const responseBody = JSON.parse(decodedResponseBody);
 
-        console.log("response", responseBody.content);
+        // console.log("response", responseBody.content);
 
         const message = responseBody.content;
         options.onFinish(message);
@@ -390,69 +421,7 @@ export class ClaudeApi implements LLMApi {
     }
   }
   async usage() {
-    // const formatDate = (d: Date) =>
-    //   `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
-    //     .getDate()
-    //     .toString()
-    //     .padStart(2, "0")}`;
-    // const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
-    // const now = new Date();
-    // const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    // const startDate = formatDate(startOfMonth);
-    // const endDate = formatDate(new Date(Date.now() + ONE_DAY));
-
-    // const [used, subs] = await Promise.all([
-    //   fetch(
-    //     this.path(
-    //       `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
-    //     ),
-    //     {
-    //       method: "GET",
-    //       headers: getHeaders(),
-    //     },
-    //   ),
-    //   fetch(this.path(OpenaiPath.SubsPath), {
-    //     method: "GET",
-    //     headers: getHeaders(),
-    //   }),
-    // ]);
-
-    // if (used.status === 401) {
-    //   throw new Error(Locale.Error.Unauthorized);
-    // }
-
-    // if (!used.ok || !subs.ok) {
-    //   throw new Error("Failed to query usage from openai");
-    // }
-
-    // const response = (await used.json()) as {
-    //   total_usage?: number;
-    //   error?: {
-    //     type: string;
-    //     message: string;
-    //   };
-    // };
-
-    // const total = (await subs.json()) as {
-    //   hard_limit_usd?: number;
-    // };
-
-    // if (response.error && response.error.type) {
-    //   throw Error(response.error.message);
-    // }
-
-    // if (response.total_usage) {
-    //   response.total_usage = Math.round(response.total_usage) / 100;
-    // }
-
-    // if (total.hard_limit_usd) {
-    //   total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
-    // }
-
-    // return {
-    //   used: response.total_usage,
-    //   total: total.hard_limit_usd,
-    // } as LLMUsage;
+    // As there are no usage data for AWS, we are returning a dummy usage data
 
     return {
       used: 1000,
@@ -461,6 +430,7 @@ export class ClaudeApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
+    // as we only support Claude 3 mode at present, so we are returning a dummy model list data
     return [];
   }
 }

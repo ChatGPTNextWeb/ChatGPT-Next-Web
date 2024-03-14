@@ -14,7 +14,7 @@ export const EN_MASKS: BuiltinMask[] = [
       },
     ],
     modelConfig: {
-      model: "claude-3",
+      model: "claude-3-sonnet",
       temperature: 0.3,
       max_tokens: 2000,
       presence_penalty: 0,
@@ -60,7 +60,7 @@ export const EN_MASKS: BuiltinMask[] = [
       },
     ],
     modelConfig: {
-      model: "claude-3",
+      model: "claude-3-sonnet",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
@@ -86,7 +86,7 @@ export const EN_MASKS: BuiltinMask[] = [
       },
     ],
     modelConfig: {
-      model: "claude-3",
+      model: "claude-3-sonnet",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,
@@ -118,7 +118,7 @@ export const EN_MASKS: BuiltinMask[] = [
       },
     ],
     modelConfig: {
-      model: "claude-3",
+      model: "claude-3-sonnet",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,

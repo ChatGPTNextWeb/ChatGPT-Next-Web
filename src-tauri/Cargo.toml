@@ -23,7 +23,6 @@ tauri = { version = "1.5.4", features = [
     "clipboard-all",
     "dialog-all",
     "shell-open",
-    "updater",
     "window-close",
     "window-hide",
     "window-maximize",
