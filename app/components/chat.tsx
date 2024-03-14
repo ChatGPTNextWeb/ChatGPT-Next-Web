@@ -1,3 +1,4 @@
+"use client";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   useState,
@@ -99,6 +100,8 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+
+import { pdfToText } from "../utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -335,56 +338,7 @@ export function DocumentsList(props: {
   const [files, setFiles] = useState<UploadDocumentProps[]>([]);
   const [selectedId, setSelectedId] = useState("");
 
-  useEffect(() => {
-    loadFilelist();
-  }, []);
-
-  const loadFilelist = () => {
-    fetch(`/api/documents`)
-      .then((response) => response.json())
-      .then((data) => {
-        setFiles(data);
-      })
-      .catch((error) => console.error("Error uploading file:", error))
-      .finally(() => {});
-  };
-  const uploadFile = (file: File, maxSize: number): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      const formData = new FormData();
-
-      reader.onload = (readerEvent: any) => {
-        console.log("File load successfully");
-        const fileContent = readerEvent.target.result;
-        formData.append("file", file, file.name);
-
-        fetch(`/api/documents/upload`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const { file, size } = data;
-            if (file) {
-              const exists = files.some((f) => f.file === file);
-
-              if (!exists) {
-                setFiles([...files, { file: file, size }]);
-                loadFilelist();
-              }
-            }
-          })
-          .catch((error) => console.error("Error uploading file:", error))
-          .finally(() => {});
-
-        resolve(fileContent);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
-  async function uploadDocument() {
+  async function localLoadDocument() {
     const files: string[] = [];
 
     files.push(
@@ -395,7 +349,13 @@ export function DocumentsList(props: {
         fileInput.multiple = true;
         fileInput.onchange = (event: any) => {
           const files = event.target.files;
-          uploadFile(files[0], 256 * 1024);
+
+          pdfToText(files[0])
+            .then((text) => {
+              props.onDocumentSelect(text ?? "");
+              setFiles([{ file: files[0].name, size: files[0].size }]);
+            })
+            .catch((error) => console.error("Failed to extract text from pdf"));
         };
         fileInput.click();
       })),
@@ -410,23 +370,8 @@ export function DocumentsList(props: {
 
   const deleteDocument = async (file: string) => {
     if (confirm(`Are you sure you want to delete ${file} ?`)) {
-      try {
-        const response = await fetch(`/api/documents?file=${file}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.ok) {
-          // handle successful delete
-          loadFilelist();
-        } else {
-          // handle error
-        }
-      } catch (error) {
-        console.log(error);
-      }
+      setFiles([]);
+      props.onDocumentSelect("");
     }
   };
 
@@ -436,19 +381,10 @@ export function DocumentsList(props: {
         <>
           <IconButton
             icon={<CloudIcon />}
-            text={"Upload Documents"}
+            text={"Load PDF File"}
             bordered
             onClick={() => {
-              console.log("upload"), uploadDocument();
-            }}
-          />{" "}
-          <br />
-          <IconButton
-            icon={<ResetIcon />}
-            text={"Reset"}
-            bordered
-            onClick={() => {
-              setSelectedId("");
+              console.log("upload"), localLoadDocument();
             }}
           />
           <hr />
@@ -457,15 +393,6 @@ export function DocumentsList(props: {
       {props.showDocumentsList === true &&
         files.map((document, idx) => (
           <div key={document.file}>
-            <input
-              type="radio"
-              id={idx.toString()}
-              checked={selectedId === idx.toString()}
-              onChange={() => {
-                props.onDocumentSelect(document.file);
-                setSelectedId(idx.toString());
-              }}
-            />
             {document.file} , size: {(document.size / 1024).toFixed(2)}/kb{" "}
             <button
               className={styles["icon-button"]}
