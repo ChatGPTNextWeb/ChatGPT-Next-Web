@@ -335,7 +335,6 @@ export const useChatStore = createPersistStore(
         };
 
         if (attachFile && attachFile !== "") {
-          const contents = await loadFilelist(attachFile);
           mContent = [
             {
               type: "text",
@@ -343,7 +342,7 @@ export const useChatStore = createPersistStore(
             },
           ];
           mContent = mContent.concat([
-            { type: "text", text: JSON.stringify(contents) },
+            { type: "text", text: JSON.stringify({ context: attachFile }) },
           ]);
         }
 

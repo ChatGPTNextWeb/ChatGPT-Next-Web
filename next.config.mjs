@@ -9,6 +9,8 @@ console.log("[Next] build with chunk: ", !disableChunk);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack(config) {
+    config.resolve.alias.canvas = false
+    config.resolve.alias.encoding = false
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"],
