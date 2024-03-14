@@ -73,7 +73,7 @@ export enum ServiceProvider {
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
-  Anthropic = "Anthropic",
+  // Anthropic = "Anthropic",
   Claude = "Claude",
   AWS = "AWS",
 }
@@ -123,8 +123,21 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 
 export const DEFAULT_MODELS = [
   {
-    name: "claude-3",
+    name: "claude-3-sonnet",
     available: true,
+    modelId: "anthropic.claude-3-sonnet-20240229-v1:0",
+    anthropic_version: "bedrock-2023-05-31",
+    provider: {
+      id: "aws",
+      providerName: "AWS",
+      providerType: "aws",
+    },
+  },
+  {
+    name: "claude-3-haiku",
+    available: true,
+    modelId: "anthropic.claude-3-haiku-20240307-v1:0",
+    anthropic_version: "bedrock-2023-05-31",
     provider: {
       id: "aws",
       providerName: "AWS",

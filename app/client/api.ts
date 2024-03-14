@@ -55,6 +55,8 @@ export interface LLMUsage {
 export interface LLMModel {
   name: string;
   available: boolean;
+  modelId: string;
+  anthropic_version: string;
   provider: LLMModelProvider;
 }
 
@@ -94,7 +96,7 @@ interface ChatProvider {
 export class ClientApi {
   public llm: LLMApi;
 
-  constructor(provider: ModelProvider = ModelProvider.GPT) {
+  constructor(provider: ModelProvider = ModelProvider.Claude) {
     console.log("provider is:" + provider);
     if (provider === ModelProvider.Claude) {
       this.llm = new ClaudeApi();
