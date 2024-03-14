@@ -81,8 +81,8 @@ const en: LocaleType = {
       return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
-    StartSpeak: "Start talking",
-    StopSpeak: "Stop talking",
+    StartSpeak: "Talk",
+    StopSpeak: "Stop",
     Config: {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",

@@ -79,8 +79,8 @@ const cn = {
       return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
-    StartSpeak: "开始说话",
-    StopSpeak: "停止说话",
+    StartSpeak: "说话",
+    StopSpeak: "停止",
     Config: {
       Reset: "清除记忆",
       SaveAs: "存为面具",
