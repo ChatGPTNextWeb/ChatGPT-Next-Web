@@ -294,11 +294,15 @@ export function getMessageImages(message: RequestMessage): string[] {
 
 export function isVisionModel(model: string) {
   const accessStore = useAccessStore.getState();
-  const customVisionModels = accessStore.customVisionModels.split(/[+,]/).map(item => item.trim());
+  const customVisionModels = accessStore.customVisionModels
+    .split(/[+,]/)
+    .map(item => item.trim())
+    .filter(item => item !== '');  
   const visionKeywords = [
       "vision",
       ...customVisionModels,
   ];
+  console.log("vision", customVisionModels) 
   return (
     // model.startsWith("gpt-4-vision") ||
     // model.startsWith("gemini-pro-vision") ||
