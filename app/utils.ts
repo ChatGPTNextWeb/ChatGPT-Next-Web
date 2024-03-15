@@ -302,7 +302,6 @@ export function isVisionModel(model: string) {
       "vision",
       ...customVisionModels,
   ];
-  console.log("vision", customVisionModels) 
   return (
     // model.startsWith("gpt-4-vision") ||
     // model.startsWith("gemini-pro-vision") ||
