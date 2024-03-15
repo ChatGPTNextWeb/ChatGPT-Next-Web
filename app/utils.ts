@@ -3,6 +3,7 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
 import { DEFAULT_MODELS } from "./constant";
+import { useAccessStore } from "@/app/store";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -292,9 +293,10 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
+  const accessStore = useAccessStore.getState();
   return (
     // model.startsWith("gpt-4-vision") ||
     // model.startsWith("gemini-pro-vision") ||
-    model.includes("vision")
+    model.includes("vision") || accessStore.customVisionModels.includes(model)
   );
 }

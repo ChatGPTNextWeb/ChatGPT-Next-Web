@@ -21,6 +21,7 @@ declare global {
       ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
+      CUSTOM_VISION_MODELS?: string; // allow user append custom vision models
 
       // azure only
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
@@ -59,6 +60,7 @@ export const getServerSideConfig = () => {
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
   let customModels = process.env.CUSTOM_MODELS ?? "";
+  let customVisionModels = process.env.CUSTOM_VISION_MODELS ?? "";
 
   if (disableGPT4) {
     if (customModels) customModels += ",";
@@ -66,7 +68,7 @@ export const getServerSideConfig = () => {
       .map((m) => "-" + m.name)
       .join(",");
   }
-
+  if (customVisionModels) customVisionModels += ",";
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
 
@@ -106,5 +108,6 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+    customVisionModels,
   };
 };
