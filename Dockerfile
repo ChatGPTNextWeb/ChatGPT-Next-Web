@@ -1,62 +1,77 @@
 FROM node:18-alpine AS base
 
+# Install dependencies only when needed
 FROM base AS deps
-
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
-
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# RUN yarn config set registry 'https://registry.npmmirror.com/'
-RUN yarn install
 
+# Rebuild the source code only when needed
 FROM base AS builder
-
-RUN apk update && apk add --no-cache git
-
-ENV OPENAI_API_KEY=""
-ENV CODE=""
-
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+# ENV NEXT_TELEMETRY_DISABLED 1
+
 RUN yarn build
 
+# If using npm comment out above and use below instead
+# RUN npm run build
+
+# Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-RUN apk add proxychains-ng
+ENV NODE_ENV production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED 1
 
-ENV PROXY_URL=""
-ENV OPENAI_API_KEY=""
-ENV CODE=""
+# Build the application
+ARG NEXT_PUBLIC_BACKEND_URL
+
+# Print environment variables during build
+RUN echo "NEXT_PUBLIC_BACKEND_URL: $NEXT_PUBLIC_BACKEND_URL"
+
+# Set environment variables
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/.next/server ./.next/server
+
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
 
 EXPOSE 3000
 
-CMD if [ -n "$PROXY_URL" ]; then \
-        export HOSTNAME="127.0.0.1"; \
-        protocol=$(echo $PROXY_URL | cut -d: -f1); \
-        host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
-        port=$(echo $PROXY_URL | cut -d: -f3); \
-        conf=/etc/proxychains.conf; \
-        echo "strict_chain" > $conf; \
-        echo "proxy_dns" >> $conf; \
-        echo "remote_dns_subnet 224" >> $conf; \
-        echo "tcp_read_time_out 15000" >> $conf; \
-        echo "tcp_connect_time_out 8000" >> $conf; \
-        echo "localnet 127.0.0.0/255.0.0.0" >> $conf; \
-        echo "localnet ::1/128" >> $conf; \
-        echo "[ProxyList]" >> $conf; \
-        echo "$protocol $host $port" >> $conf; \
-        cat /etc/proxychains.conf; \
-        proxychains -f $conf node server.js; \
-    else \
-        node server.js; \
-    fi
+ENV PORT 3000
+# set hostname to localhost
+ENV HOSTNAME "0.0.0.0"
+
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD ["node", "server.js"]
