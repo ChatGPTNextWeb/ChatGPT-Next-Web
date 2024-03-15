@@ -99,7 +99,15 @@ yarn dev
 Docker credentials can be found in the keypass file.
 
 ```shell
-docker buildx build . -t avviaintelligence/knowledgeai-chat:<version>
+# enable multi plattform build
+docker buildx create --use
+export DOCKER_CLI_EXPERIMENTAL=enabled
+
+# check that the build instance is running
+docker buildx inspect --bootstrap
+
+# build and push image
+docker buildx build --platform linux/amd64,linux/arm64 -t avviaintelligence/knowledgeai-chat:<version> .
 docker push avviaintelligence/knowledgeai-chat:<version>
 ```
 
@@ -112,8 +120,11 @@ docker push avviaintelligence/knowledgeai-chat:<version>
 docker pull avviaintelligence/knowledgeai-chat
 
 docker run -d -p 80:3000 \
-   -e OPENAI_API_KEY="xxxx" \
-   -e BASE_URL="your base url" \
+   -e OPENAI_API_KEY="your Avvia Intelligence API Key" \
+   -e BASE_URL="url of Avvia Intelligence OpenAI endpoint, e.g. https://server/openai" \
+   -e NEXTAUTH_URL="url where the app is hosted, e.g. https://example:3000" \
+   -e OKTA_OAUTH2_CLIENT_ID "okta client id" \
+   -e OKTA_OAUTH2_CLIENT_SECRET "okta secret" \
    avviaintelligence/knowledgeai-chat
 ```
 

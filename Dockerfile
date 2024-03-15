@@ -69,8 +69,24 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT 3000
-# set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
+
+ENV AZURE_OPENAI_APIVERSION 2023-05-15
+ENV AZURE_OPENAI_DEPLOYMENT_ID GPT_35_turbo
+ENV CODE ""
+ENV DISABLE_GPT4 1
+ENV HIDE_BALANCE_QUERY 1
+ENV HIDE_USER_API_KEY 1
+ENV NEXTAUTH_SECRET =FFF41AF4D3A8F3A8C3A4D3A8F3A8C3A
+ENV OPENAI_ON_AZURE 0
+ENV OPENAI_ORG_ID ""
+
+# overwrite on container start
+ENV BASE_URL ""
+ENV OPENAI_API_KEY ""
+ENV NEXTAUTH_URL ""
+ENV OKTA_OAUTH2_CLIENT_ID ""
+ENV OKTA_OAUTH2_CLIENT_SECRET ""
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
