@@ -157,7 +157,7 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          <a href="https://Hello.un.edu.pl/"  target="_blank" style="text-decoration: none rel="noopener noreferrer"> ©Hello.un.edu.pl</a>
+          <a href="https://Hello.un.edu.pl/"  target="_blank" style="text-decoration: none; rel="noopener noreferrer"> ©Hello.un.edu.pl</a>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
