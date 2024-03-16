@@ -93,7 +93,9 @@
     margin-left: -2px;
   }
 }
-
+a{
+ text-decoration: none;
+ }
 .window-content {
   width: var(--window-content-width);
   height: 100%;
