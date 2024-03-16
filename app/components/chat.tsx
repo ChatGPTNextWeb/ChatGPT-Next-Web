@@ -1,3 +1,4 @@
+"use client";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   useState,
@@ -37,6 +38,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import CloudIcon from "../icons/cloud-success.svg";
 import BedrockBotIcon from "../icons/bedrock_16.svg";
 
 import {
@@ -98,6 +100,8 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+
+import { pdfToText } from "../utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -315,6 +319,97 @@ export function PromptHints(props: {
   );
 }
 
+interface DocumentProps {
+  id: string;
+  file: string;
+  size: number;
+  content: string;
+}
+
+interface UploadDocumentProps {
+  file: string;
+  size: number;
+}
+
+export function DocumentsList(props: {
+  showDocumentsList: boolean;
+  onDocumentSelect: (file: string) => void;
+}) {
+  const [files, setFiles] = useState<UploadDocumentProps[]>([]);
+  const [selectedId, setSelectedId] = useState("");
+
+  async function localLoadDocument() {
+    const files: string[] = [];
+
+    files.push(
+      ...(await new Promise<string[]>((res, rej) => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "application/pdf";
+        fileInput.multiple = true;
+        fileInput.onchange = (event: any) => {
+          const files = event.target.files;
+
+          pdfToText(files[0])
+            .then((text) => {
+              props.onDocumentSelect(text ?? "");
+              setFiles([{ file: files[0].name, size: files[0].size }]);
+            })
+            .catch((error) => console.error("Failed to extract text from pdf"));
+        };
+        fileInput.click();
+      })),
+    );
+
+    const filesLength = files.length;
+    if (filesLength > 3) {
+      files.splice(3, filesLength - 3);
+    }
+    //setAttachImages(images);
+  }
+
+  const deleteDocument = async (file: string) => {
+    if (confirm(`Are you sure you want to delete ${file} ?`)) {
+      setFiles([]);
+      props.onDocumentSelect("");
+    }
+  };
+
+  return (
+    <div>
+      {props.showDocumentsList === true && (
+        <>
+          <IconButton
+            icon={<CloudIcon />}
+            text={"Load PDF File"}
+            bordered
+            onClick={() => {
+              console.log("upload"), localLoadDocument();
+            }}
+          />
+          <hr />
+        </>
+      )}
+      {props.showDocumentsList === true &&
+        files.map((document, idx) => (
+          <div key={document.file}>
+            {document.file} , size: {(document.size / 1024).toFixed(2)}/kb{" "}
+            <button
+              className={styles["icon-button"]}
+              onClick={() => {
+                deleteDocument(document.file);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              x
+            </button>
+            <p> </p>
+          </div>
+        ))}
+    </div>
+  );
+}
+
 function ClearContextDivider() {
   const chatStore = useChatStore();
 
@@ -423,6 +518,7 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  showDocuments: () => void;
   hitBottom: boolean;
   uploading: boolean;
 }) {
@@ -556,6 +652,14 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
+      <ChatAction
+        onClick={() => {
+          props.showDocuments(), console.log("document upload");
+        }}
+        text={"Documents"}
+        icon={<CloudIcon />}
+      />
+
       {showModelSelector && (
         <Selector
           defaultSelectedValue={currentModel}
@@ -679,9 +783,13 @@ function _Chat() {
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
+  const [attachDocument, setAttachDocument] = useState("");
+
   // prompt hints
   const promptStore = usePromptStore();
   const [promptHints, setPromptHints] = useState<RenderPompt[]>([]);
+  const [documents, setDocuments] = useState<DocumentProps[]>([]);
+  const [showDocuments, setShowDocuments] = useState(false);
   const onSearch = useDebouncedCallback(
     (text: string) => {
       const matchedPrompts = promptStore.search(text);
@@ -756,7 +864,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, attachDocument)
       .then(() => setIsLoading(false));
     setAttachImages([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
@@ -908,7 +1016,9 @@ function _Chat() {
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(textContent, images, attachDocument)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -1455,6 +1565,14 @@ function _Chat() {
       <div className={styles["chat-input-panel"]}>
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
+        <DocumentsList
+          showDocumentsList={showDocuments}
+          onDocumentSelect={(file) => {
+            console.log("onDocumentSelect", file);
+            setAttachDocument(file);
+          }}
+        />
+
         <ChatActions
           uploadImage={uploadImage}
           setAttachImages={setAttachImages}
@@ -1473,6 +1591,10 @@ function _Chat() {
             inputRef.current?.focus();
             setUserInput("/");
             onSearch("");
+          }}
+          showDocuments={() => {
+            console.log("showdocuments");
+            setShowDocuments(!showDocuments);
           }}
         />
         <label
