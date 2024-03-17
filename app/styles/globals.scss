@@ -349,11 +349,15 @@ pre {
   justify-content: center;
   border: var(--border-in-light);
   box-shadow: var(--card-shadow);
-  border-radius: 10px;
+  border-radius: 11px;
 }
 
 .one-line {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.copyable {
+  user-select: text;
 }

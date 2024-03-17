@@ -124,11 +124,7 @@ const es: PartialLocaleType = {
       SubTitle:
         "Se comprimirán los mensajes si la longitud de los mensajes no comprimidos supera el valor",
     },
-    Token: {
-      Title: "Clave de API",
-      SubTitle: "Utiliza tu clave para ignorar el límite de código de acceso",
-      Placeholder: "Clave de la API de OpenAI",
-    },
+
     Usage: {
       Title: "Saldo de la cuenta",
       SubTitle(used: any, total: any) {
@@ -138,11 +134,7 @@ const es: PartialLocaleType = {
       Check: "Comprobar de nuevo",
       NoAccess: "Introduzca la clave API para comprobar el saldo",
     },
-    AccessCode: {
-      Title: "Código de acceso",
-      SubTitle: "Control de acceso habilitado",
-      Placeholder: "Necesita código de acceso",
-    },
+
     Model: "Modelo",
     Temperature: {
       Title: "Temperatura",
@@ -189,6 +181,9 @@ const es: PartialLocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Eres un asistente que",
   },
   Mask: {
     Name: "Mask",
