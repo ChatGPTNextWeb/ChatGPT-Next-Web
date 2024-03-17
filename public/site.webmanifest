@@ -1,6 +1,6 @@
 {
-  "name": "NextChat",
-  "short_name": "NextChat",
+  "name": "Bedrock Client",
+  "short_name": "BrClient",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

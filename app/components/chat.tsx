@@ -39,7 +39,6 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 import CloudIcon from "../icons/cloud-success.svg";
-import BedrockBotIcon from "../icons/bedrock_16.svg";
 
 import {
   ChatMessage,
