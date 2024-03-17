@@ -2,10 +2,10 @@
 import {
   ApiPath,
   DEFAULT_API_HOST,
-  DEFAULT_MODELS,
-  OpenaiPath,
+  // DEFAULT_MODELS,
+  // OpenaiPath,
   REQUEST_TIMEOUT_MS,
-  ServiceProvider,
+  // ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -19,20 +19,20 @@ import {
   LLMUsage,
   MultimodalContent,
 } from "../api";
-import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
-import { makeAzurePath } from "@/app/azure";
+// import Locale from "../../locales";
+// import {
+//   EventStreamContentType,
+//   fetchEventSource,
+// } from "@fortaine/fetch-event-source";
+// import { prettyObject } from "@/app/utils/format";
+// import { getClientConfig } from "@/app/config/client";
+// import { makeAzurePath } from "@/app/azure";
 import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
-import vi from "@/app/locales/vi";
+// import vi from "@/app/locales/vi";
 
 export interface AWSListModelResponse {
   object: string;
@@ -45,7 +45,6 @@ export interface AWSListModelResponse {
 
 export class ClaudeApi implements LLMApi {
   // private disableListModels = true;
-
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
@@ -56,35 +55,37 @@ export class ClaudeApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
-  get_model_id(model: string): string {
-    // get the model id from the model name
-    // go through all the models in DEFAULT_MODELS, and find the model id by the model name
+  // get_model_id(model: string): string {
+  //   // get the model id from the model name
+  //   // go through all the models in DEFAULT_MODELS, and find the model id by the model name
 
-    var model_id = "";
-    for (var i = 0; i < DEFAULT_MODELS.length; i++) {
-      if (DEFAULT_MODELS[i].name === model) {
-        model_id = DEFAULT_MODELS[i].modelId;
-        break;
-      }
-    }
+  //   // const appConfig = useAppConfig();
+  //   // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", appConfig);
+  //   var model_id = "";
+  //   for (var i = 0; i < DEFAULT_MODELS.length; i++) {
+  //     if (DEFAULT_MODELS[i].name === model) {
+  //       model_id = DEFAULT_MODELS[i].modelId;
+  //       break;
+  //     }
+  //   }
 
-    return model_id;
-  }
+  //   return model_id;
+  // }
 
-  get_model_version(model: string): string {
-    // get the model version from the model name
-    // go through all the models in DEFAULT_MODELS, and find the model version by the model name
+  // get_model_version(model: string): string {
+  //   // get the model version from the model name
+  //   // go through all the models in DEFAULT_MODELS, and find the model version by the model name
 
-    var model_version = "";
-    for (var i = 0; i < DEFAULT_MODELS.length; i++) {
-      if (DEFAULT_MODELS[i].name === model) {
-        model_version = DEFAULT_MODELS[i].anthropic_version;
-        break;
-      }
-    }
+  //   var model_version = "";
+  //   for (var i = 0; i < DEFAULT_MODELS.length; i++) {
+  //     if (DEFAULT_MODELS[i].name === model) {
+  //       model_version = DEFAULT_MODELS[i].anthropic_version;
+  //       break;
+  //     }
+  //   }
 
-    return model_version;
-  }
+  //   return model_version;
+  // }
 
   convertMessagePayload(
     messages: any,
@@ -255,6 +256,7 @@ export class ClaudeApi implements LLMApi {
       },
     };
 
+    const models = useAppConfig.getState().models;
     const accessStore = useAccessStore.getState();
 
     if (
@@ -292,9 +294,13 @@ export class ClaudeApi implements LLMApi {
       content: visionModel ? v.content : getMessageTextContent(v),
     }));
 
-    var modelID = this.get_model_id(modelConfig.model);
-    var modelVersion = this.get_model_version(modelConfig.model);
+    const currentModel = models.find((v) => v.name === modelConfig.model);
+    const modelID = currentModel?.modelId; // this.get_model_id(modelConfig.model);
+    const modelVersion = currentModel?.anthropic_version; // this.get_model_version(modelConfig.model);
 
+    if (!modelID || !modelVersion) {
+      throw new Error(`Could not find modelID or modelVersion.`);
+    }
     const requestPayload = this.convertMessagePayload(
       messages,
       modelConfig,

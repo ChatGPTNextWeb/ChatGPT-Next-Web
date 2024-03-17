@@ -1,38 +1,61 @@
-import { ModalConfigValidator, ModelConfig } from "../store";
+import { ModalConfigValidator, ModelConfig, useAppConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
-import { useAllModels } from "../utils/hooks";
+// import { useAllModels } from "../utils/hooks";
+import { IconButton } from "./button";
+import ResetIcon from "../icons/reload.svg";
+import { LLMModel } from "../client/api";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
-  const allModels = useAllModels();
-
+  const appConfig = useAppConfig();
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
-        <Select
-          value={props.modelConfig.model}
-          onChange={(e) => {
-            props.updateConfig(
-              (config) =>
-                (config.model = ModalConfigValidator.model(
-                  e.currentTarget.value,
-                )),
-            );
-          }}
-        >
-          {allModels
-            .filter((v) => v.available)
-            .map((v, i) => (
-              <option value={v.name} key={i}>
-                {v.displayName}({v.provider?.providerName})
-              </option>
-            ))}
-        </Select>
+        <div className="password-input-container">
+          <Select
+            value={props.modelConfig.model}
+            onChange={(e) => {
+              props.updateConfig(
+                (config) =>
+                  (config.model = ModalConfigValidator.model(
+                    e.currentTarget.value,
+                  )),
+              );
+            }}
+          >
+            {appConfig.models
+              .filter((v) => v.available)
+              .map((v, i) => (
+                <option value={v.name} key={i}>
+                  {v.displayName}({v.provider?.providerName})
+                </option>
+              ))}
+          </Select>
+          <IconButton
+            onClick={async () => {
+              try {
+                //TODO: change url!!!
+                const response = await fetch(
+                  "https://eiai.fun/bedrock-models.json?f=" +
+                    new Date().getTime().toString(),
+                );
+                const bedrockModels = await response.json();
+                appConfig.update(
+                  (config) =>
+                    (config.models = bedrockModels as any as LLMModel[]),
+                );
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+            icon={<ResetIcon />}
+          />
+        </div>
       </ListItem>
       <ListItem
         title={Locale.Settings.Temperature.Title}

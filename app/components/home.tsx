@@ -171,13 +171,12 @@ function Screen() {
 
 export function useLoadData() {
   const config = useAppConfig();
-
-  var api: ClientApi;
-  if (config.modelConfig.model.startsWith("gemini")) {
-    api = new ClientApi(ModelProvider.GeminiPro);
-  } else {
-    api = new ClientApi(ModelProvider.GPT);
-  }
+  var api: ClientApi = new ClientApi(ModelProvider.Claude);
+  // if (config.modelConfig.model.startsWith("gemini")) {
+  //   api = new ClientApi(ModelProvider.GeminiPro);
+  // } else {
+  //   api = new ClientApi(ModelProvider.GPT);
+  // }
   useEffect(() => {
     (async () => {
       const models = await api.llm.models();

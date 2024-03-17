@@ -57,6 +57,7 @@ export interface LLMModel {
   available: boolean;
   modelId?: string;
   anthropic_version?: string;
+  displayName: string;
   provider: LLMModelProvider;
 }
 
