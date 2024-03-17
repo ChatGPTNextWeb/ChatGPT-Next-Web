@@ -80,5 +80,6 @@
     "lint-staged/yaml": "^2.2.2",
     "@langchain/core": "0.1.30",
     "openai": "4.28.4"
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }
