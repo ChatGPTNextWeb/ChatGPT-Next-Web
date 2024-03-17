@@ -97,7 +97,6 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
-import { listen } from "@tauri-apps/api/event";
 import { InputRange } from "./input-range";
 import { config } from "process";
 
