@@ -5,6 +5,8 @@ import { RequestMessage } from "./client/api";
 import { DEFAULT_MODELS } from "./constant";
 
 import { pdfjs } from "react-pdf";
+import * as mammoth from "mammoth";
+import readXlsxFile from "read-excel-file";
 
 // Path to the pdf.worker.js file
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -349,4 +351,109 @@ const pdfToText = async (file: File): Promise<string | undefined> => {
   }
 };
 
-export { pdfToText };
+/**
+ * Reads the contents of a file (CSV, TXT, or Markdown).
+ * @param {File} file - The file to read.
+ * @returns {Promise<string>} A promise that resolves with the file contents.
+ */
+const readTXTFile = async (file: File): Promise<string | undefined> => {
+  try {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+    if (!fileExtension || !["csv", "txt", "md"].includes(fileExtension)) {
+      console.error("Unsupported file type:", fileExtension);
+      return;
+    }
+
+    const fileReader = new FileReader();
+
+    return new Promise<string>((resolve, reject) => {
+      fileReader.onload = () => {
+        if (fileReader.result && typeof fileReader.result === "string") {
+          resolve(fileReader.result);
+        } else {
+          reject(new Error("Failed to read file contents"));
+        }
+      };
+
+      fileReader.onerror = () => {
+        reject(new Error("Error reading file"));
+      };
+
+      fileReader.readAsText(file);
+    });
+  } catch (error) {
+    console.error("Error reading file:", error);
+  }
+};
+
+/**
+ * Extracts the text content from a .docx file.
+ *
+ * @param {File} file - The .docx file to extract text from.
+ * @returns {Promise<string | undefined>} A promise that resolves with the extracted text content, or undefined if an error occurs.
+ */
+const extractTextFromDocx = async (file: File): Promise<string | undefined> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.result) {
+        const buffer = reader.result as ArrayBuffer;
+        mammoth
+          .extractRawText({ arrayBuffer: buffer })
+          .then((result) => {
+            const text = result.value;
+            resolve(text);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        reject(new Error("Failed to read file"));
+      }
+    };
+
+    reader.onerror = () => {
+      reject(reader.error);
+    };
+
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+/**
+ * Extracts text content from an .xlsx file.
+ *
+ * @param {File} file - The .xlsx file to extract text from.
+ * @returns {Promise<string | undefined>} A promise that resolves with the extracted text content, or undefined if an error occurs.
+ */
+const extractTextFromXlsx = async (file: File): Promise<string | undefined> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.result) {
+        const buffer = reader.result as ArrayBuffer;
+        readXlsxFile(buffer)
+          .then((rows) => {
+            const textContent = rows.map((row) => row.join("\t")).join("\n");
+            resolve(textContent);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        reject(new Error("Failed to read file"));
+      }
+    };
+
+    reader.onerror = () => {
+      reject(reader.error);
+    };
+
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+export { pdfToText, readTXTFile, extractTextFromDocx, extractTextFromXlsx };

@@ -63,6 +63,8 @@ import {
   getMessageImages,
   isVisionModel,
   compressImage,
+  extractTextFromDocx,
+  extractTextFromXlsx,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -101,7 +103,7 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 
-import { pdfToText } from "../utils";
+import { pdfToText, readTXTFile } from "../utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -345,17 +347,48 @@ export function DocumentsList(props: {
       ...(await new Promise<string[]>((res, rej) => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
-        fileInput.accept = "application/pdf";
+        fileInput.accept = "application/pdf,.csv,.txt,.md,.docx,.xlsx";
         fileInput.multiple = true;
         fileInput.onchange = (event: any) => {
           const files = event.target.files;
-
-          pdfToText(files[0])
-            .then((text) => {
-              props.onDocumentSelect(text ?? "");
-              setFiles([{ file: files[0].name, size: files[0].size }]);
-            })
-            .catch((error) => console.error("Failed to extract text from pdf"));
+          const fileExtension = files[0].name.split(".").pop()?.toLowerCase();
+          if (fileExtension === "pdf") {
+            pdfToText(files[0])
+              .then((text) => {
+                props.onDocumentSelect(text ?? "");
+                setFiles([{ file: files[0].name, size: files[0].size }]);
+              })
+              .catch((error) =>
+                console.error("Failed to extract text from pdf"),
+              );
+          } else if (fileExtension === "docx") {
+            extractTextFromDocx(files[0])
+              .then((text) => {
+                props.onDocumentSelect(text ?? "");
+                setFiles([{ file: files[0].name, size: files[0].size }]);
+              })
+              .catch((error) =>
+                console.error("Failed to extract text from pdf"),
+              );
+          } else if (fileExtension === "xlsx") {
+            extractTextFromXlsx(files[0])
+              .then((text) => {
+                props.onDocumentSelect(text ?? "");
+                setFiles([{ file: files[0].name, size: files[0].size }]);
+              })
+              .catch((error) =>
+                console.error("Failed to extract text from pdf"),
+              );
+          } else {
+            readTXTFile(files[0])
+              .then((text) => {
+                props.onDocumentSelect(text ?? "");
+                setFiles([{ file: files[0].name, size: files[0].size }]);
+              })
+              .catch((error) =>
+                console.error("Failed to extract text from pdf"),
+              );
+          }
         };
         fileInput.click();
       })),
@@ -381,7 +414,7 @@ export function DocumentsList(props: {
         <>
           <IconButton
             icon={<CloudIcon />}
-            text={"Load PDF File"}
+            text={"Load PDF/Word/Excel/TXT/CSV/MD File"}
             bordered
             onClick={() => {
               console.log("upload"), localLoadDocument();
