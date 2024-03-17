@@ -463,8 +463,8 @@ export function ChatActions(props: {
 
     // if current model is not available
     // switch to first available model
-    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
-    if (isUnavaliableModel && models.length > 0) {
+    const isUnavailableModel = !models.some((m) => m.name === currentModel);
+    if (isUnavailableModel && models.length > 0) {
       const nextModel = models[0].name as ModelType;
       chatStore.updateCurrentSession(
         (session) => (session.mask.modelConfig.model = nextModel),
@@ -1100,11 +1100,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
