@@ -97,7 +97,6 @@ export const ModalConfigValidator = {
     return limitNumber(x, 0, 1, 1);
   },
 };
-console.log("config", DEFAULT_CONFIG);
 
 export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
