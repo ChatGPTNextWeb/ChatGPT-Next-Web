@@ -97,6 +97,7 @@ export const ModalConfigValidator = {
     return limitNumber(x, 0, 1, 1);
   },
 };
+console.log("config", DEFAULT_CONFIG);
 
 export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
@@ -109,14 +110,7 @@ export const useAppConfig = createPersistStore(
       if (!newModels || newModels.length === 0) {
         return;
       }
-
-      const oldModels = get().models;
       const modelMap: Record<string, LLMModel> = {};
-
-      for (const model of oldModels) {
-        model.available = false;
-        modelMap[model.name] = model;
-      }
 
       for (const model of newModels) {
         model.available = true;
