@@ -7,6 +7,7 @@ import {
   LLMModel,
   LLMUsage,
   SpeechOptions,
+  TranscriptionOptions,
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
@@ -18,6 +19,9 @@ import {
 } from "@/app/utils";
 
 export class GeminiProApi implements LLMApi {
+  transcription(options: TranscriptionOptions): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
     throw new Error("Method not implemented.");
   }

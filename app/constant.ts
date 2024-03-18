@@ -80,6 +80,7 @@ export enum ModelProvider {
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   SpeechPath: "v1/audio/speech",
+  TranscriptionPath: "v1/audio/transcriptions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",

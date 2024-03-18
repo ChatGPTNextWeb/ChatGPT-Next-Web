@@ -108,6 +108,11 @@ import { useAllModels } from "../utils/hooks";
 import { ClientApi } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
 import { MultimodalContent } from "../client/api";
+import {
+  OpenAITranscriptionApi,
+  SpeechApi,
+  WebTranscriptionApi,
+} from "../utils/speech";
 
 const ttsPlayer = createTTSPlayer();
 
@@ -801,17 +806,19 @@ function _Chat() {
   };
 
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<any>(null);
-  const startListening = () => {
-    if (recognition) {
-      recognition.start();
+  const [speechApi, setSpeechApi] = useState<any>(null);
+
+  const startListening = async () => {
+    console.log(speechApi);
+    if (speechApi) {
+      await speechApi.start();
       setIsListening(true);
     }
   };
 
-  const stopListening = () => {
-    if (recognition) {
-      recognition.stop();
+  const stopListening = async () => {
+    if (speechApi) {
+      await speechApi.stop();
       setIsListening(false);
     }
   };
@@ -891,26 +898,11 @@ function _Chat() {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    if (typeof window !== "undefined") {
-      const SpeechRecognition =
-        (window as any).SpeechRecognition ||
-        (window as any).webkitSpeechRecognition;
-      const recognitionInstance = new SpeechRecognition();
-      recognitionInstance.continuous = true;
-      recognitionInstance.interimResults = true;
-      let lang = getSTTLang();
-      recognitionInstance.lang = lang;
-      recognitionInstance.onresult = (event: any) => {
-        const result = event.results[event.results.length - 1];
-        if (result.isFinal) {
-          if (!isListening) {
-            onRecognitionEnd(result[0].transcript);
-          }
-        }
-      };
-
-      setRecognition(recognitionInstance);
-    }
+    setSpeechApi(
+      new WebTranscriptionApi((transcription) =>
+        onRecognitionEnd(transcription),
+      ),
+    );
   }, []);
 
   // check if should send message
@@ -1700,7 +1692,9 @@ function _Chat() {
               }
               className={styles["chat-input-send"]}
               type="primary"
-              onClick={() => (isListening ? stopListening() : startListening())}
+              onClick={async () =>
+                isListening ? await stopListening() : await startListening()
+              }
             />
           ) : (
             <IconButton
