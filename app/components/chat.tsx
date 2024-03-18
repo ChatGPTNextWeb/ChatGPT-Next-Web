@@ -1477,8 +1477,11 @@ function _Chat() {
               })}
             </div>
           )}
-          <div className="flex gap-2 absolute right-[30px] bottom-[32px]">
+          <div className="flex gap-2 absolute left-[30px] bottom-[32px]">
             <SpeechRecorder textUpdater={setUserInput}></SpeechRecorder>
+          </div>
+
+          <div className="flex gap-2 absolute right-[30px] bottom-[32px]">
             <IconButton
               icon={<SendWhiteIcon />}
               text={Locale.Chat.Send}

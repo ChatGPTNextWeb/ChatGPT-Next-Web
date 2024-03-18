@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+import VoiceIcon from "@/app/icons/voice.svg";
+import { getLang, formatLang } from "@/app/locales";
 type SpeechRecognitionType =
   | typeof window.SpeechRecognition
   | typeof window.webkitSpeechRecognition;
@@ -22,29 +23,42 @@ export default function SpeechRecorder({
     }
   }, []);
   return (
-    <div>
-      <button
-        onClick={() => {
-          if (!isRecording && speechRecognition) {
-            speechRecognition.continuous = true; // 连续识别
-            speechRecognition.lang = "zh-CN"; // 设置识别的语言为中文
-            speechRecognition.interimResults = true; // 返回临时结果
-            speechRecognition.start();
-            speechRecognition.onresult = function (event: any) {
-              console.log(event);
-              var transcript = event.results[0][0].transcript; // 获取识别结果
-              console.log(transcript);
-              textUpdater(transcript);
-            };
-            setIsRecording(true);
-          } else {
-            speechRecognition.stop();
-            setIsRecording(false);
-          }
-        }}
-      >
-        {isRecording ? "输入中" : "点击说话"}
-      </button>
-    </div>
+    <>
+      {speechRecognition && (
+        <div>
+          <button
+            onClick={() => {
+              if (!isRecording && speechRecognition) {
+                speechRecognition.continuous = true;
+                speechRecognition.lang = formatLang(getLang());
+                console.log(speechRecognition.lang);
+                speechRecognition.interimResults = true;
+                speechRecognition.start();
+                speechRecognition.onresult = function (event: any) {
+                  console.log(event);
+                  var transcript = event.results[0][0].transcript;
+                  console.log(transcript);
+                  textUpdater(transcript);
+                };
+                setIsRecording(true);
+              } else {
+                speechRecognition.stop();
+                setIsRecording(false);
+              }
+            }}
+          >
+            {isRecording ? (
+              <button className="p-2 rounded-full bg-blue-500 hover:bg-blue-600 ring-4 ring-blue-200 transition animate-pulse">
+                <VoiceIcon fill={"white"} />
+              </button>
+            ) : (
+              <button className="p-2 rounded-full bg-zinc-100 hover:bg-zinc-200 transition">
+                <VoiceIcon fill={"#8282A5"} />
+              </button>
+            )}
+          </button>
+        </div>
+      )}
+    </>
   );
 }
