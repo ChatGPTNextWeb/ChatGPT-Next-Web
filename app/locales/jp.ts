@@ -12,6 +12,13 @@ const jp: PartialLocaleType = {
   },
   Chat: {
     SubTitle: (count: number) => `ChatGPTとの ${count} 通のチャット`,
+    EditMessage: {
+      Title: "全てのメッセージを修正",
+      Topic: {
+        Title: "トピック",
+        SubTitle: "このトピックを変える",
+      },
+    },
     Actions: {
       ChatList: "メッセージリストを表示",
       CompressedHistory: "圧縮された履歴プロンプトを表示",
@@ -19,7 +26,12 @@ const jp: PartialLocaleType = {
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
+      Pin: "ピン",
+      PinToastContent:
+        "コンテキストプロンプトに1つのメッセージをピン留めしました",
+      PinToastAction: "表示",
       Delete: "削除",
+      Edit: "編集",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -33,7 +45,7 @@ const jp: PartialLocaleType = {
     Send: "送信",
     Config: {
       Reset: "リセット",
-      SaveAs: "另存为面具",
+      SaveAs: "保存",
     },
   },
   Export: {
@@ -42,6 +54,28 @@ const jp: PartialLocaleType = {
     Download: "ファイルをダウンロード",
     MessageFromYou: "あなたからのメッセージ",
     MessageFromChatGPT: "ChatGPTからのメッセージ",
+    Format: {
+      Title: "フォーマットをエクスポート",
+      SubTitle: "マークダウン形式、PNG画像形式を選択できます。",
+    },
+    IncludeContext: {
+      Title: "コンテキストを含みますか？",
+      SubTitle: "コンテキストを含ませるか否か",
+    },
+    Steps: {
+      Select: "エクスポート設定",
+      Preview: "プレビュー",
+    },
+    Image: {
+      Toast: "画像生成中...",
+      Modal: "長押し、または右クリックで保存してください。",
+    },
+  },
+  Select: {
+    Search: "検索",
+    All: "すべて選択",
+    Latest: "新しいメッセージを選択",
+    Clear: "クリア",
   },
   Memory: {
     Title: "履歴メモリ",
@@ -113,6 +147,10 @@ const jp: PartialLocaleType = {
         Title: "キャラクターページ",
         SubTitle: "新規チャット作成時にキャラクターページを表示する",
       },
+      Builtin: {
+        Title: "ビルトインマスクを非表示",
+        SubTitle: "マスクリストからビルトインを非表示する",
+      },
     },
     Prompt: {
       Disable: {
@@ -142,11 +180,7 @@ const jp: PartialLocaleType = {
       SubTitle:
         "圧縮されていない履歴メッセージがこの値を超えた場合、圧縮が行われます。",
     },
-    Token: {
-      Title: "APIキー",
-      SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
-      Placeholder: "OpenAI APIキー",
-    },
+
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
@@ -155,11 +189,6 @@ const jp: PartialLocaleType = {
       IsChecking: "確認中...",
       Check: "再確認",
       NoAccess: "APIキーまたはアクセスパスワードを入力して残高を表示",
-    },
-    AccessCode: {
-      Title: "アクセスパスワード",
-      SubTitle: "暗号化アクセスが有効になっています",
-      Placeholder: "アクセスパスワードを入力してください",
     },
     Model: "モデル (model)",
     Temperature: {
@@ -178,6 +207,10 @@ const jp: PartialLocaleType = {
     FrequencyPenalty: {
       Title: "話題の頻度 (frequency_penalty)",
       SubTitle: "値が大きいほど、重複語を低減する可能性が高くなります",
+    },
+    AutoGenerateTitle: {
+      Title: "タイトルの自動生成",
+      SubTitle: "会話内容に基づいて適切なタイトルを生成する",
     },
   },
   Store: {
@@ -204,6 +237,7 @@ const jp: PartialLocaleType = {
     Add: "追加",
   },
   Plugin: { Name: "プラグイン" },
+  FineTuned: { Sysmessage: "あなたはアシスタントです" },
   Mask: {
     Name: "キャラクタープリセット",
     Page: {
