@@ -899,7 +899,7 @@ function _Chat() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     setSpeechApi(
-      new WebTranscriptionApi((transcription) =>
+      new OpenAITranscriptionApi((transcription) =>
         onRecognitionEnd(transcription),
       ),
     );

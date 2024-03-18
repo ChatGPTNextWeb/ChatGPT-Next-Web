@@ -147,7 +147,7 @@ export class ChatGPTApi implements LLMApi {
         method: "POST",
         body: formData,
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: getHeaders(true),
       };
 
       // make a fetch request

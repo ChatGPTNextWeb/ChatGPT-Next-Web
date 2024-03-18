@@ -13,35 +13,12 @@ export abstract class SpeechApi {
   onTranscriptionReceived(callback: TranscriptionCallback) {
     this.onTranscription = callback;
   }
-
-  protected async getMediaStream(): Promise<MediaStream | null> {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      return await navigator.mediaDevices.getUserMedia({ audio: true });
-    } else if (navigator.getUserMedia) {
-      return new Promise((resolve, reject) => {
-        navigator.getUserMedia({ audio: true }, resolve, reject);
-      });
-    } else {
-      console.warn("当前浏览器不支持 getUserMedia");
-      return null;
-    }
-  }
-
-  protected createRecorder(stream: MediaStream): MediaRecorder | null {
-    if (MediaRecorder.isTypeSupported("audio/webm")) {
-      return new MediaRecorder(stream, { mimeType: "audio/webm" });
-    } else if (MediaRecorder.isTypeSupported("audio/ogg")) {
-      return new MediaRecorder(stream, { mimeType: "audio/ogg" });
-    } else {
-      console.warn("当前浏览器不支持 MediaRecorder");
-      return null;
-    }
-  }
 }
 
 export class OpenAITranscriptionApi extends SpeechApi {
   private listeningStatus = false;
-  private recorder: MediaRecorder | null = null;
+  private mediaRecorder: MediaRecorder | null = null;
+  private stream: MediaStream | null = null;
   private audioChunks: Blob[] = [];
 
   isListening = () => this.listeningStatus;
@@ -54,35 +31,44 @@ export class OpenAITranscriptionApi extends SpeechApi {
   }
 
   async start(): Promise<void> {
-    const stream = await this.getMediaStream();
-    if (!stream) {
-      console.error("无法获取音频流");
-      return;
-    }
+    // @ts-ignore
+    navigator.getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
+    if (navigator.mediaDevices) {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          this.audioChunks.push(e.data);
+        }
+      };
 
-    this.recorder = this.createRecorder(stream);
-    if (!this.recorder) {
-      console.error("无法创建 MediaRecorder");
+      this.stream = stream;
+    } else {
+      console.warn("Media Decives will work only with SSL");
       return;
     }
 
     this.audioChunks = [];
 
-    this.recorder.addEventListener("dataavailable", (event) => {
-      this.audioChunks.push(event.data);
-    });
+    // this.recorder.addEventListener("dataavailable", (event) => {
+    //     this.audioChunks.push(event.data);
+    // });
 
-    this.recorder.start();
+    this.mediaRecorder.start();
     this.listeningStatus = true;
   }
 
   async stop(): Promise<void> {
-    if (!this.recorder || !this.listeningStatus) {
+    if (!this.mediaRecorder || !this.listeningStatus) {
       return;
     }
 
     return new Promise((resolve) => {
-      this.recorder!.addEventListener("stop", async () => {
+      this.mediaRecorder!.addEventListener("stop", async () => {
         const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
         const llm = new ChatGPTApi();
         const transcription = await llm.transcription({ file: audioBlob });
@@ -91,7 +77,7 @@ export class OpenAITranscriptionApi extends SpeechApi {
         resolve();
       });
 
-      this.recorder!.stop();
+      this.mediaRecorder!.stop();
     });
   }
 }
