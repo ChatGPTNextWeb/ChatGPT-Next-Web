@@ -8,10 +8,12 @@ export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
   // This will remove the specified punctuation from the end of the string
   // and also trim quotes from both the start and end if they exist.
-  return topic
-    // fix for gemini
-    .replace(/^["“”*]+|["“”*]+$/g, "")
-    .replace(/[，。！？”“"、,.!?*]*$/, "");
+  return (
+    topic
+      // fix for gemini
+      .replace(/^["“”*]+|["“”*]+$/g, "")
+      .replace(/[，。！？”“"、,.!?*]*$/, "")
+  );
 }
 
 export async function copyToClipboard(text: string) {
@@ -57,10 +59,7 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeTextFile(
-          result,
-          text
-        );
+        await window.__TAURI__.fs.writeTextFile(result, text);
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);
@@ -87,43 +86,54 @@ export async function downloadAs(text: string, filename: string) {
 
 export function compressImage(file: File, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (readerEvent: any) => {
-      const image = new Image();
-      image.onload = () => {
-        let canvas = document.createElement("canvas");
+    fetch(URL.createObjectURL(file))
+      .then((response) => response.blob())
+      .then((blob) => createImageBitmap(blob))
+      .then((imageBitmap) => {
+        let canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
         let ctx = canvas.getContext("2d");
-        let width = image.width;
-        let height = image.height;
+        let width = imageBitmap.width;
+        let height = imageBitmap.height;
         let quality = 0.9;
-        let dataUrl;
 
-        do {
-          canvas.width = width;
-          canvas.height = height;
-          ctx?.clearRect(0, 0, canvas.width, canvas.height);
-          ctx?.drawImage(image, 0, 0, width, height);
-          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        const checkSizeAndPostMessage = () => {
+          canvas
+            .convertToBlob({ type: "image/jpeg", quality: quality })
+            .then((blob) => {
+              const reader = new FileReader();
+              reader.onloadend = function () {
+                const base64data = reader.result;
+                if (typeof base64data !== "string") {
+                  reject("Invalid base64 data");
+                  return;
+                }
+                if (base64data.length < maxSize) {
+                  resolve(base64data);
+                  return;
+                }
+                if (quality > 0.5) {
+                  // Prioritize quality reduction
+                  quality -= 0.1;
+                } else {
+                  // Then reduce the size
+                  width *= 0.9;
+                  height *= 0.9;
+                }
+                canvas.width = width;
+                canvas.height = height;
 
-          if (dataUrl.length < maxSize) break;
-
-          if (quality > 0.5) {
-            // Prioritize quality reduction
-            quality -= 0.1;
-          } else {
-            // Then reduce the size
-            width *= 0.9;
-            height *= 0.9;
-          }
-        } while (dataUrl.length > maxSize);
-
-        resolve(dataUrl);
-      };
-      image.onerror = reject;
-      image.src = readerEvent.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+                ctx?.drawImage(imageBitmap, 0, 0, width, height);
+                checkSizeAndPostMessage();
+              };
+              reader.readAsDataURL(blob);
+            });
+        };
+        ctx?.drawImage(imageBitmap, 0, 0, width, height);
+        checkSizeAndPostMessage();
+      })
+      .catch((error) => {
+        throw error;
+      });
   });
 }
 

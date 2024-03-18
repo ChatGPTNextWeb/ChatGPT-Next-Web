@@ -97,6 +97,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { before } from "node:test";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -1100,70 +1101,44 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const maxImages = 3;
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel) || uploading) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
+      const files: File[] = [];
       for (const item of items) {
-        if (item.kind === "file" && item.type.startsWith("image/")) {
-          event.preventDefault();
-          const file = item.getAsFile();
-          if (file) {
-            const images: string[] = [];
-            images.push(...attachImages);
-            images.push(
-              ...(await new Promise<string[]>((res, rej) => {
-                setUploading(true);
-                const imagesData: string[] = [];
-                compressImage(file, 256 * 1024)
-                  .then((dataUrl) => {
-                    imagesData.push(dataUrl);
-                    setUploading(false);
-                    res(imagesData);
-                  })
-                  .catch((e) => {
-                    setUploading(false);
-                    rej(e);
-                  });
-              })),
-            );
-            const imagesLength = images.length;
-
-            if (imagesLength > 3) {
-              images.splice(3, imagesLength - 3);
-            }
-            setAttachImages(images);
-          }
+        if (item.kind !== "file" || !item.type.startsWith("image/")) {
+          continue;
+        }
+        event.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          files.push(file);
         }
       }
-    },
-    [attachImages, chatStore],
-  );
-
-  async function uploadImage() {
-    const images: string[] = [];
-    images.push(...attachImages);
-
-    images.push(
-      ...(await new Promise<string[]>((res, rej) => {
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept =
-          "image/png, image/jpeg, image/webp, image/heic, image/heif";
-        fileInput.multiple = true;
-        fileInput.onchange = (event: any) => {
-          setUploading(true);
-          const files = event.target.files;
+      if (files.length == 0) {
+        return;
+      }
+      if (attachImages.length >= maxImages) {
+        return;
+      }
+      setUploading(true);
+      const images = [...attachImages];
+      images.push(
+        ...(await new Promise<string[]>((res, rej) => {
           const imagesData: string[] = [];
           for (let i = 0; i < files.length; i++) {
-            const file = event.target.files[i];
+            const file = files[i];
             compressImage(file, 256 * 1024)
               .then((dataUrl) => {
                 imagesData.push(dataUrl);
                 if (
-                  imagesData.length === 3 ||
+                  imagesData.length + attachImages.length >= maxImages ||
                   imagesData.length === files.length
                 ) {
                   setUploading(false);
@@ -1175,16 +1150,63 @@ function _Chat() {
                 rej(e);
               });
           }
-        };
-        fileInput.click();
-      })),
-    );
+        })),
+      );
+      const imagesLength = images.length;
+      if (imagesLength > maxImages) {
+        images.splice(maxImages, imagesLength - maxImages);
+      }
+      setAttachImages(images);
+    },
+    [attachImages, chatStore],
+  );
 
-    const imagesLength = images.length;
-    if (imagesLength > 3) {
-      images.splice(3, imagesLength - 3);
-    }
-    setAttachImages(images);
+  async function uploadImage() {
+    const maxImages = 3;
+    if (uploading) return;
+    new Promise<string[]>((res, rej) => {
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept =
+        "image/png, image/jpeg, image/webp, image/heic, image/heif";
+      fileInput.multiple = true;
+      fileInput.onchange = (event: any) => {
+        setUploading(true);
+        const files = event.target.files;
+        const imagesData: string[] = [];
+        if (attachImages.length >= maxImages) {
+          res([]);
+        }
+        for (let i = 0; i < files.length; i++) {
+          const file = event.target.files[i];
+          compressImage(file, 256 * 1024)
+            .then((dataUrl) => {
+              imagesData.push(dataUrl);
+              if (
+                imagesData.length + attachImages.length >= maxImages ||
+                imagesData.length === files.length
+              ) {
+                res(imagesData);
+              }
+            })
+            .catch((e) => {
+              rej(e);
+            });
+        }
+      };
+      fileInput.click();
+    })
+      .then((imagesData) => {
+        const images = attachImages.concat(imagesData);
+        const imagesLength = images.length;
+        if (imagesLength > maxImages) {
+          images.splice(maxImages, imagesLength - maxImages);
+        }
+        setAttachImages(images);
+      })
+      .finally(() => {
+        setUploading(false);
+      });
   }
 
   return (
