@@ -11,6 +11,7 @@ import { useMaskStore } from "../store/mask";
 import { ChatAction } from "../components/chat";
 import Locale from "../locales";
 import BreakIcon from "../icons/bot.svg";
+import FacebookLoginButton from "./hippo/FacebookLoginButton";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -178,6 +179,7 @@ export function SideBar(props: { className?: string }) {
       >
         <BreakIcon className="icon" /> Chat with me
       </div>
+      <FacebookLoginButton />
     </div>
   );
 }

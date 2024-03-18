@@ -53,18 +53,24 @@ async function handle(
   }
 
   try {
-    const response = await requestOpenai(req);
+    if (subpath === "v1/chat/completions") {
+      const response = await requestOpenai(req);
 
-    // list models
-    if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
-      const resJson = (await response.json()) as OpenAIListModelResponse;
-      const availableModels = getModels(resJson);
-      return NextResponse.json(availableModels, {
-        status: response.status,
-      });
+      // list models
+      if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
+        const resJson = (await response.json()) as OpenAIListModelResponse;
+        const availableModels = getModels(resJson);
+
+        return NextResponse.json(availableModels, {
+          status: response.status,
+        });
+      }
+
+      return response;
     }
-
-    return response;
+    if (subpath === "v2/chat/completions") {
+      return NextResponse.json({ msg: "v2/chat/completions" });
+    }
   } catch (e) {
     console.error("[OpenAI] ", e);
     return NextResponse.json(prettyObject(e));

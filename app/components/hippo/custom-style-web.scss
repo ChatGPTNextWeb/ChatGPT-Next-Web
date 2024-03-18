@@ -12,6 +12,20 @@
   height: 100%;
   object-fit: contain;
 }
+
+#fb-login-button {
+  background-color: #3b5998; /* Facebook blue */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#fb-login-button:hover {
+  background-color: #2d4373; /* Darker Facebook blue on hover */
+}
 // screen pc
 @media only screen and (min-width: 600px) {
   .stream-sidebar {

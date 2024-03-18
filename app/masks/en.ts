@@ -41,7 +41,7 @@ export const EN_MASKS: BuiltinMask[] = [
       presence_penalty: 0,
       frequency_penalty: 0,
       sendMemory: true,
-      historyMessageCount: 32,
+      historyMessageCount: 5,
       compressMessageLengthThreshold: 1000,
       enableInjectSystemPrompts: true,
     },

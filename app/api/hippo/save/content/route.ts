@@ -9,7 +9,10 @@ export async function POST(request: Request): Promise<any> {
       data: json.text,
       data_type: "text",
     };
-    const result = await axios.post(process.env.SAVETOVECTORDATABASE, data);
+    const result = await axios.post(
+      process.env.SAVECONTENTTOVECTORDATABASE,
+      data,
+    );
     return NextResponse.json(result.data.message, { status: 200 });
   } catch (error) {
     console.log(error);

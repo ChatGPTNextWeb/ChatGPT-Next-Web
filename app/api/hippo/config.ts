@@ -54,7 +54,7 @@ export async function searchFromVectorDatabase(requestPayload) {
       userId: userId,
       statusRag: statusRag,
     });
-    console.log("resdaa", res.data);
+
     return res.data;
   } catch (error) {
     console.log(error);
