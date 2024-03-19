@@ -99,21 +99,8 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
+function escapeDollarNumber(text: string): string {
+  return text.replace(/\$(\d+(?:[.,]\d+)*)(?=\s*[a-zA-Z.,;!?]?\s*$|\s+[a-zA-Z])/g, (match, p1) => `\\${match}`);
 }
 
 function _MarkDownContent(props: { content: string }) {
