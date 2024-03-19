@@ -1,4 +1,4 @@
-import { trimTopic, getMessageTextContent } from "../utils";
+import { trimTopic, getMessageTextContent, isDalleModel } from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
@@ -85,7 +85,7 @@ function createEmptySession(): ChatSession {
 
 function getSummarizeModel(currentModel: string) {
   // if it is using gpt-* models, force to use 3.5 to summarize
-  if (currentModel.startsWith("gpt")) {
+  if (currentModel.startsWith("gpt") || isDalleModel(currentModel)) {
     return SUMMARIZE_MODEL;
   }
   if (currentModel.startsWith("gemini-pro")) {
@@ -356,6 +356,7 @@ export const useChatStore = createPersistStore(
         api.llm.chat({
           messages: sendMessages,
           config: { ...modelConfig, stream: true },
+          attachImages: attachImages,
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {
@@ -558,6 +559,7 @@ export const useChatStore = createPersistStore(
             config: {
               model: getSummarizeModel(session.mask.modelConfig.model),
             },
+            isSummarizeSession: true,
             onFinish(message) {
               get().updateCurrentSession(
                 (session) =>
@@ -613,6 +615,7 @@ export const useChatStore = createPersistStore(
               stream: true,
               model: getSummarizeModel(session.mask.modelConfig.model),
             },
+            isSummarizeSession: true,
             onUpdate(message) {
               session.memoryPrompt = message;
             },

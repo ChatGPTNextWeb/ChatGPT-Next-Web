@@ -67,8 +67,20 @@ const cn = {
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
-    Input: (submitKey: string) => {
+    Input: (
+      submitKey: string,
+      isDalle2VariationModeV?: boolean,
+      isDalle2EditModeV?: boolean,
+    ) => {
       var inputHints = `${submitKey} 发送`;
+      if (isDalle2VariationModeV) {
+        inputHints += `，DALL-E-2 variation 模式下不支持输入，只能上传1张图片`;
+        return inputHints;
+      }
+      if (isDalle2EditModeV) {
+        inputHints += `，DALL-E-2 edit 模式下，最少需要上传1张图片`;
+        return inputHints;
+      }
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
@@ -356,6 +368,30 @@ const cn = {
     FrequencyPenalty: {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
+    },
+    n: {
+      Title: "图像数量",
+      SubTitle: "需要生成的图像数量，dall-e-3仅支持1",
+    },
+    size: {
+      Title: "图像大小",
+      SubTitle: "The size of the generated images",
+    },
+    quality: {
+      Title: "图像质量 (hd)",
+      SubTitle:
+        "将生成的图像的质量。 hd 创建的图像具有更精细的细节和更高的图像一致性。",
+    },
+    style: {
+      Title: "图像风格",
+      SubTitle: "The style of the generated images",
+    },
+    dall2Mode: {
+      Title: "DALL-E 2 模式",
+      SubTitle:
+        "Edit 模式可以上传两张图片，第一张为原图，第二张为mask；createVariation 模式仅可以上传一张图片，且会忽略用户输入的prompt",
+      ModelTips:
+        "受限于当前浏览器存储方案的大小限制，当网站刷新时图片将不会存留，请及时保存所需图片",
     },
   },
   Store: {

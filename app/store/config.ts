@@ -25,6 +25,11 @@ export enum Theme {
   Light = "light",
 }
 
+export const dall2Size = ["256x256", "512x512", "1024x1024"];
+export const dall3Size = ["1024x1024", "1792x1024", "1024x1792"];
+export const dall3Style = ["vivid", "natural"];
+export const dall2modes = ["Default", "Edit", "CreateVariation"] as const;
+
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
@@ -57,6 +62,11 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
+    dall2Mode: "Default" as (typeof dall2modes)[number],
+    n: 1,
+    quality: "standard",
+    size: "1024x1024",
+    style: "vivid",
   },
 };
 

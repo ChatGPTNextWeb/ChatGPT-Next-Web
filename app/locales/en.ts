@@ -69,8 +69,20 @@ const en: LocaleType = {
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
-    Input: (submitKey: string) => {
+    Input: (
+      submitKey: string,
+      isDalle2VariationModeV?: boolean,
+      isDalle2EditModeV?: boolean,
+    ) => {
       var inputHints = `${submitKey} to send`;
+      if (isDalle2VariationModeV) {
+        inputHints += `，in DALL-E 2's variation mode, input is not supported, and only one image can be uploaded.`;
+        return inputHints;
+      }
+      if (isDalle2EditModeV) {
+        inputHints += `，in DALL-E 2's edit mode, at least one image needs to be uploaded.`;
+        return inputHints;
+      }
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += ", Shift + Enter to wrap";
       }
@@ -361,6 +373,31 @@ const en: LocaleType = {
       Title: "Frequency Penalty",
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
+    },
+    n: {
+      Title: "Number of Images",
+      SubTitle:
+        "The number of images to generate, only 1 is supported by DALL-E 3",
+    },
+    size: {
+      Title: "Image Size",
+      SubTitle: "The size of the generated images",
+    },
+    quality: {
+      Title: "Image Quality (HD)",
+      SubTitle:
+        "The quality of the generated images. HD images have finer details and higher image consistency.",
+    },
+    style: {
+      Title: "Image Style",
+      SubTitle: "The style of the generated images",
+    },
+    dall2Mode: {
+      Title: "DALL-E 2 Mode",
+      SubTitle:
+        "Edit mode allows uploading two images, the first one as the original image and the second one as the mask; createVariation mode only allows uploading one image and ignores the user's input prompt",
+      ModelTips:
+        "Due to the size limitations of the current browser storage solution, images will not be retained when the website is refreshed. Please save any necessary images promptly.",
     },
   },
   Store: {

@@ -60,6 +60,10 @@ import {
   getMessageImages,
   isVisionModel,
   compressImage,
+  createObjectURL,
+  isNotDalle2DefaultMode,
+  isDalle2VariationMode,
+  isDalle2EditMode,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -445,6 +449,8 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const currentDall2Mode =
+    chatStore.currentSession().mask.modelConfig.dall2Mode;
   const allModels = useAllModels();
   const models = useMemo(
     () => allModels.filter((m) => m.available),
@@ -454,7 +460,11 @@ export function ChatActions(props: {
   const [showUploadImage, setShowUploadImage] = useState(false);
 
   useEffect(() => {
-    const show = isVisionModel(currentModel);
+    const isDalle2DefaultModeV = isNotDalle2DefaultMode(
+      currentModel,
+      currentDall2Mode,
+    );
+    const show = isVisionModel(currentModel) || isDalle2DefaultModeV;
     setShowUploadImage(show);
     if (!show) {
       props.setAttachImages([]);
@@ -677,6 +687,18 @@ function _Chat() {
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const isDalle2VariationModeV = isDalle2VariationMode(
+    session.mask.modelConfig.model,
+    session.mask.modelConfig.dall2Mode,
+  );
+  const isDalle2EditModeV = isDalle2EditMode(
+    session.mask.modelConfig.model,
+    session.mask.modelConfig.dall2Mode,
+  );
+  const isDalle2DefaultModeV = isNotDalle2DefaultMode(
+    session.mask.modelConfig.model,
+    session.mask.modelConfig.dall2Mode,
+  );
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -745,7 +767,10 @@ function _Chat() {
   };
 
   const doSubmit = (userInput: string) => {
-    if (userInput.trim() === "") return;
+    if (userInput.trim() === "" && !isDalle2VariationModeV) return;
+    if (isDalle2DefaultModeV) {
+      if (attachImages.length === 0) return;
+    }
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
       setUserInput("");
@@ -1100,11 +1125,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
@@ -1117,7 +1144,13 @@ function _Chat() {
               ...(await new Promise<string[]>((res, rej) => {
                 setUploading(true);
                 const imagesData: string[] = [];
-                compressImage(file, 256 * 1024)
+                let promiseFn;
+                if (isDalle2DefaultModeV) {
+                  promiseFn = Promise.resolve(createObjectURL(file));
+                } else {
+                  promiseFn = compressImage(file, 256 * 1024);
+                }
+                promiseFn
                   .then((dataUrl) => {
                     imagesData.push(dataUrl);
                     setUploading(false);
@@ -1159,7 +1192,13 @@ function _Chat() {
           const imagesData: string[] = [];
           for (let i = 0; i < files.length; i++) {
             const file = event.target.files[i];
-            compressImage(file, 256 * 1024)
+            let promiseFn;
+            if (isDalle2DefaultModeV) {
+              promiseFn = Promise.resolve(createObjectURL(file));
+            } else {
+              promiseFn = compressImage(file, 256 * 1024);
+            }
+            promiseFn
               .then((dataUrl) => {
                 imagesData.push(dataUrl);
                 if (
@@ -1408,7 +1447,7 @@ function _Chat() {
                       <img
                         className={styles["chat-message-item-image"]}
                         src={getMessageImages(message)[0]}
-                        alt=""
+                        alt="img"
                       />
                     )}
                     {getMessageImages(message).length > 1 && (
@@ -1428,7 +1467,7 @@ function _Chat() {
                               }
                               key={index}
                               src={image}
-                              alt=""
+                              alt="img"
                             />
                           );
                         })}
@@ -1483,8 +1522,13 @@ function _Chat() {
           <textarea
             id="chat-input"
             ref={inputRef}
+            disabled={isDalle2VariationModeV}
             className={styles["chat-input"]}
-            placeholder={Locale.Chat.Input(submitKey)}
+            placeholder={Locale.Chat.Input(
+              submitKey,
+              isDalle2VariationModeV,
+              isDalle2EditModeV,
+            )}
             onInput={(e) => onInput(e.currentTarget.value)}
             value={userInput}
             onKeyDown={onInputKeyDown}

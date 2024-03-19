@@ -76,6 +76,9 @@ export enum ModelProvider {
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
+  createImgPath: "v1/images/generations",
+  createEditPath: "v1/images/edits",
+  createVariationionsPath: "v1/images/variations",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
@@ -201,6 +204,24 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-4-vision-preview",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "dall-e-2",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "dall-e-3",
     available: true,
     provider: {
       id: "openai",
