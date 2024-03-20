@@ -57,3 +57,33 @@
 .signin .provider+.provider {
   margin-top: 1rem
 }
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.container1 {
+  height: 100%;
+  background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+}
+
+.login-form {
+  background-color: #fff;
+  width: 350px;
+  height: 500px;
+  border-radius: 15px;
+
+  /* 定位到中心 */
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* 毛玻璃 */
+  backdrop-filter: blur(10px); /* 应用模糊效果 */
+  background-color: rgba(255, 255, 255, 0.5); /* 半透明的白色背景 */
+}

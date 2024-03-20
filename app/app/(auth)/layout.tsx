@@ -22,7 +22,7 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="container mx-auto signin">
+    <div className="container1 w-full signin">
       <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
         {children}
       </div>
