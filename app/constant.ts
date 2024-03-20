@@ -167,6 +167,16 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "claude-3-opus-20240229",
+    describe: "claude第三代模型最强版",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
     name: "gpt-4-vision-preview",
     available: true,
     describe: "GPT-4多模态,图像识别",
