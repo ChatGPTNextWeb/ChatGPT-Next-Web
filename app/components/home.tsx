@@ -29,7 +29,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
-import { generateRandomToken } from "../api/hippo/config";
+import { generateRandomToken } from "../api/hippo/funcApi";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (

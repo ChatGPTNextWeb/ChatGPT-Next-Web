@@ -21,9 +21,8 @@ export async function getPathVidStream(): Promise<any> {
   }
 }
 
-export async function saveToVectorDatabase(text) {
+export async function saveConentHippo(text) {
   try {
-    await searchPathVid(text);
     //
     const userId = localStorage.getItem("userId");
     const res = axios.post(process.env.SAVETOVECTORDATABASE_BOT, {
@@ -35,28 +34,11 @@ export async function saveToVectorDatabase(text) {
     console.log(error);
   }
 }
-export async function searchPathVid(text) {
+export async function searchVidHippo(text) {
   const res = await axios.post("/api/hippo/search/pathVid", {
     text: text,
   });
   const dataPathResult = res.data.collection[0].metadata.url;
   localStorage.setItem("pathVidStream", dataPathResult);
   return res.data;
-}
-export async function searchFromVectorDatabase(requestPayload) {
-  try {
-    const requestPayloads = requestPayload;
-    const userId = localStorage.getItem("userId");
-    const statusRag = localStorage.getItem("statusRag");
-
-    const res = await axios.post(process.env.SEARCHFROMVECTORDATABASE_BOT, {
-      requestPayload: requestPayloads,
-      userId: userId,
-      statusRag: statusRag,
-    });
-
-    return res.data;
-  } catch (error) {
-    console.log(error);
-  }
 }

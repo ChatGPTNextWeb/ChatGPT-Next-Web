@@ -1,29 +1,44 @@
-import { NextResponse } from "next/server";
-const axios = require("axios");
-
-export async function POST(request: Request) {
+export async function Save(request: Request): Promise<any> {
   try {
     const json = await request.json();
 
-    let userId = json.userId;
-    let statusRag = json.statusRag;
-    let requestPayload = json.requestPayload;
+    const data = {
+      collection_name: json.userId,
+      data: json.text,
+      data_type: "text",
+    };
+    const result = await fetch.post(
+      process.env.SAVECONTENTTOVECTORDATABASE,
+      data,
+    );
+    return result.data.message;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
 
-    const messages = requestPayload.messages;
-    const lastMessage = messages[messages.length - 1];
-
-    if (lastMessage.role === "user" && statusRag === "1") {
+export async function genRagMsg(lastMessage: any, userId: any) {
+  try {
+    if (lastMessage.role === "user") {
       const data = {
         collection_name: userId,
         data: lastMessage.content,
         data_type: "text",
       };
 
-      const result = await axios.post(
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      };
+      const response = await fetch(
         process.env.SEARCHFROMVECTORDATABASE,
-        data,
+        requestOptions,
       );
-      const resultData = result.data.collection;
+      const result = await response.json();
+
+      const resultData = result.collection;
       // dataSearch -> context
       let context = "";
       let firstIteration = true;
@@ -36,7 +51,7 @@ export async function POST(request: Request) {
         }
       }
       // form rag
-      lastMessage.content = `
+      return `
       You are a Q&A expert system. Your responses must always be rooted in the context provided for each query. Here are some guidelines to follow:
       1. Refrain from explicitly mentioning the context provided in your response.
       2. The context should silently guide your answers without being directly acknowledged.
@@ -50,9 +65,6 @@ export async function POST(request: Request) {
       """
       `;
       //
-      return NextResponse.json(requestPayload, { status: 200 });
-    } else {
-      return NextResponse.json(requestPayload, { status: 200 });
     }
   } catch (e) {
     console.log(e);

@@ -3,8 +3,9 @@ import { getServerSideConfig } from "@/app/config/server";
 import { ModelProvider, OpenaiPath } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth";
-import { requestOpenai } from "../../common";
+import { auth } from "../../../auth";
+import { requestOpenai } from "../../../common";
+import { genRagMsg } from "../../.common/rag";
 
 const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
 
@@ -18,6 +19,23 @@ function getModels(remoteModelRes: OpenAIListModelResponse) {
   }
 
   return remoteModelRes;
+}
+// this is hippo req
+async function convertNextChatRequest(req: NextRequest) {
+  let reqBody = await req.json();
+  let messages = reqBody["messages"];
+  let lastMessage = messages[messages.length - 1];
+  lastMessage.content = await genRagMsg(lastMessage, reqBody["userId"]);
+  delete reqBody["userId"];
+
+  let newReq = new NextRequest(req.nextUrl, {
+    method: req.method,
+    headers: req.headers,
+    body: JSON.stringify(reqBody),
+  });
+  newReq.nextUrl.pathname = newReq.nextUrl.pathname.replace("/hippo", "");
+
+  return newReq;
 }
 
 async function handle(
@@ -53,7 +71,8 @@ async function handle(
   }
 
   try {
-    const response = await requestOpenai(req);
+    const newReq = await convertNextChatRequest(req);
+    const response = await requestOpenai(newReq);
 
     // list models
     if (subpath === OpenaiPath.ListModelPath && response.status === 200) {

@@ -19,6 +19,7 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { saveConentHippo, searchVidHippo } from "../api/hippo/funcApi";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -560,6 +561,10 @@ export const useChatStore = createPersistStore(
         const lastSummarizeIndex = session.messages.length;
 
         console.log("[Chat History] ", toBeSummarizedMsgs);
+        const lastMsgAssistant =
+          toBeSummarizedMsgs[toBeSummarizedMsgs.length - 1];
+        await searchVidHippo(lastMsgAssistant.content);
+        saveConentHippo(lastMsgAssistant.content);
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
