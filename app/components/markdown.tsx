@@ -100,7 +100,10 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string): string {
-  return text.replace(/\$(\d+(?:[.,]\d+)*)(?=\s*[a-zA-Z.,;!?]?\s*$|\s+[a-zA-Z])/g, (match, p1) => `\\${match}`);
+  return text.split('\n').map((line, index, lines) => {
+    const isInCodeBlock = lines[index - 1]?.trim() === '```' && lines[index + 1]?.trim() === '```';
+    return isInCodeBlock ? line : line.replace(/(?<!`)\$(\d+(?:[.,]\d+)*)(?=\s*[a-zA-Z.,;!?]?\s*$|\s+[a-zA-Z])(?!`)/g, '\\$&');
+  }).join('\n');
 }
 
 function _MarkDownContent(props: { content: string }) {
