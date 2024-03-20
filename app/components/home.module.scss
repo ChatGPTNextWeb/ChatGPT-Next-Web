@@ -105,8 +105,11 @@
 .mobile {
   display: none;
 }
+.browser {
+  display: block;
+}
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 600px) {
   .container {
     min-height: unset;
     min-width: unset;
@@ -130,6 +133,9 @@
 
   .mobile {
     display: block;
+  }
+  .browser {
+    display: none;
   }
 }
 

@@ -230,9 +230,8 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
+          <div className={styles["sidebar-action"] + " " + styles.browser}>
             <IconButton
-              // text={Locale.Settings.Danger.Clear.Title}
               onClick={async () => {
                 if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
                   chatStore.clearAllData();
@@ -240,7 +239,7 @@ export function SideBar(props: { className?: string }) {
               }}
               title={Locale.Settings.Danger.Clear.Title}
               icon={<DeleteIcon />}
-              // type="danger"
+              type="danger"
               className={styles["custom-sidebar-clear-button"]}
             />
           </div>
