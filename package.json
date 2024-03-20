@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 7866",
     "build": "cross-env BUILD_MODE=standalone next build",
-    "start": "next start",
+    "start": "next start -p 7866 ",
     "lint": "next lint",
     "export": "cross-env BUILD_MODE=export BUILD_APP=1 next build",
     "export:dev": "cross-env BUILD_MODE=export BUILD_APP=1 next dev",

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { loadFacebookSDK } from "./facebookSDK";
+declare let FB: any;
 
 export default function FacebookLoginButton() {
   useEffect(() => {
@@ -10,7 +11,7 @@ export default function FacebookLoginButton() {
 
   function facebookLogin() {
     FB.login(
-      function (response) {
+      function (response: any) {
         if (response.authResponse) {
           // User logged in successfully, handle the login response
           console.log("User is now logged in");

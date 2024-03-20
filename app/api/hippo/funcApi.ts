@@ -21,7 +21,7 @@ export async function getPathVidStream(): Promise<any> {
   }
 }
 
-export async function saveConentHippo(text) {
+export async function saveConentHippo(text: string) {
   try {
     //
     const userId = localStorage.getItem("userId");
@@ -34,7 +34,7 @@ export async function saveConentHippo(text) {
     console.log(error);
   }
 }
-export async function searchVidHippo(text) {
+export async function searchVidHippo(text: string) {
   const res = await axios.post("/api/hippo/search/pathVid", {
     text: text,
   });

@@ -1,3 +1,5 @@
+declare let FB: any;
+
 export function loadFacebookSDK() {
   window.fbAsyncInit = function () {
     FB.init({

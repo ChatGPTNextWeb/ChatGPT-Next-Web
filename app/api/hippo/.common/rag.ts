@@ -1,23 +1,3 @@
-export async function Save(request: Request): Promise<any> {
-  try {
-    const json = await request.json();
-
-    const data = {
-      collection_name: json.userId,
-      data: json.text,
-      data_type: "text",
-    };
-    const result = await fetch.post(
-      process.env.SAVECONTENTTOVECTORDATABASE,
-      data,
-    );
-    return result.data.message;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-}
-
 export async function genRagMsg(lastMessage: any, userId: any) {
   try {
     if (lastMessage.role === "user") {
@@ -33,7 +13,7 @@ export async function genRagMsg(lastMessage: any, userId: any) {
         body: JSON.stringify(data),
       };
       const response = await fetch(
-        process.env.SEARCHFROMVECTORDATABASE,
+        `${process.env.SEARCHFROMVECTORDATABASE}`,
         requestOptions,
       );
       const result = await response.json();
