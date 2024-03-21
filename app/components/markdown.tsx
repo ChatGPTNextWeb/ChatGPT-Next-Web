@@ -99,21 +99,11 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
+function escapeDollarNumber(text: string): string {
+  return text.split('\n').map((line, index, lines) => {
+    const isInCodeBlock = lines[index - 1]?.trim() === '```' && lines[index + 1]?.trim() === '```';
+    return isInCodeBlock ? line : line.replace(/\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)/g, '\\$&');
+  }).join('\n');
 }
 
 function _MarkDownContent(props: { content: string }) {
