@@ -146,6 +146,20 @@ function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
     };
   }, [currentDate, searchDate]); // 空数组作为第二个参数，表示仅在组件挂载和卸载时执行
 
+  useEffect(() => {
+    const handleResize = () => {
+      console.log("窗口大小变化");
+      let chartDom = document.getElementById("usage-by-model-chart");
+      if (!chartDom) return;
+      const myChart = echarts.getInstanceByDom(chartDom);
+      myChart?.resize();
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div
       id="usage-by-model-chart"
