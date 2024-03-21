@@ -538,15 +538,15 @@ export function ImagePreviewer(props: {
             <NextImage
               src={ChatGptIcon.src}
               alt="logo"
-              width={42}
-              height={42}
+              width={80}
+              height={80}
             />
           </div>
 
           <div>
             <div className={styles["main-title"]}>    CatGPT</div>
             <div className={styles["sub-title"]}>
-              lolis.dev
+              By: L.R.T. (lolis.dev)
             </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
