@@ -100,9 +100,17 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string): string {
-  return text.split('\n').map((line, index, lines) => {
-    const isInCodeBlock = lines[index - 1]?.trim() === '```' && lines[index + 1]?.trim() === '```';
-    return isInCodeBlock ? line : line.replace(/(?<!`|\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)(?!`)/g, '\\$&');
+  let isInCodeBlock = false;
+  return text.split('\n').map(line => {
+    if (line.trim() === '```') {
+      isInCodeBlock = !isInCodeBlock;
+      return line;
+    }
+    if (!isInCodeBlock) {
+      return line.replace(/(?<!`.*|\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)(?!.*`)/g, '\\$&');
+    } else {
+      return line;
+    }
   }).join('\n');
 }
 
