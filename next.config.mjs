@@ -10,7 +10,6 @@ console.log("[Next] build with chunk: ", disableChunk);
 // const isProd = process.env.NODE_ENV === 'production'
 
 // 为了修复tiktoken的插件问题
-import CopyPlugin from "copy-webpack-plugin";
 const nextConfig = {
   // transpilePackages: ['tiktoken'],
   webpack(config) {
