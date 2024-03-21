@@ -73,7 +73,7 @@ const SideBar: React.FC = () => {
     if (current != pathname) {
       router.push(current);
     }
-  }, []);
+  }, [current, pathname, router]);
   // useEffect(() => {
   //     const handleStart = () => setLoading(true)
   //     const handleComplete = () => setLoading(false);
