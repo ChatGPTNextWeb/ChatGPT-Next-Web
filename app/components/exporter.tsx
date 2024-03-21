@@ -538,8 +538,8 @@ export function ImagePreviewer(props: {
             <NextImage
               src={ChatGptIcon.src}
               alt="logo"
-              width={80}
-              height={80}
+              width={30}
+              height={30}
             />
           </div>
 
