@@ -43,9 +43,11 @@ export default function UserLoginButton() {
         redirect: false,
       });
     }
+    console.log("0000000000000", result);
     setLoading(false);
     if (!result?.error) {
-      window.location.href = result?.url || "/";
+      window.location.href =
+        result?.url && result.url.includes("verify") ? result.url : "/";
     } else setError(true);
   };
 
