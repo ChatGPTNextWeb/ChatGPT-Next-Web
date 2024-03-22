@@ -639,8 +639,14 @@ export default function UserByMap() {
     };
     handleResize();
     window.addEventListener("resize", handleResize);
+    if (document.readyState === "complete") {
+      handleResize();
+    } else {
+      window.addEventListener("load", handleResize);
+    }
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("load", handleResize);
     };
   }, []);
 
