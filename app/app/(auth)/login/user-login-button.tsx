@@ -44,11 +44,9 @@ export default function UserLoginButton() {
       });
     }
     setLoading(false);
-    console.log("------1", result);
-    // if (!result?.error) {
-    //   console.log('------2',result)
-    //   window.location.href = result?.url || "/";
-    // } else setError(true);
+    if (!result?.error) {
+      window.location.href = result?.url || "/";
+    } else setError(true);
   };
 
   useEffect(() => {
