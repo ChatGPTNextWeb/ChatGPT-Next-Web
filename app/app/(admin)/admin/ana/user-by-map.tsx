@@ -614,7 +614,7 @@ export default function UserByMap() {
         },
       ],
     };
-    const loadEcharts = () => {
+    const loadEcharts = async () => {
       let chartDom = document.getElementById("userByMapChart");
       if (!chartDom) return;
       let myChart = echarts.init(chartDom, "default", {
@@ -623,8 +623,11 @@ export default function UserByMap() {
       });
       option && myChart?.setOption(option);
     };
-
-    loadEcharts();
+    try {
+      loadEcharts();
+    } catch (e) {
+      console.log("[loadEcharts] 地图加载失败", e);
+    }
   }, []);
 
   useEffect(() => {
@@ -660,7 +663,7 @@ export default function UserByMap() {
         style={{ width: "1080px", height: "600px" }}
       ></div>
       <Script
-        src="https://api.map.baidu.com/api?v=3.0&ak=19e9FKQC49u5uQe4CBqan9ER2mYhQ3ip&callback=onBMapCallback"
+        src="https://api.map.baidu.com/api?v=3.0&ak=19e9FKQC49u5uQe4CBqan9ER2mYhQ3ip&callback=initMap"
         strategy="beforeInteractive"
       />
     </div>
