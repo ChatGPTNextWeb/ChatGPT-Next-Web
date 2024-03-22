@@ -16,6 +16,10 @@ const nextConfig = {
     STREAMBOT_BOT: process.env.STREAMBOT_BOT,
     SAVETOVECTORDATABASE_BOT: process.env.SAVETOVECTORDATABASE_BOT,
     SEARCHFROMVECTORDATABASE_BOT: process.env.SEARCHFROMVECTORDATABASE_BOT,
+    IDAPPFB: process.env.IDAPPFB,
+    IDAPPSECRET: process.env.IDAPPSECRET,
+    GITHUB_ID: process.env.GITHUB_ID,
+    GITHUB_SECRET: process.env.GITHUB_SECRET,
   },
   webpack(config) {
     config.module.rules.push({
