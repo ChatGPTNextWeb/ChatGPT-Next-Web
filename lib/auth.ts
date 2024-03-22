@@ -10,8 +10,8 @@ const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 
 export const authOptions: NextAuthOptions = {
-    debug: true,
-    // debug: !SECURE_COOKIES,
+    // debug: true,
+    debug: !SECURE_COOKIES,
     useSecureCookies: SECURE_COOKIES,
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
@@ -76,11 +76,11 @@ export const authOptions: NextAuthOptions = {
             }
         })
     ],
-    pages: {
-        signIn: `/login`,
-        // verifyRequest: `/login`,
-        error: "/login", // Error code passed in query string as ?error=
-    },
+    // pages: {
+    //     signIn: `/login`,
+    //     // verifyRequest: `/login`,
+    //     error: "/login", // Error code passed in query string as ?error=
+    // },
     adapter: PrismaAdapter(prisma),
     session: { strategy: "jwt", maxAge: 3 * 24 * 60 * 60 },
     cookies: {
