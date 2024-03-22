@@ -18,8 +18,7 @@ const nextConfig = {
     SEARCHFROMVECTORDATABASE_BOT: process.env.SEARCHFROMVECTORDATABASE_BOT,
     IDAPPFB: process.env.IDAPPFB,
     IDAPPSECRET: process.env.IDAPPSECRET,
-    GITHUB_ID: process.env.GITHUB_ID,
-    GITHUB_SECRET: process.env.GITHUB_SECRET,
+    NEXTAUTH_URL: process.env.AUTH_URL,
   },
   webpack(config) {
     config.module.rules.push({
