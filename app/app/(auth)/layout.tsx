@@ -16,7 +16,8 @@ export default async function AuthLayout({
 }) {
   const session = await getSession();
   // If the user is already authenticated, redirect them to home
-  if (session?.user?.name && isName(session.user.name)) {
+  const name = session?.user?.email || session?.user?.name;
+  if (name && isName(name)) {
     // Replace '/dashboard' with the desired redirect path
     redirect("/");
   }

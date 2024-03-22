@@ -1,13 +1,14 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import { isName } from "@/lib/auth_list";
 
 export default function UserLoginButton() {
   const [loading, setLoading] = useState(false);
 
   const nameInput = useRef<HTMLInputElement>(null);
+  const emailInput = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState("");
   const [error, setError] = useState(false);
 
@@ -27,18 +28,31 @@ export default function UserLoginButton() {
     setLoading(true);
     e.preventDefault();
 
-    console.log("current,username2", username);
-    const result = await signIn("credentials", {
-      username: username,
-      redirect: false,
-    });
+    let result: { error: any; url: string | null } | undefined = {
+      error: null,
+      url: null,
+    };
+    if (emailInput.current && emailInput.current.value) {
+      result = await signIn("email", {
+        email: emailInput.current.value,
+        redirect: false,
+      });
+    } else {
+      result = await signIn("credentials", {
+        username: username,
+        redirect: false,
+      });
+    }
     setLoading(false);
-    if (!result?.error) {
-      window.location.href = "/";
-    } else setError(true);
+    console.log("------1", result);
+    // if (!result?.error) {
+    //   console.log('------2',result)
+    //   window.location.href = result?.url || "/";
+    // } else setError(true);
   };
 
   useEffect(() => {
+    if (!username) return;
     if (nameInput.current) {
       if (!isName(username)) {
         setError(true);
@@ -81,8 +95,31 @@ export default function UserLoginButton() {
                 onCompositionStart={(e) => e.preventDefault()}
                 onCompositionEnd={handleComposition}
                 onChange={onNameChange}
-                required
+                // required
                 placeholder="输入姓名、拼音或邮箱"
+                className={`${
+                  loading
+                    ? "cursor-not-allowed bg-stone-50 dark:bg-stone-800"
+                    : "bg-white hover:bg-stone-50 active:bg-stone-100 dark:bg-black dark:hover:border-white dark:hover:bg-black"
+                } group my-2 flex h-10 w-full items-center justify-center space-x-2 rounded-md border border-stone-200 transition-colors duration-75 focus:outline-none dark:border-stone-700
+                  ${
+                    error
+                      ? "focus:invalid:border-red-500 focus:invalid:ring-red-500"
+                      : ""
+                  }
+                `}
+              />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                ref={emailInput}
+                // value={username}
+                onCompositionStart={(e) => e.preventDefault()}
+                // onCompositionEnd={handleComposition}
+                // onChange={onNameChange}
+                // required
+                placeholder="邮箱验证，测试阶段"
                 className={`${
                   loading
                     ? "cursor-not-allowed bg-stone-50 dark:bg-stone-800"

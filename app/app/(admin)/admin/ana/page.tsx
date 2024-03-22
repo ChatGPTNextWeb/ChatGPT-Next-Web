@@ -7,7 +7,8 @@ import { Flex } from "antd";
 
 export default async function AdminPage() {
   const session = await getSession();
-  if (!(session?.user?.name && ADMIN_LIST.includes(session.user.name))) {
+  const name = session?.user?.email || session?.user?.name;
+  if (!(name && ADMIN_LIST.includes(name))) {
     // Replace '/dashboard' with the desired redirect path
     redirect("/");
   }

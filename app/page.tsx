@@ -12,7 +12,8 @@ const serverConfig = getServerSideConfig();
 
 export default async function App() {
   const session = await getSession();
-  if (!session || !(session?.user?.name && isName(session.user.name))) {
+  const name = session?.user?.email || session?.user?.name;
+  if (!(name && isName(name))) {
     redirect("/login");
   }
 

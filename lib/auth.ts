@@ -1,5 +1,6 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
+import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
@@ -26,6 +27,17 @@ export const authOptions: NextAuthOptions = {
                     image: profile.avatar_url,
                 };
             },
+        }),
+        EmailProvider({
+          server: {
+            host: process.env.EMAIL_SERVER_HOST,
+            port: process.env.EMAIL_SERVER_PORT,
+            auth: {
+              user: process.env.EMAIL_SERVER_USER,
+              pass: process.env.EMAIL_SERVER_PASSWORD,
+            },
+          },
+          from: process.env.EMAIL_FROM,
         }),
         CredentialsProvider({
             // The name to display on the sign in form (e.g. "Sign in with...")
@@ -66,7 +78,7 @@ export const authOptions: NextAuthOptions = {
     ],
     pages: {
         signIn: `/login`,
-        verifyRequest: `/login`,
+        // verifyRequest: `/login`,
         error: "/login", // Error code passed in query string as ?error=
     },
     adapter: PrismaAdapter(prisma),
@@ -99,7 +111,7 @@ export const authOptions: NextAuthOptions = {
             session.user = {
                 ...session.user,
                 // @ts-expect-error
-                id: token.sub,
+                id: token?.sub,
                 // @ts-expect-error
                 username: token?.user?.username || token?.user?.gh_username,
             };

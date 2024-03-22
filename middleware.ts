@@ -18,19 +18,19 @@ export default async function middleware(req: NextRequest) {
 
     // console.log('==============,认证，', path, session)
     // 认证有点多此一举，页面中的认证应该已经够了
-    if (!session && path !== "/login") {
-        // 给关键请求特殊待遇
-        if (path.startsWith('/api/openai/')) {
-             return NextResponse.json(false, {
-                status: 401,
-             });
-        }
-        return NextResponse.redirect(new URL("/login", req.url));
-    } else if (session) {
-      // console.log('referer=====', DENY_LIST.includes(session?.name ?? ""))
-      if (isName(session?.name ?? "") && path.startsWith("/login"))
-        return NextResponse.redirect(new URL("/", req.url));
-    }
+    // if (!session && path !== "/login") {
+    //     // 给关键请求特殊待遇
+    //     if (path.startsWith('/api/openai/')) {
+    //          return NextResponse.json(false, {
+    //             status: 401,
+    //          });
+    //     }
+    //     return NextResponse.redirect(new URL("/login", req.url));
+    // } else if (session) {
+    //   // console.log('referer=====', DENY_LIST.includes(session?.name ?? ""))
+    //   if (isName(session?.name ?? "") && path.startsWith("/login"))
+    //     return NextResponse.redirect(new URL("/", req.url));
+    // }
 
     if (path == '/login') {
         return NextResponse.rewrite(

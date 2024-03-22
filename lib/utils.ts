@@ -1,4 +1,4 @@
-
+import bcrypt from "bcryptjs";
 import {get_encoding} from "tiktoken";
 
 
@@ -18,7 +18,6 @@ export async function fetcher<JSON = any>(
 }
 
 export const capitalize = (s: string) => {
-  if (typeof s !== "string") return "";
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
@@ -61,3 +60,13 @@ export const toDateString = (date: Date) => {
 export const random = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
+
+// 将明文处理为 hash
+export function hashPassword(password: string) {
+  return bcrypt.hashSync(password, 10);
+}
+
+// 对比明文和 hash 是否一致
+export function comparePassword(password: string, hashPassword: string) {
+  return bcrypt.compareSync(password, hashPassword);
+}

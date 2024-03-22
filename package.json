@@ -26,6 +26,7 @@
     "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.9",
     "antd": "^5.15.1",
+    "bcryptjs": "^2.4.3",
     "echarts": "^5.4.3",
     "emoji-picker-react": "^4.7.10",
     "fuse.js": "^7.0.0",
@@ -35,6 +36,7 @@
     "next": "^14.1.0",
     "next-auth": "^4.24.5",
     "node-fetch": "^3.3.1",
+    "nodemailer": "^6.9.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
@@ -53,6 +55,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.8",
+    "@types/bcryptjs": "^2.4.6",
     "@types/cookie": "^0.6.0",
     "@types/node": "^20.11.10",
     "@types/react": "^18.2.48",
