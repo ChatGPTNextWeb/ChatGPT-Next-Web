@@ -20,8 +20,12 @@ function getModels(remoteModelRes: OpenAIListModelResponse) {
 
   return remoteModelRes;
 }
-// this is hippo req
-async function convertNextChatRequest(req: NextRequest) {
+
+/**
+ *  Build rag in req.msg and change req.pathname to call apiOpenAi
+ * @returns {NextRequest} new req.
+ */
+async function updateRequest(req: NextRequest) {
   let reqBody = await req.json();
   let messages = reqBody["messages"];
   let lastMessage = messages[messages.length - 1];
@@ -38,6 +42,9 @@ async function convertNextChatRequest(req: NextRequest) {
   return newReq;
 }
 
+/**
+ * API (handle req from user).
+ */
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
@@ -71,7 +78,7 @@ async function handle(
   }
 
   try {
-    const newReq = await convertNextChatRequest(req);
+    const newReq = await updateRequest(req);
     const response = await requestOpenai(newReq);
 
     // list models

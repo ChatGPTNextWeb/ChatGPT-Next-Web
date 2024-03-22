@@ -11,6 +11,12 @@ export function generateRandomToken(length: number): string {
   }
   return token;
 }
+
+/**
+ * Get sample video links.
+ *
+ * @returns {string[]} text - response modelAI.
+ */
 export async function getPathVidStream(): Promise<any> {
   try {
     const res = await axios.get(process.env.STREAMBOT_BOT);
@@ -21,19 +27,29 @@ export async function getPathVidStream(): Promise<any> {
   }
 }
 
+/**
+ * Save response modelAI.
+ *
+ * @param {string} text - response modelAI.
+ */
 export async function saveConentHippo(text: string) {
   try {
     //
     const userId = localStorage.getItem("userId");
-    const res = axios.post(process.env.SAVETOVECTORDATABASE_BOT, {
+    axios.post(process.env.SAVETOVECTORDATABASE_BOT, {
       text: text,
       userId: userId,
     });
-    return res.data;
   } catch (error) {
     console.log(error);
   }
 }
+/**
+ * Search path video from response modelAI.
+ *
+ * @param {string} text - response modelAI.
+ * @return {Promise<string>}  video link has the highest score .
+ */
 export async function searchVidHippo(text: string) {
   const res = await axios.post("/api/hippo/search/pathVid", {
     text: text,

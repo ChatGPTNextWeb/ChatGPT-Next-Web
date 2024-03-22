@@ -65,6 +65,7 @@ const en: LocaleType = {
       Masks: "Have Some Funs",
       Clear: "Clean chat",
       Settings: "Settings",
+      UploadImage: "Upload Images",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",

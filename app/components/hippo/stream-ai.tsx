@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPathVidStream } from "../../api/hippo/funcApi";
+import { getPathVidStream } from "../../api/hippo/hippofunc";
 
 export function Stream() {
   const [selectPathStream, setSelectPathStream] = useState("");
