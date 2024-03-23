@@ -10,12 +10,12 @@ const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
 export async function requestOpenai(req: NextRequest) {
   const config = getServerSideConfig();
   const controller = new AbortController();
-  const authValue = req.headers.get("Authorization") ?? "";
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
   );
 
+  let authValue = req.headers.get("Authorization") ?? "";
   let baseUrl = BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
@@ -46,20 +46,17 @@ export async function requestOpenai(req: NextRequest) {
     fetchUrl = `${baseUrl}/${openaiPath}`;
   }
 
-  console.log(req.headers);
   let avviaKey = req.headers.get("x-avvia-key")
-  let avviaAuthValue = authValue
   if (avviaKey) {
-    avviaAuthValue = avviaKey;
+    authValue = avviaKey;
   }
-
 
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
       "api-key": config.apiKey ? config.apiKey : "",
-      Authorization: avviaAuthValue,
+      Authorization: authValue,
       ...(process.env.OPENAI_ORG_ID && {
         "OpenAI-Organization": process.env.OPENAI_ORG_ID,
       }),
