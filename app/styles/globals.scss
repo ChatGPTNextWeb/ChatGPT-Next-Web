@@ -155,9 +155,9 @@ input[type="checkbox"] {
   color: var(--black);
   appearance: none;
   border: var(--border-in-light);
-  border-radius: 5px;
-  height: 16px;
-  width: 16px;
+  border-radius: 4px;
+  height: 18px;
+  width: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +183,7 @@ input[type="range"] {
   height: 8px;
   width: 20px;
   background-color: var(--primary);
-  border-radius: 10px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all ease 0.3s;
   margin-left: 5px;
@@ -223,11 +223,11 @@ input[type="number"],
 input[type="text"],
 input[type="password"] {
   appearance: none;
-  border-radius: 10px;
+  border-radius: 6px;
   border: var(--border-in-light);
   min-height: 36px;
   box-sizing: border-box;
-  background: var(--white);
+  background: var(--gray);
   color: var(--black);
   padding: 0 10px;
   max-width: 50%;
