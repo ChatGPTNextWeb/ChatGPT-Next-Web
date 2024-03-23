@@ -46,12 +46,20 @@ export async function requestOpenai(req: NextRequest) {
     fetchUrl = `${baseUrl}/${openaiPath}`;
   }
 
+  console.log(req.headers);
+  let avviaKey = req.headers.get("x-avvia-key")
+  let avviaAuthValue = authValue
+  if (avviaKey) {
+    avviaAuthValue = avviaKey;
+  }
+
+
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
       "api-key": config.apiKey ? config.apiKey : "",
-      Authorization: authValue,
+      Authorization: avviaAuthValue,
       ...(process.env.OPENAI_ORG_ID && {
         "OpenAI-Organization": process.env.OPENAI_ORG_ID,
       }),
@@ -65,30 +73,6 @@ export async function requestOpenai(req: NextRequest) {
     signal: controller.signal,
   };
 
-  // #1815 try to refuse gpt4 request
-  if (DISABLE_GPT4 && req.body) {
-    try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody);
-
-      if ((jsonBody?.model ?? "").includes("gpt-4")) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: "you are not allowed to use gpt-4 model",
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error("[OpenAI] gpt4 filter", e);
-    }
-  }
-
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
@@ -98,11 +82,25 @@ export async function requestOpenai(req: NextRequest) {
     // to disable nginx buffering
     newHeaders.set("X-Accel-Buffering", "no");
 
-    return new Response(res.body, {
+    let resp = new Response(res.body, {
       status: res.status,
       statusText: res.statusText,
       headers: newHeaders,
     });
+
+    if (res.status !== 200) {
+      return NextResponse.json(
+          {
+            error: true,
+            message: "Avvia Intelligence Error " + res.status + ": " + res.statusText,
+          },
+          {
+            status: 500,
+          },
+        );
+    } else {
+      return resp;
+    }
   } finally {
     clearTimeout(timeoutId);
   }

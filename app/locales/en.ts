@@ -297,6 +297,10 @@ const en = {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
     },
+    ModelApiKey: {
+      Title: "API Key",
+      SubTitle: "API key of the Avvia Intelligence tenant",
+    },
     ModelUser: {
       Title: "Project ID",
       SubTitle: "ID of the Avvia Intelligence project to use for RAG requests",

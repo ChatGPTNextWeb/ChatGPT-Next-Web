@@ -48,6 +48,7 @@ export const DEFAULT_CONFIG = {
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
     user: -1,
+    apikey: "",
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,
@@ -172,6 +173,7 @@ export const useAppConfig = createPersistStore(
       if (version < 3.8) {
         state.lastUpdate = Date.now();
         state.modelConfig.user = -1;
+        state.modelConfig.apikey = "";
       }
 
       return state as any;

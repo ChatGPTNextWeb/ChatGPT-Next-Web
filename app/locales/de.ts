@@ -245,6 +245,10 @@ const de: PartialLocaleType = {
         "Hinzufügen von eigenen, fine-getunten Modellen. Modellnamen sind durch Komma getrennt.",
     },
     Model: "Modell",
+    ModelApiKey: {
+      Title: "API Key",
+      SubTitle: "API key des Avvia Intelligence Mandanten",
+    },
     ModelUser: {
       Title: "Projekt ID",
       SubTitle: "ID des Avvia Intelligence Projekts",

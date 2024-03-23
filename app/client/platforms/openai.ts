@@ -89,6 +89,10 @@ export class ChatGPTApi implements LLMApi {
         headers: getHeaders(),
       };
 
+      if (modelConfig.apikey) {
+        chatPayload.headers["x-avvia-key"] = `Bearer ${modelConfig.apikey}`;
+      }
+
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
@@ -186,8 +190,13 @@ export class ChatGPTApi implements LLMApi {
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        if (resJson.error) {
+          const message = resJson.message;
+          options.onError?.(new Error(message));
+        } else {
+          const message = this.extractMessage(resJson);
+          options.onFinish(message);
+        }
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

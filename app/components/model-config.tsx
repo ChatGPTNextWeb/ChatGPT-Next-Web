@@ -13,6 +13,20 @@ export function ModelConfigList(props: {
   return (
     <>
       <ListItem
+        title={Locale.Settings.ModelApiKey.Title}
+        subTitle={Locale.Settings.ModelApiKey.SubTitle}
+      >
+        <input
+          type="password"
+          value={props.modelConfig.apikey}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.apikey = e.currentTarget.value),
+            )
+          }
+        ></input>
+        </ListItem>
+      <ListItem
         title={Locale.Settings.ModelUser.Title}
         subTitle={Locale.Settings.ModelUser.SubTitle}
       >
