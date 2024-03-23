@@ -100,13 +100,13 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string): string {
-  let isInCodeBlock = false;
+  let isInCode = false;
   return text.split('\n').map(line => {
-    if (line.trim() === '```') {
-      isInCodeBlock = !isInCodeBlock;
+    if (line.trim() === '```' || line.trim() === '`') {
+      isInCode = !isInCode;
       return line;
     }
-    if (!isInCodeBlock) {
+    if (!isInCode) {
       return line.replace(/(?<!\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)(?!`+)/g, '\\$&');
     } else {
       return line;
