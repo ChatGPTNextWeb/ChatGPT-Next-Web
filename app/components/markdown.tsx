@@ -100,14 +100,20 @@ export function PreCode(props: { children: any }) {
 }
 
 function escapeDollarNumber(text: string): string {
-  let isInCode = false;
+  let isInMultilineCode = false;
   return text.split('\n').map(line => {
     if (line.trim() === '```' || line.trim() === '`') {
-      isInCode = !isInCode;
+      isInMultilineCode = !isInMultilineCode;
       return line;
     }
-    if (!isInCode) {
-      return line.replace(/(?<!\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)(?!`+)/g, '\\$&');
+    if (!isInMultilineCode) {
+      return line.replace(/(`[^`]*`)|(\$[0-9]+(?:[,.][0-9]+)*)/g, (match, inlineCode, number) => {
+        if (inlineCode) {
+          return inlineCode;
+        } else {
+          return `\\${number}`;
+        }
+      });
     } else {
       return line;
     }
