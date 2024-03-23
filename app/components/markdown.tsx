@@ -109,7 +109,7 @@ function escapeDollarNumber(text: string): string {
     if (!isInBlockCode) {
       return line.split(/(`.*?`)/g).map((segment, index) => {
         if (index % 2 === 0) {
-          return segment.replace(/(?<!\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)/g, '\\$&');
+          return segment.replace(/(?<!\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\.)/g, '\\$&');
         } else {
           return segment;
         }
