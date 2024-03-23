@@ -107,7 +107,7 @@ function escapeDollarNumber(text: string): string {
       return line;
     }
     if (!isInCodeBlock) {
-      return line.replace(/(?<!`.*|\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)(?!.*`)/g, '\\$&');
+      return line.replace(/(?<!\\)\$\d+([,.](\d+[,.])?\d+)?(?!.*\$\B)(?!`+)/g, '\\$&');
     } else {
       return line;
     }
