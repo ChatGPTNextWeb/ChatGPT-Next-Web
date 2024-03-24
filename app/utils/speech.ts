@@ -62,7 +62,7 @@ export class OpenAITranscriptionApi extends SpeechApi {
     //     this.audioChunks.push(event.data);
     // });
 
-    this.mediaRecorder.start();
+    this.mediaRecorder.start(1000);
     this.listeningStatus = true;
   }
 
