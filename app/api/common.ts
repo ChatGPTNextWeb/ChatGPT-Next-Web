@@ -9,6 +9,8 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
+  // 打印 req
+  console.log("[Request]", req);
   // 将 req 转换为 json
   console.log("[JSON Request]", req.json());
   // 将 req 转换为 text
