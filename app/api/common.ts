@@ -9,6 +9,9 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
+  // req.body 
+  console.log("[Request Body]", req.body);
+
   var authValue,
     authHeaderName = "";
   if (serverConfig.isAzure) {
@@ -25,6 +28,8 @@ export async function requestOpenai(req: NextRequest) {
     authHeaderName = "Authorization";
   }
 
+  // @todo claude api key to authValue
+
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
@@ -32,6 +37,8 @@ export async function requestOpenai(req: NextRequest) {
 
   let baseUrl =
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
+  
+  // @todo claude url to baseUrl
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
