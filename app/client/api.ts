@@ -8,7 +8,6 @@ import {
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
-import { getServerSideConfig } from "@/app/config/server";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -148,7 +147,7 @@ export class ClientApi {
   }
 }
 
-export function getHeaders(model?: string) {
+export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -158,32 +157,11 @@ export function getHeaders(model?: string) {
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
-
-  console.log("[ModelApi]", model);
-  // 获取 claudeApiKey 变量
-  const claudeApiKey = getServerSideConfig().claudeApiKey;
-  console.log("[ClaudeApiKey]", claudeApiKey);
-
-  // Define a function to determine the API key
-  function determineApiKey(): string {
-    if (isGoogle) {
-      return accessStore.googleApiKey;
-    } else if (isAzure) {
-      return accessStore.azureApiKey;
-    } else if (model && model.includes("claude")) {
-      if (typeof claudeApiKey === 'undefined') {
-        throw new Error('Claude API key is not defined');
-      }
-      return claudeApiKey;
-    } else {
-      return accessStore.openaiApiKey;
-    }
-  }
-
-  // Use the function to get the API key
-  const apiKey = determineApiKey();
-
-  console.log("[ApiKey]",apiKey);
+  const apiKey = isGoogle
+    ? accessStore.googleApiKey
+    : isAzure
+    ? accessStore.azureApiKey
+    : accessStore.openaiApiKey;
   const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;

@@ -30,7 +30,6 @@ import {
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
-import { getServerSideConfig } from "@/app/config/server";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -44,7 +43,7 @@ export interface OpenAIListModelResponse {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string, model?: string): string {
+  path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     const isAzure = accessStore.provider === ServiceProvider.Azure;
@@ -55,23 +54,7 @@ export class ChatGPTApi implements LLMApi {
       );
     }
 
-    // 获取 claudeUrl 变量
-    const serverSideConfig = getServerSideConfig();
-    console.log("[ServerSideConfig]", serverSideConfig);
-    const claudeUrl = serverSideConfig.claudeUrl;
-    console.log("[ClaudeUrl]", claudeUrl);
-
     let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
-
-    // 如果 model 的值包含 claude 
-    if ((model as string).includes("claude")) {
-      console.log("[ModelUrl]", model);
-      if (typeof claudeUrl === 'undefined') {
-        throw new Error('Claude Url is not defined');
-      }
-      baseUrl = claudeUrl;
-    }
-    console.log("[BaseUrl]", baseUrl);
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
@@ -144,12 +127,12 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath, modelConfig.model);
+      const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(modelConfig.model),
+        headers: getHeaders(),
       };
 
       // make a fetch request
