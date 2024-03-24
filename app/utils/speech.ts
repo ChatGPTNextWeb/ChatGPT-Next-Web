@@ -31,11 +31,15 @@ export class OpenAITranscriptionApi extends SpeechApi {
   }
 
   async start(): Promise<void> {
-    // @ts-ignore prettier-ignore
+    // @ts-ignore
     navigator.getUserMedia =
+      // @ts-ignore
       navigator.getUserMedia ||
+      // @ts-ignore
       navigator.webkitGetUserMedia ||
+      // @ts-ignore
       navigator.mozGetUserMedia ||
+      // @ts-ignore
       navigator.msGetUserMedia;
     if (navigator.mediaDevices) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
