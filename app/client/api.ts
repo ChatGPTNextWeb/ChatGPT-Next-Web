@@ -164,13 +164,22 @@ export function getHeaders(model?: string) {
   const claudeApiKey = getServerSideConfig().claudeApiKey;
   console.log("[ClaudeApiKey]", claudeApiKey);
 
-  const apiKey = isGoogle
-    ? accessStore.googleApiKey
-    : isAzure
-    ? accessStore.azureApiKey
-    : (model: string) => model.includes("claude") // Add type annotation to "model" variable
-    ? claudeApiKey
-    : accessStore.openaiApiKey;
+  // Define a function to determine the API key
+  function determineApiKey(): string {
+    if (isGoogle) {
+      return accessStore.googleApiKey;
+    } else if (isAzure) {
+      return accessStore.azureApiKey;
+    } else if (model && model.includes("claude")) {
+      return claudeApiKey;
+    } else {
+      return accessStore.openaiApiKey;
+    }
+  }
+
+  // Use the function to get the API key
+  const apiKey = determineApiKey();
+
   console.log("[ApiKey]",apiKey);
   const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
