@@ -9,17 +9,9 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  // 打印 req
-  console.log("[Request]", req);
-  // 将 req 转换为 json
-  console.log("[JSON Request]", req.json());
-  // 将 req 转换为 text
-  console.log("[Text Request]", req.text());
-  // 将 req 转换为 string
-  console.log("[String Request]", req.toString());
-
   // req.body 
-  // console.log("[Request Body]", req.body);
+  const body = req.body;
+  console.log("[Request Body]", JSON.stringify(body));
   // get model from req.body
   // const model = req.body?.model;
 
@@ -101,7 +93,7 @@ export async function requestOpenai(req: NextRequest) {
       }),
     },
     method: req.method,
-    body: req.body,
+    body: body,
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
