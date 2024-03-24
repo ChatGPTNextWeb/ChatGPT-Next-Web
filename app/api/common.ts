@@ -9,11 +9,12 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  // req.body 
-  // const body = req.body;
-  // console.log("[Request Body]", JSON.parse(body));
-  // get model from req.body
-  // const model = req.body?.model;
+  // reqBody 
+  const reqBody = await req.text();
+  console.log("[Request Body]", reqBody);
+  // get model from reqBody
+  const model = reqBody ? JSON.parse(reqBody).model : "";
+  console.log("[Request Body Model]", model);
 
   var authValue,
     authHeaderName = "";
@@ -32,10 +33,10 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   // @todo claude api key to authValue
-  // if (model && model.includes("claude")) {
-  //   const claudeApiKey = serverConfig.claudeApiKey;
-  //   authValue = claudeApiKey;
-  // }
+  if (model && model.includes("claude")) {
+    const claudeApiKey = serverConfig.claudeApiKey;
+    authValue = claudeApiKey;
+  }
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
@@ -46,9 +47,9 @@ export async function requestOpenai(req: NextRequest) {
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
   
   // @todo claude url to baseUrl
-  // if (model && model.includes("claude")) {
-  //   baseUrl = serverConfig.claudeUrl;
-  // }
+  if (model && model.includes("claude")) {
+    baseUrl = serverConfig.claudeUrl;
+  }
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -108,12 +109,11 @@ export async function requestOpenai(req: NextRequest) {
         DEFAULT_MODELS,
         serverConfig.customModels,
       );
-      const clonedBody = await req.text();
-      console.log("[OpenAI] gpt4 filter clonedBody", clonedBody);
+      // const clonedBody = await req.text();
+      const clonedBody = reqBody;
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
-      console.log("[OpenAI] gpt4 filter jsonBody", jsonBody);
 
       // not undefined and is false
       if (modelTable[jsonBody?.model ?? ""].available === false) {
