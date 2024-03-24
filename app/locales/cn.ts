@@ -402,6 +402,10 @@ const cn = {
         Title: "启用语音转文本",
         SubTitle: "启用语音转文本",
       },
+      Engine: {
+        Title: "转换引擎",
+        SubTitle: "音频转换引擎",
+      },
     },
   },
   Store: {

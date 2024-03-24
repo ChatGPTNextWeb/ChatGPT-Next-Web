@@ -67,9 +67,16 @@ export async function requestOpenai(req: NextRequest) {
 
   let jsonBody;
   let clonedBody;
-  if (req.method !== "GET" && req.method !== "HEAD") {
+  const contentType = req.headers.get("Content-Type");
+  if (
+    req.method !== "GET" &&
+    req.method !== "HEAD" &&
+    contentType?.includes("json")
+  ) {
     clonedBody = await req.text();
     jsonBody = JSON.parse(clonedBody) as { model?: string };
+  } else {
+    clonedBody = req.body;
   }
   if (serverConfig.isAzure) {
     baseUrl = `${baseUrl}/${jsonBody?.model}`;
@@ -77,7 +84,7 @@ export async function requestOpenai(req: NextRequest) {
   const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": contentType ?? "application/json",
       "Cache-Control": "no-store",
       [authHeaderName]: authValue,
       ...(serverConfig.openaiOrgId && {

@@ -134,6 +134,9 @@ export const DEFAULT_TTS_VOICES = [
   "shimmer",
 ];
 
+export const DEFAULT_STT_ENGINE = "WebAPI";
+export const DEFAULT_STT_ENGINES = ["WebAPI", "OpenAI Whisper"];
+
 export const DEFAULT_MODELS = [
   {
     name: "gpt-4",

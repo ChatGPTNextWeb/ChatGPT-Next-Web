@@ -5,6 +5,8 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_STT_ENGINE,
+  DEFAULT_STT_ENGINES,
   DEFAULT_TTS_MODEL,
   DEFAULT_TTS_MODELS,
   DEFAULT_TTS_VOICE,
@@ -16,6 +18,8 @@ import { createPersistStore } from "../utils/store";
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 export type TTSModelType = (typeof DEFAULT_TTS_MODELS)[number];
 export type TTSVoiceType = (typeof DEFAULT_TTS_VOICES)[number];
+
+export type STTEngineType = (typeof DEFAULT_STT_ENGINES)[number];
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -81,6 +85,7 @@ export const DEFAULT_CONFIG = {
 
   sttConfig: {
     enable: false,
+    engine: DEFAULT_STT_ENGINE,
   },
 };
 
@@ -113,6 +118,12 @@ export const TTSConfigValidator = {
   },
   speed(x: number) {
     return limitNumber(x, 0.25, 4.0, 1.0);
+  },
+};
+
+export const STTConfigValidator = {
+  engine(x: string) {
+    return x as STTEngineType;
   },
 };
 

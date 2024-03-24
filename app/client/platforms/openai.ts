@@ -143,11 +143,12 @@ export class ChatGPTApi implements LLMApi {
 
     try {
       const path = this.path(OpenaiPath.TranscriptionPath, options.model);
+      const headers = getHeaders(true);
       const payload = {
         method: "POST",
         body: formData,
         signal: controller.signal,
-        headers: getHeaders(true),
+        headers: headers,
       };
 
       // make a fetch request
@@ -155,7 +156,6 @@ export class ChatGPTApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-
       const res = await fetch(path, payload);
       clearTimeout(requestTimeoutId);
       const json = await res.json();

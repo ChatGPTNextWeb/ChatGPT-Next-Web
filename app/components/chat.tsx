@@ -91,6 +91,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
+  DEFAULT_STT_ENGINE,
   LAST_INPUT_KEY,
   ModelProvider,
   Path,
@@ -806,10 +807,10 @@ function _Chat() {
   };
 
   const [isListening, setIsListening] = useState(false);
+  const [isTranscription, setIsTranscription] = useState(false);
   const [speechApi, setSpeechApi] = useState<any>(null);
 
   const startListening = async () => {
-    console.log(speechApi);
     if (speechApi) {
       await speechApi.start();
       setIsListening(true);
@@ -818,6 +819,8 @@ function _Chat() {
 
   const stopListening = async () => {
     if (speechApi) {
+      if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
+        setIsTranscription(true);
       await speechApi.stop();
       setIsListening(false);
     }
@@ -826,6 +829,8 @@ function _Chat() {
   const onRecognitionEnd = (finalTranscript: string) => {
     console.log(finalTranscript);
     if (finalTranscript) setUserInput(finalTranscript);
+    if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
+      setIsTranscription(false);
   };
 
   const doSubmit = (userInput: string) => {
@@ -899,9 +904,13 @@ function _Chat() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     setSpeechApi(
-      new OpenAITranscriptionApi((transcription) =>
-        onRecognitionEnd(transcription),
-      ),
+      config.sttConfig.engine === DEFAULT_STT_ENGINE
+        ? new WebTranscriptionApi((transcription) =>
+            onRecognitionEnd(transcription),
+          )
+        : new OpenAITranscriptionApi((transcription) =>
+            onRecognitionEnd(transcription),
+          ),
     );
   }, []);
 
@@ -1695,6 +1704,7 @@ function _Chat() {
               onClick={async () =>
                 isListening ? await stopListening() : await startListening()
               }
+              loding={isTranscription}
             />
           ) : (
             <IconButton

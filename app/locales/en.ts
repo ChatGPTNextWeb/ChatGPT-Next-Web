@@ -408,6 +408,10 @@ const en: LocaleType = {
         Title: "Enable STT",
         SubTitle: "Enable Speech-to-Text",
       },
+      Engine: {
+        Title: "STT Engine",
+        SubTitle: "Text-to-Speech Engine",
+      },
     },
   },
   Store: {

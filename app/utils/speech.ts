@@ -31,7 +31,7 @@ export class OpenAITranscriptionApi extends SpeechApi {
   }
 
   async start(): Promise<void> {
-    // @ts-ignore
+    // @ts-ignore prettier-ignore
     navigator.getUserMedia =
       navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
@@ -103,20 +103,18 @@ export class WebTranscriptionApi extends SpeechApi {
     this.recognitionInstance.onresult = (event: any) => {
       const result = event.results[event.results.length - 1];
       if (result.isFinal) {
-        if (!this.isListening) {
-          this.onTranscriptionReceived(result[0].transcript);
-        }
+        this.onTranscription(result[0].transcript);
       }
     };
   }
 
   async start(): Promise<void> {
-    await this.recognitionInstance.start();
     this.listeningStatus = true;
+    await this.recognitionInstance.start();
   }
 
   async stop(): Promise<void> {
-    await this.recognitionInstance.stop();
     this.listeningStatus = false;
+    await this.recognitionInstance.stop();
   }
 }

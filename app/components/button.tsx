@@ -4,6 +4,8 @@ import styles from "./button.module.scss";
 
 export type ButtonType = "primary" | "danger" | null;
 
+import LoadingIcon from "../icons/three-dots-white.svg";
+
 export function IconButton(props: {
   onClick?: () => void;
   icon?: JSX.Element;
@@ -16,6 +18,7 @@ export function IconButton(props: {
   disabled?: boolean;
   tabIndex?: number;
   autoFocus?: boolean;
+  loding?: boolean;
 }) {
   return (
     <button
@@ -32,7 +35,7 @@ export function IconButton(props: {
       tabIndex={props.tabIndex}
       autoFocus={props.autoFocus}
     >
-      {props.icon && (
+      {props.icon && !props.loding && (
         <div
           className={
             styles["icon-button-icon"] +
@@ -43,9 +46,19 @@ export function IconButton(props: {
         </div>
       )}
 
-      {props.text && (
+      {props.text && !props.loding && (
         <div className={styles["icon-button-text"]}>{props.text}</div>
       )}
+      {props.loding ? (
+        <div
+          className={
+            styles["icon-button-loading-icon"] +
+            ` ${props.type === "primary" && "no-dark"}`
+          }
+        >
+          <LoadingIcon />
+        </div>
+      ) : null}
     </button>
   );
 }

@@ -65,6 +65,16 @@
   align-items: center;
 }
 
+.icon-button-loading-icon {
+  width: 40px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: white;
+  stroke: white;
+}
+
 @media only screen and (max-width: 600px) {
   .icon-button {
     padding: 16px;
