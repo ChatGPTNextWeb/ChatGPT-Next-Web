@@ -48,7 +48,8 @@ export async function requestOpenai(req: NextRequest) {
   
   // @todo claude url to baseUrl
   if (model && model.includes("claude")) {
-    baseUrl = serverConfig.claudeUrl;
+    const claudeUrl = serverConfig.claudeUrl;
+    baseUrl = claudeUrl;
   }
 
   if (!baseUrl.startsWith("http")) {
