@@ -64,6 +64,9 @@ export class ChatGPTApi implements LLMApi {
     // 如果 model 的值包含 claude 
     if ((model as string).includes("claude")) {
       console.log("[ModelUrl]", model);
+      if (typeof claudeUrl === 'undefined') {
+        throw new Error('Claude Url is not defined');
+      }
       baseUrl = claudeUrl;
     }
     console.log("[BaseUrl]", baseUrl);
