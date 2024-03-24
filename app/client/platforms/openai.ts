@@ -30,6 +30,7 @@ import {
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
+import { getServerSideConfig } from "@/app/config/server";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -54,7 +55,20 @@ export class ChatGPTApi implements LLMApi {
       );
     }
 
+    // 获取 model 变量
+    const model = useChatStore.getState().currentSession().mask.model;
+    console.log("[ModelUrl]", model);
+    // 获取 claudeUrl 变量
+    const claudeUrl = getServerSideConfig().claudeUrl;
+    console.log("[ClaudeUrl]", claudeUrl);
+
     let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+
+    // 如果 model 的值包含 claude 
+    if (model.includes("claude")) {
+      baseUrl = claudeUrl;
+    }
+    console.log("[BaseUrl]", baseUrl);
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;

@@ -31,6 +31,10 @@ declare global {
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
 
+      // claude only
+      CLAUDE_URL?: string;
+      CLAUDE_API_KEY?: string;
+
       // google tag manager
       GTM_ID?: string;
     }
@@ -69,6 +73,7 @@ export const getServerSideConfig = () => {
 
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
+  const isClaude = !!process.env.CLAUDE_URL;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -91,6 +96,10 @@ export const getServerSideConfig = () => {
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,
     googleUrl: process.env.GOOGLE_URL,
+
+    isClaude,
+    claudeUrl: process.env.CLAUDE_URL,
+    claudeApiKey: process.env.CLAUDE_API_KEY,
 
     gtmId: process.env.GTM_ID,
 

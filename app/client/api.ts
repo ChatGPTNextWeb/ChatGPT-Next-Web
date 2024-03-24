@@ -8,6 +8,7 @@ import {
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
+import { getServerSideConfig } from "@/app/config/server";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -157,11 +158,22 @@ export function getHeaders() {
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
+
+  // 获取 model 变量
+  const model = useChatStore.getState().currentSession().mask.model;
+  console.log("[ModelApi]", model);
+  // 获取 claudeApiKey 变量
+  const claudeApiKey = getServerSideConfig().claudeApiKey;
+  console.log("[ClaudeApiKey]", claudeApiKey);
+
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
     ? accessStore.azureApiKey
+    : model.includes("claude")
+    ? claudeApiKey
     : accessStore.openaiApiKey;
+  console.log("[ApiKey]",apiKey);
   const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;
