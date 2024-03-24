@@ -171,6 +171,9 @@ export function getHeaders(model?: string) {
     } else if (isAzure) {
       return accessStore.azureApiKey;
     } else if (model && model.includes("claude")) {
+      if (typeof claudeApiKey === 'undefined') {
+        throw new Error('Claude API key is not defined');
+      }
       return claudeApiKey;
     } else {
       return accessStore.openaiApiKey;
