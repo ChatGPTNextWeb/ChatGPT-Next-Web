@@ -11,7 +11,7 @@ export async function requestOpenai(req: NextRequest) {
 
   // req.body 
   const body = req.body;
-  console.log("[Request Body]", JSON.stringify(body));
+  console.log("[Request Body]", JSON.parse(body));
   // get model from req.body
   // const model = req.body?.model;
 
