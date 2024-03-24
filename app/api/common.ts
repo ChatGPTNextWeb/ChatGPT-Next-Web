@@ -9,8 +9,10 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
+  // 将 req 转换为 json
+  console.log("[JSON Request]", req.json());
   // req.body 
-  console.log("[Request Body]", req.body);
+  // console.log("[Request Body]", req.body);
   // get model from req.body
   // const model = req.body?.model;
 
