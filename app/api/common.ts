@@ -32,7 +32,7 @@ export async function requestOpenai(req: NextRequest) {
     authHeaderName = "Authorization";
   }
 
-  // @todo claude api key to authValue
+  // if model is claude then claude api key to authValue
   if (model && model.includes("claude")) {
     const claudeApiKey = serverConfig.claudeApiKey;
     // Check if claudeApiKey is not undefined before assigning
@@ -51,7 +51,7 @@ export async function requestOpenai(req: NextRequest) {
   let baseUrl =
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
   
-  // @todo claude url to baseUrl
+  // if model is claude then  claude url to baseUrl
   if (model && model.includes("claude")) {
     const claudeUrl = serverConfig.claudeUrl;
     // Check if claudeUrl is not undefined before assigning
