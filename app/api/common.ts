@@ -10,8 +10,8 @@ export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
   // req.body 
-  const body = req.body;
-  console.log("[Request Body]", JSON.parse(body));
+  // const body = req.body;
+  // console.log("[Request Body]", JSON.parse(body));
   // get model from req.body
   // const model = req.body?.model;
 
@@ -93,7 +93,7 @@ export async function requestOpenai(req: NextRequest) {
       }),
     },
     method: req.method,
-    body: body,
+    body: req.body,
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
@@ -109,9 +109,11 @@ export async function requestOpenai(req: NextRequest) {
         serverConfig.customModels,
       );
       const clonedBody = await req.text();
+      console.log("[OpenAI] gpt4 filter clonedBody", clonedBody);
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
+      console.log("[OpenAI] gpt4 filter jsonBody", jsonBody);
 
       // not undefined and is false
       if (modelTable[jsonBody?.model ?? ""].available === false) {
