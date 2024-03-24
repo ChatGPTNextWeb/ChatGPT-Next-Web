@@ -11,6 +11,8 @@ export async function requestOpenai(req: NextRequest) {
 
   // req.body 
   console.log("[Request Body]", req.body);
+  // get model from req.body
+  const model = req.body?.model;
 
   var authValue,
     authHeaderName = "";
@@ -28,7 +30,11 @@ export async function requestOpenai(req: NextRequest) {
     authHeaderName = "Authorization";
   }
 
-  // @todo claude api key to authValue
+  // claude api key to authValue
+  if (model && model.includes("claude")) {
+    const claudeApiKey = serverConfig.claudeApiKey;
+    authValue = claudeApiKey;
+  }
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
@@ -39,6 +45,9 @@ export async function requestOpenai(req: NextRequest) {
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
   
   // @todo claude url to baseUrl
+  if (model && model.includes("claude")) {
+    baseUrl = serverConfig.claudeUrl;
+  }
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
