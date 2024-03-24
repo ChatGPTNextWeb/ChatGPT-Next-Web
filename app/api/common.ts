@@ -35,7 +35,12 @@ export async function requestOpenai(req: NextRequest) {
   // @todo claude api key to authValue
   if (model && model.includes("claude")) {
     const claudeApiKey = serverConfig.claudeApiKey;
-    authValue = claudeApiKey;
+    // Check if claudeApiKey is not undefined before assigning
+    if (typeof claudeApiKey === 'string') {
+      authValue = claudeApiKey;
+    } else {
+      throw new Error('claudeApiKey is undefined');
+    }
   }
 
   let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
@@ -49,7 +54,12 @@ export async function requestOpenai(req: NextRequest) {
   // @todo claude url to baseUrl
   if (model && model.includes("claude")) {
     const claudeUrl = serverConfig.claudeUrl;
-    baseUrl = claudeUrl;
+    // Check if claudeUrl is not undefined before assigning
+    if (typeof claudeUrl === 'string') {
+      baseUrl = claudeUrl;
+    } else {
+      throw new Error('claudeUrl is undefined');
+    }
   }
 
   if (!baseUrl.startsWith("http")) {
