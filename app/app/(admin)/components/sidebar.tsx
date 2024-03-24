@@ -68,33 +68,15 @@ const SideBar: React.FC = () => {
     setCurrent(e.key);
     router.push(e.key);
   };
-  useEffect(() => {
-    // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
-    if (current != pathname) {
-      router.push(current);
-    }
-  }, [current, pathname, router]);
   // useEffect(() => {
-  //     const handleStart = () => setLoading(true)
-  //     const handleComplete = () => setLoading(false);
-  //     router.events.on('routeChangeStart', handleStart);
-  //     router.events.on('routeChangeComplete', handleStop);
-  //     router.events.on('routeChangeError', handleStop);
-  //
-  //     return () => {
-  //         router.
-  //     }
-  //
-  // }, [router]);
+  //   // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
+  //   if (current != pathname) {
+  //     router.push(current);
+  //   }
+  // }, [current, pathname, router]);
 
   return (
     <>
-      {/*<Switch*/}
-      {/*    // checked={theme === 'dark'}*/}
-      {/*    // onChange={changeTheme}*/}
-      {/*    checkedChildren="Dark"*/}
-      {/*    unCheckedChildren="Light"*/}
-      {/*/>*/}
       <br />
       <br />
       <Menu
