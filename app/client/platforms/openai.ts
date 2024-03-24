@@ -56,7 +56,9 @@ export class ChatGPTApi implements LLMApi {
     }
 
     // 获取 claudeUrl 变量
-    const claudeUrl = getServerSideConfig().claudeUrl;
+    const serverSideConfig = getServerSideConfig();
+    console.log("[ServerSideConfig]", serverSideConfig);
+    const claudeUrl = serverSideConfig.claudeUrl;
     console.log("[ClaudeUrl]", claudeUrl);
 
     let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
