@@ -11,6 +11,11 @@ export async function requestOpenai(req: NextRequest) {
 
   // 将 req 转换为 json
   console.log("[JSON Request]", req.json());
+  // 将 req 转换为 text
+  console.log("[Text Request]", req.text());
+  // 将 req 转换为 string
+  console.log("[String Request]", req.toString());
+
   // req.body 
   // console.log("[Request Body]", req.body);
   // get model from req.body
