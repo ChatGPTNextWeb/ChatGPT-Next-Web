@@ -148,7 +148,7 @@ export class ClientApi {
   }
 }
 
-export function getHeaders() {
+export function getHeaders(model?: string) {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -159,8 +159,6 @@ export function getHeaders() {
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
 
-  // 获取 model 变量
-  const model = useChatStore.getState().currentSession().mask.model;
   console.log("[ModelApi]", model);
   // 获取 claudeApiKey 变量
   const claudeApiKey = getServerSideConfig().claudeApiKey;
@@ -170,7 +168,7 @@ export function getHeaders() {
     ? accessStore.googleApiKey
     : isAzure
     ? accessStore.azureApiKey
-    : model.includes("claude")
+    : (model: string) => model.includes("claude") // Add type annotation to "model" variable
     ? claudeApiKey
     : accessStore.openaiApiKey;
   console.log("[ApiKey]",apiKey);

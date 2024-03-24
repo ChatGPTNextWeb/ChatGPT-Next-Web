@@ -44,7 +44,7 @@ export interface OpenAIListModelResponse {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string): string {
+  path(path: string, model?: string): string {
     const accessStore = useAccessStore.getState();
 
     const isAzure = accessStore.provider === ServiceProvider.Azure;
@@ -55,9 +55,6 @@ export class ChatGPTApi implements LLMApi {
       );
     }
 
-    // 获取 model 变量
-    const model = useChatStore.getState().currentSession().mask.model;
-    console.log("[ModelUrl]", model);
     // 获取 claudeUrl 变量
     const claudeUrl = getServerSideConfig().claudeUrl;
     console.log("[ClaudeUrl]", claudeUrl);
@@ -65,7 +62,8 @@ export class ChatGPTApi implements LLMApi {
     let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
 
     // 如果 model 的值包含 claude 
-    if (model.includes("claude")) {
+    if ((model as string).includes("claude")) {
+      console.log("[ModelUrl]", model);
       baseUrl = claudeUrl;
     }
     console.log("[BaseUrl]", baseUrl);
@@ -141,12 +139,12 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      const chatPath = this.path(OpenaiPath.ChatPath, modelConfig.model);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: getHeaders(modelConfig.model),
       };
 
       // make a fetch request
