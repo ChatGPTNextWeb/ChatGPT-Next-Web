@@ -1,6 +1,9 @@
 "use client";
 
-import React, { ReactNode, useState } from "react";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import { ADMIN_LIST } from "@/lib/auth_list";
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -15,12 +18,23 @@ const { Header, Sider, Content } = Layout;
 
 function MainLayout({ children }: { children: ReactNode }) {
   // const [theme, setTheme] = useState<ThemeConfig>('dark');
-
+  const { data, status } = useSession();
+  const name = data?.user?.email || data?.user?.name;
+  // console.log('name', name, data, status)
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG, colorBgLayout },
   } = theme.useToken();
 
+  // 客户端才执行
+  useEffect(() => {
+    // 用户已登录，且没设置密码
+    // if (status === "loading") return;
+    if (status === "authenticated" && !(name && ADMIN_LIST.includes(name))) {
+      redirect("/");
+    }
+    // 状态变化时，重新判断
+  }, [name, status]);
   return (
     <ConfigProvider
       theme={{
