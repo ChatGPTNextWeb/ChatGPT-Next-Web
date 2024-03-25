@@ -46,7 +46,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
     };
   }
 
-/*
+  /*
   if (serverConfig.hideUserApiKey && !!apiKey) {
       return {
       error: true,
@@ -63,7 +63,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
 
     if (serverApiKey) {
       console.log("[Auth] use system api key");
-      req.headers.set("Authorization", `Bearer ${systemApiKey}`);
+      req.headers.set("Authorization", `Bearer ${serverApiKey}`);
     } else {
       console.log("[Auth] admin did not provide an api key");
     }
