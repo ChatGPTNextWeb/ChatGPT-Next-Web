@@ -1,11 +1,16 @@
 /* eslint-disable @next/next/no-page-custom-font */
-import { type Metadata } from "next";
+import "./styles/globals.scss";
+import "./styles/markdown.scss";
+import "./styles/highlight.scss";
 import { getServerSession } from "next-auth";
 import SessionProvider from "./components/session-provider";
+
 import { getClientConfig } from "./config/client";
-import "./styles/globals.scss";
-import "./styles/highlight.scss";
-import "./styles/markdown.scss";
+import { type Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getServerSideConfig } from "./config/server";
+import { GoogleTagManager } from "@next/third-parties/google";
+const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
   title: "AdExGPT Web",
@@ -42,6 +47,17 @@ export default async function RootLayout({
       </head>
       <body>
         <SessionProvider session={session}>{children}</SessionProvider>
+        {children}
+        {serverConfig?.isVercel && (
+          <>
+            <SpeedInsights />
+          </>
+        )}
+        {serverConfig?.gtmId && (
+          <>
+            <GoogleTagManager gtmId={serverConfig.gtmId} />
+          </>
+        )}
       </body>
     </html>
   );
