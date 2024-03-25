@@ -97,7 +97,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
-
+import SpeechRecorder from "./chat/speechRecorder";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
@@ -347,7 +347,7 @@ function ChatAction(props: {
     full: 16,
     icon: 16,
   });
-
+  const [isActive, setIsActive] = useState(false);
   function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
@@ -361,25 +361,22 @@ function ChatAction(props: {
 
   return (
     <div
-      className={`${styles["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} clickable group`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
       }}
-      onMouseEnter={updateWidth}
-      onTouchStart={updateWidth}
-      style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
-      }
     >
-      <div ref={iconRef} className={styles["icon"]}>
-        {props.icon}
-      </div>
-      <div className={styles["text"]} ref={textRef}>
-        {props.text}
+      <div className="flex">
+        <div ref={iconRef} className={styles["icon"]}>
+          {props.icon}
+        </div>
+        <div
+          className={`${styles["text"]} transition-all duration-1000 w-0 group-hover:w-[60px]`}
+          ref={textRef}
+        >
+          {props.text}
+        </div>
       </div>
     </div>
   );
@@ -424,6 +421,7 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  setUserInput: (text: string) => void;
   hitBottom: boolean;
   uploading: boolean;
 }) {
@@ -1462,6 +1460,7 @@ function _Chat() {
           scrollToBottom={scrollToBottom}
           hitBottom={hitBottom}
           uploading={uploading}
+          setUserInput={setUserInput}
           showPromptHints={() => {
             // Click again to close
             if (promptHints.length > 0) {
@@ -1522,13 +1521,19 @@ function _Chat() {
               })}
             </div>
           )}
-          <IconButton
-            icon={<SendWhiteIcon />}
-            text={Locale.Chat.Send}
-            className={styles["chat-input-send"]}
-            type="primary"
-            onClick={() => doSubmit(userInput)}
-          />
+          <div className="flex gap-2 absolute left-[30px] bottom-[32px]">
+            <SpeechRecorder textUpdater={setUserInput}></SpeechRecorder>
+          </div>
+
+          <div className="flex gap-2 absolute right-[30px] bottom-[32px]">
+            <IconButton
+              icon={<SendWhiteIcon />}
+              text={Locale.Chat.Send}
+              className={styles["chat-input-send"]}
+              type="primary"
+              onClick={() => doSubmit(userInput)}
+            />
+          </div>
         </label>
       </div>
 

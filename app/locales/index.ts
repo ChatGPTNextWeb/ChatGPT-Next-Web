@@ -70,6 +70,28 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   sk: "Slovensky",
 };
 
+const LANG_CODE_MAPPING = {
+  cn: "zh-CN",
+  en: "en-US",
+  tw: "zh-TW",
+  pt: "pt-BR",
+  jp: "ja-JP",
+  ko: "ko-KR",
+  id: "id-ID",
+  fr: "fr-FR",
+  es: "es-ES",
+  it: "it-IT",
+  tr: "tr-TR",
+  de: "de-DE",
+  vi: "vi-VN",
+  ru: "ru-RU",
+  cs: "cs-CZ",
+  no: "nb-NO",
+  ar: "ar-SA",
+  bn: "bn-BD",
+  sk: "sk-SK",
+};
+
 const LANG_KEY = "lang";
 const DEFAULT_LANG = "en";
 
@@ -80,6 +102,13 @@ const targetLang = ALL_LANGS[getLang()] as LocaleType;
 merge(fallbackLang, targetLang);
 
 export default fallbackLang as LocaleType;
+
+export const formatLang = (languageCode: string) => {
+  return (
+    LANG_CODE_MAPPING[languageCode as keyof typeof LANG_CODE_MAPPING] ||
+    languageCode
+  );
+};
 
 function getItem(key: string) {
   try {
