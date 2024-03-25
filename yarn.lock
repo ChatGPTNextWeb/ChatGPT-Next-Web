@@ -2837,12 +2837,12 @@ elkjs@^0.9.0:
   resolved "https://registry.npmjs.org/elkjs/-/elkjs-0.9.1.tgz"
   integrity sha512-JWKDyqAdltuUcyxaECtYG6H4sqysXSLeoXuGUBfRNESMTkj+w+qdb0jya8Z/WI0jVd03WQtCGhS6FOFtlhD5FQ==
 
-emoji-picker-react@^4.6.14:
-  version "4.6.14"
-  resolved "https://registry.npmjs.org/emoji-picker-react/-/emoji-picker-react-4.6.14.tgz"
-  integrity sha512-83QJxsSSD/3VL+uQRxAqubcMQIwthbtskxegl3Nw6JpgVwehcsyA3Mho59Yage44BFGxb/o0FoSSajGHk59X0w==
+emoji-picker-react@^4.9.2:
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.9.2.tgz#5118c5e1028ce4a96c94eb7c9bef09d30b08742c"
+  integrity sha512-pdvLKpto0DMrjE+/8V9QeYjrMcOkJmqBn3GyCSG2zanY32rN2cnWzBUmzArvapAjzBvgf7hNmJP8xmsdu0cmJA==
   dependencies:
-    flairup "0.0.32"
+    flairup "0.0.38"
 
 emoji-regex@^9.2.2:
   version "9.2.2"
@@ -3311,10 +3311,10 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-flairup@0.0.32:
-  version "0.0.32"
-  resolved "https://registry.npmjs.org/flairup/-/flairup-0.0.32.tgz"
-  integrity sha512-kqFDVgPXq714gyUtKp/nEkCg4vWpRni8pSWoPMU54pQNGqVEOfT+bBYgCyWFb5MygSh2q0wCWvcX6kyAus9C7g==
+flairup@0.0.38:
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/flairup/-/flairup-0.0.38.tgz#62216990a8317a1b07d1d816033624c5b2130f31"
+  integrity sha512-W9QA5TM7eYNlGoBYwfVn/o6v4yWBCxfq4+EJ5w774oFeyWvVWnYq6Dgt4CJltjG9y/lPwbOqz3jSSr8K66ToGg==
 
 flat-cache@^3.0.4:
   version "3.0.4"
