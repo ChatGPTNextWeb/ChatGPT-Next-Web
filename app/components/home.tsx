@@ -28,9 +28,7 @@ import { getClientConfig } from "../config/client";
 import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
-import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
-import { useAccessStore } from "../store";
 import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
