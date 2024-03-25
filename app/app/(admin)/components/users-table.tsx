@@ -9,7 +9,6 @@ import type { GetRef, TableColumnsType, TableColumnType } from "antd";
 import Highlighter from "react-highlight-words";
 // 后期考虑删除该依赖
 
-const { Column, ColumnGroup } = Table;
 import { getCurrentTime } from "@/app/utils/custom";
 
 interface UserInterface {
