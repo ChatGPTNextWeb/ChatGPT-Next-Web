@@ -22,6 +22,10 @@ const DEFAULT_ACCESS_STATE = {
 
   provider: ServiceProvider.OpenAI,
 
+  // fastgpt
+  fastgptUrl: "",
+  fastgptApiKey: "",
+
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
   openaiApiKey: "",
@@ -65,6 +69,10 @@ export const useAccessStore = createPersistStore(
 
     isValidGoogle() {
       return ensure(get(), ["googleApiKey"]);
+    },
+
+    isValidFastGPT() {
+      return ensure(get(), ["fastgptUrl", "fastgptApiKey"]);
     },
 
     isAuthorized() {

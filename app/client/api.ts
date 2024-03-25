@@ -34,6 +34,18 @@ export interface LLMConfig {
   stream?: boolean;
   presence_penalty?: number;
   frequency_penalty?: number;
+  // 添加fastGPT可能需要的兼容项
+  chatId?: string;
+  detail?: boolean;
+  variables?: Record<string, string>;
+}
+
+// FastGPT 所有配置
+export interface FastGPTConfig {
+  chatId: string;
+  stream?: boolean;
+  detail?: boolean;
+  variables?: Record<string, string>;
 }
 
 export interface ChatOptions {
@@ -147,7 +159,7 @@ export class ClientApi {
   }
 }
 
-export function getHeaders() {
+export function getHeaders(FastGptApiKey: string = "") {
   const accessStore = useAccessStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -157,6 +169,7 @@ export function getHeaders() {
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
+  const isFastGPT = modelConfig.model.startsWith("fastgpt");
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
@@ -165,6 +178,11 @@ export function getHeaders() {
   const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;
+
+  if (isFastGPT) {
+    headers["Authorization"] = makeBearer(FastGptApiKey);
+    return headers;
+  }
 
   // when using google api in app, not set auth header
   if (!(isGoogle && clientConfig?.isApp)) {
