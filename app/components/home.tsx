@@ -23,7 +23,6 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
