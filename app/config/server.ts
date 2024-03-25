@@ -33,6 +33,9 @@ declare global {
 
       // google tag manager
       GTM_ID?: string;
+
+      // fastgpt only
+      FAST_GPT?: string;
     }
   }
 }
@@ -69,6 +72,7 @@ export const getServerSideConfig = () => {
 
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
+  const isFastGPT = !!process.env.FAST_GPT;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -106,5 +110,7 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+
+    isFastGPT,
   };
 };

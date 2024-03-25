@@ -1269,12 +1269,27 @@ function _Chat() {
           inputRef.current?.blur();
           setAutoScroll(false);
         }}
-      ></div>
+      >
+        <iframe
+          src="http://localhost:3002/chat/share?shareId=o8y0fecj37msu0bqpjenb9di"
+          frameBorder="0"
+          width="100%"
+          height="100%"
+          allow="microphone"
+        />
+        <iframe
+          src="http://localhost:3002/chat/share?shareId=swpil2g5wsq7y6t2qr5bh4g4"
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          allow="microphone"
+        />
+      </div>
 
       <div className={styles["chat-input-panel"]}>
-        <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
+        {/* <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} /> */}
 
-        <ChatActions
+        {/* <ChatActions
           uploadImage={uploadImage}
           setAttachImages={setAttachImages}
           setUploading={setUploading}
@@ -1293,7 +1308,7 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
-        />
+        /> */}
         <label
           className={`${styles["chat-input-panel-inner"]} ${
             attachImages.length != 0
