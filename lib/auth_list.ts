@@ -1,6 +1,6 @@
 
 export const DENY_LIST: string[] = [
-  "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话", "笑死", "观化听风"
+  "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话", "笑死", "观化听风", "null", "undefined",
 ]
 export const ADMIN_LIST: string[] = [
   "司金辉", "sijinhui", "sijinhui@qq.com",

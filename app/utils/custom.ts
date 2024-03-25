@@ -1,5 +1,7 @@
-export function getCurrentTime(): string {
-  const now = new Date();
+export function getCurrentTime(now?: Date): string {
+  if (!now) {
+    const now = new Date();
+  }
   const formatter = new Intl.DateTimeFormat("zh-CN", {
     timeZone: "Asia/Shanghai", // 设置为中国标准时间
     year: "numeric",
