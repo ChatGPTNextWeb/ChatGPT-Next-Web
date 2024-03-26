@@ -50,7 +50,7 @@ const items: MenuItem[] = [
 
 const SideBar: React.FC = () => {
   const [theme, setTheme] = useState<MenuTheme>("dark");
-  const [current, setCurrent] = useState("/admin/ana");
+  const [current, setCurrent] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
@@ -63,12 +63,12 @@ const SideBar: React.FC = () => {
     setCurrent(e.key);
     router.push(e.key);
   };
-  useEffect(() => {
-    // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
-    if (current != pathname) {
-      router.push(current);
-    }
-  }, [current, pathname, router]);
+  // useEffect(() => {
+  //   // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
+  //   if (current != pathname) {
+  //     router.push(current);
+  //   }
+  // }, [current, pathname, router]);
 
   return (
     <>
@@ -78,7 +78,7 @@ const SideBar: React.FC = () => {
         theme={theme}
         onClick={onClick}
         // style={{ width: 256 }}
-        defaultOpenKeys={["dashboard"]}
+        // defaultOpenKeys={["dashboard"]}
         selectedKeys={[current]}
         mode="inline"
         items={items}
