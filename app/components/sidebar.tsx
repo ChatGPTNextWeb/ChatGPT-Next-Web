@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -15,7 +15,7 @@ import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
 
-import { useAppConfig, useChatStore } from "../store";
+import { useAppConfig, useChatStore, useFastGPTChatStore } from "../store";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -34,6 +34,13 @@ import { showConfirm, showToast } from "./ui-lib";
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
+
+const FastGPTChatList = dynamic(
+  async () => (await import("./fastgpt-chat-list")).FastGPTChatList,
+  {
+    loading: () => null,
+  },
+);
 
 function useHotKey() {
   const chatStore = useChatStore();
@@ -130,7 +137,7 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
-
+  const fastgptChatStore = useFastGPTChatStore();
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -142,6 +149,10 @@ export function SideBar(props: { className?: string }) {
   );
 
   useHotKey();
+  const [fastgptdisplay, setFastGPTDisplay] = useState(false);
+  const switchChatList = () => {
+    setFastGPTDisplay(!fastgptdisplay);
+  };
 
   return (
     <div
@@ -181,9 +192,9 @@ export function SideBar(props: { className?: string }) {
         />
         <IconButton
           icon={<PluginIcon />}
-          text={"FastGPT"}
+          text={"FG List"}
           className={styles["sidebar-bar-button"]}
-          onClick={() => navigate(Path.FastGPT, { state: { fromHome: true } })}
+          onClick={() => switchChatList()}
           shadow
         />
       </div>
@@ -196,7 +207,11 @@ export function SideBar(props: { className?: string }) {
           }
         }}
       >
-        <ChatList narrow={shouldNarrow} />
+        {fastgptdisplay ? (
+          <FastGPTChatList narrow={shouldNarrow} />
+        ) : (
+          <ChatList narrow={shouldNarrow} />
+        )}
       </div>
 
       <div className={styles["sidebar-tail"]}>
@@ -226,6 +241,23 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div> */}
+        </div>
+        <div>
+          <IconButton
+            icon={<AddIcon />}
+            text={shouldNarrow ? undefined : "FastGPT"}
+            onClick={() => {
+              // if (config.dontShowMaskSplashScreen) {
+              //   chatStore.newSession();
+              //   navigate(Path.Chat);
+              // } else {
+              //   navigate(Path.NewChat);
+              // }
+              fastgptChatStore.newSession();
+              navigate(Path.FastGPT);
+            }}
+            shadow
+          />
         </div>
         <div>
           <IconButton

@@ -1214,7 +1214,7 @@ function _Chat() {
             className={`window-header-main-title ${styles["chat-body-main-title"]}`}
             // onClickCapture={() => setIsEditingMessage(true)}
           >
-            {"FastGPT Demo"}
+            {!session.topic ? DEFAULT_FASTGPT_TOPIC : session.topic}
           </div>
           <div className="window-header-sub-title">
             {Locale.Chat.SubTitle(session.messages.length)}

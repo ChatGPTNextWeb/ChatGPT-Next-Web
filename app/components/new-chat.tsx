@@ -11,7 +11,7 @@ import EyeIcon from "../icons/eye.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
-import { useAppConfig, useChatStore } from "../store";
+import { useAppConfig, useChatStore, useFastGPTChatStore } from "../store";
 import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
@@ -72,6 +72,7 @@ function useMaskGroup(masks: Mask[]) {
 }
 
 export function NewChat() {
+  // const chatStore = fastgpt ? useFastGPTChatStore() : useChatStore();
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
 
@@ -89,6 +90,11 @@ export function NewChat() {
     setTimeout(() => {
       chatStore.newSession(mask);
       navigate(Path.Chat);
+      // if (fastgpt) {
+      //   navigate(Path.FastGPT);
+      // } else {
+      //   navigate(Path.Chat);
+      // }
     }, 10);
   };
 

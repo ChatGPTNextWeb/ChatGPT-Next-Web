@@ -60,7 +60,7 @@ export interface ChatSession {
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
-export const DEFAULT_FASTGPT_TOPIC = "FastGPT Demo";
+export const DEFAULT_FASTGPT_TOPIC = "FastGPT";
 export const BOT_HELLO: ChatMessage = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
@@ -780,7 +780,7 @@ export const useFastGPTChatStore = createPersistStore(
       },
 
       newSession(mask?: Mask) {
-        const session = createEmptySession();
+        const session = createEmptyFastGPTSession();
 
         if (mask) {
           const config = useAppConfig.getState();
