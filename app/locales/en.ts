@@ -64,6 +64,7 @@ const en: LocaleType = {
       Prompt: "Prompts",
       Masks: "Masks",
       Clear: "Clear Context",
+      NewChat: "New Chat",
       Settings: "Settings",
       UploadImage: "Upload Images",
     },
