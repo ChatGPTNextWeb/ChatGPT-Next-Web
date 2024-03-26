@@ -36,8 +36,8 @@ const nextConfig = {
    * - https://github.com/vercel/next.js/blob/08a92e0aa589e9220b0e740594c39846c69ef308/packages/next/src/build/webpack/plugins/define-env-plugin.ts#L146
    */
   env: {
-    // This is avaliable as process.env.buildMode
-    BUILD_MODE: mode,
+    // This is avaliable as process.env.BUILD_MODE
+    BUILD_MODE: JSON.stringify('mode'),
   },
   output: mode,
   images: {
