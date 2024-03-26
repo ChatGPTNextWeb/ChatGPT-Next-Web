@@ -29,6 +29,11 @@ export type ChatMessage = RequestMessage & {
   model?: ModelType;
 };
 
+export type FastgptConfig = {
+  stream: boolean;
+  detail: boolean;
+};
+
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
     id: nanoid(),

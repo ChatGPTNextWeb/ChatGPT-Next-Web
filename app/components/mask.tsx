@@ -31,6 +31,7 @@ import {
   Popover,
   Select,
   showConfirm,
+  PasswordInput,
 } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
@@ -77,6 +78,7 @@ export function MaskConfig(props: {
   mask: Mask;
   updateMask: Updater<Mask>;
   extraListItems?: JSX.Element;
+  // shouldFastGPT?: boolean;
   readonly?: boolean;
   shouldSyncFromGlobal?: boolean;
 }) {
@@ -163,6 +165,21 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
 
+        <ListItem
+          title={Locale.Mask.Config.FastGPT.Title}
+          subTitle={Locale.Mask.Config.FastGPT.SubTitle}
+        >
+          <input
+            type="checkbox"
+            checked={props.mask.fastgpt}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                mask.fastgpt = e.currentTarget.checked;
+              });
+            }}
+          ></input>
+        </ListItem>
+
         {!props.shouldSyncFromGlobal ? (
           <ListItem
             title={Locale.Mask.Config.Share.Title}
@@ -205,13 +222,71 @@ export function MaskConfig(props: {
         ) : null}
       </List>
 
-      <List>
-        <ModelConfigList
-          modelConfig={{ ...props.mask.modelConfig }}
-          updateConfig={updateConfig}
-        />
-        {props.extraListItems}
-      </List>
+      {props.mask.fastgpt ? (
+        <List>
+          <ListItem title={Locale.Mask.Config.FastGPT.Stream.Title}>
+            <input
+              type="checkbox"
+              checked={props.mask.fastgptConfig?.stream}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptConfig.stream = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+          <ListItem title={Locale.Mask.Config.FastGPT.Detail.Title}>
+            <input
+              type="checkbox"
+              checked={props.mask.fastgptConfig?.detail}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptConfig.detail = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        </List>
+      ) : (
+        <List>
+          <ModelConfigList
+            modelConfig={{ ...props.mask.modelConfig }}
+            updateConfig={updateConfig}
+          />
+          {props.extraListItems}
+        </List>
+      )}
+
+      {props.mask.fastgpt ? (
+        <List>
+          <ListItem
+            title={Locale.Mask.Config.FastGPT.API.Title}
+            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
+          >
+            <PasswordInput
+              value={props.mask.fastgptAPI.token}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  props.mask.fastgptAPI.token = e.currentTarget.value;
+                });
+              }}
+            ></PasswordInput>
+          </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.FastGPT.API.Title}
+            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
+          >
+            <PasswordInput
+              value={props.mask.fastgptAPI.token1}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  props.mask.fastgptAPI.token1 = e.currentTarget.value;
+                });
+              }}
+            ></PasswordInput>
+          </ListItem>
+        </List>
+      ) : null}
     </>
   );
 }

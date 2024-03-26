@@ -758,6 +758,10 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
+    // In FastGPT, we need a number of messages and they have diffrent headers
+    // So we need a method to handle and control diiferent headers
+    // 将使用chatStore进行提交的方法进行包装
+    // 调用对话设置里，设置好的Headers API Key，传过来，发往后端
     chatStore
       .onUserInput(userInput, attachImages)
       .then(() => setIsLoading(false));
@@ -1221,16 +1225,14 @@ function _Chat() {
           </div>
         </div>
         <div className="window-actions">
-          {/* {!isMobileScreen && (
-            <div className="window-action-button">
-              <IconButton
-                icon={<RenameIcon />}
-                bordered
-                onClick={() => setIsEditingMessage(true)}
-              />
-            </div>
-          )}
           <div className="window-action-button">
+            <IconButton
+              icon={<RenameIcon />}
+              bordered
+              onClick={() => setShowPromptModal(true)}
+            />
+          </div>
+          {/* <div className="window-action-button">
             <IconButton
               icon={<ExportIcon />}
               bordered

@@ -1,6 +1,6 @@
 import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
-import { DEFAULT_TOPIC, ChatMessage } from "./chat";
+import { DEFAULT_TOPIC, ChatMessage, FastgptConfig } from "./chat";
 import { ModelConfig, useAppConfig } from "./config";
 import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
@@ -17,9 +17,22 @@ export type Mask = {
   modelConfig: ModelConfig;
   lang: Lang;
   builtin: boolean;
+  //是否使用fastgpt
   fastgpt?: boolean;
-  fastgptConfig?: Record<string, any>;
+  //fastgpt的配置（detail, stream）
+  fastgptConfig: FastgptConfig;
+  //fastgpt API (Bearer token)
+  fastgptAPI: Record<string, any>;
+  //fastgpt variables
+  fastgptVar: Record<string, any>;
 };
+
+export const DEFAULT_FASTGPTVAR = {
+  name: "",
+  des: "",
+  char_personality: "",
+  senario: "",
+} as Record<string, any>;
 
 export const DEFAULT_MASK_STATE = {
   masks: {} as Record<string, Mask>,
@@ -38,6 +51,13 @@ export const createEmptyMask = () =>
     modelConfig: { ...useAppConfig.getState().modelConfig },
     lang: getLang(),
     builtin: false,
+    fastgpt: false,
+    fastgptConfig: {
+      detail: false,
+      stream: true,
+    },
+    fastgptAPI: {},
+    fastgptVar: { ...DEFAULT_FASTGPTVAR },
     createdAt: Date.now(),
   }) as Mask;
 

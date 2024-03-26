@@ -430,6 +430,20 @@ const cn = {
         SubTitle: "生成此面具的直达链接",
         Action: "复制链接",
       },
+      FastGPT: {
+        Title: "是否为 FastGPT 对话",
+        SubTitle: "使用 FastGPT 配置进行对话",
+        Stream: {
+          Title: "是否开启流式对话（默认开启）",
+        },
+        Detail: {
+          Title: "是否返回中间值（默认关闭）",
+        },
+        API: {
+          Title: "FastGPT API Key",
+          SubTitle: "填写API（fast-开头）",
+        },
+      },
     },
   },
   NewChat: {
