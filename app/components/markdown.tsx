@@ -120,9 +120,27 @@ function escapeDollarNumber(text: string): string {
   }).join('\n');
 }
 
+function escapeBrackets(text: string) {
+  const pattern =
+    /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
+  return text.replace(
+    pattern,
+    (match, codeBlock, squareBracket, roundBracket) => {
+      if (codeBlock) {
+        return codeBlock;
+      } else if (squareBracket) {
+        return `$$${squareBracket}$$`;
+      } else if (roundBracket) {
+        return `$${roundBracket}$`;
+      }
+      return match;
+    },
+  );
+}
+
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(
-    () => escapeDollarNumber(props.content),
+    () => escapeBrackets(escapeDollarNumber(props.content)),
     [props.content],
   );
 
