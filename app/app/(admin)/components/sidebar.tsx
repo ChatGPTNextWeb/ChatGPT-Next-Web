@@ -50,7 +50,7 @@ const items: MenuItem[] = [
 
 const SideBar: React.FC = () => {
   const [theme, setTheme] = useState<MenuTheme>("dark");
-  const [current, setCurrent] = useState("/admin/ana");
+  const [current, setCurrent] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
@@ -78,7 +78,7 @@ const SideBar: React.FC = () => {
         theme={theme}
         onClick={onClick}
         // style={{ width: 256 }}
-        defaultOpenKeys={["dashboard"]}
+        // defaultOpenKeys={["dashboard"]}
         selectedKeys={[current]}
         mode="inline"
         items={items}
