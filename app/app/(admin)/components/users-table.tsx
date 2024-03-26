@@ -118,11 +118,13 @@ function UsersTable({ users }: UserInterface) {
     },
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
+        // @ts-ignore
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     render: (text) =>
       searchedColumn === dataIndex ? (
+        // @ts-ignore
         <Highlighter
           highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}

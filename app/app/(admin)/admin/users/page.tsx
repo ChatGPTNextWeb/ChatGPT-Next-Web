@@ -4,8 +4,11 @@ import { User } from "@prisma/client";
 import UsersTable from "../../components/users-table";
 
 async function getData() {
-  const users = await prisma.user.findMany();
-  return users;
+  return await prisma.user.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 }
 export default async function UsersPage() {
   const users: User[] = await getData();
