@@ -99,23 +99,6 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
-}
-
 function escapeBrackets(text: string) {
   const pattern =
     /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
@@ -136,7 +119,7 @@ function escapeBrackets(text: string) {
 
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(
-    () => escapeBrackets(escapeDollarNumber(props.content)),
+    () => escapeBrackets(props.content),
     [props.content],
   );
 
