@@ -17,6 +17,8 @@ export type Mask = {
   modelConfig: ModelConfig;
   lang: Lang;
   builtin: boolean;
+  fastgpt?: boolean;
+  fastgptConfig?: Record<string, any>;
 };
 
 export const DEFAULT_MASK_STATE = {
