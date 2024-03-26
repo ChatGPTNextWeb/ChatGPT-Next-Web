@@ -46,7 +46,7 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
     setLoading(true);
     const fetchUsers = async () => {
       try {
-        const url = new URL("/api/admin/users/", "http://localhost:3000");
+        const url = new URL("/api/admin/users/", window.location.href);
         url.searchParams.append("search", searchText);
         console.log(url, "url");
         const response = await fetch(url);
