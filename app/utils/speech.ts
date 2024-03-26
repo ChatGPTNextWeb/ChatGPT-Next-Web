@@ -1,5 +1,6 @@
 import { ChatGPTApi } from "../client/platforms/openai";
 import { getSTTLang } from "../locales";
+import { isFirefox } from "../utils";
 
 export type TranscriptionCallback = (transcription: string) => void;
 
@@ -94,6 +95,7 @@ export class WebTranscriptionApi extends SpeechApi {
 
   constructor(transcriptionCallback?: TranscriptionCallback) {
     super();
+    if (isFirefox()) return;
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;

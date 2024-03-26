@@ -68,6 +68,7 @@ import {
   getMessageImages,
   isVisionModel,
   compressImage,
+  isFirefox,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -92,6 +93,7 @@ import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
   DEFAULT_STT_ENGINE,
+  FIREFOX_DEFAULT_STT_ENGINE,
   LAST_INPUT_KEY,
   ModelProvider,
   Path,
@@ -903,6 +905,7 @@ function _Chat() {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
     setSpeechApi(
       config.sttConfig.engine === DEFAULT_STT_ENGINE
         ? new WebTranscriptionApi((transcription) =>
