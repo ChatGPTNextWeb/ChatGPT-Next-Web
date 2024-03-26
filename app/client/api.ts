@@ -8,6 +8,7 @@ import {
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
+import { FastGPTApi } from "./platforms/fastgpt";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -34,9 +35,10 @@ export interface LLMConfig {
   stream?: boolean;
   presence_penalty?: number;
   frequency_penalty?: number;
-  // 添加fastGPT可能需要的兼容项
+  // fastGPT
   chatId?: string;
   detail?: boolean;
+  fastapikey?: string;
   variables?: Record<string, string>;
 }
 
@@ -45,10 +47,21 @@ export interface FastGPTConfig {
   chatId: string;
   stream?: boolean;
   detail?: boolean;
+  apikey?: string[];
   variables?: Record<string, string>;
 }
 
 export interface ChatOptions {
+  messages: RequestMessage[];
+  config: LLMConfig;
+
+  onUpdate?: (message: string, chunk: string) => void;
+  onFinish: (message: string) => void;
+  onError?: (err: Error) => void;
+  onController?: (controller: AbortController) => void;
+}
+
+export interface FastGPTChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
 
@@ -110,6 +123,10 @@ export class ClientApi {
       this.llm = new GeminiProApi();
       return;
     }
+    if (provider === ModelProvider.FastGPT) {
+      this.llm = new FastGPTApi();
+      return;
+    }
     this.llm = new ChatGPTApi();
   }
 
@@ -169,18 +186,19 @@ export function getHeaders(FastGptApiKey: string = "") {
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
-  const isFastGPT = modelConfig.model.startsWith("fastgpt");
+  // const isFastGPT = useChatStore.getState().currentSession().mask.fastgpt;
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
     ? accessStore.azureApiKey
     : accessStore.openaiApiKey;
   const clientConfig = getClientConfig();
-  const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
+  const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s}`;
   const validString = (x: string) => x && x.length > 0;
 
-  if (isFastGPT) {
+  if (FastGptApiKey) {
     headers["Authorization"] = makeBearer(FastGptApiKey);
+    // console.log("[FastGPT]", headers["Authorization"]);
     return headers;
   }
 

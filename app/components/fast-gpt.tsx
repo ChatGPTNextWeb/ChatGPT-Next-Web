@@ -749,6 +749,7 @@ function _Chat() {
   };
 
   const doSubmit = (userInput: string) => {
+    console.log("[Chat] submit: ", userInput);
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -758,6 +759,7 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
+
     // In FastGPT, we need a number of messages and they have diffrent headers
     // So we need a method to handle and control diiferent headers
     // 将使用chatStore进行提交的方法进行包装

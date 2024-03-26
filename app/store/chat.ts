@@ -883,6 +883,7 @@ export const useFastGPTChatStore = createPersistStore(
       async onUserInput(content: string, attachImages?: string[]) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+        const fastgptConfig = session.mask.fastgptConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
@@ -919,8 +920,9 @@ export const useFastGPTChatStore = createPersistStore(
         });
 
         // get recent messages
-        const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
+        // const recentMessages = get().getMessagesWithMemory();
+        const emptyMessages = [] as ChatMessage[];
+        const sendMessages = emptyMessages.concat(userMessage);
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -936,16 +938,23 @@ export const useFastGPTChatStore = createPersistStore(
         });
 
         var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
+        api = new ClientApi(ModelProvider.FastGPT);
+
+        // else if (modelConfig.model.startsWith("gemini")) {
+        //   api = new ClientApi(ModelProvider.GeminiPro);
+        // } else {
+        //   api = new ClientApi(ModelProvider.GPT);
+        // }
 
         // make request
+        // 发送！
         api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: true },
+          config: {
+            ...modelConfig,
+            stream: session.mask.fastgptConfig.stream,
+            variables: session.mask.fastgptVar,
+          },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {

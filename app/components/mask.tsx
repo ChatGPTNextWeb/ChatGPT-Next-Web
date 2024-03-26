@@ -264,15 +264,37 @@ export function MaskConfig(props: {
             subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
           >
             <PasswordInput
-              value={props.mask.fastgptAPI.token}
+              value={props.mask.fastgptAPI}
               onChange={(e) => {
                 props.updateMask((mask) => {
-                  props.mask.fastgptAPI.token = e.currentTarget.value;
+                  props.mask.fastgptAPI = e.currentTarget.value;
                 });
               }}
             ></PasswordInput>
           </ListItem>
-          <ListItem
+          <ListItem title={"变量一"}>
+            <input
+              type="text"
+              checked={props.mask.fastgptVar.name}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  props.mask.fastgptVar.name = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+          <ListItem title={"变量二"}>
+            <input
+              type="text"
+              checked={props.mask.fastgptVar.var1}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  props.mask.fastgptVar.var1 = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+          {/* <ListItem
             title={Locale.Mask.Config.FastGPT.API.Title}
             subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
           >
@@ -284,7 +306,7 @@ export function MaskConfig(props: {
                 });
               }}
             ></PasswordInput>
-          </ListItem>
+          </ListItem> */}
         </List>
       ) : null}
     </>

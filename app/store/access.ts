@@ -23,7 +23,7 @@ const DEFAULT_ACCESS_STATE = {
   provider: ServiceProvider.OpenAI,
 
   // fastgpt
-  fastgptUrl: "",
+  fastgptUrl: "http://192.168.1.206:3002",
   fastgptApiKey: "",
 
   // openai

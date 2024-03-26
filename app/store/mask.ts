@@ -22,13 +22,13 @@ export type Mask = {
   //fastgpt的配置（detail, stream）
   fastgptConfig: FastgptConfig;
   //fastgpt API (Bearer token)
-  fastgptAPI: Record<string, any>;
+  fastgptAPI: string;
   //fastgpt variables
   fastgptVar: Record<string, any>;
 };
 
 export const DEFAULT_FASTGPTVAR = {
-  name: "",
+  name: "Lucy",
   des: "",
   char_personality: "",
   senario: "",
@@ -56,7 +56,7 @@ export const createEmptyMask = () =>
       detail: false,
       stream: true,
     },
-    fastgptAPI: {},
+    fastgptAPI: "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
     fastgptVar: { ...DEFAULT_FASTGPTVAR },
     createdAt: Date.now(),
   }) as Mask;

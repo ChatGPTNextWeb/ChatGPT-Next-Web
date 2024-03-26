@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
+import {
+  DEFAULT_MODELS,
+  OPENAI_BASE_URL,
+  GEMINI_BASE_URL,
+  DEFAULT_FASTGPT_BASE_URL,
+} from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
 
@@ -162,12 +167,7 @@ export async function requestFastgpt(req: NextRequest) {
     "",
   );
 
-  let baseUrl =
-    serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
-
-  if (!baseUrl.startsWith("http")) {
-    baseUrl = `https://${baseUrl}`;
-  }
+  let baseUrl = DEFAULT_FASTGPT_BASE_URL;
 
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
@@ -176,9 +176,6 @@ export async function requestFastgpt(req: NextRequest) {
   console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
   // this fix [Org ID] undefined in server side if not using custom point
-  if (serverConfig.openaiOrgId !== undefined) {
-    console.log("[Org ID]", serverConfig.openaiOrgId);
-  }
 
   const timeoutId = setTimeout(
     () => {
@@ -186,16 +183,6 @@ export async function requestFastgpt(req: NextRequest) {
     },
     10 * 60 * 1000,
   );
-
-  if (serverConfig.isAzure) {
-    if (!serverConfig.azureApiVersion) {
-      return NextResponse.json({
-        error: true,
-        message: `missing AZURE_API_VERSION in server env vars`,
-      });
-    }
-    path = makeAzurePath(path, serverConfig.azureApiVersion);
-  }
 
   const fetchUrl = `${baseUrl}/${path}`;
   const fetchOptions: RequestInit = {
