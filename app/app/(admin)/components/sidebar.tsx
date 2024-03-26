@@ -36,21 +36,16 @@ const items: MenuItem[] = [
     getItem("使用分析", "/admin/ana"),
   ]),
 
-  getItem("Navigation Two", "sub2", <AppstoreOutlined />, [
-    getItem("Option 5", "5"),
-    getItem("Option 6", "6"),
-    getItem("Submenu", "sub3", null, [
-      getItem("Option 7", "7"),
-      getItem("Option 8", "8"),
-    ]),
+  getItem("管理", "manage", <AppstoreOutlined />, [
+    getItem("用户管理", "/admin/users"),
   ]),
 
-  getItem("Navigation Three", "sub4", <SettingOutlined />, [
-    getItem("Option 9", "9"),
-    getItem("Option 10", "10"),
-    getItem("Option 11", "11"),
-    getItem("Option 12", "12"),
-  ]),
+  // getItem("Navigation Three", "sub4", <SettingOutlined />, [
+  //   getItem("Option 9", "9"),
+  //   getItem("Option 10", "10"),
+  //   getItem("Option 11", "11"),
+  //   getItem("Option 12", "12"),
+  // ]),
 ];
 
 const SideBar: React.FC = () => {
@@ -68,12 +63,12 @@ const SideBar: React.FC = () => {
     setCurrent(e.key);
     router.push(e.key);
   };
-  // useEffect(() => {
-  //   // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
-  //   if (current != pathname) {
-  //     router.push(current);
-  //   }
-  // }, [current, pathname, router]);
+  useEffect(() => {
+    // 如果按钮和路径不相等，那其实应该跳转到按钮的网址
+    if (current != pathname) {
+      router.push(current);
+    }
+  }, [current, pathname, router]);
 
   return (
     <>
