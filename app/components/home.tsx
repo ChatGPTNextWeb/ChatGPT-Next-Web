@@ -112,7 +112,8 @@ const loadAsyncGoogleFont = () => {
   const proxyFontUrl = "/google-fonts";
   const remoteFontUrl = "https://fonts.googleapis.com";
   const googleFontUrl =
-    getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
+    process.env.BUILD_MODE === "export" ? remoteFontUrl : proxyFontUrl;
+
   linkEl.rel = "stylesheet";
   linkEl.href =
     googleFontUrl +

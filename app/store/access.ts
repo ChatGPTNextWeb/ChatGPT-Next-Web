@@ -12,7 +12,7 @@ import { ensure } from "../utils/clone";
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export"
+  process.env.BUILD_MODE === "export"
     ? DEFAULT_API_HOST + "/api/proxy/openai"
     : ApiPath.OpenAI;
 
@@ -80,7 +80,7 @@ export const useAccessStore = createPersistStore(
       );
     },
     fetch() {
-      if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
+      if (fetchState > 0 || process.env.BUILD_MODE === "export") return;
       fetchState = 1;
       fetch("/api/config", {
         method: "post",

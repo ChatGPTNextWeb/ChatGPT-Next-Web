@@ -26,6 +26,19 @@ const nextConfig = {
 
     return config;
   },
+  /**
+   * Next.js supports inline public environment variables in next.config.js
+   *
+   * https://nextjs.org/docs/app/api-reference/next-config-js/env
+   *
+   * Next.js implements this using webpack.DefinePlugin:
+   * - https://github.com/vercel/next.js/blob/08a92e0aa589e9220b0e740594c39846c69ef308/packages/next/src/build/webpack/plugins/define-env-plugin.ts#L76
+   * - https://github.com/vercel/next.js/blob/08a92e0aa589e9220b0e740594c39846c69ef308/packages/next/src/build/webpack/plugins/define-env-plugin.ts#L146
+   */
+  env: {
+    // This is avaliable as process.env.buildMode
+    BUILD_MODE: mode,
+  },
   output: mode,
   images: {
     unoptimized: mode === "export",
