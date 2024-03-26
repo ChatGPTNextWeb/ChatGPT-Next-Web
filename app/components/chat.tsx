@@ -240,6 +240,8 @@ function useSubmitHandler() {
   }, []);
 
   const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Fix Chinese input method "Enter" on Safari
+    if (e.keyCode == 229) return false;
     if (e.key !== "Enter") return false;
     if (e.key === "Enter" && (e.nativeEvent.isComposing || isComposing.current))
       return false;
@@ -399,12 +401,12 @@ function ChatAction(props: {
               ...props.style,
             } as React.CSSProperties)
           : props.loding
-          ? ({
-              "--icon-width": `30px`,
-              "--full-width": `30px`,
-              ...props.style,
-            } as React.CSSProperties)
-          : props.style
+            ? ({
+                "--icon-width": `30px`,
+                "--full-width": `30px`,
+                ...props.style,
+              } as React.CSSProperties)
+            : props.style
       }
     >
       {props.icon ? (
