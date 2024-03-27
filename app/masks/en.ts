@@ -86,7 +86,7 @@ export const EN_MASKS: BuiltinMask[] = [
       },
     ],
     modelConfig: {
-      model: "gpt-3.5-turbo-1106",
+      model: "gpt-3.5-turbo-0125",
       temperature: 0.5,
       max_tokens: 2000,
       presence_penalty: 0,

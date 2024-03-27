@@ -30,6 +30,7 @@ const DEFAULT_ACCESS_STATE = {
   azureUrl: "",
   azureApiKey: "",
   azureApiVersion: "2023-05-15",
+  azureVoiceKey: "",
 
   // google ai studio
   googleUrl: "",
