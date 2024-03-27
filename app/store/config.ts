@@ -49,7 +49,7 @@ export const DEFAULT_CONFIG = {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 4000,
+    max_tokens: 2048,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
@@ -57,6 +57,7 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
+    useMaxTokens: false,
   },
 };
 
