@@ -28,7 +28,7 @@ export type Mask = {
 };
 
 export const DEFAULT_FASTGPTVAR = {
-  name: "Lucy",
+  name: "",
   des: "",
   char_personality: "",
   senario: "",

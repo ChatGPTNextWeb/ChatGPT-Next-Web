@@ -301,13 +301,36 @@ export function MaskConfig(props: {
               }}
             ></input>
           </ListItem>
-          <ListItem title={"变量(char_personality)"}>
+          <ListItem title={"变量(des)"}>
             <input
               type="text"
               value={props.mask.fastgptVar.des}
               onChange={(e) => {
                 props.updateMask((mask) => {
                   props.mask.fastgptVar.des = e.currentTarget.value;
+                });
+              }}
+            ></input>
+          </ListItem>
+          <ListItem title={"变量(char_personality)"}>
+            <input
+              type="text"
+              value={props.mask.fastgptVar.char_personality}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  props.mask.fastgptVar.char_personality =
+                    e.currentTarget.value;
+                });
+              }}
+            ></input>
+          </ListItem>
+          <ListItem title={"变量(senario)"}>
+            <input
+              type="text"
+              value={props.mask.fastgptVar.senario}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  props.mask.fastgptVar.senario = e.currentTarget.value;
                 });
               }}
             ></input>
