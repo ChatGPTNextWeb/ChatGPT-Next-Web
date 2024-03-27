@@ -116,7 +116,7 @@ export class FastGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      console.log("[FastGPT] Headers: ", modelConfig.api);
+      console.log("[FastGPT] Headers: ", options.config.fastapikey);
       // FastGPT path 跟 OpenAI 一样
       const chatPath = this.path(OpenaiPath.ChatPath);
       console.log("[Request] chat path: ", chatPath);
@@ -124,7 +124,7 @@ export class FastGPTApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(modelConfig.api),
+        headers: getHeaders(options.config.fastapikey),
       };
 
       // make a fetch request

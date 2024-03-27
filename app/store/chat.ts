@@ -951,13 +951,13 @@ export const useFastGPTChatStore = createPersistStore(
         // }
 
         // make request
-        // 发送！
         api.llm.chat({
           messages: sendMessages,
           config: {
             ...modelConfig,
             stream: session.mask.fastgptConfig.stream,
             variables: session.mask.fastgptVar,
+            fastapikey: session.mask.fastgptAPI[fastgptNum ?? 0],
           },
           onUpdate(message) {
             botMessage.streaming = true;

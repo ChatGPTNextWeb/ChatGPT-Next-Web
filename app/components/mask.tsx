@@ -265,10 +265,25 @@ export function MaskConfig(props: {
           >
             <input
               type="text"
-              value={props.mask.fastgptAPI}
+              value={props.mask.fastgptAPI[0]}
               onChange={(e) => {
                 props.updateMask((mask) => {
-                  mask.fastgptAPI = e.currentTarget.value;
+                  mask.fastgptAPI[0] = e.currentTarget.value;
+                });
+                console.log(props.mask.fastgptAPI);
+              }}
+            ></input>
+          </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.FastGPT.API.Title}
+            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
+          >
+            <input
+              type="text"
+              value={props.mask.fastgptAPI[1]}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptAPI[1] = e.currentTarget.value;
                 });
                 console.log(props.mask.fastgptAPI);
               }}

@@ -765,7 +765,7 @@ function _Chat() {
     // So we need a method to handle and control diiferent headers
     // 将使用chatStore进行提交的方法进行包装
     // 调用对话设置里，设置好的Headers API Key，传过来，发往后端
-    const sendNumber = 2;
+    const sendNumber = session.mask.fastgptAPI.length;
     // if sendNumber > 1, I need send multiple onUserInput
     for (let i = 0; i < sendNumber; i++) {
       chatStore
