@@ -295,8 +295,8 @@ export function MaskConfig(props: {
               value={props.mask.fastgptVar.name}
               onChange={(e) => {
                 props.updateMask((mask) => {
-                  props.mask.fastgptVar.name = e.currentTarget.value;
-                  console.log(props.mask.fastgptVar.name);
+                  mask.fastgptVar.name = e.currentTarget.value;
+                  console.log(mask.fastgptVar.name);
                 });
               }}
             ></input>
