@@ -33,6 +33,7 @@
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.7.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
     "nanoid": "^5.0.3",
     "next": "^14.1.0",
     "next-auth": "^4.24.5",

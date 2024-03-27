@@ -98,11 +98,14 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
-import { Button } from "emoji-picker-react/src/components/atoms/Button";
 import Image from "next/image";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 import { getTokenLength } from "@/lib/utils";
+import VoiceInput from "@/app/components/voice-input";
+
+// const VoiceInput = dynamic(
+//     () => import('@/app/components/voice-input'), { ssr: false });
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -1251,6 +1254,21 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  // const [ voiceInputText, setVoiceInputText ] = useState("");
+  // const [ voiceInputLoading, setVoiceInputLoading ] = useState(false);
+
+  // useEffect(() => {
+  //   if (voiceInputLoading) {
+  //     // 正在进行语音输入，输入框应该显示原有文本加上语音输入的。
+  //     setUserInput(userInput + voiceInputText);
+  //   } else {
+  //     // 但是语音输入结束，应该清理多余字符。
+  //     console.log('end', userInput, voiceInputText)
+  //   }
+  //
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [voiceInputLoading, voiceInputText]);
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1688,6 +1706,16 @@ function _Chat() {
               })}
             </div>
           )}
+          <div className={styles["chat-input-send-area"]}>
+            <VoiceInput
+              // voiceInputText={voiceInputText}
+              // setVoiceInputText={setVoiceInputText}
+              // voiceInputLoading={voiceInputLoading}
+              // setVoiceInputLoading={setVoiceInputLoading}
+              userInput={userInput}
+              setUserInput={setUserInput}
+            />
+          </div>
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}

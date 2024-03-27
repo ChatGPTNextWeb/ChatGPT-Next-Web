@@ -27,6 +27,7 @@ declare global {
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
+      AZURE_VOICE_KEY?: string;
 
       // google only
       GOOGLE_API_KEY?: string;
@@ -93,6 +94,7 @@ export const getServerSideConfig = () => {
     azureUrl: process.env.AZURE_URL ?? "",
     azureApiKey: process.env.AZURE_API_KEY ?? "",
     azureApiVersion: process.env.AZURE_API_VERSION ?? "",
+    azureVoiceKey: process.env.AZURE_VOICE_KEY ?? "",
 
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,
