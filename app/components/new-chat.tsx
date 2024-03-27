@@ -73,7 +73,8 @@ function useMaskGroup(masks: Mask[]) {
 
 export function NewChat() {
   // const chatStore = fastgpt ? useFastGPTChatStore() : useChatStore();
-  const chatStore = useChatStore();
+  // const chatStore = useChatStore();
+  const chatStore = useFastGPTChatStore();
   const maskStore = useMaskStore();
 
   const masks = maskStore.getAll();
@@ -89,7 +90,8 @@ export function NewChat() {
   const startChat = (mask?: Mask) => {
     setTimeout(() => {
       chatStore.newSession(mask);
-      navigate(Path.Chat);
+      // navigate(Path.Chat);
+      navigate(Path.FastGPT);
       // if (fastgpt) {
       //   navigate(Path.FastGPT);
       // } else {

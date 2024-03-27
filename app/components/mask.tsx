@@ -263,33 +263,36 @@ export function MaskConfig(props: {
             title={Locale.Mask.Config.FastGPT.API.Title}
             subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
           >
-            <PasswordInput
+            <input
+              type="text"
               value={props.mask.fastgptAPI}
               onChange={(e) => {
                 props.updateMask((mask) => {
-                  props.mask.fastgptAPI = e.currentTarget.value;
+                  mask.fastgptAPI = e.currentTarget.value;
                 });
+                console.log(props.mask.fastgptAPI);
               }}
-            ></PasswordInput>
+            ></input>
           </ListItem>
-          <ListItem title={"变量一"}>
+          <ListItem title={"变量(name)"}>
             <input
               type="text"
-              checked={props.mask.fastgptVar.name}
+              value={props.mask.fastgptVar.name}
               onChange={(e) => {
                 props.updateMask((mask) => {
-                  props.mask.fastgptVar.name = e.currentTarget.checked;
+                  props.mask.fastgptVar.name = e.currentTarget.value;
+                  console.log(props.mask.fastgptVar.name);
                 });
               }}
             ></input>
           </ListItem>
-          <ListItem title={"变量二"}>
+          <ListItem title={"变量(char_personality)"}>
             <input
               type="text"
-              checked={props.mask.fastgptVar.var1}
+              value={props.mask.fastgptVar.des}
               onChange={(e) => {
                 props.updateMask((mask) => {
-                  props.mask.fastgptVar.var1 = e.currentTarget.checked;
+                  props.mask.fastgptVar.des = e.currentTarget.value;
                 });
               }}
             ></input>

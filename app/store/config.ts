@@ -57,12 +57,25 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
+    fastgpt: {
+      stream: true,
+      detail: false,
+      variables: {},
+      apikey: {},
+    } as FastGPTModelConfig,
   },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
 
 export type ModelConfig = ChatConfig["modelConfig"];
+
+export type FastGPTModelConfig = {
+  stream: boolean;
+  detail: boolean;
+  variables: Record<string, any>;
+  apikey: Record<string, any>;
+};
 
 export function limitNumber(
   x: number,

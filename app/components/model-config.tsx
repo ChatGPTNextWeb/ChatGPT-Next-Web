@@ -2,7 +2,7 @@ import { ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
-import { ListItem, Select } from "./ui-lib";
+import { List, ListItem, PasswordInput, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
 
 export function ModelConfigList(props: {
@@ -219,3 +219,60 @@ export function ModelConfigList(props: {
     </>
   );
 }
+
+// export function FastGPTModelConfigList(props: {
+//   modelConfig: ModelConfig;
+//   updateConfig: (updater: (config: ModelConfig) => void) => void;
+// }) {
+
+//   return (
+//     <>
+//       <ListItem title={Locale.Mask.Config.FastGPT.Stream.Title}>
+//         <input
+//           type="checkbox"
+//           checked={props.modelConfig.fastgpt.stream}
+//           onChange={(e) =>
+//             props.updateConfig(
+//               (config) => (config.fastgpt.stream = e.currentTarget.checked),
+//             )
+//           }
+//         ></input>
+//       </ListItem>
+//       <ListItem title={Locale.Mask.Config.FastGPT.Stream.Title}>
+//         <input
+//           type="checkbox"
+//           checked={props.modelConfig.fastgpt.detail}
+//           onChange={(e) =>
+//             props.updateConfig(
+//               (config) => (config.fastgpt.detail = e.currentTarget.checked),
+//             )
+//           }
+//         ></input>
+//       </ListItem>
+//       <ListItem
+//         title={Locale.Mask.Config.FastGPT.API.Title}
+//         subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
+//       >
+//         <PasswordInput
+//           value={props.modelConfig.fastgpt.apikey.apikey1}
+//           onChange={(e) => {
+//             props.updateConfig((config) => {
+//               config.fastgpt.apikey.apikey1 = e.currentTarget.value;
+//             });
+//           }}
+//         ></PasswordInput>
+//       </ListItem>
+//       <ListItem title={"变量一"}>
+//         <input
+//           type="text"
+//           value={props.modelConfig.fastgpt.variables.name}
+//           onChange={(e) => {
+//             props.updateConfig((config) => {
+//               config.fastgpt.variables.name = e.currentTarget.value;
+//             });
+//           }}
+//         ></input>
+//       </ListItem>
+//     </>
+//   );
+// }

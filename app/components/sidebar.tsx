@@ -149,7 +149,7 @@ export function SideBar(props: { className?: string }) {
   );
 
   useHotKey();
-  const [fastgptdisplay, setFastGPTDisplay] = useState(false);
+  const [fastgptdisplay, setFastGPTDisplay] = useState(true);
   const switchChatList = () => {
     setFastGPTDisplay(!fastgptdisplay);
   };

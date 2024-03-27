@@ -758,15 +758,20 @@ function _Chat() {
       matchCommand.invoke();
       return;
     }
+    console.log("[FastGPT Mask]: ", session.mask);
     setIsLoading(true);
 
     // In FastGPT, we need a number of messages and they have diffrent headers
     // So we need a method to handle and control diiferent headers
     // 将使用chatStore进行提交的方法进行包装
     // 调用对话设置里，设置好的Headers API Key，传过来，发往后端
-    chatStore
-      .onUserInput(userInput, attachImages)
-      .then(() => setIsLoading(false));
+    const sendNumber = 2;
+    // if sendNumber > 1, I need send multiple onUserInput
+    for (let i = 0; i < sendNumber; i++) {
+      chatStore
+        .onUserInput(userInput, attachImages, i)
+        .then(() => setIsLoading(false));
+    }
     setAttachImages([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");

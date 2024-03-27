@@ -880,7 +880,11 @@ export const useFastGPTChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string, attachImages?: string[]) {
+      async onUserInput(
+        content: string,
+        attachImages?: string[],
+        fastgptNum?: number,
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         const fastgptConfig = session.mask.fastgptConfig;
