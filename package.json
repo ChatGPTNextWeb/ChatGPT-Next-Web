@@ -57,11 +57,11 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "1.5.11",
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.2.70",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie": "^0.6.0",
+    "@types/node": "^20.11.30",
     "@types/nodemailer": "^6.4.14",
+    "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.7",
     "@types/react-highlight-words": "^0.16.7",
     "@types/react-katex": "^3.0.0",

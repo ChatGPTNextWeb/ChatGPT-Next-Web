@@ -63,6 +63,7 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
 
     fetchUsers();
     console.log(users, "users1");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText]);
 
   return (
