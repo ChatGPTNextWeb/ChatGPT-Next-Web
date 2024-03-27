@@ -55,7 +55,7 @@ typings
 
 # Next.js build output
 .next
-out
+# out
 
 # Nuxt.js build output
 .nuxt
