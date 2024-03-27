@@ -1691,6 +1691,12 @@ function _Chat() {
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
+            type="primary"
+            onClick={() => doSubmit(userInput)}
+          />
+          <IconButton
+            icon={<SendWhiteIcon />}
+            text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             type="primary"
             onClick={() => doSubmit(userInput)}
