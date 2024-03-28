@@ -34,6 +34,7 @@ export interface LLMConfig {
   stream?: boolean;
   presence_penalty?: number;
   frequency_penalty?: number;
+  useMaxTokens?: boolean;
 }
 
 export interface ChatOptions {
