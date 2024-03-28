@@ -17,6 +17,8 @@ import {
   SpeechRecognitionResult,
 } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports";
 import { useAccessStore } from "@/app/store";
+// import { getServerSideConfig } from "@/app/config/server";
+// import { GetServerSideProps } from 'next';
 
 interface VoiceInputInterface {
   userInput: string;
@@ -33,9 +35,9 @@ export default function VoiceInput({
   // const recognition = useRef(null);
   const recognizer = useRef<ms_audio_sdk.SpeechRecognizer | undefined>();
   const [tempUserInput, setTempUserInput] = useState("");
-  const accessStore = useAccessStore();
+  const [accessToken, setAccessToken] = useState("");
   // const lastLength = useRef(0);
-
+  // console.log('5555', serverConfig)
   // useEffect(() => {
   //
   //   function onresult(event: any) {
@@ -60,6 +62,17 @@ export default function VoiceInput({
   //   }
   //
   // }, []);
+
+  useEffect(() => {
+    const get_access_token = async () => {
+      const response = await fetch("/api/get_voice_token");
+      const result = await response.json();
+      setAccessToken(result.result);
+    };
+    if (accessToken === "") {
+      get_access_token();
+    }
+  }, [accessToken]);
 
   function onRecognizedResult(result: SpeechRecognitionResult) {
     // setVoiceInputText("");
@@ -88,7 +101,8 @@ export default function VoiceInput({
     event: SpeechRecognitionCanceledEventArgs,
   ) {
     console.log(event);
-
+    // 如果有异常就尝试重新获取
+    setAccessToken("");
     // 展示取消事件
     // statusDiv.innerHTML += "(cancel) Reason: " + ms_audio_sdk.CancellationReason[event.reason];
     // if (event.reason === ms_audio_sdk.CancellationReason.Error) {
@@ -126,8 +140,12 @@ export default function VoiceInput({
     setTempUserInput(userInput); // 开始的时候拷贝一份用于复原
     setVoiceInputText("");
 
-    const speechConfig = ms_audio_sdk.SpeechConfig.fromSubscription(
-      accessStore.azureVoiceKey,
+    // const speechConfig = ms_audio_sdk.SpeechConfig.fromSubscription(
+    //   "eb0f36d782ec403eb1d979b4d3d8876c",
+    //   "eastasia",
+    // );
+    const speechConfig = ms_audio_sdk.SpeechConfig.fromAuthorizationToken(
+      accessToken,
       "eastasia",
     );
     const audioConfig = ms_audio_sdk.AudioConfig.fromDefaultMicrophoneInput();
@@ -147,7 +165,7 @@ export default function VoiceInput({
         // onRecognizedResult(result);
         setVoiceInputText(`${result.text}`);
         console.log("3333", tempUserInput, "2", voiceInputText);
-        setUserInput(tempUserInput + voiceInputText + `${result.text}`);
+        setUserInput(tempUserInput + voiceInputText ?? "" + `${result.text}`);
         // setVoiceInputText(result.text);
         console.log("result", result.text);
         setVoiceInputLoading(false);
@@ -190,3 +208,11 @@ export default function VoiceInput({
     </div>
   );
 }
+
+// export const getServerSideProps: GetServerSideProps = async context => {
+//   const serverConfig = getServerSideConfig();
+//   console.log('66666', serverConfig, )
+//   return {
+//     props: {}
+//   };
+// };
