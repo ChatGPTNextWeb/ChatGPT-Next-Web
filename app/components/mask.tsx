@@ -21,6 +21,7 @@ import {
   ModelType,
   useAppConfig,
   useChatStore,
+  useFastGPTChatStore,
 } from "../store";
 import { MultimodalContent, ROLES } from "../client/api";
 import {
@@ -289,6 +290,36 @@ export function MaskConfig(props: {
               }}
             ></input>
           </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.FastGPT.API.Title}
+            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
+          >
+            <input
+              type="text"
+              value={props.mask.fastgptAPI[2]}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptAPI[2] = e.currentTarget.value;
+                });
+                console.log(props.mask.fastgptAPI);
+              }}
+            ></input>
+          </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.FastGPT.API.Title}
+            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
+          >
+            <input
+              type="text"
+              value={props.mask.fastgptAPI[3]}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptAPI[3] = e.currentTarget.value;
+                });
+                console.log(props.mask.fastgptAPI);
+              }}
+            ></input>
+          </ListItem>
           <ListItem title={"变量(name)"}>
             <input
               type="text"
@@ -540,7 +571,8 @@ export function MaskPage() {
   const navigate = useNavigate();
 
   const maskStore = useMaskStore();
-  const chatStore = useChatStore();
+  const chatStore = useFastGPTChatStore();
+  // const chatStore = useChatStore();
 
   const [filterLang, setFilterLang] = useState<Lang>();
 
@@ -699,7 +731,7 @@ export function MaskPage() {
                     text={Locale.Mask.Item.Chat}
                     onClick={() => {
                       chatStore.newSession(m);
-                      navigate(Path.Chat);
+                      navigate(Path.FastGPT);
                     }}
                   />
                   {m.builtin ? (
