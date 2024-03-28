@@ -935,10 +935,14 @@ export const useFastGPTChatStore = createPersistStore(
             ...userMessage,
             content: mContent,
           };
-          session.messages = session.messages.concat([
-            savedUserMessage,
-            botMessage,
-          ]);
+          if (fastgptNum == 0) {
+            session.messages = session.messages.concat([
+              savedUserMessage,
+              botMessage,
+            ]);
+          } else {
+            session.messages = session.messages.concat([botMessage]);
+          }
         });
 
         var api: ClientApi;
