@@ -3,6 +3,7 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
 import { DEFAULT_MODELS } from "./constant";
+import { useAccessStore } from "@/app/store";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -292,11 +293,18 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
-  // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
+  const accessStore = useAccessStore.getState();
+  const customVisionModels = accessStore.customVisionModels
+    .split(/[+,]/)
+    .map(item => item.trim())
+    .filter(item => item !== '');  
   const visionKeywords = [
-    "vision",
-    "claude-3",
+      "vision",
+      ...customVisionModels,
   ];
-
-  return visionKeywords.some(keyword => model.includes(keyword));
+  return (
+    // model.startsWith("gpt-4-vision") ||
+    // model.startsWith("gemini-pro-vision") ||
+    visionKeywords.some(keyword => model.includes(keyword))
+  );
 }

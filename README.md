@@ -233,6 +233,11 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 
 User `-all` to disable all default models, `+all` to enable all default models.
 
+### `CUSTOM_VISION_MODELS`（可选）
+
+> Example: `+claude-3-opus-20240229,+claude-3-sonnet-20240229` means add `claude-3-opus-20240229` and `claude-3-sonnet-20240229` to vision model list, use `+` to add a custom model, separated modols by comma.
+
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
