@@ -124,7 +124,7 @@ export const usePromptStore = createPersistStore(
 
     search(text: string) {
       if (text.length === 0) {
-        // return all rompts
+        // return all prompts
         return this.getUserPrompts().concat(SearchService.builtinPrompts);
       }
       return SearchService.search(text) as Prompt[];
@@ -154,28 +154,38 @@ export const usePromptStore = createPersistStore(
       fetch(PROMPT_URL)
         .then((res) => res.json())
         .then((res) => {
-          let fetchPrompts = [res.en, res.cn];
-          if (getLang() === "cn") {
-            fetchPrompts = fetchPrompts.reverse();
+          const lang = getLang();
+          let fetchPrompts: PromptList;
+
+          switch (lang) {
+            case "cn":
+              fetchPrompts = res.cn;
+              break;
+            case "id":
+              fetchPrompts = res.id;
+              break;
+            // Add cases for other languages here
+            default:
+              fetchPrompts = res.en;
+              break;
           }
-          const builtinPrompts = fetchPrompts.map((promptList: PromptList) => {
-            return promptList.map(
-              ([title, content]) =>
-                ({
-                  id: nanoid(),
-                  title,
-                  content,
-                  createdAt: Date.now(),
-                }) as Prompt,
-            );
-          });
+
+          const builtinPrompts = fetchPrompts.map(
+            ([title, content]) =>
+              ({
+                id: nanoid(),
+                title,
+                content,
+                createdAt: Date.now(),
+              }) as Prompt,
+          );
 
           const userPrompts = usePromptStore.getState().getUserPrompts() ?? [];
 
           const allPromptsForSearch = builtinPrompts
-            .reduce((pre, cur) => pre.concat(cur), [])
+            .concat(userPrompts)
             .filter((v) => !!v.title && !!v.content);
-          SearchService.count.builtin = res.en.length + res.cn.length;
+          SearchService.count.builtin = fetchPrompts.length;
           SearchService.init(allPromptsForSearch, userPrompts);
         });
     },
