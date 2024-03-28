@@ -275,6 +275,20 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   );
 }
 
+export function SearchInput(props: HTMLProps<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+
+  function changeVisibility() {
+    setVisible(!visible);
+  }
+
+  return (
+    <div className={"search-input-container"}>
+      <input {...props} type="text" className={"search-input"} />
+    </div>
+  );
+}
+
 export function Select(
   props: React.DetailedHTMLProps<
     React.SelectHTMLAttributes<HTMLSelectElement>,
