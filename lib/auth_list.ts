@@ -88,6 +88,9 @@ export function isPinYin(input: string): number {
 
 
 export function isName(input: string): boolean {
+  if (!input || input === "") {
+    return false;
+  }
   if (DENY_LIST.includes(input)) {
     return false;
   }

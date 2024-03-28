@@ -145,7 +145,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 export function getSession() {
-    console.log('in........',)
+    // console.log('in........',)
     return getServerSession(authOptions) as Promise<{
         user: {
             id: string;
