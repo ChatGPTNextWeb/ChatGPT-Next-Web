@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { DENY_LIST, isName, ADMIN_LIST } from "@/lib/auth_list";
+import {use} from "react";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -28,7 +29,11 @@ export default async function middleware(req: NextRequest) {
         if (!is_admin_user) return NextResponse.json({error: '无管理员授权'}, { status: 401 });
 
     }
-    // console.log('==============,认证，', path, session)
+    const userName = session?.name || session?.email
+    if (!isName(userName ?? "") && path !== "/login" ) {
+      // 用处不大，避免漏网之鱼
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
     // 认证有点多此一举，页面中的认证应该已经够了
     // if (!session && path !== "/login") {
     //     // 给关键请求特殊待遇
