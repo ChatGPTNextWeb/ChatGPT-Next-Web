@@ -178,6 +178,10 @@ const en: LocaleType = {
       Title: "Send Preview Bubble",
       SubTitle: "Preview markdown in bubble",
     },
+    SpeedAnimation: {
+      Title: "Speed Animation Response",
+      SubTitle: "A Speed Animation Response you can control how fast the response text is displayed during the animation",
+    },
     AutoGenerateTitle: {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",

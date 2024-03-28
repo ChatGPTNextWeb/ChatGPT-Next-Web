@@ -176,6 +176,10 @@ const pt: PartialLocaleType = {
     SendPreviewBubble: {
       Title: "Bolha de Pré-visualização de Envio",
       SubTitle: "Pré-visualizar markdown na bolha",
+    }, // for contributor who feat this lang: you need to pull req again later for fix this lang, if its not correctly
+    SpeedAnimation: {
+      Title: "Velocidade de Animação da Resposta",
+      SubTitle: "Uma resposta de animação de velocidade na qual você pode controlar a rapidez com que o texto da resposta é exibido durante a animação",
     },
     AutoGenerateTitle: {
       Title: "Gerar Título Automaticamente",

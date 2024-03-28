@@ -176,6 +176,10 @@ const cn = {
       Title: "预览气泡",
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
+    SpeedAnimation: {
+      Title: "动画速度响应",
+      SubTitle: "通过控制动画期间响应文本的显示速度，您可以控制动画速度响应",
+    },
     AutoGenerateTitle: {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",
