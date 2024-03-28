@@ -115,7 +115,7 @@ export default function VoiceInput({
     speechConfig.speechRecognitionLanguage = "zh-CN";
     speechConfig.setProperty(
       ms_audio_sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs,
-      "2500",
+      "3500",
     );
     recognizer.current = new ms_audio_sdk.SpeechRecognizer(
       speechConfig,

@@ -21,7 +21,7 @@
     "@hello-pangea/dnd": "^16.5.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@next/third-parties": "^14.1.0",
-    "@prisma/client": "^5.9.0",
+    "@prisma/client": "5.11.0",
     "@svgr/webpack": "^8.1.0",
     "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.9",
