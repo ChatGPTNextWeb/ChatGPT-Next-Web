@@ -78,6 +78,16 @@ export const getServerSideConfig = () => {
     `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
   );
 
+  let AzureModelMaper: Record<string, string> = {};
+  (process.env.AZURE_OPENAI_MODEL_MAPPER || "")
+    .trim()
+    .split(",")
+    .map((v) => v.trim().split("="))
+    .forEach(([k, v]) => {
+      AzureModelMaper[k] = v;
+    });
+  console.log("[AZURE_OPENAI_MODEL_MAPPER]", AzureModelMaper);
+
   return {
     baseUrl: process.env.BASE_URL,
     apiKey,
@@ -87,6 +97,7 @@ export const getServerSideConfig = () => {
     azureUrl: process.env.AZURE_URL,
     azureApiKey: process.env.AZURE_API_KEY,
     azureApiVersion: process.env.AZURE_API_VERSION,
+    azureModelMaper: AzureModelMaper,
 
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,

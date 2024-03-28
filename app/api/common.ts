@@ -6,6 +6,13 @@ import { makeAzurePath } from "../azure";
 
 const serverConfig = getServerSideConfig();
 
+export function azureModelMaper(model: string) {
+  if (serverConfig.isAzure) {
+    return serverConfig.azureModelMaper[model] ?? model;
+  }
+  return model;
+}
+
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
@@ -41,6 +48,13 @@ export async function requestOpenai(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
+  let body = await req.json();
+  console.log("[model name]", body["model"]);
+  baseUrl = baseUrl.replace(
+    "{deploy-name}",
+    azureModelMaper(body["model"]) as string,
+  );
+
   console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
 
@@ -72,7 +86,7 @@ export async function requestOpenai(req: NextRequest) {
       }),
     },
     method: req.method,
-    body: req.body,
+    body: JSON.stringify(body),
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
@@ -81,7 +95,7 @@ export async function requestOpenai(req: NextRequest) {
   };
 
   // #1815 try to refuse gpt4 request
-  if (serverConfig.customModels && req.body) {
+  if (serverConfig.customModels && body) {
     try {
       const modelTable = collectModelTable(
         DEFAULT_MODELS,
