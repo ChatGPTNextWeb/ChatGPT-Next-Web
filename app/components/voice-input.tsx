@@ -16,9 +16,6 @@ import {
   SpeechRecognitionEventArgs,
   SpeechRecognitionResult,
 } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports";
-import { useAccessStore } from "@/app/store";
-// import { getServerSideConfig } from "@/app/config/server";
-// import { GetServerSideProps } from 'next';
 
 interface VoiceInputInterface {
   userInput: string;
@@ -36,32 +33,6 @@ export default function VoiceInput({
   const recognizer = useRef<ms_audio_sdk.SpeechRecognizer | undefined>();
   const [tempUserInput, setTempUserInput] = useState("");
   const [accessToken, setAccessToken] = useState("");
-  // const lastLength = useRef(0);
-  // console.log('5555', serverConfig)
-  // useEffect(() => {
-  //
-  //   function onresult(event: any) {
-  //     // 这个事件会把前面识别的结果都返回回来，所以需要取最后一个识别结果
-  //     const length = event.results.length;
-  //     // 没有新的识别结果的时候，事件也会触发，所以这里判断一下如果没有新的识别结果，就不取最后一个识别结果了。
-  //     if (lastLength.current === length) {
-  //       return;
-  //     }
-  //
-  //     lastLength.current = length;
-  //
-  //     console.log(event.results);
-  //
-  //     // 获取最后一个识别结果
-  //     const transcript = event.results[length - 1]?.[0]?.transcript;
-  //
-  //     // 将最后一个识别结果添加到文本
-  //     if (transcript) {
-  //       setVoiceInputText((voiceInputText) => voiceInputText + transcript);
-  //     }
-  //   }
-  //
-  // }, []);
 
   useEffect(() => {
     const get_access_token = async () => {
@@ -140,10 +111,6 @@ export default function VoiceInput({
     setTempUserInput(userInput); // 开始的时候拷贝一份用于复原
     setVoiceInputText("");
 
-    // const speechConfig = ms_audio_sdk.SpeechConfig.fromSubscription(
-    //   "eb0f36d782ec403eb1d979b4d3d8876c",
-    //   "eastasia",
-    // );
     const speechConfig = ms_audio_sdk.SpeechConfig.fromAuthorizationToken(
       accessToken,
       "eastasia",
@@ -162,9 +129,8 @@ export default function VoiceInput({
     recognizer.current.canceled = onCanceled; // 自定义中断
     recognizer.current.recognizeOnceAsync(
       (result) => {
-        // onRecognizedResult(result);
-        setVoiceInputText(`${result.text}`);
-        console.log("3333", tempUserInput, "2", voiceInputText);
+        onRecognizedResult(result);
+
         setUserInput(tempUserInput + voiceInputText ?? "" + `${result.text}`);
         // setVoiceInputText(result.text);
         console.log("result", result.text);
