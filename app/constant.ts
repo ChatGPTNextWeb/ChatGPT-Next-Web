@@ -25,7 +25,6 @@ export enum Path {
 export enum ApiPath {
   Cors = "",
   OpenAI = "/api/openai",
-  Google = "/api/google",
 }
 
 export enum SlotID {
