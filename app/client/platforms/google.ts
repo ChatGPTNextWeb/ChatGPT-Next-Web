@@ -112,15 +112,15 @@ export class GeminiProApi implements LLMApi {
     options.onController?.(controller);
     try {
       let googleChatPath = visionModel
-        ? Google.VisionChatPath
-        : Google.ChatPath;
+        ? Google.ChatPath(modelConfig.model)
+        : Google.VisionChatPath(modelConfig.model);
       let chatPath = this.path(googleChatPath);
 
       // let baseUrl = accessStore.googleUrl;
 
       if (!baseUrl) {
         baseUrl = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google/" + googleChatPath
+          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath(modelConfig.model)
           : chatPath;
       }
 
