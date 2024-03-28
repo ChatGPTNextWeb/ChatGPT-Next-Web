@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import * as ms_audio_sdk from "microsoft-cognitiveservices-speech-sdk";
+import { getSession } from "@/lib/auth";
 import { getServerSideConfig } from "@/app/config/server";
 const serverConfig = getServerSideConfig();
 // Gets an access token.
@@ -13,7 +12,6 @@ async function getAccessToken() {
     },
     cache: "no-cache",
   };
-  console.log(options);
   return await fetch(uri, options);
 }
 
@@ -21,6 +19,12 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
+  // 认证
+
+  const session = await getSession();
+  if (!session?.user)
+    return NextResponse.json({ error: "未认证" }, { status: 401 });
+
   const get_access_token = await getAccessToken();
 
   if (!get_access_token.ok) {
