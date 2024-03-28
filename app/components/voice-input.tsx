@@ -47,8 +47,7 @@ export default function VoiceInput({
 
   function onRecognizedResult(result: SpeechRecognitionResult) {
     // setVoiceInputText("");
-    setVoiceInputText(`${result.text}`);
-
+    setVoiceInputText(`${result.text ?? ""}`);
     let intentJson = result.properties.getProperty(
       ms_audio_sdk.PropertyId.LanguageUnderstandingServiceResponse_JsonResult,
     );
@@ -57,8 +56,6 @@ export default function VoiceInput({
     }
 
     // setTempUserInput("");
-    console.log("3333", tempUserInput, "2", voiceInputText);
-
     // if (result?.translations) {
     //   let resultJson = JSON.parse(result.json);
     //   resultJson['privTranslationPhrase']['Translation']['Translations'].forEach(
@@ -89,12 +86,11 @@ export default function VoiceInput({
     setUserInput(
       tempUserInput +
         voiceInputText.replace(/(.*)(^|[\r\n]+).*\[\.\.\.][\r\n]+/, "$1$2") +
-        `${result.text} [...]`,
+        `${result.text ?? ""} [...]`,
     );
-
     setVoiceInputText(
       voiceInputText.replace(/(.*)(^|[\r\n]+).*\[\.\.\.][\r\n]+/, "$1$2") +
-        `${result.text} [...]`,
+        `${result.text ?? ""} [...]`,
     );
   }
 
@@ -130,12 +126,10 @@ export default function VoiceInput({
     recognizer.current.recognizeOnceAsync(
       (result) => {
         onRecognizedResult(result);
-
-        setUserInput(tempUserInput + voiceInputText ?? "" + `${result.text}`);
-        // setVoiceInputText(result.text);
-        console.log("result", result.text);
+        setUserInput(
+          tempUserInput + (voiceInputText ?? "") + `${result.text ?? ""}`,
+        );
         setVoiceInputLoading(false);
-        // recognizer.close();
       },
       (err) => {
         console.error("Recognition error: ", err); // 错误处理
