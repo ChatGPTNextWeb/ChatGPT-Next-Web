@@ -448,10 +448,17 @@ export function ChatActions(props: {
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const allModels = useAllModels();
-  const models = useMemo(
-    () => allModels.filter((m) => m.available),
-    [allModels],
-  );
+  const models = useMemo(() => {
+    const filteredModels = allModels.filter((m) => m.available);
+    const defaultModel = filteredModels.find((m) => m.isDefault);
+    if (defaultModel) {
+      const arr = [defaultModel, ...filteredModels.filter((m) => m !== defaultModel)];
+      return arr;
+    } else {
+      return filteredModels;
+    }
+  }, [allModels]);
+  
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 

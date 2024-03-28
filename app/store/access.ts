@@ -8,6 +8,7 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
+import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -90,6 +91,14 @@ export const useAccessStore = createPersistStore(
         },
       })
         .then((res) => res.json())
+        .then((res) => {
+          // Set default model from env request
+          let custom_models = res.customModels ?? "";
+          const models = custom_models.split(",");
+          const model_default = models.find((model: string) => model.startsWith("+*"))?.substring(2) || "gpt-3.5-turbo";
+          DEFAULT_CONFIG.modelConfig.model = model_default;
+          return res
+        })
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));
