@@ -97,6 +97,8 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { InputRange } from "./input-range";
+import { config } from "process";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -627,6 +629,31 @@ export function EditMessageModal(props: { onClose: () => void }) {
               }
             ></input>
           </ListItem>
+          <ListItem
+            title={Locale.Settings.HistoryCount.Title}
+            subTitle={Locale.Settings.HistoryCount.SubTitle}
+          >
+            <InputRange
+              title={(
+                session.overrideModelConfig?.historyMessageCount ??
+                session.mask.modelConfig.historyMessageCount
+              ).toString()}
+              value={
+                session.overrideModelConfig?.historyMessageCount ??
+                session.mask.modelConfig.historyMessageCount
+              }
+              min="0"
+              max="64"
+              step="1"
+              onChange={(e) =>
+                chatStore.updateCurrentSession(
+                  (session) =>
+                    ((session.overrideModelConfig ??= {}).historyMessageCount =
+                      e.currentTarget.valueAsNumber),
+                )
+              }
+            ></InputRange>
+          </ListItem>
         </List>
         <ContextPrompts
           context={messages}
@@ -1102,11 +1129,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
