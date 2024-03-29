@@ -1570,15 +1570,15 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/katex@^0.11.0":
-  version "0.11.1"
-  resolved "https://registry.npmjs.org/@types/katex/-/katex-0.11.1.tgz"
-  integrity sha512-DUlIj2nk0YnJdlWgsFuVKcX27MLW0KbKmGVoUHmFr+74FYYNUDAaj9ZqTADvsbE8rfxuVmSFc7KczYn5Y09ozg==
-
 "@types/katex@^0.14.0":
   version "0.14.0"
   resolved "https://registry.npmjs.org/@types/katex/-/katex-0.14.0.tgz"
   integrity sha512-+2FW2CcT0K3P+JMR8YG846bmDwplKUTsWgT2ENwdQ1UdVfRk3GQrh6Mi4sTopy30gI8Uau5CEqHTDZ6YvWIUPA==
+
+"@types/katex@^0.16.0":
+  version "0.16.7"
+  resolved "https://registry.yarnpkg.com/@types/katex/-/katex-0.16.7.tgz#03ab680ab4fa4fbc6cb46ecf987ecad5d8019868"
+  integrity sha512-HMwFiRujE5PjrgwHQ25+bsLJgowjGjm5Z8FVSf0N6PwgJrwxH0QxzHYDcKsTfV3wva0vzrpqMTJS2jXPr5BMEQ==
 
 "@types/mdast@^3.0.0":
   version "3.0.11"
@@ -2261,7 +2261,7 @@ commander@^2.20.0:
   resolved "https://registry.npmmirror.com/commander/-/commander-2.20.3.tgz"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-commander@^8.0.0, commander@^8.3.0:
+commander@^8.3.0:
   version "8.3.0"
   resolved "https://registry.npmjs.org/commander/-/commander-8.3.0.tgz"
   integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
@@ -4046,17 +4046,10 @@ json5@^2.2.2:
     array-includes "^3.1.5"
     object.assign "^4.1.3"
 
-katex@^0.13.0:
-  version "0.13.24"
-  resolved "https://registry.npmjs.org/katex/-/katex-0.13.24.tgz"
-  integrity sha512-jZxYuKCma3VS5UuxOx/rFV1QyGSl3Uy/i0kTJF3HgQ5xMinCQVF8Zd4bMY/9aI9b9A2pjIBOsjSSm68ykTAr8w==
-  dependencies:
-    commander "^8.0.0"
-
 katex@^0.16.0:
-  version "0.16.8"
-  resolved "https://registry.npmjs.org/katex/-/katex-0.16.8.tgz"
-  integrity sha512-ftuDnJbcbOckGY11OO+zg3OofESlbR5DRl2cmN8HeWeeFIV7wTXvAOx8kEjZjobhA+9wh2fbKeO6cdcA9Mnovg==
+  version "0.16.10"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.16.10.tgz#6f81b71ac37ff4ec7556861160f53bc5f058b185"
+  integrity sha512-ZiqaC04tp2O5utMsl2TEZTXxa6WSC4yo0fv5ML++D3QZv/vx2Mct0mTlRx3O+uUkjfuAgOkzsCmq5MiUEsDDdA==
   dependencies:
     commander "^8.3.0"
 
@@ -4610,12 +4603,12 @@ micromark-extension-gfm@^3.0.0:
     micromark-util-types "^2.0.0"
 
 micromark-extension-math@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/micromark-extension-math/-/micromark-extension-math-2.0.2.tgz"
-  integrity sha512-cFv2B/E4pFPBBFuGgLHkkNiFAIQv08iDgPH2HCuR2z3AUgMLecES5Cq7AVtwOtZeRrbA80QgMUk8VVW0Z+D2FA==
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/micromark-extension-math/-/micromark-extension-math-2.1.2.tgz#52c70cc8266cd20ada1ef5a479bfed9a19b789bf"
+  integrity sha512-es0CcOV89VNS9wFmyn+wyFTKweXGW4CEvdaAca6SWRWPyYCbBisnjaHLjWO4Nszuiud84jCpkHsqAJoa768Pvg==
   dependencies:
-    "@types/katex" "^0.11.0"
-    katex "^0.13.0"
+    "@types/katex" "^0.16.0"
+    katex "^0.16.0"
     micromark-factory-space "^1.0.0"
     micromark-util-character "^1.0.0"
     micromark-util-symbol "^1.0.0"
