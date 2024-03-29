@@ -51,6 +51,7 @@ import {
   DEFAULT_FASTGPT_TOPIC,
   ModelType,
   useFastGPTChatStore,
+  FASTGPT_MODEL_TOPIC,
 } from "../store";
 
 import {
@@ -1204,7 +1205,9 @@ function _Chat() {
     setAttachImages(images);
   }
   const fastChatTotal = session.mask.fastgptAPI.length;
-  const [fastChatNum, setFastChatNum] = useState(0);
+  // const [fastChatNum, setFastChatNum] = useState(0);
+  const fastChatName = FASTGPT_MODEL_TOPIC;
+  let fastChatNum = -1;
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -1293,6 +1296,12 @@ function _Chat() {
           const showTyping = message.preview || message.streaming;
 
           const shouldShowClearContextDivider = i === clearContextIndex - 1;
+
+          if (!isUser && !isContext) {
+            fastChatNum++;
+            fastChatNum = fastChatNum % fastChatTotal;
+          }
+          // const checkFastNum = setFastChatNum((fastChatNum) => fastChatNum + 1);
 
           return (
             // <Fragment key={message.id}>
@@ -1470,58 +1479,67 @@ function _Chat() {
               >
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-header"]}>
-                    <div className={styles["chat-message-avatar"]}>
-                      <div className={styles["chat-message-edit"]}>
-                        <IconButton
-                          icon={<EditIcon />}
-                          onClick={async () => {
-                            const newMessage = await showPrompt(
-                              Locale.Chat.Actions.Edit,
-                              getMessageTextContent(message),
-                              10,
-                            );
-                            let newContent: string | MultimodalContent[] =
-                              newMessage;
-                            const images = getMessageImages(message);
-                            if (images.length > 0) {
-                              newContent = [{ type: "text", text: newMessage }];
-                              for (let i = 0; i < images.length; i++) {
-                                newContent.push({
-                                  type: "image_url",
-                                  image_url: {
-                                    url: images[i],
-                                  },
-                                });
+                    {isUser || isContext ? (
+                      <div className={styles["chat-message-avatar"]}>
+                        <div className={styles["chat-message-edit"]}>
+                          <IconButton
+                            icon={<EditIcon />}
+                            onClick={async () => {
+                              const newMessage = await showPrompt(
+                                Locale.Chat.Actions.Edit,
+                                getMessageTextContent(message),
+                                10,
+                              );
+                              let newContent: string | MultimodalContent[] =
+                                newMessage;
+                              const images = getMessageImages(message);
+                              if (images.length > 0) {
+                                newContent = [
+                                  { type: "text", text: newMessage },
+                                ];
+                                for (let i = 0; i < images.length; i++) {
+                                  newContent.push({
+                                    type: "image_url",
+                                    image_url: {
+                                      url: images[i],
+                                    },
+                                  });
+                                }
                               }
-                            }
-                            chatStore.updateCurrentSession((session) => {
-                              const m = session.mask.context
-                                .concat(session.messages)
-                                .find((m) => m.id === message.id);
-                              if (m) {
-                                m.content = newContent;
-                              }
-                            });
-                          }}
-                        ></IconButton>
+                              chatStore.updateCurrentSession((session) => {
+                                const m = session.mask.context
+                                  .concat(session.messages)
+                                  .find((m) => m.id === message.id);
+                                if (m) {
+                                  m.content = newContent;
+                                }
+                              });
+                            }}
+                          ></IconButton>
+                        </div>
+                        {isUser ? (
+                          <Avatar avatar={config.avatar} />
+                        ) : (
+                          <>
+                            {["system"].includes(message.role) ? (
+                              <Avatar avatar="2699-fe0f" />
+                            ) : (
+                              <MaskAvatar
+                                avatar={session.mask.avatar}
+                                model={
+                                  message.model ||
+                                  session.mask.modelConfig.model
+                                }
+                              />
+                            )}
+                          </>
+                        )}
                       </div>
-                      {isUser ? (
-                        <Avatar avatar={config.avatar} />
-                      ) : (
-                        <>
-                          {["system"].includes(message.role) ? (
-                            <Avatar avatar="2699-fe0f" />
-                          ) : (
-                            <MaskAvatar
-                              avatar={session.mask.avatar}
-                              model={
-                                message.model || session.mask.modelConfig.model
-                              }
-                            />
-                          )}
-                        </>
-                      )}
-                    </div>
+                    ) : (
+                      <div className={styles["chat-message-fastgpt-name"]}>
+                        {fastChatName[fastChatNum]}
+                      </div>
+                    )}
                   </div>
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>

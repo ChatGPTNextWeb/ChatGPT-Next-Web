@@ -35,7 +35,7 @@ export const EN_MASKS: BuiltinMask[] = [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
       "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
-      "fastgpt-hOukNqrsqdM5C7u7FeozSVm7B15gNOfdOQEDPI0094Ej8WPQ664D",
+      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
       name: "Kai Brown",
@@ -79,7 +79,7 @@ export const EN_MASKS: BuiltinMask[] = [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
       "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
-      "fastgpt-hOukNqrsqdM5C7u7FeozSVm7B15gNOfdOQEDPI0094Ej8WPQ664D",
+      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
       name: "Kai Brown",
@@ -123,7 +123,7 @@ export const EN_MASKS: BuiltinMask[] = [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
       "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
-      "fastgpt-hOukNqrsqdM5C7u7FeozSVm7B15gNOfdOQEDPI0094Ej8WPQ664D",
+      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
       name: "Ganyu",
@@ -168,7 +168,7 @@ export const EN_MASKS: BuiltinMask[] = [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
       "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
-      "fastgpt-hOukNqrsqdM5C7u7FeozSVm7B15gNOfdOQEDPI0094Ej8WPQ664D",
+      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
       name: "Cricket",
