@@ -133,14 +133,6 @@ export default function VoiceInput({
     recognizer.current.recognizeOnceAsync(
       (result) => {
         onRecognizedResult(result);
-        console.log(
-          "1",
-          tempUserInput,
-          "2",
-          voiceInputText ?? "",
-          "3",
-          `${result.text ?? ""}`,
-        );
         setUserInput(
           tempUserInput + (voiceInputText ?? "") + `${result.text ?? ""}`,
         );
