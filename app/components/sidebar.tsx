@@ -166,11 +166,11 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          NextChat
+          AIChat Demo
         </div>
-        <div className={styles["sidebar-sub-title"]}>
+        {/* <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
-        </div>
+        </div> */}
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
@@ -190,13 +190,13 @@ export function SideBar(props: { className?: string }) {
           }}
           shadow
         />
-        <IconButton
+        {/* <IconButton
           icon={<PluginIcon />}
           text={"FG List"}
           className={styles["sidebar-bar-button"]}
-          onClick={() => switchChatList()}
+          // onClick={() => switchChatList()}
           shadow
-        />
+        /> */}
       </div>
 
       <div
@@ -242,7 +242,7 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div> */}
         </div>
-        <div>
+        {/* <div>
           <IconButton
             icon={<AddIcon />}
             text={shouldNarrow ? undefined : "FastGPT"}
@@ -258,7 +258,7 @@ export function SideBar(props: { className?: string }) {
             }}
             shadow
           />
-        </div>
+        </div> */}
         <div>
           <IconButton
             icon={<AddIcon />}
