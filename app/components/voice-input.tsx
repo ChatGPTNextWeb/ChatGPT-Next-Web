@@ -45,6 +45,13 @@ export default function VoiceInput({
     }
   }, [accessToken]);
 
+  useEffect(() => {
+    if (!userInput || userInput.trim() === "") {
+      setTempUserInput("");
+      setVoiceInputText("");
+    }
+  }, [userInput]);
+
   function onRecognizedResult(result: SpeechRecognitionResult) {
     // setVoiceInputText("");
     setVoiceInputText(`${result.text ?? ""}`);
@@ -68,7 +75,7 @@ export default function VoiceInput({
     sender: Recognizer,
     event: SpeechRecognitionCanceledEventArgs,
   ) {
-    console.log(event);
+    console.log("[onCanceled] ", event);
     // 如果有异常就尝试重新获取
     setAccessToken("");
     // 展示取消事件
@@ -126,9 +133,19 @@ export default function VoiceInput({
     recognizer.current.recognizeOnceAsync(
       (result) => {
         onRecognizedResult(result);
+        console.log(
+          "1",
+          tempUserInput,
+          "2",
+          voiceInputText ?? "",
+          "3",
+          `${result.text ?? ""}`,
+        );
         setUserInput(
           tempUserInput + (voiceInputText ?? "") + `${result.text ?? ""}`,
         );
+        setTempUserInput("");
+        setVoiceInputText("");
         setVoiceInputLoading(false);
       },
       (err) => {
