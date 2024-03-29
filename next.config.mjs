@@ -24,6 +24,8 @@ const nextConfig = {
       child_process: false,
     };
 
+    // open source map
+    config.devtool = 'source-map';
     return config;
   },
   output: mode,
