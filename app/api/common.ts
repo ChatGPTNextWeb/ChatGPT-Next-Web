@@ -166,7 +166,7 @@ export async function requestLog(
       path: url_path,
       logEntry: JSON.stringify(jsonBody),
       model: url_path.startsWith("mj/") ? "midjourney" : jsonBody?.model, // 后面尝试请求是添加到参数
-      name: h_userName,
+      userName: h_userName,
     };
 
     await fetch(`${baseUrl}/api/logs/openai`, {
