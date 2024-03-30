@@ -159,21 +159,22 @@ export async function requestLog(
     }
     const baseUrl = "http://localhost:3000";
     const ip = getIP(req);
-    let h_userName = await getSessionName();
-    console.log("[中文]", h_userName, baseUrl);
+
+    let { session, name } = await getSessionName();
+    console.log("[中文]", name, session, baseUrl);
     const logData = {
       ip: ip,
       path: url_path,
       logEntry: JSON.stringify(jsonBody),
       model: url_path.startsWith("mj/") ? "midjourney" : jsonBody?.model, // 后面尝试请求是添加到参数
-      userName: h_userName,
+      userName: name,
+      userID: session?.user?.id,
     };
 
     await fetch(`${baseUrl}/api/logs/openai`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // ...req.headers,
       },
       body: JSON.stringify(logData),
     });

@@ -82,15 +82,13 @@ export const authOptions: NextAuthOptions = {
                 // 判断姓名格式是否符合要求，不符合则拒绝
                 if (username && isName(username)) {
                     // Any object returned will be saved in `user` property of the JWT
-                    let user:{[key: string]: string} = {
-                        name: username,
-                        // email: null
-                    }
+                    let user:{[key: string]: string} = {}
                     if (isEmail(username)) {
-                        user['email'] =  username;
+                        user['email'] = username;
+                    } else {
+                        user['name'] = username;
                     }
-                    await insertUser(user);
-                    return user
+                    return await insertUser(user) ?? user
                 } else {
                     // If you return null then an error will be displayed advising the user to check their details.
                     // return null
@@ -125,7 +123,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         jwt: async ({ token, user }) => {
             // const current_time =  Math.floor(Date.now() / 1000);
-            // console.log('=============', token, user, current_time)
+            console.log('=============', token, user,)
             if (user) {
                 token.user = user;
             }
@@ -139,6 +137,7 @@ export const authOptions: NextAuthOptions = {
                 // @ts-expect-error
                 username: token?.user?.username || token?.user?.gh_username,
             };
+            console.log('555555555,', session, token)
             return session;
         },
     },
@@ -159,8 +158,11 @@ export function getSession() {
 
 export async function getSessionName() {
     const session = await getSession();
-    // console.log('in........',)
-    return session?.user?.email || session?.user?.name
+    console.log('in........', session)
+    return {
+        name: session?.user?.email || session?.user?.name,
+        session
+    }
 }
 
 // export function withSiteAuth(action: any) {
@@ -232,21 +234,22 @@ export async function insertUser(user: {[key: string]: string}) {
         }
         const existingUser = conditions.length? await prisma.user.findFirst({
             where: {
-                OR: conditions,
+                AND: conditions,
             },
         }) : null;
         // console.log('[LOG]', existingUser, user, '=======')
         if (!existingUser) {
-            const newUser = await prisma.user.create({
+            return await prisma.user.create({
                 data: user
             })
-            // console.log('[LOG]', user, '=======')
+        } else {
+            console.log('user==========', existingUser)
+            return existingUser;
         }
     } catch (e) {
         console.log('[Prisma Error]', e);
         return false;
     }
-    return true;
 }
 
 

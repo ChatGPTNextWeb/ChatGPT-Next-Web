@@ -9,12 +9,13 @@ async function handle(
 ) {
   try {
     const request_data = await req.json();
-    if (request_data?.userName) {
-      await insertUser({
-        name: request_data?.userName,
-        email: request_data?.userName,
-      });
-    }
+    console.log("log", request_data);
+    // if (request_data?.userName) {
+    //   await insertUser({
+    //     name: request_data?.userName,
+    //     email: request_data?.userName,
+    //   });
+    // }
     // console.log("===========4", request_data);
     try {
       if (request_data?.logEntry) {

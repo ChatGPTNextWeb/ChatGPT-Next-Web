@@ -16,8 +16,8 @@ model User {
   id            String     @id @default(cuid())
   name          String?    @unique
   // if you are using Github OAuth, you can get rid of the username attribute (that is for Twitter OAuth)
-  username      String?
-  gh_username   String?
+  username      String?    @unique
+  gh_username   String?    @unique
   email         String?    @unique
   emailVerified DateTime?
   image         String?
@@ -70,10 +70,11 @@ model LogEntry {
   path      String?  @db.Text
   model     String?  @db.VarChar(25)
   userName  String?  @db.VarChar(50)
+  userID    String?
   createdAt DateTime @default(now())
   // logEntry  String?  @db.Text
   logToken  Int?     @default(0)
-  user      User?    @relation(fields: [userName], references: [name], onDelete: NoAction)
+  user      User?    @relation(fields: [userID], references: [id], onDelete: NoAction)
 }
 
 model VerificationToken {
