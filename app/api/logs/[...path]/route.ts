@@ -10,7 +10,7 @@ async function handle(
   try {
     const request_data = await req.json();
     if (request_data?.userName) {
-      await insertUser({ name: request_data?.userName });
+      await insertUser({ name: request_data?.name, email: request_data?.name });
     }
     // console.log("===========4", request_data);
     try {

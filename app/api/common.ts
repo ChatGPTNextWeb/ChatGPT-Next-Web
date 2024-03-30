@@ -159,12 +159,6 @@ export async function requestLog(
     }
     const baseUrl = "http://localhost:3000";
     const ip = getIP(req);
-    // 对其进行 Base64 解码
-    // let h_userName = req.headers.get("x-request-name");
-    // if (h_userName) {
-    //   const buffer = Buffer.from(h_userName, "base64");
-    //   h_userName = decodeURIComponent(buffer.toString("utf-8"));
-    // }
     let h_userName = await getSessionName();
     console.log("[中文]", h_userName, baseUrl);
     const logData = {
@@ -172,7 +166,7 @@ export async function requestLog(
       path: url_path,
       logEntry: JSON.stringify(jsonBody),
       model: url_path.startsWith("mj/") ? "midjourney" : jsonBody?.model, // 后面尝试请求是添加到参数
-      userName: h_userName,
+      name: h_userName,
     };
 
     await fetch(`${baseUrl}/api/logs/openai`, {
