@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { DENY_LIST, isName, ADMIN_LIST } from "@/lib/auth_list";
-import {use} from "react";
+import { isName, ADMIN_LIST } from "@/lib/auth_list";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -60,23 +59,23 @@ export default async function middleware(req: NextRequest) {
         );
     }
 
-    if (req.method == 'POST' && (path.startsWith("/api/openai/") || path.startsWith("/api/midjourney"))) {
-        // 重写header，添加用户名
-        // console.log(session,'========')
-        const requestHeaders = new Headers(req.headers)
-
-        // 使用 encodeURIComponent 对特殊字符进行编码
-        // 将编码的 URI 组件转换成 Base64
-        const encodeName = Buffer.from(encodeURIComponent(`${session?.name}`)).toString('base64');
-
-        requestHeaders.set('x-request-name', encodeName)
-        return NextResponse.next({
-            request: {
-                // New request headers
-                headers: requestHeaders,
-            },
-        })
-    }
+    // if (req.method == 'POST' && (path.startsWith("/api/openai/") || path.startsWith("/api/midjourney"))) {
+    //     // 重写header，添加用户名
+    //     // console.log(session,'========')
+    //     const requestHeaders = new Headers(req.headers)
+    //
+    //     // 使用 encodeURIComponent 对特殊字符进行编码
+    //     // 将编码的 URI 组件转换成 Base64
+    //     const encodeName = Buffer.from(encodeURIComponent(`${session?.name}`)).toString('base64');
+    //
+    //     requestHeaders.set('x-request-name', encodeName)
+    //     return NextResponse.next({
+    //         request: {
+    //             // New request headers
+    //             headers: requestHeaders,
+    //         },
+    //     })
+    // }
 
     return NextResponse.next()
 }

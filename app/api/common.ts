@@ -4,6 +4,7 @@ import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
 import { getIP } from "@/app/api/auth";
+import { getSessionName } from "@/lib/auth";
 
 const serverConfig = getServerSideConfig();
 
@@ -149,22 +150,22 @@ export async function requestLog(
   req: NextRequest,
   jsonBody: any,
   url_path: string,
+  name?: string,
 ) {
   // LOG
   try {
     if (url_path.startsWith("mj/") && !url_path.startsWith("mj/submit/")) {
       return;
     }
-    // const protocol = req.headers.get("x-forwarded-proto") || "http";
-    //const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
     const baseUrl = "http://localhost:3000";
     const ip = getIP(req);
     // 对其进行 Base64 解码
-    let h_userName = req.headers.get("x-request-name");
-    if (h_userName) {
-      const buffer = Buffer.from(h_userName, "base64");
-      h_userName = decodeURIComponent(buffer.toString("utf-8"));
-    }
+    // let h_userName = req.headers.get("x-request-name");
+    // if (h_userName) {
+    //   const buffer = Buffer.from(h_userName, "base64");
+    //   h_userName = decodeURIComponent(buffer.toString("utf-8"));
+    // }
+    let h_userName = await getSessionName();
     console.log("[中文]", h_userName, baseUrl);
     const logData = {
       ip: ip,

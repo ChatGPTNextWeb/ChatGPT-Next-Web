@@ -2,10 +2,10 @@ import {getServerSession, type NextAuthOptions, Theme} from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import {PrismaAdapter} from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
-import { isEmail, isName } from "@/lib/auth_list";
-import { createTransport } from "nodemailer";
+import {isEmail, isName} from "@/lib/auth_list";
+import {createTransport} from "nodemailer";
 
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
@@ -155,6 +155,12 @@ export function getSession() {
             image: string;
         };
     } | null>;
+}
+
+export async function getSessionName() {
+    const session = await getSession();
+    // console.log('in........',)
+    return session?.user?.email || session?.user?.name
 }
 
 // export function withSiteAuth(action: any) {
