@@ -1,19 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { insertUser } from "@/lib/auth";
-// import { getTokenLength } from "@/app/utils/token";
-// import { Tiktoken } from "tiktoken/lite"
-// import cl100k_base from "tiktoken/encoders/cl100k_base.json"
-// import "tiktoken";
-// import { get_encoding } from "tiktoken";
-import { addHours, subMinutes } from "date-fns";
 import { getTokenLength } from "@/lib/utils";
-
-// function getTokenLength(input: string): number {
-//   const encoding = get_encoding("cl100k_base");
-//   // console.log('tokens: ', input, encoding.countTokens())
-//   return encoding.encode(input).length;
-// }
 
 async function handle(
   req: NextRequest,
@@ -21,9 +9,13 @@ async function handle(
 ) {
   try {
     const request_data = await req.json();
-    if (request_data?.userName) {
-      await insertUser({ name: request_data?.userName });
-    }
+    console.log("log", request_data);
+    // if (request_data?.userName) {
+    //   await insertUser({
+    //     name: request_data?.userName,
+    //     email: request_data?.userName,
+    //   });
+    // }
     // console.log("===========4", request_data);
     try {
       if (request_data?.logEntry) {

@@ -8,10 +8,8 @@ import {
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth, getIP } from "../../auth";
-import { getToken } from "next-auth/jwt";
+import { auth } from "../../auth";
 import { requestLog, requestOpenai } from "../../common";
-import { headers } from "next/headers";
 
 const ALLOWD_PATH = new Set(Object.values({ ...OpenaiPath, ...AZURE_PATH }));
 
@@ -113,7 +111,7 @@ async function handle(
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
+// export const runtime = "edge";
 export const preferredRegion = [
   "arn1",
   "bom1",
