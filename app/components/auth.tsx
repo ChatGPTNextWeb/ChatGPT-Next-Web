@@ -95,6 +95,15 @@ export function AuthPage() {
           }}
         />
         <IconButton
+          text="访问免费AI助手"
+          onClick={() => {
+            window.open(
+              "https://dify.liujiarong.top/chat/OEbaF0tRFWBs6yOf",
+              "_blank",
+            );
+          }}
+        />
+        <IconButton
           text={Locale.Auth.Later}
           onClick={() => {
             resetAccessCode();

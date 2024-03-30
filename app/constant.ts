@@ -298,195 +298,204 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  {
-    name: "bakllava-1",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "codeninja-1.0-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "deepseek-coder-1.3b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "dolphin-phi-2",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gemma-2b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gemma-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "llama2-chat-7b-q4",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "llamacorn-1.1b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "llava-1.5-7b-q5",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "mistral-ins-7b-q4",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "noromaid-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "openchat-3.5-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "openhermes-neural-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "phi-2-3b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "solar-10.7b-slerp",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "stable-zephyr-3b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "starling-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "stealth-v1.2-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "tinyllama-1.1b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "wizardcoder-13b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "trinity-v1.2-7b",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
+  // {
+  //   name: "qwen-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "bakllava-1",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "codeninja-1.0-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "deepseek-coder-1.3b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "dolphin-phi-2",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "gemma-2b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "gemma-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "llama2-chat-7b-q4",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "llamacorn-1.1b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "llava-1.5-7b-q5",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "mistral-ins-7b-q4",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "noromaid-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "openchat-3.5-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "openhermes-neural-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "phi-2-3b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "solar-10.7b-slerp",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "stable-zephyr-3b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "starling-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "stealth-v1.2-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "tinyllama-1.1b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "wizardcoder-13b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // {
+  //   name: "trinity-v1.2-7b",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;

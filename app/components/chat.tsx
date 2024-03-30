@@ -37,6 +37,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import OtherRobot from "../icons/otherRobot.svg";
 
 import {
   ChatMessage,
@@ -555,6 +556,16 @@ export function ChatActions(props: {
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
+      />
+      <ChatAction
+        text="免费模型"
+        icon={<OtherRobot />}
+        onClick={() => {
+          window.open(
+            "https://dify.liujiarong.top/chat/OEbaF0tRFWBs6yOf",
+            "_blank",
+          );
+        }}
       />
 
       {showModelSelector && (
@@ -1102,11 +1113,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
