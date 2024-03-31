@@ -39,6 +39,7 @@
     "https-proxy-agent": "^7.0.2",
     "langchain": "0.1.20",
     "mermaid": "^10.6.1",
+    "mime": "^4.0.1",
     "nanoid": "^5.0.3",
     "next": "^13.4.9",
     "node-fetch": "^3.3.1",

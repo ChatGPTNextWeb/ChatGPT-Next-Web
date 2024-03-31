@@ -69,6 +69,7 @@ import {
   isVisionModel,
   compressImage,
   isFirefox,
+  isSupportRAGModel,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -116,6 +117,7 @@ import {
   SpeechApi,
   WebTranscriptionApi,
 } from "../utils/speech";
+import { getServerSideConfig } from "../config/server";
 
 const ttsPlayer = createTTSPlayer();
 
@@ -460,6 +462,8 @@ function useScrollToBottom(
 export function ChatActions(props: {
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
+  uploadFile: () => void;
+  setAttachFiles: (files: string[]) => void;
   setUploading: (uploading: boolean) => void;
   showPromptModal: () => void;
   scrollToBottom: () => void;
@@ -503,9 +507,15 @@ export function ChatActions(props: {
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
+  const [showUploadFile, setShowUploadFile] = useState(false);
+
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
+    const serverConfig = getServerSideConfig();
+    setShowUploadFile(
+      serverConfig.isEnableRAG && !show && isSupportRAGModel(currentModel),
+    );
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
@@ -553,6 +563,14 @@ export function ChatActions(props: {
             onClick={props.uploadImage}
             text={Locale.Chat.InputActions.UploadImage}
             icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
+          />
+        )}
+
+        {showUploadFile && (
+          <ChatAction
+            onClick={props.uploadFile}
+            text={Locale.Chat.InputActions.UploadFle}
+            icon={props.uploading ? <LoadingButtonIcon /> : <UploadIcon />}
           />
         )}
         <ChatAction
@@ -713,6 +731,14 @@ export function DeleteImageButton(props: { deleteImage: () => void }) {
   );
 }
 
+export function DeleteFileButton(props: { deleteFile: () => void }) {
+  return (
+    <div className={styles["delete-file"]} onClick={props.deleteFile}>
+      <DeleteIcon />
+    </div>
+  );
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -743,6 +769,7 @@ function _Chat() {
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [attachFiles, setAttachFiles] = useState<string[]>([]);
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -851,6 +878,7 @@ function _Chat() {
       .onUserInput(userInput, attachImages)
       .then(() => setIsLoading(false));
     setAttachImages([]);
+    setAttachFiles([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
@@ -1324,6 +1352,53 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  async function uploadFile() {
+    const uploadFiles: string[] = [];
+    uploadFiles.push(...attachFiles);
+
+    uploadFiles.push(
+      ...(await new Promise<string[]>((res, rej) => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = ".pdf,.txt,.json,.csv,.md";
+        fileInput.multiple = true;
+        fileInput.onchange = (event: any) => {
+          setUploading(true);
+          const files = event.target.files;
+          const api = new ClientApi();
+          const fileDatas: string[] = [];
+          for (let i = 0; i < files.length; i++) {
+            const file = event.target.files[i];
+            api.file
+              .upload(file)
+              .then((fileInfo) => {
+                console.log(fileInfo);
+                fileDatas.push(fileInfo);
+                if (
+                  fileDatas.length === 5 ||
+                  fileDatas.length === files.length
+                ) {
+                  setUploading(false);
+                  res(fileDatas);
+                }
+              })
+              .catch((e) => {
+                setUploading(false);
+                rej(e);
+              });
+          }
+        };
+        fileInput.click();
+      })),
+    );
+
+    const filesLength = uploadFiles.length;
+    if (filesLength > 5) {
+      uploadFiles.splice(5, filesLength - 5);
+    }
+    setAttachFiles(uploadFiles);
+  }
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1632,6 +1707,8 @@ function _Chat() {
         <ChatActions
           uploadImage={uploadImage}
           setAttachImages={setAttachImages}
+          uploadFile={uploadFile}
+          setAttachFiles={setAttachFiles}
           setUploading={setUploading}
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
@@ -1651,7 +1728,7 @@ function _Chat() {
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
-            attachImages.length != 0
+            attachImages.length != 0 || attachFiles.length != 0
               ? styles["chat-input-panel-inner-attach"]
               : ""
           }`}
@@ -1697,7 +1774,26 @@ function _Chat() {
               })}
             </div>
           )}
-
+          {attachFiles.length != 0 && (
+            <div className={styles["attach-files"]}>
+              {attachFiles.map((file, index) => {
+                return (
+                  <div key={index} className={styles["attach-file"]}>
+                    <div className={styles["attach-file-mask"]}>
+                      <DeleteFileButton
+                        deleteFile={() => {
+                          setAttachFiles(
+                            attachFiles.filter((_, i) => i !== index),
+                          );
+                        }}
+                      />
+                    </div>
+                    <div className={styles["attach-file-name"]}>${file}</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           {config.sttConfig.enable ? (
             <IconButton
               icon={<VoiceWhiteIcon />}

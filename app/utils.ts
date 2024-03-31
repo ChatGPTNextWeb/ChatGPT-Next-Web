@@ -296,3 +296,9 @@ export function isVisionModel(model: string) {
 
   return visionKeywords.some((keyword) => model.includes(keyword));
 }
+
+export function isSupportRAGModel(modelName: string) {
+  return DEFAULT_MODELS.filter((model) => model.provider.id === "openai").some(
+    (model) => model.name === modelName,
+  );
+}

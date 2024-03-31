@@ -111,5 +111,7 @@ export const getServerSideConfig = () => {
       !!process.env.NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN &&
       !process.env.R2_ACCOUNT_ID &&
       !process.env.S3_ENDPOINT,
+
+    isEnableRAG: !!process.env.NEXT_PUBLIC_ENABLE_RAG,
   };
 };
