@@ -158,7 +158,7 @@ export function getSession() {
 
 export async function getSessionName() {
     const session = await getSession();
-    console.log('in........', session)
+    // console.log('in........', session)
     return {
         name: session?.user?.email || session?.user?.name,
         session
