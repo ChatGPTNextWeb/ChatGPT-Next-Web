@@ -74,7 +74,7 @@ model LogEntry {
   createdAt DateTime @default(now())
   // logEntry  String?  @db.Text
   logToken  Int?     @default(0)
-  user      User?    @relation(fields: [userID], references: [id], onDelete: NoAction)
+  user      User?    @relation(fields: [userID], references: [id], onDelete: SetNull)
 }
 
 model VerificationToken {

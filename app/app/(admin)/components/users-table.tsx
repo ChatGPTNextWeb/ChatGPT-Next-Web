@@ -8,12 +8,14 @@ import React, {
   useState,
 } from "react";
 import { User } from "@prisma/client";
-import { Space, Table, Tag, Input, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import type { FilterDropdownProps } from "antd/es/table/interface";
-import type { GetRef, TableColumnsType, TableColumnType } from "antd";
+import { Space, Table, Tag, Input, Button, notification } from "antd";
+import type { GetRef, TableColumnsType } from "antd";
+
+import type { NotificationArgsProps } from "antd";
+
 import Highlighter from "react-highlight-words";
 // 后期考虑删除该依赖
+type NotificationPlacement = NotificationArgsProps["placement"];
 
 import type { SearchProps } from "antd/es/input/Search";
 
@@ -77,122 +79,44 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
 }
 
 function UsersTable({ users, setUsers, loading }: UserInterface) {
-  // const [searchText, setSearchText] = useState("");
-  // const [searchedColumn, setSearchedColumn] = useState("");
-  // const searchInput = useRef<InputRef>(null);
-  // const handleSearch = (
-  //   selectedKeys: string[],
-  //   confirm: FilterDropdownProps["confirm"],
-  //   dataIndex: DataIndex,
-  // ) => {
-  //   confirm();
-  //   setSearchText(selectedKeys[0]);
-  //   setSearchedColumn(dataIndex);
-  // };
+  const [api, contextHolder] = notification.useNotification();
 
-  // const handleReset = (clearFilters: () => void) => {
-  //   clearFilters();
-  //   setSearchText("");
-  // };
-
-  // const getColumnSearchProps = (
-  //   dataIndex: DataIndex,
-  // ): TableColumnType<User> => ({
-  //   filterDropdown: ({
-  //     setSelectedKeys,
-  //     selectedKeys,
-  //     confirm,
-  //     clearFilters,
-  //     close,
-  //   }) => (
-  //     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-  //       <Input
-  //         ref={searchInput}
-  //         placeholder={`Search ${dataIndex}`}
-  //         value={selectedKeys[0]}
-  //         onChange={(e) =>
-  //           setSelectedKeys(e.target.value ? [e.target.value] : [])
-  //         }
-  //         onPressEnter={() =>
-  //           handleSearch(selectedKeys as string[], confirm, dataIndex)
-  //         }
-  //         style={{ marginBottom: 8, display: "block" }}
-  //       />
-  //       <Space>
-  //         <Button
-  //           type="primary"
-  //           onClick={() =>
-  //             handleSearch(selectedKeys as string[], confirm, dataIndex)
-  //           }
-  //           icon={<SearchOutlined />}
-  //           size="small"
-  //           style={{ width: 90 }}
-  //         >
-  //           Search
-  //         </Button>
-  //         <Button
-  //           onClick={() => clearFilters && handleReset(clearFilters)}
-  //           size="small"
-  //           style={{ width: 90 }}
-  //         >
-  //           Reset
-  //         </Button>
-  //         <Button
-  //           type="link"
-  //           size="small"
-  //           onClick={() => {
-  //             confirm({ closeDropdown: false });
-  //             setSearchText((selectedKeys as string[])[0]);
-  //             setSearchedColumn(dataIndex);
-  //           }}
-  //         >
-  //           Filter
-  //         </Button>
-  //         <Button
-  //           type="link"
-  //           size="small"
-  //           onClick={() => {
-  //             close();
-  //           }}
-  //         >
-  //           close
-  //         </Button>
-  //       </Space>
-  //     </div>
-  //   ),
-  //   filterIcon: (filtered: boolean) => (
-  //     <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-  //   ),
-  //   onFilter: (value, record: User) => {
-  //     let result = record?.[dataIndex];
-  //     if (result) {
-  //       return result
-  //         .toString()
-  //         .toLowerCase()
-  //         .includes((value as string).toLowerCase());
-  //     }
-  //     return false;
-  //   },
-  //   onFilterDropdownOpenChange: (visible) => {
-  //     if (visible) {
-  //       // @ts-ignore
-  //       setTimeout(() => searchInput.current?.select(), 100);
-  //     }
-  //   },
-  //   render: (text) =>
-  //     searchedColumn === dataIndex ? (
-  //       // @ts-ignore
-  //       <Highlighter
-  //         highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-  //         searchWords={[searchText]}
-  //         autoEscape
-  //         textToHighlight={text ? text.toString() : ""}
-  //       />
-  //     ) : (
-  //       text
-  //     ),
-  // });
-
+  const openNotification = (level: string, arms: NotificationArgsProps) => {
+    if (level === "error") {
+      api.error({
+        ...arms,
+        placement: "topRight",
+      });
+    } else {
+      api.info({
+        ...arms,
+        placement: "topRight",
+      });
+    }
+  };
+  const handleDeleteUser = (record: User) => {
+    fetch(`/api/admin/users/${record.id}`, { method: "delete" })
+      .then((response) => {
+        console.log("delete, ", record);
+        if (response.ok) {
+          openNotification("info", {
+            message: "删除用户",
+            description: `${record.email || record.name} 删除成功`,
+          });
+        } else {
+          openNotification("error", {
+            message: "删除用户",
+            description: `${record.email || record.name} 删除失败`,
+          });
+        }
+      })
+      .catch((reason) => {
+        openNotification("error", {
+          message: "删除用户",
+          description: `${record.email || record.name} 删除失败\n${reason}`,
+        });
+      });
+  };
   const columns: TableColumnsType<User> = [
     { title: "Name", dataIndex: "name" },
     {
@@ -218,15 +142,16 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       title: "Action",
       dataIndex: "",
       key: "id",
-      render: () => (
+      render: (_, record) => (
         <Space size="middle">
+          {contextHolder}
           <a>编辑</a>
-          <a>删除</a>
+          <a onClick={() => handleDeleteUser(record)}>删除</a>
         </Space>
       ),
     },
   ];
-  console.log(users, "users2");
+  // console.log(users, "users2");
 
   return (
     <Table
@@ -234,6 +159,10 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       rowKey="id"
       columns={columns}
       loading={loading as boolean}
+      scroll={{
+        scrollToFirstRowOnChange: true,
+        y: 1080,
+      }}
     />
   );
 }

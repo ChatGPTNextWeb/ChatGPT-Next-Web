@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getSessionName } from "@/lib/auth";
+import { ADMIN_LIST } from "@/lib/auth_list";
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
+  // 认证，管理员权限
+  const { name } = await getSessionName();
+  if (!(name && ADMIN_LIST.includes(name))) {
+    return NextResponse.json({ error: "无权限" }, { status: 401 });
+  }
+
   // 判断网址和请求方法
   const method = req.method;
   // const url = req.url;
   const { pathname, searchParams } = new URL(req.url);
   const searchText = searchParams.get("search");
-  // console.log(req)
+  // console.log(req, '2', params.path)
 
   if (method === "GET") {
     // 是否有查询
@@ -51,8 +59,27 @@ async function handle(
     return NextResponse.json({ count: count, results: result });
   }
 
-  return NextResponse.json({ error: "当前方法不支持" }, { status: 400 });
+  if (method === "DELETE") {
+    if (!params.path) {
+      return NextResponse.json({ error: "未输入用户ID" }, { status: 400 });
+    }
+    try {
+      const userId = params.path[0];
+      const user = await prisma.user.delete({
+        where: {
+          id: userId,
+        },
+      });
+      // console.log('user', user)
+    } catch (e) {
+      console.log("[delete user]", e);
+      return NextResponse.json({ error: "无法删除用户" }, { status: 400 });
+    }
+    return NextResponse.json({ result: "删除用户成功" });
+  }
+  return NextResponse.json({ error: "当前方法不支持" }, { status: 405 });
 }
 
 export const GET = handle;
 export const POST = handle;
+export const DELETE = handle;

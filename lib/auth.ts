@@ -123,7 +123,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         jwt: async ({ token, user }) => {
             // const current_time =  Math.floor(Date.now() / 1000);
-            console.log('=============', token, user,)
+            // console.log('=============', token, user,)
             if (user) {
                 token.user = user;
             }
@@ -137,7 +137,7 @@ export const authOptions: NextAuthOptions = {
                 // @ts-expect-error
                 username: token?.user?.username || token?.user?.gh_username,
             };
-            console.log('555555555,', session, token)
+            // console.log('555555555,', session, token)
             return session;
         },
     },
