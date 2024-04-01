@@ -9,7 +9,7 @@ jobs:
   build:
     name: build test image to aly
     # runs-on: thinkpad
-    runs-on: ubuntu-latest
+    runs-on: almalinux
     #    runs-on: self-hosted
     steps:
       - name: Check out the repo
