@@ -1,17 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { VerifiedAdminUser } from "@/lib/auth";
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  // 认证，管理员权限
-  const isAdmin = await VerifiedAdminUser();
-  if (isAdmin) {
-    return NextResponse.json({ error: "无权限" }, { status: 401 });
-  }
-
   // 判断网址和请求方法
   const method = req.method;
   // const url = req.url;
