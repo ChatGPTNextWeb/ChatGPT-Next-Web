@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credential, req) {
                 const username = cleanUpString(`${credential?.username}`);
                 // 验证用户名
-                console.log(credential, username, '==============3')
+                // console.log(credential, username, '==============3')
                 // 判断姓名格式是否符合要求，不符合则拒绝
                 if (username && isName(username)) {
                     // Any object returned will be saved in `user` property of the JWT
@@ -243,7 +243,7 @@ export async function insertUser(user: {[key: string]: string}) {
                 data: user
             })
         } else {
-            console.log('user==========', existingUser)
+            // console.log('user==========', existingUser)
             return existingUser;
         }
     } catch (e) {

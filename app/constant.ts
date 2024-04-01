@@ -107,7 +107,7 @@ Latex inline: $x^2$
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo-0125";
+export const SUMMARIZE_MODEL = "gpt-35-turbo-0125";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
@@ -132,7 +132,7 @@ export const DEFAULT_MODELS = [
   //   available: false,
   // },
   {
-    name: "gpt-3.5-turbo-0125",
+    name: "gpt-35-turbo-0125",
     describe: "GPT-3,最快,效果一般,最便宜",
     available: true,
     provider: {
@@ -238,7 +238,10 @@ export const DEFAULT_MODELS = [
   },
 ] as const;
 
-export const AZURE_MODELS: string[] = ["gpt-4-0125-preview"];
+export const AZURE_MODELS: string[] = [
+  "gpt-35-turbo-0125",
+  "gpt-4-0125-preview",
+];
 // export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
 // export const AZURE_PATH = AZURE_MODELS.map((m) => ({ m: `openai/deployments/${m}/chat/completions`} ));
 export const AZURE_PATH = AZURE_MODELS.reduce(

@@ -51,7 +51,7 @@ export const DEFAULT_CONFIG = {
   dontUseModel: DISABLE_MODELS,
 
   modelConfig: {
-    model: "gpt-3.5-turbo-0125" as ModelType,
+    model: "gpt-35-turbo-0125" as ModelType,
     temperature: 0.8,
     top_p: 1,
     max_tokens: 2000,
@@ -137,7 +137,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.8992,
+    version: 3.8993,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -168,7 +168,7 @@ export const useAppConfig = createPersistStore(
       if (version < 3.8) {
         state.lastUpdate = Date.now();
       }
-      if (version < 3.8992) {
+      if (version < 3.8993) {
         state.lastUpdate = Date.now();
         return { ...DEFAULT_CONFIG };
       }
