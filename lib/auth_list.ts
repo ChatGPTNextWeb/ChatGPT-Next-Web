@@ -1,6 +1,8 @@
+import * as pinyin from "tiny-pinyin";
 
 export const DENY_LIST: string[] = [
   "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话", "笑死", "观化听风", "null", "undefined",
+  "zhangsan",
 ]
 export const ADMIN_LIST: string[] = [
   "司金辉", "sijinhui", "sijinhui@qq.com",
@@ -91,8 +93,12 @@ export function isName(input: string): boolean {
   if (!input || input === "") {
     return false;
   }
-  if (DENY_LIST.includes(input)) {
-    return false;
+  try {
+    if (DENY_LIST.includes(input.toLowerCase()) || pinyin.convertToPinyin(input).toLowerCase()) {
+      return false;
+    }
+  } catch (e) {
+    console.log('[isName]', e)
   }
   return isEmail(input) || (input.length >= 2 && isHanZi(input)) || (isPinYin(input) >= 2);
 }

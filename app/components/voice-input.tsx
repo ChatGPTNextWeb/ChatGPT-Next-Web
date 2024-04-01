@@ -1,4 +1,3 @@
-// "use client";
 import { Button, Input, Space } from "antd";
 import {
   Dispatch,
@@ -41,7 +40,11 @@ export default function VoiceInput({
       setAccessToken(result.result);
     };
     if (accessToken === "") {
-      get_access_token();
+      try {
+        get_access_token();
+      } catch (e) {
+        console.log("[get_access_token]", e);
+      }
     }
   }, [accessToken]);
 
@@ -61,15 +64,6 @@ export default function VoiceInput({
     if (intentJson) {
       setVoiceInputText(voiceInputText + `${intentJson}`);
     }
-
-    // setTempUserInput("");
-    // if (result?.translations) {
-    //   let resultJson = JSON.parse(result.json);
-    //   resultJson['privTranslationPhrase']['Translation']['Translations'].forEach(
-    //       function (translation: { Language: any; Text: any; }) {
-    //         setVoiceInputText(voiceInputText + ` [${translation.Language}] ${translation.Text}\r\n`);
-    //       });
-    // }
   }
   function onCanceled(
     sender: Recognizer,
@@ -177,11 +171,3 @@ export default function VoiceInput({
     </div>
   );
 }
-
-// export const getServerSideProps: GetServerSideProps = async context => {
-//   const serverConfig = getServerSideConfig();
-//   console.log('66666', serverConfig, )
-//   return {
-//     props: {}
-//   };
-// };
