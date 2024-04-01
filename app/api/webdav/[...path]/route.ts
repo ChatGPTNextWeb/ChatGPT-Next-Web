@@ -42,10 +42,7 @@ async function handle(
   }
 
   // for MKCOL request, only allow request ${folder}
-  if (
-    req.method === "MKCOL" &&
-     !targetPath.endsWith(folder)
-  ) {
+  if (req.method === "MKCOL" && !targetPath.endsWith(folder)) {
     return NextResponse.json(
       {
         error: true,
@@ -58,10 +55,7 @@ async function handle(
   }
 
   // for GET request, only allow request ending with fileName
-  if (
-    req.method === "GET" &&
-     !targetPath.endsWith(fileName)
-  ) {
+  if (req.method === "GET" && !targetPath.endsWith(fileName)) {
     return NextResponse.json(
       {
         error: true,
@@ -74,10 +68,7 @@ async function handle(
   }
 
   //   for PUT request, only allow request ending with fileName
-  if (
-    req.method === "PUT" &&
-     !targetPath.endsWith(fileName)
-  ) {
+  if (req.method === "PUT" && !targetPath.endsWith(fileName)) {
     return NextResponse.json(
       {
         error: true,
@@ -101,7 +92,7 @@ async function handle(
       authorization: req.headers.get("authorization") ?? "",
     },
     body: shouldNotHaveBody ? null : req.body,
-    redirect: 'manual',
+    redirect: "manual",
     method,
     // @ts-ignore
     duplex: "half",
