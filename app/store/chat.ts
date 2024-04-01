@@ -170,22 +170,23 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
-function fillContextTemplate(input: ChatMessage[], modelConfig: ModelConfig) {
-  // const inContext;
-  const output: ChatMessage[] = [];
-  const vars = modelConfig.fastgpt.variables;
+function fillContextTemplate(
+  input: ChatMessage[],
+  fastgptVar: Record<string, any>,
+) {
+  let output: ChatMessage[] = [];
+  const vars = fastgptVar;
+  // console.log("[fillContextTemplate] vars: ", vars);
 
   input.map((chatMsg) => {
-    // chatMsg is a ChatMessage
     let newMsg = chatMsg;
-    const chatContent = chatMsg.content;
-    if (typeof chatContent === "string") {
-      Object.entries(vars).forEach(([name, value]) => {
-        const regex = new RegExp(`{{${name}}}`, "g");
-        newMsg.content = chatContent.replace(regex, value.toString());
-      });
-    }
-    output.concat(newMsg);
+    Object.entries(vars).forEach(([name, value]) => {
+      const regex = new RegExp(`{${name}}`, "g");
+      if (typeof newMsg.content === "string") {
+        newMsg.content = newMsg.content.replace(regex, value.toString());
+      }
+    });
+    output.push(newMsg);
   });
 
   // return ChatMessage[];
@@ -915,7 +916,7 @@ export const useFastGPTChatStore = createPersistStore(
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
-        const fastgptConfig = session.mask.fastgptConfig;
+        const fastgptVar = session.mask.fastgptVar;
 
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
@@ -953,11 +954,13 @@ export const useFastGPTChatStore = createPersistStore(
 
         // get recent messages
         // const recentMessages = get().getMessagesWithMemory();
+
         const inContextMessages = get().getInContextPrompts();
         const recentMessages = fillContextTemplate(
           inContextMessages,
-          modelConfig,
+          fastgptVar,
         );
+        console.log("[RecentMessages]: ", recentMessages);
         // IF () recentMessages.concat(userMessage);
         const emptyMessages = [] as ChatMessage[];
         // const sendMessages = emptyMessages.concat(userMessage);
