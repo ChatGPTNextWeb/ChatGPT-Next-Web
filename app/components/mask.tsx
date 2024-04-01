@@ -225,42 +225,7 @@ export function MaskConfig(props: {
 
       {props.mask.fastgpt ? (
         <List>
-          <ListItem title={Locale.Mask.Config.FastGPT.Stream.Title}>
-            <input
-              type="checkbox"
-              checked={props.mask.fastgptConfig?.stream}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptConfig.stream = e.currentTarget.checked;
-                });
-              }}
-            ></input>
-          </ListItem>
-          <ListItem title={Locale.Mask.Config.FastGPT.Detail.Title}>
-            <input
-              type="checkbox"
-              checked={props.mask.fastgptConfig?.detail}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptConfig.detail = e.currentTarget.checked;
-                });
-              }}
-            ></input>
-          </ListItem>
-        </List>
-      ) : (
-        <List>
-          <ModelConfigList
-            modelConfig={{ ...props.mask.modelConfig }}
-            updateConfig={updateConfig}
-          />
-          {props.extraListItems}
-        </List>
-      )}
-
-      {props.mask.fastgpt ? (
-        <List>
-          <ListItem
+          {/* <ListItem
             title={Locale.Mask.Config.FastGPT.API.Title}
             subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
           >
@@ -319,8 +284,8 @@ export function MaskConfig(props: {
                 console.log(props.mask.fastgptAPI);
               }}
             ></input>
-          </ListItem>
-          <ListItem title={"变量(name)"}>
+          </ListItem> */}
+          <ListItem title={"Name"} subTitle="AI Name">
             <input
               type="text"
               value={props.mask.fastgptVar.name}
@@ -332,7 +297,7 @@ export function MaskConfig(props: {
               }}
             ></input>
           </ListItem>
-          <ListItem title={"变量(des)"}>
+          <ListItem title={"Des"} subTitle="Brief introduction">
             <input
               type="text"
               value={props.mask.fastgptVar.des}
@@ -343,7 +308,7 @@ export function MaskConfig(props: {
               }}
             ></input>
           </ListItem>
-          <ListItem title={"变量(char_personality)"}>
+          <ListItem title={"Character personality"}>
             <input
               type="text"
               value={props.mask.fastgptVar.char_personality}
@@ -355,7 +320,7 @@ export function MaskConfig(props: {
               }}
             ></input>
           </ListItem>
-          <ListItem title={"变量(senario)"}>
+          <ListItem title={"Senario"}>
             <input
               type="text"
               value={props.mask.fastgptVar.senario}
@@ -381,6 +346,41 @@ export function MaskConfig(props: {
           </ListItem> */}
         </List>
       ) : null}
+
+      {props.mask.fastgpt ? (
+        <List>
+          <ListItem title={Locale.Mask.Config.FastGPT.Stream.Title}>
+            <input
+              type="checkbox"
+              checked={props.mask.fastgptConfig?.stream}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptConfig.stream = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+          <ListItem title={Locale.Mask.Config.FastGPT.Detail.Title}>
+            <input
+              type="checkbox"
+              checked={props.mask.fastgptConfig?.detail}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.fastgptConfig.detail = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        </List>
+      ) : (
+        <List>
+          <ModelConfigList
+            modelConfig={{ ...props.mask.modelConfig }}
+            updateConfig={updateConfig}
+          />
+          {props.extraListItems}
+        </List>
+      )}
     </>
   );
 }

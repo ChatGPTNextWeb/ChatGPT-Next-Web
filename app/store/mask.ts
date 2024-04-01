@@ -46,18 +46,29 @@ export const createEmptyMask = () =>
     id: nanoid(),
     avatar: DEFAULT_MASK_AVATAR,
     name: DEFAULT_TOPIC,
-    context: [],
+    context: [
+      {
+        id: "text-to-pic-1",
+        role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
+    ],
     syncGlobalConfig: false, // use global config as default
     modelConfig: { ...useAppConfig.getState().modelConfig },
     lang: getLang(),
     builtin: false,
-    fastgpt: false,
+    fastgpt: true,
     fastgptConfig: {
       detail: false,
       stream: true,
     },
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
+      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
+      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: { ...DEFAULT_FASTGPTVAR },
     createdAt: Date.now(),

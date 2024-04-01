@@ -436,6 +436,21 @@ const en: LocaleType = {
         SubTitle: "Generate a link to this mask",
         Action: "Copy Link",
       },
+      FastGPT: {
+        Title: "Whether it's a FastGPT conversation or not",
+        SubTitle: "Use the FastGPT configuration for conversations",
+        Stream: {
+          Title:
+            "Whether to enable streaming conversations (enabled by default)",
+        },
+        Detail: {
+          Title: "Whether to return an intermediate value (off by default)",
+        },
+        API: {
+          Title: "FastGPT API Key",
+          SubTitle: "Fill in the API (fast-start)",
+        },
+      },
     },
   },
   NewChat: {
