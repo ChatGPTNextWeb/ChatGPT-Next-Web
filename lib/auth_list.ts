@@ -94,7 +94,7 @@ export function isName(input: string): boolean {
     return false;
   }
   try {
-    if (DENY_LIST.includes(input.toLowerCase()) || pinyin.convertToPinyin(input).toLowerCase()) {
+    if (DENY_LIST.includes(input.toLowerCase()) || DENY_LIST.includes(pinyin.convertToPinyin(input).toLowerCase())) {
       return false;
     }
   } catch (e) {

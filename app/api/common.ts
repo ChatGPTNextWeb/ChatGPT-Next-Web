@@ -150,7 +150,6 @@ export async function requestLog(
   req: NextRequest,
   jsonBody: any,
   url_path: string,
-  name?: string,
 ) {
   // LOG
   try {

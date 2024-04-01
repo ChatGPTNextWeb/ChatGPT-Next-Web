@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { isName, ADMIN_LIST } from "@/lib/auth_list";
+import { VerifiedUser, getSessionName } from "@/lib/auth";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -15,6 +16,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     const session = await getToken({ req });
+    // const {session} = await getSessionName();
 
     // 管理员页面的api接口还是要认证的
     if (path.startsWith('/api/admin/')) {
@@ -26,7 +28,6 @@ export default async function middleware(req: NextRequest) {
             }
         }
         if (!is_admin_user) return NextResponse.json({error: '无管理员授权'}, { status: 401 });
-
     }
     const userName = session?.name || session?.email
     if (!isName(userName ?? "") && path !== "/login" ) {

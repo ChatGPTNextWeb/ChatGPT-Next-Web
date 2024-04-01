@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { VerifiedUser } from "@/lib/auth";
 import { getServerSideConfig } from "@/app/config/server";
 const serverConfig = getServerSideConfig();
 // Gets an access token.
@@ -21,9 +21,8 @@ async function handle(
 ) {
   // 认证
 
-  const session = await getSession();
-  if (!session?.user)
-    return NextResponse.json({ error: "未认证" }, { status: 401 });
+  const isUser = await VerifiedUser();
+  if (!isUser) return NextResponse.json({ error: "未认证" }, { status: 401 });
 
   const get_access_token = await getAccessToken();
 

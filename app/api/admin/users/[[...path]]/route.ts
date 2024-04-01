@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { getSessionName } from "@/lib/auth";
-import { ADMIN_LIST } from "@/lib/auth_list";
+import { VerifiedAdminUser } from "@/lib/auth";
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
   // 认证，管理员权限
-  const { name } = await getSessionName();
-  if (!(name && ADMIN_LIST.includes(name))) {
+  const isAdmin = await VerifiedAdminUser();
+  if (isAdmin) {
     return NextResponse.json({ error: "无权限" }, { status: 401 });
   }
 

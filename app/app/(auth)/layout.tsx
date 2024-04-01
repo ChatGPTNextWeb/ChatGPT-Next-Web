@@ -1,9 +1,8 @@
 import "@/app/app/login.scss";
 import { Metadata } from "next";
 import { ReactNode } from "react";
-import { getSession } from "@/lib/auth";
-import { isName } from "@/lib/auth_list";
-import { redirect } from "next/navigation";
+// import { VerifiedUser } from "@/lib/auth";
+// import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Login | 实人认证",
@@ -14,13 +13,11 @@ export default async function AuthLayout({
 }: {
   children: ReactNode;
 }) {
-  const session = await getSession();
-  // If the user is already authenticated, redirect them to home
-  const name = session?.user?.email || session?.user?.name;
-  if (name && isName(name)) {
-    // Replace '/dashboard' with the desired redirect path
-    redirect("/");
-  }
+  // const isUser = await VerifiedUser();
+  // if (isUser) {
+  //   // Replace '/dashboard' with the desired redirect path
+  //   redirect("/");
+  // }
 
   return (
     <div className="container1 w-full signin">
