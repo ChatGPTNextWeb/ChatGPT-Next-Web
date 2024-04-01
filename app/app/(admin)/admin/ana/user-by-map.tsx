@@ -11,10 +11,7 @@ import React, {
 import Script from "next/script";
 
 import * as echarts from "echarts";
-// var echarts = require('echarts');
 import "echarts/extension/bmap/bmap";
-// require("echarts");
-// require("echarts/extension/bmap/bmap");
 
 interface DataItem {
   name: string;

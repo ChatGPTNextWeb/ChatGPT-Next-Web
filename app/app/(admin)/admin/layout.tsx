@@ -4,13 +4,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { ADMIN_LIST } from "@/lib/auth_list";
 import React, { ReactNode, useEffect, useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, theme, ConfigProvider, ThemeConfig } from "antd";
 import SideBar from "../components/sidebar";
 

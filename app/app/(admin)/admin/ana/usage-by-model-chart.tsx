@@ -9,9 +9,8 @@ import React, {
 } from "react";
 
 import * as echarts from "echarts";
-// import { DatePicker } from "@tremor/react";
 import { DatePicker } from "antd";
-import { Col, Row } from "antd";
+import { Row } from "antd";
 
 import locale from "antd/es/date-picker/locale/zh_CN";
 import "dayjs/locale/zh-cn";
@@ -20,10 +19,6 @@ import dayjs from "dayjs";
 import { EChartsOption } from "echarts";
 import { essos } from "@/lib/charts_theme";
 import { subDays, addDays } from "date-fns";
-
-// import customParseFormat from 'dayjs/plugin/customParseFormat';
-// dayjs.extend(customParseFormat);
-// const dateFormat = 'YYYY-MM-DD';
 
 interface ComponentProps {
   currentDate: Date;

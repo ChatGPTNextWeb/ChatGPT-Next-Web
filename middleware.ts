@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { isName, ADMIN_LIST } from "@/lib/auth_list";
-import { VerifiedUser, getSessionName } from "@/lib/auth";
+// import { isName, ADMIN_LIST } from "@/lib/auth_list";
+import { VerifiedUser, VerifiedAdminUser } from "@/lib/auth_client";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -16,38 +16,22 @@ export default async function middleware(req: NextRequest) {
     }
 
     const session = await getToken({ req });
-    // const {session} = await getSessionName();
+    const isUser = await VerifiedUser(session);
+    const isAdminUser = await VerifiedAdminUser(session);
 
     // 管理员页面的api接口还是要认证的
     if (path.startsWith('/api/admin/')) {
-        let is_admin_user = false;
         // 需要确认是管理员
-        if (session && session?.user) {
-            if (ADMIN_LIST.includes(session?.name ?? "")) {
-                is_admin_user = true
-            }
-        }
-        if (!is_admin_user) return NextResponse.json({error: '无管理员授权'}, { status: 401 });
+        if (!isAdminUser) return NextResponse.json({error: '无管理员授权'}, { status: 401 });
     }
-    const userName = session?.name || session?.email
-    if (!isName(userName ?? "") && path !== "/login" ) {
-      // 用处不大，避免漏网之鱼
+    // 不是用户且页面不是登录页
+    if (!isUser && path !== "/login" ) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    // 认证有点多此一举，页面中的认证应该已经够了
-    // if (!session && path !== "/login") {
-    //     // 给关键请求特殊待遇
-    //     if (path.startsWith('/api/openai/')) {
-    //          return NextResponse.json(false, {
-    //             status: 401,
-    //          });
-    //     }
-    //     return NextResponse.redirect(new URL("/login", req.url));
-    // } else if (session) {
-    //   // console.log('referer=====', DENY_LIST.includes(session?.name ?? ""))
-    //   if (isName(session?.name ?? "") && path.startsWith("/login"))
-    //     return NextResponse.redirect(new URL("/", req.url));
-    // }
+    // 如果登录了且页面是登录页面
+    if (isUser && path == "/login") {
+        return NextResponse.redirect(new URL("/", req.url))
+    }
 
     if (path == '/login') {
         return NextResponse.rewrite(

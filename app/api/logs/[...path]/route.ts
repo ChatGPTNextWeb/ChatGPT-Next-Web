@@ -9,7 +9,7 @@ async function handle(
 ) {
   try {
     const request_data = await req.json();
-    console.log("log", request_data);
+    // console.log("log", request_data);
     // if (request_data?.userName) {
     //   await insertUser({
     //     name: request_data?.userName,
