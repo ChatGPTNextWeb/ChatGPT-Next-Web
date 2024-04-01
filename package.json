@@ -25,7 +25,7 @@
     "emoji-picker-react": "^4.9.2",
     "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
-    "mermaid": "^10.6.1",
+    "mermaid": "^10.9.0",
     "nanoid": "^5.0.3",
     "next": "^13.4.9",
     "node-fetch": "^3.3.1",
