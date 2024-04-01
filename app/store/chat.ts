@@ -170,6 +170,28 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
+function fillContextTemplate(input: ChatMessage[], modelConfig: ModelConfig) {
+  // const inContext;
+  const output: ChatMessage[] = [];
+  const vars = modelConfig.fastgpt.variables;
+
+  input.map((chatMsg) => {
+    // chatMsg is a ChatMessage
+    let newMsg = chatMsg;
+    const chatContent = chatMsg.content;
+    if (typeof chatContent === "string") {
+      Object.entries(vars).forEach(([name, value]) => {
+        const regex = new RegExp(`{{${name}}}`, "g");
+        newMsg.content = chatContent.replace(regex, value.toString());
+      });
+    }
+    output.concat(newMsg);
+  });
+
+  // return ChatMessage[];
+  return output;
+}
+
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
@@ -931,8 +953,15 @@ export const useFastGPTChatStore = createPersistStore(
 
         // get recent messages
         // const recentMessages = get().getMessagesWithMemory();
+        const inContextMessages = get().getInContextPrompts();
+        const recentMessages = fillContextTemplate(
+          inContextMessages,
+          modelConfig,
+        );
+        // IF () recentMessages.concat(userMessage);
         const emptyMessages = [] as ChatMessage[];
-        const sendMessages = emptyMessages.concat(userMessage);
+        // const sendMessages = emptyMessages.concat(userMessage);
+        const sendMessages = recentMessages.concat(userMessage);
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -1117,6 +1146,14 @@ export const useFastGPTChatStore = createPersistStore(
         ];
 
         return recentMessages;
+      },
+
+      // FROM: getMessagesWithMemory
+      getInContextPrompts() {
+        const session = get().currentSession();
+        // in-context prompts
+        const contextPrompts = session.mask.context.slice();
+        return contextPrompts;
       },
 
       updateMessage(

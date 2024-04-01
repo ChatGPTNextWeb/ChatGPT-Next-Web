@@ -44,3 +44,6 @@ dev
 
 *.key
 *.key.pub
+
+# nohup.out
+nohup.out
