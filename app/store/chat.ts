@@ -69,7 +69,7 @@ export const DEFAULT_FASTGPT_TOPIC = "FastGPT";
 export const FASTGPT_MODEL_TOPIC = [
   "MiniMax",
   "Mixtral",
-  "chronos-hermes-13b",
+  "pygmalion-2-7b",
   "openchat-3.5-0106",
 ];
 export const BOT_HELLO: ChatMessage = createMessage({

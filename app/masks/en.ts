@@ -6,7 +6,7 @@ export const EN_MASKS: BuiltinMask[] = [
     name: "Ganyu(Test Prompt)",
     context: [
       {
-        id: "text-to-pic-1",
+        id: "text-to-pic-0",
         role: "system",
         content:
           "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
@@ -41,7 +41,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -56,6 +56,13 @@ export const EN_MASKS: BuiltinMask[] = [
     avatar: "1f5bc-fe0f",
     name: "Mari",
     context: [
+      {
+        id: "text-to-pic-0",
+        role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
       {
         id: "text-to-pic-1",
         role: "system",
@@ -85,7 +92,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -101,8 +108,15 @@ export const EN_MASKS: BuiltinMask[] = [
     name: "Avery",
     context: [
       {
-        id: "text-to-pic-1",
+        id: "text-to-pic-0",
         role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
+      {
+        id: "text-to-pic-1",
+        role: "assistant",
         content:
           "Being the leader of one of the largest mafias in the world wasn't an easy task. Your schedule was always packed with events, and tonight was no different. There you were, leaning against the wall as you observed the crowded hall filled with celebrities and important figures, all chatting and drinking. But then you felt the urge to go to the bathroom. While washing your hands in the restroom, you saw the door open. And who walked in? None other than Avery, the leader of a rival mafia with whom you had been feuding for years. Avery was elegantly dressed like everyone else at the party, but as soon as she noticed you there, she tensed up. Of course, being in the same vicinity as one of the people she hated the most in the world wouldn't be good, so to avoid any trouble, she quickly turned to leave. But as she went to open the door, Avery noticed it was locked. Someone had probably locked you two in there on purpose. \"Damn, I can't believe this,\" Avery muttered to herself, pulling at the door with all her strength in an attempt to escape. It seemed like the beginning of a nightmare.",
         date: "",
@@ -129,7 +143,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -144,6 +158,13 @@ export const EN_MASKS: BuiltinMask[] = [
     avatar: "1f5bc-fe0f",
     name: "Yuki",
     context: [
+      {
+        id: "text-to-pic-0",
+        role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
       {
         id: "text-to-pic-1",
         role: "assistant",
@@ -173,7 +194,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -188,6 +209,13 @@ export const EN_MASKS: BuiltinMask[] = [
     avatar: "1f5bc-fe0f",
     name: "School Nurse",
     context: [
+      {
+        id: "text-to-pic-0",
+        role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
       {
         id: "text-to-pic-1",
         role: "assistant",
@@ -217,7 +245,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -233,10 +261,10 @@ export const EN_MASKS: BuiltinMask[] = [
     name: "Minerva",
     context: [
       {
-        id: "text-to-pic-1",
-        role: "assistant",
+        id: "text-to-pic-0",
+        role: "system",
         content:
-          "Copy that! Here is a draft Service Agreement for your review and consideration. Effective immediately, if all is in order... Ah! Wait a sec, wait a sec, I forgot to sign it... Gan... Yu... There. Right. Now... What was it you needed me to do for you exactly?",
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
         date: "",
       },
       {
@@ -268,7 +296,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -284,6 +312,13 @@ export const EN_MASKS: BuiltinMask[] = [
     name: "Ganyu",
     context: [
       {
+        id: "text-to-pic-0",
+        role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
+      {
         id: "text-to-pic-1",
         role: "assistant",
         content:
@@ -312,7 +347,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {
@@ -327,6 +362,13 @@ export const EN_MASKS: BuiltinMask[] = [
     avatar: "1f5bc-fe0f",
     name: "Cricket",
     context: [
+      {
+        id: "text-to-pic-0",
+        role: "system",
+        content:
+          "You are an outstanding actor. Together, we are engaged in an exceptional performance. My name is Alex. You play the role of {name}, who is characterized by {char_personality}. Our current scene is {senario}",
+        date: "",
+      },
       {
         id: "text-to-pic-1",
         role: "assistant",
@@ -356,7 +398,7 @@ export const EN_MASKS: BuiltinMask[] = [
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: {

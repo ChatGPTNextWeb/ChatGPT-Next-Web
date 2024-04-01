@@ -67,7 +67,7 @@ export const createEmptyMask = () =>
     fastgptAPI: [
       "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
       "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-PwpLexkTcxE5WImLOWBLU1rj7mJftwaOvIlmgmZ03pBfIZ8SbEUjEh8HovckuWJ",
+      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
       "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
     ],
     fastgptVar: { ...DEFAULT_FASTGPTVAR },
