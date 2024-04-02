@@ -5,6 +5,8 @@ import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
 import { getIP } from "@/app/api/auth";
 import { getSessionName } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { getTokenLength } from "@/lib/utils";
 
 const serverConfig = getServerSideConfig();
 
@@ -169,15 +171,42 @@ export async function requestLog(
       userName: name,
       userID: session?.user?.id,
     };
-
-    await fetch(`${baseUrl}/api/logs/openai`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(logData),
-    });
+    saveLogs(logData);
   } catch (e) {
     console.log("[LOG]", e, "==========");
   }
+}
+
+export async function saveLogs(logData: {
+  ip?: string;
+  path?: string;
+  logEntry?: string;
+  model?: string;
+  userName?: string;
+  userID?: string;
+  logToken?: number;
+}) {
+  try {
+    if (logData?.logEntry) {
+      const regex_message = /(?<="content":")(.*?)(?="}[,\]])/g;
+      const matchAllMessage = logData.logEntry.match(regex_message);
+      // console.log(matchAllMessage, "=====");
+      if (matchAllMessage && matchAllMessage.length > 0) {
+        logData.logToken =
+          getTokenLength(matchAllMessage.join(" ")) +
+          matchAllMessage.length * 3;
+      }
+      delete logData?.logEntry;
+    }
+    if (logData?.model == "midjourney") {
+      logData.logToken = 1000;
+    }
+  } catch (e) {
+    console.log("[LOG]", "logToken", e);
+    logData.logToken = 0;
+  }
+  const result = await prisma.logEntry.create({
+    data: logData,
+  });
+  // console.log("result", result)
 }
