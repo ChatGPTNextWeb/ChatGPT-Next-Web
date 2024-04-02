@@ -979,6 +979,7 @@ function _Chat() {
         }
       });
     },
+    // set openai key & endpoint url
     settings: (text) => {
       try {
         const payload = JSON.parse(text) as {
@@ -996,9 +997,17 @@ function _Chat() {
             if (!res) return;
             if (payload.key) {
               // TODO: auto-fill openai api key here, must specific provider type
+              config.update(
+                (config) =>
+                  (config.providerConfig.openai.apiKey = payload.key!),
+              );
             }
             if (payload.url) {
               // TODO: auto-fill openai url here, must specific provider type
+              config.update(
+                (config) =>
+                  (config.providerConfig.openai.endpoint = payload.url!),
+              );
             }
           });
         }
