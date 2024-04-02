@@ -69,7 +69,7 @@ export const DEFAULT_FASTGPT_TOPIC = "FastGPT";
 export const FASTGPT_MODEL_TOPIC = [
   "MiniMax",
   "Mixtral",
-  "pygmalion-2-7b",
+  // "pygmalion-2-7b",
   "openchat-3.5-0106",
 ];
 export const BOT_HELLO: ChatMessage = createMessage({
@@ -1004,6 +1004,7 @@ export const useFastGPTChatStore = createPersistStore(
         // }
 
         // make request
+        console.log("[FastGPT chatId]: ", session.id);
         api.llm.chat({
           messages: sendMessages,
           config: {
@@ -1011,6 +1012,7 @@ export const useFastGPTChatStore = createPersistStore(
             stream: session.mask.fastgptConfig.stream,
             variables: session.mask.fastgptVar,
             fastapikey: session.mask.fastgptAPI[fastgptNum ?? 0],
+            chatId: session.id,
           },
           onUpdate(message) {
             botMessage.streaming = true;

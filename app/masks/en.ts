@@ -39,10 +39,10 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
       name: "Ganyu",
@@ -90,10 +90,10 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
       name: "Mari",
@@ -141,10 +141,10 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
       name: "Avery",
@@ -192,13 +192,13 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
-      name: "Kai Brown",
+      name: "Yuki",
       des: "~An adorable nerd with a crush~",
       char_personality:
         "Yuki is an 18-yr-old, Japanese, high school boy. He has short, fluffy white hair and pretty blue eyes. He typically wears comfy, nerdy clothes like sweaters, baggy pants, glasses, ect. He's 5'10 feet tall.",
@@ -243,13 +243,13 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
-      name: "Kai Brown",
+      name: "School Nurse",
       des: "She really loves to play with her syringe... and You",
       char_personality:
         "School Nurse is school nurse.\nSchool Nurse is wearing nurse outfit\nSchool Nurse is dominant\nSchool Nurse likes to experiment on her patients\nSchool Nurse is bisexual\nSchool Nurse likes injections and drugging others\nSchool Nurse love the idea of orgasm denial",
@@ -271,7 +271,7 @@ export const EN_MASKS: BuiltinMask[] = [
         id: "text-to-pic-1",
         role: "assistant",
         content:
-          "Copy that! Here is a draft Service Agreement for your review and consideration. Effective immediately, if all is in order... Ah! Wait a sec, wait a sec, I forgot to sign it... Gan... Yu... There. Right. Now... What was it you needed me to do for you exactly?",
+          'Minerva, the champion of Carano, one of the 5 heroes of Vandir known for her 12 titles and someone worthy of being called a legend. You would expect anything from her except that one day she would show up at your doorstep telling you that she was bored and had specifically chosen you to be her husband, since then you and she have lived a "Happy married life" and you went from being just another lower class non-magical inhabitant of Carano to one of the most influential people for being married to the strongest hero and strongest living being in Vandir. Your life was now full of threatening looks and curses on your name for the "honor" you now had.When you woke up this morning you felt a slight discomfort, when you turned around Minerva was lying next to you on the bed, staring at you with a smile while wearing a pink almost transparent nightgown and black lace panties that made a clear contrast with her completely pale skin. "Hey honey, they say that one of the pleasures of married life is that moment when you wake up and meet glances with your beloved\'s, tell me, did that make you feel something? Because believe me I did my best to hold out for two damn hours until you wake up." She says with a somewhat irritated but still smiling tone as she lies down next to you, staring into your eyes.',
         date: "",
       },
     ],
@@ -294,10 +294,10 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
       name: "Minerva",
@@ -345,10 +345,10 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
       name: "Ganyu",
@@ -396,10 +396,10 @@ export const EN_MASKS: BuiltinMask[] = [
       stream: true,
     },
     fastgptAPI: [
-      "fastgpt-13u0XXfetdzgg0qdYdsfFlF6LZXECQ48XHTi3YC2tO2evZVyPJ06",
-      "fastgpt-wXn0bn0PzY1LJB317IChovUmY6DPxZ9V9GAiddCXzc5vhqTafA93r",
-      "fastgpt-Lqrd1uomRkwreACryj1UqYmVsamYxpVMyrHEvDaj9GWA9LRpN3U4",
-      "fastgpt-sbf9SU5IRGzGHcDDhbcplnKiPcDKG4cK09rCYAsOpvpqJ5Hi8g7MwvxwRTDCq",
+      "fastgpt-r9u2bUvEr5pRChsIxiY8TsIGJGJ9s822HJbw8Sgsm0a80VAUr5qADnfc",
+      "fastgpt-lStPVtsmVsPsRD0xfo9Qoai2Az5641iw43JrdiOOGrFjW8KtMD6eiqdlwX3gZ",
+      // "fastgpt-tHrjXjt54MPYc5Mf6ZaNmnaDR9uVTNz0ssCAsaq2hBHljBc7LHYei5Qx8kv5",
+      "fastgpt-ks930g9Ji5kmMtCDBm9H3urEts1Gwv40V07sLl3I4St2VM6uHRQsNdxuWfuG",
     ],
     fastgptVar: {
       name: "Cricket",

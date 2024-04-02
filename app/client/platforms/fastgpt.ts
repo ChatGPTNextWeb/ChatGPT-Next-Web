@@ -91,12 +91,12 @@ export class FastGPTApi implements LLMApi {
       role: v.role,
       content: visionModel ? v.content : getMessageTextContent(v),
     }));
-
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.fastgptConfig,
       ...{
-        id: useChatStore.getState().currentSession().id,
+        // id: useChatStore.getState().currentSession().id,
+        id: options.config.chatId,
         api: useChatStore.getState().currentSession().mask.fastgptAPI,
       },
     };
