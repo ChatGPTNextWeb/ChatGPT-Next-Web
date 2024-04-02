@@ -17,7 +17,7 @@ jobs:
     name: build image to aly
     # runs-on: "103.200"
     # runs-on: thinkpad
-    runs-on: almalinux
+    runs-on: self
     #    runs-on: self-hosted
     steps:
       - name: Check out the repo
@@ -36,7 +36,7 @@ jobs:
   deploy:
     name: 部署到服务器
     needs: build
-    runs-on: z4
+    runs-on: self
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3

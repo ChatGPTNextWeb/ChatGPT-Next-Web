@@ -9,7 +9,7 @@ jobs:
   build:
     name: build test image to aly
     # runs-on: thinkpad
-    runs-on: almalinux
+    runs-on: self
     #    runs-on: self-hosted
     steps:
       - name: Check out the repo
@@ -32,7 +32,7 @@ jobs:
           yes | docker system prune --filter "until=168h"
   deploy:
     name: 部署到dev服务器
-    runs-on: z4
+    runs-on: self
     needs: build
     steps:
       - name: Check out the repo
