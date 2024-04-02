@@ -160,7 +160,7 @@ export async function requestLog(
     const ip = getIP(req);
 
     let { session, name } = await getSessionName();
-    console.log("[中文]", name, session, baseUrl);
+    // console.log("[中文]", name, session, baseUrl);
     const logData = {
       ip: ip,
       path: url_path,
