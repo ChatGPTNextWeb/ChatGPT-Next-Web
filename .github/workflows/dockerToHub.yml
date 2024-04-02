@@ -21,7 +21,7 @@ jobs:
     #    runs-on: self-hosted
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           clean: false
           github-server-url: 'https://gh.siji.ci'
@@ -39,7 +39,7 @@ jobs:
     runs-on: self
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           clean: true
           github-server-url: 'https://gh.siji.ci'

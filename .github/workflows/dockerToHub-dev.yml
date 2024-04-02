@@ -13,7 +13,7 @@ jobs:
     #    runs-on: self-hosted
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'dev'
           clean: false
@@ -36,7 +36,7 @@ jobs:
     needs: build
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           clean: true
           ref: 'dev'
