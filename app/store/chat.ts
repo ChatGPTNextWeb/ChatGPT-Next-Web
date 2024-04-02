@@ -186,7 +186,9 @@ function fillContextTemplate(
         newMsg.content = newMsg.content.replace(regex, value.toString());
       }
     });
-    output.push(newMsg);
+    if (newMsg.role != "assistant") {
+      output.push(newMsg);
+    }
   });
 
   // return ChatMessage[];
@@ -960,11 +962,23 @@ export const useFastGPTChatStore = createPersistStore(
           inContextMessages,
           fastgptVar,
         );
+        let sendMessages = [] as ChatMessage[];
         console.log("[RecentMessages]: ", recentMessages);
         // IF () recentMessages.concat(userMessage);
-        const emptyMessages = [] as ChatMessage[];
+        console.log("[TotalMessage]: ", session.messages);
+        //messages中有role==user且并不是messages的第一个元素
+        if (
+          session.messages.some(
+            (msg) => msg.role === "user" && msg !== session.messages[0],
+          )
+        ) {
+          const emptyMessages = [] as ChatMessage[];
+          sendMessages = emptyMessages.concat(userMessage);
+        } else {
+          sendMessages = recentMessages.concat(userMessage);
+        }
         // const sendMessages = emptyMessages.concat(userMessage);
-        const sendMessages = recentMessages.concat(userMessage);
+
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
