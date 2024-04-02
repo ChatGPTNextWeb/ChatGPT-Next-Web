@@ -964,9 +964,6 @@ export const useFastGPTChatStore = createPersistStore(
         );
         let sendMessages = [] as ChatMessage[];
         console.log("[RecentMessages]: ", recentMessages);
-        // IF () recentMessages.concat(userMessage);
-        console.log("[TotalMessage]: ", session.messages);
-        //messages中有role==user且并不是messages的第一个元素
         if (
           session.messages.some(
             (msg) => msg.role === "user" && msg !== session.messages[0],
