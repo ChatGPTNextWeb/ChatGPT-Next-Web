@@ -42,7 +42,7 @@ jobs:
           ref: 'dev'
           github-server-url: 'https://gh.siji.ci'
       - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.8.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Sync repository to tx
