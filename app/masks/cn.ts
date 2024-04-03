@@ -92,7 +92,9 @@ avatar: "gpt-bot",
 
 例句：
 当小明见到他的朋友时，他热情地说：“你好！”
-When Xiaoming saw his friend, he greeted him enthusiastically, “Hello!” "
+When Xiaoming saw his friend, he greeted him enthusiastically, “Hello!” ",
+            date: "",
+      },
     ],
     modelConfig: {
       model: "gemini-pro",
