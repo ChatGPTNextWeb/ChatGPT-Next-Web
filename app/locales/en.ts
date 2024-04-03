@@ -426,6 +426,10 @@ const en: LocaleType = {
     Config: {
       Avatar: "Bot Avatar",
       Name: "Bot Name",
+      OneAPI: {
+        Title: "是否隐藏模型参数",
+        SubTitle: "隐藏模型参数（默认开启）",
+      },
       Sync: {
         Title: "Use Global Config",
         SubTitle: "Use global config in this chat",
