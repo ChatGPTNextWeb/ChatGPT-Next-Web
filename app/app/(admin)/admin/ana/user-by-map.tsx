@@ -1,13 +1,6 @@
 "use client";
 
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  Dispatch,
-  SetStateAction,
-  useRef,
-} from "react";
+import React, { useEffect, useRef } from "react";
 import Script from "next/script";
 
 import * as echarts from "echarts";
@@ -20,7 +13,10 @@ interface DataItem {
 
 export default function UserByMap() {
   const userByMapChart = useRef(null);
-
+  // const loadBaiduMap = useRef(<Script
+  //   src="https://api.map.baidu.com/api?v=3.0&ak=19e9FKQC49u5uQe4CBqan9ER2mYhQ3ip&callback=initMap"
+  //   strategy="beforeInteractive"
+  // />);
   useEffect(() => {
     if (!userByMapChart.current) return;
     const data: DataItem[] = [
@@ -619,12 +615,24 @@ export default function UserByMap() {
         useDirtyRect: false,
       });
       option && myChart?.setOption(option);
+      setTimeout(() => myChart.resize(), 200);
     };
     try {
       loadEcharts();
     } catch (e) {
       console.log("[loadEcharts] 地图加载失败", e);
     }
+  }, []);
+
+  useEffect(() => {
+    const initMap = () => {
+      if (window.BMap && userByMapChart.current) {
+        var map = new window.BMap.Map(userByMapChart.current); // 创建Map实例
+        // var point = new window.BMap.Point(116.404, 39.915); // 创建点坐标
+        // map.centerAndZoom(point, 15); // 初始化地图,设置中心点坐标和地图级别
+      }
+    };
+    window.initMap = initMap;
   }, []);
 
   useEffect(() => {
@@ -668,6 +676,7 @@ export default function UserByMap() {
       <Script
         src="https://api.map.baidu.com/api?v=3.0&ak=19e9FKQC49u5uQe4CBqan9ER2mYhQ3ip&callback=initMap"
         strategy="beforeInteractive"
+        onLoad={() => window.initMap()}
       />
     </div>
   );

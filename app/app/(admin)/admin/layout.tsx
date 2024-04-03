@@ -1,8 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { ADMIN_LIST } from "@/lib/auth_list";
 import React, { ReactNode, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, theme, ConfigProvider, ThemeConfig } from "antd";
@@ -11,24 +8,32 @@ import SideBar from "../components/sidebar";
 const { Header, Sider, Content } = Layout;
 
 function MainLayout({ children }: { children: ReactNode }) {
-  // const [theme, setTheme] = useState<ThemeConfig>('dark');
-  const { data, status } = useSession();
-  const name = data?.user?.email || data?.user?.name;
-  // console.log('name', name, data, status)
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    typeof window !== "undefined" && window.innerWidth < 768,
+  );
   const {
     token: { colorBgContainer, borderRadiusLG, colorBgLayout },
   } = theme.useToken();
-
-  // 客户端才执行
+  // 处理布局
   useEffect(() => {
-    // 用户已登录，且没设置密码
-    // if (status === "loading") return;
-    if (status === "authenticated" && !(name && ADMIN_LIST.includes(name))) {
-      redirect("/");
-    }
-    // 状态变化时，重新判断
-  }, [name, status]);
+    const handleResize = () => {
+      // 更新折叠状态以匹配屏幕宽度
+      setCollapsed(typeof window !== "undefined" && window.innerWidth < 768);
+    };
+    // 监听窗口大小变化
+    window.addEventListener("resize", handleResize);
+    // 组件卸载时移除监听器
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  // 客户端才执行
+  // useEffect(() => {
+  //   // 用户已登录，且没设置密码
+  //   // if (status === "loading") return;
+  //   if (status === "authenticated" && !(name && ADMIN_LIST.includes(name))) {
+  //     redirect("/");
+  //   }
+  //   // 状态变化时，重新判断
+  // }, [name, status]);
   return (
     <ConfigProvider
       theme={{
@@ -40,7 +45,12 @@ function MainLayout({ children }: { children: ReactNode }) {
       }}
     >
       <Layout style={{ height: "100%" }}>
-        <Sider>
+        <Sider
+          breakpoint={"md"}
+          collapsedWidth="0"
+          collapsed={collapsed}
+          trigger={null}
+        >
           <div className="demo-logo-vertical" />*
           <SideBar />
         </Sider>
