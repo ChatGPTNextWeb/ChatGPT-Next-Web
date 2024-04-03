@@ -759,16 +759,16 @@ function _Chat() {
       matchCommand.invoke();
       return;
     }
-    console.log("[FastGPT Mask]: ", session.mask);
+    // console.log("[FastGPT Mask]: ", session.mask);
     setIsLoading(true);
-
     // Branch One-api:
     // One-api的调用只需要更改不同的模型名字即可，所以这里只需要统计模型数量即可
-    const sendNumber = session.mask.fastgptAPI.length;
-    // if sendNumber > 1, I need send multiple onUserInput
+
+    const oneApiModels = config.oneApiModel.split(",");
+    const sendNumber = oneApiModels.length;
     for (let i = 0; i < sendNumber; i++) {
       chatStore
-        .onUserInput(userInput, attachImages, i)
+        .onUserInput(userInput, oneApiModels[i], attachImages, i)
         .then(() => setIsLoading(false));
     }
     setAttachImages([]);
@@ -921,7 +921,13 @@ function _Chat() {
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    const oneApiModels = config.oneApiModel.split(",");
+    const sendNumber = oneApiModels.length;
+    for (let i = 0; i < sendNumber; i++) {
+      chatStore
+        .onUserInput(userInput, oneApiModels[i], attachImages, i)
+        .then(() => setIsLoading(false));
+    }
     inputRef.current?.focus();
   };
 

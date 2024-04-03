@@ -65,7 +65,8 @@ export interface ChatSession {
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
-export const DEFAULT_FASTGPT_TOPIC = "FastGPT";
+export const DEFAULT_FASTGPT_TOPIC = "New Chat";
+// 暂不使用
 export const FASTGPT_MODEL_TOPIC = [
   "MiniMax",
   "Mixtral",
@@ -73,6 +74,7 @@ export const FASTGPT_MODEL_TOPIC = [
   "openchat-3.5-0106",
 ];
 
+// 暂不使用
 export const ONEAPI_MODEL = [
   "abab5.5s-chat",
   "mixtral",
@@ -921,6 +923,7 @@ export const useFastGPTChatStore = createPersistStore(
 
       async onUserInput(
         content: string,
+        oneApiModel: string,
         attachImages?: string[],
         fastgptNum?: number,
       ) {
@@ -1003,7 +1006,7 @@ export const useFastGPTChatStore = createPersistStore(
         });
 
         var api: ClientApi;
-        api = new ClientApi(ModelProvider.GPT);
+        api = new ClientApi(ModelProvider.FastGPT);
 
         // else if (modelConfig.model.startsWith("gemini")) {
         //   api = new ClientApi(ModelProvider.GeminiPro);
@@ -1012,14 +1015,13 @@ export const useFastGPTChatStore = createPersistStore(
         // }
 
         // make request
-        console.log("[FastGPT chatId]: ", session.id);
         api.llm.chat({
           messages: sendMessages,
           config: {
             ...modelConfig,
             stream: session.mask.fastgptConfig.stream,
             variables: session.mask.fastgptVar,
-            fastapikey: session.mask.fastgptAPI[fastgptNum ?? 0],
+            model: oneApiModel,
           },
           onUpdate(message) {
             botMessage.streaming = true;
