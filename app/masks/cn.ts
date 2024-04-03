@@ -2,7 +2,7 @@ import { BuiltinMask } from "./typing";
 
 export const CN_MASKS: BuiltinMask[] = [
 {
-avatar: "",
+avatar: "gpt-bot",
     name: "英作润色",
     context: [
       {
@@ -34,7 +34,7 @@ avatar: "",
     createdAt: 1688899480503,
   },
   {
-    avatar: "",
+    avatar: "gpt-bot",
     name: "英语邮件",
     context: [
       {
@@ -66,7 +66,7 @@ avatar: "",
     createdAt: 1688899480504,
   },
   {
-    avatar: "",
+    avatar: "gpt-bot",
     name: "英汉词典",
     context: [
       {
@@ -92,7 +92,7 @@ avatar: "",
     createdAt: 1688899480505,
   },
  {
-    avatar: "",
+    avatar: "gpt-bot",
     name: "Paimon",
     context: [
       {
@@ -124,7 +124,7 @@ avatar: "",
     createdAt: 1688899480506,
   },
     {
-    avatar: "",
+    avatar: "gpt-bot",
     name: "AI女友",
     context: [
       {
@@ -156,7 +156,7 @@ avatar: "",
     createdAt: 1688899480507,
   },
    {
-    avatar: "",
+    avatar: "gpt-bot",
     name: "变猫娘！",
     context: [
       {
@@ -188,7 +188,7 @@ avatar: "",
     createdAt: 1688899480508,
   },
   {
-    avatar: "",
+    avatar: "gpt-bot",
     name: "变聪明猫娘！",
     context: [
       {
