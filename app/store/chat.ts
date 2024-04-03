@@ -923,12 +923,11 @@ export const useFastGPTChatStore = createPersistStore(
         content: string,
         oneApiModel: string,
         attachImages?: string[],
-        fastgptNum?: number,
+        oneApiNum?: number,
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         const fastgptVar = session.mask.fastgptVar;
-
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
 
@@ -963,28 +962,37 @@ export const useFastGPTChatStore = createPersistStore(
           model: modelConfig.model,
         });
 
-        // get recent messages
-        // const recentMessages = get().getMessagesWithMemory();
+        // get recent messages(except mask)
+        const memoryMessages = get().getMessagesWithMemory(oneApiNum);
 
-        const inContextMessages = get().getInContextPrompts();
+        //获取mask中的上下文信息
+        //const 换 let，可能解决了深拷贝问题
+        let inContextMessages = get().getInContextPrompts();
+        //对面具中的变量进行替换
         const recentMessages = fillContextTemplate(
           inContextMessages,
           fastgptVar,
         );
         let sendMessages = [] as ChatMessage[];
-        console.log("[RecentMessages]: ", recentMessages);
-        if (
-          session.messages.some(
-            (msg) => msg.role === "user" && msg !== session.messages[0],
-          )
-        ) {
-          const emptyMessages = [] as ChatMessage[];
-          sendMessages = emptyMessages.concat(userMessage);
-        } else {
-          sendMessages = recentMessages.concat(userMessage);
-        }
-        // const sendMessages = emptyMessages.concat(userMessage);
+        // console.log("[RecentMessages]: ", recentMessages);
 
+        sendMessages = recentMessages.concat(memoryMessages);
+        if (oneApiNum == 0) {
+          sendMessages = sendMessages.concat(userMessage);
+        }
+        // if (
+        //   session.messages.some(
+        //     (msg) => msg.role === "user" && msg !== session.messages[0],
+        //   )
+        // ) {
+        //   const emptyMessages = [] as ChatMessage[];
+        //   sendMessages = emptyMessages.concat(userMessage);
+        // } else {
+        //   sendMessages = recentMessages.concat(userMessage);
+        // }
+
+        // const sendMessages = emptyMessages.concat(userMessage);
+        // sendMessages = sendMessages.concat(memoryMessages);
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -993,7 +1001,7 @@ export const useFastGPTChatStore = createPersistStore(
             ...userMessage,
             content: mContent,
           };
-          if (fastgptNum == 0) {
+          if (oneApiNum == 0) {
             session.messages = session.messages.concat([
               savedUserMessage,
               botMessage,
@@ -1011,7 +1019,6 @@ export const useFastGPTChatStore = createPersistStore(
         // } else {
         //   api = new ClientApi(ModelProvider.GPT);
         // }
-
         // make request
         api.llm.chat({
           messages: sendMessages,
@@ -1082,8 +1089,9 @@ export const useFastGPTChatStore = createPersistStore(
           date: "",
         } as ChatMessage;
       },
-
-      getMessagesWithMemory() {
+      // FROM: getMessagesWithMemory
+      // 由于总结功能暂时无法使用，舍去进行总结的长记忆内容，改为使用短记忆内容作为历史消息进行发送
+      getMessagesWithMemory(oneApiNum?: number) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         const clearContextIndex = session.clearContextIndex ?? 0;
@@ -1110,12 +1118,12 @@ export const useFastGPTChatStore = createPersistStore(
               }),
             ]
           : [];
-        if (shouldInjectSystemPrompts) {
-          console.log(
-            "[Global System Prompt] ",
-            systemPrompts.at(0)?.content ?? "empty",
-          );
-        }
+        // if (shouldInjectSystemPrompts) {
+        //   console.log(
+        //     "[Global System Prompt] ",
+        //     systemPrompts.at(0)?.content ?? "empty",
+        //   );
+        // }
 
         // long term memory
         const shouldSendLongTermMemory =
@@ -1135,11 +1143,9 @@ export const useFastGPTChatStore = createPersistStore(
         );
 
         // lets concat send messages, including 4 parts:
-        // 0. system prompt: to get close to OpenAI Web ChatGPT
-        // 1. long term memory: summarized memory messages
-        // 2. pre-defined in-context prompts
-        // 3. short term memory: latest n messages
-        // 4. newest input message
+        // 1. in-context prompts
+        // 2. short term memory: latest n messages
+        // 3. newest input message
         const memoryStartIndex = shouldSendLongTermMemory
           ? Math.min(longTermMemoryStartIndex, shortTermMemoryStartIndex)
           : shortTermMemoryStartIndex;
@@ -1149,26 +1155,47 @@ export const useFastGPTChatStore = createPersistStore(
 
         // get recent messages as much as possible
         const reversedRecentMessages = [];
+        // for (
+        //   let i = totalMessageCount - 1, tokenCount = 0;
+        //   i >= contextStartIndex && tokenCount < maxTokenThreshold;
+        //   i -= 1
+        // ) {
+        //   const msg = messages[i];
+        //   if (!msg || msg.isError) continue;
+        //   tokenCount += estimateTokenLength(getMessageTextContent(msg));
+        //   reversedRecentMessages.push(msg);
+        // }
         for (
-          let i = totalMessageCount - 1, tokenCount = 0;
-          i >= contextStartIndex && tokenCount < maxTokenThreshold;
-          i -= 1
+          let i = 0, tokenCount = 0, modelNum = 0, startMemory = false;
+          i <= totalMessageCount - 1 && tokenCount < maxTokenThreshold;
+          i++
         ) {
           const msg = messages[i];
-          if (!msg || msg.isError) continue;
-          tokenCount += estimateTokenLength(getMessageTextContent(msg));
-          reversedRecentMessages.push(msg);
+          if (msg.role === "user") {
+            modelNum = -1;
+            tokenCount += estimateTokenLength(getMessageTextContent(msg));
+            reversedRecentMessages.push(msg);
+            startMemory = true;
+          } else {
+            // role isn't user
+            if (startMemory) {
+              modelNum++;
+            }
+            if (modelNum == oneApiNum && startMemory) {
+              tokenCount += estimateTokenLength(getMessageTextContent(msg));
+              reversedRecentMessages.push(msg);
+            }
+          }
         }
-
         // concat all messages
-        const recentMessages = [
-          ...systemPrompts,
-          ...longTermMemoryPrompts,
-          ...contextPrompts,
-          ...reversedRecentMessages.reverse(),
-        ];
-
-        return recentMessages;
+        // const recentMessages = [
+        //   ...systemPrompts,
+        //   ...longTermMemoryPrompts,
+        //   ...contextPrompts,
+        //   ...reversedRecentMessages,
+        // ];
+        console.log("[MemoryMessages]: ", reversedRecentMessages);
+        return reversedRecentMessages;
       },
 
       // FROM: getMessagesWithMemory
@@ -1262,12 +1289,12 @@ export const useFastGPTChatStore = createPersistStore(
 
         const lastSummarizeIndex = session.messages.length;
 
-        console.log(
-          "[Chat History] ",
-          toBeSummarizedMsgs,
-          historyMsgLength,
-          modelConfig.compressMessageLengthThreshold,
-        );
+        // console.log(
+        //   "[Chat History] ",
+        //   toBeSummarizedMsgs,
+        //   historyMsgLength,
+        //   modelConfig.compressMessageLengthThreshold,
+        // );
 
         if (
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&

@@ -84,7 +84,7 @@ export function MaskConfig(props: {
   shouldSyncFromGlobal?: boolean;
 }) {
   const [showPicker, setShowPicker] = useState(false);
-
+  const [focusingInput, setFocusingInput] = useState(false);
   const updateConfig = (updater: (config: ModelConfig) => void) => {
     if (props.readonly) return;
 
@@ -346,6 +346,37 @@ function ContextPromptItem(props: {
           bordered
         />
       )}
+    </div>
+  );
+}
+
+function InputTextItem(props: {
+  text: string;
+  update: (text: string) => void;
+}) {
+  const [focusingInput, setFocusingInput] = useState(false);
+
+  return (
+    <div className={chatStyle["context-prompt-row"]}>
+      {!focusingInput && (
+        <>
+          <div className={chatStyle["context-drag"]}>Title</div>
+        </>
+      )}
+      <Input
+        value={props.text}
+        type="text"
+        className={chatStyle["context-content"]}
+        rows={focusingInput ? 5 : 1}
+        onFocus={() => setFocusingInput(true)}
+        onBlur={() => {
+          setFocusingInput(false);
+          // If the selection is not removed when the user loses focus, some
+          // extensions like "Translate" will always display a floating bar
+          window?.getSelection()?.removeAllRanges();
+        }}
+        onInput={(e) => props.update(e.currentTarget.value)}
+      />
     </div>
   );
 }
