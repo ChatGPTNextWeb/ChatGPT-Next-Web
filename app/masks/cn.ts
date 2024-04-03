@@ -202,7 +202,7 @@ avatar: "",
       },
     ],
     modelConfig: {
-      model: "gemini-pro",
+      model:   model: "gemini-pro",
       temperature: 0.7,
       max_tokens: 512000,
       presence_penalty: 0,
@@ -582,33 +582,7 @@ avatar: "",
         role: "assistant",
         content: "我已经准备好了。",
         date: "",
-      },
-      {
-        id: "mentor-2",
-        role: "user",
-        content: "我作业写不完怎么办",
-        date: "",
-      },
-      {
-        id: "mentor-3",
-        role: "assistant",
-        content:
-          '“行动是治愈恐惧的良药。” - 威廉·詹姆斯\n"Action is the antidote to fear." - William James',
-        date: "",
-      },
-      {
-        id: "mentor-4",
-        role: "user",
-        content: "论文被拒了怎么办",
-        date: "",
-      },
-      {
-        id: "mentor-5",
-        role: "assistant",
-        content:
-          '"失败是成功之母。" - 俗语\n"Failure is the mother of success." - Chinese proverb',
-        date: "",
-      },
+        },
     ],
     modelConfig: {
       model: "gemini-pro",
