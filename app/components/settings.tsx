@@ -1168,7 +1168,23 @@ export function Settings() {
             ></input>
           </ListItem>
         </List>
-
+        <List>
+          <ListItem
+            title={Locale.Settings.Access.OneAPIModel.Title}
+            subTitle={Locale.Settings.Access.OneAPIModel.SubTitle}
+          >
+            <input
+              type="text"
+              value={config.oneApiModel}
+              onChange={(e) => {
+                config.update(
+                  (config) => (config.oneApiModel = e.currentTarget.value),
+                );
+                console.log(config.oneApiModel);
+              }}
+            ></input>
+          </ListItem>
+        </List>
         <List>
           <ModelConfigList
             modelConfig={config.modelConfig}

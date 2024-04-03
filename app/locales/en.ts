@@ -320,6 +320,10 @@ const en: LocaleType = {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",
       },
+      OneAPIModel: {
+        Title: "OneAPI Model name",
+        SubTitle: "OneAPI model options, seperated by comma",
+      },
       Google: {
         ApiKey: {
           Title: "API Key",

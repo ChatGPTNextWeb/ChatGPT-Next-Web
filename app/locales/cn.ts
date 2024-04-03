@@ -334,6 +334,10 @@ const cn = {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
       },
+      OneAPIModel: {
+        Title: "OneAPI 模型名",
+        SubTitle: "调用的OneAPI模型，使用英文逗号隔开",
+      },
     },
 
     Model: "模型 (model)",

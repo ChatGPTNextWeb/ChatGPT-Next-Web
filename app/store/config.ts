@@ -4,6 +4,7 @@ import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
+  DEFAULT_ONEAPI_MODEL,
   DEFAULT_SIDEBAR_WIDTH,
   StoreKey,
 } from "../constant";
@@ -44,6 +45,8 @@ export const DEFAULT_CONFIG = {
 
   customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
+
+  oneApiModel: DEFAULT_ONEAPI_MODEL,
 
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
