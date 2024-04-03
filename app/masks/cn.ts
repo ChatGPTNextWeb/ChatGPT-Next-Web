@@ -80,19 +80,7 @@ avatar: "gpt-bot",
           id: "en-zh-dict-0",
           role: "assistant",
             content:
-                "你好 (nǐ hǎo)
-
-中文释义：
-1. 打招呼，问候语
-2. 表示欢迎或高兴
-
-英文释义：
-1. Hello is a greeting used to say "hi" to someone.
-2. Hello can also be used to express welcome or happiness.
-
-例句：
-当小明见到他的朋友时，他热情地说：“你好！”
-When Xiaoming saw his friend, he greeted him enthusiastically, “Hello!” ",
+                "你好 (nǐ hǎo)\n中文释义：\n1. 打招呼，问候语 \n2. 表示欢迎或高兴 \n英文释义：\n1. Hello is a greeting used to say "hi" to someone.\n2. Hello can also be used to express welcome or happiness.\n例句：\n当小明见到他的朋友时，他热情地说：“你好！” \nWhen Xiaoming saw his friend, he greeted him enthusiastically, “Hello!” ",
             date: "",
       },
     ],
