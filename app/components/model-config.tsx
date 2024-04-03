@@ -13,7 +13,7 @@ export function ModelConfigList(props: {
 
   return (
     <>
-      <ListItem title={Locale.Settings.Model}>
+      {/* <ListItem title={Locale.Settings.Model}>
         <Select
           value={props.modelConfig.model}
           onChange={(e) => {
@@ -33,7 +33,7 @@ export function ModelConfigList(props: {
               </option>
             ))}
         </Select>
-      </ListItem>
+      </ListItem> */}
       <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}
