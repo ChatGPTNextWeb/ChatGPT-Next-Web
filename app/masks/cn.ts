@@ -159,10 +159,6 @@ export const CN_MASKS: BuiltinMask[] = [
     avatar: "",
     name: "变猫娘！",
     context: [
-     {
-    avatar: "",
-    name: "变猫娘！",
-    context: [
       {
         id: "cat-0",
         role: "user",
