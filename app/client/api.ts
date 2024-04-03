@@ -196,7 +196,7 @@ export function getHeaders(FastGptApiKey: string = "") {
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s}`;
   const validString = (x: string) => x && x.length > 0;
 
-  if (FastGptApiKey) {
+  if (FastGptApiKey !== "") {
     headers["Authorization"] = makeBearer(FastGptApiKey);
     // console.log("[FastGPT]", headers["Authorization"]);
     return headers;
