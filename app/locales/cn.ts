@@ -435,8 +435,8 @@ const cn = {
         Action: "复制链接",
       },
       FastGPT: {
-        Title: "模版参数设置",
-        SubTitle: "使用 参数 配置进行对话",
+        Title: "是否调整模型参数",
+        SubTitle: "是否调整模型参数（默认关闭）",
         Stream: {
           Title: "是否开启流式对话（默认开启）",
         },
@@ -447,6 +447,10 @@ const cn = {
           Title: "FastGPT API Key",
           SubTitle: "填写API（fast-开头）",
         },
+      },
+      OneAPI: {
+        Title: "是否隐藏模型参数",
+        SubTitle: "隐藏模型参数（默认开启）",
       },
     },
   },

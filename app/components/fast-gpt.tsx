@@ -1208,9 +1208,12 @@ function _Chat() {
     }
     setAttachImages(images);
   }
-  const fastChatTotal = session.mask.fastgptAPI.length;
-  // const [fastChatNum, setFastChatNum] = useState(0);
+  // const fastChatTotal = session.mask.fastgptAPI.length;
+
+  // fastChatName is default name and can't change
   const fastChatName = FASTGPT_MODEL_TOPIC;
+  const oneAPIModelsName = config.oneApiModel.split(",");
+  // const oneAPIModelsName = fastChatName;
   let fastChatNum = -1;
 
   return (
@@ -1304,7 +1307,7 @@ function _Chat() {
           if (isUser) fastChatNum = -1;
           if (!isUser && !isContext) {
             fastChatNum++;
-            fastChatNum = fastChatNum % fastChatTotal;
+            fastChatNum = fastChatNum % oneAPIModelsName.length;
           }
           // const checkFastNum = setFastChatNum((fastChatNum) => fastChatNum + 1);
 
@@ -1380,7 +1383,7 @@ function _Chat() {
                         </div>
                       ) : (
                         <div className={styles["chat-message-fastgpt-name"]}>
-                          {fastChatName[fastChatNum]}
+                          {oneAPIModelsName[fastChatNum]}
                         </div>
                       )}
                     </div>

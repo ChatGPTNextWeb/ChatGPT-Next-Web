@@ -167,8 +167,8 @@ export function MaskConfig(props: {
         </ListItem>
 
         <ListItem
-          title={Locale.Mask.Config.FastGPT.Title}
-          subTitle={Locale.Mask.Config.FastGPT.SubTitle}
+          title={Locale.Mask.Config.OneAPI.Title}
+          subTitle={Locale.Mask.Config.OneAPI.SubTitle}
         >
           <input
             type="checkbox"
@@ -223,155 +223,56 @@ export function MaskConfig(props: {
         ) : null}
       </List>
 
-      {props.mask.fastgpt ? (
-        <List>
-          {/* <ListItem
-            title={Locale.Mask.Config.FastGPT.API.Title}
-            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
-          >
-            <input
-              type="text"
-              value={props.mask.fastgptAPI[0]}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptAPI[0] = e.currentTarget.value;
-                });
-                console.log(props.mask.fastgptAPI);
-              }}
-            ></input>
-          </ListItem>
-          <ListItem
-            title={Locale.Mask.Config.FastGPT.API.Title}
-            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
-          >
-            <input
-              type="text"
-              value={props.mask.fastgptAPI[1]}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptAPI[1] = e.currentTarget.value;
-                });
-                console.log(props.mask.fastgptAPI);
-              }}
-            ></input>
-          </ListItem>
-          <ListItem
-            title={Locale.Mask.Config.FastGPT.API.Title}
-            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
-          >
-            <input
-              type="text"
-              value={props.mask.fastgptAPI[2]}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptAPI[2] = e.currentTarget.value;
-                });
-                console.log(props.mask.fastgptAPI);
-              }}
-            ></input>
-          </ListItem>
-          <ListItem
-            title={Locale.Mask.Config.FastGPT.API.Title}
-            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
-          >
-            <input
-              type="text"
-              value={props.mask.fastgptAPI[3]}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptAPI[3] = e.currentTarget.value;
-                });
-                console.log(props.mask.fastgptAPI);
-              }}
-            ></input>
-          </ListItem> */}
-          <ListItem title={"Name"} subTitle="AI Name">
-            <input
-              type="text"
-              value={props.mask.fastgptVar.name}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptVar.name = e.currentTarget.value;
-                  console.log(mask.fastgptVar.name);
-                });
-              }}
-            ></input>
-          </ListItem>
-          <ListItem title={"Des"} subTitle="Brief introduction">
-            <input
-              type="text"
-              value={props.mask.fastgptVar.des}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  props.mask.fastgptVar.des = e.currentTarget.value;
-                });
-              }}
-            ></input>
-          </ListItem>
-          <ListItem title={"Character personality"}>
-            <input
-              type="text"
-              value={props.mask.fastgptVar.char_personality}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  props.mask.fastgptVar.char_personality =
-                    e.currentTarget.value;
-                });
-              }}
-            ></input>
-          </ListItem>
-          <ListItem title={"Senario"}>
-            <input
-              type="text"
-              value={props.mask.fastgptVar.senario}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  props.mask.fastgptVar.senario = e.currentTarget.value;
-                });
-              }}
-            ></input>
-          </ListItem>
-          {/* <ListItem
-            title={Locale.Mask.Config.FastGPT.API.Title}
-            subTitle={Locale.Mask.Config.FastGPT.API.SubTitle}
-          >
-            <PasswordInput
-              value={props.mask.fastgptAPI.token1}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  props.mask.fastgptAPI.token1 = e.currentTarget.value;
-                });
-              }}
-            ></PasswordInput>
-          </ListItem> */}
-        </List>
-      ) : null}
+      <List>
+        <ListItem title={"Name"} subTitle="AI Name">
+          <input
+            type="text"
+            value={props.mask.fastgptVar.name}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                mask.fastgptVar.name = e.currentTarget.value;
+                console.log(mask.fastgptVar.name);
+              });
+            }}
+          ></input>
+        </ListItem>
+        <ListItem title={"Des"} subTitle="Brief introduction">
+          <input
+            type="text"
+            value={props.mask.fastgptVar.des}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                props.mask.fastgptVar.des = e.currentTarget.value;
+              });
+            }}
+          ></input>
+        </ListItem>
+        <ListItem title={"Character personality"}>
+          <input
+            type="text"
+            value={props.mask.fastgptVar.char_personality}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                props.mask.fastgptVar.char_personality = e.currentTarget.value;
+              });
+            }}
+          ></input>
+        </ListItem>
+        <ListItem title={"Senario"}>
+          <input
+            type="text"
+            value={props.mask.fastgptVar.senario}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                props.mask.fastgptVar.senario = e.currentTarget.value;
+              });
+            }}
+          ></input>
+        </ListItem>
+      </List>
 
       {props.mask.fastgpt ? (
-        <List>
-          <ListItem title={Locale.Mask.Config.FastGPT.Stream.Title}>
-            <input
-              type="checkbox"
-              checked={props.mask.fastgptConfig?.stream}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptConfig.stream = e.currentTarget.checked;
-                });
-              }}
-            ></input>
-          </ListItem>
-          <ListItem title={Locale.Mask.Config.FastGPT.Detail.Title}>
-            <input
-              type="checkbox"
-              checked={props.mask.fastgptConfig?.detail}
-              onChange={(e) => {
-                props.updateMask((mask) => {
-                  mask.fastgptConfig.detail = e.currentTarget.checked;
-                });
-              }}
-            ></input>
-          </ListItem>
-        </List>
+        <></>
       ) : (
         <List>
           <ModelConfigList
