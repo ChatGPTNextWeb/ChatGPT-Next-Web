@@ -435,8 +435,8 @@ const cn = {
         Action: "复制链接",
       },
       FastGPT: {
-        Title: "是否为 FastGPT 对话",
-        SubTitle: "使用 FastGPT 配置进行对话",
+        Title: "模版参数设置",
+        SubTitle: "使用 参数 配置进行对话",
         Stream: {
           Title: "是否开启流式对话（默认开启）",
         },
