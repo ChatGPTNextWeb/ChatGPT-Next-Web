@@ -3,7 +3,7 @@ import { BuiltinMask } from "./typing";
 export const CN_MASKS: BuiltinMask[] = [
 {
 avatar: "",
-    name: "英文写作润色",
+    name: "英作润色",
     context: [
       {
         id: "en-polish-0",
@@ -201,14 +201,14 @@ avatar: "",
         date: "",
       },
     ],
-    modelConfig: {
-      model:   model: "gemini-pro",
+     modelConfig: {
+      model: "gemini-pro",
       temperature: 0.7,
       max_tokens: 512000,
       presence_penalty: 0,
       frequency_penalty: 0,
       sendMemory: true,
-      historyMessageCount: 32,
+      historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
     },
     lang: "cn",
@@ -582,7 +582,33 @@ avatar: "",
         role: "assistant",
         content: "我已经准备好了。",
         date: "",
-        },
+      },
+      {
+        id: "mentor-2",
+        role: "user",
+        content: "我作业写不完怎么办",
+        date: "",
+      },
+      {
+        id: "mentor-3",
+        role: "assistant",
+        content:
+          '“行动是治愈恐惧的良药。” - 威廉·詹姆斯\n"Action is the antidote to fear." - William James',
+        date: "",
+      },
+      {
+        id: "mentor-4",
+        role: "user",
+        content: "论文被拒了怎么办",
+        date: "",
+      },
+      {
+        id: "mentor-5",
+        role: "assistant",
+        content:
+          '"失败是成功之母。" - 俗语\n"Failure is the mother of success." - Chinese proverb',
+        date: "",
+      },
     ],
     modelConfig: {
       model: "gemini-pro",
