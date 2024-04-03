@@ -762,10 +762,8 @@ function _Chat() {
     console.log("[FastGPT Mask]: ", session.mask);
     setIsLoading(true);
 
-    // In FastGPT, we need a number of messages and they have diffrent headers
-    // So we need a method to handle and control diiferent headers
-    // 将使用chatStore进行提交的方法进行包装
-    // 调用对话设置里，设置好的Headers API Key，传过来，发往后端
+    // Branch One-api:
+    // One-api的调用只需要更改不同的模型名字即可，所以这里只需要统计模型数量即可
     const sendNumber = session.mask.fastgptAPI.length;
     // if sendNumber > 1, I need send multiple onUserInput
     for (let i = 0; i < sendNumber; i++) {

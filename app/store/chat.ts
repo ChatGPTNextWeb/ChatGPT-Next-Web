@@ -72,6 +72,14 @@ export const FASTGPT_MODEL_TOPIC = [
   // "pygmalion-2-7b",
   "openchat-3.5-0106",
 ];
+
+export const ONEAPI_MODEL = [
+  "abab5.5s-chat",
+  "mixtral",
+  // "pygmalion-2-7b",
+  "openchat-3.5-0106",
+];
+
 export const BOT_HELLO: ChatMessage = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
@@ -995,7 +1003,7 @@ export const useFastGPTChatStore = createPersistStore(
         });
 
         var api: ClientApi;
-        api = new ClientApi(ModelProvider.FastGPT);
+        api = new ClientApi(ModelProvider.GPT);
 
         // else if (modelConfig.model.startsWith("gemini")) {
         //   api = new ClientApi(ModelProvider.GeminiPro);
@@ -1012,7 +1020,6 @@ export const useFastGPTChatStore = createPersistStore(
             stream: session.mask.fastgptConfig.stream,
             variables: session.mask.fastgptVar,
             fastapikey: session.mask.fastgptAPI[fastgptNum ?? 0],
-            chatId: session.id,
           },
           onUpdate(message) {
             botMessage.streaming = true;
