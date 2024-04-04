@@ -17,12 +17,30 @@
   background-size: cover;
   background-position: center;
   background-color: var(--second);
+  display: flex;
+
+  span {
+    position: absolute;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+    top: 8px;
+    bottom: 8px;
+    left: 5px;
+    right: 10px;
+    pointer-events: none;
+  }
 
   .attach-file-mask {
     width: 100%;
     height: 100%;
     opacity: 0;
     transition: all ease 0.2s;
+    z-index: 999;
   }
 
   .attach-file-mask:hover {
@@ -39,25 +57,6 @@
     border-radius: 5px;
     float: right;
     background-color: var(--white);
-  }
-
-  .attach-file-name {
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 4px;
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-all;
-    // line-height: 1.2;
-    // max-height: 2.4em;
-    position: absolute;
-    top: 0;
-    left: 0;
   }
 }
 

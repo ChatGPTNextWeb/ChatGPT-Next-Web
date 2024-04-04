@@ -118,6 +118,7 @@ import {
   WebTranscriptionApi,
 } from "../utils/speech";
 import { getServerSideConfig } from "../config/server";
+import { FileInfo } from "../client/platforms/utils";
 
 const ttsPlayer = createTTSPlayer();
 
@@ -463,7 +464,7 @@ export function ChatActions(props: {
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
   uploadFile: () => void;
-  setAttachFiles: (files: string[]) => void;
+  setAttachFiles: (files: FileInfo[]) => void;
   setUploading: (uploading: boolean) => void;
   showPromptModal: () => void;
   scrollToBottom: () => void;
@@ -769,7 +770,7 @@ function _Chat() {
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [attachFiles, setAttachFiles] = useState<string[]>([]);
+  const [attachFiles, setAttachFiles] = useState<FileInfo[]>([]);
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -1353,11 +1354,11 @@ function _Chat() {
   }
 
   async function uploadFile() {
-    const uploadFiles: string[] = [];
+    const uploadFiles: FileInfo[] = [];
     uploadFiles.push(...attachFiles);
 
     uploadFiles.push(
-      ...(await new Promise<string[]>((res, rej) => {
+      ...(await new Promise<FileInfo[]>((res, rej) => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = ".pdf,.txt,.json,.csv,.md";
@@ -1366,7 +1367,7 @@ function _Chat() {
           setUploading(true);
           const files = event.target.files;
           const api = new ClientApi();
-          const fileDatas: string[] = [];
+          const fileDatas: FileInfo[] = [];
           for (let i = 0; i < files.length; i++) {
             const file = event.target.files[i];
             api.file
@@ -1375,7 +1376,7 @@ function _Chat() {
                 console.log(fileInfo);
                 fileDatas.push(fileInfo);
                 if (
-                  fileDatas.length === 5 ||
+                  fileDatas.length === 3 ||
                   fileDatas.length === files.length
                 ) {
                   setUploading(false);
@@ -1778,7 +1779,12 @@ function _Chat() {
             <div className={styles["attach-files"]}>
               {attachFiles.map((file, index) => {
                 return (
-                  <div key={index} className={styles["attach-file"]}>
+                  <div
+                    key={index}
+                    className={styles["attach-file"]}
+                    title={file.originalFilename}
+                  >
+                    <span>{file.originalFilename}</span>
                     <div className={styles["attach-file-mask"]}>
                       <DeleteFileButton
                         deleteFile={() => {
@@ -1788,7 +1794,6 @@ function _Chat() {
                         }}
                       />
                     </div>
-                    <div className={styles["attach-file-name"]}>${file}</div>
                   </div>
                 );
               })}
