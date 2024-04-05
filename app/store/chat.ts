@@ -26,6 +26,7 @@ export interface ChatToolMessage {
   toolInput?: string;
 }
 import { createPersistStore } from "../utils/store";
+import { FileInfo } from "../client/platforms/utils";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -304,7 +305,11 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string, attachImages?: string[]) {
+      async onUserInput(
+        content: string,
+        attachImages?: string[],
+        attachFiles?: FileInfo[],
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -335,6 +340,7 @@ export const useChatStore = createPersistStore(
         let userMessage: ChatMessage = createMessage({
           role: "user",
           content: mContent,
+          fileInfos: attachFiles,
         });
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
@@ -359,7 +365,6 @@ export const useChatStore = createPersistStore(
                 m.lang === (getLang() == "cn" ? getLang() : "en")) &&
               m.enable,
           );
-
         // save user's and bot's message
         get().updateCurrentSession((session) => {
           const savedUserMessage = {
@@ -374,13 +379,23 @@ export const useChatStore = createPersistStore(
         if (
           config.pluginConfig.enable &&
           session.mask.usePlugins &&
-          allPlugins.length > 0 &&
+          (allPlugins.length > 0 || !!process.env.NEXT_PUBLIC_ENABLE_RAG) &&
           modelConfig.model.startsWith("gpt") &&
           modelConfig.model != "gpt-4-vision-preview"
         ) {
           console.log("[ToolAgent] start");
           const pluginToolNames = allPlugins.map((m) => m.toolName);
+          if (!!process.env.NEXT_PUBLIC_ENABLE_RAG)
+            pluginToolNames.push("rag-search");
+          if (attachFiles && attachFiles.length > 0) {
+            console.log("crete rag store");
+            await api.llm.createRAGSore({
+              chatSessionId: session.id,
+              fileInfos: attachFiles,
+            });
+          }
           api.llm.toolAgentChat({
+            chatSessionId: session.id,
             messages: sendMessages,
             config: { ...modelConfig, stream: true },
             agentConfig: { ...pluginConfig, useTools: pluginToolNames },

@@ -7,16 +7,15 @@ import { StableDiffusionNodeWrapper } from "@/app/api/langchain-tools/stable_dif
 import { Calculator } from "langchain/tools/calculator";
 import { WebBrowser } from "langchain/tools/webbrowser";
 import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
+import { RAGSearch } from "./rag_search";
 
 export class NodeJSTool {
   private apiKey: string | undefined;
-
   private baseUrl: string;
-
   private model: BaseLanguageModel;
-
   private embeddings: Embeddings;
-
+  private sessionId: string;
+  private ragEmbeddings: Embeddings;
   private callback?: (data: string) => Promise<void>;
 
   constructor(
@@ -24,12 +23,16 @@ export class NodeJSTool {
     baseUrl: string,
     model: BaseLanguageModel,
     embeddings: Embeddings,
+    sessionId: string,
+    ragEmbeddings: Embeddings,
     callback?: (data: string) => Promise<void>,
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
     this.model = model;
     this.embeddings = embeddings;
+    this.sessionId = sessionId;
+    this.ragEmbeddings = ragEmbeddings;
     this.callback = callback;
   }
 
@@ -57,6 +60,9 @@ export class NodeJSTool {
       wolframAlphaTool,
       pdfBrowserTool,
     ];
+    if (!!process.env.NEXT_PUBLIC_ENABLE_RAG) {
+      tools.push(new RAGSearch(this.sessionId, this.model, this.ragEmbeddings));
+    }
     return tools;
   }
 }

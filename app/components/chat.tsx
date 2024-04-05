@@ -876,7 +876,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, attachFiles)
       .then(() => setIsLoading(false));
     setAttachImages([]);
     setAttachFiles([]);
@@ -1106,34 +1106,36 @@ function _Chat() {
 
   // preview messages
   const renderMessages = useMemo(() => {
-    return context
-      .concat(session.messages as RenderMessage[])
-      .concat(
-        isLoading
-          ? [
-              {
-                ...createMessage({
-                  role: "assistant",
-                  content: "……",
-                }),
-                preview: true,
-              },
-            ]
-          : [],
-      )
-      .concat(
-        userInput.length > 0 && config.sendPreviewBubble
-          ? [
-              {
-                ...createMessage({
-                  role: "user",
-                  content: userInput,
-                }),
-                preview: true,
-              },
-            ]
-          : [],
-      );
+    return (
+      context
+        .concat(session.messages as RenderMessage[])
+        // .concat(
+        //   isLoading
+        //     ? [
+        //       {
+        //         ...createMessage({
+        //           role: "assistant",
+        //           content: "……",
+        //         }),
+        //         preview: true,
+        //       },
+        //     ]
+        //     : [],
+        // )
+        .concat(
+          userInput.length > 0 && config.sendPreviewBubble
+            ? [
+                {
+                  ...createMessage({
+                    role: "user",
+                    content: userInput,
+                  }),
+                  preview: true,
+                },
+              ]
+            : [],
+        )
+    );
   }, [
     config.sendPreviewBubble,
     context,
@@ -1658,6 +1660,29 @@ function _Chat() {
                       parentRef={scrollRef}
                       defaultShow={i >= messages.length - 6}
                     />
+                    {message.fileInfos && message.fileInfos.length > 0 && (
+                      <nav
+                        className={styles["chat-message-item-files"]}
+                        style={
+                          {
+                            "--file-count": message.fileInfos.length,
+                          } as React.CSSProperties
+                        }
+                      >
+                        {message.fileInfos.map((fileInfo, index) => {
+                          return (
+                            <a
+                              key={index}
+                              href={fileInfo.filePath}
+                              className={styles["chat-message-item-file"]}
+                              target="_blank"
+                            >
+                              {fileInfo.originalFilename}
+                            </a>
+                          );
+                        })}
+                      </nav>
+                    )}
                     {getMessageImages(message).length == 1 && (
                       <img
                         className={styles["chat-message-item-image"]}
@@ -1784,7 +1809,9 @@ function _Chat() {
                     className={styles["attach-file"]}
                     title={file.originalFilename}
                   >
-                    <span>{file.originalFilename}</span>
+                    <div className={styles["attach-file-info"]}>
+                      {file.originalFilename}
+                    </div>
                     <div className={styles["attach-file-mask"]}>
                       <DeleteFileButton
                         deleteFile={() => {

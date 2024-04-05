@@ -1,16 +1,66 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
-import { NodeJSTool } from "@/app/api/langchain-tools/nodejs_tools";
 import { ACCESS_CODE_PREFIX, ModelProvider } from "@/app/constant";
 import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
-import path from "path";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { CSVLoader } from "langchain/document_loaders/fs/csv";
+import { DocxLoader } from "langchain/document_loaders/fs/docx";
+import { EPubLoader } from "langchain/document_loaders/fs/epub";
+import { JSONLoader } from "langchain/document_loaders/fs/json";
+import { JSONLinesLoader } from "langchain/document_loaders/fs/json";
+import { OpenAIWhisperAudio } from "langchain/document_loaders/fs/openai_whisper_audio";
+// import { PPTXLoader } from "langchain/document_loaders/fs/pptx";
+import { SRTLoader } from "langchain/document_loaders/fs/srt";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { Document } from "@langchain/core/documents";
 import { PineconeStore } from "@langchain/pinecone";
 import { getServerSideConfig } from "@/app/config/server";
-import { RequestBody } from "../../tool/agent/agentapi";
+import { FileInfo } from "@/app/client/platforms/utils";
+import mime from "mime";
+import LocalFileStorage from "@/app/utils/local_file_storage";
+import S3FileStorage from "@/app/utils/s3_file_storage";
+
+interface RequestBody {
+  sessionId: string;
+  fileInfos: FileInfo[];
+  baseUrl?: string;
+}
+
+function getLoader(
+  fileName: string,
+  fileBlob: Blob,
+  openaiApiKey: string,
+  openaiBaseUrl: string,
+) {
+  const extension = fileName.split(".").pop();
+  switch (extension) {
+    case "txt":
+    case "md":
+      return new TextLoader(fileBlob);
+    case "pdf":
+      return new PDFLoader(fileBlob);
+    case "docx":
+      return new DocxLoader(fileBlob);
+    case "csv":
+      return new CSVLoader(fileBlob);
+    case "json":
+      return new JSONLoader(fileBlob);
+    // case 'pptx':
+    //   return new PPTXLoader(fileBlob);
+    case "srt":
+      return new SRTLoader(fileBlob);
+    case "mp3":
+      return new OpenAIWhisperAudio(fileBlob, {
+        clientOptions: {
+          apiKey: openaiApiKey,
+          baseURL: openaiBaseUrl,
+        },
+      });
+    default:
+      throw new Error(`Unsupported file type: ${extension}`);
+  }
+}
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
@@ -27,88 +77,70 @@ async function handle(req: NextRequest) {
     const reqBody: RequestBody = await req.json();
     const authToken = req.headers.get("Authorization") ?? "";
     const token = authToken.trim().replaceAll("Bearer ", "").trim();
-
-    //https://js.langchain.com/docs/integrations/vectorstores/pinecone
-    // const formData = await req.formData();
-    // const file = formData.get("file") as File;
-    // const originalFileName = file?.name;
-
-    // const fileReader = file.stream().getReader();
-    // const fileData: number[] = [];
-
-    // while (true) {
-    //   const { done, value } = await fileReader.read();
-    //   if (done) break;
-    //   fileData.push(...value);
-    // }
-
-    // const buffer = Buffer.from(fileData);
-    // const fileType = path.extname(originalFileName).slice(1);
-    // const fileBlob = bufferToBlob(buffer, "application/pdf")
-
-    // const loader = new PDFLoader(fileBlob);
-    // const docs = await loader.load();
-    // const textSplitter = new RecursiveCharacterTextSplitter({
-    //   chunkSize: 1000,
-    //   chunkOverlap: 200,
-    // });
-    // const splits = await textSplitter.splitDocuments(docs);
-    const pinecone = new Pinecone();
-    // await pinecone.createIndex({
-    //   name: 'example-index',
-    //   dimension: 1536,
-    //   metric: 'cosine',
-    //   spec: {
-    //     pod: {
-    //       environment: 'gcp-starter',
-    //       podType: 'p1.x1',
-    //       pods: 1
-    //     }
-    //   }
-    // });
-    const pineconeIndex = pinecone.Index("example-index");
-    const docs = [
-      new Document({
-        metadata: { foo: "bar" },
-        pageContent: "pinecone is a vector db",
-      }),
-      new Document({
-        metadata: { foo: "bar" },
-        pageContent: "the quick brown fox jumped over the lazy dog",
-      }),
-      new Document({
-        metadata: { baz: "qux" },
-        pageContent: "lorem ipsum dolor sit amet",
-      }),
-      new Document({
-        metadata: { baz: "qux" },
-        pageContent: "pinecones are the woody fruiting body and of a pine tree",
-      }),
-    ];
     const apiKey = getOpenAIApiKey(token);
     const baseUrl = getOpenAIBaseUrl(reqBody.baseUrl);
-    console.log(baseUrl);
+    const serverConfig = getServerSideConfig();
+    const pinecone = new Pinecone();
+    const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
     const embeddings = new OpenAIEmbeddings(
       {
-        modelName: "text-embedding-ada-002",
+        modelName: process.env.RAG_EMBEDDING_MODEL ?? "text-embedding-3-large",
         openAIApiKey: apiKey,
       },
       { basePath: baseUrl },
     );
-    await PineconeStore.fromDocuments(docs, embeddings, {
-      pineconeIndex,
-      maxConcurrency: 5,
-    });
-    const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
-      pineconeIndex,
-    });
-    const results = await vectorStore.similaritySearch("pinecone", 1, {
-      foo: "bar",
-    });
-    console.log(results);
+    //https://js.langchain.com/docs/integrations/vectorstores/pinecone
+    // process files
+    for (let i = 0; i < reqBody.fileInfos.length; i++) {
+      const fileInfo = reqBody.fileInfos[i];
+      const contentType = mime.getType(fileInfo.fileName);
+      // get file buffer
+      var fileBuffer: Buffer | undefined;
+      if (serverConfig.isStoreFileToLocal) {
+        fileBuffer = await LocalFileStorage.get(fileInfo.fileName);
+      } else {
+        var file = await S3FileStorage.get(fileInfo.fileName);
+        var fileByteArray = await file?.transformToByteArray();
+        if (fileByteArray) fileBuffer = Buffer.from(fileByteArray);
+      }
+      if (!fileBuffer || !contentType) {
+        console.error(`get ${fileInfo.fileName} buffer fail`);
+        continue;
+      }
+      // load file to docs
+      const fileBlob = bufferToBlob(fileBuffer, contentType);
+      const loader = getLoader(fileInfo.fileName, fileBlob, apiKey, baseUrl);
+      const docs = await loader.load();
+      // modify doc meta
+      docs.forEach((doc) => {
+        doc.metadata = {
+          ...doc.metadata,
+          sessionId: reqBody.sessionId,
+          sourceFileName: fileInfo.originalFilename,
+          fileName: fileInfo.fileName,
+        };
+      });
+      // split
+      const chunkSize = process.env.RAG_CHUNK_SIZE
+        ? parseInt(process.env.RAG_CHUNK_SIZE, 10)
+        : 2000;
+      const chunkOverlap = process.env.RAG_CHUNK_OVERLAP
+        ? parseInt(process.env.RAG_CHUNK_OVERLAP, 10)
+        : 200;
+      const textSplitter = new RecursiveCharacterTextSplitter({
+        chunkSize: chunkSize,
+        chunkOverlap: chunkOverlap,
+      });
+      const splits = await textSplitter.splitDocuments(docs);
+      // remove history
+      await PineconeStore.fromDocuments(splits, embeddings, {
+        pineconeIndex,
+        maxConcurrency: 5,
+      });
+    }
     return NextResponse.json(
       {
-        storeId: "",
+        sessionId: reqBody.sessionId,
       },
       {
         status: 200,
@@ -140,7 +172,6 @@ function getOpenAIApiKey(token: string) {
   }
   return apiKey;
 }
-
 function getOpenAIBaseUrl(reqBaseUrl: string | undefined) {
   const serverConfig = getServerSideConfig();
   let baseUrl = "https://api.openai.com/v1";
@@ -153,7 +184,25 @@ function getOpenAIBaseUrl(reqBaseUrl: string | undefined) {
   return baseUrl;
 }
 
-export const GET = handle;
 export const POST = handle;
 
 export const runtime = "nodejs";
+export const preferredRegion = [
+  "arn1",
+  "bom1",
+  "cdg1",
+  "cle1",
+  "cpt1",
+  "dub1",
+  "fra1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "lhr1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];

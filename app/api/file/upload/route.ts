@@ -23,15 +23,13 @@ async function handle(req: NextRequest) {
     const file = formData.get("file") as File;
     const originalFileName = file?.name;
 
-    const fileReader = file.stream().getReader();
-    const fileData: number[] = [];
-
-    while (true) {
-      const { done, value } = await fileReader.read();
-      if (done) break;
-      fileData.push(...value);
+    let fileData: ArrayBuffer | undefined;
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        fileData = await value.arrayBuffer();
+      }
     }
-
+    if (!fileData) throw new Error("Get file buffer error");
     const buffer = Buffer.from(fileData);
     const fileType = path.extname(originalFileName).slice(1);
     var fileName = `${Date.now()}.${fileType}`;

@@ -18,21 +18,25 @@
   background-position: center;
   background-color: var(--second);
   display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
 
-  span {
+  .attach-file-info {
+    top: 5px;
+    width: 100%;
     position: absolute;
     font-size: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
+    font-weight: bolder;
+    text-align: center;
+    word-wrap: break-word;
+    word-break: break-all;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     line-height: 1.5;
-    top: 8px;
-    bottom: 8px;
-    left: 5px;
-    right: 10px;
-    pointer-events: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
   }
 
   .attach-file-mask {
@@ -514,6 +518,17 @@
   border: var(--border-in-light);
   position: relative;
   transition: all ease 0.3s;
+}
+
+.chat-message-item-files {
+  display: grid;
+  grid-template-columns: repeat(var(--file-count), auto);
+  grid-gap: 5px;
+}
+
+.chat-message-item-file {
+  text-decoration: none;
+  color: #aaa;
 }
 
 .chat-message-item-image {
