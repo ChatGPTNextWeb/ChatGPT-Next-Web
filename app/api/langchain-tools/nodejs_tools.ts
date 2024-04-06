@@ -7,6 +7,7 @@ import { StableDiffusionNodeWrapper } from "@/app/api/langchain-tools/stable_dif
 import { Calculator } from "langchain/tools/calculator";
 import { WebBrowser } from "langchain/tools/webbrowser";
 import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
+import { BilibiliVideoInfoTool } from "./bilibili_vid_info";
 
 export class NodeJSTool {
   private apiKey: string | undefined;
@@ -48,6 +49,7 @@ export class NodeJSTool {
     const arxivAPITool = new ArxivAPIWrapper();
     const wolframAlphaTool = new WolframAlphaTool();
     const pdfBrowserTool = new PDFBrowser(this.model, this.embeddings);
+    const bilibiliVideoInfoTool = new BilibiliVideoInfoTool();
     let tools = [
       calculatorTool,
       webBrowserTool,
@@ -56,6 +58,7 @@ export class NodeJSTool {
       arxivAPITool,
       wolframAlphaTool,
       pdfBrowserTool,
+      bilibiliVideoInfoTool,
     ];
     return tools;
   }

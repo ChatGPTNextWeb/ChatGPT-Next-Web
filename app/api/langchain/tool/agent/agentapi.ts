@@ -293,9 +293,11 @@ export class AgentApi {
 
       const tools = [];
 
+      // configure the right tool for web searching
       if (useTools.includes("web-search")) tools.push(searchTool);
       // console.log(customTools);
 
+      // include tools included in this project
       customTools.forEach((customTool) => {
         if (customTool) {
           if (useTools.includes(customTool.name)) {
@@ -304,6 +306,7 @@ export class AgentApi {
         }
       });
 
+      // include tools from Langchain community
       useTools.forEach((toolName) => {
         if (toolName) {
           var tool = langchainTools[
