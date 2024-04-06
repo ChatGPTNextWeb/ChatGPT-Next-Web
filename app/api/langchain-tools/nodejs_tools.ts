@@ -8,6 +8,7 @@ import { Calculator } from "langchain/tools/calculator";
 import { WebBrowser } from "langchain/tools/webbrowser";
 import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
 import { BilibiliVideoInfoTool } from "./bilibili_vid_info";
+import { BilibiliVideoSearchTool } from "./bilibili_vid_search";
 
 export class NodeJSTool {
   private apiKey: string | undefined;
@@ -50,6 +51,7 @@ export class NodeJSTool {
     const wolframAlphaTool = new WolframAlphaTool();
     const pdfBrowserTool = new PDFBrowser(this.model, this.embeddings);
     const bilibiliVideoInfoTool = new BilibiliVideoInfoTool();
+    const bilibiliVideoSearchTool = new BilibiliVideoSearchTool();
     let tools = [
       calculatorTool,
       webBrowserTool,
@@ -59,6 +61,7 @@ export class NodeJSTool {
       wolframAlphaTool,
       pdfBrowserTool,
       bilibiliVideoInfoTool,
+      bilibiliVideoSearchTool,
     ];
     return tools;
   }

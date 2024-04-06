@@ -38,6 +38,7 @@
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",
     "langchain": "0.1.20",
+    "md5": "^2.3.0",
     "mermaid": "^10.6.1",
     "nanoid": "^5.0.3",
     "next": "^13.4.9",
@@ -54,6 +55,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.59.2",
+    "sharp": "^0.33.3",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.4",
     "zustand": "^4.3.8"
@@ -61,6 +63,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "1.5.11",
     "@types/html-to-text": "^9.0.1",
+    "@types/md5": "^2.3.5",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.7",
