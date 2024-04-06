@@ -53,6 +53,16 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     onlyNodeRuntime: true,
   },
   {
+    name: "Bilibili听歌识曲",
+    toolName: "bilibili_music_recognition",
+    lang: "cn",
+    description: "通过Bilibili视频ID进行听歌识曲识别。",
+    builtin: true,
+    createdAt: 1712394126000,
+    enable: true,
+    onlyNodeRuntime: true,
+  },
+  {
     name: "维基百科",
     toolName: "WikipediaQueryRun",
     lang: "cn",
