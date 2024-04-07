@@ -72,11 +72,11 @@ if (mode !== "export") {
       {
 
         source: "/api/proxy/google/:path*",
-        destination: "api.laodongai.com/:path*",
+        destination: "https://api.laodongai.com/:path*",
       },
       {
         source: "/api/proxy/openai/:path*",
-        destination: "api.laodongai.com/:path*",
+        destination: "https://api.laodongai.com/:path*",
 
       },
       {
