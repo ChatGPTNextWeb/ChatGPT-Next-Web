@@ -64,6 +64,7 @@ jobs:
             echo "${{ secrets.DOCKER_ENV }}" > .env
             # 测试分支,
             echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" >> .env
+            echo "NEXTAUTH_URL=https://chat-t.xiaosi.cc" >> .env
             sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             sed -i 's|23000:|23001:|g' docker-compose.yml

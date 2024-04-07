@@ -8,6 +8,7 @@ yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-
 yarn install
 yarn run build
 
+npx prisma generate # 自动下载匹配的客户端依赖
 mkdir -p "./node_modules/tiktoken"
 #export OUT_DIR="out"
 
