@@ -1,4 +1,3 @@
-import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
 import { getServerSideConfig } from "@/app/config/server";
 import {
   ANTHROPIC_BASE_URL,
@@ -6,12 +5,10 @@ import {
   ApiPath,
   DEFAULT_MODELS,
   ModelProvider,
-  OpenaiPath,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
-import { requestOpenai } from "../../common";
 import { collectModelTable } from "@/app/utils/model";
 
 const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
@@ -121,7 +118,7 @@ export async function request(req: NextRequest) {
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
-      // "Cache-Control": "no-store",
+      "Cache-Control": "no-store",
       [authHeaderName]: authValue,
       "anthropic-version":
         req.headers.get("anthropic-version") ||
@@ -136,7 +133,7 @@ export async function request(req: NextRequest) {
     signal: controller.signal,
   };
 
-  // #1815 try to refuse gpt4 request
+  // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
       const modelTable = collectModelTable(
@@ -161,7 +158,7 @@ export async function request(req: NextRequest) {
         );
       }
     } catch (e) {
-      console.error("[OpenAI] gpt4 filter", e);
+      console.error(`[Anthropic] filter`, e);
     }
   }
   console.log("[Anthropic request]", fetchOptions.headers, req.method);
@@ -180,12 +177,6 @@ export async function request(req: NextRequest) {
     newHeaders.delete("www-authenticate");
     // to disable nginx buffering
     newHeaders.set("X-Accel-Buffering", "no");
-
-    // The latest version of the OpenAI API forced the content-encoding to be "br" in json response
-    // So if the streaming is disabled, we need to remove the content-encoding header
-    // Because Vercel uses gzip to compress the response, if we don't remove the content-encoding header
-    // The browser will try to decode the response with brotli and fail
-    newHeaders.delete("content-encoding");
 
     return new Response(res.body, {
       status: res.status,
