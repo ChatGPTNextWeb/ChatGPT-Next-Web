@@ -496,7 +496,6 @@ export const useChatStore = createPersistStore(
           tokenCount += estimateTokenLength(getMessageTextContent(msg));
           reversedRecentMessages.push(msg);
         }
-
         // concat all messages
         const recentMessages = [
           ...systemPrompts,
