@@ -44,23 +44,6 @@ export default async function middleware(req: NextRequest) {
         );
     }
 
-    // if (req.method == 'POST' && (path.startsWith("/api/openai/") || path.startsWith("/api/midjourney"))) {
-    //     // 重写header，添加用户名
-    //     // console.log(session,'========')
-    //     const requestHeaders = new Headers(req.headers)
-    //
-    //     // 使用 encodeURIComponent 对特殊字符进行编码
-    //     // 将编码的 URI 组件转换成 Base64
-    //     const encodeName = Buffer.from(encodeURIComponent(`${session?.name}`)).toString('base64');
-    //
-    //     requestHeaders.set('x-request-name', encodeName)
-    //     return NextResponse.next({
-    //         request: {
-    //             // New request headers
-    //             headers: requestHeaders,
-    //         },
-    //     })
-    // }
 
     return NextResponse.next()
 }
@@ -72,3 +55,5 @@ export const config = {
         "/((?!api/logs/|api/auth/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)",
     ],
 };
+
+// 发现中间件在边缘网络中才生效，自己部署的docker不行
