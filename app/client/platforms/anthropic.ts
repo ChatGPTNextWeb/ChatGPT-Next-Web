@@ -189,8 +189,6 @@ export class ClaudeApi implements LLMApi {
         "anthropic-version": accessStore.anthropicApiVersion,
         Authorization: getAuthKey(accessStore.anthropicApiKey),
       },
-      // mode: (!clientConfig?.isApp && pathObj.hostname === location.hostname ? "same-origin" : "cors") as RequestMode,
-      // mode: "no-cors" as RequestMode,
       credentials: "include" as RequestCredentials,
     };
 
@@ -309,43 +307,43 @@ export class ClaudeApi implements LLMApi {
     };
   }
   async models() {
-    const provider = {
-      id: "anthropic",
-      providerName: "Anthropic",
-      providerType: "anthropic",
-    };
+    // const provider = {
+    //   id: "anthropic",
+    //   providerName: "Anthropic",
+    //   providerType: "anthropic",
+    // };
 
     return [
-      {
-        name: "claude-instant-1.2",
-        available: true,
-        provider,
-      },
-      {
-        name: "claude-2.0",
-        available: true,
-        provider,
-      },
-      {
-        name: "claude-2.1",
-        available: true,
-        provider,
-      },
-      {
-        name: "claude-3-opus-20240229",
-        available: true,
-        provider,
-      },
-      {
-        name: "claude-3-sonnet-20240229",
-        available: true,
-        provider,
-      },
-      {
-        name: "claude-3-haiku-20240307",
-        available: true,
-        provider,
-      },
+      // {
+      //   name: "claude-instant-1.2",
+      //   available: true,
+      //   provider,
+      // },
+      // {
+      //   name: "claude-2.0",
+      //   available: true,
+      //   provider,
+      // },
+      // {
+      //   name: "claude-2.1",
+      //   available: true,
+      //   provider,
+      // },
+      // {
+      //   name: "claude-3-opus-20240229",
+      //   available: true,
+      //   provider,
+      // },
+      // {
+      //   name: "claude-3-sonnet-20240229",
+      //   available: true,
+      //   provider,
+      // },
+      // {
+      //   name: "claude-3-haiku-20240307",
+      //   available: true,
+      //   provider,
+      // },
     ];
   }
   path(path: string): string {
