@@ -301,7 +301,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "claude-instant-1",
+    name: "claude-instant-1.2",
     available: true,
     provider: {
       id: "anthropic",
@@ -310,7 +310,16 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "claude-2",
+    name: "claude-2.0",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
+  },
+  {
+    name: "claude-2.1",
     available: true,
     provider: {
       id: "anthropic",

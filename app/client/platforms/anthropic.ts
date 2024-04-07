@@ -3,7 +3,7 @@ import { ChatOptions, LLMApi, MultimodalContent } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
-import { MessageRole, RequestMessage } from "@/app/typing";
+import { RequestMessage } from "@/app/typing";
 import {
   EventStreamContentType,
   fetchEventSource,
@@ -237,45 +237,53 @@ export class ClaudeApi implements LLMApi {
 
     const shouldStream = !!options.config.stream;
 
-    const prompt = options.messages.map((v) => {
-      const { role, content } = v;
-      const insideRole = ClaudeMapper[role] ?? "user";
+    const prompt = options.messages
+      .filter((v) => {
+        if (!v.content) return false;
+        if (typeof v.content === "string" && !v.content.trim()) return false;
+        return true;
+      })
+      .map((v) => {
+        const { role, content } = v;
+        const insideRole = ClaudeMapper[role] ?? "user";
 
-      if (!visionModel || typeof content === "string") {
+        if (!visionModel || typeof content === "string") {
+          return {
+            role: insideRole,
+            content: getMessageTextContent(v),
+          };
+        }
         return {
           role: insideRole,
-          content: getMessageTextContent(v),
+          content: content
+            .filter((v) => v.image_url || v.text)
+            .map(({ type, text, image_url }) => {
+              if (type === "text") {
+                return {
+                  type,
+                  text: text!,
+                };
+              }
+              const { url = "" } = image_url || {};
+              const colonIndex = url.indexOf(":");
+              const semicolonIndex = url.indexOf(";");
+              const comma = url.indexOf(",");
+
+              const mimeType = url.slice(colonIndex + 1, semicolonIndex);
+              const encodeType = url.slice(semicolonIndex + 1, comma);
+              const data = url.slice(comma + 1);
+
+              return {
+                type: "image" as const,
+                source: {
+                  type: encodeType,
+                  media_type: mimeType,
+                  data,
+                },
+              };
+            }),
         };
-      }
-      return {
-        role: insideRole,
-        content: content.map(({ type, text, image_url }) => {
-          if (type === "text") {
-            return {
-              type,
-              text: text!,
-            };
-          }
-          const { url = "" } = image_url || {};
-          const colonIndex = url.indexOf(":");
-          const semicolonIndex = url.indexOf(";");
-          const comma = url.indexOf(",");
-
-          const mimeType = url.slice(colonIndex + 1, semicolonIndex);
-          const encodeType = url.slice(semicolonIndex + 1, comma);
-          const data = url.slice(comma + 1);
-
-          return {
-            type: "image" as const,
-            source: {
-              type: encodeType,
-              media_type: mimeType,
-              data,
-            },
-          };
-        }),
-      };
-    });
+      });
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -372,19 +380,30 @@ export class ClaudeApi implements LLMApi {
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]" || context.finished) {
+            let chunkJson:
+              | undefined
+              | {
+                  type: "content_block_delta" | "content_block_stop";
+                  delta?: {
+                    type: "text_delta";
+                    text: string;
+                  };
+                  index: number;
+                };
+            try {
+              chunkJson = JSON.parse(msg.data);
+            } catch (e) {
+              console.error("[Response] parse error", msg.data);
+            }
+
+            if (!chunkJson || chunkJson.type === "content_block_stop") {
               return finish();
             }
-            const chunk = msg.data;
-            try {
-              const chunkJson = JSON.parse(chunk) as ChatStreamResponse;
-              const delta = chunkJson.completion;
-              if (delta) {
-                context.text += delta;
-                options.onUpdate?.(context.text, delta);
-              }
-            } catch (e) {
-              console.error("[Request] parse error", chunk, msg);
+
+            const { delta } = chunkJson;
+            if (delta?.text) {
+              context.text += delta.text;
+              options.onUpdate?.(context.text, delta.text);
             }
           },
           onclose() {
@@ -430,12 +449,17 @@ export class ClaudeApi implements LLMApi {
 
     return [
       {
-        name: "claude-instant-1",
+        name: "claude-instant-1.2",
         available: true,
         provider,
       },
       {
-        name: "claude-2",
+        name: "claude-2.0",
+        available: true,
+        provider,
+      },
+      {
+        name: "claude-2.1",
         available: true,
         provider,
       },
