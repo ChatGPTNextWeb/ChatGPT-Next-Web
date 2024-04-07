@@ -1,9 +1,10 @@
 import webpack from "webpack";
-// import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
-const mode = process.env.BUILD_MODE ?? "standalone";
+// const mode = process.env.BUILD_MODE ?? "standalone";
+const mode = null;
 console.log("[Next] build mode", mode);
-
-const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
+//
+// const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
+const disableChunk = true;
 console.log("[Next] build with chunk: ", disableChunk);
 
 /** @type {import('next').NextConfig} */
@@ -23,22 +24,6 @@ const nextConfig = {
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       )
     }
-    // turn off static file serving of WASM files
-    // we need to let Webpack handle WASM import
-    // config.module.rules
-    //   .find((i) => "oneOf" in i)
-    //   .oneOf.find((i) => i.type === "asset/resource")
-    //   .exclude.push(/\.wasm$/);
-    // config.plugins.push(
-    //     new CopyPlugin({
-    //       patterns: [
-    //         {
-    //           from: ".//node_modules/tiktoken/,
-    //           to: "",
-    //         }
-    //       ]
-    //     })
-    // )
 
     config.optimization.minimize = true
     config.optimization.splitChunks = {
@@ -58,7 +43,9 @@ const nextConfig = {
 
     return config;
   },
-  output: mode,
+  // 非常重要的配置，切换运行方式
+  // output: mode,
+
   // 不影响public，https://www.nextjs.cn/docs/api-reference/next.config.js/cdn-support-with-asset-prefix
   // assetPrefix: isProd ? "https://cos.xiaosi.cc" : "",
   images: {
