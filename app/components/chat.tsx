@@ -1363,7 +1363,7 @@ function _Chat() {
       ...(await new Promise<FileInfo[]>((res, rej) => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
-        fileInput.accept = ".pdf,.txt,.json,.csv,.md";
+        fileInput.accept = ".pdf,.txt,.md,.json,.csv,.docx,.srt,.mp3";
         fileInput.multiple = true;
         fileInput.onchange = (event: any) => {
           setUploading(true);
