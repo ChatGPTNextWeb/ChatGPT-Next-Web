@@ -25,7 +25,7 @@
 > [!WARNING]
 > 本项目插件功能基于 [OpenAI API 函数调用](https://platform.openai.com/docs/guides/function-calling) 功能实现，转发 GitHub Copilot 接口或类似实现的模拟接口并不能正常调用插件功能！
 
-![cover](./docs/images/gpt-vision-example.jpg)
+![cover](./docs/images/rag-example.jpg)
 
 ![plugin-example](./docs/images/plugin-example.png)
 
@@ -34,6 +34,9 @@
 ![dall-e-plugin](./docs/images/dalle-plugin-example.png)
 
 ## 主要功能
+
+- RAG 功能 （预览）
+  - 配置请参考文档[RAG 功能配置说明](./docs/rag-cn.md)
 
 - 除插件工具外，与原项目保持一致 [ChatGPT-Next-Web 主要功能](https://github.com/Yidadaa/ChatGPT-Next-Web#主要功能)
 
@@ -142,7 +145,7 @@
 
 - [x] 支持语音输入 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/208
 
-- [ ] 支持其他类型文件上传 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/77
+- [x] 支持其他类型文件上传 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/77
 
 - [ ] 支持 Azure Storage https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/217
 
@@ -295,11 +298,9 @@ docker run -d -p 3000:3000 \
 | [简体中文](./docs/synchronise-chat-logs-cn.md) | [English](./docs/synchronise-chat-logs-en.md) | [Italiano](./docs/synchronise-chat-logs-es.md) | [日本語](./docs/synchronise-chat-logs-ja.md) | [한국어](./docs/synchronise-chat-logs-ko.md)
 
 
-## 贡献者
+## Star History
 
-<a href="https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Hk-Gosuto/ChatGPT-Next-Web-LangChain" />
-</a>
+[![Star History Chart](https://api.star-history.com/svg?repos=Hk-Gosuto/ChatGPT-Next-Web-LangChain&type=Date)](https://star-history.com/#Hk-Gosuto/ChatGPT-Next-Web-LangChain&Date)
 
 ## 捐赠
 

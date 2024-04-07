@@ -20,6 +20,7 @@ import { FileInfo } from "@/app/client/platforms/utils";
 import mime from "mime";
 import LocalFileStorage from "@/app/utils/local_file_storage";
 import S3FileStorage from "@/app/utils/s3_file_storage";
+import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 
 interface RequestBody {
   sessionId: string;
@@ -80,16 +81,17 @@ async function handle(req: NextRequest) {
     const apiKey = getOpenAIApiKey(token);
     const baseUrl = getOpenAIBaseUrl(reqBody.baseUrl);
     const serverConfig = getServerSideConfig();
-    const pinecone = new Pinecone();
-    const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
+    // const pinecone = new Pinecone();
+    // const pineconeIndex = pinecone.Index(serverConfig.pineconeIndex!);
     const embeddings = new OpenAIEmbeddings(
       {
-        modelName: process.env.RAG_EMBEDDING_MODEL ?? "text-embedding-3-large",
+        modelName: serverConfig.ragEmbeddingModel,
         openAIApiKey: apiKey,
       },
       { basePath: baseUrl },
     );
-    //https://js.langchain.com/docs/integrations/vectorstores/pinecone
+    // https://js.langchain.com/docs/integrations/vectorstores/pinecone
+    // https://js.langchain.com/docs/integrations/vectorstores/qdrant
     // process files
     for (let i = 0; i < reqBody.fileInfos.length; i++) {
       const fileInfo = reqBody.fileInfos[i];
@@ -121,22 +123,33 @@ async function handle(req: NextRequest) {
         };
       });
       // split
-      const chunkSize = process.env.RAG_CHUNK_SIZE
-        ? parseInt(process.env.RAG_CHUNK_SIZE, 10)
+      const chunkSize = serverConfig.ragChunkSize
+        ? parseInt(serverConfig.ragChunkSize, 10)
         : 2000;
-      const chunkOverlap = process.env.RAG_CHUNK_OVERLAP
-        ? parseInt(process.env.RAG_CHUNK_OVERLAP, 10)
+      const chunkOverlap = serverConfig.ragChunkOverlap
+        ? parseInt(serverConfig.ragChunkOverlap, 10)
         : 200;
       const textSplitter = new RecursiveCharacterTextSplitter({
         chunkSize: chunkSize,
         chunkOverlap: chunkOverlap,
       });
       const splits = await textSplitter.splitDocuments(docs);
-      // remove history
-      await PineconeStore.fromDocuments(splits, embeddings, {
-        pineconeIndex,
-        maxConcurrency: 5,
-      });
+      const vectorStore = await QdrantVectorStore.fromDocuments(
+        splits,
+        embeddings,
+        {
+          url: process.env.QDRANT_URL,
+          apiKey: process.env.QDRANT_API_KEY,
+          collectionName: reqBody.sessionId,
+        },
+      );
+      // await PineconeStore.fromDocuments(splits, embeddings, {
+      //   pineconeIndex,
+      //   maxConcurrency: 5,
+      // });
+      // const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+      //   pineconeIndex,
+      // });
     }
     return NextResponse.json(
       {

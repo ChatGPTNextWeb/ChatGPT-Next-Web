@@ -509,14 +509,13 @@ export function ChatActions(props: {
   const [showUploadImage, setShowUploadImage] = useState(false);
 
   const [showUploadFile, setShowUploadFile] = useState(false);
+  const accessStore = useAccessStore();
 
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
-    const serverConfig = getServerSideConfig();
-    setShowUploadFile(
-      serverConfig.isEnableRAG && !show && isSupportRAGModel(currentModel),
-    );
+    const isEnableRAG = !!process.env.NEXT_PUBLIC_ENABLE_RAG;
+    setShowUploadFile(isEnableRAG && !show && isSupportRAGModel(currentModel));
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
@@ -1039,7 +1038,9 @@ function _Chat() {
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(textContent, images, userMessage.fileInfos)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 

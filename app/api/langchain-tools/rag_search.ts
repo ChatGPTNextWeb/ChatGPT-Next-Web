@@ -7,6 +7,8 @@ import { RunnableSequence } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
+import { getServerSideConfig } from "@/app/config/server";
+import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 
 export class RAGSearch extends Tool {
   static lc_name() {
@@ -34,21 +36,32 @@ export class RAGSearch extends Tool {
 
   /** @ignore */
   async _call(inputs: string, runManager?: CallbackManagerForToolRun) {
-    const pinecone = new Pinecone();
-    const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
-    const vectorStore = await PineconeStore.fromExistingIndex(this.embeddings, {
-      pineconeIndex,
-    });
+    const serverConfig = getServerSideConfig();
+    // const pinecone = new Pinecone();
+    // const pineconeIndex = pinecone.Index(serverConfig.pineconeIndex!);
+    // const vectorStore = await PineconeStore.fromExistingIndex(this.embeddings, {
+    //   pineconeIndex,
+    // });
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(
+      this.embeddings,
+      {
+        url: process.env.QDRANT_URL,
+        apiKey: process.env.QDRANT_API_KEY,
+        collectionName: this.sessionId,
+      },
+    );
 
     let context;
-    const returnCunt = process.env.RAG_RETURN_COUNT
-      ? parseInt(process.env.RAG_RETURN_COUNT, 10)
+    const returnCunt = serverConfig.ragReturnCount
+      ? parseInt(serverConfig.ragReturnCount, 10)
       : 4;
-    const results = await vectorStore.similaritySearch(inputs, returnCunt, {
-      sessionId: this.sessionId,
-    });
+    console.log("[rag-search]", { inputs, returnCunt });
+    // const results = await vectorStore.similaritySearch(inputs, returnCunt, {
+    //   sessionId: this.sessionId,
+    // });
+    const results = await vectorStore.similaritySearch(inputs, returnCunt);
     context = formatDocumentsAsString(results);
-    console.log("[rag-search]", context);
+    console.log("[rag-search]", { context });
     return context;
     // const input = `Text:${context}\n\nQuestion:${inputs}\n\nI need you to answer the question based on the text.`;
 

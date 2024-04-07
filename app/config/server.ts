@@ -113,5 +113,10 @@ export const getServerSideConfig = () => {
       !process.env.S3_ENDPOINT,
 
     isEnableRAG: !!process.env.NEXT_PUBLIC_ENABLE_RAG,
+    ragEmbeddingModel:
+      process.env.RAG_EMBEDDING_MODEL ?? "text-embedding-3-large",
+    ragChunkSize: process.env.RAG_CHUNK_SIZE ?? "2000",
+    ragChunkOverlap: process.env.RAG_CHUNK_OVERLAP ?? "200",
+    ragReturnCount: process.env.RAG_RETURN_COUNT ?? "4",
   };
 };

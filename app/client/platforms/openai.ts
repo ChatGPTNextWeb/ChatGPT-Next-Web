@@ -363,7 +363,7 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
-  async createRAGSore(options: CreateRAGStoreOptions): Promise<void> {
+  async createRAGStore(options: CreateRAGStoreOptions): Promise<void> {
     try {
       const accessStore = useAccessStore.getState();
       const isAzure = accessStore.provider === ServiceProvider.Azure;
@@ -373,7 +373,7 @@ export class ChatGPTApi implements LLMApi {
         fileInfos: options.fileInfos,
         baseUrl: baseUrl,
       };
-      console.log("[Request] openai payload: ", requestPayload);
+      console.log("[Request] rag store payload: ", requestPayload);
       const controller = new AbortController();
       options.onController?.(controller);
       let path = "/api/langchain/rag/store";
