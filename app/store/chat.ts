@@ -287,7 +287,7 @@ export const useChatStore = createPersistStore(
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
-        get().summarizeSession();
+        // get().summarizeSession();
       },
 
       async onUserInput(content: string, attachImages?: string[]) {
@@ -348,6 +348,8 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
+        } else if (modelConfig.model.startsWith("claude")) {
+          api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -533,6 +535,8 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
+        } else if (modelConfig.model.startsWith("claude")) {
+          api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
