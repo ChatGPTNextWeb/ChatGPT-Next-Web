@@ -8,11 +8,9 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-
 export const DEFAULT_API_HOST = "https://api.laodongai.com/";
 export const OPENAI_BASE_URL = "https://api.laodongai.com/";
 export const GEMINI_BASE_URL = "https://api.laodongai.com/";
-
 
 export enum Path {
   Home = "/",
@@ -129,55 +127,6 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4-online",
-    available: true,
-  },
-  {
-    name: "gpt-4-0314",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-4-0613",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-4-32k",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-4-32k-0613",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
     name: "gpt-4-turbo-preview",
     available: true,
     provider: {
@@ -187,16 +136,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4-1106-preview",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-4-0125-preview",
+    name: "gpt-4-all",
     available: true,
     provider: {
       id: "openai",
@@ -232,51 +172,6 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-3.5-turbo-0613",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-3.5-turbo-1106",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-3.5-turbo-16k",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-3.5-turbo-16k-0613",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
     name: "gemini-pro",
     available: true,
     provider: {
@@ -293,58 +188,6 @@ export const DEFAULT_MODELS = [
       providerName: "Google",
       providerType: "google",
     },
-  },
-  {
-    name: "gpt-3.5-turbo-1106",
-    available: true,
-  },
-  {
-    name: "gpt-4-1106-preview",
-    available: true,
-  },
-  {
-    name: "gpt-4-all",
-    available: true,
-  },
-  {
-    name: "gpt-4-dalle",
-    available: true,
-  },
-  {
-    name: "gpt-4-v",
-    available: true,
-  },
-  {
-    name: "gpt-4-vision-preview",
-    available: true,
-  },
-  {
-    name: "net-gpt-4",
-    available: true,
-  },
-  {
-    name: "net-gpt-3.5",
-    available: true,
-  },
-  {
-    name: "ERNIE-Bot-4",
-    available: true,
-  },
-  {
-    name: "claude-2",
-    available: true,
-  },
-  {
-    name: "claude-2-100k",
-    available: true,
-  },
-  {
-    name: "dall-e-3",
-    available: true,
-  },
-  {
-    name: "SparkDesk",
-    available: true,
   },
 ] as const;
 
