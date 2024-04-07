@@ -25,8 +25,8 @@ coverage
 .grunt
 
 # Node.js dependencies
-/node_modules
-/jspm_packages
+#/node_modules
+#/jspm_packages
 
 # TypeScript v1 declaration files
 typings
@@ -54,7 +54,7 @@ typings
 .env*.local
 
 # Next.js build output
-.next
+#.next
 # out
 
 # Nuxt.js build output
@@ -63,7 +63,7 @@ dist
 
 # Gatsby files
 .cache/
-
+.next/cache/
 
 # Vuepress build output
 .vuepress/dist
@@ -97,4 +97,4 @@ Thumbs.db
 *.key.pub
 
 # node
-node_modules
+#node_modules

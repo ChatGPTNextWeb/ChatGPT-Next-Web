@@ -618,7 +618,9 @@ export default function UserByMap() {
       setTimeout(() => myChart.resize(), 200);
     };
     try {
-      loadEcharts();
+      if (typeof window.initMap != undefined) {
+        loadEcharts();
+      }
     } catch (e) {
       console.log("[loadEcharts] 地图加载失败", e);
     }

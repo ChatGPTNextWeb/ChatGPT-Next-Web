@@ -1,6 +1,6 @@
 import webpack from "webpack";
 // const mode = process.env.BUILD_MODE ?? "standalone";
-const mode = null;
+const mode = "export";
 console.log("[Next] build mode", mode);
 //
 // const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
