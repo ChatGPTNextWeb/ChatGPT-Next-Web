@@ -80,7 +80,7 @@ export const preferredRegion = [
 
 const serverConfig = getServerSideConfig();
 
-export async function request(req: NextRequest) {
+async function request(req: NextRequest) {
   const controller = new AbortController();
 
   let authHeaderName = "x-api-key";
