@@ -2,6 +2,7 @@ import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import {
   AgentChatOptions,
   ChatOptions,
+  CreateRAGStoreOptions,
   getHeaders,
   LLMApi,
   LLMModel,
@@ -19,6 +20,9 @@ import {
 } from "@/app/utils";
 
 export class GeminiProApi implements LLMApi {
+  createRAGStore(options: CreateRAGStoreOptions): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }

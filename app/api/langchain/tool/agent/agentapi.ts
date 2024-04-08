@@ -44,6 +44,7 @@ export interface RequestMessage {
 }
 
 export interface RequestBody {
+  chatSessionId: string;
   messages: RequestMessage[];
   isAzure: boolean;
   azureApiVersion?: string;

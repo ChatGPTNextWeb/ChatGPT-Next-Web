@@ -44,6 +44,13 @@ async function handle(req: NextRequest) {
       },
       { basePath: baseUrl },
     );
+    const ragEmbeddings = new OpenAIEmbeddings(
+      {
+        modelName: process.env.RAG_EMBEDDING_MODEL ?? "text-embedding-3-large",
+        openAIApiKey: apiKey,
+      },
+      { basePath: baseUrl },
+    );
 
     var dalleCallback = async (data: string) => {
       var response = new ResponseBody();
@@ -62,6 +69,8 @@ async function handle(req: NextRequest) {
       baseUrl,
       model,
       embeddings,
+      reqBody.chatSessionId,
+      ragEmbeddings,
       dalleCallback,
     );
     var nodejsTools = await nodejsTool.getCustomTools();

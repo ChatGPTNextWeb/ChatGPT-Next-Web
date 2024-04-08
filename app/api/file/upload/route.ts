@@ -4,6 +4,7 @@ import { auth } from "@/app/api/auth";
 import LocalFileStorage from "@/app/utils/local_file_storage";
 import { getServerSideConfig } from "@/app/config/server";
 import S3FileStorage from "@/app/utils/s3_file_storage";
+import path from "path";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
@@ -19,20 +20,14 @@ async function handle(req: NextRequest) {
 
   try {
     const formData = await req.formData();
-    const image = formData.get("file") as File;
+    const file = formData.get("file") as File;
+    const fileData = await file.arrayBuffer();
+    const originalFileName = file?.name;
 
-    const imageReader = image.stream().getReader();
-    const imageData: number[] = [];
-
-    while (true) {
-      const { done, value } = await imageReader.read();
-      if (done) break;
-      imageData.push(...value);
-    }
-
-    const buffer = Buffer.from(imageData);
-
-    var fileName = `${Date.now()}.png`;
+    if (!fileData) throw new Error("Get file buffer error");
+    const buffer = Buffer.from(fileData);
+    const fileType = path.extname(originalFileName).slice(1);
+    var fileName = `${Date.now()}.${fileType}`;
     var filePath = "";
     const serverConfig = getServerSideConfig();
     if (serverConfig.isStoreFileToLocal) {

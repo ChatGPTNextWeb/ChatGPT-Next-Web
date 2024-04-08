@@ -12,6 +12,7 @@ import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import {
   AgentChatOptions,
   ChatOptions,
+  CreateRAGStoreOptions,
   getHeaders,
   LLMApi,
   LLMModel,
@@ -362,6 +363,34 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
+  async createRAGStore(options: CreateRAGStoreOptions): Promise<void> {
+    try {
+      const accessStore = useAccessStore.getState();
+      const isAzure = accessStore.provider === ServiceProvider.Azure;
+      let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+      const requestPayload = {
+        sessionId: options.chatSessionId,
+        fileInfos: options.fileInfos,
+        baseUrl: baseUrl,
+      };
+      console.log("[Request] rag store payload: ", requestPayload);
+      const controller = new AbortController();
+      options.onController?.(controller);
+      let path = "/api/langchain/rag/store";
+      const chatPayload = {
+        method: "POST",
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
+        headers: getHeaders(),
+      };
+      const res = await fetch(path, chatPayload);
+      if (res.status !== 200) throw new Error(await res.text());
+    } catch (e) {
+      console.log("[Request] failed to make a chat reqeust", e);
+      options.onError?.(e as Error);
+    }
+  }
+
   async toolAgentChat(options: AgentChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,
@@ -379,6 +408,7 @@ export class ChatGPTApi implements LLMApi {
     const isAzure = accessStore.provider === ServiceProvider.Azure;
     let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
     const requestPayload = {
+      chatSessionId: options.chatSessionId,
       messages,
       isAzure,
       azureApiVersion: accessStore.azureApiVersion,

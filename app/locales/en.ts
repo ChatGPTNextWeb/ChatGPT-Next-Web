@@ -70,6 +70,7 @@ const en: LocaleType = {
       EnablePlugins: "Enable Plugins",
       DisablePlugins: "Disable Plugins",
       UploadImage: "Upload Images",
+      UploadFle: "Upload Files",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",

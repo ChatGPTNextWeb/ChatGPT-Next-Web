@@ -10,16 +10,15 @@ import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
 import { BilibiliVideoInfoTool } from "./bilibili_vid_info";
 import { BilibiliVideoSearchTool } from "./bilibili_vid_search";
 import { BilibiliMusicRecognitionTool } from "./bilibili_music_recognition";
+import { RAGSearch } from "./rag_search";
 
 export class NodeJSTool {
   private apiKey: string | undefined;
-
   private baseUrl: string;
-
   private model: BaseLanguageModel;
-
   private embeddings: Embeddings;
-
+  private sessionId: string;
+  private ragEmbeddings: Embeddings;
   private callback?: (data: string) => Promise<void>;
 
   constructor(
@@ -27,12 +26,16 @@ export class NodeJSTool {
     baseUrl: string,
     model: BaseLanguageModel,
     embeddings: Embeddings,
+    sessionId: string,
+    ragEmbeddings: Embeddings,
     callback?: (data: string) => Promise<void>,
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
     this.model = model;
     this.embeddings = embeddings;
+    this.sessionId = sessionId;
+    this.ragEmbeddings = ragEmbeddings;
     this.callback = callback;
   }
 
@@ -66,6 +69,9 @@ export class NodeJSTool {
       bilibiliVideoSearchTool,
       bilibiliMusicRecognitionTool,
     ];
+    if (!!process.env.ENABLE_RAG) {
+      tools.push(new RAGSearch(this.sessionId, this.model, this.ragEmbeddings));
+    }
     return tools;
   }
 }

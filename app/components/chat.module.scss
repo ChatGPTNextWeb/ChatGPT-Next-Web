@@ -1,5 +1,69 @@
 @import "../styles/animation.scss";
 
+.attach-files {
+  position: absolute;
+  left: 30px;
+  bottom: 32px;
+  display: flex;
+}
+
+.attach-file {
+  cursor: default;
+  width: 64px;
+  height: 64px;
+  border: rgba($color: #888, $alpha: 0.2) 1px solid;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--second);
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+
+  .attach-file-info {
+    top: 5px;
+    width: 100%;
+    position: absolute;
+    font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    word-wrap: break-word;
+    word-break: break-all;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+  }
+
+  .attach-file-mask {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all ease 0.2s;
+    z-index: 999;
+  }
+
+  .attach-file-mask:hover {
+    opacity: 1;
+  }
+
+  .delete-file {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    float: right;
+    background-color: var(--white);
+  }
+}
+
 .attach-images {
   position: absolute;
   left: 30px;
@@ -232,10 +296,12 @@
 
   animation: slide-in ease 0.3s;
 
-  $linear: linear-gradient(to right,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 1),
-      rgba(0, 0, 0, 0));
+  $linear: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0)
+  );
   mask-image: $linear;
 
   @mixin show {
@@ -368,7 +434,7 @@
   }
 }
 
-.chat-message-user>.chat-message-container {
+.chat-message-user > .chat-message-container {
   align-items: flex-end;
 }
 
@@ -454,6 +520,17 @@
   transition: all ease 0.3s;
 }
 
+.chat-message-item-files {
+  display: grid;
+  grid-template-columns: repeat(var(--file-count), auto);
+  grid-gap: 5px;
+}
+
+.chat-message-item-file {
+  text-decoration: none;
+  color: #aaa;
+}
+
 .chat-message-item-image {
   width: 100%;
   margin-top: 10px;
@@ -482,23 +559,27 @@
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
 
-
 @media only screen and (max-width: 600px) {
-  $calc-image-width: calc(100vw/3*2/var(--image-count));
+  $calc-image-width: calc(100vw / 3 * 2 / var(--image-count));
 
   .chat-message-item-image-multi {
     width: $calc-image-width;
     height: $calc-image-width;
   }
-  
+
   .chat-message-item-image {
-    max-width: calc(100vw/3*2);
+    max-width: calc(100vw / 3 * 2);
   }
 }
 
 @media screen and (min-width: 600px) {
-  $max-image-width: calc(calc(1200px - var(--sidebar-width))/3*2/var(--image-count));
-  $image-width: calc(calc(var(--window-width) - var(--sidebar-width))/3*2/var(--image-count));
+  $max-image-width: calc(
+    calc(1200px - var(--sidebar-width)) / 3 * 2 / var(--image-count)
+  );
+  $image-width: calc(
+    calc(var(--window-width) - var(--sidebar-width)) / 3 * 2 /
+      var(--image-count)
+  );
 
   .chat-message-item-image-multi {
     width: $image-width;
@@ -508,7 +589,7 @@
   }
 
   .chat-message-item-image {
-    max-width: calc(calc(1200px - var(--sidebar-width))/3*2);
+    max-width: calc(calc(1200px - var(--sidebar-width)) / 3 * 2);
   }
 }
 
@@ -526,7 +607,7 @@
   z-index: 1;
 }
 
-.chat-message-user>.chat-message-container>.chat-message-item {
+.chat-message-user > .chat-message-container > .chat-message-item {
   background-color: var(--second);
 
   &:hover {
@@ -637,7 +718,8 @@
   min-height: 68px;
 }
 
-.chat-input:focus {}
+.chat-input:focus {
+}
 
 .chat-input-send {
   background-color: var(--primary);
