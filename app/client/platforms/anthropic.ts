@@ -189,7 +189,6 @@ export class ClaudeApi implements LLMApi {
         "anthropic-version": accessStore.anthropicApiVersion,
         Authorization: getAuthKey(accessStore.anthropicApiKey),
       },
-      // credentials: "include" as RequestCredentials,
     };
 
     if (shouldStream) {
