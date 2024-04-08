@@ -102,17 +102,20 @@ const CorsHeaders = [
 const IndexHeaders = [
   { key: "Cache-Control", value: "public, max-age=86400"}
 ]
+const ForceCacheHeaders = [
+  { key: "Cache-Control", value: "max-age=2592000, s-maxage=86400"}
+]
 
 if (mode !== "export") {
   nextConfig.headers = async () => {
     return [
       {
-        source: "/api/:path*",
-        headers: CorsHeaders,
+        source: "/:path*\\.(png|ico|txt|css|js|json|webmanifest)",
+        headers: ForceCacheHeaders,
       },
       // {
-      //   source: "/",
-      //   headers: IndexHeaders,
+      //   source: "/api/:path*",
+      //   headers: CorsHeaders,
       // },
     ];
   };
