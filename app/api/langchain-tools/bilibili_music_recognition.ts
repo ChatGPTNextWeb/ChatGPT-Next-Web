@@ -36,6 +36,14 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
       // let result = await this.doAcrcloudRecognitionUsingMetaprocAPI(searchQuery);
       // parse query
       const [videoAid, pid, targetSec] = query.split(",");
+      // check if arguments are valid
+      // is videoAid a string of numbers?
+      if (!/^\d+$/.test(videoAid)) {
+        throw new Error(
+          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid using av{BVid} format using BiliVideoInfo tool.",
+        );
+      }
+
       const result = await this.doAcrcloudRecognitionUsingMetaprocAPI(
         videoAid,
         parseInt(pid),
@@ -92,6 +100,5 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     return response;
   }
 
-  description = `A tool that recognizes music in Bilibili videos using ACRCloud API. Input string is in this format: video_aid,pid,target_sec. video_aid is extracted from av{video_aid}, e.g. av170001 means video_aid=170001. pid is the page ID of the video(note: pid starts from 1, not 0). and target_sec is the time in seconds where the recognition is expected to start from.
-Trick: If you only have a BVID of the video, you can convert it to video_aid by triggering the video info API and extract the video_aid from the response, before using this tool.`;
+  description = `A tool that recognizes music in Bilibili videos using ACRCloud API. Input string is in this format: video_aid,pid,target_sec. video_aid is extracted from av{video_aid}, e.g. av170001 means video_aid=170001. pid is the page ID of the video(note: pid starts from 1, not 0). and target_sec is the time in seconds where the recognition is expected to start from. To recognize music that begins with video, use timestamp 0 or 1, which is the most useful case.`;
 }
