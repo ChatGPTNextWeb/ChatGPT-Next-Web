@@ -348,6 +348,8 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
+        } else if (modelConfig.model.startsWith("claude")) {
+          api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -494,7 +496,6 @@ export const useChatStore = createPersistStore(
           tokenCount += estimateTokenLength(getMessageTextContent(msg));
           reversedRecentMessages.push(msg);
         }
-
         // concat all messages
         const recentMessages = [
           ...systemPrompts,
@@ -533,6 +534,8 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
+        } else if (modelConfig.model.startsWith("claude")) {
+          api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
