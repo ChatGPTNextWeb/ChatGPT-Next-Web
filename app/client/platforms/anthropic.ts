@@ -356,7 +356,7 @@ export class ClaudeApi implements LLMApi {
       const isApp = !!getClientConfig()?.isApp;
 
       baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy" + ApiPath.Anthropic
+        ? DEFAULT_API_HOST + "/api/proxy/anthropic"
         : ApiPath.Anthropic;
     }
 
