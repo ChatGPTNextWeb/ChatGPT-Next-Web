@@ -37,6 +37,8 @@ export class RAGSearch extends Tool {
   /** @ignore */
   async _call(inputs: string, runManager?: CallbackManagerForToolRun) {
     const serverConfig = getServerSideConfig();
+    if (!serverConfig.isEnableRAG)
+      throw new Error("env ENABLE_RAG not configured");
     // const pinecone = new Pinecone();
     // const pineconeIndex = pinecone.Index(serverConfig.pineconeIndex!);
     // const vectorStore = await PineconeStore.fromExistingIndex(this.embeddings, {

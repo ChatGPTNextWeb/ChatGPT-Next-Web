@@ -21,14 +21,9 @@ async function handle(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
+    const fileData = await file.arrayBuffer();
     const originalFileName = file?.name;
 
-    let fileData: ArrayBuffer | undefined;
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        fileData = await value.arrayBuffer();
-      }
-    }
     if (!fileData) throw new Error("Get file buffer error");
     const buffer = Buffer.from(fileData);
     const fileType = path.extname(originalFileName).slice(1);

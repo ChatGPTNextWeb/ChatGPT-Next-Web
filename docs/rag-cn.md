@@ -41,7 +41,7 @@
 
 ## 环境变量
 
-### `NEXT_PUBLIC_ENABLE_RAG`
+### `ENABLE_RAG`
 
 如果你想启用 RAG 功能，将此环境变量设置为 1 即可。
 

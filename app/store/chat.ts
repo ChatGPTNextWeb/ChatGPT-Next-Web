@@ -374,9 +374,9 @@ export const useChatStore = createPersistStore(
           session.messages.push(savedUserMessage);
           session.messages.push(botMessage);
         });
+        const isEnableRAG = attachFiles && attachFiles?.length > 0;
         var api: ClientApi;
         api = new ClientApi(ModelProvider.GPT);
-        const isEnableRAG = !!process.env.NEXT_PUBLIC_ENABLE_RAG;
         if (
           config.pluginConfig.enable &&
           session.mask.usePlugins &&

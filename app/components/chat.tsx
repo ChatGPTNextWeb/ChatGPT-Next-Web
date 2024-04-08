@@ -117,7 +117,6 @@ import {
   SpeechApi,
   WebTranscriptionApi,
 } from "../utils/speech";
-import { getServerSideConfig } from "../config/server";
 import { FileInfo } from "../client/platforms/utils";
 
 const ttsPlayer = createTTSPlayer();
@@ -507,14 +506,18 @@ export function ChatActions(props: {
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
-
   const [showUploadFile, setShowUploadFile] = useState(false);
+
   const accessStore = useAccessStore();
+  const isEnableRAG = useMemo(
+    () => accessStore.enableRAG(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
-    const isEnableRAG = !!process.env.NEXT_PUBLIC_ENABLE_RAG;
     setShowUploadFile(isEnableRAG && !show && isSupportRAGModel(currentModel));
     if (!show) {
       props.setAttachImages([]);

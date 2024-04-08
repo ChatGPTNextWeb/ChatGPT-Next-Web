@@ -112,7 +112,7 @@ export const getServerSideConfig = () => {
       !process.env.R2_ACCOUNT_ID &&
       !process.env.S3_ENDPOINT,
 
-    isEnableRAG: !!process.env.NEXT_PUBLIC_ENABLE_RAG,
+    isEnableRAG: !!process.env.ENABLE_RAG,
     ragEmbeddingModel:
       process.env.RAG_EMBEDDING_MODEL ?? "text-embedding-3-large",
     ragChunkSize: process.env.RAG_CHUNK_SIZE ?? "2000",

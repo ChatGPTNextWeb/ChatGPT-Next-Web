@@ -56,8 +56,10 @@ export const useAccessStore = createPersistStore(
       return get().needCode;
     },
 
-    isEnableRAG() {
-      return ensure(get(), ["isEnableRAG"]);
+    enableRAG() {
+      this.fetch();
+
+      return get().isEnableRAG;
     },
 
     isValidOpenAI() {

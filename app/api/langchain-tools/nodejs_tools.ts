@@ -60,7 +60,7 @@ export class NodeJSTool {
       wolframAlphaTool,
       pdfBrowserTool,
     ];
-    if (!!process.env.NEXT_PUBLIC_ENABLE_RAG) {
+    if (!!process.env.ENABLE_RAG) {
       tools.push(new RAGSearch(this.sessionId, this.model, this.ragEmbeddings));
     }
     return tools;
