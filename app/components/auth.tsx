@@ -20,6 +20,8 @@ export function AuthPage() {
     accessStore.update((access) => {
       access.openaiApiKey = "";
       access.accessCode = "";
+      access.googleApiKey = "";
+      access.anthropicApiKey = "";
     });
   }; // Reset access code to empty string
 
@@ -72,6 +74,17 @@ export function AuthPage() {
             onChange={(e) => {
               accessStore.update(
                 (access) => (access.googleApiKey = e.currentTarget.value),
+              );
+            }}
+          />
+          <input
+            className={styles["auth-input"]}
+            type="password"
+            placeholder={Locale.Settings.Access.Anthropic.ApiKey.Placeholder}
+            value={accessStore.anthropicApiKey}
+            onChange={(e) => {
+              accessStore.update(
+                (access) => (access.anthropicApiKey = e.currentTarget.value),
               );
             }}
           />

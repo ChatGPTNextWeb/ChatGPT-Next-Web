@@ -321,7 +321,7 @@ const en: LocaleType = {
           Title: "Anthropic API Key",
           SubTitle:
             "Use a custom Anthropic Key to bypass password access restrictions",
-          Placeholder: "Anthropic API Key",
+          Placeholder: "Enter your Anthropic API Key",
         },
 
         Endpoint: {

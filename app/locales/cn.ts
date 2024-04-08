@@ -317,7 +317,7 @@ const cn = {
         ApiKey: {
           Title: "接口密钥",
           SubTitle: "使用自定义 Anthropic Key 绕过密码访问限制",
-          Placeholder: "Anthropic API Key",
+          Placeholder: "输入您的 Anthropic API 密钥",
         },
 
         Endpoint: {
