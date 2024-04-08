@@ -126,6 +126,11 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   let output = modelConfig.template ?? DEFAULT_INPUT_TEMPLATE;
 
+  // remove duplicate
+  if (input.startsWith(output)) {
+    output = "";
+  }
+
   // must contains {{input}}
   const inputVar = "{{input}}";
   if (!output.includes(inputVar)) {
