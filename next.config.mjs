@@ -107,18 +107,18 @@ const ForceCacheHeaders = [
 ]
 
 if (mode !== "export") {
-  nextConfig.headers = async () => {
-    return [
-      {
-        source: "/:path*\\.(png|ico|txt|css|js|json|webmanifest)",
-        headers: ForceCacheHeaders,
-      },
-      // {
-      //   source: "/api/:path*",
-      //   headers: CorsHeaders,
-      // },
-    ];
-  };
+  // nextConfig.headers = async () => {
+  //   return [
+  //     {
+  //       source: "/:path*\\.(png|ico|txt|css|js|json|webmanifest)",
+  //       headers: ForceCacheHeaders,
+  //     },
+  //     {
+  //       source: "/api/:path*",
+  //       headers: CorsHeaders,
+  //     },
+  //   ];
+  // };
 
   nextConfig.rewrites = async () => {
     const ret = [
