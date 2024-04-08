@@ -328,15 +328,6 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "claude-3",
-    available: true,
-    provider: {
-      id: "anthropic",
-      providerName: "Anthropic",
-      providerType: "anthropic",
-    },
-  },
-  {
     name: "claude-3-opus-20240229",
     available: true,
     provider: {
