@@ -88,33 +88,10 @@ export class BilibiliVideoInfoTool extends Tool implements RequestTool {
     );
 
     let rawData: { [key: string]: any } = await resp.json();
-    console.log("response for", prompt, "is", rawData);
+    // console.log("response for", prompt, "is", rawData);
     let data: { [key: string]: string } = {};
 
     // Keep those: bvid, aid, videos, copyright, tname, title, pubdate, desc, state(values see below), owner, argue_info
-    // state:
-    // 1	橙色通过
-    // 0	开放浏览
-    // -1	待审
-    // -2	被打回
-    // -3	网警锁定
-    // -4	被锁定	视频撞车了
-    // -5	管理员锁定
-    // -6	修复待审
-    // -7	暂缓审核
-    // -8	补档待审
-    // -9	等待转码
-    // -10	延迟审核
-    // -11	视频源待修
-    // -12	转储失败
-    // -13	允许评论待审
-    // -14	临时回收站
-    // -15	分发中
-    // -16	转码失败
-    // -20	创建未提交
-    // -30	创建已提交
-    // -40	定时发布
-    // -100	用户删除
     // convert state to string
     const stateConvertDict: { [key: string]: string } = {
       "1": "橙色通过",
