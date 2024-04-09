@@ -18,7 +18,7 @@ export default async function middleware(req: NextRequest) {
     const session = await getToken({ req });
     const isUser = await VerifiedUser(session);
     const isAdminUser = await VerifiedAdminUser(session);
-    console.log('----session', session, '---isUser', isUser, '---isAdmin', isAdminUser)
+    // console.log('----session', session, '---isUser', isUser, '---isAdmin', isAdminUser)
     // 管理员页面的api接口还是要认证的
     if (path.startsWith('/api/admin/')) {
         // 需要确认是管理员

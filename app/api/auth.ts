@@ -80,7 +80,7 @@ export function auth(
         break;
       case ModelProvider.GPT:
       default:
-        if (serverConfig.isAzure) {
+        if (isAzure) {
           systemApiKey = serverConfig.azureApiKey;
         } else {
           systemApiKey = serverConfig.apiKey;
