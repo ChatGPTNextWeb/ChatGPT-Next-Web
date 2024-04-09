@@ -62,12 +62,31 @@ export function auth(
   if (!apiKey) {
     const serverConfig = getServerSideConfig();
 
-    const systemApiKey =
-      modelProvider === ModelProvider.GeminiPro
-        ? serverConfig.googleApiKey
-        : isAzure
-          ? serverConfig.azureApiKey
-          : serverConfig.apiKey;
+    // const systemApiKey =
+    //   modelProvider === ModelProvider.GeminiPro
+    //     ? serverConfig.googleApiKey
+    //     : isAzure
+    //       ? serverConfig.azureApiKey
+    //       : serverConfig.apiKey;
+
+    let systemApiKey: string | undefined;
+
+    switch (modelProvider) {
+      case ModelProvider.GeminiPro:
+        systemApiKey = serverConfig.googleApiKey;
+        break;
+      case ModelProvider.Claude:
+        systemApiKey = serverConfig.anthropicApiKey;
+        break;
+      case ModelProvider.GPT:
+      default:
+        if (serverConfig.isAzure) {
+          systemApiKey = serverConfig.azureApiKey;
+        } else {
+          systemApiKey = serverConfig.apiKey;
+        }
+    }
+
     if (systemApiKey) {
       console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${systemApiKey}`);
