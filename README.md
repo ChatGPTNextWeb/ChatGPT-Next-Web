@@ -247,10 +247,10 @@ User `-all` to disable all default models, `+all` to enable all default models.
 
 ### `WHITE_WEBDEV_DOMAINS` (可选)
 
-如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
-- 每一个地址必须是一个完整的 origin 
+You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format：
+- Each address must be a complete origin 
 > `https://xxxx`
-- 多个地址以`,`相连
+- Multiple addresses are connected by ', '
 
 ## Requirements
 
