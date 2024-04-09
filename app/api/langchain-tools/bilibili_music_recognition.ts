@@ -63,7 +63,7 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     targetSec: number,
   ) {
     // get http://10.0.1.3:32345/api/recog_music_in_bili_video?video_aid=170001&pid=1&target_sec=14
-
+    // TODO open-source the forwarding server, and put the server address in an environment variable
     const url = `http://10.0.1.3:32345/api/recog_music_in_bili_video?video_aid=${videoAid}&pid=${pid}&target_sec=${targetSec}`;
 
     const headers = {
@@ -77,6 +77,7 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     );
 
     if (!response.ok) {
+      // unify all errors' type (string result or Error)
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
