@@ -88,11 +88,17 @@ async function handle(
         statusText: res.statusText,
       });
     }
-
-    return res;
+    // console.log('[mj res]', await res.json())
+    return NextResponse.json(await res.json(), {
+      status: res.status,
+      statusText: res.statusText,
+    });
+  } catch (e) {
+    console.log("[mj error]", e);
   } finally {
     clearTimeout(timeoutId);
   }
+  return NextResponse.json({ error: "未知错误" }, { status: 400 });
 }
 
 export const GET = handle;
