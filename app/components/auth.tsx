@@ -85,6 +85,25 @@ export function AuthPage() {
           onClick={goChat}
         />
         <IconButton
+          text={"获取自己API Key"}
+          type="primary"
+          onClick={() => {
+            window.open(
+              "https://newapi.liujiarong.top/register?aff=OUqN",
+              "_blank",
+            );
+          }}
+        />
+        <IconButton
+          text="访问免费AI助手"
+          onClick={() => {
+            window.open(
+              "https://dify.liujiarong.top/chat/OEbaF0tRFWBs6yOf",
+              "_blank",
+            );
+          }}
+        />
+        <IconButton
           text={Locale.Auth.Later}
           onClick={() => {
             resetAccessCode();
