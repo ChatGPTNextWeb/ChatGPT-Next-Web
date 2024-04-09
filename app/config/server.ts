@@ -71,6 +71,7 @@ export const getServerSideConfig = () => {
 
   // const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
+  const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
   // 需要一个函数来判断请求中模型是否为微软的。
   // 当前逻辑，gpt-4-32k模型为微软，别的不是
   // const isAzure = !!process.env.AZURE_URL;
@@ -99,6 +100,11 @@ export const getServerSideConfig = () => {
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,
     googleUrl: process.env.GOOGLE_URL,
+
+    isAnthropic,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
+    anthropicUrl: process.env.ANTHROPIC_URL,
 
     gtmId: process.env.GTM_ID,
 

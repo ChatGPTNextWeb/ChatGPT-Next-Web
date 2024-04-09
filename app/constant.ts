@@ -10,6 +10,7 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
 export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
+export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
@@ -26,6 +27,7 @@ export enum Path {
 export enum ApiPath {
   Cors = "",
   OpenAI = "/api/openai",
+  Anthropic = "/api/anthropic",
 }
 
 export enum SlotID {
@@ -68,12 +70,21 @@ export enum ServiceProvider {
   OpenAI = "OpenAI",
   Azure = "Azure",
   Google = "Google",
+  Anthropic = "Anthropic",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
+  Claude = "Claude",
 }
+
+export const Anthropic = {
+  ChatPath: "v1/messages",
+  ChatPath1: "v1/complete",
+  ExampleEndpoint: "https://api.anthropic.com",
+  Vision: "2023-06-01",
+};
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
@@ -98,12 +109,20 @@ export const Google = {
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
+// export const DEFAULT_SYSTEM_TEMPLATE = `
+// You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+// Knowledge cutoff: {{cutoff}}
+// Current model: {{model}}
+// Current time: {{time}}
+// Latex inline: $x^2$
+// Latex block: $$e=mc^2$$
+// `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
-Latex inline: $x^2$ 
+Latex inline: \(x^2\) 
 Latex block: $$e=mc^2$$
 `;
 
