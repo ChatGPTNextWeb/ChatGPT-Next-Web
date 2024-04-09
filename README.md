@@ -245,7 +245,7 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 
 User `-all` to disable all default models, `+all` to enable all default models.
 
-### `WHITE_WEBDEV_DOMAINS` (可选)
+### `WHITE_WEBDEV_ENDPOINTS` (可选)
 
 You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format：
 - Each address must be a complete origin 

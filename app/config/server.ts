@@ -79,7 +79,7 @@ export const getServerSideConfig = () => {
     `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
   );
 
-  const whiteWebDevDomains = (process.env.WHITE_WEBDEV_DOMAINS ?? "").split(
+  const whiteWebDevEndpoints = (process.env.WHITE_WEBDEV_ENDPOINTS ?? "").split(
     ",",
   );
 
@@ -116,6 +116,6 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
-    whiteWebDevDomains,
+    whiteWebDevEndpoints,
   };
 };
