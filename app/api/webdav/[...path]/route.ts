@@ -116,15 +116,10 @@ async function handle(
 
   const fetchResult = await fetch(targetUrl, fetchOptions);
 
-  console.log(
-    "[Any Proxy]",
-    targetUrl,
-    {
-      status: fetchResult.status,
-      statusText: fetchResult.statusText,
-    },
-    fetchResult,
-  );
+  console.log("[Any Proxy]", targetUrl, {
+    status: fetchResult.status,
+    statusText: fetchResult.statusText,
+  });
 
   return fetchResult;
 }
