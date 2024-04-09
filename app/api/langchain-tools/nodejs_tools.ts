@@ -11,6 +11,7 @@ import { BilibiliVideoInfoTool } from "./bilibili_vid_info";
 import { BilibiliVideoSearchTool } from "./bilibili_vid_search";
 import { BilibiliMusicRecognitionTool } from "./bilibili_music_recognition";
 import { RAGSearch } from "./rag_search";
+import { BilibiliVideoConclusionTool } from "./bilibili_vid_conclusion";
 
 export class NodeJSTool {
   private apiKey: string | undefined;
@@ -57,6 +58,7 @@ export class NodeJSTool {
     const bilibiliVideoInfoTool = new BilibiliVideoInfoTool();
     const bilibiliVideoSearchTool = new BilibiliVideoSearchTool();
     const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
+    const bilibiliVideoConclusionTool = new BilibiliVideoConclusionTool();
     let tools = [
       calculatorTool,
       webBrowserTool,
@@ -68,6 +70,7 @@ export class NodeJSTool {
       bilibiliVideoInfoTool,
       bilibiliVideoSearchTool,
       bilibiliMusicRecognitionTool,
+      bilibiliVideoConclusionTool,
     ];
     if (!!process.env.ENABLE_RAG) {
       tools.push(new RAGSearch(this.sessionId, this.model, this.ragEmbeddings));

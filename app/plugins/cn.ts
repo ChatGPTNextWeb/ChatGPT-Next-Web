@@ -63,6 +63,16 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     onlyNodeRuntime: true,
   },
   {
+    name: "Bilibili视频总结",
+    toolName: "bilibili_video_conclusion",
+    lang: "cn",
+    description: "通过Bilibili视频ID进行视频总结。",
+    builtin: true,
+    createdAt: 1712394126000,
+    enable: true,
+    onlyNodeRuntime: true,
+  },
+  {
     name: "维基百科",
     toolName: "WikipediaQueryRun",
     lang: "cn",
