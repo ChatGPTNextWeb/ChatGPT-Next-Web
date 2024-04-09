@@ -245,6 +245,13 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 
 User `-all` to disable all default models, `+all` to enable all default models.
 
+### `WHITE_WEBDEV_DOMAINS` (可选)
+
+如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+- 每一个地址必须是一个完整的 origin 
+> `https://xxxx`
+- 多个地址以`,`相连
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
