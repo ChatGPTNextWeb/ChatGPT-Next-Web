@@ -142,6 +142,13 @@ anthropic claude Api Url.
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
+### `WHITE_WEBDEV_ENDPOINTS` (可选)
+
+如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+- 每一个地址必须是一个完整的 endpoint
+> `https://xxxx/xxx`
+- 多个地址以`,`相连
+
 ### `CUSTOM_MODELS` （可选）
 
 > 示例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` 表示增加 `qwen-7b-chat` 和 `glm-6b` 到模型列表，而从列表中删除 `gpt-3.5-turbo`，并将 `gpt-4-1106-preview` 模型名字展示为 `gpt-4-turbo`。
