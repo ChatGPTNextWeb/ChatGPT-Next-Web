@@ -6,6 +6,10 @@ import { Calculator } from "langchain/tools/calculator";
 import { WebBrowser } from "langchain/tools/webbrowser";
 import { Embeddings } from "langchain/dist/embeddings/base.js";
 import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
+import { BilibiliVideoInfoTool } from "./bilibili_vid_info";
+import { BilibiliVideoSearchTool } from "./bilibili_vid_search";
+import { BilibiliVideoConclusionTool } from "./bilibili_vid_conclusion";
+import { BilibiliMusicRecognitionTool } from "./bilibili_music_recognition";
 
 export class EdgeTool {
   private apiKey: string | undefined;
@@ -46,6 +50,10 @@ export class EdgeTool {
     const stableDiffusionTool = new StableDiffusionWrapper();
     const arxivAPITool = new ArxivAPIWrapper();
     const wolframAlphaTool = new WolframAlphaTool();
+    const bilibiliVideoInfoTool = new BilibiliVideoInfoTool();
+    const bilibiliVideoSearchTool = new BilibiliVideoSearchTool();
+    const bilibiliVideoConclusionTool = new BilibiliVideoConclusionTool();
+    const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
     let tools = [
       calculatorTool,
       webBrowserTool,
@@ -53,6 +61,10 @@ export class EdgeTool {
       stableDiffusionTool,
       arxivAPITool,
       wolframAlphaTool,
+      bilibiliVideoInfoTool,
+      bilibiliVideoSearchTool,
+      bilibiliMusicRecognitionTool,
+      bilibiliVideoConclusionTool,
     ];
     return tools;
   }
