@@ -279,3 +279,5 @@ export const DISABLE_MODELS = DEFAULT_MODELS.filter(
 // console.log('========', DISABLE_MODELS)
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
+
+export const internalWhiteWebDavEndpoints = ["https://dav.jianguoyun.com"];
