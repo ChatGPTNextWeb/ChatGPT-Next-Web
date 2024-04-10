@@ -51,7 +51,7 @@ jobs:
         run: |
           yes | docker image prune
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TY_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
-          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@ty.xiaosi.cc:/data/ChatGPT-Next-Web/
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@ty.xiaosi.cc:/data/ChatGPT-Next-Web/
       - name: deploy-to-ty
         uses: appleboy/ssh-action@master
         env:
