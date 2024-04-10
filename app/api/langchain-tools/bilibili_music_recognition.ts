@@ -1,6 +1,5 @@
 import { Tool } from "@langchain/core/tools";
 import { getRandomUserAgent } from "./ua_tools";
-import { encWbi, getWbiKeys } from "./bili_wbi_tools";
 
 export interface Headers {
   [key: string]: string;
@@ -35,12 +34,24 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     try {
       // let result = await this.doAcrcloudRecognitionUsingMetaprocAPI(searchQuery);
       // parse query
-      const [videoAid, pid, targetSec] = query.split(",");
+      var [videoAid, pid, targetSec] = query.split(",");
       // check if arguments are valid
-      // is videoAid a string of numbers?
-      if (!/^\d+$/.test(videoAid)) {
+      if (!(/^\d+$/.test(videoAid) || /^av\d+$/.test(videoAid))) {
         throw new Error(
-          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid using av{BVid} format using BiliVideoInfo tool.",
+          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid using av{Aid} format using BiliVideoInfo tool.",
+        );
+      }
+      if (videoAid.startsWith("av")) videoAid = videoAid.slice(2);
+
+      if (!/^\d+$/.test(pid)) {
+        throw new Error(
+          "Invalid pid: it should be a number representing the page number of the video, starting from 1.",
+        );
+      }
+
+      if (!/^\d+$/.test(targetSec)) {
+        throw new Error(
+          "Invalid targetSec: it should be a number representing the time in seconds where the recognition is expected to start from.",
         );
       }
 
@@ -62,9 +73,13 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     pid: number,
     targetSec: number,
   ) {
-    // get http://10.0.1.3:32345/api/recog_music_in_bili_video?video_aid=170001&pid=1&target_sec=14
-    // TODO open-source the forwarding server, and put the server address in an environment variable
-    const url = `http://10.0.1.3:32345/api/recog_music_in_bili_video?video_aid=${videoAid}&pid=${pid}&target_sec=${targetSec}`;
+    if (!process.env.BILIVID_METAPROCESS_SERVER_ADDRESS) {
+      throw new Error(
+        "BILIVID_METAPROCESS_SERVER_ADDRESS environment variable is not set. Please set it to the address of the BiliVid metaprocess server.",
+      );
+    }
+    // for reference: https://github.com/fred913/bilivid-metaprocess-server
+    const url = `http://${process.env.BILIVID_METAPROCESS_SERVER_ADDRESS}/api/recog_music_in_bili_video?video_aid=${videoAid}&pid=${pid}&target_sec=${targetSec}`;
 
     const headers = {
       "User-Agent": getRandomUserAgent(),

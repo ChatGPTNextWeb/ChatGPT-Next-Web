@@ -35,7 +35,6 @@ export class BilibiliVideoConclusionTool extends Tool implements RequestTool {
     try {
       var [videoAid, pid] = query.split(",");
       // check if arguments are valid
-      // is videoAid a string of numbers?
       if (!(/^\d+$/.test(videoAid) || /^av\d+$/.test(videoAid))) {
         throw new Error(
           "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid using av{Aid} format using BiliVideoInfo tool.",

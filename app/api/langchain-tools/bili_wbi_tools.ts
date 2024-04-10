@@ -1,4 +1,5 @@
 import md5 from "md5";
+import { getRandomUserAgent } from "./ua_tools";
 
 const mixinKeyEncTab: number[] = [
   46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35, 27, 43, 5, 49,
@@ -45,14 +46,18 @@ export async function getWbiKeys(): Promise<{
   img_key: string;
   sub_key: string;
 }> {
+  // check if process.env.BILIBILI_COOKIES is set
+  if (!process.env.BILIBILI_COOKIES) {
+    throw new Error(
+      "Cookie not found. Please set BILIBILI_COOKIES environment variable.",
+    );
+  }
   const res: Response = await fetch(
     "https://api.bilibili.com/x/web-interface/nav",
     {
       headers: {
-        // SESSDATA 字段
-        Cookie: "SESSDATA=xxxxxx",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        Cookie: process.env.BILIBILI_COOKIES,
+        "User-Agent": getRandomUserAgent(),
         Referer: "https://www.bilibili.com/", //对于直接浏览器调用可能不适用
       },
     },

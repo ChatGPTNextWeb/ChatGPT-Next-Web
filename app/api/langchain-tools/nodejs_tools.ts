@@ -57,8 +57,8 @@ export class NodeJSTool {
     const pdfBrowserTool = new PDFBrowser(this.model, this.embeddings);
     const bilibiliVideoInfoTool = new BilibiliVideoInfoTool();
     const bilibiliVideoSearchTool = new BilibiliVideoSearchTool();
-    const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
     const bilibiliVideoConclusionTool = new BilibiliVideoConclusionTool();
+    const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
     let tools = [
       calculatorTool,
       webBrowserTool,
