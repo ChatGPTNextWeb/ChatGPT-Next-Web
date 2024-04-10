@@ -50,48 +50,52 @@ jobs:
       - name: Sync repository to ty
         run: |
           yes | docker image prune
-          ssh -o StrictHostKeyChecking=no root@ty.xiaosi.cc 'mkdir -p /data/ChatGPT-Next-Web'
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TY_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@ty.xiaosi.cc:/data/ChatGPT-Next-Web/
       - name: deploy-to-ty
         uses: appleboy/ssh-action@master
         env:
          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
         with:
-          host: ty.xiaosi.cc #服务器地址
+          host: ${{ secrets.TY_SSH_IP }} #服务器地址
           username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
           envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
           script: |
             cd $SERVER_WORKDIR #进入到工作目录
             echo "${{ secrets.DOCKER_ENV }}" > .env
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
-            tccli cdn PurgePathCache --cli-unfold-argument --Paths 'https://chat.xiaosi.cc/' --FlushType delete
+            tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
       - name: Sync repository to tx
         run: |
           yes | docker image prune
-          ssh -o StrictHostKeyChecking=no root@tx.xiaosi.cc 'mkdir -p /data/ChatGPT-Next-Web'
-          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TX_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/ChatGPT-Next-Web
       - name: deploy-to-tx
         uses: appleboy/ssh-action@master
         env:
           SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
         with:
-          host: tx.xiaosi.cc #服务器地址
+          host: ${{ secrets.TX_SSH_IP }} #服务器地址
           username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
           envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
           script: |
             cd $SERVER_WORKDIR #进入到工作目录
             echo "${{ secrets.DOCKER_ENV }}" > .env
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
-            tccli cdn PurgePathCache --cli-unfold-argument --Paths 'https://chat.xiaosi.cc/' --FlushType delete
+            tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete

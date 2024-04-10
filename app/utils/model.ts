@@ -23,6 +23,12 @@ export function collectModelTable(
     };
   });
 
+  const customProvider = (modelName: string) => ({
+    id: modelName,
+    providerName: "",
+    providerType: "custom",
+  });
+
   // server custom models
   customModels
     .split(",")
@@ -44,7 +50,7 @@ export function collectModelTable(
           displayName: displayName || name,
           available,
           describe: "",
-          provider: modelTable[name]?.provider, // Use optional chaining
+          provider: modelTable[name]?.provider ?? customProvider(name), // Use optional chaining
         };
       }
     });

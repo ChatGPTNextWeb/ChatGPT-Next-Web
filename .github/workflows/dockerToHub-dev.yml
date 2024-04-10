@@ -48,15 +48,16 @@ jobs:
       - name: Sync repository to tx
         run: |
           yes | docker image prune
-          ssh -o StrictHostKeyChecking=no root@tx.xiaosi.cc 'mkdir -p /data/test/ChatGPT-Next-Web'
-          rsync -az -e 'ssh -o StrictHostKeyChecking=no' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/test/ChatGPT-Next-Web
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TX_SSH_IP }} 'mkdir -p /data/test/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@tx.xiaosi.cc:/data/test/ChatGPT-Next-Web
       - name: deploy-to-tx
         uses: appleboy/ssh-action@master
         env:
          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
         with:
-          host: tx.xiaosi.cc #服务器地址
+          host: ${{ secrets.TX_SSH_IP }} #服务器地址
           username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
           envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
           script: |
@@ -68,7 +69,41 @@ jobs:
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             sed -i 's|23000:|23001:|g' docker-compose.yml
             sed -i 's|container_name:|#container_name:|g' docker-compose.yml
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
+
+
+      - name: Sync repository to xy-nm
+        run: |
+          yes | docker image prune
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.NM_SSH_IP }} 'mkdir -p /data/test/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@xy-nm.xiaosi.cc:/data/test/ChatGPT-Next-Web
+      - name: deploy-to-xy-nm
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
+        with:
+          host: ${{ secrets.NM_SSH_IP }} #服务器地址
+          username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
+          envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
+          script: |
+            cd /data/test/ChatGPT-Next-Web
+            echo "${{ secrets.DOCKER_ENV }}" > .env
+            # 测试分支,
+            echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" >> .env
+            sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
+            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            sed -i 's|23000:|23001:|g' docker-compose.yml
+            sed -i 's|container_name:|#container_name:|g' docker-compose.yml
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+            docker-compose pull && docker-compose up -d
+            yes | docker image prune
+            rm -rf /www/server/nginx/proxy_cache_dir/*
+            rm -rf /www/server/nginx/proxy_temp_dir/*
+
+
