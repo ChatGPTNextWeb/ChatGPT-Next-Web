@@ -68,12 +68,11 @@ jobs:
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             sed -i 's|23000:|23001:|g' docker-compose.yml
             sed -i 's|container_name:|#container_name:|g' docker-compose.yml
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
-
-
 
 
       - name: Sync repository to xy-nm
@@ -99,6 +98,7 @@ jobs:
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             sed -i 's|23000:|23001:|g' docker-compose.yml
             sed -i 's|container_name:|#container_name:|g' docker-compose.yml
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
