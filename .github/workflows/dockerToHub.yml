@@ -65,6 +65,7 @@ jobs:
             cd $SERVER_WORKDIR #进入到工作目录
             echo "${{ secrets.DOCKER_ENV }}" > .env
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
@@ -89,6 +90,7 @@ jobs:
             cd $SERVER_WORKDIR #进入到工作目录
             echo "${{ secrets.DOCKER_ENV }}" > .env
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/*
