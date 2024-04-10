@@ -62,6 +62,7 @@ const cn = {
       Prompt: "快捷指令",
       Masks: "所有面具",
       Clear: "清除聊天",
+      NewChat: "另起聊天",
       Settings: "对话设置",
       UploadImage: "上传图片",
     },
@@ -176,7 +177,7 @@ const cn = {
       Title: "预览气泡",
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
-    ShortcutQuickChat:"快捷键-快速对话",
+    ShortcutQuickChat: "快捷键-快速对话",
     AutoGenerateTitle: {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",

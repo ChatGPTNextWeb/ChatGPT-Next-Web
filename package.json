@@ -64,5 +64,6 @@
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2"
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }

@@ -37,6 +37,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import AddIcon from "../icons/add.svg";
 
 import {
   ChatMessage,
@@ -97,7 +98,9 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
-import { listen } from '@tauri-apps/api/event';
+import { InputRange } from "./input-range";
+import { config } from "process";
+import { listen } from "@tauri-apps/api/event";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -556,6 +559,15 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
+      <ChatAction
+        text={Locale.Chat.InputActions.NewChat}
+        icon={<AddIcon />}
+        onClick={() => {
+          chatStore.newSession(chatStore.currentSession().mask);
+          navigate(Path.Chat);
+        }}
+      />
+
       {showModelSelector && (
         <Selector
           defaultSelectedValue={currentModel}
@@ -713,12 +725,12 @@ function _Chat() {
   useEffect(measure, [userInput]);
 
   useEffect(() => {
-    const unlisten = listen('activate_input_field', () => {
+    const unlisten = listen("activate_input_field", () => {
       inputRef.current?.focus();
     });
-    
+
     return () => {
-      unlisten.then((f) => f());;
+      unlisten.then((f) => f());
     };
   }, []);
 
@@ -1111,11 +1123,13 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if(!isVisionModel(currentModel)){return;}
+      if (!isVisionModel(currentModel)) {
+        return;
+      }
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
