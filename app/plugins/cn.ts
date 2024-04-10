@@ -40,7 +40,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1712394126000,
     enable: true,
-    onlyNodeRuntime: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "Bilibili视频搜索",
@@ -50,7 +50,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1712394126000,
     enable: true,
-    onlyNodeRuntime: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "Bilibili听歌识曲",
@@ -60,7 +60,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1712394126000,
     enable: true,
-    onlyNodeRuntime: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "Bilibili视频总结",
@@ -70,7 +70,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     builtin: true,
     createdAt: 1712394126000,
     enable: true,
-    onlyNodeRuntime: true,
+    onlyNodeRuntime: false,
   },
   {
     name: "维基百科",
