@@ -69,6 +69,7 @@ export const getServerSideConfig = () => {
 
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
+  const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -76,6 +77,10 @@ export const getServerSideConfig = () => {
   const apiKey = apiKeys[randomIndex];
   console.log(
     `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
+  );
+
+  const whiteWebDevEndpoints = (process.env.WHITE_WEBDEV_ENDPOINTS ?? "").split(
+    ",",
   );
 
   return {
@@ -92,6 +97,11 @@ export const getServerSideConfig = () => {
     googleApiKey: process.env.GOOGLE_API_KEY,
     googleUrl: process.env.GOOGLE_URL,
 
+    isAnthropic,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
+    anthropicUrl: process.env.ANTHROPIC_URL,
+
     gtmId: process.env.GTM_ID,
 
     needCode: ACCESS_CODES.size > 0,
@@ -106,5 +116,6 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+    whiteWebDevEndpoints,
   };
 };
