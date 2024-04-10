@@ -13,7 +13,7 @@ const cn = {
   Auth: {
     Title: "需要密码",
     Tips: "管理员开启了密码验证，请在下方填入访问码",
-    SubTips: "或者输入你的 OpenAI 或 Google API 密钥",
+    SubTips: "或者输入你的 OpenAI, Google API 或 Anthropic API 密钥",
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
@@ -317,7 +317,7 @@ const cn = {
         ApiKey: {
           Title: "接口密钥",
           SubTitle: "使用自定义 Anthropic Key 绕过密码访问限制",
-          Placeholder: "Anthropic API Key",
+          Placeholder: "输入您的 Anthropic API 密钥",
         },
 
         Endpoint: {
