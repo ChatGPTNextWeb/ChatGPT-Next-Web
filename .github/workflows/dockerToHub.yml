@@ -81,6 +81,7 @@ jobs:
     name: 部署到天翼云服务器
     needs: download-repo
     runs-on: self
+    steps:
       - name: Sync repository to tyy
         run: |
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TY_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
@@ -110,6 +111,7 @@ jobs:
     name: 部署到腾讯云
     needs: download-repo
     runs-on: self
+    steps:
       - name: Sync repository to tx
         run: |
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TX_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
