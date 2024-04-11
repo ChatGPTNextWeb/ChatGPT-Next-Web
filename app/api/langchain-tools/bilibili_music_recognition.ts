@@ -83,7 +83,8 @@ export class BilibiliMusicRecognitionTool
       "User-Agent": getRandomUserAgent(),
     };
 
-    const response = await this.fetchWithTimeout(
+    const response = await this.fetchWithTimeoutWithRetry(
+      // the server has a stupid restart period every one minute. Give it a shot to recover.
       url,
       { headers },
       this.timeout,
@@ -97,6 +98,32 @@ export class BilibiliMusicRecognitionTool
     var data = await response.json();
 
     return data;
+  }
+
+  async fetchWithTimeoutWithRetry(
+    resource: RequestInfo | URL,
+    options = {},
+    timeout: number = 30000,
+    retryCount: number = 3,
+    retryDelay: number = 1200,
+  ) {
+    const _delay = async (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+    let response;
+    for (let i = 0; i < retryCount; i++) {
+      try {
+        response = await this.fetchWithTimeout(resource, options, timeout);
+        if (response.ok) {
+          return response;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      await _delay(retryDelay);
+    }
+    if (response) throw new Error(`HTTP error! status: ${response.status}`);
+    else throw new Error("Failed to fetch resource after multiple retries.");
   }
 
   async fetchWithTimeout(
