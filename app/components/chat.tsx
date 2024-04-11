@@ -561,10 +561,7 @@ export function ChatActions(props: {
         text="免费模型"
         icon={<OtherRobot />}
         onClick={() => {
-          window.open(
-            "https://dify.liujiarong.top/chat/OEbaF0tRFWBs6yOf",
-            "_blank",
-          );
+          window.open("https://robot.liujiarong.top/chat", "_blank");
         }}
       />
 

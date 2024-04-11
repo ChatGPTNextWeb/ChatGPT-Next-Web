@@ -95,6 +95,13 @@ export function AuthPage() {
           }}
         />
         <IconButton
+          text={"体验版ChatGPT"}
+          type="primary"
+          onClick={() => {
+            window.open("https://robot.liujiarong.top/chat", "_blank");
+          }}
+        />
+        <IconButton
           text="访问免费AI助手"
           onClick={() => {
             window.open(
