@@ -73,7 +73,9 @@ export function createWebDavClient(store: SyncStore) {
       if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
         proxyUrl += "/";
       }
-
+      if (proxyUrl === "/") {
+        proxyUrl = location.origin;
+      }
       let url;
       if (proxyUrl.length > 0 || proxyUrl === "/") {
         let u = new URL(proxyUrl + "/api/webdav/" + path);
