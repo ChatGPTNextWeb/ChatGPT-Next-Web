@@ -69,10 +69,7 @@ export function createWebDavClient(store: SyncStore) {
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
-
-      if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
-        proxyUrl += "/";
-      }
+      
       if (proxyUrl === "/") {
         proxyUrl = location.origin;
       }
