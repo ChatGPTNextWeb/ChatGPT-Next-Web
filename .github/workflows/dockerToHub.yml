@@ -82,6 +82,10 @@ jobs:
     needs: download-repo
     runs-on: self
     steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Sync repository to tyy
         run: |
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TY_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
@@ -112,6 +116,10 @@ jobs:
     needs: download-repo
     runs-on: self
     steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Sync repository to tx
         run: |
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TX_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
