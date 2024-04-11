@@ -76,6 +76,7 @@ export class BilibiliVideoConclusionTool
     );
 
     const vidinfo = await vidinfo_resp.json();
+    console.log("[BilibiliVideoConclusionTool]", vidinfo);
     const mid = vidinfo.data.owner.mid;
     const cid = vidinfo.data.pages[pid - 1].cid;
 
@@ -99,6 +100,7 @@ export class BilibiliVideoConclusionTool
     );
 
     const data = await resp.json();
+    console.log("[BilibiliVideoConclusionTool]", data);
     const model_result = data.data.model_result;
     switch (model_result.result_type) {
       case 0:

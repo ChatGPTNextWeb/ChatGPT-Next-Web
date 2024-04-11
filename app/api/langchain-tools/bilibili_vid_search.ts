@@ -68,7 +68,7 @@ export class BilibiliVideoSearchTool extends Tool implements RequestTool {
     });
 
     let rawData: { [key: string]: any } = await resp.json();
-    // console.log(rawData);
+    console.log("[BilibiliVideoSearchTool]", rawData);
     let data: Array<{
       title: string;
       url: string;
@@ -99,7 +99,7 @@ export class BilibiliVideoSearchTool extends Tool implements RequestTool {
         durationSeconds,
       });
     });
-
+    console.log("[BilibiliVideoSearchTool]", data);
     return data;
   }
 

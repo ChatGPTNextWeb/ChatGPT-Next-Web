@@ -68,7 +68,7 @@
       - 环境变量：`BING_SEARCH_API_KEY`
       - 申请地址：[Web Search API | Microsoft Bing](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
   
-    - ChooseSearchEngine
+    - ChooseSearchEngine（作者：[hang666](https://github.com/hang666)）
   
       - 环境变量：`CHOOSE_SEARCH_ENGINE`
   
@@ -107,6 +107,14 @@
       - 使用本插件需要一定的专业知识，Stable Diffusion 本身的相关问题不在本项目的解答范围内，如果您确定要使用本插件请参考 [Stable Diffusion 插件配置指南](./docs/stable-diffusion-plugin-cn.md) 文档进行配置
       - StableDiffusion 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
     - Arxiv
+    - B站相关插件（作者：[fred913](https://github.com/fred913)）
+      - bilibili 视频信息获取（建议使用以下插件时同时启用本插件）
+      - bilibili 视频搜索
+        - 需配置环境变量 `BILIBILI_COOKIES`
+      - bilibili 听歌识曲
+        - 需提前部署 [bilivid-metaprocess-server](https://github.com/fred913/bilivid-metaprocess-server) 并配置环境变量 `BILIVID_METAPROCESS_SERVER_ADDRESS`
+      - bilibili视频总结
+        - 需配置环境变量 `BILIBILI_COOKIES`
   
 - 支持 gemini-pro, gemini-pro-vision 模型
   - 以下功能目前还不支持

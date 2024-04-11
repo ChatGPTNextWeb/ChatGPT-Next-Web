@@ -79,12 +79,3 @@ export async function getWbiKeys(): Promise<{
     ),
   };
 }
-
-// async function main(): Promise<void> {
-//     const web_keys: { img_key: string, sub_key: string } = await getWbiKeys()
-//     const params: Record<string, string | number> = { foo: '114', bar: '514', baz: 1919810 }
-//     const img_key: string = web_keys.img_key
-//     const sub_key: string = web_keys.sub_key
-//     const query: string = encWbi(params, img_key, sub_key)
-//     console.log(query)
-// }
