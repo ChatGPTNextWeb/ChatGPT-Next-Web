@@ -33,8 +33,8 @@ jobs:
           docker-compose build
           docker-compose push
           yes | docker system prune --filter "until=168h"
-  deploy:
-    name: 部署到服务器
+  download-repo:
+    name: 下载仓库
     needs: build
     runs-on: self
     steps:
@@ -43,13 +43,17 @@ jobs:
         with:
           clean: true
           github-server-url: 'https://gh.siji.ci'
+  deploy-nm:
+    name: 部署到内蒙服务器
+    needs: download-repo
+    runs-on: self
+    steps:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Sync repository to nm
         run: |
-          yes | docker image prune
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.NM_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.NM_SSH_IP }}:/data/ChatGPT-Next-Web/
       - name: deploy-to-nm
@@ -73,9 +77,12 @@ jobs:
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
             #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
-      - name: Sync repository to ty
+  deploy-ty:
+    name: 部署到天翼云服务器
+    needs: download-repo
+    runs-on: self
+      - name: Sync repository to tyy
         run: |
-          yes | docker image prune
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TY_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.TY_SSH_IP }}:/data/ChatGPT-Next-Web/
       - name: deploy-to-ty
@@ -99,9 +106,12 @@ jobs:
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
             #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
+  deploy-tx:
+    name: 部署到腾讯云
+    needs: download-repo
+    runs-on: self
       - name: Sync repository to tx
         run: |
-          yes | docker image prune
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TX_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.TX_SSH_IP }}:/data/ChatGPT-Next-Web
       - name: deploy-to-tx
