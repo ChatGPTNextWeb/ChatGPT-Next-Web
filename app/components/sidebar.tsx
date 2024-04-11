@@ -152,10 +152,8 @@ export function SideBar(props: { className?: string }) {
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
       }}
     >
-      <div className={styles["sidebar-header"]} data-tauri-drag-region>
-        <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          这里开始……
-        </div>
+      <div className={styles["sidebar-header"]}>
+        <div className={styles["sidebar-title"]}>这里开始……</div>
         <div className={styles["sidebar-sub-title"]}>
           选择一个你自己的助理
           <br />
