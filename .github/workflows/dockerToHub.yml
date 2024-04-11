@@ -72,7 +72,7 @@ jobs:
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
-            tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
+            #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
       - name: Sync repository to ty
         run: |
           yes | docker image prune
@@ -98,7 +98,7 @@ jobs:
             rm -rf /www/server/nginx/proxy_cache_dir/*
             rm -rf /www/server/nginx/proxy_temp_dir/*
             sleep 2
-            tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
+            #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
       - name: Sync repository to tx
         run: |
           yes | docker image prune
