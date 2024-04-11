@@ -1,6 +1,7 @@
-import { Tool } from "@langchain/core/tools";
+import { StructuredTool } from "@langchain/core/tools";
 import { getRandomUserAgent } from "./ua_tools";
 import { encWbi, getWbiKeys } from "./bili_wbi_tools";
+import { z } from "zod";
 
 export interface Headers {
   [key: string]: string;
@@ -12,7 +13,10 @@ export interface RequestTool {
   timeout: number;
 }
 
-export class BilibiliVideoConclusionTool extends Tool implements RequestTool {
+export class BilibiliVideoConclusionTool
+  extends StructuredTool
+  implements RequestTool
+{
   name = "bilibili_video_conclusion";
 
   maxOutputLength = Infinity;
@@ -30,25 +34,25 @@ export class BilibiliVideoConclusionTool extends Tool implements RequestTool {
     this.timeout = timeout ?? this.timeout;
   }
 
+  schema = z.object({
+    videoAid: z.string().describe("The AID of the video to be recognized"),
+    pid: z.number().describe("The page ID of the video, starting from 1"),
+  });
+
   /** @ignore */
-  async _call(query: string) {
+  async _call({ videoAid, pid }: z.infer<typeof this.schema>) {
     try {
-      var [videoAid, pid] = query.split(",");
+      var newVideoAid = videoAid.toString();
       // check if arguments are valid
-      if (!(/^\d+$/.test(videoAid) || /^av\d+$/.test(videoAid))) {
+      if (!(/^\d+$/.test(newVideoAid) || /^av\d+$/.test(newVideoAid))) {
         throw new Error(
-          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid using av{Aid} format using BiliVideoInfo tool.",
-        );
-      }
-      if (!/^\d+$/.test(pid)) {
-        throw new Error(
-          "Invalid pid: it should be a number representing the page number of the video, starting from 1.",
+          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid number using BiliVideoInfo tool.",
         );
       }
 
-      if (videoAid.startsWith("av")) videoAid = videoAid.slice(2);
+      if (newVideoAid.startsWith("av")) newVideoAid = newVideoAid.slice(2);
 
-      let result = await this.fetchVideoInfo(+videoAid, +pid);
+      let result = await this.fetchVideoInfo(+newVideoAid, +pid);
       // console.log(result)
       return result;
     } catch (error) {
@@ -98,7 +102,7 @@ export class BilibiliVideoConclusionTool extends Tool implements RequestTool {
     const model_result = data.data.model_result;
     switch (model_result.result_type) {
       case 0:
-        return "BiliAPI returned result: Unable to provide a conclusion for this video, or the conclusion cannot be generated for this video due to the video quality or the video content.";
+        return "BiliAPI returned result: Unable to provide a conclusion for this video, or the conclusion cannot be generated for this video due to the content (news, ad, ). Remember, this is a restriction by the Bilibili Services, not from the tool.";
       case 1:
         return model_result.summary;
       case 2:
@@ -133,5 +137,5 @@ export class BilibiliVideoConclusionTool extends Tool implements RequestTool {
     return response;
   }
 
-  description = `A tool to fetch the conclusion of a Bilibili video. It uses the BiliAPI to fetch the conclusion of the video. Input string should be in the format of "videoAid,pid" where videoAid is the Aid of the video and pid is the page number of the video, starting from 1.`;
+  description = `A tool to fetch the conclusion of a Bilibili video. It uses the BiliAPI to fetch the conclusion of the video. As for input parameters, videoAid is the Aid of the video and pid is the page number of the video, starting from 1.`;
 }

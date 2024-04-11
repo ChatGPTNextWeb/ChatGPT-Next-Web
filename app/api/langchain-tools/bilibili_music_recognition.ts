@@ -1,5 +1,6 @@
-import { Tool } from "@langchain/core/tools";
+import { StructuredTool } from "@langchain/core/tools";
 import { getRandomUserAgent } from "./ua_tools";
+import { z } from "zod";
 
 export interface Headers {
   [key: string]: string;
@@ -11,7 +12,10 @@ export interface RequestTool {
   timeout: number;
 }
 
-export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
+export class BilibiliMusicRecognitionTool
+  extends StructuredTool
+  implements RequestTool
+{
   name = "bilibili_music_recognition";
 
   maxOutputLength = Infinity;
@@ -29,36 +33,30 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     this.timeout = timeout ?? this.timeout;
   }
 
+  schema = z.object({
+    videoAid: z.string().describe("The AID of the video to be recognized"),
+    pid: z.number().describe("The page ID of the video, starting from 1"),
+    targetSec: z
+      .number()
+      .describe(
+        "The time in seconds where the recognition is expected to start from",
+      ),
+  });
+
   /** @ignore */
-  async _call(query: string) {
+  async _call({ videoAid, pid, targetSec }: z.infer<typeof this.schema>) {
     try {
-      // let result = await this.doAcrcloudRecognitionUsingMetaprocAPI(searchQuery);
-      // parse query
-      var [videoAid, pid, targetSec] = query.split(",");
-      // check if arguments are valid
-      if (!(/^\d+$/.test(videoAid) || /^av\d+$/.test(videoAid))) {
+      var newVideoAid = videoAid.toString();
+      if (!(/^\d+$/.test(newVideoAid) || /^av\d+$/.test(newVideoAid))) {
         throw new Error(
-          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid using av{Aid} format using BiliVideoInfo tool.",
+          "Invalid videoAid: It should be a string of numbers. If a BVid or a short link is given, please convert it to Aid number using BiliVideoInfo tool.",
         );
       }
-      if (videoAid.startsWith("av")) videoAid = videoAid.slice(2);
-
-      if (!/^\d+$/.test(pid)) {
-        throw new Error(
-          "Invalid pid: it should be a number representing the page number of the video, starting from 1.",
-        );
-      }
-
-      if (!/^\d+$/.test(targetSec)) {
-        throw new Error(
-          "Invalid targetSec: it should be a number representing the time in seconds where the recognition is expected to start from.",
-        );
-      }
-
+      if (newVideoAid.startsWith("av")) newVideoAid = newVideoAid.slice(2);
       const result = await this.doAcrcloudRecognitionUsingMetaprocAPI(
-        videoAid,
-        parseInt(pid),
-        parseInt(targetSec),
+        newVideoAid,
+        typeof pid === "string" ? parseInt(pid) : pid,
+        typeof targetSec === "string" ? parseInt(targetSec) : targetSec,
       );
       // console.log(result)
       return JSON.stringify(result);
@@ -116,5 +114,5 @@ export class BilibiliMusicRecognitionTool extends Tool implements RequestTool {
     return response;
   }
 
-  description = `A tool that recognizes music in Bilibili videos using ACRCloud API. Input string is in this format: video_aid,pid,target_sec. video_aid is extracted from av{video_aid}, e.g. av170001 means video_aid=170001. pid is the page ID of the video(note: pid starts from 1, not 0). and target_sec is the time in seconds where the recognition is expected to start from. To recognize music that begins with video, use timestamp 0 or 1, which is the most useful case.`;
+  description = `A tool that recognizes music in Bilibili videos using ACRCloud API. As for input parameters, videoAid is the AID of the video to be recognized, pid is the page ID of the video(note: pid starts from 1, not 0). and target_sec is the time in seconds where the recognition is expected to start from. To recognize music that begins with video, use timestamp 0 or 1, which is the most useful case.`;
 }
