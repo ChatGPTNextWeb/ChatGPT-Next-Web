@@ -70,19 +70,13 @@ export function createWebDavClient(store: SyncStore) {
         path = path.slice(1);
       }
       
-      if (proxyUrl === "/") {
+      if (proxyUrl === "") {
         proxyUrl = location.origin;
       }
-      let url;
-      if (proxyUrl.length > 0) {
-        let u = new URL(proxyUrl + "/api/webdav/" + path);
-        // add query params
-        u.searchParams.append("endpoint", config.endpoint);
-        url = u.toString();
-      } else {
-        url = "/api/upstash/" + path + "?endpoint=" + config.endpoint;
-      }
-      return url;
+      let u = new URL(proxyUrl + "/api/webdav/" + path);
+      // add query params
+      u.searchParams.append("endpoint", config.endpoint);
+      return u.toString();
     },
   };
 }
