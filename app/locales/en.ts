@@ -491,6 +491,10 @@ const en: LocaleType = {
     Code: "Detected access code from url, confirm to apply? ",
     Settings: "Detected settings from url, confirm to apply?",
   },
+
+  Discover: {
+    SearchPlaceholder: "Search assistant",
+  },
 };
 
 export default en;

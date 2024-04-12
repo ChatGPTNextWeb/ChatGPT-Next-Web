@@ -1,0 +1,24 @@
+.search {
+    display: flex;
+    max-width: 460px;
+    height: 50px;
+    padding: 16px;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+
+    border-radius: 16px;
+    border: 1px solid var(--Light-Text-Black, #18182A);
+    background: var(--light-opacity-white-70, rgba(255, 255, 255, 0.70));
+    box-shadow: 0px 8px 40px 0px rgba(60, 68, 255, 0.12);
+
+    .icon {
+        height: 20px;
+        width: 20px;
+        flex: 0 0;
+    }
+    .input {
+        height: 18px;
+        flex: 1 1;
+    } 
+}

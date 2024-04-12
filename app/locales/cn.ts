@@ -484,6 +484,9 @@ const cn = {
     Topic: "主题",
     Time: "时间",
   },
+  Discover: {
+    SearchPlaceholder: "搜索助手",
+  },
 };
 
 type DeepPartial<T> = T extends object
