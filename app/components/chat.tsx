@@ -473,7 +473,7 @@ export function ChatActions(props: {
       );
       showToast(nextModel);
     }
-  }, [chatStore, currentModel, models]);
+  }, [chatStore, currentModel, models, props]);
 
   return (
     <div className={styles["chat-input-actions"]}>
