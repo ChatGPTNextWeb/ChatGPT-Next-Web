@@ -1,11 +1,16 @@
 #!/bin/bash
 
-yarn config set registry 'https://registry.npmmirror.com/'
-yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+# 加速
+#yarn config set registry 'https://registry.npmmirror.com/'
+#yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
+#yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+# 官方
+yarn config delete registry
+yarn config delete sharp_binary_host
+yarn config delete sharp_libvips_binary_host
 
 #yarn cache clean
-yes | yarn install
+yarn install
 yarn run build
 
 mkdir -p "./node_modules/tiktoken"
