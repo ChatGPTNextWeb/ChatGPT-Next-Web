@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { STORAGE_KEY } from "../../../constant";
+import { STORAGE_KEY, internalWhiteWebDavEndpoints } from "../../../constant";
+import { getServerSideConfig } from "@/app/config/server";
+
+const config = getServerSideConfig();
+
+const mergedWhiteWebDavEndpoints = [
+  ...internalWhiteWebDavEndpoints,
+  ...config.whiteWebDevEndpoints,
+].filter((domain) => Boolean(domain.trim()));
+
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
@@ -14,7 +23,9 @@ async function handle(
   let endpoint = requestUrl.searchParams.get("endpoint");
 
   // Validate the endpoint to prevent potential SSRF attacks
-  if (!endpoint || !endpoint.startsWith("/")) {
+  if (
+    !mergedWhiteWebDavEndpoints.some((white) => endpoint?.startsWith(white))
+  ) {
     return NextResponse.json(
       {
         error: true,
@@ -25,6 +36,11 @@ async function handle(
       },
     );
   }
+
+  if (!endpoint?.endsWith("/")) {
+    endpoint += "/";
+  }
+
   const endpointPath = params.path.join("/");
   const targetPath = `${endpoint}/${endpointPath}`;
 
@@ -108,7 +124,7 @@ async function handle(
   return fetchResult;
 }
 
-export const POST = handle;
+export const PUT = handle;
 export const GET = handle;
 export const OPTIONS = handle;
 

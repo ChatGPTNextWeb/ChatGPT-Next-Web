@@ -265,6 +265,29 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 
 如果你不想让用户使用历史摘要功能，将此环境变量设置为 1 即可。
 
+### `ANTHROPIC_API_KEY` (optional)
+
+anthropic claude Api Key.
+
+### `ANTHROPIC_API_VERSION` (optional)
+
+anthropic claude Api version.
+
+### `ANTHROPIC_URL` (optional)
+
+anthropic claude Api Url.
+
+### `DISABLE_FAST_LINK` （可选）
+
+如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
+
+### `WHITE_WEBDEV_ENDPOINTS` (可选)
+
+如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+- 每一个地址必须是一个完整的 endpoint
+> `https://xxxx/xxx`
+- 多个地址以`,`相连
+
 ## 部署
 
 ### 容器部署 （推荐）
