@@ -158,7 +158,7 @@ export function SideBar(props: { className?: string }) {
           ChatMC
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          MarketCast's ChatGPT Service
+          MarketCast&apos;s ChatGPT Service
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
