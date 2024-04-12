@@ -31,21 +31,27 @@ export default function VoiceInput({
   // const recognition = useRef(null);
   const recognizer = useRef<ms_audio_sdk.SpeechRecognizer | undefined>();
   const [tempUserInput, setTempUserInput] = useState("");
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useState("unknown");
+
+  const get_access_token = async () => {
+    if (accessToken === "" || accessToken === "unknown") {
+      try {
+        const response = await fetch("/api/get_voice_token");
+        const result = await response.json();
+        setAccessToken(result.result);
+        return result.result;
+      } catch (e) {
+        setAccessToken("");
+        return "";
+      }
+    } else return accessToken;
+  };
 
   useEffect(() => {
-    const get_access_token = async () => {
-      const response = await fetch("/api/get_voice_token");
-      const result = await response.json();
-      setAccessToken(result.result);
-    };
     if (accessToken === "") {
-      try {
-        get_access_token();
-      } catch (e) {
-        console.log("[get_access_token]", e);
-      }
+      get_access_token();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   useEffect(() => {
@@ -95,7 +101,9 @@ export default function VoiceInput({
     );
   }
 
-  const startRecognition = () => {
+  const startRecognition = async () => {
+    let token = await get_access_token();
+
     if (voiceInputLoading) {
       recognizer.current?.close();
       setVoiceInputLoading(false);
@@ -109,7 +117,7 @@ export default function VoiceInput({
     setVoiceInputText("");
 
     const speechConfig = ms_audio_sdk.SpeechConfig.fromAuthorizationToken(
-      accessToken,
+      token,
       "eastasia",
     );
     const audioConfig = ms_audio_sdk.AudioConfig.fromDefaultMicrophoneInput();
