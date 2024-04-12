@@ -114,20 +114,22 @@ async function handle(
     duplex: "half",
   };
 
-  console.log("[Any Proxy]", targetUrl, {
-    method: req.method,
-    params: req.body,
-  });
-
   let fetchResult;
 
   try {
     fetchResult = await fetch(targetUrl, fetchOptions);
   } finally {
-    console.log("[Any Proxy]", targetUrl, {
-      status: fetchResult?.status,
-      statusText: fetchResult?.statusText,
-    });
+    console.log(
+      "[Any Proxy]",
+      targetUrl,
+      {
+        method: req.method,
+      },
+      {
+        status: fetchResult?.status,
+        statusText: fetchResult?.statusText,
+      },
+    );
   }
 
   return fetchResult;
