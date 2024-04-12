@@ -101,9 +101,7 @@ export default function VoiceInput({
     );
   }
 
-  const startRecognition = async () => {
-    let token = await get_access_token();
-
+  const startRecognition = () => {
     if (voiceInputLoading) {
       recognizer.current?.close();
       setVoiceInputLoading(false);
@@ -116,37 +114,42 @@ export default function VoiceInput({
     setTempUserInput(userInput); // 开始的时候拷贝一份用于复原
     setVoiceInputText("");
 
-    const speechConfig = ms_audio_sdk.SpeechConfig.fromAuthorizationToken(
-      token,
-      "eastasia",
-    );
-    const audioConfig = ms_audio_sdk.AudioConfig.fromDefaultMicrophoneInput();
-    speechConfig.speechRecognitionLanguage = "zh-CN";
-    speechConfig.setProperty(
-      ms_audio_sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs,
-      "3500",
-    );
-    recognizer.current = new ms_audio_sdk.SpeechRecognizer(
-      speechConfig,
-      audioConfig,
-    );
-    recognizer.current.recognizing = onRecognizing; // 自定义分段显示
-    recognizer.current.canceled = onCanceled; // 自定义中断
-    recognizer.current.recognizeOnceAsync(
-      (result) => {
-        onRecognizedResult(result);
-        setUserInput(
-          tempUserInput + (voiceInputText ?? "") + `${result.text ?? ""}`,
-        );
-        setTempUserInput("");
-        setVoiceInputText("");
-        setVoiceInputLoading(false);
-      },
-      (err) => {
-        console.error("Recognition error: ", err); // 错误处理
-        setVoiceInputLoading(false);
-      },
-    );
+    const getToken = async () => {
+      return await get_access_token();
+    };
+    getToken().then((token) => {
+      const speechConfig = ms_audio_sdk.SpeechConfig.fromAuthorizationToken(
+        token,
+        "eastasia",
+      );
+      const audioConfig = ms_audio_sdk.AudioConfig.fromDefaultMicrophoneInput();
+      speechConfig.speechRecognitionLanguage = "zh-CN";
+      speechConfig.setProperty(
+        ms_audio_sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs,
+        "3500",
+      );
+      recognizer.current = new ms_audio_sdk.SpeechRecognizer(
+        speechConfig,
+        audioConfig,
+      );
+      recognizer.current.recognizing = onRecognizing; // 自定义分段显示
+      recognizer.current.canceled = onCanceled; // 自定义中断
+      recognizer.current.recognizeOnceAsync(
+        (result) => {
+          onRecognizedResult(result);
+          setUserInput(
+            tempUserInput + (voiceInputText ?? "") + `${result.text ?? ""}`,
+          );
+          setTempUserInput("");
+          setVoiceInputText("");
+          setVoiceInputLoading(false);
+        },
+        (err) => {
+          console.error("Recognition error: ", err); // 错误处理
+          setVoiceInputLoading(false);
+        },
+      );
+    });
   };
 
   const icon = useMemo(() => {
