@@ -867,37 +867,37 @@ export function Settings() {
         {/*  </ListItem>*/}
         {/*</List>*/}
 
-        {/*<List>*/}
-        {/*<ListItem*/}
-        {/*  title={Locale.Settings.Prompt.Disable.Title}*/}
-        {/*  subTitle={Locale.Settings.Prompt.Disable.SubTitle}*/}
-        {/*>*/}
-        {/*  <input*/}
-        {/*    type="checkbox"*/}
-        {/*    checked={config.disablePromptHint}*/}
-        {/*    onChange={(e) =>*/}
-        {/*      updateConfig(*/}
-        {/*        (config) =>*/}
-        {/*          (config.disablePromptHint = e.currentTarget.checked),*/}
-        {/*      )*/}
-        {/*    }*/}
-        {/*  ></input>*/}
-        {/*</ListItem>*/}
+        <List>
+          <ListItem
+            title={Locale.Settings.Prompt.Disable.Title}
+            subTitle={Locale.Settings.Prompt.Disable.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.disablePromptHint}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.disablePromptHint = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
 
-        {/*  <ListItem*/}
-        {/*    title={Locale.Settings.Prompt.List}*/}
-        {/*    subTitle={Locale.Settings.Prompt.ListCount(*/}
-        {/*      builtinCount,*/}
-        {/*      customCount,*/}
-        {/*    )}*/}
-        {/*  >*/}
-        {/*    <IconButton*/}
-        {/*      icon={<EditIcon />}*/}
-        {/*      text={Locale.Settings.Prompt.Edit}*/}
-        {/*      onClick={() => setShowPromptModal(true)}*/}
-        {/*    />*/}
-        {/*  </ListItem>*/}
-        {/*</List>*/}
+          <ListItem
+            title={Locale.Settings.Prompt.List}
+            subTitle={Locale.Settings.Prompt.ListCount(
+              builtinCount,
+              customCount,
+            )}
+          >
+            <IconButton
+              icon={<EditIcon />}
+              text={Locale.Settings.Prompt.Edit}
+              onClick={() => setShowPromptModal(true)}
+            />
+          </ListItem>
+        </List>
 
         {/*<List id={SlotID.CustomModel}>*/}
         {/*  {showAccessCode && (*/}
