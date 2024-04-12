@@ -16,20 +16,24 @@ export const SearchService = {
   ready: false,
   builtinEngine: new Fuse<Prompt>([], { keys: ["title"] }),
   userEngine: new Fuse<Prompt>([], { keys: ["title"] }),
+  gptEngine: new Fuse<Prompt>([], { keys: ["title"] }),
   count: {
     builtin: 0,
   },
   allPrompts: [] as Prompt[],
   builtinPrompts: [] as Prompt[],
 
-  init(builtinPrompts: Prompt[], userPrompts: Prompt[]) {
+  init(builtinPrompts: Prompt[], userPrompts: Prompt[], gptPrompts?: Prompt[]) {
     if (this.ready) {
       return;
     }
-    this.allPrompts = userPrompts.concat(builtinPrompts);
+    const _gptPrompts = gptPrompts ?? [];
+
+    this.allPrompts = userPrompts.concat(builtinPrompts).concat(_gptPrompts);
     this.builtinPrompts = builtinPrompts.slice();
     this.builtinEngine.setCollection(builtinPrompts);
     this.userEngine.setCollection(userPrompts);
+    this.gptEngine.setCollection(_gptPrompts);
     this.ready = true;
   },
 
@@ -42,12 +46,16 @@ export const SearchService = {
   },
 
   search(text: string) {
-    if (text.startsWith("mj ")) {
+    if (text.startsWith("mj")) {
       return [];
     }
     const userResults = this.userEngine.search(text);
     const builtinResults = this.builtinEngine.search(text);
-    return userResults.concat(builtinResults).map((v) => v.item);
+    const gptResults = this.gptEngine.search(text);
+    return userResults
+      .concat(builtinResults)
+      .concat(gptResults)
+      .map((v) => v.item);
   },
 };
 
@@ -152,6 +160,7 @@ export const usePromptStore = createPersistStore(
     onRehydrateStorage(state) {
       // const PROMPT_URL = "https://cos.xiaosi.cc/next/public/prompts.json";
       const PROMPT_URL = "./prompts.json";
+      const GPT_PROMPT_URL = "./prompt_library.json";
 
       type PromptList = Array<[string, string]>;
 
@@ -173,14 +182,50 @@ export const usePromptStore = createPersistStore(
                 }) as Prompt,
             );
           });
-
-          const userPrompts = usePromptStore.getState().getUserPrompts() ?? [];
-
-          const allPromptsForSearch = builtinPrompts
-            .reduce((pre, cur) => pre.concat(cur), [])
-            .filter((v) => !!v.title && !!v.content);
-          SearchService.count.builtin = res.en.length + res.cn.length;
-          SearchService.init(allPromptsForSearch, userPrompts);
+          // let gptPrompts: Prompt[] = [];
+          try {
+            fetch(GPT_PROMPT_URL)
+              .then((res2) => res2.json())
+              .then((res2) => {
+                const gptPrompts: Prompt[] = res2["items"].map(
+                  (prompt: {
+                    id: string;
+                    title: string;
+                    description: string;
+                    prompt: string;
+                    category: string;
+                  }) => {
+                    return {
+                      id: prompt["id"],
+                      title: prompt["title"],
+                      content: prompt["prompt"],
+                      createdAt: Date.now(),
+                    };
+                  },
+                );
+                const userPrompts =
+                  usePromptStore.getState().getUserPrompts() ?? [];
+                const allPromptsForSearch = builtinPrompts
+                  .reduce((pre, cur) => pre.concat(cur), [])
+                  .filter((v) => !!v.title && !!v.content);
+                SearchService.count.builtin =
+                  res.en.length + res.cn.length + res["total"];
+                SearchService.init(
+                  allPromptsForSearch,
+                  userPrompts,
+                  gptPrompts,
+                );
+              });
+          } catch (e) {
+            console.log("[gpt prompt]", e);
+            const userPrompts =
+              usePromptStore.getState().getUserPrompts() ?? [];
+            const allPromptsForSearch = builtinPrompts
+              .reduce((pre, cur) => pre.concat(cur), [])
+              .filter((v) => !!v.title && !!v.content);
+            SearchService.count.builtin = res.en.length + res.cn.length;
+            SearchService.init(allPromptsForSearch, userPrompts);
+          }
         });
     },
   },

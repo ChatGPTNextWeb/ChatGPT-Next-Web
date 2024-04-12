@@ -1,0 +1,617 @@
+{
+  "items": [
+    {
+      "id": "4284aa0c",
+      "title": "编一个故事",
+      "description": "关于Sharky，一位刷牙的鲨鱼超级英雄",
+      "prompt": "编写一个关于“鲨齿侠”——一个刷牙鲨鱼超级英雄的5句话故事。每句话都用一个项目符号标出。",
+      "category": "write"
+    },
+    {
+      "id": "8051afd4",
+      "title": "编写一个Python脚本",
+      "description": "自动发送每日电子邮件报告",
+      "prompt": "编写一个脚本，用于自动发送每日电子邮件报告，并指导我如何设置。",
+      "category": "code"
+    },
+    {
+      "id": "2a3c0e6b",
+      "title": "头脑风暴命名",
+      "description": "用可乐和石榴糖浆调制的无酒精鸡尾酒",
+      "prompt": "你能为一款含可乐和石榴糖浆的无酒精鸡尾酒想出一些名字吗？",
+      "category": "idea"
+    },
+    {
+      "id": "e5887b58",
+      "title": "写一份感谢信",
+      "description": "给我课程的客座讲师",
+      "prompt": "你能给来我们班级分享她职业生涯的客座讲师写一封简短的感谢信吗？大家都说这非常鼓舞人心。",
+      "category": "write"
+    },
+    {
+      "id": "9fd632ea",
+      "title": "平衡化学方程式",
+      "description": "引导我完成步骤",
+      "prompt": "你能先问我想要平衡哪个化学方程式吗？然后，一步一步指导我如何平衡它，提供提示并在每一步骤中征求我的反馈。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "f2251c8d",
+      "title": "给我一些想法",
+      "description": "如何处理我的孩子的艺术作品",
+      "prompt": "我能用孩子们的艺术作品做哪5件创意事情？我不想扔掉它们，但它们确实太占地方了。",
+      "category": "idea"
+    },
+    {
+      "id": "edb56594",
+      "title": "设计一个数据库模式",
+      "description": "用于在线商品商店",
+      "prompt": "为在线商品商店设计一个数据库架构。",
+      "category": "code"
+    },
+    {
+      "id": "195cfe2a",
+      "title": "提出概念",
+      "description": "用于复古风格的街机游戏",
+      "prompt": "提出5个复古风格街机游戏的概念。",
+      "category": "idea"
+    },
+    {
+      "id": "e3c32040",
+      "title": "为我创建一个个人网页",
+      "description": "在向我提出三个问题之后",
+      "prompt": "为我创建一个个人网页，所有内容都在一个文件里。首先问我3个问题，了解你需要知道的信息。",
+      "category": "code"
+    },
+    {
+      "id": "fb344f29",
+      "title": "测试我对世界各国首都的了解",
+      "description": "提高我的地理技能",
+      "prompt": "让我们通过问答的方式来提高我的地理知识吧。你可以选择一个国家，问我它的首都是什么，我会尽力正确回答。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "7d125662",
+      "title": "推荐一道菜",
+      "description": "带到聚餐的美食",
+      "prompt": "你能推荐一些适合带到聚餐的开胃菜选项吗？",
+      "category": "idea"
+    },
+    {
+      "id": "d360e33a",
+      "title": "解释飞机颠簸",
+      "description": "对于从未飞行过的人",
+      "prompt": "你能向从未乘坐过飞机的人解释一下什么是飞机颠簸吗？请保持对话简洁明了。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "c45a8f55",
+      "title": "撰写课程概览",
+      "description": "关于决策背后的心理学",
+      "prompt": "为《决策心理学》课程撰写一段概述",
+      "category": "write"
+    },
+    {
+      "id": "7b3c7ee7",
+      "title": "规划一次旅行",
+      "description": "在挪威看极光",
+      "prompt": "规划一次为期3天的挪威北极光之旅。同时推荐一些理想的日期。",
+      "category": "travel"
+    },
+    {
+      "id": "7463dc89",
+      "title": "创建内容日历",
+      "description": "用于一个TikTok账号",
+      "prompt": "为点评房地产列表的TikTok账户创建内容日历。",
+      "category": "write"
+    },
+    {
+      "id": "c25a3687",
+      "title": "给我看一个代码片段",
+      "description": "网站的固定头部",
+      "prompt": "向我展示一个网站粘性头部的CSS和JavaScript代码片段。",
+      "category": "code"
+    },
+    {
+      "id": "c2fc4bd8",
+      "title": "写一份感谢信",
+      "description": "感谢我们的保姆在最后一刻提供帮助",
+      "prompt": "给我们的保姆写一张简短又甜蜜的感谢信，感谢她上周末临时照顾孩子们。我想让她知道我们全家都非常感激她！",
+      "category": "write"
+    },
+    {
+      "id": "4857d8b9",
+      "title": "给我一些想法",
+      "description": "关于如何制定我的新年计划",
+      "prompt": "给我三个关于如何制定新年计划的好主意。请提供一些个人的、家庭的和职业上的建议。",
+      "category": "idea"
+    },
+    {
+      "id": "124cc228",
+      "title": "重新讲述一个神话",
+      "description": "带有现代转折",
+      "prompt": "让我们用现代的视角重新讲述一个著名的神话故事。首先，你能问我哪个神话故事最吸引我，以及应该加入哪些现代元素或我感兴趣的内容吗？",
+      "category": "write"
+    },
+    {
+      "id": "a2c08e32",
+      "title": "比较设计原则",
+      "description": "适用于移动应用和桌面软件",
+      "prompt": "在一张简洁的表格中比较移动应用和桌面软件的设计原则",
+      "category": "data-vis"
+    },
+    {
+      "id": "53d8cb2c",
+      "title": "创建早晨日常",
+      "description": "提高我的生产力",
+      "prompt": "你能帮我定制一个个性化的早晨日程吗？这样可以提高我整天的工作效率。首先，询问我目前的习惯以及哪些早晨活动能让我精力充沛。",
+      "category": "idea"
+    },
+    {
+      "id": "2e7eb4e8",
+      "title": "编写一个SQL查询",
+      "description": "向“订单”表添加一个“状态”列",
+      "prompt": "给我一个SQL查询，用于向订单表添加一个默认值为PENDING的“status”列。如果“completed_at”已设置，则将其更改为COMPLETE。",
+      "category": "code"
+    },
+    {
+      "id": "9fa376de",
+      "title": "推荐一道菜",
+      "description": "给一个挑食的约会对象留下深刻印象",
+      "prompt": "我打算给我约会对象做饭，他/她挑食。你能推荐一道简单的菜吗？",
+      "category": "idea"
+    },
+    {
+      "id": "edc96ffa",
+      "title": "比较讲故事技巧",
+      "description": "在小说和电影中",
+      "prompt": "在一张简明的表格中比较小说和电影中的叙事技巧的不同方面",
+      "category": "data-vis"
+    },
+    {
+      "id": "d9887b64",
+      "title": "告诉我一个有趣的事实",
+      "description": "关于金州勇士队",
+      "prompt": "告诉我一个关于金州勇士队的随机趣事",
+      "category": "misc"
+    },
+    {
+      "id": "719b9eb6",
+      "title": "规划一次旅行",
+      "description": "前往冰岛的摄影探险",
+      "prompt": "我喜欢拍摄自然风光。你能帮我规划一个3天游览冰岛最上镜地点的行程吗？",
+      "category": "travel"
+    },
+    {
+      "id": "94e4124e",
+      "title": "撰写文本",
+      "description": "邀请我的邻居们来参加烧烤",
+      "prompt": "写一条简短又亲切的短信，邀请我的邻居来参加烧烤。",
+      "category": "write"
+    },
+    {
+      "id": "d4675c8e",
+      "title": "解释期权交易",
+      "description": "如果我熟悉买卖股票",
+      "prompt": "如果您熟悉股票买卖，请简单介绍一下期权交易。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "a99fb031",
+      "title": "自动化社交媒体帖子",
+      "description": "创建一个工具来安排我的帖子",
+      "prompt": "你能帮我开发一个自动化工具，根据我设置的参数来安排我的社交媒体帖子吗？首先问我最常使用哪些平台。",
+      "category": "code"
+    },
+    {
+      "id": "d1c0099d",
+      "title": "帮我学习",
+      "description": "大学入学考试的词汇",
+      "prompt": "帮我学习词汇：写一个句子并留一个空白处，我将尝试选出正确的选项。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "93c8aa03",
+      "title": "创意名片",
+      "description": "真正引人注目",
+      "prompt": "你能帮助我设计一张具有创意的自由摄影师名片吗？请先询问我关于风格偏好和颜色选择。",
+      "category": "idea"
+    },
+    {
+      "id": "df5c965d",
+      "title": "制定内容策略",
+      "description": "用于介绍免费的本地周末活动的新闻通讯",
+      "prompt": "制定一个关于免费本地周末活动的新闻通讯内容策略。",
+      "category": "write"
+    },
+    {
+      "id": "26b7ced9",
+      "title": "设计一个编程游戏",
+      "description": "以有趣的方式教授基础知识",
+      "prompt": "你能帮我设计一个教授基础编程技能的游戏概念吗？首先问我想要专注于哪种编程语言。",
+      "category": "idea"
+    },
+    {
+      "id": "e438c06f",
+      "title": "写一封电子邮件",
+      "description": "表达你对父母的爱",
+      "prompt": "给我的父母写一封简短的邮件，表达我对他们深深的爱以及对我们共同度过的时光的感激之情",
+      "category": "write"
+    },
+    {
+      "id": "0bdc73b5",
+      "title": "制定自我保养计划",
+      "description": "根据我的压力水平量身定制",
+      "prompt": "你能询问我日常的压力触发因素和放松活动，以定制个性化的自我护理计划吗？",
+      "category": "idea"
+    },
+    {
+      "id": "38034ee7",
+      "title": "解释超导体",
+      "description": "就像我五岁一样",
+      "prompt": "像我五岁一样解释什么是超导体。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "cfc830e7",
+      "title": "建议一些代号",
+      "description": "介绍灵活工作安排的项目",
+      "prompt": "为引入灵活工作安排的项目建议5个代号，并阐述每个代号的含义。",
+      "category": "idea"
+    },
+    {
+      "id": "b91c5219",
+      "title": "规划一次旅行",
+      "description": "探索曼谷的夜生活",
+      "prompt": "规划一周行程探索曼谷的夜生活。",
+      "category": "travel"
+    },
+    {
+      "id": "3ce209dc",
+      "title": "推荐有趣的活动",
+      "description": "一个四口之家在雨天室内可以做的事情",
+      "prompt": "你能为一个四口之家在雨天推荐一些室内的有趣活动吗？",
+      "category": "idea"
+    },
+    {
+      "id": "082d26c5",
+      "title": "帮我调试",
+      "description": "一个链表问题",
+      "prompt": "尝试反转链表后，为什么我的链表似乎为空？可能的原因有哪些？",
+      "category": "code"
+    },
+    {
+      "id": "a1cf549a",
+      "title": "建议一些名称",
+      "description": "适用于我日间经营咖啡馆、夜间转为酒吧的生意",
+      "prompt": "为我的咖啡店起5个高雅的名字，晚上会转变为酒吧，如“翻页者”般。请附上一句话简述其含义。",
+      "category": "idea"
+    },
+    {
+      "id": "70f11a62",
+      "title": "规划一次旅行",
+      "description": "像当地人一样体验首尔",
+      "prompt": "我计划去首尔进行为期4天的旅行。你能建议一个不涉及热门旅游景点的行程吗？",
+      "category": "travel"
+    },
+    {
+      "id": "080a3b71",
+      "title": "制作一个三明治",
+      "description": "使用我厨房里的食材",
+      "prompt": "你能让我列出我储藏室里的五种食材，然后帮我用它们发明一个新的三明治食谱吗？",
+      "category": "idea"
+    },
+    {
+      "id": "6a52bcd6",
+      "title": "规划一次旅行",
+      "description": "在预算范围内探索马达加斯加的野生动物",
+      "prompt": "你能帮我制定一个预算内探索马达加斯加野生动物的计划吗？我想在那里待一个星期。",
+      "category": "travel"
+    },
+    {
+      "id": "52714f58",
+      "title": "写一个简短的故事",
+      "description": "根据您喜爱的类型量身定制",
+      "prompt": "让我们深入探讨如何编写一个引人入胜的短故事。你能先问我最喜欢哪种类型，并分享一个我想要包含的主题或元素吗？",
+      "category": "idea"
+    },
+    {
+      "id": "b72bbc88",
+      "title": "测试我的知识",
+      "description": "关于古代文明",
+      "prompt": "你能通过提出具体问题来测试我对古代文明的了解吗？首先询问我最感兴趣的文明是哪一个，以及原因。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "b1935e1a",
+      "title": "解释这段代码：",
+      "description": "cat config.yaml | awk NF",
+      "prompt": "解释这个bash命令的作用：“cat config.yaml | awk NF”",
+      "category": "code"
+    },
+    {
+      "id": "b6f15125",
+      "title": "深入历史",
+      "description": "选择一个历史人物",
+      "prompt": "让我们一起深入历史吧。你能问我想了解哪位历史人物以及为什么他们引起了我的兴趣吗？我渴望探索他们对世界的影响以及他们留下的遗产。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "d4a2df13",
+      "title": "比较商业策略",
+      "description": "从预算到奢华的过渡",
+      "prompt": "使用简要表格比较从预算到奢华以及从奢华到预算的商业策略转变，概述不同方面",
+      "category": "data-vis"
+    },
+    {
+      "id": "ad0ae38c",
+      "title": "解释为什么爆米花会爆开",
+      "description": "对于喜欢在微波炉里观看的孩子",
+      "prompt": "向一个喜欢在微波炉里看爆米花爆开的孩子解释为什么爆米花会弹开。",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "a8a3f26d",
+      "title": "创建章程",
+      "description": "创建一个电影俱乐部",
+      "prompt": "创建一个章程，用于成立一个电影俱乐部，每周举办放映和讨论活动",
+      "category": "write"
+    },
+    {
+      "id": "68bab2dc",
+      "title": "思维激励",
+      "description": "用于小型书店的客户忠诚度计划",
+      "prompt": "你能帮我想出7个顾客忠诚度计划的创意吗？我在一家小书店工作。",
+      "category": "idea"
+    },
+    {
+      "id": "a03c22ac",
+      "title": "写一封电子邮件",
+      "description": "请求为我的项目延长截止日期",
+      "prompt": "给我的教授写一封简短的邮件，请求延长我的项目截止日期。我真的没有合理的理由，我也愿意承认这一点——所以请保持真实！",
+      "category": "write"
+    },
+    {
+      "id": "bbb177d3",
+      "title": "比较营销策略",
+      "description": "适合Z世代和千禧一代的太阳镜",
+      "prompt": "比较Z世代和千禧一代的太阳镜营销策略。",
+      "category": "data-vis"
+    },
+    {
+      "id": "77999a0e",
+      "title": "规划一个“心理健康日”",
+      "description": "帮助我放松",
+      "prompt": "你能帮我规划一个专注于活力恢复的'心理健康日'吗？首先，你能问我我最喜欢的放松方式是什么吗？",
+      "category": "travel"
+    },
+    {
+      "id": "30578287",
+      "title": "帮我选择",
+      "description": "给我爱钓鱼的爸爸的一份礼物",
+      "prompt": "你能为我爱钓鱼的爸爸想出一些创意礼物的主意吗？但请不要包括任何钓鱼装备。",
+      "category": "shop"
+    },
+    {
+      "id": "0895e32d",
+      "title": "头脑风暴命名",
+      "description": "我们即将从收容所领养的一只橘色猫咪",
+      "prompt": "为我们即将从收容所领养的橘猫起十个名字，并提供一些昵称选项。",
+      "category": "idea"
+    },
+    {
+      "id": "19a3e27e",
+      "title": "帮我选择",
+      "description": "一套在镜头前看起来很好的服装",
+      "prompt": "我明天有一个摄影拍摄。你能推荐一些在镜头前看起来不错的颜色和服装选项吗？",
+      "category": "shop"
+    },
+    {
+      "id": "5f82447b",
+      "title": "编写文本消息",
+      "description": "邀请一位朋友作为我的婚礼伴侣",
+      "prompt": "下个月有个婚礼，想邀你做我的伴侣。保持简短随意，不强求。",
+      "category": "write"
+    },
+    {
+      "id": "55568f18",
+      "title": "头脑风暴命名",
+      "description": "为我的幻想足球队设计一个青蛙主题",
+      "prompt": "为我的以青蛙为主题的幻想足球队想几个名字。",
+      "category": "idea"
+    },
+    {
+      "id": "6eebdf34",
+      "title": "规划一次旅行",
+      "description": "用于巴塞罗那的建筑摄影",
+      "prompt": "如果我对建筑摄影感兴趣，你能推荐一些巴塞罗那的参观地点吗？",
+      "category": "travel"
+    },
+    {
+      "id": "974d4604",
+      "title": "帮我选择",
+      "description": "给喜欢园艺的妈妈的生日礼物",
+      "prompt": "帮我挑选一份给喜欢园艺的妈妈的生日礼物。但不要推荐园艺工具——她已经拥有所有的了！",
+      "category": "shop"
+    },
+    {
+      "id": "6597823b",
+      "title": "规划行程",
+      "description": "体验澳大利亚内陆的野生动物",
+      "prompt": "你能给我一个4天的行程安排，以体验澳大利亚内陆的野生动物吗？",
+      "category": "travel"
+    },
+    {
+      "id": "9d9a6e9e",
+      "title": "写一条消息",
+      "description": "附带一只小猫咪动图的信息，旨在帮助朋友度过难熬的一天",
+      "prompt": "我想要让我的朋友振作起来，他今天过得不太好。你能建议几条简短又甜蜜的短信，并附上一张小猫咪的gif吗？",
+      "category": "write"
+    },
+    {
+      "id": "d69355b0",
+      "title": "克服拖延",
+      "description": "给我一些建议",
+      "prompt": "你能先问我最容易拖延的时刻是什么，然后给我一些建议来克服它吗？",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "a36cb799",
+      "title": "给未来的我写一封信",
+      "description": "反思我的心理健康",
+      "prompt": "你能帮我写一封给未来的自己的信吗？请先询问我在心理健康之旅中想包含的关键里程碑和挑战。",
+      "category": "write"
+    },
+    {
+      "id": "bb350c72",
+      "title": "规划一次旅行",
+      "description": "在3天内看遍纽约的精华",
+      "prompt": "我将在纽约待3天。你能推荐我应该做些什么来最好地体验这座城市吗？",
+      "category": "travel"
+    },
+    {
+      "id": "e90a6598",
+      "title": "推荐有趣的活动",
+      "description": "在室内与我那充满活力的狗狗一起做的事情",
+      "prompt": "有哪五种既有趣又富有创意的室内活动适合我这个精力旺盛的狗狗？",
+      "category": "idea"
+    },
+    {
+      "id": "9575d31b",
+      "title": "规划一次旅行",
+      "description": "探索土耳其卡帕多西亚的岩石地貌",
+      "prompt": "我想去土耳其卡帕多西亚看岩石地貌。你能帮我规划一个3天的行程吗？",
+      "category": "travel"
+    },
+    {
+      "id": "72419588",
+      "title": "提高我的论文写作能力",
+      "description": "请让我概述我的想法",
+      "prompt": "你能通过要求我就给定主题概述我的想法来帮助我提高我的论文写作技能吗？让我们专注于发展清晰的论点和支持论据。",
+      "category": "genius"
+    },
+    {
+      "id": "17fd594d",
+      "title": "写一份感谢信",
+      "description": "给我的面试官",
+      "prompt": "向我的面试官写2-3句话以表示感谢，同时重申我对这个工作机会的兴奋之情，但保持不太正式的态度。",
+      "category": "write"
+    },
+    {
+      "id": "a16e7d82",
+      "title": "开始一个在线业务",
+      "description": "寻找一个小众领域",
+      "prompt": "你能询问我我的兴趣和技能，以帮助确定我的在线业务的细分市场吗？我们也来讨论可能适合我特定情况的潜在商业模式。",
+      "category": "misc"
+    },
+    {
+      "id": "c25fcdc8",
+      "title": "创建一个锻炼计划",
+      "description": "用于阻力训练",
+      "prompt": "我需要开始进行抗阻力训练。你能为我制定一个7天的锻炼计划，帮助我逐渐适应吗？",
+      "category": "write"
+    },
+    {
+      "id": "bd372e53",
+      "title": "推荐活动",
+      "description": "用于远程员工的团队建设日",
+      "prompt": "你能推荐几个适合团建日的破冰活动吗？我们有远程员工，想让他们也感到被包括。",
+      "category": "idea"
+    },
+    {
+      "id": "364cd94c",
+      "title": "写一封电子邮件",
+      "description": "向当地的水管工请求报价",
+      "prompt": "写封邮件给当地的水管工，请求回流测试的报价。我需要在接下来的两周内完成。请保持简洁随和。",
+      "category": "write"
+    },
+    {
+      "id": "58d452ea",
+      "title": "探讨边缘案例",
+      "description": "一个函数，以出生日期为输入，输出为星座",
+      "prompt": "你能为一个输入生日并返回星座的函数思考一些边缘情况吗？",
+      "category": "idea"
+    },
+    {
+      "id": "380892b0",
+      "title": "解释怀旧之情",
+      "description": "给一个幼儿园的小朋友",
+      "prompt": "你能向一个幼儿园小朋友解释什么是“怀旧”吗？",
+      "category": "teach-or-explain"
+    },
+    {
+      "id": "8ef7d653",
+      "title": "推荐有趣的活动",
+      "description": "帮助我在新城市交朋友",
+      "prompt": "我刚搬到一个新城市，想交朋友。有什么有趣的活动可以帮助我做到这一点吗？",
+      "category": "idea"
+    },
+    {
+      "id": "944a3d4e",
+      "title": "规划行程",
+      "description": "参观英格兰著名作家的家园，进行一次文学之旅",
+      "prompt": "我很兴奋去英格兰参观一些著名作家的家。你能为我策划这样的文学之旅吗？",
+      "category": "travel"
+    },
+    {
+      "id": "45bbb361",
+      "title": "日常妆容",
+      "description": "轻松展现时尚魅力",
+      "prompt": "为了帮助我找到最佳的日常妆容，请先让我描述一下我当前的化妆流程以及我希望通过它实现的目标好吗？",
+      "category": "idea"
+    },
+    {
+      "id": "2eaebcb7",
+      "title": "规划行程",
+      "description": "探索巴黎的时尚焦点",
+      "prompt": "如果我对时尚特别感兴趣，在巴黎五天内我能做些什么？",
+      "category": "travel"
+    },
+    {
+      "id": "2351955a",
+      "title": "头脑风暴内容创意",
+      "description": "关于城市设计的新播客",
+      "prompt": "为我的新城市设计播客构思5个剧集点子。",
+      "category": "idea"
+    },
+    {
+      "id": "8eca0e52",
+      "title": "规划我的完美电影",
+      "description": "基于我欣赏的类型",
+      "prompt": "首先，你能问我最喜欢的电影类型吗？然后，我们将创造一个结合我所有喜爱元素的完美电影情节。",
+      "category": "write"
+    },
+    {
+      "id": "241e9e8c",
+      "title": "设定现实目标",
+      "description": "为我的成长规划道路",
+      "prompt": "您能先了解我的当前生活方式和习惯吗？这有助于我们设定现实的自我提升目标。",
+      "category": "idea"
+    },
+    {
+      "id": "BKxhwXJ",
+      "title": "推荐有趣的活动",
+      "description": "一家人访问旧金山",
+      "prompt": "我的家人第一次来旧金山。能否列出一些必看景点和必做活动？",
+      "category": "travel"
+    },
+    {
+      "id": "a477416b",
+      "title": "告诉我一个有趣的事实",
+      "description": "关于罗马帝国",
+      "prompt": "告诉我一个关于罗马帝国的随机趣事",
+      "category": "misc"
+    },
+    {
+      "id": "c43fd43f",
+      "title": "编写电子表格公式",
+      "description": "将日期转换为星期几",
+      "prompt": "你能写一个电子表格公式，将一列中的日期转换为星期几（如“星期四”）吗？",
+      "category": "code"
+    }
+  ],
+  "total": 87,
+  "limit": 1000,
+  "offset": 0,
+  "url": "https://chat.openai.com/backend-api/prompt_library/?limit=1000&offset=0"
+}
