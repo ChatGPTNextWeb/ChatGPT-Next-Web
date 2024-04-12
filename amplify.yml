@@ -1,0 +1,21 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - yarn install
+    build:
+      commands:
+        - env | grep -e HIDE_USER_API_KEY -e OPENAI_ORG_ID -e OPENAI_API_KEY -e BASE_URL -e DISABLE_GPT4 >> .env.production
+        - echo "CODE=$CODE" >> .env.production
+        - pwd
+        - head .env.production
+        - type 
+        - yarn run build
+  artifacts:
+    baseDirectory: .next/
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
