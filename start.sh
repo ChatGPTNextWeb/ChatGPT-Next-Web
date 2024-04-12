@@ -5,7 +5,7 @@ yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
 yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
 
 #yarn cache clean
-yarn install
+yes | yarn install
 yarn run build
 
 mkdir -p "./node_modules/tiktoken"
