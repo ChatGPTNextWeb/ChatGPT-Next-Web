@@ -92,8 +92,8 @@ import {
   UNFINISHED_INPUT,
 } from "../constant";
 import { Avatar } from "./emoji";
-import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
-import { useMaskStore } from "../store/mask";
+// import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
+// import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
@@ -114,7 +114,7 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 export function SessionConfigModel(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const maskStore = useMaskStore();
+  // const maskStore = useMaskStore();
   const navigate = useNavigate();
 
   return (
@@ -136,40 +136,40 @@ export function SessionConfigModel(props: { onClose: () => void }) {
               }
             }}
           />,
-          <IconButton
-            key="copy"
-            icon={<CopyIcon />}
-            bordered
-            text={Locale.Chat.Config.SaveAs}
-            onClick={() => {
-              navigate(Path.Masks);
-              setTimeout(() => {
-                maskStore.create(session.mask);
-              }, 500);
-            }}
-          />,
+          // <IconButton
+          //   key="copy"
+          //   icon={<CopyIcon />}
+          //   bordered
+          //   text={Locale.Chat.Config.SaveAs}
+          //   onClick={() => {
+          //     navigate(Path.Masks);
+          //     setTimeout(() => {
+          //       maskStore.create(session.mask);
+          //     }, 500);
+          //   }}
+          // />,
         ]}
       >
-        <MaskConfig
-          mask={session.mask}
-          updateMask={(updater) => {
-            const mask = { ...session.mask };
-            updater(mask);
-            chatStore.updateCurrentSession((session) => (session.mask = mask));
-          }}
-          shouldSyncFromGlobal
-          extraListItems={
-            session.mask.modelConfig.sendMemory ? (
-              <ListItem
-                className="copyable"
-                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
-                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
-              ></ListItem>
-            ) : (
-              <></>
-            )
-          }
-        ></MaskConfig>
+        {/*<MaskConfig*/}
+        {/*  mask={session.mask}*/}
+        {/*  updateMask={(updater) => {*/}
+        {/*    const mask = { ...session.mask };*/}
+        {/*    updater(mask);*/}
+        {/*    chatStore.updateCurrentSession((session) => (session.mask = mask));*/}
+        {/*  }}*/}
+        {/*  shouldSyncFromGlobal*/}
+        {/*  extraListItems={*/}
+        {/*    session.mask.modelConfig.sendMemory ? (*/}
+        {/*      <ListItem*/}
+        {/*        className="copyable"*/}
+        {/*        title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}*/}
+        {/*        subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}*/}
+        {/*      ></ListItem>*/}
+        {/*    ) : (*/}
+        {/*      <></>*/}
+        {/*    )*/}
+        {/*  }*/}
+        {/*></MaskConfig>*/}
       </Modal>
     </div>
   );
@@ -680,14 +680,14 @@ export function EditMessageModal(props: { onClose: () => void }) {
             ></input>
           </ListItem>
         </List>
-        <ContextPrompts
-          context={messages}
-          updateContext={(updater) => {
-            const newMessages = messages.slice();
-            updater(newMessages);
-            setMessages(newMessages);
-          }}
-        />
+        {/*<ContextPrompts*/}
+        {/*  context={messages}*/}
+        {/*  updateContext={(updater) => {*/}
+        {/*    const newMessages = messages.slice();*/}
+        {/*    updater(newMessages);*/}
+        {/*    setMessages(newMessages);*/}
+        {/*  }}*/}
+        {/*/>*/}
       </Modal>
     </div>
   );
@@ -867,10 +867,10 @@ function _Chat() {
       });
 
       // auto sync mask config from global config
-      if (session.mask.syncGlobalConfig) {
-        console.log("[Mask] syncing from global, name = ", session.mask.name);
-        session.mask.modelConfig = { ...config.modelConfig };
-      }
+      // if (session.mask.syncGlobalConfig) {
+      //   console.log("[Mask] syncing from global, name = ", session.mask.name);
+      //   session.mask.modelConfig = { ...config.modelConfig };
+      // }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1411,16 +1411,16 @@ function _Chat() {
                         <Avatar avatar={config.avatar} />
                       ) : (
                         <>
-                          {["system"].includes(message.role) ? (
-                            <Avatar avatar="2699-fe0f" />
-                          ) : (
-                            <MaskAvatar
-                              avatar={session.mask.avatar}
-                              model={
-                                message.model || session.mask.modelConfig.model
-                              }
-                            />
-                          )}
+                          {/*{["system"].includes(message.role) ? (*/}
+                          {/*  <Avatar avatar="2699-fe0f" />*/}
+                          {/*) : (*/}
+                          {/*  <MaskAvatar*/}
+                          {/*    avatar={session.mask.avatar}*/}
+                          {/*    model={*/}
+                          {/*      message.model || session.mask.modelConfig.model*/}
+                          {/*    }*/}
+                          {/*  />*/}
+                          {/*)}*/}
                         </>
                       )}
                     </div>
