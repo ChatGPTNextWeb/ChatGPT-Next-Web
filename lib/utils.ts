@@ -1,10 +1,9 @@
 import bcrypt from "bcryptjs";
-import {get_encoding} from "tiktoken";
+import { get_encoding } from "tiktoken";
 
 
 export function getTokenLength(input: string): number {
   const encoding = get_encoding("cl100k_base");
-  // console.log('tokens: ', input, encoding.countTokens())
   return encoding.encode(input).length;
 }
 
