@@ -11,7 +11,7 @@ yarn config delete sharp_libvips_binary_host
 
 #yarn cache clean
 #yarn install
-npm i -g cnpm
+npm i cnpm
 cnpm i
 yarn run build
 
