@@ -11,7 +11,7 @@ yarn config delete sharp_libvips_binary_host
 
 #yarn cache clean
 # sharp
-yarn add sharp
+yarn global add sharp
 
 yarn install
 yarn run build
