@@ -47,7 +47,6 @@ export default async function RootLayout({
       </head>
       <body>
         <SessionProvider session={session}>{children}</SessionProvider>
-        {children}
         {serverConfig?.isVercel && (
           <>
             <SpeedInsights />
