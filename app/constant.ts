@@ -8,8 +8,11 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-export const DEFAULT_CORS_HOST = "https://ab.nextweb.fun";
-export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
+export const DEFAULT_API_HOST = "https://api.nextchat.dev";
+export const OPENAI_BASE_URL = "https://api.openai.com";
+export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
+
+export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
 export enum Path {
   Home = "/",
@@ -21,11 +24,14 @@ export enum Path {
 }
 
 export enum ApiPath {
-  Cors = "/api/cors",
+  Cors = "",
+  OpenAI = "/api/openai",
+  Anthropic = "/api/anthropic",
 }
 
 export enum SlotID {
   AppBody = "app-body",
+  CustomModel = "custom-model",
 }
 
 export enum FileName {
@@ -59,6 +65,26 @@ export const REQUEST_TIMEOUT_MS = 60000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
+export enum ServiceProvider {
+  OpenAI = "OpenAI",
+  Azure = "Azure",
+  Google = "Google",
+  Anthropic = "Anthropic",
+}
+
+export enum ModelProvider {
+  GPT = "GPT",
+  GeminiPro = "GeminiPro",
+  Claude = "Claude",
+}
+
+export const Anthropic = {
+  ChatPath: "v1/messages",
+  ChatPath1: "v1/complete",
+  ExampleEndpoint: "https://api.anthropic.com",
+  Vision: "2023-06-01",
+};
+
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
@@ -66,74 +92,308 @@ export const OpenaiPath = {
   ListModelPath: "v1/models",
 };
 
+export const Azure = {
+  ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
+};
+
+export const Google = {
+  ExampleEndpoint: "https://generativelanguage.googleapis.com/",
+  ChatPath: "v1beta/models/gemini-pro:generateContent",
+  VisionChatPath: "v1beta/models/gemini-pro-vision:generateContent",
+
+  // /api/openai/v1/chat/completions
+};
+
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
+// export const DEFAULT_SYSTEM_TEMPLATE = `
+// You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+// Knowledge cutoff: {{cutoff}}
+// Current model: {{model}}
+// Current time: {{time}}
+// Latex inline: $x^2$
+// Latex block: $$e=mc^2$$
+// `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by OpenAI.
-Knowledge cutoff: {{knowledgeCutoff}}
+You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
+Latex inline: \\(x^2\\) 
+Latex block: $$e=mc^2$$
 `;
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
+
+export const KnowledgeCutOffDate: Record<string, string> = {
+  default: "2021-09",
+  "gpt-4-turbo": "2023-12",
+  "gpt-4-turbo-preview": "2023-12",
+  "gpt-4-1106-preview": "2023-04",
+  "gpt-4-0125-preview": "2023-12",
+  "gpt-4-vision-preview": "2023-04",
+  // After improvements,
+  // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
+  "gemini-pro": "2023-12",
+};
 
 export const DEFAULT_MODELS = [
   {
     name: "gpt-4",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-0314",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-0613",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-32k",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-32k-0314",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-32k-0613",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4-turbo",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4-turbo-2024-04-09",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4-turbo-preview",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-1106-preview",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4-0125-preview",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-4-vision-preview",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-3.5-turbo",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-3.5-turbo-0125",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-3.5-turbo-0301",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-3.5-turbo-0613",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-3.5-turbo-1106",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-3.5-turbo-16k",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
   },
   {
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gemini-pro",
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
+  {
+    name: "gemini-pro-vision",
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
+  {
+    name: "claude-instant-1.2",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
+  },
+  {
+    name: "claude-2.0",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
+  },
+  {
+    name: "claude-2.1",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
+  },
+  {
+    name: "claude-3-opus-20240229",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
+  },
+  {
+    name: "claude-3-sonnet-20240229",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
+  },
+  {
+    name: "claude-3-haiku-20240307",
+    available: true,
+    provider: {
+      id: "anthropic",
+      providerName: "Anthropic",
+      providerType: "anthropic",
+    },
   },
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
+
+// some famous webdav endpoints
+export const internalWhiteWebDavEndpoints = [
+  "https://dav.jianguoyun.com/dav/",
+  "https://dav.dropdav.com/",
+  "https://dav.box.com/dav",
+  "https://nanao.teracloud.jp/dav/",
+  "https://webdav.4shared.com/",
+  "https://dav.idrivesync.com",
+  "https://webdav.yandex.com",
+  "https://app.koofr.net/dav/Koofr",
+];
