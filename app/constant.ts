@@ -139,7 +139,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4",
     available: true,
-    maxInToken: 8_2,
+    maxInToken: 8_192,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -150,7 +150,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-0613",
     available: true,
-    maxInToken: 8_12,
+    maxInToken: 8_192,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -161,7 +161,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-32k",
     available: true,
-    maxInToken: 368,
+    maxInToken: 32_768,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -172,7 +172,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-32k-0613",
     available: true,
-    maxInToken: 328,
+    maxInToken: 32_768,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -194,7 +194,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-turbo-2024-04-09",
     available: true,
-    maxInToken: 1200,
+    maxInToken: 128_000,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -205,7 +205,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-turbo-preview",
     available: true,
-    maxInToken: 8_000,
+    maxInToken: 128_000,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -216,7 +216,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-vision-preview",
     available: true,
-    maxInToken: 28_000,
+    maxInToken: 128_000,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -227,7 +227,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo",
     available: true,
-    maxInToken: 6_385,
+    maxInToken: 16_385,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -238,7 +238,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo-0125",
     available: true,
-    maxInToken: 15,
+    maxInToken: 16_385,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -249,7 +249,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo-1106",
     available: true,
-    maxInToken: 188,
+    maxInToken: 16_385,
     maxOutToken: 4_096,
     provider: {
       id: "openai",
@@ -282,7 +282,7 @@ export const DEFAULT_MODELS = [
   {
     name: "gemini-pro-vision",
     available: true,
-    maxInToken: 14118,
+    maxInToken: 12_288,
     maxOutToken: 4_096,
     provider: {
       id: "google",
@@ -293,7 +293,7 @@ export const DEFAULT_MODELS = [
   {
     name: "claude-instant-1.2",
     available: true,
-    maxInToken: 18780,
+    maxInToken: 100_000,
     maxOutToken: 4_096,
     provider: {
       id: "anthropic",
@@ -304,7 +304,7 @@ export const DEFAULT_MODELS = [
   {
     name: "claude-2.0",
     available: true,
-    maxInToken: 10,
+    maxInToken: 100_000,
     maxOutToken: 4_096,
     provider: {
       id: "anthropic",
@@ -315,7 +315,7 @@ export const DEFAULT_MODELS = [
   {
     name: "claude-2.1",
     available: true,
-    maxInToken: 254,
+    maxInToken: 200_000,
     maxOutToken: 4_096,
     provider: {
       id: "anthropic",
@@ -326,7 +326,7 @@ export const DEFAULT_MODELS = [
   {
     name: "claude-3-opus-20240229",
     available: true,
-    maxInToken: 207800,
+    maxInToken: 200_000,
     maxOutToken: 4_096,
     provider: {
       id: "anthropic",
@@ -337,7 +337,7 @@ export const DEFAULT_MODELS = [
   {
     name: "claude-3-sonnet-20240229",
     available: true,
-    maxInToken: 870_000,
+    maxInToken: 200_000,
     maxOutToken: 4_096,
     provider: {
       id: "anthropic",
@@ -348,7 +348,7 @@ export const DEFAULT_MODELS = [
   {
     name: "claude-3-haiku-20240307",
     available: true,
-    maxInToken: 200,
+    maxInToken: 200_000,
     maxOutToken: 4_096,
     provider: {
       id: "anthropic",
