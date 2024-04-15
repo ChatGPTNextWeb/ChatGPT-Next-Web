@@ -63,9 +63,6 @@ export function createWebDavClient(store: SyncStore) {
       };
     },
     path(path: string, proxyUrl: string = "") {
-      if (!path.endsWith("/")) {
-        path += "/";
-      }
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
