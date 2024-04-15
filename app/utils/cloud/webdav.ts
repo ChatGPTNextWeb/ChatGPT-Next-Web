@@ -68,7 +68,7 @@ export function createWebDavClient(store: SyncStore) {
       }
       
       if (proxyUrl === "") {
-        proxyUrl = location.origin;
+        proxyUrl = (() => {let url = new URL(location.href); url.hash = ''; url.search = ''; return url.href.substring(0, url.href.length-1)})();
       }
       let u = new URL(proxyUrl + "/api/webdav/" + path);
       // add query params
