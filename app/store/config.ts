@@ -25,6 +25,11 @@ export enum Theme {
   Light = "light",
 }
 
+function getMaxTokens(modelName: ModelType) {
+  const model = DEFAULT_MODELS.find(m => m.name === modelName);
+  return model ? model.maxInToken : 4096;
+}
+
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
@@ -49,7 +54,7 @@ export const DEFAULT_CONFIG = {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 4000,
+    max_tokens: 2_048,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
@@ -59,6 +64,8 @@ export const DEFAULT_CONFIG = {
     template: DEFAULT_INPUT_TEMPLATE,
   },
 };
+
+DEFAULT_CONFIG.modelConfig.max_tokens = getMaxTokens(DEFAULT_CONFIG.modelConfig.model);
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
 
@@ -81,8 +88,12 @@ export const ModalConfigValidator = {
   model(x: string) {
     return x as ModelType;
   },
-  max_tokens(x: number) {
-    return limitNumber(x, 0, 512000, 1024);
+  max_tokens(x: number, modelName: ModelType = DEFAULT_CONFIG.modelConfig.model) { // 设置默认值
+    const model = DEFAULT_MODELS.find(m => m.name === modelName);
+    if (!model) {
+      return 2048; 
+    }
+    return limitNumber(x, 0, model.maxOutToken, model.maxOutToken);
   },
   presence_penalty(x: number) {
     return limitNumber(x, -2, 2, 0);
@@ -133,7 +144,7 @@ export const useAppConfig = createPersistStore(
   {
     name: StoreKey.Config,
     version: 3.8,
-    migrate(persistedState, version) {
+    migrate(persistedState: any, version: number) {
       const state = persistedState as ChatConfig;
 
       if (version < 3.4) {
