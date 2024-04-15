@@ -85,7 +85,7 @@ export function ModelConfigList(props: {
           type="number"
           min={0}
           max={maxOutToken}
-          value={maxOutToken}
+          value={props.modelConfig.max_tokens}
           onChange={(e) =>
             props.updateConfig(
               (config) =>
