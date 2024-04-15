@@ -1,5 +1,5 @@
 import { ModalConfigValidator, ModelConfig } from "../store";
-
+import { DEFAULT_MODELS } from "../constant";
 import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
@@ -10,6 +10,11 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
+
+  const currentModel = DEFAULT_MODELS.find(
+    (model) => model.name === props.modelConfig.model
+  );
+  const maxOutToken = currentModel ? currentModel.maxOutToken : 4096; // 设置默认值
 
   return (
     <>
@@ -78,9 +83,9 @@ export function ModelConfigList(props: {
       >
         <input
           type="number"
-          min={1024}
-          max={512000}
-          value={props.modelConfig.max_tokens}
+          min={0}
+          max={maxOutToken}
+          value={maxOutToken}
           onChange={(e) =>
             props.updateConfig(
               (config) =>
