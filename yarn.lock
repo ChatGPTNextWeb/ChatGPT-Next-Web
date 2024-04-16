@@ -1919,25 +1919,27 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@langchain/cohere@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@langchain/cohere/-/cohere-0.0.6.tgz#d1663df071cca1348c69ff5a9c52dedbb35a8a85"
-  integrity sha512-WBFAWt8K7bbAbAJG/neMqalJ1DvXxPCtB0n9Gq7rTUFzB5CmjCNpKxdGvkv22t7hAkPnCbFTQWEtiHo3uWOyRg==
+"@langchain/cohere@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@langchain/cohere/-/cohere-0.0.7.tgz#e9b4ce0b9eac15d87f0843203f08091b854aa880"
+  integrity sha512-ICSrSOT6FzSbR+xnbkP6BxXhuom1ViPRiy8K8KrL6bHbTiR5v1UnpskTWRpyhQS1GA6+3t1gp7XHxB5CZzLyqQ==
   dependencies:
     "@langchain/core" "~0.1"
-    cohere-ai "^7.8.0"
+    cohere-ai "^7.9.3"
 
-"@langchain/community@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.npmjs.org/@langchain/community/-/community-0.0.30.tgz"
-  integrity sha512-duYJtC8wN8FeIBkijGmDcOPpcK6dPU3Uwamh9K3ASuM97AUI2gEzZJeVtUPQiWFRPyDOAlPfNtrqxVUy2kmp9g==
+"@langchain/community@0.0.49":
+  version "0.0.49"
+  resolved "https://registry.yarnpkg.com/@langchain/community/-/community-0.0.49.tgz#63b2c86189e9cad82abe708a183c7dc8d01ec8bc"
+  integrity sha512-+6LoV+r7CWk2o0F4QWjJwJ+Qvxgpx6Ta6os0shWkkyY2e+xH04EAkXpMHFjur/+1oodmqiHD/gHYxzZTT3B8aw==
   dependencies:
-    "@langchain/core" "~0.1.29"
-    "@langchain/openai" "~0.0.14"
+    "@langchain/core" "~0.1.56"
+    "@langchain/openai" "~0.0.28"
+    expr-eval "^2.0.2"
     flat "^5.0.2"
     langsmith "~0.1.1"
     uuid "^9.0.0"
     zod "^3.22.3"
+    zod-to-json-schema "^3.22.5"
 
 "@langchain/community@~0.0.47":
   version "0.0.47"
@@ -1953,10 +1955,10 @@
     zod "^3.22.3"
     zod-to-json-schema "^3.22.5"
 
-"@langchain/core@0.1.57", "@langchain/core@~0.1", "@langchain/core@~0.1.13", "@langchain/core@~0.1.29", "@langchain/core@~0.1.45", "@langchain/core@~0.1.56":
-  version "0.1.57"
-  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.57.tgz#c592ad6715e373e4203f590f20b8b999e64cfb16"
-  integrity sha512-6wOwidPkkRcANrOKl88+YYpm3jHfpg6W8EqZHQCImSAlxdEhyDSq2eeQKHOPCFCrfNWkClaNn+Wlzzz4Qwf9Tg==
+"@langchain/core@0.1.58", "@langchain/core@~0.1", "@langchain/core@~0.1.56":
+  version "0.1.58"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.58.tgz#a1708ddadb12cbbbb77d24a36a35d1802c2eeeaa"
+  integrity sha512-a3b2wQbseLLnoRfQY3W6cnbSreHlPfrCoi41kznzzXTgToPK7cSeCn1wOK4CmLdWu9HCk8cm3x5yM5FXPNEP+Q==
   dependencies:
     ansi-styles "^5.0.0"
     camelcase "6"
@@ -1964,35 +1966,14 @@
     js-tiktoken "^1.0.8"
     langsmith "~0.1.7"
     ml-distance "^4.0.0"
+    mustache "^4.2.0"
     p-queue "^6.6.2"
     p-retry "4"
     uuid "^9.0.0"
     zod "^3.22.4"
     zod-to-json-schema "^3.22.3"
 
-"@langchain/openai@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.npmjs.org/@langchain/openai/-/openai-0.0.14.tgz"
-  integrity sha512-co6nRylPrLGY/C3JYxhHt6cxLq07P086O7K3QaZH7SFFErIN9wSzJonpvhZR07DEUq6eK6wKgh2ORxA/NcjSRQ==
-  dependencies:
-    "@langchain/core" "~0.1.13"
-    js-tiktoken "^1.0.7"
-    openai "^4.26.0"
-    zod "^3.22.4"
-    zod-to-json-schema "^3.22.3"
-
-"@langchain/openai@~0.0.14":
-  version "0.0.23"
-  resolved "https://registry.npmjs.org/@langchain/openai/-/openai-0.0.23.tgz"
-  integrity sha512-H5yv2hKQ5JVa6jC1wQxiN2299lJbPc5JUv93c6IUw+0jr0kFqH48NWbcythz1UFj2rOpZdaFJSYJs2nr9bhVLg==
-  dependencies:
-    "@langchain/core" "~0.1.45"
-    js-tiktoken "^1.0.7"
-    openai "^4.26.0"
-    zod "^3.22.4"
-    zod-to-json-schema "^3.22.3"
-
-"@langchain/openai@~0.0.28":
+"@langchain/openai@0.0.28", "@langchain/openai@~0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-0.0.28.tgz#afaeec61b44816935db9ae937496c964c81ab571"
   integrity sha512-2s1RA3/eAnz4ahdzsMPBna9hfAqpFNlWdHiPxVGZ5yrhXsbLWWoPcF+22LCk9t0HJKtazi2GCIWc0HVXH9Abig==
@@ -3760,10 +3741,10 @@ client-only@0.0.1:
   resolved "https://registry.npmjs.org/client-only/-/client-only-0.0.1.tgz"
   integrity sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==
 
-cohere-ai@^7.8.0:
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/cohere-ai/-/cohere-ai-7.9.0.tgz#05dcf98417e4700cd941eaa340e5684633f4352e"
-  integrity sha512-iHPG4dule+nMlw88Xe0USGZbLlXuRC4yvOvfCqoEdW9tHOc0vkiPfiyjBalDcPKj9KEvWZfii84kyN5HyTMySw==
+cohere-ai@^7.9.3:
+  version "7.9.3"
+  resolved "https://registry.yarnpkg.com/cohere-ai/-/cohere-ai-7.9.3.tgz#8f1e393e6d46922eb5e0fa46f23499a20d1196a9"
+  integrity sha512-DcZ6B9Fa1yaFFkZ3+HO/aE4R97m08cZs/ww7YpfEcTatAljznmnXtaFKRMP57olLMGKmYA/oHpkUqh/Vt4kvFA==
   dependencies:
     form-data "4.0.0"
     js-base64 "3.7.2"
@@ -6932,6 +6913,11 @@ ms@^2.0.0, ms@^2.1.1:
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
+mustache@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/mustache/-/mustache-4.2.0.tgz#e5892324d60a12ec9c2a73359edca52972bf6f64"
+  integrity sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==
+
 nanoid@^3.3.6:
   version "3.3.7"
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz"
@@ -7146,16 +7132,15 @@ onetime@^6.0.0:
   dependencies:
     mimic-fn "^4.0.0"
 
-openai@4.28.4, openai@^4.26.0, openai@^4.32.1:
-  version "4.28.4"
-  resolved "https://registry.yarnpkg.com/openai/-/openai-4.28.4.tgz#d4bf1f53a89ef151bf066ef284489e12e7dd1657"
-  integrity sha512-RNIwx4MT/F0zyizGcwS+bXKLzJ8QE9IOyigDG/ttnwB220d58bYjYFp0qjvGwEFBO6+pvFVIDABZPGDl46RFsg==
+openai@4.35.0, openai@^4.32.1:
+  version "4.35.0"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-4.35.0.tgz#3a9fa95e87d18df73ef3ff03ed40bd7b4e7770e9"
+  integrity sha512-K8GY7k4h+dT2GSmn3JGSjkwElpo8cPa4eQ6p++uK1HSrrIBp6NalD3A3DIamvX1AnIyrKqe8M//HoQWgjntUiA==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"
     abort-controller "^3.0.0"
     agentkeepalive "^4.2.1"
-    digest-fetch "^1.3.0"
     form-data-encoder "1.7.2"
     formdata-node "^4.3.2"
     node-fetch "^2.6.7"

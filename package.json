@@ -21,9 +21,9 @@
     "@aws-sdk/s3-request-presigner": "^3.414.0",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
-    "@langchain/cohere": "^0.0.6",
-    "@langchain/community": "0.0.30",
-    "@langchain/openai": "0.0.26",
+    "@langchain/cohere": "^0.0.7",
+    "@langchain/community": "0.0.49",
+    "@langchain/openai": "0.0.28",
     "@langchain/pinecone": "^0.0.4",
     "@next/third-parties": "^14.1.0",
     "@pinecone-database/pinecone": "^2.2.0",
@@ -92,8 +92,8 @@
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2",
-    "@langchain/core": "0.1.57",
-    "openai": "4.28.4"
+    "@langchain/core": "0.1.58",
+    "openai": "4.35.0"
   },
   "packageManager": "yarn@1.22.19"
 }
