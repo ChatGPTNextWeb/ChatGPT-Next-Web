@@ -102,8 +102,8 @@ import Image from "next/image";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 import { getTokenLength } from "@/lib/utils";
-import VoiceInput from "@/app/components/voice-input";
-
+import VoiceInput from "./voice-input";
+import GptPrompts from "./gpt-prompts";
 // const VoiceInput = dynamic(
 //     () => import('@/app/components/voice-input'), { ssr: false });
 
@@ -1636,6 +1636,7 @@ function _Chat() {
       </div>
 
       <div className={styles["chat-input-panel"]}>
+        <GptPrompts />
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
         <ChatActions
