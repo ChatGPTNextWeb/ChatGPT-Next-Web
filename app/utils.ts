@@ -296,6 +296,7 @@ export function isVisionModel(model: string) {
   const visionKeywords = [
     "vision",
     "claude-3",
+    "gpt-4-turbo-2024-04-09",
   ];
 
   return visionKeywords.some(keyword => model.includes(keyword));
