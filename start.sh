@@ -10,7 +10,9 @@ yarn config delete sharp_binary_host
 yarn config delete sharp_libvips_binary_host
 
 #yarn cache clean
-yarn install
+#yarn install
+npm i cnpm
+cnpm i
 yarn run build
 
 mkdir -p "./node_modules/tiktoken"

@@ -73,8 +73,8 @@ jobs:
             docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
-            rm -rf /www/server/nginx/proxy_cache_dir/*
-            rm -rf /www/server/nginx/proxy_temp_dir/*
+            rm -rf /www/server/nginx/proxy_cache_dir/* || true
+            rm -rf /www/server/nginx/proxy_temp_dir/* || true
             sleep 2
             #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
   deploy-ty:
