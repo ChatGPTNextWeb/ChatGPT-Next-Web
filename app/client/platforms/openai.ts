@@ -124,10 +124,15 @@ export class ChatGPTApi implements LLMApi {
       "gpt-4-0613",
       "gpt-4-32k-0314",
       "gpt-4-32k-0613",
+      "gpt-4-1106-preview",
+      "gpt-4-0125-preview",
+      "gpt-4-1106-vision",
+      "gpt-4-1106-vision-preview",
+      
     ];
 
     // Check if the current model is in the list of models to replace
-    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4-turbo-preview" : modelConfig.model;
+    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4-turbo" : modelConfig.model;
 
     const requestPayload = {
       messages,
