@@ -103,7 +103,7 @@ import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 import { getTokenLength } from "@/lib/utils";
 import VoiceInput from "./voice-input";
-import GptPrompts from "./gpt-prompts";
+// import GptPrompts from "./gpt-prompts";
 // const VoiceInput = dynamic(
 //     () => import('@/app/components/voice-input'), { ssr: false });
 
@@ -1636,7 +1636,7 @@ function _Chat() {
       </div>
 
       <div className={styles["chat-input-panel"]}>
-        <GptPrompts />
+        {/*<GptPrompts />*/}
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
         <ChatActions
