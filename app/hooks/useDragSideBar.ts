@@ -2,14 +2,13 @@ import {
   DEFAULT_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
   MIN_SIDEBAR_WIDTH,
-  NARROW_SIDEBAR_WIDTH,
 } from "@/app/constant";
 import { useAppConfig } from "../store/config";
-import { useEffect, useRef } from "react";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
+import { useRef } from "react";
 
 export default function useDragSideBar() {
-  const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
+  const limit = (x: number) =>
+    Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, x));
 
   const config = useAppConfig();
   const startX = useRef(0);
@@ -18,11 +17,7 @@ export default function useDragSideBar() {
 
   const toggleSideBar = () => {
     config.update((config) => {
-      if (config.sidebarWidth < MIN_SIDEBAR_WIDTH) {
-        config.sidebarWidth = DEFAULT_SIDEBAR_WIDTH;
-      } else {
-        config.sidebarWidth = NARROW_SIDEBAR_WIDTH;
-      }
+      config.sidebarWidth = DEFAULT_SIDEBAR_WIDTH;
     });
   };
 
@@ -39,12 +34,13 @@ export default function useDragSideBar() {
       lastUpdateTime.current = Date.now();
       const d = e.clientX - startX.current;
       const nextWidth = limit(startDragWidth.current + d);
+
+      document.documentElement.style.setProperty(
+        "--sidebar-width",
+        `${nextWidth}px`,
+      );
       config.update((config) => {
-        if (nextWidth < MIN_SIDEBAR_WIDTH) {
-          config.sidebarWidth = NARROW_SIDEBAR_WIDTH;
-        } else {
-          config.sidebarWidth = nextWidth;
-        }
+        config.sidebarWidth = nextWidth;
       });
     };
 
@@ -64,20 +60,12 @@ export default function useDragSideBar() {
     window.addEventListener("pointerup", handleDragEnd);
   };
 
-  const isMobileScreen = useMobileScreen();
-  const shouldNarrow =
-    !isMobileScreen && config.sidebarWidth < MIN_SIDEBAR_WIDTH;
-
-  useEffect(() => {
-    const barWidth = shouldNarrow
-      ? NARROW_SIDEBAR_WIDTH
-      : limit(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
-    const sideBarWidth = isMobileScreen ? "100vw" : `${barWidth}px`;
-    document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
-  }, [config.sidebarWidth, isMobileScreen, shouldNarrow]);
+  // useLayoutEffect(() => {
+  //   const barWidth = limit(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
+  //   document.documentElement.style.setProperty("--sidebar-width", `${barWidth}px`);
+  // }, [config.sidebarWidth]);
 
   return {
     onDragStart,
-    shouldNarrow,
   };
 }

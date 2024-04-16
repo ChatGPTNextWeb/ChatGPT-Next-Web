@@ -134,11 +134,17 @@ export default function SessionList(props: ListHoodProps) {
     moveSession(source.index, destination.index);
   };
 
+  let layoutClassName = "py-7 px-0";
+
+  if (isMobileScreen) {
+    layoutClassName = "h-menu-title-mobile py-6";
+  }
+
   return (
     <>
       <div data-tauri-drag-region>
         <div
-          className="flex items-center justify-between py-7 px-0"
+          className={`flex items-center justify-between ${layoutClassName}`}
           data-tauri-drag-region
         >
           <div className="">

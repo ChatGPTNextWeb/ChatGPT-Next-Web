@@ -1,12 +1,16 @@
-import { useLayoutEffect } from "react";
-import { useWindowSize } from "../utils";
+import { useWindowSize } from "@/app/hooks/useWindowSize";
+import { useRef } from "react";
 
-export const MOBILE_MAX_WIDTH = 600;
+export const MOBILE_MAX_WIDTH = 768;
 
 export default function useMobileScreen() {
-  const { width } = useWindowSize();
+  const widthRef = useRef<number>(0);
 
-  const isMobile = width <= MOBILE_MAX_WIDTH;
+  useWindowSize((size) => {
+    widthRef.current = size.width;
+  });
+
+  const isMobile = widthRef.current <= MOBILE_MAX_WIDTH;
 
   return isMobile;
 }

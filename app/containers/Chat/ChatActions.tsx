@@ -6,7 +6,7 @@ import { ChatControllerPool } from "@/app/client/controller";
 import { useAllModels } from "@/app/utils/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { isVisionModel } from "@/app/utils";
-import { Selector, showToast } from "@/app/components/ui-lib";
+import { showToast } from "@/app/components/ui-lib";
 import Locale from "@/app/locales";
 import { Path } from "@/app/constant";
 
@@ -22,10 +22,12 @@ import MaskIcon from "@/app/icons/mask.svg";
 import BreakIcon from "@/app/icons/break.svg";
 import SettingsIcon from "@/app/icons/chat-settings.svg";
 import ImageIcon from "@/app/icons/image.svg";
+import AddCircleIcon from "@/app/icons/addCircle.svg";
 
 import ChatAction from "./ChatAction";
 
 import styles from "./index.module.scss";
+import Popover from "@/app/components/Popover";
 
 export function ChatActions(props: {
   uploadImage: () => void;
@@ -34,8 +36,11 @@ export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
+  showModelSelector: (show: boolean) => void;
   hitBottom: boolean;
   uploading: boolean;
+  isMobileScreen: boolean;
+  className?: string;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -62,7 +67,6 @@ export function ChatActions(props: {
     () => allModels.filter((m) => m.available),
     [allModels],
   );
-  const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
   useEffect(() => {
@@ -85,106 +89,159 @@ export function ChatActions(props: {
     }
   }, [chatStore, currentModel, models]);
 
+  const actions = [
+    {
+      onClick: stopAll,
+      text: Locale.Chat.InputActions.Stop,
+      isShow: couldStop,
+      icon: <StopIcon />,
+      placement: "left",
+    },
+    {
+      onClick: props.scrollToBottom,
+      text: Locale.Chat.InputActions.ToBottom,
+      isShow: !props.hitBottom,
+      icon: <BottomIcon />,
+      placement: "left",
+    },
+    {
+      onClick: props.showPromptModal,
+      text: Locale.Chat.InputActions.Settings,
+      isShow: props.hitBottom,
+      icon: <SettingsIcon />,
+      placement: "right",
+    },
+    {
+      onClick: props.uploadImage,
+      text: Locale.Chat.InputActions.UploadImage,
+      isShow: showUploadImage,
+      icon: props.uploading ? <LoadingButtonIcon /> : <ImageIcon />,
+      placement: "left",
+    },
+    {
+      onClick: nextTheme,
+      text: Locale.Chat.InputActions.Theme[theme],
+      isShow: true,
+      icon: (
+        <>
+          {theme === Theme.Auto ? (
+            <AutoIcon />
+          ) : theme === Theme.Light ? (
+            <LightIcon />
+          ) : theme === Theme.Dark ? (
+            <DarkIcon />
+          ) : null}
+        </>
+      ),
+      placement: "left",
+    },
+    {
+      onClick: props.showPromptHints,
+      text: Locale.Chat.InputActions.Prompt,
+      isShow: true,
+      icon: <PromptIcon />,
+      placement: "left",
+    },
+    {
+      onClick: () => {
+        navigate(Path.Masks);
+      },
+      text: Locale.Chat.InputActions.Masks,
+      isShow: true,
+      icon: <MaskIcon />,
+      placement: "left",
+    },
+    {
+      onClick: () => {
+        chatStore.updateCurrentSession((session) => {
+          if (session.clearContextIndex === session.messages.length) {
+            session.clearContextIndex = undefined;
+          } else {
+            session.clearContextIndex = session.messages.length;
+            session.memoryPrompt = ""; // will clear memory
+          }
+        });
+      },
+      text: Locale.Chat.InputActions.Clear,
+      isShow: true,
+      icon: <BreakIcon />,
+      placement: "right",
+    },
+    {
+      onClick: () => props.showModelSelector(true),
+      text: currentModel,
+      isShow: true,
+      icon: <RobotIcon />,
+      placement: "left",
+    },
+  ] as const;
+
+  if (props.isMobileScreen) {
+    const content = (
+      <div>
+        {actions.map((act) => {
+          return (
+            <div
+              key={act.text}
+              className={`flex p-3 bg-white hover:bg-select-btn rounded-action-btn`}
+            >
+              {act.icon}
+              {act.text}
+            </div>
+          );
+        })}
+      </div>
+    );
+    return (
+      <Popover content={content}>
+        <AddCircleIcon />
+      </Popover>
+    );
+  }
+
+  const popoverClassName = `bg-gray-800 whitespace-nowrap px-3 py-2.5 text-white text-sm-title rounded-md`;
+
   return (
-    <div className={styles["chat-input-actions"]}>
-      {couldStop && (
-        <ChatAction
-          onClick={stopAll}
-          text={Locale.Chat.InputActions.Stop}
-          icon={<StopIcon />}
-        />
-      )}
-      {!props.hitBottom && (
-        <ChatAction
-          onClick={props.scrollToBottom}
-          text={Locale.Chat.InputActions.ToBottom}
-          icon={<BottomIcon />}
-        />
-      )}
-      {props.hitBottom && (
-        <ChatAction
-          onClick={props.showPromptModal}
-          text={Locale.Chat.InputActions.Settings}
-          icon={<SettingsIcon />}
-        />
-      )}
-
-      {showUploadImage && (
-        <ChatAction
-          onClick={props.uploadImage}
-          text={Locale.Chat.InputActions.UploadImage}
-          icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
-        />
-      )}
-      <ChatAction
-        onClick={nextTheme}
-        text={Locale.Chat.InputActions.Theme[theme]}
-        icon={
-          <>
-            {theme === Theme.Auto ? (
-              <AutoIcon />
-            ) : theme === Theme.Light ? (
-              <LightIcon />
-            ) : theme === Theme.Dark ? (
-              <DarkIcon />
-            ) : null}
-          </>
-        }
-      />
-
-      <ChatAction
-        onClick={props.showPromptHints}
-        text={Locale.Chat.InputActions.Prompt}
-        icon={<PromptIcon />}
-      />
-
-      <ChatAction
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
-        text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
-      />
-
-      <ChatAction
-        text={Locale.Chat.InputActions.Clear}
-        icon={<BreakIcon />}
-        onClick={() => {
-          chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
-              session.clearContextIndex = undefined;
-            } else {
-              session.clearContextIndex = session.messages.length;
-              session.memoryPrompt = ""; // will clear memory
-            }
-          });
-        }}
-      />
-
-      <ChatAction
-        onClick={() => setShowModelSelector(true)}
-        text={currentModel}
-        icon={<RobotIcon />}
-      />
-
-      {showModelSelector && (
-        <Selector
-          defaultSelectedValue={currentModel}
-          items={models.map((m) => ({
-            title: m.displayName,
-            value: m.name,
-          }))}
-          onClose={() => setShowModelSelector(false)}
-          onSelection={(s) => {
-            if (s.length === 0) return;
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
-              session.mask.syncGlobalConfig = false;
-            });
-            showToast(s[0]);
-          }}
-        />
-      )}
+    <div className={`flex gap-2 item-center ${props.className}`}>
+      {actions
+        .filter((v) => v.placement === "left" && v.isShow)
+        .map((act, ind) => {
+          return (
+            <Popover
+              key={act.text}
+              content={act.text}
+              popoverClassName={`${popoverClassName}`}
+              placement={ind ? "t" : "rt"}
+            >
+              <div
+                className="h-[32px] w-[32px] flex items-center justify-center"
+                onClick={act.onClick}
+              >
+                {act.icon}
+              </div>
+            </Popover>
+          );
+        })}
+      <div className="flex-1"></div>
+      {actions
+        .filter((v) => v.placement === "right" && v.isShow)
+        .map((act, ind, arr) => {
+          return (
+            <Popover
+              key={act.text}
+              content={act.text}
+              popoverClassName={`${popoverClassName}`}
+              placement={ind === arr.length - 1 ? "lt" : "t"}
+            >
+              <div
+                className="h-[32px] w-[32px] flex items-center justify-center"
+                onClick={act.onClick}
+              >
+                {act.icon}
+              </div>
+            </Popover>
+          );
+        })}
     </div>
   );
 }

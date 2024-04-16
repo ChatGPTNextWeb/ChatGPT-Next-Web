@@ -6,10 +6,11 @@ import {
   createMessage,
   useAccessStore,
   useAppConfig,
+  ModelType,
 } from "@/app/store";
 import { autoGrowTextArea, useMobileScreen } from "@/app/utils";
 import Locale from "@/app/locales";
-import { showConfirm } from "@/app/components/ui-lib";
+import { Selector, showConfirm, showToast } from "@/app/components/ui-lib";
 import {
   CHAT_PAGE_SIZE,
   REQUEST_TIMEOUT_MS,
@@ -24,8 +25,7 @@ import { EditMessageModal } from "./EditMessageModal";
 import ChatHeader from "./ChatHeader";
 import ChatInputPanel, { ChatInputPanelInstance } from "./ChatInputPanel";
 import ChatMessagePanel, { RenderMessage } from "./ChatMessagePanel";
-
-import styles from "./index.module.scss";
+import { useAllModels } from "@/app/utils/hooks";
 
 function _Chat() {
   const chatStore = useChatStore();
@@ -33,6 +33,7 @@ function _Chat() {
   const config = useAppConfig();
 
   const [showExport, setShowExport] = useState(false);
+  const [showModelSelector, setShowModelSelector] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -236,6 +237,7 @@ function _Chat() {
     setIsLoading,
     setShowPromptModal,
     _setMsgRenderIndex,
+    showModelSelector: setShowModelSelector,
   };
 
   const chatMessagePanelProps = {
@@ -254,15 +256,25 @@ function _Chat() {
     setShowPromptModal,
   };
 
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const allModels = useAllModels();
+  const models = useMemo(
+    () => allModels.filter((m) => m.available),
+    [allModels],
+  );
+
   return (
     <div
-      className={`${styles.chat}  my-2.5 ml-1 mr-2.5 rounded-md bg-gray-50`}
+      className={`flex flex-col h-[100%] overflow-hidden ${
+        isMobileScreen ? "" : `my-2.5 ml-1 mr-2.5 rounded-md`
+      } bg-gray-50`}
       key={session.id}
     >
       <ChatHeader
         setIsEditingMessage={setIsEditingMessage}
         setShowExport={setShowExport}
         isMobileScreen={isMobileScreen}
+        showModelSelector={setShowModelSelector}
       />
 
       <ChatMessagePanel {...chatMessagePanelProps} />
@@ -286,6 +298,25 @@ function _Chat() {
         showModal={showPromptModal}
         setShowModal={setShowPromptModal}
       />
+
+      {showModelSelector && (
+        <Selector
+          defaultSelectedValue={currentModel}
+          items={models.map((m) => ({
+            title: m.displayName,
+            value: m.name,
+          }))}
+          onClose={() => setShowModelSelector(false)}
+          onSelection={(s) => {
+            if (s.length === 0) return;
+            chatStore.updateCurrentSession((session) => {
+              session.mask.modelConfig.model = s[0] as ModelType;
+              session.mask.syncGlobalConfig = false;
+            });
+            showToast(s[0]);
+          }}
+        />
+      )}
     </div>
   );
 }

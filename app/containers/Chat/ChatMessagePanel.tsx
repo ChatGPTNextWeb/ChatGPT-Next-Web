@@ -10,7 +10,6 @@ import {
   getMessageTextContent,
   selectOrCopy,
 } from "@/app/utils";
-import { IconButton } from "@/app/components/button";
 import { showPrompt, showToast } from "@/app/components/ui-lib";
 
 import CopyIcon from "@/app/icons/copy.svg";
@@ -213,7 +212,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
 
   return (
     <div
-      className={styles["chat-body"]}
+      className={`relative flex-1 overscroll-y-none overflow-x-hidden px-3 pb-5`}
       ref={scrollRef}
       onScroll={(e) => onChatBodyScroll(e.currentTarget)}
       onMouseDown={() => inputRef.current?.blur()}
@@ -229,119 +228,51 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
           i > 0 &&
           !(message.preview || message.content.length === 0) &&
           !isContext;
-        const showTyping = message.preview || message.streaming;
+        // const showTyping = message.preview || message.streaming;
 
         const shouldShowClearContextDivider = i === clearContextIndex - 1;
 
         return (
           <Fragment key={message.id}>
             <div
-              className={
-                isUser ? styles["chat-message-user"] : styles["chat-message"]
-              }
+              className={`flex mt-6 gap-2 ${isUser ? "flex-row-reverse" : ""}`}
             >
-              <div className={styles["chat-message-container"]}>
-                <div className={styles["chat-message-header"]}>
-                  <div className={styles["chat-message-avatar"]}>
-                    <div className={styles["chat-message-edit"]}>
-                      <IconButton
-                        icon={<EditIcon />}
-                        onClick={async () => {
-                          const newMessage = await showPrompt(
-                            Locale.Chat.Actions.Edit,
-                            getMessageTextContent(message),
-                            10,
-                          );
-                          let newContent: string | MultimodalContent[] =
-                            newMessage;
-                          const images = getMessageImages(message);
-                          if (images.length > 0) {
-                            newContent = [{ type: "text", text: newMessage }];
-                            for (let i = 0; i < images.length; i++) {
-                              newContent.push({
-                                type: "image_url",
-                                image_url: {
-                                  url: images[i],
-                                },
-                              });
-                            }
-                          }
-                          chatStore.updateCurrentSession((session) => {
-                            const m = session.mask.context
-                              .concat(session.messages)
-                              .find((m) => m.id === message.id);
-                            if (m) {
-                              m.content = newContent;
-                            }
-                          });
-                        }}
-                      ></IconButton>
-                    </div>
-                    {isUser ? (
-                      <Avatar avatar={config.avatar} />
+              <div className={`relative flex-0`}>
+                {isUser ? (
+                  <Avatar avatar={config.avatar} />
+                ) : (
+                  <>
+                    {["system"].includes(message.role) ? (
+                      <Avatar avatar="2699-fe0f" />
                     ) : (
-                      <>
-                        {["system"].includes(message.role) ? (
-                          <Avatar avatar="2699-fe0f" />
-                        ) : (
-                          <MaskAvatar
-                            avatar={session.mask.avatar}
-                            model={
-                              message.model || session.mask.modelConfig.model
-                            }
-                          />
-                        )}
-                      </>
+                      <MaskAvatar
+                        avatar={session.mask.avatar}
+                        model={message.model || session.mask.modelConfig.model}
+                      />
                     )}
-                  </div>
-
-                  {showActions && (
-                    <div className={styles["chat-message-actions"]}>
-                      <div className={styles["chat-input-actions"]}>
-                        {message.streaming ? (
-                          <ChatAction
-                            text={Locale.Chat.Actions.Stop}
-                            icon={<StopIcon />}
-                            onClick={() => onUserStop(message.id ?? i)}
-                          />
-                        ) : (
-                          <>
-                            <ChatAction
-                              text={Locale.Chat.Actions.Retry}
-                              icon={<ResetIcon />}
-                              onClick={() => onResend(message)}
-                            />
-
-                            <ChatAction
-                              text={Locale.Chat.Actions.Delete}
-                              icon={<DeleteIcon />}
-                              onClick={() => onDelete(message.id ?? i)}
-                            />
-
-                            <ChatAction
-                              text={Locale.Chat.Actions.Pin}
-                              icon={<PinIcon />}
-                              onClick={() => onPinMessage(message)}
-                            />
-                            <ChatAction
-                              text={Locale.Chat.Actions.Copy}
-                              icon={<CopyIcon />}
-                              onClick={() =>
-                                copyToClipboard(getMessageTextContent(message))
-                              }
-                            />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {showTyping && (
-                  <div className={styles["chat-message-status"]}>
-                    {Locale.Chat.Typing}
-                  </div>
+                  </>
                 )}
-                <div className={styles["chat-message-item"]}>
+              </div>
+              {/* {showTyping && (
+                <div className={styles["chat-message-status"]}>
+                  {Locale.Chat.Typing}
+                </div>
+              )} */}
+              <div className={`group relative max-w-message-width`}>
+                <div
+                  className={` pointer-events-none  text-gray-500 text-right text-time whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
+                    isUser ? "right-0" : "left-0"
+                  } bottom-[100%] hidden group-hover:block`}
+                >
+                  {isContext
+                    ? Locale.Chat.IsContext
+                    : message.date.toLocaleString()}
+                </div>
+                <div
+                  className={`transition-all duration-300 select-text break-words font-common text-sm-title rounded-message box-border peer py-2 px-3 ${
+                    isUser ? "text-right  bg-message-bg" : " bg-white"
+                  }`}
+                >
                   <Markdown
                     content={getMessageTextContent(message)}
                     loading={
@@ -357,17 +288,18 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     fontSize={fontSize}
                     parentRef={scrollRef}
                     defaultShow={i >= messages.length - 6}
+                    className={isUser ? " text-white" : "text-black"}
                   />
                   {getMessageImages(message).length == 1 && (
                     <img
-                      className={styles["chat-message-item-image"]}
+                      className={` w-[100%] mt-2.5`}
                       src={getMessageImages(message)[0]}
                       alt=""
                     />
                   )}
                   {getMessageImages(message).length > 1 && (
                     <div
-                      className={styles["chat-message-item-images"]}
+                      className={`styles["chat-message-item-images"] w-[100%]`}
                       style={
                         {
                           "--image-count": getMessageImages(message).length,
@@ -388,11 +320,85 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                   )}
                 </div>
 
-                <div className={styles["chat-message-action-date"]}>
-                  {isContext
-                    ? Locale.Chat.IsContext
-                    : message.date.toLocaleString()}
-                </div>
+                {showActions && (
+                  <div
+                    className={` absolute ${
+                      isUser ? "right-0" : "left-0"
+                    } top-[100%] hidden group-hover:block`}
+                  >
+                    <div className={styles["chat-input-actions"]}>
+                      {message.streaming ? (
+                        <ChatAction
+                          text={Locale.Chat.Actions.Stop}
+                          icon={<StopIcon />}
+                          onClick={() => onUserStop(message.id ?? i)}
+                        />
+                      ) : (
+                        <>
+                          <ChatAction
+                            text={Locale.Chat.Actions.Retry}
+                            icon={<ResetIcon />}
+                            onClick={() => onResend(message)}
+                          />
+
+                          <ChatAction
+                            text={Locale.Chat.Actions.Delete}
+                            icon={<DeleteIcon />}
+                            onClick={() => onDelete(message.id ?? i)}
+                          />
+
+                          <ChatAction
+                            text={Locale.Chat.Actions.Pin}
+                            icon={<PinIcon />}
+                            onClick={() => onPinMessage(message)}
+                          />
+                          <ChatAction
+                            text={Locale.Chat.Actions.Copy}
+                            icon={<CopyIcon />}
+                            onClick={() =>
+                              copyToClipboard(getMessageTextContent(message))
+                            }
+                          />
+                          <ChatAction
+                            text={Locale.Chat.Actions.Copy}
+                            icon={<EditIcon />}
+                            onClick={async () => {
+                              const newMessage = await showPrompt(
+                                Locale.Chat.Actions.Edit,
+                                getMessageTextContent(message),
+                                10,
+                              );
+                              let newContent: string | MultimodalContent[] =
+                                newMessage;
+                              const images = getMessageImages(message);
+                              if (images.length > 0) {
+                                newContent = [
+                                  { type: "text", text: newMessage },
+                                ];
+                                for (let i = 0; i < images.length; i++) {
+                                  newContent.push({
+                                    type: "image_url",
+                                    image_url: {
+                                      url: images[i],
+                                    },
+                                  });
+                                }
+                              }
+                              chatStore.updateCurrentSession((session) => {
+                                const m = session.mask.context
+                                  .concat(session.messages)
+                                  .find((m) => m.id === message.id);
+                                if (m) {
+                                  m.content = newContent;
+                                }
+                              });
+                            }}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             {shouldShowClearContextDivider && <ClearContextDivider />}

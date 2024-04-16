@@ -30,7 +30,6 @@ import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import backgroundUrl from "!url-loader!@/app/icons/background.svg";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -126,11 +125,9 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
-  const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
-  const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -155,7 +152,7 @@ function Screen() {
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
           <div
-            className={`flex flex-col h-[100%] w-[--window-content-width`}
+            className={`flex flex-col h-[100%] w-[--window-content-width]`}
             id={SlotID.AppBody}
           >
             <ErrorBoundary>

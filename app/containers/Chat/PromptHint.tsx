@@ -8,6 +8,7 @@ export type RenderPompt = Pick<Prompt, "title" | "content">;
 export default function PromptHints(props: {
   prompts: RenderPompt[];
   onPromptSelect: (prompt: RenderPompt) => void;
+  className?: string;
 }) {
   const noPrompts = props.prompts.length === 0;
   const [selectIndex, setSelectIndex] = useState(0);
@@ -56,7 +57,7 @@ export default function PromptHints(props: {
 
   if (noPrompts) return null;
   return (
-    <div className={styles["prompt-hints"]}>
+    <div className={`${styles["prompt-hints"]} ${props.className}`}>
       {props.prompts.map((prompt, i) => (
         <div
           ref={i === selectIndex ? selectedRef : null}
