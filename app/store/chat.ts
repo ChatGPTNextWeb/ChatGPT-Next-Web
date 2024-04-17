@@ -20,6 +20,7 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { identifyDefaultClaudeModel } from "../utils/checkers";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -119,12 +120,17 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
     ServiceProvider: serviceProvider,
     cutoff,
     model: modelConfig.model,
-    time: new Date().toLocaleString(),
+    time: new Date().toString(),
     lang: getLang(),
     input: input,
   };
 
   let output = modelConfig.template ?? DEFAULT_INPUT_TEMPLATE;
+
+  // remove duplicate
+  if (input.startsWith(output)) {
+    output = "";
+  }
 
   // must contains {{input}}
   const inputVar = "{{input}}";
@@ -348,6 +354,8 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
+        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
+          api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -494,7 +502,6 @@ export const useChatStore = createPersistStore(
           tokenCount += estimateTokenLength(getMessageTextContent(msg));
           reversedRecentMessages.push(msg);
         }
-
         // concat all messages
         const recentMessages = [
           ...systemPrompts,
@@ -533,6 +540,8 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
+        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
+          api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -557,6 +566,7 @@ export const useChatStore = createPersistStore(
             messages: topicMessages,
             config: {
               model: getSummarizeModel(session.mask.modelConfig.model),
+              stream: false,
             },
             onFinish(message) {
               get().updateCurrentSession(
@@ -600,6 +610,10 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
+          /** Destruct max_tokens while summarizing
+           * this param is just shit
+           **/
+          const { max_tokens, ...modelcfg } = modelConfig;
           api.llm.chat({
             messages: toBeSummarizedMsgs.concat(
               createMessage({
@@ -609,7 +623,7 @@ export const useChatStore = createPersistStore(
               }),
             ),
             config: {
-              ...modelConfig,
+              ...modelcfg,
               stream: true,
               model: getSummarizeModel(session.mask.modelConfig.model),
             },

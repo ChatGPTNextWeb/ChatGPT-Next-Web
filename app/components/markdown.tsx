@@ -135,10 +135,9 @@ function escapeBrackets(text: string) {
 }
 
 function _MarkDownContent(props: { content: string }) {
-  const escapedContent = useMemo(
-    () => escapeBrackets(escapeDollarNumber(props.content)),
-    [props.content],
-  );
+  const escapedContent = useMemo(() => {
+    return escapeBrackets(escapeDollarNumber(props.content));
+  }, [props.content]);
 
   return (
     <ReactMarkdown
