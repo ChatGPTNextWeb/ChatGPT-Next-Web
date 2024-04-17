@@ -106,6 +106,18 @@ const IndexHeaders = [
 const ForceCacheHeaders = [
   { key: "Cache-Control", value: "max-age=2592000, s-maxage=86400"}
 ]
+const NoCacheHeaders = [
+  { key: "Cache-Control", value: "no-cache"}
+]
+
+nextConfig.headers = async () => {
+  return [
+    {
+      source: '/',
+      headers: NoCacheHeaders,
+    }
+  ]
+}
 
 if (mode !== "export") {
   // nextConfig.headers = async () => {
