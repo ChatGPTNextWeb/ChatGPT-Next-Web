@@ -2,9 +2,17 @@
 
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { User } from "@prisma/client";
-import { Space, Table, Tag, Input, Button, notification } from "antd";
+import {
+  Space,
+  Table,
+  Tag,
+  Input,
+  Button,
+  notification,
+  Popconfirm,
+} from "antd";
 import type { GetRef, TableColumnsType } from "antd";
-
+// import { headers } from 'next/headers'
 import type { NotificationArgsProps } from "antd";
 
 import Highlighter from "react-highlight-words";
@@ -75,6 +83,53 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
 function UsersTable({ users, setUsers, loading }: UserInterface) {
   const [api, contextHolder] = notification.useNotification();
 
+  const [newPassword, setNewPassword] = useState("");
+
+  const newPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // if ((e.nativeEvent as InputEvent).isComposing) {
+    //   return;
+    // }
+    setNewPassword(e.target.value.trim());
+  };
+
+  const confirmPassword = async (id: string) => {
+    console.log("-----", newPassword, id);
+    try {
+      fetch(`/api/admin/users/${id}/`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: newPassword,
+        }),
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          if (res["result"] == "ok") {
+            openNotification("info", {
+              message: "修改密码",
+              description: `${id} 密码修改成功`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log("e", error);
+          openNotification("error", {
+            message: "修改密码",
+            description: `${id} 密码修改失败`,
+          });
+        });
+    } catch {
+      openNotification("error", {
+        message: "修改密码",
+        description: `${id} 密码修改失败`,
+      });
+    }
+    setNewPassword("");
+  };
+
   const openNotification = (level: string, arms: NotificationArgsProps) => {
     if (level === "error") {
       api.error({
@@ -139,7 +194,25 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       render: (_, record) => (
         <Space size="middle">
           {contextHolder}
-          <a>编辑</a>
+          <Popconfirm
+            title="输入新密码"
+            description={
+              <>
+                <Input.Password
+                  autoComplete="new-password"
+                  value={newPassword}
+                  onCompositionStart={(e) => e.preventDefault()}
+                  onChange={newPasswordChange}
+                />
+              </>
+            }
+            onConfirm={() => confirmPassword(record.id)}
+            onOpenChange={() => console.log("open change")}
+          >
+            <Button type="primary" size="small">
+              设置密码
+            </Button>
+          </Popconfirm>
           <a onClick={() => handleDeleteUser(record)}>删除</a>
         </Space>
       ),
