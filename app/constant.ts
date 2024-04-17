@@ -108,6 +108,7 @@ export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
+  "gpt-4-turbo": "2023-12",
   "gpt-4-turbo-preview": "2023-12",
   "gpt-4-1106-preview": "2023-04",
   "gpt-4-0125-preview": "2023-12",
@@ -122,6 +123,15 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 export const DEFAULT_MODELS = [
   {
     name: "gpt-4-turbo-2024-04-09",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4-turbo",
     available: true,
     provider: {
       id: "openai",
