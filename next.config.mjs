@@ -107,7 +107,7 @@ const ForceCacheHeaders = [
   { key: "Cache-Control", value: "max-age=2592000, s-maxage=86400"}
 ]
 const NoCacheHeaders = [
-  { key: "Cache-Control", value: "no-cache"}
+  { key: "Cache-Control", value: "no-cache, no-store, must-revalidate, max-age=0" }
 ]
 
 nextConfig.headers = async () => {
