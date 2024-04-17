@@ -24,7 +24,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import { getClientConfig } from "../config/client";
-import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { ClientApi } from "../client/api";
