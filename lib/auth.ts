@@ -4,6 +4,7 @@ import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {PrismaAdapter} from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
+import { User } from "@prisma/client";
 import {ADMIN_LIST, isEmail, isName} from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
 
@@ -140,6 +141,12 @@ export const authOptions: NextAuthOptions = {
             // console.log('555555555,', session, token)
             return session;
         },
+        // 过滤不存在的用户，目前没用
+        // async signIn({ user, account, profile, email, credentials }) {
+        //     const existingUser = await existUser(user as User);
+        //     console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
+        //     return !!existingUser;
+        // }
     },
 };
 
@@ -233,21 +240,24 @@ export async function VerifiedAdminUser() {
 //     };
 // }
 
+async function existUser(user: {[key: string]: string} | User ) {
+    const conditions = [];
+    if (user?.name) {
+        conditions.push({ name: user.name });
+    }
+    if (user?.email) {
+        conditions.push({ email: user.email });
+    }
+    return conditions.length ? await prisma.user.findFirst({
+        where: {
+            AND: conditions,
+        },
+    }) : null
+}
 
 export async function insertUser(user: {[key: string]: string}) {
     try {
-        const conditions = [];
-        if (user?.name) {
-            conditions.push({ name: user.name });
-        }
-        if (user?.email) {
-            conditions.push({ email: user.email });
-        }
-        const existingUser = conditions.length? await prisma.user.findFirst({
-            where: {
-                AND: conditions,
-            },
-        }) : null;
+        const existingUser = await existUser(user);
         // console.log('[LOG]', existingUser, user, '=======')
         if (!existingUser) {
             return await prisma.user.create({
