@@ -1,5 +1,6 @@
 "use client";
 
+import "./users-table.modules.scss";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { User } from "@prisma/client";
 import {
@@ -50,7 +51,7 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
     setLoading(true);
     const fetchUsers = async () => {
       try {
-        const url = new URL("/api/admin/users/", window.location.href);
+        const url = new URL("/api/admin/users", window.location.href);
         url.searchParams.append("search", searchText);
         console.log(url, "url");
         const response = await fetch(url);
@@ -95,7 +96,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
   const confirmPassword = async (id: string) => {
     console.log("-----", newPassword, id);
     try {
-      fetch(`/api/admin/users/${id}/`, {
+      fetch(`/api/admin/users/${id}`, {
         method: "put",
         headers: {
           "Content-Type": "application/json",
