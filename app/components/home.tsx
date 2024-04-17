@@ -23,9 +23,11 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { getClientConfig } from "../config/client";
+
+import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
+import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
