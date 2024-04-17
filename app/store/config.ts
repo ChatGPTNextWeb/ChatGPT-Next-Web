@@ -46,14 +46,14 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-4-turbo-preview" as ModelType,
+    model: "gpt-4-turbo" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
-    historyMessageCount: 14,
+    historyMessageCount: 20,
     compressMessageLengthThreshold: 43210,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
