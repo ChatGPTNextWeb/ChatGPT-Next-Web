@@ -62,7 +62,9 @@ export const random = (min: number, max: number) => {
 
 // 将明文处理为 hash
 export function hashPassword(password: string) {
-  return bcrypt.hashSync(password, 10);
+  const p = password.trim()
+  if (!p) return "";
+  return bcrypt.hashSync(password.trim(), 10);
 }
 
 // 对比明文和 hash 是否一致

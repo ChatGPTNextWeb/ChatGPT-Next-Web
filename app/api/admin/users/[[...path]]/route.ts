@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { User } from "@prisma/client";
+import { hashPassword } from "@/lib/utils";
 
 async function handle(
   req: NextRequest,
@@ -14,41 +16,44 @@ async function handle(
 
   if (method === "GET") {
     // 是否有查询
-    const result = searchText
-      ? await prisma.user.findMany({
-          orderBy: {
-            createdAt: "desc",
-          },
-          where: {
-            OR: [
-              {
-                name: {
-                  contains: searchText,
-                  mode: "insensitive", // 不区分大小写
+    try {
+      const result = searchText
+        ? await prisma.user.findMany({
+            orderBy: {
+              createdAt: "desc",
+            },
+            where: {
+              OR: [
+                {
+                  name: {
+                    contains: searchText,
+                    mode: "insensitive", // 不区分大小写
+                  },
                 },
-              },
-              {
-                username: {
-                  contains: searchText,
-                  mode: "insensitive", // 不区分大小写
+                {
+                  username: {
+                    contains: searchText,
+                    mode: "insensitive", // 不区分大小写
+                  },
                 },
-              },
-              {
-                email: {
-                  contains: searchText,
-                  mode: "insensitive", // 不区分大小写
+                {
+                  email: {
+                    contains: searchText,
+                    mode: "insensitive", // 不区分大小写
+                  },
                 },
-              },
-            ],
-          },
-        })
-      : await prisma.user.findMany({
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-    const count = result.length;
-    return NextResponse.json({ count: count, results: result });
+              ],
+            },
+          })
+        : await prisma.user.findMany({
+            orderBy: {
+              createdAt: "desc",
+            },
+          });
+      const count = result.length;
+      return NextResponse.json({ count: count, results: result });
+    } catch {}
+    return NextResponse.json({ error: "未知错误" }, { status: 500 });
   }
 
   if (method === "DELETE") {
@@ -69,9 +74,36 @@ async function handle(
     }
     return NextResponse.json({ result: "删除用户成功" });
   }
+
+  if (method === "PUT") {
+    try {
+      const userId = params.path[0];
+      return await changeUserInfo(userId, await req.json());
+    } catch {
+      return NextResponse.json({ error: "未知错误" }, { status: 500 });
+    }
+  }
   return NextResponse.json({ error: "当前方法不支持" }, { status: 405 });
+}
+
+async function changeUserInfo(id: string, info: User) {
+  const hashDPassword = hashPassword(info?.password ?? "");
+  console.log("-----------", id, info, hashDPassword);
+  if (hashDPassword) {
+    await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        password: hashDPassword,
+      },
+    });
+    return NextResponse.json({ result: "ok" });
+  }
+  return NextResponse.json({ error: "未知错误" }, { status: 500 });
 }
 
 export const GET = handle;
 export const POST = handle;
+export const PUT = handle;
 export const DELETE = handle;
