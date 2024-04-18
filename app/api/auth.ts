@@ -56,7 +56,8 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
 */
 
   // if user does not provide an api key, inject system api key
-  if (!apiKey) {
+  if (!apiKey || !!serverConfig.hideUserApiKey) {
+//  if (!apiKey) {
     const serverConfig = getServerSideConfig();
 
     // const systemApiKey =
