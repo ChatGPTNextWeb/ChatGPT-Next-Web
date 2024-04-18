@@ -104,7 +104,13 @@ export class GeminiProApi implements LLMApi {
     };
 
     const accessStore = useAccessStore.getState();
-    let baseUrl = accessStore.googleUrl;
+
+    let baseUrl = "";
+
+    if (accessStore.useCustomConfig) {
+      baseUrl = accessStore.googleUrl;
+    }
+
     const isApp = !!getClientConfig()?.isApp;
 
     let shouldStream = !!options.config.stream;
@@ -112,8 +118,8 @@ export class GeminiProApi implements LLMApi {
     options.onController?.(controller);
     try {
       let googleChatPath = visionModel
-        ? Google.VisionChatPath
-        : Google.ChatPath;
+        ? Google.VisionChatPath(modelConfig.model)
+        : Google.ChatPath(modelConfig.model);
       let chatPath = this.path(googleChatPath);
 
       // let baseUrl = accessStore.googleUrl;
