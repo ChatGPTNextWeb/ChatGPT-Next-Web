@@ -7,7 +7,7 @@ import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
+import PinIcon from "../icons/pin.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
@@ -155,10 +155,19 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          NextChat
+          IKunAI ChatGPT
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          <PinIcon />
+          无需登录即可使用，为了防止被滥用，不定时更新一定免费额度，在经济条件允许的情况下会尽可能提供稳定的免费使用。
+        </div>
+        <div className={styles["sidebar-sub-title"]}>
+          <PinIcon />
+          或者你也可以选择兑换专属额度，请前往{" "}
+          <a href="https://oneapi.snat.top" target="_blank">
+            https://oneapi.snat.top
+          </a>{" "}
+          兑换。
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
