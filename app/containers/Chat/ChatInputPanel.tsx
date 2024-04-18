@@ -2,7 +2,6 @@ import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import useUploadImage from "@/app/hooks/useUploadImage";
-import { IconButton } from "@/app/components/button";
 import Locale from "@/app/locales";
 
 import useSubmitHandler from "@/app/hooks/useSubmitHandler";
@@ -17,13 +16,14 @@ import usePaste from "@/app/hooks/usePaste";
 import { ChatActions } from "./ChatActions";
 import PromptHints, { RenderPompt } from "./PromptHint";
 
-import SendWhiteIcon from "@/app/icons/send-white.svg";
-import DeleteIcon from "@/app/icons/clear.svg";
+// import CEIcon from "@/app/icons/command&enterIcon.svg";
+// import EnterIcon from "@/app/icons/enterIcon.svg";
+import SendIcon from "@/app/icons/sendIcon.svg";
 
-import styles from "./index.module.scss";
+import Btn from "@/app/components/Btn";
+import Thumbnail from "@/app/components/ThumbnailImg";
 
 export interface ChatInputPanelProps {
-  scrollRef: React.RefObject<HTMLDivElement>;
   inputRef: React.RefObject<HTMLTextAreaElement>;
   isMobileScreen: boolean;
   renderMessages: any[];
@@ -34,24 +34,17 @@ export interface ChatInputPanelProps {
   setAttachImages: (imgs: string[]) => void;
   setUserInput: (v: string) => void;
   setIsLoading: (value: boolean) => void;
-  setShowPromptModal: (value: boolean) => void;
+  showChatSetting: (value: boolean) => void;
   _setMsgRenderIndex: (value: number) => void;
   showModelSelector: (value: boolean) => void;
+  setAutoScroll: (value: boolean) => void;
+  scrollDomToBottom: () => void;
 }
 
 export interface ChatInputPanelInstance {
   setUploading: (v: boolean) => void;
   doSubmit: (userInput: string) => void;
-  setAutoScroll: (v: boolean) => void;
   setMsgRenderIndex: (v: number) => void;
-}
-
-export function DeleteImageButton(props: { deleteImage: () => void }) {
-  return (
-    <div className={styles["delete-image"]} onClick={props.deleteImage}>
-      <DeleteIcon />
-    </div>
-  );
 }
 
 // only search prompts when user input is short
@@ -67,13 +60,14 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
       isMobileScreen,
       setUserInput,
       setIsLoading,
-      setShowPromptModal,
+      showChatSetting,
       renderMessages,
-      scrollRef,
       _setMsgRenderIndex,
       hitBottom,
       inputRows,
       showModelSelector,
+      setAutoScroll,
+      scrollDomToBottom,
     } = props;
 
     const [uploading, setUploading] = useState(false);
@@ -90,18 +84,6 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
     const { submitKey, shouldSubmit } = useSubmitHandler();
 
     const autoFocus = !isMobileScreen; // wont auto focus on mobile screen
-
-    const isScrolledToBottom = scrollRef?.current
-      ? Math.abs(
-          scrollRef.current.scrollHeight -
-            (scrollRef.current.scrollTop + scrollRef.current.clientHeight),
-        ) <= 1
-      : false;
-
-    const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
-      scrollRef,
-      isScrolledToBottom,
-    );
 
     // chat commands shortcuts
     const chatCommands = useChatCommand({
@@ -226,12 +208,14 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
 
     let inputClassName = " flex flex-col px-5 pb-5";
     let actionsClassName = "py-2.5";
-    let inputTextAreaClassName = "";
+    let labelClassName = "rounded-md p-4 gap-4";
+    let textarea = "min-h-chat-input";
 
     if (isMobileScreen) {
       inputClassName = "flex flex-row-reverse items-center gap-2 p-3";
       actionsClassName = "";
-      inputTextAreaClassName = "";
+      labelClassName = " rounded-chat-input p-3 gap-3 flex-1";
+      textarea = "h-chat-input-mobile";
     }
 
     return (
@@ -241,7 +225,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
         <PromptHints
           prompts={promptHints}
           onPromptSelect={onPromptSelect}
-          className=""
+          className=" border-gray-200"
         />
 
         <div className={`${inputClassName}`}>
@@ -250,7 +234,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
             uploadImage={uploadImage}
             setAttachImages={setAttachImages}
             setUploading={setUploading}
-            showPromptModal={() => setShowPromptModal(true)}
+            showChatSetting={() => showChatSetting(true)}
             scrollToBottom={scrollToBottom}
             hitBottom={hitBottom}
             uploading={uploading}
@@ -269,18 +253,35 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
             isMobileScreen={isMobileScreen}
           />
           <label
-            className={`${styles["chat-input-panel-inner"]} ${
-              attachImages.length != 0
-                ? styles["chat-input-panel-inner-attach"]
-                : ""
-            } ${inputTextAreaClassName}`}
+            className={`cursor-text flex flex-col bg-white border-[1px] border-white focus-within:border-blue-300 focus-within:shadow-chat-input ${labelClassName}`}
             htmlFor="chat-input"
           >
+            {attachImages.length != 0 && (
+              <div className={`flex gap-2`}>
+                {attachImages.map((image, index) => {
+                  return (
+                    <Thumbnail
+                      key={index}
+                      deleteImage={() => {
+                        setAttachImages(
+                          attachImages.filter((_, i) => i !== index),
+                        );
+                      }}
+                      image={image}
+                    />
+                  );
+                })}
+              </div>
+            )}
             <textarea
               id="chat-input"
               ref={inputRef}
-              className={styles["chat-input"]}
-              placeholder={Locale.Chat.Input(submitKey)}
+              className={`leading-[19px] flex-1 focus:outline-none focus:shadow-none focus:border-none ${textarea} resize-none`}
+              placeholder={
+                isMobileScreen
+                  ? Locale.Chat.Input(submitKey, isMobileScreen)
+                  : undefined
+              }
               onInput={(e) => onInput(e.currentTarget.value)}
               value={userInput}
               onKeyDown={onInputKeyDown}
@@ -293,36 +294,22 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
                 fontSize: config.fontSize,
               }}
             />
-            {attachImages.length != 0 && (
-              <div className={styles["attach-images"]}>
-                {attachImages.map((image, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={styles["attach-image"]}
-                      style={{ backgroundImage: `url("${image}")` }}
-                    >
-                      <div className={styles["attach-image-mask"]}>
-                        <DeleteImageButton
-                          deleteImage={() => {
-                            setAttachImages(
-                              attachImages.filter((_, i) => i !== index),
-                            );
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+            {!isMobileScreen && (
+              <div className="flex items-center justify-center text-sm gap-3">
+                <div className="flex-1">&nbsp;</div>
+                <div className="text-gray-500 text-time line-clamp-1">
+                  {Locale.Chat.Input(submitKey)}
+                </div>
+                <Btn
+                  className="min-w-[77px]"
+                  icon={<SendIcon />}
+                  text={Locale.Chat.Send}
+                  // className={styles["chat-input-send"]}
+                  type="primary"
+                  onClick={() => doSubmit(userInput)}
+                />
               </div>
             )}
-            <IconButton
-              icon={<SendWhiteIcon />}
-              text={Locale.Chat.Send}
-              className={styles["chat-input-send"]}
-              type="primary"
-              onClick={() => doSubmit(userInput)}
-            />
           </label>
         </div>
       </div>

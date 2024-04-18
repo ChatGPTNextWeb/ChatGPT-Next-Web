@@ -18,8 +18,8 @@ import dynamic from "next/dynamic";
 import useHotKey from "@/app/hooks/useHotKey";
 import useDragSideBar from "@/app/hooks/useDragSideBar";
 import useMobileScreen from "@/app/hooks/useMobileScreen";
-import TabActions from "./TabActions";
 import MenuWrapper from "./MenuWrapper";
+import ActionsBar from "@/app/components/ActionsBar";
 
 const SessionList = MenuWrapper(
   dynamic(async () => await import("./SessionList"), {
@@ -72,7 +72,7 @@ export function SideBar(props: { className?: string }) {
 
   return (
     <div className={`${containerClassName}`}>
-      <TabActions
+      <ActionsBar
         inMobile={isMobileScreen}
         actionsShema={[
           {
@@ -133,7 +133,9 @@ export function SideBar(props: { className?: string }) {
           mobile: [[Path.Chat, Path.Masks, Path.Settings]],
         }}
         selected={selectedTab}
-        className={tabActionsClassName}
+        className={`${
+          isMobileScreen ? "justify-around" : "flex-col"
+        } ${tabActionsClassName}`}
       />
 
       <SessionList

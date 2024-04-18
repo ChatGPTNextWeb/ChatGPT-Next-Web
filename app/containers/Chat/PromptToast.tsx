@@ -3,8 +3,6 @@ import Locale from "@/app/locales";
 
 import BrainIcon from "@/app/icons/brain.svg";
 
-import SessionConfigModel from "./SessionConfigModal";
-
 import styles from "./index.module.scss";
 
 export default function PromptToast(props: {
@@ -29,9 +27,6 @@ export default function PromptToast(props: {
             {Locale.Context.Toast(context.length)}
           </span>
         </div>
-      )}
-      {props.showModal && (
-        <SessionConfigModel onClose={() => props.setShowModal(false)} />
       )}
     </div>
   );

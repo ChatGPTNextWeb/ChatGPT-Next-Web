@@ -1,35 +1,27 @@
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { ChatMessage, useChatStore } from "@/app/store/chat";
 import { CHAT_PAGE_SIZE } from "@/app/constant";
 import Locale from "@/app/locales";
 
-import styles from "./index.module.scss";
 import {
-  copyToClipboard,
   getMessageImages,
   getMessageTextContent,
   selectOrCopy,
 } from "@/app/utils";
-import { showPrompt, showToast } from "@/app/components/ui-lib";
 
-import CopyIcon from "@/app/icons/copy.svg";
-import ResetIcon from "@/app/icons/reload.svg";
-import DeleteIcon from "@/app/icons/clear.svg";
-import PinIcon from "@/app/icons/pin.svg";
-import EditIcon from "@/app/icons/rename.svg";
-import StopIcon from "@/app/icons/pause.svg";
 import LoadingIcon from "@/app/icons/three-dots.svg";
 
-import { MultimodalContent } from "@/app/client/api";
 import { Avatar } from "@/app/components/emoji";
 import { MaskAvatar } from "@/app/components/mask";
 import { useAppConfig } from "@/app/store/config";
-import ChatAction from "./ChatAction";
-import { ChatControllerPool } from "@/app/client/controller";
 import ClearContextDivider from "./ClearContextDivider";
 import dynamic from "next/dynamic";
+import useRelativePosition, {
+  Orientation,
+} from "@/app/hooks/useRelativePosition";
+import MessageActions, { RenderMessage } from "./MessageActions";
 
-export type RenderMessage = ChatMessage & { preview?: boolean };
+export type { RenderMessage };
 
 export interface ChatMessagePanelProps {
   scrollRef: React.RefObject<HTMLDivElement>;
@@ -39,6 +31,7 @@ export interface ChatMessagePanelProps {
   userInput: string;
   context: any[];
   renderMessages: RenderMessage[];
+  scrollDomToBottom: () => void;
   setAutoScroll?: (value: boolean) => void;
   setMsgRenderIndex?: (newIndex: number) => void;
   setHitBottom?: (value: boolean) => void;
@@ -47,8 +40,17 @@ export interface ChatMessagePanelProps {
   setShowPromptModal?: (value: boolean) => void;
 }
 
+let MarkdownLoadedCallback: () => void;
+
 const Markdown = dynamic(
-  async () => (await import("@/app/components/markdown")).Markdown,
+  async () => {
+    const bundle = await import("@/app/components/markdown");
+
+    if (MarkdownLoadedCallback) {
+      MarkdownLoadedCallback();
+    }
+    return bundle.Markdown;
+  },
   {
     loading: () => <LoadingIcon />,
   },
@@ -69,12 +71,39 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
     renderMessages,
     setIsLoading,
     setShowPromptModal,
+    scrollDomToBottom,
   } = props;
 
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const config = useAppConfig();
   const fontSize = config.fontSize;
+
+  const { position, getRelativePosition } = useRelativePosition({
+    containerRef: scrollRef,
+    delay: 0,
+    offsetDistance: 20,
+  });
+
+  // clear context index = context length + index in messages
+  const clearContextIndex =
+    (session.clearContextIndex ?? -1) >= 0
+      ? session.clearContextIndex! + context.length - msgRenderIndex
+      : -1;
+
+  if (!MarkdownLoadedCallback) {
+    MarkdownLoadedCallback = () => {
+      window.setTimeout(scrollDomToBottom, 100);
+    };
+  }
+
+  const messages = useMemo(() => {
+    const endRenderIndex = Math.min(
+      msgRenderIndex + 3 * CHAT_PAGE_SIZE,
+      renderMessages.length,
+    );
+    return renderMessages.slice(msgRenderIndex, endRenderIndex);
+  }, [msgRenderIndex, renderMessages]);
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const bottomHeight = e.scrollTop + e.clientHeight;
@@ -109,110 +138,9 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
     }
   };
 
-  const deleteMessage = (msgId?: string) => {
-    chatStore.updateCurrentSession(
-      (session) =>
-        (session.messages = session.messages.filter((m) => m.id !== msgId)),
-    );
-  };
-
-  const onDelete = (msgId: string) => {
-    deleteMessage(msgId);
-  };
-
-  const onResend = (message: ChatMessage) => {
-    // when it is resending a message
-    // 1. for a user's message, find the next bot response
-    // 2. for a bot's message, find the last user's input
-    // 3. delete original user input and bot's message
-    // 4. resend the user's input
-
-    const resendingIndex = session.messages.findIndex(
-      (m) => m.id === message.id,
-    );
-
-    if (resendingIndex < 0 || resendingIndex >= session.messages.length) {
-      console.error("[Chat] failed to find resending message", message);
-      return;
-    }
-
-    let userMessage: ChatMessage | undefined;
-    let botMessage: ChatMessage | undefined;
-
-    if (message.role === "assistant") {
-      // if it is resending a bot's message, find the user input for it
-      botMessage = message;
-      for (let i = resendingIndex; i >= 0; i -= 1) {
-        if (session.messages[i].role === "user") {
-          userMessage = session.messages[i];
-          break;
-        }
-      }
-    } else if (message.role === "user") {
-      // if it is resending a user's input, find the bot's response
-      userMessage = message;
-      for (let i = resendingIndex; i < session.messages.length; i += 1) {
-        if (session.messages[i].role === "assistant") {
-          botMessage = session.messages[i];
-          break;
-        }
-      }
-    }
-
-    if (userMessage === undefined) {
-      console.error("[Chat] failed to resend", message);
-      return;
-    }
-
-    // delete the original messages
-    deleteMessage(userMessage.id);
-    deleteMessage(botMessage?.id);
-
-    // resend the message
-    setIsLoading?.(true);
-    const textContent = getMessageTextContent(userMessage);
-    const images = getMessageImages(userMessage);
-    chatStore
-      .onUserInput(textContent, images)
-      .then(() => setIsLoading?.(false));
-    inputRef.current?.focus();
-  };
-
-  const onPinMessage = (message: ChatMessage) => {
-    chatStore.updateCurrentSession((session) =>
-      session.mask.context.push(message),
-    );
-
-    showToast(Locale.Chat.Actions.PinToastContent, {
-      text: Locale.Chat.Actions.PinToastAction,
-      onClick: () => {
-        setShowPromptModal?.(true);
-      },
-    });
-  };
-
-  // clear context index = context length + index in messages
-  const clearContextIndex =
-    (session.clearContextIndex ?? -1) >= 0
-      ? session.clearContextIndex! + context.length - msgRenderIndex
-      : -1;
-
-  const messages = useMemo(() => {
-    const endRenderIndex = Math.min(
-      msgRenderIndex + 3 * CHAT_PAGE_SIZE,
-      renderMessages.length,
-    );
-    return renderMessages.slice(msgRenderIndex, endRenderIndex);
-  }, [msgRenderIndex, renderMessages]);
-
-  // stop response
-  const onUserStop = (messageId: string) => {
-    ChatControllerPool.stop(session.id, messageId);
-  };
-
   return (
     <div
-      className={`relative flex-1 overscroll-y-none overflow-x-hidden px-3 pb-5`}
+      className={`relative flex-1 overscroll-y-none overflow-y-auto overflow-x-hidden px-3 pb-6`}
       ref={scrollRef}
       onScroll={(e) => onChatBodyScroll(e.currentTarget)}
       onMouseDown={() => inputRef.current?.blur()}
@@ -228,9 +156,14 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
           i > 0 &&
           !(message.preview || message.content.length === 0) &&
           !isContext;
-        // const showTyping = message.preview || message.streaming;
 
         const shouldShowClearContextDivider = i === clearContextIndex - 1;
+
+        const actionsBarPosition =
+          position?.id === message.id &&
+          position?.poi.overlapPositions[Orientation.bottom]
+            ? "bottom-[calc(100%-0.25rem)]"
+            : "top-[calc(100%-0.25rem)]";
 
         return (
           <Fragment key={message.id}>
@@ -253,11 +186,6 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                   </>
                 )}
               </div>
-              {/* {showTyping && (
-                <div className={styles["chat-message-status"]}>
-                  {Locale.Chat.Typing}
-                </div>
-              )} */}
               <div className={`group relative max-w-message-width`}>
                 <div
                   className={` pointer-events-none  text-gray-500 text-right text-time whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
@@ -269,9 +197,14 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     : message.date.toLocaleString()}
                 </div>
                 <div
-                  className={`transition-all duration-300 select-text break-words font-common text-sm-title rounded-message box-border peer py-2 px-3 ${
+                  className={`transition-all duration-300 select-text break-words font-common text-sm-title ${
+                    isUser ? "rounded-user-message" : "rounded-bot-message"
+                  } box-border peer py-2 px-3 ${
                     isUser ? "text-right  bg-message-bg" : " bg-white"
                   }`}
+                  onPointerMoveCapture={(e) =>
+                    getRelativePosition(e.currentTarget, message.id)
+                  }
                 >
                   <Markdown
                     content={getMessageTextContent(message)}
@@ -290,26 +223,12 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     defaultShow={i >= messages.length - 6}
                     className={isUser ? " text-white" : "text-black"}
                   />
-                  {getMessageImages(message).length == 1 && (
-                    <img
-                      className={` w-[100%] mt-2.5`}
-                      src={getMessageImages(message)[0]}
-                      alt=""
-                    />
-                  )}
-                  {getMessageImages(message).length > 1 && (
-                    <div
-                      className={`styles["chat-message-item-images"] w-[100%]`}
-                      style={
-                        {
-                          "--image-count": getMessageImages(message).length,
-                        } as React.CSSProperties
-                      }
-                    >
+                  {getMessageImages(message).length > 0 && (
+                    <div className={`w-[100%]`}>
                       {getMessageImages(message).map((image, index) => {
                         return (
                           <img
-                            className={styles["chat-message-item-image-multi"]}
+                            className={`w-[100%] mt-2.5 rounded-chat-img`}
                             key={index}
                             src={image}
                             alt=""
@@ -319,86 +238,15 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     </div>
                   )}
                 </div>
-
-                {showActions && (
-                  <div
-                    className={` absolute ${
-                      isUser ? "right-0" : "left-0"
-                    } top-[100%] hidden group-hover:block`}
-                  >
-                    <div className={styles["chat-input-actions"]}>
-                      {message.streaming ? (
-                        <ChatAction
-                          text={Locale.Chat.Actions.Stop}
-                          icon={<StopIcon />}
-                          onClick={() => onUserStop(message.id ?? i)}
-                        />
-                      ) : (
-                        <>
-                          <ChatAction
-                            text={Locale.Chat.Actions.Retry}
-                            icon={<ResetIcon />}
-                            onClick={() => onResend(message)}
-                          />
-
-                          <ChatAction
-                            text={Locale.Chat.Actions.Delete}
-                            icon={<DeleteIcon />}
-                            onClick={() => onDelete(message.id ?? i)}
-                          />
-
-                          <ChatAction
-                            text={Locale.Chat.Actions.Pin}
-                            icon={<PinIcon />}
-                            onClick={() => onPinMessage(message)}
-                          />
-                          <ChatAction
-                            text={Locale.Chat.Actions.Copy}
-                            icon={<CopyIcon />}
-                            onClick={() =>
-                              copyToClipboard(getMessageTextContent(message))
-                            }
-                          />
-                          <ChatAction
-                            text={Locale.Chat.Actions.Copy}
-                            icon={<EditIcon />}
-                            onClick={async () => {
-                              const newMessage = await showPrompt(
-                                Locale.Chat.Actions.Edit,
-                                getMessageTextContent(message),
-                                10,
-                              );
-                              let newContent: string | MultimodalContent[] =
-                                newMessage;
-                              const images = getMessageImages(message);
-                              if (images.length > 0) {
-                                newContent = [
-                                  { type: "text", text: newMessage },
-                                ];
-                                for (let i = 0; i < images.length; i++) {
-                                  newContent.push({
-                                    type: "image_url",
-                                    image_url: {
-                                      url: images[i],
-                                    },
-                                  });
-                                }
-                              }
-                              chatStore.updateCurrentSession((session) => {
-                                const m = session.mask.context
-                                  .concat(session.messages)
-                                  .find((m) => m.id === message.id);
-                                if (m) {
-                                  m.content = newContent;
-                                }
-                              });
-                            }}
-                          />
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
+                <MessageActions
+                  className={actionsBarPosition}
+                  message={message}
+                  inputRef={inputRef}
+                  isUser={isUser}
+                  showActions={showActions}
+                  setIsLoading={setIsLoading}
+                  setShowPromptModal={setShowPromptModal}
+                />
               </div>
             </div>
             {shouldShowClearContextDivider && <ClearContextDivider />}

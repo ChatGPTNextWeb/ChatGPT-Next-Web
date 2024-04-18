@@ -11,6 +11,7 @@ interface Action {
   title?: string;
   icons: JSX.Element | IconMap;
   className?: string;
+  onClick?: () => void;
 }
 
 type Groups = {
@@ -18,25 +19,29 @@ type Groups = {
   mobile: string[][];
 };
 
-export interface TabActionsProps {
+export interface ActionsBarProps {
   actionsShema: Action[];
-  onSelect: (id: string) => void;
-  selected: string;
+  onSelect?: (id: string) => void;
+  selected?: string;
   groups: string[][] | Groups;
   className?: string;
-  inMobile: boolean;
+  inMobile?: boolean;
 }
 
-export default function TabActions(props: TabActionsProps) {
+export default function ActionsBar(props: ActionsBarProps) {
   const { actionsShema, onSelect, selected, groups, className, inMobile } =
     props;
 
-  const handlerClick = (id: string) => (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    if (selected !== id) {
-      onSelect?.(id);
-    }
-  };
+  const handlerClick =
+    (action: Action) => (e: { preventDefault: () => void }) => {
+      e.preventDefault();
+      if (action.onClick) {
+        action.onClick();
+      }
+      if (selected !== action.id) {
+        onSelect?.(action.id);
+      }
+    };
 
   const internalGroup = Array.isArray(groups)
     ? groups
@@ -80,7 +85,7 @@ export default function TabActions(props: TabActionsProps) {
                             : "text-gray-400"
                         }
                     `}
-              onClick={handlerClick(action.id)}
+              onClick={handlerClick(action)}
             >
               {selected === action.id ? mobileActiveIcon : mobileInactiveIcon}
               <div className="  leading-3 text-sm-mobile-tab h-3 font-common w-[100%]">
@@ -93,10 +98,10 @@ export default function TabActions(props: TabActionsProps) {
         return (
           <div
             key={action.id}
-            className={` ${
+            className={`p-3 ${
               selected === action.id ? "bg-blue-900" : "bg-transparent"
-            } p-3 rounded-md items-center ${action.className}`}
-            onClick={handlerClick(action.id)}
+            } rounded-md items-center ${action.className}`}
+            onClick={handlerClick(action)}
           >
             {selected === action.id ? activeIcon : inactiveIcon}
           </div>
@@ -104,18 +109,10 @@ export default function TabActions(props: TabActionsProps) {
       }),
     );
     if (ind < arr.length - 1) {
-      res.push(<div className=" flex-1"></div>);
+      res.push(<div key={String(ind)} className=" flex-1"></div>);
     }
     return res;
   }, [] as JSX.Element[]);
 
-  return (
-    <div
-      className={`flex ${
-        inMobile ? "justify-around" : "flex-col"
-      } items-center ${className}`}
-    >
-      {content}
-    </div>
-  );
+  return <div className={`flex items-center ${className} `}>{content}</div>;
 }

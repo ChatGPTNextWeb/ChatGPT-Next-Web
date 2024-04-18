@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Prompt } from "@/app/store/prompt";
 
 import styles from "./index.module.scss";
+import useShowPromptHint from "@/app/hooks/useShowPromptHint";
 
 export type RenderPompt = Pick<Prompt, "title" | "content">;
 
@@ -11,8 +12,12 @@ export default function PromptHints(props: {
   className?: string;
 }) {
   const noPrompts = props.prompts.length === 0;
+
   const [selectIndex, setSelectIndex] = useState(0);
+
   const selectedRef = useRef<HTMLDivElement>(null);
+
+  const { internalPrompts, notShowPrompt } = useShowPromptHint({ ...props });
 
   useEffect(() => {
     setSelectIndex(0);
@@ -55,10 +60,24 @@ export default function PromptHints(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.prompts.length, selectIndex]);
 
-  if (noPrompts) return null;
+  if (!internalPrompts.length) {
+    return null;
+  }
+
   return (
-    <div className={`${styles["prompt-hints"]} ${props.className}`}>
-      {props.prompts.map((prompt, i) => (
+    <div
+      className={`
+      ${styles["prompt-hints"]} 
+      transition-all duration-300 shadow-inner rounded-none w-[100%] flex flex-col-reverse overflow-auto
+      ${
+        notShowPrompt
+          ? "max-h-[0vh] border-none"
+          : "border-b-[1px] pt-2.5 max-h-[50vh]"
+      } 
+      ${props.className}
+    `}
+    >
+      {internalPrompts.map((prompt, i) => (
         <div
           ref={i === selectIndex ? selectedRef : null}
           className={

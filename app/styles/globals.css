@@ -23,3 +23,8 @@ body {
   width: 100%;
   overflow: hidden;
 }
+
+:root {
+  --tip-popover-color: #434360;
+  --chat-panel-bg: rgb(249, 250, 251, 1);
+}

@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import { useMemo, ReactNode, useLayoutEffect } from "react";
-import { DEFAULT_SIDEBAR_WIDTH, Path, SlotID } from "@/app/constant";
+import { useMemo, ReactNode } from "react";
+import { Path, SlotID } from "@/app/constant";
 import { getLang } from "@/app/locales";
 
 import useMobileScreen from "@/app/hooks/useMobileScreen";
@@ -29,7 +29,7 @@ export default function Screen(props: ScreenProps) {
   useListenWinResize();
 
   let containerClassName = "flex h-[100%] w-[100%]";
-  let pageClassName = "flex-1 h-[100%]";
+  let pageClassName = "flex-1 h-[100%] w-page";
   let sidebarClassName = "basis-sidebar h-[100%]";
 
   if (isMobileScreen) {

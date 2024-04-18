@@ -526,25 +526,12 @@
 }
 
 .prompt-hints {
-  min-height: 20px;
-  width: 100%;
-  max-height: 50vh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column-reverse;
-
-  background-color: var(--white);
-  border: var(--border-in-light);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
-
   .prompt-hint {
     color: var(--black);
     padding: 6px 10px;
-    animation: slide-in ease 0.3s;
-    cursor: pointer;
-    transition: all ease 0.3s;
+    // animation: slide-in ease 0.3s;
+    // cursor: pointer;
+    // transition: all ease 0.3s;
     border: transparent 1px solid;
     margin: 4px;
     border-radius: 8px;
@@ -573,13 +560,13 @@
   }
 }
 
-.chat-input-panel-inner {
-  cursor: text;
-  display: flex;
-  flex: 1;
-  border-radius: 10px;
-  border: var(--border-in-light);
-}
+// .chat-input-panel-inner {
+//   cursor: text;
+//   display: flex;
+//   flex: 1;
+//   border-radius: 10px;
+//   border: var(--border-in-light);
+// }
 
 .chat-input-panel-inner-attach {
   padding-bottom: 80px;

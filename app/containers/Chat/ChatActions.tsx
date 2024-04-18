@@ -24,16 +24,13 @@ import SettingsIcon from "@/app/icons/chat-settings.svg";
 import ImageIcon from "@/app/icons/image.svg";
 import AddCircleIcon from "@/app/icons/addCircle.svg";
 
-import ChatAction from "./ChatAction";
-
-import styles from "./index.module.scss";
 import Popover from "@/app/components/Popover";
 
 export function ChatActions(props: {
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
   setUploading: (uploading: boolean) => void;
-  showPromptModal: () => void;
+  showChatSetting: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
   showModelSelector: (show: boolean) => void;
@@ -105,9 +102,9 @@ export function ChatActions(props: {
       placement: "left",
     },
     {
-      onClick: props.showPromptModal,
+      onClick: props.showChatSetting,
       text: Locale.Chat.InputActions.Settings,
-      isShow: props.hitBottom,
+      isShow: true,
       icon: <SettingsIcon />,
       placement: "right",
     },
@@ -178,28 +175,36 @@ export function ChatActions(props: {
 
   if (props.isMobileScreen) {
     const content = (
-      <div>
+      <div className="w-[100%]">
         {actions.map((act) => {
           return (
             <div
               key={act.text}
-              className={`flex p-3 bg-white hover:bg-select-btn rounded-action-btn`}
+              className={`flex items-center gap-3 p-3 bg-white hover:bg-select-btn rounded-action-btn leading-6`}
             >
               {act.icon}
-              {act.text}
+              <div className="flex-1 text-common text-actions-popover-menu-item">
+                {act.text}
+              </div>
             </div>
           );
         })}
       </div>
     );
     return (
-      <Popover content={content}>
+      <Popover
+        content={content}
+        trigger="click"
+        placement="lt"
+        noArrow
+        popoverClassName="border-actions-popover border-gray-200 rounded-md shadow-actions-popover w-actions-popover bg-white "
+      >
         <AddCircleIcon />
       </Popover>
     );
   }
 
-  const popoverClassName = `bg-gray-800 whitespace-nowrap px-3 py-2.5 text-white text-sm-title rounded-md`;
+  const popoverClassName = `bg-chat-actions-popover-color whitespace-nowrap px-3 py-2.5 text-white text-sm-title rounded-md`;
 
   return (
     <div className={`flex gap-2 item-center ${props.className}`}>
@@ -214,7 +219,7 @@ export function ChatActions(props: {
               placement={ind ? "t" : "rt"}
             >
               <div
-                className="h-[32px] w-[32px] flex items-center justify-center"
+                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-gray-200 hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -234,7 +239,7 @@ export function ChatActions(props: {
               placement={ind === arr.length - 1 ? "lt" : "t"}
             >
               <div
-                className="h-[32px] w-[32px] flex items-center justify-center"
+                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-gray-200 hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}

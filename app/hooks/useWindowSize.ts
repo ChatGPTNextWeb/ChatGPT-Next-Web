@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 type Size = {
   width: number;
@@ -7,15 +7,6 @@ type Size = {
 
 export function useWindowSize(callback: (size: Size) => void) {
   const callbackRef = useRef<typeof callback>();
-  const hascalled = useRef(false);
-
-  if (typeof window !== "undefined" && !hascalled.current) {
-    callback({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-    hascalled.current = true;
-  }
 
   callbackRef.current = callback;
 
@@ -28,6 +19,11 @@ export function useWindowSize(callback: (size: Size) => void) {
     };
 
     window.addEventListener("resize", onResize);
+
+    callback({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
 
     return () => {
       window.removeEventListener("resize", onResize);

@@ -45,7 +45,7 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
 });
 
-const Chat = dynamic(async () => await import("@/app/containers/Chat"), {
+const Chat = dynamic(async () => (await import("./chat")).Chat, {
   loading: () => <Loading noLogo />,
 });
 
@@ -151,10 +151,7 @@ function Screen() {
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
-          <div
-            className={`flex flex-col h-[100%] w-[--window-content-width]`}
-            id={SlotID.AppBody}
-          >
+          <div className={styles["window-content"]} id={SlotID.AppBody}>
             <ErrorBoundary>
               <Routes>
                 <Route path={Path.Home} element={<Chat />} />

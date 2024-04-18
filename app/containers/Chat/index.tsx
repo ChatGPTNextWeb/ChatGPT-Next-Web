@@ -1,4 +1,3 @@
-import { useDebouncedCallback } from "use-debounce";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
   useChatStore,
@@ -8,7 +7,6 @@ import {
   useAppConfig,
   ModelType,
 } from "@/app/store";
-import { autoGrowTextArea, useMobileScreen } from "@/app/utils";
 import Locale from "@/app/locales";
 import { Selector, showConfirm, showToast } from "@/app/components/ui-lib";
 import {
@@ -26,6 +24,10 @@ import ChatHeader from "./ChatHeader";
 import ChatInputPanel, { ChatInputPanelInstance } from "./ChatInputPanel";
 import ChatMessagePanel, { RenderMessage } from "./ChatMessagePanel";
 import { useAllModels } from "@/app/utils/hooks";
+import useRows from "@/app/hooks/useRows";
+import useMobileScreen from "@/app/hooks/useMobileScreen";
+import SessionConfigModel from "./SessionConfigModal";
+import useScrollToBottom from "@/app/hooks/useScrollToBottom";
 
 function _Chat() {
   const chatStore = useChatStore();
@@ -47,22 +49,11 @@ function _Chat() {
   const [attachImages, setAttachImages] = useState<string[]>([]);
 
   // auto grow input
-  const [inputRows, setInputRows] = useState(2);
-  const measure = useDebouncedCallback(
-    () => {
-      const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
-      const inputRows = Math.min(
-        20,
-        Math.max(2 + Number(!isMobileScreen), rows),
-      );
-      setInputRows(inputRows);
-    },
-    100,
-    {
-      leading: true,
-      trailing: true,
-    },
-  );
+  const { measure, inputRows } = useRows({
+    inputRef,
+  });
+
+  const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(scrollRef);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
@@ -224,7 +215,6 @@ function _Chat() {
   }, []);
 
   const chatinputPanelProps = {
-    scrollRef,
     inputRef,
     isMobileScreen,
     renderMessages,
@@ -235,9 +225,11 @@ function _Chat() {
     setAttachImages,
     setUserInput,
     setIsLoading,
-    setShowPromptModal,
+    showChatSetting: setShowPromptModal,
     _setMsgRenderIndex,
     showModelSelector: setShowModelSelector,
+    scrollDomToBottom,
+    setAutoScroll,
   };
 
   const chatMessagePanelProps = {
@@ -248,12 +240,13 @@ function _Chat() {
     userInput,
     context,
     renderMessages,
-    setAutoScroll: chatInputPanelRef.current?.setAutoScroll,
+    setAutoScroll,
     setMsgRenderIndex: chatInputPanelRef.current?.setMsgRenderIndex,
     setHitBottom,
     setUserInput,
     setIsLoading,
     setShowPromptModal,
+    scrollDomToBottom,
   };
 
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
@@ -265,9 +258,11 @@ function _Chat() {
 
   return (
     <div
-      className={`flex flex-col h-[100%] overflow-hidden ${
+      className={`flex flex-col ${
+        isMobileScreen ? "h-[100%]" : "h-[calc(100%-1.25rem)]"
+      } overflow-hidden ${
         isMobileScreen ? "" : `my-2.5 ml-1 mr-2.5 rounded-md`
-      } bg-gray-50`}
+      } bg-chat-panel`}
       key={session.id}
     >
       <ChatHeader
@@ -298,6 +293,10 @@ function _Chat() {
         showModal={showPromptModal}
         setShowModal={setShowPromptModal}
       />
+
+      {showPromptModal && (
+        <SessionConfigModel onClose={() => setShowPromptModal(false)} />
+      )}
 
       {showModelSelector && (
         <Selector
