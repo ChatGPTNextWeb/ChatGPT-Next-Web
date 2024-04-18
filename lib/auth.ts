@@ -94,9 +94,9 @@ export const authOptions: NextAuthOptions = {
                     let existingUser = await existUser(user); // await insertUser(user)
                     if (!existingUser) {
                       // 如果不存在，则报错
-                      // throw new Error("用户查询失败")
+                      throw new Error("用户名或密码不正确")
                       // 如果不存在，则创建
-                      existingUser = await insertUser(user);
+                      // existingUser = await insertUser(user);
                     }
                     // 有密码就校验密码，没有就直接返回用户
                     (password || existingUser.password) && validatePassword(password, existingUser.password);
@@ -104,7 +104,7 @@ export const authOptions: NextAuthOptions = {
                 } else {
                     // If you return null then an error will be displayed advising the user to check their details.
                     // return null
-                    throw new Error("用户名校验失败")
+                    throw new Error("用户名或密码不正确")
                     // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
                 }
             }
@@ -153,11 +153,11 @@ export const authOptions: NextAuthOptions = {
             return session;
         },
         // 过滤不存在的用户，目前没用
-        // async signIn({ user, account, profile, email, credentials }) {
-        //     const existingUser = await existUser(user as User);
-        //     console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
-        //     return !!existingUser;
-        // }
+        async signIn({ user, account, profile, email, credentials }) {
+            const existingUser = await existUser(user as User);
+            console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
+            return !!existingUser;
+        }
     },
 };
 
