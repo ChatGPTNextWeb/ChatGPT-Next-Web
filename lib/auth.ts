@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 import { User } from "@prisma/client";
 import {ADMIN_LIST, isEmail, isName} from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
-
+import { comparePassword, hashPassword } from "@/lib/utils";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 
@@ -73,13 +73,14 @@ export const authOptions: NextAuthOptions = {
             // You can pass any HTML attribute to the <input> tag through the object.
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "输入姓名或邮箱" },
-                // password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password", placeholder: "密码验证，测试阶段" }
             },
             // @ts-ignore
             async authorize(credential, req) {
                 const username = cleanUpString(`${credential?.username}`);
+                const password = cleanPassword(`${credential?.password}`);
                 // 验证用户名
-                // console.log(credential, username, '==============3')
+                // console.log(credential, 'p', password, '==============3')
                 // 判断姓名格式是否符合要求，不符合则拒绝
                 if (username && isName(username)) {
                     // Any object returned will be saved in `user` property of the JWT
@@ -89,11 +90,21 @@ export const authOptions: NextAuthOptions = {
                     } else {
                         user['name'] = username;
                     }
-                    return await insertUser(user) ?? user
+                    // 目前用户不存在，则会创建新用户。
+                    let existingUser = await existUser(user); // await insertUser(user)
+                    if (!existingUser) {
+                      // 如果不存在，则报错
+                      // throw new Error("用户查询失败")
+                      // 如果不存在，则创建
+                      existingUser = await insertUser(user);
+                    }
+                    // 有密码就校验密码，没有就直接返回用户
+                    password && validatePassword(password, existingUser.password);
+                    return existingUser;
                 } else {
                     // If you return null then an error will be displayed advising the user to check their details.
                     // return null
-                    throw new Error("用户名校验失败")
+                    throw new Error("username,用户名校验失败")
                     // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
                 }
             }
@@ -183,93 +194,49 @@ export async function VerifiedAdminUser() {
     return !!(name && ADMIN_LIST.includes(name));
 }
 
-// export function withSiteAuth(action: any) {
-//     return async (
-//         formData: FormData | null,
-//         siteId: string,
-//         key: string | null,
-//     ) => {
-//         const session = await getSession();
-//         if (!session) {
-//             return {
-//                 error: "Not authenticated",
-//             };
-//         }
-//         const site = await prisma.site.findUnique({
-//             where: {
-//                 id: siteId,
-//             },
-//         });
-//         if (!site || site.userId !== session.user.id) {
-//             return {
-//                 error: "Not authorized",
-//             };
-//         }
-//
-//         return action(formData, site, key);
-//     };
-// }
-//
-// export function withPostAuth(action: any) {
-//     return async (
-//         formData: FormData | null,
-//         postId: string,
-//         key: string | null,
-//     ) => {
-//         const session = await getSession();
-//         if (!session?.user.id) {
-//             return {
-//                 error: "Not authenticated",
-//             };
-//         }
-//         const post = await prisma.post.findUnique({
-//             where: {
-//                 id: postId,
-//             },
-//             include: {
-//                 site: true,
-//             },
-//         });
-//         if (!post || post.userId !== session.user.id) {
-//             return {
-//                 error: "Post not found",
-//             };
-//         }
-//
-//         return action(formData, post, key);
-//     };
-// }
+export function validatePassword(password: string, hashPassword: string | null | undefined ): boolean | void {
+  if (!hashPassword) {
+    throw new Error("password,未设置密码");
+  }
+
+  if (!comparePassword(password, hashPassword)) {
+    throw new Error("password,用户名或密码不正确")
+  } else {
+    return true;
+  }
+}
 
 async function existUser(user: {[key: string]: string} | User ) {
-    const conditions = [];
-    if (user?.name) {
-        conditions.push({ name: user.name });
-    }
-    if (user?.email) {
-        conditions.push({ email: user.email });
-    }
-    return conditions.length ? await prisma.user.findFirst({
-        where: {
-            AND: conditions,
-        },
-    }) : null
+  const conditions = [];
+  if (user?.name) {
+    conditions.push({ name: user.name });
+  }
+  if (user?.email) {
+    conditions.push({ email: user.email });
+  }
+  return conditions.length ? await prisma.user.findFirst({
+    where: {
+      AND: conditions,
+    },
+  }) : null
 }
 
 export async function insertUser(user: {[key: string]: string}) {
     try {
-        const existingUser = await existUser(user);
-        // console.log('[LOG]', existingUser, user, '=======')
-        if (!existingUser) {
-            return await prisma.user.create({
-                data: user
-            })
-        } else {
-            // console.log('user==========', existingUser)
-            return existingUser;
-        }
+        return await prisma.user.create({
+          data: user
+        })
+        // const existingUser = await existUser(user);
+        // // console.log('[LOG]', existingUser, user, '=======')
+        // if (!existingUser) {
+        //
+        // } else {
+        //     // console.log('user==========', existingUser)
+        //     return existingUser;
+        // }
     } catch (e) {
-        console.log('[Prisma Error]', e);
-        return false;
+        throw new Error("username,用户创建失败");
+        // return false;
     }
 }
 
@@ -287,6 +254,15 @@ function cleanUpString(input: string): string {
     }
 }
 
+function cleanPassword(input: string): string {
+  try {
+    // 去除前后空格
+    return input.trim()
+  }
+  catch {
+    return '';
+  }
+}
 
 
 

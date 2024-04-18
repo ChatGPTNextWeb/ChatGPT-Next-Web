@@ -51,7 +51,22 @@ async function handle(
             },
           });
       const count = result.length;
-      return NextResponse.json({ count: count, results: result });
+      return NextResponse.json({
+        count: count,
+        results: result.map((item) => {
+          return {
+            id: item.id,
+            name: item.name,
+            username: item.username,
+            gh_username: item.gh_username,
+            image: item.image,
+            email: item.email,
+            emailVerified: item.emailVerified,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+          };
+        }),
+      });
     } catch {}
     return NextResponse.json({ error: "未知错误" }, { status: 500 });
   }

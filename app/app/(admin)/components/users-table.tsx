@@ -1,6 +1,5 @@
 "use client";
 
-import "./users-table.modules.scss";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { User } from "@prisma/client";
 import {

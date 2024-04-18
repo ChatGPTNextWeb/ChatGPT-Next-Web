@@ -14,7 +14,7 @@
   border: 0;
   border-top: 1px solid var(--color-separator);
   display: block;
-  margin: 2rem auto 1rem;
+  margin: 1rem auto 1rem;
   overflow: visible
 }
 
@@ -47,7 +47,7 @@
 }
 
 .signin form input[type],.signin>div input[type] {
-  margin-bottom: .5rem
+  //margin-bottom: .5rem
 }
 
 .signin form button,.signin>div button {
@@ -73,7 +73,7 @@ html {
 .login-form {
   background-color: #fff;
   width: 350px;
-  height: 500px;
+  height: 550px;
   border-radius: 15px;
 
   /* 定位到中心 */
@@ -86,4 +86,12 @@ html {
   /* 毛玻璃 */
   backdrop-filter: blur(10px); /* 应用模糊效果 */
   background-color: rgba(255, 255, 255, 0.5); /* 半透明的白色背景 */
+}
+
+input {
+  text-align: left !important
+}
+
+#login-form input:-webkit-autofill {
+  transition: background-color 5000s ease-in-out 0s;
 }
