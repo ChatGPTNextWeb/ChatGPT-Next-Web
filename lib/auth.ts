@@ -99,12 +99,12 @@ export const authOptions: NextAuthOptions = {
                       existingUser = await insertUser(user);
                     }
                     // 有密码就校验密码，没有就直接返回用户
-                    password && validatePassword(password, existingUser.password);
+                    (password || existingUser.password) && validatePassword(password, existingUser.password);
                     return existingUser;
                 } else {
                     // If you return null then an error will be displayed advising the user to check their details.
                     // return null
-                    throw new Error("username,用户名校验失败")
+                    throw new Error("用户名校验失败")
                     // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
                 }
             }
@@ -196,11 +196,11 @@ export async function VerifiedAdminUser() {
 
 export function validatePassword(password: string, hashPassword: string | null | undefined ): boolean | void {
   if (!hashPassword) {
-    throw new Error("password,未设置密码");
+    throw new Error("未设置密码");
   }
 
   if (!comparePassword(password, hashPassword)) {
-    throw new Error("password,用户名或密码不正确")
+    throw new Error("用户名或密码不正确")
   } else {
     return true;
   }
@@ -235,7 +235,7 @@ export async function insertUser(user: {[key: string]: string}) {
         //     return existingUser;
         // }
     } catch (e) {
-        throw new Error("username,用户创建失败");
+        throw new Error("用户创建失败");
         // return false;
     }
 }

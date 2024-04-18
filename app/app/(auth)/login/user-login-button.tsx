@@ -47,18 +47,22 @@ export default function UserLoginButton() {
         window.location.href =
           result?.url && result.url.includes("verify") ? result.url : "/";
       } else {
-        const errorParts = result.error.split(",");
-        if (errorParts.length > 1) {
+        if (loginProvider === "credentials") {
           loginForm.setFields([
             {
-              name: errorParts[0],
-              errors: [errorParts[1]],
+              name: "username",
+              errors: [result.error],
             },
-          ]);
-        } else {
-          loginForm.setFields([
             {
               name: "password",
+              errors: [result.error],
+            },
+          ]);
+        }
+        if (loginProvider === "email") {
+          loginForm.setFields([
+            {
+              name: "email",
               errors: [result.error],
             },
           ]);
