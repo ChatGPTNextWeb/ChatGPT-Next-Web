@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { insertUser } from "@/lib/auth";
 import { getTokenLength } from "@/lib/utils";
 
 async function handle(

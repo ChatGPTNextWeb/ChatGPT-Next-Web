@@ -80,7 +80,7 @@ export const authOptions: NextAuthOptions = {
                 const username = cleanUpString(`${credential?.username}`);
                 const password = cleanPassword(`${credential?.password}`);
                 // 验证用户名
-                console.log(credential, 'p', password, '==============3')
+                // console.log(credential, 'p', password, '==============3')
                 // 判断姓名格式是否符合要求，不符合则拒绝
                 if (username && isName(username)) {
                     // Any object returned will be saved in `user` property of the JWT
@@ -90,17 +90,21 @@ export const authOptions: NextAuthOptions = {
                     } else {
                         user['name'] = username;
                     }
-                    if (password) {
-                      user['password'] = password;
-                      // 如果有密码，则启用密码验证，查询数据库，否则失败
-                      return await validatePassword(user);
+                    // 目前用户不存在，则会创建新用户。
+                    let existingUser = await existUser(user); // await insertUser(user)
+                    if (!existingUser) {
+                      // 如果不存在，则报错
+                      // throw new Error("用户查询失败")
+                      // 如果不存在，则创建
+                      existingUser = await insertUser(user);
                     }
-
-                    return await insertUser(user) ?? user
+                    // 有密码就校验密码，没有就直接返回用户
+                    password && validatePassword(password, existingUser.password);
+                    return existingUser;
                 } else {
                     // If you return null then an error will be displayed advising the user to check their details.
                     // return null
-                    throw new Error("用户名校验失败")
+                    throw new Error("username,用户名校验失败")
                     // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
                 }
             }
@@ -190,21 +194,15 @@ export async function VerifiedAdminUser() {
     return !!(name && ADMIN_LIST.includes(name));
 }
 
-export async function validatePassword(user: {[key: string]: string}): Promise<User | void> {
-
-  const existingUser = await existUser(user);
-  console.log('------', 'existUser', existUser)
-
-  if (!existingUser) {
-    throw new Error("用户名或密码不正确");
+export function validatePassword(password: string, hashPassword: string | null | undefined ): boolean | void {
+  if (!hashPassword) {
+    throw new Error("password,未设置密码");
   }
-  if (existingUser.password == null) {
-    throw new Error("未设置密码");
-  }
-  if (!comparePassword(user.passowrd, existingUser.password)) {
-    throw new Error("用户名或密码不正确")
+
+  if (!comparePassword(password, hashPassword)) {
+    throw new Error("password,用户名或密码不正确")
   } else {
-    return existingUser;
+    return true;
   }
 }
 
@@ -225,19 +223,20 @@ async function existUser(user: {[key: string]: string} | User ) {
 
 export async function insertUser(user: {[key: string]: string}) {
     try {
-        const existingUser = await existUser(user);
-        // console.log('[LOG]', existingUser, user, '=======')
-        if (!existingUser) {
-            return await prisma.user.create({
-                data: user
-            })
-        } else {
-            // console.log('user==========', existingUser)
-            return existingUser;
-        }
+        return await prisma.user.create({
+          data: user
+        })
+        // const existingUser = await existUser(user);
+        // // console.log('[LOG]', existingUser, user, '=======')
+        // if (!existingUser) {
+        //
+        // } else {
+        //     // console.log('user==========', existingUser)
+        //     return existingUser;
+        // }
     } catch (e) {
-        console.log('[Prisma Error]', e);
-        return false;
+        throw new Error("username,用户创建失败");
+        // return false;
     }
 }
 
