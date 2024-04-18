@@ -159,16 +159,24 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-sub-title"]}>
           <PinIcon />
-          无需登录即可使用，为了防止被滥用，不定时更新一定免费额度，在经济条件允许的情况下会尽可能提供稳定的免费使用。
+          无需登录，会定时补充免费额度，获得的赞助用于运维开支。
         </div>
         <div className={styles["sidebar-sub-title"]}>
           <PinIcon />
-          或者你也可以选择兑换专属额度，请前往{" "}
+          你可以通过爱发电赞助，感谢支持。
+          <a href="https://afdian.net/a/ikunai" target="_blank">
+            前往爱发电
+          </a>{" "}
+        </div>
+        <div className={styles["sidebar-sub-title"]}>
+          <PinIcon />
+          公用免费额度用完的时候你可以选择兑换专属额度，请前往{" "}
           <a href="https://oneapi.snat.top" target="_blank">
             https://oneapi.snat.top
           </a>{" "}
           兑换。
         </div>
+
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
