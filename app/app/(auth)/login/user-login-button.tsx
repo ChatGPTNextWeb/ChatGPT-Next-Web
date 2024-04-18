@@ -8,11 +8,16 @@ export default function UserLoginButton() {
   const [loading, setLoading] = useState(false);
 
   const nameInput = useRef<HTMLInputElement>(null);
+  const passwordInput = useRef<HTMLInputElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const [error, setError] = useState(false);
 
-  const handleComposition = (e: React.CompositionEvent<HTMLInputElement>) => {
+  const handleNameComposition = (
+    e: React.CompositionEvent<HTMLInputElement>,
+  ) => {
     if (e.type === "compositionend") {
       setUsername(e.currentTarget.value);
     }
@@ -22,6 +27,12 @@ export default function UserLoginButton() {
       return;
     }
     setUsername(e.target.value);
+  };
+  const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if ((e.nativeEvent as InputEvent).isComposing) {
+      return;
+    }
+    setPassword(e.target.value);
   };
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     // handle yow submition
@@ -40,6 +51,7 @@ export default function UserLoginButton() {
     } else {
       result = await signIn("credentials", {
         username: username,
+        password: password,
         redirect: false,
       });
     }
@@ -93,10 +105,33 @@ export default function UserLoginButton() {
                 ref={nameInput}
                 // value={username}
                 onCompositionStart={(e) => e.preventDefault()}
-                onCompositionEnd={handleComposition}
+                onCompositionEnd={handleNameComposition}
                 onChange={onNameChange}
                 // required
                 placeholder="输入姓名、拼音或邮箱"
+                className={`${
+                  loading
+                    ? "cursor-not-allowed bg-stone-50 dark:bg-stone-800"
+                    : "bg-white hover:bg-stone-50 active:bg-stone-100 dark:bg-black dark:hover:border-white dark:hover:bg-black"
+                } group my-2 flex h-10 w-full items-center justify-center space-x-2 rounded-md border border-stone-200 transition-colors duration-75 focus:outline-none dark:border-stone-700
+                  ${
+                    error
+                      ? "focus:invalid:border-red-500 focus:invalid:ring-red-500"
+                      : ""
+                  }
+                `}
+              />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                ref={passwordInput}
+                value={password}
+                // onCompositionStart={(e) => e.preventDefault()}
+                // onCompositionEnd={handleComposition}
+                onChange={onPasswordChange}
+                // required
+                placeholder="密码验证，测试阶段"
                 className={`${
                   loading
                     ? "cursor-not-allowed bg-stone-50 dark:bg-stone-800"
