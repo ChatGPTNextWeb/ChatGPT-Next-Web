@@ -13,6 +13,7 @@ import {
   StoreKey,
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
+  ANTHROPIC_SUMMARIZE_MODEL,
 } from "../constant";
 import { ClientApi, RequestMessage, MultimodalContent } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
@@ -91,6 +92,9 @@ function getSummarizeModel(currentModel: string) {
   }
   if (currentModel.startsWith("gemini-pro")) {
     return GEMINI_SUMMARIZE_MODEL;
+  }
+  if (currentModel.startsWith("claude")){
+    return ANTHROPIC_SUMMARIZE_MODEL;
   }
   return currentModel;
 }
