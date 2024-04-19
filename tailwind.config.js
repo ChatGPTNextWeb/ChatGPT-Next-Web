@@ -74,6 +74,7 @@ module.exports = {
         'select-btn': 'rgba(0, 0, 0, 0.05)',
         'chat-actions-popover-color': 'var(--tip-popover-color)',
         'chat-panel': 'var(--chat-panel-bg)',
+        'global': '#E3E3ED',
       },
       boxShadow: {
         'btn': '0px 4px 10px 0px rgba(60, 68, 255, 0.14)',

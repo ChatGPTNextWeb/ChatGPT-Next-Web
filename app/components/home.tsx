@@ -9,7 +9,7 @@ import styles from "./home.module.scss";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
-import { getCSSVar } from "../utils";
+import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
 import { ModelProvider, Path, SlotID } from "../constant";
@@ -23,14 +23,13 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import { SideBar } from "@/app/containers/Sidebar";
+import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
-import backgroundUrl from "!url-loader!@/app/icons/background.svg";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -125,9 +124,13 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
+  const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
+  const isMobileScreen = useMobileScreen();
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -137,11 +140,10 @@ function Screen() {
     <div
       className={
         styles.container +
-        `${styles["container"]} ${styles["tight-container"]} ${
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
           getLang() === "ar" ? styles["rtl-screen"] : ""
         }`
       }
-      style={{ background: `url(${backgroundUrl})` }}
     >
       {isAuth ? (
         <>
@@ -152,15 +154,13 @@ function Screen() {
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
           <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <ErrorBoundary>
-              <Routes>
-                <Route path={Path.Home} element={<Chat />} />
-                <Route path={Path.NewChat} element={<NewChat />} />
-                <Route path={Path.Masks} element={<MaskPage />} />
-                <Route path={Path.Chat} element={<Chat />} />
-                <Route path={Path.Settings} element={<Settings />} />
-              </Routes>
-            </ErrorBoundary>
+            <Routes>
+              <Route path={Path.Home} element={<Chat />} />
+              <Route path={Path.NewChat} element={<NewChat />} />
+              <Route path={Path.Masks} element={<MaskPage />} />
+              <Route path={Path.Chat} element={<Chat />} />
+              <Route path={Path.Settings} element={<Settings />} />
+            </Routes>
           </div>
         </>
       )}

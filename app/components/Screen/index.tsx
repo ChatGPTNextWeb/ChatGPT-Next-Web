@@ -5,8 +5,6 @@ import { getLang } from "@/app/locales";
 
 import useMobileScreen from "@/app/hooks/useMobileScreen";
 import { isIOS } from "@/app/utils";
-
-import backgroundUrl from "!url-loader!@/app/icons/background.svg";
 import useListenWinResize from "@/app/hooks/useListenWinResize";
 
 interface ScreenProps {
@@ -40,9 +38,8 @@ export default function Screen(props: ScreenProps) {
 
   return (
     <div
-      className={containerClassName}
+      className={`bg-global ${containerClassName}`}
       style={{
-        backgroundImage: `url(${backgroundUrl})`,
         direction: getLang() === "ar" ? "rtl" : "ltr",
       }}
     >
