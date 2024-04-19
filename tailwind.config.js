@@ -37,7 +37,7 @@ module.exports = {
         'md': '15rem',
         'lg': '21.25rem',
         '2xl': '27.5rem',
-        'page': 'calc(100% - var(--sidebar-width))',
+        'page': 'calc(100% - var(--menu-width))',
         'thumbnail': '5rem',
         'actions-popover': '203px',
       },
@@ -52,12 +52,14 @@ module.exports = {
         'setting-panel-mobile': 'calc(100vh - var(--siderbar-mobile-height))',
       },
       flexBasis: {
-        'sidebar': 'var(--sidebar-width)',
-        'page': 'calc(100% - var(--sidebar-width))',
+        'sidebar': 'var(--menu-width)',
+        'page': 'calc(100% - var(--menu-width))',
+        'message-width': 'var(--max-message-width)',
       },
       spacing: {
         'chat-header-gap': '0.625rem',
-        'chat-panel-mobile': 'var(--siderbar-mobile-height)'
+        'chat-panel-mobile': 'var(--siderbar-mobile-height)',
+        'message-img': 'calc((100%- var(--img-gap-count)*0.25rem)/var(--img-count))',
       },
       backgroundImage: {
         'message-bg': 'linear-gradient(259deg, #9786FF 8.42%, #4A5CFF 90.13%)',
@@ -67,8 +69,9 @@ module.exports = {
         'time': 'all ease 0.6s',
         'message': 'all ease 0.3s',
       },
+      maxHeight: {},
       maxWidth: {
-        'message-width': 'var(--max-message-width, 80%)'
+        'message-width': 'var(--max-message-width)',
       },
       backgroundColor: {
         'select-btn': 'rgba(0, 0, 0, 0.05)',

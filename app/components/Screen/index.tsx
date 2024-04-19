@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useMemo, ReactNode } from "react";
-import { Path, SlotID } from "@/app/constant";
+import { Path, SIDEBAR_ID, SlotID } from "@/app/constant";
 import { getLang } from "@/app/locales";
 
 import useMobileScreen from "@/app/hooks/useMobileScreen";
@@ -47,7 +47,9 @@ export default function Screen(props: ScreenProps) {
         props.noAuth
       ) : (
         <>
-          <div className={sidebarClassName}>{props.sidebar}</div>
+          <div className={sidebarClassName} id={SIDEBAR_ID}>
+            {props.sidebar}
+          </div>
 
           <div
             className={pageClassName}

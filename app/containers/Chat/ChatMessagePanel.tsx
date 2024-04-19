@@ -20,6 +20,7 @@ import useRelativePosition, {
   Orientation,
 } from "@/app/hooks/useRelativePosition";
 import MessageActions, { RenderMessage } from "./MessageActions";
+import Imgs from "@/app/components/Imgs";
 
 export type { RenderMessage };
 
@@ -186,7 +187,11 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                   </>
                 )}
               </div>
-              <div className={`group relative max-w-message-width`}>
+              <div
+                className={`group relative flex-1 flex ${
+                  isUser ? "flex-row-reverse" : ""
+                }`}
+              >
                 <div
                   className={` pointer-events-none  text-gray-500 text-right text-time whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
                     isUser ? "right-0" : "left-0"
@@ -198,10 +203,10 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                 </div>
                 <div
                   className={`transition-all duration-300 select-text break-words font-common text-sm-title ${
-                    isUser ? "rounded-user-message" : "rounded-bot-message"
-                  } box-border peer py-2 px-3 ${
-                    isUser ? "text-right  bg-message-bg" : " bg-white"
-                  }`}
+                    isUser
+                      ? "rounded-user-message bg-message-bg"
+                      : "rounded-bot-message bg-white"
+                  } box-border peer py-2 px-3`}
                   onPointerMoveCapture={(e) =>
                     getRelativePosition(e.currentTarget, message.id)
                   }
@@ -221,22 +226,11 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     fontSize={fontSize}
                     parentRef={scrollRef}
                     defaultShow={i >= messages.length - 6}
-                    className={isUser ? " text-white" : "text-black"}
+                    className={`max-w-message-width ${
+                      isUser ? " text-white" : "text-black"
+                    }`}
                   />
-                  {getMessageImages(message).length > 0 && (
-                    <div className={`w-[100%]`}>
-                      {getMessageImages(message).map((image, index) => {
-                        return (
-                          <img
-                            className={`w-[100%] mt-2.5 rounded-chat-img`}
-                            key={index}
-                            src={image}
-                            alt=""
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
+                  <Imgs message={message} isMobileScreen={isMobileScreen} />
                 </div>
                 <MessageActions
                   className={actionsBarPosition}

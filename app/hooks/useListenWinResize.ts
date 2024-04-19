@@ -8,8 +8,10 @@ import {
   DEFAULT_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
   MIN_SIDEBAR_WIDTH,
+  SIDEBAR_ID,
 } from "@/app/constant";
-import { useAppConfig } from "../store/config";
+import { useAppConfig } from "@/app/store/config";
+import { updateGlobalCSSVars } from "@/app/utils/client";
 
 export const MOBILE_MAX_WIDTH = 768;
 
@@ -42,16 +44,10 @@ export default function useListenWinResize() {
       }
     }
 
-    nextSidebar = Math.max(
-      MIN_SIDEBAR_WIDTH,
-      Math.min(MAX_SIDEBAR_WIDTH, nextSidebar),
-    );
-    document.documentElement.style.setProperty(
-      "--sidebar-width",
-      `${nextSidebar}px`,
-    );
+    const { menuWidth } = updateGlobalCSSVars(nextSidebar);
+
     config.update((config) => {
-      config.sidebarWidth = nextSidebar;
+      config.sidebarWidth = menuWidth;
     });
   });
 }

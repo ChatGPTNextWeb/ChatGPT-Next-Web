@@ -28,4 +28,5 @@ body {
   --tip-popover-color: #434360;
   --chat-panel-bg: rgb(249, 250, 251, 1);
   --siderbar-mobile-height: 3.125rem;
+  --max-message-width: calc(var(--chat-panel-max-width) * 0.6);
 }

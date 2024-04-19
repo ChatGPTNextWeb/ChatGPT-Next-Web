@@ -3,8 +3,9 @@ import {
   MAX_SIDEBAR_WIDTH,
   MIN_SIDEBAR_WIDTH,
 } from "@/app/constant";
-import { useAppConfig } from "../store/config";
+import { useAppConfig } from "@/app/store/config";
 import { useRef } from "react";
+import { updateGlobalCSSVars } from "@/app/utils/client";
 
 export default function useDragSideBar() {
   const limit = (x: number) =>
@@ -35,9 +36,11 @@ export default function useDragSideBar() {
       const d = e.clientX - startX.current;
       const nextWidth = limit(startDragWidth.current + d);
 
+      const { menuWidth } = updateGlobalCSSVars(nextWidth);
+
       document.documentElement.style.setProperty(
-        "--sidebar-width",
-        `${nextWidth}px`,
+        "--menu-width",
+        `${menuWidth}px`,
       );
       config.update((config) => {
         config.sidebarWidth = nextWidth;
@@ -62,7 +65,7 @@ export default function useDragSideBar() {
 
   // useLayoutEffect(() => {
   //   const barWidth = limit(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
-  //   document.documentElement.style.setProperty("--sidebar-width", `${barWidth}px`);
+  //   document.documentElement.style.setProperty("--menu-width", `${barWidth}px`);
   // }, [config.sidebarWidth]);
 
   return {
