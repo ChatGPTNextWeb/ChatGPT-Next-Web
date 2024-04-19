@@ -176,7 +176,12 @@ export function SideBar(props: { className?: string }) {
           </a>{" "}
           兑换。
         </div>
-
+        <div className={styles["sidebar-sub-title"]}>
+          <PinIcon />
+          <a href="https://oneapi.snat.top/about" target="_blank">
+            常见问题&关于
+          </a>
+        </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
