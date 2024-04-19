@@ -128,7 +128,7 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "所有设置选项",
-
+    GeneralSettings: "通用设置",
     Danger: {
       Reset: {
         Title: "重置所有设置",

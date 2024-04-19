@@ -18,7 +18,6 @@ interface ScreenProps {
 export default function Screen(props: ScreenProps) {
   const location = useLocation();
   const isAuth = location.pathname === Path.Auth;
-  const isHome = location.pathname === Path.Home;
 
   const isMobileScreen = useMobileScreen();
   const isIOSMobile = useMemo(
@@ -28,16 +27,15 @@ export default function Screen(props: ScreenProps) {
 
   useListenWinResize();
 
-  let containerClassName = "flex h-[100%] w-[100%]";
-  let pageClassName = "flex-1 h-[100%] w-page";
-  let sidebarClassName = "basis-sidebar h-[100%]";
+  let containerClassName = "flex h-[100%] w-[100%] bg-center overflow-hidden";
+  let sidebarClassName = "flex-0 overflow-hidden";
+  let pageClassName = "flex-1 h-[100%] min-w-0 overflow-hidden";
 
   if (isMobileScreen) {
-    containerClassName = "h-[100%] w-[100%] relative bg-center";
-    pageClassName = `absolute top-0 h-[100%] w-[100%] ${
-      !isHome ? "left-0" : "left-[101%]"
-    } z-10`;
-    sidebarClassName = `h-[100%] w-[100%]`;
+    containerClassName =
+      "relative flex flex-col-reverse h-[100%] w-[100%] bg-center";
+    sidebarClassName = "absolute w-[100%] bottom-0 z-10";
+    pageClassName = "w-[100%] h-[100%]";
   }
 
   return (

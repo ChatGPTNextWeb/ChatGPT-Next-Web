@@ -17,9 +17,10 @@ import { useLoadData } from "@/app/hooks/useLoadData";
 import Loading from "@/app/components/Loading";
 import Screen from "@/app/components/Screen";
 import { SideBar } from "./Sidebar";
+import GlobalLoading from "@/app/components/GlobalLoading";
 
 const Settings = dynamic(
-  async () => (await import("@/app/components/settings")).Settings,
+  async () => await import("@/app/containers/Settings"),
   {
     loading: () => <Loading noLogo />,
   },
@@ -94,7 +95,7 @@ export default function Home() {
   }, []);
 
   if (!useHasHydrated()) {
-    return <Loading />;
+    return <GlobalLoading />;
   }
 
   return (

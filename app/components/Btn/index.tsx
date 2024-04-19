@@ -50,7 +50,7 @@ export default function IconButton(props: {
       autoFocus={autoFocus}
     >
       {text && (
-        <div className={`text-common text-sm-title leading-4 line-clamp-1`}>
+        <div className={`font-common text-sm-title leading-4 line-clamp-1`}>
           {text}
         </div>
       )}

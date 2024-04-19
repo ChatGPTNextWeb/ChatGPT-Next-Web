@@ -176,19 +176,22 @@ export function ChatActions(props: {
   if (props.isMobileScreen) {
     const content = (
       <div className="w-[100%]">
-        {actions.map((act) => {
-          return (
-            <div
-              key={act.text}
-              className={`flex items-center gap-3 p-3 bg-white hover:bg-select-btn rounded-action-btn leading-6`}
-            >
-              {act.icon}
-              <div className="flex-1 text-common text-actions-popover-menu-item">
-                {act.text}
+        {actions
+          .filter((v) => v.isShow)
+          .map((act) => {
+            return (
+              <div
+                key={act.text}
+                className={`flex items-center gap-3 p-3 bg-white hover:bg-select-btn rounded-action-btn leading-6`}
+                onClick={act.onClick}
+              >
+                {act.icon}
+                <div className="flex-1 font-common text-actions-popover-menu-item">
+                  {act.text}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
     );
     return (

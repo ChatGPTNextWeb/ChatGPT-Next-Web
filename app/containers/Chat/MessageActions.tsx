@@ -49,7 +49,7 @@ const genActionsShema = (
     (message: RenderMessage) => void
   >,
 ) => {
-  const className = "!p-1 hover:bg-gray-100 !rounded-actions-bar-btn";
+  const className = " !p-1 hover:bg-gray-100 !rounded-actions-bar-btn ";
   return [
     {
       id: "Edit",
@@ -231,9 +231,19 @@ export default function MessageActions(props: MessageActionsProps) {
   return (
     showActions && (
       <div
-        className={`transition-all duration-500 absolute z-10 ${
-          isUser ? "right-0" : "left-0"
-        } opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-all bg-white rounded-md shadow-actions-bar ${className}`}
+        className={`
+          absolute z-10
+          ${isUser ? "right-0" : "left-0"} 
+          transition-all duration-500 
+          opacity-0
+          pointer-events-none
+          group-hover:opacity-100 
+          group-hover:pointer-events-auto
+        bg-white 
+          rounded-md 
+          shadow-actions-bar 
+          ${className}
+        `}
       >
         <ActionsBar
           actionsShema={genActionsShema(message, {

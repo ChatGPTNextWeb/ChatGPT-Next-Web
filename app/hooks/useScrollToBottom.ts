@@ -10,9 +10,13 @@ export default function useScrollToBottom(
       ) <= 1
     : false;
 
-  const initScrolled = useRef(false);
   // for auto-scroll
   const [autoScroll, setAutoScroll] = useState(true);
+
+  const autoScrollRef = useRef<typeof autoScroll>();
+
+  autoScrollRef.current = autoScroll;
+
   function scrollDomToBottom() {
     const dom = scrollRef.current;
     if (dom) {
@@ -23,13 +27,30 @@ export default function useScrollToBottom(
     }
   }
 
+  // useEffect(() => {
+  //   const dom = scrollRef.current;
+  //   if (dom) {
+  //     dom.ontouchstart = (e) => {
+  //       const autoScroll = autoScrollRef.current;
+  //       if (autoScroll) {
+  //         setAutoScroll(false);
+  //       }
+  //     }
+  //     dom.onscroll = (e) => {
+  //       const autoScroll = autoScrollRef.current;
+  //       if (autoScroll) {
+  //         setAutoScroll(false);
+  //       }
+  //     }
+  //   }
+  // }, []);
+
   // auto scroll
   useEffect(() => {
-    if (autoScroll && !detach && !initScrolled.current) {
+    if (autoScroll && !detach) {
       scrollDomToBottom();
-      initScrolled.current = true;
     }
-  }, [autoScroll, detach]);
+  });
 
   return {
     scrollRef,

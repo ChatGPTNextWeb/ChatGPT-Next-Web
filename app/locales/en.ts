@@ -131,6 +131,7 @@ const en: LocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
+    GeneralSettings: "General settings",
     Danger: {
       Reset: {
         Title: "Reset All Settings",

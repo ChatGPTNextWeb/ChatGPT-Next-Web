@@ -10,7 +10,6 @@ import {
   MIN_SIDEBAR_WIDTH,
 } from "@/app/constant";
 import { useAppConfig } from "../store/config";
-import { useReducer, useState } from "react";
 
 export const MOBILE_MAX_WIDTH = 768;
 
@@ -24,8 +23,6 @@ const widths = [
 
 export default function useListenWinResize() {
   const config = useAppConfig();
-
-  const [_, refresh] = useReducer((x) => x + 1, 0);
 
   useWindowSize((size) => {
     let nextSidebar = config.sidebarWidth;
@@ -56,6 +53,5 @@ export default function useListenWinResize() {
     config.update((config) => {
       config.sidebarWidth = nextSidebar;
     });
-    refresh();
   });
 }

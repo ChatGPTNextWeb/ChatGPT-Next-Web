@@ -1,14 +1,19 @@
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 type Size = {
   width: number;
   height: number;
 };
 
-export function useWindowSize(callback: (size: Size) => void) {
+export function useWindowSize(callback?: (size: Size) => void) {
   const callbackRef = useRef<typeof callback>();
 
   callbackRef.current = callback;
+
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   useLayoutEffect(() => {
     const onResize = () => {
@@ -16,11 +21,15 @@ export function useWindowSize(callback: (size: Size) => void) {
         width: window.innerWidth,
         height: window.innerHeight,
       });
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     };
 
     window.addEventListener("resize", onResize);
 
-    callback({
+    callback?.({
       width: window.innerWidth,
       height: window.innerHeight,
     });
@@ -29,4 +38,6 @@ export function useWindowSize(callback: (size: Size) => void) {
       window.removeEventListener("resize", onResize);
     };
   }, []);
+
+  return size;
 }

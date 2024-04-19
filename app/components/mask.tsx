@@ -1,5 +1,4 @@
 import { IconButton } from "./button";
-import { ErrorBoundary } from "./error";
 
 import styles from "./mask.module.scss";
 
@@ -56,6 +55,7 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { getMessageTextContent } from "../utils";
+import useMobileScreen from "@/app/hooks/useMobileScreen";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -465,9 +465,15 @@ export function MaskPage() {
     });
   };
 
+  const isMobileScreen = useMobileScreen();
+
   return (
-    <ErrorBoundary>
-      <div className={styles["mask-page"]}>
+    <>
+      <div
+        className={`${styles["mask-page"]} !bg-gray-50 ${
+          isMobileScreen ? "pb-chat-panel-mobile" : ""
+        }`}
+      >
         <div className="window-header">
           <div className="window-header-title">
             <div className="window-header-main-title">
@@ -645,6 +651,6 @@ export function MaskPage() {
           </Modal>
         </div>
       )}
-    </ErrorBoundary>
+    </>
   );
 }

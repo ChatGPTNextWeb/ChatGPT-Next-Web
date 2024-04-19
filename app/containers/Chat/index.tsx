@@ -1,327 +1,230 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
-  useChatStore,
-  BOT_HELLO,
-  createMessage,
-  useAccessStore,
-  useAppConfig,
-  ModelType,
-} from "@/app/store";
+  DragDropContext,
+  Droppable,
+  Draggable,
+  OnDragEndResponder,
+} from "@hello-pangea/dnd";
+
+import { useAppConfig, useChatStore } from "@/app/store";
+
 import Locale from "@/app/locales";
-import { Selector, showConfirm, showToast } from "@/app/components/ui-lib";
-import {
-  CHAT_PAGE_SIZE,
-  REQUEST_TIMEOUT_MS,
-  UNFINISHED_INPUT,
-} from "@/app/constant";
-import { useCommand } from "@/app/command";
-import { prettyObject } from "@/app/utils/format";
-import { ExportMessageModal } from "@/app/components/exporter";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Path } from "@/app/constant";
+import { Mask } from "@/app/store/mask";
+import { useRef, useEffect, useMemo, useContext } from "react";
+import { showConfirm } from "@/app/components/ui-lib";
 
-import PromptToast from "./PromptToast";
-import { EditMessageModal } from "./EditMessageModal";
-import ChatHeader from "./ChatHeader";
-import ChatInputPanel, { ChatInputPanelInstance } from "./ChatInputPanel";
-import ChatMessagePanel, { RenderMessage } from "./ChatMessagePanel";
-import { useAllModels } from "@/app/utils/hooks";
-import useRows from "@/app/hooks/useRows";
+import AddIcon from "@/app/icons/addIcon.svg";
+import NextChatTitle from "@/app/icons/nextchatTitle.svg";
+// import { ListHoodProps } from "@/app/containers/types";
 import useMobileScreen from "@/app/hooks/useMobileScreen";
-import SessionConfigModel from "./SessionConfigModal";
-import useScrollToBottom from "@/app/hooks/useScrollToBottom";
+import { getTime } from "@/app/utils";
+import DeleteIcon from "@/app/icons/deleteIcon.svg";
+import LogIcon from "@/app/icons/logIcon.svg";
 
-function _Chat() {
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
-  const config = useAppConfig();
+import MenuWrapper, {
+  MenuWrapperInspectProps,
+} from "@/app/components/MenuWrapper";
+import Panel from "./ChatPanel";
 
-  const [showExport, setShowExport] = useState(false);
-  const [showModelSelector, setShowModelSelector] = useState(false);
-
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [userInput, setUserInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const chatInputPanelRef = useRef<ChatInputPanelInstance | null>(null);
-
-  const [hitBottom, setHitBottom] = useState(true);
-  const isMobileScreen = useMobileScreen();
-
-  const [attachImages, setAttachImages] = useState<string[]>([]);
-
-  // auto grow input
-  const { measure, inputRows } = useRows({
-    inputRef,
-  });
-
-  const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(scrollRef);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(measure, [userInput]);
-
+export function SessionItem(props: {
+  onClick?: () => void;
+  onDelete?: () => void;
+  title: string;
+  count: number;
+  time: string;
+  selected: boolean;
+  id: string;
+  index: number;
+  narrow?: boolean;
+  mask: Mask;
+}) {
+  const draggableRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    chatStore.updateCurrentSession((session) => {
-      const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
-      session.messages.forEach((m) => {
-        // check if should stop all stale messages
-        if (m.isError || new Date(m.date).getTime() < stopTiming) {
-          if (m.streaming) {
-            m.streaming = false;
-          }
-
-          if (m.content.length === 0) {
-            m.isError = true;
-            m.content = prettyObject({
-              error: true,
-              message: "empty response",
-            });
-          }
-        }
+    if (props.selected && draggableRef.current) {
+      draggableRef.current?.scrollIntoView({
+        block: "center",
       });
-
-      // auto sync mask config from global config
-      if (session.mask.syncGlobalConfig) {
-        console.log("[Mask] syncing from global, name = ", session.mask.name);
-        session.mask.modelConfig = { ...config.modelConfig };
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const context: RenderMessage[] = useMemo(() => {
-    return session.mask.hideContext ? [] : session.mask.context.slice();
-  }, [session.mask.context, session.mask.hideContext]);
-  const accessStore = useAccessStore();
-
-  if (
-    context.length === 0 &&
-    session.messages.at(0)?.content !== BOT_HELLO.content
-  ) {
-    const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
     }
-    context.push(copiedHello);
-  }
+  }, [props.selected]);
 
-  // preview messages
-  const renderMessages = useMemo(() => {
-    return context
-      .concat(session.messages as RenderMessage[])
-      .concat(
-        isLoading
-          ? [
-              {
-                ...createMessage({
-                  role: "assistant",
-                  content: "……",
-                }),
-                preview: true,
-              },
-            ]
-          : [],
-      )
-      .concat(
-        userInput.length > 0 && config.sendPreviewBubble
-          ? [
-              {
-                ...createMessage({
-                  role: "user",
-                  content: userInput,
-                }),
-                preview: true,
-              },
-            ]
-          : [],
-      );
-  }, [
-    config.sendPreviewBubble,
-    context,
-    isLoading,
-    session.messages,
-    userInput,
-  ]);
-
-  const [msgRenderIndex, _setMsgRenderIndex] = useState(
-    Math.max(0, renderMessages.length - CHAT_PAGE_SIZE),
-  );
-
-  const [showPromptModal, setShowPromptModal] = useState(false);
-
-  useCommand({
-    fill: setUserInput,
-    submit: (text) => {
-      chatInputPanelRef.current?.doSubmit(text);
-    },
-    code: (text) => {
-      if (accessStore.disableFastLink) return;
-      console.log("[Command] got code from url: ", text);
-      showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
-        if (res) {
-          accessStore.update((access) => (access.accessCode = text));
-        }
-      });
-    },
-    settings: (text) => {
-      if (accessStore.disableFastLink) return;
-
-      try {
-        const payload = JSON.parse(text) as {
-          key?: string;
-          url?: string;
-        };
-
-        console.log("[Command] got settings from url: ", payload);
-
-        if (payload.key || payload.url) {
-          showConfirm(
-            Locale.URLCommand.Settings +
-              `\n${JSON.stringify(payload, null, 4)}`,
-          ).then((res) => {
-            if (!res) return;
-            if (payload.key) {
-              accessStore.update(
-                (access) => (access.openaiApiKey = payload.key!),
-              );
-            }
-            if (payload.url) {
-              accessStore.update((access) => (access.openaiUrl = payload.url!));
-            }
-          });
-        }
-      } catch {
-        console.error("[Command] failed to get settings from url: ", text);
-      }
-    },
-  });
-
-  // edit / insert message modal
-  const [isEditingMessage, setIsEditingMessage] = useState(false);
-
-  // remember unfinished input
-  useEffect(() => {
-    // try to load from local storage
-    const key = UNFINISHED_INPUT(session.id);
-    const mayBeUnfinishedInput = localStorage.getItem(key);
-    if (mayBeUnfinishedInput && userInput.length === 0) {
-      setUserInput(mayBeUnfinishedInput);
-      localStorage.removeItem(key);
-    }
-
-    const dom = inputRef.current;
-    return () => {
-      localStorage.setItem(key, dom?.value ?? "");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const chatinputPanelProps = {
-    inputRef,
-    isMobileScreen,
-    renderMessages,
-    attachImages,
-    userInput,
-    hitBottom,
-    inputRows,
-    setAttachImages,
-    setUserInput,
-    setIsLoading,
-    showChatSetting: setShowPromptModal,
-    _setMsgRenderIndex,
-    showModelSelector: setShowModelSelector,
-    scrollDomToBottom,
-    setAutoScroll,
-  };
-
-  const chatMessagePanelProps = {
-    scrollRef,
-    inputRef,
-    isMobileScreen,
-    msgRenderIndex,
-    userInput,
-    context,
-    renderMessages,
-    setAutoScroll,
-    setMsgRenderIndex: chatInputPanelRef.current?.setMsgRenderIndex,
-    setHitBottom,
-    setUserInput,
-    setIsLoading,
-    setShowPromptModal,
-    scrollDomToBottom,
-  };
-
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const allModels = useAllModels();
-  const models = useMemo(
-    () => allModels.filter((m) => m.available),
-    [allModels],
-  );
+  const { pathname: currentPath } = useLocation();
 
   return (
-    <div
-      className={`flex flex-col ${
-        isMobileScreen ? "h-[100%]" : "h-[calc(100%-1.25rem)]"
-      } overflow-hidden ${
-        isMobileScreen ? "" : `my-2.5 ml-1 mr-2.5 rounded-md`
-      } bg-chat-panel`}
-      key={session.id}
-    >
-      <ChatHeader
-        setIsEditingMessage={setIsEditingMessage}
-        setShowExport={setShowExport}
-        isMobileScreen={isMobileScreen}
-        showModelSelector={setShowModelSelector}
-      />
-
-      <ChatMessagePanel {...chatMessagePanelProps} />
-
-      <ChatInputPanel ref={chatInputPanelRef} {...chatinputPanelProps} />
-
-      {showExport && (
-        <ExportMessageModal onClose={() => setShowExport(false)} />
-      )}
-
-      {isEditingMessage && (
-        <EditMessageModal
-          onClose={() => {
-            setIsEditingMessage(false);
+    <Draggable draggableId={`${props.id}`} index={props.index}>
+      {(provided) => (
+        <div
+          className={`group relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 ${
+            props.selected &&
+            (currentPath === Path.Chat || currentPath === Path.Home)
+              ? `bg-blue-100 border-blue-200 border `
+              : `bg-gray-100 hover:bg-gray-200`
+          }`}
+          onClick={props.onClick}
+          ref={(ele) => {
+            draggableRef.current = ele;
+            provided.innerRef(ele);
           }}
-        />
-      )}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          title={`${props.title}\n${Locale.ChatItem.ChatItemCount(
+            props.count,
+          )}`}
+        >
+          <div className=" flex-shrink-0">
+            <LogIcon />
+          </div>
+          <div className="flex flex-col flex-1">
+            <div className={`flex justify-between items-center`}>
+              <div
+                className={` text-gray-900 text-sm-title line-clamp-1 flex-1`}
+              >
+                {props.title}
+              </div>
+              <div
+                className={`text-gray-500 text-sm group-hover:opacity-0 pl-3`}
+              >
+                {getTime(props.time)}
+              </div>
+            </div>
+            <div className={`text-gray-500 text-sm`}>
+              {Locale.ChatItem.ChatItemCount(props.count)}
+            </div>
+          </div>
 
-      <PromptToast
-        showToast={!hitBottom}
-        showModal={showPromptModal}
-        setShowModal={setShowPromptModal}
-      />
-
-      {showPromptModal && (
-        <SessionConfigModel onClose={() => setShowPromptModal(false)} />
+          <div
+            className={`absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100`}
+            onClickCapture={(e) => {
+              props.onDelete?.();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <DeleteIcon />
+          </div>
+        </div>
       )}
-
-      {showModelSelector && (
-        <Selector
-          defaultSelectedValue={currentModel}
-          items={models.map((m) => ({
-            title: m.displayName,
-            value: m.name,
-          }))}
-          onClose={() => setShowModelSelector(false)}
-          onSelection={(s) => {
-            if (s.length === 0) return;
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
-              session.mask.syncGlobalConfig = false;
-            });
-            showToast(s[0]);
-          }}
-        />
-      )}
-    </div>
+    </Draggable>
   );
 }
 
-export default function Chat() {
+export default MenuWrapper(function SessionList(props) {
+  const { setShowPanel } = props;
+
+  const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
+    (state) => [
+      state.sessions,
+      state.currentSessionIndex,
+      state.selectSession,
+      state.moveSession,
+    ],
+  );
+  const navigate = useNavigate();
+  const isMobileScreen = useMobileScreen();
+  const config = useAppConfig();
   const chatStore = useChatStore();
-  const sessionIndex = chatStore.currentSessionIndex;
-  return <_Chat key={sessionIndex}></_Chat>;
-}
+  const { pathname: currentPath } = useLocation();
+
+  useEffect(() => {
+    setShowPanel?.(currentPath === Path.Chat);
+  }, [currentPath]);
+
+  const onDragEnd: OnDragEndResponder = (result) => {
+    const { destination, source } = result;
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    moveSession(source.index, destination.index);
+  };
+
+  let layoutClassName = "flex flex-col py-7 px-0";
+
+  if (isMobileScreen) {
+    layoutClassName = "flex flex-col py-6 pb-chat-panel-mobile ";
+  }
+
+  return (
+    <div className={`h-[100%] ${layoutClassName}`}>
+      <div data-tauri-drag-region>
+        <div
+          className={`flex items-center justify-between`}
+          data-tauri-drag-region
+        >
+          <div className="">
+            <NextChatTitle />
+          </div>
+          <div
+            className=""
+            onClick={() => {
+              if (config.dontShowMaskSplashScreen) {
+                chatStore.newSession();
+                navigate(Path.Chat);
+              } else {
+                navigate(Path.NewChat);
+              }
+            }}
+          >
+            <AddIcon />
+          </div>
+        </div>
+        <div className={`pb-3 text-sm sm:text-sm-mobile text-blue-500`}>
+          Build your own AI assistant.
+        </div>
+      </div>
+
+      <div
+        className={`flex-1 overflow-y-auto overflow-x-hidden`}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            navigate(Path.Home);
+          }
+        }}
+      >
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="chat-list">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`w-[100%]`}
+              >
+                {sessions.map((item, i) => (
+                  <SessionItem
+                    title={item.topic}
+                    time={new Date(item.lastUpdate).toLocaleString()}
+                    count={item.messages.length}
+                    key={item.id}
+                    id={item.id}
+                    index={i}
+                    selected={i === selectedIndex}
+                    onClick={() => {
+                      navigate(Path.Chat);
+                      selectSession(i);
+                    }}
+                    onDelete={async () => {
+                      if (
+                        !isMobileScreen ||
+                        (await showConfirm(Locale.Home.DeleteChat))
+                      ) {
+                        chatStore.deleteSession(i);
+                      }
+                    }}
+                    mask={item.mask}
+                  />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+    </div>
+  );
+}, Panel);

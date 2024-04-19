@@ -16,6 +16,7 @@ import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
+import useMobileScreen from "@/app/hooks/useMobileScreen";
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   return (
@@ -110,8 +111,14 @@ export function NewChat() {
     }
   }, [groups]);
 
+  const isMobileScreen = useMobileScreen();
+
   return (
-    <div className={styles["new-chat"]}>
+    <div
+      className={`${styles["new-chat"]} !bg-gray-50 px-1 ${
+        isMobileScreen ? "pb-chat-panel-mobile" : ""
+      }`}
+    >
       <div className={styles["mask-header"]}>
         <IconButton
           icon={<LeftIcon />}

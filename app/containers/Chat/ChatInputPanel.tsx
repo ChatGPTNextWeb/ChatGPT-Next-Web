@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import useUploadImage from "@/app/hooks/useUploadImage";
@@ -10,7 +10,6 @@ import { ChatCommandPrefix, useChatCommand } from "@/app/command";
 import { useChatStore } from "@/app/store/chat";
 import { usePromptStore } from "@/app/store/prompt";
 import { useAppConfig } from "@/app/store/config";
-import useScrollToBottom from "@/app/hooks/useScrollToBottom";
 import usePaste from "@/app/hooks/usePaste";
 
 import { ChatActions } from "./ChatActions";
@@ -168,9 +167,13 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
     useImperativeHandle(ref, () => ({
       setUploading,
       doSubmit,
-      setAutoScroll,
       setMsgRenderIndex,
     }));
+
+    function scrollToBottom() {
+      setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
+      scrollDomToBottom();
+    }
 
     const onInput = (text: string) => {
       setUserInput(text);
@@ -194,11 +197,6 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
       newIndex = Math.min(renderMessages.length - CHAT_PAGE_SIZE, newIndex);
       newIndex = Math.max(0, newIndex);
       _setMsgRenderIndex(newIndex);
-    }
-
-    function scrollToBottom() {
-      setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
-      scrollDomToBottom();
     }
 
     const { handlePaste } = usePaste(attachImages, {

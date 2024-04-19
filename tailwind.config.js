@@ -11,6 +11,11 @@ module.exports = {
       'sm-mobile-tab': '0.625rem',
       'chat-header-title': '1rem',
       'actions-popover-menu-item': '15px',
+      'setting-title': '1.25rem',
+      'setting-items': '1rem',
+    },
+    fontWeight: {
+      'setting-title': '700',
     },
     fontFamily: {
       'common': ['Satoshi Variable', 'Variable'],
@@ -23,10 +28,6 @@ module.exports = {
       xl: '1440px',
       '2xl': '1980px'
     },
-    // spacing: Array.from({ length: 1000 }).reduce((map, _, index) => {
-    //   map[index] = `${index}rem`;
-    //   return map;
-    // }, {}),
     extend: {
       minHeight: {
         'chat-input-mobile': '19px',
@@ -41,11 +42,14 @@ module.exports = {
         'actions-popover': '203px',
       },
       height: {
-        mobile: '3.125rem',
+        mobile: 'var(--siderbar-mobile-height)',
+        // mobile: '3.125rem',
         'menu-title-mobile': '3rem',
         'thumbnail': '5rem',
         'chat-input-mobile': '19px',
         'chat-input': '60px',
+        'chat-panel-mobile': '- var(--siderbar-mobile-height)',
+        'setting-panel-mobile': 'calc(100vh - var(--siderbar-mobile-height))',
       },
       flexBasis: {
         'sidebar': 'var(--sidebar-width)',
@@ -53,6 +57,7 @@ module.exports = {
       },
       spacing: {
         'chat-header-gap': '0.625rem',
+        'chat-panel-mobile': 'var(--siderbar-mobile-height)'
       },
       backgroundImage: {
         'message-bg': 'linear-gradient(259deg, #9786FF 8.42%, #4A5CFF 90.13%)',
@@ -75,6 +80,7 @@ module.exports = {
         'chat-input': '0px 4px 20px 0px rgba(60, 68, 255, 0.13)',
         'actions-popover': '0px 14px 40px 0px rgba(0, 0, 0, 0.12)',
         'actions-bar': '0px 4px 30px 0px rgba(0, 0, 0, 0.10)',
+        'prompt-hint-container': 'inset 0 4px 8px 0 rgba(0, 0, 0, 0.1)'
       }
     },
     borderRadius: {
