@@ -102,6 +102,13 @@ export function AuthPage() {
           }}
         />
         <IconButton
+          text={"国内大模型"}
+          type="primary"
+          onClick={() => {
+            window.open("https://chatnio.liujiarong.top", "_blank");
+          }}
+        />
+        <IconButton
           text="访问免费AI助手"
           onClick={() => {
             window.open(

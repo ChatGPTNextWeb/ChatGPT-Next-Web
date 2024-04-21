@@ -38,6 +38,7 @@ import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 import OtherRobot from "../icons/otherRobot.svg";
+import CatRobot from "../icons/catRobot.svg";
 
 import {
   ChatMessage,
@@ -565,6 +566,13 @@ export function ChatActions(props: {
         }}
       />
 
+      <ChatAction
+        text="国内大模型"
+        icon={<CatRobot />}
+        onClick={() => {
+          window.open("https://chatnio.liujiarong.top", "_blank");
+        }}
+      />
       {showModelSelector && (
         <Selector
           defaultSelectedValue={currentModel}
