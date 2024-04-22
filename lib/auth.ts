@@ -94,9 +94,9 @@ export const authOptions: NextAuthOptions = {
                     let existingUser = await existUser(user); // await insertUser(user)
                     if (!existingUser) {
                       // 如果不存在，则报错
-                      throw new Error("用户名或密码不正确")
+                      // throw new Error("用户名或密码不正确")
                       // 如果不存在，则创建
-                      // existingUser = await insertUser(user);
+                      existingUser = await insertUser(user);
                     }
                     // 有密码就校验密码，没有就直接返回用户
                     (password || existingUser.password) && validatePassword(password, existingUser.password);
