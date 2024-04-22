@@ -170,16 +170,16 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-sub-title"]}>
           <PinIcon />
-          公用免费额度用完的时候你可以选择兑换专属额度，请前往{" "}
+          购买令牌可以获得专属额度和解锁更多模型。
           <a href="https://oneapi.snat.top" target="_blank">
-            https://oneapi.snat.top
-          </a>{" "}
-          兑换。
+            前往兑换
+          </a>
         </div>
         <div className={styles["sidebar-sub-title"]}>
           <PinIcon />
+          常见问题答疑
           <a href="https://oneapi.snat.top/about" target="_blank">
-            常见问题&关于
+            前往查看
           </a>
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
