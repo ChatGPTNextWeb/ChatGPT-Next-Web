@@ -69,6 +69,7 @@ function MainLayout({ children }: { children: ReactNode }) {
             />
           </Header>
           <Content
+            id="admin-page-content"
             style={{
               // margin: "24px 16px",
               padding: 24,
