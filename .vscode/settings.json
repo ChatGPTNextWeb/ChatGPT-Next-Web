@@ -1,0 +1,37 @@
+{
+    "[toml]": {
+        "editor.defaultFormatter": "tamasfe.even-better-toml"
+    },
+
+    "debug.internalConsoleOptions": "neverOpen",
+    "debug.closeReadonlyTabsOnEnd": true,
+
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    },
+    "editor.rulers": [
+        88, 120
+    ],
+
+    "evenBetterToml.formatter.alignComments": true,
+    "evenBetterToml.formatter.alignEntries": true,
+    "evenBetterToml.formatter.allowedBlankLines": 2,
+    "evenBetterToml.formatter.arrayAutoCollapse": true,
+    "evenBetterToml.formatter.arrayTrailingComma": true,
+    "evenBetterToml.formatter.columnWidth": 120,
+    "evenBetterToml.formatter.indentString": "    ",
+    "evenBetterToml.formatter.trailingNewline": true,
+
+    "files.trimTrailingWhitespace": true,
+
+    "remote.autoForwardPortsFallback": 0,
+    "remote.restoreForwardedPorts": false,
+
+    "terminal.integrated.env.linux": {
+        "WORKSPACE_FOLDER": "${workspaceFolder}"
+    },
+    "workbench.iconTheme": "vscode-icons",
+}
