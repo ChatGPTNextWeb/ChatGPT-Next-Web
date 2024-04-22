@@ -1,0 +1,56 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "KnowledgeAI-Chat",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:20-bookworm",
+	"containerEnv": {
+        "WORKSPACE": "/workspaces/${localWorkspaceFolderBasename}"
+    },
+    "remoteUser": "vscode",
+	"forwardPorts": [3000],
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "installOhMyZshConfig": true,
+            "upgradePackages": true,
+            "username": "vscode"
+        },
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/git-lfs:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/prulloac/devcontainer-features/pre-commit:1": {},
+        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+            "plugins": "ssh-agent npm",
+            "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
+            "username": "vscode"
+        },
+        "ghcr.io/schlich/devcontainer-features/powerlevel10k:1": {}
+	},
+	"postCreateCommand": "bash ./.devcontainer/postcreate.sh",
+    "postStartCommand": "yarn install",
+	"customizations": {
+        "vscode": {
+            "extensions": [
+				"ms-vscode.vscode-typescript-next",
+				"dbaeumer.vscode-eslint",
+				"DSKWRK.vscode-generate-getter-setter",
+				"foxundermoon.next-js",
+				"pmneo.tsimporter",
+				"stringham.move-ts",
+				"yoavbls.pretty-ts-errors",
+                "DavidAnson.vscode-markdownlint",
+                "esbenp.prettier-vscode",
+                "GitHub.copilot-chat",
+                "GitHub.copilot",
+                "github.vscode-github-actions",
+                "humao.rest-client",
+                "mutantdino.resourcemonitor",
+                "redhat.vscode-yaml",
+                "tamasfe.even-better-toml",
+                "vscode-icons-team.vscode-icons"
+            ]
+        }
+    }
+}

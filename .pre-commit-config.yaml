@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/Yelp/detect-secrets.git
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args:
+          [
+            "--baseline",
+            ".secrets.baseline",
+          ]
+        exclude: ^tests/|.*/tests/.*|.*\.js|.secrets.baseline|\.env|__pycache__|\.vscode|\.pytest_cache|\.mypy_cache|\.git/.*|^build|^dist|\.ipynb_checkpoints
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: mixed-line-ending
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
+      - id: destroyed-symlinks
+      - id: detect-private-key
