@@ -141,6 +141,21 @@ function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
     };
   }, [currentDate, searchDate]); // 空数组作为第二个参数，表示仅在组件挂载和卸载时执行
 
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     console.log("窗口大小变化");
+  //     let chartDom = document.getElementById("usage-by-model-chart");
+  //     if (!chartDom) return;
+  //     const myChart = echarts.getInstanceByDom(chartDom);
+  //     myChart?.resize();
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
+
+  // #admin-page-content
   useEffect(() => {
     const handleResize = () => {
       console.log("窗口大小变化");
@@ -149,9 +164,24 @@ function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
       const myChart = echarts.getInstanceByDom(chartDom);
       myChart?.resize();
     };
-    window.addEventListener("resize", handleResize);
+    const targetNode = document.getElementById("admin-page-content");
+    // 创建一个观察器实例并传入回调函数，该函数在观察到变化时执行
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        // console.log(`Element's size: ${width}px x ${height}px`);
+        handleResize();
+      }
+    });
+
+    // const config = { attributes: true, childList: true, subtree: true };
+    targetNode && resizeObserver.observe(targetNode);
+
+    // window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
+
+      // window.removeEventListener("resize", handleResize);
     };
   }, []);
 
