@@ -29,6 +29,9 @@ export const authOptions: NextAuthOptions = {
                     image: profile.avatar_url,
                 };
             },
+            httpOptions: {
+                timeout: 50000,
+            }
         }),
         EmailProvider({
           server: {
@@ -152,11 +155,12 @@ export const authOptions: NextAuthOptions = {
             // console.log('555555555,', session, token)
             return session;
         },
-        // 过滤不存在的用户，目前没用
+        // 过滤不存在的用户
         async signIn({ user, account, profile, email, credentials }) {
             const existingUser = await existUser(user as User);
             console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
-            return !!existingUser;
+            // 顺便过滤掉不允许登录的用户
+            return !!existingUser && existingUser.allowToLogin;
         }
     },
 };

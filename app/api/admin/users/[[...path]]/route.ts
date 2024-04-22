@@ -64,6 +64,7 @@ async function handle(
             emailVerified: item.emailVerified,
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
+            allowToLogin: item.allowToLogin,
           };
         }),
       });

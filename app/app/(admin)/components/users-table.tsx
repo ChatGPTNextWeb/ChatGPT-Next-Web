@@ -10,6 +10,7 @@ import {
   Button,
   notification,
   Popconfirm,
+  Checkbox,
 } from "antd";
 import type { GetRef, TableColumnsType } from "antd";
 // import { headers } from 'next/headers'
@@ -188,6 +189,18 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       render: (value) => getCurrentTime(new Date(value)),
     },
     {
+      title: "allowToLogin",
+      dataIndex: "allowToLogin",
+      width: 120,
+      render: (value) => {
+        return (
+          <div>
+            <Checkbox defaultChecked={value} disabled></Checkbox>
+          </div>
+        );
+      },
+    },
+    {
       title: "Action",
       dataIndex: "",
       key: "id",
@@ -195,7 +208,8 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
         <Space size="middle">
           {contextHolder}
           <Popconfirm
-            title="输入新密码"
+            id="user-admin-table-pop_confirm"
+            title="设置密码"
             description={
               <>
                 <Input.Password
