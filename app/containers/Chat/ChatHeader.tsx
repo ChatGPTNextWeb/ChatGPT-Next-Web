@@ -44,9 +44,15 @@ export default function ChatHeader(props: ChatHeaderProps) {
 
   return (
     <div
-      className={`absolute w-[100%] bg-gray-50 z-10 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b-[1px] border-gray-200 ${containerClassName}`}
+      className={`absolute w-[100%]  backdrop-blur-[30px] z-10 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b-[1px] border-gray-200 ${containerClassName}`}
       data-tauri-drag-region
     >
+      <div
+        className={`absolute z-[-1] top-0 left-0 w-[100%] h-[100%] opacity-85 backdrop-blur-[20px]  bg-gray-50 flex flex-0 justify-between items-center  gap-chat-header-gap`}
+      >
+        {" "}
+      </div>
+
       {isMobileScreen ? (
         <div onClick={() => navigate(Path.Home)}>
           <GobackIcon />

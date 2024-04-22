@@ -29,6 +29,9 @@ module.exports = {
       '2xl': '1980px'
     },
     extend: {
+      backdropBlur: {
+        'chat-header': '20px',
+      },
       minHeight: {
         'chat-input-mobile': '19px',
         'chat-input': '60px',
