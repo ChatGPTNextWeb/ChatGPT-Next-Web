@@ -72,7 +72,7 @@ import { useMaskStore } from "@/app/store/mask";
 import { ProviderType } from "@/app/utils/cloud";
 import SettingHeader from "./SettingHeader";
 import useMobileScreen from "@/app/hooks/useMobileScreen";
-import { MenuWrapperInspectProps } from "@/app/components/MenuWrapper";
+import { MenuWrapperInspectProps } from "@/app/components/MenuLayout";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();

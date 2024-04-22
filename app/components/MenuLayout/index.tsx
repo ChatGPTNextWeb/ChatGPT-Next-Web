@@ -17,7 +17,7 @@ export interface MenuWrapperInspectProps {
   showPanel?: boolean;
 }
 
-export default function MenuWrapper<
+export default function MenuLayout<
   ListComponentProps extends MenuWrapperInspectProps,
   PanelComponentProps extends MenuWrapperInspectProps,
 >(

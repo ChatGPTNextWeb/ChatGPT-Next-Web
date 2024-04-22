@@ -44,7 +44,7 @@ export default function ChatHeader(props: ChatHeaderProps) {
 
   return (
     <div
-      className={`flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b-[1px] border-gray-200 ${containerClassName}`}
+      className={`absolute w-[100%] bg-gray-50 z-10 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b-[1px] border-gray-200 ${containerClassName}`}
       data-tauri-drag-region
     >
       {isMobileScreen ? (

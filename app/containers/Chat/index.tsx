@@ -22,9 +22,9 @@ import { getTime } from "@/app/utils";
 import DeleteIcon from "@/app/icons/deleteIcon.svg";
 import LogIcon from "@/app/icons/logIcon.svg";
 
-import MenuWrapper, {
+import MenuLayout, {
   MenuWrapperInspectProps,
-} from "@/app/components/MenuWrapper";
+} from "@/app/components/MenuLayout";
 import Panel from "./ChatPanel";
 
 export function SessionItem(props: {
@@ -108,7 +108,7 @@ export function SessionItem(props: {
   );
 }
 
-export default MenuWrapper(function SessionList(props) {
+export default MenuLayout(function SessionList(props) {
   const { setShowPanel } = props;
 
   const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(

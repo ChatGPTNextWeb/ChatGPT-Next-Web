@@ -263,7 +263,7 @@ function _Chat() {
 
   return (
     <div
-      className={`flex flex-col ${
+      className={`relative flex flex-col ${
         isMobileScreen
           ? "absolute h-[100vh] w-[100%]"
           : "h-[calc(100%-1.25rem)]"

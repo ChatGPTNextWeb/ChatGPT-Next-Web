@@ -141,7 +141,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
 
   return (
     <div
-      className={`relative flex-1 overscroll-y-none overflow-y-auto overflow-x-hidden px-3 pb-6`}
+      className={`pt-[80px] relative flex-1 overscroll-y-none overflow-y-auto overflow-x-hidden px-3 pb-6`}
       ref={scrollRef}
       onScroll={(e) => onChatBodyScroll(e.currentTarget)}
       onMouseDown={() => inputRef.current?.blur()}

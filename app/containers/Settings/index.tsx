@@ -1,12 +1,12 @@
 import Locale from "@/app/locales";
 import useMobileScreen from "@/app/hooks/useMobileScreen";
-import MenuWrapper from "@/app/components/MenuWrapper";
+import MenuLayout from "@/app/components/MenuLayout";
 
 import Panel from "./SettingPanel";
 
 import GotoIcon from "@/app/icons/goto.svg";
 
-export default MenuWrapper(function SettingList(props) {
+export default MenuLayout(function SettingList(props) {
   const { setShowPanel } = props;
   const isMobileScreen = useMobileScreen();
 
