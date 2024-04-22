@@ -109,6 +109,12 @@ export function AuthPage() {
           }}
         />
         <IconButton
+          text="图片模型"
+          onClick={() => {
+            window.open("https://aichat.liujiarong.top", "_blank");
+          }}
+        />
+        <IconButton
           text="访问免费AI助手"
           onClick={() => {
             window.open(

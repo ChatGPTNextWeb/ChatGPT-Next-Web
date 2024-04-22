@@ -39,6 +39,7 @@ import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
 import OtherRobot from "../icons/otherRobot.svg";
 import CatRobot from "../icons/catRobot.svg";
+import RobotImages from "../icons/robotImages.svg";
 
 import {
   ChatMessage,
@@ -571,6 +572,14 @@ export function ChatActions(props: {
         icon={<CatRobot />}
         onClick={() => {
           window.open("https://chatnio.liujiarong.top", "_blank");
+        }}
+      />
+
+      <ChatAction
+        text="绘图模型"
+        icon={<RobotImages />}
+        onClick={() => {
+          window.open("https://aichat.liujiarong.top", "_blank");
         }}
       />
       {showModelSelector && (
