@@ -1,14 +1,16 @@
 import Locale from "@/app/locales";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import MenuLayout from "@/app/components/MenuLayout";
 
 import Panel from "./SettingPanel";
 
 import GotoIcon from "@/app/icons/goto.svg";
+import { useAppConfig } from "@/app/store";
 
 export default MenuLayout(function SettingList(props) {
   const { setShowPanel } = props;
-  const isMobileScreen = useMobileScreen();
+  const config = useAppConfig();
+
+  const { isMobileScreen } = config;
 
   let layoutClassName = "pt-7 px-4";
   let titleClassName = "pb-5";

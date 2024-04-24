@@ -17,7 +17,6 @@ import { showConfirm } from "@/app/components/ui-lib";
 import AddIcon from "@/app/icons/addIcon.svg";
 import NextChatTitle from "@/app/icons/nextchatTitle.svg";
 // import { ListHoodProps } from "@/app/containers/types";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import { getTime } from "@/app/utils";
 import DeleteIcon from "@/app/icons/deleteIcon.svg";
 import LogIcon from "@/app/icons/logIcon.svg";
@@ -120,8 +119,10 @@ export default MenuLayout(function SessionList(props) {
     ],
   );
   const navigate = useNavigate();
-  const isMobileScreen = useMobileScreen();
   const config = useAppConfig();
+
+  const { isMobileScreen } = config;
+
   const chatStore = useChatStore();
   const { pathname: currentPath } = useLocation();
 

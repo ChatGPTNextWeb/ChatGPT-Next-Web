@@ -16,7 +16,6 @@ import { useAppConfig } from "@/app/store";
 import { Path, REPO_URL } from "@/app/constant";
 import { useNavigate, useLocation } from "react-router-dom";
 import useHotKey from "@/app/hooks/useHotKey";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import ActionsBar from "@/app/components/ActionsBar";
 
 export function SideBar(props: { className?: string }) {
@@ -24,7 +23,7 @@ export function SideBar(props: { className?: string }) {
   const loc = useLocation();
 
   const config = useAppConfig();
-  const isMobileScreen = useMobileScreen();
+  const { isMobileScreen } = config;
 
   useHotKey();
 

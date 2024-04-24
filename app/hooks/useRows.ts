@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { autoGrowTextArea } from "../utils";
-import useMobileScreen from "./useMobileScreen";
+import { useAppConfig } from "../store";
 
 export default function useRows({
   inputRef,
@@ -9,14 +9,14 @@ export default function useRows({
   inputRef: React.RefObject<HTMLTextAreaElement>;
 }) {
   const [inputRows, setInputRows] = useState(2);
-  const isMobileScreen = useMobileScreen();
+  const config = useAppConfig();
 
   const measure = useDebouncedCallback(
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
         20,
-        Math.max(2 + (isMobileScreen ? -1 : 1), rows),
+        Math.max(2 + (config.isMobileScreen ? -1 : 1), rows),
       );
       setInputRows(inputRows);
     },

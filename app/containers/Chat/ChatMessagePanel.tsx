@@ -153,10 +153,6 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
       {messages.map((message, i) => {
         const isUser = message.role === "user";
         const isContext = i < context.length;
-        const showActions =
-          i > 0 &&
-          !(message.preview || message.content.length === 0) &&
-          !isContext;
 
         const shouldShowClearContextDivider = i === clearContextIndex - 1;
 
@@ -237,7 +233,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                   message={message}
                   inputRef={inputRef}
                   isUser={isUser}
-                  showActions={showActions}
+                  isContext={isContext}
                   setIsLoading={setIsLoading}
                   setShowPromptModal={setShowPromptModal}
                 />

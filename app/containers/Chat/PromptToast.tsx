@@ -7,7 +7,6 @@ import styles from "./index.module.scss";
 
 export default function PromptToast(props: {
   showToast?: boolean;
-  showModal?: boolean;
   setShowModal: (_: boolean) => void;
 }) {
   const chatStore = useChatStore();

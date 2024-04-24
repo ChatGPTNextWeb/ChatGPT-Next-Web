@@ -198,7 +198,7 @@ export function ChatActions(props: {
       <Popover
         content={content}
         trigger="click"
-        placement="lt"
+        placement="rt"
         noArrow
         popoverClassName="border-actions-popover border-gray-200 rounded-md shadow-actions-popover w-actions-popover bg-white "
       >
@@ -219,7 +219,7 @@ export function ChatActions(props: {
               key={act.text}
               content={act.text}
               popoverClassName={`${popoverClassName}`}
-              placement={ind ? "t" : "rt"}
+              placement={ind ? "t" : "lt"}
             >
               <div
                 className="h-[32px] w-[32px] flex items-center justify-center hover:bg-gray-200 hover:rounded-action-btn"
@@ -239,7 +239,7 @@ export function ChatActions(props: {
               key={act.text}
               content={act.text}
               popoverClassName={`${popoverClassName}`}
-              placement={ind === arr.length - 1 ? "lt" : "t"}
+              placement={ind === arr.length - 1 ? "rt" : "t"}
             >
               <div
                 className="h-[32px] w-[32px] flex items-center justify-center hover:bg-gray-200 hover:rounded-action-btn"

@@ -1,0 +1,104 @@
+import SelectIcon from "@/app/icons/downArrowIcon.svg";
+import Popover from "@/app/components/Popover";
+import React, { useContext, useMemo, useRef } from "react";
+import useRelativePosition, {
+  Orientation,
+} from "@/app/hooks/useRelativePosition";
+import List from "@/app/components/List";
+
+export type Option<Value> = {
+  value: Value;
+  label: string;
+  icon?: React.ReactNode;
+};
+
+export interface SearchProps<Value> {
+  value?: string;
+  onSelect?: (v: Value) => void;
+  options?: Option<Value>[];
+  inMobile?: boolean;
+}
+
+const Select = <Value extends number | string>(props: SearchProps<Value>) => {
+  const { value, onSelect, options = [], inMobile } = props;
+
+  const { isMobileScreen, selectClassName } = useContext(List.ListContext);
+
+  const optionsRef = useRef<Option<Value>[]>([]);
+  optionsRef.current = options;
+  const selectedOption = useMemo(
+    () => optionsRef.current.find((o) => o.value === value),
+    [value],
+  );
+
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const { position, getRelativePosition } = useRelativePosition({
+    delay: 0,
+  });
+
+  let headerH = 100;
+  let baseH = position?.poi.distanceToBottomBoundary || 0;
+  if (isMobileScreen) {
+    headerH = 60;
+  }
+  if (position?.poi.relativePosition[1] === Orientation.bottom) {
+    baseH = position?.poi.distanceToTopBoundary;
+  }
+
+  const maxHeight = `${baseH - headerH}px`;
+
+  const content = (
+    <div
+      className={`px-2 py-2 flex flex-col gap-1 overflow-y-auto overflow-x-hidden`}
+      style={{ maxHeight }}
+    >
+      {options?.map((o) => (
+        <div
+          key={o.value}
+          className={`flex  items-center p-3 gap-2 ${
+            selectedOption?.value === o.value ? "bg-gray-100 rounded-md" : ""
+          }`}
+          onClick={() => {
+            onSelect?.(o.value);
+          }}
+        >
+          {!!o.icon && <div className="">{o.icon}</div>}
+          <div className={`flex-1`}>{o.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <Popover
+      content={content}
+      trigger="click"
+      noArrow
+      placement={
+        position?.poi.relativePosition[1] !== Orientation.bottom ? "rb" : "rt"
+      }
+      popoverClassName="border-actions-popover border-gray-200 rounded-md shadow-actions-popover w-actions-popover  bg-white"
+      onShow={(e) => {
+        getRelativePosition(contentRef.current!, "");
+      }}
+    >
+      <div
+        className={`flex items-center gap-3 py-2 px-3 bg-gray-100 rounded-action-btn font-time text-sm-title ${selectClassName}`}
+        ref={contentRef}
+      >
+        <div className={`flex items-center gap-2 flex-1`}>
+          {!!selectedOption?.icon && (
+            <div className={``}>{selectedOption?.icon}</div>
+          )}
+          <div className={`flex-1`}>{selectedOption?.label}</div>
+        </div>
+        <div className={``}>
+          <SelectIcon />
+        </div>
+      </div>
+    </Popover>
+  );
+};
+
+export default Select;

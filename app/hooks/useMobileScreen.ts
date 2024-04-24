@@ -1,6 +1,5 @@
 import { useWindowSize } from "@/app/hooks/useWindowSize";
-
-export const MOBILE_MAX_WIDTH = 768;
+import { MOBILE_MAX_WIDTH } from "@/app/hooks/useListenWinResize";
 
 export default function useMobileScreen() {
   const { width } = useWindowSize();

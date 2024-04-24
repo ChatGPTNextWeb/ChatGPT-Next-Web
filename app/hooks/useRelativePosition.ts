@@ -2,7 +2,7 @@ import { RefObject, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 export interface Options {
-  containerRef: RefObject<HTMLDivElement | null>;
+  containerRef?: RefObject<HTMLElement | null>;
   delay?: number;
   offsetDistance?: number;
 }
@@ -32,7 +32,7 @@ interface Position {
 }
 
 export default function useRelativePosition({
-  containerRef,
+  containerRef = { current: window.document.body },
   delay = 100,
   offsetDistance = 0,
 }: Options) {
@@ -49,6 +49,7 @@ export default function useRelativePosition({
         width: targetW,
         height: targetH,
       } = target.getBoundingClientRect();
+
       const {
         x: containerX,
         y: containerY,

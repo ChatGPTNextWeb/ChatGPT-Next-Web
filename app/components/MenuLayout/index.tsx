@@ -1,16 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { Path } from "@/app/constant";
-import useDragSideBar from "@/app/hooks/useDragSideBar";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import {
-  ComponentType,
-  Context,
-  createContext,
-  useContext,
-  useState,
-} from "react";
+  DEFAULT_SIDEBAR_WIDTH,
+  MAX_SIDEBAR_WIDTH,
+  MIN_SIDEBAR_WIDTH,
+  Path,
+} from "@/app/constant";
+import useDrag from "@/app/hooks/useDrag";
+import useMobileScreen from "@/app/hooks/useMobileScreen";
+import { updateGlobalCSSVars } from "@/app/utils/client";
+import { ComponentType, useRef, useState } from "react";
 
 import DragIcon from "@/app/icons/drag.svg";
+import { useAppConfig } from "@/app/store/config";
 
 export interface MenuWrapperInspectProps {
   setShowPanel?: (v: boolean) => void;
@@ -28,10 +29,35 @@ export default function MenuLayout<
     const [showPanel, setShowPanel] = useState(false);
 
     const navigate = useNavigate();
+    const config = useAppConfig();
 
     const isMobileScreen = useMobileScreen();
+
+    const startDragWidth = useRef(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
     // drag side bar
-    const { onDragStart } = useDragSideBar();
+    const { onDragStart } = useDrag({
+      customToggle: () => {
+        config.update((config) => {
+          config.sidebarWidth = DEFAULT_SIDEBAR_WIDTH;
+        });
+      },
+      customDragMove: (nextWidth: number) => {
+        const { menuWidth } = updateGlobalCSSVars(nextWidth);
+
+        document.documentElement.style.setProperty(
+          "--menu-width",
+          `${menuWidth}px`,
+        );
+        config.update((config) => {
+          config.sidebarWidth = nextWidth;
+        });
+      },
+      customLimit: (x: number) =>
+        Math.max(
+          MIN_SIDEBAR_WIDTH,
+          Math.min(MAX_SIDEBAR_WIDTH, startDragWidth.current + x),
+        ),
+    });
 
     let containerClassName = "flex h-[100%] w-[100%]";
     let listClassName =
@@ -64,7 +90,10 @@ export default function MenuLayout<
           {!isMobileScreen && (
             <div
               className={`group absolute right-0 h-[100%] flex items-center`}
-              onPointerDown={(e) => onDragStart(e as any)}
+              onPointerDown={(e) => {
+                startDragWidth.current = config.sidebarWidth;
+                onDragStart(e as any);
+              }}
             >
               <div className="opacity-0 group-hover:bg-[rgba($color: #000000, $alpha: 0.01) group-hover:opacity-20">
                 <DragIcon />

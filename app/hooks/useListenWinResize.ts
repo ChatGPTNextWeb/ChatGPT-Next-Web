@@ -8,7 +8,6 @@ import {
   DEFAULT_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
   MIN_SIDEBAR_WIDTH,
-  SIDEBAR_ID,
 } from "@/app/constant";
 import { useAppConfig } from "@/app/store/config";
 import { updateGlobalCSSVars } from "@/app/utils/client";
@@ -48,6 +47,9 @@ export default function useListenWinResize() {
 
     config.update((config) => {
       config.sidebarWidth = menuWidth;
+    });
+    config.update((config) => {
+      config.isMobileScreen = size.width <= MOBILE_MAX_WIDTH;
     });
   });
 }

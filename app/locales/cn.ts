@@ -129,7 +129,11 @@ const cn = {
     Title: "设置",
     SubTitle: "所有设置选项",
     GeneralSettings: "通用设置",
+    Basic: {
+      Title: "基础设置",
+    },
     Danger: {
+      Title: "系统设置",
       Reset: {
         Title: "重置所有设置",
         SubTitle: "重置所有设置项回默认值",
@@ -181,6 +185,7 @@ const cn = {
       SubTitle: "根据对话内容生成合适的标题",
     },
     Sync: {
+      Title: "数据设置",
       CloudState: "云端数据",
       NotSyncYet: "还没有进行过同步",
       Success: "同步成功",
@@ -224,6 +229,7 @@ const cn = {
       ImportFailed: "导入失败",
     },
     Mask: {
+      Title: "面具设置",
       Splash: {
         Title: "面具启动页",
         SubTitle: "新建聊天时，展示面具启动页",
@@ -234,6 +240,7 @@ const cn = {
       },
     },
     Prompt: {
+      Title: "提示语设置",
       Disable: {
         Title: "禁用提示词自动补全",
         SubTitle: "在输入框开头输入 / 即可触发自动补全",
@@ -271,6 +278,7 @@ const cn = {
     },
 
     Access: {
+      title: "接口设置",
       AccessCode: {
         Title: "访问密码",
         SubTitle: "管理员已开启加密访问",
@@ -352,7 +360,9 @@ const cn = {
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
       },
     },
-
+    Models: {
+      Title: "模型设置",
+    },
     Model: "模型 (model)",
     Temperature: {
       Title: "随机性 (temperature)",

@@ -16,10 +16,12 @@ module.exports = {
     },
     fontWeight: {
       'setting-title': '700',
+      'setting-card-title': '600',
     },
     fontFamily: {
       'common': ['Satoshi Variable', 'Variable'],
-      'time': ['Hind', 'Variable']
+      'time': ['Hind', 'Variable'],
+      'setting-card-title': ['PingFang HK', 'PingFang']
     },
     screens: {
       sm: '480px',
@@ -29,12 +31,24 @@ module.exports = {
       '2xl': '1980px'
     },
     extend: {
+      lineHeight: {
+        'slide-btn': "17px",
+        'input': '22px',
+      },
       backdropBlur: {
         'chat-header': '20px',
       },
       minHeight: {
         'chat-input-mobile': '19px',
         'chat-input': '60px',
+      },
+      minWidth: {
+        'select-mobile-lg': '200px',
+        'select-mobile': '170px',
+        'select': '240px',
+        'slide-range-mobile-lg': '200px',
+        'slide-range-mobile': '170px',
+        'slide-range': '240px',
       },
       width: {
         'md': '15rem',
@@ -43,6 +57,7 @@ module.exports = {
         'page': 'calc(100% - var(--menu-width))',
         'thumbnail': '5rem',
         'actions-popover': '203px',
+        'switch': '2.25rem',
       },
       height: {
         mobile: 'var(--siderbar-mobile-height)',
@@ -53,6 +68,8 @@ module.exports = {
         'chat-input': '60px',
         'chat-panel-mobile': '- var(--siderbar-mobile-height)',
         'setting-panel-mobile': 'calc(100vh - var(--siderbar-mobile-height))',
+        'slide-btn': '18px',
+        'switch': '1rem',
       },
       flexBasis: {
         'sidebar': 'var(--menu-width)',
@@ -75,12 +92,14 @@ module.exports = {
       maxHeight: {},
       maxWidth: {
         'message-width': 'var(--max-message-width)',
+        'setting-list': '710px',
       },
       backgroundColor: {
         'select-btn': 'rgba(0, 0, 0, 0.05)',
         'chat-actions-popover-color': 'var(--tip-popover-color)',
         'chat-panel': 'var(--chat-panel-bg)',
         'global': '#E3E3ED',
+        'switch-checked': '#2E42F3',
       },
       boxShadow: {
         'btn': '0px 4px 10px 0px rgba(60, 68, 255, 0.14)',
@@ -88,7 +107,11 @@ module.exports = {
         'actions-popover': '0px 14px 40px 0px rgba(0, 0, 0, 0.12)',
         'actions-bar': '0px 4px 30px 0px rgba(0, 0, 0, 0.10)',
         'prompt-hint-container': 'inset 0 4px 8px 0 rgba(0, 0, 0, 0.1)'
-      }
+      },
+      colors: {
+        'text-hint': '#A5A5B3',
+        'text-danger': '#FF5454',
+      },
     },
     borderRadius: {
       'none': '0',
@@ -102,6 +125,7 @@ module.exports = {
       'actions-bar-btn': '0.375rem',
       'chat-input': '0.5rem',
       'chat-img': '0.5rem',
+      'slide': '0.625rem',
     },
     borderWidth: {
       DEFAULT: '1px',

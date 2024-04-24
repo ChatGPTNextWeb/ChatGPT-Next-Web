@@ -2,11 +2,11 @@ import * as React from "react";
 
 export type ButtonType = "primary" | "danger" | null;
 
-export default function IconButton(props: {
+export default function Btn(props: {
   onClick?: () => void;
   icon?: JSX.Element;
   type?: ButtonType;
-  text?: string;
+  text?: React.ReactNode;
   bordered?: boolean;
   shadow?: boolean;
   className?: string;
@@ -20,8 +20,6 @@ export default function IconButton(props: {
     icon,
     type,
     text,
-    bordered,
-    shadow,
     className,
     title,
     disabled,
@@ -29,18 +27,30 @@ export default function IconButton(props: {
     autoFocus,
   } = props;
 
+  let btnClassName;
+
+  switch (type) {
+    case "primary":
+      btnClassName = `${disabled ? "bg-blue-300" : "bg-blue-600"} text-white`;
+      break;
+    case "danger":
+      btnClassName = `${
+        disabled ? "bg-blue-300" : "bg-blue-600"
+      } text-text-danger`;
+      break;
+    default:
+      btnClassName = `${
+        disabled ? "bg-gray-100" : "bg-gray-300"
+      } text-gray-500`;
+  }
+
   return (
     <button
       className={`
         ${className ?? ""} 
         py-2 px-3 flex items-center justify-center gap-1 rounded-action-btn shadow-btn transition-all duration-300 select-none
-        ${
-          type === "primary"
-            ? `${disabled ? "bg-blue-300" : "bg-blue-600"}`
-            : `${disabled ? "bg-gray-100" : "bg-gray-300"}`
-        } 
         ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
-        ${type === "primary" ? `text-white` : `text-gray-500`} 
+        ${btnClassName} 
       `}
       onClick={onClick}
       title={title}

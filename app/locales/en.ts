@@ -132,7 +132,11 @@ const en: LocaleType = {
     Title: "Settings",
     SubTitle: "All Settings",
     GeneralSettings: "General settings",
+    Basic: {
+      Title: "Basic Settings",
+    },
     Danger: {
+      Title: "System Settings",
       Reset: {
         Title: "Reset All Settings",
         SubTitle: "Reset all setting items to default",
@@ -184,6 +188,7 @@ const en: LocaleType = {
       SubTitle: "Generate a suitable title based on the conversation content",
     },
     Sync: {
+      Title: "Data Settings",
       CloudState: "Last Update",
       NotSyncYet: "Not sync yet",
       Success: "Sync Success",
@@ -228,6 +233,7 @@ const en: LocaleType = {
       ImportFailed: "Failed to import from file",
     },
     Mask: {
+      Title: "Mask Settings",
       Splash: {
         Title: "Mask Splash Screen",
         SubTitle: "Show a mask splash screen before starting new chat",
@@ -238,6 +244,7 @@ const en: LocaleType = {
       },
     },
     Prompt: {
+      Title: "Prompt Settings",
       Disable: {
         Title: "Disable auto-completion",
         SubTitle: "Input / to trigger auto-completion",
@@ -275,6 +282,7 @@ const en: LocaleType = {
       NoAccess: "Enter API Key to check balance",
     },
     Access: {
+      title: "API Settings",
       AccessCode: {
         Title: "Access Code",
         SubTitle: "Access control Enabled",
@@ -357,7 +365,9 @@ const en: LocaleType = {
         },
       },
     },
-
+    Models: {
+      Title: "Model Settings",
+    },
     Model: "Model",
     Temperature: {
       Title: "Temperature",

@@ -30,3 +30,8 @@ body {
   --siderbar-mobile-height: 3.125rem;
   --max-message-width: calc(var(--chat-panel-max-width) * 0.6);
 }
+
+input {
+  text-align: inherit;
+  background-color: inherit;
+}

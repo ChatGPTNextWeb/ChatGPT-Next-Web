@@ -3,7 +3,7 @@
 require("../polyfill");
 
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 
 import dynamic from "next/dynamic";
 import { Path } from "@/app/constant";
@@ -12,12 +12,13 @@ import { getISOLang } from "@/app/locales";
 import { useSwitchTheme } from "@/app/hooks/useSwitchTheme";
 import { AuthPage } from "@/app/components/auth";
 import { getClientConfig } from "@/app/config/client";
-import { useAccessStore } from "@/app/store";
+import { useAccessStore, useAppConfig } from "@/app/store";
 import { useLoadData } from "@/app/hooks/useLoadData";
 import Loading from "@/app/components/Loading";
 import Screen from "@/app/components/Screen";
 import { SideBar } from "./Sidebar";
 import GlobalLoading from "@/app/components/GlobalLoading";
+import { MOBILE_MAX_WIDTH } from "../hooks/useListenWinResize";
 
 const Settings = dynamic(
   async () => await import("@/app/containers/Settings"),
@@ -84,14 +85,19 @@ export default function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+  const config = useAppConfig();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     loadAsyncGoogleFont();
+    config.update(
+      (config) =>
+        (config.isMobileScreen = window.innerWidth <= MOBILE_MAX_WIDTH),
+    );
   }, []);
 
   if (!useHasHydrated()) {

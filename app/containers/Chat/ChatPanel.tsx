@@ -25,7 +25,6 @@ import ChatInputPanel, { ChatInputPanelInstance } from "./ChatInputPanel";
 import ChatMessagePanel, { RenderMessage } from "./ChatMessagePanel";
 import { useAllModels } from "@/app/utils/hooks";
 import useRows from "@/app/hooks/useRows";
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import SessionConfigModel from "./SessionConfigModal";
 import useScrollToBottom from "@/app/hooks/useScrollToBottom";
 
@@ -33,6 +32,8 @@ function _Chat() {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const config = useAppConfig();
+
+  const { isMobileScreen } = config;
 
   const [showExport, setShowExport] = useState(false);
   const [showModelSelector, setShowModelSelector] = useState(false);
@@ -44,7 +45,6 @@ function _Chat() {
   const chatInputPanelRef = useRef<ChatInputPanelInstance | null>(null);
 
   const [hitBottom, setHitBottom] = useState(true);
-  const isMobileScreen = useMobileScreen();
 
   const [attachImages, setAttachImages] = useState<string[]>([]);
 
@@ -295,11 +295,7 @@ function _Chat() {
         />
       )}
 
-      <PromptToast
-        showToast={!hitBottom}
-        showModal={showPromptModal}
-        setShowModal={setShowPromptModal}
-      />
+      <PromptToast showToast={!hitBottom} setShowModal={setShowPromptModal} />
 
       {showPromptModal && (
         <SessionConfigModel onClose={() => setShowPromptModal(false)} />

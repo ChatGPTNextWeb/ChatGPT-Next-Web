@@ -144,10 +144,10 @@ label {
   cursor: pointer;
 }
 
-input {
-  text-align: center;
-  font-family: inherit;
-}
+// input {
+//   text-align: center;
+//   font-family: inherit;
+// }
 
 input[type="checkbox"] {
   cursor: pointer;
@@ -219,20 +219,20 @@ input[type="range"]::-ms-thumb:hover {
   @include thumbHover();
 }
 
-input[type="number"],
-input[type="text"],
-input[type="password"] {
-  appearance: none;
-  border-radius: 10px;
-  border: var(--border-in-light);
-  min-height: 36px;
-  box-sizing: border-box;
-  background: var(--white);
-  color: var(--black);
-  padding: 0 10px;
-  max-width: 50%;
-  font-family: inherit;
-}
+// input[type="number"],
+// input[type="text"],
+// input[type="password"] {
+//   appearance: none;
+//   border-radius: 10px;
+//   border: var(--border-in-light);
+//   min-height: 36px;
+//   box-sizing: border-box;
+//   background: var(--white);
+//   color: var(--black);
+//   padding: 0 10px;
+//   max-width: 50%;
+//   font-family: inherit;
+// }
 
 div.math {
   overflow-x: auto;

@@ -23,7 +23,8 @@ export type RenderMessage = ChatMessage & { preview?: boolean };
 export interface MessageActionsProps {
   message: RenderMessage;
   isUser: boolean;
-  showActions: boolean;
+  isContext: boolean;
+  showActions?: boolean;
   inputRef: RefObject<HTMLTextAreaElement>;
   className?: string;
   setIsLoading?: (value: boolean) => void;
@@ -96,12 +97,33 @@ const genActionsShema = (
   ];
 };
 
+enum GroupType {
+  "streaming" = "streaming",
+  "isContext" = "isContext",
+  "normal" = "normal",
+}
+
+const groupsTypes = {
+  [GroupType.streaming]: [[Locale.Chat.Actions.Stop]],
+  [GroupType.isContext]: [["Edit"]],
+  [GroupType.normal]: [
+    [
+      Locale.Chat.Actions.Retry,
+      "Edit",
+      Locale.Chat.Actions.Copy,
+      Locale.Chat.Actions.Pin,
+      Locale.Chat.Actions.Delete,
+    ],
+  ],
+};
+
 export default function MessageActions(props: MessageActionsProps) {
   const {
     className,
     message,
     isUser,
-    showActions,
+    isContext,
+    showActions = true,
     setIsLoading,
     inputRef,
     setShowPromptModal,
@@ -228,6 +250,12 @@ export default function MessageActions(props: MessageActionsProps) {
 
   const onCopy = () => copyToClipboard(getMessageTextContent(message));
 
+  const groupsType = [
+    message.streaming && GroupType.streaming,
+    isContext && GroupType.isContext,
+    GroupType.normal,
+  ].find((i) => i) as GroupType;
+
   return (
     showActions && (
       <div
@@ -254,19 +282,7 @@ export default function MessageActions(props: MessageActionsProps) {
             onResend,
             onUserStop,
           })}
-          groups={
-            message.streaming
-              ? [[Locale.Chat.Actions.Stop]]
-              : [
-                  [
-                    Locale.Chat.Actions.Retry,
-                    "Edit",
-                    Locale.Chat.Actions.Copy,
-                    Locale.Chat.Actions.Pin,
-                    Locale.Chat.Actions.Delete,
-                  ],
-                ]
-          }
+          groups={groupsTypes[groupsType]}
           className="flex flex-row gap-1  p-1"
         />
       </div>

@@ -8,6 +8,7 @@ import { ContextPrompts } from "@/app/components/mask";
 
 import CancelIcon from "@/app/icons/cancel.svg";
 import ConfirmIcon from "@/app/icons/confirm.svg";
+import Input from "@/app/components/Input";
 
 export function EditMessageModal(props: { onClose: () => void }) {
   const chatStore = useChatStore();
@@ -47,15 +48,16 @@ export function EditMessageModal(props: { onClose: () => void }) {
             title={Locale.Chat.EditMessage.Topic.Title}
             subTitle={Locale.Chat.EditMessage.Topic.SubTitle}
           >
-            <input
+            <Input
               type="text"
               value={session.topic}
-              onInput={(e) =>
+              onChange={(e) =>
                 chatStore.updateCurrentSession(
-                  (session) => (session.topic = e.currentTarget.value),
+                  (session) => (session.topic = e || ""),
                 )
               }
-            ></input>
+              className=" text-center"
+            ></Input>
           </ListItem>
         </List>
         <ContextPrompts
