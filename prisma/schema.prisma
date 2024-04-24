@@ -136,3 +136,13 @@ model VerificationToken {
 //   image         String? @db.Text
 //   imageBlurhash String? @db.Text
 // }
+
+model Setting {
+  key         String  @id
+  value       String
+  type        String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("settings")
+}

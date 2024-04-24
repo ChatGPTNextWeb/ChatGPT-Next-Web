@@ -96,10 +96,13 @@ export const authOptions: NextAuthOptions = {
                     // 目前用户不存在，则会创建新用户。
                     let existingUser = await existUser(user); // await insertUser(user)
                     if (!existingUser) {
-                      // 如果不存在，则报错
-                      // throw new Error("用户名或密码不正确")
-                      // 如果不存在，则创建
-                      existingUser = await insertUser(user);
+                      if (await getSetting("allowNewUser")) {
+                        // 如果不存在，则创建
+                        existingUser = await insertUser(user);
+                      } else {
+                        // 如果不存在，则报错
+                        throw new Error("未知用户")
+                      }
                     }
                     // 有密码就校验密码，没有就直接返回用户
                     (password || existingUser.password) && validatePassword(password, existingUser.password);
@@ -158,7 +161,7 @@ export const authOptions: NextAuthOptions = {
         // 过滤不存在的用户
         async signIn({ user, account, profile, email, credentials }) {
             const existingUser = await existUser(user as User);
-            console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
+            // console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
             // 顺便过滤掉不允许登录的用户
             return !!existingUser && existingUser.allowToLogin;
         }
@@ -207,6 +210,28 @@ export function validatePassword(password: string, hashPassword: string | null |
     throw new Error("用户名或密码不正确")
   } else {
     return true;
+  }
+}
+
+async function getSetting(key: string) {
+  const setting = await prisma.setting.findUnique({
+    where: {
+      key: key
+    }
+  })
+  console.log('setting,------', setting)
+  if (!setting) {
+    return null;
+  }
+  // 根据类型字段转换值
+  switch (setting.type) {
+    case 'boolean':
+      return setting.value === 'true';
+    case 'number':
+      return Number(setting.value);
+    case 'string':
+    default:
+      return setting.value;
   }
 }
 
