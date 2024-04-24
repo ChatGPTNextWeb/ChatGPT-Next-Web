@@ -38,6 +38,7 @@ const items: MenuItem[] = [
 
   getItem("管理", "manage", <AppstoreOutlined />, [
     getItem("用户管理", "/admin/users"),
+    getItem("系统设置", "/admin/setting"),
   ]),
 
   // getItem("Navigation Three", "sub4", <SettingOutlined />, [
