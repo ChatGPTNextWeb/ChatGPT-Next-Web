@@ -35,6 +35,7 @@ tauri = { version = "1.5.4", features = [
     "window-start-dragging",
     "window-unmaximize",
     "window-unminimize",
+    "devtools",
 ] }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 
