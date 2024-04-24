@@ -72,7 +72,10 @@ export class ChatGPTApi implements LLMApi {
       }
 
       if (isAzure) {
-        path = makeAzurePath(path, accessStore.azureApiVersion);
+        const modelConfig = useChatStore.getState().currentSession()
+          .mask.modelConfig;
+        let model = modelConfig.model;
+        path = makeAzurePath(path, model, accessStore.azureApiVersion);
       }
 
       baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
