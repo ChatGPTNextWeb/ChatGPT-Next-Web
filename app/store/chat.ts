@@ -325,7 +325,12 @@ export const useChatStore = createPersistStore(
         let mContent: string | MultimodalContent[] = userContent;
 
         if (attachImages && attachImages.length > 0) {
-          mContent = [];
+          mContent = [
+            {
+              type: "text",
+              text: userContent,
+            },
+          ];
           mContent = mContent.concat(
             attachImages.map((url) => {
               return {
@@ -336,12 +341,6 @@ export const useChatStore = createPersistStore(
               };
             }),
           );
-          mContent = mContent.concat([
-            {
-              type: "text",
-              text: userContent,
-            },
-          ]);
         }
         let userMessage: ChatMessage = createMessage({
           role: "user",
