@@ -126,7 +126,7 @@ function SettingForm() {
       title: "action",
       dataIndex: "",
       key: "key",
-      render: (_, record) => (
+      render: (_: string, record: Setting) => (
         <Space size="small">
           <a type="link" onClick={() => handleEdit("PUT", record)}>
             编辑
@@ -151,32 +151,5 @@ function SettingForm() {
     </>
   );
 }
-
-// const EditFormModal = ({ visible, onClose, onSubmit, initialData }) => {
-//   const [formData, setFormData] = useState(initialData);
-//   const handleFormChange = (changeVlaue, allValues) => {
-//     setFormData(allValues);
-//   };
-//
-//   const handleSubmit = () => {
-//     onSubmit(formData);
-//     onClose();
-//   }
-//
-//   return (
-//       <Modal
-//           title="编辑设置"
-//           open={visible}
-//           onCancel={onClose}
-//           footer={[
-//               <Button key="cancel" onClick={onClose}>取消</Button>,
-//               <Button key="submit" type="primary" onClick={handleSubmit}>提交</Button>,
-//           ]}
-//       >
-// 123
-//       </Modal>
-//   )
-//
-// }
 
 export default SettingForm;
