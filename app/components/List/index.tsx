@@ -75,9 +75,6 @@ export function ListItem(props: ListItemProps) {
     default:
       internalNextLine = false;
   }
-  if (childrenMeta.type === "input") {
-    console.log("===============", internalNextLine, nextline, inputNextLine);
-  }
 
   const update = useCallback((m: ChildrenMeta) => {
     setMeta(m);
@@ -85,7 +82,7 @@ export function ListItem(props: ListItemProps) {
 
   return (
     <div
-      className={`relative after:h-[0.5px] after:bottom-0 after:w-[100%] after:left-0 after:absolute last:after:hidden after:bg-gray-100 ${
+      className={`relative after:h-[0.5px] after:bottom-0 after:w-[100%] after:left-0 after:absolute last:after:hidden after:bg-list-item-divider ${
         internalNextLine ? "" : "flex gap-3"
       } justify-between items-center px-0 ${containerClassName} ${className}`}
       onClick={onClick}
@@ -96,7 +93,9 @@ export function ListItem(props: ListItemProps) {
         <div className=" font-common text-sm-mobile font-weight-[500] line-clamp-1">
           {title}
         </div>
-        {subTitle && <div className={` text-sm text-gray-300`}>{subTitle}</div>}
+        {subTitle && (
+          <div className={` text-sm text-text-list-subtitle`}>{subTitle}</div>
+        )}
       </div>
       <ListContext.Provider value={{ ...context, update }}>
         <div

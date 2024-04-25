@@ -31,24 +31,22 @@ export default function Btn(props: {
 
   switch (type) {
     case "primary":
-      btnClassName = `${disabled ? "bg-blue-300" : "bg-blue-600"} text-white`;
+      btnClassName = `${
+        disabled ? "bg-primary-btn-disabled" : "bg-primary-btn shadow-btn"
+      } text-text-btn-primary `;
       break;
     case "danger":
-      btnClassName = `${
-        disabled ? "bg-blue-300" : "bg-blue-600"
-      } text-text-danger`;
+      btnClassName = `bg-danger-btn text-text-btn-danger`;
       break;
     default:
-      btnClassName = `${
-        disabled ? "bg-gray-100" : "bg-gray-300"
-      } text-gray-500`;
+      btnClassName = `bg-default-btn text-text-btn-default`;
   }
 
   return (
     <button
       className={`
         ${className ?? ""} 
-        py-2 px-3 flex items-center justify-center gap-1 rounded-action-btn shadow-btn transition-all duration-300 select-none
+        py-2 px-3 flex items-center justify-center gap-1 rounded-action-btn transition-all duration-300 select-none
         ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
         ${btnClassName} 
       `}

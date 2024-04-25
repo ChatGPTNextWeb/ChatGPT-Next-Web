@@ -82,7 +82,7 @@ export default function Popover(props: {
 
   let placementClassName;
   let arrowClassName = "absolute left-[50%] translate-x-[calc(-50%)]";
-  // "absolute rotate-45 w-[8.5px] h-[8.5px] left-[50%] translate-x-[calc(-50%)] bg-black rounded-[1px] ";
+
   arrowClassName += " ";
 
   switch (placement) {

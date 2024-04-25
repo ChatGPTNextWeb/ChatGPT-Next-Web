@@ -81,8 +81,8 @@ export default function ActionsBar(props: ActionsBarProps) {
               }%] flex flex-col items-center justify-center gap-0.5
                         ${
                           selected === action.id
-                            ? "text-blue-700"
-                            : "text-gray-400"
+                            ? "text-text-sidebar-tab-mobile-active"
+                            : "text-text-sidebar-tab-mobile-inactive"
                         }
                     `}
               onClick={handlerClick(action)}
@@ -99,7 +99,9 @@ export default function ActionsBar(props: ActionsBarProps) {
           <div
             key={action.id}
             className={`p-3 ${
-              selected === action.id ? "bg-blue-900" : "bg-transparent"
+              selected === action.id
+                ? "bg-actions-bar-btn-default"
+                : "bg-transparent"
             } rounded-md items-center ${action.className}`}
             onClick={handlerClick(action)}
           >

@@ -203,13 +203,14 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
       emitImages: setAttachImages,
       setUploading,
     });
-
+    let containerClassName = "border-t border-chat-input-top";
     let inputClassName = " flex flex-col px-5 pb-5";
     let actionsClassName = "py-2.5";
     let labelClassName = "rounded-md p-4 gap-4";
     let textarea = "min-h-chat-input";
 
     if (isMobileScreen) {
+      containerClassName = "rounded-tl-md rounded-tr-md";
       inputClassName = "flex flex-row-reverse items-center gap-2 p-3";
       actionsClassName = "";
       labelClassName = " rounded-chat-input p-3 gap-3 flex-1";
@@ -217,13 +218,11 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
     }
 
     return (
-      <div
-        className={`relative w-[100%] box-border border-gray-200 border-t-[1px]`}
-      >
+      <div className={`relative w-[100%] box-border ${containerClassName}`}>
         <PromptHints
           prompts={promptHints}
           onPromptSelect={onPromptSelect}
-          className=" border-gray-200"
+          className=" border-chat-input-top"
         />
 
         <div className={`${inputClassName}`}>
@@ -251,7 +250,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
             isMobileScreen={isMobileScreen}
           />
           <label
-            className={`cursor-text flex flex-col bg-white border-[1px] border-white focus-within:border-blue-300 focus-within:shadow-chat-input ${labelClassName}`}
+            className={`cursor-text flex flex-col bg-chat-panel-input-hood border border-chat-input-hood sm:focus-within:border-chat-input-hood-focus sm:focus-within:shadow-chat-input-hood-focus-shadow ${labelClassName}`}
             htmlFor="chat-input"
           >
             {attachImages.length != 0 && (
@@ -295,14 +294,14 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
             {!isMobileScreen && (
               <div className="flex items-center justify-center text-sm gap-3">
                 <div className="flex-1">&nbsp;</div>
-                <div className="text-gray-500 text-time line-clamp-1">
+                <div className="text-text-chat-input-placeholder text-time line-clamp-1">
                   {Locale.Chat.Input(submitKey)}
                 </div>
                 <Btn
                   className="min-w-[77px]"
                   icon={<SendIcon />}
                   text={Locale.Chat.Send}
-                  // className={styles["chat-input-send"]}
+                  disabled={!userInput.length}
                   type="primary"
                   onClick={() => doSubmit(userInput)}
                 />

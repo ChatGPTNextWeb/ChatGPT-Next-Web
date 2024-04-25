@@ -409,8 +409,8 @@ const cn = {
     Toast: (x: any) => `包含 ${x} 条预设提示词`,
     Edit: "当前对话设置",
     Add: "新增一条对话",
-    Clear: "上下文已清除",
-    Revert: "恢复上下文",
+    Clear: "解除以上内容关联",
+    Revert: "撤销",
   },
   Plugin: {
     Name: "插件",

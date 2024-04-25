@@ -24,11 +24,94 @@ body {
   overflow: hidden;
 }
 
+*:focus-visible {
+  outline: none;
+}
+
 :root {
-  --tip-popover-color: #434360;
-  --chat-panel-bg: rgb(249, 250, 251, 1);
+  --global-bg: #e3e3ed;
+  --actived-widget-bg: #2e42f3;
+  --primary-btn-disabled-bg: rgba(60, 68, 255, 0.2);
+  --danger-btn-bg: #fff6f6;
+  --default-widget-bg: #f7f7f8;
+  --default-container-bg: #f7f7f8;
+  --similar-panel-bg: #fff;
+  --similar-highlight-hood-bg: #fff;
+  --similar-widget-btn-bg: #fff;
+  --chat-panel-message-bot-bg: #fff;
+  --chat-panel-message-user-bg: #4a5cff;
+  --similar-line-bg: #f0f0f3;
+  --chat-panel-message-mobile-bg: #f0f0f3;
+  --chat-menu-session-unselected-bg: #f0f0f3;
+  --similar-btn-hovered-bg: rgba(0, 0, 0, 0.05);
+  --slider-slided-travel-bg: #88889a;
+  --switch-unchecked-bg: #c9c9d1;
+  --chat-actions-btn-popover-bg: #434360;
+  --chat-panel-message-clear-divider-bg: #e2e2e6;
+  --chat-menu-session-hovered-bg: #e2e2e6;
+  --menu-item-selected-bg: #dee1fd;
+  --small-widget-border: rgba(0, 0, 0, 0.1);
+  --slider-block-border: #c9c9d1;
+  --chat-actions-popover-mobile-border: #f0f0f3;
+  --panel-header-border: #e2e2e6;
+  --chat-input-hood-border: #fff;
+  --chat-input-hood-focus-border: #606078;
+  --menu-item-selected-border: #c9cefc;
+  --sidebar-tab-mobile-active-text: #2e42f3;
+  --bg-contract-text: #fff;
+  --danger-btn-text: #ff5454;
+  --btn-default-text: #606078;
+  --weakness-text: #a5a5b3;
+  --key-text: #18182a;
+  --description-text: #88889a;
+  --message-clear-revert-text: #3c44ff;
+  --menu-item-time: rgba(0, 0, 0, 0.3);
   --siderbar-mobile-height: 3.125rem;
   --max-message-width: calc(var(--chat-panel-max-width) * 0.6);
+}
+
+.dark {
+  --global-bg: #303030;
+  --actived-widget-bg: #384cfc;
+  --primary-btn-disabled-bg: rgba(60, 68, 255, 0.2);
+  --danger-btn-bg: #20131a;
+  --default-widget-bg: #1d1d1d;
+  --default-container-bg: #1d1d1d;
+  --similar-panel-bg: #111;
+
+  --similar-highlight-hood-bg: #fff;
+
+  --similar-widget-btn-bg: #fff;
+  --chat-panel-message-bot-bg: #fff;
+  --chat-panel-message-user-bg: #4a5cff;
+  --similar-line-bg: #f0f0f3;
+  --chat-panel-message-mobile-bg: #f0f0f3;
+  --chat-menu-session-unselected-bg: #f0f0f3;
+  --similar-btn-hovered-bg: rgba(0, 0, 0, 0.05);
+  --slider-slided-travel-bg: #88889a;
+  --switch-unchecked-bg: #c9c9d1;
+  --chat-actions-btn-popover-bg: #434360;
+  --chat-panel-message-clear-divider-bg: #e2e2e6;
+  --chat-menu-session-hovered-bg: #e2e2e6;
+  --menu-item-selected-bg: #dee1fd;
+  --small-widget-border: rgba(0, 0, 0, 0.1);
+  --slider-block-border: #c9c9d1;
+  --chat-actions-popover-mobile-border: #f0f0f3;
+  --panel-header-border: #e2e2e6;
+  --chat-input-hood-border: #fff;
+  --chat-input-hood-focus-border: #606078;
+  --menu-item-selected-border: #c9cefc;
+  --sidebar-tab-mobile-active-text: #2e42f3;
+  --bg-contract-text: #fff;
+  --danger-btn-text: #ff5454;
+  --btn-default-text: #606078;
+  --weakness-text: #a5a5b3;
+  --key-text: #18182a;
+  --description-text: #88889a;
+  --message-clear-revert-text: #3c44ff;
+  --menu-item-time: rgba(0, 0, 0, 0.3);
+
+  --select-popover-panel-bg: #1d1d1d;
 }
 
 input {

@@ -61,7 +61,7 @@ export default function MenuLayout<
 
     let containerClassName = "flex h-[100%] w-[100%]";
     let listClassName =
-      "relative basis-sidebar h-[calc(100%-1.25rem)] pb-6 max-md:px-4 max-md:pb-4 rounded-md my-2.5 bg-gray-50";
+      "relative basis-sidebar h-[calc(100%-1.25rem)] pb-6 max-md:px-4 max-md:pb-4 rounded-md my-2.5 bg-menu";
     let panelClassName = "flex-1 h-[100%] w-page";
 
     if (isMobileScreen) {
@@ -95,7 +95,7 @@ export default function MenuLayout<
                 onDragStart(e as any);
               }}
             >
-              <div className="opacity-0 group-hover:bg-[rgba($color: #000000, $alpha: 0.01) group-hover:opacity-20">
+              <div className="opacity-0 group-hover:bg-[rgba($color: #000000, $alpha: 0.01)] group-hover:opacity-20">
                 <DragIcon />
               </div>
             </div>

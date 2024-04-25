@@ -33,7 +33,6 @@ export default function SyncItems() {
     };
   }, [chatStore.sessions, maskStore.masks, promptStore.prompts]);
 
-  const btnStyle = " !shadow-none !bg-gray-50";
   const textStyle = "!text-sm";
   return (
     <>
@@ -50,7 +49,6 @@ export default function SyncItems() {
         >
           <div className="flex gap-3">
             <Btn
-              className={btnStyle}
               onClick={() => {
                 setShowSyncConfigModal(true);
               }}
@@ -58,7 +56,6 @@ export default function SyncItems() {
             ></Btn>
             {couldSync && (
               <Btn
-                className={btnStyle}
                 onClick={async () => {
                   try {
                     await syncStore.sync();
@@ -80,14 +77,12 @@ export default function SyncItems() {
         >
           <div className="flex gap-3">
             <Btn
-              className={btnStyle}
               onClick={() => {
                 syncStore.export();
               }}
               text={<span className={textStyle}>{Locale.UI.Export}</span>}
             ></Btn>
             <Btn
-              className={btnStyle}
               onClick={async () => {
                 syncStore.import();
               }}

@@ -13,7 +13,7 @@ export default function Loading({
 }) {
   let theme;
   if (typeof window !== "undefined") {
-    theme = getCSSVar("--chat-panel-bg");
+    theme = getCSSVar("--default-container-bg");
   }
 
   const isMobileScreen = useMobileScreen();

@@ -24,7 +24,7 @@ export default function Card(props: CardProps) {
           {title}
         </div>
       )}
-      <div className={`px-4 py-1 rounded-lg bg-white ${className}`}>
+      <div className={`px-4 py-1 rounded-lg bg-card ${className}`}>
         {children}
       </div>
     </>

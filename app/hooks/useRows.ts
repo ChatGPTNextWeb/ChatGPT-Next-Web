@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { autoGrowTextArea } from "../utils";
 import { useAppConfig } from "../store";
@@ -10,13 +10,14 @@ export default function useRows({
 }) {
   const [inputRows, setInputRows] = useState(2);
   const config = useAppConfig();
+  const { isMobileScreen } = config;
 
   const measure = useDebouncedCallback(
     () => {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
         20,
-        Math.max(2 + (config.isMobileScreen ? -1 : 1), rows),
+        Math.max(2 + (isMobileScreen ? -1 : 1), rows),
       );
       setInputRows(inputRows);
     },
@@ -26,6 +27,10 @@ export default function useRows({
       trailing: true,
     },
   );
+
+  useEffect(() => {
+    measure();
+  }, [isMobileScreen]);
 
   return {
     inputRows,

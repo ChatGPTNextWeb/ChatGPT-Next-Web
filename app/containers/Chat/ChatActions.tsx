@@ -182,7 +182,7 @@ export function ChatActions(props: {
             return (
               <div
                 key={act.text}
-                className={`flex items-center gap-3 p-3 bg-white hover:bg-select-btn rounded-action-btn leading-6`}
+                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6`}
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -200,14 +200,14 @@ export function ChatActions(props: {
         trigger="click"
         placement="rt"
         noArrow
-        popoverClassName="border-actions-popover border-gray-200 rounded-md shadow-actions-popover w-actions-popover bg-white "
+        popoverClassName="border border-chat-actions-popover-mobile rounded-md shadow-chat-actions-popover-mobile w-actions-popover bg-chat-actions-popover-panel-mobile "
       >
         <AddCircleIcon />
       </Popover>
     );
   }
 
-  const popoverClassName = `bg-chat-actions-popover-color whitespace-nowrap px-3 py-2.5 text-white text-sm-title rounded-md`;
+  const popoverClassName = `bg-chat-actions-btn-popover whitespace-nowrap px-3 py-2.5 text-text-chat-actions-btn-popover text-sm-title rounded-md`;
 
   return (
     <div className={`flex gap-2 item-center ${props.className}`}>
@@ -222,7 +222,7 @@ export function ChatActions(props: {
               placement={ind ? "t" : "lt"}
             >
               <div
-                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-gray-200 hover:rounded-action-btn"
+                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -242,7 +242,7 @@ export function ChatActions(props: {
               placement={ind === arr.length - 1 ? "rt" : "t"}
             >
               <div
-                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-gray-200 hover:rounded-action-btn"
+                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}

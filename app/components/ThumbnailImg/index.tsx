@@ -9,7 +9,7 @@ export default function Thumbnail(props: ThumbnailProps) {
   const { image, deleteImage } = props;
   return (
     <div
-      className={` h-thumbnail w-thumbnail cursor-default border-1 border-black border-opacity-10 rounded-action-btn flex-0 bg-cover bg-center`}
+      className={` h-thumbnail w-thumbnail cursor-default border border-thumbnail rounded-action-btn flex-0 bg-cover bg-center`}
       style={{ backgroundImage: `url("${image}")` }}
     >
       <div

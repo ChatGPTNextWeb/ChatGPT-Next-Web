@@ -6,6 +6,8 @@ import useRelativePosition, {
 } from "@/app/hooks/useRelativePosition";
 import List from "@/app/components/List";
 
+import Selected from "@/app/icons/selectedIcon.svg";
+
 export type Option<Value> = {
   value: Value;
   label: string;
@@ -56,15 +58,14 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       {options?.map((o) => (
         <div
           key={o.value}
-          className={`flex  items-center p-3 gap-2 ${
-            selectedOption?.value === o.value ? "bg-gray-100 rounded-md" : ""
-          }`}
+          className={`flex  items-center p-3 gap-2 rounded-md hover:bg-select-option-hovered`}
           onClick={() => {
             onSelect?.(o.value);
           }}
         >
           {!!o.icon && <div className="">{o.icon}</div>}
           <div className={`flex-1`}>{o.label}</div>
+          {selectedOption?.value === o.value && <Selected />}
         </div>
       ))}
     </div>
@@ -78,13 +79,13 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "rb" : "rt"
       }
-      popoverClassName="border-actions-popover border-gray-200 rounded-md shadow-actions-popover w-actions-popover  bg-white"
+      popoverClassName="border border-select-popover rounded-md shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel dark:bg-select-popover-panel-dark"
       onShow={(e) => {
         getRelativePosition(contentRef.current!, "");
       }}
     >
       <div
-        className={`flex items-center gap-3 py-2 px-3 bg-gray-100 rounded-action-btn font-time text-sm-title ${selectClassName}`}
+        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title ${selectClassName}`}
         ref={contentRef}
       >
         <div className={`flex items-center gap-2 flex-1`}>

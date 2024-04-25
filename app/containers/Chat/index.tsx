@@ -56,8 +56,8 @@ export function SessionItem(props: {
           className={`group relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 ${
             props.selected &&
             (currentPath === Path.Chat || currentPath === Path.Home)
-              ? `bg-blue-100 border-blue-200 border `
-              : `bg-gray-100 hover:bg-gray-200`
+              ? `bg-chat-menu-session-selected border-chat-menu-session-selected border `
+              : `bg-chat-menu-session-unselected hover:bg-chat-menu-session-hovered`
           }`}
           onClick={props.onClick}
           ref={(ele) => {
@@ -76,17 +76,17 @@ export function SessionItem(props: {
           <div className="flex flex-col flex-1">
             <div className={`flex justify-between items-center`}>
               <div
-                className={` text-gray-900 text-sm-title line-clamp-1 flex-1`}
+                className={` text-text-chat-menu-item-title text-sm-title line-clamp-1 flex-1`}
               >
                 {props.title}
               </div>
               <div
-                className={`text-gray-500 text-sm group-hover:opacity-0 pl-3`}
+                className={`text-text-chat-menu-item-time text-sm group-hover:opacity-0 pl-3`}
               >
                 {getTime(props.time)}
               </div>
             </div>
-            <div className={`text-gray-500 text-sm`}>
+            <div className={`text-text-chat-menu-item-description text-sm`}>
               {Locale.ChatItem.ChatItemCount(props.count)}
             </div>
           </div>
@@ -145,17 +145,19 @@ export default MenuLayout(function SessionList(props) {
     moveSession(source.index, destination.index);
   };
 
-  let layoutClassName = "flex flex-col py-7 px-0";
+  let layoutClassName = "flex flex-col  px-0";
+  let titleClassName = "py-7";
 
   if (isMobileScreen) {
-    layoutClassName = "flex flex-col py-6 pb-chat-panel-mobile ";
+    layoutClassName = "flex flex-col  pb-chat-panel-mobile ";
+    titleClassName = "py-6 box-content h-0";
   }
 
   return (
     <div className={`h-[100%] ${layoutClassName}`}>
       <div data-tauri-drag-region>
         <div
-          className={`flex items-center justify-between`}
+          className={`flex items-center justify-between ${titleClassName}`}
           data-tauri-drag-region
         >
           <div className="">
@@ -175,7 +177,9 @@ export default MenuLayout(function SessionList(props) {
             <AddIcon />
           </div>
         </div>
-        <div className={`pb-3 text-sm sm:text-sm-mobile text-blue-500`}>
+        <div
+          className={`pb-3 text-sm sm:text-sm-mobile text-text-chat-header-subtitle`}
+        >
           Build your own AI assistant.
         </div>
       </div>

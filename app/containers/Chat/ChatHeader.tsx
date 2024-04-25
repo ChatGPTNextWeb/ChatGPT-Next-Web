@@ -44,11 +44,11 @@ export default function ChatHeader(props: ChatHeaderProps) {
 
   return (
     <div
-      className={`absolute w-[100%]  backdrop-blur-[30px] z-20 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b-[1px] border-gray-200 ${containerClassName}`}
+      className={`absolute w-[100%]  backdrop-blur-[30px] z-20 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap sm:border-b sm:border-chat-header-bottom ${containerClassName}`}
       data-tauri-drag-region
     >
       <div
-        className={`absolute z-[-1] top-0 left-0 w-[100%] h-[100%] opacity-85 backdrop-blur-[20px]  bg-gray-50 flex flex-0 justify-between items-center  gap-chat-header-gap`}
+        className={`absolute z-[-1] top-0 left-0 w-[100%] h-[100%] opacity-85 backdrop-blur-[20px]  sm:bg-chat-panel-header-mask bg-chat-panel-header-mobile flex flex-0 justify-between items-center  gap-chat-header-gap`}
       >
         {" "}
       </div>
@@ -63,12 +63,14 @@ export default function ChatHeader(props: ChatHeaderProps) {
 
       <div className={`flex-1 ${titleClassName}`}>
         <div
-          className={`line-clamp-1 cursor-pointer text-black text-chat-header-title font-common ${mainTitleClassName}`}
+          className={`line-clamp-1 cursor-pointer text-text-chat-header-title text-chat-header-title font-common ${mainTitleClassName}`}
           onClickCapture={() => setIsEditingMessage(true)}
         >
           {!session.topic ? DEFAULT_TOPIC : session.topic}
         </div>
-        <div className={`text-gray-500 text-sm ${subTitleClassName}`}>
+        <div
+          className={`text-text-chat-header-subtitle text-sm ${subTitleClassName}`}
+        >
           {isMobileScreen ? (
             <div
               className="flex items-center gap-1"

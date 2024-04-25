@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { Path } from "@/app/constant";
 import Locale from "@/app/locales";
 import GobackIcon from "@/app/icons/goback.svg";
 
@@ -19,7 +18,7 @@ export default function SettingHeader(props: ChatHeaderProps) {
   let subTitleClassName = "";
 
   if (isMobileScreen) {
-    containerClassName = "h-menu-title-mobile";
+    containerClassName = "h-menu-title-mobile bg-settings-header-mobile";
     titleClassName = "flex flex-col items-center justify-center gap-0.5 text";
     mainTitleClassName = "text-sm-title h-[19px] leading-5";
     subTitleClassName = "text-sm-mobile-tab leading-4";
@@ -27,7 +26,7 @@ export default function SettingHeader(props: ChatHeaderProps) {
 
   return (
     <div
-      className={`relative flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b-[1px] border-gray-200 ${containerClassName}`}
+      className={`relative flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b border-settings-header ${containerClassName}`}
       data-tauri-drag-region
     >
       {isMobileScreen ? (
@@ -41,7 +40,7 @@ export default function SettingHeader(props: ChatHeaderProps) {
 
       <div className={`flex-1 ${titleClassName}`}>
         <div
-          className={`line-clamp-1 cursor-pointer text-black text-chat-header-title font-common ${mainTitleClassName}`}
+          className={`line-clamp-1 cursor-pointer text-text-settings-panel-header-title text-chat-header-title font-common ${mainTitleClassName}`}
         >
           {Locale.Settings.Title}
         </div>

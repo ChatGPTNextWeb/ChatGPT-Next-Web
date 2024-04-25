@@ -17,9 +17,9 @@ export default MenuLayout(function SettingList(props) {
   let itemClassName = "";
 
   if (isMobileScreen) {
-    layoutClassName = "h-[100%] mx-[-1.5rem] px-6 py-6 bg-blue-50";
+    layoutClassName = "h-[100%] mx-[-1.5rem] px-6 py-6 bg-settings-menu-mobile";
     titleClassName = "h-menu-title-mobile";
-    itemClassName = "p-4 bg-white";
+    itemClassName = "p-4 bg-settings-menu-item-mobile";
   }
 
   return (
@@ -29,25 +29,19 @@ export default MenuLayout(function SettingList(props) {
           className={`flex items-center justify-between ${titleClassName}`}
           data-tauri-drag-region
         >
-          <div className="text-setting-title text-black font-common font-setting-title">
+          <div className="text-setting-title text-text-settings-menu-title font-common font-setting-title">
             {Locale.Settings.Title}
           </div>
         </div>
-        {/* <div className={`pb-3 text-sm sm:text-sm-mobile text-blue-500`}>
-            {Locale.Settings.SubTitle}
-            </div> */}
       </div>
 
       <div
         className={`flex flex-col overflow-y-auto overflow-x-hidden w-[100%]`}
       >
         <div
-          //   className={`p-4 font-common text-setting-items font-normal text-black
-          //     border-[1px] border-blue-200 border-opacity-0 rounded-md
-          //   `}
-          className={`p-4 font-common text-setting-items font-normal text-black
-                border-[1px] border-blue-200 border-opacity-0 rounded-md
-                hover:border-opacity-100 hover:bg-blue-100 ${itemClassName}
+          className={`p-4 font-common text-setting-items font-normal text-text-settings-menu-item-title
+                border border-settings-menu-item-selected border-opacity-0 rounded-md
+                hover:border-opacity-100 hover:font-semibold hover:bg-settings-menu-item-selected ${itemClassName}
                 flex justify-between items-center
             `}
           onClick={() => {

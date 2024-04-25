@@ -55,17 +55,19 @@ export default function SlideRange(props: SlideRangeProps) {
       className={`flex flex-col justify-center items-end gap-1 w-[100%] ${className} ${rangeClassName}`}
     >
       {!!description && (
-        <div className="text-text-hint text-common text-sm">{description}</div>
+        <div className="text-text-slider-block text-common text-sm">
+          {description}
+        </div>
       )}
       <div
-        className="flex my-1.5 relative w-[100%] h-1.5 bg-gray-200 rounded-slide"
+        className="flex my-1.5 relative w-[100%] h-1.5 bg-slider rounded-slide"
         ref={slideRef}
       >
-        <div className="absolute  top-0 h-[100%] w-[var(--slide-value-size)] pointer-events-none bg-gray-500 rounded-slide">
+        <div className="absolute  top-0 h-[100%] w-[var(--slide-value-size)] pointer-events-none bg-slider-slided-travel rounded-slide">
           &nbsp;
         </div>
         <div
-          className=" absolute w-[30px] top-[50%] translate-y-[-50%] left-[var(--slide-value-size)] translate-x-[-50%] pointer-events-none h-slide-btn leading-slide-btn text-sm-mobile text-center rounded-slide border-[1px] border-gray-300 bg-white"
+          className=" absolute w-[30px] top-[50%] translate-y-[-50%] left-[var(--slide-value-size)] translate-x-[-50%] pointer-events-none h-slide-btn leading-slide-btn text-sm-mobile text-center rounded-slide border border-slider-block bg-slider-block"
           // onPointerDown={onPointerDown}
         >
           {value}

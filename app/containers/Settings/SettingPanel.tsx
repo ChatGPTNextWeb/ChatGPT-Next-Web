@@ -60,7 +60,7 @@ export default function Settings(props: MenuWrapperInspectProps) {
 
   return (
     <div
-      className={`flex flex-col overflow-hidden bg-chat-panel ${containerClassName}`}
+      className={`flex flex-col overflow-hidden bg-settings-panel ${containerClassName}`}
     >
       <SettingHeader
         isMobileScreen={isMobileScreen}

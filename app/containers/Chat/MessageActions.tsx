@@ -50,7 +50,8 @@ const genActionsShema = (
     (message: RenderMessage) => void
   >,
 ) => {
-  const className = " !p-1 hover:bg-gray-100 !rounded-actions-bar-btn ";
+  const className =
+    " !p-1 hover:bg-chat-message-actions-btn-hovered !rounded-actions-bar-btn ";
   return [
     {
       id: "Edit",
@@ -267,9 +268,10 @@ export default function MessageActions(props: MessageActionsProps) {
           pointer-events-none
           group-hover:opacity-100 
           group-hover:pointer-events-auto
-        bg-white 
+          bg-chat-message-actions 
           rounded-md 
-          shadow-actions-bar 
+          shadow-message-actions-bar 
+          dark:bg-none
           ${className}
         `}
       >

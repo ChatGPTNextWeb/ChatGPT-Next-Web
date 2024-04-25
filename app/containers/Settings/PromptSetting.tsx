@@ -21,7 +21,6 @@ export default function PromptSetting(props: PromptSettingProps) {
   const promptStore = usePromptStore();
   const customCount = promptStore.getUserPrompts().length ?? 0;
 
-  const btnStyle = " !shadow-none !bg-gray-50";
   const textStyle = " !text-sm";
 
   return (
@@ -45,7 +44,6 @@ export default function PromptSetting(props: PromptSettingProps) {
         >
           <div className="flex gap-3">
             <Btn
-              className={btnStyle}
               onClick={() => setShowPromptModal(true)}
               text={
                 <span className={textStyle}>{Locale.Settings.Prompt.Edit}</span>

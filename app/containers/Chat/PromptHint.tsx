@@ -72,7 +72,7 @@ export default function PromptHints(props: {
       ${
         notShowPrompt
           ? "max-h-[0vh] border-none"
-          : "border-b-[1px] pt-2.5 max-h-[50vh]"
+          : "border-b pt-2.5 max-h-[50vh]"
       } 
       ${props.className}
     `}

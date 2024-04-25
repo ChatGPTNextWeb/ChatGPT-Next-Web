@@ -46,7 +46,8 @@ export function SideBar(props: { className?: string }) {
 
   if (isMobileScreen) {
     containerClassName = "flex flex-col-reverse w-[100%] h-[100%]";
-    tabActionsClassName = "bg-gray-100 rounded-tl-md rounded-tr-md h-mobile";
+    tabActionsClassName =
+      "bg-sidebar-mobile rounded-tl-md rounded-tr-md h-mobile";
   }
 
   return (

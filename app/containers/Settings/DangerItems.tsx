@@ -68,9 +68,6 @@ export default function DangerItems() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const btnStyle = " !shadow-none !bg-gray-50";
-  const textStyle = " !text-sm";
-
   return (
     <List
       widgetStyle={{
@@ -126,7 +123,6 @@ export default function DangerItems() {
       >
         <Btn
           text={Locale.Settings.Danger.Reset.Action}
-          className={btnStyle}
           onClick={async () => {
             if (await showConfirm(Locale.Settings.Danger.Reset.Confirm)) {
               appConfig.reset();
@@ -141,7 +137,6 @@ export default function DangerItems() {
       >
         <Btn
           text={Locale.Settings.Danger.Clear.Action}
-          className={btnStyle}
           onClick={async () => {
             if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
               chatStore.clearAllData();

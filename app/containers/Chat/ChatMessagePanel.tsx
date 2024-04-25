@@ -141,7 +141,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
 
   return (
     <div
-      className={`pt-[80px] relative flex-1 overscroll-y-none overflow-y-auto overflow-x-hidden px-3 pb-6`}
+      className={`pt-[80px] relative flex-1 overscroll-y-none overflow-y-auto overflow-x-hidden px-3 pb-6 md:bg-chat-panel-message bg-chat-panel-message-mobile`}
       ref={scrollRef}
       onScroll={(e) => onChatBodyScroll(e.currentTarget)}
       onMouseDown={() => inputRef.current?.blur()}
@@ -189,7 +189,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                 }`}
               >
                 <div
-                  className={` pointer-events-none  text-gray-500 text-right text-time whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
+                  className={` pointer-events-none  text-text-chat-message-date text-right text-time whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
                     isUser ? "right-0" : "left-0"
                   } bottom-[100%] hidden group-hover:block`}
                 >
@@ -200,8 +200,8 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                 <div
                   className={`transition-all duration-300 select-text break-words font-common text-sm-title ${
                     isUser
-                      ? "rounded-user-message bg-message-bg"
-                      : "rounded-bot-message bg-white"
+                      ? "rounded-user-message bg-chat-panel-message-user"
+                      : "rounded-bot-message bg-chat-panel-message-bot"
                   } box-border peer py-2 px-3`}
                   onPointerMoveCapture={(e) =>
                     getRelativePosition(e.currentTarget, message.id)
@@ -223,7 +223,9 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     parentRef={scrollRef}
                     defaultShow={i >= messages.length - 6}
                     className={`max-w-message-width ${
-                      isUser ? " text-white" : "text-black"
+                      isUser
+                        ? " text-text-chat-message-markdown-user"
+                        : "text-text-chat-message-markdown-bot"
                     }`}
                   />
                   <Imgs message={message} isMobileScreen={isMobileScreen} />
