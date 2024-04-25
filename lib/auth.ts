@@ -219,7 +219,7 @@ async function getSetting(key: string) {
       key: key
     }
   })
-  console.log('setting,------', setting)
+  // console.log('setting,------', setting)
   if (!setting) {
     return null;
   }
