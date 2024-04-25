@@ -263,7 +263,7 @@ export default function MessageActions(props: MessageActionsProps) {
         className={`
           absolute z-10
           ${isUser ? "right-0" : "left-0"} 
-          transition-all duration-500 
+          transition-all duration-300 
           opacity-0
           pointer-events-none
           group-hover:opacity-100 

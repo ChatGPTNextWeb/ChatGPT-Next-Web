@@ -73,7 +73,7 @@ export default function Input(props: CommonInputProps & InputProps) {
         }}
       />
       {type == "password" && (
-        <div onClick={() => setShow((pre) => !pre)}>
+        <div className=" cursor-pointer" onClick={() => setShow((pre) => !pre)}>
           {show ? <PasswordVisible /> : <PasswordInvisible />}
         </div>
       )}

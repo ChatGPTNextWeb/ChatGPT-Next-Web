@@ -52,13 +52,13 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
 
   const content = (
     <div
-      className={`px-2 py-2 flex flex-col gap-1 overflow-y-auto overflow-x-hidden`}
+      className={` flex flex-col gap-1 overflow-y-auto overflow-x-hidden`}
       style={{ maxHeight }}
     >
       {options?.map((o) => (
         <div
           key={o.value}
-          className={`flex  items-center p-3 gap-2 rounded-md hover:bg-select-option-hovered`}
+          className={`flex  items-center p-3 gap-2 rounded-action-btn hover:bg-select-option-hovered`}
           onClick={() => {
             onSelect?.(o.value);
           }}
@@ -79,13 +79,13 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "rb" : "rt"
       }
-      popoverClassName="border border-select-popover rounded-md shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel dark:bg-select-popover-panel-dark"
+      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel dark:bg-select-popover-panel-dark"
       onShow={(e) => {
         getRelativePosition(contentRef.current!, "");
       }}
     >
       <div
-        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title ${selectClassName}`}
+        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title ${selectClassName} cursor-pointer`}
         ref={contentRef}
       >
         <div className={`flex items-center gap-2 flex-1`}>

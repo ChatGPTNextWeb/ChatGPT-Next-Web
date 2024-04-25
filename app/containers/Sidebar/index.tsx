@@ -41,17 +41,14 @@ export function SideBar(props: { className?: string }) {
       selectedTab = Path.Home;
   }
 
-  let containerClassName = "relative flex h-[100%]";
-  let tabActionsClassName = "2xl:px-5 xl:px-4 px-2 py-6";
-
-  if (isMobileScreen) {
-    containerClassName = "flex flex-col-reverse w-[100%] h-[100%]";
-    tabActionsClassName =
-      "bg-sidebar-mobile rounded-tl-md rounded-tr-md h-mobile";
-  }
-
   return (
-    <div className={`${containerClassName}`}>
+    <div
+      className={`
+      flex h-[100%]
+      max-md:flex-col-reverse max-md:w-[100%]
+      md:relative 
+    `}
+    >
       <ActionsBar
         inMobile={isMobileScreen}
         actionsShema={[
@@ -113,9 +110,10 @@ export function SideBar(props: { className?: string }) {
           mobile: [[Path.Home, Path.Masks, Path.Settings]],
         }}
         selected={selectedTab}
-        className={`${
-          isMobileScreen ? "justify-around" : "flex-col"
-        } ${tabActionsClassName}`}
+        className={`
+        max-md:bg-sidebar-mobile max-md:rounded-tl-md max-md:rounded-tr-md max-md:h-mobile max-md:justify-around
+        2xl:px-5 xl:px-4 md:px-2 md:py-6 md:flex-col
+        `}
       />
     </div>
   );

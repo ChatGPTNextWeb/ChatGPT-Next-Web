@@ -43,6 +43,7 @@
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.4",
+    "use-resize-observer": "^9.1.0",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

@@ -59,23 +59,20 @@ export default function MenuLayout<
         ),
     });
 
-    let containerClassName = "flex h-[100%] w-[100%]";
-    let listClassName =
-      "relative basis-sidebar h-[calc(100%-1.25rem)] pb-6 max-md:px-4 max-md:pb-4 rounded-md my-2.5 bg-menu";
-    let panelClassName = "flex-1 h-[100%] w-page";
-
-    if (isMobileScreen) {
-      containerClassName = "h-[100%] w-[100%] relative bg-center";
-      listClassName = `h-[100%] w-[100%] flex-1 px-4`;
-      panelClassName = `transition-all duration-300 absolute top-0 max-h-[100vh] w-[100%] ${
-        showPanel ? "left-0" : "left-[101%]"
-      } z-10`;
-    }
-
     return (
-      <div className={`${containerClassName}`}>
+      <div
+        className={`
+        h-[100%] w-[100%] relative bg-center
+        md:flex 
+      `}
+      >
         <div
-          className={`flex flex-col px-6 ${listClassName}`}
+          className={`
+            flex flex-col px-6 
+            h-[100%] 
+            max-md:w-[100%] max-md:px-4 max-md:pb-4 max-md:flex-1
+            md:relative md:basis-sidebar md:h-[calc(100%-1.25rem)] md:pb-6  md:rounded-md md:my-2.5 md:bg-menu
+          `}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               navigate(Path.Home);
@@ -101,7 +98,14 @@ export default function MenuLayout<
             </div>
           )}
         </div>
-        <div className={`${panelClassName}`}>
+        <div
+          className={`
+          md:flex-1 md:h-[100%] md:w-page
+          max-md:transition-all max-md:duration-300 max-md:absolute max-md:top-0 max-md:max-h-[100vh] max-md:w-[100%] ${
+            showPanel ? "max-md:left-0" : "max-md:left-[101%]"
+          } max-md:z-10
+        `}
+        >
           <PanelComponent
             {...props}
             setShowPanel={setShowPanel}

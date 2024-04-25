@@ -228,7 +228,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                         : "text-text-chat-message-markdown-bot"
                     }`}
                   />
-                  <Imgs message={message} isMobileScreen={isMobileScreen} />
+                  <Imgs message={message} />
                 </div>
                 <MessageActions
                   className={actionsBarPosition}

@@ -10,37 +10,35 @@ export interface ChatHeaderProps {
 export default function SettingHeader(props: ChatHeaderProps) {
   const { isMobileScreen, goback } = props;
 
-  const navigate = useNavigate();
-
-  let containerClassName = "";
-  let titleClassName = "mr-4";
-  let mainTitleClassName = "";
-  let subTitleClassName = "";
-
-  if (isMobileScreen) {
-    containerClassName = "h-menu-title-mobile bg-settings-header-mobile";
-    titleClassName = "flex flex-col items-center justify-center gap-0.5 text";
-    mainTitleClassName = "text-sm-title h-[19px] leading-5";
-    subTitleClassName = "text-sm-mobile-tab leading-4";
-  }
-
   return (
     <div
-      className={`relative flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b border-settings-header ${containerClassName}`}
+      className={`
+        relative flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap border-b border-settings-header 
+        max-md:h-menu-title-mobile max-md:bg-settings-header-mobile
+      `}
       data-tauri-drag-region
     >
       {isMobileScreen ? (
         <div
-          className="absolute left-4 top-[50%] translate-y-[-50%]"
+          className="absolute left-4 top-[50%] translate-y-[-50%] cursor-pointer"
           onClick={() => goback()}
         >
           <GobackIcon />
         </div>
       ) : null}
 
-      <div className={`flex-1 ${titleClassName}`}>
+      <div
+        className={`
+        flex-1 
+        max-md:flex max-md:flex-col max-md:items-center max-md:justify-center max-md:gap-0.5 max-md:text
+        md:mr-4
+      `}
+      >
         <div
-          className={`line-clamp-1 cursor-pointer text-text-settings-panel-header-title text-chat-header-title font-common ${mainTitleClassName}`}
+          className={`
+          line-clamp-1 cursor-pointer text-text-settings-panel-header-title text-chat-header-title font-common 
+          max-md:text-sm-title max-md:h-chat-header-title-mobile max-md:leading-5
+          `}
         >
           {Locale.Settings.Title}
         </div>

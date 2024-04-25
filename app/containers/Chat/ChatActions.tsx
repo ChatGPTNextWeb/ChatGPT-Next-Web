@@ -115,23 +115,23 @@ export function ChatActions(props: {
       icon: props.uploading ? <LoadingButtonIcon /> : <ImageIcon />,
       placement: "left",
     },
-    {
-      onClick: nextTheme,
-      text: Locale.Chat.InputActions.Theme[theme],
-      isShow: true,
-      icon: (
-        <>
-          {theme === Theme.Auto ? (
-            <AutoIcon />
-          ) : theme === Theme.Light ? (
-            <LightIcon />
-          ) : theme === Theme.Dark ? (
-            <DarkIcon />
-          ) : null}
-        </>
-      ),
-      placement: "left",
-    },
+    // {
+    //   onClick: nextTheme,
+    //   text: Locale.Chat.InputActions.Theme[theme],
+    //   isShow: true,
+    //   icon: (
+    //     <>
+    //       {theme === Theme.Auto ? (
+    //         <AutoIcon />
+    //       ) : theme === Theme.Light ? (
+    //         <LightIcon />
+    //       ) : theme === Theme.Dark ? (
+    //         <DarkIcon />
+    //       ) : null}
+    //     </>
+    //   ),
+    //   placement: "left",
+    // },
     {
       onClick: props.showPromptHints,
       text: Locale.Chat.InputActions.Prompt,
@@ -201,6 +201,7 @@ export function ChatActions(props: {
         placement="rt"
         noArrow
         popoverClassName="border border-chat-actions-popover-mobile rounded-md shadow-chat-actions-popover-mobile w-actions-popover bg-chat-actions-popover-panel-mobile "
+        className=" cursor-pointer"
       >
         <AddCircleIcon />
       </Popover>
@@ -222,7 +223,7 @@ export function ChatActions(props: {
               placement={ind ? "t" : "lt"}
             >
               <div
-                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
+                className=" cursor-pointer h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -242,7 +243,7 @@ export function ChatActions(props: {
               placement={ind === arr.length - 1 ? "rt" : "t"}
             >
               <div
-                className="h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
+                className=" cursor-pointer h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}

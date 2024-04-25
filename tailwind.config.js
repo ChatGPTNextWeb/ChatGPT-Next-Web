@@ -4,6 +4,13 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      sm: '480px',
+      md: '768px',
+      lg: '1120px',
+      xl: '1440px',
+      '2xl': '1980px'
+    },
     fontSize: {
       sm: '0.75rem',
       'sm-mobile': '0.875rem',
@@ -19,16 +26,9 @@ module.exports = {
       'setting-card-title': '600',
     },
     fontFamily: {
-      'common': ['Satoshi Variable', 'Variable'],
-      'time': ['Hind', 'Variable'],
-      'setting-card-title': ['PingFang HK', 'PingFang']
-    },
-    screens: {
-      sm: '480px',
-      md: '768px',
-      lg: '1120px',
-      xl: '1440px',
-      '2xl': '1980px'
+      'common': ['Satoshi Variable', "SF Pro Text", "SF Pro Icons", "Helvetica Neue", 'Helvetica', 'Arial', 'sans-serif'],
+      'time': ['Hind', "SF Pro Text", "SF Pro Icons", "Helvetica Neue", 'Helvetica', 'Arial', 'sans-serif'],
+      'setting-card-title': ['PingFang HK', 'PingFang', "SF Pro Text", "SF Pro Icons", "Helvetica Neue", 'Helvetica', 'Arial', 'sans-serif']
     },
     extend: {
       lineHeight: {
@@ -53,6 +53,7 @@ module.exports = {
         'setting-panel-mobile': 'calc(100vh - var(--siderbar-mobile-height))',
         'slide-btn': '18px',
         'switch': '1rem',
+        'chat-header-title-mobile': '19px',
       },
       minWidth: {
         'select-mobile-lg': '200px',

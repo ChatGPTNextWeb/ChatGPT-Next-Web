@@ -76,7 +76,7 @@ export default function ActionsBar(props: ActionsBarProps) {
           return (
             <div
               key={action.id}
-              className={` shrink-1 grow-0 basis-[${
+              className={` cursor-pointer shrink-1 grow-0 basis-[${
                 (100 - 1) / arr.length
               }%] flex flex-col items-center justify-center gap-0.5
                         ${
@@ -98,7 +98,7 @@ export default function ActionsBar(props: ActionsBarProps) {
         return (
           <div
             key={action.id}
-            className={`p-3 ${
+            className={`cursor-pointer p-3 ${
               selected === action.id
                 ? "bg-actions-bar-btn-default"
                 : "bg-transparent"

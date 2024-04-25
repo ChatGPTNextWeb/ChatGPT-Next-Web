@@ -203,29 +203,28 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
       emitImages: setAttachImages,
       setUploading,
     });
-    let containerClassName = "border-t border-chat-input-top";
-    let inputClassName = " flex flex-col px-5 pb-5";
-    let actionsClassName = "py-2.5";
-    let labelClassName = "rounded-md p-4 gap-4";
-    let textarea = "min-h-chat-input";
-
-    if (isMobileScreen) {
-      containerClassName = "rounded-tl-md rounded-tr-md";
-      inputClassName = "flex flex-row-reverse items-center gap-2 p-3";
-      actionsClassName = "";
-      labelClassName = " rounded-chat-input p-3 gap-3 flex-1";
-      textarea = "h-chat-input-mobile";
-    }
 
     return (
-      <div className={`relative w-[100%] box-border ${containerClassName}`}>
+      <div
+        className={`
+        relative w-[100%] box-border 
+        max-md:rounded-tl-md max-md:rounded-tr-md
+        md:border-t md:border-chat-input-top
+      `}
+      >
         <PromptHints
           prompts={promptHints}
           onPromptSelect={onPromptSelect}
           className=" border-chat-input-top"
         />
 
-        <div className={`${inputClassName}`}>
+        <div
+          className={`
+            flex
+            max-md:flex-row-reverse max-md:items-center max-md:gap-2 max-md:p-3
+            md:flex-col md:px-5 md:pb-5
+          `}
+        >
           <ChatActions
             showModelSelector={showModelSelector}
             uploadImage={uploadImage}
@@ -246,11 +245,18 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
               setUserInput("/");
               onSearch("");
             }}
-            className={actionsClassName}
+            className={`
+              md:py-2.5
+            `}
             isMobileScreen={isMobileScreen}
           />
           <label
-            className={`cursor-text flex flex-col bg-chat-panel-input-hood border border-chat-input-hood sm:focus-within:border-chat-input-hood-focus sm:focus-within:shadow-chat-input-hood-focus-shadow ${labelClassName}`}
+            className={`
+              cursor-text flex flex-col bg-chat-panel-input-hood border border-chat-input-hood 
+              sm:focus-within:border-chat-input-hood-focus sm:focus-within:shadow-chat-input-hood-focus-shadow 
+              rounded-chat-input p-3 gap-3 max-md:flex-1
+              md:rounded-md md:p-4 md:gap-4
+            `}
             htmlFor="chat-input"
           >
             {attachImages.length != 0 && (
@@ -273,7 +279,11 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
             <textarea
               id="chat-input"
               ref={inputRef}
-              className={`leading-[19px] flex-1 focus:outline-none focus:shadow-none focus:border-none ${textarea} resize-none`}
+              className={`
+                leading-[19px] flex-1 focus:outline-none focus:shadow-none focus:border-none resize-none
+                max-md:h-chat-input-mobile
+                md:min-h-chat-input
+              `}
               placeholder={
                 isMobileScreen
                   ? Locale.Chat.Input(submitKey, isMobileScreen)

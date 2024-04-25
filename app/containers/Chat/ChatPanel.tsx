@@ -273,13 +273,11 @@ function _Chat() {
 
   return (
     <div
-      className={`relative flex flex-col ${
-        isMobileScreen
-          ? "absolute h-[100vh] w-[100%]"
-          : "h-[calc(100%-1.25rem)]"
-      } overflow-hidden ${
-        isMobileScreen ? "" : `my-2.5 ml-1 mr-2.5 rounded-md`
-      } bg-chat-panel`}
+      className={`
+        relative flex flex-col overflow-hidden bg-chat-panel
+        max-md:absolute max-md:h-[100vh] max-md:w-[100%]
+        md:h-[calc(100%-1.25rem)] md:my-2.5 md:ml-1 md:mr-2.5 md:rounded-md
+        `}
       key={session.id}
     >
       <ChatHeader

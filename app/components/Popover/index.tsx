@@ -184,7 +184,7 @@ export default function Popover(props: {
             )}
             {createPortal(
               <div
-                className={`${popoverCommonClass} ${popoverClassName}`}
+                className={`${popoverCommonClass} ${popoverClassName} cursor-pointer`}
                 style={{ zIndex: baseZIndex + 1, ...placementStyle }}
               >
                 {content}

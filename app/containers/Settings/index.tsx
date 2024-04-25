@@ -12,21 +12,21 @@ export default MenuLayout(function SettingList(props) {
 
   const { isMobileScreen } = config;
 
-  let layoutClassName = "pt-7 px-4";
-  let titleClassName = "pb-5";
-  let itemClassName = "";
-
-  if (isMobileScreen) {
-    layoutClassName = "h-[100%] mx-[-1.5rem] px-6 py-6 bg-settings-menu-mobile";
-    titleClassName = "h-menu-title-mobile";
-    itemClassName = "p-4 bg-settings-menu-item-mobile";
-  }
-
   return (
-    <div className={` ${layoutClassName}`}>
+    <div
+      className={`
+      px-6
+      max-md:h-[100%] max-md:mx-[-1.5rem] max-md:py-6 max-md:bg-settings-menu-mobile
+      md:pt-7 md:px-4
+    `}
+    >
       <div data-tauri-drag-region>
         <div
-          className={`flex items-center justify-between ${titleClassName}`}
+          className={`
+            flex items-center justify-between 
+            max-md:h-menu-title-mobile
+            md:pb-5
+          `}
           data-tauri-drag-region
         >
           <div className="text-setting-title text-text-settings-menu-title font-common font-setting-title">
@@ -39,11 +39,14 @@ export default MenuLayout(function SettingList(props) {
         className={`flex flex-col overflow-y-auto overflow-x-hidden w-[100%]`}
       >
         <div
-          className={`p-4 font-common text-setting-items font-normal text-text-settings-menu-item-title
-                border border-settings-menu-item-selected border-opacity-0 rounded-md
-                hover:border-opacity-100 hover:font-semibold hover:bg-settings-menu-item-selected ${itemClassName}
-                flex justify-between items-center
-            `}
+          className={`
+            p-4 font-common text-setting-items font-normal text-text-settings-menu-item-title
+            border 
+            border-opacity-0 rounded-md
+            hover:border-opacity-100 hover:font-semibold hover:bg-settings-menu-item-selected 
+            flex justify-between items-center
+            max-md:bg-settings-menu-item-mobile
+          `}
           onClick={() => {
             setShowPanel?.(true);
           }}

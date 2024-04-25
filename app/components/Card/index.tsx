@@ -4,22 +4,22 @@ export interface CardProps {
   className?: string;
   children?: ReactNode;
   title?: ReactNode;
-  inMobile?: boolean;
 }
 
 export default function Card(props: CardProps) {
-  const { className, children, title, inMobile } = props;
-
-  let titleClassName = "ml-4 mb-3";
-  if (inMobile) {
-    titleClassName = "ml-3 mb-3";
-  }
+  const { className, children, title } = props;
 
   return (
     <>
       {title && (
         <div
-          className={`capitalize font-black font-setting-card-title text-sm-mobile font-weight-setting-card-title  ${titleClassName}`}
+          className={`
+            capitalize font-black font-setting-card-title text-sm-mobile font-weight-setting-card-title
+            mb-3
+
+            ml-3
+            md:ml-4  
+          `}
         >
           {title}
         </div>

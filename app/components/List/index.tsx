@@ -52,20 +52,13 @@ export function ListItem(props: ListItemProps) {
 
   const context = useContext(ListContext);
 
-  const [childrenMeta, setMeta] = useState<ChildrenMeta>({});
+  const [childrenType, setMeta] = useState<ChildrenMeta["type"]>("unknown");
 
-  const { isMobileScreen, inputNextLine, rangeNextLine } = context;
-
-  let containerClassName = "py-3";
-  let titleClassName = "";
-  if (isMobileScreen) {
-    containerClassName = "py-2";
-    titleClassName = "";
-  }
+  const { inputNextLine, rangeNextLine } = context;
 
   let internalNextLine;
 
-  switch (childrenMeta.type) {
+  switch (childrenType) {
     case "input":
       internalNextLine = !!(nextline || inputNextLine);
       break;
@@ -76,20 +69,18 @@ export function ListItem(props: ListItemProps) {
       internalNextLine = false;
   }
 
-  const update = useCallback((m: ChildrenMeta) => {
-    setMeta(m);
+  const updateType = useCallback((m: ChildrenMeta) => {
+    setMeta(m.type);
   }, []);
 
   return (
     <div
       className={`relative after:h-[0.5px] after:bottom-0 after:w-[100%] after:left-0 after:absolute last:after:hidden after:bg-list-item-divider ${
         internalNextLine ? "" : "flex gap-3"
-      } justify-between items-center px-0 ${containerClassName} ${className}`}
+      } justify-between items-center px-0 py-2 md:py-3 ${className}`}
       onClick={onClick}
     >
-      <div
-        className={`flex-1 flex flex-col justify-start gap-1 ${titleClassName}`}
-      >
+      <div className={`flex-1 flex flex-col justify-start gap-1`}>
         <div className=" font-common text-sm-mobile font-weight-[500] line-clamp-1">
           {title}
         </div>
@@ -97,7 +88,7 @@ export function ListItem(props: ListItemProps) {
           <div className={` text-sm text-text-list-subtitle`}>{subTitle}</div>
         )}
       </div>
-      <ListContext.Provider value={{ ...context, update }}>
+      <ListContext.Provider value={{ ...context, update: updateType }}>
         <div
           className={`${
             internalNextLine ? "mt-[0.625rem]" : "max-w-[70%]"

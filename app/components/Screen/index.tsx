@@ -25,20 +25,13 @@ export default function Screen(props: ScreenProps) {
 
   useListenWinResize();
 
-  let containerClassName = "flex h-[100%] w-[100%] bg-center overflow-hidden";
-  let sidebarClassName = "flex-0 overflow-hidden";
-  let pageClassName = "flex-1 h-[100%] min-w-0 overflow-hidden";
-
-  if (isMobileScreen) {
-    containerClassName =
-      "relative flex flex-col-reverse h-[100%] w-[100%] bg-center";
-    sidebarClassName = "absolute w-[100%] bottom-0 z-10";
-    pageClassName = "w-[100%] h-[100%]";
-  }
-
   return (
     <div
-      className={`bg-global ${containerClassName}`}
+      className={`
+        bg-global flex h-[100%] w-[100%] bg-center
+        max-md:relative  max-md:flex-col-reverse  
+        md:overflow-hidden
+      `}
       style={{
         direction: getLang() === "ar" ? "rtl" : "ltr",
       }}
@@ -47,16 +40,26 @@ export default function Screen(props: ScreenProps) {
         props.noAuth
       ) : (
         <>
-          <div className={sidebarClassName} id={SIDEBAR_ID}>
+          <div
+            className={`
+              max-md:absolute max-md:w-[100%] max-md:bottom-0 max-md:z-10
+              md:flex-0 md:overflow-hidden
+            `}
+            id={SIDEBAR_ID}
+          >
             {props.sidebar}
           </div>
 
           <div
-            className={pageClassName}
+            className={`
+            h-[100%]
+            max-md:w-[100%] 
+            md:flex-1 md:min-w-0 md:overflow-hidden
+            `}
             id={SlotID.AppBody}
             style={{
               // #3016 disable transition on ios mobile screen
-              transition: isMobileScreen && isIOSMobile ? "none" : undefined,
+              transition: isIOSMobile ? "none" : undefined,
             }}
           >
             {props.children}

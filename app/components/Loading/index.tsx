@@ -1,4 +1,3 @@
-import useMobileScreen from "@/app/hooks/useMobileScreen";
 import BotIcon from "@/app/icons/bot.svg";
 import LoadingIcon from "@/app/icons/three-dots.svg";
 
@@ -16,15 +15,17 @@ export default function Loading({
     theme = getCSSVar("--default-container-bg");
   }
 
-  const isMobileScreen = useMobileScreen();
-
   return (
     <div
-      className={`flex flex-col justify-center items-center w-[100%] ${
-        isMobileScreen
-          ? "h-[100%]"
-          : `my-2.5 ml-1 mr-2.5 rounded-md h-[calc(100%-1.25rem)]`
-      }`}
+      className={`
+        flex flex-col justify-center items-center w-[100%] 
+        h-[100%]
+        md:my-2.5
+        md:ml-1
+        md:mr-2.5
+        md:rounded-md
+        md:h-[calc(100%-1.25rem)]
+        `}
       style={{ background: useSkeleton ? theme : "" }}
     >
       {!noLogo && <BotIcon />}

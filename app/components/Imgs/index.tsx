@@ -4,32 +4,22 @@ import { RequestMessage } from "@/app/client/api";
 
 interface ImgsProps {
   message: RequestMessage;
-  isMobileScreen?: boolean;
 }
 
 export default function Imgs(props: ImgsProps) {
-  const { message, isMobileScreen } = props;
+  const { message } = props;
   const imgSrcs = getMessageImages(message);
 
   if (imgSrcs.length < 1) {
     return <></>;
   }
 
-  let imgVars = {
+  const imgVars = {
     "--imgs-width": `calc(var(--max-message-width) - ${
       imgSrcs.length - 1
     }*0.25rem)`,
     "--img-width": `calc(var(--imgs-width)/ ${imgSrcs.length})`,
   };
-
-  if (isMobileScreen) {
-    imgVars = {
-      "--imgs-width": `calc(var(--max-message-width) - ${
-        imgSrcs.length - 1
-      }*0.25rem)`,
-      "--img-width": `calc(var(--imgs-width)/ ${imgSrcs.length})`,
-    };
-  }
 
   return (
     <div

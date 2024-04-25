@@ -30,21 +30,13 @@ export default function ChatHeader(props: ChatHeaderProps) {
 
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
 
-  let containerClassName = "";
-  let titleClassName = "mr-4";
-  let mainTitleClassName = "";
-  let subTitleClassName = "";
-
-  if (isMobileScreen) {
-    containerClassName = "h-menu-title-mobile";
-    titleClassName = "flex flex-col items-center justify-center gap-0.5 text";
-    mainTitleClassName = "text-sm-title h-[19px] leading-5";
-    subTitleClassName = "text-sm-mobile-tab leading-4";
-  }
-
   return (
     <div
-      className={`absolute w-[100%]  backdrop-blur-[30px] z-20 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap sm:border-b sm:border-chat-header-bottom ${containerClassName}`}
+      className={`
+        absolute w-[100%] backdrop-blur-[30px] z-20 flex flex-0 justify-between items-center px-6 py-4 gap-chat-header-gap 
+        sm:border-b sm:border-chat-header-bottom 
+        max-md:h-menu-title-mobile
+      `}
       data-tauri-drag-region
     >
       <div
@@ -54,26 +46,38 @@ export default function ChatHeader(props: ChatHeaderProps) {
       </div>
 
       {isMobileScreen ? (
-        <div onClick={() => navigate(Path.Home)}>
+        <div className=" cursor-pointer" onClick={() => navigate(Path.Home)}>
           <GobackIcon />
         </div>
       ) : (
         <LogIcon />
       )}
 
-      <div className={`flex-1 ${titleClassName}`}>
+      <div
+        className={`
+        flex-1 
+        max-md:flex max-md:flex-col max-md:items-center max-md:justify-center max-md:gap-0.5 max-md:text
+        md:mr-4
+      `}
+      >
         <div
-          className={`line-clamp-1 cursor-pointer text-text-chat-header-title text-chat-header-title font-common ${mainTitleClassName}`}
+          className={`
+            line-clamp-1 cursor-pointer text-text-chat-header-title text-chat-header-title font-common 
+            max-md:text-sm-title max-md:h-chat-header-title-mobile max-md:leading-5
+          `}
           onClickCapture={() => setIsEditingMessage(true)}
         >
           {!session.topic ? DEFAULT_TOPIC : session.topic}
         </div>
         <div
-          className={`text-text-chat-header-subtitle text-sm ${subTitleClassName}`}
+          className={`
+            text-text-chat-header-subtitle text-sm 
+            max-md:text-sm-mobile-tab max-md:leading-4
+          `}
         >
           {isMobileScreen ? (
             <div
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 cursor-pointer"
               onClick={() => showModelSelector(true)}
             >
               {currentModel}
@@ -86,6 +90,7 @@ export default function ChatHeader(props: ChatHeaderProps) {
       </div>
 
       <div
+        className=" cursor-pointer"
         onClick={() => {
           setShowExport(true);
         }}

@@ -57,9 +57,7 @@ export default function AppSetting(props: AppSettingProps) {
   return (
     <List
       widgetStyle={{
-        selectClassName: isMobileScreen
-          ? "min-w-select-mobile"
-          : "min-w-select",
+        selectClassName: "min-w-select-mobile md:min-w-select",
         rangeNextLine: isMobileScreen,
       }}
     >

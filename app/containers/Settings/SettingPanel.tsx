@@ -47,26 +47,27 @@ export default function Settings(props: MenuWrapperInspectProps) {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
 
-  let containerClassName =
-    "h-[calc(100%-1.25rem)] my-2.5 ml-1 mr-2.5 rounded-md";
-  let listBodyClassName = "px-6 py-8";
-  let cardClassName = "max-w-setting-list mb-8";
-
-  if (isMobileScreen) {
-    containerClassName = "h-setting-panel-mobile";
-    listBodyClassName = "gap-5 w-[100%] px-4 py-5";
-    cardClassName = "mb-6";
-  }
+  const cardClassName = "mb-6 md:max-w-setting-list md:mb-8";
 
   return (
     <div
-      className={`flex flex-col overflow-hidden bg-settings-panel ${containerClassName}`}
+      className={`
+        flex flex-col overflow-hidden bg-settings-panel 
+        h-setting-panel-mobile
+        md:h-[calc(100%-1.25rem)] md:my-2.5 md:ml-1 md:mr-2.5 md:rounded-md
+      `}
     >
       <SettingHeader
         isMobileScreen={isMobileScreen}
         goback={() => setShowPanel?.(false)}
       />
-      <div className={`!overflow-x-hidden ${listBodyClassName}`}>
+      <div
+        className={`
+        !overflow-x-hidden 
+        max-md:gap-5 max-md:w-[100%] px-4 py-5
+        md:px-6 md:py-8
+      `}
+      >
         <Card className={cardClassName} title={Locale.Settings.Basic.Title}>
           <AppSetting />
         </Card>

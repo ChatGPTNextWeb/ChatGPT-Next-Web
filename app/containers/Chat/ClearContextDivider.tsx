@@ -8,7 +8,7 @@ export default function ClearContextDivider() {
 
   return (
     <div
-      className={`mt-6 mb-8 flex items-center justify-center gap-2.5`}
+      className={`mt-6 mb-8 flex items-center justify-center gap-2.5 max-md:cursor-pointer`}
       onClick={() => {
         if (!isMobileScreen) {
           return;
@@ -24,9 +24,10 @@ export default function ClearContextDivider() {
           {Locale.Context.Clear}
         </div>
         <div
-          className={`text-text-chat-panel-message-clear-revert  underline font-common ${
-            !isMobileScreen ? " cursor-pointer" : ""
-          }`}
+          className={`
+          text-text-chat-panel-message-clear-revert  underline font-common 
+          md:cursor-pointer
+          `}
           onClick={() => {
             if (isMobileScreen) {
               return;

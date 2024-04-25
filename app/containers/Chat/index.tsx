@@ -11,20 +11,20 @@ import Locale from "@/app/locales";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "@/app/constant";
 import { Mask } from "@/app/store/mask";
-import { useRef, useEffect, useMemo, useContext } from "react";
+import { useRef, useEffect } from "react";
 import { showConfirm } from "@/app/components/ui-lib";
 
 import AddIcon from "@/app/icons/addIcon.svg";
 import NextChatTitle from "@/app/icons/nextchatTitle.svg";
-// import { ListHoodProps } from "@/app/containers/types";
+import DeleteChatIcon from "@/app/icons/deleteChatIcon.svg";
+
 import { getTime } from "@/app/utils";
 import DeleteIcon from "@/app/icons/deleteIcon.svg";
 import LogIcon from "@/app/icons/logIcon.svg";
 
-import MenuLayout, {
-  MenuWrapperInspectProps,
-} from "@/app/components/MenuLayout";
+import MenuLayout from "@/app/components/MenuLayout";
 import Panel from "./ChatPanel";
+import Popover from "@/app/components/Popover";
 
 export function SessionItem(props: {
   onClick?: () => void;
@@ -90,17 +90,30 @@ export function SessionItem(props: {
               {Locale.ChatItem.ChatItemCount(props.count)}
             </div>
           </div>
-
-          <div
-            className={`absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100`}
-            onClickCapture={(e) => {
-              props.onDelete?.();
-              e.preventDefault();
-              e.stopPropagation();
-            }}
+          <Popover
+            content={
+              <div
+                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6`}
+                onClickCapture={(e) => {
+                  props.onDelete?.();
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <DeleteChatIcon />
+                <div className="flex-1 font-common text-actions-popover-menu-item">
+                  {Locale.Chat.Actions.Delete}
+                </div>
+              </div>
+            }
+            className=""
           >
-            <DeleteIcon />
-          </div>
+            <div
+              className={`absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100`}
+            >
+              <DeleteIcon />
+            </div>
+          </Popover>
         </div>
       )}
     </Draggable>
@@ -145,26 +158,28 @@ export default MenuLayout(function SessionList(props) {
     moveSession(source.index, destination.index);
   };
 
-  let layoutClassName = "flex flex-col  px-0";
-  let titleClassName = "py-7";
-
-  if (isMobileScreen) {
-    layoutClassName = "flex flex-col  pb-chat-panel-mobile ";
-    titleClassName = "py-6 box-content h-0";
-  }
-
   return (
-    <div className={`h-[100%] ${layoutClassName}`}>
+    <div
+      className={`
+      h-[100%] flex flex-col
+      max-md:pb-chat-panel-mobile 
+      md:px-0
+    `}
+    >
       <div data-tauri-drag-region>
         <div
-          className={`flex items-center justify-between ${titleClassName}`}
+          className={`
+            flex items-center justify-between
+            py-6 max-md:box-content max-md:h-0
+            md:py-7
+          `}
           data-tauri-drag-region
         >
           <div className="">
             <NextChatTitle />
           </div>
           <div
-            className=""
+            className=" cursor-pointer"
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
                 chatStore.newSession();
