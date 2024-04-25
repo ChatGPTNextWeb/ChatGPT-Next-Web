@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # 加速
 #yarn config set registry 'https://registry.npmmirror.com/'
 #yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
