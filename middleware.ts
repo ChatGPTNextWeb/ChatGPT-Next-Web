@@ -15,6 +15,11 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL(path.replace('/app', ''), req.url), 301);
     }
 
+    // 如果是主页，交给主页判断，这里判断会影响性能
+    // if (path == "/") {
+    //   return NextResponse.next()
+    // }
+
     const session = await getToken({ req });
     const isUser = await VerifiedUser(session);
     const isAdminUser = await VerifiedAdminUser(session);
@@ -32,6 +37,8 @@ export default async function middleware(req: NextRequest) {
     if (isUser && path == "/login") {
         return NextResponse.redirect(new URL("/", req.url))
     }
+
+
 
     if (path == '/login') {
         return NextResponse.rewrite(

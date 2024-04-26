@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+
 require("../polyfill");
 
 import { useState, useEffect } from "react";
@@ -192,6 +194,7 @@ export function useLoadData() {
 }
 
 export function Home() {
+  // const { status } = useSession({ required: true })
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
