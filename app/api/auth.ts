@@ -88,13 +88,13 @@ export function auth(
     }
 
     if (systemApiKey) {
-      console.log("[Auth] use system api key");
+      // console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${systemApiKey}`);
     } else {
-      console.log("[Auth] admin did not provide an api key");
+      // console.log("[Auth] admin did not provide an api key");
     }
   } else {
-    console.log("[Auth] use user api key");
+    // console.log("[Auth] use user api key");
   }
 
   return {

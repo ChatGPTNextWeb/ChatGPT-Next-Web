@@ -117,7 +117,7 @@ export async function requestOpenai(
       // If openaiOrganizationHeader is present, log it; otherwise, log that the header is not present
       console.log("[Org ID]", openaiOrganizationHeader);
     } else {
-      console.log("[Org ID] is not set up.");
+      // console.log("[Org ID] is not set up.");
     }
 
     // to prevent browser prompt for credentials
@@ -196,6 +196,7 @@ export async function saveLogs(logData: {
           getTokenLength(matchAllMessage.join(" ")) +
           matchAllMessage.length * 3;
       }
+      console.log("[debug log]----", logData);
       delete logData?.logEntry;
     }
     if (logData?.model == "midjourney") {
@@ -205,8 +206,16 @@ export async function saveLogs(logData: {
     console.log("[LOG]", "logToken", e);
     logData.logToken = 0;
   }
-  const result = await prisma.logEntry.create({
-    data: logData,
-  });
+  try {
+    const result = await prisma.logEntry.create({
+      data: logData,
+    });
+  } catch {
+    delete logData?.userID;
+    const result = await prisma.logEntry.create({
+      data: logData,
+    });
+  }
+
   // console.log("result", result)
 }
