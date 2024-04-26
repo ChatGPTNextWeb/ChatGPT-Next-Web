@@ -11,7 +11,7 @@ import ClearIcon from "@/app/icons/clear.svg";
 import EditIcon from "@/app/icons/edit.svg";
 import EyeIcon from "@/app/icons/eye.svg";
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 import { copyToClipboard } from "@/app/utils";
 import Input from "@/app/components/Input";
 

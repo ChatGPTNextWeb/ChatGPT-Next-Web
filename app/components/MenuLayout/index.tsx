@@ -86,13 +86,13 @@ export default function MenuLayout<
           />
           {!isMobileScreen && (
             <div
-              className={`group absolute right-0 h-[100%] flex items-center`}
+              className={`group/menu-dragger absolute right-0 h-[100%] flex items-center`}
               onPointerDown={(e) => {
                 startDragWidth.current = config.sidebarWidth;
                 onDragStart(e as any);
               }}
             >
-              <div className="opacity-0 group-hover:bg-[rgba($color: #000000, $alpha: 0.01)] group-hover:opacity-20">
+              <div className="opacity-0 group-hover/menu-dragger:bg-[rgba($color: #000000, $alpha: 0.01)] group-hover/menu-dragger:opacity-20">
                 <DragIcon />
               </div>
             </div>

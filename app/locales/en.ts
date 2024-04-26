@@ -22,6 +22,11 @@ const en: LocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
+    DeleteContent:
+      "After deleting the assistant, the chat content cannot be retrieved. Are you sure to delete it?",
+    DeleteTitle: "Delete assistant",
+    DeleteCancelBtn: "Cancel",
+    DeleteOkBtn: "Delete",
   },
   Chat: {
     SubTitle: (count: number) => `${count} messages`,

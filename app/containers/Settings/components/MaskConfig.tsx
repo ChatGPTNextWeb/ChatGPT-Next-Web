@@ -9,7 +9,7 @@ import { copyToClipboard } from "@/app/utils";
 import Locale from "@/app/locales";
 import { Popover, showConfirm } from "@/app/components/ui-lib";
 import { AvatarPicker } from "@/app/components/emoji";
-import ModelSetting from "@/app/containers/Settings/ModelSetting";
+import ModelSetting from "@/app/containers/Settings/components/ModelSetting";
 import { IconButton } from "@/app/components/button";
 
 import CopyIcon from "@/app/icons/copy.svg";

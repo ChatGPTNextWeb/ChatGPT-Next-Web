@@ -52,13 +52,13 @@ export function ListItem(props: ListItemProps) {
 
   const context = useContext(ListContext);
 
-  const [childrenType, setMeta] = useState<ChildrenMeta["type"]>("unknown");
+  const [childrenMeta, setMeta] = useState<ChildrenMeta>({});
 
   const { inputNextLine, rangeNextLine } = context;
 
   let internalNextLine;
 
-  switch (childrenType) {
+  switch (childrenMeta.type) {
     case "input":
       internalNextLine = !!(nextline || inputNextLine);
       break;
@@ -69,8 +69,8 @@ export function ListItem(props: ListItemProps) {
       internalNextLine = false;
   }
 
-  const updateType = useCallback((m: ChildrenMeta) => {
-    setMeta(m.type);
+  const update = useCallback((m: ChildrenMeta) => {
+    setMeta(m);
   }, []);
 
   return (
@@ -88,7 +88,7 @@ export function ListItem(props: ListItemProps) {
           <div className={` text-sm text-text-list-subtitle`}>{subTitle}</div>
         )}
       </div>
-      <ListContext.Provider value={{ ...context, update: updateType }}>
+      <ListContext.Provider value={{ ...context, update }}>
         <div
           className={`${
             internalNextLine ? "mt-[0.625rem]" : "max-w-[70%]"

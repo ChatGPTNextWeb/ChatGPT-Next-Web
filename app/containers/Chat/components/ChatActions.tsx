@@ -208,7 +208,7 @@ export function ChatActions(props: {
     );
   }
 
-  const popoverClassName = `bg-chat-actions-btn-popover whitespace-nowrap px-3 py-2.5 text-text-chat-actions-btn-popover text-sm-title rounded-md`;
+  const popoverClassName = `bg-chat-actions-btn-popover px-3 py-2.5 text-text-chat-actions-btn-popover text-sm-title rounded-md`;
 
   return (
     <div className={`flex gap-2 item-center ${props.className}`}>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Prompt } from "@/app/store/prompt";
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 import useShowPromptHint from "@/app/hooks/useShowPromptHint";
 
 export type RenderPompt = Pick<Prompt, "title" | "content">;

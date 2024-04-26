@@ -1,13 +1,9 @@
-import { Fragment, useEffect, useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { ChatMessage, useChatStore } from "@/app/store/chat";
 import { CHAT_PAGE_SIZE } from "@/app/constant";
 import Locale from "@/app/locales";
 
-import {
-  getMessageImages,
-  getMessageTextContent,
-  selectOrCopy,
-} from "@/app/utils";
+import { getMessageTextContent, selectOrCopy } from "@/app/utils";
 
 import LoadingIcon from "@/app/icons/three-dots.svg";
 

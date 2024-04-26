@@ -71,6 +71,7 @@ module.exports = {
         'thumbnail': '5rem',
         'actions-popover': '203px',
         'switch': '2.25rem',
+        'confirm': '26.25rem',
       },
       flexBasis: {
         'sidebar': 'var(--menu-width)',
@@ -126,6 +127,11 @@ module.exports = {
         'settings-header-mobile': 'var(--similar-highlight-hood-bg)',
         'settings-panel': 'var(--default-container-bg)',
         'sidebar-mobile': 'var(--similar-highlight-hood-bg)',
+        'delete-chat-popover-panel': 'var(--similar-panel-bg)',
+        'confirm-mask': 'var(--confirm-mask-bg)',
+        'confirm-panel': 'var(--similar-panel-bg)',
+        'delete-chat-ok-btn': 'var(--delete-chat-ok-btn-bg)',
+        'delete-chat-cancel-btn': 'var(--delete-chat-cancel-btn-bg)',
       },
       backgroundImage: {
         // 'chat-panel-message-user': 'linear-gradient(259deg, #9786FF 8.42%, #4A5CFF 90.13%)',
@@ -146,7 +152,8 @@ module.exports = {
         'chat-input-hood-focus-shadow': '0px 4px 20px 0px rgba(60, 68, 255, 0.13)',
         'select-popover-shadow': '0px 14px 40px 0px rgba(0, 0, 0, 0.12)',
         'message-actions-bar': '0px 4px 30px 0px var(--small-widget-border)',
-        'prompt-hint-container': 'inset 0 4px 8px 0 rgba(0, 0, 0, 0.1)'
+        'prompt-hint-container': 'inset 0 4px 8px 0 rgba(0, 0, 0, 0.1)',
+        'delete-chat-popover-shadow': '0px 0px 1px 0px rgba(0, 0, 0, 0.08), 0px 8px 20px 0px rgba(0, 0, 0, 0.08)',
       },
       colors: {
         'select-popover': 'var(--small-widget-border)',
@@ -160,6 +167,8 @@ module.exports = {
         'chat-menu-session-selected': 'var(--menu-item-selected-border)',
         'settings-menu-item-selected': 'var(--menu-item-selected-border)',
         'settings-header': 'var(--panel-header-border)',
+        'delete-chat-popover': 'var(--small-widget-border)',
+        'delete-chat-cancel-btn': 'var(--delete-chat-cancel-btn-border)',
         'text-sidebar-tab-mobile-active': 'var(--sidebar-tab-mobile-active-text)',
         'text-sidebar-tab-mobile-inactive': 'var(--weakness-text)',
         'text-btn-primary': 'var(--bg-contract-text)',
@@ -183,7 +192,19 @@ module.exports = {
         'text-settings-menu-title': 'var(--key-text)',
         'text-settings-menu-item-title': 'var(--key-text)',
         'text-settings-panel-header-title': 'var(--key-text)',
+        'text-confirm-mask': 'var(--confirm-mask-text)',
+        'text-delete-chat-ok-btn': 'var(--delete-chat-ok-btn-text)',
+        'text-delete-chat-cancel-btn': 'var(--delete-chat-cancel-btn-text)',
       },
+      keyframes: {
+        mask: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        }
+      },
+      animation: {
+        mask: 'mask 150ms cubic-bezier(0.16, 1, 0.3, 1)'
+      }
     },
     borderRadius: {
       'none': '0',

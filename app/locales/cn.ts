@@ -20,6 +20,10 @@ const cn = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
+    DeleteContent: "删除助手后，无法检索聊天内容。你确定要删除它吗?",
+    DeleteTitle: "删除助手",
+    DeleteCancelBtn: "取消",
+    DeleteOkBtn: "删除",
   },
   Chat: {
     SubTitle: (count: number) => `共 ${count} 条对话`,

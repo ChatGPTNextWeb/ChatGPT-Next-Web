@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { ListContext } from "@/app/components/List";
-import useResizeObserver from "use-resize-observer";
+import { useResizeObserver } from "usehooks-ts";
 
 interface SlideRangeProps {
   className?: string;
@@ -31,13 +31,16 @@ export default function SlideRange(props: SlideRangeProps) {
 
   const slideRef = useRef<HTMLDivElement>(null);
 
-  const { ref, width = 1 } = useResizeObserver<HTMLDivElement>();
-
-  ref(slideRef.current);
+  useResizeObserver({
+    ref: slideRef,
+    onResize: () => {
+      setProperty(value);
+    },
+  });
 
   const transformToWidth = (x: number = start) => {
     const abs = x - start;
-    const maxWidth = width - margin * 2;
+    const maxWidth = (slideRef.current?.clientWidth || 1) - margin * 2;
     const result = (abs / stroke) * maxWidth;
     return result;
   };
@@ -49,10 +52,10 @@ export default function SlideRange(props: SlideRangeProps) {
       `${initWidth + margin}px`,
     );
   };
+
   useEffect(() => {
-    setProperty(value);
     update?.({ type: "range" });
-  }, [width]);
+  }, []);
 
   return (
     <div

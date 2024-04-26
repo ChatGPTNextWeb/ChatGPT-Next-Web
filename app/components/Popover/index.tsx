@@ -1,9 +1,16 @@
 import useRelativePosition from "@/app/hooks/useRelativePosition";
-import { getCSSVar } from "@/app/utils";
-import { useMemo, useState } from "react";
+import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-const ArrowIcon = ({ color }: { color: string }) => {
+const ArrowIcon = ({ sibling }: { sibling: RefObject<HTMLDivElement> }) => {
+  const [color, setColor] = useState<string>("");
+  useEffect(() => {
+    if (sibling.current) {
+      const { backgroundColor } = window.getComputedStyle(sibling.current);
+      setColor(backgroundColor);
+    }
+  }, []);
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -33,10 +40,10 @@ if (!popoverRoot) {
   popoverRoot.style.position = "fixed";
   popoverRoot.style.bottom = "0";
   popoverRoot.style.zIndex = "100";
-  popoverRoot.id = "popoverRootName";
+  popoverRoot.id = "popover-root";
 }
 
-export default function Popover(props: {
+export interface PopoverProps {
   content?: JSX.Element | string;
   children?: JSX.Element;
   show?: boolean;
@@ -44,10 +51,12 @@ export default function Popover(props: {
   className?: string;
   popoverClassName?: string;
   trigger?: "hover" | "click";
-  placement?: "t" | "lt" | "rt" | "lb" | "rb" | "b";
+  placement?: "t" | "lt" | "rt" | "lb" | "rb" | "b" | "l" | "r";
   noArrow?: boolean;
-  bgcolor?: string;
-}) {
+  delayClose?: number;
+}
+
+export default function Popover(props: PopoverProps) {
   const {
     content,
     children,
@@ -58,7 +67,7 @@ export default function Popover(props: {
     trigger = "hover",
     placement = "t",
     noArrow = false,
-    bgcolor,
+    delayClose = 0,
   } = props;
 
   const [internalShow, setShow] = useState(false);
@@ -66,111 +75,127 @@ export default function Popover(props: {
     delay: 0,
   });
 
-  const {
-    distanceToBottomBoundary = 0,
-    distanceToLeftBoundary = 0,
-    distanceToRightBoundary = -10000,
-    distanceToTopBoundary = 0,
-    targetH = 0,
-    targetW = 0,
-  } = position?.poi || {};
-
-  let placementStyle: React.CSSProperties = {};
   const popoverCommonClass = `absolute p-2 box-border`;
 
   const mergedShow = show ?? internalShow;
 
-  let placementClassName;
-  let arrowClassName = "absolute left-[50%] translate-x-[calc(-50%)]";
+  const { arrowClassName, placementStyle } = useMemo(() => {
+    const arrowCommonClassName = `${
+      noArrow ? "hidden" : ""
+    } absolute z-10 left-[50%] translate-x-[calc(-50%)]`;
 
-  arrowClassName += " ";
+    let defaultTopPlacement = true; // when users dont config 't' or 'b'
 
-  switch (placement) {
-    case "b":
-      placementStyle = {
-        top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
-        left: `calc(${distanceToLeftBoundary + targetW}px - ${
-          targetW * 0.02
-        }px)`,
-        transform: "translateX(-50%)",
-      };
-      placementClassName =
-        "top-[calc(100%+0.5rem)] left-[50%]  translate-x-[calc(-50%)]";
-      arrowClassName += "top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]";
-      break;
-    // case 'l':
-    //     placementClassName = '';
-    //     break;
-    // case 'r':
-    //     placementClassName = '';
-    //     break;
-    case "rb":
-      placementStyle = {
-        top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
-        right: `calc(${distanceToRightBoundary}px - ${targetW * 0.02}px)`,
-      };
-      placementClassName = "top-[calc(100%+0.5rem)] right-[calc(-2%)]";
-      arrowClassName += "top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]";
-      break;
-    case "rt":
-      placementStyle = {
-        bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
-        right: `calc(${distanceToRightBoundary}px - ${targetW * 0.02}px)`,
-      };
-      placementClassName = "bottom-[calc(100%+0.5rem)] right-[calc(-2%)]";
-      arrowClassName += "bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]";
-      break;
-    case "lt":
-      placementStyle = {
-        bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
-        left: `calc(${distanceToLeftBoundary}px - ${targetW * 0.02}px)`,
-      };
-      placementClassName = "bottom-[calc(100%+0.5rem)] left-[calc(-2%)]";
-      arrowClassName += "bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]";
-      break;
-    case "lb":
-      placementStyle = {
-        top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
-        left: `calc(${distanceToLeftBoundary}px - ${targetW * 0.02}px)`,
-      };
-      placementClassName = "top-[calc(100%+0.5rem)] left-[calc(-2%)]";
-      arrowClassName += "top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]";
-      break;
-    case "t":
-    default:
-      placementStyle = {
-        bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
-        left: `calc(${distanceToLeftBoundary + targetW}px - ${
-          targetW * 0.02
-        }px)`,
-        transform: "translateX(-50%)",
-      };
-      placementClassName =
-        "bottom-[calc(100%+0.5rem)] left-[50%] translate-x-[calc(-50%)]";
-      arrowClassName += "bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]";
-  }
+    const {
+      distanceToBottomBoundary = 0,
+      distanceToLeftBoundary = 0,
+      distanceToRightBoundary = -10000,
+      distanceToTopBoundary = 0,
+      targetH = 0,
+      targetW = 0,
+    } = position?.poi || {};
 
-  if (noArrow) {
-    arrowClassName = "hidden";
-  }
+    if (distanceToBottomBoundary > distanceToTopBoundary) {
+      defaultTopPlacement = false;
+    }
 
-  const internalBgColor = useMemo(() => {
-    return bgcolor ?? getCSSVar("--tip-popover-color");
-  }, [bgcolor]);
+    const placements = {
+      lt: {
+        placementStyle: {
+          bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
+          left: `calc(${distanceToLeftBoundary}px - ${targetW * 0.02}px)`,
+        },
+        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]`,
+      },
+      lb: {
+        placementStyle: {
+          top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
+          left: `calc(${distanceToLeftBoundary}px - ${targetW * 0.02}px)`,
+        },
+        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]`,
+      },
+      rt: {
+        placementStyle: {
+          bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
+          right: `calc(${distanceToRightBoundary}px - ${targetW * 0.02}px)`,
+        },
+        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]`,
+      },
+      rb: {
+        placementStyle: {
+          top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
+          right: `calc(${distanceToRightBoundary}px - ${targetW * 0.02}px)`,
+        },
+        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]`,
+      },
+      t: {
+        placementStyle: {
+          bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
+          left: `calc(${distanceToLeftBoundary + targetW / 2}px`,
+          transform: "translateX(-50%)",
+        },
+        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]`,
+      },
+      b: {
+        placementStyle: {
+          top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
+          left: `calc(${distanceToLeftBoundary + targetW / 2}px`,
+          transform: "translateX(-50%)",
+        },
+        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]`,
+      },
+    };
+
+    const getStyle = () => {
+      if (["l", "r"].includes(placement)) {
+        return placements[
+          `${placement}${defaultTopPlacement ? "t" : "b"}` as
+            | "lt"
+            | "lb"
+            | "rb"
+            | "rt"
+        ];
+      }
+      return placements[placement as Exclude<typeof placement, "l" | "r">];
+    };
+
+    return getStyle();
+  }, [Object.values(position?.poi || {})]);
+
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<number>(0);
 
   if (trigger === "click") {
+    const handleOpen = (e: { currentTarget: any }) => {
+      clearTimeout(closeTimer.current);
+      onShow?.(true);
+      setShow(true);
+      getRelativePosition(e.currentTarget, "");
+      window.document.documentElement.style.overflow = "hidden";
+    };
+    const handleClose = () => {
+      if (delayClose) {
+        closeTimer.current = window.setTimeout(() => {
+          onShow?.(false);
+          setShow(false);
+        }, delayClose);
+      } else {
+        onShow?.(false);
+        setShow(false);
+      }
+      window.document.documentElement.style.overflow = "auto";
+    };
+
     return (
       <div
         className={`relative ${className}`}
         onClick={(e) => {
           e.preventDefault();
-          onShow?.(!mergedShow);
-          setShow(!mergedShow);
+          e.stopPropagation();
           if (!mergedShow) {
-            getRelativePosition(e.currentTarget, "");
-            window.document.documentElement.style.overflow = "hidden";
+            handleOpen(e);
           } else {
-            window.document.documentElement.style.overflow = "auto";
+            handleClose();
           }
         }}
       >
@@ -179,29 +204,32 @@ export default function Popover(props: {
           <>
             {!noArrow && (
               <div className={`${arrowClassName}`}>
-                <ArrowIcon color={internalBgColor} />
+                <ArrowIcon sibling={popoverRef} />
               </div>
             )}
             {createPortal(
               <div
                 className={`${popoverCommonClass} ${popoverClassName} cursor-pointer`}
                 style={{ zIndex: baseZIndex + 1, ...placementStyle }}
+                ref={popoverRef}
               >
                 {content}
               </div>,
               popoverRoot,
             )}
-            <div
-              className=" fixed w-[100%] h-[100%] top-0 left-0 right-0 bottom-0"
-              style={{ zIndex: baseZIndex }}
-              onClick={(e) => {
-                e.preventDefault();
-                onShow?.(!mergedShow);
-                setShow(!mergedShow);
-              }}
-            >
-              &nbsp;
-            </div>
+            {createPortal(
+              <div
+                className=" fixed w-[100vw] h-[100vh] right-0 bottom-0"
+                style={{ zIndex: baseZIndex }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleClose();
+                }}
+              >
+                &nbsp;
+              </div>,
+              popoverRoot,
+            )}
           </>
         )}
       </div>
@@ -209,18 +237,53 @@ export default function Popover(props: {
   }
 
   return (
-    <div className={`group relative ${className}`}>
+    <div
+      className={`relative ${className}`}
+      onPointerEnter={(e) => {
+        e.preventDefault();
+        clearTimeout(closeTimer.current);
+        onShow?.(true);
+        setShow(true);
+        getRelativePosition(e.currentTarget, "");
+        window.document.documentElement.style.overflow = "hidden";
+      }}
+      onPointerLeave={(e) => {
+        e.preventDefault();
+        if (delayClose) {
+          closeTimer.current = window.setTimeout(() => {
+            onShow?.(false);
+            setShow(false);
+          }, delayClose);
+        } else {
+          onShow?.(false);
+          setShow(false);
+        }
+        window.document.documentElement.style.overflow = "auto";
+      }}
+    >
       {children}
-      {!noArrow && (
-        <div className={`hidden group-hover:block ${arrowClassName}`}>
-          <ArrowIcon color={internalBgColor} />
-        </div>
+      {mergedShow && (
+        <>
+          <div
+            className={`${
+              noArrow ? "opacity-0" : ""
+            } bg-inherit ${arrowClassName}`}
+            style={{ zIndex: baseZIndex + 1 }}
+          >
+            <ArrowIcon sibling={popoverRef} />
+          </div>
+          {createPortal(
+            <div
+              className={` whitespace-nowrap ${popoverCommonClass} ${popoverClassName} cursor-pointer`}
+              style={{ zIndex: baseZIndex + 1, ...placementStyle }}
+              ref={popoverRef}
+            >
+              {content}
+            </div>,
+            popoverRoot,
+          )}
+        </>
       )}
-      <div
-        className={`hidden group-hover:block ${popoverCommonClass} ${placementClassName} ${popoverClassName}`}
-      >
-        {content}
-      </div>
     </div>
   );
 }

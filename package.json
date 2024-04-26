@@ -19,6 +19,7 @@
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@next/third-parties": "^14.1.0",
+    "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-switch": "^1.0.3",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
@@ -43,7 +44,7 @@
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.4",
-    "use-resize-observer": "^9.1.0",
+    "usehooks-ts": "^3.1.0",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

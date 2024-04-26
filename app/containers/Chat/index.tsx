@@ -12,7 +12,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "@/app/constant";
 import { Mask } from "@/app/store/mask";
 import { useRef, useEffect } from "react";
-import { showConfirm } from "@/app/components/ui-lib";
 
 import AddIcon from "@/app/icons/addIcon.svg";
 import NextChatTitle from "@/app/icons/nextchatTitle.svg";
@@ -24,7 +23,8 @@ import LogIcon from "@/app/icons/logIcon.svg";
 
 import MenuLayout from "@/app/components/MenuLayout";
 import Panel from "./ChatPanel";
-import Popover from "@/app/components/Popover";
+import Popover, { PopoverProps } from "@/app/components/Popover";
+import Confirm from "@/app/components/Confirm";
 
 export function SessionItem(props: {
   onClick?: () => void;
@@ -37,6 +37,7 @@ export function SessionItem(props: {
   index: number;
   narrow?: boolean;
   mask: Mask;
+  isMobileScreen: boolean;
 }) {
   const draggableRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -53,7 +54,7 @@ export function SessionItem(props: {
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
-          className={`group relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 ${
+          className={`group/chat-menu-list relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 ${
             props.selected &&
             (currentPath === Path.Chat || currentPath === Path.Home)
               ? `bg-chat-menu-session-selected border-chat-menu-session-selected border `
@@ -81,7 +82,7 @@ export function SessionItem(props: {
                 {props.title}
               </div>
               <div
-                className={`text-text-chat-menu-item-time text-sm group-hover:opacity-0 pl-3`}
+                className={`text-text-chat-menu-item-time text-sm group-hover/chat-menu-list:opacity-0 pl-3`}
               >
                 {getTime(props.time)}
               </div>
@@ -106,10 +107,17 @@ export function SessionItem(props: {
                 </div>
               </div>
             }
-            className=""
+            popoverClassName={`
+              px-2 py-1 border-delete-chat-popover bg-delete-chat-popover-panel rounded-md shadow-delete-chat-popover-shadow
+            `}
+            noArrow
+            placement={props.isMobileScreen ? "r" : "l"}
+            className="!absolute top-[50%] translate-y-[-50%] right-3"
+            trigger={props.isMobileScreen ? "click" : "hover"}
+            delayClose={100}
           >
             <div
-              className={`absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100`}
+              className={` pointer-events-none opacity-0 group-hover/chat-menu-list:pointer-events-auto group-hover/chat-menu-list:opacity-100`}
             >
               <DeleteIcon />
             </div>
@@ -230,13 +238,18 @@ export default MenuLayout(function SessionList(props) {
                     }}
                     onDelete={async () => {
                       if (
-                        !isMobileScreen ||
-                        (await showConfirm(Locale.Home.DeleteChat))
+                        await Confirm.show({
+                          okText: Locale.ChatItem.DeleteOkBtn,
+                          cancelText: Locale.ChatItem.DeleteCancelBtn,
+                          title: Locale.ChatItem.DeleteTitle,
+                          content: Locale.ChatItem.DeleteContent,
+                        })
                       ) {
                         chatStore.deleteSession(i);
                       }
                     }}
                     mask={item.mask}
+                    isMobileScreen={isMobileScreen}
                   />
                 ))}
                 {provided.placeholder}

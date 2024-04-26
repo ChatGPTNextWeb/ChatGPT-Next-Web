@@ -18,14 +18,16 @@ import { useCommand } from "@/app/command";
 import { prettyObject } from "@/app/utils/format";
 import { ExportMessageModal } from "@/app/components/exporter";
 
-import PromptToast from "./PromptToast";
-import { EditMessageModal } from "./EditMessageModal";
-import ChatHeader from "./ChatHeader";
-import ChatInputPanel, { ChatInputPanelInstance } from "./ChatInputPanel";
-import ChatMessagePanel, { RenderMessage } from "./ChatMessagePanel";
+import PromptToast from "./components/PromptToast";
+import { EditMessageModal } from "./components/EditMessageModal";
+import ChatHeader from "./components/ChatHeader";
+import ChatInputPanel, {
+  ChatInputPanelInstance,
+} from "./components/ChatInputPanel";
+import ChatMessagePanel, { RenderMessage } from "./components/ChatMessagePanel";
 import { useAllModels } from "@/app/utils/hooks";
 import useRows from "@/app/hooks/useRows";
-import SessionConfigModel from "./SessionConfigModal";
+import SessionConfigModel from "./components/SessionConfigModal";
 import useScrollToBottom from "@/app/hooks/useScrollToBottom";
 
 function _Chat() {

@@ -70,6 +70,13 @@ body {
   --menu-item-time: rgba(0, 0, 0, 0.3);
   --siderbar-mobile-height: 3.125rem;
   --max-message-width: calc(var(--chat-panel-max-width) * 0.6);
+  --confirm-mask-bg: rgba(0, 0, 0, 0.7);
+  --confirm-mask-text: #18182a;
+  --delete-chat-ok-btn-bg: #ff5454;
+  --delete-chat-ok-btn-text: #fff;
+  --delete-chat-cancel-btn-bg: #fff;
+  --delete-chat-cancel-btn-text: #18182a;
+  --delete-chat-cancel-btn-border: #e2e2e6;
 }
 
 .dark {

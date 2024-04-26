@@ -8,7 +8,7 @@ import { Path } from "@/app/constant";
 
 import ResetIcon from "@/app/icons/reload.svg";
 import CopyIcon from "@/app/icons/copy.svg";
-import MaskConfig from "@/app/containers/Settings/MaskConfig";
+import MaskConfig from "@/app/containers/Settings/components/MaskConfig";
 import { ListItem } from "@/app/components/List";
 
 export default function SessionConfigModel(props: { onClose: () => void }) {

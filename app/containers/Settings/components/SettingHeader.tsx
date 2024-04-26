@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import Locale from "@/app/locales";
 import GobackIcon from "@/app/icons/goback.svg";
 

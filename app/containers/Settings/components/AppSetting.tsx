@@ -1,7 +1,7 @@
 import LoadingIcon from "@/app/icons/three-dots.svg";
 import ResetIcon from "@/app/icons/reload.svg";
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 import { useEffect, useState } from "react";
 import { Avatar, AvatarPicker } from "@/app/components/emoji";

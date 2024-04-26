@@ -7,15 +7,15 @@ import List from "@/app/components/List";
 import { useNavigate } from "react-router-dom";
 import { getClientConfig } from "@/app/config/client";
 import Card from "@/app/components/Card";
-import SettingHeader from "./SettingHeader";
+import SettingHeader from "./components/SettingHeader";
 import { MenuWrapperInspectProps } from "@/app/components/MenuLayout";
-import SyncItems from "./SyncItems";
-import DangerItems from "./DangerItems";
-import AppSetting from "./AppSetting";
-import MaskSetting from "./MaskSetting";
-import PromptSetting from "./PromptSetting";
-import ProviderSetting from "./ProviderSetting";
-import ModelConfigList from "./ModelSetting";
+import SyncItems from "./components/SyncItems";
+import DangerItems from "./components/DangerItems";
+import AppSetting from "./components/AppSetting";
+import MaskSetting from "./components/MaskSetting";
+import PromptSetting from "./components/PromptSetting";
+import ProviderSetting from "./components/ProviderSetting";
+import ModelConfigList from "./components/ModelSetting";
 
 export default function Settings(props: MenuWrapperInspectProps) {
   const { setShowPanel } = props;

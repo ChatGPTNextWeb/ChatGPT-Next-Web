@@ -3,7 +3,7 @@ import Locale from "@/app/locales";
 
 import BrainIcon from "@/app/icons/brain.svg";
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 export default function PromptToast(props: {
   showToast?: boolean;
