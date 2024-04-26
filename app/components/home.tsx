@@ -192,6 +192,7 @@ export function useLoadData() {
 }
 
 export function Home() {
+  // const { status } = useSession({ required: true })
   useSwitchTheme();
   useLoadData();
   useHtmlLang();

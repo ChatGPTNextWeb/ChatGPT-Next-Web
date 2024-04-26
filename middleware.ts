@@ -15,6 +15,7 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL(path.replace('/app', ''), req.url), 301);
     }
 
+
     const session = await getToken({ req });
     const isUser = await VerifiedUser(session);
     const isAdminUser = await VerifiedAdminUser(session);

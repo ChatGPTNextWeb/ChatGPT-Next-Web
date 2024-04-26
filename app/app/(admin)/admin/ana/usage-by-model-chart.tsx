@@ -92,9 +92,12 @@ function EchartsComponent({ currentDate, setCurrentDate }: ComponentProps) {
     if (searchDate != currentDateString) {
       async function fetchData() {
         // console.log("异步", searchDate, currentDateString);
-        const response = await fetch("/api/charts?date=" + currentDateString, {
-          method: "GET",
-        });
+        const response = await fetch(
+          "/api/admin/charts?date=" + currentDateString,
+          {
+            method: "GET",
+          },
+        );
         // console.log('====', searchDate, currentDateString),
         const option: EChartsOption = await response.json();
         option["tooltip"] = {
