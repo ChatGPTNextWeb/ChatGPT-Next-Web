@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { addHours, subMinutes } from "date-fns";
 import { EChartsOption } from "echarts";
+import { getCurStartEnd } from "@/app/utils/custom";
 
 interface StringKeyedObject {
   [key: string]: { [key: string]: number };
@@ -50,19 +51,7 @@ function HandleLogData(
 
 async function handle(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const date = searchParams.get("date") ?? "";
-  // 当天日期的开始和结束
-  let currentTime = new Date(date);
-  // today = subMinutes(today, today.getTimezoneOffset())
-  const startOfTheDayInTimeZone = new Date(
-    currentTime.getFullYear(),
-    currentTime.getMonth(),
-    currentTime.getDate(),
-    0,
-    0,
-    0,
-  );
-  const endOfTheDayInTimeZone = addHours(startOfTheDayInTimeZone, +24); // 当天的结束时间
+  const { startOfTheDayInTimeZone, endOfTheDayInTimeZone } = getCurStartEnd();
   const todayLog = await prisma.logEntry.findMany({
     where: {
       createdAt: {

@@ -1,3 +1,5 @@
+import { addHours } from "date-fns";
+
 export function getCurrentTime(now?: Date): string {
   if (!now) {
     const now = new Date();
@@ -15,4 +17,20 @@ export function getCurrentTime(now?: Date): string {
   // console.log(formattedDateTime); // 输出中国标准时间格式
 
   return formatter.format(now);
+}
+
+export function getCurStartEnd(now = new Date()) {
+  const startOfTheDayInTimeZone = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0,
+    0,
+    0,
+  );
+  const endOfTheDayInTimeZone = addHours(startOfTheDayInTimeZone, +24); // 当天的结束时间
+  return {
+    startOfTheDayInTimeZone,
+    endOfTheDayInTimeZone,
+  };
 }
