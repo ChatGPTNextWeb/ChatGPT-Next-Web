@@ -1,7 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-
 require("../polyfill");
 
 import { useState, useEffect } from "react";

@@ -71,6 +71,7 @@ export function collectModelTableWithDefaultModel(
       name: defaultModel,
       displayName: defaultModel,
       available: true,
+      describe: "默认模型",
       provider:
         modelTable[defaultModel]?.provider ?? customProvider(defaultModel),
       isDefault: true,

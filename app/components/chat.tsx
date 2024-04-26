@@ -501,7 +501,7 @@ export function ChatActions(props: {
       // show next model to default model if exist
       let nextModel: ModelType = (
         models.find((model) => model.isDefault) || models[0]
-      ).name;
+      ).name as ModelType;
       chatStore.updateCurrentSession(
         (session) => (session.mask.modelConfig.model = nextModel),
       );
