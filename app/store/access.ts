@@ -8,6 +8,7 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
+import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -51,6 +52,7 @@ const DEFAULT_ACCESS_STATE = {
   useMjImgSelfProxy: false,
   disableFastLink: false,
   customModels: "",
+  defaultModel: "",
 };
 
 export const useAccessStore = createPersistStore(
@@ -105,6 +107,31 @@ export const useAccessStore = createPersistStore(
       };
       set(() => ({ ...res }));
       fetchState = 2; // 设置 fetchState 值为 "获取已完成"
+      // fetch("/api/config", {
+      //   method: "post",
+      //   body: null,
+      //   headers: {
+      //     ...getHeaders(),
+      //   },
+      // })
+      //   .then((res) => res.json())
+      //   .then((res) => {
+      //     // Set default model from env request
+      //     let defaultModel = res.defaultModel ?? "";
+      //     DEFAULT_CONFIG.modelConfig.model =
+      //       defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
+      //     return res;
+      //   })
+      //   .then((res: DangerConfig) => {
+      //     console.log("[Config] got config from server", res);
+      //     set(() => ({ ...res }));
+      //   })
+      //   .catch(() => {
+      //     console.error("[Config] failed to fetch config");
+      //   })
+      //   .finally(() => {
+      //     fetchState = 2;
+      //   });
     },
   }),
   {
