@@ -79,7 +79,7 @@ export enum ModelProvider {
 }
 
 export const Anthropic = {
-  ChatPath: "v1/messages",
+  ChatPath: "v1/chat/completions", // 修改为与OpenAI API相同
   ChatPath1: "v1/complete",
   ExampleEndpoint: "https://api.anthropic.com",
   Vision: "2023-06-01",
@@ -135,6 +135,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 };
 
 const openaiModels = [
+  // 全都整合到 openaiModels 门下
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-1106",
   "gpt-3.5-turbo-0125",
@@ -146,15 +147,9 @@ const openaiModels = [
   "gpt-4-turbo-preview",
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
-];
-
-const googleModels = [
   "gemini-1.0-pro",
   "gemini-1.5-pro-latest",
   "gemini-pro-vision",
-];
-
-const anthropicModels = [
   "claude-instant-1.2",
   "claude-2.0",
   "claude-2.1",
@@ -162,6 +157,10 @@ const anthropicModels = [
   "claude-3-opus-20240229",
   "claude-3-haiku-20240307",
 ];
+
+const googleModels = [""];
+
+const anthropicModels = [""];
 
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({

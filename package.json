@@ -41,6 +41,7 @@
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.4",
+    "yarn": "^1.22.22",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
