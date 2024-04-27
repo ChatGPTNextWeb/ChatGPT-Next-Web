@@ -340,6 +340,7 @@ function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
+  stopShortcut?: string;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -347,6 +348,25 @@ function ChatAction(props: {
     full: 16,
     icon: 16,
   });
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        props.stopShortcut &&
+        event.key === props.stopShortcut &&
+        event.ctrlKey
+      ) {
+        props.onClick();
+        setTimeout(updateWidth, 1);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [props.onClick, props.stopShortcut]);
 
   function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
@@ -495,6 +515,7 @@ export function ChatActions(props: {
           onClick={stopAll}
           text={Locale.Chat.InputActions.Stop}
           icon={<StopIcon />}
+          stopShortcut="c"
         />
       )}
       {!props.hitBottom && (
