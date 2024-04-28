@@ -11,6 +11,7 @@ export function useAllModels() {
       [configStore.customModels, accessStore.customModels].join(","),
       accessStore.defaultModel,
     ).filter((m) => !configStore.dontUseModel.includes(m.name as any));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accessStore.customModels,
     configStore.customModels,
