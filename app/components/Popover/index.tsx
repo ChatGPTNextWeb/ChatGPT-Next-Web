@@ -39,7 +39,7 @@ if (!popoverRoot) {
   popoverRoot.style.width = "100%";
   popoverRoot.style.position = "fixed";
   popoverRoot.style.bottom = "0";
-  popoverRoot.style.zIndex = "100";
+  popoverRoot.style.zIndex = "10000";
   popoverRoot.id = "popover-root";
 }
 

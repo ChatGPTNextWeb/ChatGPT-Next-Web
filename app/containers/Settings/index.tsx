@@ -26,7 +26,7 @@ export default MenuLayout(function SettingList(props) {
   return (
     <div
       className={`
-      max-md:h-[100%] max-md:mx-[-1.5rem] max-md:py-6 max-md:bg-settings-menu-mobile
+      max-md:h-[100%] max-md:mx-[-1rem] max-md:py-6 max-md:px-4 max-md:bg-settings-menu-mobile
       md:pt-7
     `}
     >

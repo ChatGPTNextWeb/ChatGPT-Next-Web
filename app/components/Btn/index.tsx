@@ -32,7 +32,9 @@ export default function Btn(props: {
   switch (type) {
     case "primary":
       btnClassName = `${
-        disabled ? "bg-primary-btn-disabled" : "bg-primary-btn shadow-btn"
+        disabled
+          ? "bg-primary-btn-disabled dark:opacity-30 dark:text-primary-btn-disabled-dark"
+          : "bg-primary-btn shadow-btn"
       } text-text-btn-primary `;
       break;
     case "danger":

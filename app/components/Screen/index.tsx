@@ -52,9 +52,9 @@ export default function Screen(props: ScreenProps) {
 
           <div
             className={`
-            h-[100%]
-            max-md:w-[100%] 
-            md:flex-1 md:min-w-0 md:overflow-hidden
+              h-[100%]
+              max-md:w-[100%] 
+              md:flex-1 md:min-w-0 md:overflow-hidden
             `}
             id={SlotID.AppBody}
             style={{

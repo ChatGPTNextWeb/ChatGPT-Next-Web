@@ -12,16 +12,25 @@ import { Path } from "@/app/constant";
 
 import BottomIcon from "@/app/icons/bottom.svg";
 import StopIcon from "@/app/icons/pause.svg";
-import RobotIcon from "@/app/icons/robot.svg";
 import LoadingButtonIcon from "@/app/icons/loading.svg";
-import PromptIcon from "@/app/icons/prompt.svg";
-import MaskIcon from "@/app/icons/mask.svg";
-import BreakIcon from "@/app/icons/break.svg";
-import SettingsIcon from "@/app/icons/chat-settings.svg";
-import ImageIcon from "@/app/icons/image.svg";
+import PromptIcon from "@/app/icons/comandIcon.svg";
+import MaskIcon from "@/app/icons/maskIcon.svg";
+import BreakIcon from "@/app/icons/eraserIcon.svg";
+import SettingsIcon from "@/app/icons/configIcon.svg";
+import ImageIcon from "@/app/icons/uploadImgIcon.svg";
 import AddCircleIcon from "@/app/icons/addCircle.svg";
+import BottomArrow from "@/app/icons/downArrowLgIcon.svg";
 
 import Popover from "@/app/components/Popover";
+
+export interface Action {
+  onClick: () => void;
+  text: string;
+  isShow: boolean;
+  pcRender?: () => JSX.Element;
+  icon?: JSX.Element;
+  placement: "left" | "right";
+}
 
 export function ChatActions(props: {
   uploadImage: () => void;
@@ -83,7 +92,7 @@ export function ChatActions(props: {
     }
   }, [chatStore, currentModel, models]);
 
-  const actions = [
+  const actions: Action[] = [
     {
       onClick: stopAll,
       text: Locale.Chat.InputActions.Stop,
@@ -92,18 +101,23 @@ export function ChatActions(props: {
       placement: "left",
     },
     {
+      onClick: () => props.showModelSelector(true),
+      text: currentModel,
+      isShow: true,
+      pcRender: () => (
+        <div className="flex items-center  justify-center gap-1 cursor-pointer rounded-chat-model-select pl-3 pr-2.5 py-2 font-common leading-4 bg-chat-actions-select-model">
+          {currentModel}
+          <BottomArrow />
+        </div>
+      ),
+      placement: "left",
+    },
+    {
       onClick: props.scrollToBottom,
       text: Locale.Chat.InputActions.ToBottom,
       isShow: !props.hitBottom,
       icon: <BottomIcon />,
       placement: "left",
-    },
-    {
-      onClick: props.showChatSetting,
-      text: Locale.Chat.InputActions.Settings,
-      isShow: true,
-      icon: <SettingsIcon />,
-      placement: "right",
     },
     {
       onClick: props.uploadImage,
@@ -162,11 +176,11 @@ export function ChatActions(props: {
       placement: "right",
     },
     {
-      onClick: () => props.showModelSelector(true),
-      text: currentModel,
+      onClick: props.showChatSetting,
+      text: Locale.Chat.InputActions.Settings,
       isShow: true,
-      icon: <RobotIcon />,
-      placement: "left",
+      icon: <SettingsIcon />,
+      placement: "right",
     },
   ] as const;
 
@@ -174,7 +188,7 @@ export function ChatActions(props: {
     const content = (
       <div className="w-[100%]">
         {actions
-          .filter((v) => v.isShow)
+          .filter((v) => v.isShow && v.icon)
           .map((act) => {
             return (
               <div
@@ -212,6 +226,13 @@ export function ChatActions(props: {
       {actions
         .filter((v) => v.placement === "left" && v.isShow)
         .map((act, ind) => {
+          if (act.pcRender) {
+            return (
+              <div key={act.text} onClick={act.onClick}>
+                {act.pcRender()}
+              </div>
+            );
+          }
           return (
             <Popover
               key={act.text}

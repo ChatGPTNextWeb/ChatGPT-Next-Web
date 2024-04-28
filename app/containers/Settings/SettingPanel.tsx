@@ -54,7 +54,7 @@ export default function Settings(props: MenuWrapperInspectProps) {
       className={`
         flex flex-col overflow-hidden bg-settings-panel 
         h-setting-panel-mobile
-        md:h-[calc(100%-1.25rem)] md:my-2.5 md:ml-1 md:mr-2.5 md:rounded-md
+        md:h-[calc(100%-1.25rem)] md:my-2.5 md:mr-2.5 md:rounded-md
       `}
     >
       <SettingHeader

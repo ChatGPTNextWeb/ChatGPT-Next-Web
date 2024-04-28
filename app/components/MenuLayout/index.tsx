@@ -84,20 +84,20 @@ export default function MenuLayout<
             setShowPanel={setShowPanel}
             showPanel={showPanel}
           />
-          {!isMobileScreen && (
-            <div
-              className={`group/menu-dragger absolute right-0 h-[100%] flex items-center`}
-              onPointerDown={(e) => {
-                startDragWidth.current = config.sidebarWidth;
-                onDragStart(e as any);
-              }}
-            >
-              <div className="opacity-0 group-hover/menu-dragger:bg-[rgba($color: #000000, $alpha: 0.01)] group-hover/menu-dragger:opacity-20">
-                <DragIcon />
-              </div>
-            </div>
-          )}
         </div>
+        {!isMobileScreen && (
+          <div
+            className={`group/menu-dragger h-[100%] cursor-col-resize w-[0.25rem]  flex items-center justify-center`}
+            onPointerDown={(e) => {
+              startDragWidth.current = config.sidebarWidth;
+              onDragStart(e as any);
+            }}
+          >
+            <div className="w-[1px] opacity-0 group-hover/menu-dragger:opacity-100 bg-menu-dragger">
+              &nbsp;
+            </div>
+          </div>
+        )}
         <div
           className={`
           md:flex-1 md:h-[100%] md:w-page

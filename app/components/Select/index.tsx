@@ -79,13 +79,14 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "rb" : "rt"
       }
-      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel dark:bg-select-popover-panel-dark"
+      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel"
       onShow={(e) => {
         getRelativePosition(contentRef.current!, "");
       }}
+      className={selectClassName}
     >
       <div
-        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title ${selectClassName} cursor-pointer`}
+        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title  cursor-pointer`}
         ref={contentRef}
       >
         <div className={`flex items-center gap-2 flex-1`}>

@@ -119,7 +119,7 @@ export function SessionItem(props: {
             align={props.isMobileScreen ? "end" : "start"}
           >
             <div
-              className={` pointer-events-none opacity-0 group-hover/chat-menu-list:pointer-events-auto group-hover/chat-menu-list:opacity-100`}
+              className={`!absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 group-hover/chat-menu-list:pointer-events-auto group-hover/chat-menu-list:opacity-100`}
             >
               <DeleteIcon />
             </div>

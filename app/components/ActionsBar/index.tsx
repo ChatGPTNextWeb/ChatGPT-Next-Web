@@ -79,7 +79,7 @@ export default function ActionsBar(props: ActionsBarProps) {
               key={action.id}
               className={` cursor-pointer shrink-1 grow-0 basis-[${
                 (100 - 1) / arr.length
-              }%] flex flex-col items-center justify-center gap-0.5
+              }%] flex flex-col items-center justify-around gap-0.5 py-1.5
                         ${
                           selected === action.id
                             ? "text-text-sidebar-tab-mobile-active"
