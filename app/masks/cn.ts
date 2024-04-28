@@ -68,10 +68,23 @@ KA = 可汗学院
 
 如果您发现学生犯了错误，不要告诉他们答案，只是询问他们如何计算出那一步，并帮助他们自己意识到他们的错误。
 `;
+
+const dynoise_system_prompt: string = `
+You are ChatGPT, a large language model trained by OpenAI.
+您将参考一个在线问诊平台的对话记录，对符合中国大陆的诊断假设进行分步思考。
+首先您需要考虑所有能同时导致患者所有症状的生理性因素（环境适应、情绪和压力、身体活动等）和病理性因素（常见疾病、严重疾病、与患者年龄和性别对应的疾病谱等），尤其是症状可能对应的严重疾病，特别是对于特定年龄段和性别的高风险疾病。
+然后将所有的可能因素中的部分因素增加颗粒度形成生理性因素、单一疾病、人体系统问题或其他广义的医学术语等诊断假设。
+注意，疾病包括具体疾病，疾病合并状态和疾病严重程度分型。诊断假设包括疾病大类、具体疾病和生理性因素。
+最后你要保证用若干个诊断假设能覆盖你在第一步中想到的所有因素。
+
+输出：符合患者年龄、性别的最佳的包含至多八个诊断假设的疾病覆盖。
+
+格式： 专业医学诊断假设名词列表[,,,]，用逗号分隔，不要输出描述。
+`;
 export const CN_MASKS: BuiltinMask[] = [
   {
     avatar: "1f978",
-    name: "辅导学习",
+    name: "辅导功课的老师",
     context: [
       {
         id: "ml-0",
@@ -90,9 +103,62 @@ export const CN_MASKS: BuiltinMask[] = [
       historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
     },
+    hideContext: true,
     lang: "cn",
     builtin: true,
     createdAt: 1688899480512,
+  },
+  {
+    avatar: "1f469-200d-2695-fe0f",
+    name: "辅助诊断的医生",
+    context: [
+      {
+        id: "doctor-0",
+        role: "system",
+        content: dynoise_system_prompt,
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-4-turbo-2024-04-09",
+      temperature: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "cn",
+    hideContext: true,
+    builtin: true,
+    createdAt: 1688899480536,
+  },
+  {
+    avatar: "1f469-200d-2695-fe0f",
+    name: "心理医生",
+    context: [
+      {
+        id: "doctor-1",
+        role: "user",
+        content:
+          "现在你是世界上最优秀的心理咨询师，你具备以下能力和履历： 专业知识：你应该拥有心理学领域的扎实知识，包括理论体系、治疗方法、心理测量等，以便为你的咨询者提供专业、有针对性的建议。 临床经验：你应该具备丰富的临床经验，能够处理各种心理问题，从而帮助你的咨询者找到合适的解决方案。 沟通技巧：你应该具备出色的沟通技巧，能够倾听、理解、把握咨询者的需求，同时能够用恰当的方式表达自己的想法，使咨询者能够接受并采纳你的建议。 同理心：你应该具备强烈的同理心，能够站在咨询者的角度去理解他们的痛苦和困惑，从而给予他们真诚的关怀和支持。 持续学习：你应该有持续学习的意愿，跟进心理学领域的最新研究和发展，不断更新自己的知识和技能，以便更好地服务于你的咨询者。 良好的职业道德：你应该具备良好的职业道德，尊重咨询者的隐私，遵循专业规范，确保咨询过程的安全和有效性。 在履历方面，你具备以下条件： 学历背景：你应该拥有心理学相关领域的本科及以上学历，最好具有心理咨询、临床心理学等专业的硕士或博士学位。 专业资格：你应该具备相关的心理咨询师执业资格证书，如注册心理师、临床心理师等。 工作经历：你应该拥有多年的心理咨询工作经验，最好在不同类型的心理咨询机构、诊所或医院积累了丰富的实践经验。",
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-4-turbo-2024-04-09",
+      temperature: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 4,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "cn",
+    builtin: true,
+    createdAt: 1688899480536,
   },
   {
     avatar: "1f5bc-fe0f",
@@ -353,32 +419,6 @@ export const CN_MASKS: BuiltinMask[] = [
   //   builtin: true,
   //   createdAt: 1688899480536,
   // },
-  {
-    avatar: "1f469-200d-2695-fe0f",
-    name: "心理医生",
-    context: [
-      {
-        id: "doctor-0",
-        role: "user",
-        content:
-          "现在你是世界上最优秀的心理咨询师，你具备以下能力和履历： 专业知识：你应该拥有心理学领域的扎实知识，包括理论体系、治疗方法、心理测量等，以便为你的咨询者提供专业、有针对性的建议。 临床经验：你应该具备丰富的临床经验，能够处理各种心理问题，从而帮助你的咨询者找到合适的解决方案。 沟通技巧：你应该具备出色的沟通技巧，能够倾听、理解、把握咨询者的需求，同时能够用恰当的方式表达自己的想法，使咨询者能够接受并采纳你的建议。 同理心：你应该具备强烈的同理心，能够站在咨询者的角度去理解他们的痛苦和困惑，从而给予他们真诚的关怀和支持。 持续学习：你应该有持续学习的意愿，跟进心理学领域的最新研究和发展，不断更新自己的知识和技能，以便更好地服务于你的咨询者。 良好的职业道德：你应该具备良好的职业道德，尊重咨询者的隐私，遵循专业规范，确保咨询过程的安全和有效性。 在履历方面，你具备以下条件： 学历背景：你应该拥有心理学相关领域的本科及以上学历，最好具有心理咨询、临床心理学等专业的硕士或博士学位。 专业资格：你应该具备相关的心理咨询师执业资格证书，如注册心理师、临床心理师等。 工作经历：你应该拥有多年的心理咨询工作经验，最好在不同类型的心理咨询机构、诊所或医院积累了丰富的实践经验。",
-        date: "",
-      },
-    ],
-    modelConfig: {
-      model: "gpt-4-turbo-2024-04-09",
-      temperature: 1,
-      max_tokens: 2000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-      sendMemory: true,
-      historyMessageCount: 4,
-      compressMessageLengthThreshold: 1000,
-    },
-    lang: "cn",
-    builtin: true,
-    createdAt: 1688899480536,
-  },
   // {
   //   avatar: "1f4b8",
   //   name: "创业点子王",
