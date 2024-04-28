@@ -10,9 +10,6 @@ import { showToast } from "@/app/components/ui-lib";
 import Locale from "@/app/locales";
 import { Path } from "@/app/constant";
 
-import LightIcon from "@/app/icons/light.svg";
-import DarkIcon from "@/app/icons/dark.svg";
-import AutoIcon from "@/app/icons/auto.svg";
 import BottomIcon from "@/app/icons/bottom.svg";
 import StopIcon from "@/app/icons/pause.svg";
 import RobotIcon from "@/app/icons/robot.svg";

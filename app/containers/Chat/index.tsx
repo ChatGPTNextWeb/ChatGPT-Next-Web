@@ -23,8 +23,8 @@ import LogIcon from "@/app/icons/logIcon.svg";
 
 import MenuLayout from "@/app/components/MenuLayout";
 import Panel from "./ChatPanel";
-import Popover, { PopoverProps } from "@/app/components/Popover";
 import Confirm from "@/app/components/Confirm";
+import HoverPopover from "@/app/components/HoverPopover";
 
 export function SessionItem(props: {
   onClick?: () => void;
@@ -96,7 +96,7 @@ export function SessionItem(props: {
               {Locale.ChatItem.ChatItemCount(props.count)}
             </div>
           </div>
-          <Popover
+          <HoverPopover
             content={
               <div
                 className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
@@ -113,20 +113,17 @@ export function SessionItem(props: {
               </div>
             }
             popoverClassName={`
-              px-2 py-1 border-delete-chat-popover bg-delete-chat-popover-panel rounded-md shadow-delete-chat-popover-shadow
+              px-2 py-1 border-delete-chat-popover bg-delete-chat-popover-panel rounded-md shadow-delete-chat-popover-shadow 
             `}
             noArrow
-            placement={props.isMobileScreen ? "r" : "l"}
-            className="!absolute top-[50%] translate-y-[-50%] right-3"
-            trigger={props.isMobileScreen ? "click" : "hover"}
-            delayClose={100}
+            align={props.isMobileScreen ? "end" : "start"}
           >
             <div
               className={` pointer-events-none opacity-0 group-hover/chat-menu-list:pointer-events-auto group-hover/chat-menu-list:opacity-100`}
             >
               <DeleteIcon />
             </div>
-          </Popover>
+          </HoverPopover>
         </div>
       )}
     </Draggable>
@@ -175,7 +172,6 @@ export default MenuLayout(function SessionList(props) {
     <div
       className={`
       h-[100%] flex flex-col
-      max-md:pb-chat-panel-mobile 
       md:px-0
     `}
     >
@@ -213,7 +209,7 @@ export default MenuLayout(function SessionList(props) {
       </div>
 
       <div
-        className={`flex-1 overflow-y-auto`}
+        className={`flex-1 overflow-y-auto max-md:pb-chat-panel-mobile `}
         // onClick={(e) => {
         //   if (e.target === e.currentTarget) {
         //     navigate(Path.Home);

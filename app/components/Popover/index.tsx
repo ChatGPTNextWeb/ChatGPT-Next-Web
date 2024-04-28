@@ -54,6 +54,7 @@ export interface PopoverProps {
   placement?: "t" | "lt" | "rt" | "lb" | "rb" | "b" | "l" | "r";
   noArrow?: boolean;
   delayClose?: number;
+  useGlobalRoot?: boolean;
 }
 
 export default function Popover(props: PopoverProps) {
@@ -68,6 +69,7 @@ export default function Popover(props: PopoverProps) {
     placement = "t",
     noArrow = false,
     delayClose = 0,
+    useGlobalRoot,
   } = props;
 
   const [internalShow, setShow] = useState(false);
@@ -244,62 +246,66 @@ export default function Popover(props: PopoverProps) {
     );
   }
 
-  // return (
-  //   <div
-  //     className={`relative ${className}`}
-  //     onPointerEnter={(e) => {
-  //       e.preventDefault();
-  //       clearTimeout(closeTimer.current);
-  //       onShow?.(true);
-  //       setShow(true);
-  //       getRelativePosition(e.currentTarget, "");
-  //       window.document.documentElement.style.overflow = "hidden";
-  //     }}
-  //     onPointerLeave={(e) => {
-  //       e.preventDefault();
-  //       if (delayClose) {
-  //         closeTimer.current = window.setTimeout(() => {
-  //           onShow?.(false);
-  //           setShow(false);
-  //         }, delayClose);
-  //       } else {
-  //         onShow?.(false);
-  //         setShow(false);
-  //       }
-  //       window.document.documentElement.style.overflow = "auto";
-  //     }}
-  //   >
-  //     {children}
-  //     {mergedShow && (
-  //       <>
-  //         <div
-  //           className={`${
-  //             noArrow ? "opacity-0" : ""
-  //           } bg-inherit ${arrowClassName}`}
-  //           style={{ zIndex: baseZIndex + 1 }}
-  //         >
-  //           <ArrowIcon sibling={popoverRef} />
-  //         </div>
-  //         {createPortal(
-  //           <div
-  //             className={` whitespace-nowrap ${popoverCommonClass} ${popoverClassName} cursor-pointer`}
-  //             style={{ zIndex: baseZIndex + 1, ...placementStyle }}
-  //             ref={popoverRef}
-  //           >
-  //             {content}
-  //           </div>,
-  //           popoverRoot,
-  //         )}
-  //       </>
-  //     )}
-  //   </div>
-  // );
+  if (useGlobalRoot) {
+    return (
+      <div
+        className={`relative ${className}`}
+        onPointerEnter={(e) => {
+          e.preventDefault();
+          clearTimeout(closeTimer.current);
+          onShow?.(true);
+          setShow(true);
+          getRelativePosition(e.currentTarget, "");
+          window.document.documentElement.style.overflow = "hidden";
+        }}
+        onPointerLeave={(e) => {
+          e.preventDefault();
+          if (delayClose) {
+            closeTimer.current = window.setTimeout(() => {
+              onShow?.(false);
+              setShow(false);
+            }, delayClose);
+          } else {
+            onShow?.(false);
+            setShow(false);
+          }
+          window.document.documentElement.style.overflow = "auto";
+        }}
+      >
+        {children}
+        {mergedShow && (
+          <>
+            <div
+              className={`${
+                noArrow ? "opacity-0" : ""
+              } bg-inherit ${arrowClassName}`}
+              style={{ zIndex: baseZIndex + 1 }}
+            >
+              <ArrowIcon sibling={popoverRef} />
+            </div>
+            {createPortal(
+              <div
+                className={` whitespace-nowrap ${popoverCommonClass} ${popoverClassName} cursor-pointer`}
+                style={{ zIndex: baseZIndex + 1, ...placementStyle }}
+                ref={popoverRef}
+              >
+                {content}
+              </div>,
+              popoverRoot,
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
       className={`group relative ${className}`}
       onPointerEnter={(e) => {
         getRelativePosition(e.currentTarget, "");
+        e.preventDefault();
+        e.stopPropagation();
       }}
     >
       {children}
