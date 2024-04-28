@@ -12,6 +12,7 @@ interface Action {
   icons: JSX.Element | IconMap;
   className?: string;
   onClick?: () => void;
+  activeClassName?: string;
 }
 
 type Groups = {
@@ -100,7 +101,7 @@ export default function ActionsBar(props: ActionsBarProps) {
             key={action.id}
             className={`cursor-pointer p-3 ${
               selected === action.id
-                ? "bg-actions-bar-btn-default"
+                ? `!bg-actions-bar-btn-default ${action.activeClassName}`
                 : "bg-transparent"
             } rounded-md items-center ${action.className}`}
             onClick={handlerClick(action)}

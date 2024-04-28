@@ -36,10 +36,10 @@ export default function Btn(props: {
       } text-text-btn-primary `;
       break;
     case "danger":
-      btnClassName = `bg-danger-btn text-text-btn-danger`;
+      btnClassName = `bg-danger-btn text-text-btn-danger hover:bg-hovered-btn`;
       break;
     default:
-      btnClassName = `bg-default-btn text-text-btn-default`;
+      btnClassName = `bg-default-btn text-text-btn-default hover:bg-hovered-btn`;
   }
 
   return (

@@ -58,7 +58,7 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       {options?.map((o) => (
         <div
           key={o.value}
-          className={`flex  items-center p-3 gap-2 rounded-action-btn hover:bg-select-option-hovered`}
+          className={`flex  items-center p-3 gap-2 rounded-action-btn hover:bg-select-option-hovered  cursor-pointer`}
           onClick={() => {
             onSelect?.(o.value);
           }}

@@ -180,7 +180,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                 )}
               </div>
               <div
-                className={`group relative flex-1 flex ${
+                className={`group relative flex flex ${
                   isUser ? "flex-row-reverse" : ""
                 }`}
               >

@@ -79,7 +79,7 @@ export default function Popover(props: PopoverProps) {
 
   const mergedShow = show ?? internalShow;
 
-  const { arrowClassName, placementStyle } = useMemo(() => {
+  const { arrowClassName, placementStyle, placementClassName } = useMemo(() => {
     const arrowCommonClassName = `${
       noArrow ? "hidden" : ""
     } absolute z-10 left-[50%] translate-x-[calc(-50%)]`;
@@ -105,28 +105,32 @@ export default function Popover(props: PopoverProps) {
           bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
           left: `calc(${distanceToLeftBoundary}px - ${targetW * 0.02}px)`,
         },
-        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]`,
+        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)] pb-[0.5rem]`,
+        placementClassName: "bottom-[calc(100%+0.5rem)] left-[calc(-2%)]",
       },
       lb: {
         placementStyle: {
           top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
           left: `calc(${distanceToLeftBoundary}px - ${targetW * 0.02}px)`,
         },
-        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]`,
+        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]  pt-[0.5rem]`,
+        placementClassName: "top-[calc(100%+0.5rem)] left-[calc(-2%)]",
       },
       rt: {
         placementStyle: {
           bottom: `calc(${distanceToBottomBoundary + targetH}px + 0.5rem)`,
           right: `calc(${distanceToRightBoundary}px - ${targetW * 0.02}px)`,
         },
-        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]`,
+        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)] pb-[0.5rem]`,
+        placementClassName: "bottom-[calc(100%+0.5rem)] right-[calc(-2%)]",
       },
       rb: {
         placementStyle: {
           top: `calc(-${distanceToBottomBoundary}px + 0.5rem)`,
           right: `calc(${distanceToRightBoundary}px - ${targetW * 0.02}px)`,
         },
-        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]`,
+        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)] pt-[0.5rem]`,
+        placementClassName: "top-[calc(100%+0.5rem)] right-[calc(-2%)]",
       },
       t: {
         placementStyle: {
@@ -134,7 +138,9 @@ export default function Popover(props: PopoverProps) {
           left: `calc(${distanceToLeftBoundary + targetW / 2}px`,
           transform: "translateX(-50%)",
         },
-        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)]`,
+        arrowClassName: `${arrowCommonClassName} bottom-[calc(100%+0.5rem)] translate-y-[calc(100%)] pb-[0.5rem]`,
+        placementClassName:
+          "bottom-[calc(100%+0.5rem)] left-[50%] translate-x-[calc(-50%)]",
       },
       b: {
         placementStyle: {
@@ -142,7 +148,9 @@ export default function Popover(props: PopoverProps) {
           left: `calc(${distanceToLeftBoundary + targetW / 2}px`,
           transform: "translateX(-50%)",
         },
-        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)]`,
+        arrowClassName: `${arrowCommonClassName} top-[calc(100%+0.5rem)] translate-y-[calc(-100%)] pt-[0.5rem]`,
+        placementClassName:
+          "top-[calc(100%+0.5rem)] left-[50%]  translate-x-[calc(-50%)]",
       },
     };
 
@@ -236,54 +244,83 @@ export default function Popover(props: PopoverProps) {
     );
   }
 
+  // return (
+  //   <div
+  //     className={`relative ${className}`}
+  //     onPointerEnter={(e) => {
+  //       e.preventDefault();
+  //       clearTimeout(closeTimer.current);
+  //       onShow?.(true);
+  //       setShow(true);
+  //       getRelativePosition(e.currentTarget, "");
+  //       window.document.documentElement.style.overflow = "hidden";
+  //     }}
+  //     onPointerLeave={(e) => {
+  //       e.preventDefault();
+  //       if (delayClose) {
+  //         closeTimer.current = window.setTimeout(() => {
+  //           onShow?.(false);
+  //           setShow(false);
+  //         }, delayClose);
+  //       } else {
+  //         onShow?.(false);
+  //         setShow(false);
+  //       }
+  //       window.document.documentElement.style.overflow = "auto";
+  //     }}
+  //   >
+  //     {children}
+  //     {mergedShow && (
+  //       <>
+  //         <div
+  //           className={`${
+  //             noArrow ? "opacity-0" : ""
+  //           } bg-inherit ${arrowClassName}`}
+  //           style={{ zIndex: baseZIndex + 1 }}
+  //         >
+  //           <ArrowIcon sibling={popoverRef} />
+  //         </div>
+  //         {createPortal(
+  //           <div
+  //             className={` whitespace-nowrap ${popoverCommonClass} ${popoverClassName} cursor-pointer`}
+  //             style={{ zIndex: baseZIndex + 1, ...placementStyle }}
+  //             ref={popoverRef}
+  //           >
+  //             {content}
+  //           </div>,
+  //           popoverRoot,
+  //         )}
+  //       </>
+  //     )}
+  //   </div>
+  // );
+
   return (
     <div
-      className={`relative ${className}`}
+      className={`group relative ${className}`}
       onPointerEnter={(e) => {
-        e.preventDefault();
-        clearTimeout(closeTimer.current);
-        onShow?.(true);
-        setShow(true);
         getRelativePosition(e.currentTarget, "");
-        window.document.documentElement.style.overflow = "hidden";
-      }}
-      onPointerLeave={(e) => {
-        e.preventDefault();
-        if (delayClose) {
-          closeTimer.current = window.setTimeout(() => {
-            onShow?.(false);
-            setShow(false);
-          }, delayClose);
-        } else {
-          onShow?.(false);
-          setShow(false);
-        }
-        window.document.documentElement.style.overflow = "auto";
       }}
     >
       {children}
-      {mergedShow && (
-        <>
-          <div
-            className={`${
-              noArrow ? "opacity-0" : ""
-            } bg-inherit ${arrowClassName}`}
-            style={{ zIndex: baseZIndex + 1 }}
-          >
-            <ArrowIcon sibling={popoverRef} />
-          </div>
-          {createPortal(
-            <div
-              className={` whitespace-nowrap ${popoverCommonClass} ${popoverClassName} cursor-pointer`}
-              style={{ zIndex: baseZIndex + 1, ...placementStyle }}
-              ref={popoverRef}
-            >
-              {content}
-            </div>,
-            popoverRoot,
-          )}
-        </>
-      )}
+      <div
+        className={`
+          hidden group-hover:block 
+          ${noArrow ? "opacity-0" : ""} 
+          bg-inherit 
+          ${arrowClassName}
+        `}
+        style={{ zIndex: baseZIndex + 1 }}
+      >
+        <ArrowIcon sibling={popoverRef} />
+      </div>
+      <div
+        className={`hidden group-hover:block whitespace-nowrap ${popoverCommonClass} ${placementClassName} ${popoverClassName}`}
+        ref={popoverRef}
+        style={{ zIndex: 10000 }}
+      >
+        {content}
+      </div>
     </div>
   );
 }

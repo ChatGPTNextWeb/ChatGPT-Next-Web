@@ -261,17 +261,13 @@ export default function MessageActions(props: MessageActionsProps) {
     showActions && (
       <div
         className={`
-          absolute z-10
+          absolute z-10 w-[100%]
           ${isUser ? "right-0" : "left-0"} 
           transition-all duration-300 
           opacity-0
           pointer-events-none
           group-hover:opacity-100 
           group-hover:pointer-events-auto
-          bg-chat-message-actions 
-          rounded-md 
-          shadow-message-actions-bar 
-          dark:bg-none
           ${className}
         `}
       >
@@ -285,7 +281,13 @@ export default function MessageActions(props: MessageActionsProps) {
             onUserStop,
           })}
           groups={groupsTypes[groupsType]}
-          className="flex flex-row gap-1  p-1"
+          className={`
+            float-right flex flex-row gap-1  p-1
+            bg-chat-message-actions 
+            rounded-md 
+            shadow-message-actions-bar 
+            dark:bg-none
+          `}
         />
       </div>
     )

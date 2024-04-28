@@ -73,11 +73,11 @@ export default function MenuLayout<
             max-md:w-[100%] max-md:px-4 max-md:pb-4 max-md:flex-1
             md:relative md:basis-sidebar md:h-[calc(100%-1.25rem)] md:pb-6  md:rounded-md md:my-2.5 md:bg-menu
           `}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              navigate(Path.Home);
-            }
-          }}
+          // onClick={(e) => {
+          //   if (e.target === e.currentTarget) {
+          //     navigate(Path.Home);
+          //   }
+          // }}
         >
           <ListComponent
             {...props}

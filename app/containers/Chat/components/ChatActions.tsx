@@ -182,7 +182,7 @@ export function ChatActions(props: {
             return (
               <div
                 key={act.text}
-                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6`}
+                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
                 onClick={act.onClick}
               >
                 {act.icon}

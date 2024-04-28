@@ -54,12 +54,17 @@ export function SessionItem(props: {
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
-          className={`group/chat-menu-list relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 ${
-            props.selected &&
-            (currentPath === Path.Chat || currentPath === Path.Home)
-              ? `bg-chat-menu-session-selected border-chat-menu-session-selected border `
-              : `bg-chat-menu-session-unselected hover:bg-chat-menu-session-hovered`
-          }`}
+          className={`
+            group/chat-menu-list relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 
+            border 
+            bg-chat-menu-session-unselected border-chat-menu-session-unselected
+            ${
+              props.selected &&
+              (currentPath === Path.Chat || currentPath === Path.Home)
+                ? `!bg-chat-menu-session-selected !border-chat-menu-session-selected`
+                : `hover:bg-chat-menu-session-hovered hover:chat-menu-session-hovered`
+            }
+          `}
           onClick={props.onClick}
           ref={(ele) => {
             draggableRef.current = ele;
@@ -94,7 +99,7 @@ export function SessionItem(props: {
           <Popover
             content={
               <div
-                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6`}
+                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
                 onClickCapture={(e) => {
                   props.onDelete?.();
                   e.preventDefault();
@@ -208,12 +213,12 @@ export default MenuLayout(function SessionList(props) {
       </div>
 
       <div
-        className={`flex-1 overflow-y-auto overflow-x-hidden`}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
-        }}
+        className={`flex-1 overflow-y-auto`}
+        // onClick={(e) => {
+        //   if (e.target === e.currentTarget) {
+        //     navigate(Path.Home);
+        //   }
+        // }}
       >
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="chat-list">

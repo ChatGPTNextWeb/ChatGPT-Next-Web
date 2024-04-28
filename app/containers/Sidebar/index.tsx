@@ -61,6 +61,8 @@ export function SideBar(props: { className?: string }) {
               mobileInactive: <DiscoverMobileInactive />,
             },
             title: "Discover",
+            activeClassName: "shadow-sidebar-btn-shadow",
+            className: "mb-4 hover:bg-sidebar-btn-hovered",
           },
           {
             id: Path.Home,
@@ -71,11 +73,13 @@ export function SideBar(props: { className?: string }) {
               mobileInactive: <AssistantMobileInactive />,
             },
             title: "Assistant",
+            activeClassName: "shadow-sidebar-btn-shadow",
+            className: "mb-4 hover:bg-sidebar-btn-hovered",
           },
           {
             id: "github",
             icons: <GitHubIcon />,
-            className: "p-2",
+            className: "!p-2 mb-3 hover:bg-sidebar-btn-hovered",
           },
           {
             id: Path.Settings,
@@ -85,7 +89,7 @@ export function SideBar(props: { className?: string }) {
               mobileActive: <SettingMobileActive />,
               mobileInactive: <SettingMobileInactive />,
             },
-            className: "p-2",
+            className: "!p-2 hover:bg-sidebar-btn-hovered",
             title: "Settrings",
           },
         ]}
