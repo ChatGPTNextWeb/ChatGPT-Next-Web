@@ -8,17 +8,19 @@ import {
   Tag,
   Input,
   Button,
-  notification,
+  notification as notificationModule,
   Popconfirm,
   Checkbox,
+  Modal,
+  Form,
 } from "antd";
 import type { GetRef, TableColumnsType } from "antd";
 // import { headers } from 'next/headers'
 import type { NotificationArgsProps } from "antd";
 
-import Highlighter from "react-highlight-words";
+// import Highlighter from "react-highlight-words";
 // 后期考虑删除该依赖
-type NotificationPlacement = NotificationArgsProps["placement"];
+// type NotificationPlacement = NotificationArgsProps["placement"];
 
 import type { SearchProps } from "antd/es/input/Search";
 
@@ -82,8 +84,10 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
 }
 
 function UsersTable({ users, setUsers, loading }: UserInterface) {
-  const [api, contextHolder] = notification.useNotification();
-
+  const [notification, notificationContextHolder] =
+    notificationModule.useNotification();
+  const [editUserModal, editUserModalContextHolder] = Modal.useModal();
+  const [editUserForm] = Form.useForm();
   const [newPassword, setNewPassword] = useState("");
 
   const newPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,12 +137,12 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
 
   const openNotification = (level: string, arms: NotificationArgsProps) => {
     if (level === "error") {
-      api.error({
+      notification.error({
         ...arms,
         placement: "topRight",
       });
     } else {
-      api.info({
+      notification.info({
         ...arms,
         placement: "topRight",
       });
@@ -189,7 +193,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       render: (value) => getCurrentTime(new Date(value)),
     },
     {
-      title: "isAdmin",
+      title: "管理员",
       dataIndex: "isAdmin",
       width: 80,
       render: (value) => {
@@ -201,9 +205,9 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       },
     },
     {
-      title: "allowToLogin",
+      title: "允许登录",
       dataIndex: "allowToLogin",
-      width: 120,
+      width: 80,
       render: (value) => {
         return (
           <div>
@@ -212,13 +216,26 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
         );
       },
     },
+    // {
+    //   title: "编辑",
+    //   dataIndex: "",
+    //   key: "id",
+    //   width: 80,
+    //   render: (value) => {
+    //     return (
+    //       <div>
+    //         <a >编辑</a>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: "Action",
       dataIndex: "",
       key: "id",
       render: (_, record) => (
-        <Space size="middle">
-          {contextHolder}
+        <Space size="small">
+          <a>编辑</a>
           <Popconfirm
             id="user-admin-table-pop_confirm"
             title="设置密码"
@@ -247,16 +264,20 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
   // console.log(users, "users2");
 
   return (
-    <Table
-      dataSource={users}
-      rowKey="id"
-      columns={columns}
-      loading={loading as boolean}
-      scroll={{
-        scrollToFirstRowOnChange: true,
-        y: 1080,
-      }}
-    />
+    <>
+      {notificationContextHolder}
+      {editUserModalContextHolder}
+      <Table
+        dataSource={users}
+        rowKey="id"
+        columns={columns}
+        loading={loading as boolean}
+        scroll={{
+          scrollToFirstRowOnChange: true,
+          y: 1080,
+        }}
+      />
+    </>
   );
 }
 

@@ -20,13 +20,13 @@ function SettingForm() {
   const [form] = Form.useForm();
 
   const [setting, setSetting] = useState<Setting[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const openModal = () => setIsModalVisible(true);
-  const closeModal = () => setIsModalVisible(false);
-
-  const handleFormSubmit = async (record: Setting) => {
-    console.log("-------", record);
-  };
+  // const [isModalVisible, setIsModalVisible] = useState(false);
+  // const openModal = () => setIsModalVisible(true);
+  // const closeModal = () => setIsModalVisible(false);
+  //
+  // const handleFormSubmit = async (record: Setting) => {
+  //   console.log("-------", record);
+  // };
 
   const handelDel = (record: Setting) => {
     fetch(`/api/admin/setting/${record.key}`, {
