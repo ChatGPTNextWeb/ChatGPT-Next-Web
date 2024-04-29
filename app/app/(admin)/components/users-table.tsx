@@ -189,6 +189,18 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       render: (value) => getCurrentTime(new Date(value)),
     },
     {
+      title: "isAdmin",
+      dataIndex: "isAdmin",
+      width: 80,
+      render: (value) => {
+        return (
+          <div>
+            <Checkbox defaultChecked={value} disabled></Checkbox>
+          </div>
+        );
+      },
+    },
+    {
       title: "allowToLogin",
       dataIndex: "allowToLogin",
       width: 120,

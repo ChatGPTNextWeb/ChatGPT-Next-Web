@@ -25,6 +25,7 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   allowToLogin  Boolean    @default(true)
+  isAdmin       Boolean?   @default(false)
   accounts      Account[]
   sessions      Session[]
   // sites         Site[]
