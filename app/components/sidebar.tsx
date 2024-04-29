@@ -12,6 +12,7 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
+import ServerStack from "../icons/ServerStack.svg";
 
 import Locale from "../locales";
 
@@ -158,7 +159,7 @@ export function SideBar(props: { className?: string }) {
           NextChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          驾驭未来的最好方式就是创造未来
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -220,6 +221,11 @@ export function SideBar(props: { className?: string }) {
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href="https://stats.uptimerobot.com/TTbVUvRqXZ" target="_blank" rel="status">
+              <IconButton icon={<ServerStack />} shadow />
+             </a>
           </div>
         </div>
         <div>

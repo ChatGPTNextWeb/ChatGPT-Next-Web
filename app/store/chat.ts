@@ -442,23 +442,23 @@ export const useChatStore = createPersistStore(
           session.mask.modelConfig.model.startsWith("gpt-");
 
         var systemPrompts: ChatMessage[] = [];
-        systemPrompts = shouldInjectSystemPrompts
-          ? [
-              createMessage({
-                role: "system",
-                content: fillTemplateWith("", {
-                  ...modelConfig,
-                  template: DEFAULT_SYSTEM_TEMPLATE,
-                }),
-              }),
-            ]
-          : [];
-        if (shouldInjectSystemPrompts) {
-          console.log(
-            "[Global System Prompt] ",
-            systemPrompts.at(0)?.content ?? "empty",
-          );
-        }
+        // systemPrompts = shouldInjectSystemPrompts
+        //   ? [
+        //       createMessage({
+        //         role: "system",
+        //         content: fillTemplateWith("", {
+        //           ...modelConfig,
+        //           template: DEFAULT_SYSTEM_TEMPLATE,
+        //         }),
+        //       }),
+        //     ]
+        //   : [];
+        // if (shouldInjectSystemPrompts) {
+        //   console.log(
+        //     "[Global System Prompt] ",
+        //     systemPrompts.at(0)?.content ?? "empty",
+        //   );
+        // }
 
         // long term memory
         const shouldSendLongTermMemory =
