@@ -55,11 +55,11 @@ export default function Input(props: CommonInputProps & InputProps) {
 
   return (
     <div
-      className={`w-[100%] rounded-chat-input bg-input flex gap-3 items-center px-3 py-2 ${className}`}
+      className={` group/input w-[100%] rounded-chat-input bg-input flex gap-3 items-center px-3 py-2 ${className} hover:bg-select-hover`}
     >
       <input
         {...rest}
-        className=" overflow-hidden text-text-input text-sm-title leading-input outline-none flex-1"
+        className=" overflow-hidden text-text-input text-sm-title leading-input outline-none flex-1 group-hover/input:bg-input-input-ele-hover"
         type={internalType}
         value={value}
         onChange={(e) => {

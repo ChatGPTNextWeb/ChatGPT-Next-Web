@@ -1,5 +1,12 @@
 import useRelativePosition from "@/app/hooks/useRelativePosition";
-import { RefObject, useEffect, useMemo, useRef, useState } from "react";
+import {
+  RefObject,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 
 const ArrowIcon = ({ sibling }: { sibling: RefObject<HTMLDivElement> }) => {
@@ -55,6 +62,7 @@ export interface PopoverProps {
   noArrow?: boolean;
   delayClose?: number;
   useGlobalRoot?: boolean;
+  getPopoverPanelRef?: (ref: RefObject<HTMLDivElement>) => void;
 }
 
 export default function Popover(props: PopoverProps) {
@@ -70,6 +78,7 @@ export default function Popover(props: PopoverProps) {
     noArrow = false,
     delayClose = 0,
     useGlobalRoot,
+    getPopoverPanelRef,
   } = props;
 
   const [internalShow, setShow] = useState(false);
@@ -175,10 +184,14 @@ export default function Popover(props: PopoverProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number>(0);
 
+  useLayoutEffect(() => {
+    getPopoverPanelRef?.(popoverRef);
+    onShow?.(internalShow);
+  }, [internalShow]);
+
   if (trigger === "click") {
     const handleOpen = (e: { currentTarget: any }) => {
       clearTimeout(closeTimer.current);
-      onShow?.(true);
       setShow(true);
       getRelativePosition(e.currentTarget, "");
       window.document.documentElement.style.overflow = "hidden";
@@ -186,11 +199,9 @@ export default function Popover(props: PopoverProps) {
     const handleClose = () => {
       if (delayClose) {
         closeTimer.current = window.setTimeout(() => {
-          onShow?.(false);
           setShow(false);
         }, delayClose);
       } else {
-        onShow?.(false);
         setShow(false);
       }
       window.document.documentElement.style.overflow = "auto";
@@ -219,7 +230,7 @@ export default function Popover(props: PopoverProps) {
             )}
             {createPortal(
               <div
-                className={`${popoverCommonClass} ${popoverClassName} cursor-pointer`}
+                className={`${popoverCommonClass} ${popoverClassName} cursor-pointer overflow-auto`}
                 style={{ zIndex: baseZIndex + 1, ...placementStyle }}
                 ref={popoverRef}
               >

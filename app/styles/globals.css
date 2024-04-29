@@ -75,13 +75,16 @@ body {
   --sidebar-mobile-bg: #fff;
   --sidebar-btn-hovered-bg: rgba(0, 0, 0, 0.05);
   --delete-chat-popover-panel-bg: #fff;
-  --confirm-mask-bg: rgba(0, 0, 0, 0.7);
-  --confirm-panel-bg: #fff;
+  --modal-mask-bg: rgba(0, 0, 0, 0.7);
+  --moda-panel-bg: #fff;
   --delete-chat-ok-btn-bg: #ff5454;
   --delete-chat-cancel-btn-bg: #fff;
   --chat-message-actions-bg: #fff;
   --menu-dragger-bg: blue;
-  --chat-actions-select-model-bg: rgba(0, 0, 0, 0.1);
+  --chat-actions-select-model-bg: rgba(0, 0, 0, 0.05);
+  --chat-actions-select-model-hover-bg: rgba(0, 0, 0, 0.1);
+  --select-hover-bg: rgba(0, 0, 0, 0.05);
+  --input-input-ele-hover-bg: rgba(0, 0, 0, 0);
 
   --select-popover-border: rgba(0, 0, 0, 0.1);
   --slider-block-border: #c9c9d1;
@@ -98,6 +101,7 @@ body {
   --delete-chat-cancel-btn-border: #e2e2e6;
   --chat-menu-session-unselected-border: #f0f0f3;
   --chat-menu-session-hovered-border: #e2e2e6;
+  --modal-header-bottom-border: #f0f0f3;
 
   --sidebar-tab-mobile-active-text: #2e42f3;
   --sidebar-tab-mobile-inactive-text: #a5a5b3;
@@ -122,7 +126,7 @@ body {
   --settings-menu-title-text: #18182a;
   --settings-menu-item-title-text: #18182a;
   --settings-panel-header-title-text: #18182a;
-  --confirm-mask-text: #18182a;
+  --modal-mask-text: #18182a;
   --delete-chat-ok-btn-text: #fff;
   --delete-chat-cancel-btn-text: #18182a;
 
@@ -185,8 +189,8 @@ body {
   --sidebar-mobile-bg: #fff;
   --sidebar-btn-hovered-bg: rgba(0, 0, 0, 0.05);
   --delete-chat-popover-panel-bg: #fff;
-  --confirm-mask-bg: rgba(0, 0, 0, 0.7);
-  --confirm-panel-bg: #fff;
+  --modal-mask-bg: rgba(0, 0, 0, 0.7);
+  --moda-panel-bg: #fff;
   --delete-chat-ok-btn-bg: #ff5454;
   --delete-chat-cancel-btn-bg: #fff;
   --chat-message-actions-bg: #fff;
@@ -230,7 +234,7 @@ body {
   --settings-menu-title-text: #18182a;
   --settings-menu-item-title-text: #18182a;
   --settings-panel-header-title-text: #18182a;
-  --confirm-mask-text: #18182a;
+  --modal-mask-text: #18182a;
   --delete-chat-ok-btn-text: #fff;
   --delete-chat-cancel-btn-text: #18182a;
   --primary-btn-disabled-dark-text: #fafafa;

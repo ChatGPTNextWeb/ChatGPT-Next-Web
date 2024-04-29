@@ -23,7 +23,7 @@ import LogIcon from "@/app/icons/logIcon.svg";
 
 import MenuLayout from "@/app/components/MenuLayout";
 import Panel from "./ChatPanel";
-import Confirm from "@/app/components/Confirm";
+import Modal from "@/app/components/Modal";
 import HoverPopover from "@/app/components/HoverPopover";
 
 export function SessionItem(props: {
@@ -119,7 +119,12 @@ export function SessionItem(props: {
             align={props.isMobileScreen ? "end" : "start"}
           >
             <div
-              className={`!absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 group-hover/chat-menu-list:pointer-events-auto group-hover/chat-menu-list:opacity-100`}
+              className={`
+                !absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 
+                group-hover/chat-menu-list:pointer-events-auto 
+                group-hover/chat-menu-list:opacity-100
+                hover:bg-select-hover rounded-chat-img
+              `}
             >
               <DeleteIcon />
             </div>
@@ -239,7 +244,7 @@ export default MenuLayout(function SessionList(props) {
                     }}
                     onDelete={async () => {
                       if (
-                        await Confirm.show({
+                        await Modal.warn({
                           okText: Locale.ChatItem.DeleteOkBtn,
                           cancelText: Locale.ChatItem.DeleteCancelBtn,
                           title: Locale.ChatItem.DeleteTitle,

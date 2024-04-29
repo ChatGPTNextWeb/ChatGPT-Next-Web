@@ -19,15 +19,15 @@ import BreakIcon from "@/app/icons/eraserIcon.svg";
 import SettingsIcon from "@/app/icons/configIcon.svg";
 import ImageIcon from "@/app/icons/uploadImgIcon.svg";
 import AddCircleIcon from "@/app/icons/addCircle.svg";
-import BottomArrow from "@/app/icons/downArrowLgIcon.svg";
 
 import Popover from "@/app/components/Popover";
+import ModelSelect from "./ModelSelect";
 
 export interface Action {
-  onClick: () => void;
+  onClick?: () => void;
   text: string;
   isShow: boolean;
-  pcRender?: () => JSX.Element;
+  render?: (key: string) => JSX.Element;
   icon?: JSX.Element;
   placement: "left" | "right";
 }
@@ -39,7 +39,6 @@ export function ChatActions(props: {
   showChatSetting: () => void;
   scrollToBottom: () => void;
   showPromptHints: () => void;
-  showModelSelector: (show: boolean) => void;
   hitBottom: boolean;
   uploading: boolean;
   isMobileScreen: boolean;
@@ -101,15 +100,9 @@ export function ChatActions(props: {
       placement: "left",
     },
     {
-      onClick: () => props.showModelSelector(true),
       text: currentModel,
-      isShow: true,
-      pcRender: () => (
-        <div className="flex items-center  justify-center gap-1 cursor-pointer rounded-chat-model-select pl-3 pr-2.5 py-2 font-common leading-4 bg-chat-actions-select-model">
-          {currentModel}
-          <BottomArrow />
-        </div>
-      ),
+      isShow: !props.isMobileScreen,
+      render: (key: string) => <ModelSelect key={key} />,
       placement: "left",
     },
     {
@@ -182,7 +175,7 @@ export function ChatActions(props: {
       icon: <SettingsIcon />,
       placement: "right",
     },
-  ] as const;
+  ];
 
   if (props.isMobileScreen) {
     const content = (
@@ -226,12 +219,8 @@ export function ChatActions(props: {
       {actions
         .filter((v) => v.placement === "left" && v.isShow)
         .map((act, ind) => {
-          if (act.pcRender) {
-            return (
-              <div key={act.text} onClick={act.onClick}>
-                {act.pcRender()}
-              </div>
-            );
+          if (act.render) {
+            return act.render(act.text);
           }
           return (
             <Popover

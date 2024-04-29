@@ -6,7 +6,12 @@ import styles from "../index.module.scss";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarPicker } from "@/app/components/emoji";
 import { Popover } from "@/app/components/ui-lib";
-import Locale, { AllLangs, changeLang, getLang } from "@/app/locales";
+import Locale, {
+  ALL_LANG_OPTIONS,
+  AllLangs,
+  changeLang,
+  getLang,
+} from "@/app/locales";
 import Link from "next/link";
 import { IconButton } from "@/app/components/button";
 import { useUpdateStore } from "@/app/store/update";
@@ -140,7 +145,10 @@ export default function AppSetting(props: AppSettingProps) {
       <ListItem title={Locale.Settings.Lang.Name}>
         <Select
           value={getLang()}
-          options={AllLangs.map((lang) => ({ value: lang, label: lang }))}
+          options={AllLangs.map((lang) => ({
+            value: lang,
+            label: ALL_LANG_OPTIONS[lang],
+          }))}
           onSelect={(e) => {
             changeLang(e);
           }}

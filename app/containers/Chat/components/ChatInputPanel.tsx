@@ -35,7 +35,6 @@ export interface ChatInputPanelProps {
   setIsLoading: (value: boolean) => void;
   showChatSetting: (value: boolean) => void;
   _setMsgRenderIndex: (value: number) => void;
-  showModelSelector: (value: boolean) => void;
   setAutoScroll: (value: boolean) => void;
   scrollDomToBottom: () => void;
 }
@@ -64,7 +63,6 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
       _setMsgRenderIndex,
       hitBottom,
       inputRows,
-      showModelSelector,
       setAutoScroll,
       scrollDomToBottom,
     } = props;
@@ -226,7 +224,6 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
           `}
         >
           <ChatActions
-            showModelSelector={showModelSelector}
             uploadImage={uploadImage}
             setAttachImages={setAttachImages}
             setUploading={setUploading}

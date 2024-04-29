@@ -12,16 +12,10 @@ export interface ChatHeaderProps {
   isMobileScreen: boolean;
   setIsEditingMessage: (v: boolean) => void;
   setShowExport: (v: boolean) => void;
-  showModelSelector: (v: boolean) => void;
 }
 
 export default function ChatHeader(props: ChatHeaderProps) {
-  const {
-    isMobileScreen,
-    setIsEditingMessage,
-    setShowExport,
-    showModelSelector,
-  } = props;
+  const { isMobileScreen, setIsEditingMessage, setShowExport } = props;
 
   const navigate = useNavigate();
 
@@ -78,7 +72,7 @@ export default function ChatHeader(props: ChatHeaderProps) {
           {isMobileScreen ? (
             <div
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => showModelSelector(true)}
+              onClick={() => {}}
             >
               {currentModel}
               <BottomArrow />

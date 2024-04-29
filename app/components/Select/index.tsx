@@ -58,14 +58,22 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       {options?.map((o) => (
         <div
           key={o.value}
-          className={`flex  items-center p-3 gap-2 rounded-action-btn hover:bg-select-option-hovered  cursor-pointer`}
+          className={`flex items-center px-3 py-2 gap-3 rounded-action-btn hover:bg-select-option-hovered cursor-pointer`}
           onClick={() => {
             onSelect?.(o.value);
           }}
         >
-          {!!o.icon && <div className="">{o.icon}</div>}
-          <div className={`flex-1`}>{o.label}</div>
-          {selectedOption?.value === o.value && <Selected />}
+          <div className="flex gap-2 flex-1">
+            {!!o.icon && <div className="">{o.icon}</div>}
+            <div className={`flex-1`}>{o.label}</div>
+          </div>
+          <div
+            className={
+              selectedOption?.value === o.value ? "opacity-100" : "opacity-0"
+            }
+          >
+            <Selected />
+          </div>
         </div>
       ))}
     </div>
@@ -86,7 +94,7 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       className={selectClassName}
     >
       <div
-        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title  cursor-pointer`}
+        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title  cursor-pointer hover:bg-select-hover`}
         ref={contentRef}
       >
         <div className={`flex items-center gap-2 flex-1`}>

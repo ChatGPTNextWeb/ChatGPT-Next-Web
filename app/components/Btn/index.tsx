@@ -2,7 +2,7 @@ import * as React from "react";
 
 export type ButtonType = "primary" | "danger" | null;
 
-export default function Btn(props: {
+export interface BtnProps {
   onClick?: () => void;
   icon?: JSX.Element;
   type?: ButtonType;
@@ -14,7 +14,9 @@ export default function Btn(props: {
   disabled?: boolean;
   tabIndex?: number;
   autoFocus?: boolean;
-}) {
+}
+
+export default function Btn(props: BtnProps) {
   const {
     onClick,
     icon,

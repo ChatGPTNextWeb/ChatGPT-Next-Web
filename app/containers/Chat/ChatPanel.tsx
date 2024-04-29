@@ -38,7 +38,6 @@ function _Chat() {
   const { isMobileScreen } = config;
 
   const [showExport, setShowExport] = useState(false);
-  const [showModelSelector, setShowModelSelector] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -234,7 +233,6 @@ function _Chat() {
     setIsLoading,
     showChatSetting: setShowPromptModal,
     _setMsgRenderIndex,
-    showModelSelector: setShowModelSelector,
     scrollDomToBottom,
     setAutoScroll,
   };
@@ -256,23 +254,6 @@ function _Chat() {
     scrollDomToBottom,
   };
 
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-  const allModels = useAllModels();
-  const models = useMemo(() => {
-    const filteredModels = allModels.filter((m) => m.available);
-    const defaultModel = filteredModels.find((m) => m.isDefault);
-
-    if (defaultModel) {
-      const arr = [
-        defaultModel,
-        ...filteredModels.filter((m) => m !== defaultModel),
-      ];
-      return arr;
-    } else {
-      return filteredModels;
-    }
-  }, [allModels]);
-
   return (
     <div
       className={`
@@ -286,7 +267,6 @@ function _Chat() {
         setIsEditingMessage={setIsEditingMessage}
         setShowExport={setShowExport}
         isMobileScreen={isMobileScreen}
-        showModelSelector={setShowModelSelector}
       />
 
       <ChatMessagePanel {...chatMessagePanelProps} />
@@ -309,25 +289,6 @@ function _Chat() {
 
       {showPromptModal && (
         <SessionConfigModel onClose={() => setShowPromptModal(false)} />
-      )}
-
-      {showModelSelector && (
-        <Selector
-          defaultSelectedValue={currentModel}
-          items={models.map((m) => ({
-            title: m.displayName,
-            value: m.name,
-          }))}
-          onClose={() => setShowModelSelector(false)}
-          onSelection={(s) => {
-            if (s.length === 0) return;
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
-              session.mask.syncGlobalConfig = false;
-            });
-            showToast(s[0]);
-          }}
-        />
       )}
     </div>
   );
