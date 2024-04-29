@@ -97,6 +97,11 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
     setNewPassword(e.target.value.trim());
   };
 
+  const handleUserEdit = (
+    method: "POST" | "PUT",
+    record: User | undefined,
+  ) => {};
+
   const confirmPassword = async (id: string) => {
     console.log("-----", newPassword, id);
     try {
