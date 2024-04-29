@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-// import { isName, ADMIN_LIST } from "@/lib/auth_list";
 import { VerifiedUser, VerifiedAdminUser } from "@/lib/auth_client";
+import { CUS_JWT } from "@/lib/auth_type";
+
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -17,8 +18,8 @@ export default async function middleware(req: NextRequest) {
 
 
     const session = await getToken({ req });
-    const isUser = await VerifiedUser(session);
-    const isAdminUser = await VerifiedAdminUser(session);
+    const isUser = await VerifiedUser(session as CUS_JWT);
+    const isAdminUser = await VerifiedAdminUser(session as CUS_JWT);
     // console.log('----session', session, '---isUser', isUser, '---isAdmin', isAdminUser)
     // 管理员页面的api接口还是要认证的
     if (path.startsWith('/api/admin/')) {

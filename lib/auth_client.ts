@@ -1,10 +1,5 @@
-import {ADMIN_LIST, isName} from "@/lib/auth_list";
-import { JWT } from "next-auth/jwt";
-import { User } from "@prisma/client";
-
-type CUS_JWT = JWT & {
-  user: User,
-}
+import {isName} from "@/lib/auth_list";
+import { CUS_JWT } from "@/lib/auth_type";
 
 
 export async function VerifiedUser(session: CUS_JWT |null) {

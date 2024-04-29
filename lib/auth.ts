@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import {PrismaAdapter} from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import { User } from "@prisma/client";
-import {ADMIN_LIST, isEmail, isName} from "@/lib/auth_list";
+import { isEmail, isName } from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
 import { comparePassword, hashPassword } from "@/lib/utils";
 import {getCurStartEnd} from "@/app/utils/custom";
@@ -192,17 +192,6 @@ export async function getSessionName() {
         name: session?.user?.email || session?.user?.name,
         session
     }
-}
-
-export async function VerifiedUser() {
-    const { name, session } = await getSessionName();
-    const userId = session?.user?.id
-    return !!(name && isName(name) && userId);
-}
-
-export async function VerifiedAdminUser() {
-    const { name, session } = await getSessionName();
-    return !!(name && ADMIN_LIST.includes(name));
 }
 
 export function validatePassword(password: string, hashPassword: string | null | undefined ): boolean | void {
