@@ -5,13 +5,13 @@ import RemarkBreaks from "remark-breaks";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
-import { useRef, useState, RefObject, useEffect } from "react";
+import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
-import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
 
 export function Mermaid(props: { code: string }) {
@@ -99,7 +99,46 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+function escapeDollarNumber(text: string) {
+  let escapedText = "";
+
+  for (let i = 0; i < text.length; i += 1) {
+    let char = text[i];
+    const nextChar = text[i + 1] || " ";
+
+    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
+      char = "\\$";
+    }
+
+    escapedText += char;
+  }
+
+  return escapedText;
+}
+
+function escapeBrackets(text: string) {
+  const pattern =
+    /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
+  return text.replace(
+    pattern,
+    (match, codeBlock, squareBracket, roundBracket) => {
+      if (codeBlock) {
+        return codeBlock;
+      } else if (squareBracket) {
+        return `$$${squareBracket}$$`;
+      } else if (roundBracket) {
+        return `$${roundBracket}$`;
+      }
+      return match;
+    },
+  );
+}
+
 function _MarkDownContent(props: { content: string }) {
+  const escapedContent = useMemo(() => {
+    return escapeBrackets(escapeDollarNumber(props.content));
+  }, [props.content]);
+
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
@@ -124,7 +163,7 @@ function _MarkDownContent(props: { content: string }) {
         },
       }}
     >
-      {props.content}
+      {escapedContent}
     </ReactMarkdown>
   );
 }

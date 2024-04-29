@@ -1,3 +1,4 @@
+import { getClientConfig } from "../config/client";
 import { Updater } from "../typing";
 import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
 import { createPersistStore } from "../utils/store";
@@ -20,6 +21,7 @@ export interface WebDavConfig {
   password: string;
 }
 
+const isApp = !!getClientConfig()?.isApp;
 export type SyncStore = GetStoreState<typeof useSyncStore>;
 
 const DEFAULT_SYNC_STATE = {
@@ -46,7 +48,7 @@ const DEFAULT_SYNC_STATE = {
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
   (set, get) => ({
-    coundSync() {
+    cloudSync() {
       const config = get()[get().provider];
       return Object.values(config).every((c) => c.toString().length > 0);
     },
@@ -57,7 +59,13 @@ export const useSyncStore = createPersistStore(
 
     export() {
       const state = getLocalAppState();
-      const fileName = `Backup-${new Date().toLocaleString()}.json`;
+      const datePart = isApp
+        ? `${new Date().toLocaleDateString().replace(/\//g, "_")} ${new Date()
+            .toLocaleTimeString()
+            .replace(/:/g, "_")}`
+        : new Date().toLocaleString();
+
+      const fileName = `Backup-${datePart}.json`;
       downloadAs(JSON.stringify(state), fileName);
     },
 
@@ -95,7 +103,8 @@ export const useSyncStore = createPersistStore(
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
       } catch (e) {
-        console.log("[Sync] failed to get remoate state", e);
+        console.log("[Sync] failed to get remote state", e);
+        throw e;
       }
 
       await client.set(config.username, JSON.stringify(localState));
@@ -110,13 +119,22 @@ export const useSyncStore = createPersistStore(
   }),
   {
     name: StoreKey.Sync,
-    version: 1.1,
+    version: 1.2,
 
     migrate(persistedState, version) {
       const newState = persistedState as typeof DEFAULT_SYNC_STATE;
 
       if (version < 1.1) {
         newState.upstash.username = STORAGE_KEY;
+      }
+
+      if (version < 1.2) {
+        if (
+          (persistedState as typeof DEFAULT_SYNC_STATE).proxyUrl ===
+          "/api/cors/"
+        ) {
+          newState.proxyUrl = "";
+        }
       }
 
       return newState as any;
