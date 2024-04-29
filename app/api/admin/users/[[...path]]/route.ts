@@ -95,7 +95,16 @@ async function handle(
   if (method === "PUT") {
     try {
       const userId = params.path[0];
-      return await changeUserInfo(userId, await req.json());
+      let new_user_info: Partial<User> = Object.entries(
+        await req.json(),
+      ).reduce((acc, [key, value]) => {
+        if (value !== null) {
+          // @ts-ignore
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
+      return await changeUserInfo(userId, new_user_info);
     } catch {
       return NextResponse.json({ error: "未知错误" }, { status: 500 });
     }
@@ -103,16 +112,18 @@ async function handle(
   return NextResponse.json({ error: "当前方法不支持" }, { status: 405 });
 }
 
-async function changeUserInfo(id: string, info: User) {
-  const hashDPassword = hashPassword(info?.password ?? "");
-  console.log("-----------", id, info, hashDPassword);
-  if (hashDPassword) {
+async function changeUserInfo(id: string, info: Partial<User>) {
+  if (info.password) {
+    info["password"] = hashPassword(info.password);
+  }
+  // console.log("-----------", id, info, hashDPassword);
+  if (info) {
     await prisma.user.update({
       where: {
         id: id,
       },
       data: {
-        password: hashDPassword,
+        ...info,
       },
     });
     return NextResponse.json({ result: "ok" });

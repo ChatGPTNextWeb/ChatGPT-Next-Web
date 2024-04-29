@@ -5,20 +5,21 @@ import { User } from "@prisma/client";
 import {
   Space,
   Table,
-  Tag,
   Input,
   Button,
-  notification,
-  Popconfirm,
+  notification as notificationModule,
   Checkbox,
+  Modal,
+  Form,
 } from "antd";
 import type { GetRef, TableColumnsType } from "antd";
+import { LockOutlined } from "@ant-design/icons";
 // import { headers } from 'next/headers'
 import type { NotificationArgsProps } from "antd";
 
-import Highlighter from "react-highlight-words";
+// import Highlighter from "react-highlight-words";
 // 后期考虑删除该依赖
-type NotificationPlacement = NotificationArgsProps["placement"];
+// type NotificationPlacement = NotificationArgsProps["placement"];
 
 import type { SearchProps } from "antd/es/input/Search";
 
@@ -36,9 +37,6 @@ interface SearchTextProps {
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
 }
-
-type DataIndex = keyof User;
-type InputRef = GetRef<typeof Input>;
 
 function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
   const [searchText, setSearchText] = useState("");
@@ -82,63 +80,114 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
 }
 
 function UsersTable({ users, setUsers, loading }: UserInterface) {
-  const [api, contextHolder] = notification.useNotification();
+  const [notification, notificationContextHolder] =
+    notificationModule.useNotification();
+  const [editUserModal, editUserModalContextHolder] = Modal.useModal();
+  const [editUserForm] = Form.useForm();
 
-  const [newPassword, setNewPassword] = useState("");
+  const handleUserEdit = (method: "POST" | "PUT", record: User | undefined) => {
+    editUserModal.confirm({
+      title: "编辑用户",
+      content: (
+        <Form
+          form={editUserForm}
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 28 }}
+          layout="horizontal"
+          autoComplete="off"
+          initialValues={record}
+          preserve={false}
+        >
+          <Form.Item name="id" label="id" rules={[{ required: true }]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item name="name" label="name">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item name="username" label="username">
+            <Input autoComplete="off" />
+          </Form.Item>
+          <Form.Item name="gh_username" label="gh_username">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item name="email" label="email">
+            <Input />
+          </Form.Item>
+          <Form.Item name="emailVerified" label="emailVerified">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item name="createdAt" label="createdAt">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item name="updatedAt" label="updatedAt">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item
+            name="allowToLogin"
+            label="allowToLogin"
+            valuePropName="checked"
+          >
+            <Checkbox />
+          </Form.Item>
+          <Form.Item name="isAdmin" label="isAdmin" valuePropName="checked">
+            <Checkbox />
+          </Form.Item>
 
-  const newPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if ((e.nativeEvent as InputEvent).isComposing) {
-    //   return;
-    // }
-    setNewPassword(e.target.value.trim());
-  };
-
-  const confirmPassword = async (id: string) => {
-    console.log("-----", newPassword, id);
-    try {
-      fetch(`/api/admin/users/${id}`, {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password: newPassword,
-        }),
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res["result"] == "ok") {
-            openNotification("info", {
-              message: "修改密码",
-              description: `${id} 密码修改成功`,
+          <Form.Item name="password" label="password">
+            <Input
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+              autoComplete="new-password"
+            />
+          </Form.Item>
+        </Form>
+      ),
+      onOk: () => {
+        const setting_key = method === "PUT" ? record?.id : "";
+        editUserForm.validateFields().then((values) => {
+          const dataToSubmit = {
+            username: values.username ?? null,
+            email: values.email ?? null,
+            allowToLogin: values.allowToLogin ?? true,
+            isAdmin: values.isAdmin ?? false,
+            password: values.password ?? null,
+          };
+          fetch(`/api/admin/users/${values.id}`, {
+            method: method,
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dataToSubmit),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              if (result["result"] == "ok") {
+                openNotification("info", {
+                  message: "修改信息",
+                  description: `${values.id} 信息修改成功`,
+                });
+              }
+            })
+            .catch((error) => {
+              console.log("e", error);
+              openNotification("error", {
+                message: "修改信息",
+                description: `${values.id} 信息修改失败`,
+              });
             });
-          }
-        })
-        .catch((error) => {
-          console.log("e", error);
-          openNotification("error", {
-            message: "修改密码",
-            description: `${id} 密码修改失败`,
-          });
         });
-    } catch {
-      openNotification("error", {
-        message: "修改密码",
-        description: `${id} 密码修改失败`,
-      });
-    }
-    setNewPassword("");
+      },
+    });
   };
 
   const openNotification = (level: string, arms: NotificationArgsProps) => {
     if (level === "error") {
-      api.error({
+      notification.error({
         ...arms,
         placement: "topRight",
       });
     } else {
-      api.info({
+      notification.info({
         ...arms,
         placement: "topRight",
       });
@@ -189,7 +238,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       render: (value) => getCurrentTime(new Date(value)),
     },
     {
-      title: "isAdmin",
+      title: "管理员",
       dataIndex: "isAdmin",
       width: 80,
       render: (value) => {
@@ -201,9 +250,9 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       },
     },
     {
-      title: "allowToLogin",
+      title: "允许登录",
       dataIndex: "allowToLogin",
-      width: 120,
+      width: 80,
       render: (value) => {
         return (
           <div>
@@ -217,29 +266,13 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       dataIndex: "",
       key: "id",
       render: (_, record) => (
-        <Space size="middle">
-          {contextHolder}
-          <Popconfirm
-            id="user-admin-table-pop_confirm"
-            title="设置密码"
-            description={
-              <>
-                <Input.Password
-                  autoComplete="new-password"
-                  value={newPassword}
-                  onCompositionStart={(e) => e.preventDefault()}
-                  onChange={newPasswordChange}
-                />
-              </>
-            }
-            onConfirm={() => confirmPassword(record.id)}
-            onOpenChange={() => console.log("open change")}
-          >
-            <Button type="primary" size="small">
-              设置密码
-            </Button>
-          </Popconfirm>
-          <a onClick={() => handleDeleteUser(record)}>删除</a>
+        <Space size="small">
+          <Button type="link" onClick={() => handleUserEdit("PUT", record)}>
+            编辑
+          </Button>
+          <Button type="link" onClick={() => handleDeleteUser(record)}>
+            删除
+          </Button>
         </Space>
       ),
     },
@@ -247,16 +280,20 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
   // console.log(users, "users2");
 
   return (
-    <Table
-      dataSource={users}
-      rowKey="id"
-      columns={columns}
-      loading={loading as boolean}
-      scroll={{
-        scrollToFirstRowOnChange: true,
-        y: 1080,
-      }}
-    />
+    <>
+      {notificationContextHolder}
+      {editUserModalContextHolder}
+      <Table
+        dataSource={users}
+        rowKey="id"
+        columns={columns}
+        loading={loading as boolean}
+        scroll={{
+          scrollToFirstRowOnChange: true,
+          y: 1080,
+        }}
+      />
+    </>
   );
 }
 

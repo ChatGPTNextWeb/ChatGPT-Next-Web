@@ -10,7 +10,7 @@ import {createTransport} from "nodemailer";
 import { comparePassword, hashPassword } from "@/lib/utils";
 import {getCurStartEnd} from "@/app/utils/custom";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
-type PartialUser = Partial<User>;
+
 
 
 export const authOptions: NextAuthOptions = {
@@ -89,7 +89,7 @@ export const authOptions: NextAuthOptions = {
                 // 判断姓名格式是否符合要求，不符合则拒绝
                 if (username && isName(username)) {
                     // Any object returned will be saved in `user` property of the JWT
-                    let user: PartialUser = {}
+                    let user: Partial<User> = {}
                     if (isEmail(username)) {
                         user['email'] = username;
                     } else {
@@ -228,7 +228,7 @@ async function getSetting(key: string) {
   }
 }
 
-async function existUser(user: PartialUser ) {
+async function existUser(user: Partial<User> ) {
   const conditions = [];
   if (user?.name) {
     conditions.push({ name: user.name });
@@ -243,7 +243,7 @@ async function existUser(user: PartialUser ) {
   }) : null
 }
 
-export async function insertUser(user: PartialUser ) {
+export async function insertUser(user: Partial<User> ) {
     console.log('------------', user)
     try {
         return await prisma.user.create({
