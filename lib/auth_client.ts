@@ -1,4 +1,4 @@
-import {ADMIN_LIST, isName} from "@/lib/auth_list";
+import { isName } from "@/lib/auth_list";
 import { JWT } from "next-auth/jwt";
 import { User } from "@prisma/client";
 
