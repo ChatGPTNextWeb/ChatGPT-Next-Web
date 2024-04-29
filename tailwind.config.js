@@ -54,6 +54,7 @@ module.exports = {
         'slide-btn': '18px',
         'switch': '1rem',
         'chat-header-title-mobile': '19px',
+        'model-bottom-drawer': 'calc(100vh - 110px)',
       },
       minWidth: {
         'select-mobile-lg': '200px',

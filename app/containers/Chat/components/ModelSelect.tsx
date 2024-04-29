@@ -3,14 +3,16 @@ import React, { useMemo, useRef } from "react";
 import useRelativePosition, {
   Orientation,
 } from "@/app/hooks/useRelativePosition";
-
-import Selected from "@/app/icons/selectedIcon.svg";
+import Locale from "@/app/locales";
 import { useChatStore } from "@/app/store/chat";
 import { useAllModels } from "@/app/utils/hooks";
 import { ModelType, useAppConfig } from "@/app/store/config";
 import { showToast } from "@/app/components/ui-lib";
 import BottomArrow from "@/app/icons/downArrowLgIcon.svg";
 import BottomArrowMobile from "@/app/icons/bottomArrow.svg";
+import Modal, { TriggerProps } from "@/app/components/Modal";
+
+import Selected from "@/app/icons/selectedIcon.svg";
 
 const ModelSelect = () => {
   const config = useAppConfig();
@@ -60,15 +62,14 @@ const ModelSelect = () => {
     });
   };
 
-  const content = (
-    <div
-      className={` flex flex-col gap-1 overflow-y-auto overflow-x-hidden relative h-[100%]`}
-    >
+  const content: TriggerProps["content"] = ({ close }) => (
+    <div className={`flex flex-col gap-1 overflow-x-hidden  relative`}>
       {models?.map((o) => (
         <div
           key={o.displayName}
           className={`flex  items-center px-3 py-2 gap-3 rounded-action-btn hover:bg-select-option-hovered  cursor-pointer`}
           onClick={() => {
+            close();
             chatStore.updateCurrentSession((session) => {
               session.mask.modelConfig.model = o.name as ModelType;
               session.mask.syncGlobalConfig = false;
@@ -90,39 +91,41 @@ const ModelSelect = () => {
 
   if (isMobileScreen) {
     return (
-      <Popover
-        content={content}
-        trigger="click"
-        noArrow
-        placement={
-          position?.poi.relativePosition[1] !== Orientation.bottom ? "lb" : "lt"
-        }
-        popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel max-h-chat-actions-select-model-popover"
-        onShow={(e) => {
+      <Modal.Trigger
+        content={(e) => (
+          <div className="h-[100%]  overflow-y-auto" ref={contentRef}>
+            {content(e)}
+          </div>
+        )}
+        type="bottom-drawer"
+        onOpen={(e) => {
           if (e) {
             autoScrollToSelectedModal();
             getRelativePosition(rootRef.current!, "");
           }
         }}
-        getPopoverPanelRef={(ref) => (contentRef.current = ref.current)}
+        title={Locale.Chat.SelectModel}
+        headerBordered
+        noFooter
+        modelClassName="h-model-bottom-drawer"
       >
         <div className="flex items-center gap-1 cursor-pointer" ref={rootRef}>
           {currentModel}
           <BottomArrowMobile />
         </div>
-      </Popover>
+      </Modal.Trigger>
     );
   }
 
   return (
     <Popover
-      content={content}
+      content={content({ close: () => {} })}
       trigger="click"
       noArrow
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "lb" : "lt"
       }
-      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel max-h-chat-actions-select-model-popover"
+      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel max-h-chat-actions-select-model-popover !py-0"
       onShow={(e) => {
         if (e) {
           autoScrollToSelectedModal();
@@ -135,7 +138,7 @@ const ModelSelect = () => {
         className="flex items-center  justify-center gap-1 cursor-pointer rounded-chat-model-select pl-3 pr-2.5 py-2 font-common leading-4 bg-chat-actions-select-model hover:bg-chat-actions-select-model-hover"
         ref={rootRef}
       >
-        <div className="line-clamp-1 max-w-chat-actions-select-model">
+        <div className="line-clamp-1 max-w-chat-actions-select-model text-sm-title">
           {currentModel}
         </div>
         <BottomArrow />

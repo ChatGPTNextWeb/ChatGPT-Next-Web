@@ -84,6 +84,7 @@ const cn = {
       SaveAs: "存为面具",
     },
     IsContext: "预设提示词",
+    SelectModel: "选择模型",
   },
   Export: {
     Title: "分享聊天记录",

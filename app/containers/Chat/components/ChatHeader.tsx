@@ -7,6 +7,7 @@ import LogIcon from "@/app/icons/logIcon.svg";
 import GobackIcon from "@/app/icons/goback.svg";
 import ShareIcon from "@/app/icons/shareIcon.svg";
 import BottomArrow from "@/app/icons/bottomArrow.svg";
+import ModelSelect from "./ModelSelect";
 
 export interface ChatHeaderProps {
   isMobileScreen: boolean;
@@ -70,13 +71,7 @@ export default function ChatHeader(props: ChatHeaderProps) {
           `}
         >
           {isMobileScreen ? (
-            <div
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={() => {}}
-            >
-              {currentModel}
-              <BottomArrow />
-            </div>
+            <ModelSelect />
           ) : (
             Locale.Chat.SubTitle(session.messages.length)
           )}

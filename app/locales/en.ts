@@ -87,6 +87,7 @@ const en: LocaleType = {
       SaveAs: "Save as Mask",
     },
     IsContext: "Contextual Prompt",
+    SelectModel: "Choose model",
   },
   Export: {
     Title: "Export Messages",

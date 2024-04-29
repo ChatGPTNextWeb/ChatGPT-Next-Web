@@ -30,6 +30,10 @@ body {
   outline: none;
 }
 
+* {
+  font-weight: 400;
+}
+
 .light-new {
   --global-bg: #e3e3ed;
   --actions-bar-btn-default-bg: #2e42f3;

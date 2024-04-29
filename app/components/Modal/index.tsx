@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Btn, { BtnProps } from "@/app/components/Btn";
@@ -13,7 +13,9 @@ export interface ModalProps {
   cancelText?: string;
   okBtnProps?: BtnProps;
   cancelBtnProps?: BtnProps;
-  content?: React.ReactNode;
+  content?:
+    | React.ReactNode
+    | ((handlers: { close: () => void }) => JSX.Element);
   title?: React.ReactNode;
   visible?: boolean;
   noFooter?: boolean;
@@ -22,6 +24,8 @@ export interface ModalProps {
   closeble?: boolean;
   type?: "modal" | "bottom-drawer";
   headerBordered?: boolean;
+  modelClassName?: string;
+  onOpen?: (v: boolean) => void;
 }
 
 export interface WarnProps
@@ -34,8 +38,16 @@ export interface WarnProps
     | "onOk"
     | "okBtnProps"
     | "cancelBtnProps"
+    | "content"
   > {
   onOk?: () => Promise<void> | void;
+  content?: React.ReactNode;
+}
+
+export interface TriggerProps
+  extends Omit<ModalProps, "visible" | "onOk" | "onCancel"> {
+  children: JSX.Element;
+  className?: string;
 }
 
 const baseZIndex = 150;
@@ -56,9 +68,11 @@ const Modal = (props: ModalProps) => {
     cancelBtnProps,
     type = "modal",
     headerBordered,
+    modelClassName,
+    onOpen,
   } = props;
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(!!visible);
 
   const mergeOpen = visible ?? open;
 
@@ -67,6 +81,15 @@ const Modal = (props: ModalProps) => {
     onCancel?.();
   };
 
+  const handleOk = () => {
+    setOpen(false);
+    onOk?.();
+  };
+
+  useLayoutEffect(() => {
+    onOpen?.(mergeOpen);
+  }, [mergeOpen]);
+
   let layoutClassName = "";
   let panelClassName = "";
   let titleClassName = "";
@@ -74,11 +97,11 @@ const Modal = (props: ModalProps) => {
 
   switch (type) {
     case "bottom-drawer":
-      layoutClassName =
-        "fixed inset-0 flex flex-col item-start top-0 left-[50vw] translate-x-[-50%] md:";
-      panelClassName = "";
-      titleClassName = "";
-      footerClassName = "";
+      layoutClassName = "fixed inset-0 flex flex-col w-[100%] bottom-0";
+      panelClassName =
+        "rounded-t-chat-model-select overflow-y-auto overflow-x-hidden";
+      titleClassName = "px-4 py-3";
+      footerClassName = "absolute w-[100%]";
       break;
     case "modal":
     default:
@@ -107,9 +130,9 @@ const Modal = (props: ModalProps) => {
         >
           <div className="flex-1">&nbsp;</div>
           <div
-            className={`flex flex-col          
+            className={`flex flex-col flex-0      
               bg-moda-panel text-modal-mask    
-              ${headerBordered ? " border-b border-modal-header-bottom" : ""}
+              ${modelClassName}
               ${panelClassName}
             `}
           >
@@ -118,6 +141,11 @@ const Modal = (props: ModalProps) => {
                 className={`
                       flex items-center justify-between gap-3 font-common
                       md:text-chat-header-title md:font-bold md:leading-5
+                      ${
+                        headerBordered
+                          ? " border-b border-modal-header-bottom"
+                          : ""
+                      }
                       ${titleClassName}
                   `}
               >
@@ -136,7 +164,15 @@ const Modal = (props: ModalProps) => {
                 )}
               </AlertDialog.Title>
             )}
-            {content}
+            <div className="flex-1 overflow-hidden">
+              {typeof content === "function"
+                ? content({
+                    close: () => {
+                      handleClose();
+                    },
+                  })
+                : content}
+            </div>
             {!noFooter && (
               <div
                 className={`
@@ -155,10 +191,7 @@ const Modal = (props: ModalProps) => {
                 <AlertDialog.Action asChild>
                   <Btn
                     {...okBtnProps}
-                    onClick={() => {
-                      setOpen(false);
-                      onOk?.();
-                    }}
+                    onClick={handleOk}
                     text={okText}
                     className={`${btnCommonClass} ${okBtnClass}`}
                   />
@@ -166,7 +199,7 @@ const Modal = (props: ModalProps) => {
               </div>
             )}
           </div>
-          <div className="flex-1">&nbsp;</div>
+          {type === "modal" && <div className="flex-1">&nbsp;</div>}
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>
@@ -252,8 +285,39 @@ Modal.warn = (props: Omit<WarnProps, "visible" | "onCancel" | "onOk">) => {
   });
 };
 
-const Trigger = (props: ModalProps) => {
-  return <></>;
+export const Trigger = (props: TriggerProps) => {
+  const { children, className, content, ...rest } = props;
+
+  const [internalVisible, setVisible] = useState(false);
+
+  return (
+    <>
+      <div
+        className={className}
+        onClick={() => {
+          setVisible(true);
+        }}
+      >
+        {children}
+      </div>
+      <Modal
+        {...rest}
+        visible={internalVisible}
+        onCancel={() => {
+          setVisible(false);
+        }}
+        content={
+          typeof content === "function"
+            ? content({
+                close: () => {
+                  setVisible(false);
+                },
+              })
+            : content
+        }
+      />
+    </>
+  );
 };
 
 Modal.Trigger = Trigger;
