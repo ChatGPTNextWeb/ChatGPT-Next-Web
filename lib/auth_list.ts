@@ -4,6 +4,12 @@ export const DENY_LIST: string[] = [
   "suibian", "某某", "张三", "李四", "啊实打实", "官方回复电话", "笑死", "观化听风", "null", "undefined",
   "zhangsan",
 ]
+export const ADMIN_LIST: string[] = [
+  "sijinhui", "sijinhui@qq.com",
+  "yuchuan", "于川",
+  "jujujujuju",
+]
+
 
 export function isEmail(input: string): boolean {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
