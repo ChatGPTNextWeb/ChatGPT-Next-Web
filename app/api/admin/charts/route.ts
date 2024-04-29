@@ -51,7 +51,9 @@ function HandleLogData(
 
 async function handle(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const { startOfTheDayInTimeZone, endOfTheDayInTimeZone } = getCurStartEnd();
+  const currentTime = new Date(searchParams.get("date") ?? "");
+  const { startOfTheDayInTimeZone, endOfTheDayInTimeZone } =
+    getCurStartEnd(currentTime);
   const todayLog = await prisma.logEntry.findMany({
     where: {
       createdAt: {
