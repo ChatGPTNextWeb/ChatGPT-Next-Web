@@ -10,6 +10,7 @@ import {createTransport} from "nodemailer";
 import { comparePassword, hashPassword } from "@/lib/utils";
 import {getCurStartEnd} from "@/app/utils/custom";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
+type PartialUser = Partial<User>;
 
 
 export const authOptions: NextAuthOptions = {
@@ -88,7 +89,7 @@ export const authOptions: NextAuthOptions = {
                 // 判断姓名格式是否符合要求，不符合则拒绝
                 if (username && isName(username)) {
                     // Any object returned will be saved in `user` property of the JWT
-                    let user:{[key: string]: string} = {}
+                    let user: PartialUser = {}
                     if (isEmail(username)) {
                         user['email'] = username;
                     } else {
@@ -97,13 +98,8 @@ export const authOptions: NextAuthOptions = {
                     // 目前用户不存在，则会创建新用户。
                     let existingUser = await existUser(user); // await insertUser(user)
                     if (!existingUser) {
-                      if (await getSetting("allowNewUser")) {
-                        // 如果不存在，则创建
-                        existingUser = await insertUser(user);
-                      } else {
-                        // 如果不存在，则报错
-                        throw new Error("未知用户")
-                      }
+                      user['allowToLogin'] = !!await getSetting("allowNewUser");
+                      existingUser = await insertUser(user);
                     }
                     // 有密码就校验密码，没有就直接返回用户
                     (password || existingUser.password) && validatePassword(password, existingUser.password);
@@ -236,7 +232,7 @@ async function getSetting(key: string) {
   }
 }
 
-async function existUser(user: {[key: string]: string} | User ) {
+async function existUser(user: PartialUser ) {
   const conditions = [];
   if (user?.name) {
     conditions.push({ name: user.name });
@@ -251,7 +247,8 @@ async function existUser(user: {[key: string]: string} | User ) {
   }) : null
 }
 
-export async function insertUser(user: {[key: string]: string}) {
+export async function insertUser(user: PartialUser ) {
+    console.log('------------', user)
     try {
         return await prisma.user.create({
           data: user

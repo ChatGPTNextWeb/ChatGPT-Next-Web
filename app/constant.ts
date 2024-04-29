@@ -263,6 +263,16 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "gpt-4-turbo-2024-04-09",
+    describe: "GPT-4,新版,测试",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
     name: "claude-3-opus-20240229",
     describe: "claude第三代模型最强版",
     available: true,
