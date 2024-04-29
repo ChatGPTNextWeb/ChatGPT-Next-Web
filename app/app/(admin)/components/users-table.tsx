@@ -5,11 +5,9 @@ import { User } from "@prisma/client";
 import {
   Space,
   Table,
-  Tag,
   Input,
   Button,
   notification as notificationModule,
-  Popconfirm,
   Checkbox,
   Modal,
   Form,
@@ -39,9 +37,6 @@ interface SearchTextProps {
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
 }
-
-type DataIndex = keyof User;
-type InputRef = GetRef<typeof Input>;
 
 function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
   const [searchText, setSearchText] = useState("");
@@ -89,14 +84,6 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
     notificationModule.useNotification();
   const [editUserModal, editUserModalContextHolder] = Modal.useModal();
   const [editUserForm] = Form.useForm();
-  const [newPassword, setNewPassword] = useState("");
-
-  const newPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if ((e.nativeEvent as InputEvent).isComposing) {
-    //   return;
-    // }
-    setNewPassword(e.target.value.trim());
-  };
 
   const handleUserEdit = (method: "POST" | "PUT", record: User | undefined) => {
     editUserModal.confirm({
@@ -193,44 +180,6 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
     });
   };
 
-  const confirmPassword = async (id: string) => {
-    console.log("-----", newPassword, id);
-    try {
-      fetch(`/api/admin/users/${id}`, {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password: newPassword,
-        }),
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res["result"] == "ok") {
-            openNotification("info", {
-              message: "修改密码",
-              description: `${id} 密码修改成功`,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log("e", error);
-          openNotification("error", {
-            message: "修改密码",
-            description: `${id} 密码修改失败`,
-          });
-        });
-    } catch {
-      openNotification("error", {
-        message: "修改密码",
-        description: `${id} 密码修改失败`,
-      });
-    }
-    setNewPassword("");
-  };
-
   const openNotification = (level: string, arms: NotificationArgsProps) => {
     if (level === "error") {
       notification.error({
@@ -312,49 +261,18 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
         );
       },
     },
-    // {
-    //   title: "编辑",
-    //   dataIndex: "",
-    //   key: "id",
-    //   width: 80,
-    //   render: (value) => {
-    //     return (
-    //       <div>
-    //         <a >编辑</a>
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       title: "Action",
       dataIndex: "",
       key: "id",
       render: (_, record) => (
         <Space size="small">
-          <a type="link" onClick={() => handleUserEdit("PUT", record)}>
+          <Button type="link" onClick={() => handleUserEdit("PUT", record)}>
             编辑
-          </a>
-          <Popconfirm
-            id="user-admin-table-pop_confirm"
-            title="设置密码"
-            description={
-              <>
-                <Input.Password
-                  autoComplete="new-password"
-                  value={newPassword}
-                  onCompositionStart={(e) => e.preventDefault()}
-                  onChange={newPasswordChange}
-                />
-              </>
-            }
-            onConfirm={() => confirmPassword(record.id)}
-            onOpenChange={() => console.log("open change")}
-          >
-            <Button type="primary" size="small">
-              设置密码
-            </Button>
-          </Popconfirm>
-          <a onClick={() => handleDeleteUser(record)}>删除</a>
+          </Button>
+          <Button type="link" onClick={() => handleDeleteUser(record)}>
+            删除
+          </Button>
         </Space>
       ),
     },
