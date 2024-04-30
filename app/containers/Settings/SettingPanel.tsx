@@ -47,7 +47,7 @@ export default function Settings(props: MenuWrapperInspectProps) {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
 
-  const cardClassName = "mb-6 md:max-w-setting-list md:mb-8 last:mb-0";
+  const cardClassName = "mb-6 md:mb-8 last:mb-0";
 
   return (
     <div
@@ -72,6 +72,8 @@ export default function Settings(props: MenuWrapperInspectProps) {
       >
         <div
           className={`
+            w-full
+            max-w-screen-md
             !overflow-x-hidden 
             overflow-y-auto
           `}

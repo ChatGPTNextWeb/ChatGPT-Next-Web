@@ -155,7 +155,6 @@ module.exports = {
       },
       maxWidth: {
         'message-width': 'var(--max-message-width)',
-        'setting-list': '710px',
         'chat-actions-select-model': '82px',
       },
       boxShadow: {
