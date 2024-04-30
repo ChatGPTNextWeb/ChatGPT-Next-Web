@@ -26,6 +26,7 @@ export interface ModalProps {
   headerBordered?: boolean;
   modelClassName?: string;
   onOpen?: (v: boolean) => void;
+  maskCloseble?: boolean;
 }
 
 export interface WarnProps
@@ -70,6 +71,7 @@ const Modal = (props: ModalProps) => {
     headerBordered,
     modelClassName,
     onOpen,
+    maskCloseble = true,
   } = props;
 
   const [open, setOpen] = useState(!!visible);
@@ -121,6 +123,11 @@ const Modal = (props: ModalProps) => {
         <AlertDialog.Overlay
           className="bg-modal-mask fixed inset-0 animate-mask "
           style={{ zIndex: baseZIndex - 1 }}
+          onClick={() => {
+            if (maskCloseble) {
+              handleClose();
+            }
+          }}
         />
         <AlertDialog.Content
           className={`
@@ -128,7 +135,16 @@ const Modal = (props: ModalProps) => {
           `}
           style={{ zIndex: baseZIndex - 1 }}
         >
-          <div className="flex-1">&nbsp;</div>
+          <div
+            className="flex-1"
+            onClick={() => {
+              if (maskCloseble) {
+                handleClose();
+              }
+            }}
+          >
+            &nbsp;
+          </div>
           <div
             className={`flex flex-col flex-0      
               bg-moda-panel text-modal-mask    

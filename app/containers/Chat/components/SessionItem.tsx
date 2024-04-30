@@ -54,12 +54,12 @@ export default function SessionItem(props: {
               }
             `}
           onClick={props.onClick}
-          // ref={(ele) => {
-          //   draggableRef.current = ele;
-          //   provided.innerRef(ele);
-          // }}
-          // {...provided.draggableProps}
-          // {...provided.dragHandleProps}
+          ref={(ele) => {
+            draggableRef.current = ele;
+            provided.innerRef(ele);
+          }}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
           title={`${props.title}\n${Locale.ChatItem.ChatItemCount(
             props.count,
           )}`}

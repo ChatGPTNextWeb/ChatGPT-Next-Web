@@ -97,20 +97,13 @@ export default MenuLayout(function SessionList(props) {
         </div>
       </div>
 
-      <div
-        className={`flex-1 overflow-y-auto max-md:pb-chat-panel-mobile `}
-        // onClick={(e) => {
-        //   if (e.target === e.currentTarget) {
-        //     navigate(Path.Home);
-        //   }
-        // }}
-      >
+      <div className={`flex-1 overflow-y-auto max-md:pb-chat-panel-mobile `}>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="chat-list">
             {(provided) => (
               <div
-                // ref={provided.innerRef}
-                // {...provided.droppableProps}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
                 className={`w-[100%]`}
               >
                 {sessions.map((item, i) => (
