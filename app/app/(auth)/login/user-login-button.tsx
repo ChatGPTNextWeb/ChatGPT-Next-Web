@@ -3,7 +3,13 @@
 import { signIn } from "next-auth/react";
 import React, { useState, useEffect, useRef, use } from "react";
 import { isName } from "@/lib/auth_list";
-import { Form, Input, InputRef } from "antd";
+import {
+  Form,
+  Input,
+  InputRef,
+  notification as notificationModule,
+  NotificationArgsProps,
+} from "antd";
 import { UserOutlined, MailOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
 import { SignInOptions } from "next-auth/react";
@@ -12,12 +18,28 @@ export default function UserLoginButton() {
   const [loading, setLoading] = useState(false);
   const [loginForm] = Form.useForm();
   const nameInput = useRef<InputRef>(null);
-  const passwordInput = useRef<InputRef>(null);
-  const emailInput = useRef<HTMLInputElement>(null);
+  // const passwordInput = useRef<InputRef>(null);
+  // const emailInput = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
+  const [notification, notificationContextHolder] =
+    notificationModule.useNotification();
 
-  const [error, setError] = useState(false);
+  const openNotification = (level: string, arms: NotificationArgsProps) => {
+    if (level === "error") {
+      notification.error({
+        ...arms,
+        placement: "topRight",
+      });
+    } else {
+      notification.info({
+        ...arms,
+        placement: "topRight",
+      });
+    }
+  };
+
+  // const [error, setError] = useState(false);
   type FieldType = {
     username?: string;
     password?: string;
@@ -47,6 +69,17 @@ export default function UserLoginButton() {
         window.location.href =
           result?.url && result.url.includes("verify") ? result.url : "/";
       } else {
+        switch (result.error) {
+          case "AccessDenied":
+            openNotification("error", {
+              message: "登录失败",
+              description: "无权限，请确认用户名正确并等待审批",
+            });
+            break;
+          default:
+            break;
+        }
+
         if (loginProvider === "credentials") {
           loginForm.setFields([
             {
@@ -81,71 +114,68 @@ export default function UserLoginButton() {
     console.log("Failed:", errorInfo);
   };
 
-  const handleNameComposition = (
-    e: React.CompositionEvent<HTMLInputElement>,
-  ) => {
-    if (e.type === "compositionend") {
-      setUsername(e.currentTarget.value);
-    }
-  };
-  const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if ((e.nativeEvent as InputEvent).isComposing) {
-      return;
-    }
-    setUsername(e.target.value);
-  };
-  const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if ((e.nativeEvent as InputEvent).isComposing) {
-      return;
-    }
-    setPassword(e.target.value);
-  };
-  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    // handle yow submition
-    setLoading(true);
-    e.preventDefault();
+  // const handleNameComposition = (
+  //   e: React.CompositionEvent<HTMLInputElement>,
+  // ) => {
+  //   if (e.type === "compositionend") {
+  //     setUsername(e.currentTarget.value);
+  //   }
+  // };
+  // const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if ((e.nativeEvent as InputEvent).isComposing) {
+  //     return;
+  //   }
+  //   setUsername(e.target.value);
+  // };
+  // const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if ((e.nativeEvent as InputEvent).isComposing) {
+  //     return;
+  //   }
+  //   setPassword(e.target.value);
+  // };
+  // const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   // handle yow submition
+  //   setLoading(true);
+  //   e.preventDefault();
+  //
+  //   let result: { error: any; url: string | null } | undefined = {
+  //     error: null,
+  //     url: null,
+  //   };
+  //   if (emailInput.current && emailInput.current.value) {
+  //     result = await signIn("email", {
+  //       email: emailInput.current.value,
+  //       redirect: false,
+  //     });
+  //   } else {
+  //     result = await signIn("credentials", {
+  //       username: username,
+  //       password: password,
+  //       redirect: false,
+  //     });
+  //   }
+  //   console.log("0000000000000", result);
+  //   setLoading(false);
+  //   if (!result?.error) {
+  //     window.location.href =
+  //       result?.url && result.url.includes("verify") ? result.url : "/";
+  //   } else setError(true);
+  // };
 
-    let result: { error: any; url: string | null } | undefined = {
-      error: null,
-      url: null,
-    };
-    if (emailInput.current && emailInput.current.value) {
-      result = await signIn("email", {
-        email: emailInput.current.value,
-        redirect: false,
-      });
-    } else {
-      result = await signIn("credentials", {
-        username: username,
-        password: password,
-        redirect: false,
-      });
-    }
-    console.log("0000000000000", result);
-    setLoading(false);
-    if (!result?.error) {
-      window.location.href =
-        result?.url && result.url.includes("verify") ? result.url : "/";
-    } else setError(true);
-  };
-
-  useEffect(() => {
-    if (!username) return;
-    if (nameInput.current) {
-      if (!isName(username)) {
-        setError(true);
-        // nameInput
-        // nameInput.current.setCustomValidity("用户名校验失败");
-      } else {
-        setError(false);
-        // nameInput.current.setCustomValidity("");
-      }
-    }
-    // console.log("username:", username);
-  }, [username]);
+  // useEffect(() => {
+  //   if (!username) return;
+  //   if (nameInput.current) {
+  //     if (!isName(username)) {
+  //       setError(true);
+  //     } else {
+  //       setError(false);
+  //     }
+  //   }
+  // }, [username]);
 
   return (
     <>
+      {notificationContextHolder}
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
         <Form
           className="space-y-6"
