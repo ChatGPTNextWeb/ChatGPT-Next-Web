@@ -71,6 +71,9 @@ export default function DangerItems() {
   return (
     <List
       widgetStyle={{
+        selectClassName: "min-w-select-mobile md:min-w-select",
+        inputClassName: "md:min-w-select",
+        rangeClassName: "md:min-w-select",
         rangeNextLine: isMobileScreen,
         inputNextLine: isMobileScreen,
       }}

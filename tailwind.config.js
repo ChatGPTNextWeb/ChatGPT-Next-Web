@@ -103,6 +103,7 @@ module.exports = {
         'slider': 'var(--slider-bg)',
         'slider-slided-travel': 'var(--slider-slided-travel-bg)',
         'slider-block': 'var(--slider-block-bg)',
+        'slider-block-hover': 'var(--slider-block-hover-bg)',
         'switch-unchecked': 'var(--switch-unchecked-bg)',
         'switch-checked': 'var(--switch-checked-bg)',
         'switch-btn': 'var(--switch-btn-bg)',

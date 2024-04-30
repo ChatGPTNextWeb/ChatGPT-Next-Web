@@ -263,6 +263,9 @@ const cn = {
         Title: "编辑提示词",
       },
     },
+    Provider: {
+      Title: "自定义模型",
+    },
     HistoryCount: {
       Title: "附带历史消息数",
       SubTitle: "每次请求携带的历史消息数",

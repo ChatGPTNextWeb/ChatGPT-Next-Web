@@ -8,6 +8,8 @@ import { SearchService, usePromptStore } from "@/app/store/prompt";
 import Switch from "@/app/components/Switch";
 import Btn from "@/app/components/Btn";
 
+import EditIcon from "@/app/icons/editIcon.svg";
+
 export interface PromptSettingProps {}
 
 export default function PromptSetting(props: PromptSettingProps) {
@@ -48,6 +50,7 @@ export default function PromptSetting(props: PromptSettingProps) {
               text={
                 <span className={textStyle}>{Locale.Settings.Prompt.Edit}</span>
               }
+              prefixIcon={config.isMobileScreen ? undefined : <EditIcon />}
             ></Btn>
           </div>
         </ListItem>

@@ -74,7 +74,7 @@ export default function SlideRange(props: SlideRangeProps) {
           &nbsp;
         </div>
         <div
-          className="cursor-pointer absolute z-1 w-[30px] top-[50%] translate-y-[-50%] left-[var(--slide-value-size)] translate-x-[-50%]  h-slide-btn leading-slide-btn text-sm-mobile text-center rounded-slide border border-slider-block bg-slider-block"
+          className="cursor-pointer absolute z-1 w-[30px] top-[50%] translate-y-[-50%] left-[var(--slide-value-size)] translate-x-[-50%]  h-slide-btn leading-slide-btn text-sm-mobile text-center rounded-slide border border-slider-block bg-slider-block hover:bg-slider-block-hover"
           // onPointerDown={onPointerDown}
         >
           {value}

@@ -8,7 +8,7 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
-import List from "@/app/components/List";
+import List, { ListContext } from "@/app/components/List";
 
 export interface CommonInputProps
   extends Omit<
@@ -45,6 +45,8 @@ export default function Input(props: CommonInputProps & InputProps) {
   const { value, type = "text", onChange, className, ...rest } = props;
   const [show, setShow] = useState(false);
 
+  const { inputClassName } = useContext(ListContext);
+
   const internalType = (show && "text") || type;
 
   const { update } = useContext(List.ListContext);
@@ -55,7 +57,7 @@ export default function Input(props: CommonInputProps & InputProps) {
 
   return (
     <div
-      className={` group/input w-[100%] rounded-chat-input bg-input flex gap-3 items-center px-3 py-2 ${className} hover:bg-select-hover`}
+      className={` group/input w-[100%] rounded-chat-input bg-input flex gap-3 items-center px-3 py-2 ${className} hover:bg-select-hover ${inputClassName}`}
     >
       <input
         {...rest}

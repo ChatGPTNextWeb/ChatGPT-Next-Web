@@ -26,6 +26,9 @@ export default function ProviderSetting() {
     <List
       id={SlotID.CustomModel}
       widgetStyle={{
+        selectClassName: "min-w-select-mobile md:min-w-select",
+        inputClassName: "md:min-w-select",
+        rangeClassName: "md:min-w-select",
         inputNextLine: isMobileScreen,
       }}
     >

@@ -1,3 +1,8 @@
+import ConfigIcon from "@/app/icons/configIcon2.svg";
+import ExportIcon from "@/app/icons/exportIcon.svg";
+import ImportIcon from "@/app/icons/importIcon.svg";
+import SyncIcon from "@/app/icons/syncIcon.svg";
+
 import { showToast } from "@/app/components/ui-lib";
 import { useChatStore } from "@/app/store/chat";
 import { useMaskStore } from "@/app/store/mask";
@@ -9,6 +14,7 @@ import Locale from "@/app/locales";
 import SyncConfigModal from "./SyncConfigModal";
 import List, { ListItem } from "@/app/components/List";
 import Btn from "@/app/components/Btn";
+import { useAppConfig } from "@/app/store";
 
 export default function SyncItems() {
   const syncStore = useSyncStore();
@@ -18,6 +24,8 @@ export default function SyncItems() {
   const couldSync = useMemo(() => {
     return syncStore.cloudSync();
   }, [syncStore]);
+
+  const { isMobileScreen } = useAppConfig();
 
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
 
@@ -53,6 +61,7 @@ export default function SyncItems() {
                 setShowSyncConfigModal(true);
               }}
               text={<span className={textStyle}>{Locale.UI.Config}</span>}
+              prefixIcon={isMobileScreen ? undefined : <ConfigIcon />}
             ></Btn>
             {couldSync && (
               <Btn
@@ -66,6 +75,7 @@ export default function SyncItems() {
                   }
                 }}
                 text={<span className={textStyle}>{Locale.UI.Sync}</span>}
+                prefixIcon={<SyncIcon />}
               ></Btn>
             )}
           </div>
@@ -81,12 +91,14 @@ export default function SyncItems() {
                 syncStore.export();
               }}
               text={<span className={textStyle}>{Locale.UI.Export}</span>}
+              prefixIcon={<ExportIcon />}
             ></Btn>
             <Btn
               onClick={async () => {
                 syncStore.import();
               }}
               text={<span className={textStyle}>{Locale.UI.Import}</span>}
+              prefixIcon={<ImportIcon />}
             ></Btn>
           </div>
         </ListItem>

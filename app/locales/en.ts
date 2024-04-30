@@ -268,6 +268,9 @@ const en: LocaleType = {
         Title: "Edit Prompt",
       },
     },
+    Provider: {
+      Title: "Custom Models",
+    },
     HistoryCount: {
       Title: "Attached Messages Count",
       SubTitle: "Number of sent messages attached per request",

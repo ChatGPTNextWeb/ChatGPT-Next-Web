@@ -5,6 +5,7 @@ export type ButtonType = "primary" | "danger" | null;
 export interface BtnProps {
   onClick?: () => void;
   icon?: JSX.Element;
+  prefixIcon?: JSX.Element;
   type?: ButtonType;
   text?: React.ReactNode;
   bordered?: boolean;
@@ -27,6 +28,7 @@ export default function Btn(props: BtnProps) {
     disabled,
     tabIndex,
     autoFocus,
+    prefixIcon,
   } = props;
 
   let btnClassName;
@@ -61,6 +63,9 @@ export default function Btn(props: BtnProps) {
       tabIndex={tabIndex}
       autoFocus={autoFocus}
     >
+      {prefixIcon && (
+        <div className={`flex items-center justify-center`}>{prefixIcon}</div>
+      )}
       {text && (
         <div className={`font-common text-sm-title leading-4 line-clamp-1`}>
           {text}

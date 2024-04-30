@@ -47,7 +47,7 @@ export default function Settings(props: MenuWrapperInspectProps) {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
 
-  const cardClassName = "mb-6 md:max-w-setting-list md:mb-8";
+  const cardClassName = "mb-6 md:max-w-setting-list md:mb-8 last:mb-0";
 
   return (
     <div
@@ -63,46 +63,61 @@ export default function Settings(props: MenuWrapperInspectProps) {
       />
       <div
         className={`
-        !overflow-x-hidden 
-        max-md:gap-5 max-md:w-[100%] px-4 py-5
-        md:px-6 md:py-8
-      `}
+          max-md:w-[100%]
+          px-4 py-5
+          md:px-6 md:py-8
+          flex items-start justify-center
+          overflow-y-auto
+        `}
       >
-        <Card className={cardClassName} title={Locale.Settings.Basic.Title}>
-          <AppSetting />
-        </Card>
-        <Card className={cardClassName} title={Locale.Settings.Sync.Title}>
-          <SyncItems />
-        </Card>
-        <Card className={cardClassName} title={Locale.Settings.Mask.Title}>
-          <MaskSetting />
-        </Card>
-        <Card className={cardClassName} title={Locale.Settings.Prompt.Title}>
-          <PromptSetting />
-        </Card>
-        <Card className={cardClassName}>
-          <ProviderSetting />
-        </Card>
-        <Card className={cardClassName} title={Locale.Settings.Models.Title}>
-          <List
-            widgetStyle={{
-              selectClassName: "min-w-select-mobile-lg",
-              rangeNextLine: isMobileScreen,
-            }}
+        <div
+          className={`
+            !overflow-x-hidden 
+            overflow-y-auto
+          `}
+        >
+          <Card className={cardClassName} title={Locale.Settings.Basic.Title}>
+            <AppSetting />
+          </Card>
+          <Card className={cardClassName} title={Locale.Settings.Sync.Title}>
+            <SyncItems />
+          </Card>
+          <Card className={cardClassName} title={Locale.Settings.Mask.Title}>
+            <MaskSetting />
+          </Card>
+          <Card className={cardClassName} title={Locale.Settings.Prompt.Title}>
+            <PromptSetting />
+          </Card>
+          <Card
+            className={cardClassName}
+            title={Locale.Settings.Provider.Title}
           >
-            <ModelConfigList
-              modelConfig={config.modelConfig}
-              updateConfig={(updater) => {
-                const modelConfig = { ...config.modelConfig };
-                updater(modelConfig);
-                config.update((config) => (config.modelConfig = modelConfig));
+            <ProviderSetting />
+          </Card>
+          <Card className={cardClassName} title={Locale.Settings.Models.Title}>
+            <List
+              widgetStyle={{
+                // selectClassName: "min-w-select-mobile-lg",
+                selectClassName: "min-w-select-mobile md:min-w-select",
+                inputClassName: "md:min-w-select",
+                rangeClassName: "md:min-w-select",
+                rangeNextLine: isMobileScreen,
               }}
-            />
-          </List>
-        </Card>
-        <Card className={cardClassName} title={Locale.Settings.Danger.Title}>
-          <DangerItems />
-        </Card>
+            >
+              <ModelConfigList
+                modelConfig={config.modelConfig}
+                updateConfig={(updater) => {
+                  const modelConfig = { ...config.modelConfig };
+                  updater(modelConfig);
+                  config.update((config) => (config.modelConfig = modelConfig));
+                }}
+              />
+            </List>
+          </Card>
+          <Card className={cardClassName} title={Locale.Settings.Danger.Title}>
+            <DangerItems />
+          </Card>
+        </div>
       </div>
     </div>
   );

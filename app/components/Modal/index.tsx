@@ -215,7 +215,18 @@ const Modal = (props: ModalProps) => {
               </div>
             )}
           </div>
-          {type === "modal" && <div className="flex-1">&nbsp;</div>}
+          {type === "modal" && (
+            <div
+              className="flex-1"
+              onClick={() => {
+                if (maskCloseble) {
+                  handleClose();
+                }
+              }}
+            >
+              &nbsp;
+            </div>
+          )}
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>
