@@ -46,6 +46,7 @@ export default function SessionItem(props: {
           className={`
               group/chat-menu-list relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 
               border 
+              transition-colors duration-300 ease-in-out
               bg-chat-menu-session-unselected-mobile border-chat-menu-session-unselected-mobile
               md:bg-chat-menu-session-unselected md:border-chat-menu-session-unselected
               ${

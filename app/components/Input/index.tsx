@@ -57,7 +57,7 @@ export default function Input(props: CommonInputProps & InputProps) {
 
   return (
     <div
-      className={` group/input w-[100%] rounded-chat-input bg-input flex gap-3 items-center px-3 py-2 ${className} hover:bg-select-hover ${inputClassName}`}
+      className={` group/input w-[100%] rounded-chat-input bg-input transition-colors duration-300 ease-in-out flex gap-3 items-center px-3 py-2 ${className} hover:bg-select-hover ${inputClassName}`}
     >
       <input
         {...rest}

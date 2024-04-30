@@ -103,7 +103,9 @@ export default function ActionsBar(props: ActionsBarProps) {
               selected === action.id
                 ? `!bg-actions-bar-btn-default ${action.activeClassName}`
                 : "bg-transparent"
-            } rounded-md items-center ${action.className}`}
+            } rounded-md items-center ${
+              action.className
+            } transition duration-300 ease-in-out`}
             onClick={handlerClick(action)}
           >
             {selected === action.id ? activeIcon : inactiveIcon}

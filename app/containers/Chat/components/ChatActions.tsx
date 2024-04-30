@@ -236,7 +236,7 @@ export function ChatActions(props: {
               className={`${act.className ?? ""}`}
             >
               <div
-                className={` cursor-pointer h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn`}
+                className={` cursor-pointer h-[32px] w-[32px] flex items-center justify-center transition duration-300 ease-in-out hover:bg-chat-actions-btn-hovered hover:rounded-action-btn`}
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -256,7 +256,7 @@ export function ChatActions(props: {
               placement={ind === arr.length - 1 ? "rt" : "t"}
             >
               <div
-                className=" cursor-pointer h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
+                className=" cursor-pointer h-[32px] w-[32px] flex items-center transition duration-300 ease-in-out justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
                 onClick={act.onClick}
               >
                 {act.icon}

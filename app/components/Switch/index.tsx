@@ -16,7 +16,7 @@ export default function Switch(props: SwitchProps) {
       checked={value}
       onCheckedChange={onChange}
       className={` 
-        cursor-pointer flex w-switch h-switch p-0.5 box-content rounded-md
+        cursor-pointer flex w-switch h-switch p-0.5 box-content rounded-md transition-colors duration-300 ease-in-out
         ${switchClassName} 
         ${
           value
