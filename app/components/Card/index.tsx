@@ -14,7 +14,7 @@ export default function Card(props: CardProps) {
       {title && (
         <div
           className={`
-            capitalize font-black font-setting-card-title text-sm-mobile font-weight-setting-card-title
+            capitalize !font-semibold text-sm-mobile font-weight-setting-card-title
             mb-3
 
             ml-3

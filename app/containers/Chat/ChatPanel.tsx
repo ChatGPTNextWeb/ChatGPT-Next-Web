@@ -259,7 +259,7 @@ function _Chat() {
       className={`
         relative flex flex-col overflow-hidden bg-chat-panel
         max-md:absolute max-md:h-[100vh] max-md:w-[100%]
-        md:h-[calc(100%-1.25rem)] md:my-2.5 md:mr-2.5 md:rounded-md
+        md:h-[100%] md:mr-2.5 md:rounded-md
         `}
       key={session.id}
     >

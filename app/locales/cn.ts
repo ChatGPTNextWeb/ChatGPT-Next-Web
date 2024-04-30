@@ -134,6 +134,8 @@ const cn = {
     Title: "设置",
     SubTitle: "所有设置选项",
     GeneralSettings: "通用设置",
+    ModelSettings: "模型设置",
+    DataSettings: "同步设置",
     Basic: {
       Title: "基础设置",
     },

@@ -63,7 +63,9 @@ const ModelSelect = () => {
   };
 
   const content: TriggerProps["content"] = ({ close }) => (
-    <div className={`flex flex-col gap-1 overflow-x-hidden  relative`}>
+    <div
+      className={`flex flex-col gap-1 overflow-x-hidden  relative text-sm-title`}
+    >
       {models?.map((o) => (
         <div
           key={o.displayName}
@@ -125,7 +127,7 @@ const ModelSelect = () => {
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "lb" : "lt"
       }
-      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel max-h-chat-actions-select-model-popover !py-0"
+      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel max-h-chat-actions-select-model-popover  w-[280px]"
       onShow={(e) => {
         if (e) {
           autoScrollToSelectedModal();
@@ -135,7 +137,7 @@ const ModelSelect = () => {
       getPopoverPanelRef={(ref) => (contentRef.current = ref.current)}
     >
       <div
-        className="flex items-center  justify-center gap-1 cursor-pointer rounded-chat-model-select pl-3 pr-2.5 py-2 font-common leading-4 bg-chat-actions-select-model hover:bg-chat-actions-select-model-hover"
+        className="flex items-center justify-center gap-1 cursor-pointer rounded-chat-model-select pl-3 pr-2.5 py-2 font-common leading-4 bg-chat-actions-select-model hover:bg-chat-actions-select-model-hover"
         ref={rootRef}
       >
         <div className="line-clamp-1 max-w-chat-actions-select-model text-sm-title">

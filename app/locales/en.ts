@@ -138,6 +138,8 @@ const en: LocaleType = {
     Title: "Settings",
     SubTitle: "All Settings",
     GeneralSettings: "General settings",
+    ModelSettings: "Model settings",
+    DataSettings: "Sync settings",
     Basic: {
       Title: "Basic Settings",
     },

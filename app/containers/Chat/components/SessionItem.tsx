@@ -13,6 +13,7 @@ import DeleteIcon from "@/app/icons/deleteIcon.svg";
 import LogIcon from "@/app/icons/logIcon.svg";
 
 import HoverPopover from "@/app/components/HoverPopover";
+import Popover from "@/app/components/Popover";
 
 export default function SessionItem(props: {
   onClick?: () => void;
@@ -45,12 +46,16 @@ export default function SessionItem(props: {
           className={`
               group/chat-menu-list relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 
               border 
-              bg-chat-menu-session-unselected border-chat-menu-session-unselected cursor-pointer
+              bg-chat-menu-session-unselected-mobile border-chat-menu-session-unselected-mobile
+              md:bg-chat-menu-session-unselected md:border-chat-menu-session-unselected
               ${
                 props.selected &&
                 (currentPath === Path.Chat || currentPath === Path.Home)
-                  ? `!bg-chat-menu-session-selected !border-chat-menu-session-selected`
-                  : `hover:bg-chat-menu-session-hovered hover:chat-menu-session-hovered`
+                  ? `
+                    md:!bg-chat-menu-session-selected md:!border-chat-menu-session-selected
+                    !bg-chat-menu-session-selected-mobile !border-chat-menu-session-selected-mobile
+                    `
+                  : `md:hover:bg-chat-menu-session-hovered md:hover:chat-menu-session-hovered`
               }
             `}
           onClick={props.onClick}
@@ -75,7 +80,7 @@ export default function SessionItem(props: {
                 {props.title}
               </div>
               <div
-                className={`text-text-chat-menu-item-time text-sm group-hover/chat-menu-list:opacity-0 pl-3`}
+                className={`text-text-chat-menu-item-time text-sm group-hover/chat-menu-list:opacity-0 pl-3 hidden md:block`}
               >
                 {getTime(props.time)}
               </div>
@@ -84,39 +89,82 @@ export default function SessionItem(props: {
               {Locale.ChatItem.ChatItemCount(props.count)}
             </div>
           </div>
-          <HoverPopover
-            content={
-              <div
-                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
-                onClickCapture={(e) => {
-                  props.onDelete?.();
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                <DeleteChatIcon />
-                <div className="flex-1 font-common text-actions-popover-menu-item">
-                  {Locale.Chat.Actions.Delete}
-                </div>
-              </div>
-            }
-            popoverClassName={`
-                px-2 py-1 border-delete-chat-popover bg-delete-chat-popover-panel rounded-md shadow-delete-chat-popover-shadow 
-              `}
-            noArrow
-            align={props.isMobileScreen ? "end" : "start"}
+          <div
+            className={`text-text-chat-menu-item-time text-sm pl-3 block md:hidden`}
           >
-            <div
-              className={`
-                  !absolute top-[50%] translate-y-[-50%] right-3 pointer-events-none opacity-0 
-                  group-hover/chat-menu-list:pointer-events-auto 
-                  group-hover/chat-menu-list:opacity-100
-                  hover:bg-select-hover rounded-chat-img
+            {getTime(props.time)}
+          </div>
+          {props.isMobileScreen ? (
+            <Popover
+              content={
+                <div
+                  className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
+                  onClickCapture={(e) => {
+                    props.onDelete?.();
+                  }}
+                >
+                  <DeleteChatIcon />
+                  <div className="flex-1 font-common text-actions-popover-menu-item text-text-chat-menu-item-delete">
+                    {Locale.Chat.Actions.Delete}
+                  </div>
+                </div>
+              }
+              popoverClassName={`
+                    px-2 py-1 border-delete-chat-popover bg-delete-chat-popover-panel rounded-md shadow-delete-chat-popover-shadow 
                 `}
+              noArrow
+              placement="r"
             >
-              <DeleteIcon />
-            </div>
-          </HoverPopover>
+              <div
+                className={`
+                        cursor-pointer rounded-chat-img
+                        md:!absolute md:top-[50%] md:translate-y-[-50%] md:right-3 md:pointer-events-none md:opacity-0 
+                        md:group-hover/chat-menu-list:pointer-events-auto 
+                        md:group-hover/chat-menu-list:opacity-100
+                        md:hover:bg-select-hover 
+                        follow-parent-svg
+                        text-text-chat-menu-item-time
+                    `}
+              >
+                <DeleteIcon />
+              </div>
+            </Popover>
+          ) : (
+            <HoverPopover
+              content={
+                <div
+                  className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
+                  onClickCapture={(e) => {
+                    props.onDelete?.();
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <DeleteChatIcon />
+                  <div className="flex-1 font-common text-actions-popover-menu-item text-text-chat-menu-item-delete">
+                    {Locale.Chat.Actions.Delete}
+                  </div>
+                </div>
+              }
+              popoverClassName={`
+                    px-2 py-1 border-delete-chat-popover bg-delete-chat-popover-panel rounded-md shadow-delete-chat-popover-shadow 
+                `}
+              noArrow
+              align="start"
+            >
+              <div
+                className={`
+                        cursor-pointer rounded-chat-img
+                        md:!absolute md:top-[50%] md:translate-y-[-50%] md:right-3 md:pointer-events-none md:opacity-0 
+                        md:group-hover/chat-menu-list:pointer-events-auto 
+                        md:group-hover/chat-menu-list:opacity-100
+                        md:hover:bg-select-hover 
+                    `}
+              >
+                <DeleteIcon />
+              </div>
+            </HoverPopover>
+          )}
         </div>
       )}
     </Draggable>

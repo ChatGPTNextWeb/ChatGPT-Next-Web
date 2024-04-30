@@ -115,7 +115,7 @@ export function SideBar(props: { className?: string }) {
         }}
         selected={selectedTab}
         className={`
-        max-md:bg-sidebar-mobile max-md:rounded-tl-md max-md:rounded-tr-md max-md:h-mobile max-md:justify-around
+        max-md:bg-sidebar-mobile  max-md:h-mobile max-md:justify-around
         2xl:px-5 xl:px-4 md:px-2 md:py-6 md:flex-col
         `}
       />

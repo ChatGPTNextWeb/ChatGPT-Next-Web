@@ -28,9 +28,9 @@ export default function Screen(props: ScreenProps) {
   return (
     <div
       className={`
-        bg-global flex h-[100%] w-[100%] bg-center
-        max-md:relative  max-md:flex-col-reverse  
-        md:overflow-hidden
+         flex h-[100%] w-[100%] bg-center
+        max-md:relative  max-md:flex-col-reverse  max-md:bg-global-mobile
+        md:overflow-hidden md:bg-global
       `}
       style={{
         direction: getLang() === "ar" ? "rtl" : "ltr",
@@ -54,7 +54,7 @@ export default function Screen(props: ScreenProps) {
             className={`
               h-[100%]
               max-md:w-[100%] 
-              md:flex-1 md:min-w-0 md:overflow-hidden
+              md:flex-1 md:min-w-0 md:overflow-hidden md:flex
             `}
             id={SlotID.AppBody}
             style={{

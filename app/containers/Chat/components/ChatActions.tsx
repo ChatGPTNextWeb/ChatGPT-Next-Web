@@ -30,6 +30,7 @@ export interface Action {
   render?: (key: string) => JSX.Element;
   icon?: JSX.Element;
   placement: "left" | "right";
+  className?: string;
 }
 
 export function ChatActions(props: {
@@ -220,7 +221,11 @@ export function ChatActions(props: {
         .filter((v) => v.placement === "left" && v.isShow)
         .map((act, ind) => {
           if (act.render) {
-            return act.render(act.text);
+            return (
+              <div className={`${act.className ?? ""}`} key={act.text}>
+                {act.render(act.text)}
+              </div>
+            );
           }
           return (
             <Popover
@@ -228,9 +233,10 @@ export function ChatActions(props: {
               content={act.text}
               popoverClassName={`${popoverClassName}`}
               placement={ind ? "t" : "lt"}
+              className={`${act.className ?? ""}`}
             >
               <div
-                className=" cursor-pointer h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
+                className={` cursor-pointer h-[32px] w-[32px] flex items-center justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn`}
                 onClick={act.onClick}
               >
                 {act.icon}

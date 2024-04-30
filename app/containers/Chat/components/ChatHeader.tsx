@@ -6,7 +6,6 @@ import { DEFAULT_TOPIC, useChatStore } from "@/app/store/chat";
 import LogIcon from "@/app/icons/logIcon.svg";
 import GobackIcon from "@/app/icons/goback.svg";
 import ShareIcon from "@/app/icons/shareIcon.svg";
-import BottomArrow from "@/app/icons/bottomArrow.svg";
 import ModelSelect from "./ModelSelect";
 
 export interface ChatHeaderProps {
@@ -79,7 +78,7 @@ export default function ChatHeader(props: ChatHeaderProps) {
       </div>
 
       <div
-        className=" cursor-pointer"
+        className=" cursor-pointer hover:bg-hovered-btn p-1.5 rounded-action-btn"
         onClick={() => {
           setShowExport(true);
         }}

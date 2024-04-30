@@ -180,7 +180,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                 )}
               </div>
               <div
-                className={`group relative flex flex ${
+                className={`group relative flex ${
                   isUser ? "flex-row-reverse" : ""
                 }`}
               >
@@ -218,7 +218,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                     fontSize={fontSize}
                     parentRef={scrollRef}
                     defaultShow={i >= messages.length - 6}
-                    className={`max-w-message-width ${
+                    className={`leading-6 max-w-message-width ${
                       isUser
                         ? " text-text-chat-message-markdown-user"
                         : "text-text-chat-message-markdown-bot"

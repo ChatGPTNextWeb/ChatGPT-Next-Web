@@ -1,3 +1,4 @@
+"use client";
 import Locale from "@/app/locales";
 import MenuLayout from "@/app/components/MenuLayout";
 
@@ -5,23 +6,37 @@ import Panel from "./SettingPanel";
 
 import GotoIcon from "@/app/icons/goto.svg";
 import { useAppConfig } from "@/app/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+export const list = [
+  {
+    id: Locale.Settings.GeneralSettings,
+    title: Locale.Settings.GeneralSettings,
+    icon: null,
+  },
+  {
+    id: Locale.Settings.ModelSettings,
+    title: Locale.Settings.ModelSettings,
+    icon: null,
+  },
+  {
+    id: Locale.Settings.DataSettings,
+    title: Locale.Settings.DataSettings,
+    icon: null,
+  },
+];
 
 export default MenuLayout(function SettingList(props) {
-  const { setShowPanel } = props;
+  const { setShowPanel, setExternalProps } = props;
   const config = useAppConfig();
 
   const { isMobileScreen } = config;
 
-  const list = [
-    {
-      id: Locale.Settings.GeneralSettings,
-      title: Locale.Settings.GeneralSettings,
-      icon: null,
-    },
-  ];
-
   const [selected, setSelected] = useState(list[0].id);
+
+  useEffect(() => {
+    setExternalProps?.(list[0]);
+  }, []);
 
   return (
     <div
@@ -39,28 +54,28 @@ export default MenuLayout(function SettingList(props) {
           `}
           data-tauri-drag-region
         >
-          <div className="text-setting-title text-text-settings-menu-title font-common font-setting-title">
+          <div className="text-setting-title text-text-settings-menu-title font-common !font-bold">
             {Locale.Settings.Title}
           </div>
         </div>
       </div>
 
       <div
-        className={`flex flex-col overflow-y-auto overflow-x-hidden w-[100%]`}
+        className={`flex flex-col gap-2 overflow-y-auto overflow-x-hidden w-[100%]`}
       >
         {list.map((i) => (
           <div
             key={i.id}
             className={`
               p-4 font-common text-setting-items font-normal text-text-settings-menu-item-title
-             cursor-pointer
+              cursor-pointer
               border 
               rounded-md
 
               bg-chat-menu-session-unselected border-chat-menu-session-unselected
               ${
                 selected === i.id && !isMobileScreen
-                  ? `!bg-chat-menu-session-selected !border-chat-menu-session-selected`
+                  ? `!bg-chat-menu-session-selected !border-chat-menu-session-selected !font-medium`
                   : `hover:bg-chat-menu-session-hovered hover:chat-menu-session-hovered`
               }
 
@@ -70,6 +85,8 @@ export default MenuLayout(function SettingList(props) {
             `}
             onClick={() => {
               setShowPanel?.(true);
+              setExternalProps?.(i);
+              setSelected(i.id);
             }}
           >
             {i.title}

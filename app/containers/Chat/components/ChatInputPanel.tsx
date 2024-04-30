@@ -250,7 +250,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
           <label
             className={`
               cursor-text flex flex-col bg-chat-panel-input-hood border border-chat-input-hood 
-              sm:focus-within:border-chat-input-hood-focus sm:focus-within:shadow-chat-input-hood-focus-shadow 
+              focus-within:border-chat-input-hood-focus sm:focus-within:shadow-chat-input-hood-focus-shadow 
               rounded-chat-input p-3 gap-3 max-md:flex-1
               md:rounded-md md:p-4 md:gap-4
             `}

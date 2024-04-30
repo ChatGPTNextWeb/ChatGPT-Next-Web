@@ -15,11 +15,15 @@ export default function Switch(props: SwitchProps) {
     <RadixSwitch.Root
       checked={value}
       onCheckedChange={onChange}
-      className={` cursor-pointer flex w-switch h-switch p-0.5 box-content rounded-md ${switchClassName} ${
-        value
-          ? "bg-switch-checked justify-end"
-          : "bg-switch-unchecked justify-start"
-      }`}
+      className={` 
+        cursor-pointer flex w-switch h-switch p-0.5 box-content rounded-md
+        ${switchClassName} 
+        ${
+          value
+            ? "bg-switch-checked justify-end"
+            : "bg-switch-unchecked justify-start"
+        }
+      `}
     >
       <RadixSwitch.Thumb
         className={` bg-switch-btn block w-4 h-4 drop-shadow-sm rounded-md`}

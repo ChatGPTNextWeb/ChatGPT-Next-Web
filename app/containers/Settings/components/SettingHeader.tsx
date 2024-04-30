@@ -36,7 +36,7 @@ export default function SettingHeader(props: ChatHeaderProps) {
         <div
           className={`
           line-clamp-1 cursor-pointer text-text-settings-panel-header-title text-chat-header-title font-common 
-          max-md:text-sm-title max-md:h-chat-header-title-mobile max-md:leading-5
+          max-md:text-sm-title max-md:h-chat-header-title-mobile max-md:leading-5 !font-medium
           `}
         >
           {Locale.Settings.Title}

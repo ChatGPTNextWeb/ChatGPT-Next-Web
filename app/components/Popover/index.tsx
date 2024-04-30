@@ -312,9 +312,13 @@ export default function Popover(props: PopoverProps) {
 
   return (
     <div
-      className={`group relative ${className}`}
+      className={`group/popover relative ${className}`}
       onPointerEnter={(e) => {
         getRelativePosition(e.currentTarget, "");
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
       }}
@@ -322,7 +326,7 @@ export default function Popover(props: PopoverProps) {
       {children}
       <div
         className={`
-          hidden group-hover:block 
+          hidden group-hover/popover:block 
           ${noArrow ? "opacity-0" : ""} 
           bg-inherit 
           ${arrowClassName}
@@ -332,9 +336,14 @@ export default function Popover(props: PopoverProps) {
         <ArrowIcon sibling={popoverRef} />
       </div>
       <div
-        className={`hidden group-hover:block whitespace-nowrap ${popoverCommonClass} ${placementClassName} ${popoverClassName}`}
+        className={`
+          hidden group-hover/popover:block whitespace-nowrap 
+          ${popoverCommonClass} 
+          ${placementClassName} 
+          ${popoverClassName}
+        `}
         ref={popoverRef}
-        style={{ zIndex: 10000 }}
+        style={{ zIndex: baseZIndex + 1 }}
       >
         {content}
       </div>

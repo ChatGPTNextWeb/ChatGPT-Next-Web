@@ -18,7 +18,7 @@ import ProviderSetting from "./components/ProviderSetting";
 import ModelConfigList from "./components/ModelSetting";
 
 export default function Settings(props: MenuWrapperInspectProps) {
-  const { setShowPanel } = props;
+  const { setShowPanel, id } = props;
 
   const navigate = useNavigate();
   const accessStore = useAccessStore();
@@ -49,12 +49,63 @@ export default function Settings(props: MenuWrapperInspectProps) {
 
   const cardClassName = "mb-6 md:mb-8 last:mb-0";
 
+  const itemMap = {
+    [Locale.Settings.GeneralSettings]: (
+      <>
+        <Card className={cardClassName} title={Locale.Settings.Basic.Title}>
+          <AppSetting />
+        </Card>
+
+        <Card className={cardClassName} title={Locale.Settings.Mask.Title}>
+          <MaskSetting />
+        </Card>
+        <Card className={cardClassName} title={Locale.Settings.Prompt.Title}>
+          <PromptSetting />
+        </Card>
+        <Card className={cardClassName} title={Locale.Settings.Provider.Title}>
+          <ProviderSetting />
+        </Card>
+
+        <Card className={cardClassName} title={Locale.Settings.Danger.Title}>
+          <DangerItems />
+        </Card>
+      </>
+    ),
+    [Locale.Settings.ModelSettings]: (
+      <Card className={cardClassName} title={Locale.Settings.Models.Title}>
+        <List
+          widgetStyle={{
+            // selectClassName: "min-w-select-mobile-lg",
+            selectClassName: "min-w-select-mobile md:min-w-select",
+            inputClassName: "md:min-w-select",
+            rangeClassName: "md:min-w-select",
+            rangeNextLine: isMobileScreen,
+          }}
+        >
+          <ModelConfigList
+            modelConfig={config.modelConfig}
+            updateConfig={(updater) => {
+              const modelConfig = { ...config.modelConfig };
+              updater(modelConfig);
+              config.update((config) => (config.modelConfig = modelConfig));
+            }}
+          />
+        </List>
+      </Card>
+    ),
+    [Locale.Settings.DataSettings]: (
+      <Card className={cardClassName} title={Locale.Settings.Sync.Title}>
+        <SyncItems />
+      </Card>
+    ),
+  };
+
   return (
     <div
       className={`
         flex flex-col overflow-hidden bg-settings-panel 
         h-setting-panel-mobile
-        md:h-[calc(100%-1.25rem)] md:my-2.5 md:mr-2.5 md:rounded-md
+        md:h-[100%] md:mr-2.5 md:rounded-md
       `}
     >
       <SettingHeader
@@ -78,47 +129,7 @@ export default function Settings(props: MenuWrapperInspectProps) {
             overflow-y-auto
           `}
         >
-          <Card className={cardClassName} title={Locale.Settings.Basic.Title}>
-            <AppSetting />
-          </Card>
-          <Card className={cardClassName} title={Locale.Settings.Sync.Title}>
-            <SyncItems />
-          </Card>
-          <Card className={cardClassName} title={Locale.Settings.Mask.Title}>
-            <MaskSetting />
-          </Card>
-          <Card className={cardClassName} title={Locale.Settings.Prompt.Title}>
-            <PromptSetting />
-          </Card>
-          <Card
-            className={cardClassName}
-            title={Locale.Settings.Provider.Title}
-          >
-            <ProviderSetting />
-          </Card>
-          <Card className={cardClassName} title={Locale.Settings.Models.Title}>
-            <List
-              widgetStyle={{
-                // selectClassName: "min-w-select-mobile-lg",
-                selectClassName: "min-w-select-mobile md:min-w-select",
-                inputClassName: "md:min-w-select",
-                rangeClassName: "md:min-w-select",
-                rangeNextLine: isMobileScreen,
-              }}
-            >
-              <ModelConfigList
-                modelConfig={config.modelConfig}
-                updateConfig={(updater) => {
-                  const modelConfig = { ...config.modelConfig };
-                  updater(modelConfig);
-                  config.update((config) => (config.modelConfig = modelConfig));
-                }}
-              />
-            </List>
-          </Card>
-          <Card className={cardClassName} title={Locale.Settings.Danger.Title}>
-            <DangerItems />
-          </Card>
+          {itemMap[id] || null}
         </div>
       </div>
     </div>
