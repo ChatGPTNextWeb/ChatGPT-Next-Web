@@ -46,6 +46,7 @@ export default function SessionItem(props: {
               group/chat-menu-list relative flex p-3 items-center gap-2 self-stretch rounded-md mb-2 
               border 
               bg-chat-menu-session-unselected border-chat-menu-session-unselected cursor-pointer
+              transition-colors duration-300 ease-in-out
               ${
                 props.selected &&
                 (currentPath === Path.Chat || currentPath === Path.Home)
