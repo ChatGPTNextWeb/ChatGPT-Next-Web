@@ -12,11 +12,15 @@ async function handle(
   // const url = req.url;
   const { pathname, searchParams } = new URL(req.url);
   const searchText = searchParams.get("search");
+
   // console.log(req, '2', params.path)
 
   if (method === "GET") {
     // 是否有查询
     try {
+      const skip = Number(searchParams.get("skip"));
+      const take = Number(searchParams.get("take"));
+      console.log("-----", skip, take);
       const result = searchText
         ? await prisma.user.findMany({
             orderBy: {
