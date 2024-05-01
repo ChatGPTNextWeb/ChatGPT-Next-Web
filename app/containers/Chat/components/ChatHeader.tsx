@@ -22,8 +22,6 @@ export default function ChatHeader(props: ChatHeaderProps) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
 
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
-
   return (
     <div
       className={`
@@ -40,7 +38,10 @@ export default function ChatHeader(props: ChatHeaderProps) {
       </div>
 
       {isMobileScreen ? (
-        <div className=" cursor-pointer" onClick={() => navigate(Path.Home)}>
+        <div
+          className=" cursor-pointer follow-parent-svg default-icon-color"
+          onClick={() => navigate(Path.Home)}
+        >
           <GobackIcon />
         </div>
       ) : (
@@ -78,7 +79,7 @@ export default function ChatHeader(props: ChatHeaderProps) {
       </div>
 
       <div
-        className=" cursor-pointer hover:bg-hovered-btn p-1.5 rounded-action-btn"
+        className=" cursor-pointer hover:bg-hovered-btn p-1.5 rounded-action-btn follow-parent-svg default-icon-color"
         onClick={() => {
           setShowExport(true);
         }}

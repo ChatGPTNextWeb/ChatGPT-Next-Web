@@ -80,7 +80,7 @@ const ModelSelect = () => {
           }}
           ref={currentModel === o.name ? selectedItemRef : undefined}
         >
-          <div className={`flex-1`}>{o.name}</div>
+          <div className={`flex-1 text-text-select`}>{o.name}</div>
           <div
             className={currentModel === o.name ? "opacity-100" : "opacity-0"}
           >
@@ -111,7 +111,10 @@ const ModelSelect = () => {
         noFooter
         modelClassName="h-model-bottom-drawer"
       >
-        <div className="flex items-center gap-1 cursor-pointer" ref={rootRef}>
+        <div
+          className="flex items-center gap-1 cursor-pointer text-text-modal-select"
+          ref={rootRef}
+        >
           {currentModel}
           <BottomArrowMobile />
         </div>
@@ -127,7 +130,7 @@ const ModelSelect = () => {
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "lb" : "lt"
       }
-      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-select-popover-panel max-h-chat-actions-select-model-popover  w-[280px]"
+      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-model-select-popover-panel max-h-chat-actions-select-model-popover  w-[280px]"
       onShow={(e) => {
         if (e) {
           autoScrollToSelectedModal();
@@ -140,7 +143,7 @@ const ModelSelect = () => {
         className="flex items-center justify-center gap-1 cursor-pointer rounded-chat-model-select pl-3 pr-2.5 py-2 font-common leading-4 bg-chat-actions-select-model hover:bg-chat-actions-select-model-hover"
         ref={rootRef}
       >
-        <div className="line-clamp-1 max-w-chat-actions-select-model text-sm-title">
+        <div className="line-clamp-1 max-w-chat-actions-select-model text-sm-title text-text-modal-select">
           {currentModel}
         </div>
         <BottomArrow />

@@ -77,6 +77,7 @@ export default function SyncConfigModal(props: { onClose?: () => void }) {
             text={Locale.UI.Confirm}
           />,
         ]}
+        className="!bg-modal-mask active-new"
       >
         <List
           widgetStyle={{

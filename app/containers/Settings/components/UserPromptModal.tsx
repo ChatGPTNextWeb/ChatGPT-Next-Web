@@ -32,6 +32,7 @@ function EditPromptModal(props: { id: string; onClose: () => void }) {
             bordered
           />,
         ]}
+        // className="!bg-modal-mask"
       >
         <div className={styles["edit-prompt-modal"]}>
           <Input
@@ -103,6 +104,7 @@ export default function UserPromptModal(props: { onClose?: () => void }) {
             text={Locale.Settings.Prompt.Modal.Add}
           />,
         ]}
+        // className="!bg-modal-mask"
       >
         <div className={styles["user-prompt-modal"]}>
           <Input

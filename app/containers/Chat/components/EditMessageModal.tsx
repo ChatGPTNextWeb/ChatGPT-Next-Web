@@ -42,6 +42,7 @@ export function EditMessageModal(props: { onClose: () => void }) {
             }}
           />,
         ]}
+        // className="!bg-modal-mask"
       >
         <List>
           <ListItem

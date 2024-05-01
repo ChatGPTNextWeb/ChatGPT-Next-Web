@@ -49,6 +49,7 @@ export default function SessionConfigModel(props: { onClose: () => void }) {
             }}
           />,
         ]}
+        // className="!bg-modal-mask"
       >
         <MaskConfig
           mask={session.mask}

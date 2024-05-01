@@ -99,13 +99,18 @@ export default function SessionItem(props: {
             <Popover
               content={
                 <div
-                  className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
+                  className={`
+                    flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer
+                    follow-parent-svg
+                    fill-none
+                    text-text-chat-menu-item-delete
+                `}
                   onClickCapture={(e) => {
                     props.onDelete?.();
                   }}
                 >
                   <DeleteChatIcon />
-                  <div className="flex-1 font-common text-actions-popover-menu-item text-text-chat-menu-item-delete">
+                  <div className="flex-1 font-common text-actions-popover-menu-item ">
                     {Locale.Chat.Actions.Delete}
                   </div>
                 </div>
@@ -124,6 +129,7 @@ export default function SessionItem(props: {
                         md:group-hover/chat-menu-list:opacity-100
                         md:hover:bg-select-hover 
                         follow-parent-svg
+                        fill-none
                         text-text-chat-menu-item-time
                     `}
               >
@@ -134,7 +140,12 @@ export default function SessionItem(props: {
             <HoverPopover
               content={
                 <div
-                  className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
+                  className={`
+                    flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer
+                    follow-parent-svg
+                    fill-none
+                    text-text-chat-menu-item-delete
+                `}
                   onClickCapture={(e) => {
                     props.onDelete?.();
                     e.preventDefault();

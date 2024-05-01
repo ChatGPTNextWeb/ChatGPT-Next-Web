@@ -1,6 +1,6 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="32" height="32" rx="8" fill="url(#paint0_linear_460_33855)"/>
-<rect width="32" height="32" rx="8" stroke="white"/>
+<rect width="32" height="32" rx="8" stroke="url(#paint0_linear_460_33855)"/>
 <g filter="url(#filter0_d_460_33855)">
 <path d="M9.51146 11.3436C9.86914 9.99625 11.2528 9.19527 12.5993 9.55608C13.9414 9.9157 14.7392 11.2938 14.3827 12.6368L11.9487 21.8055C11.591 23.1529 10.2073 23.9538 8.86082 23.593C7.51868 23.2334 6.72089 21.8553 7.07741 20.5123L9.51146 11.3436Z" fill="url(#paint1_linear_460_33855)"/>
 </g>

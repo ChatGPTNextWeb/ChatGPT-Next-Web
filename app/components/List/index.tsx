@@ -81,7 +81,7 @@ export function ListItem(props: ListItemProps) {
       onClick={onClick}
     >
       <div className={`flex-1 flex flex-col justify-start gap-1`}>
-        <div className=" font-common text-sm-mobile font-weight-[500] line-clamp-1">
+        <div className=" font-common text-sm-mobile font-weight-[500] line-clamp-1 text-text-list-title">
           {title}
         </div>
         {subTitle && (

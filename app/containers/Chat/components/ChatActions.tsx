@@ -187,7 +187,7 @@ export function ChatActions(props: {
             return (
               <div
                 key={act.text}
-                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer`}
+                className={`flex items-center gap-3 p-3 rounded-action-btn leading-6 cursor-pointer follow-parent-svg default-icon-color`}
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -206,7 +206,7 @@ export function ChatActions(props: {
         placement="rt"
         noArrow
         popoverClassName="border border-chat-actions-popover-mobile rounded-md shadow-chat-actions-popover-mobile w-actions-popover bg-chat-actions-popover-panel-mobile "
-        className=" cursor-pointer"
+        className=" cursor-pointer follow-parent-svg default-icon-color"
       >
         <AddCircleIcon />
       </Popover>
@@ -236,7 +236,11 @@ export function ChatActions(props: {
               className={`${act.className ?? ""}`}
             >
               <div
-                className={` cursor-pointer h-[32px] w-[32px] flex items-center justify-center transition duration-300 ease-in-out hover:bg-chat-actions-btn-hovered hover:rounded-action-btn`}
+                className={` 
+                  cursor-pointer h-[32px] w-[32px] flex items-center justify-center transition duration-300 ease-in-out 
+                  hover:bg-chat-actions-btn-hovered hover:rounded-action-btn
+                  follow-parent-svg default-icon-color
+                `}
                 onClick={act.onClick}
               >
                 {act.icon}
@@ -256,7 +260,11 @@ export function ChatActions(props: {
               placement={ind === arr.length - 1 ? "rt" : "t"}
             >
               <div
-                className=" cursor-pointer h-[32px] w-[32px] flex items-center transition duration-300 ease-in-out justify-center hover:bg-chat-actions-btn-hovered hover:rounded-action-btn"
+                className={`
+                  cursor-pointer h-[32px] w-[32px] flex items-center transition duration-300 ease-in-out justify-center 
+                  hover:bg-chat-actions-btn-hovered hover:rounded-action-btn
+                  follow-parent-svg default-icon-color
+                `}
                 onClick={act.onClick}
               >
                 {act.icon}

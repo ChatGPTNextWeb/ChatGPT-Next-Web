@@ -62,9 +62,7 @@ export default function SlideRange(props: SlideRangeProps) {
       className={`flex flex-col justify-center items-end gap-1 w-[100%] ${className} ${rangeClassName}`}
     >
       {!!description && (
-        <div className="text-text-slider-block text-common text-sm ">
-          {description}
-        </div>
+        <div className=" text-common text-sm ">{description}</div>
       )}
       <div
         className="flex my-1.5 relative w-[100%] h-1.5 bg-slider rounded-slide cursor-pointer"
@@ -74,7 +72,7 @@ export default function SlideRange(props: SlideRangeProps) {
           &nbsp;
         </div>
         <div
-          className="cursor-pointer absolute z-1 w-[30px] top-[50%] translate-y-[-50%] left-[var(--slide-value-size)] translate-x-[-50%]  h-slide-btn leading-slide-btn text-sm-mobile text-center rounded-slide border border-slider-block bg-slider-block hover:bg-slider-block-hover"
+          className="cursor-pointer absolute z-1 w-[30px] top-[50%] translate-y-[-50%] left-[var(--slide-value-size)] translate-x-[-50%]  h-slide-btn leading-slide-btn text-sm-mobile text-center rounded-slide border border-slider-block bg-slider-block hover:bg-slider-block-hover text-text-slider-block"
           // onPointerDown={onPointerDown}
         >
           {value}

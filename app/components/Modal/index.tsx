@@ -147,7 +147,7 @@ const Modal = (props: ModalProps) => {
           </div>
           <div
             className={`flex flex-col flex-0      
-              bg-moda-panel text-modal-mask    
+              bg-moda-panel text-modal-panel    
               ${modelClassName}
               ${panelClassName}
             `}
@@ -156,7 +156,7 @@ const Modal = (props: ModalProps) => {
               <AlertDialog.Title
                 className={`
                       flex items-center justify-between gap-3 font-common
-                      md:text-chat-header-title md:font-bold md:leading-5
+                      md:text-chat-header-title md:font-bold md:leading-5 
                       ${
                         headerBordered
                           ? " border-b border-modal-header-bottom"
@@ -165,7 +165,7 @@ const Modal = (props: ModalProps) => {
                       ${titleClassName}
                   `}
               >
-                <div className="flex gap-3 justify-start flex-1 items-center">
+                <div className="flex gap-3 justify-start flex-1 items-center text-text-modal-title text-chat-header-title">
                   {title}
                 </div>
                 {closeble && (
@@ -180,7 +180,7 @@ const Modal = (props: ModalProps) => {
                 )}
               </AlertDialog.Title>
             )}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-hidden text-text-modal-content text-sm-title">
               {typeof content === "function"
                 ? content({
                     close: () => {

@@ -55,6 +55,7 @@ export default function Btn(props: BtnProps) {
         py-2 px-3 flex items-center justify-center gap-1 rounded-action-btn transition-all duration-300 select-none
         ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
         ${btnClassName} 
+        follow-parent-svg
       `}
       onClick={onClick}
       title={title}

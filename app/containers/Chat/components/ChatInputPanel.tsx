@@ -277,7 +277,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
               id="chat-input"
               ref={inputRef}
               className={`
-                leading-[19px] flex-1 focus:outline-none focus:shadow-none focus:border-none resize-none
+                leading-[19px] flex-1 focus:outline-none focus:shadow-none focus:border-none resize-none bg-inherit text-text-input
                 max-md:h-chat-input-mobile
                 md:min-h-chat-input
               `}
