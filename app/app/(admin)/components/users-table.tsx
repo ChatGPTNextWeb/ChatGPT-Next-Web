@@ -85,6 +85,17 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
   const [editUserModal, editUserModalContextHolder] = Modal.useModal();
   const [editUserForm] = Form.useForm();
 
+  const [tableScroll, setTableScroll] = useState({ y: 240 });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setTableScroll({ y: window.innerHeight - 240 });
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleUserEdit = (method: "POST" | "PUT", record: User | undefined) => {
     editUserModal.confirm({
       title: "编辑用户",
@@ -217,15 +228,17 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       });
   };
   const columns: TableColumnsType<User> = [
-    { title: "Name", dataIndex: "name" },
+    { title: "姓名", dataIndex: "name", width: 80 },
     {
-      title: "UserName",
+      title: "用户名",
       dataIndex: "username",
+      width: 80,
     },
-    { title: "Email", dataIndex: "email" },
+    { title: "邮箱", dataIndex: "email", width: 180 },
     {
       title: "createdAt",
       dataIndex: "createdAt",
+      width: 120,
       render: (value) => getCurrentTime(new Date(value)),
       sorter: (a, b) => {
         if (a.createdAt < b.createdAt) return 1;
@@ -235,12 +248,13 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
     {
       title: "updatedAt",
       dataIndex: "updatedAt",
+      width: 120,
       render: (value) => getCurrentTime(new Date(value)),
     },
     {
       title: "管理员",
       dataIndex: "isAdmin",
-      width: 80,
+      width: 50,
       render: (value) => {
         return (
           <div>
@@ -252,7 +266,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
     {
       title: "允许登录",
       dataIndex: "allowToLogin",
-      width: 80,
+      width: 50,
       render: (value) => {
         return (
           <div>
@@ -265,6 +279,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       title: "Action",
       dataIndex: "",
       key: "id",
+      width: 120,
       render: (_, record) => (
         <Space size="small">
           <Button type="link" onClick={() => handleUserEdit("PUT", record)}>
@@ -286,11 +301,12 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       <Table
         dataSource={users}
         rowKey="id"
+        size="middle"
         columns={columns}
         loading={loading as boolean}
         scroll={{
           scrollToFirstRowOnChange: true,
-          y: 1080,
+          ...tableScroll,
         }}
       />
     </>
