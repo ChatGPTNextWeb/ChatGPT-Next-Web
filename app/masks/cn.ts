@@ -123,14 +123,14 @@ avatar: "gpt-bot",
         id: "en-zh-dict-0",
         role: "user",
         content:
-          "将英文单词转换为包括中文释义（用中文，给出尽可能多的义项，并按照常用程度排序）、英文释义（用英文给出对应解释）和对应例句的完整而且翔实的解释。请检查所有信息是否准确，并在回答时表现得像一部词典，包含读者能从词典中查询到的各种信息。在我进一步追问时（如果有），给出相应的反馈。不需要任何其他反馈。第一个单词是“Hello” ",
+          "将英文单词转换为包括中文释义（用中文，给出尽可能多的义项，并按照常用程度排序）、英文释义（用英文给出对应解释）和每个义项一个对应例句的完整而且翔实的解释。请检查所有信息是否准确，并在回答时表现得像一部词典，包含读者能从词典中查询到的各种信息。在我进一步追问时（如果有），给出相应的反馈。不需要任何其他反馈。第一个单词是“Hello” ",
         date: "",
       },
         {
           id: "en-zh-dict-0",
           role: "assistant",
             content:
-                "你好 (nǐ hǎo)\n中文释义：\n1. 打招呼，问候语 \n2. 表示欢迎或高兴 \n英文释义：\n1. Hello is a greeting used to say “hi” to someone.\n2. Hello can also be used to express welcome or happiness.\n例句：\n当小明见到他的朋友时，他热情地说：“你好！” \nWhen Xiaoming saw his friend, he greeted him enthusiastically, “Hello!” ",
+                "你好 (nǐ hǎo)\n释义：\n1. 打招呼，问候语 \n Hello is a greeting used to say “hi” to someone. \n2. 表示欢迎或高兴 \n Hello can also be used to express welcome or happiness. \n 例句：\n当小明见到他的朋友时，他热情地说：“你好！” \nWhen Xiaoming saw his friend, he greeted him enthusiastically, “Hello!” ",
             date: "",
       },
     ],
