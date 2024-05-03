@@ -1,5 +1,5 @@
-export const OWNER = "Yidadaa";
-export const REPO = "ChatGPT-Next-Web";
+export const OWNER = "HXH2002";
+export const REPO = "ChatGPT-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;
@@ -140,14 +140,13 @@ const openaiModels = [
   "gpt-3.5-turbo-0125",
   "gpt-4",
   "gpt-4-0613",
-  "gpt-4-32k",
-  "gpt-4-32k-0613",
   "gpt-4-turbo",
   "gpt-4-turbo-preview",
   "gpt-4-vision-preview",
-  "gpt-4-turbo-2024-04-09",
+  "gpt-4-1106-preview",
+  // "gpt-4-turbo-2024-04-09",
 ];
-
+/*
 const googleModels = [
   "gemini-1.0-pro",
   "gemini-1.5-pro-latest",
@@ -162,7 +161,7 @@ const anthropicModels = [
   "claude-3-opus-20240229",
   "claude-3-haiku-20240307",
 ];
-
+*/
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
