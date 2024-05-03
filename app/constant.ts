@@ -146,7 +146,7 @@ const openaiModels = [
   "gpt-4-1106-preview",
   // "gpt-4-turbo-2024-04-09",
 ];
-/*
+
 const googleModels = [
   "gemini-1.0-pro",
   "gemini-1.5-pro-latest",
@@ -161,7 +161,7 @@ const anthropicModels = [
   "claude-3-opus-20240229",
   "claude-3-haiku-20240307",
 ];
-*/
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
