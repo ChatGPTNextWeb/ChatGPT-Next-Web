@@ -210,7 +210,8 @@ export async function saveLogs(logData: {
     const result = await prisma.logEntry.create({
       data: logData,
     });
-  } catch {
+  } catch (e) {
+    console.log("-------[debug log2]", logData);
     delete logData?.userID;
     const result = await prisma.logEntry.create({
       data: logData,
