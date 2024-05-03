@@ -68,7 +68,7 @@ model Session {
 
 model LogEntry {
   id        Int      @id @default(autoincrement())
-  ip        String?  @db.VarChar(25)
+  ip        String?  @db.VarChar(50)  // IPV6 long 39
   path      String?  @db.Text
   model     String?  @db.VarChar(25)
   userName  String?  @db.VarChar(50)
