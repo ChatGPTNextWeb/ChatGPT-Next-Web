@@ -10,9 +10,15 @@ yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-
 #yarn config delete sharp_libvips_binary_host
 
 #yarn cache clean
-#yarn install
-npm i cnpm
-cnpm i
+yarn install
+#if command -v cnpm &> /dev/null
+#then
+#    echo "cnpm 已安装"
+#else
+#    npm i cnpm
+#fi
+#
+#cnpm i
 yarn run build
 
 mkdir -p "./node_modules/tiktoken"
