@@ -115,6 +115,7 @@ export const useSyncStore = createPersistStore(
       }
     
       await client.set(config.username, JSON.stringify(localState));
+
       this.markSyncTime();
     },    
 
