@@ -89,7 +89,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
 
   useEffect(() => {
     const handleResize = () => {
-      setTableScroll({ y: window.innerHeight - 240 });
+      setTableScroll({ y: window.innerHeight - 260 });
     };
     window.addEventListener("resize", handleResize);
     handleResize();
