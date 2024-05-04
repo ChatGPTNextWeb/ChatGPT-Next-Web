@@ -1,7 +1,13 @@
 #FROM registry.cn-hangzhou.aliyuncs.com/sijinhui/node:18-alpine AS base
 FROM hub.siji.ci/library/node:20-alpine AS base
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk update && apk add --no-cache git tzdata vips-dev
+RUN apk update && apk add --no-cache git tzdata
+RUN apk add --no-cache \
+        vips-dev \
+        fftw-dev \
+        glib-dev \
+        glib \
+        expat-dev
 # 设置时区环境变量
 ENV TZ=Asia/Chongqing
 # 更新并安装时区工具
@@ -14,9 +20,9 @@ WORKDIR /app
 
 COPY package.json ./
 
-RUN yarn config set registry 'https://registry.npmmirror.com/'
-RUN yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-RUN yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+#RUN yarn config set registry 'https://registry.npmmirror.com/'
+#RUN yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
+#RUN yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
 #RUN # 清理遗留的缓存
 RUN yarn cache clean
 RUN yarn install

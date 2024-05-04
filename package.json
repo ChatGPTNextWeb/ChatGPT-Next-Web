@@ -21,7 +21,7 @@
     "@hello-pangea/dnd": "^16.5.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@next/third-parties": "^14.2.1",
-    "@prisma/client": "5.13.0",
+    "@prisma/client": "5.12.1",
     "@svgr/webpack": "^8.1.0",
     "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.9",
@@ -59,7 +59,6 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^14.2.3",
     "@tauri-apps/cli": "1.5.11",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie": "^0.6.0",
@@ -82,8 +81,7 @@
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
-    "prisma": "^5.13.0",
-    "speed-measure-webpack-plugin": "^1.5.0",
+    "prisma": "^5.12.1",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.3.3",
