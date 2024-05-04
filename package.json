@@ -59,6 +59,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.3",
     "@tauri-apps/cli": "1.5.11",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie": "^0.6.0",
@@ -82,6 +83,7 @@
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "prisma": "^5.13.0",
+    "speed-measure-webpack-plugin": "^1.5.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.3.3",

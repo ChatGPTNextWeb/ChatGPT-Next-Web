@@ -1,4 +1,12 @@
 import webpack from "webpack";
+// debug build
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+
 // import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
@@ -11,7 +19,7 @@ console.log("[Next] build with chunk: ", disableChunk);
 // const isProd = process.env.NODE_ENV === 'production'
 
 // 为了修复tiktoken的插件问题
-const nextConfig = {
+const nextConfig = withBundleAnalyzer({
   // transpilePackages: ['tiktoken'],
   webpack(config) {
     config.module.rules.push({
@@ -81,8 +89,11 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  // externals: {
+  //   'sharp': 'commonjs sharp'
+  // },
   swcMinify: true,
-};
+});
 
 const CorsHeaders = [
   { key: "Access-Control-Allow-Credentials", value: "true" },
