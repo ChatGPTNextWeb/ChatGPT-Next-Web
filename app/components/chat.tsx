@@ -500,10 +500,20 @@ export function ChatActions(props: {
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const allModels = useAllModels();
-  const models = useMemo(
-    () => allModels.filter((m) => m.available),
-    [allModels],
-  );
+  const models = useMemo(() => {
+    const filteredModels = allModels.filter((m) => m.available);
+    const defaultModel = filteredModels.find((m) => m.isDefault);
+
+    if (defaultModel) {
+      const arr = [
+        defaultModel,
+        ...filteredModels.filter((m) => m !== defaultModel),
+      ];
+      return arr;
+    } else {
+      return filteredModels;
+    }
+  }, [allModels]);
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
   const [showUploadFile, setShowUploadFile] = useState(false);
@@ -528,7 +538,10 @@ export function ChatActions(props: {
     // switch to first available model
     const isUnavaliableModel = !models.some((m) => m.name === currentModel);
     if (isUnavaliableModel && models.length > 0) {
-      const nextModel = models[0].name as ModelType;
+      // show next model to default model if exist
+      let nextModel: ModelType = (
+        models.find((model) => model.isDefault) || models[0]
+      ).name;
       chatStore.updateCurrentSession(
         (session) => (session.mask.modelConfig.model = nextModel),
       );

@@ -14,6 +14,7 @@ const DANGER_CONFIG = {
   disableFastLink: serverConfig.disableFastLink,
   customModels: serverConfig.customModels,
   isEnableRAG: serverConfig.isEnableRAG,
+  defaultModel: serverConfig.defaultModel,
 };
 
 declare global {
