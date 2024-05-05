@@ -367,8 +367,8 @@ const en: LocaleType = {
       SubTitle: "Do not alter this value together with temperature",
     },
     MaxTokens: {
-      Title: "Max Tokens",
-      SubTitle: "Maximum length of input tokens and generated tokens",
+      Title: "Single Response Limit (max_tokens)",
+      SubTitle: "Maximum number of tokens used in a single interaction",    
     },
     PresencePenalty: {
       Title: "Presence Penalty",

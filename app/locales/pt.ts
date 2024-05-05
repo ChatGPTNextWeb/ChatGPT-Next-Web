@@ -349,8 +349,8 @@ const pt: PartialLocaleType = {
       SubTitle: "Não altere este valor junto com a temperatura",
     },
     MaxTokens: {
-      Title: "Máximo de Tokens",
-      SubTitle: "Comprimento máximo de tokens de entrada e tokens gerados",
+      Title: "Limite de Resposta Única (max_tokens)",
+      SubTitle: "Número máximo de tokens usados em uma única interação",
     },
     PresencePenalty: {
       Title: "Penalidade de Presença",

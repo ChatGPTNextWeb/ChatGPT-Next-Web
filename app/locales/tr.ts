@@ -142,9 +142,8 @@ const tr: PartialLocaleType = {
         "Daha büyük bir değer girildiğinde gerçeklik oranı düşer ve daha rastgele çıktılar üretir",
     },
     MaxTokens: {
-      Title: "Maksimum Belirteç",
-      SubTitle:
-        "Girdi belirteçlerinin ve oluşturulan belirteçlerin maksimum uzunluğu",
+      Title: "Tek Yanıtlama Sınırlaması (max_tokens)",
+      SubTitle: "Tek etkileşimde kullanılan maksimum token sayısı",
     },
     PresencePenalty: {
       Title: "Varlık Cezası",

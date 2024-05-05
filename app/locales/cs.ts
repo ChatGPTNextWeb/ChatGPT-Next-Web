@@ -141,8 +141,8 @@ const cs: PartialLocaleType = {
       SubTitle: "Větší hodnota činí výstup náhodnějším",
     },
     MaxTokens: {
-      Title: "Max. počet tokenů",
-      SubTitle: "Maximální délka vstupního tokenu a generovaných tokenů",
+      Title: "Limit jedné odpovědi (max_tokens)",
+      SubTitle: "Maximální počet tokenů použitých v jedné interakci",    
     },
     PresencePenalty: {
       Title: "Přítomnostní korekce",

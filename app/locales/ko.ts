@@ -141,8 +141,8 @@ const ko: PartialLocaleType = {
       SubTitle: "값이 클수록 더 무작위한 출력이 생성됩니다.",
     },
     MaxTokens: {
-      Title: "최대 토큰 수 (max_tokens)",
-      SubTitle: "입력 토큰과 생성된 토큰의 최대 길이",
+      Title: "단일 응답 제한 (max_tokens)",
+      SubTitle: "단일 상호작용에서 사용되는 최대 토큰 수",
     },
     PresencePenalty: {
       Title: "존재 페널티 (presence_penalty)",

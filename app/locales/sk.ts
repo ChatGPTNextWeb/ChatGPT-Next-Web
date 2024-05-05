@@ -368,8 +368,8 @@ const sk: PartialLocaleType = {
       SubTitle: "Neupravujte túto hodnotu spolu s teplotou",
     },
     MaxTokens: {
-      Title: "Maximálny počet tokenov",
-      SubTitle: "Maximálna dĺžka vstupných tokenov a generovaných tokenov",
+      Title: "Obmedzenie jedné odpovede (max_tokens)",
+      SubTitle: "Maximálny počet tokenov použitých v jednej interakcii",
     },
     PresencePenalty: {
       Title: "Penalizácia za prítomnosť",

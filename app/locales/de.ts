@@ -140,8 +140,8 @@ const de: PartialLocaleType = {
       SubTitle: "Ein größerer Wert führt zu zufälligeren Antworten",
     },
     MaxTokens: {
-      Title: "Max Tokens", //Maximale Token
-      SubTitle: "Maximale Anzahl der Anfrage- plus Antwort-Token",
+      Title: "Maximale Antwortbegrenzung (max_tokens)", //Maximale Token
+      SubTitle: "Maximale Anzahl der in einer einzelnen Interaktion verwendeten Token",    
     },
     PresencePenalty: {
       Title: "Presence Penalty", //Anwesenheitsstrafe

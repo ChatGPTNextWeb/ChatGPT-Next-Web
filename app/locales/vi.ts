@@ -140,8 +140,8 @@ const vi: PartialLocaleType = {
       SubTitle: "Giá trị càng lớn, câu trả lời càng ngẫu nhiên",
     },
     MaxTokens: {
-      Title: "Giới hạn số lượng token (max_tokens)",
-      SubTitle: "Số lượng token tối đa được sử dụng trong mỗi lần tương tác",
+      Title: "Giới hạn về số token trong một phản hồi (max_tokens)",
+      SubTitle: "Số lượng token tối đa được sử dụng trong một lần phản hồi",
     },
     PresencePenalty: {
       Title: "Chủ đề mới (presence_penalty)",

@@ -123,8 +123,8 @@ const no: PartialLocaleType = {
       SubTitle: "Høyere verdi gir mer kreative svar",
     },
     MaxTokens: {
-      Title: "Maks tokens",
-      SubTitle: "Maksimum lengde på tokens for instrukser og svar",
+      Title: "Enkelt svarbegrensning (max_tokens)",
+      SubTitle: "Maksimalt antall tokens brukt i en enkelt interaksjon",
     },
   },
   Store: {
