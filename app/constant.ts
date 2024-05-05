@@ -1,5 +1,4 @@
-
-.export const OWNER = "HXH2002";
+export const OWNER = "HXH2002";
 export const REPO = "ChatGPT-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
