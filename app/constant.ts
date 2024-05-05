@@ -1,4 +1,5 @@
-export const OWNER = "HXH2002";
+
+.export const OWNER = "HXH2002";
 export const REPO = "ChatGPT-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
@@ -111,7 +112,7 @@ export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lan
 // Latex block: $$e=mc^2$$
 // `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatXH(星环大模型), a large language model trained by {{ServiceProvider}}.
+You are 星环大模型（ChatXH), a large language model trained by 天津星轨科技有限公司 based on {{model}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
@@ -150,13 +151,13 @@ const openaiModels = [
   
 ];
 
-const googleModels = [
+const googleModels: string[] = [
   // "gemini-1.0-pro",
   // "gemini-1.5-pro-latest",
   // "gemini-pro-vision",
 ];
 
-const anthropicModels = [
+const anthropicModels: string[] = [
   // "claude-instant-1.2",
   // "claude-2.0",
   // "claude-2.1",
