@@ -368,7 +368,7 @@ const en: LocaleType = {
     },
     MaxTokens: {
       Title: "Single Response Limit (max_tokens)",
-      SubTitle: "Maximum number of tokens used in a single interaction",    
+      SubTitle: "Maximum number of tokens used in a single interaction",
     },
     PresencePenalty: {
       Title: "Presence Penalty",

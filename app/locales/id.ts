@@ -260,7 +260,7 @@ const id: PartialLocaleType = {
     },
     MaxTokens: {
       Title: "Batas Respon Tunggal (max_tokens)",
-      SubTitle: "Jumlah maksimum token yang digunakan dalam satu interaksi",    
+      SubTitle: "Jumlah maksimum token yang digunakan dalam satu interaksi",
     },
     PresencePenalty: {
       Title: "Penalti Kehadiran",
@@ -370,7 +370,7 @@ const id: PartialLocaleType = {
   Exporter: {
     Description: {
       Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
-    },  
+    },
     Model: "Model",
     Messages: "Pesan",
     Topic: "Topik",

@@ -142,7 +142,7 @@ const it: PartialLocaleType = {
     },
     MaxTokens: {
       Title: "Limite di risposta singola (max_tokens)",
-      SubTitle: "Numero massimo di token utilizzati in un'interazione singola",    
+      SubTitle: "Numero massimo di token utilizzati in un'interazione singola",
     },
     PresencePenalty: {
       Title: "Penalità di presenza",

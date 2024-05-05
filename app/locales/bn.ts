@@ -221,7 +221,7 @@ const bn: PartialLocaleType = {
     },
     MaxTokens: {
       Title: "একক প্রতিক্রিয়ার সীমা (max_tokens)",
-      SubTitle: "একটি একক ইন্টার্যাকশনে ব্যবহৃত টোকেনের সর্বাধিক সংখ্যা",    
+      SubTitle: "একটি একক ইন্টার্যাকশনে ব্যবহৃত টোকেনের সর্বাধিক সংখ্যা",
     },
     PresencePenalty: {
       Title: "উপস্থিতির জরিমানা",

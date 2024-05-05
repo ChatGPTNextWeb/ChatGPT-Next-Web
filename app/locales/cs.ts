@@ -142,7 +142,7 @@ const cs: PartialLocaleType = {
     },
     MaxTokens: {
       Title: "Limit jedné odpovědi (max_tokens)",
-      SubTitle: "Maximální počet tokenů použitých v jedné interakci",    
+      SubTitle: "Maximální počet tokenů použitých v jedné interakci",
     },
     PresencePenalty: {
       Title: "Přítomnostní korekce",
