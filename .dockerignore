@@ -54,7 +54,7 @@ typings
 .env*.local
 
 # Next.js build output
-.next
+.next/
 # out
 
 # Nuxt.js build output
