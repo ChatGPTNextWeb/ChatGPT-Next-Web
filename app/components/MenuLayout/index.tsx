@@ -61,6 +61,7 @@ export default function MenuLayout<
       <div
         className={`
           w-[100%] relative bg-center
+          max-md:h-[100%]
           md:flex md:my-2.5
         `}
       >

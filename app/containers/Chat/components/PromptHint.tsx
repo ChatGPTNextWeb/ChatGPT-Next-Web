@@ -67,15 +67,14 @@ export default function PromptHints(props: {
   return (
     <div
       className={`
-      ${styles["prompt-hints"]} 
-      transition-all duration-300 shadow-prompt-hint-container rounded-none w-[100%] flex flex-col-reverse overflow-auto
-      ${
-        notShowPrompt
-          ? "max-h-[0vh] border-none"
-          : "border-b pt-2.5 max-h-[50vh]"
-      } 
-      ${props.className}
-    `}
+        transition-all duration-300 shadow-prompt-hint-container rounded-none  flex flex-col-reverse overflow-x-hidden
+        ${
+          notShowPrompt
+            ? "max-h-[0vh] border-none"
+            : "border-b pt-2.5 max-h-[50vh]"
+        } 
+        ${props.className}
+      `}
     >
       {internalPrompts.map((prompt, i) => (
         <div

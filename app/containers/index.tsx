@@ -111,8 +111,30 @@ export default function Home() {
           <ErrorBoundary>
             <Routes>
               <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
+              <Route
+                path={Path.NewChat}
+                element={
+                  <NewChat
+                    className={`
+              md:w-[100%] px-1
+              ${config.theme === "dark" ? "" : "bg-gray-50"}
+              ${config.isMobileScreen ? "pb-chat-panel-mobile" : ""}
+              `}
+                  />
+                }
+              />
+              <Route
+                path={Path.Masks}
+                element={
+                  <MaskPage
+                    className={`
+                md:w-[100%]
+                ${config.theme === "dark" ? "" : "bg-gray-50"}
+                ${config.isMobileScreen ? "pb-chat-panel-mobile" : ""}
+              `}
+                  />
+                }
+              />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.Settings} element={<Settings />} />
             </Routes>

@@ -398,7 +398,7 @@ export function ContextPrompts(props: {
   );
 }
 
-export function MaskPage() {
+export function MaskPage(props: { className?: string }) {
   const navigate = useNavigate();
 
   const maskStore = useMaskStore();
@@ -470,9 +470,10 @@ export function MaskPage() {
   return (
     <>
       <div
-        className={`${styles["mask-page"]} !bg-gray-50 ${
-          isMobileScreen ? "pb-chat-panel-mobile" : ""
-        }`}
+        className={`
+          ${styles["mask-page"]} 
+          ${props.className}
+          `}
       >
         <div className="window-header">
           <div className="window-header-title">
