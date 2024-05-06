@@ -8,9 +8,8 @@ on:
 jobs:
   build:
     name: build test image to aly
-    # runs-on: thinkpad
-    runs-on: self
-    #    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
