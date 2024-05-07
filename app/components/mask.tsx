@@ -465,8 +465,6 @@ export function MaskPage(props: { className?: string }) {
     });
   };
 
-  const isMobileScreen = useMobileScreen();
-
   return (
     <>
       <div

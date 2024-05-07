@@ -117,7 +117,7 @@ export default function Home() {
                   <NewChat
                     className={`
               md:w-[100%] px-1
-              ${config.theme === "dark" ? "" : "bg-gray-50"}
+              ${config.theme === "dark" ? "bg-[var(--white)]" : "bg-gray-50"}
               ${config.isMobileScreen ? "pb-chat-panel-mobile" : ""}
               `}
                   />
@@ -129,7 +129,7 @@ export default function Home() {
                   <MaskPage
                     className={`
                 md:w-[100%]
-                ${config.theme === "dark" ? "" : "bg-gray-50"}
+                ${config.theme === "dark" ? "bg-[var(--white)]" : "bg-gray-50"}
                 ${config.isMobileScreen ? "pb-chat-panel-mobile" : ""}
               `}
                   />

@@ -8,6 +8,10 @@
   justify-content: center;
   flex-direction: column;
 
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
+
   .mask-header {
     display: flex;
     justify-content: space-between;

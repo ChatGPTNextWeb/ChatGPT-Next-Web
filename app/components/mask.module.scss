@@ -4,6 +4,10 @@
   display: flex;
   flex-direction: column;
 
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
+
   .mask-page-body {
     padding: 20px;
     overflow-y: auto;

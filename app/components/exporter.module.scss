@@ -2,6 +2,9 @@
   &-body {
     margin-top: 20px;
   }
+  div:not(.no-dark) > svg {
+    filter: invert(0.5);
+  }
 }
 
 .export-content {
