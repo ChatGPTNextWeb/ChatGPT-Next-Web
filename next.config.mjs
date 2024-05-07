@@ -1,4 +1,12 @@
 import webpack from "webpack";
+// debug build
+// import { createRequire } from 'module';
+// const require = createRequire(import.meta.url);
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// });
+
+
 // import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
@@ -81,6 +89,9 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  // externals: {
+  //   'sharp': 'commonjs sharp'
+  // },
   swcMinify: true,
 };
 
