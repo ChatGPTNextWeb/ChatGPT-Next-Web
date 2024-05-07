@@ -105,7 +105,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "NextChat",
+        "title": "AxuanGPT",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
