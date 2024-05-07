@@ -170,6 +170,7 @@ const cn = {
     InputTemplate: {
       Title: "用户输入预处理",
       SubTitle: "用户最新的一条消息会填充到此模板",
+      Error: "模板中必须携带占位符{{input}}",
     },
 
     Update: {

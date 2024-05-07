@@ -90,6 +90,7 @@ module.exports = {
         'danger-btn': 'var(--danger-btn-bg)',
         'default-btn': 'var(--default-btn-bg)',
         'hovered-btn': 'var(--hovered-btn-bg)',
+        'hovered-danger-btn': 'var(--hovered-danger-btn-bg)',
         'card': 'var(--card-bg)',
         'input': 'var(--input-bg)',
         'list-item-divider': 'var(--list-item-divider-bg)',
@@ -186,6 +187,7 @@ module.exports = {
         'chat-menu-session-unselected-mobile': 'var(--chat-menu-session-unselected-mobile-border)',
         'chat-menu-session-hovered': 'var(--chat-menu-session-hovered-border)',
         'modal-header-bottom': 'var(--modal-header-bottom-border)',
+        'transparent': 'transparent',
 
         'text-sidebar-tab-mobile-active': 'var(--sidebar-tab-mobile-active-text)',
         'text-sidebar-tab-mobile-inactive': 'var(--sidebar-tab-mobile-inactive-text)',

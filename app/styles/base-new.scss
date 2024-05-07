@@ -64,6 +64,7 @@ body {
   --danger-btn-bg: #fff6f6;
   --default-btn-bg: #f7f7f8;
   --hovered-btn-bg: rgba(0, 0, 0, 0.05);
+  --hovered-danger-btn-bg: #FFE7E7;
   --card-bg: #fff;
   --input-bg: #f7f7f8;
   --list-item-divider-bg: #f0f0f3;
@@ -191,6 +192,7 @@ body {
   --danger-btn-bg: #20131A;
   --default-btn-bg: #1D1D1D;
   --hovered-btn-bg: #303030;
+  --hovered-danger-btn-bg:#303030;
   --card-bg: #111;
   --input-bg: #1D1D1D;
   --list-item-divider-bg: #303030;
@@ -216,7 +218,7 @@ body {
   --chat-panel-message-mobile-bg: #303030;
   --chat-message-actions-btn-hovered-bg: rgba(255, 255, 255, 0.05);
   --chat-panel-bg: #1D1D1D;
-  --chat-panel-message-clear-divider-bg: #e2e2e6; //////////
+  --chat-panel-message-clear-divider-bg: #a5a5b3;
   --chat-menu-session-selected-bg: #182455;
   --chat-menu-session-unselected-bg: #303030;
   --chat-menu-session-hovered-bg: #404040;

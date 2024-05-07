@@ -185,7 +185,7 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
                 }`}
               >
                 <div
-                  className={` pointer-events-none  text-text-chat-message-date text-right text-time whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
+                  className={` pointer-events-none  text-text-chat-message-date text-right font-common whitespace-nowrap transition-all duration-500 text-sm absolute z-1 ${
                     isUser ? "right-0" : "left-0"
                   } bottom-[100%] hidden group-hover:block`}
                 >

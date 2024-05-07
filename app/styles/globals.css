@@ -13,6 +13,9 @@
     font-feature-settings:
       "clig" off,
       "liga" off;
-    src: url(/fonts/Roboto.woff2) format("woff2");
+    src:
+      url("../fonts/Satoshi-Variable.woff2") format("woff2"),
+      url("../fonts/Satoshi-Variable.woff") format("woff"),
+      url("../fonts/Satoshi-Variable.ttf") format("truetype");
   }
 }

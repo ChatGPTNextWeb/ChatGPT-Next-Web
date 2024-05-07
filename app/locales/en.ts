@@ -174,6 +174,7 @@ const en: LocaleType = {
     InputTemplate: {
       Title: "Input Template",
       SubTitle: "Newest message will be filled to this template",
+      Error: "Placeholder {{input}} must be included in the template",
     },
 
     Update: {

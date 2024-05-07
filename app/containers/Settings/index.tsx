@@ -71,15 +71,13 @@ export default MenuLayout(function SettingList(props) {
               cursor-pointer
               border 
               rounded-md
-
-              bg-chat-menu-session-unselected border-chat-menu-session-unselected
+              border-transparent
               ${
                 selected === i.id && !isMobileScreen
                   ? `!bg-chat-menu-session-selected !border-chat-menu-session-selected !font-medium`
-                  : `hover:bg-chat-menu-session-hovered hover:chat-menu-session-hovered`
+                  : `hover:bg-chat-menu-session-unselected hover:border-chat-menu-session-unselected`
               }
 
-              hover:border-opacity-100 hover:font-semibold hover:bg-settings-menu-item-selected 
               flex justify-between items-center
               max-md:bg-settings-menu-item-mobile
             `}

@@ -153,6 +153,16 @@ export default function ModelSetting(props: {
             title={Locale.Settings.InputTemplate.Title}
             subTitle={Locale.Settings.InputTemplate.SubTitle}
             nextline={isMobileScreen}
+            validator={(v: string) => {
+              if (!v.includes("{{input}}")) {
+                return {
+                  error: true,
+                  message: Locale.Settings.InputTemplate.Error,
+                };
+              }
+
+              return { error: false };
+            }}
           >
             <Input
               type="text"
@@ -160,7 +170,6 @@ export default function ModelSetting(props: {
               onChange={(e = "") =>
                 props.updateConfig((config) => (config.template = e))
               }
-              className="text-center"
             ></Input>
           </ListItem>
         </>
