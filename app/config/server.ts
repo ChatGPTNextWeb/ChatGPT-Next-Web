@@ -53,6 +53,22 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   }
 })();
 
+function getApiKey(keys?: string) {
+  const apiKeyEnvVar = keys ?? "";
+  const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
+  const randomIndex = Math.floor(Math.random() * apiKeys.length);
+  const apiKey = apiKeys[randomIndex];
+  if (apiKey) {
+    console.log(
+      `[Server Config] using ${randomIndex + 1} of ${
+        apiKeys.length
+      } api key - ${apiKey}`,
+    );
+  }
+
+  return apiKey;
+}
+
 export const getServerSideConfig = () => {
   if (typeof process === "undefined") {
     throw Error(
@@ -80,36 +96,35 @@ export const getServerSideConfig = () => {
   // const isAzure = !!process.env.AZURE_URL;
   const hasAzure = !!process.env.AZURE_URL;
 
-  const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
-  const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
-  const randomIndex = Math.floor(Math.random() * apiKeys.length);
-  const apiKey = apiKeys[randomIndex];
+  // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
+  // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
+  // const randomIndex = Math.floor(Math.random() * apiKeys.length);
+  // const apiKey = apiKeys[randomIndex];
   // console.log(
   //   `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
   // );
 
-  const whiteWebDevEndpoints = (process.env.WHITE_WEBDEV_ENDPOINTS ?? "").split(
-    ",",
-  );
+  const allowedWebDevEndpoints = (
+    process.env.WHITE_WEBDEV_ENDPOINTS ?? ""
+  ).split(",");
 
   return {
     baseUrl: process.env.BASE_URL,
-    apiKey,
+    apiKey: getApiKey(process.env.OPENAI_API_KEY),
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
-    // isAzure,
-    // hasAzure,
     azureUrl: process.env.AZURE_URL ?? "",
-    azureApiKey: process.env.AZURE_API_KEY ?? "",
+    azureApiKey: getApiKey(process.env.AZURE_API_KEY) ?? "",
     azureApiVersion: process.env.AZURE_API_VERSION ?? "",
+
     azureVoiceKey: process.env.AZURE_VOICE_KEY ?? "",
 
     isGoogle,
-    googleApiKey: process.env.GOOGLE_API_KEY,
+    googleApiKey: getApiKey(process.env.GOOGLE_API_KEY),
     googleUrl: process.env.GOOGLE_URL,
 
     isAnthropic,
-    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
 
@@ -128,6 +143,6 @@ export const getServerSideConfig = () => {
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
     defaultModel,
-    whiteWebDevEndpoints,
+    allowedWebDevEndpoints,
   };
 };

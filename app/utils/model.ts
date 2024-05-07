@@ -66,14 +66,13 @@ export function collectModelTableWithDefaultModel(
 ) {
   let modelTable = collectModelTable(models, customModels);
   if (defaultModel && defaultModel !== "") {
-    delete modelTable[defaultModel];
     modelTable[defaultModel] = {
+      ...modelTable[defaultModel],
       name: defaultModel,
-      displayName: defaultModel,
       available: true,
       describe: "默认模型",
-      provider:
-        modelTable[defaultModel]?.provider ?? customProvider(defaultModel),
+      // provider:
+      //   modelTable[defaultModel]?.provider ?? customProvider(defaultModel),
       isDefault: true,
     };
   }
