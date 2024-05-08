@@ -13,10 +13,29 @@ on:
 #      - 'package.json'
 
 jobs:
-
+  build:
+    name: build image to aly
+    # runs-on: "103.200"
+    # runs-on: thinkpad
+    runs-on: self
+    #    runs-on: self-hosted
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          clean: false
+          github-server-url: 'https://gh.siji.ci'
+      - name: build and deploy to Docker Hub
+        run: |
+          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKER_ENV }}" > .env
+          #bash ./start.sh
+          docker-compose build
+          docker-compose push
+          yes | docker system prune --filter "until=168h"
   download-repo:
     name: 下载仓库
-    #needs: build
+    needs: build
     runs-on: self
     steps:
       - name: Check out the repo
