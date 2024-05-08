@@ -34,5 +34,13 @@ rsync -az --delete ./.next/server/ ${OUT_DIR}/.next/server
 rsync -az --delete "./node_modules/tiktoken/" ${OUT_DIR}/node_modules/tiktoken
 
 docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
-docker build -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build .
+
+# 检查构建器是否已存在
+if ! docker buildx inspect mybuilder &> /dev/null; then
+    docker buildx create --use --name=mybuilder
+fi
+#docker build -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build --load .
+
 docker tag registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:latest
+docker tag registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test
