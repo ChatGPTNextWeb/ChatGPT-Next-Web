@@ -101,7 +101,7 @@ import { getClientConfig } from "../config/client";
 import Image from "next/image";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
-import { getTokenLength } from "@/lib/utils";
+// import { getTokenLength } from "@/lib/utils";
 import VoiceInput from "./voice-input";
 // import GptPrompts from "./gpt-prompts";
 // const VoiceInput = dynamic(
@@ -1268,6 +1268,30 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  // 加载状态结束，获取token
+  const [loadingChange, setLoadingChange] = useState(false);
+  useEffect(() => {
+    if (!isLoading && loadingChange) {
+      try {
+        fetch("/api/logs/get_current_token", {
+          method: "GET",
+          credentials: "include",
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            console.log("请求成功，", result);
+            localStorage.setItem(
+              "current_day_token",
+              result["result"]["current_token"],
+            );
+          });
+      } catch {}
+    }
+    return () => {
+      setLoadingChange(isLoading);
+    };
+  }, [isLoading, loadingChange]);
+
   // const [ voiceInputText, setVoiceInputText ] = useState("");
   // const [ voiceInputLoading, setVoiceInputLoading ] = useState(false);
 
@@ -1756,45 +1780,45 @@ function _Chat() {
   );
 }
 
-function getCurrentDayToken(sessions: ChatSession[]): number {
-  try {
-    const currentTime = new Date();
-    const startOfTheDayInTimeZone = new Date(
-      currentTime.getFullYear(),
-      currentTime.getMonth(),
-      currentTime.getDate(),
-      0,
-      0,
-      0,
-    );
-    const current_day_message = sessions
-      .reduce((acc, item) => {
-        // @ts-ignore
-        return acc.concat(item.messages);
-      }, [])
-      .filter((item1) => {
-        // @ts-ignore
-        const dateToCheck = new Date(item1.date);
-        return startOfTheDayInTimeZone < dateToCheck;
-      });
-    const all_current_day_content = current_day_message
-      // @ts-ignore
-      .map((item) => item.content)
-      .join(" ");
-    // 获取会话之后，再整合content，
-    return getTokenLength(all_current_day_content);
-  } catch (e) {
-    return 0;
-  }
-}
+// function getCurrentDayToken(sessions: ChatSession[]): number {
+//   try {
+//     const currentTime = new Date();
+//     const startOfTheDayInTimeZone = new Date(
+//       currentTime.getFullYear(),
+//       currentTime.getMonth(),
+//       currentTime.getDate(),
+//       0,
+//       0,
+//       0,
+//     );
+//     const current_day_message = sessions
+//       .reduce((acc, item) => {
+//         // @ts-ignore
+//         return acc.concat(item.messages);
+//       }, [])
+//       .filter((item1) => {
+//         // @ts-ignore
+//         const dateToCheck = new Date(item1.date);
+//         return startOfTheDayInTimeZone < dateToCheck;
+//       });
+//     const all_current_day_content = current_day_message
+//       // @ts-ignore
+//       .map((item) => item.content)
+//       .join(" ");
+//     // 获取会话之后，再整合content，
+//     return getTokenLength(all_current_day_content);
+//   } catch (e) {
+//     return 0;
+//   }
+// }
 
 export function Chat() {
   const chatStore = useChatStore();
   const sessionIndex = chatStore.currentSessionIndex;
   // 这里计先计算一下当天总token数。
-  localStorage.setItem(
-    "current_day_token",
-    String(getCurrentDayToken(chatStore.sessions)),
-  );
+  // localStorage.setItem(
+  //   "current_day_token",
+  //   String(getCurrentDayToken(chatStore.sessions)),
+  // );
   return <_Chat key={sessionIndex}></_Chat>;
 }
