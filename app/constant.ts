@@ -201,8 +201,8 @@ const anthropicModels = [
 
 export const DEFAULT_MODELS = [
   {
-    name: "gpt-35-turbo-0125",
-    describe: "GPT-3,微软",
+    name: "gpt-3.5-turbo-0125",
+    describe: "GPT-3,质量一般,便宜",
     available: true,
     provider: {
       id: "openai",
@@ -245,8 +245,8 @@ export const DEFAULT_MODELS = [
   //   },
   // },
   {
-    name: "gpt-3.5-turbo-0125",
-    describe: "GPT-3,备用",
+    name: "gpt-35-turbo-0125",
+    describe: "GPT-3,微软,备用",
     available: true,
     provider: {
       id: "openai",
