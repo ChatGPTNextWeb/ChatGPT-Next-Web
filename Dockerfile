@@ -14,17 +14,18 @@ ENV TZ=Asia/Chongqing
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 FROM base AS deps
-RUN apk add --no-cache libc6-compat g++ make
+
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json yarn.lock ./
 
-#RUN yarn config set registry 'https://registry.npmmirror.com/'
-#RUN yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-#RUN yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+RUN yarn config set registry 'https://registry.npmmirror.com/'
+RUN yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
+RUN yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
 #RUN # 清理遗留的缓存
-RUN yarn cache clean
+#RUN yarn cache clean
 RUN yarn install
 
 FROM base AS builder

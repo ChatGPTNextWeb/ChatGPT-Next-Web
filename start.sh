@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 # 加速
-#yarn config set registry 'https://registry.npmmirror.com/'
-#yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-#yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+yarn config set registry 'https://registry.npmmirror.com/'
+yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
+yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
 # 官方
-yarn config delete registry
-yarn config delete sharp_binary_host
-yarn config delete sharp_libvips_binary_host
+#yarn config delete registry
+#yarn config delete sharp_binary_host
+#yarn config delete sharp_libvips_binary_host
 
 yarn cache clean
 yarn install
@@ -34,3 +34,5 @@ rsync -az --delete ./.next/server/ ${OUT_DIR}/.next/server
 rsync -az --delete "./node_modules/tiktoken/" ${OUT_DIR}/node_modules/tiktoken
 
 docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+docker build -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build .
+docker tag registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:latest

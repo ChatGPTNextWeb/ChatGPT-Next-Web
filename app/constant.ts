@@ -228,22 +228,8 @@ export const DEFAULT_MODELS = [
   //     providerType: "openai",
   //   },
   // },
-  // {
-  //   name: "gpt-4-turbo-2024-04-09",
-  //   available: true,
-  //   provider: {
-  //     id: "openai",
-  //     providerName: "OpenAI",
-  //     providerType: "openai",
-  //   },
-  // },
-  // {
-  //   name: "gpt-4",
-  //   describe: "GPT-4,聪明,贵,慢",
-  //   available: false,
-  // },
   {
-    name: "gpt-4-0125-preview",
+    name: "gpt-4-turbo-2024-04-09",
     describe: "GPT-4,最新版,推荐",
     available: true,
     provider: {
@@ -252,19 +238,24 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
+  // {
+  //   name: "gpt-4",
+  //   describe: "GPT-4,聪明,贵,慢",
+  //   available: false,
+  // },
+  // {
+  //   name: "gpt-4-0125-preview",
+  //   describe: "GPT-4,最新版,推荐",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
   {
     name: "gpt-4-1106-preview",
     describe: "GPT-4,旧版,备用",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "gpt-4-turbo-2024-04-09",
-    describe: "GPT-4,新版,测试",
     available: true,
     provider: {
       id: "openai",
@@ -345,8 +336,8 @@ export const DEFAULT_MODELS = [
 ] as const;
 
 export const AZURE_MODELS: string[] = [
-  "gpt-35-turbo-0125",
-  "gpt-4-0125-preview",
+  // "gpt-35-turbo-0125",
+  "gpt-4-turbo-2024-04-09",
 ];
 // export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
 // export const AZURE_PATH = AZURE_MODELS.map((m) => ({ m: `openai/deployments/${m}/chat/completions`} ));
