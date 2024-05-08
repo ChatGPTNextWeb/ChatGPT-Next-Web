@@ -1,0 +1,147 @@
+name: PRO DEPLOY TO TY
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+#    paths:
+#      - 'app/**'
+#      - 'public/**'
+#      - '.github/**'
+#      - 'docker-compose.yml'
+#      - 'Dockerfile'
+#      - 'package.json'
+
+jobs:
+  build:
+    name: build image to aly
+    # runs-on: "103.200"
+    # runs-on: thinkpad
+    runs-on: self
+    #    runs-on: self-hosted
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          clean: false
+          github-server-url: 'https://gh.siji.ci'
+      - name: build and deploy to Docker Hub
+        run: |
+          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKER_ENV }}" > .env
+          bash ./start.sh
+          #docker-compose build
+          docker-compose push
+          yes | docker system prune --filter "until=168h"
+  download-repo:
+    name: 下载仓库
+    needs: build
+    runs-on: self
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          github-server-url: 'https://gh.siji.ci'
+  deploy-nm:
+    name: 部署到内蒙服务器
+    needs: download-repo
+    runs-on: self
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Sync repository to nm
+        run: |
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.NM_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.NM_SSH_IP }}:/data/ChatGPT-Next-Web/
+      - name: deploy-to-nm
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
+        with:
+          host: ${{ secrets.NM_SSH_IP }} #服务器地址
+          username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
+          envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
+          script: |
+            cd $SERVER_WORKDIR #进入到工作目录
+            echo "${{ secrets.DOCKER_ENV }}" > .env
+            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+            docker-compose pull && docker-compose up -d
+            yes | docker image prune
+            rm -rf /www/server/nginx/proxy_cache_dir/* || true
+            rm -rf /www/server/nginx/proxy_temp_dir/* || true
+            sleep 2
+            #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
+  deploy-ty:
+    name: 部署到天翼云服务器
+    needs: download-repo
+    runs-on: self
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Sync repository to tyy
+        run: |
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TY_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.TY_SSH_IP }}:/data/ChatGPT-Next-Web/
+      - name: deploy-to-ty
+        uses: appleboy/ssh-action@master
+        env:
+         SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
+        with:
+          host: ${{ secrets.TY_SSH_IP }} #服务器地址
+          username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
+          envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
+          script: |
+            cd $SERVER_WORKDIR #进入到工作目录
+            echo "${{ secrets.DOCKER_ENV }}" > .env
+            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+            docker-compose pull && docker-compose up -d
+            yes | docker image prune
+            rm -rf /www/server/nginx/proxy_cache_dir/*
+            rm -rf /www/server/nginx/proxy_temp_dir/*
+            sleep 2
+            #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
+  deploy-tx:
+    name: 部署到腾讯云
+    needs: download-repo
+    runs-on: self
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Sync repository to tx
+        run: |
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.TX_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.TX_SSH_IP }}:/data/ChatGPT-Next-Web
+      - name: deploy-to-tx
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
+        with:
+          host: ${{ secrets.TX_SSH_IP }} #服务器地址
+          username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
+          envs: SERVER_WORKDIR,ALY_DOCKER_PASSWORD,ALY_DOCKER_USERNAME,DOCKER_ENV #使用工作目录变量
+          script: |
+            cd $SERVER_WORKDIR #进入到工作目录
+            echo "${{ secrets.DOCKER_ENV }}" > .env
+            echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+            docker-compose pull && docker-compose up -d
+            yes | docker image prune
+            rm -rf /www/server/nginx/proxy_cache_dir/*
+            rm -rf /www/server/nginx/proxy_temp_dir/*
+            sleep 2
+            tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
