@@ -1268,8 +1268,10 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  // 加载状态结束，获取token
+  const [loadingChange, setLoadingChange] = useState(false);
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && loadingChange) {
       try {
         fetch("/api/logs/get_current_token", {
           method: "GET",
@@ -1284,10 +1286,11 @@ function _Chat() {
             );
           });
       } catch {}
-
-      console.log("加载消息完成。获取token");
     }
-  }, [isLoading]);
+    return () => {
+      setLoadingChange(isLoading);
+    };
+  }, [isLoading, loadingChange]);
 
   // const [ voiceInputText, setVoiceInputText ] = useState("");
   // const [ voiceInputLoading, setVoiceInputLoading ] = useState(false);
