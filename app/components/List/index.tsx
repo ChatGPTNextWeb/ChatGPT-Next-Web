@@ -17,6 +17,7 @@ interface WidgetStyle {
 
 interface ChildrenMeta {
   type?: "unknown" | "input" | "range";
+  error?: string;
 }
 
 export interface ListProps {
@@ -27,6 +28,15 @@ export interface ListProps {
   widgetStyle?: WidgetStyle;
 }
 
+type Error =
+  | {
+      error: true;
+      message: string;
+    }
+  | {
+      error: false;
+    };
+
 export interface ListItemProps {
   title: string;
   subTitle?: string;
@@ -34,10 +44,15 @@ export interface ListItemProps {
   className?: string;
   onClick?: () => void;
   nextline?: boolean;
+  validator?: (v: any) => Error | Promise<Error>;
 }
 
 export const ListContext = createContext<
-  { isMobileScreen?: boolean; update?: (m: ChildrenMeta) => void } & WidgetStyle
+  {
+    isMobileScreen?: boolean;
+    update?: (m: ChildrenMeta) => void;
+    handleValidate?: (v: any) => void;
+  } & WidgetStyle
 >({ isMobileScreen: false });
 
 export function ListItem(props: ListItemProps) {
@@ -48,6 +63,7 @@ export function ListItem(props: ListItemProps) {
     subTitle,
     children,
     nextline,
+    validator,
   } = props;
 
   const context = useContext(ListContext);
@@ -56,9 +72,11 @@ export function ListItem(props: ListItemProps) {
 
   const { inputNextLine, rangeNextLine } = context;
 
+  const { type, error } = childrenMeta;
+
   let internalNextLine;
 
-  switch (childrenMeta.type) {
+  switch (type) {
     case "input":
       internalNextLine = !!(nextline || inputNextLine);
       break;
@@ -70,7 +88,22 @@ export function ListItem(props: ListItemProps) {
   }
 
   const update = useCallback((m: ChildrenMeta) => {
-    setMeta(m);
+    setMeta((pre) => ({ ...pre, ...m }));
+  }, []);
+
+  const handleValidate = useCallback((v: any) => {
+    const insideValidator = validator || (() => {});
+
+    Promise.resolve(insideValidator(v)).then((result) => {
+      if (result && result.error) {
+        return update({
+          error: result.message,
+        });
+      }
+      update({
+        error: undefined,
+      });
+    });
   }, []);
 
   return (
@@ -88,13 +121,18 @@ export function ListItem(props: ListItemProps) {
           <div className={` text-sm text-text-list-subtitle`}>{subTitle}</div>
         )}
       </div>
-      <ListContext.Provider value={{ ...context, update }}>
+      <ListContext.Provider value={{ ...context, update, handleValidate }}>
         <div
           className={`${
             internalNextLine ? "mt-[0.625rem]" : "max-w-[70%]"
-          } flex items-center justify-center`}
+          } flex flex-col items-center justify-center`}
         >
-          {children}
+          <div>{children}</div>
+          {!!error && (
+            <div className="text-text-btn-danger text-sm-mobile-tab mt-[0.3125rem] flex items-start w-[100%]">
+              <div className="">{error}</div>
+            </div>
+          )}
         </div>
       </ListContext.Provider>
     </div>

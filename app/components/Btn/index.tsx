@@ -42,7 +42,7 @@ export default function Btn(props: BtnProps) {
       } text-text-btn-primary `;
       break;
     case "danger":
-      btnClassName = `bg-danger-btn text-text-btn-danger hover:bg-hovered-btn`;
+      btnClassName = `bg-danger-btn text-text-btn-danger hover:bg-hovered-danger-btn`;
       break;
     default:
       btnClassName = `bg-default-btn text-text-btn-default hover:bg-hovered-btn`;

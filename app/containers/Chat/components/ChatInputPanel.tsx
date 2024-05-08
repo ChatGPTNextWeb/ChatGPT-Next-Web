@@ -301,7 +301,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
             {!isMobileScreen && (
               <div className="flex items-center justify-center text-sm gap-3">
                 <div className="flex-1">&nbsp;</div>
-                <div className="text-text-chat-input-placeholder text-time line-clamp-1">
+                <div className="text-text-chat-input-placeholder font-common line-clamp-1">
                   {Locale.Chat.Input(submitKey)}
                 </div>
                 <Btn

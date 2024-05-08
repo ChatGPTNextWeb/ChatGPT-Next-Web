@@ -96,7 +96,7 @@ const Select = <Value extends number | string>(props: SearchProps<Value>) => {
       className={selectClassName}
     >
       <div
-        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-time text-sm-title  cursor-pointer hover:bg-select-hover transition duration-300 ease-in-out`}
+        className={`flex items-center gap-3 py-2 px-3 bg-select rounded-action-btn font-common text-sm-title  cursor-pointer hover:bg-select-hover transition duration-300 ease-in-out`}
         ref={contentRef}
       >
         <div

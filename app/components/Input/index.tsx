@@ -4,7 +4,6 @@ import {
   DetailedHTMLProps,
   InputHTMLAttributes,
   useContext,
-  useEffect,
   useLayoutEffect,
   useState,
 } from "react";
@@ -17,6 +16,7 @@ export interface CommonInputProps
   > {
   className?: string;
 }
+
 export interface NumberInputProps {
   onChange?: (v: number) => void;
   type?: "number";
@@ -49,11 +49,15 @@ export default function Input(props: CommonInputProps & InputProps) {
 
   const internalType = (show && "text") || type;
 
-  const { update } = useContext(List.ListContext);
+  const { update, handleValidate } = useContext(List.ListContext);
 
   useLayoutEffect(() => {
     update?.({ type: "input" });
   }, []);
+
+  useLayoutEffect(() => {
+    handleValidate?.(value);
+  }, [value]);
 
   return (
     <div

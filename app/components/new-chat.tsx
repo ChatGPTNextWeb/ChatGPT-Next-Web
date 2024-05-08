@@ -72,7 +72,7 @@ function useMaskGroup(masks: Mask[]) {
   return groups;
 }
 
-export function NewChat() {
+export function NewChat(props: { className?: string }) {
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
 
@@ -115,9 +115,10 @@ export function NewChat() {
 
   return (
     <div
-      className={`${styles["new-chat"]} !bg-gray-50 px-1 ${
-        isMobileScreen ? "pb-chat-panel-mobile" : ""
-      }`}
+      className={`
+      ${styles["new-chat"]}
+      ${props.className}
+      `}
     >
       <div className={styles["mask-header"]}>
         <IconButton

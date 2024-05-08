@@ -124,13 +124,17 @@ const ModelSelect = () => {
 
   return (
     <Popover
-      content={content({ close: () => {} })}
+      content={
+        <div className="max-h-chat-actions-select-model-popover overflow-y-auto">
+          {content({ close: () => {} })}
+        </div>
+      }
       trigger="click"
       noArrow
       placement={
         position?.poi.relativePosition[1] !== Orientation.bottom ? "lb" : "lt"
       }
-      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-model-select-popover-panel max-h-chat-actions-select-model-popover  w-[280px]"
+      popoverClassName="border border-select-popover rounded-lg shadow-select-popover-shadow w-actions-popover  bg-model-select-popover-panel w-[280px]"
       onShow={(e) => {
         if (e) {
           autoScrollToSelectedModal();

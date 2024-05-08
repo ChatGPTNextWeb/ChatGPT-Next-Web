@@ -38,10 +38,6 @@
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
 
   --theme-color: var(--gray);
-
-  div:not(.no-dark) > svg {
-    filter: invert(0.5);
-  }
 }
 
 .light {
