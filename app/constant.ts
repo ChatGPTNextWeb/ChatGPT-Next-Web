@@ -200,18 +200,9 @@ const anthropicModels = [
 // ] as const;
 
 export const DEFAULT_MODELS = [
-  // {
-  //   name: "gpt-4",
-  //   available: true,
-  // },
-  // {
-  //   name: "gpt-3.5-turbo-16k",
-  //   describe: "GPT-3,最快,笨",
-  //   available: false,
-  // },
   {
     name: "gpt-35-turbo-0125",
-    describe: "GPT-3,最快,效果一般,最便宜",
+    describe: "GPT-3,微软",
     available: true,
     provider: {
       id: "openai",
@@ -253,6 +244,16 @@ export const DEFAULT_MODELS = [
   //     providerType: "openai",
   //   },
   // },
+  {
+    name: "gpt-3.5-turbo-0125",
+    describe: "GPT-3,备用",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
   {
     name: "gpt-4-1106-preview",
     describe: "GPT-4,旧版,备用",
@@ -336,7 +337,7 @@ export const DEFAULT_MODELS = [
 ] as const;
 
 export const AZURE_MODELS: string[] = [
-  // "gpt-35-turbo-0125",
+  "gpt-35-turbo-0125",
   "gpt-4-turbo-2024-04-09",
 ];
 // export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
