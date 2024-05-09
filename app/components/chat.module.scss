@@ -41,6 +41,54 @@
     background-color: var(--white);
   }
 }
+.attach-files {
+  position: absolute;
+  left: 30px;
+  bottom: 32px;
+  display: flex;
+}
+
+.attach-file {
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  padding: 0px 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+
+  .file-name {
+    margin-left: 3px;
+    text-decoration: none;
+    color: #000;
+  }
+
+  .attach-image-mask {
+    // width: 100%;
+    // height: 100%;
+    opacity: 0;
+    transition: all ease 0.2s;
+    position: absolute;
+    top: -12px;
+    right: -12px;
+  }
+
+  .attach-image-mask:hover {
+    opacity: 1;
+  }
+
+  .delete-image {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--white);
+  }
+}
+
 
 .chat-input-actions {
   display: flex;
@@ -583,6 +631,9 @@
 
 .chat-input-panel-inner-attach {
   padding-bottom: 80px;
+}
+.chat-input-panel-inner-attach-file {
+  padding-bottom: 30px;
 }
 
 .chat-input-panel-inner:has(.chat-input:focus) {

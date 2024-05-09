@@ -64,6 +64,10 @@ const cn = {
       Clear: "清除聊天",
       Settings: "对话设置",
       UploadImage: "上传图片",
+      UploadFile: {
+        text: "上传文件",
+        tips: "请去设置页面配置对象存储服务",
+      },
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -373,6 +377,42 @@ const cn = {
     FrequencyPenalty: {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
+    },
+    useSearch: {
+      Title: "联网搜索",
+      SubTitle: "建议关闭联网搜索，防止干扰解读结果",
+    },
+    CloudStorageService: {
+      UseCloudStorageService: {
+        Title: "云存储服务",
+        subTitle: "是否使用云存储服务",
+      },
+      StorageServiceProvider: {
+        Title: "云存储服务列表",
+        subTitle: "切换云存储服务",
+      },
+      OSS: {
+        region: {
+          Title: "区域",
+          SubTitle: "必须填写",
+          Placeholder: "OSS Region",
+        },
+        accessKeyId: {
+          Title: "访问ID",
+          SubTitle: "必须填写",
+          Placeholder: "OSS AccessKeyId",
+        },
+        accessKeySecret: {
+          Title: "访问密钥",
+          SubTitle: "必须填写",
+          Placeholder: "OSS AccessKeySecret",
+        },
+        bucket: {
+          Title: "桶",
+          SubTitle: "必须填写",
+          Placeholder: "OSS Bucket",
+        },
+      },
     },
   },
   Store: {

@@ -9,6 +9,8 @@ import React, {
   RefObject,
 } from "react";
 
+import OSS from "ali-oss";
+
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -37,6 +39,8 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import PdfIcon from "../icons/pdfIcon.svg";
+import UploadFileIcon from "../icons/upload.svg";
 
 import {
   ChatMessage,
@@ -60,6 +64,9 @@ import {
   getMessageImages,
   isVisionModel,
   compressImage,
+  getMessageFiles,
+  extractFilenameFromUrl,
+  isKimiModel,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -87,6 +94,7 @@ import {
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
+  CloudServiceProvider,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -426,6 +434,10 @@ export function ChatActions(props: {
   showPromptHints: () => void;
   hitBottom: boolean;
   uploading: boolean;
+  uploadFile: () => void;
+  fileUploading: boolean;
+  setFileUploading: (uploading: boolean) => void;
+  setAttachFiles: (url: string[]) => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -464,6 +476,7 @@ export function ChatActions(props: {
   }, [allModels]);
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
+  const [showUploadFile, setShowUploadFile] = useState(false);
 
   useEffect(() => {
     const show = isVisionModel(currentModel);
@@ -471,6 +484,13 @@ export function ChatActions(props: {
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
+    }
+    // upload file
+    const uploadFileShow = isKimiModel(currentModel);
+    setShowUploadFile(uploadFileShow);
+    if (!uploadFileShow) {
+      props.setAttachFiles([]);
+      props.setFileUploading(false);
     }
 
     // if current model is not available
@@ -517,6 +537,15 @@ export function ChatActions(props: {
           onClick={props.uploadImage}
           text={Locale.Chat.InputActions.UploadImage}
           icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
+        />
+      )}
+      {showUploadFile && (
+        <ChatAction
+          onClick={props.uploadFile}
+          text={Locale.Chat.InputActions.UploadFile.text}
+          icon={
+            props.fileUploading ? <LoadingButtonIcon /> : <UploadFileIcon />
+          }
         />
       )}
       <ChatAction
@@ -692,6 +721,9 @@ function _Chat() {
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  // 目前只支持传一个文件
+  const [fileUploading, setFileUploading] = useState(false);
+  const [attachFiles, setAttachFiles] = useState<string[]>([]);
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -770,9 +802,10 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, attachFiles)
       .then(() => setIsLoading(false));
     setAttachImages([]);
+    setAttachFiles([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
@@ -943,6 +976,27 @@ function _Chat() {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
+  // 配置云存储数据后才可以实例化oss
+  const {
+    use_cloud_service,
+    cloud_service,
+    oss_region,
+    oss_accessKeyId,
+    oss_accessKeySecret,
+    oss_bucket,
+  } = accessStore || {};
+  let ossClient: any;
+  if (use_cloud_service && cloud_service == CloudServiceProvider.OSS) {
+    if (oss_region && oss_accessKeyId && oss_accessKeySecret && oss_bucket) {
+      const OSS_CONFIG = {
+        region: oss_region?.trim() || "",
+        accessKeyId: oss_accessKeyId || "",
+        accessKeySecret: oss_accessKeySecret || "",
+        bucket: oss_bucket?.trim() || "",
+      };
+      ossClient = new OSS(OSS_CONFIG);
+    }
+  }
 
   if (
     context.length === 0 &&
@@ -1205,6 +1259,42 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  async function uploadFile() {
+    if (!accessStore.use_cloud_service) {
+      showToast(Locale.Chat.InputActions.UploadFile.tips);
+      return;
+    }
+    // 目前不会和上传文件同时出现
+    // setAttachImages([]);
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "application/pdf";
+    fileInput.onchange = async (event: any) => {
+      try {
+        setFileUploading(true);
+        const file = event?.target?.files[0];
+        let attachFiles = [];
+        switch (accessStore.cloud_service) {
+          case CloudServiceProvider.OSS:
+            if (!ossClient) {
+              showToast(Locale.Chat.InputActions.UploadFile.tips);
+              return;
+            }
+            const result = await ossClient?.put(file?.name, file);
+            const fileLinkByOss = (result?.res as any)?.requestUrls[0];
+            attachFiles.push(fileLinkByOss);
+            break;
+        }
+        setAttachFiles(attachFiles);
+      } catch (err) {
+        console.log("file upload error:", err);
+      } finally {
+        setFileUploading(false);
+      }
+    };
+    fileInput.click();
+  }
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1452,6 +1542,19 @@ function _Chat() {
                         })}
                       </div>
                     )}
+                    {/* 渲染文件 */}
+                    {getMessageFiles(message).length == 1 && (
+                      <div className={styles["attach-file"]}>
+                        <PdfIcon />
+                        <a
+                          href={getMessageFiles(message)[0]}
+                          download
+                          className={styles["file-name"]}
+                        >
+                          {extractFilenameFromUrl(getMessageFiles(message)[0])}
+                        </a>
+                      </div>
+                    )}
                   </div>
 
                   <div className={styles["chat-message-action-date"]}>
@@ -1489,11 +1592,19 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          uploadFile={uploadFile}
+          fileUploading={fileUploading}
+          setAttachFiles={setAttachFiles}
+          setFileUploading={setFileUploading}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
             attachImages.length != 0
               ? styles["chat-input-panel-inner-attach"]
+              : ""
+          } ${
+            attachFiles.length != 0
+              ? styles["chat-input-panel-inner-attach-file"]
               : ""
           }`}
           htmlFor="chat-input"
@@ -1529,6 +1640,29 @@ function _Chat() {
                         deleteImage={() => {
                           setAttachImages(
                             attachImages.filter((_, i) => i !== index),
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {attachFiles.length != 0 && (
+            <div className={styles["attach-files"]}>
+              {attachFiles.map((url, index) => {
+                return (
+                  <div key={index} className={styles["attach-file"]}>
+                    <PdfIcon />
+                    <div className={styles["file-name"]}>
+                      {extractFilenameFromUrl(url)}
+                    </div>
+                    <div className={styles["attach-image-mask"]}>
+                      <DeleteImageButton
+                        deleteImage={() => {
+                          setAttachFiles(
+                            attachFiles.filter((_, i) => i !== index),
                           );
                         }}
                       />
