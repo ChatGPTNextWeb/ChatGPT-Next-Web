@@ -18,6 +18,7 @@ export function collectModelTable(
       displayName: string;
       provider?: LLMModel["provider"]; // Marked as optional
       isDefault?: boolean;
+      isCustomModel?: boolean;
     }
   > = {};
 
@@ -47,6 +48,7 @@ export function collectModelTable(
       } else {
         modelTable[name] = {
           name,
+          isCustomModel: true,
           displayName: displayName || name,
           available,
           provider: modelTable[name]?.provider ?? customProvider(name), // Use optional chaining
