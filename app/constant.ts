@@ -285,9 +285,9 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gemini-pro",
+    name: "gemini-1.5-pro-latest",
     available: true,
-    describe: "谷歌的,不要钱,但质量一般",
+    describe: "谷歌的,不要钱,质量还不错",
     provider: {
       id: "google",
       providerName: "Google",
