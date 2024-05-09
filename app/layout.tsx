@@ -39,8 +39,19 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="config" content={JSON.stringify(getClientConfig())} />
-        <link rel="manifest" href="/site.webmanifest"></link>
-        <script src="/serviceWorkerRegister.js" defer></script>
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="https://oss.xiaosi.cc/chat/public/favicon.ico"
+        />
+        <link
+          rel="manifest"
+          href="https://oss.xiaosi.cc/chat/public/site.webmanifest"
+        ></link>
+        <script
+          src="https://oss.xiaosi.cc/chat/public/serviceWorkerRegister.js"
+          defer
+        ></script>
       </head>
       <body>
         <Providers>{children}</Providers>
