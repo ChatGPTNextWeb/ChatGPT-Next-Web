@@ -30,13 +30,13 @@ const DEFAULT_SYNC_STATE = {
   proxyUrl: corsPath(ApiPath.Cors),
 
   webdav: {
-    endpoint: "",
-    username: "",
+    endpoint: "https://dav.jianguoyun.com/dav/",
+    username: "next",
     password: "",
   },
 
   upstash: {
-    endpoint: "",
+    endpoint: "apn1-busy-midge-34212.upstash.io",
     username: STORAGE_KEY,
     apiKey: "",
   },
