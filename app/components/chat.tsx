@@ -485,7 +485,6 @@ export function ChatActions(props: {
       props.setAttachImages([]);
       props.setUploading(false);
     }
-    // upload file
     const uploadFileShow = isKimiModel(currentModel);
     setShowUploadFile(uploadFileShow);
     if (!uploadFileShow) {
@@ -721,7 +720,7 @@ function _Chat() {
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
-  // 目前只支持传一个文件
+
   const [fileUploading, setFileUploading] = useState(false);
   const [attachFiles, setAttachFiles] = useState<string[]>([]);
 
@@ -976,7 +975,6 @@ function _Chat() {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
-  // 配置云存储数据后才可以实例化oss
   const {
     use_cloud_service,
     cloud_service,
@@ -1264,8 +1262,6 @@ function _Chat() {
       showToast(Locale.Chat.InputActions.UploadFile.tips);
       return;
     }
-    // 目前不会和上传文件同时出现
-    // setAttachImages([]);
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "application/pdf";
@@ -1542,7 +1538,6 @@ function _Chat() {
                         })}
                       </div>
                     )}
-                    {/* 渲染文件 */}
                     {getMessageFiles(message).length == 1 && (
                       <div className={styles["attach-file"]}>
                         <PdfIcon />

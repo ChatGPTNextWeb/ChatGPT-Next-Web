@@ -217,7 +217,7 @@ export function ModelConfigList(props: {
           }
         ></input>
       </ListItem>
-      {/* kimi 的联网搜索 */}
+
       {isKimiModel(props.modelConfig.model) && (
         <ListItem
           title={Locale.Settings.useSearch.Title}
