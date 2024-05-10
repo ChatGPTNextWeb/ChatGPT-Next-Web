@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import { ModelType, Theme, useAppConfig } from "@/app/store/config";
 import { useChatStore } from "@/app/store/chat";
 import { ChatControllerPool } from "@/app/client/controller";
@@ -22,6 +20,7 @@ import AddCircleIcon from "@/app/icons/addCircle.svg";
 
 import Popover from "@/app/components/Popover";
 import ModelSelect from "./ModelSelect";
+import { useRouter } from "next/navigation";
 
 export interface Action {
   onClick?: () => void;
@@ -46,7 +45,7 @@ export function ChatActions(props: {
   className?: string;
 }) {
   const config = useAppConfig();
-  const navigate = useNavigate();
+  const router = useRouter();
   const chatStore = useChatStore();
 
   // switch themes
@@ -146,7 +145,7 @@ export function ChatActions(props: {
     },
     {
       onClick: () => {
-        navigate(Path.Masks);
+        router.push(Path.Masks);
       },
       text: Locale.Chat.InputActions.Masks,
       isShow: true,
@@ -206,7 +205,7 @@ export function ChatActions(props: {
         placement="rt"
         noArrow
         popoverClassName="border border-chat-actions-popover-mobile rounded-md shadow-chat-actions-popover-mobile w-actions-popover bg-chat-actions-popover-panel-mobile "
-        className=" cursor-pointer follow-parent-svg default-icon-color"
+        className="cursor-pointer follow-parent-svg default-icon-color"
       >
         <AddCircleIcon />
       </Popover>

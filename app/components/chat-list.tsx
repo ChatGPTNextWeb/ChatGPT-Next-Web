@@ -12,13 +12,14 @@ import {
 import { useChatStore } from "../store";
 
 import Locale from "../locales";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+// import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
 import { useRef, useEffect } from "react";
 import { showConfirm } from "./ui-lib";
 import { useMobileScreen } from "../utils";
+import { usePathname, useRouter } from "next/navigation";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -41,14 +42,14 @@ export function ChatItem(props: {
     }
   }, [props.selected]);
 
-  const { pathname: currentPath } = useLocation();
+  const pathname = usePathname();
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
           className={`${styles["chat-item"]} ${
             props.selected &&
-            (currentPath === Path.Chat || currentPath === Path.Home) &&
+            (pathname === Path.Chat || pathname === Path.Home) &&
             styles["chat-item-selected"]
           }`}
           onClick={props.onClick}
@@ -112,8 +113,8 @@ export function ChatList(props: { narrow?: boolean }) {
     ],
   );
   const chatStore = useChatStore();
-  const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
+  const router = useRouter();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -150,7 +151,8 @@ export function ChatList(props: { narrow?: boolean }) {
                 index={i}
                 selected={i === selectedIndex}
                 onClick={() => {
-                  navigate(Path.Chat);
+                  // navigate(Path.Chat);
+                  router.push(Path.Chat);
                   selectSession(i);
                 }}
                 onDelete={async () => {

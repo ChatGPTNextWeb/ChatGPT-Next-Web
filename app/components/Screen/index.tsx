@@ -1,11 +1,12 @@
-import { useLocation } from "react-router-dom";
 import { useMemo, ReactNode } from "react";
 import { Path, SIDEBAR_ID, SlotID } from "@/app/constant";
 import { getLang } from "@/app/locales";
 
 import useMobileScreen from "@/app/hooks/useMobileScreen";
-import { isIOS } from "@/app/utils";
+
 import useListenWinResize from "@/app/hooks/useListenWinResize";
+import { usePathname } from "next/navigation";
+import { useDeviceInfo } from "@/app/hooks/useDeviceInfo";
 
 interface ScreenProps {
   children: ReactNode;
@@ -14,15 +15,11 @@ interface ScreenProps {
 }
 
 export default function Screen(props: ScreenProps) {
-  const location = useLocation();
-  const isAuth = location.pathname === Path.Auth;
+  const pathname = usePathname();
+  const isAuth = pathname === Path.Auth;
 
   const isMobileScreen = useMobileScreen();
-  const isIOSMobile = useMemo(
-    () => isIOS() && isMobileScreen,
-    [isMobileScreen],
-  );
-
+  const { deviceType, systemInfo } = useDeviceInfo();
   useListenWinResize();
 
   return (
@@ -59,7 +56,10 @@ export default function Screen(props: ScreenProps) {
             id={SlotID.AppBody}
             style={{
               // #3016 disable transition on ios mobile screen
-              transition: isIOSMobile ? "none" : undefined,
+              transition:
+                systemInfo === "iOS" && deviceType === "mobile"
+                  ? "none"
+                  : undefined,
             }}
           >
             {props.children}

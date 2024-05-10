@@ -32,7 +32,7 @@ interface Position {
 }
 
 export default function useRelativePosition({
-  containerRef = { current: window.document.body },
+  containerRef = { current: null },
   delay = 100,
   offsetDistance = 0,
 }: Options) {

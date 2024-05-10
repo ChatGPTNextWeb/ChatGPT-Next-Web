@@ -10,6 +10,7 @@ import { ChatCommandPrefix, useChatCommand } from "@/app/command";
 import { useChatStore } from "@/app/store/chat";
 import { usePromptStore } from "@/app/store/prompt";
 import { useAppConfig } from "@/app/store/config";
+import { useRouter } from "next/navigation";
 import usePaste from "@/app/hooks/usePaste";
 
 import { ChatActions } from "./ChatActions";
@@ -71,7 +72,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
     const [promptHints, setPromptHints] = useState<RenderPompt[]>([]);
 
     const chatStore = useChatStore();
-    const navigate = useNavigate();
+    const router = useRouter();
     const config = useAppConfig();
 
     const { uploadImage } = useUploadImage(attachImages, {
@@ -85,7 +86,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
     // chat commands shortcuts
     const chatCommands = useChatCommand({
       new: () => chatStore.newSession(),
-      newm: () => navigate(Path.NewChat),
+      newm: () => router.push(Path.NewChat),
       prev: () => chatStore.nextSession(-1),
       next: () => chatStore.nextSession(1),
       clear: () =>
@@ -299,7 +300,7 @@ export default forwardRef<ChatInputPanelInstance, ChatInputPanelProps>(
               }}
             />
             {!isMobileScreen && (
-              <div className="flex items-center justify-center text-sm gap-3">
+              <div className="flex items-center justify-center gap-3 text-sm">
                 <div className="flex-1">&nbsp;</div>
                 <div className="text-text-chat-input-placeholder font-common line-clamp-1">
                   {Locale.Chat.Input(submitKey)}

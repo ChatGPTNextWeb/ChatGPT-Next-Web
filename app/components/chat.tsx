@@ -97,6 +97,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { useRouter } from "next/navigation";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -428,7 +429,7 @@ export function ChatActions(props: {
   uploading: boolean;
 }) {
   const config = useAppConfig();
-  const navigate = useNavigate();
+  const router = useRouter();
   const chatStore = useChatStore();
 
   // switch themes
@@ -543,7 +544,8 @@ export function ChatActions(props: {
 
       <ChatAction
         onClick={() => {
-          navigate(Path.Masks);
+          // navigate(Path.Masks);
+          router.push(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
         icon={<MaskIcon />}

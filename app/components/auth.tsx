@@ -1,7 +1,8 @@
+"use client";
 import styles from "./auth.module.scss";
 import { IconButton } from "./button";
 
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { Path } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
@@ -11,11 +12,11 @@ import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
 
 export function AuthPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const accessStore = useAccessStore();
 
-  const goHome = () => navigate(Path.Home);
-  const goChat = () => navigate(Path.Chat);
+  const goHome = () => router.push(Path.Home);
+  const goChat = () => router.push(Path.Chat);
   const resetAccessCode = () => {
     accessStore.update((access) => {
       access.openaiApiKey = "";

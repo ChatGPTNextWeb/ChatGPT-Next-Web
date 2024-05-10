@@ -14,13 +14,14 @@ import AssistantMobileInactive from "@/app/icons/assistantMobileInactive.svg";
 
 import { useAppConfig } from "@/app/store";
 import { Path, REPO_URL } from "@/app/constant";
-import { useNavigate, useLocation } from "react-router-dom";
 import useHotKey from "@/app/hooks/useHotKey";
 import ActionsBar from "@/app/components/ActionsBar";
+import { usePathname, useRouter } from "next/navigation";
 
 export function SideBar(props: { className?: string }) {
-  const navigate = useNavigate();
-  const loc = useLocation();
+  // const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const config = useAppConfig();
   const { isMobileScreen } = config;
@@ -28,8 +29,7 @@ export function SideBar(props: { className?: string }) {
   useHotKey();
 
   let selectedTab: string;
-
-  switch (loc.pathname) {
+  switch (pathname) {
     case Path.Masks:
     case Path.NewChat:
       selectedTab = Path.Masks;
@@ -40,6 +40,7 @@ export function SideBar(props: { className?: string }) {
     default:
       selectedTab = Path.Home;
   }
+  console.log("======", selectedTab);
 
   return (
     <div
@@ -98,12 +99,17 @@ export function SideBar(props: { className?: string }) {
             return window.open(REPO_URL, "noopener noreferrer");
           }
           if (id !== Path.Masks) {
-            return navigate(id);
+            router.push(id);
+            return;
           }
           if (config.dontShowMaskSplashScreen !== true) {
-            navigate(Path.NewChat, { state: { fromHome: true } });
+            // navigate(Path.NewChat, { state: { fromHome: true } });
+            router.push(Path.NewChat);
+            return;
           } else {
-            navigate(Path.Masks, { state: { fromHome: true } });
+            // navigate(Path.Masks, { state: { fromHome: true } });
+            router.push(Path.Masks);
+            return;
           }
         }}
         groups={{

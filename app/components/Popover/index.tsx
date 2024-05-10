@@ -1,3 +1,4 @@
+"use client";
 import useRelativePosition from "@/app/hooks/useRelativePosition";
 import {
   RefObject,
@@ -36,19 +37,6 @@ const ArrowIcon = ({ sibling }: { sibling: RefObject<HTMLDivElement> }) => {
 
 const baseZIndex = 100;
 const popoverRootName = "popoverRoot";
-let popoverRoot = document.querySelector(
-  `#${popoverRootName}`,
-) as HTMLDivElement;
-if (!popoverRoot) {
-  popoverRoot = document.createElement("div");
-  document.body.appendChild(popoverRoot);
-  popoverRoot.style.height = "0px";
-  popoverRoot.style.width = "100%";
-  popoverRoot.style.position = "fixed";
-  popoverRoot.style.bottom = "0";
-  popoverRoot.style.zIndex = "10000";
-  popoverRoot.id = "popover-root";
-}
 
 export interface PopoverProps {
   content?: JSX.Element | string;
@@ -64,6 +52,8 @@ export interface PopoverProps {
   useGlobalRoot?: boolean;
   getPopoverPanelRef?: (ref: RefObject<HTMLDivElement>) => void;
 }
+
+let popoverRoot: HTMLDivElement;
 
 export default function Popover(props: PopoverProps) {
   const {
@@ -185,6 +175,26 @@ export default function Popover(props: PopoverProps) {
   const closeTimer = useRef<number>(0);
 
   useLayoutEffect(() => {
+    if (popoverRoot) {
+      return;
+    }
+
+    popoverRoot = document.querySelector(
+      `#${popoverRootName}`,
+    ) as HTMLDivElement;
+    if (!popoverRoot) {
+      popoverRoot = document.createElement("div");
+      document.body.appendChild(popoverRoot);
+      popoverRoot.style.height = "0px";
+      popoverRoot.style.width = "100%";
+      popoverRoot.style.position = "fixed";
+      popoverRoot.style.bottom = "0";
+      popoverRoot.style.zIndex = "10000";
+      popoverRoot.id = "popover-root";
+    }
+  }, []);
+
+  useLayoutEffect(() => {
     getPopoverPanelRef?.(popoverRef);
     onShow?.(internalShow);
   }, [internalShow]);
@@ -206,6 +216,10 @@ export default function Popover(props: PopoverProps) {
       }
       window.document.documentElement.style.overflow = "auto";
     };
+
+    if (mergedShow) {
+      return null;
+    }
 
     return (
       <div

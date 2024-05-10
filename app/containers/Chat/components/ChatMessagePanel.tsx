@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { ChatMessage, useChatStore } from "@/app/store/chat";
 import { CHAT_PAGE_SIZE } from "@/app/constant";
 import Locale from "@/app/locales";
@@ -88,11 +88,13 @@ export default function ChatMessagePanel(props: ChatMessagePanelProps) {
       ? session.clearContextIndex! + context.length - msgRenderIndex
       : -1;
 
-  if (!MarkdownLoadedCallback) {
-    MarkdownLoadedCallback = () => {
-      window.setTimeout(scrollDomToBottom, 100);
-    };
-  }
+  useEffect(() => {
+    if (!MarkdownLoadedCallback) {
+      MarkdownLoadedCallback = () => {
+        window.setTimeout(scrollDomToBottom, 100);
+      };
+    }
+  }, [scrollDomToBottom]);
 
   const messages = useMemo(() => {
     const endRenderIndex = Math.min(

@@ -1,11 +1,10 @@
 import { Draggable } from "@hello-pangea/dnd";
 
 import Locale from "@/app/locales";
-import { useLocation } from "react-router-dom";
 import { Path } from "@/app/constant";
 import { Mask } from "@/app/store/mask";
 import { useRef, useEffect } from "react";
-
+import { usePathname } from "next/navigation";
 import DeleteChatIcon from "@/app/icons/deleteChatIcon.svg";
 
 import { getTime } from "@/app/utils";
@@ -36,8 +35,7 @@ export default function SessionItem(props: {
       });
     }
   }, [props.selected]);
-
-  const { pathname: currentPath } = useLocation();
+  const pathname = usePathname();
 
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
@@ -51,7 +49,7 @@ export default function SessionItem(props: {
               md:bg-chat-menu-session-unselected md:border-chat-menu-session-unselected
               ${
                 props.selected &&
-                (currentPath === Path.Chat || currentPath === Path.Home)
+                (pathname === Path.Chat || pathname === Path.Home)
                   ? `
                     md:!bg-chat-menu-session-selected md:!border-chat-menu-session-selected
                     !bg-chat-menu-session-selected-mobile !border-chat-menu-session-selected-mobile
@@ -70,7 +68,7 @@ export default function SessionItem(props: {
             props.count,
           )}`}
         >
-          <div className=" flex-shrink-0">
+          <div className="flex-shrink-0 ">
             <LogIcon />
           </div>
           <div className="flex flex-col flex-1">

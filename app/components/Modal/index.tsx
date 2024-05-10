@@ -53,6 +53,8 @@ export interface TriggerProps
 
 const baseZIndex = 150;
 
+let div: HTMLDivElement | null = null;
+
 const Modal = (props: ModalProps) => {
   const {
     onOk,
@@ -78,6 +80,16 @@ const Modal = (props: ModalProps) => {
 
   const mergeOpen = visible ?? open;
 
+  useLayoutEffect(() => {
+    const div: HTMLDivElement = document.createElement("div");
+    div.id = "confirm-root";
+    div.style.height = "0px";
+    document.body.appendChild(div);
+  }, []);
+  const root = createRoot(div);
+  const closeModal = () => {
+    root.unmount();
+  };
   const handleClose = () => {
     setOpen(false);
     onCancel?.();
@@ -121,7 +133,7 @@ const Modal = (props: ModalProps) => {
     <AlertDialog.Root open={mergeOpen} onOpenChange={setOpen}>
       <AlertDialog.Portal>
         <AlertDialog.Overlay
-          className="bg-modal-mask fixed inset-0 animate-mask "
+          className="fixed inset-0 bg-modal-mask animate-mask "
           style={{ zIndex: baseZIndex - 1 }}
           onClick={() => {
             if (maskCloseble) {
@@ -165,7 +177,7 @@ const Modal = (props: ModalProps) => {
                       ${titleClassName}
                   `}
               >
-                <div className="flex gap-3 justify-start flex-1 items-center text-text-modal-title text-chat-header-title">
+                <div className="flex items-center justify-start flex-1 gap-3 text-text-modal-title text-chat-header-title">
                   {title}
                 </div>
                 {closeble && (
@@ -282,11 +294,6 @@ export const Warn = ({
     />
   );
 };
-
-const div = document.createElement("div");
-div.id = "confirm-root";
-div.style.height = "0px";
-document.body.appendChild(div);
 
 Modal.warn = (props: Omit<WarnProps, "visible" | "onCancel" | "onOk">) => {
   const root = createRoot(div);

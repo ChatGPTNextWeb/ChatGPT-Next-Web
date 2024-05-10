@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import Locale from "@/app/locales";
 import { Path } from "@/app/constant";
 import { DEFAULT_TOPIC, useChatStore } from "@/app/store/chat";
@@ -17,8 +17,8 @@ export interface ChatHeaderProps {
 export default function ChatHeader(props: ChatHeaderProps) {
   const { isMobileScreen, setIsEditingMessage, setShowExport } = props;
 
-  const navigate = useNavigate();
-
+  // const navigate = useNavigate();
+  const router = useRouter();
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
 
@@ -39,8 +39,8 @@ export default function ChatHeader(props: ChatHeaderProps) {
 
       {isMobileScreen ? (
         <div
-          className=" cursor-pointer follow-parent-svg default-icon-color"
-          onClick={() => navigate(Path.Home)}
+          className="cursor-pointer follow-parent-svg default-icon-color"
+          onClick={() => router.push(Path.Home)}
         >
           <GobackIcon />
         </div>

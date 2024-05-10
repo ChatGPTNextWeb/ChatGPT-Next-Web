@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 type Size = {
   width: number;
@@ -10,10 +10,14 @@ export function useWindowSize(callback?: (size: Size) => void) {
 
   callbackRef.current = callback;
 
-  const [size, setSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const [size, setSize] = useState({});
+
+  useEffect(() => {
+    setSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  }, []);
 
   useLayoutEffect(() => {
     const onResize = () => {

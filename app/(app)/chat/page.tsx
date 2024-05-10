@@ -1,3 +1,4 @@
+"use client";
 import {
   DragDropContext,
   Droppable,
@@ -7,21 +8,16 @@ import {
 import { useAppConfig, useChatStore } from "@/app/store";
 
 import Locale from "@/app/locales";
-import { Path } from "@/app/constant";
-import { useEffect } from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
+import { useRouter, usePathname } from "next/navigation";
 
 import AddIcon from "@/app/icons/addIcon.svg";
 import NextChatTitle from "@/app/icons/nextchatTitle.svg";
 
-import MenuLayout from "@/app/components/MenuLayout";
-import Panel from "./ChatPanel";
 import Modal from "@/app/components/Modal";
-import SessionItem from "./components/SessionItem";
-import { usePathname, useRouter } from "next/navigation";
+import SessionItem from "@/app/containers/Chat/components/SessionItem";
 
-export default MenuLayout(function SessionList(props) {
-  const { setShowPanel } = props;
-
+export default function Page() {
   const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
     (state) => [
       state.sessions,
@@ -35,12 +31,8 @@ export default MenuLayout(function SessionList(props) {
   const { isMobileScreen } = config;
 
   const chatStore = useChatStore();
-  const router = useRouter();
-  const pathname = usePathname();
-  useEffect(() => {
-    setShowPanel?.(pathname === Path.Chat);
-  }, [pathname]);
 
+  const pathname = usePathname();
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
     if (!destination) {
@@ -78,14 +70,12 @@ export default MenuLayout(function SessionList(props) {
           <div
             className="cursor-pointer "
             onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                // navigate(Path.Chat);
-                router.push(Path.Chat);
-              } else {
-                // navigate(Path.NewChat);
-                router.push(Path.NewChat);
-              }
+              // if (config.dontShowMaskSplashScreen) {
+              //   chatStore.newSession();
+              //   navigate(Path.Chat);
+              // } else {
+              //   navigate(Path.NewChat);
+              // }
             }}
           >
             <AddIcon />
@@ -118,8 +108,7 @@ export default MenuLayout(function SessionList(props) {
                     selected={i === selectedIndex}
                     onClick={() => {
                       // navigate(Path.Chat);
-                      selectSession(i);
-                      router.push(Path.Chat);
+                      // selectSession(i);
                     }}
                     onDelete={async () => {
                       if (
@@ -145,4 +134,4 @@ export default MenuLayout(function SessionList(props) {
       </div>
     </div>
   );
-}, Panel);
+}

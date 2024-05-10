@@ -27,9 +27,9 @@ import {
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
-import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import { useDeviceInfo } from "../hooks/useDeviceInfo";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -130,16 +130,11 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
-
+  const { deviceType, systemInfo } = useDeviceInfo();
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const config = useAppConfig();
-  const isMobileScreen = useMobileScreen();
-  const isIOSMobile = useMemo(
-    () => isIOS() && isMobileScreen,
-    [isMobileScreen],
-  );
 
   useHotKey();
 
@@ -150,7 +145,8 @@ export function SideBar(props: { className?: string }) {
       }`}
       style={{
         // #3016 disable transition on ios mobile screen
-        transition: isMobileScreen && isIOSMobile ? "none" : undefined,
+        transition:
+          deviceType === "mobile" && systemInfo === "iOS" ? "none" : undefined,
       }}
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
