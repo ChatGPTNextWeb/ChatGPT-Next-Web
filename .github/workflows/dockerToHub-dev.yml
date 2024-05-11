@@ -44,6 +44,8 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
       - name: Sync repository to test server
         run: |
           yes | docker image prune
