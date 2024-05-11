@@ -39,8 +39,8 @@ docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
 if ! docker buildx inspect mybuilder &> /dev/null; then
     docker buildx create --use --name=mybuilder
 fi
-#docker build -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build .
-docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build --load .
+#docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile.linux-build --load .
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp -f Dockerfile --load .
 
 docker tag registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:latest
 docker tag registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:temp registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test
