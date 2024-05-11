@@ -27,7 +27,7 @@ export function RewardPage() {
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <Image
-            src="https://cos.xiaosi.cc/img/zanshang.jpeg"
+            src="https://oss.xiaosi.cc/web_img/zanshang.jpeg!webp"
             alt="打赏"
             layout="fill"
             objectFit="cover" // Optional: you can use this if you want the image to cover the entire area without stretching

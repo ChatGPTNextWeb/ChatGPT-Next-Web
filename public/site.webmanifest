@@ -3,12 +3,12 @@
   "short_name": "NextChat",
   "icons": [
     {
-      "src": "https://cos.xiaosi.cc/next/public/android-chrome-192x192.png",
+      "src": "https://oss.xiaosi.cc/chat/public/android-chrome-192x192.png!webp",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cos.xiaosi.cc/next/public/android-chrome-512x512.png",
+      "src": "https://oss.xiaosi.cc/chat/public/android-chrome-512x512.png!webp",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -159,8 +159,9 @@ export const usePromptStore = createPersistStore(
 
     onRehydrateStorage(state) {
       // const PROMPT_URL = "https://cos.xiaosi.cc/next/public/prompts.json";
-      const PROMPT_URL = "./prompts.json";
-      const GPT_PROMPT_URL = "./prompt_library.json";
+      const PROMPT_URL = "https://oss.xiaosi.cc/chat/public/prompts.json";
+      const GPT_PROMPT_URL =
+        "https://oss.xiaosi.cc/chat/public/prompt_library.json";
 
       type PromptList = Array<[string, string]>;
 
