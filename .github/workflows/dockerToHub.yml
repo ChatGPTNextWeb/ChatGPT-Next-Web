@@ -1,9 +1,9 @@
 name: PRO DEPLOY TO TY
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
 #    paths:
 #      - 'app/**'
 #      - 'public/**'
