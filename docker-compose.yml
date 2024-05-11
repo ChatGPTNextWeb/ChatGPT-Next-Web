@@ -12,8 +12,9 @@ services:
 #    depends_on:
 #      db:
 #        condition: service_healthy
-    ports:
-      - "127.0.0.1:23000:3000"
+#    ports:
+#      - "127.0.0.1:23000:23000"
+    network_mode: "host"
     environment:
       - TZ=Asia/Shanghai
       - OPENAI_API_KEY=$OPENAI_API_KEY
@@ -56,6 +57,6 @@ services:
         max-size: "10m"
         max-file: "1"
 
-networks:
-  chatgpt-ns:
-    external: true
+#networks:
+#  chatgpt-ns:
+#    external: true

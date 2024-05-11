@@ -65,9 +65,10 @@ COPY --from=builder /app/node_modules/sharp ./node_modules/sharp
 
 RUN rm -f .env
 
-EXPOSE 3000
+EXPOSE 23000
 ENV KEEP_ALIVE_TIMEOUT=30
-ENV HOSTNAME=""
+ENV HOSTNAME=127.0.0.1
+ENV PORT=23000
 
 CMD if [ -n "$PROXY_URL" ]; then \
     export HOSTNAME="127.0.0.1"; \
