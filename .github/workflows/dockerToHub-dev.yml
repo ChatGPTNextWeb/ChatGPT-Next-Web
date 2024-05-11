@@ -1,4 +1,4 @@
-name: DEV DEPLOY TO TX
+name: DEV DEPLOY
 on:
   workflow_dispatch:
 #  push:
