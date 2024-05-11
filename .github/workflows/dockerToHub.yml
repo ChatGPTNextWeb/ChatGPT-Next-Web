@@ -36,7 +36,7 @@ jobs:
   download-repo:
     name: 下载仓库
     needs: build
-    runs-on: self
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
   deploy-nm:
     name: 部署到内蒙服务器
     needs: download-repo
-    runs-on: self
+    runs-on: ubuntu-latest
     steps:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -81,7 +81,7 @@ jobs:
   deploy-bk-uiyj:
     name: 部署到十堰服务器
     needs: download-repo
-    runs-on: self
+    runs-on: ubuntu-latest
     steps:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.9.0
