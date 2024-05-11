@@ -87,11 +87,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Sync repository to nm
+      - name: Sync repository to uiyj
         run: |
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.UIYJ_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
           rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.UIYJ_SSH_IP }}:/data/ChatGPT-Next-Web/
-      - name: deploy-to-nm
+      - name: deploy-to-uiyj
         uses: appleboy/ssh-action@master
         env:
           SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
