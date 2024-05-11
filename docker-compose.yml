@@ -49,8 +49,8 @@ services:
       - SECURE_COOKIES=$SECURE_COOKIES
     volumes:
       - /etc/localtime:/etc/localtime
-    networks:
-      - chatgpt-ns
+#    networks:
+#      - chatgpt-ns
     logging:
       driver: json-file
       options:
