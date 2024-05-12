@@ -48,7 +48,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y rsync
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.UIYJ_SSH_IP }} 'mkdir -p /data/test/ChatGPT-Next-Web'
-          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.UIYJ_SSH_IP }}:/data/test/ChatGPT-Next-Web
+          /usr/bin/rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.UIYJ_SSH_IP }}:/data/test/ChatGPT-Next-Web
       - name: deploy-to-tx
         uses: appleboy/ssh-action@master
         env:
