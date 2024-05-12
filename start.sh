@@ -23,10 +23,9 @@ set -e
 #rsync -az --delete ./public/ ${OUT_DIR}/public
 #rsync -az --delete ./.next/static/ ${OUT_DIR}/.next/static
 #rsync -az --delete ./.next/server/ ${OUT_DIR}/.next/server
-#rsync -az --delete ./.next/server/ ${OUT_DIR}/.next/server
 #rsync -az --delete "./node_modules/tiktoken/" ${OUT_DIR}/node_modules/tiktoken
 
-docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+#docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
 
 # 检查构建器是否已存在
 if ! docker buildx inspect mybuilder &> /dev/null; then
