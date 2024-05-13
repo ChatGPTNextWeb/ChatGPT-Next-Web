@@ -20,7 +20,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.4,
          "max_tokens":4000,
          "presence_penalty":0,
@@ -48,7 +48,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.5,
          "top_p":1,
          "max_tokens":4000,
@@ -89,7 +89,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.4,
          "max_tokens":4000,
          "presence_penalty":0,
@@ -131,7 +131,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.4,
          "max_tokens":4000,
          "presence_penalty":0,
@@ -161,7 +161,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.5,
          "top_p":1,
          "max_tokens":4000,
@@ -191,7 +191,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.5,
          "top_p":1,
          "max_tokens":4000,
@@ -227,7 +227,7 @@ export const EN_MASKS: BuiltinMask[] = [
       ],
       "syncGlobalConfig":false,
       "modelConfig":{
-         "model":"gpt-4-turbo-preview",
+         "model":"gpt-4o",
          "temperature":0.5,
          "top_p":1,
          "max_tokens":4001,
