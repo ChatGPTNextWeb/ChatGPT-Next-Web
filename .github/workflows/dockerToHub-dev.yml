@@ -16,7 +16,7 @@ jobs:
         with:
           ref: 'dev'
           clean: false
-          #github-server-url: 'https://gh.siji.ci'
+          github-server-url: 'https://gh.siji.ci'
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
@@ -46,7 +46,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Sync repository to test server
         run: |
-          sudo apt-get update && sudo apt-get install -y rsync
+          #sudo apt-get update && sudo apt-get install -y rsync
           ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.UIYJ_SSH_IP }} 'mkdir -p /data/test/ChatGPT-Next-Web'
           /usr/bin/rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.UIYJ_SSH_IP }}:/data/test/ChatGPT-Next-Web
       - name: deploy-to-tx
@@ -63,13 +63,14 @@ jobs:
             mkdir -p /data/test/ChatGPT-Next-Web
             cd /data/test/ChatGPT-Next-Web
             echo "${{ secrets.DOCKER_ENV }}" > .env
+            echo "PORT=23001" > .env
             # 测试分支,
             echo "COMPOSE_PROJECT_NAME=test-chatgpt-web" >> .env
             sed -i 's@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web@image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web:test@g' docker-compose.yml
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
-            sed -i 's|23000:|23001:|g' docker-compose.yml
+            #sed -i 's|23000:|23001:|g' docker-compose.yml
             sed -i 's|container_name:|#container_name:|g' docker-compose.yml
-            docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
+            #docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
             yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/* || true
