@@ -164,6 +164,13 @@ export const useAppConfig = createPersistStore(
         state.lastUpdate = Date.now();
       }
 
+      if (version < 3.9) {
+        state.modelConfig.template =
+          state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
+            ? state.modelConfig.template
+            : config?.template ?? DEFAULT_INPUT_TEMPLATE;
+      }
+
       return state as any;
     },
   },
