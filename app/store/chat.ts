@@ -433,7 +433,7 @@ export const useChatStore = createPersistStore(
           content:
             session.memoryPrompt.length > 0
               ? Locale.Store.Prompt.History(session.memoryPrompt)
-              : "",
+              : ";",
           date: "",
         } as ChatMessage;
       },
