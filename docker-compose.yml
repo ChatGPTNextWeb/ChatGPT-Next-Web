@@ -47,6 +47,7 @@ services:
       - EMAIL_SERVER_PASSWORD=$EMAIL_SERVER_PASSWORD
       - EMAIL_FROM=$EMAIL_FROM
       - SECURE_COOKIES=$SECURE_COOKIES
+      - PORT=$PORT
     volumes:
       - /etc/localtime:/etc/localtime
 #    networks:
