@@ -15,6 +15,7 @@ import Locale from "../locales";
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
 import { IconButton } from "./button";
+import { Card as AntCard, List as AntList, Row, Col, Grid } from "antd";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -482,6 +483,38 @@ export function Selector<T>(props: {
           })}
         </List>
       </div>
+    </div>
+  );
+}
+
+export function ModalSelector<T>(props: {
+  items: Array<{
+    title: string;
+    subTitle?: string;
+    value: T;
+  }>;
+  defaultSelectedValue?: T;
+  onSelection?: (selection: T[]) => void;
+  onClose?: () => void;
+  multiple?: boolean;
+}) {
+  console.log("-----", props);
+
+  return (
+    <div className={styles["selector"]}>
+      <Modal title="test" onClose={() => props.onClose?.()}>
+        <AntList grid={{ gutter: 16, column: 4 }}>
+          <Col span={8}>
+            <AntList.Item>
+              <AntCard title="你好">Card</AntCard>
+            </AntList.Item>
+          </Col>
+
+          <AntList.Item>
+            <AntCard title="你好">Card</AntCard>
+          </AntList.Item>
+        </AntList>
+      </Modal>
     </div>
   );
 }
