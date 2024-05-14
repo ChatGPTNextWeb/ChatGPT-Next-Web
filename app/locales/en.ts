@@ -15,6 +15,8 @@ const en: LocaleType = {
   Auth: {
     Title: "Need Access Code",
     Tips: "Please enter access code below",
+    Tips1: "密码和key只需填一个即可",
+    SubTips1: "如果自己没有key联系QQ：1422756921", 
     SubTips: "Or enter your OpenAI or Google API Key",
     Input: "access code",
     Confirm: "Confirm",
