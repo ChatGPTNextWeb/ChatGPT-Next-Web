@@ -124,6 +124,7 @@ export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
+  "gpt-4o": "2023-12",
   "gpt-4-turbo": "2023-12",
   "gpt-4-turbo-2024-04-09": "2023-12",
   "gpt-4-turbo-preview": "2023-12",
@@ -143,6 +144,7 @@ const openaiModels = [
   // "gpt-4-0613",
   "gpt-4-32k",
   // "gpt-4-32k-0613",
+  "gpt-4o",
   // "gpt-4-turbo",
   // "gpt-4-turbo-preview",
   // "gpt-4-vision-preview",
@@ -165,15 +167,6 @@ const anthropicModels = [
 ];
 
 export const DEFAULT_MODELS = [
-  {
-    name: "gpt-4-turbo-2024-04-09",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
   {
     name: "gpt-4o",
     available: true,
@@ -203,7 +196,7 @@ export const DEFAULT_MODELS = [
   })),
   ...googleModels.map((name) => ({
     name,
-    available: true,
+    available: false,
     provider: {
       id: "google",
       providerName: "Google",
@@ -212,7 +205,7 @@ export const DEFAULT_MODELS = [
   })),
   ...anthropicModels.map((name) => ({
     name,
-    available: true,
+    available: false,
     provider: {
       id: "anthropic",
       providerName: "Anthropic",

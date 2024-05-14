@@ -210,7 +210,7 @@ export const EN_MASKS: BuiltinMask[] = [
    },
    {
       "avatar":"1f3e2",
-      "name":"AdEx Circumvent Limit of 4k Output-Tokens (despite 128k Input-Tokens @ \"GPT-4 Turbo\")",
+      "name":"AdEx Circumvent Limit of 4k Output-Tokens (despite 128k Input-Tokens @ \"GPT-4o\")",
       "context":[
          {
             "id":"SqeZ3I6qPU1vtGanCKfpz",
