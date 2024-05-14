@@ -137,6 +137,7 @@ export class ChatGPTApi implements LLMApi {
     // Define an array with the model names that should be replaced
     const modelsToReplace = [
       "gpt-4",
+      "gpt-4-turbo",
       "gpt-4-32k",
       "gpt-4-0314",
       "gpt-4-0613",
@@ -150,7 +151,7 @@ export class ChatGPTApi implements LLMApi {
     ];
 
     // Check if the current model is in the list of models to replace
-    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4-turbo" : modelConfig.model;
+    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4o" : modelConfig.model;
 
     const requestPayload: RequestPayload = {
       messages,
