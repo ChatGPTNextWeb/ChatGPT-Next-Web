@@ -23,6 +23,8 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
+  BLOG_URL,
+  FAKA_URL,
   REPO_URL,
 } from "../constant";
 
@@ -186,6 +188,12 @@ export function SideBar(props: { className?: string }) {
           onClick={() => showToast(Locale.WIP)}
           shadow
         />
+      <a href={FAKA_URL} target="_blank">
+        <IconButton
+          text={shouldNarrow ? undefined : Locale.Mask.faka}
+          shadow
+        />
+      </a>
       </div>
 
       <div
