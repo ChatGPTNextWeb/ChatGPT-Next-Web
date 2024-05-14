@@ -44,3 +44,4 @@ dev
 
 *.key
 *.key.pub
+yarn.lock
