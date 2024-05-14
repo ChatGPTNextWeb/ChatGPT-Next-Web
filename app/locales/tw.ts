@@ -407,7 +407,9 @@ const tw = {
   Plugin: { Name: "外掛" },
   FineTuned: { Sysmessage: "你是一個助手" },
   Mask: {
-    Name: "角色範本",
+    blog: "青云博客",
+    faka: "购买卡密",
+    Name: "面具",
     Page: {
       Title: "預設角色角色範本",
       SubTitle: (count: number) => `${count} 個預設角色定義`,
