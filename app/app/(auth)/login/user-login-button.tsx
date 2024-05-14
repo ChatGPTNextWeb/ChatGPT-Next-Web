@@ -73,7 +73,13 @@ export default function UserLoginButton() {
           case "AccessDenied":
             openNotification("error", {
               message: "登录失败",
-              description: "无权限，请确认用户名正确并等待审批",
+              description: (
+                <span>
+                  无权限，请确认用户名正确并等待审批
+                  <br />
+                  <span style={{ color: "red" }}>或联系管理员</span>
+                </span>
+              ),
             });
             break;
           default:
