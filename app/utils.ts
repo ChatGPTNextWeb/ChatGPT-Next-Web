@@ -297,6 +297,10 @@ export function isVisionModel(model: string) {
     "gpt-4-turbo",
     "gpt-4o",
   ];
+  const isGpt4TurboPreview = model === "gpt-4-turbo-preview";
 
-  return visionKeywords.some((keyword) => model.includes(keyword));
+  return (
+    visionKeywords.some((keyword) => model.includes(keyword)) &&
+    !isGpt4TurboPreview
+  );
 }
