@@ -326,3 +326,10 @@
   align-items: center;
   justify-content: center;
 }
+
+.modal-mask-container {
+  //min-width: 80vw;
+  .ant-card .ant-card-body {
+    padding: 12px;
+  }
+}

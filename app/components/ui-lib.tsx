@@ -15,7 +15,8 @@ import Locale from "../locales";
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
 import { IconButton } from "./button";
-import { Card as AntCard, List as AntList, Row, Col, Grid } from "antd";
+import { Card as AntCard, List as AntList, Row, Col, Grid, Avatar } from "antd";
+const { Meta } = AntCard;
 
 export function Popover(props: {
   children: JSX.Element;
@@ -501,20 +502,79 @@ export function ModalSelector<T>(props: {
   console.log("-----", props);
 
   return (
-    <div className={styles["modal-mask"]}>
-      <Modal title="test" onClose={() => props.onClose?.()}>
-        <AntList grid={{ gutter: 16, column: 3 }}>
-          <Row gutter={[16, 16]}>
-            <Col span={8}>
-              <AntList.Item>
-                <AntCard title="你好">Card</AntCard>
-              </AntList.Item>
-            </Col>
-            <Col span={8}>
-              <AntList.Item>
-                <AntCard title="你好">Card</AntCard>
-              </AntList.Item>
-            </Col>
+    <div
+      className={styles["modal-mask"] + " " + styles["modal-mask-container"]}
+    >
+      <Modal title="选择模型" onClose={() => props.onClose?.()}>
+        <AntList grid={{ gutter: 16 }}>
+          <Row
+            gutter={[16, 16]}
+            style={{ marginLeft: "-8px", marginRight: "-8px" }}
+          >
+            {props.items.map((item, i) => {
+              const selected = props.defaultSelectedValue === item.value;
+              return (
+                <Col
+                  key={i}
+                  xs={{ flex: "100%" }}
+                  sm={{ flex: "50%" }}
+                  md={{ flex: "33%" }}
+                  lg={{ flex: "33%" }}
+                  xl={{ flex: "33%" }}
+                >
+                  <AntCard>
+                    <AntList.Item
+                      onClick={() => {
+                        props.onSelection?.([item.value]);
+                        props.onClose?.();
+                      }}
+                    >
+                      <Meta title={item.title} description={item.subTitle} />
+                      {selected ? (
+                        <div
+                          style={{
+                            height: 10,
+                            width: 10,
+                            backgroundColor: "var(--primary)",
+                            borderRadius: 10,
+                          }}
+                        ></div>
+                      ) : (
+                        <></>
+                      )}
+                    </AntList.Item>
+                  </AntCard>
+                </Col>
+              );
+            })}
+
+            {/*<Col xs={{ flex: '100%' }}*/}
+            {/*     sm={{ flex: '50%' }}*/}
+            {/*     md={{ flex: '33%' }}*/}
+            {/*     lg={{ flex: '33%' }}*/}
+            {/*     xl={{ flex: '33%' }}>*/}
+            {/*  <AntList.Item>*/}
+            {/*    <AntCard title="你好">Card</AntCard>*/}
+            {/*  </AntList.Item>*/}
+            {/*</Col>*/}
+            {/*<Col xs={{ flex: '100%' }}*/}
+            {/*     sm={{ flex: '50%' }}*/}
+            {/*     md={{ flex: '33%' }}*/}
+            {/*     lg={{ flex: '33%' }}*/}
+            {/*     xl={{ flex: '33%' }}>*/}
+            {/*  <AntList.Item>*/}
+            {/*    <AntCard title="你好">Card</AntCard>*/}
+            {/*  </AntList.Item>*/}
+            {/*</Col>*/}
+            {/*<Col xs={{ flex: '100%' }}*/}
+            {/*     sm={{ flex: '50%' }}*/}
+            {/*     md={{ flex: '33%' }}*/}
+            {/*     lg={{ flex: '33%' }}*/}
+            {/*     xl={{ flex: '33%' }}>*/}
+            {/*  <AntList.Item>*/}
+            {/*    <AntCard title="你好">Card</AntCard>*/}
+            {/*  </AntList.Item>*/}
+            {/*</Col>*/}
           </Row>
         </AntList>
       </Modal>
