@@ -9,18 +9,18 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
-      ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。需要key联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)。[青云博客](https://blog.aerr.cn)"
+      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。如果自己没有key联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)。[青云博客](https://blog.aerr.cn)",
   },
   Auth: {
-    Title: "Need Access Code",
-    Tips: "Please enter access code below",
-    Tips1: "密码和key只需填一个即可",
+    Title: "需要访问密码或者key",
+    Tips: "管理员开启了验证，请在下方填入访问密码",
+    Tips1: "访问密码和key只需填一个即可",
     SubTips1: "如果自己没有key联系QQ：1422756921", 
-    SubTips: "Or enter your OpenAI or Google API Key",
-    Input: "access code",
-    Confirm: "Confirm",
-    Later: "Later",
+    SubTips: "或者输入你的 OpenAI API key",
+    Input: "在此处填写访问密码",
+    Confirm: "确认",
+    Later: "稍后再说",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
