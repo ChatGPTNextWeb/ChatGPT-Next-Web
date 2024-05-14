@@ -36,7 +36,7 @@ const DEFAULT_SYNC_STATE = {
   },
 
   upstash: {
-    endpoint: "apn1-busy-midge-34212.upstash.io",
+    endpoint: "https://apn1-busy-midge-34212.upstash.io/",
     username: STORAGE_KEY,
     apiKey: "",
   },
