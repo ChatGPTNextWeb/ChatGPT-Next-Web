@@ -501,18 +501,21 @@ export function ModalSelector<T>(props: {
   console.log("-----", props);
 
   return (
-    <div className={styles["selector"]}>
+    <div className={styles["modal-mask"]}>
       <Modal title="test" onClose={() => props.onClose?.()}>
-        <AntList grid={{ gutter: 16, column: 4 }}>
-          <Col span={8}>
-            <AntList.Item>
-              <AntCard title="你好">Card</AntCard>
-            </AntList.Item>
-          </Col>
-
-          <AntList.Item>
-            <AntCard title="你好">Card</AntCard>
-          </AntList.Item>
+        <AntList grid={{ gutter: 16, column: 3 }}>
+          <Row gutter={[16, 16]}>
+            <Col span={8}>
+              <AntList.Item>
+                <AntCard title="你好">Card</AntCard>
+              </AntList.Item>
+            </Col>
+            <Col span={8}>
+              <AntList.Item>
+                <AntCard title="你好">Card</AntCard>
+              </AntList.Item>
+            </Col>
+          </Row>
         </AntList>
       </Modal>
     </div>

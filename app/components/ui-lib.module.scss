@@ -312,3 +312,17 @@
     }
   }
 }
+
+
+.modal-mask {
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: var(--full-height);
+  width: 100vw;
+  background-color: rgba(0, 0, 0, .5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
