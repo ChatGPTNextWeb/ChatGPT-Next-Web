@@ -70,7 +70,7 @@ export abstract class LLMApi {
   abstract models(): Promise<LLMModel[]>;
 }
 
-type ProviderName = "openai" | "azure" | "claude" | "palm";
+type ProviderName = "openai" | "azure" | "claude" | "palm" | "deepseek";
 
 interface Model {
   name: string;
@@ -162,6 +162,7 @@ export function getHeaders() {
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
+  const isDeepSeek = accessStore.provider === ServiceProvider.DeepSeek;
   const authHeader = isAzure ? "api-key" : "Authorization";
   const apiKey = isGoogle
     ? accessStore.googleApiKey
