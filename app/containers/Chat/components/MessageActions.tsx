@@ -31,7 +31,7 @@ export interface MessageActionsProps {
   setShowPromptModal?: (value: boolean) => void;
 }
 
-const genActionsShema = (
+const genActionsSchema = (
   message: RenderMessage,
   {
     onEdit,
@@ -272,7 +272,7 @@ export default function MessageActions(props: MessageActionsProps) {
         `}
       >
         <ActionsBar
-          actionsShema={genActionsShema(message, {
+          actionsSchema={genActionsSchema(message, {
             onCopy,
             onDelete,
             onPinMessage,

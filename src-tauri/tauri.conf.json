@@ -50,6 +50,10 @@
       },
       "notification": {
         "all": true
+      },
+      "http": {
+        "all": true,
+        "request": true
       }
     },
     "bundle": {

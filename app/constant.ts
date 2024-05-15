@@ -47,6 +47,7 @@ export enum StoreKey {
   Prompt = "prompt-store",
   Update = "chat-update",
   Sync = "sync",
+  Provider = "provider",
 }
 
 export const NARROW_SIDEBAR_WIDTH = 100;
@@ -106,7 +107,8 @@ export const Azure = {
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
-  VisionChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+  VisionChatPath: (modelName: string) =>
+    `v1beta/models/${modelName}:generateContent`,
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang

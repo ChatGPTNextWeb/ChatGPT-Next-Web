@@ -21,7 +21,7 @@ type Groups = {
 };
 
 export interface ActionsBarProps {
-  actionsShema: Action[];
+  actionsSchema: Action[];
   onSelect?: (id: string) => void;
   selected?: string;
   groups: string[][] | Groups;
@@ -30,7 +30,7 @@ export interface ActionsBarProps {
 }
 
 export default function ActionsBar(props: ActionsBarProps) {
-  const { actionsShema, onSelect, selected, groups, className, inMobile } =
+  const { actionsSchema, onSelect, selected, groups, className, inMobile } =
     props;
 
   const handlerClick =
@@ -53,7 +53,7 @@ export default function ActionsBar(props: ActionsBarProps) {
   const content = internalGroup.reduce((res, group, ind, arr) => {
     res.push(
       ...group.map((i) => {
-        const action = actionsShema.find((a) => a.id === i);
+        const action = actionsSchema.find((a) => a.id === i);
         if (!action) {
           return <></>;
         }

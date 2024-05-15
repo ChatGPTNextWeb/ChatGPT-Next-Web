@@ -4,6 +4,9 @@ import { SubmitKey } from "../store/config";
 const isApp = !!getClientConfig()?.isApp;
 
 const cn = {
+  Provider: {
+    // OPENAI_DISPLAY_NAME: 'OpenAI'
+  },
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized: isApp
