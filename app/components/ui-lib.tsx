@@ -114,6 +114,7 @@ interface ModalProps {
   defaultMax?: boolean;
   footer?: React.ReactNode;
   onClose?: () => void;
+  maskClosable?: boolean;
   is_cus?: boolean;
 }
 export function Modal(props: ModalProps) {
@@ -534,6 +535,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
         onClose={() => props.onClose?.()}
         footer={null}
         is_cus={true}
+        maskClosable={true}
       >
         <AntList grid={{ gutter: 16 }}>
           <CheckCard.Group
@@ -541,8 +543,13 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
             defaultValue={props.defaultSelectedValue}
           >
             <Row
-              gutter={[16, 16]}
-              style={{ marginLeft: "-8px", marginRight: "-8px" }}
+              gutter={[16, 8]}
+              style={{
+                marginLeft: "-8px",
+                marginRight: "-8px",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
               {props.items.map((item, i) => {
                 const selected = props.defaultSelectedValue === item.value;
@@ -557,6 +564,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
                         props.onClose?.();
                       }}
                       avatar={getCheckCardAvatar(item.value?.toString() ?? "")}
+                      style={{ marginBottom: "8px", width: "250px" }}
                     />
                   </Col>
                 );
