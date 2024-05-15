@@ -78,6 +78,7 @@ import {
   List,
   ListItem,
   Modal,
+  ModalSelector,
   Selector,
   showConfirm,
   showPrompt,
@@ -606,7 +607,7 @@ export function ChatActions(props: {
       {/*/>*/}
 
       {showModelSelector && (
-        <Selector
+        <ModalSelector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
             title: m.displayName,

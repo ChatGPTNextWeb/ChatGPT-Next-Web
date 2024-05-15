@@ -204,5 +204,7 @@ export function getHeaders(isAzure?: boolean) {
 export function useGetMidjourneySelfProxyUrl(url: string) {
   const accessStore = useAccessStore.getState();
   console.log("useMjImgSelfProxy", accessStore.useMjImgSelfProxy);
-  return url;
+
+  console.log("---------", url);
+  return url.replace("cdn.discordapp.com", "cdnig.duckagi.com");
 }

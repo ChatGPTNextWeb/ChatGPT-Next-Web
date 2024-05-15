@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.0",
+    "@ant-design/pro-components": "^2.7.1",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@next-auth/prisma-adapter": "^1.0.7",

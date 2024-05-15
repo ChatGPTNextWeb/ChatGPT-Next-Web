@@ -15,6 +15,19 @@ import Locale from "../locales";
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
 import { IconButton } from "./button";
+import {
+  Card as AntCard,
+  List as AntList,
+  Row,
+  Col,
+  Grid,
+  Avatar,
+  Button,
+} from "antd";
+import { OpenAIOutlined, GoogleOutlined } from "@ant-design/icons";
+const { Meta } = AntCard;
+import { CheckCard } from "@ant-design/pro-components";
+import { CheckGroupValueType } from "@ant-design/pro-card/es/components/CheckCard/Group";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -101,6 +114,7 @@ interface ModalProps {
   defaultMax?: boolean;
   footer?: React.ReactNode;
   onClose?: () => void;
+  is_cus?: boolean;
 }
 export function Modal(props: ModalProps) {
   useEffect(() => {
@@ -123,7 +137,9 @@ export function Modal(props: ModalProps) {
   return (
     <div
       className={
-        styles["modal-container"] + ` ${isMax && styles["modal-container-max"]}`
+        styles["modal-container"] +
+        ` ${isMax && styles["modal-container-max"]}` +
+        ` ${props.is_cus ? styles["cus-modal-container"] : ""}`
       }
     >
       <div className={styles["modal-header"]}>
@@ -482,6 +498,73 @@ export function Selector<T>(props: {
           })}
         </List>
       </div>
+    </div>
+  );
+}
+
+export function ModalSelector<T extends CheckGroupValueType>(props: {
+  items: Array<{
+    title: string;
+    subTitle?: string;
+    value: T;
+  }>;
+  defaultSelectedValue?: T;
+  onSelection?: (selection: T[]) => void;
+  onClose?: () => void;
+  multiple?: boolean;
+}) {
+  console.log("-----", props);
+
+  const getCheckCardAvatar = (value: string): React.ReactNode => {
+    if (value.startsWith("gpt")) {
+      return <OpenAIOutlined />;
+    }
+    if (value.startsWith("gemini")) {
+      return <GoogleOutlined />;
+    }
+    return <></>;
+  };
+
+  return (
+    <div
+      className={styles["modal-mask"] + " " + styles["modal-mask-container"]}
+    >
+      <Modal
+        title="选择模型"
+        onClose={() => props.onClose?.()}
+        footer={null}
+        is_cus={true}
+      >
+        <AntList grid={{ gutter: 16 }}>
+          <CheckCard.Group
+            size="small"
+            defaultValue={props.defaultSelectedValue}
+          >
+            <Row
+              gutter={[16, 16]}
+              style={{ marginLeft: "-8px", marginRight: "-8px" }}
+            >
+              {props.items.map((item, i) => {
+                const selected = props.defaultSelectedValue === item.value;
+                return (
+                  <Col key={i} sm={{ flex: "50%" }} md={{ flex: "20%" }}>
+                    <CheckCard
+                      title={item.title}
+                      description={item.subTitle}
+                      value={item.value}
+                      onClick={() => {
+                        props.onSelection?.([item.value]);
+                        props.onClose?.();
+                      }}
+                      avatar={getCheckCardAvatar(item.value?.toString() ?? "")}
+                    />
+                  </Col>
+                );
+              })}
+            </Row>
+          </CheckCard.Group>
+        </AntList>
+      </Modal>
     </div>
   );
 }
