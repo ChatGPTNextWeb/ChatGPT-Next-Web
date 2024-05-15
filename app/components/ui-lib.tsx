@@ -513,7 +513,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
   onClose?: () => void;
   multiple?: boolean;
 }) {
-  console.log("-----", props);
+  // console.log("-----", props);
 
   const getCheckCardAvatar = (value: string): React.ReactNode => {
     if (value.startsWith("gpt")) {
@@ -525,8 +525,18 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
     return <></>;
   };
 
+  const clickMaskEvent = (event: React.MouseEvent) => {
+    const div = document.getElementById("modal-mask");
+    // console.log('-----', event.target)
+    if (event.target === div) {
+      props.onClose?.();
+    }
+  };
+
   return (
     <div
+      onClick={(event) => clickMaskEvent(event)}
+      id="modal-mask"
       className={styles["modal-mask"] + " " + styles["modal-mask-container"]}
     >
       <Modal
@@ -541,8 +551,13 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
             defaultValue={props.defaultSelectedValue}
           >
             <Row
-              gutter={[16, 16]}
-              style={{ marginLeft: "-8px", marginRight: "-8px" }}
+              gutter={[16, 8]}
+              style={{
+                marginLeft: "-8px",
+                marginRight: "-8px",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
               {props.items.map((item, i) => {
                 const selected = props.defaultSelectedValue === item.value;
@@ -557,6 +572,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
                         props.onClose?.();
                       }}
                       avatar={getCheckCardAvatar(item.value?.toString() ?? "")}
+                      style={{ marginBottom: "8px", width: "250px" }}
                     />
                   </Col>
                 );
