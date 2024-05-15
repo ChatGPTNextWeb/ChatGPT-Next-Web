@@ -114,7 +114,6 @@ interface ModalProps {
   defaultMax?: boolean;
   footer?: React.ReactNode;
   onClose?: () => void;
-  maskClosable?: boolean;
   is_cus?: boolean;
 }
 export function Modal(props: ModalProps) {
@@ -514,7 +513,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
   onClose?: () => void;
   multiple?: boolean;
 }) {
-  console.log("-----", props);
+  // console.log("-----", props);
 
   const getCheckCardAvatar = (value: string): React.ReactNode => {
     if (value.startsWith("gpt")) {
@@ -526,8 +525,18 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
     return <></>;
   };
 
+  const clickMaskEvent = (event: React.MouseEvent) => {
+    const div = document.getElementById("modal-mask");
+    // console.log('-----', event.target)
+    if (event.target === div) {
+      props.onClose?.();
+    }
+  };
+
   return (
     <div
+      onClick={(event) => clickMaskEvent(event)}
+      id="modal-mask"
       className={styles["modal-mask"] + " " + styles["modal-mask-container"]}
     >
       <Modal
@@ -535,7 +544,6 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
         onClose={() => props.onClose?.()}
         footer={null}
         is_cus={true}
-        maskClosable={true}
       >
         <AntList grid={{ gutter: 16 }}>
           <CheckCard.Group
