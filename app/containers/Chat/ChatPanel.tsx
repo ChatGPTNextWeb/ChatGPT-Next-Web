@@ -8,7 +8,7 @@ import {
   ModelType,
 } from "@/app/store";
 import Locale from "@/app/locales";
-import { Selector, showConfirm, showToast } from "@/app/components/ui-lib";
+import { showConfirm } from "@/app/components/ui-lib";
 import {
   CHAT_PAGE_SIZE,
   REQUEST_TIMEOUT_MS,
@@ -25,7 +25,6 @@ import ChatInputPanel, {
   ChatInputPanelInstance,
 } from "./components/ChatInputPanel";
 import ChatMessagePanel, { RenderMessage } from "./components/ChatMessagePanel";
-import { useAllModels } from "@/app/utils/hooks";
 import useRows from "@/app/hooks/useRows";
 import SessionConfigModel from "./components/SessionConfigModal";
 import useScrollToBottom from "@/app/hooks/useScrollToBottom";

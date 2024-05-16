@@ -41,6 +41,7 @@ export const ThemeConfig = {
     title: "Dark model",
   },
 };
+const config = getClientConfig();
 
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
@@ -49,7 +50,7 @@ export const DEFAULT_CONFIG = {
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
-  tightBorder: !!getClientConfig()?.isApp,
+  tightBorder: !!config?.isApp,
   sendPreviewBubble: true,
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
@@ -75,7 +76,7 @@ export const DEFAULT_CONFIG = {
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
-    template: DEFAULT_INPUT_TEMPLATE,
+    template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
   },
 };
 
@@ -151,7 +152,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.8,
+    version: 3.9,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -180,6 +181,13 @@ export const useAppConfig = createPersistStore(
 
       if (version < 3.8) {
         state.lastUpdate = Date.now();
+      }
+
+      if (version < 3.9) {
+        state.modelConfig.template =
+          state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
+            ? state.modelConfig.template
+            : config?.template ?? DEFAULT_INPUT_TEMPLATE;
       }
 
       return state as any;
