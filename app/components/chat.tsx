@@ -490,79 +490,79 @@ export function ChatActions(props: {
 
   return (
     <div className={styles["chat-input-actions"]}>
-      {couldStop && (
-        <ChatAction
-          onClick={stopAll}
-          text={Locale.Chat.InputActions.Stop}
-          icon={<StopIcon />}
-        />
-      )}
-      {!props.hitBottom && (
-        <ChatAction
-          onClick={props.scrollToBottom}
-          text={Locale.Chat.InputActions.ToBottom}
-          icon={<BottomIcon />}
-        />
-      )}
-      {props.hitBottom && (
-        <ChatAction
-          onClick={props.showPromptModal}
-          text={Locale.Chat.InputActions.Settings}
-          icon={<SettingsIcon />}
-        />
-      )}
+      {/*{couldStop && (*/}
+      {/*  <ChatAction*/}
+      {/*    onClick={stopAll}*/}
+      {/*    text={Locale.Chat.InputActions.Stop}*/}
+      {/*    icon={<StopIcon />}*/}
+      {/*  />*/}
+      {/*)}*/}
+      {/*{!props.hitBottom && (*/}
+      {/*  <ChatAction*/}
+      {/*    onClick={props.scrollToBottom}*/}
+      {/*    text={Locale.Chat.InputActions.ToBottom}*/}
+      {/*    icon={<BottomIcon />}*/}
+      {/*  />*/}
+      {/*)}*/}
+      {/*{props.hitBottom && (*/}
+      {/*  <ChatAction*/}
+      {/*    onClick={props.showPromptModal}*/}
+      {/*    text={Locale.Chat.InputActions.Settings}*/}
+      {/*    icon={<SettingsIcon />}*/}
+      {/*  />*/}
+      {/*)}*/}
 
-      {showUploadImage && (
-        <ChatAction
-          onClick={props.uploadImage}
-          text={Locale.Chat.InputActions.UploadImage}
-          icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
-        />
-      )}
-      <ChatAction
-        onClick={nextTheme}
-        text={Locale.Chat.InputActions.Theme[theme]}
-        icon={
-          <>
-            {theme === Theme.Auto ? (
-              <AutoIcon />
-            ) : theme === Theme.Light ? (
-              <LightIcon />
-            ) : theme === Theme.Dark ? (
-              <DarkIcon />
-            ) : null}
-          </>
-        }
-      />
+      {/*{showUploadImage && (*/}
+      {/*  <ChatAction*/}
+      {/*    onClick={props.uploadImage}*/}
+      {/*    text={Locale.Chat.InputActions.UploadImage}*/}
+      {/*    icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}*/}
+      {/*  />*/}
+      {/*)}*/}
+      {/*<ChatAction*/}
+      {/*  onClick={nextTheme}*/}
+      {/*  text={Locale.Chat.InputActions.Theme[theme]}*/}
+      {/*  icon={*/}
+      {/*    <>*/}
+      {/*      {theme === Theme.Auto ? (*/}
+      {/*        <AutoIcon />*/}
+      {/*      ) : theme === Theme.Light ? (*/}
+      {/*        <LightIcon />*/}
+      {/*      ) : theme === Theme.Dark ? (*/}
+      {/*        <DarkIcon />*/}
+      {/*      ) : null}*/}
+      {/*    </>*/}
+      {/*  }*/}
+      {/*/>*/}
 
-      <ChatAction
-        onClick={props.showPromptHints}
-        text={Locale.Chat.InputActions.Prompt}
-        icon={<PromptIcon />}
-      />
+      {/*<ChatAction*/}
+      {/*  onClick={props.showPromptHints}*/}
+      {/*  text={Locale.Chat.InputActions.Prompt}*/}
+      {/*  icon={<PromptIcon />}*/}
+      {/*/>*/}
 
-      <ChatAction
-        onClick={() => {
-          navigate(Path.Masks);
-        }}
-        text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
-      />
+      {/*<ChatAction*/}
+      {/*  onClick={() => {*/}
+      {/*    navigate(Path.Masks);*/}
+      {/*  }}*/}
+      {/*  text={Locale.Chat.InputActions.Masks}*/}
+      {/*  icon={<MaskIcon />}*/}
+      {/*/>*/}
 
-      <ChatAction
-        text={Locale.Chat.InputActions.Clear}
-        icon={<BreakIcon />}
-        onClick={() => {
-          chatStore.updateCurrentSession((session) => {
-            if (session.clearContextIndex === session.messages.length) {
-              session.clearContextIndex = undefined;
-            } else {
-              session.clearContextIndex = session.messages.length;
-              session.memoryPrompt = ""; // will clear memory
-            }
-          });
-        }}
-      />
+      {/*<ChatAction*/}
+      {/*  text={Locale.Chat.InputActions.Clear}*/}
+      {/*  icon={<BreakIcon />}*/}
+      {/*  onClick={() => {*/}
+      {/*    chatStore.updateCurrentSession((session) => {*/}
+      {/*      if (session.clearContextIndex === session.messages.length) {*/}
+      {/*        session.clearContextIndex = undefined;*/}
+      {/*      } else {*/}
+      {/*        session.clearContextIndex = session.messages.length;*/}
+      {/*        session.memoryPrompt = ""; // will clear memory*/}
+      {/*      }*/}
+      {/*    });*/}
+      {/*  }}*/}
+      {/*/>*/}
 
       <ChatAction
         onClick={() => setShowModelSelector(true)}
@@ -1088,7 +1088,6 @@ function _Chat() {
             if (payload.url) {
               accessStore.update((access) => (access.openaiUrl = payload.url!));
             }
-            accessStore.update((access) => (access.useCustomConfig = true));
           });
         }
       } catch {
@@ -1233,25 +1232,25 @@ function _Chat() {
           </div>
         </div>
         <div className="window-actions">
-          {!isMobileScreen && (
-            <div className="window-action-button">
-              <IconButton
-                icon={<RenameIcon />}
-                bordered
-                onClick={() => setIsEditingMessage(true)}
-              />
-            </div>
-          )}
-          <div className="window-action-button">
-            <IconButton
-              icon={<ExportIcon />}
-              bordered
-              title={Locale.Chat.Actions.Export}
-              onClick={() => {
-                setShowExport(true);
-              }}
-            />
-          </div>
+          {/*{!isMobileScreen && (*/}
+          {/*  <div className="window-action-button">*/}
+          {/*    <IconButton*/}
+          {/*      icon={<RenameIcon />}*/}
+          {/*      bordered*/}
+          {/*      onClick={() => setIsEditingMessage(true)}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*)}*/}
+          {/*<div className="window-action-button">*/}
+          {/*  <IconButton*/}
+          {/*    icon={<ExportIcon />}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Chat.Actions.Export}*/}
+          {/*    onClick={() => {*/}
+          {/*      setShowExport(true);*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</div>*/}
           {showMaxIcon && (
             <div className="window-action-button">
               <IconButton
