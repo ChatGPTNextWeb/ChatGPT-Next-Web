@@ -45,6 +45,8 @@ export const DEFAULT_CONFIG = {
   customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
 
+  speed_animation: 60,
+
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
@@ -98,6 +100,12 @@ export const ModalConfigValidator = {
   },
 };
 
+export const speed_animationValidator = {
+  speed_animation(x: number) {
+    return limitNumber(x, 1, 200, 1); // Set the range of 1 to 100 for the speed animation
+  },
+};
+
 export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
   (set, get) => ({
@@ -132,7 +140,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.8,
+    version: 3.9,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -161,6 +169,12 @@ export const useAppConfig = createPersistStore(
 
       if (version < 3.8) {
         state.lastUpdate = Date.now();
+      }
+
+      // Speed Animation default is 60, Lower values will result in faster animation
+
+      if (version < 3.9) {
+        state.speed_animation = 60;
       }
 
       return state as any;

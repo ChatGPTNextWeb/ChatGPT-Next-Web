@@ -40,6 +40,7 @@ import {
   useUpdateStore,
   useAccessStore,
   useAppConfig,
+  speed_animationValidator,
 } from "../store";
 
 import Locale, {
@@ -828,6 +829,26 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          <ListItem
+            title={Locale.Settings.SpeedAnimation.Title}
+            subTitle={Locale.Settings.SpeedAnimation.SubTitle}
+          >
+            <InputRange
+              title={`${config.speed_animation ?? 60} m/s`}
+              value={(config.speed_animation ?? 60)}
+              min="1"
+              max="200" // average max to made it very slowly like while a server lag hahaha
+              step="1"
+              onChange={(e) =>
+                config.update((config) => {
+                  const speed = parseInt(e.currentTarget.value);
+                  config.speed_animation = speed_animationValidator.speed_animation(speed);
+                })
+              }
+            ></InputRange>
+          </ListItem>
+
         </List>
 
         <SyncItems />
