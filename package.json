@@ -32,6 +32,7 @@
     "echarts": "^5.4.3",
     "emoji-picker-react": "^4.9.2",
     "fuse.js": "^7.0.0",
+    "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
     "mermaid": "^10.7.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
