@@ -39,6 +39,7 @@
     "epub2": "^3.0.2",
     "fuse.js": "^7.0.0",
     "html-entities": "^2.4.0",
+    "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",

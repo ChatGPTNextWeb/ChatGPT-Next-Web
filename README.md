@@ -281,12 +281,15 @@ anthropic claude Api Url.
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
-### `WHITE_WEBDEV_ENDPOINTS` (可选)
+### `WHITE_WEBDEV_ENDPOINTS` (optional)
 
 如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
 - 每一个地址必须是一个完整的 endpoint
 > `https://xxxx/xxx`
 - 多个地址以`,`相连
+
+### `DEFAULT_INPUT_TEMPLATE` （可选）
+自定义默认的 template，用于初始化『设置』中的『用户输入预处理』配置项
 
 ## 部署
 
