@@ -52,7 +52,7 @@ export const DEFAULT_CONFIG = {
   dontUseModel: DISABLE_MODELS,
 
   modelConfig: {
-    model: "gpt-35-turbo-0125" as ModelType,
+    model: "gpt-3.5-turbo-0125" as ModelType,
     temperature: 0.8,
     top_p: 1,
     max_tokens: 2000,
@@ -138,7 +138,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.9,
+    version: 3.91,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -174,11 +174,12 @@ export const useAppConfig = createPersistStore(
       //   return { ...DEFAULT_CONFIG };
       // }
 
-      if (version < 3.9) {
-        state.modelConfig.template =
-          state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
-            ? state.modelConfig.template
-            : config?.template ?? DEFAULT_INPUT_TEMPLATE;
+      if (version < 3.91) {
+        state.modelConfig = DEFAULT_CONFIG.modelConfig;
+        // state.modelConfig.template =
+        //   state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
+        //     ? state.modelConfig.template
+        //     : config?.template ?? DEFAULT_INPUT_TEMPLATE;
       }
 
       return state as any;
