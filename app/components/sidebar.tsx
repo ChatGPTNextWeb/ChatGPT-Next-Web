@@ -130,6 +130,7 @@ function useDragSideBar() {
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -248,7 +249,7 @@ export function SideBar(props: { className?: string }) {
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
+                chatStore.newSession(undefined, currentModel);
                 navigate(Path.Chat);
               } else {
                 navigate(Path.NewChat);
