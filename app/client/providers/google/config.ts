@@ -1,11 +1,9 @@
-import { SettingItem } from "../../core/types";
+import { SettingItem } from "../../common";
 import Locale from "./locale";
 
 export const GoogleMetas = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
-  VisionChatPath: (modelName: string) =>
-    `v1beta/models/${modelName}:generateContent`,
 };
 
 export type SettingKeys = "googleUrl" | "googleApiKey" | "googleApiVersion";
@@ -41,7 +39,20 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     description: Locale.Endpoint.SubTitle + GoogleMetas.ExampleEndpoint,
     placeholder: GoogleMetas.ExampleEndpoint,
     type: "input",
-    validators: ["required"],
+    validators: [
+      async (v: any) => {
+        if (typeof v === "string") {
+          try {
+            new URL(v);
+          } catch (e) {
+            return Locale.Endpoint.Error.IllegalURL;
+          }
+        }
+        if (typeof v === "string" && v.endsWith("/")) {
+          return Locale.Endpoint.Error.EndWithBackslash;
+        }
+      },
+    ],
   },
   {
     name: "googleApiKey",
@@ -50,7 +61,7 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     placeholder: Locale.ApiKey.Placeholder,
     type: "input",
     inputType: "password",
-    validators: ["required"],
+    // validators: ["required"],
   },
   {
     name: "googleApiVersion",
@@ -58,6 +69,6 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     description: Locale.ApiVersion.SubTitle,
     placeholder: "2023-08-01-preview",
     type: "input",
-    validators: ["required"],
+    // validators: ["required"],
   },
 ];

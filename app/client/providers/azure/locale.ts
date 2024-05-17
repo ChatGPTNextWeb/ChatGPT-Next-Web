@@ -1,4 +1,4 @@
-import { getLocaleText } from "../../core/locale";
+import { getLocaleText } from "../../common";
 
 export default getLocaleText<
   {
@@ -10,6 +10,10 @@ export default getLocaleText<
     Endpoint: {
       Title: string;
       SubTitle: string;
+      Error: {
+        EndWithBackslash: string;
+        IllegalURL: string;
+      };
     };
     ApiVerion: {
       Title: string;
@@ -29,6 +33,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "接口地址",
         SubTitle: "样例：",
+        Error: {
+          EndWithBackslash: "不能以「/」结尾",
+          IllegalURL: "请输入一个完整可用的url",
+        },
       },
 
       ApiVerion: {
@@ -46,6 +54,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "Azure Endpoint",
         SubTitle: "Example: ",
+        Error: {
+          EndWithBackslash: "Cannot end with '/'",
+          IllegalURL: "Please enter a complete available url",
+        },
       },
 
       ApiVerion: {
@@ -63,6 +75,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "Endpoint Azure",
         SubTitle: "Exemplo: ",
+        Error: {
+          EndWithBackslash: "Não é possível terminar com '/'",
+          IllegalURL: "Insira um URL completo disponível",
+        },
       },
 
       ApiVerion: {
@@ -80,6 +96,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "Koncový bod Azure",
         SubTitle: "Príklad: ",
+        Error: {
+          EndWithBackslash: "Nemôže končiť znakom „/“",
+          IllegalURL: "Zadajte úplnú dostupnú adresu URL",
+        },
       },
 
       ApiVerion: {
@@ -97,6 +117,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "介面(Endpoint) 地址",
         SubTitle: "樣例：",
+        Error: {
+          EndWithBackslash: "不能以「/」結尾",
+          IllegalURL: "請輸入一個完整可用的url",
+        },
       },
 
       ApiVerion: {

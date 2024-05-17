@@ -1,4 +1,4 @@
-import { getLocaleText } from "../../core/locale";
+import { getLocaleText } from "../../common/locale";
 
 export default getLocaleText<
   {
@@ -11,6 +11,9 @@ export default getLocaleText<
     Endpoint: {
       Title: string;
       SubTitle: string;
+      Error: {
+        EndWithBackslash: string;
+      };
     };
   },
   "en"
@@ -26,6 +29,9 @@ export default getLocaleText<
       Endpoint: {
         Title: "接口地址",
         SubTitle: "除默认地址外，必须包含 http(s)://",
+        Error: {
+          EndWithBackslash: "不能以「/」结尾",
+        },
       },
     },
     en: {
@@ -38,6 +44,9 @@ export default getLocaleText<
       Endpoint: {
         Title: "OpenAI Endpoint",
         SubTitle: "Must starts with http(s):// or use /api/openai as default",
+        Error: {
+          EndWithBackslash: "Cannot end with '/'",
+        },
       },
     },
     pt: {
@@ -50,6 +59,9 @@ export default getLocaleText<
       Endpoint: {
         Title: "Endpoint OpenAI",
         SubTitle: "Deve começar com http(s):// ou usar /api/openai como padrão",
+        Error: {
+          EndWithBackslash: "Não é possível terminar com '/'",
+        },
       },
     },
     sk: {
@@ -63,6 +75,9 @@ export default getLocaleText<
         Title: "Koncový bod OpenAI",
         SubTitle:
           "Musí začínať http(s):// alebo použiť /api/openai ako predvolený",
+        Error: {
+          EndWithBackslash: "Nemôže končiť znakom „/“",
+        },
       },
     },
     tw: {
@@ -75,6 +90,9 @@ export default getLocaleText<
       Endpoint: {
         Title: "介面(Endpoint) 地址",
         SubTitle: "除預設地址外，必須包含 http(s)://",
+        Error: {
+          EndWithBackslash: "不能以「/」結尾",
+        },
       },
     },
   },

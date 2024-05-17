@@ -1,118 +1,182 @@
 import {
-  ChatHandlers,
   IProviderTemplate,
+  InternalChatHandlers,
   Model,
+  ModelTemplate,
   StandChatReponseMessage,
   StandChatRequestPayload,
-} from "./types";
+} from "../common";
 import * as ProviderTemplates from "@/app/client/providers";
-import { cloneDeep } from "lodash-es";
+import { nanoid } from "nanoid";
 
-export type ProviderTemplate =
-  (typeof ProviderTemplates)[keyof typeof ProviderTemplates];
+export type ProviderTemplate = IProviderTemplate<any, any, any>;
 
 export type ProviderTemplateName =
   (typeof ProviderTemplates)[keyof typeof ProviderTemplates]["prototype"]["name"];
 
+export interface Provider<
+  Providerconfig extends Record<string, any> = Record<string, any>,
+> {
+  name: string; // id of provider
+  isActive: boolean;
+  providerTemplateName: ProviderTemplateName;
+  providerConfig: Providerconfig;
+  isDefault: boolean; // Not allow to modify models of default provider
+  updated: boolean; // provider initial is finished
+
+  displayName: string;
+  models: Model[];
+}
+
+const providerTemplates = Object.values(ProviderTemplates).reduce(
+  (r, t) => ({
+    ...r,
+    [t.prototype.name]: new t(),
+  }),
+  {} as Record<ProviderTemplateName, ProviderTemplate>,
+);
+
 export class ProviderClient {
-  provider: IProviderTemplate<any, any, any>;
+  providerTemplate: IProviderTemplate<any, any, any>;
 
-  static ProviderTemplates = ProviderTemplates;
-
-  static getAllProvidersDefaultModels = () => {
-    return Object.values(ProviderClient.ProviderTemplates).reduce(
-      (r, p) => ({
-        ...r,
-        [p.prototype.name]: cloneDeep(p.prototype.models),
-      }),
-      {} as Record<ProviderTemplateName, Model[]>,
-    );
-  };
+  static ProviderTemplates = providerTemplates;
 
   static getAllProviderTemplates = () => {
-    return Object.values(ProviderClient.ProviderTemplates).reduce(
-      (r, p) => ({
+    return Object.values(providerTemplates).reduce(
+      (r, t) => ({
         ...r,
-        [p.prototype.name]: p,
+        [t.name]: t,
       }),
       {} as Record<ProviderTemplateName, ProviderTemplate>,
     );
   };
 
-  static getProviderTemplateList = () => {
-    return Object.values(ProviderClient.ProviderTemplates);
+  static getProviderTemplateMetaList = () => {
+    return Object.values(providerTemplates).map((t) => ({
+      ...t.providerMeta,
+      name: t.name,
+    }));
   };
 
-  constructor(providerTemplateName: string) {
-    this.provider = this.getProviderTemplate(providerTemplateName);
-  }
-
-  get settingItems() {
-    const { providerMeta } = this.provider;
-    const { settingItems } = providerMeta;
-    return settingItems;
+  constructor(private provider: Provider) {
+    const { providerTemplateName } = provider;
+    this.providerTemplate = this.getProviderTemplate(providerTemplateName);
   }
 
   private getProviderTemplate(providerTemplateName: string) {
-    const providerTemplate =
-      Object.values(ProviderTemplates).find(
-        (template) => template.prototype.name === providerTemplateName,
-      ) || ProviderTemplates.NextChatProvider;
+    const providerTemplate = Object.values(providerTemplates).find(
+      (template) => template.name === providerTemplateName,
+    );
 
-    return new providerTemplate();
+    return providerTemplate || providerTemplates.openai;
   }
 
-  getModelConfig(modelName: string) {
+  private getModelConfig(modelName: string) {
     const { models } = this.provider;
     return (
-      models.find((config) => config.name === modelName) ||
-      models.find((config) => config.isDefaultSelected)
+      models.find((m) => m.name === modelName) ||
+      models.find((m) => m.isDefaultSelected)
     );
   }
 
+  getAvailableModels() {
+    return Promise.resolve(
+      this.providerTemplate.getAvailableModels?.(this.provider.providerConfig),
+    )
+      .then((res) => {
+        const { defaultModels } = this.providerTemplate;
+        const availableModelsSet = new Set(
+          (res ?? defaultModels).map((o) => o.name),
+        );
+        return defaultModels.filter((m) => availableModelsSet.has(m.name));
+      })
+      .catch(() => {
+        return this.providerTemplate.defaultModels;
+      });
+  }
+
   async chat(
-    payload: StandChatRequestPayload<string>,
+    payload: StandChatRequestPayload,
   ): Promise<StandChatReponseMessage> {
-    return this.provider.chat({
+    return this.providerTemplate.chat({
       ...payload,
       stream: false,
       isVisionModel: this.getModelConfig(payload.model)?.isVisionModel,
+      providerConfig: this.provider.providerConfig,
     });
   }
 
-  streamChat(payload: StandChatRequestPayload<string>, handlers: ChatHandlers) {
-    return this.provider.streamChat(
+  streamChat(payload: StandChatRequestPayload, handlers: InternalChatHandlers) {
+    let responseText = "";
+    let remainText = "";
+
+    const timer = this.providerTemplate.streamChat(
       {
         ...payload,
         stream: true,
         isVisionModel: this.getModelConfig(payload.model)?.isVisionModel,
+        providerConfig: this.provider.providerConfig,
       },
-      handlers.onProgress,
-      handlers.onFinish,
-      handlers.onError,
+      {
+        onProgress: (chunk) => {
+          remainText += chunk;
+        },
+        onError: (err) => {
+          handlers.onError(err);
+        },
+        onFinish: () => {},
+        onFlash: (message: string) => {
+          handlers.onFinish(message);
+        },
+      },
     );
+
+    timer.signal.onabort = () => {
+      const message = responseText + remainText;
+      remainText = "";
+      handlers.onFinish(message);
+    };
+
+    const animateResponseText = () => {
+      if (remainText.length > 0) {
+        const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+        const fetchText = remainText.slice(0, fetchCount);
+        responseText += fetchText;
+        remainText = remainText.slice(fetchCount);
+        handlers.onProgress(responseText, fetchText);
+      }
+
+      requestAnimationFrame(animateResponseText);
+    };
+
+    // start animaion
+    animateResponseText();
+
+    return timer;
   }
 }
 
-export interface Provider {
-  name: string; // id of provider
-  displayName: string;
-  isActive: boolean;
-  providerTemplateName: ProviderTemplateName;
-  models: Model[];
-}
+type Params = Omit<Provider, "providerTemplateName" | "name" | "isDefault">;
 
 function createProvider(
   provider: ProviderTemplateName,
-  params?: Omit<Provider, "providerTemplateName">,
+  isDefault: true,
+): Provider;
+function createProvider(provider: ProviderTemplate, isDefault: true): Provider;
+function createProvider(
+  provider: ProviderTemplateName,
+  isDefault: false,
+  params: Params,
 ): Provider;
 function createProvider(
   provider: ProviderTemplate,
-  params?: Omit<Provider, "providerTemplateName">,
+  isDefault: false,
+  params: Params,
 ): Provider;
 function createProvider(
   provider: ProviderTemplate | ProviderTemplateName,
-  params?: Omit<Provider, "providerTemplateName">,
+  isDefault: boolean,
+  params?: Params,
 ): Provider {
   let providerTemplate: ProviderTemplate;
   if (typeof provider === "string") {
@@ -120,17 +184,41 @@ function createProvider(
   } else {
     providerTemplate = provider;
   }
+
+  const name = `${providerTemplate.name}__${nanoid()}`;
+
   const {
-    name = providerTemplate.prototype.name,
-    displayName = providerTemplate.prototype.providerMeta.displayName,
-    models = providerTemplate.prototype.models,
+    displayName = providerTemplate.providerMeta.displayName,
+    models = providerTemplate.defaultModels.map((m) =>
+      createModelFromModelTemplate(m, providerTemplate, name),
+    ),
+    providerConfig,
   } = params ?? {};
+
   return {
     name,
     displayName,
     isActive: true,
     models,
-    providerTemplateName: providerTemplate.prototype.name,
+    providerTemplateName: providerTemplate.name,
+    providerConfig: isDefault ? {} : providerConfig!,
+    isDefault,
+    updated: true,
+  };
+}
+
+function createModelFromModelTemplate(
+  m: ModelTemplate,
+  p: ProviderTemplate,
+  providerName: string,
+) {
+  return {
+    ...m,
+    providerTemplateName: p.name,
+    providerName,
+    isActive: m.isDefaultActive,
+    available: true,
+    customized: false,
   };
 }
 

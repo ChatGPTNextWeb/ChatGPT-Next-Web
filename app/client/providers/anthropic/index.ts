@@ -1,28 +1,26 @@
-import { getMessageTextContent } from "@/app/utils";
 import {
   AnthropicMetas,
+  ClaudeMapper,
   SettingKeys,
   modelConfigs,
   settingItems,
 } from "./config";
 import {
+  ChatHandlers,
   InternalChatRequestPayload,
   IProviderTemplate,
-} from "../../core/types";
+  getMessageTextContent,
+  RequestMessage,
+} from "../../common";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import Locale from "@/app/locales";
-import { prettyObject } from "@/app/utils/format";
+import { getAuthKey, trimEnd, prettyObject } from "./utils";
+import { cloneDeep } from "lodash-es";
 
 export type AnthropicProviderSettingKeys = SettingKeys;
-
-const ClaudeMapper = {
-  assistant: "assistant",
-  user: "user",
-  system: "user",
-} as const;
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -75,64 +73,25 @@ export default class AnthropicProvider
     settingItems,
   };
 
-  models = modelConfigs.map((c) => ({ ...c, providerTemplateName: this.name }));
+  defaultModels = modelConfigs;
 
   readonly REQUEST_TIMEOUT_MS = 60000;
 
   private path(payload: InternalChatRequestPayload<SettingKeys>) {
     const {
       providerConfig: { anthropicUrl },
-      context: { isApp },
     } = payload;
 
-    let baseUrl: string = anthropicUrl;
-
-    // if endpoint is empty, use default endpoint
-    if (baseUrl.trim().length === 0) {
-      baseUrl = "/api/anthropic";
-    }
-
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith("/api")) {
-      baseUrl = "https://" + baseUrl;
-    }
-
-    baseUrl = trimEnd(baseUrl, "/");
-
-    return `${baseUrl}/${AnthropicMetas.ChatPath}`;
+    return `${trimEnd(anthropicUrl!)}/${AnthropicMetas.ChatPath}`;
   }
 
-  private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
-    const {
-      messages,
-      isVisionModel,
-      model,
-      stream,
-      modelConfig,
-      providerConfig,
-    } = payload;
-    const { anthropicApiKey, anthropicApiVersion, anthropicUrl } =
-      providerConfig;
-    const { temperature, top_p, max_tokens } = modelConfig;
+  private formatMessage(
+    messages: RequestMessage[],
+    payload: InternalChatRequestPayload<SettingKeys>,
+  ) {
+    const { isVisionModel } = payload;
 
-    const keys = ["system", "user"];
-
-    // roles must alternate between "user" and "assistant" in claude, so add a fake assistant message between two user messages
-    for (let i = 0; i < messages.length - 1; i++) {
-      const message = messages[i];
-      const nextMessage = messages[i + 1];
-
-      if (keys.includes(message.role) && keys.includes(nextMessage.role)) {
-        messages[i] = [
-          message,
-          {
-            role: "assistant",
-            content: ";",
-          },
-        ] as any;
-      }
-    }
-
-    const prompt = messages
+    return messages
       .flat()
       .filter((v) => {
         if (!v.content) return false;
@@ -180,6 +139,40 @@ export default class AnthropicProvider
             }),
         };
       });
+  }
+
+  private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
+    const {
+      messages: outsideMessages,
+      model,
+      stream,
+      modelConfig,
+      providerConfig,
+    } = payload;
+    const { anthropicApiKey, anthropicApiVersion } = providerConfig;
+    const { temperature, top_p, max_tokens } = modelConfig;
+
+    const keys = ["system", "user"];
+
+    // roles must alternate between "user" and "assistant" in claude, so add a fake assistant message between two user messages
+    const messages = cloneDeep(outsideMessages);
+
+    for (let i = 0; i < messages.length - 1; i++) {
+      const message = messages[i];
+      const nextMessage = messages[i + 1];
+
+      if (keys.includes(message.role) && keys.includes(nextMessage.role)) {
+        messages[i] = [
+          message,
+          {
+            role: "assistant",
+            content: ";",
+          },
+        ] as any;
+      }
+    }
+
+    const prompt = this.formatMessage(messages, payload);
 
     const requestBody: AnthropicChatRequest = {
       messages: prompt,
@@ -196,7 +189,7 @@ export default class AnthropicProvider
         "Content-Type": "application/json",
         Accept: "application/json",
         "x-api-key": anthropicApiKey ?? "",
-        "anthropic-version": anthropicApiVersion,
+        "anthropic-version": anthropicApiVersion ?? "",
         Authorization: getAuthKey(anthropicApiKey),
       },
       body: JSON.stringify(requestBody),
@@ -204,6 +197,7 @@ export default class AnthropicProvider
       url: this.path(payload),
     };
   }
+
   private readWholeMessageResponseBody(res: any) {
     return {
       message: res?.content?.[0]?.text ?? "",
@@ -259,49 +253,11 @@ export default class AnthropicProvider
 
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
-    onProgress: (message: string, chunk: string) => void,
-    onFinish: (message: string) => void,
-    onError: (err: Error) => void,
+    handlers: ChatHandlers,
   ) {
     const requestPayload = this.formatChatPayload(payload);
 
-    let responseText = "";
-    let remainText = "";
-    let finished = false;
-
     const timer = this.getTimer();
-
-    // animate response to make it looks smooth
-    const animateResponseText = () => {
-      if (finished || timer.signal.aborted) {
-        responseText += remainText;
-        console.log("[Response Animation] finished");
-        if (responseText?.length === 0) {
-          onError(new Error("empty response from server"));
-        }
-        return;
-      }
-
-      if (remainText.length > 0) {
-        const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-        const fetchText = remainText.slice(0, fetchCount);
-        responseText += fetchText;
-        remainText = remainText.slice(fetchCount);
-        onProgress(responseText, fetchText);
-      }
-
-      requestAnimationFrame(animateResponseText);
-    };
-
-    // start animaion
-    animateResponseText();
-
-    const finish = () => {
-      if (!finished) {
-        finished = true;
-        onFinish(responseText + remainText);
-      }
-    };
 
     fetchEventSource(requestPayload.url, {
       ...requestPayload,
@@ -311,8 +267,8 @@ export default class AnthropicProvider
         console.log("[OpenAI] request response content type: ", contentType);
 
         if (contentType?.startsWith("text/plain")) {
-          responseText = await res.clone().text();
-          return finish();
+          const responseText = await res.clone().text();
+          return handlers.onFlash(responseText);
         }
 
         if (
@@ -322,29 +278,29 @@ export default class AnthropicProvider
             ?.startsWith(EventStreamContentType) ||
           res.status !== 200
         ) {
-          const responseTexts = [responseText];
+          const responseTexts = [];
+          if (res.status === 401) {
+            responseTexts.push(Locale.Error.Unauthorized);
+          }
+
           let extraInfo = await res.clone().text();
           try {
             const resJson = await res.clone().json();
             extraInfo = prettyObject(resJson);
           } catch {}
 
-          if (res.status === 401) {
-            responseTexts.push(Locale.Error.Unauthorized);
-          }
-
           if (extraInfo) {
             responseTexts.push(extraInfo);
           }
 
-          responseText = responseTexts.join("\n\n");
+          const responseText = responseTexts.join("\n\n");
 
-          return finish();
+          return handlers.onFlash(responseText);
         }
       },
       onmessage(msg) {
-        if (msg.data === "[DONE]" || finished) {
-          return finish();
+        if (msg.data === "[DONE]") {
+          return;
         }
         const text = msg.data;
         try {
@@ -353,20 +309,19 @@ export default class AnthropicProvider
             delta: { content: string };
           }>;
           const delta = choices[0]?.delta?.content;
-          const textmoderation = json?.prompt_filter_results;
 
           if (delta) {
-            remainText += delta;
+            handlers.onProgress(delta);
           }
         } catch (e) {
           console.error("[Request] parse error", text, msg);
         }
       },
       onclose() {
-        finish();
+        handlers.onFinish();
       },
       onerror(e) {
-        onError(e);
+        handlers.onError(e);
         throw e;
       },
       openWhenHidden: true,
@@ -374,29 +329,4 @@ export default class AnthropicProvider
 
     return timer;
   }
-}
-
-function trimEnd(s: string, end = " ") {
-  if (end.length === 0) return s;
-
-  while (s.endsWith(end)) {
-    s = s.slice(0, -end.length);
-  }
-
-  return s;
-}
-
-function bearer(value: string) {
-  return `Bearer ${value.trim()}`;
-}
-
-function getAuthKey(apiKey = "") {
-  let authKey = "";
-
-  if (apiKey) {
-    // use user's api key first
-    authKey = bearer(apiKey);
-  }
-
-  return authKey;
 }

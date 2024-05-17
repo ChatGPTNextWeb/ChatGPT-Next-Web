@@ -1,9 +1,9 @@
-export * from "./types";
+export * from "../common/types";
 
 export * from "./providerClient";
 
 export * from "./modelClient";
 
-export * from "./locale";
+export * from "../common/locale";
 
 export * from "./shim";

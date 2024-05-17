@@ -1,4 +1,4 @@
-import { SettingItem } from "../../core/types";
+import { SettingItem } from "../../common";
 import Locale from "./locale";
 
 export type SettingKeys =
@@ -12,6 +12,12 @@ export const AnthropicMetas = {
   ExampleEndpoint: "https://api.anthropic.com",
   Vision: "2023-06-01",
 };
+
+export const ClaudeMapper = {
+  assistant: "assistant",
+  user: "user",
+  system: "user",
+} as const;
 
 export const modelConfigs = [
   {
@@ -58,6 +64,8 @@ export const modelConfigs = [
   },
 ];
 
+const defaultEndpoint = "/api/anthropic";
+
 export const settingItems: SettingItem<SettingKeys>[] = [
   {
     name: "anthropicUrl",
@@ -65,7 +73,22 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     description: Locale.Endpoint.SubTitle + AnthropicMetas.ExampleEndpoint,
     placeholder: AnthropicMetas.ExampleEndpoint,
     type: "input",
-    validators: ["required"],
+    defaultValue: defaultEndpoint,
+    validators: [
+      "required",
+      async (v: any) => {
+        if (typeof v === "string" && !v.startsWith(defaultEndpoint)) {
+          try {
+            new URL(v);
+          } catch (e) {
+            return Locale.Endpoint.Error.IllegalURL;
+          }
+        }
+        if (typeof v === "string" && v.endsWith("/")) {
+          return Locale.Endpoint.Error.EndWithBackslash;
+        }
+      },
+    ],
   },
   {
     name: "anthropicApiKey",
@@ -74,7 +97,7 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     placeholder: Locale.ApiKey.Placeholder,
     type: "input",
     inputType: "password",
-    validators: ["required"],
+    // validators: ["required"],
   },
   {
     name: "anthropicApiVersion",
@@ -82,6 +105,6 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     description: Locale.ApiVerion.SubTitle,
     placeholder: AnthropicMetas.Vision,
     type: "input",
-    validators: ["required"],
+    // validators: ["required"],
   },
 ];

@@ -1,5 +1,7 @@
 import { RequestMessage } from "../api";
 
+export { type RequestMessage };
+
 // ===================================== LLM Types start ======================================
 
 export interface ModelConfig {
@@ -10,35 +12,50 @@ export interface ModelConfig {
   max_tokens: number;
 }
 
-export type Model = {
+export interface ModelSettings extends Omit<ModelConfig, "max_tokens"> {
+  global_max_tokens: number;
+}
+
+export type ModelTemplate = {
   name: string; // id of model in a provider
   displayName: string;
   isVisionModel?: boolean;
   isDefaultActive: boolean; // model is initialized to be active
   isDefaultSelected?: boolean; // model is initialized to be as default used model
-  providerTemplateName: string;
+  max_tokens?: number;
 };
+
+export interface Model extends Omit<ModelTemplate, "isDefaultActive"> {
+  providerTemplateName: string;
+  isActive: boolean;
+  providerName: string;
+  available: boolean;
+  customized: boolean; // Only customized model is allowed to be modified
+}
+
+export interface ModelInfo extends Pick<ModelTemplate, "name"> {
+  [k: string]: any;
+}
 
 // ===================================== LLM Types end ======================================
 
 // ===================================== Chat Request Types start ======================================
 
-export interface ChatRequestPayload<SettingKeys extends string = ""> {
+export interface ChatRequestPayload {
   messages: RequestMessage[];
-  providerConfig: Record<SettingKeys, string>;
   context: {
     isApp: boolean;
   };
 }
 
-export interface StandChatRequestPayload<SettingKeys extends string = "">
-  extends ChatRequestPayload<SettingKeys> {
+export interface StandChatRequestPayload extends ChatRequestPayload {
   modelConfig: ModelConfig;
   model: string;
 }
 
 export interface InternalChatRequestPayload<SettingKeys extends string = "">
-  extends StandChatRequestPayload<SettingKeys> {
+  extends StandChatRequestPayload {
+  providerConfig: Partial<Record<SettingKeys, string>>;
   isVisionModel: Model["isVisionModel"];
   stream: boolean;
 }
@@ -50,10 +67,16 @@ export interface ProviderRequestPayload {
   method: string;
 }
 
-export interface ChatHandlers {
+export interface InternalChatHandlers {
   onProgress: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;
   onError: (err: Error) => void;
+}
+
+export interface ChatHandlers extends InternalChatHandlers {
+  onProgress: (chunk: string) => void;
+  onFinish: () => void;
+  onFlash: (message: string) => void;
 }
 
 // ===================================== Chat Request Types end ======================================
@@ -75,7 +98,8 @@ export type Validator =
   | "number"
   | "string"
   | NumberRange
-  | NumberRange[];
+  | NumberRange[]
+  | ((v: any) => Promise<string | void>);
 
 export type CommonSettingItem<SettingKeys extends string> = {
   name: SettingKeys;
@@ -141,22 +165,20 @@ export interface IProviderTemplate<
     displayName: string;
     settingItems: SettingItem<SettingKeys>[];
   };
-  readonly models: Model[];
-
-  // formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>): ProviderRequestPayload;
-
-  // readWholeMessageResponseBody(res: WholeMessageResponseBody): StandChatReponseMessage;
+  readonly defaultModels: ModelTemplate[];
 
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
-    onProgress?: (message: string, chunk: string) => void,
-    onFinish?: (message: string) => void,
-    onError?: (err: Error) => void,
+    handlers: ChatHandlers,
   ): AbortController;
 
   chat(
     payload: InternalChatRequestPayload<SettingKeys>,
   ): Promise<StandChatReponseMessage>;
+
+  getAvailableModels?(
+    providerConfig: InternalChatRequestPayload<SettingKeys>["providerConfig"],
+  ): Promise<ModelInfo[]>;
 }
 
 export interface Serializable<Snapshot> {

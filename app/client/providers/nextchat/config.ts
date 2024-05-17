@@ -1,4 +1,4 @@
-import { SettingItem } from "../../core/types";
+import { SettingItem } from "../../common";
 import { isVisionModel } from "@/app/utils";
 import Locale from "@/app/locales";
 

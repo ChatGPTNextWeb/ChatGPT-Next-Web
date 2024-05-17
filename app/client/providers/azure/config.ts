@@ -1,12 +1,11 @@
 import Locale from "./locale";
 
-import { SettingItem } from "../../core/types";
+import { SettingItem } from "../../common";
 import { modelConfigs as openaiModelConfigs } from "../openai/config";
 
 export const AzureMetas = {
   ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
   ChatPath: "v1/chat/completions",
-  OpenAI: "/api/openai",
 };
 
 export type SettingKeys = "azureUrl" | "azureApiKey" | "azureApiVersion";
@@ -20,6 +19,21 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     description: Locale.Endpoint.SubTitle + AzureMetas.ExampleEndpoint,
     placeholder: AzureMetas.ExampleEndpoint,
     type: "input",
+    validators: [
+      async (v: any) => {
+        if (typeof v === "string") {
+          try {
+            new URL(v);
+          } catch (e) {
+            return Locale.Endpoint.Error.IllegalURL;
+          }
+        }
+        if (typeof v === "string" && v.endsWith("/")) {
+          return Locale.Endpoint.Error.EndWithBackslash;
+        }
+      },
+      "required",
+    ],
   },
   {
     name: "azureApiKey",

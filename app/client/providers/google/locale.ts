@@ -1,4 +1,4 @@
-import { getLocaleText } from "../../core/locale";
+import { getLocaleText } from "../../common";
 
 export default getLocaleText<
   {
@@ -10,6 +10,10 @@ export default getLocaleText<
     Endpoint: {
       Title: string;
       SubTitle: string;
+      Error: {
+        EndWithBackslash: string;
+        IllegalURL: string;
+      };
     };
     ApiVersion: {
       Title: string;
@@ -29,6 +33,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "终端地址",
         SubTitle: "示例：",
+        Error: {
+          EndWithBackslash: "不能以「/」结尾",
+          IllegalURL: "请输入一个完整可用的url",
+        },
       },
 
       ApiVersion: {
@@ -46,6 +54,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "Endpoint Address",
         SubTitle: "Example:",
+        Error: {
+          EndWithBackslash: "Cannot end with '/'",
+          IllegalURL: "Please enter a complete available url",
+        },
       },
 
       ApiVersion: {
@@ -64,6 +76,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "Adresa koncového bodu",
         SubTitle: "Príklad:",
+        Error: {
+          EndWithBackslash: "Nemôže končiť znakom „/“",
+          IllegalURL: "Zadajte úplnú dostupnú adresu URL",
+        },
       },
 
       ApiVersion: {
@@ -81,6 +97,10 @@ export default getLocaleText<
       Endpoint: {
         Title: "終端地址",
         SubTitle: "範例：",
+        Error: {
+          EndWithBackslash: "不能以「/」結尾",
+          IllegalURL: "請輸入一個完整可用的url",
+        },
       },
 
       ApiVersion: {

@@ -4,19 +4,21 @@ import {
   SettingKeys,
   NextChatMetas,
 } from "./config";
-import { getMessageTextContent } from "@/app/utils";
 import { ACCESS_CODE_PREFIX } from "@/app/constant";
 import {
+  ChatHandlers,
+  getMessageTextContent,
   InternalChatRequestPayload,
   IProviderTemplate,
   StandChatReponseMessage,
-} from "../../core/types";
+} from "../../common";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import Locale from "@/app/locales";
+import { makeBearer, validString } from "./utils";
 
 export type NextChatProviderSettingKeys = SettingKeys;
 
@@ -56,7 +58,7 @@ export default class NextChatProvider
   name = "nextchat" as const;
   metas = NextChatMetas;
 
-  models = modelConfigs.map((c) => ({ ...c, providerTemplateName: this.name }));
+  defaultModels = modelConfigs;
 
   providerMeta = {
     displayName: "NextChat",
@@ -82,14 +84,9 @@ export default class NextChatProvider
       "Content-Type": "application/json",
       Accept: "application/json",
     };
-    const authHeader = "Authorization";
 
-    const makeBearer = (s: string) => `Bearer ${s.trim()}`;
-    const validString = (x?: string): x is string => Boolean(x && x.length > 0);
-
-    // when using google api in app, not set auth header
     if (validString(accessCode)) {
-      headers[authHeader] = makeBearer(ACCESS_CODE_PREFIX + accessCode);
+      headers["Authorization"] = makeBearer(ACCESS_CODE_PREFIX + accessCode);
     }
 
     return headers;
@@ -160,51 +157,11 @@ export default class NextChatProvider
 
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
-    onProgress: (message: string, chunk: string) => void,
-    onFinish: (message: string) => void,
-    onError: (err: Error) => void,
+    handlers: ChatHandlers,
   ) {
     const requestPayload = this.formatChatPayload(payload);
 
-    let responseText = "";
-    let remainText = "";
-    let finished = false;
-
     const timer = this.getTimer();
-
-    // animate response to make it looks smooth
-    const animateResponseText = () => {
-      if (finished || timer.signal.aborted) {
-        responseText += remainText;
-        console.log("[Response Animation] finished");
-        if (responseText?.length === 0) {
-          onError(new Error("empty response from server"));
-        }
-        return;
-      }
-
-      if (remainText.length > 0) {
-        const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-        const fetchText = remainText.slice(0, fetchCount);
-        responseText += fetchText;
-        remainText = remainText.slice(fetchCount);
-        onProgress(responseText, fetchText);
-      }
-
-      requestAnimationFrame(animateResponseText);
-    };
-
-    // start animaion
-    animateResponseText();
-
-    const finish = () => {
-      if (!finished) {
-        finished = true;
-        onFinish(responseText + remainText);
-      }
-    };
-
-    timer.signal.onabort = finish;
 
     fetchEventSource(requestPayload.url, {
       ...requestPayload,
@@ -214,8 +171,8 @@ export default class NextChatProvider
         console.log("[OpenAI] request response content type: ", contentType);
 
         if (contentType?.startsWith("text/plain")) {
-          responseText = await res.clone().text();
-          return finish();
+          const responseText = await res.clone().text();
+          return handlers.onFlash(responseText);
         }
 
         if (
@@ -225,29 +182,29 @@ export default class NextChatProvider
             ?.startsWith(EventStreamContentType) ||
           res.status !== 200
         ) {
-          const responseTexts = [responseText];
+          const responseTexts = [];
+          if (res.status === 401) {
+            responseTexts.push(Locale.Error.Unauthorized);
+          }
+
           let extraInfo = await res.clone().text();
           try {
             const resJson = await res.clone().json();
             extraInfo = prettyObject(resJson);
           } catch {}
 
-          if (res.status === 401) {
-            responseTexts.push(Locale.Error.Unauthorized);
-          }
-
           if (extraInfo) {
             responseTexts.push(extraInfo);
           }
 
-          responseText = responseTexts.join("\n\n");
+          const responseText = responseTexts.join("\n\n");
 
-          return finish();
+          return handlers.onFlash(responseText);
         }
       },
       onmessage(msg) {
-        if (msg.data === "[DONE]" || finished) {
-          return finish();
+        if (msg.data === "[DONE]") {
+          return;
         }
         const text = msg.data;
         try {
@@ -256,20 +213,19 @@ export default class NextChatProvider
             delta: { content: string };
           }>;
           const delta = choices[0]?.delta?.content;
-          const textmoderation = json?.prompt_filter_results;
 
           if (delta) {
-            remainText += delta;
+            handlers.onProgress(delta);
           }
         } catch (e) {
           console.error("[Request] parse error", text, msg);
         }
       },
       onclose() {
-        finish();
+        handlers.onFinish();
       },
       onerror(e) {
-        onError(e);
+        handlers.onError(e);
         throw e;
       },
       openWhenHidden: true,
@@ -277,6 +233,7 @@ export default class NextChatProvider
 
     return timer;
   }
+
   async chat(
     payload: InternalChatRequestPayload<"accessCode">,
   ): Promise<StandChatReponseMessage> {

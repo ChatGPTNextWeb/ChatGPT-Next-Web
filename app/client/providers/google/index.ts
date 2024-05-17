@@ -1,12 +1,33 @@
-import { getMessageImages, getMessageTextContent } from "@/app/utils";
 import { SettingKeys, modelConfigs, settingItems, GoogleMetas } from "./config";
 import {
+  ChatHandlers,
   InternalChatRequestPayload,
   IProviderTemplate,
+  ModelInfo,
   StandChatReponseMessage,
-} from "../../core/types";
+  getMessageTextContent,
+  getMessageImages,
+} from "../../common";
+import { ensureProperEnding, makeBearer, validString } from "./utils";
 
 export type GoogleProviderSettingKeys = SettingKeys;
+
+interface ModelList {
+  models: Array<{
+    name: string;
+    baseModelId: string;
+    version: string;
+    displayName: string;
+    description: string;
+    inputTokenLimit: number; // Integer
+    outputTokenLimit: number; // Integer
+    supportedGenerationMethods: [string];
+    temperature: number;
+    topP: number;
+    topK: number; // Integer
+  }>;
+  nextPageToken: string;
+}
 
 export default class GoogleProvider
   implements IProviderTemplate<SettingKeys, "google", typeof GoogleMetas>
@@ -18,7 +39,7 @@ export default class GoogleProvider
     displayName: "Google",
     settingItems,
   };
-  models = modelConfigs.map((c) => ({ ...c, providerTemplateName: this.name }));
+  defaultModels = modelConfigs;
 
   readonly REQUEST_TIMEOUT_MS = 60000;
 
@@ -33,19 +54,8 @@ export default class GoogleProvider
       Accept: "application/json",
     };
 
-    const authHeader = "Authorization";
-
-    const makeBearer = (s: string) => `Bearer ${s.trim()}`;
-    const validString = (x?: string): x is string => Boolean(x && x.length > 0);
-
-    // when using google api in app, not set auth header
-    if (!isApp) {
-      // use user's api key first
-      if (validString(googleApiKey)) {
-        headers[authHeader] = makeBearer(googleApiKey);
-      } else {
-        throw new Error("no apiKey when chat through google");
-      }
+    if (!isApp && validString(googleApiKey)) {
+      headers["Authorization"] = makeBearer(googleApiKey);
     }
 
     return headers;
@@ -135,15 +145,9 @@ export default class GoogleProvider
       ],
     };
 
-    let baseUrl = googleUrl;
+    let googleChatPath = GoogleMetas.ChatPath(model);
 
-    let googleChatPath = isVisionModel
-      ? GoogleMetas.VisionChatPath(model)
-      : GoogleMetas.ChatPath(model);
-
-    if (!baseUrl) {
-      baseUrl = "/api/google/" + googleChatPath;
-    }
+    let baseUrl = googleUrl ?? "/api/google/" + googleChatPath;
 
     if (isApp) {
       baseUrl += `?key=${googleApiKey}`;
@@ -193,44 +197,13 @@ export default class GoogleProvider
 
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
-    onProgress: (message: string, chunk: string) => void,
-    onFinish: (message: string) => void,
-    onError: (err: Error) => void,
+    handlers: ChatHandlers,
   ) {
     const requestPayload = this.formatChatPayload(payload);
-    let responseText = "";
-    let remainText = "";
-    let finished = false;
 
     const timer = this.getTimer();
 
     let existingTexts: string[] = [];
-    const finish = () => {
-      finished = true;
-      onFinish(existingTexts.join(""));
-    };
-
-    // animate response to make it looks smooth
-    const animateResponseText = () => {
-      if (finished || timer.signal.aborted) {
-        responseText += remainText;
-        finish();
-        return;
-      }
-
-      if (remainText.length > 0) {
-        const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-        const fetchText = remainText.slice(0, fetchCount);
-        responseText += fetchText;
-        remainText = remainText.slice(fetchCount);
-        onProgress(responseText, fetchText);
-      }
-
-      requestAnimationFrame(animateResponseText);
-    };
-
-    // start animaion
-    animateResponseText();
 
     fetch(requestPayload.url, {
       ...requestPayload,
@@ -250,18 +223,16 @@ export default class GoogleProvider
               try {
                 let data = JSON.parse(ensureProperEnding(partialData));
                 if (data && data[0].error) {
-                  onError(new Error(data[0].error.message));
+                  handlers.onError(new Error(data[0].error.message));
                 } else {
-                  onError(new Error("Request failed"));
+                  handlers.onError(new Error("Request failed"));
                 }
               } catch (_) {
-                onError(new Error("Request failed"));
+                handlers.onError(new Error("Request failed"));
               }
             }
 
             console.log("Stream complete");
-            // options.onFinish(responseText + remainText);
-            finished = true;
             return Promise.resolve();
           }
 
@@ -285,7 +256,7 @@ export default class GoogleProvider
             if (textArray.length > existingTexts.length) {
               const deltaArray = textArray.slice(existingTexts.length);
               existingTexts = textArray;
-              remainText += deltaArray.join("");
+              handlers.onProgress(deltaArray.join(""));
             }
           } catch (error) {
             // console.log("[Response Animation] error: ", error,partialData);
@@ -300,6 +271,7 @@ export default class GoogleProvider
       });
     return timer;
   }
+
   async chat(
     payload: InternalChatRequestPayload<SettingKeys>,
   ): Promise<StandChatReponseMessage> {
@@ -328,11 +300,19 @@ export default class GoogleProvider
 
     return message;
   }
-}
 
-function ensureProperEnding(str: string) {
-  if (str.startsWith("[") && !str.endsWith("]")) {
-    return str + "]";
+  async getAvailableModels(
+    providerConfig: Record<SettingKeys, string>,
+  ): Promise<ModelInfo[]> {
+    const { googleApiKey, googleUrl } = providerConfig;
+    const res = await fetch(`${googleUrl}/v1beta/models?key=${googleApiKey}`, {
+      headers: {
+        Authorization: `Bearer ${googleApiKey}`,
+      },
+      method: "GET",
+    });
+    const data: ModelList = await res.json();
+
+    return data.models;
   }
-  return str;
 }

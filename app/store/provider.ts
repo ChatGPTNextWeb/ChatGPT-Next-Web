@@ -9,22 +9,37 @@ import {
 import { StoreKey } from "../constant";
 import { createPersistStore } from "../utils/store";
 
-export const DEFAULT_CONFIG = {
-  lastUpdate: Date.now(), // timestamp, to merge state
+const firstUpdate = Date.now();
 
-  providers: ProviderClient.getProviderTemplateList()
-    .filter((p) => p !== NextChatProvider)
-    .map((p) => createProvider(p)),
-};
+function getDefaultConfig() {
+  const providers = Object.values(ProviderClient.ProviderTemplates)
+    .filter((t) => !(t instanceof NextChatProvider))
+    .map((t) => createProvider(t, true));
 
-export type ProvidersConfig = typeof DEFAULT_CONFIG;
+  const initProvider = providers[0];
+
+  const currentModel =
+    initProvider.models.find((m) => m.isDefaultSelected) ||
+    initProvider.models[0];
+
+  return {
+    lastUpdate: firstUpdate, // timestamp, to merge state
+
+    currentModel: currentModel.name,
+    currentProvider: initProvider.name,
+
+    providers,
+  };
+}
+
+export type ProvidersConfig = ReturnType<typeof getDefaultConfig>;
 
 export const useProviders = createPersistStore(
-  { ...DEFAULT_CONFIG },
+  { ...getDefaultConfig() },
   (set, get) => {
     const methods = {
       reset() {
-        set(() => ({ ...DEFAULT_CONFIG }));
+        set(() => getDefaultConfig());
       },
 
       addProvider(provider: Provider) {
@@ -53,10 +68,14 @@ export const useProviders = createPersistStore(
         return get().providers.find((p) => p.name === providerName);
       },
 
-      addModel(model: Omit<Model, "providerTemplateName">, provider: Provider) {
+      addModel(
+        model: Omit<Model, "providerTemplateName" | "customized">,
+        provider: Provider,
+      ) {
         const newModel: Model = {
-          providerTemplateName: provider.providerTemplateName,
           ...model,
+          providerTemplateName: provider.providerTemplateName,
+          customized: true,
         };
         return methods.updateProvider({
           ...provider,
@@ -78,6 +97,13 @@ export const useProviders = createPersistStore(
             m.name === model.name ? model : m,
           ),
         });
+      },
+
+      switchModel(model: Model, provider: Provider) {
+        set(() => ({
+          currentModel: model.name,
+          currentProvider: provider.name,
+        }));
       },
 
       getModel(

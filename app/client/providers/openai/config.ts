@@ -1,7 +1,9 @@
-import { SettingItem } from "../../core/types";
+import { SettingItem } from "../../common";
 import Locale from "./locale";
 
 export const OPENAI_BASE_URL = "https://api.openai.com";
+
+export const ROLES = ["system", "user", "assistant"] as const;
 
 export const OpenaiMetas = {
   ChatPath: "v1/chat/completions",
@@ -12,15 +14,20 @@ export const OpenaiMetas = {
 
 export type SettingKeys = "openaiUrl" | "openaiApiKey";
 
-export const defaultModal = "gpt-3.5-turbo";
-
 export const modelConfigs = [
+  {
+    name: "gpt-4o",
+    displayName: "gpt-4o",
+    isVision: false,
+    isDefaultActive: true,
+    isDefaultSelected: true,
+  },
   {
     name: "gpt-3.5-turbo",
     displayName: "gpt-3.5-turbo",
     isVision: false,
     isDefaultActive: true,
-    isDefaultSelected: true,
+    isDefaultSelected: false,
   },
   {
     name: "gpt-3.5-turbo-0301",
@@ -150,13 +157,30 @@ export const modelConfigs = [
   },
 ];
 
+const defaultEndpoint = "/api/openai";
+
 export const settingItems: SettingItem<SettingKeys>[] = [
   {
     name: "openaiUrl",
     title: Locale.Endpoint.Title,
     description: Locale.Endpoint.SubTitle,
-    defaultValue: OPENAI_BASE_URL,
+    defaultValue: defaultEndpoint,
     type: "input",
+    validators: [
+      "required",
+      async (v: any) => {
+        if (typeof v === "string" && v.endsWith("/")) {
+          return Locale.Endpoint.Error.EndWithBackslash;
+        }
+        if (
+          typeof v === "string" &&
+          !v.startsWith(defaultEndpoint) &&
+          !v.startsWith("http")
+        ) {
+          return Locale.Endpoint.SubTitle;
+        }
+      },
+    ],
   },
   {
     name: "openaiApiKey",
