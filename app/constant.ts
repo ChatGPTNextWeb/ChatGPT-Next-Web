@@ -137,19 +137,19 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 };
 
 const openaiModels = [
-  "gpt-3.5-turbo",
-  "gpt-3.5-turbo-1106",
-  "gpt-3.5-turbo-0125",
-  "gpt-4",
-  "gpt-4-0613",
-  "gpt-4-32k",
-  "gpt-4-32k-0613",
-  "gpt-4-turbo",
-  "gpt-4-turbo-preview",
+  // "gpt-3.5-turbo",
+  // "gpt-3.5-turbo-1106",
+  // "gpt-3.5-turbo-0125",
+  // "gpt-4",
+  // "gpt-4-0613",
+  // "gpt-4-32k",
+  // "gpt-4-32k-0613",
+  // "gpt-4-turbo",
+  // "gpt-4-turbo-preview",
   "gpt-4o",
-  "gpt-4o-2024-05-13",
-  "gpt-4-vision-preview",
-  "gpt-4-turbo-2024-04-09"
+  // "gpt-4o-2024-05-13",
+  // "gpt-4-vision-preview",
+  // "gpt-4-turbo-2024-04-09"
 ];
 
 const googleModels = [
@@ -178,24 +178,24 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   })),
-  ...googleModels.map((name) => ({
-    name,
-    available: true,
-    provider: {
-      id: "google",
-      providerName: "Google",
-      providerType: "google",
-    },
-  })),
-  ...anthropicModels.map((name) => ({
-    name,
-    available: true,
-    provider: {
-      id: "anthropic",
-      providerName: "Anthropic",
-      providerType: "anthropic",
-    },
-  })),
+  // ...googleModels.map((name) => ({
+  //   name,
+  //   available: true,
+  //   provider: {
+  //     id: "google",
+  //     providerName: "Google",
+  //     providerType: "google",
+  //   },
+  // })),
+  // ...anthropicModels.map((name) => ({
+  //   name,
+  //   available: true,
+  //   provider: {
+  //     id: "anthropic",
+  //     providerName: "Anthropic",
+  //     providerType: "anthropic",
+  //   },
+  // })),
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
