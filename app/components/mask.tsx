@@ -342,26 +342,13 @@ export function ContextPrompts(props: {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <ContextPromptItem
-                          index={i}
-                          prompt={c}
-                          update={(prompt) => updateContextPrompt(i, prompt)}
-                          remove={() => removeContextPrompt(i)}
-                        />
-                        <div
-                          className={chatStyle["context-prompt-insert"]}
-                          onClick={() => {
-                            addContextPrompt(
-                              createMessage({
-                                role: "user",
-                                content: "",
-                                date: new Date().toLocaleString(),
-                              }),
-                              i + 1,
-                            );
-                          }}
-                        >
-                          <AddIcon />
+                        <div style={{ paddingTop: 6 }}>
+                          <ContextPromptItem
+                            index={i}
+                            prompt={c}
+                            update={(prompt) => updateContextPrompt(i, prompt)}
+                            remove={() => removeContextPrompt(i)}
+                          />
                         </div>
                       </div>
                     )}
@@ -373,7 +360,7 @@ export function ContextPrompts(props: {
           </Droppable>
         </DragDropContext>
 
-        {props.context.length === 0 && (
+        {context.length === 0 ? (
           <div className={chatStyle["context-prompt-row"]}>
             <IconButton
               icon={<AddIcon />}
@@ -387,10 +374,26 @@ export function ContextPrompts(props: {
                     content: "",
                     date: "",
                   }),
-                  props.context.length,
+                  context.length,
                 )
               }
             />
+          </div>
+        ) : (
+          <div
+            className={chatStyle["context-prompt-insert"]}
+            onClick={() => {
+              addContextPrompt(
+                createMessage({
+                  role: "user",
+                  content: "",
+                  date: new Date().toLocaleString(),
+                }),
+                context.length,
+              );
+            }}
+          >
+            <AddIcon />
           </div>
         )}
       </div>
@@ -469,7 +472,7 @@ export function MaskPage(props: { className?: string }) {
     <>
       <div
         className={`
-          ${styles["mask-page"]} 
+          ${styles["mask-page"]}
           ${props.className}
           `}
       >
