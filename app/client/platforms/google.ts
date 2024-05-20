@@ -3,6 +3,12 @@ import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
+import {
+  getMessageTextContent,
+  getMessageImages,
+  isVisionModel,
+} from "@/app/utils";
+
 export class GeminiProApi implements LLMApi {
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
@@ -15,10 +21,32 @@ export class GeminiProApi implements LLMApi {
   }
   async chat(options: ChatOptions): Promise<void> {
     // const apiClient = this;
-    const messages = options.messages.map((v) => ({
-      role: v.role.replace("assistant", "model").replace("system", "user"),
-      parts: [{ text: v.content }],
-    }));
+    let multimodal = false;
+    const messages = options.messages.map((v) => {
+      let parts: any[] = [{ text: getMessageTextContent(v) }];
+      if (isVisionModel(options.config.model)) {
+        const images = getMessageImages(v);
+        if (images.length > 0) {
+          multimodal = true;
+          parts = parts.concat(
+            images.map((image) => {
+              const imageType = image.split(";")[0].split(":")[1];
+              const imageData = image.split(",")[1];
+              return {
+                inline_data: {
+                  mime_type: imageType,
+                  data: imageData,
+                },
+              };
+            }),
+          );
+        }
+      }
+      return {
+        role: v.role.replace("assistant", "model").replace("system", "user"),
+        parts: parts,
+      };
+    });
 
     // google requires that role in neighboring messages must not be the same
     for (let i = 0; i < messages.length - 1; ) {
@@ -33,7 +61,9 @@ export class GeminiProApi implements LLMApi {
         i++;
       }
     }
-
+    // if (visionModel && messages.length > 1) {
+    //   options.onError?.(new Error("Multiturn chat is not enabled for models/gemini-pro-vision"));
+    // }
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -73,21 +103,27 @@ export class GeminiProApi implements LLMApi {
     };
 
     const accessStore = useAccessStore.getState();
-    let baseUrl = accessStore.googleUrl;
+
+    let baseUrl = "";
+
+    if (accessStore.useCustomConfig) {
+      baseUrl = accessStore.googleUrl;
+    }
+
     const isApp = !!getClientConfig()?.isApp;
 
     let shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      let chatPath = this.path(Google.ChatPath);
-
       // let baseUrl = accessStore.googleUrl;
 
       if (!baseUrl) {
         baseUrl = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath
-          : chatPath;
+          ? DEFAULT_API_HOST +
+            "/api/proxy/google/" +
+            Google.ChatPath(modelConfig.model)
+          : this.path(Google.ChatPath(modelConfig.model));
       }
 
       if (isApp) {
@@ -105,6 +141,7 @@ export class GeminiProApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
+
       if (shouldStream) {
         let responseText = "";
         let remainText = "";
@@ -152,6 +189,19 @@ export class GeminiProApi implements LLMApi {
               value,
             }): Promise<any> {
               if (done) {
+                if (response.status !== 200) {
+                  try {
+                    let data = JSON.parse(ensureProperEnding(partialData));
+                    if (data && data[0].error) {
+                      options.onError?.(new Error(data[0].error.message));
+                    } else {
+                      options.onError?.(new Error("Request failed"));
+                    }
+                  } catch (_) {
+                    options.onError?.(new Error("Request failed"));
+                  }
+                }
+
                 console.log("Stream complete");
                 // options.onFinish(responseText + remainText);
                 finished = true;
