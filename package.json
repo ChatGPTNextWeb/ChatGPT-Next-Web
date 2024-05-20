@@ -26,7 +26,7 @@
     "fuse.js": "^7.0.0",
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
-    "mermaid": "^10.6.1",
+    "mermaid": "^10.9.1",
     "nanoid": "^5.0.3",
     "next": "^14.1.1",
     "node-fetch": "^3.3.1",
