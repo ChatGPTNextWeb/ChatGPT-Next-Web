@@ -2,7 +2,7 @@ import { LLMModel } from "../client/api";
 
 const customProvider = (modelName: string) => ({
   id: modelName,
-  providerName: "",
+  providerName: "*OpenAI",
   providerType: "custom",
 });
 
@@ -49,7 +49,7 @@ export function collectModelTable(
           name,
           displayName: displayName || name,
           available,
-          provider: modelTable[name]?.provider ?? customProvider(name), // Use optional chaining
+          provider: customProvider(name), // Use optional chaining
         };
       }
     });
