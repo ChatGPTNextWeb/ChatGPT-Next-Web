@@ -22,8 +22,6 @@ export const BUILTIN_MASK_STORE = {
   },
 };
 
-export const BUILTIN_MASKS: BuiltinMask[] = [
-  ...CN_MASKS,
-  ...TW_MASKS,
-  ...EN_MASKS,
-].map((m) => BUILTIN_MASK_STORE.add(m));
+export const BUILTIN_MASKS: BuiltinMask[] = [...CN_MASKS, ...TW_MASKS, ...EN_MASKS].map(
+  (m) => BUILTIN_MASK_STORE.add(m),
+);
