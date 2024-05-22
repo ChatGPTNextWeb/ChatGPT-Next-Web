@@ -1,4 +1,5 @@
-import { compressImage, isVisionModel } from "@/app/utils";
+import { isVisionModel } from "@/app/utils";
+import { compressImage } from "@/app/utils/chat";
 import { useCallback, useRef } from "react";
 import { useChatStore } from "../store/chat";
 

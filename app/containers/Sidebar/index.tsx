@@ -51,7 +51,7 @@ export function SideBar(props: { className?: string }) {
     >
       <ActionsBar
         inMobile={isMobileScreen}
-        actionsShema={[
+        actionsSchema={[
           {
             id: Path.Masks,
             icons: {

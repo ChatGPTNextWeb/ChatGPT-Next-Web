@@ -1,4 +1,4 @@
-import { compressImage } from "@/app/utils";
+import { compressImage } from "@/app/utils/chat";
 import { useCallback, useRef } from "react";
 
 interface UseUploadImageOptions {

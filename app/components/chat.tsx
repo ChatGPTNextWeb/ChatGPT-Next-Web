@@ -59,8 +59,9 @@ import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
-  compressImage,
 } from "../utils";
+
+import { compressImage } from "@/app/utils/chat";
 
 import dynamic from "next/dynamic";
 
@@ -1088,6 +1089,7 @@ function _Chat() {
             if (payload.url) {
               accessStore.update((access) => (access.openaiUrl = payload.url!));
             }
+            accessStore.update((access) => (access.useCustomConfig = true));
           });
         }
       } catch {

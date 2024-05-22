@@ -32,3 +32,9 @@ export function updateGlobalCSSVars(nextSidebar: number) {
 
   return { menuWidth };
 }
+
+let count = 0;
+
+export function getUid() {
+  return count++;
+}

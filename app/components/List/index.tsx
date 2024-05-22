@@ -37,6 +37,8 @@ type Error =
       error: false;
     };
 
+type Validate = (v: any) => Error | Promise<Error>;
+
 export interface ListItemProps {
   title: string;
   subTitle?: string;
@@ -44,7 +46,7 @@ export interface ListItemProps {
   className?: string;
   onClick?: () => void;
   nextline?: boolean;
-  validator?: (v: any) => Error | Promise<Error>;
+  validator?: Validate | Validate[];
 }
 
 export const ListContext = createContext<
@@ -92,7 +94,15 @@ export function ListItem(props: ListItemProps) {
   }, []);
 
   const handleValidate = useCallback((v: any) => {
-    const insideValidator = validator || (() => {});
+    let insideValidator;
+    if (!validator) {
+      insideValidator = () => {};
+    } else if (Array.isArray(validator)) {
+      insideValidator = (v: any) =>
+        Promise.race(validator.map((validate) => validate(v)));
+    } else {
+      insideValidator = validator;
+    }
 
     Promise.resolve(insideValidator(v)).then((result) => {
       if (result && result.error) {
