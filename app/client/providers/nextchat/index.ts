@@ -3,13 +3,15 @@ import {
   settingItems,
   SettingKeys,
   NextChatMetas,
+  preferredRegion,
+  OPENAI_BASE_URL,
 } from "./config";
-import { ACCESS_CODE_PREFIX } from "@/app/constant";
 import {
   ChatHandlers,
   getMessageTextContent,
   InternalChatRequestPayload,
   IProviderTemplate,
+  ServerConfig,
   StandChatReponseMessage,
 } from "../../common";
 import {
@@ -18,7 +20,8 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import Locale from "@/app/locales";
-import { makeBearer, validString } from "./utils";
+import { auth, authHeaderName, getHeaders, getTimer, parseResp } from "./utils";
+import { NextRequest, NextResponse } from "next/server";
 
 export type NextChatProviderSettingKeys = SettingKeys;
 
@@ -52,9 +55,27 @@ interface RequestPayload {
   max_tokens?: number;
 }
 
+type ProviderTemplate = IProviderTemplate<
+  SettingKeys,
+  "azure",
+  typeof NextChatMetas
+>;
+
 export default class NextChatProvider
   implements IProviderTemplate<SettingKeys, "nextchat", typeof NextChatMetas>
 {
+  apiRouteRootName: "/api/provider/nextchat" = "/api/provider/nextchat";
+  allowedApiMethods: (
+    | "POST"
+    | "GET"
+    | "OPTIONS"
+    | "PUT"
+    | "PATCH"
+    | "DELETE"
+  )[] = ["GET", "POST"];
+
+  runtime = "edge" as const;
+  preferredRegion = preferredRegion;
   name = "nextchat" as const;
   metas = NextChatMetas;
 
@@ -64,33 +85,6 @@ export default class NextChatProvider
     displayName: "NextChat",
     settingItems,
   };
-
-  readonly REQUEST_TIMEOUT_MS = 60000;
-
-  private path(): string {
-    const path = NextChatMetas.ChatPath;
-
-    let baseUrl = "/api/openai";
-
-    console.log("[Proxy Endpoint] ", baseUrl, path);
-
-    return [baseUrl, path].join("/");
-  }
-
-  private getHeaders(payload: InternalChatRequestPayload<SettingKeys>) {
-    const { accessCode } = payload.providerConfig;
-
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-
-    if (validString(accessCode)) {
-      headers["Authorization"] = makeBearer(ACCESS_CODE_PREFIX + accessCode);
-    }
-
-    return headers;
-  }
 
   private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
     const { messages, isVisionModel, model, stream, modelConfig } = payload;
@@ -125,46 +119,106 @@ export default class NextChatProvider
     console.log("[Request] openai payload: ", requestPayload);
 
     return {
-      headers: this.getHeaders(payload),
+      headers: getHeaders(payload.providerConfig.accessCode!),
       body: JSON.stringify(requestPayload),
       method: "POST",
-      url: this.path(),
+      url: [this.apiRouteRootName, NextChatMetas.ChatPath].join("/"),
     };
   }
 
-  private readWholeMessageResponseBody(res: any) {
-    return {
-      message: res.choices?.at(0)?.message?.content ?? "",
-    };
-  }
-
-  private getTimer = () => {
+  private async requestOpenai(req: NextRequest, serverConfig: ServerConfig) {
+    const { baseUrl = OPENAI_BASE_URL, openaiOrgId } = serverConfig;
     const controller = new AbortController();
+    const authValue = req.headers.get(authHeaderName) ?? "";
 
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => controller.abort(),
-      this.REQUEST_TIMEOUT_MS,
+    const path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
+      this.apiRouteRootName,
+      "",
     );
 
-    return {
-      ...controller,
-      clear: () => {
-        clearTimeout(requestTimeoutId);
+    console.log("[Proxy] ", path);
+    console.log("[Base Url]", baseUrl);
+
+    const timeoutId = setTimeout(
+      () => {
+        controller.abort();
       },
+      10 * 60 * 1000,
+    );
+
+    const fetchUrl = `${baseUrl}/${path}`;
+    const fetchOptions: RequestInit = {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+        [authHeaderName]: authValue,
+        ...(openaiOrgId && {
+          "OpenAI-Organization": openaiOrgId,
+        }),
+      },
+      method: req.method,
+      body: req.body,
+      // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
+      redirect: "manual",
+      // @ts-ignore
+      duplex: "half",
+      signal: controller.signal,
     };
-  };
+
+    try {
+      const res = await fetch(fetchUrl, fetchOptions);
+
+      // Extract the OpenAI-Organization header from the response
+      const openaiOrganizationHeader = res.headers.get("OpenAI-Organization");
+
+      // Check if serverConfig.openaiOrgId is defined and not an empty string
+      if (openaiOrgId && openaiOrgId.trim() !== "") {
+        // If openaiOrganizationHeader is present, log it; otherwise, log that the header is not present
+        console.log("[Org ID]", openaiOrganizationHeader);
+      } else {
+        console.log("[Org ID] is not set up.");
+      }
+
+      // to prevent browser prompt for credentials
+      const newHeaders = new Headers(res.headers);
+      newHeaders.delete("www-authenticate");
+      // to disable nginx buffering
+      newHeaders.set("X-Accel-Buffering", "no");
+
+      // Conditionally delete the OpenAI-Organization header from the response if [Org ID] is undefined or empty (not setup in ENV)
+      // Also, this is to prevent the header from being sent to the client
+      if (!openaiOrgId || openaiOrgId.trim() === "") {
+        newHeaders.delete("OpenAI-Organization");
+      }
+
+      // The latest version of the OpenAI API forced the content-encoding to be "br" in json response
+      // So if the streaming is disabled, we need to remove the content-encoding header
+      // Because Vercel uses gzip to compress the response, if we don't remove the content-encoding header
+      // The browser will try to decode the response with brotli and fail
+      newHeaders.delete("content-encoding");
+
+      return new NextResponse(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: newHeaders,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
 
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
     handlers: ChatHandlers,
+    fetch: typeof window.fetch,
   ) {
     const requestPayload = this.formatChatPayload(payload);
 
-    const timer = this.getTimer();
+    const timer = getTimer();
 
     fetchEventSource(requestPayload.url, {
       ...requestPayload,
+      fetch,
       async onopen(res) {
         timer.clear();
         const contentType = res.headers.get("content-type");
@@ -236,10 +290,11 @@ export default class NextChatProvider
 
   async chat(
     payload: InternalChatRequestPayload<"accessCode">,
+    fetch: typeof window.fetch,
   ): Promise<StandChatReponseMessage> {
     const requestPayload = this.formatChatPayload(payload);
 
-    const timer = this.getTimer();
+    const timer = getTimer();
 
     const res = await fetch(requestPayload.url, {
       headers: {
@@ -253,8 +308,41 @@ export default class NextChatProvider
     timer.clear();
 
     const resJson = await res.json();
-    const message = this.readWholeMessageResponseBody(resJson);
+    const message = parseResp(resJson);
 
     return message;
   }
+
+  serverSideRequestHandler: ProviderTemplate["serverSideRequestHandler"] =
+    async (req, config) => {
+      const { subpath } = req;
+      const ALLOWD_PATH = new Set(Object.values(NextChatMetas));
+
+      if (!ALLOWD_PATH.has(subpath)) {
+        return NextResponse.json(
+          {
+            error: true,
+            message: "you are not allowed to request " + subpath,
+          },
+          {
+            status: 403,
+          },
+        );
+      }
+
+      const authResult = auth(req, config);
+      if (authResult.error) {
+        return NextResponse.json(authResult, {
+          status: 401,
+        });
+      }
+
+      try {
+        const response = await this.requestOpenai(req, config);
+
+        return response;
+      } catch (e) {
+        return NextResponse.json(prettyObject(e));
+      }
+    };
 }

@@ -1,24 +1,33 @@
 import {
+  ANTHROPIC_BASE_URL,
   AnthropicMetas,
   ClaudeMapper,
   SettingKeys,
   modelConfigs,
+  preferredRegion,
   settingItems,
 } from "./config";
 import {
   ChatHandlers,
   InternalChatRequestPayload,
   IProviderTemplate,
-  getMessageTextContent,
-  RequestMessage,
+  ServerConfig,
 } from "../../common";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import Locale from "@/app/locales";
-import { getAuthKey, trimEnd, prettyObject } from "./utils";
+import {
+  prettyObject,
+  getTimer,
+  authHeaderName,
+  auth,
+  parseResp,
+  formatMessage,
+} from "./utils";
 import { cloneDeep } from "lodash-es";
+import { NextRequest, NextResponse } from "next/server";
 
 export type AnthropicProviderSettingKeys = SettingKeys;
 
@@ -61,85 +70,31 @@ export interface ChatRequest {
   stream?: boolean; // Whether to incrementally stream the response using server-sent events.
 }
 
-export default class AnthropicProvider
-  implements IProviderTemplate<SettingKeys, "anthropic", typeof AnthropicMetas>
-{
+type ProviderTemplate = IProviderTemplate<
+  SettingKeys,
+  "anthropic",
+  typeof AnthropicMetas
+>;
+
+export default class AnthropicProvider implements ProviderTemplate {
+  apiRouteRootName = "/api/provider/anthropic" as const;
+  allowedApiMethods: ["GET", "POST"] = ["GET", "POST"];
+
+  runtime = "edge" as const;
+  preferredRegion = preferredRegion;
+
   name = "anthropic" as const;
 
   metas = AnthropicMetas;
 
   providerMeta = {
     displayName: "Anthropic",
-    settingItems,
+    settingItems: settingItems(
+      `${this.apiRouteRootName}//${AnthropicMetas.ChatPath}`,
+    ),
   };
 
   defaultModels = modelConfigs;
-
-  readonly REQUEST_TIMEOUT_MS = 60000;
-
-  private path(payload: InternalChatRequestPayload<SettingKeys>) {
-    const {
-      providerConfig: { anthropicUrl },
-    } = payload;
-
-    return `${trimEnd(anthropicUrl!)}/${AnthropicMetas.ChatPath}`;
-  }
-
-  private formatMessage(
-    messages: RequestMessage[],
-    payload: InternalChatRequestPayload<SettingKeys>,
-  ) {
-    const { isVisionModel } = payload;
-
-    return messages
-      .flat()
-      .filter((v) => {
-        if (!v.content) return false;
-        if (typeof v.content === "string" && !v.content.trim()) return false;
-        return true;
-      })
-      .map((v) => {
-        const { role, content } = v;
-        const insideRole = ClaudeMapper[role] ?? "user";
-
-        if (!isVisionModel || typeof content === "string") {
-          return {
-            role: insideRole,
-            content: getMessageTextContent(v),
-          };
-        }
-        return {
-          role: insideRole,
-          content: content
-            .filter((v) => v.image_url || v.text)
-            .map(({ type, text, image_url }) => {
-              if (type === "text") {
-                return {
-                  type,
-                  text: text!,
-                };
-              }
-              const { url = "" } = image_url || {};
-              const colonIndex = url.indexOf(":");
-              const semicolonIndex = url.indexOf(";");
-              const comma = url.indexOf(",");
-
-              const mimeType = url.slice(colonIndex + 1, semicolonIndex);
-              const encodeType = url.slice(semicolonIndex + 1, comma);
-              const data = url.slice(comma + 1);
-
-              return {
-                type: "image" as const,
-                source: {
-                  type: encodeType,
-                  media_type: mimeType,
-                  data,
-                },
-              };
-            }),
-        };
-      });
-  }
 
   private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
     const {
@@ -149,7 +104,8 @@ export default class AnthropicProvider
       modelConfig,
       providerConfig,
     } = payload;
-    const { anthropicApiKey, anthropicApiVersion } = providerConfig;
+    const { anthropicApiKey, anthropicApiVersion, anthropicUrl } =
+      providerConfig;
     const { temperature, top_p, max_tokens } = modelConfig;
 
     const keys = ["system", "user"];
@@ -172,7 +128,7 @@ export default class AnthropicProvider
       }
     }
 
-    const prompt = this.formatMessage(messages, payload);
+    const prompt = formatMessage(messages, payload.isVisionModel);
 
     const requestBody: AnthropicChatRequest = {
       messages: prompt,
@@ -188,51 +144,83 @@ export default class AnthropicProvider
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "x-api-key": anthropicApiKey ?? "",
+        [authHeaderName]: anthropicApiKey ?? "",
         "anthropic-version": anthropicApiVersion ?? "",
-        Authorization: getAuthKey(anthropicApiKey),
       },
       body: JSON.stringify(requestBody),
       method: "POST",
-      url: this.path(payload),
+      url: anthropicUrl!,
     };
   }
 
-  private readWholeMessageResponseBody(res: any) {
-    return {
-      message: res?.content?.[0]?.text ?? "",
-    };
-  }
-
-  private getTimer = (onabort: () => void = () => {}) => {
+  private async request(req: NextRequest, serverConfig: ServerConfig) {
     const controller = new AbortController();
 
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => controller.abort(),
-      this.REQUEST_TIMEOUT_MS,
+    const authValue = req.headers.get(authHeaderName) ?? "";
+
+    const path = `${req.nextUrl.pathname}`.replaceAll(
+      this.apiRouteRootName,
+      "",
     );
 
-    controller.signal.onabort = onabort;
+    const baseUrl = serverConfig.anthropicUrl || ANTHROPIC_BASE_URL;
 
-    return {
-      ...controller,
-      clear: () => {
-        clearTimeout(requestTimeoutId);
+    console.log("[Proxy] ", path);
+    console.log("[Base Url]", baseUrl);
+
+    const timeoutId = setTimeout(
+      () => {
+        controller.abort();
       },
-    };
-  };
-
-  async chat(payload: InternalChatRequestPayload<SettingKeys>) {
-    const requestPayload = this.formatChatPayload(payload);
-
-    const timer = this.getTimer();
-
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => timer.abort(),
-      this.REQUEST_TIMEOUT_MS,
+      10 * 60 * 1000,
     );
+
+    const fetchUrl = `${baseUrl}${path}`;
+
+    const fetchOptions: RequestInit = {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+        [authHeaderName]: authValue,
+        "anthropic-version":
+          req.headers.get("anthropic-version") ||
+          serverConfig.anthropicApiVersion ||
+          AnthropicMetas.Vision,
+      },
+      method: req.method,
+      body: req.body,
+      redirect: "manual",
+      // @ts-ignore
+      duplex: "half",
+      signal: controller.signal,
+    };
+
+    console.log("[Anthropic request]", fetchOptions.headers, req.method);
+    try {
+      const res = await fetch(fetchUrl, fetchOptions);
+
+      // to prevent browser prompt for credentials
+      const newHeaders = new Headers(res.headers);
+      newHeaders.delete("www-authenticate");
+      // to disable nginx buffering
+      newHeaders.set("X-Accel-Buffering", "no");
+
+      return new NextResponse(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: newHeaders,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async chat(
+    payload: InternalChatRequestPayload<SettingKeys>,
+    fetch: typeof window.fetch,
+  ) {
+    const requestPayload = this.formatChatPayload(payload);
+    const timer = getTimer();
 
     const res = await fetch(requestPayload.url, {
       headers: {
@@ -246,7 +234,7 @@ export default class AnthropicProvider
     timer.clear();
 
     const resJson = await res.json();
-    const message = this.readWholeMessageResponseBody(resJson);
+    const message = parseResp(resJson);
 
     return message;
   }
@@ -254,13 +242,14 @@ export default class AnthropicProvider
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
     handlers: ChatHandlers,
+    fetch: typeof window.fetch,
   ) {
     const requestPayload = this.formatChatPayload(payload);
-
-    const timer = this.getTimer();
+    const timer = getTimer();
 
     fetchEventSource(requestPayload.url, {
       ...requestPayload,
+      fetch,
       async onopen(res) {
         timer.clear();
         const contentType = res.headers.get("content-type");
@@ -329,4 +318,39 @@ export default class AnthropicProvider
 
     return timer;
   }
+
+  serverSideRequestHandler: ProviderTemplate["serverSideRequestHandler"] =
+    async (req, config) => {
+      const { subpath } = req;
+      const ALLOWD_PATH = [AnthropicMetas.ChatPath];
+
+      if (!ALLOWD_PATH.includes(subpath)) {
+        console.log("[Anthropic Route] forbidden path ", subpath);
+        return NextResponse.json(
+          {
+            error: true,
+            message: "you are not allowed to request " + subpath,
+          },
+          {
+            status: 403,
+          },
+        );
+      }
+
+      const authResult = auth(req, config);
+
+      if (authResult.error) {
+        return NextResponse.json(authResult, {
+          status: 401,
+        });
+      }
+
+      try {
+        const response = await this.request(req, config);
+        return response;
+      } catch (e) {
+        console.error("[Anthropic] ", e);
+        return NextResponse.json(prettyObject(e));
+      }
+    };
 }

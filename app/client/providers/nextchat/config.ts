@@ -2,12 +2,34 @@ import { SettingItem } from "../../common";
 import { isVisionModel } from "@/app/utils";
 import Locale from "@/app/locales";
 
+export const OPENAI_BASE_URL = "https://api.openai.com";
+
 export const NextChatMetas = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
 };
+
+export const preferredRegion: string | string[] = [
+  "arn1",
+  "bom1",
+  "cdg1",
+  "cle1",
+  "cpt1",
+  "dub1",
+  "fra1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "lhr1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];
 
 export type SettingKeys = "accessCode";
 

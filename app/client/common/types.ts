@@ -1,4 +1,6 @@
 import { RequestMessage } from "../api";
+import { getServerSideConfig } from "@/app/config/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export { type RequestMessage };
 
@@ -152,12 +154,21 @@ export type SettingItem<SettingKeys extends string = ""> =
 // ===================================== Provider Settings Types end ======================================
 
 // ===================================== Provider Template Types start ======================================
+
+export type ServerConfig = ReturnType<typeof getServerSideConfig>;
+
 export interface IProviderTemplate<
   SettingKeys extends string,
   NAME extends string,
   Meta extends Record<string, any>,
 > {
   readonly name: NAME;
+
+  readonly apiRouteRootName: `/api/provider/${NAME}`;
+
+  readonly allowedApiMethods: Array<
+    "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS"
+  >;
 
   readonly metas: Meta;
 
@@ -170,16 +181,30 @@ export interface IProviderTemplate<
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
     handlers: ChatHandlers,
+    fetch: typeof window.fetch,
   ): AbortController;
 
   chat(
     payload: InternalChatRequestPayload<SettingKeys>,
+    fetch: typeof window.fetch,
   ): Promise<StandChatReponseMessage>;
 
   getAvailableModels?(
     providerConfig: InternalChatRequestPayload<SettingKeys>["providerConfig"],
   ): Promise<ModelInfo[]>;
+
+  readonly runtime: "edge";
+  readonly preferredRegion: "auto" | "global" | "home" | string | string[];
+
+  serverSideRequestHandler(
+    req: NextRequest & {
+      subpath: string;
+    },
+    serverConfig: ServerConfig,
+  ): Promise<NextResponse>;
 }
+
+export type ProviderTemplate = IProviderTemplate<any, any, any>;
 
 export interface Serializable<Snapshot> {
   serialize(): Snapshot;

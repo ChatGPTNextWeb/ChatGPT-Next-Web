@@ -55,7 +55,10 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
 })();
 
 function getApiKey(keys?: string) {
-  const apiKeyEnvVar = keys ?? "";
+  if (!keys) {
+    return;
+  }
+  const apiKeyEnvVar = keys;
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   const randomIndex = Math.floor(Math.random() * apiKeys.length);
   const apiKey = apiKeys[randomIndex];

@@ -5,6 +5,26 @@ export const OPENAI_BASE_URL = "https://api.openai.com";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 
+export const preferredRegion: string | string[] = [
+  "arn1",
+  "bom1",
+  "cdg1",
+  "cle1",
+  "cpt1",
+  "dub1",
+  "fra1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "lhr1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];
+
 export const OpenaiMetas = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
@@ -157,9 +177,9 @@ export const modelConfigs = [
   },
 ];
 
-const defaultEndpoint = "/api/openai";
-
-export const settingItems: SettingItem<SettingKeys>[] = [
+export const settingItems: (
+  defaultEndpoint: string,
+) => SettingItem<SettingKeys>[] = (defaultEndpoint) => [
   {
     name: "openaiUrl",
     title: Locale.Endpoint.Title,
@@ -189,6 +209,6 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     placeholder: Locale.ApiKey.Placeholder,
     type: "input",
     inputType: "password",
-    validators: ["required"],
+    // validators: ["required"],
   },
 ];

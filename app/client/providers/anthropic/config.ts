@@ -6,10 +6,11 @@ export type SettingKeys =
   | "anthropicApiKey"
   | "anthropicApiVersion";
 
+export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
+
 export const AnthropicMetas = {
   ChatPath: "v1/messages",
-  ChatPath1: "v1/complete",
-  ExampleEndpoint: "https://api.anthropic.com",
+  ExampleEndpoint: ANTHROPIC_BASE_URL,
   Vision: "2023-06-01",
 };
 
@@ -64,9 +65,29 @@ export const modelConfigs = [
   },
 ];
 
-const defaultEndpoint = "/api/anthropic";
+export const preferredRegion: string | string[] = [
+  "arn1",
+  "bom1",
+  "cdg1",
+  "cle1",
+  "cpt1",
+  "dub1",
+  "fra1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "lhr1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];
 
-export const settingItems: SettingItem<SettingKeys>[] = [
+export const settingItems: (
+  defaultEndpoint: string,
+) => SettingItem<SettingKeys>[] = (defaultEndpoint) => [
   {
     name: "anthropicUrl",
     title: Locale.Endpoint.Title,
@@ -103,7 +124,7 @@ export const settingItems: SettingItem<SettingKeys>[] = [
     name: "anthropicApiVersion",
     title: Locale.ApiVerion.Title,
     description: Locale.ApiVerion.SubTitle,
-    placeholder: AnthropicMetas.Vision,
+    defaultValue: AnthropicMetas.Vision,
     type: "input",
     // validators: ["required"],
   },

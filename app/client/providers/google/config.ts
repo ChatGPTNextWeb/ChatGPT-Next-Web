@@ -1,8 +1,25 @@
 import { SettingItem } from "../../common";
 import Locale from "./locale";
 
+export const preferredRegion: string | string[] = [
+  "bom1",
+  "cle1",
+  "cpt1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];
+
+export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
+
 export const GoogleMetas = {
-  ExampleEndpoint: "https://generativelanguage.googleapis.com/",
+  ExampleEndpoint: GEMINI_BASE_URL,
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
 };
 
@@ -32,13 +49,16 @@ export const modelConfigs = [
   },
 ];
 
-export const settingItems: SettingItem<SettingKeys>[] = [
+export const settingItems: (
+  defaultEndpoint: string,
+) => SettingItem<SettingKeys>[] = (defaultEndpoint) => [
   {
     name: "googleUrl",
     title: Locale.Endpoint.Title,
     description: Locale.Endpoint.SubTitle + GoogleMetas.ExampleEndpoint,
     placeholder: GoogleMetas.ExampleEndpoint,
     type: "input",
+    defaultValue: defaultEndpoint,
     validators: [
       async (v: any) => {
         if (typeof v === "string") {
@@ -52,6 +72,7 @@ export const settingItems: SettingItem<SettingKeys>[] = [
           return Locale.Endpoint.Error.EndWithBackslash;
         }
       },
+      "required",
     ],
   },
   {

@@ -1,4 +1,11 @@
-import { SettingKeys, modelConfigs, settingItems, GoogleMetas } from "./config";
+import {
+  SettingKeys,
+  modelConfigs,
+  settingItems,
+  GoogleMetas,
+  GEMINI_BASE_URL,
+  preferredRegion,
+} from "./config";
 import {
   ChatHandlers,
   InternalChatRequestPayload,
@@ -8,7 +15,14 @@ import {
   getMessageTextContent,
   getMessageImages,
 } from "../../common";
-import { ensureProperEnding, makeBearer, validString } from "./utils";
+import {
+  auth,
+  ensureProperEnding,
+  getTimer,
+  parseResp,
+  urlParamApikeyName,
+} from "./utils";
+import { NextResponse } from "next/server";
 
 export type GoogleProviderSettingKeys = SettingKeys;
 
@@ -29,37 +43,37 @@ interface ModelList {
   nextPageToken: string;
 }
 
+type ProviderTemplate = IProviderTemplate<
+  SettingKeys,
+  "azure",
+  typeof GoogleMetas
+>;
+
 export default class GoogleProvider
   implements IProviderTemplate<SettingKeys, "google", typeof GoogleMetas>
 {
+  allowedApiMethods: (
+    | "POST"
+    | "GET"
+    | "OPTIONS"
+    | "PUT"
+    | "PATCH"
+    | "DELETE"
+  )[] = ["GET", "POST"];
+  runtime = "edge" as const;
+
+  apiRouteRootName: "/api/provider/google" = "/api/provider/google";
+
+  preferredRegion = preferredRegion;
+
   name = "google" as const;
   metas = GoogleMetas;
 
   providerMeta = {
     displayName: "Google",
-    settingItems,
+    settingItems: settingItems(this.apiRouteRootName),
   };
   defaultModels = modelConfigs;
-
-  readonly REQUEST_TIMEOUT_MS = 60000;
-
-  private getHeaders(payload: InternalChatRequestPayload<SettingKeys>) {
-    const {
-      providerConfig: { googleApiKey },
-      context: { isApp },
-    } = payload;
-
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-
-    if (!isApp && validString(googleApiKey)) {
-      headers["Authorization"] = makeBearer(googleApiKey);
-    }
-
-    return headers;
-  }
 
   private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
     const {
@@ -69,19 +83,16 @@ export default class GoogleProvider
       stream,
       modelConfig,
       providerConfig,
-      context: { isApp },
     } = payload;
     const { googleUrl, googleApiKey } = providerConfig;
     const { temperature, top_p, max_tokens } = modelConfig;
 
-    let multimodal = false;
     const internalMessages = messages.map((v) => {
       let parts: any[] = [{ text: getMessageTextContent(v) }];
 
       if (isVisionModel) {
         const images = getMessageImages(v);
         if (images.length > 0) {
-          multimodal = true;
           parts = parts.concat(
             images.map((image) => {
               const imageType = image.split(";")[0].split(":")[1];
@@ -145,16 +156,15 @@ export default class GoogleProvider
       ],
     };
 
-    let googleChatPath = GoogleMetas.ChatPath(model);
-
-    let baseUrl = googleUrl ?? "/api/google/" + googleChatPath;
-
-    if (isApp) {
-      baseUrl += `?key=${googleApiKey}`;
-    }
+    const baseUrl = `${googleUrl}/${GoogleMetas.ChatPath(
+      model,
+    )}?${urlParamApikeyName}=${googleApiKey}`;
 
     return {
-      headers: this.getHeaders(payload),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(requestPayload),
       method: "POST",
       url: stream
@@ -162,46 +172,15 @@ export default class GoogleProvider
         : baseUrl,
     };
   }
-  private readWholeMessageResponseBody(res: any) {
-    if (res?.promptFeedback?.blockReason) {
-      // being blocked
-      throw new Error(
-        "Message is being blocked for reason: " +
-          res.promptFeedback.blockReason,
-      );
-    }
-    return {
-      message:
-        res.candidates?.at(0)?.content?.parts?.at(0)?.text ||
-        res.error?.message ||
-        "",
-    };
-  }
-
-  private getTimer = () => {
-    const controller = new AbortController();
-
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => controller.abort(),
-      this.REQUEST_TIMEOUT_MS,
-    );
-
-    return {
-      ...controller,
-      clear: () => {
-        clearTimeout(requestTimeoutId);
-      },
-    };
-  };
 
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
     handlers: ChatHandlers,
+    fetch: typeof window.fetch,
   ) {
     const requestPayload = this.formatChatPayload(payload);
 
-    const timer = this.getTimer();
+    const timer = getTimer();
 
     let existingTexts: string[] = [];
 
@@ -274,15 +253,10 @@ export default class GoogleProvider
 
   async chat(
     payload: InternalChatRequestPayload<SettingKeys>,
+    fetch: typeof window.fetch,
   ): Promise<StandChatReponseMessage> {
     const requestPayload = this.formatChatPayload(payload);
-    const timer = this.getTimer();
-
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => timer.abort(),
-      this.REQUEST_TIMEOUT_MS,
-    );
+    const timer = getTimer();
 
     const res = await fetch(requestPayload.url, {
       headers: {
@@ -293,10 +267,10 @@ export default class GoogleProvider
       signal: timer.signal,
     });
 
-    clearTimeout(requestTimeoutId);
+    timer.clear();
 
     const resJson = await res.json();
-    const message = this.readWholeMessageResponseBody(resJson);
+    const message = parseResp(resJson);
 
     return message;
   }
@@ -315,4 +289,65 @@ export default class GoogleProvider
 
     return data.models;
   }
+
+  serverSideRequestHandler: ProviderTemplate["serverSideRequestHandler"] =
+    async (req, serverConfig) => {
+      const { googleUrl = GEMINI_BASE_URL } = serverConfig;
+
+      const controller = new AbortController();
+
+      const path = `${req.nextUrl.pathname}`.replaceAll(
+        this.apiRouteRootName,
+        "",
+      );
+
+      console.log("[Proxy] ", path);
+      console.log("[Base Url]", googleUrl);
+
+      const authResult = auth(req, serverConfig);
+      if (authResult.error) {
+        return NextResponse.json(authResult, {
+          status: 401,
+        });
+      }
+
+      const fetchUrl = `${googleUrl}/${path}?key=${authResult.apiKey}`;
+      const fetchOptions: RequestInit = {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+        },
+        method: req.method,
+        body: req.body,
+        // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
+        redirect: "manual",
+        // @ts-ignore
+        duplex: "half",
+        signal: controller.signal,
+      };
+
+      const timeoutId = setTimeout(
+        () => {
+          controller.abort();
+        },
+        10 * 60 * 1000,
+      );
+
+      try {
+        const res = await fetch(fetchUrl, fetchOptions);
+        // to prevent browser prompt for credentials
+        const newHeaders = new Headers(res.headers);
+        newHeaders.delete("www-authenticate");
+        // to disable nginx buffering
+        newHeaders.set("X-Accel-Buffering", "no");
+
+        return new NextResponse(res.body, {
+          status: res.status,
+          statusText: res.statusText,
+          headers: newHeaders,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    };
 }

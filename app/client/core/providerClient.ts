@@ -3,13 +3,14 @@ import {
   InternalChatHandlers,
   Model,
   ModelTemplate,
+  ProviderTemplate,
   StandChatReponseMessage,
   StandChatRequestPayload,
+  isSameOrigin,
+  modelNameRequestHeader,
 } from "../common";
 import * as ProviderTemplates from "@/app/client/providers";
 import { nanoid } from "nanoid";
-
-export type ProviderTemplate = IProviderTemplate<any, any, any>;
 
 export type ProviderTemplateName =
   (typeof ProviderTemplates)[keyof typeof ProviderTemplates]["prototype"]["name"];
@@ -38,6 +39,7 @@ const providerTemplates = Object.values(ProviderTemplates).reduce(
 
 export class ProviderClient {
   providerTemplate: IProviderTemplate<any, any, any>;
+  genFetch: (modelName: string) => typeof window.fetch;
 
   static ProviderTemplates = providerTemplates;
 
@@ -61,6 +63,31 @@ export class ProviderClient {
   constructor(private provider: Provider) {
     const { providerTemplateName } = provider;
     this.providerTemplate = this.getProviderTemplate(providerTemplateName);
+    this.genFetch =
+      (modelName: string) =>
+      (...args) => {
+        const req = new Request(...args);
+        const headers: Record<string, any> = {
+          ...req.headers,
+        };
+        if (isSameOrigin(req.url)) {
+          headers[modelNameRequestHeader] = modelName;
+        }
+
+        return window.fetch(req.url, {
+          method: req.method,
+          keepalive: req.keepalive,
+          headers,
+          body: req.body,
+          redirect: req.redirect,
+          integrity: req.integrity,
+          signal: req.signal,
+          credentials: req.credentials,
+          mode: req.mode,
+          referrer: req.referrer,
+          referrerPolicy: req.referrerPolicy,
+        });
+      };
   }
 
   private getProviderTemplate(providerTemplateName: string) {
@@ -98,12 +125,15 @@ export class ProviderClient {
   async chat(
     payload: StandChatRequestPayload,
   ): Promise<StandChatReponseMessage> {
-    return this.providerTemplate.chat({
-      ...payload,
-      stream: false,
-      isVisionModel: this.getModelConfig(payload.model)?.isVisionModel,
-      providerConfig: this.provider.providerConfig,
-    });
+    return this.providerTemplate.chat(
+      {
+        ...payload,
+        stream: false,
+        isVisionModel: this.getModelConfig(payload.model)?.isVisionModel,
+        providerConfig: this.provider.providerConfig,
+      },
+      this.genFetch(payload.model),
+    );
   }
 
   streamChat(payload: StandChatRequestPayload, handlers: InternalChatHandlers) {
@@ -129,6 +159,7 @@ export class ProviderClient {
           handlers.onFinish(message);
         },
       },
+      this.genFetch(payload.model),
     );
 
     timer.signal.onabort = () => {

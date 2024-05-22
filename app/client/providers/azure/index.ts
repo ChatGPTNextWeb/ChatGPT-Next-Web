@@ -1,17 +1,33 @@
-import { settingItems, SettingKeys, modelConfigs, AzureMetas } from "./config";
+import {
+  settingItems,
+  SettingKeys,
+  modelConfigs,
+  AzureMetas,
+  preferredRegion,
+} from "./config";
 import {
   ChatHandlers,
   InternalChatRequestPayload,
   IProviderTemplate,
   ModelInfo,
   getMessageTextContent,
+  ServerConfig,
 } from "../../common";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import Locale from "@/app/locales";
-import { makeAzurePath, makeBearer, prettyObject, validString } from "./utils";
+import {
+  auth,
+  authHeaderName,
+  getHeaders,
+  getTimer,
+  makeAzurePath,
+  parseResp,
+  prettyObject,
+} from "./utils";
+import { NextRequest, NextResponse } from "next/server";
 
 export type AzureProviderSettingKeys = SettingKeys;
 
@@ -62,9 +78,35 @@ interface ModelList {
   }>;
 }
 
-export default class Azure
-  implements IProviderTemplate<SettingKeys, "azure", typeof AzureMetas>
-{
+interface OpenAIListModelResponse {
+  object: string;
+  data: Array<{
+    id: string;
+    object: string;
+    root: string;
+  }>;
+}
+
+type ProviderTemplate = IProviderTemplate<
+  SettingKeys,
+  "azure",
+  typeof AzureMetas
+>;
+
+export default class Azure implements ProviderTemplate {
+  apiRouteRootName: "/api/provider/azure" = "/api/provider/azure";
+  allowedApiMethods: (
+    | "POST"
+    | "GET"
+    | "OPTIONS"
+    | "PUT"
+    | "PATCH"
+    | "DELETE"
+  )[] = ["POST", "GET"];
+  runtime = "edge" as const;
+
+  preferredRegion = preferredRegion;
+
   name = "azure" as const;
   metas = AzureMetas;
 
@@ -72,46 +114,26 @@ export default class Azure
 
   providerMeta = {
     displayName: "Azure",
-    settingItems,
+    settingItems: settingItems(
+      `${this.apiRouteRootName}/${AzureMetas.ChatPath}`,
+    ),
   };
 
-  readonly REQUEST_TIMEOUT_MS = 60000;
-
-  private path(payload: InternalChatRequestPayload<SettingKeys>): string {
+  private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
     const {
+      messages,
+      isVisionModel,
+      model,
+      stream,
+      modelConfig: {
+        temperature,
+        presence_penalty,
+        frequency_penalty,
+        top_p,
+        max_tokens,
+      },
       providerConfig: { azureUrl, azureApiVersion },
     } = payload;
-    const path = makeAzurePath(AzureMetas.ChatPath, azureApiVersion!);
-
-    console.log("[Proxy Endpoint] ", azureUrl, path);
-
-    return [azureUrl!, path].join("/");
-  }
-
-  private getHeaders(payload: InternalChatRequestPayload<SettingKeys>) {
-    const { azureApiKey } = payload.providerConfig;
-
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-
-    if (validString(azureApiKey)) {
-      headers["Authorization"] = makeBearer(azureApiKey);
-    }
-
-    return headers;
-  }
-
-  private formatChatPayload(payload: InternalChatRequestPayload<SettingKeys>) {
-    const { messages, isVisionModel, model, stream, modelConfig } = payload;
-    const {
-      temperature,
-      presence_penalty,
-      frequency_penalty,
-      top_p,
-      max_tokens,
-    } = modelConfig;
 
     const openAiMessages = messages.map((v) => ({
       role: v.role,
@@ -136,47 +158,105 @@ export default class Azure
     console.log("[Request] openai payload: ", requestPayload);
 
     return {
-      headers: this.getHeaders(payload),
+      headers: getHeaders(payload.providerConfig.azureApiKey),
       body: JSON.stringify(requestPayload),
       method: "POST",
-      url: this.path(payload),
+      url: `${azureUrl}?api-version=${azureApiVersion!}`,
     };
   }
 
-  private readWholeMessageResponseBody(res: any) {
-    return {
-      message: res.choices?.at(0)?.message?.content ?? "",
-    };
-  }
-
-  private getTimer = (onabort: () => void = () => {}) => {
+  private async requestAzure(req: NextRequest, serverConfig: ServerConfig) {
     const controller = new AbortController();
 
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => controller.abort(),
-      this.REQUEST_TIMEOUT_MS,
+    const authValue =
+      req.headers
+        .get("Authorization")
+        ?.trim()
+        .replaceAll("Bearer ", "")
+        .trim() ?? "";
+
+    const { azureUrl, azureApiVersion } = serverConfig;
+
+    if (!azureUrl) {
+      return NextResponse.json({
+        error: true,
+        message: `missing AZURE_URL in server env vars`,
+      });
+    }
+
+    if (!azureApiVersion) {
+      return NextResponse.json({
+        error: true,
+        message: `missing AZURE_API_VERSION in server env vars`,
+      });
+    }
+
+    let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
+      this.apiRouteRootName,
+      "",
     );
 
-    controller.signal.onabort = onabort;
+    path = makeAzurePath(path, azureApiVersion);
 
-    return {
-      ...controller,
-      clear: () => {
-        clearTimeout(requestTimeoutId);
+    console.log("[Proxy] ", path);
+    console.log("[Base Url]", azureUrl);
+
+    const fetchUrl = `${azureUrl}/${path}`;
+
+    const timeoutId = setTimeout(
+      () => {
+        controller.abort();
       },
-    };
-  };
+      10 * 60 * 1000,
+    );
 
-  async chat(payload: InternalChatRequestPayload<SettingKeys>) {
+    const fetchOptions: RequestInit = {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+        [authHeaderName]: authValue,
+      },
+      method: req.method,
+      body: req.body,
+      // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
+      redirect: "manual",
+      // @ts-ignore
+      duplex: "half",
+      signal: controller.signal,
+    };
+
+    try {
+      const res = await fetch(fetchUrl, fetchOptions);
+
+      // to prevent browser prompt for credentials
+      const newHeaders = new Headers(res.headers);
+      newHeaders.delete("www-authenticate");
+      // to disable nginx buffering
+      newHeaders.set("X-Accel-Buffering", "no");
+
+      // The latest version of the OpenAI API forced the content-encoding to be "br" in json response
+      // So if the streaming is disabled, we need to remove the content-encoding header
+      // Because Vercel uses gzip to compress the response, if we don't remove the content-encoding header
+      // The browser will try to decode the response with brotli and fail
+      newHeaders.delete("content-encoding");
+
+      return new NextResponse(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: newHeaders,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async chat(
+    payload: InternalChatRequestPayload<SettingKeys>,
+    fetch: typeof window.fetch,
+  ) {
     const requestPayload = this.formatChatPayload(payload);
 
-    const timer = this.getTimer();
-    // make a fetch request
-    const requestTimeoutId = setTimeout(
-      () => timer.abort(),
-      this.REQUEST_TIMEOUT_MS,
-    );
+    const timer = getTimer();
 
     const res = await fetch(requestPayload.url, {
       headers: {
@@ -187,10 +267,10 @@ export default class Azure
       signal: timer.signal,
     });
 
-    clearTimeout(requestTimeoutId);
+    timer.clear();
 
     const resJson = await res.json();
-    const message = this.readWholeMessageResponseBody(resJson);
+    const message = parseResp(resJson);
 
     return message;
   }
@@ -198,13 +278,15 @@ export default class Azure
   streamChat(
     payload: InternalChatRequestPayload<SettingKeys>,
     handlers: ChatHandlers,
+    fetch: typeof window.fetch,
   ) {
     const requestPayload = this.formatChatPayload(payload);
 
-    const timer = this.getTimer();
+    const timer = getTimer();
 
     fetchEventSource(requestPayload.url, {
       ...requestPayload,
+      fetch,
       async onopen(res) {
         timer.clear();
         const contentType = res.headers.get("content-type");
@@ -278,7 +360,7 @@ export default class Azure
     providerConfig: Record<SettingKeys, string>,
   ): Promise<ModelInfo[]> {
     const { azureApiKey, azureUrl } = providerConfig;
-    const res = await fetch(`${azureUrl}/vi/models`, {
+    const res = await fetch(`${azureUrl}/${AzureMetas.ListModelPath}`, {
       headers: {
         Authorization: `Bearer ${azureApiKey}`,
       },
@@ -290,4 +372,37 @@ export default class Azure
       name: o.id,
     }));
   }
+
+  serverSideRequestHandler: ProviderTemplate["serverSideRequestHandler"] =
+    async (req, config) => {
+      const { subpath } = req;
+      const ALLOWD_PATH = [AzureMetas.ChatPath];
+
+      if (!ALLOWD_PATH.includes(subpath)) {
+        return NextResponse.json(
+          {
+            error: true,
+            message: "you are not allowed to request " + subpath,
+          },
+          {
+            status: 403,
+          },
+        );
+      }
+
+      const authResult = auth(req, config);
+      if (authResult.error) {
+        return NextResponse.json(authResult, {
+          status: 401,
+        });
+      }
+
+      try {
+        const response = await this.requestAzure(req, config);
+
+        return response;
+      } catch (e) {
+        return NextResponse.json(prettyObject(e));
+      }
+    };
 }
