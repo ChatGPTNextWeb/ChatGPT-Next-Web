@@ -125,7 +125,7 @@ Latex inline: \\(x^2\\)
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-35-turbo-0125";
+export const SUMMARIZE_MODEL = "gpt-4o";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
@@ -206,7 +206,7 @@ const anthropicModels = [
 
 export const DEFAULT_MODELS = [
   {
-    name: "gpt-3.5-turbo-0125",
+    name: "gpt-3.5-turbo",
     describe: "GPT-3,质量一般,便宜",
     available: true,
     provider: {
@@ -235,16 +235,16 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  {
-    name: "gpt-35-turbo-0125",
-    describe: "GPT-3,微软,备用",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
+  // {
+  //   name: "gpt-35-turbo-0125",
+  //   describe: "GPT-3,微软,备用",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
   {
     name: "claude-3-opus-20240229",
     describe: "claude第三代模型最强版",
@@ -255,16 +255,16 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  {
-    name: "gpt-4-vision-preview",
-    available: true,
-    describe: "GPT-4多模态,图像识别",
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
+  // {
+  //   name: "gpt-4-vision-preview",
+  //   available: true,
+  //   describe: "GPT-4多模态,图像识别",
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
   {
     name: "gemini-1.5-pro-latest",
     available: true,
@@ -318,7 +318,7 @@ export const DEFAULT_MODELS = [
 ] as const;
 
 export const AZURE_MODELS: string[] = [
-  "gpt-35-turbo-0125",
+  //"gpt-35-turbo-0125",
   "gpt-4-turbo-2024-04-09",
   "gpt-4o",
 ];
