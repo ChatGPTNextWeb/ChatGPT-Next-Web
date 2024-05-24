@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { VerifiedUser, VerifiedAdminUser } from "@/lib/auth_client";
+import { VerifiedUser, VerifiedAdminUser, VerifiedNeedSetPassword } from "@/lib/auth_client";
 import { CUS_JWT } from "@/lib/auth_type";
 
 
@@ -15,7 +15,6 @@ export default async function middleware(req: NextRequest) {
     if (path.startsWith('/app')) {
         return NextResponse.redirect(new URL(path.replace('/app', ''), req.url), 301);
     }
-
 
     const session = await getToken({ req });
     const isUser = await VerifiedUser(session as CUS_JWT);
@@ -35,7 +34,7 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/", req.url))
     }
 
-    if (path == '/login') {
+    if (path.startsWith('/login')) {
         return NextResponse.rewrite(
             new URL(`/app${path}`, req.url),
         );
@@ -46,6 +45,10 @@ export default async function middleware(req: NextRequest) {
         );
     }
 
+    if (VerifiedNeedSetPassword(path, session as CUS_JWT)) {
+      console.log('-0-0-- 需要修改密码', )
+      // return NextResponse.redirect(new URL("/login/set-password", req.url))
+    }
 
     return NextResponse.next()
 }
