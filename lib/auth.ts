@@ -8,7 +8,6 @@ import { User } from "@prisma/client";
 import { isEmail, isName } from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
 import { comparePassword, hashPassword } from "@/lib/utils";
-import {getCurStartEnd} from "@/app/utils/custom";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 
@@ -158,6 +157,8 @@ export const authOptions: NextAuthOptions = {
                 id: token?.sub,
                 // @ts-expect-error
                 username: token?.user?.username || token?.user?.gh_username,
+                // @ts-expect-error
+                hasPassword: !!token?.user?.password,
             };
             // console.log('555555555,', session, token)
             return session;
