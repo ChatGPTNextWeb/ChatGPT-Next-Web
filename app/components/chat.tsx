@@ -105,6 +105,8 @@ import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 // import { getTokenLength } from "@/lib/utils";
 import VoiceInput from "./voice-input";
+import { Progress, Tooltip } from "antd";
+import { white } from "kleur/colors";
 // import GptPrompts from "./gpt-prompts";
 // const VoiceInput = dynamic(
 //     () => import('@/app/components/voice-input'), { ssr: false });
@@ -1281,7 +1283,7 @@ function _Chat() {
         })
           .then((response) => response.json())
           .then((result) => {
-            console.log("请求成功，", result);
+            // console.log("请求成功，", result);
             localStorage.setItem(
               "current_day_token",
               result["result"]["current_token"],
@@ -1333,11 +1335,29 @@ function _Chat() {
             {!session.topic ? DEFAULT_TOPIC : session.topic}
           </div>
           <div className="window-header-sub-title">
-            {Locale.Chat.SubTitle(session.messages.length)}
-            <span>
-              &nbsp;&nbsp;当天使用：
-              {localStorage.getItem("current_day_token") ?? 0}
-            </span>
+            {/*{Locale.Chat.SubTitle(session.messages.length)}&nbsp;&nbsp;*/}
+            <Tooltip
+              title={
+                <span style={{ color: "black" }}>
+                  {localStorage.getItem("current_day_token") ?? 0}{" "}
+                  <span style={{ color: "black" }}>/ 100000</span>
+                </span>
+              }
+              color={"var(--second)"}
+              placement="bottom"
+            >
+              当天使用：
+              <Progress
+                percent={
+                  (parseInt(localStorage.getItem("current_day_token") ?? "0") /
+                    100000) *
+                  100
+                }
+                size="small"
+                showInfo={false}
+                strokeColor={{ from: "green", to: "red" }}
+              />
+            </Tooltip>
           </div>
         </div>
         <div className="window-actions">
