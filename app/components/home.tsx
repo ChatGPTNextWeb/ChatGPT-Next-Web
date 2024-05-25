@@ -9,13 +9,14 @@ import styles from "./home.module.scss";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
+import { showToast } from "./ui-lib";
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
 import { ModelProvider, Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
-import { getISOLang, getLang } from "../locales";
+import Locale, { getISOLang, getLang } from "../locales";
 
 import {
   HashRouter as Router,
@@ -29,6 +30,7 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
+import { useSyncStore } from "../store/sync";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -131,6 +133,21 @@ function Screen() {
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const syncStore = useSyncStore();
+
+  useEffect(() => {
+    async function sync() {
+      try {
+        await syncStore.sync();
+        showToast(Locale.Settings.Sync.Success);
+      } catch (e) {
+        showToast(Locale.Settings.Sync.Fail);
+        console.error("[Sync]", e);
+      }
+    }
+    sync();
+  }, []);
+  
 
   useEffect(() => {
     loadAsyncGoogleFont();
