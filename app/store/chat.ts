@@ -514,6 +514,26 @@ export const useChatStore = createPersistStore(
             botMessage,
           ]);
         });
+
+        const current_day_token = parseInt(
+          localStorage.getItem("current_day_token") ?? "0",
+        );
+        // console.log('---------', current_day_token)
+        if (current_day_token >= 100000) {
+          botMessage.content +=
+            "\n\n" +
+            prettyObject({
+              error: true,
+              message: "当日请求过多。",
+            });
+          botMessage.streaming = false;
+          get().onNewMessage(botMessage);
+          set(() => ({}));
+          extAttr?.setAutoScroll(true);
+
+          return;
+        }
+
         if (
           content.toLowerCase().startsWith("/mj") ||
           content.toLowerCase().startsWith("/MJ")

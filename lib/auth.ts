@@ -245,7 +245,7 @@ async function existUser(user: Partial<User> ) {
 }
 
 export async function insertUser(user: Partial<User> ) {
-    console.log('------------', user)
+    // console.log('------------', user)
     try {
         return await prisma.user.create({
           data: user

@@ -48,7 +48,7 @@ export default function SetPasswordPage() {
         if (result["result"] == "ok") {
           signOut({ redirect: true, callbackUrl: "/login" });
         }
-        console.log("--------", result);
+        // console.log("--------", result);
       });
   };
 

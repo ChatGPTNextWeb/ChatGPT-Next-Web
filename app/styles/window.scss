@@ -24,6 +24,10 @@
 
   .window-header-sub-title {
     font-size: 14px;
+    width: 150px;
+    .ant-progress {
+      width: 50%;
+    }
   }
 }
 
