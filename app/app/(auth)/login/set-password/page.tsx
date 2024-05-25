@@ -2,55 +2,92 @@
 import { redirect } from "next/navigation";
 // import { getSession } from "@/lib/auth";
 import { useSession } from "next-auth/react";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, FormProps, Input } from "antd";
 import { LockOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useState } from "react";
+import { signOut } from "next-auth/react";
 
 type LoginType = "phone" | "account";
 
 export default function SetPasswordPage() {
+  const [loading, setLoading] = useState(false);
   const { data: session, status } = useSession();
-
+  const [showOldPassword, setShowOldPassword] = useState<Boolean>(true);
   const [setPasswordForm] = Form.useForm();
   // if (typeof window !== "undefined" && loading) return null;
   // console.log("2222222", session);
-  // @ts-expect-error
-  if (!session?.user?.hasPassword) {
-  }
-  // else {
-  //   redirect("/")
+  // @ ts-expect-error
+  // if (!session?.user?.hasPassword) {
+  //   setShowOldPassword(false);
   // }
+  //     if (status === "authenticated") {
+  //         console.log('55555,', session, status)
+  //         // @ts-expect-error
+  //         if (session?.user?.hasPassword) {
+  //             setShowOldPassword(false);
+  //         }
+  //     }
+  //     console.log('---', session)
+  type FieldType = {
+    "user[old_password]"?: string;
+    "user[password]"?: string;
+    "user[password_confirmation]"?: string;
+  };
+  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+    setLoading(true);
+    // console.log('-------------', values)
+    // @ts-expect-error
+    fetch(`/api/user/${session?.user?.id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result["result"] == "ok") {
+          signOut({ redirect: true, callbackUrl: "/login" });
+        }
+        console.log("--------", result);
+      });
+  };
+
   return (
     <>
-      {/*<p>Signed in as {}</p>*/}
-      {/*<div>需要设置一个密码</div>*/}
       <div className="mx-auto mt-4 w-11/12 max-w-xs sm:w-full">
         <Form
           autoComplete="off"
           form={setPasswordForm}
           id="set-password-form"
           layout="vertical"
+          onFinish={onFinish}
         >
-          <Form.Item
-            name="user[old_password]"
-            label="Old password"
-            rules={[
-              {
-                validator: async (_, value) => {
-                  if (!value) {
-                    return Promise.reject(new Error("请填写该字段"));
-                  }
-                },
-              },
-            ]}
-          >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              autoComplete="current-password"
-              id="user_old_password"
-            />
-          </Form.Item>
+          {
+            // @ts-expect-error
+            status === "authenticated" && session?.user?.hasPassword && (
+              <Form.Item
+                name="user[old_password]"
+                label="Old password"
+                rules={[
+                  {
+                    validator: async (_, value) => {
+                      if (!value) {
+                        return Promise.reject(new Error("请填写该字段"));
+                      }
+                    },
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  autoComplete="current-password"
+                  id="user_old_password"
+                />
+              </Form.Item>
+            )
+          }
+
           <Form.Item
             name="user[password]"
             label="New password"
