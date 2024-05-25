@@ -99,3 +99,30 @@ input {
 #user-admin-table-pop_confirm input:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s;
 }
+
+#set-password-form input:-webkit-autofill {
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+/* 提交按钮特定宽度 */
+
+.short-width-button {
+  width: auto !important;
+}
+
+//#set-password-form .ant-form-item {
+//  margin-top: auto !important;
+//  margin-bottom: auto !important;
+//}
+
+#set-password-form .ant-form-item .ant-col label {
+  font-weight: 600;
+}
+#set-password-form .ant-btn {
+  font-weight: 600;
+}
+
+#set-password-form {
+  text-align: right !important;
+}

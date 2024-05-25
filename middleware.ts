@@ -45,10 +45,10 @@ export default async function middleware(req: NextRequest) {
         );
     }
 
-    if (VerifiedNeedSetPassword(path, session as CUS_JWT)) {
-      console.log('-0-0-- 需要修改密码', )
-      // return NextResponse.redirect(new URL("/login/set-password", req.url))
-    }
+    // if (VerifiedNeedSetPassword(path, session as CUS_JWT)) {
+    //   console.log('-0-0-- 需要修改密码', )
+    //   // return NextResponse.redirect(new URL("/login/set-password", req.url))
+    // }
 
     return NextResponse.next()
 }

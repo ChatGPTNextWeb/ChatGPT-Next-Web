@@ -14,6 +14,7 @@ import {
 import { UserOutlined, MailOutlined } from "@ant-design/icons";
 import type { FormProps, TabsProps } from "antd";
 import { SignInOptions } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 export default function UserLoginCore() {
   const [loading, setLoading] = useState(false);
@@ -66,10 +67,20 @@ export default function UserLoginCore() {
         // 如果没有密码，且登录成功了，说明需要设置密码
         let result_url =
           result?.url && result.url.includes("verify") ? result.url : "/";
-        if (result_url === "/") {
-          result_url = "/login/set-password";
-        }
-        window.location.href = result_url;
+
+        // 手动获取一遍session
+        getSession()
+          .then((value) => {
+            // @ts-expect-error
+            if (!value?.user?.hasPassword) {
+              if (result_url === "/") {
+                result_url = "/login/set-password";
+              }
+            }
+          })
+          .finally(() => {
+            window.location.href = result_url;
+          });
       } else {
         switch (result.error) {
           case "AccessDenied":
