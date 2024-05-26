@@ -1786,6 +1786,9 @@ function _Chat() {
           />
         </label>
       </div>
+      <div className={styles["bottom-tip"]}>
+        <span>AI 也可能会犯错。请核查重要信息。</span>
+      </div>
 
       {showExport && (
         <ExportMessageModal onClose={() => setShowExport(false)} />

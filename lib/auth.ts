@@ -8,8 +8,10 @@ import { User } from "@prisma/client";
 import { isEmail, isName } from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
 import { comparePassword, hashPassword } from "@/lib/utils";
+import { randomInt, randomBytes } from "crypto";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
+let verificationTokens = new Map();
 
 
 export const authOptions: NextAuthOptions = {
@@ -44,28 +46,38 @@ export const authOptions: NextAuthOptions = {
             },
           },
           from: process.env.EMAIL_FROM,
+          maxAge: 5 * 60,
+          async generateVerificationToken() {
+              return randomBytes(4).toString("hex").substring(0, 4);
+          },
           async sendVerificationRequest({
                                     identifier: email,
                                     url,
+                                    token,
                                     provider: { server, from, name },
                                     theme,
                                   }) {
-            /* your function */
-            console.log('send mail,', email, url, server, from, )
-            const { host } = new URL(url)
-            const transport = createTransport(server)
-            const result = await transport.sendMail({
-              to: email,
-              from: from,
-              subject: `Sign in to ${host}`,
-              html: email_html({ url, host, theme }),
-            })
+
+              // const token = randomInt(1000, 10000);
+
+              verificationTokens.set(email, token);
+              /* your function */
+              const { host  } = new URL(url)
+              // console.log('send mail,-----', email, host, token )
+
+              const transport = createTransport(server)
+              const result = await transport.sendMail({
+                  to: email,
+                  from: from,
+                  subject: `Your sign-in code for ${host}`,
+                  text: email_text({url, token, host}),
+                  html: email_html({ url, token, host, theme }),
+              })
             const failed = result.rejected.concat(result.pending).filter(Boolean)
             console.log('[result],', result)
             if (failed.length) {
               throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
             }
-
           },
         }),
         CredentialsProvider({
@@ -290,6 +302,7 @@ function cleanPassword(input: string): string {
 
 
 
+
 /**
  * Email HTML body
  * Insert invisible space into domains from being turned into a hyperlink by email
@@ -298,50 +311,31 @@ function cleanPassword(input: string): string {
  *
  * @note We don't add the email address to avoid needing to escape it, if you do, remember to sanitize it!
  */
-function email_html(params: { url: string, host: string, theme: Theme }) {
-  const { url, host, theme } = params
+function email_text(params: { url: string, token: number|string, host: string}) {
+    const { url, token, host } = params;
+    return `Sign in to ${host}\n\nYour sign-in code is: ${token}\n\nOr click on this link to sign in:\n${url}\n\n`;
+}
+
+
+function email_html(params: { url: string, token: number|string, host: string, theme: Theme }) {
+  const { url, token, host, theme } = params
 
   const escapedHost = host.replace(/\./g, "&#8203;.")
+  const escapedUrl = url.replace(/\./g, "&#8203;.")
 
-  const brandColor = theme.brandColor || "#346df1"
-  const color = {
-    background: "#f9f9f9",
-    text: "#444",
-    mainBackground: "#fff",
-    buttonBackground: brandColor,
-    buttonBorder: brandColor,
-    buttonText: theme.buttonText || "#fff",
-  }
+  // const brandColor = theme.brandColor || "#346df1"
+  // const color = {
+  //   background: "#f9f9f9",
+  //   text: "#444",
+  //   mainBackground: "#fff",
+  //   buttonBackground: brandColor,
+  //   buttonBorder: brandColor,
+  //   buttonText: theme.buttonText || "#fff",
+  // }
 
-  return `
-<body style="background: ${color.background};">
-  <table width="100%" border="0" cellspacing="20" cellpadding="0"
-    style="background: ${color.mainBackground}; max-width: 600px; margin: auto; border-radius: 10px;">
-    <tr>
-      <td align="center"
-        style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
-        Sign in to <strong>${escapedHost}</strong>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" style="padding: 20px 0;">
-        <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td align="center" style="border-radius: 5px;" bgcolor="${color.buttonBackground}"><a href="${url}"
-                target="_blank"
-                style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${color.buttonText}; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid ${color.buttonBorder}; display: inline-block; font-weight: bold;">Sign
-                in</a></td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"
-        style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
-        If you did not request this email you can safely ignore it.
-      </td>
-    </tr>
-  </table>
-</body>
-`
+    return `<p>Sign in to <strong>${escapedHost}</strong></p>
+          <p>Your sign-in code is: <strong>${token}</strong></p>
+          <p>Or click on this link to sign in:</p>
+          <p><a href="${url}">${escapedUrl}</a></p>
+          <p>If you did not request this email, you can safely ignore it.</p>`;
 }

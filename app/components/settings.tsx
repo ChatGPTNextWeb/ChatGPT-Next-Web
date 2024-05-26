@@ -677,7 +677,7 @@ export function Settings() {
           </div>
         </div>
       </div>
-      <div className={styles["settings"]}>
+      <div className={styles["settings"]} id="user-settings">
         <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover

@@ -1,23 +1,31 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef, use, useMemo } from "react";
 import { isName } from "@/lib/auth_list";
 import {
   Form,
   Tabs,
   Input,
+  Button,
   InputRef,
   notification as notificationModule,
   NotificationArgsProps,
 } from "antd";
-import { UserOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  MailOutlined,
+  LoadingOutlined,
+  AudioOutlined,
+} from "@ant-design/icons";
 import type { FormProps, TabsProps } from "antd";
 import { SignInOptions } from "next-auth/react";
 import { getSession } from "next-auth/react";
 
 export default function UserLoginCore() {
   const [loading, setLoading] = useState(false);
+  const [capLoading, setCapLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [loginForm] = Form.useForm();
   const [loginMethod, setLoginMethod] = useState<"common" | "cap">("common");
   const [notification, notificationContextHolder] =
@@ -37,11 +45,53 @@ export default function UserLoginCore() {
     }
   };
 
+  useEffect(() => {
+    let timer = undefined;
+    if (timeLeft > 0) {
+      timer = setTimeout(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
+  const capIcon = useMemo(() => {
+    if (capLoading) {
+      return (
+        <LoadingOutlined
+          style={{
+            fontSize: 16,
+            color: "rgb(234, 149, 24)",
+          }}
+        />
+      );
+    }
+    return <></>;
+  }, [capLoading]);
+  const sendCap = () => {
+    loginForm.validateFields().then((values) => {
+      setCapLoading(true);
+      signIn("email", {
+        redirect: false,
+        email: values.email,
+      }).then((result) => {
+        console.log("33333333333", result);
+        setCapLoading(false);
+        setTimeLeft(60);
+      });
+    });
+
+    // const email = loginForm.getFieldValue("email");
+    // console.log('----------', email)
+  };
+
   // const [error, setError] = useState(false);
   type FieldType = {
     username?: string;
     password?: string;
     email?: string;
+    cap?: string;
   };
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     setLoading(true);
@@ -52,7 +102,20 @@ export default function UserLoginCore() {
 
     if (loginMethod === "cap") {
       loginProvider = "email";
-      signInOptions = { ...signInOptions, email: values.email };
+      signInOptions = {
+        ...signInOptions,
+        email: values.email,
+        cap: values.cap,
+      };
+      fetch(
+        `/api/auth/callback/email?token=${values.cap}&email=${values.email}`,
+      ).then((result) => {
+        console.log("------------", result);
+        if (result.redirected) {
+          window.location.href = result.url;
+        }
+      });
+      return;
     } else {
       loginProvider = "credentials";
       signInOptions = {
@@ -257,21 +320,58 @@ export default function UserLoginCore() {
                       type: "email",
                       message: "The input is not valid E-mail!",
                     },
-                    // {
-                    //   validator: async (_, value) => {
-                    //     const username_value = loginForm.getFieldValue("username");
-                    //     if (value && username_value) {
-                    //       return Promise.reject(new Error("Field must be unique!"));
-                    //     }
-                    //   },
-                    // },
+                    {
+                      required: true,
+                    },
                   ]}
                 >
                   <Input
                     prefix={
                       <MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />
                     }
+                    addonAfter={
+                      <button
+                        onClick={sendCap}
+                        disabled={capLoading || timeLeft > 0}
+                        className="align-bottom"
+                      >
+                        {capLoading ? (
+                          <span style={{ width: "70px" }}>
+                            <LoadingOutlined
+                              style={{
+                                fontSize: 16,
+                                color: "rgb(234, 149, 24)",
+                              }}
+                            />
+                          </span>
+                        ) : timeLeft > 0 ? (
+                          <span style={{ color: "gray" }}>
+                            {timeLeft}秒后重试
+                          </span>
+                        ) : (
+                          "发送验证码"
+                        )}
+                      </button>
+                    }
+                    size="middle"
                     placeholder="邮箱验证，测试阶段"
+                    className={
+                      "text-sm font-medium text-stone-600 dark:text-stone-400"
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="cap"
+                  rules={[
+                    {
+                      len: 4,
+                      message: "Make sure it's at 4 characters",
+                    },
+                  ]}
+                >
+                  <Input
+                    size="middle"
+                    placeholder="验证码"
                     className={
                       "text-sm font-medium text-stone-600 dark:text-stone-400"
                     }

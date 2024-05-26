@@ -550,8 +550,7 @@
 .chat-input-panel {
   position: relative;
   width: 100%;
-  padding: 20px;
-  padding-top: 10px;
+  padding: 10px 20px 25px;
   box-sizing: border-box;
   flex-direction: column;
   border-top: var(--border-in-light);
@@ -667,6 +666,10 @@
   position: absolute;
   right: 100px;
   bottom: 32px;
+
+  @media only screen and (max-width: 600px) {
+    right: 110px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -677,4 +680,20 @@
   .chat-input-send {
     bottom: 30px;
   }
+  .bottom-tip {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+}
+
+.bottom-tip {
+  text-align: center;
+  margin-top: -25px;
+  font-size: .75rem;
+  line-height: 1.5rem;
+  //margin-bottom: .5rem;
+  //padding-top: .5rem;
+  position: relative;
+  z-index: 1;
+  color: #7d7d7d !important;
 }
