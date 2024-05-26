@@ -1786,6 +1786,19 @@ function _Chat() {
           />
         </label>
       </div>
+      <div
+        className={styles["bottom-tip"]}
+        //     style={{
+        //   color: "var(--text-secondary)",
+        //   fontSize: ".75rem",
+        //   lineHeight: "1rem",
+        //   textAlign: "center",
+        //   paddingBottom: ".5rem",
+        //   paddingTop: ".5rem"
+        // }}
+      >
+        <span>AI 也可能会犯错。请核查重要信息。</span>
+      </div>
 
       {showExport && (
         <ExportMessageModal onClose={() => setShowExport(false)} />
