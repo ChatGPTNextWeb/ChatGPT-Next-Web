@@ -284,7 +284,7 @@ const fr: PartialLocaleType = {
     Return: "Retour",
     Skip: "Passer",
     Title: "Choisir un assitant",
-    SubTitle: "Discutez avec l'âme derrière le masque",
+    SubTitle: "Préconfigurez l'IA avec un prompt spécifique à un besoin",
     More: "En savoir plus",
     NotShow: "Ne pas afficher à nouveau",
     ConfirmNoShow:
