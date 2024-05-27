@@ -152,12 +152,12 @@ const openaiModels = [
   // "gpt-4-turbo-2024-04-09"
 ];
 
-// const googleModels = [
-//   "gemini-1.0-pro",
-//   "gemini-1.5-pro-latest",
-//   "gemini-1.5-flash-latest",
-//   "gemini-pro-vision",
-// ];
+const googleModels = [
+  "gemini-1.0-pro",
+  "gemini-1.5-pro-latest",
+  "gemini-1.5-flash-latest",
+  // "gemini-pro-vision",
+];
 
 const anthropicModels = [
   // "claude-instant-1.2",
@@ -178,15 +178,15 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   })),
-  // ...googleModels.map((name) => ({
-  //   name,
-  //   available: true,
-  //   provider: {
-  //     id: "google",
-  //     providerName: "Google",
-  //     providerType: "google",
-  //   },
-  // })),
+  ...googleModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  })),
   ...anthropicModels.map((name) => ({
     name,
     available: true,
