@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, Input, Space } from "antd";
 import {
   Dispatch,
