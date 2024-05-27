@@ -55,58 +55,65 @@ export default function VoiceInput({
   }, [accessToken]);
 
   useEffect(() => {
+    // console.log('77777777777', userInput)
     if (!userInput || userInput.trim() === "") {
       setTempUserInput("");
       setVoiceInputText("");
+    } else {
+      if (!/\[\.\.\.\]$/.test(userInput)) {
+        setTempUserInput(userInput);
+      }
     }
   }, [userInput]);
+  useEffect(() => {}, [tempUserInput]);
+
+  useEffect(() => {
+    if (voiceInputText.trim() !== "") {
+      setUserInput(tempUserInput + voiceInputText);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voiceInputText]);
 
   function onRecognizedResult(result: SpeechRecognitionResult) {
-    // setVoiceInputText("");
-    setVoiceInputText(`${result.text ?? ""}`);
+    let temp_rec_result = `${result.text ?? ""}`;
     let intentJson = result.properties.getProperty(
       ms_audio_sdk.PropertyId.LanguageUnderstandingServiceResponse_JsonResult,
     );
     if (intentJson) {
-      setVoiceInputText(voiceInputText + `${intentJson}`);
+      temp_rec_result += `${intentJson}`;
     }
+    setVoiceInputText(temp_rec_result);
   }
   function onCanceled(
     sender: Recognizer,
     event: SpeechRecognitionCanceledEventArgs,
   ) {
-    console.log("[onCanceled] ", event);
+    // console.log("[onCanceled] ", event);
     // 如果有异常就尝试重新获取
     setAccessToken("");
-    // 展示取消事件
-    // statusDiv.innerHTML += "(cancel) Reason: " + ms_audio_sdk.CancellationReason[event.reason];
-    // if (event.reason === ms_audio_sdk.CancellationReason.Error) {
-    //   statusDiv.innerHTML += ": " + event.errorDetails;
-    // }
-    // statusDiv.innerHTML += "\r\n";
   }
+
   function onRecognizing(
     sender: Recognizer,
     event: SpeechRecognitionEventArgs,
   ) {
     let result = event.result;
-    setUserInput(
-      tempUserInput +
-        voiceInputText.replace(/(.*)(^|[\r\n]+).*\[\.\.\.][\r\n]+/, "$1$2") +
-        `${result.text ?? ""} [...]`,
-    );
+
     setVoiceInputText(
       voiceInputText.replace(/(.*)(^|[\r\n]+).*\[\.\.\.][\r\n]+/, "$1$2") +
         `${result.text ?? ""} [...]`,
     );
   }
+  function onRecognized(sender: Recognizer, event: SpeechRecognitionEventArgs) {
+    var result = event.result;
+    onRecognizedResult(event.result);
+  }
 
   const startRecognition = () => {
     if (voiceInputLoading) {
       recognizer.current?.close();
+      recognizer.current = undefined;
       setVoiceInputLoading(false);
-      // setVoiceInputText("");
-      // setUserInput(tempUserInput);
       return;
     }
 
@@ -124,44 +131,37 @@ export default function VoiceInput({
       );
       const audioConfig = ms_audio_sdk.AudioConfig.fromDefaultMicrophoneInput();
       speechConfig.speechRecognitionLanguage = "zh-CN";
-      speechConfig.setProperty(
-        ms_audio_sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs,
-        "3500",
-      );
       recognizer.current = new ms_audio_sdk.SpeechRecognizer(
         speechConfig,
         audioConfig,
       );
       recognizer.current.recognizing = onRecognizing; // 自定义分段显示
+      recognizer.current.recognized = onRecognized;
       recognizer.current.canceled = onCanceled; // 自定义中断
-      recognizer.current.recognizeOnceAsync(
-        (result) => {
-          onRecognizedResult(result);
-          setUserInput(
-            tempUserInput + (voiceInputText ?? "") + `${result.text ?? ""}`,
-          );
-          setTempUserInput("");
-          setVoiceInputText("");
-          setVoiceInputLoading(false);
-        },
-        (err) => {
-          console.error("Recognition error: ", err); // 错误处理
-          setVoiceInputLoading(false);
-        },
-      );
+      recognizer.current.startContinuousRecognitionAsync();
     });
   };
 
   const icon = useMemo(() => {
     if (voiceInputLoading) {
-      return (
-        <LoadingOutlined
-          style={{
-            fontSize: 16,
-            color: "rgb(234, 149, 24)",
-          }}
-        />
-      );
+      if (accessToken === "unknown") {
+        return (
+          <LoadingOutlined
+            style={{
+              fontSize: 16,
+            }}
+          />
+        );
+      } else {
+        return (
+          <LoadingOutlined
+            style={{
+              fontSize: 16,
+              color: "rgb(234, 149, 24)",
+            }}
+          />
+        );
+      }
     }
     return (
       <AudioOutlined
@@ -171,12 +171,11 @@ export default function VoiceInput({
         }}
       />
     );
-  }, [voiceInputLoading]);
+  }, [voiceInputLoading, accessToken]);
 
   return (
     <div>
       <Space.Compact>
-        {/*<Input value={voiceInputText} />*/}
         <Button type="text" onClick={startRecognition} icon={icon} />
       </Space.Compact>
     </div>
