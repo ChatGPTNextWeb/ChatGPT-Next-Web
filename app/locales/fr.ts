@@ -128,7 +128,7 @@ const fr: PartialLocaleType = {
       FoundUpdate: (x: string) => `Nouvelle version disponible : ${x}`,
       GoToUpdate: "Mise à jour",
     },
-    SendKey: "Clé d'envoi",
+    SendKey: "Touche pour envoyer le message",
     Theme: "Thème",
     TightBorder: "Bordure serrée",
     SendPreviewBubble: {
@@ -240,7 +240,7 @@ const fr: PartialLocaleType = {
     Sysmessage: "Eres un asistente que",
   },
   Mask: {
-    Name: "Masque",
+    Name: "Assistants",
     Page: {
       Title: "Modèle de prompt",
       SubTitle: (count: number) => `${count} modèles de prompts`,
