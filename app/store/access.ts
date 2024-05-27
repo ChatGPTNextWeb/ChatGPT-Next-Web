@@ -3,6 +3,7 @@ import {
   DEFAULT_API_HOST,
   ServiceProvider,
   StoreKey,
+  CloudServiceProvider,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -52,8 +53,18 @@ const DEFAULT_ACCESS_STATE = {
   defaultModel: "",
 };
 
+const DEFAULT_OSS_STATE = {
+  use_cloud_service: false,
+  cloud_service: CloudServiceProvider.OSS,
+  // oss
+  oss_region: "",
+  oss_accessKeyId: "",
+  oss_accessKeySecret: "",
+  oss_bucket: "",
+};
+
 export const useAccessStore = createPersistStore(
-  { ...DEFAULT_ACCESS_STATE },
+  { ...DEFAULT_ACCESS_STATE, ...DEFAULT_OSS_STATE },
 
   (set, get) => ({
     enabledAccessControl() {

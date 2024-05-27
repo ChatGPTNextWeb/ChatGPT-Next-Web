@@ -29,6 +29,7 @@ import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
+  isKimiModel,
 } from "@/app/utils";
 
 export interface OpenAIListModelResponse {
@@ -52,6 +53,7 @@ interface RequestPayload {
   frequency_penalty: number;
   top_p: number;
   max_tokens?: number;
+  use_search?: boolean;
 }
 
 export class ChatGPTApi implements LLMApi {
@@ -103,9 +105,11 @@ export class ChatGPTApi implements LLMApi {
 
   async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
+    const kimiModel = isKimiModel(options.config.model);
+    const getOriginContent = visionModel || kimiModel;
     const messages = options.messages.map((v) => ({
       role: v.role,
-      content: visionModel ? v.content : getMessageTextContent(v),
+      content: getOriginContent ? v.content : getMessageTextContent(v),
     }));
 
     const modelConfig = {
@@ -127,6 +131,10 @@ export class ChatGPTApi implements LLMApi {
       // max_tokens: Math.max(modelConfig.max_tokens, 1024),
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
+
+    if (kimiModel) {
+      requestPayload.use_search = modelConfig.use_search || false;
+    }
 
     // add max_tokens to vision model
     if (visionModel && modelConfig.model.includes("preview")) {

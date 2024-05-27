@@ -308,7 +308,11 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string, attachImages?: string[]) {
+      async onUserInput(
+        content: string,
+        attachImages?: string[],
+        attachFiles?: string[],
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -330,6 +334,24 @@ export const useChatStore = createPersistStore(
                 type: "image_url",
                 image_url: {
                   url: url,
+                },
+              };
+            }),
+          );
+        }
+        if (attachFiles && attachFiles.length > 0) {
+          mContent = [
+            {
+              type: "text",
+              text: userContent,
+            },
+          ];
+          mContent = mContent.concat(
+            attachFiles.map((url) => {
+              return {
+                type: "file",
+                file_url: {
+                  url,
                 },
               };
             }),

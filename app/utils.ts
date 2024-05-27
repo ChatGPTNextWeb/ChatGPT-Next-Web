@@ -264,3 +264,28 @@ export function isVisionModel(model: string) {
     visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo
   );
 }
+
+export function getMessageFiles(message: RequestMessage): string[] {
+  if (typeof message.content === "string") {
+    return [];
+  }
+  const urls: string[] = [];
+  for (const c of message.content) {
+    if (c.type === "file") {
+      urls.push(c.file_url?.url ?? "");
+    }
+  }
+  return urls;
+}
+// get file name from url
+export function extractFilenameFromUrl(url: string) {
+  const parsedUrl = new URL(url);
+  const path = parsedUrl.pathname;
+  const filename = path.split("/").pop() || "";
+  const decodedFilename = decodeURIComponent(filename);
+  return decodedFilename;
+}
+
+export function isKimiModel(model: string) {
+  return model === "kimi";
+}

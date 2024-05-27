@@ -4,6 +4,7 @@ import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
+import { isKimiModel } from "../utils";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -216,6 +217,23 @@ export function ModelConfigList(props: {
           }
         ></input>
       </ListItem>
+
+      {isKimiModel(props.modelConfig.model) && (
+        <ListItem
+          title={Locale.Settings.useSearch.Title}
+          subTitle={Locale.Settings.useSearch.SubTitle}
+        >
+          <input
+            type="checkbox"
+            checked={props.modelConfig.use_search}
+            onChange={(e) =>
+              props.updateConfig(
+                (config) => (config.use_search = e.currentTarget.checked),
+              )
+            }
+          ></input>
+        </ListItem>
+      )}
     </>
   );
 }

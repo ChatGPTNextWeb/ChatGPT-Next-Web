@@ -61,6 +61,7 @@ import {
   ServiceProvider,
   SlotID,
   UPDATE_URL,
+  CloudServiceProvider,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1233,6 +1234,155 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+        </List>
+        <List>
+          <ListItem
+            title={
+              Locale.Settings.CloudStorageService.UseCloudStorageService.Title
+            }
+            subTitle={
+              Locale.Settings.CloudStorageService.UseCloudStorageService
+                .subTitle
+            }
+          >
+            <input
+              type="checkbox"
+              checked={accessStore.use_cloud_service}
+              onChange={(e) =>
+                accessStore.update(
+                  (access) =>
+                    (access.use_cloud_service = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+          {accessStore.use_cloud_service && (
+            <>
+              <ListItem
+                title={
+                  Locale.Settings.CloudStorageService.StorageServiceProvider
+                    .Title
+                }
+                subTitle={
+                  Locale.Settings.CloudStorageService.StorageServiceProvider
+                    .subTitle
+                }
+              >
+                <Select
+                  value={accessStore.cloud_service}
+                  onChange={(e) => {
+                    accessStore.update(
+                      (access) =>
+                        (access.cloud_service = e.target
+                          .value as CloudServiceProvider),
+                    );
+                  }}
+                >
+                  {Object.entries(CloudServiceProvider).map(([k, v]) => (
+                    <option value={v} key={k}>
+                      {k}
+                    </option>
+                  ))}
+                </Select>
+              </ListItem>
+              {accessStore.cloud_service === CloudServiceProvider.OSS && (
+                <>
+                  <ListItem
+                    title={Locale.Settings.CloudStorageService.OSS.region.Title}
+                    subTitle={
+                      Locale.Settings.CloudStorageService.OSS.region.SubTitle
+                    }
+                  >
+                    <input
+                      type="text"
+                      value={accessStore.oss_region}
+                      placeholder={
+                        Locale.Settings.CloudStorageService.OSS.region
+                          .Placeholder
+                      }
+                      onChange={(e) =>
+                        accessStore.update(
+                          (access) =>
+                            (access.oss_region = e.currentTarget.value),
+                        )
+                      }
+                    ></input>
+                  </ListItem>
+                  <ListItem
+                    title={
+                      Locale.Settings.CloudStorageService.OSS.accessKeyId.Title
+                    }
+                    subTitle={
+                      Locale.Settings.CloudStorageService.OSS.accessKeyId
+                        .SubTitle
+                    }
+                  >
+                    <PasswordInput
+                      type="text"
+                      placeholder={
+                        Locale.Settings.CloudStorageService.OSS.accessKeyId
+                          .Placeholder
+                      }
+                      value={accessStore.oss_accessKeyId}
+                      onChange={(e) =>
+                        accessStore.update(
+                          (access) =>
+                            (access.oss_accessKeyId = e.currentTarget.value),
+                        )
+                      }
+                    ></PasswordInput>
+                  </ListItem>
+                  <ListItem
+                    title={
+                      Locale.Settings.CloudStorageService.OSS.accessKeySecret
+                        .Title
+                    }
+                    subTitle={
+                      Locale.Settings.CloudStorageService.OSS.accessKeySecret
+                        .SubTitle
+                    }
+                  >
+                    <PasswordInput
+                      type="text"
+                      placeholder={
+                        Locale.Settings.CloudStorageService.OSS.accessKeySecret
+                          .Placeholder
+                      }
+                      value={accessStore.oss_accessKeySecret}
+                      onChange={(e) =>
+                        accessStore.update(
+                          (access) =>
+                            (access.oss_accessKeySecret =
+                              e.currentTarget.value),
+                        )
+                      }
+                    ></PasswordInput>
+                  </ListItem>
+                  <ListItem
+                    title={Locale.Settings.CloudStorageService.OSS.bucket.Title}
+                    subTitle={
+                      Locale.Settings.CloudStorageService.OSS.bucket.SubTitle
+                    }
+                  >
+                    <input
+                      type="text"
+                      placeholder={
+                        Locale.Settings.CloudStorageService.OSS.bucket
+                          .Placeholder
+                      }
+                      value={accessStore.oss_bucket}
+                      onChange={(e) =>
+                        accessStore.update(
+                          (access) =>
+                            (access.oss_bucket = e.currentTarget.value),
+                        )
+                      }
+                    ></input>
+                  </ListItem>
+                </>
+              )}
+            </>
+          )}
         </List>
 
         <List>

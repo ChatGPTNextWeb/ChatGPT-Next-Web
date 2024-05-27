@@ -66,6 +66,10 @@ const en: LocaleType = {
       Clear: "Clear Context",
       Settings: "Settings",
       UploadImage: "Upload Images",
+      UploadFile: {
+        text: "Upload File",
+        tips: "Please go to setting page set cloud storage service Info",
+      },
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -379,6 +383,42 @@ const en: LocaleType = {
       Title: "Frequency Penalty",
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
+    },
+    useSearch: {
+      Title: "Network Search",
+      SubTitle: "Recommended close, prevent disturb",
+    },
+    CloudStorageService: {
+      UseCloudStorageService: {
+        Title: "Cloud Storage Service",
+        subTitle: "Use OSS or Other cloud storage service",
+      },
+      StorageServiceProvider: {
+        Title: "Cloud Storage Service List",
+        subTitle: "Switch cloud storage service",
+      },
+      OSS: {
+        region: {
+          Title: "region",
+          SubTitle: "required",
+          Placeholder: "OSS Region",
+        },
+        accessKeyId: {
+          Title: "accessKeyId",
+          SubTitle: "required",
+          Placeholder: "OSS AccessKeyId",
+        },
+        accessKeySecret: {
+          Title: "accessKeySecret",
+          SubTitle: "required",
+          Placeholder: "OSS AccessKeySecret",
+        },
+        bucket: {
+          Title: "bucket",
+          SubTitle: "required",
+          Placeholder: "OSS Bucket",
+        },
+      },
     },
   },
   Store: {
