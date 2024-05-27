@@ -95,6 +95,7 @@ import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
   DEFAULT_STT_ENGINE,
+  DEFAULT_TTS_ENGINE,
   FIREFOX_DEFAULT_STT_ENGINE,
   LAST_INPUT_KEY,
   ModelProvider,
@@ -119,6 +120,7 @@ import {
   WebTranscriptionApi,
 } from "../utils/speech";
 import { FileInfo } from "../client/platforms/utils";
+import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 const ttsPlayer = createTTSPlayer();
 
@@ -1086,12 +1088,25 @@ function _Chat() {
       const config = useAppConfig.getState();
       setSpeechLoading(true);
       ttsPlayer.init();
-      const audioBuffer = await api.llm.speech({
-        model: config.ttsConfig.model,
-        input: text,
-        voice: config.ttsConfig.voice,
-        speed: config.ttsConfig.speed,
-      });
+      let audioBuffer: ArrayBuffer;
+      const { markdownToTxt } = require("markdown-to-txt");
+      const textContent = markdownToTxt(text);
+      if (config.ttsConfig.engine !== DEFAULT_TTS_ENGINE) {
+        const edgeVoiceName = accessStore.edgeVoiceName();
+        const tts = new MsEdgeTTS();
+        await tts.setMetadata(
+          edgeVoiceName,
+          OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3,
+        );
+        audioBuffer = await tts.toArrayBuffer(textContent);
+      } else {
+        audioBuffer = await api.llm.speech({
+          model: config.ttsConfig.model,
+          input: textContent,
+          voice: config.ttsConfig.voice,
+          speed: config.ttsConfig.speed,
+        });
+      }
       setSpeechStatus(true);
       ttsPlayer
         .play(audioBuffer, () => {

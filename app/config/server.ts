@@ -151,5 +151,7 @@ export const getServerSideConfig = () => {
     ragChunkOverlap: process.env.RAG_CHUNK_OVERLAP ?? "200",
     ragReturnCount: process.env.RAG_RETURN_COUNT ?? "4",
     allowedWebDevEndpoints,
+
+    edgeTTSVoiceName: process.env.EDGE_TTS_VOICE_NAME ?? "zh-CN-YunxiNeural",
   };
 };
