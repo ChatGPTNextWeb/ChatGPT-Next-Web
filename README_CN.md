@@ -159,6 +159,11 @@ anthropic claude Api Url.
 ### `DEFAULT_INPUT_TEMPLATE` （可选）
 自定义默认的 template，用于初始化『设置』中的『用户输入预处理』配置项
 
+### `DEFAULT_MODEL` （可选）
+
+自定义默认新聊天和设置页中的默认模型
+
+
 ## 开发
 
 点击下方按钮，开始二次开发：
