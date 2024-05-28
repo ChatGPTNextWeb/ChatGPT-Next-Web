@@ -59,13 +59,15 @@ export default function VoiceInput({
     if (!userInput || userInput.trim() === "") {
       setTempUserInput("");
       setVoiceInputText("");
+      recognizer.current?.close();
+      recognizer.current = undefined;
+      setVoiceInputLoading(false);
     } else {
       if (!/\[\.\.\.\]$/.test(userInput)) {
         setTempUserInput(userInput);
       }
     }
   }, [userInput]);
-  useEffect(() => {}, [tempUserInput]);
 
   useEffect(() => {
     if (voiceInputText.trim() !== "") {
