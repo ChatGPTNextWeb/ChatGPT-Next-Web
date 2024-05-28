@@ -38,6 +38,7 @@ import {
   AIMessage,
 } from "@langchain/core/messages";
 import { MultimodalContent } from "@/app/client/api";
+import { GoogleCustomSearch } from "@/app/api/langchain-tools/langchian-tool-index";
 
 export interface RequestMessage {
   role: string;
@@ -284,8 +285,11 @@ export class AgentApi {
           func: async (input: string) => serpAPITool.call(input),
         });
       }
-      if (process.env.GOOGLE_CSE_ID && process.env.GOOGLE_API_KEY) {
-        let googleCustomSearchTool = new langchainTools["GoogleCustomSearch"]();
+      if (process.env.GOOGLE_CSE_ID && process.env.GOOGLE_SEARCH_API_KEY) {
+        let googleCustomSearchTool = new GoogleCustomSearch({
+          apiKey: process.env.GOOGLE_SEARCH_API_KEY,
+          googleCSEId: process.env.GOOGLE_CSE_ID,
+        });
         searchTool = new DynamicTool({
           name: "google_custom_search",
           description: googleCustomSearchTool.description,

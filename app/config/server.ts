@@ -117,7 +117,7 @@ export const getServerSideConfig = () => {
 
     isGoogle,
     googleApiKey: getApiKey(process.env.GOOGLE_API_KEY),
-    googleUrl: process.env.GEMINI_BASE_URL ?? process.env.GOOGLE_URL,
+    googleUrl: process.env.GOOGLE_URL,
 
     isAnthropic,
     anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),

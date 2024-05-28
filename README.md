@@ -57,7 +57,7 @@
     - [GoogleCustomSearch](https://api.js.langchain.com/classes/langchain_tools.GoogleCustomSearch.html)
   
       - 环境变量：
-        - `GOOGLE_API_KEY`
+        - ~~`GOOGLE_API_KEY`~~ `GOOGLE_SEARCH_API_KEY`
         - `GOOGLE_CSE_ID`
       - 申请参考：[说明](https://stackoverflow.com/questions/37083058/programmatically-searching-google-in-python-using-custom-search)
   
@@ -238,7 +238,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 Google Gemini Pro Api Key.
 
-### `GOOGLE_BASE_URL` （可选）
+### ~~ `GOOGLE_BASE_URL` （可选）~~  `GEMINI_BASE_URL` （可选）
 
 Google Gemini Pro Api Url.
 

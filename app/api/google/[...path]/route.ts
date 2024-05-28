@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { getServerSideConfig } from "@/app/config/server";
-import { GOOGLE_BASE_URL, ModelProvider } from "@/app/constant";
+import { GEMINI_BASE_URL, ModelProvider } from "@/app/constant";
 
 async function handle(
   req: NextRequest,
@@ -17,7 +17,7 @@ async function handle(
 
   const serverConfig = getServerSideConfig();
 
-  let baseUrl = serverConfig.googleUrl || GOOGLE_BASE_URL;
+  let baseUrl = serverConfig.googleUrl || GEMINI_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;

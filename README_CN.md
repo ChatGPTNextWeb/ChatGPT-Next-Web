@@ -110,7 +110,7 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 
 Google Gemini Pro 密钥.
 
-### `GOOGLE_BASE_URL` (optional)
+### ~~`GOOGLE_BASE_URL` (optional)~~ `GEMINI_BASE_URL` (optional)
 
 Google Gemini Pro Api Url.
 
