@@ -256,6 +256,12 @@ You can use this option if you want to increase the number of webdav service add
 
 Customize the default template used to initialize the User Input Preprocessing configuration item in Settings.
 
+
+### `DEFAULT_MODEL` (optional)
+
+Customize the default model used to initialize a new chat and the default model in the configuration page.
+
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
