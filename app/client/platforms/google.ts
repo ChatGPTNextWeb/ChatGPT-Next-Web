@@ -122,6 +122,8 @@ export class GeminiProApi implements LLMApi {
         baseUrl = isApp
           ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath(modelConfig.model)
           : this.path(Google.ChatPath(modelConfig.model));
+      } else if (isApp && !baseUrl.endsWith(":generateContent")) {
+        baseUrl += googleChatPath;
       }
 
       if (isApp) {
