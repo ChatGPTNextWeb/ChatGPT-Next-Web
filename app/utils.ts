@@ -267,6 +267,14 @@ export function isVisionModel(model: string) {
 }
 
 export function isSupportRAGModel(modelName: string) {
+  const specialModels = [
+    "gpt-4-turbo",
+    "gpt-4-turbo-2024-04-09",
+    "gpt-4o",
+    "gpt-4o-2024-05-13",
+  ];
+  if (specialModels.some((keyword) => modelName === keyword)) return true;
+  if (isVisionModel(modelName)) return false;
   return DEFAULT_MODELS.filter((model) => model.provider.id === "openai").some(
     (model) => model.name === modelName,
   );

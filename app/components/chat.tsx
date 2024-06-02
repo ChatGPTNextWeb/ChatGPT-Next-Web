@@ -531,7 +531,7 @@ export function ChatActions(props: {
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
-    setShowUploadFile(isEnableRAG && !show && isSupportRAGModel(currentModel));
+    setShowUploadFile(isEnableRAG && isSupportRAGModel(currentModel));
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
