@@ -21,16 +21,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - 
-        name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: lllyuee/azure
-          tags: |
-            type=raw,value=latest
-            type=ref,event=tag
-      
-      - 
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -45,8 +35,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_RESPOSITORY }}:gptlatest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-            
+          
