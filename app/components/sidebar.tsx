@@ -9,7 +9,6 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
-import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -175,13 +174,6 @@ export function SideBar(props: { className?: string }) {
               navigate(Path.Masks, { state: { fromHome: true } });
             }
           }}
-          shadow
-        />
-        <IconButton
-          icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
-          className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
           shadow
         />
       </div>
