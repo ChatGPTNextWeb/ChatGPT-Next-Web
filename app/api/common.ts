@@ -108,7 +108,7 @@ export async function requestOpenai(req: NextRequest) {
       fetchOptions.body = clonedBody;
 
       // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""].available === false) {
+      if (modelTable[jsonBody?.model ?? ""]?.available === false) {
         return NextResponse.json(
           {
             error: true,
