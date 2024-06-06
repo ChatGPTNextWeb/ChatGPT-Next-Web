@@ -10,19 +10,19 @@ import { GoogleTagManager } from "@next/third-parties/google";
 const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
-  title: "NextChat",
-  description: "Your personal ChatGPT Chat Bot.",
+  title: "AiHubChat",
+  description: "Чат с искуственным интелектом",
   viewport: {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
   },
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+    { media: "(prefers-color-scheme: light)", color: "#bd91c7" },
+    { media: "(prefers-color-scheme: dark)", color: "#54305c" },
   ],
   appleWebApp: {
-    title: "NextChat",
+    title: "AiHubChat",
     statusBarStyle: "default",
   },
 };
