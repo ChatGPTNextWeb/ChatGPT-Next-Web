@@ -1218,21 +1218,7 @@ export function Settings() {
             </ListItem>
           ) : null}
 
-          <ListItem
-            title={Locale.Settings.Access.CustomModel.Title}
-            subTitle={Locale.Settings.Access.CustomModel.SubTitle}
-          >
-            <input
-              type="text"
-              value={config.customModels}
-              placeholder="model1,model2,model3"
-              onChange={(e) =>
-                config.update(
-                  (config) => (config.customModels = e.currentTarget.value),
-                )
-              }
-            ></input>
-          </ListItem>
+          
         </List>
 
         <List>
