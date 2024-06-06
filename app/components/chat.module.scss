@@ -87,6 +87,14 @@
       }
     }
 
+    &[data-expanded="true"] {
+      width: var(--full-width) !important; /* 始终保持展开状态 */
+      .text {
+        opacity: 1;
+        transform: translate(0);
+      }
+    }
+
     .text,
     .icon {
       display: flex;
@@ -458,7 +466,7 @@
     width: $calc-image-width;
     height: $calc-image-width;
   }
-  
+
   .chat-message-item-image {
     max-width: calc(100vw/3*2);
   }
