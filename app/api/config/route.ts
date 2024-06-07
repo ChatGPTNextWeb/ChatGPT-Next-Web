@@ -16,6 +16,7 @@ const DANGER_CONFIG = {
   isEnableRAG: serverConfig.isEnableRAG,
   defaultModel: serverConfig.defaultModel,
   edgeTTSVoiceName: serverConfig.edgeTTSVoiceName,
+  isUseOpenAIEndpointForAllModels: serverConfig.isUseOpenAIEndpointForAllModels,
 };
 
 declare global {

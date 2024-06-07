@@ -300,7 +300,7 @@ anthropic claude Api Url.
 配置 Edge TTS 使用的语音声音，默认为：zh-CN-YunxiNeural
 可访问 https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts#supported-languages 查看支持的参数
 
-### `NEXT_PUBLIC_USE_OPENAI_ENDPOINT_FOR_ALL_MODELS` （可选）
+### `USE_OPENAI_ENDPOINT_FOR_ALL_MODELS` （可选）
 
 配置所有模型都使用 OpenAI 路由，在使用类似 `one-api` 的中转项目时会很有用
 将此环境变量设置为 1 即可

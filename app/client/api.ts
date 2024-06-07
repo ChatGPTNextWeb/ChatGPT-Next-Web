@@ -218,7 +218,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
   const isGoogle =
     modelConfig.model.startsWith("gemini") &&
-    !!!process.env.NEXT_PUBLIC_USE_OPENAI_ENDPOINT_FOR_ALL_MODELS;
+    !accessStore.useOpenAIEndpointForAllModels();
   if (!ignoreHeaders && !isGoogle) {
     headers = {
       "Content-Type": "application/json",

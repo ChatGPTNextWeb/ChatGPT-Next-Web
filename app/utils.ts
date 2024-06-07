@@ -4,6 +4,7 @@ import Locale from "./locales";
 import { ClientApi, RequestMessage } from "./client/api";
 import { DEFAULT_MODELS, ModelProvider } from "./constant";
 import { identifyDefaultClaudeModel } from "./utils/checkers";
+import { useAccessStore } from "./store";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -282,7 +283,8 @@ export function isSupportRAGModel(modelName: string) {
 }
 
 export function getClientApi(modelName: string): ClientApi {
-  if (!!process.env.NEXT_PUBLIC_USE_OPENAI_ENDPOINT_FOR_ALL_MODELS)
+  const accessStore = useAccessStore.getState();
+  if (accessStore.useOpenAIEndpointForAllModels())
     return new ClientApi(ModelProvider.GPT);
   var api: ClientApi;
   if (modelName.startsWith("gemini")) {
