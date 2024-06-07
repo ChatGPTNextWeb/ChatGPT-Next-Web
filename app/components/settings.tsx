@@ -567,20 +567,20 @@ export function Settings() {
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = updateStore.formatVersion(updateStore.version);
-  const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
-  const hasNewVersion = currentVersion !== remoteId;
+ // const currentVersion = updateStore.formatVersion(updateStore.version);
+ // const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
+ // const hasNewVersion = currentVersion !== remoteId;
   const updateUrl = getClientConfig()?.isApp ? RELEASE_URL : UPDATE_URL;
 
-  function checkUpdate(force = false) {
+ /* function checkUpdate(force = false) {
     setCheckingUpdate(true);
     updateStore.getLatestVersion(force).then(() => {
       setCheckingUpdate(false);
-    });
+    }); *
 
     console.log("[Update] local version ", updateStore.version);
     console.log("[Update] remote version ", updateStore.remoteVersion);
-  }
+  }*/
 
   const accessStore = useAccessStore();
   const shouldHideBalanceQuery = useMemo(() => {
@@ -703,6 +703,12 @@ export function Settings() {
             </Popover>
           </ListItem>
 
+
+
+
+
+          
+         /*
           <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
@@ -727,6 +733,13 @@ export function Settings() {
               />
             )}
           </ListItem>
+          */
+
+
+
+
+
+          
 
           <ListItem title={Locale.Settings.SendKey}>
             <Select
