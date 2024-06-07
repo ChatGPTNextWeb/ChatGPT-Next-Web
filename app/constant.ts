@@ -276,7 +276,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4o-2024-05-13",
+    name: "gpt-4o-all",
     describe: "GPT-4,最新版,省着点用",
     available: true,
     provider: {
@@ -347,6 +347,7 @@ export const internalAllowedWebDavEndpoints = [
   "https://dav.dropdav.com/",
   "https://dav.box.com/dav",
   "https://nanao.teracloud.jp/dav/",
+  "https://bora.teracloud.jp/dav/",
   "https://webdav.4shared.com/",
   "https://dav.idrivesync.com",
   "https://webdav.yandex.com",
