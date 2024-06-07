@@ -5,12 +5,12 @@
   --theme: light;
 
   /* color */
-  --white: white;
+  --white: #fcc4ff42;
   --black: rgb(48, 48, 48);
   --gray: rgb(250, 250, 250);
   --primary: #8b5cf6; /* Фиолетовый цвет */
   --second: #d0b2d6; /* Пастельно-фиолетовый */
-  --hover-color: #f3f3f3;
+  --hover-color: #f1bcff;
   --bar-color: rgba(0, 0, 0, 0.1);
   --theme-color: var(--gray);
 
@@ -26,12 +26,12 @@
   --theme: dark;
 
   /* color */
-  --white: rgb(30, 30, 30);
+  --white: #1400174f;
   --black: rgb(187, 187, 187);
   --gray: rgb(21, 21, 21);
   --primary: #8b5cf6; /* Фиолетовый цвет */
   --second: #341e38; /* Темно-фиолетовый */ 
-  --hover-color: #323232;
+  --hover-color: #1d0035b5;
 
   --bar-color: rgba(255, 255, 255, 0.1);
 
