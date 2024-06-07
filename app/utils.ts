@@ -284,8 +284,9 @@ export function isSupportRAGModel(modelName: string) {
 
 export function getClientApi(modelName: string): ClientApi {
   const accessStore = useAccessStore.getState();
-  if (accessStore.useOpenAIEndpointForAllModels())
+  if (accessStore.isUseOpenAIEndpointForAllModels) {
     return new ClientApi(ModelProvider.GPT);
+  }
   var api: ClientApi;
   if (modelName.startsWith("gemini")) {
     api = new ClientApi(ModelProvider.GeminiPro);

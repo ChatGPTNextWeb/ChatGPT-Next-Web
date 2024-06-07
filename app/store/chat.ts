@@ -392,8 +392,7 @@ export const useChatStore = createPersistStore(
           session.messages.push(botMessage);
         });
         const isEnableRAG = attachFiles && attachFiles?.length > 0;
-        var api: ClientApi;
-        api = new ClientApi(ModelProvider.GPT);
+        var api: ClientApi = getClientApi(modelConfig.model);
         if (
           config.pluginConfig.enable &&
           session.mask.usePlugins &&
@@ -660,7 +659,7 @@ export const useChatStore = createPersistStore(
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
-        var api: ClientApi = getClientApi(config.modelConfig.model);
+        var api: ClientApi = getClientApi(modelConfig.model);
 
         // remove error messages if any
         const messages = session.messages;
