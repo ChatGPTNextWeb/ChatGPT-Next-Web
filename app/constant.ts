@@ -276,7 +276,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4o-2024-05-13",
+    name: "gpt-4o-all",
     describe: "GPT-4,最新版,省着点用",
     available: true,
     provider: {
