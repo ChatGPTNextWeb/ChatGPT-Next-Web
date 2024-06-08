@@ -207,6 +207,7 @@ export const internalAllowedWebDavEndpoints = [
   "https://dav.dropdav.com/",
   "https://dav.box.com/dav",
   "https://nanao.teracloud.jp/dav/",
+  "https://bora.teracloud.jp/dav/",
   "https://webdav.4shared.com/",
   "https://dav.idrivesync.com",
   "https://webdav.yandex.com",
