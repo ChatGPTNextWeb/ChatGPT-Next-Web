@@ -1,4 +1,5 @@
 import heic2any from "heic2any";
+import { reader } from "next/dist/experimental/testmode/fetch";
 
 export function compressImage(file: File, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -39,7 +40,10 @@ export function compressImage(file: File, maxSize: number): Promise<string> {
     };
     reader.onerror = reject;
 
-    if (file.type.includes("heic")) {
+    if (
+      file.name.toLowerCase().endsWith(".heic") ||
+      file.type.includes("heic")
+    ) {
       heic2any({ blob: file, toType: "image/jpeg" })
         .then((blob) => {
           reader.readAsDataURL(blob as Blob);
@@ -47,8 +51,8 @@ export function compressImage(file: File, maxSize: number): Promise<string> {
         .catch((e) => {
           reject(e);
         });
+    } else {
+      reader.readAsDataURL(file);
     }
-
-    reader.readAsDataURL(file);
   });
 }
