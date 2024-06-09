@@ -1,4 +1,12 @@
 {
   "extends": "next/core-web-vitals",
-  "plugins": ["prettier"]
+  "plugins": [
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "ignorePatterns": ["globals.css"]
 }

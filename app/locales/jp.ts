@@ -95,6 +95,7 @@ const jp: PartialLocaleType = {
   Settings: {
     Title: "設定",
     SubTitle: "設定オプション",
+    GeneralSettings: "一般設定",
     Danger: {
       Reset: {
         Title: "設定をリセット",

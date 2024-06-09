@@ -101,6 +101,7 @@ interface ModalProps {
   defaultMax?: boolean;
   footer?: React.ReactNode;
   onClose?: () => void;
+  className?: string;
 }
 export function Modal(props: ModalProps) {
   useEffect(() => {
@@ -122,14 +123,14 @@ export function Modal(props: ModalProps) {
 
   return (
     <div
-      className={
-        styles["modal-container"] + ` ${isMax && styles["modal-container-max"]}`
-      }
+      className={`${styles["modal-container"]} ${
+        isMax && styles["modal-container-max"]
+      } ${props.className ?? ""}`}
     >
-      <div className={styles["modal-header"]}>
-        <div className={styles["modal-title"]}>{props.title}</div>
+      <div className={`${styles["modal-header"]} new-header follow-parent-svg`}>
+        <div className={`${styles["modal-title"]}`}>{props.title}</div>
 
-        <div className={styles["modal-header-actions"]}>
+        <div className={`${styles["modal-header-actions"]}`}>
           <div
             className={styles["modal-header-action"]}
             onClick={() => setMax(!isMax)}
@@ -147,11 +148,11 @@ export function Modal(props: ModalProps) {
 
       <div className={styles["modal-content"]}>{props.children}</div>
 
-      <div className={styles["modal-footer"]}>
+      <div className={`${styles["modal-footer"]} new-footer`}>
         {props.footer}
         <div className={styles["modal-actions"]}>
           {props.actions?.map((action, i) => (
-            <div key={i} className={styles["modal-action"]}>
+            <div key={i} className={`${styles["modal-action"]} new-btn`}>
               {action}
             </div>
           ))}

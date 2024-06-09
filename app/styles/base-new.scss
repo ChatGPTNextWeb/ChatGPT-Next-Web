@@ -1,0 +1,312 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: PingFang, "SF Pro Text", "SF Pro Icons", "Helvetica Neue",
+    Helvetica, Arial, sans-serif;
+}
+
+.light-new, 
+.dark-new {
+    *:focus-visible {
+        outline: none;
+    }
+      
+    * {
+        font-weight: 400;
+    }
+
+    input {
+        text-align: inherit;
+        background-color: inherit;
+    }
+
+    .follow-parent-svg {
+      svg {
+        fill: inherit;
+        *:not(rect) {
+          fill: currentColor;
+        }
+        rect {
+          fill: inherit;
+        }
+      }
+    }
+
+    .default-icon-color {
+      color: var(--default-icon-color);
+    }
+    .active-new {
+      .new-header, .new-footer {
+        border-color: var(--modal-header-bottom-border) !important;
+        color: var(--modal-title-text) !important;
+      }
+  
+      .new-btn {
+        button {
+          background: var(--default-btn-bg);
+          color: var(--btn-default-text);
+        }
+      }
+    }
+
+    --siderbar-mobile-height: 3.125rem;
+    --max-message-width: calc(var(--chat-panel-max-width) * 0.6);
+}
+
+.light-new {
+  --global-bg: #e3e3ed;
+  --global-mobile-bg: #f0f0f3;
+  --actions-bar-btn-default-bg: #2e42f3;
+  --primary-btn-bg: #2e42f3;
+  --primary-btn-disabled-bg: rgba(60, 68, 255, 0.2);
+  --danger-btn-bg: #fff6f6;
+  --default-btn-bg: #f7f7f8;
+  --hovered-btn-bg: rgba(0, 0, 0, 0.05);
+  --hovered-danger-btn-bg: #FFE7E7;
+  --card-bg: #fff;
+  --input-bg: #f7f7f8;
+  --list-item-divider-bg: #f0f0f3;
+  --menu-bg: #f7f7f8;
+  --select-option-hovered-bg: rgba(0, 0, 0, 0.05);
+  --select-popover-panel-bg: #fff;
+  --select-bg: #f7f7f8;
+  --slider-bg: #f0f0f3;
+  --slider-slided-travel-bg: #88889a;
+  --slider-block-bg: #fff;
+  --switch-unchecked-bg: #c9c9d1;
+  --switch-checked-bg: #2e42f3;
+  --switch-btn-bg: #fff;
+  --chat-actions-popover-panel-mobile-bg: #fff;
+  --chat-actions-btn-popover-bg: #434360;
+  --chat-actions-btn-hovered-bg: rgba(0, 0, 0, 0.05);
+  --chat-panel-header-mask-bg: #f7f7f8;
+  --chat-panel-header-mobile-bg: #fff;
+  --chat-panel-input-hood-bg: #fff;
+  --chat-panel-message-user-bg: #4a5cff;
+  --chat-panel-message-bot-bg: #fff;
+  --chat-panel-message-bg: #f7f7f8;
+  --chat-panel-message-mobile-bg: #f0f0f3;
+  --chat-message-actions-btn-hovered-bg: rgba(0, 0, 0, 0.05);
+  --chat-panel-bg: #f7f7f8;
+  --chat-panel-message-clear-divider-bg: #e2e2e6;
+  --chat-menu-session-selected-bg: #dee1fd;
+  --chat-menu-session-unselected-bg: #f0f0f3;
+  --chat-menu-session-hovered-bg: #e2e2e6;
+  --settings-menu-mobile-bg: #f7f7f8;
+  --settings-menu-item-mobile-bg: #fff;
+  --settings-menu-item-selected-bg: #dee1fd;
+  --settings-header-mobile-bg: #fff;
+  --settings-panel-bg: #f7f7f8;
+  --sidebar-mobile-bg: #fff;
+  --sidebar-btn-hovered-bg: rgba(0, 0, 0, 0.05);
+  --delete-chat-popover-panel-bg: #fff;
+  --modal-mask-bg: rgba(0, 0, 0, 0.7);
+  --modal-panel-bg: #fff;
+  --delete-chat-ok-btn-bg: #ff5454;
+  --delete-chat-cancel-btn-bg: #fff;
+  --chat-message-actions-bg: #fff;
+  --menu-dragger-bg: #2E42F3;
+  --chat-actions-select-model-bg: rgba(0, 0, 0, 0.05);
+  --chat-actions-select-model-hover-bg: rgba(0, 0, 0, 0.1);
+  --select-hover-bg: rgba(0, 0, 0, 0.05);
+  --input-input-ele-hover-bg: rgba(0, 0, 0, 0);
+  --slider-block-hover-bg: #F7F7F8;
+  --chat-menu-session-unselected-mobile-bg:#FFF;
+  --chat-menu-session-selected-mobile-bg:  rgba(0, 0, 0, 0.05);
+  --model-select-popover-panel-bg: #fff;
+
+  --select-popover-border: rgba(0, 0, 0, 0.1);
+  --slider-block-border: #c9c9d1;
+  --thumbnail-border: rgba(0, 0, 0, 0.1);
+  --chat-actions-popover-mobile-border: #f0f0f3;
+  --chat-header-bottom-border: #e2e2e6;
+  --chat-input-top-border: #e2e2e6;
+  --chat-input-hood-border: #fff;
+  --chat-input-hood-focus-border: #606078;
+  --chat-menu-session-selected-border: #c9cefc;
+  --settings-menu-item-selected-border: #c9cefc;
+  --settings-header-border: #e2e2e6;
+  --delete-chat-popover-border: rgba(0, 0, 0, 0.1);
+  --delete-chat-cancel-btn-border: #e2e2e6;
+  --chat-menu-session-unselected-border: #f0f0f3;
+  --chat-menu-session-hovered-border: #e2e2e6;
+  --modal-header-bottom-border: #f0f0f3;
+  --chat-menu-session-unselected-mobile-border: #FFF;
+  --chat-menu-session-selected-mobile-border: rgba(0, 0, 0, 0);
+
+  --sidebar-tab-mobile-active-text: #2e42f3;
+  --sidebar-tab-mobile-inactive-text: #a5a5b3;
+  --btn-primary-text: #fff;
+  --btn-danger-text: #ff5454;
+  --btn-default-text: #606078;
+  --card-title-text: #18182A;
+  --input-text: #18182a;
+  --select-text: #18182a;
+  --list-subtitle-text: #a5a5b3;
+  --slider-block-text: #606078;
+  --chat-actions-btn-popover-text: #fff;
+  --chat-header-title-text: #18182a;
+  --chat-header-subtitle-text: #88889a;
+  --chat-input-placeholder-text: #88889a;
+  --chat-message-date-text: #88889a;
+  --chat-message-markdown-user-text: #fff;
+  --chat-message-markdown-bot-text: #18182a;
+  --chat-panel-message-clear-text: #a5a5b3;
+  --chat-panel-message-clear-revert-text: #3c44ff;
+  --chat-menu-item-title-text: #18182a;
+  --chat-menu-item-time-text: rgba(0, 0, 0, 0.3);
+  --chat-menu-item-description-text: #88889a;
+  --settings-menu-title-text: #18182a;
+  --settings-menu-item-title-text: #18182a;
+  --settings-panel-header-title-text: #18182a;
+  --modal-panel-text: #18182a;
+  --delete-chat-ok-btn-text: #fff;
+  --delete-chat-cancel-btn-text: #18182a;
+  --chat-menu-item-delete-text: #FF5454;
+  --list-title-text: #18182A;
+  --select-option-text: #18182A;
+  --modal-select-text: #18182A;
+  --modal-title-text: #18182A;
+  --modal-content-text: #18182A;
+
+  --btn-shadow: 0px 4px 10px 0px rgba(60, 68, 255, 0.14);
+  --chat-actions-popover-mobile-shadow: 0px 14px 40px 0px rgba(0, 0, 0, 0.12);
+  --chat-input-hood-focus-shadow: 0px 4px 20px 0px rgba(60, 68, 255, 0.13);
+  --select-popover-shadow: 0px 14px 40px 0px rgba(0, 0, 0, 0.12);
+  --message-actions-bar-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.1);
+  --prompt-hint-container-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  --delete-chat-popover-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.08),
+    0px 8px 20px 0px rgba(0, 0, 0, 0.08);
+  --sidebar-btn-shadow: 4px 8px 16px 0px rgba(60, 68, 255, 0.2);
+
+  --default-icon-color: #606078;
+}
+
+.dark-new {
+  --global-bg: #303030;
+  --actions-bar-btn-default-bg: #384cfc;
+  --primary-btn-bg: #384cfc;
+  --primary-btn-disabled-bg: rgba(60, 68, 255, 0.2);
+  --danger-btn-bg: #20131A;
+  --default-btn-bg: #1D1D1D;
+  --hovered-btn-bg: #303030;
+  --hovered-danger-btn-bg:#303030;
+  --card-bg: #111;
+  --input-bg: #1D1D1D;
+  --list-item-divider-bg: #303030;
+  --menu-bg: #1D1D1D;
+  --select-option-hovered-bg: rgba(255, 255, 255, 0.05);
+  --select-popover-panel-bg: #1D1D1D;
+  --select-bg: #1D1D1D;
+  --slider-bg: #303030;
+  --slider-slided-travel-bg: #B0B0B0;
+  --slider-block-bg: #111;
+  --switch-unchecked-bg: #303030;
+  --switch-checked-bg: #384CFC;
+  --switch-btn-bg: #111;
+  --chat-actions-popover-panel-mobile-bg: #111;
+  --chat-actions-btn-popover-bg: #F0F0F0;
+  --chat-actions-btn-hovered-bg: rgba(255, 255, 255, 0.05);
+  --chat-panel-header-mask-bg: #1D1D1D;
+  --chat-panel-header-mobile-bg: #111;
+  --chat-panel-input-hood-bg: #111;
+  --chat-panel-message-user-bg: #4a5cff;
+  --chat-panel-message-bot-bg: #111;
+  --chat-panel-message-bg: #1D1D1D;
+  --chat-panel-message-mobile-bg: #303030;
+  --chat-message-actions-btn-hovered-bg: rgba(255, 255, 255, 0.05);
+  --chat-panel-bg: #1D1D1D;
+  --chat-panel-message-clear-divider-bg: #a5a5b3;
+  --chat-menu-session-selected-bg: #182455;
+  --chat-menu-session-unselected-bg: #303030;
+  --chat-menu-session-hovered-bg: #404040;
+  --settings-menu-mobile-bg: #1D1D1D;
+  --settings-menu-item-mobile-bg: #111;
+  --settings-menu-item-selected-bg: #182455;
+  --settings-header-mobile-bg: #111;
+  --settings-panel-bg: #1D1D1D;
+  --sidebar-mobile-bg: #111;
+  --sidebar-btn-hovered-bg: rgba(255, 255, 255, 0.05);
+  --delete-chat-popover-panel-bg: #111;
+  --modal-mask-bg: rgba(0, 0, 0, 0.85);
+  --modal-panel-bg: #111;
+  --delete-chat-ok-btn-bg: #F55151;
+  --delete-chat-cancel-btn-bg: #404040;
+  --chat-message-actions-bg: rgba(255, 255, 255, 0);
+  --menu-dragger-bg: #2E42F3;                  ///////////
+  --chat-actions-select-model-bg: rgba(255, 255, 255, 0.05);
+  --chat-actions-select-model-hover-bg: rgba(255, 255, 255, 0.1);
+  --select-hover-bg: #303030;
+  --input-input-ele-hover-bg: rgba(0, 0, 0, 0);
+  --chat-menu-session-unselected-mobile-bg:#111; 
+  --chat-menu-session-selected-mobile-bg:  #1D1D1D;
+  --global-mobile-bg: #303030;
+  --model-select-popover-panel-bg: #111;
+
+  --select-popover-border: rgba(255, 255, 255, 0.05);
+  --slider-block-border: #6C6C6C;
+  --thumbnail-border: rgba(255, 255, 255, 0.05);
+  --chat-actions-popover-mobile-border: #303030;
+  --chat-header-bottom-border: #303030;
+  --chat-input-top-border: #303030;
+  --chat-input-hood-border: rgba(0,0,0,0);
+  --chat-input-hood-focus-border: #E3E3E3;
+  --chat-menu-session-selected-border: #1C2E70;
+  --settings-menu-item-selected-border: #1C2E70;
+  --settings-header-border: #404040;
+  --delete-chat-popover-border: rgba(255, 255, 255, 0.1);
+  --delete-chat-cancel-btn-border: #303030;
+  --chat-menu-session-unselected-border: #303030;
+  --chat-menu-session-hovered-border: #1D1D1D;   
+  --modal-header-bottom-border: #303030;
+  --chat-menu-session-unselected-mobile-border: rgba(0, 0, 0, 0);
+  --chat-menu-session-selected-mobile-border: rgba(0, 0, 0, 0);
+
+  --sidebar-tab-mobile-active-text: #384CFC;
+  --sidebar-tab-mobile-inactive-text: #a5a5b3;
+  --btn-primary-text: #fff;
+  --btn-danger-text: #ff5454;
+  --btn-default-text: #E3E3E3;
+  --card-title-text: #FAFAFA; 
+  --input-text: #FAFAFA; 
+  --select-text: #FAFAFA;
+  --list-subtitle-text: #a5a5b3;
+  --slider-block-text: #E3E3E3;
+  --chat-actions-btn-popover-text: #111;
+  --chat-header-title-text: #FAFAFA;
+  --chat-header-subtitle-text: #B0B0B0;
+  --chat-input-placeholder-text: #B0B0B0;
+  --chat-message-date-text: #B0B0B0;
+  --chat-message-markdown-user-text: #FAFAFA;
+  --chat-message-markdown-bot-text: #FAFAFA;
+  --chat-panel-message-clear-text: #a5a5b3;  //////////////
+  --chat-panel-message-clear-revert-text: #3c44ff;   ///////////////
+  --chat-menu-item-title-text: #fff;
+  --chat-menu-item-time-text: rgba(255, 255, 255, 0.30);
+  --chat-menu-item-description-text: #B0B0B0;
+  --settings-menu-title-text: #FAFAFA;
+  --settings-menu-item-title-text: #FAFAFA;
+  --settings-panel-header-title-text: #FAFAFA;
+  --modal-panel-text: #FAFAFA;
+  --delete-chat-ok-btn-text: #fff;
+  --delete-chat-cancel-btn-text: #FAFAFA;
+  --chat-menu-item-delete-text: #F55151;
+  --list-title-text: #FAFAFA;
+  --select-option-text: #FAFAFA;
+  --modal-select-text: #E3E3E3;
+  --modal-title-text: #FAFAFA;
+  --modal-content-text: #FAFAFA;
+
+  --btn-shadow: 0px 4px 20px 0px rgba(60, 68, 255, 0.13);
+  --chat-actions-popover-mobile-shadow: 0px 14px 40px 0px rgba(0, 0, 0, 0.12);
+  --chat-input-hood-focus-shadow: 0px 4px 20px 0px rgba(60, 68, 255, 0.13);
+  --select-popover-shadow:  0px 8px 30px 0px rgba(0, 0, 0, 0.10);
+  --message-actions-bar-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0);
+  --prompt-hint-container-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  --delete-chat-popover-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.08), 0px 8px 20px 0px rgba(0, 0, 0, 0.08);
+  --sidebar-btn-shadow: 4px 8px 16px 0px rgba(60, 68, 255, 0.20);
+
+  --default-icon-color: #E3E3E3;
+}

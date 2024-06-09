@@ -1,5 +1,4 @@
 import { IconButton } from "./button";
-import { ErrorBoundary } from "./error";
 
 import styles from "./mask.module.scss";
 
@@ -56,6 +55,7 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { getMessageTextContent } from "../utils";
+import useMobileScreen from "@/app/hooks/useMobileScreen";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -398,7 +398,7 @@ export function ContextPrompts(props: {
   );
 }
 
-export function MaskPage() {
+export function MaskPage(props: { className?: string }) {
   const navigate = useNavigate();
 
   const maskStore = useMaskStore();
@@ -466,8 +466,13 @@ export function MaskPage() {
   };
 
   return (
-    <ErrorBoundary>
-      <div className={styles["mask-page"]}>
+    <>
+      <div
+        className={`
+          ${styles["mask-page"]} 
+          ${props.className}
+          `}
+      >
         <div className="window-header">
           <div className="window-header-title">
             <div className="window-header-main-title">
@@ -645,6 +650,6 @@ export function MaskPage() {
           </Modal>
         </div>
       )}
-    </ErrorBoundary>
+    </>
   );
 }

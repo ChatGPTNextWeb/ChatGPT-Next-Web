@@ -16,6 +16,7 @@ import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
+import useMobileScreen from "@/app/hooks/useMobileScreen";
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   return (
@@ -71,7 +72,7 @@ function useMaskGroup(masks: Mask[]) {
   return groups;
 }
 
-export function NewChat() {
+export function NewChat(props: { className?: string }) {
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
 
@@ -110,8 +111,15 @@ export function NewChat() {
     }
   }, [groups]);
 
+  const isMobileScreen = useMobileScreen();
+
   return (
-    <div className={styles["new-chat"]}>
+    <div
+      className={`
+      ${styles["new-chat"]}
+      ${props.className}
+      `}
+    >
       <div className={styles["mask-header"]}>
         <IconButton
           icon={<LeftIcon />}

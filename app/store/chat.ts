@@ -32,9 +32,26 @@ export type ChatMessage = RequestMessage & {
   model?: ModelType;
 };
 
-export function createMessage(override: Partial<ChatMessage>): ChatMessage {
+let tempGlobalId = 0;
+
+export function createMessage(
+  override: Partial<ChatMessage>,
+  options?: { temp?: boolean; customId?: string },
+): ChatMessage {
+  const { temp, customId } = options ?? {};
+
+  let id: string;
+  if (customId) {
+    id = customId;
+  } else if (temp) {
+    tempGlobalId += 1;
+    id = String(tempGlobalId);
+  } else {
+    id = nanoid();
+  }
+
   return {
-    id: nanoid(),
+    id,
     date: new Date().toLocaleString(),
     role: "user",
     content: "",

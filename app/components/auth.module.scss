@@ -6,6 +6,8 @@
   width: 100%;
   flex-direction: column;
 
+  background-color: var(--white);
+
   .auth-logo {
     transform: scale(1.4);
   }
@@ -32,5 +34,19 @@
     button:not(:last-child) {
       margin-bottom: 10px;
     }
+  }
+  input[type="number"],
+  input[type="text"],
+  input[type="password"] {
+    appearance: none;
+    border-radius: 10px;
+    border: var(--border-in-light);
+    min-height: 36px;
+    box-sizing: border-box;
+    background: var(--white);
+    color: var(--black);
+    padding: 0 10px;
+    max-width: 50%;
+    font-family: inherit;
   }
 }

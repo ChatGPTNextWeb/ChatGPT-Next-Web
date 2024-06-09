@@ -177,13 +177,14 @@ export function Markdown(
     fontSize?: number;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
+    className?: string;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
-      className="markdown-body"
+      className={`markdown-body ${props.className}`}
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
       }}
