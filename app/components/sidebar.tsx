@@ -5,12 +5,11 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
+import AccountIcon from "../icons/account.svg";
 import DeleteIcon from "../icons/delete.svg";
-import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import BotIcon from "../icons/bot.png";
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -155,27 +154,25 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          NextChat
+          Invisibility
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          Open source web chat app
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          <img src={BotIcon.src} alt="logo" />
         </div>
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
         <IconButton
-          icon={<MaskIcon />}
-          text={shouldNarrow ? undefined : Locale.Mask.Name}
+          icon={<AccountIcon />}
+          text={shouldNarrow ? undefined : "Sign Up"}
           className={styles["sidebar-bar-button"]}
           onClick={() => {
-            if (config.dontShowMaskSplashScreen !== true) {
-              navigate(Path.NewChat, { state: { fromHome: true } });
-            } else {
-              navigate(Path.Masks, { state: { fromHome: true } });
-            }
+            // Open login page
+            navigate("https://authkit.i.inc/signup");
+            //https://authkit.i.inc/sign-up?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback
           }}
           shadow
         />

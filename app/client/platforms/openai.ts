@@ -82,7 +82,7 @@ export class ChatGPTApi implements LLMApi {
       const isApp = !!getClientConfig()?.isApp;
       baseUrl = isApp
         ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
-        : ApiPath.OpenAI;
+        : DEFAULT_API_HOST + ApiPath.OpenAI;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -141,6 +141,7 @@ export class ChatGPTApi implements LLMApi {
 
     try {
       const chatPath = this.path(OpenaiPath.ChatPath);
+      console.log(chatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),

@@ -6,7 +6,7 @@ import { Path } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
 
-import BotIcon from "../icons/bot.svg";
+import BotIcon from "../icons/bot.png";
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
 
@@ -33,7 +33,7 @@ export function AuthPage() {
   return (
     <div className={styles["auth-page"]}>
       <div className={`no-dark ${styles["auth-logo"]}`}>
-        <BotIcon />
+        <img src={BotIcon.src} alt="logo" />
       </div>
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>

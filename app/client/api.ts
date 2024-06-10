@@ -12,7 +12,14 @@ import { ClaudeApi } from "./platforms/anthropic";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
-export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
+export const Models = [
+  "gpt-4o",
+  "bedrock/anthropic.claude-3-opus-20240229-v1:0",
+  "groq/llama3-70b-8192",
+  "openrouter/google/gemini-pro-1.5",
+  "openrouter/perplexity/llama-3-sonar-large-32k-online",
+] as const;
+
 export type ChatModel = ModelType;
 
 export interface MultimodalContent {
@@ -70,7 +77,7 @@ export abstract class LLMApi {
   abstract models(): Promise<LLMModel[]>;
 }
 
-type ProviderName = "openai" | "azure" | "claude" | "palm";
+type ProviderName = "invisibility";
 
 interface Model {
   name: string;

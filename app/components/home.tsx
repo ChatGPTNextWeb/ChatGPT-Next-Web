@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 import styles from "./home.module.scss";
 
-import BotIcon from "../icons/bot.svg";
+import BotIcon from "../icons/bot.png";
 import LoadingIcon from "../icons/three-dots.svg";
 
 import { getCSSVar, useMobileScreen } from "../utils";
@@ -32,9 +32,11 @@ import { useAccessStore } from "../store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
 
 export function Loading(props: { noLogo?: boolean }) {
+  // TODO fix this loading thing
   return (
     <div className={styles["loading-content"] + " no-dark"}>
-      {!props.noLogo && <BotIcon />}
+      {/* {!props.noLogo && <img src={BotIcon.src} alt="logo" />} */}
+      {!props.noLogo}
       <LoadingIcon />
     </div>
   );

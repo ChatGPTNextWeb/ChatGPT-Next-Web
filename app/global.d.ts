@@ -10,6 +10,11 @@ declare module "*.scss" {
 
 declare module "*.svg";
 
+declare module "*.png" {
+  const value: string;
+  export default value;
+}
+
 declare interface Window {
   __TAURI__?: {
     writeText(text: string): Promise<void>;
@@ -21,7 +26,7 @@ declare interface Window {
       writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
       writeTextFile(path: string, data: string): Promise<void>;
     };
-    notification:{
+    notification: {
       requestPermission(): Promise<Permission>;
       isPermissionGranted(): Promise<boolean>;
       sendNotification(options: string | Options): void;
