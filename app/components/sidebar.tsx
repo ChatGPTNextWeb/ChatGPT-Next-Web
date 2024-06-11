@@ -159,9 +159,13 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-sub-title"]}>
           Open source web chat app
         </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          <img src={BotIcon.src} alt="logo" />
-        </div>
+        {/* <div className={styles["sidebar-logo"] + " no-dark"}> */}
+        {/*     <img */}
+        {/*         src={BotIcon.src} */}
+        {/*         alt="logo" */}
+        {/*         style={{ width: '100%', height: 'auto' }} */}
+        {/*     /> */}
+        {/* </div> */}
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
