@@ -53,7 +53,7 @@ export const DEFAULT_CONFIG = {
     max_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
-    sendMemory: true,
+    sendMemory: false,
     historyMessageCount: 42,
     compressMessageLengthThreshold: 90001,
     enableInjectSystemPrompts: true,
