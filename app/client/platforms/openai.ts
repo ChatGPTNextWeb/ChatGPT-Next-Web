@@ -246,7 +246,7 @@ export class ChatGPTApi implements LLMApi {
                 delta: { content: string };
               }>;
               const delta = choices[0]?.delta?.content;
-              const textmoderation = json?.prompt_filter_results;
+              const textmoderation = json?.content_filter_results;
 
               if (delta) {
                 remainText += delta;
