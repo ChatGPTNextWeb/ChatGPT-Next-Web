@@ -42,6 +42,11 @@ const DEFAULT_ACCESS_STATE = {
   anthropicApiVersion: "2023-06-01",
   anthropicUrl: "",
 
+  //AWS
+  awsUrl: "",
+  awsApiKey: "",
+  awsApiVersion: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,

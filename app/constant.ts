@@ -1,4 +1,4 @@
-export const OWNER = "Yidadaa";
+export const OWNER = "Ryder Tsui";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
@@ -70,12 +70,14 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  AWS = "AWS",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Bedrock = "Bedrock",
 }
 
 export const Anthropic = {
@@ -99,6 +101,12 @@ export const Azure = {
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+};
+
+export const AWS = {
+  ExampleEndpoint: "http://localhost:8866",
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -168,6 +176,14 @@ const anthropicModels = [
   "claude-3-haiku-20240307",
 ];
 
+const bedrockModels = [
+  "llama3-70b",
+  "llama3-8b",
+  "claude-3-haiku",
+  "claude-3-sonnet",
+  "claude-3-opus",
+];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -194,6 +210,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...bedrockModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "AWS",
+      providerName: "Bedrock",
+      providerType: "bedrock",
     },
   })),
 ] as const;

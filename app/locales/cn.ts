@@ -347,6 +347,21 @@ const cn = {
           SubTitle: "选择一个特定的 API 版本",
         },
       },
+      AWS: {
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：http://localhost:8866",
+        },
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "API Key",
+          Placeholder: "输入您的 AWS API 密钥",
+        },
+        ApiVerion: {
+          Title: "接口版本 (aws api version)",
+          SubTitle: "选择指定的部分版本",
+        },
+      },
       CustomModel: {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",

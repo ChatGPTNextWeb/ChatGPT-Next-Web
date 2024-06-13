@@ -92,6 +92,7 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isAWS = !!process.env.AWS_API_KEY;
 
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -123,6 +124,10 @@ export const getServerSideConfig = () => {
     anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
+
+    isAWS,
+    awsApiKey: getApiKey(process.env.AWS_API_KEY),
+    awsUrl: process.env.AWS_URL,
 
     gtmId: process.env.GTM_ID,
 

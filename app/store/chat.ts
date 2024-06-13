@@ -366,8 +366,9 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Claude);
+        } else if (modelConfig.model.startsWith("claude")) {
+          api = new ClientApi(ModelProvider.Bedrock);
+          //api = new ClientApi(ModelProvider.Claude);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -551,7 +552,8 @@ export const useChatStore = createPersistStore(
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else if (identifyDefaultClaudeModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Claude);
+          //api = new ClientApi(ModelProvider.Claude);
+          api = new ClientApi(ModelProvider.Bedrock);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }

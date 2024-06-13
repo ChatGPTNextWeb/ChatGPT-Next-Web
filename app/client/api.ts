@@ -9,6 +9,7 @@ import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
+import { BedrockApi } from "./platforms/aws";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -70,7 +71,7 @@ export abstract class LLMApi {
   abstract models(): Promise<LLMModel[]>;
 }
 
-type ProviderName = "openai" | "azure" | "claude" | "palm";
+type ProviderName = "aws" | "openai" | "azure" | "claude" | "palm";
 
 interface Model {
   name: string;
@@ -101,6 +102,9 @@ export class ClientApi {
         break;
       case ModelProvider.Claude:
         this.llm = new ClaudeApi();
+        break;
+      case ModelProvider.Bedrock:
+        this.llm = new BedrockApi();
         break;
       default:
         this.llm = new ChatGPTApi();
@@ -162,11 +166,15 @@ export function getHeaders() {
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
+  const isAWS = accessStore.provider === ServiceProvider.AWS;
   const authHeader = isAzure ? "api-key" : "Authorization";
+
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
     ? accessStore.azureApiKey
+    : isAWS
+    ? accessStore.awsApiKey
     : accessStore.openaiApiKey;
   const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;

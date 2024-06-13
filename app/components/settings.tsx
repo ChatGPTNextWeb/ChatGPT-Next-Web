@@ -1187,6 +1187,46 @@ export function Settings() {
                       </ListItem>
                     </>
                   )}
+                  {accessStore.provider === ServiceProvider.AWS && (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.AWS.Endpoint.Title}
+                        subTitle={Locale.Settings.Access.AWS.Endpoint.SubTitle}
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.awsUrl}
+                          placeholder={
+                            Locale.Settings.Access.AWS.Endpoint.SubTitle
+                          }
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.awsUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.AWS.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.AWS.ApiKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.awsApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.AWS.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.awsApiKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                    </>
+                  )}
                 </>
               )}
             </>
