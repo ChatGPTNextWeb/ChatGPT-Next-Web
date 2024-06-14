@@ -130,6 +130,10 @@ function useDragSideBar() {
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
+  const navigateToExternalSite = (url: string) => {
+    window.location.href = url;
+  };
+
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -175,8 +179,11 @@ export function SideBar(props: { className?: string }) {
           className={styles["sidebar-bar-button"]}
           onClick={() => {
             // Open login page
-            navigate("https://authkit.i.inc/signup");
+            navigateToExternalSite(
+              "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev",
+            );
             //https://authkit.i.inc/sign-up?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback
+            //https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev
           }}
           shadow
         />
