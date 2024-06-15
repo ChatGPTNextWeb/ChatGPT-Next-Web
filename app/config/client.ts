@@ -25,3 +25,29 @@ function queryMeta(key: string, defaultValue?: string): string {
 
   return ret;
 }
+
+// import { BuildConfig, getBuildConfig } from "./build";
+
+// export function getClientConfig(): BuildConfig | undefined {
+//   if (typeof document !== "undefined") {
+//     // client side
+//     const config = queryMeta("config");
+//     return config ? (JSON.parse(config) as BuildConfig) : undefined;
+//   }
+
+//   if (typeof process !== "undefined") {
+//     // server side
+//     return getBuildConfig();
+//   }
+// }
+
+// function queryMeta(key: string, defaultValue?: string): string {
+//   if (typeof document !== "undefined") {
+//     const meta = document.head.querySelector(
+//       `meta[name='${key}']`,
+//     ) as HTMLMetaElement;
+//     return meta?.content ?? defaultValue ?? "";
+//   } else {
+//     return defaultValue ?? "";
+//   }
+// }

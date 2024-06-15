@@ -193,6 +193,6 @@ export function getHeaders() {
       );
     }
   }
-
+  console.log(headers);
   return headers;
 }
