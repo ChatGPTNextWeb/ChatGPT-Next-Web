@@ -21,5 +21,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   });
 
   // Redirect to the home page
-  return NextResponse.redirect("http://localhost:3000/"); // 302 for temporary redirect
+  return NextResponse.redirect("http://localhost:3000/");
+  //https://chat.i.inc/ //prod
+  //http://localhost:3000/ //dev
 }

@@ -182,8 +182,8 @@ export function SideBar(props: { className?: string }) {
             navigateToExternalSite(
               "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev",
             );
-            //https://authkit.i.inc/sign-up?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback
-            //https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev
+            //https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb //production
+            //https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev //dev
           }}
           shadow
         />
