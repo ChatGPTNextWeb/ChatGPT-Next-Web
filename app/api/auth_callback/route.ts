@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,7 +15,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   // Set the cookie with appropriate options
   cookies().set("auth_token", token, {
     path: "/", // Accessible from all paths on your domain
-    httpOnly: true, // Not accessible from JavaScript for enhanced security
+    httpOnly: false, // Not accessible from JavaScript for enhanced security
     secure: process.env.NODE_ENV === "production", // Set to true for HTTPS in production
     maxAge: 60 * 60 * 24, // Expires in 24 hours (adjust as needed)
   });
