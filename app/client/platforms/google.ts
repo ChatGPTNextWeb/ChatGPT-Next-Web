@@ -64,6 +64,9 @@ export class GeminiProApi implements LLMApi {
     // if (visionModel && messages.length > 1) {
     //   options.onError?.(new Error("Multiturn chat is not enabled for models/gemini-pro-vision"));
     // }
+
+    const accessStore = useAccessStore.getState();
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -85,24 +88,22 @@ export class GeminiProApi implements LLMApi {
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
-          threshold: "BLOCK_NONE",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_HATE_SPEECH",
-          threshold: "BLOCK_NONE",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          threshold: "BLOCK_NONE",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-          threshold: "BLOCK_NONE",
+          threshold: accessStore.googleSafetySettings,
         },
       ],
     };
-
-    const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
 
@@ -120,7 +121,9 @@ export class GeminiProApi implements LLMApi {
 
       if (!baseUrl) {
         baseUrl = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath(modelConfig.model)
+          ? DEFAULT_API_HOST +
+            "/api/proxy/google/" +
+            Google.ChatPath(modelConfig.model)
           : this.path(Google.ChatPath(modelConfig.model));
       }
 
@@ -139,7 +142,7 @@ export class GeminiProApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-      
+
       if (shouldStream) {
         let responseText = "";
         let remainText = "";

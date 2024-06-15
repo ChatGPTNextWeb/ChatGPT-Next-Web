@@ -1,6 +1,7 @@
 import {
   ApiPath,
   DEFAULT_API_HOST,
+  GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
 } from "../constant";
@@ -36,6 +37,7 @@ const DEFAULT_ACCESS_STATE = {
   googleUrl: "",
   googleApiKey: "",
   googleApiVersion: "v1",
+  googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
 
   // anthropic
   anthropicApiKey: "",

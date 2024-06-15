@@ -54,6 +54,7 @@ import {
   Anthropic,
   Azure,
   Google,
+  GoogleSafetySettingsThreshold,
   OPENAI_BASE_URL,
   Path,
   RELEASE_URL,
@@ -1121,6 +1122,35 @@ export function Settings() {
                             )
                           }
                         ></input>
+                      </ListItem>
+                      <ListItem
+                        title={
+                          Locale.Settings.Access.Google.GoogleSafetySettings
+                            .Title
+                        }
+                        subTitle={
+                          Locale.Settings.Access.Google.GoogleSafetySettings
+                            .SubTitle
+                        }
+                      >
+                        <Select
+                          value={accessStore.googleSafetySettings}
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.googleSafetySettings = e.target
+                                  .value as GoogleSafetySettingsThreshold),
+                            );
+                          }}
+                        >
+                          {Object.entries(GoogleSafetySettingsThreshold).map(
+                            ([k, v]) => (
+                              <option value={v} key={k}>
+                                {k}
+                              </option>
+                            ),
+                          )}
+                        </Select>
                       </ListItem>
                     </>
                   )}
