@@ -6,7 +6,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
   // Extract the token from the query string
   const searchParams = req.nextUrl.searchParams;
   const token = searchParams.get("token");
-  console.log(token);
   // Validate the token (optional, add your validation logic here)
   if (!token) {
     return NextResponse.json({ error: "Missing token in query string" });
@@ -19,6 +18,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
     secure: process.env.NODE_ENV === "production", // Set to true for HTTPS in production
     maxAge: 60 * 60 * 24, // Expires in 24 hours (adjust as needed)
   });
+
+  process.env.OPENAI_API_KEY = "" + token;
 
   // Redirect to the home page
   return NextResponse.redirect("http://localhost:3000/");
