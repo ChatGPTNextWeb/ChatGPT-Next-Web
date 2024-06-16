@@ -10,12 +10,10 @@ const AuthCallbackPage = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined" && token) {
-      // Update the state with the token
-      useAccessStore.setState({ openaiApiKey: `${token}` });
-      console.log(
-        "Updated OpenAI API Key:",
-        useAccessStore.getState().openaiApiKey,
-      );
+      // Update the state with the token and isLoggedin to true
+      useAccessStore.setState({ openaiApiKey: `${token}`, isLoggedin: true });
+
+      console.log("User is logged in:", useAccessStore.getState().isLoggedin);
 
       // Redirect to the home page
       router.push("/");
