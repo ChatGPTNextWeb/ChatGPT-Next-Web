@@ -29,6 +29,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import Logout, { navigateToExternalSite } from "../utils/logout";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -131,10 +132,6 @@ export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
   const isLoggedin = useAccessStore.getState().isLoggedin;
 
-  const navigateToExternalSite = (url: string) => {
-    window.location.href = url;
-  };
-
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -174,7 +171,17 @@ export function SideBar(props: { className?: string }) {
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
-        {isLoggedin && (
+        {isLoggedin ? (
+          <IconButton
+            icon={<AccountIcon />}
+            text={shouldNarrow ? undefined : "Logout"}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => {
+              Logout();
+            }}
+            shadow
+          />
+        ) : (
           <IconButton
             icon={<AccountIcon />}
             text={shouldNarrow ? undefined : "Sign Up"}
@@ -182,18 +189,15 @@ export function SideBar(props: { className?: string }) {
             onClick={() => {
               // Open login page
               if (process.env.NODE_ENV === "development") {
-                navigateToExternalSite(
-                  "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev",
-                );
+                navigateToExternalSite(Path.LoginDev);
               } else {
-                navigateToExternalSite(
-                  "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb",
-                );
+                navigateToExternalSite(Path.Login);
               }
             }}
             shadow
           />
         )}
+
         <IconButton
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
