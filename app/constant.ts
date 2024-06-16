@@ -21,6 +21,8 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Auth = "/auth",
+  LoginDev = "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev",
+  Login = "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb",
 }
 
 export enum ApiPath {
