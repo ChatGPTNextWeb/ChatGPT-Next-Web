@@ -9,6 +9,7 @@ import Locale from "../locales";
 import BotIcon from "../icons/bot.png";
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
+import Image from "next/image";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export function AuthPage() {
   return (
     <div className={styles["auth-page"]}>
       <div className={`no-dark ${styles["auth-logo"]}`}>
-        <img src={BotIcon.src} alt="logo" />
+        <Image src={BotIcon.src} alt="logo" />
       </div>
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>

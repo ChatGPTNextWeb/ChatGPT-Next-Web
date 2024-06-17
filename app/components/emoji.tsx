@@ -7,6 +7,7 @@ import EmojiPicker, {
 import { ModelType } from "../store";
 
 import BotIcon from "../icons/bot.png";
+import Image from "next/image";
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
   // Whoever owns this Content Delivery Network (CDN), I am using your CDN to serve emojis
@@ -35,7 +36,7 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
   if (props.model) {
     return (
       <div className="no-dark">
-        <img
+        <Image
           src={BotIcon.src} // Use the `src` property correctly
           alt="logo"
           className="user-avatar"
