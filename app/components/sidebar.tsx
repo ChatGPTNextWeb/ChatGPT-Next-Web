@@ -14,7 +14,7 @@ import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
 
-import { useAppConfig, useChatStore } from "../store";
+import { useAccessStore, useAppConfig, useChatStore } from "../store";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -29,6 +29,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import Logout, { navigateToExternalSite } from "../utils/logout";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -129,10 +130,7 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
-
-  const navigateToExternalSite = (url: string) => {
-    window.location.href = url;
-  };
+  const isLoggedin = useAccessStore.getState().isLoggedin;
 
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -173,20 +171,33 @@ export function SideBar(props: { className?: string }) {
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
-        <IconButton
-          icon={<AccountIcon />}
-          text={shouldNarrow ? undefined : "Sign Up"}
-          className={styles["sidebar-bar-button"]}
-          onClick={() => {
-            // Open login page
-            navigateToExternalSite(
-              "https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev",
-            );
-            //https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb //production
-            //https://authkit.i.inc/?redirect_uri=https%3A%2F%2Fcloak.i.inc%2Fauth%2Fworkos%2Fcallback_nextweb_dev //dev
-          }}
-          shadow
-        />
+        {isLoggedin ? (
+          <IconButton
+            icon={<AccountIcon />}
+            text={shouldNarrow ? undefined : "Logout"}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => {
+              Logout();
+            }}
+            shadow
+          />
+        ) : (
+          <IconButton
+            icon={<AccountIcon />}
+            text={shouldNarrow ? undefined : "Sign Up"}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => {
+              // Open login page
+              if (process.env.NODE_ENV === "development") {
+                navigateToExternalSite(Path.LoginDev);
+              } else {
+                navigateToExternalSite(Path.Login);
+              }
+            }}
+            shadow
+          />
+        )}
+
         <IconButton
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}

@@ -92,8 +92,6 @@ export class ChatGPTApi implements LLMApi {
       baseUrl = "https://" + baseUrl;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
-
     return [baseUrl, path].join("/");
   }
 
@@ -133,15 +131,12 @@ export class ChatGPTApi implements LLMApi {
       requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
     }
 
-    console.log("[Request] openai payload: ", requestPayload);
-
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
       const chatPath = this.path(OpenaiPath.ChatPath);
-      console.log(chatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -164,7 +159,6 @@ export class ChatGPTApi implements LLMApi {
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
-            console.log("[Response Animation] finished");
             if (responseText?.length === 0) {
               options.onError?.(new Error("empty response from server"));
             }
@@ -199,10 +193,6 @@ export class ChatGPTApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
@@ -260,10 +250,6 @@ export class ChatGPTApi implements LLMApi {
               ) {
                 const contentFilterResults =
                   textmoderation[0]?.content_filter_results;
-                console.log(
-                  `[${ServiceProvider.Azure}] [Text Moderation] flagged categories result:`,
-                  contentFilterResults,
-                );
               }
             } catch (e) {
               console.error("[Request] parse error", text, msg);
@@ -287,7 +273,6 @@ export class ChatGPTApi implements LLMApi {
         options.onFinish(message);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
       options.onError?.(e as Error);
     }
   }
@@ -371,7 +356,6 @@ export class ChatGPTApi implements LLMApi {
 
     const resJson = (await res.json()) as OpenAIListModelResponse;
     const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
-    console.log("[Models]", chatModels);
 
     if (!chatModels) {
       return [];

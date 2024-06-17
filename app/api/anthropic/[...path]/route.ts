@@ -17,8 +17,6 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Anthropic Route] params ", params);
-
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
@@ -26,7 +24,6 @@ async function handle(
   const subpath = params.path.join("/");
 
   if (!ALLOWD_PATH.has(subpath)) {
-    console.log("[Anthropic Route] forbidden path ", subpath);
     return NextResponse.json(
       {
         error: true,
@@ -103,9 +100,6 @@ async function request(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
-
   const timeoutId = setTimeout(
     () => {
       controller.abort();
@@ -161,7 +155,6 @@ async function request(req: NextRequest) {
       console.error(`[Anthropic] filter`, e);
     }
   }
-  console.log("[Anthropic request]", fetchOptions.headers, req.method);
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 

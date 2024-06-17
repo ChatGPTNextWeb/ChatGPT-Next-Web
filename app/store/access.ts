@@ -50,6 +50,7 @@ const DEFAULT_ACCESS_STATE = {
   disableFastLink: false,
   customModels: "",
   defaultModel: "",
+  isLoggedin: false,
 };
 
 export const useAccessStore = createPersistStore(
@@ -119,6 +120,12 @@ export const useAccessStore = createPersistStore(
         .finally(() => {
           fetchState = 2;
         });
+    },
+    setIsLoggedin(loggedIn: boolean) {
+      set({ isLoggedin: loggedIn });
+    },
+    getIsLoggedin() {
+      return get().isLoggedin;
     },
   }),
   {

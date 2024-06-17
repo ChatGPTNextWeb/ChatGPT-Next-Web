@@ -9,20 +9,21 @@ import { getServerSideConfig } from "./config/server";
 import { GoogleTagManager } from "@next/third-parties/google";
 const serverConfig = getServerSideConfig();
 
-export const metadata: Metadata = {
-  title: "Invisibility",
-  description: "Your personal ChatGPT Chat Bot.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fafafa" },
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
+};
+
+export const metadata: Metadata = {
+  title: "Invisibility",
+  description: "Your personal ChatGPT Chat Bot.",
   appleWebApp: {
-    title: "NextChat",
+    title: "Invisibility",
     statusBarStyle: "default",
   },
 };
