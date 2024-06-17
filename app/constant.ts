@@ -1,5 +1,6 @@
 export const OWNER = "InvisibilityInc";
 export const REPO = "nextweb";
+export const DISCORD_URL = "https://discord.i.inc/";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;

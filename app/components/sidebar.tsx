@@ -5,6 +5,7 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
+import DiscordIcon from "../icons/discord.svg";
 import AddIcon from "../icons/add.svg";
 import AccountIcon from "../icons/account.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -18,6 +19,7 @@ import { useAccessStore, useAppConfig, useChatStore } from "../store";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
+  DISCORD_URL,
   MAX_SIDEBAR_WIDTH,
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
@@ -184,7 +186,7 @@ export function SideBar(props: { className?: string }) {
         ) : (
           <IconButton
             icon={<AccountIcon />}
-            text={shouldNarrow ? undefined : "Sign Up"}
+            text={shouldNarrow ? undefined : "Login"}
             className={styles["sidebar-bar-button"]}
             onClick={() => {
               // Open login page
@@ -238,6 +240,11 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
+            </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
+              <IconButton icon={<DiscordIcon />} shadow />
             </a>
           </div>
         </div>
