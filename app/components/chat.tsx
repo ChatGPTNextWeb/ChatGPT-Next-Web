@@ -1415,6 +1415,8 @@ function _Chat() {
                         className={styles["chat-message-item-image"]}
                         src={getMessageImages(message)[0]}
                         alt=""
+                        width={100}
+                        height={100}
                       />
                     )}
                     {getMessageImages(message).length > 1 && (
@@ -1435,6 +1437,8 @@ function _Chat() {
                               key={index}
                               src={image}
                               alt=""
+                              width={100}
+                              height={100}
                             />
                           );
                         })}

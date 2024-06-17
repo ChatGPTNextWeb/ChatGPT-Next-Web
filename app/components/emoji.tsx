@@ -40,6 +40,8 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
           src={BotIcon.src} // Use the `src` property correctly
           alt="logo"
           className="user-avatar"
+          width={100}
+          height={100}
         />
       </div>
     );
