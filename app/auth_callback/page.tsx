@@ -1,7 +1,8 @@
 "use client";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAccessStore } from "@/app/store";
+import Spinner from "@/app/components/spinner";
 
 const AuthCallbackPage = () => {
   const router = useRouter();
@@ -15,13 +16,18 @@ const AuthCallbackPage = () => {
 
       console.log("User is logged in:", useAccessStore.getState().isLoggedin);
 
-      // Redirect to the home page
       router.push("/");
     }
   }, [token, router]);
 
-  // Don't render anything, just redirect
   return null;
 };
+const AuthCallbackPageWrapper = () => {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <AuthCallbackPage />
+    </Suspense>
+  );
+};
 
-export default AuthCallbackPage;
+export default AuthCallbackPageWrapper;
