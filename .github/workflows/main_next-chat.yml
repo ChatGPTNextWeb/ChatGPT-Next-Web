@@ -40,7 +40,7 @@ jobs:
         run: |
           npm install
           npm run build
-          mv ./.next/static ./.next/standalone/build
+          mv ./.next/static ./.next/standalone/.next
           mv ./public ./.next/standalone
 
       - name: 'Deploy to Azure Web App'
