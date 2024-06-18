@@ -112,6 +112,16 @@ export function getLang(): Lang {
 
   const lang = getLanguage();
 
+  const languageMap: Record<string, Lang> = {
+    zh: "cn",
+    "zh-cn": "cn",
+    "zh-tw": "tw",
+    "zh-hk": "tw",
+    ja: "jp",
+    nn: "no",
+  };
+  if (languageMap[lang]) return languageMap[lang];
+
   for (const option of AllLangs) {
     if (lang.includes(option)) {
       return option;
