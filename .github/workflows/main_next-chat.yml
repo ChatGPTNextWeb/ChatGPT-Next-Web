@@ -40,8 +40,8 @@ jobs:
         run: |
           npm install
           npm run build
-          mv ./next/static ./next/standalone/build
-          mv ./public ./next/standalone
+          mv ./.next/static ./.next/standalone/build
+          mv ./public ./.next/standalone
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'next-chat'
           slot-name: 'Production'
-          package: ./next/standalone
+          package: ./.next/standalone
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
