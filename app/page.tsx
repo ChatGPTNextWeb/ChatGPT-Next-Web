@@ -6,11 +6,13 @@ import { useEffect } from "react";
 import { useAccessStore } from "./store";
 import { Path } from "./constant";
 import { useRouter } from "next/navigation";
+import { useTokenRefresh } from "./utils/hooks";
 const serverConfig = getServerSideConfig();
 
 export default function App() {
   const router = useRouter();
   const isLoggedin = useAccessStore.getState().isLoggedin;
+  useTokenRefresh();
   useEffect(() => {
     if (!isLoggedin) {
       if (process.env.NODE_ENV === "development") {
