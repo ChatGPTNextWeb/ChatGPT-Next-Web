@@ -92,8 +92,8 @@ export function useSwitchTheme() {
 
       const query = window.matchMedia("(prefers-color-scheme: dark)");
       meta.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
-      query.addEventListener("change", (e) => {
-        meta.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
+      query.addEventListener("change", () => {
+        meta?.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
       });
     } else {
       const themeColor = getCSSVar("--theme-color");
