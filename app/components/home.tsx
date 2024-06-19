@@ -92,9 +92,13 @@ export function useSwitchTheme() {
 
       const query = window.matchMedia("(prefers-color-scheme: dark)");
       meta.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
-      query.addEventListener("change", () => {
+      const updateThemeColor = (e: MediaQueryListEvent) => {
         meta?.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
-      });
+      };
+      query.addEventListener("change", updateThemeColor);
+      return () => {
+        query.removeEventListener("change", updateThemeColor);
+      };
     } else {
       const themeColor = getCSSVar("--theme-color");
       metaDescriptionDark?.setAttribute("content", themeColor);
