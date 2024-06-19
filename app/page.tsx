@@ -8,7 +8,7 @@ import { Path } from "./constant";
 import { useRouter } from "next/navigation";
 const serverConfig = getServerSideConfig();
 
-export default async function App() {
+export default function App() {
   const router = useRouter();
   const isLoggedin = useAccessStore.getState().isLoggedin;
   useEffect(() => {
@@ -19,7 +19,7 @@ export default async function App() {
         router.push(Path.Login);
       }
     }
-  }, []);
+  }, [isLoggedin, router]);
   return (
     <>
       <Home />
