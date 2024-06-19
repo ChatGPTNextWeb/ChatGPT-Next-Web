@@ -25,7 +25,7 @@ export function collectModelTable(
   models.forEach((m) => {
     modelTable[m.name] = {
       ...m,
-      displayName: m.name, // 'provider' is copied over if it exists
+      displayName: m.displayName, // 'provider' is copied over if it exists
     };
   });
 
