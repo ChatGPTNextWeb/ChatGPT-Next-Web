@@ -5,7 +5,7 @@ services:
 #    image: yidadaa/chatgpt-next-web
     restart: always
     image: registry.cn-hangzhou.aliyuncs.com/si-private/chatgpt-next-web
-#    image: registry.cn-hangzhou.aliyuncs.com/sijinhui/chatgpt-next-web
+#    image: registry.gitlab.si.icu/common/chatgpt-next-web
     build:
       context: .
       dockerfile: Dockerfile
