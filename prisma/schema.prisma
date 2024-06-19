@@ -1,9 +1,14 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//   // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// }
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider = "mysql"
+  url      = env("DATABASE_URL") // uses connection pooling
   // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
@@ -14,7 +19,7 @@ generator client {
 
 model User {
   id            String     @id @default(cuid())
-  name          String?    @unique
+  name          String?
   // if you are using Github OAuth, you can get rid of the username attribute (that is for Twitter OAuth)
   username      String?    @unique
   gh_username   String?    @unique
@@ -28,8 +33,6 @@ model User {
   isAdmin       Boolean?   @default(false)
   accounts      Account[]
   sessions      Session[]
-  // sites         Site[]
-  // posts         Post[]
   logs          LogEntry[]
 }
 
