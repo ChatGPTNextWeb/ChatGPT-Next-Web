@@ -22,9 +22,7 @@ const AuthCallbackPage = () => {
 };
 const AuthCallbackPageWrapper = () => {
   return (
-    <Suspense>
-      fallback=
-      {<Loading />}
+    <Suspense fallback={<Loading />}>
       <AuthCallbackPage />
     </Suspense>
   );
