@@ -63,10 +63,20 @@ export function useSwitchTheme() {
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
 
+    let meta = document.querySelector(`meta[name="theme-color"]`);
+
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "theme-color");
+      document.head.appendChild(meta);
+    }
+
     if (config.theme === "dark") {
       document.body.classList.add("dark");
+      meta.setAttribute("content", "#000000");
     } else if (config.theme === "light") {
       document.body.classList.add("light");
+      meta.setAttribute("content", "#FFFFFF");
     }
 
     const metaDescriptionDark = document.querySelector(
@@ -79,6 +89,12 @@ export function useSwitchTheme() {
     if (config.theme === "auto") {
       metaDescriptionDark?.setAttribute("content", "#151515");
       metaDescriptionLight?.setAttribute("content", "#fafafa");
+
+      const query = window.matchMedia("(prefers-color-scheme: dark)");
+      meta.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
+      query.addEventListener("change", (e) => {
+        meta.setAttribute("content", query.matches ? "#000000" : "#FFFFFF");
+      });
     } else {
       const themeColor = getCSSVar("--theme-color");
       metaDescriptionDark?.setAttribute("content", themeColor);
