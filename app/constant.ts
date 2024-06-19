@@ -2124,9 +2124,8 @@ export const DEFAULT_MODELS = [
     displayName: display_name,
     available: true,
     provider: {
+      id: provider.provider_id,
       providerName: provider.provider_name,
-      providerType: provider.provider_id,
-      moderation: provider.moderation,
     },
   })),
   // ...googleModels.map((name) => ({
