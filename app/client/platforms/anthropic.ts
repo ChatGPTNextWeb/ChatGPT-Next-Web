@@ -339,9 +339,14 @@ export class ClaudeApi implements LLMApi {
       //   name: "claude-3-opus-20240229",
       //   available: true,
       //   provider,
-      // },
+      // },      
       // {
       //   name: "claude-3-sonnet-20240229",
+      //   available: true,
+      //   provider,
+      // },
+      // {
+      //   name: "claude-3-5-sonnet-20240620",
       //   available: true,
       //   provider,
       // },
