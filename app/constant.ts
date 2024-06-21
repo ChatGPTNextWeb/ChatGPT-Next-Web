@@ -27,6 +27,7 @@ export enum ApiPath {
   Cors = "",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
+  Room = "/api/room",
 }
 
 export enum SlotID {
@@ -76,6 +77,7 @@ export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  ROOM = "ROOM",
 }
 
 export const Anthropic = {
@@ -83,6 +85,13 @@ export const Anthropic = {
   ChatPath1: "v1/complete",
   ExampleEndpoint: "https://api.anthropic.com",
   Vision: "2023-06-01",
+};
+
+export const RoomPath = {
+  ChatPath: "v1/room/chat/messages",
+  UsagePath: "v1/room/billing/usage",
+  SubsPath: "v1/room/billing/subscription",
+  ListModelPath: "v1/room/models",
 };
 
 export const OpenaiPath = {
@@ -168,6 +177,8 @@ const anthropicModels = [
   "claude-3-haiku-20240307",
 ];
 
+const kssBoxModels = ["room-chat"];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -194,6 +205,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...kssBoxModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "kssbox-model",
+      providerName: "kssbox-model",
+      providerType: "kssbox-model",
     },
   })),
 ] as const;

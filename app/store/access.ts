@@ -23,6 +23,11 @@ const DEFAULT_ACCESS_STATE = {
 
   provider: ServiceProvider.OpenAI,
 
+  // room api
+  roomUrl: "",
+  roomApiKey: "",
+  roomApiVersion: "v1",
+
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
   openaiApiKey: "",

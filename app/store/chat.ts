@@ -368,8 +368,10 @@ export const useChatStore = createPersistStore(
           api = new ClientApi(ModelProvider.GeminiPro);
         } else if (identifyDefaultClaudeModel(modelConfig.model)) {
           api = new ClientApi(ModelProvider.Claude);
-        } else {
+        } else if (modelConfig.model.startsWith("gpt")) {
           api = new ClientApi(ModelProvider.GPT);
+        } else {
+          api = new ClientApi(ModelProvider.ROOM);
         }
 
         // make request

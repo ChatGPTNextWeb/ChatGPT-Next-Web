@@ -7,6 +7,7 @@ import {
 } from "../constant";
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { RoomApi } from "./platforms/room";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 export const ROLES = ["system", "user", "assistant"] as const;
@@ -70,7 +71,7 @@ export abstract class LLMApi {
   abstract models(): Promise<LLMModel[]>;
 }
 
-type ProviderName = "openai" | "azure" | "claude" | "palm";
+type ProviderName = "openai" | "azure" | "claude" | "palm" | "room";
 
 interface Model {
   name: string;
@@ -102,8 +103,10 @@ export class ClientApi {
       case ModelProvider.Claude:
         this.llm = new ClaudeApi();
         break;
-      default:
+      case ModelProvider.GPT:
         this.llm = new ChatGPTApi();
+      default:
+        this.llm = new RoomApi();
     }
   }
 
