@@ -60,6 +60,7 @@ export interface LLMUsage {
 }
 
 export interface LLMModel {
+  displayName: string;
   name: string;
   available: boolean;
   provider: LLMModelProvider;
@@ -68,7 +69,6 @@ export interface LLMModel {
 export interface LLMModelProvider {
   id: string;
   providerName: string;
-  providerType: string;
 }
 
 export abstract class LLMApi {
