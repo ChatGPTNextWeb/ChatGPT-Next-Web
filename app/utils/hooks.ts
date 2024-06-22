@@ -3,6 +3,7 @@ import { useAccessStore, useAppConfig } from "../store";
 import { collectModels, collectModelsWithDefaultModel } from "./model";
 import { getToken, isTokenExpired, setToken } from "@/app/utils/tokenManager";
 import { useRouter } from "next/navigation";
+import { Path } from "../constant";
 
 export function useAllModels() {
   const accessStore = useAccessStore();
@@ -48,7 +49,11 @@ export const useTokenRefresh = () => {
         } catch (err) {
           console.error("Error refreshing token", err);
           useAccessStore.setState({ isLoggedin: false });
-          router.push("/login");
+          if (process.env.NODE_ENV === "development") {
+            router.push(Path.LoginDev);
+          } else {
+            router.push(Path.Login);
+          }
         }
       }
     };
