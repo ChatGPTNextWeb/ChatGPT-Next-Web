@@ -29,7 +29,7 @@ export const useTokenRefresh = () => {
 
   useEffect(() => {
     const refreshToken = async () => {
-      const currentToken = getToken();
+      const currentToken = getToken() || useAccessStore.getState().openaiApiKey;
       if (currentToken && isTokenExpired()) {
         try {
           const response = await fetch(
@@ -49,11 +49,6 @@ export const useTokenRefresh = () => {
         } catch (err) {
           console.error("Error refreshing token", err);
           useAccessStore.setState({ isLoggedin: false });
-          if (process.env.NODE_ENV === "development") {
-            router.push(Path.LoginDev);
-          } else {
-            router.push(Path.Login);
-          }
         }
       }
     };
