@@ -1,14 +1,13 @@
 import { getClientConfig } from "../config/client";
 import {
   ACCESS_CODE_PREFIX,
-  Azure,
   ModelProvider,
   ServiceProvider,
 } from "../constant";
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import { GeminiProApi } from "./platforms/google";
-import { ClaudeApi } from "./platforms/anthropic";
+// import { GeminiProApi } from "./platforms/google";
+// import { ClaudeApi } from "./platforms/anthropic";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -101,17 +100,21 @@ interface ChatProvider {
 export class ClientApi {
   public llm: LLMApi;
 
-  constructor(provider: ModelProvider = ModelProvider.GPT) {
-    switch (provider) {
-      case ModelProvider.GeminiPro:
-        this.llm = new GeminiProApi();
-        break;
-      case ModelProvider.Claude:
-        this.llm = new ClaudeApi();
-        break;
-      default:
-        this.llm = new ChatGPTApi();
-    }
+  // constructor(provider: ModelProvider = ModelProvider.GPT) {
+  //   switch (provider) {
+  //     case ModelProvider.GeminiPro:
+  //       this.llm = new GeminiProApi();
+  //       break;
+  //     case ModelProvider.Claude:
+  //       this.llm = new ClaudeApi();
+  //       break;
+  //     default:
+  //       this.llm = new ChatGPTApi();
+  //   }
+  // }
+
+  constructor() {
+    this.llm = new ChatGPTApi();
   }
 
   config() {}
@@ -170,11 +173,12 @@ export function getHeaders() {
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
-  const apiKey = isGoogle
-    ? accessStore.googleApiKey
-    : isAzure
-    ? accessStore.azureApiKey
-    : accessStore.openaiApiKey;
+  // const apiKey = isGoogle
+  //   ? accessStore.googleApiKey
+  //   : isAzure
+  //   ? accessStore.azureApiKey
+  //   : accessStore.openaiApiKey;
+  const apiKey = accessStore.openaiApiKey;
   const clientConfig = getClientConfig();
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;

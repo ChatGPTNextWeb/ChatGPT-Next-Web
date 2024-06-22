@@ -12,6 +12,7 @@ import DeleteIcon from "../icons/delete.svg";
 import PluginIcon from "../icons/plugin.svg";
 import BotIcon from "../icons/bot.png";
 import DragIcon from "../icons/drag.svg";
+import LogoutIcon from "../icons/logout.svg";
 
 import Locale from "../locales";
 
@@ -175,7 +176,7 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header-bar"]}>
         {isLoggedin ? (
           <IconButton
-            icon={<AccountIcon />}
+            icon={<LogoutIcon />}
             text={shouldNarrow ? undefined : "Logout"}
             className={styles["sidebar-bar-button"]}
             onClick={() => {
