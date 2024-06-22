@@ -81,27 +81,11 @@ export enum ModelProvider {
   Claude = "Claude",
 }
 
-export const Anthropic = {
-  ChatPath: "v1/messages",
-  ChatPath1: "v1/complete",
-  ExampleEndpoint: "https://api.anthropic.com",
-  Vision: "2023-06-01",
-};
-
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
-};
-
-export const Azure = {
-  ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
-};
-
-export const Google = {
-  ExampleEndpoint: "https://generativelanguage.googleapis.com/",
-  ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -2102,22 +2086,6 @@ const openaiModels = [
   },
 ];
 
-const googleModels = [
-  "gemini-1.0-pro",
-  "gemini-1.5-pro-latest",
-  "gemini-1.5-flash-latest",
-  "gemini-pro-vision",
-];
-
-const anthropicModels = [
-  "claude-instant-1.2",
-  "claude-2.0",
-  "claude-2.1",
-  "claude-3-sonnet-20240229",
-  "claude-3-opus-20240229",
-  "claude-3-haiku-20240307",
-];
-
 export const DEFAULT_MODELS = [
   ...openaiModels.map(({ model_name, display_name, provider }) => ({
     name: model_name,
@@ -2128,24 +2096,6 @@ export const DEFAULT_MODELS = [
       providerName: provider.provider_name,
     },
   })),
-  // ...googleModels.map((name) => ({
-  //   name,
-  //   available: true,
-  //   provider: {
-  //     id: "google",
-  //     providerName: "Google",
-  //     providerType: "google",
-  //   },
-  // })),
-  // ...anthropicModels.map((name) => ({
-  //   name,
-  //   available: true,
-  //   provider: {
-  //     id: "anthropic",
-  //     providerName: "Anthropic",
-  //     providerType: "anthropic",
-  //   },
-  // })),
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
