@@ -27,3 +27,8 @@ export const isTokenExpired = () => {
   const hoursPassed = diff / (1000 * 60 * 60);
   return hoursPassed > 24;
 };
+
+export const clearToken = () => {
+  cookies.remove(TOKEN_COOKIE_NAME);
+  cookies.remove(TOKEN_TIMESTAMP_COOKIE_NAME);
+};

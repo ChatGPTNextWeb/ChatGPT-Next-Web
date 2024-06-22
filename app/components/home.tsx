@@ -30,6 +30,7 @@ import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
+import { useTokenRefresh } from "../utils/hooks";
 
 export function Loading(props: { noLogo?: boolean }) {
   // TODO fix this loading thing
@@ -137,6 +138,8 @@ function Screen() {
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+  // const isLoggedIn = useAccessStore.getState().isLoggedin;
+  useTokenRefresh();
 
   return (
     <div

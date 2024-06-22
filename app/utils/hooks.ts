@@ -26,10 +26,10 @@ export function useAllModels() {
 
 export const useTokenRefresh = () => {
   const router = useRouter();
-
   useEffect(() => {
     const refreshToken = async () => {
       const currentToken = getToken();
+
       if (currentToken && isTokenExpired()) {
         try {
           const response = await fetch(

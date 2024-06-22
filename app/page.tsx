@@ -12,7 +12,7 @@ const serverConfig = getServerSideConfig();
 export default function App() {
   const router = useRouter();
   const isLoggedin = useAccessStore.getState().isLoggedin;
-  useTokenRefresh();
+
   useEffect(() => {
     if (!isLoggedin) {
       if (process.env.NODE_ENV === "development") {
@@ -22,6 +22,7 @@ export default function App() {
       }
     }
   }, [isLoggedin, router]);
+
   return (
     <>
       <Home />
