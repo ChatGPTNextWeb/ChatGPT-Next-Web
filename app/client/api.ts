@@ -113,7 +113,7 @@ export class ClientApi {
   //   }
   // }
 
-  constructor() {
+  constructor(provider: ModelProvider = ModelProvider.GPT) {
     this.llm = new ChatGPTApi();
   }
 

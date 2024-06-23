@@ -170,25 +170,25 @@ function Screen() {
   );
 }
 
-// export function useLoadData() {
-//   const config = useAppConfig();
+export function useLoadData() {
+  const config = useAppConfig();
 
-//   var api: ClientApi;
-//   if (config.modelConfig.model.startsWith("gpt")) {
-//     api = new ClientApi(ModelProvider.GeminiPro);
-//   } else if (identifyDefaultClaudeModel(config.modelConfig.model)) {
-//     api = new ClientApi(ModelProvider.Claude);
-//   } else {
-//     api = new ClientApi(ModelProvider.GPT);
-//   }
-//   useEffect(() => {
-//     (async () => {
-//       const models = await api.llm.models();
-//       config.mergeModels(models);
-//     })();
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, []);
-// }
+  var api: ClientApi;
+  if (config.modelConfig.model.startsWith("gpt")) {
+    api = new ClientApi(ModelProvider.GeminiPro);
+  } else if (identifyDefaultClaudeModel(config.modelConfig.model)) {
+    api = new ClientApi(ModelProvider.Claude);
+  } else {
+    api = new ClientApi(ModelProvider.GPT);
+  }
+  useEffect(() => {
+    (async () => {
+      const models = await api.llm.models();
+      config.mergeModels(models);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
 
 export function Home() {
   useSwitchTheme();

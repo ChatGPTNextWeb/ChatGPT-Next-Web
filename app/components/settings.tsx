@@ -584,11 +584,7 @@ export function Settings() {
     const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
 
     return accessStore.hideBalanceQuery || isOpenAiUrl;
-  }, [
-    accessStore.hideBalanceQuery,
-    accessStore.openaiUrl,
-    accessStore.provider,
-  ]);
+  }, [accessStore.hideBalanceQuery, accessStore.openaiUrl]);
 
   const usage = {
     used: updateStore.used,
