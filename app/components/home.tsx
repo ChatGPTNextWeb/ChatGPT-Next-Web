@@ -177,7 +177,7 @@ export function useLoadData() {
   const config = useAppConfig();
 
   var api: ClientApi;
-  if (config.modelConfig.model.startsWith("gemini")) {
+  if (config.modelConfig.model.startsWith("gpt")) {
     api = new ClientApi(ModelProvider.GeminiPro);
   } else if (identifyDefaultClaudeModel(config.modelConfig.model)) {
     api = new ClientApi(ModelProvider.Claude);
@@ -195,7 +195,7 @@ export function useLoadData() {
 
 export function Home() {
   useSwitchTheme();
-  useLoadData();
+  // useLoadData();
   useHtmlLang();
 
   useEffect(() => {
