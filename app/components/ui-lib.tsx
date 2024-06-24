@@ -9,6 +9,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
+import ClaudeInstantIcon from "../icons/Claude-Instant.svg";
 
 import Locale from "../locales";
 
@@ -521,6 +522,9 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
     }
     if (value.startsWith("gemini")) {
       return <GoogleOutlined />;
+    }
+    if (value.startsWith("claude")) {
+      return <ClaudeInstantIcon />;
     }
     return <></>;
   };
