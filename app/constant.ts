@@ -256,9 +256,9 @@ export const DEFAULT_MODELS = [
     },
   },
   // {
-  //   name: "gpt-4-vision-preview",
+  //   name: "gpt-4o-2024-05-13",
   //   available: true,
-  //   describe: "GPT-4多模态,图像识别",
+  //   describe: "GPT-4多模态,原生代理",
   //   provider: {
   //     id: "openai",
   //     providerName: "OpenAI",
