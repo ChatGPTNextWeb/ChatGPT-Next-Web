@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           clean: true
-          github-server-url: 'https://gh.siji.ci'
+          github-server-url: 'https://gh.sivpn.cn'
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           clean: true
-          github-server-url: 'https://gh.siji.ci'
+          github-server-url: 'https://gh.sivpn.cn'
 #  deploy-nm:
 #    name: 部署到内蒙服务器
 #    needs: download-repo

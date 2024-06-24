@@ -31,19 +31,16 @@ async function handle(
                 {
                   name: {
                     contains: searchText,
-                    mode: "insensitive", // 不区分大小写
                   },
                 },
                 {
                   username: {
                     contains: searchText,
-                    mode: "insensitive", // 不区分大小写
                   },
                 },
                 {
                   email: {
                     contains: searchText,
-                    mode: "insensitive", // 不区分大小写
                   },
                 },
               ],
