@@ -71,9 +71,9 @@ model Session {
 
 model LogEntry {
   id        Int      @id @default(autoincrement())
-  ip        String?  @db.VarChar(50)  // IPV6 long 39
+  ip        String?  @db.VarChar(50) // IPV6 long 39
   path      String?  @db.Text
-  model     String?  @db.VarChar(25)
+  model     String?  @db.VarChar(50)
   userName  String?  @db.VarChar(50)
   userID    String?
   createdAt DateTime @default(now())
@@ -142,11 +142,11 @@ model VerificationToken {
 // }
 
 model Setting {
-  key         String  @id
-  value       String
-  type        String
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  key       String   @id
+  value     String
+  type      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("settings")
 }
