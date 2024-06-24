@@ -28,6 +28,7 @@ jobs:
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.gitlab.si.icu -u ${{ secrets.DOCKER_USERNAME }}
           echo "${{ secrets.DOCKER_ENV }}" > .env
           #bash ./start.sh
           docker-compose build
