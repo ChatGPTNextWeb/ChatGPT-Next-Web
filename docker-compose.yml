@@ -22,11 +22,11 @@ services:
       - /etc/localtime:/etc/localtime
 #    networks:
 #      - chatgpt-ns
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "1"
+#    logging:
+#      driver: json-file
+#      options:
+#        max-size: "10m"
+#        max-file: "1"
 
 #networks:
 #  chatgpt-ns:
