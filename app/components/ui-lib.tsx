@@ -13,7 +13,7 @@ import MinIcon from "../icons/min.svg";
 import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
-import React, { HTMLProps, useEffect, useState } from "react";
+import React, { HTMLProps, MouseEvent, useEffect, useState } from "react";
 import { IconButton } from "./button";
 
 export function Popover(props: {
@@ -47,7 +47,7 @@ export function ListItem(props: {
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent) => void;
 }) {
   return (
     <div
@@ -442,6 +442,7 @@ export function Selector<T>(props: {
     title: string;
     subTitle?: string;
     value: T;
+    disable?: boolean;
   }>;
   defaultSelectedValue?: T;
   onSelection?: (selection: T[]) => void;
@@ -456,13 +457,18 @@ export function Selector<T>(props: {
             const selected = props.defaultSelectedValue === item.value;
             return (
               <ListItem
-                className={styles["selector-item"]}
+                className={`${styles["selector-item"]} ${
+                  item.disable && styles["selector-item-disabled"]
+                }`}
                 key={i}
                 title={item.title}
                 subTitle={item.subTitle}
-                onClick={() => {
-                  props.onSelection?.([item.value]);
-                  props.onClose?.();
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (!item.disable) {
+                    props.onSelection?.([item.value]);
+                    props.onClose?.();
+                  }
                 }}
               >
                 {selected ? (

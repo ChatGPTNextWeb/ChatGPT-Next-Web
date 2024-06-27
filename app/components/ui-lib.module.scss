@@ -291,6 +291,10 @@
   justify-content: center;
   z-index: 999;
 
+  .selector-item-disabled{
+    opacity: 0.6;
+  }
+
   &-content {
     .list {
       max-height: 90vh;
