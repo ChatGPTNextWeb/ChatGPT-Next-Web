@@ -23,15 +23,21 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
+  PLUGINS,
   REPO_URL,
 } from "../constant";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Selector, showConfirm, showToast } from "./ui-lib";
+import de from "@/app/locales/de";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
+  loading: () => null,
+});
+
+const SdList = dynamic(async () => (await import("./sd-list")).SdList, {
   loading: () => null,
 });
 
@@ -141,9 +147,20 @@ export function SideBar(props: { className?: string }) {
     [isMobileScreen],
   );
   const [showPluginSelector, setShowPluginSelector] = useState(false);
+  const location = useLocation();
 
   useHotKey();
 
+  let bodyComponent: React.JSX.Element;
+  let isChat: boolean;
+  switch (location.pathname) {
+    case Path.Sd:
+      bodyComponent = <SdList />;
+      break;
+    default:
+      isChat = true;
+      bodyComponent = <ChatList narrow={shouldNarrow} />;
+  }
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
@@ -192,12 +209,12 @@ export function SideBar(props: { className?: string }) {
       <div
         className={styles["sidebar-body"]}
         onClick={(e) => {
-          if (e.target === e.currentTarget) {
+          if (isChat && e.target === e.currentTarget) {
             navigate(Path.Home);
           }
         }}
       >
-        <ChatList narrow={shouldNarrow} />
+        {bodyComponent}
       </div>
 
       <div className={styles["sidebar-tail"]}>
@@ -254,11 +271,16 @@ export function SideBar(props: { className?: string }) {
               value: "-",
               disable: true,
             },
-            { title: "Stable Diffusion", value: "sd" },
+            ...PLUGINS.map((item) => {
+              return {
+                title: item.name,
+                value: item.path,
+              };
+            }),
           ]}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {
-            console.log("go to page: ", s);
+            navigate(s[0], { state: { fromHome: true } });
           }}
         />
       )}

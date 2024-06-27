@@ -1,5 +1,7 @@
 "use client";
 
+import { Sd } from "@/app/components/sd";
+
 require("../polyfill");
 
 import { useState, useEffect } from "react";
@@ -159,6 +161,7 @@ function Screen() {
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
+              <Route path={Path.Sd} element={<Sd />} />
               <Route path={Path.Settings} element={<Settings />} />
             </Routes>
           </div>

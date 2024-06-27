@@ -21,6 +21,7 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Auth = "/auth",
+  Sd = "/sd",
 }
 
 export enum ApiPath {
@@ -213,3 +214,5 @@ export const internalAllowedWebDavEndpoints = [
   "https://webdav.yandex.com",
   "https://app.koofr.net/dav/Koofr",
 ];
+
+export const PLUGINS = [{ name: "Stable Diffusion", path: Path.Sd }];
