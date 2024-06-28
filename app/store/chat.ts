@@ -366,7 +366,10 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (modelConfig.model.startsWith("claude")) {
+        } else if (
+          modelConfig.model.startsWith("claude") ||
+          modelConfig.model.startsWith("knowledge-base")
+        ) {
           api = new ClientApi(ModelProvider.Bedrock);
           //api = new ClientApi(ModelProvider.Claude);
         } else {

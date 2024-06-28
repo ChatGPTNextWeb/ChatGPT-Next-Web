@@ -15,12 +15,13 @@ export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
 export enum Path {
+  Login = "/login",
   Home = "/",
   Chat = "/chat",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
-  Auth = "/auth",
+  Auth = "/b-auth", //暂时修改
 }
 
 export enum ApiPath {
@@ -182,6 +183,7 @@ const bedrockModels = [
   "claude-3-haiku",
   "claude-3-sonnet",
   "claude-3-opus",
+  "knowledge-base-regulations",
 ];
 
 export const DEFAULT_MODELS = [

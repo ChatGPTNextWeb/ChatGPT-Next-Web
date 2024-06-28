@@ -16,12 +16,14 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^6.1.12",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
+    "aws-amplify": "^6.3.6",
     "emoji-picker-react": "^4.9.2",
     "fuse.js": "^7.0.0",
     "heic2any": "^0.0.4",
@@ -45,6 +47,8 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.0.3",
+    "@aws-amplify/backend-cli": "^1.0.4",
     "@tauri-apps/cli": "1.5.11",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.70",

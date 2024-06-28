@@ -1,0 +1,89 @@
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.authenticator {
+  // /* 覆盖全局样式 */
+  input[type="number"],
+  input[type="text"],
+  input[type="password"] {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    border-radius: var(
+      --amplify-components-fieldcontrol-border-radius
+    ) !important;
+    border: var(--amplify-components-fieldcontrol-border) !important;
+    min-height: 36px !important;
+    box-sizing: border-box !important;
+    background: var(--amplify-components-fieldcontrol-background) !important;
+    color: var(--amplify-components-fieldcontrol-color) !important;
+    padding: var(--amplify-components-fieldcontrol-padding) !important;
+    max-width: 100% !important;
+    font-family: inherit !important;
+    font-size: var(--amplify-components-fieldcontrol-font-size) !important;
+    line-height: var(--amplify-components-fieldcontrol-line-height) !important;
+    -webkit-padding-before: var(
+      --amplify-components-fieldcontrol-padding-block-start
+    ) !important;
+    padding-block-start: var(
+      --amplify-components-fieldcontrol-padding-block-start
+    ) !important;
+    -webkit-padding-after: var(
+      --amplify-components-fieldcontrol-padding-block-end
+    ) !important;
+    padding-block-end: var(
+      --amplify-components-fieldcontrol-padding-block-end
+    ) !important;
+    -webkit-padding-start: var(
+      --amplify-components-fieldcontrol-padding-inline-start
+    ) !important;
+    padding-inline-start: var(
+      --amplify-components-fieldcontrol-padding-inline-start
+    ) !important;
+    -webkit-padding-end: var(
+      --amplify-components-fieldcontrol-padding-inline-end
+    ) !important;
+    padding-inline-end: var(
+      --amplify-components-fieldcontrol-padding-inline-end
+    ) !important;
+    transition: all var(--amplify-components-fieldcontrol-transition-duration) !important;
+    width: 100% !important;
+    border-color: var(
+      --amplify-components-fieldcontrol-border-color
+    ) !important;
+    border-style: var(
+      --amplify-components-fieldcontrol-border-style
+    ) !important;
+    border-width: var(
+      --amplify-components-fieldcontrol-border-width
+    ) !important;
+    outline-color: var(
+      --amplify-components-fieldcontrol-outline-color
+    ) !important;
+    outline-style: var(
+      --amplify-components-fieldcontrol-outline-style
+    ) !important;
+    outline-width: var(
+      --amplify-components-fieldcontrol-outline-width
+    ) !important;
+    outline-offset: var(
+      --amplify-components-fieldcontrol-outline-offset
+    ) !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    user-select: text !important;
+    display: inline-block !important;
+  }
+
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear,
+  input[type="password"]::-webkit-search-cancel-button,
+  input[type="password"]::-webkit-search-decoration {
+    display: none;
+  }
+}

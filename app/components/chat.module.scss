@@ -231,10 +231,12 @@
 
   animation: slide-in ease 0.3s;
 
-  $linear: linear-gradient(to right,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 1),
-      rgba(0, 0, 0, 0));
+  $linear: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0)
+  );
   mask-image: $linear;
 
   @mixin show {
@@ -367,7 +369,7 @@
   }
 }
 
-.chat-message-user>.chat-message-container {
+.chat-message-user > .chat-message-container {
   align-items: flex-end;
 }
 
@@ -450,23 +452,27 @@
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
 
-
 @media only screen and (max-width: 600px) {
-  $calc-image-width: calc(100vw/3*2/var(--image-count));
+  $calc-image-width: calc(100vw / 3 * 2 / var(--image-count));
 
   .chat-message-item-image-multi {
     width: $calc-image-width;
     height: $calc-image-width;
   }
-  
+
   .chat-message-item-image {
-    max-width: calc(100vw/3*2);
+    max-width: calc(100vw / 3 * 2);
   }
 }
 
 @media screen and (min-width: 600px) {
-  $max-image-width: calc(calc(1200px - var(--sidebar-width))/3*2/var(--image-count));
-  $image-width: calc(calc(var(--window-width) - var(--sidebar-width))/3*2/var(--image-count));
+  $max-image-width: calc(
+    calc(1200px - var(--sidebar-width)) / 3 * 2 / var(--image-count)
+  );
+  $image-width: calc(
+    calc(var(--window-width) - var(--sidebar-width)) / 3 * 2 /
+      var(--image-count)
+  );
 
   .chat-message-item-image-multi {
     width: $image-width;
@@ -476,7 +482,7 @@
   }
 
   .chat-message-item-image {
-    max-width: calc(calc(1200px - var(--sidebar-width))/3*2);
+    max-width: calc(calc(1200px - var(--sidebar-width)) / 3 * 2);
   }
 }
 
@@ -494,7 +500,7 @@
   z-index: 1;
 }
 
-.chat-message-user>.chat-message-container>.chat-message-item {
+.chat-message-user > .chat-message-container > .chat-message-item {
   background-color: var(--second);
 
   &:hover {
@@ -605,7 +611,8 @@
   min-height: 68px;
 }
 
-.chat-input:focus {}
+.chat-input:focus {
+}
 
 .chat-input-send {
   background-color: var(--primary);
