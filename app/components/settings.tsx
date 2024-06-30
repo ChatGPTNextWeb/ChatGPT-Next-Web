@@ -482,7 +482,7 @@ function ImportConfigModal(props: { onClose?: () => void }) {
           <IconButton
             key="cancel"
             onClick={() => {
-              props.onClose();
+              props.onClose?.();
             }}
             icon={<CancelIcon />}
             bordered
