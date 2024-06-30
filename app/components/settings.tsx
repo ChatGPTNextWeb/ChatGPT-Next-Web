@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 import styles from "./settings.module.scss";
+import uiStyle from "./ui-lib.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
 import AddIcon from "../icons/add.svg";
@@ -72,6 +73,7 @@ import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
+import CancelIcon from "../icons/cancel.svg";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -467,6 +469,61 @@ function SyncConfigModal(props: { onClose?: () => void }) {
   );
 }
 
+function ImportConfigModal(props: { onClose?: () => void }) {
+  const [importString, setImportString] = useState("");
+  const syncStore = useSyncStore();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Sync.Config.ImportModal.Title}
+        onClose={() => props.onClose?.()}
+        actions={[
+          <IconButton
+            key="cancel"
+            onClick={() => {
+              props.onClose();
+            }}
+            icon={<CancelIcon />}
+            bordered
+            shadow
+            text={Locale.UI.Cancel}
+          />,
+          <IconButton
+            key="confirm"
+            onClick={async () => {
+              try {
+                await syncStore.importSyncConfig(importString);
+                showToast(Locale.Settings.Sync.ImportSuccess);
+                props.onClose?.();
+              } catch (e) {
+                showToast(Locale.Settings.Sync.ImportFail);
+                console.log("[Sync] Failed to import sync config", e);
+              }
+            }}
+            icon={<ConfirmIcon />}
+            bordered
+            text={Locale.UI.Confirm}
+          />,
+        ]}
+      >
+        <div className={styles["import-config-modal"]}>
+          <textarea
+            className={uiStyle["modal-input"]}
+            autoFocus
+            placeholder={Locale.Settings.Sync.Config.ImportModal.Placeholder}
+            value={importString}
+            rows={props.rows ?? 3}
+            onInput={(e) => {
+              setImportString(e.currentTarget.value);
+            }}
+          />
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
 function SyncItems() {
   const syncStore = useSyncStore();
   const chatStore = useChatStore();
@@ -477,6 +534,7 @@ function SyncItems() {
   }, [syncStore]);
 
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
@@ -512,19 +570,35 @@ function SyncItems() {
               }}
             />
             {couldSync && (
-              <IconButton
-                icon={<ResetIcon />}
-                text={Locale.UI.Sync}
-                onClick={async () => {
-                  try {
-                    await syncStore.sync();
-                    showToast(Locale.Settings.Sync.Success);
-                  } catch (e) {
-                    showToast(Locale.Settings.Sync.Fail);
-                    console.error("[Sync]", e);
-                  }
-                }}
-              />
+              <>
+                <IconButton
+                  icon={<ResetIcon />}
+                  text={Locale.UI.Sync}
+                  onClick={async () => {
+                    try {
+                      await syncStore.sync();
+                      showToast(Locale.Settings.Sync.Success);
+                    } catch (e) {
+                      showToast(Locale.Settings.Sync.Fail);
+                      console.error("[Sync]", e);
+                    }
+                  }}
+                />
+                <IconButton
+                  icon={<UploadIcon />}
+                  text={Locale.UI.Export}
+                  onClick={() => {
+                    syncStore.exportSyncConfig();
+                  }}
+                />
+                <IconButton
+                  icon={<DownloadIcon />}
+                  text={Locale.UI.Import}
+                  onClick={() => {
+                    setShowImportModal(true);
+                  }}
+                />
+              </>
             )}
           </div>
         </ListItem>
@@ -554,6 +628,10 @@ function SyncItems() {
 
       {showSyncConfigModal && (
         <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
+      )}
+
+      {showImportModal && (
+        <ImportConfigModal onClose={() => setShowImportModal(false)} />
       )}
     </>
   );
