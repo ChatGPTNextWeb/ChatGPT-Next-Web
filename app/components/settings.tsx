@@ -469,7 +469,7 @@ function SyncConfigModal(props: { onClose?: () => void }) {
   );
 }
 
-function ImportConfigModal(props: { onClose?: () => void }) {
+function ImportConfigModal(props: { onClose?: () => void; rows?: number }) {
   const [importString, setImportString] = useState("");
   const syncStore = useSyncStore();
 
