@@ -569,6 +569,13 @@ function SyncItems() {
                 setShowSyncConfigModal(true);
               }}
             />
+            <IconButton
+              icon={<DownloadIcon />}
+              text={Locale.UI.Import}
+              onClick={() => {
+                setShowImportModal(true);
+              }}
+            />
             {couldSync && (
               <>
                 <IconButton
@@ -589,13 +596,6 @@ function SyncItems() {
                   text={Locale.UI.Export}
                   onClick={() => {
                     syncStore.exportSyncConfig();
-                  }}
-                />
-                <IconButton
-                  icon={<DownloadIcon />}
-                  text={Locale.UI.Import}
-                  onClick={() => {
-                    setShowImportModal(true);
                   }}
                 />
               </>
