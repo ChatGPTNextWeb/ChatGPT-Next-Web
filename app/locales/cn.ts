@@ -185,12 +185,10 @@ const cn = {
       NotSyncYet: "还没有进行过同步",
       Success: "同步成功",
       Fail: "同步失败",
-
       ExportSuccess: "同步配置已复制到剪贴板",
-      ExportFail: "导出失败，请重试",
+      ExportFail: "同步配置导出失败，请重试",
       ImportSuccess: "同步配置导入成功",
-      ImportFail: "导入失败，请检查配置字符串",
-
+      ImportFail: "同步配置导入失败，请检查配置字符串",
       Config: {
         Modal: {
           Title: "配置云同步",
