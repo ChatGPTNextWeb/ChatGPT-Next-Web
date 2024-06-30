@@ -59,8 +59,9 @@ export const useSyncStore = createPersistStore(
 
       const jsonString = JSON.stringify(exportData);
       const compressed = pako.deflate(jsonString);
-      const encoded = btoa(String.fromCharCode.apply(null, compressed));
-
+      const encoded = btoa(
+        String.fromCharCode.apply(null, Array.from(compressed)),
+      );
       try {
         await navigator.clipboard.writeText(encoded);
         showToast(Locale.Settings.Sync.ExportSuccess);
