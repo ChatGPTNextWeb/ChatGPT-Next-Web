@@ -513,7 +513,7 @@ function ImportConfigModal(props: { onClose?: () => void }) {
             autoFocus
             placeholder={Locale.Settings.Sync.Config.ImportModal.Placeholder}
             value={importString}
-            rows={props.rows ?? 3}
+            rows={props?.rows ?? 3}
             onInput={(e) => {
               setImportString(e.currentTarget.value);
             }}
