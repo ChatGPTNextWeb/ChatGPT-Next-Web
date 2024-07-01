@@ -22,8 +22,8 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 RUN yarn config set registry 'https://registry.npmmirror.com/'
-RUN yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-RUN yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+RUN yarn config set sharp_binary_host "https://npmmirror.com/mirrors/sharp"
+RUN yarn config set sharp_libvips_binary_host "https://cdn.npmmirror.com/binaries/sharp-libvips"
 #RUN # 清理遗留的缓存
 #RUN yarn cache clean
 RUN yarn install
