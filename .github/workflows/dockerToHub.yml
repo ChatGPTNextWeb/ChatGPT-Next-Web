@@ -113,4 +113,4 @@ jobs:
             rm -rf /www/server/nginx/proxy_cache_dir/* || true
             rm -rf /www/server/nginx/proxy_temp_dir/* || true
             sleep 2
-            #tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
+            tccli cdn PurgePathCache --cli-unfold-argument --Paths '${{ secrets.WEB_URL }}' --FlushType delete
