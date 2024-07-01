@@ -1,13 +1,13 @@
 #FROM registry.cn-hangzhou.aliyuncs.com/sijinhui/node:18-alpine AS base
 FROM hub.sivpn.cn/library/node:22.1-alpine AS base
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk update && apk add --no-cache git tzdata
-RUN apk add --no-cache \
-        vips-dev \
-        fftw-dev \
-        glib-dev \
-        glib \
-        expat-dev
+RUN apk add --no-cache tzdata
+#RUN apk add --no-cache \
+#        vips-dev \
+#        fftw-dev \
+#        glib-dev \
+#        glib \
+#        expat-dev
 # 设置时区环境变量
 ENV TZ=Asia/Chongqing
 # 更新并安装时区工具
@@ -30,6 +30,8 @@ RUN yarn install
 
 FROM base AS builder
 
+RUN apk add --no-cache git
+
 ENV OPENAI_API_KEY=""
 ENV GOOGLE_API_KEY=""
 ENV CODE=""
@@ -39,8 +41,9 @@ COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 # 避免下面那个报错
 RUN mkdir -p "/app/node_modules/tiktoken"
-RUN mkdir -p "/app/node_modules/sharp"
-
+#RUN mkdir -p "/app/node_modules/sharp"
+#RUN yarn add sharp
+ENV NEXT_SHARP_PATH /app/node_modules/sharp
 RUN yarn build
 
 FROM base AS runner
