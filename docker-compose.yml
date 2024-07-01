@@ -2,15 +2,11 @@ version: "3.9"
 services:
   chatgpt-next-web:
     container_name: chatgpt-next-web
-#    image: yidadaa/chatgpt-next-web
     restart: always
     image: registry.gitlab.si.icu/sijinhui/chatgpt-next-web
     build:
       context: .
       dockerfile: Dockerfile
-#    depends_on:
-#      db:
-#        condition: service_healthy
 #    ports:
 #      - "127.0.0.1:23000:23000"
     network_mode: "host"
@@ -20,14 +16,3 @@ services:
       - .env
     volumes:
       - /etc/localtime:/etc/localtime
-#    networks:
-#      - chatgpt-ns
-#    logging:
-#      driver: json-file
-#      options:
-#        max-size: "10m"
-#        max-file: "1"
-
-#networks:
-#  chatgpt-ns:
-#    external: true

@@ -33,7 +33,7 @@ jobs:
           #bash ./start.sh
           docker-compose build
           docker-compose push
-          yes | docker system prune --filter "until=168h"
+          #yes | docker system prune --filter "until=168h"
   download-repo:
     name: 下载仓库
     needs: build
@@ -109,7 +109,7 @@ jobs:
             echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
             docker network ls | grep -qw chatgpt-ns || docker network create chatgpt-ns
             docker-compose pull && docker-compose up -d
-            yes | docker image prune
+            #yes | docker image prune
             rm -rf /www/server/nginx/proxy_cache_dir/* || true
             rm -rf /www/server/nginx/proxy_temp_dir/* || true
             sleep 2
