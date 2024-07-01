@@ -186,7 +186,6 @@ export class GeminiProApi implements LLMApi {
         const chatPath =
           baseUrl.replace("generateContent", "streamGenerateContent") +
           (baseUrl.indexOf("?") > -1 ? "&alt=sse" : "?alt=sse");
-        console.log("chatPath", chatPath);
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
