@@ -171,6 +171,8 @@ export const authOptions: NextAuthOptions = {
                 username: token?.user?.username || token?.user?.gh_username,
                 // @ts-expect-error
                 hasPassword: !!token?.user?.password,
+                // @ts-expect-error
+                isAdmin: token?.user?.isAdmin,
             };
             // console.log('555555555,', session, token)
             return session;
