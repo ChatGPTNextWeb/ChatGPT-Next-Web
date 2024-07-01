@@ -1,5 +1,5 @@
 import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, LLMApi, MultimodalContent } from "../api";
+import { ChatOptions, getHeaders, LLMApi, MultimodalContent,  } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
@@ -190,9 +190,7 @@ export class ClaudeApi implements LLMApi {
       body: JSON.stringify(requestBody),
       signal: controller.signal,
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "x-api-key": accessStore.anthropicApiKey,
+        ...getHeaders(),  // get common headers
         "anthropic-version": accessStore.anthropicApiVersion,
         Authorization: getAuthKey(accessStore.anthropicApiKey),
       },
