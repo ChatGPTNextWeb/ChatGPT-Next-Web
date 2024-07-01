@@ -14,6 +14,8 @@ export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
+export const BAIDU_BASE_URL = "https://aip.baidubce.com";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -27,6 +29,8 @@ export enum ApiPath {
   Cors = "",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
+  Google = "/api/google",
+  Baidu = "/api/baidu",
 }
 
 export enum SlotID {
@@ -70,12 +74,14 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  Baidu = "Baidu",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Ernie = "Ernie",
 }
 
 export const Anthropic = {
@@ -99,6 +105,12 @@ export const Azure = {
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+};
+
+export const Baidu = {
+  ExampleEndpoint: "https://aip.baidubce.com",
+  ChatPath: (modelName: string) =>
+    `/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${modelName}`,
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -169,6 +181,8 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
+const baiduModels = ["ernie-4.0-8k-preview"];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -195,6 +209,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...baiduModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "baidu",
+      providerName: "Baidu",
+      providerType: "baidu",
     },
   })),
 ] as const;

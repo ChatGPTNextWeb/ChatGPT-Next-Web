@@ -42,6 +42,11 @@ const DEFAULT_ACCESS_STATE = {
   anthropicApiVersion: "2023-06-01",
   anthropicUrl: "",
 
+  // baidu
+  baiduUrl: "",
+  baiduApiKey: "",
+  baiduSecretKey: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -78,6 +83,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["anthropicApiKey"]);
     },
 
+    isValidaBaidu() {
+      return ensure(get(), ["baiduUrl", "baiduApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -87,6 +96,7 @@ export const useAccessStore = createPersistStore(
         this.isValidAzure() ||
         this.isValidGoogle() ||
         this.isValidAnthropic() ||
+        this.isValidaBaidu() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
@@ -131,6 +141,7 @@ export const useAccessStore = createPersistStore(
           openaiApiKey: string;
           azureApiVersion: string;
           googleApiKey: string;
+          baicApiKey: string;
         };
         state.openaiApiKey = state.token;
         state.azureApiVersion = "2023-08-01-preview";
