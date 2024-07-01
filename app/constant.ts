@@ -181,7 +181,7 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
-const baiduModels = ["ernie-4.0-8k-preview"];
+const baiduModels = ["completions_pro"];
 
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
