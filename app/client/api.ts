@@ -184,7 +184,8 @@ export function getHeaders() {
       accessStore.enabledAccessControl() &&
       validString(accessStore.accessCode)
     ) {
-      headers[authHeader] = makeBearer(
+      // access_code must send with header named `Authorization`, will using in auth middleware.
+      headers['Authorization'] = makeBearer(
         ACCESS_CODE_PREFIX + accessStore.accessCode,
       );
     }
