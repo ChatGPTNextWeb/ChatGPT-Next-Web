@@ -37,7 +37,7 @@ const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
 
-const SdList = dynamic(async () => (await import("./sd-list")).SdList, {
+const SdPanel = dynamic(async () => (await import("./sd-panel")).SdPanel, {
   loading: () => null,
 });
 
@@ -155,7 +155,7 @@ export function SideBar(props: { className?: string }) {
   let isChat: boolean = false;
   switch (location.pathname) {
     case Path.Sd:
-      bodyComponent = <SdList />;
+      bodyComponent = <SdPanel />;
       break;
     default:
       isChat = true;

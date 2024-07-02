@@ -484,6 +484,16 @@ const cn = {
     Topic: "主题",
     Time: "时间",
   },
+  SdPanel: {
+    Prompt: "画面提示",
+    NegativePrompt: "否定提示",
+    PleaseInput: (name: string) => `请输入${name}`,
+    AspectRatio: "横纵比",
+    ImageStyle: "图像风格",
+    OutFormat: "输出格式",
+    AIModel: "AI模型",
+    Submit: "提交生成",
+  },
 };
 
 type DeepPartial<T> = T extends object
