@@ -14,6 +14,18 @@ const sdCommonParams = (model: string, data: any) => {
       required: true,
     },
     {
+      name: locales.SdPanel.ChildModel,
+      value: "model",
+      type: "select",
+      default: 0,
+      support: ["sd3"],
+      options: [
+        { name: "SD3 Medium", value: "sd3-medium" },
+        { name: "SD3 Large", value: "sd3-large" },
+        { name: "SD3 Large Turbo", value: "sd3-large-turbo" },
+      ],
+    },
+    {
       name: locales.SdPanel.NegativePrompt,
       value: "negative_prompt",
       type: "textarea",
@@ -26,7 +38,14 @@ const sdCommonParams = (model: string, data: any) => {
       default: "1:1",
       options: [
         { name: "1:1", value: "1:1" },
-        { name: "2:2", value: "2:2" },
+        { name: "16:9", value: "16:9" },
+        { name: "21:9", value: "21:9" },
+        { name: "2:3", value: "2:3" },
+        { name: "3:2", value: "3:2" },
+        { name: "4:5", value: "4:5" },
+        { name: "5:4", value: "5:4" },
+        { name: "9:16", value: "9:16" },
+        { name: "9:21", value: "9:21" },
       ],
     },
     {
@@ -35,9 +54,37 @@ const sdCommonParams = (model: string, data: any) => {
       type: "select",
       default: "3d",
       support: ["core"],
-      options: [{ name: "3D", value: "3d" }],
+      options: [
+        { name: locales.SdPanel.Styles.D3Model, value: "3d-model" },
+        { name: locales.SdPanel.Styles.AnalogFilm, value: "analog-film" },
+        { name: locales.SdPanel.Styles.Anime, value: "anime" },
+        { name: locales.SdPanel.Styles.Cinematic, value: "cinematic" },
+        { name: locales.SdPanel.Styles.ComicBook, value: "comic-book" },
+        { name: locales.SdPanel.Styles.DigitalArt, value: "digital-art" },
+        { name: locales.SdPanel.Styles.Enhance, value: "enhance" },
+        { name: locales.SdPanel.Styles.FantasyArt, value: "fantasy-art" },
+        { name: locales.SdPanel.Styles.Isometric, value: "isometric" },
+        { name: locales.SdPanel.Styles.LineArt, value: "line-art" },
+        { name: locales.SdPanel.Styles.LowPoly, value: "low-poly" },
+        {
+          name: locales.SdPanel.Styles.ModelingCompound,
+          value: "modeling-compound",
+        },
+        { name: locales.SdPanel.Styles.NeonPunk, value: "neon-punk" },
+        { name: locales.SdPanel.Styles.Origami, value: "origami" },
+        { name: locales.SdPanel.Styles.Photographic, value: "photographic" },
+        { name: locales.SdPanel.Styles.PixelArt, value: "pixel-art" },
+        { name: locales.SdPanel.Styles.TileTexture, value: "tile-texture" },
+      ],
     },
-    { name: "Seed", value: "seed", type: "number", default: 0 },
+    {
+      name: "Seed",
+      value: "seed",
+      type: "number",
+      default: 0,
+      min: 0,
+      max: 4294967294,
+    },
     {
       name: locales.SdPanel.OutFormat,
       value: "output_format",
@@ -69,7 +116,11 @@ const models = [
     name: "Stable Diffusion 3",
     value: "sd3",
     params: (data: any) => {
-      return sdCommonParams("sd3", data);
+      return sdCommonParams("sd3", data).filter((item) => {
+        return !(
+          data.model === "sd3-large-turbo" && item.value == "negative_prompt"
+        );
+      });
     },
   },
 ];
@@ -100,15 +151,8 @@ export function ControlParamItem(props: {
 export function ControlParam(props: {
   columns: any[];
   data: any;
-  set: React.Dispatch<React.SetStateAction<{}>>;
+  onChange: (field: string, val: any) => void;
 }) {
-  const handleValueChange = (field: string, val: any) => {
-    props.set((prevParams) => ({
-      ...prevParams,
-      [field]: val,
-    }));
-  };
-
   return (
     <>
       {props.columns.map((item) => {
@@ -122,7 +166,7 @@ export function ControlParam(props: {
                   style={{ maxWidth: "100%", width: "100%", padding: "10px" }}
                   placeholder={item.placeholder}
                   onChange={(e) => {
-                    handleValueChange(item.value, e.currentTarget.value);
+                    props.onChange(item.value, e.currentTarget.value);
                   }}
                   value={props.data[item.value]}
                 ></textarea>
@@ -135,7 +179,7 @@ export function ControlParam(props: {
                 <Select
                   value={props.data[item.value]}
                   onChange={(e) => {
-                    handleValueChange(item.value, e.currentTarget.value);
+                    props.onChange(item.value, e.currentTarget.value);
                   }}
                 >
                   {item.options.map((opt: any) => {
@@ -154,9 +198,11 @@ export function ControlParam(props: {
               <ControlParamItem title={item.name} subTitle={item.sub}>
                 <input
                   type="number"
-                  value={props.data[item.value]}
+                  min={item.min}
+                  max={item.max}
+                  value={props.data[item.value] || 0}
                   onChange={(e) => {
-                    handleValueChange(item.value, e.currentTarget.value);
+                    props.onChange(item.value, parseInt(e.currentTarget.value));
                   }}
                 />
               </ControlParamItem>
@@ -170,7 +216,7 @@ export function ControlParam(props: {
                   value={props.data[item.value]}
                   style={{ maxWidth: "100%", width: "100%" }}
                   onChange={(e) => {
-                    handleValueChange(item.value, e.currentTarget.value);
+                    props.onChange(item.value, e.currentTarget.value);
                   }}
                 />
               </ControlParamItem>
@@ -182,9 +228,47 @@ export function ControlParam(props: {
   );
 }
 
+const getModelParamBasicData = (
+  columns: any[],
+  data: any,
+  clearText?: boolean,
+) => {
+  const newParams: any = {};
+  columns.forEach((item: any) => {
+    if (clearText && ["text", "textarea", "number"].includes(item.type)) {
+      newParams[item.value] = item.default || "";
+    } else {
+      // @ts-ignore
+      newParams[item.value] = data[item.value] || item.default || "";
+    }
+  });
+  return newParams;
+};
+
 export function SdPanel() {
   const [currentModel, setCurrentModel] = useState(models[0]);
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState(
+    getModelParamBasicData(currentModel.params({}), {}),
+  );
+  const handleValueChange = (field: string, val: any) => {
+    setParams((prevParams: any) => ({
+      ...prevParams,
+      [field]: val,
+    }));
+  };
+  const handleModelChange = (model: any) => {
+    setCurrentModel(model);
+    setParams(getModelParamBasicData(model.params({}), params));
+  };
+  const handleSubmit = () => {
+    const columns = currentModel.params(params);
+    const reqData: any = {};
+    columns.forEach((item: any) => {
+      reqData[item.value] = params[item.value] ?? null;
+    });
+    console.log(JSON.stringify(reqData, null, 4));
+    setParams(getModelParamBasicData(columns, params, true));
+  };
   return (
     <>
       <ControlParamItem title={locales.SdPanel.AIModel}>
@@ -196,9 +280,7 @@ export function SdPanel() {
                 key={item.value}
                 type={currentModel.value == item.value ? "primary" : null}
                 shadow
-                onClick={() => {
-                  setCurrentModel(item);
-                }}
+                onClick={() => handleModelChange(item)}
               />
             );
           })}
@@ -206,14 +288,15 @@ export function SdPanel() {
       </ControlParamItem>
       <ControlParam
         columns={currentModel.params(params) as any[]}
-        set={setParams}
         data={params}
+        onChange={handleValueChange}
       ></ControlParam>
       <IconButton
         text={locales.SdPanel.Submit}
         type="primary"
         style={{ marginTop: "20px" }}
         shadow
+        onClick={handleSubmit}
       ></IconButton>
     </>
   );
