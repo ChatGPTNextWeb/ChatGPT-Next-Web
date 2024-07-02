@@ -492,7 +492,7 @@ const cn = {
     ImageStyle: "图像风格",
     OutFormat: "输出格式",
     AIModel: "AI模型",
-    ChildModel: "子模型",
+    ModelVersion: "模型版本",
     Submit: "提交生成",
     Styles: {
       D3Model: "3D模型",

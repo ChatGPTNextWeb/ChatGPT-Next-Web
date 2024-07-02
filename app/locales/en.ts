@@ -498,7 +498,7 @@ const en: LocaleType = {
     ImageStyle: "Image Style",
     OutFormat: "Output Format",
     AIModel: "AI Model",
-    ChildModel: "Child Model",
+    ModelVersion: "Model Version",
     Submit: "Submit",
     Styles: {
       D3Model: "3d-model",

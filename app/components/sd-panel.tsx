@@ -14,7 +14,7 @@ const sdCommonParams = (model: string, data: any) => {
       required: true,
     },
     {
-      name: locales.SdPanel.ChildModel,
+      name: locales.SdPanel.ModelVersion,
       value: "model",
       type: "select",
       default: 0,
