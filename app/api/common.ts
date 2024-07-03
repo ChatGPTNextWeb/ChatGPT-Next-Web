@@ -72,7 +72,7 @@ export async function requestOpenai(req: NextRequest) {
       }),
     },
     method: req.method,
-    body: req.body,
+    body: await req.text(),
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
@@ -87,10 +87,8 @@ export async function requestOpenai(req: NextRequest) {
         DEFAULT_MODELS,
         serverConfig.customModels,
       );
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
+      
+      const jsonBody = JSON.parse(fetchOptions.body as string) as { model?: string };
 
       // not undefined and is false
       if (modelTable[jsonBody?.model ?? ""].available === false) {
