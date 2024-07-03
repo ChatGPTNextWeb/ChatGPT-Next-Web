@@ -500,6 +500,7 @@ const en: LocaleType = {
     AIModel: "AI Model",
     ModelVersion: "Model Version",
     Submit: "Submit",
+    ParamIsRequired: (name: string) => `${name} is required`,
     Styles: {
       D3Model: "3d-model",
       AnalogFilm: "analog-film",
@@ -518,6 +519,26 @@ const en: LocaleType = {
       Photographic: "photographic",
       PixelArt: "pixel-art",
       TileTexture: "tile-texture",
+    },
+  },
+  Sd: {
+    SubTitle: (count: number) => `${count} images`,
+    Actions: {
+      Params: "See Params",
+      Copy: "Copy Prompt",
+      Delete: "Delete",
+      Retry: "Retry",
+    },
+    EmptyRecord: "No images yet",
+    Status: {
+      Name: "Status",
+      Success: "Success",
+      Error: "Error",
+      Wait: "Waiting",
+      Running: "Running",
+    },
+    Danger: {
+      Delete: "Confirm to delete?",
     },
   },
 };

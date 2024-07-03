@@ -1,8 +1,14 @@
 import styles from "./sd-panel.module.scss";
 import React, { useState } from "react";
-import { Select } from "@/app/components/ui-lib";
+import { Select, showToast } from "@/app/components/ui-lib";
 import { IconButton } from "@/app/components/button";
 import locales from "@/app/locales";
+import { nanoid } from "nanoid";
+import { useIndexedDB } from "react-indexed-db-hook";
+import { StoreKey } from "@/app/constant";
+import { SdDbInit, sendSdTask, useSdStore } from "@/app/store/sd";
+
+SdDbInit();
 
 const sdCommonParams = (model: string, data: any) => {
   return [
@@ -89,7 +95,7 @@ const sdCommonParams = (model: string, data: any) => {
       name: locales.SdPanel.OutFormat,
       value: "output_format",
       type: "select",
-      default: 0,
+      default: "png",
       options: [
         { name: "PNG", value: "png" },
         { name: "JPEG", value: "jpeg" },
@@ -128,6 +134,7 @@ const models = [
 export function ControlParamItem(props: {
   title: string;
   subTitle?: string;
+  required?: boolean;
   children?: JSX.Element | JSX.Element[];
   className?: string;
 }) {
@@ -135,7 +142,10 @@ export function ControlParamItem(props: {
     <div className={styles["ctrl-param-item"] + ` ${props.className || ""}`}>
       <div className={styles["ctrl-param-item-header"]}>
         <div className={styles["ctrl-param-item-title"]}>
-          <div>{props.title}</div>
+          <div>
+            {props.title}
+            {props.required && <span style={{ color: "red" }}>*</span>}
+          </div>
         </div>
       </div>
       {props.children}
@@ -160,7 +170,11 @@ export function ControlParam(props: {
         switch (item.type) {
           case "textarea":
             element = (
-              <ControlParamItem title={item.name} subTitle={item.sub}>
+              <ControlParamItem
+                title={item.name}
+                subTitle={item.sub}
+                required={item.required}
+              >
                 <textarea
                   rows={item.rows || 3}
                   style={{ maxWidth: "100%", width: "100%", padding: "10px" }}
@@ -175,7 +189,11 @@ export function ControlParam(props: {
             break;
           case "select":
             element = (
-              <ControlParamItem title={item.name} subTitle={item.sub}>
+              <ControlParamItem
+                title={item.name}
+                subTitle={item.sub}
+                required={item.required}
+              >
                 <Select
                   value={props.data[item.value]}
                   onChange={(e) => {
@@ -195,7 +213,11 @@ export function ControlParam(props: {
             break;
           case "number":
             element = (
-              <ControlParamItem title={item.name} subTitle={item.sub}>
+              <ControlParamItem
+                title={item.name}
+                subTitle={item.sub}
+                required={item.required}
+              >
                 <input
                   type="number"
                   min={item.min}
@@ -210,7 +232,11 @@ export function ControlParam(props: {
             break;
           default:
             element = (
-              <ControlParamItem title={item.name} subTitle={item.sub}>
+              <ControlParamItem
+                title={item.name}
+                subTitle={item.sub}
+                required={item.required}
+              >
                 <input
                   type="text"
                   value={props.data[item.value]}
@@ -260,14 +286,43 @@ export function SdPanel() {
     setCurrentModel(model);
     setParams(getModelParamBasicData(model.params({}), params));
   };
+  const sdListDb = useIndexedDB(StoreKey.SdList);
+  const { execCountInc } = useSdStore();
   const handleSubmit = () => {
     const columns = currentModel.params(params);
-    const reqData: any = {};
-    columns.forEach((item: any) => {
-      reqData[item.value] = params[item.value] ?? null;
-    });
-    console.log(JSON.stringify(reqData, null, 4));
-    setParams(getModelParamBasicData(columns, params, true));
+    const reqParams: any = {};
+    for (let i = 0; i < columns.length; i++) {
+      const item = columns[i];
+      reqParams[item.value] = params[item.value] ?? null;
+      if (item.required) {
+        if (!reqParams[item.value]) {
+          showToast(locales.SdPanel.ParamIsRequired(item.name));
+          return;
+        }
+      }
+    }
+    // console.log(JSON.stringify(reqParams, null, 4));
+    let data: any = {
+      model: currentModel.value,
+      model_name: currentModel.name,
+      status: "wait",
+      params: reqParams,
+      created_at: new Date().toISOString(),
+      img_data: "",
+    };
+    sdListDb.add(data).then(
+      (id) => {
+        data = { ...data, id, status: "running" };
+        sdListDb.update(data);
+        execCountInc();
+        sendSdTask(data, sdListDb, execCountInc);
+        setParams(getModelParamBasicData(columns, params, true));
+      },
+      (error) => {
+        console.error(error);
+        showToast(`error: ` + error.message);
+      },
+    );
   };
   return (
     <>

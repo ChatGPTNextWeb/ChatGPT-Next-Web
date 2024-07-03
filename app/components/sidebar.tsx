@@ -155,6 +155,7 @@ export function SideBar(props: { className?: string }) {
   let isChat: boolean = false;
   switch (location.pathname) {
     case Path.Sd:
+    case Path.SdPanel:
       bodyComponent = <SdPanel />;
       break;
     default:
@@ -220,16 +221,18 @@ export function SideBar(props: { className?: string }) {
 
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"] + " " + styles.mobile}>
-            <IconButton
-              icon={<DeleteIcon />}
-              onClick={async () => {
-                if (await showConfirm(Locale.Home.DeleteChat)) {
-                  chatStore.deleteSession(chatStore.currentSessionIndex);
-                }
-              }}
-            />
-          </div>
+          {isChat && (
+            <div className={styles["sidebar-action"] + " " + styles.mobile}>
+              <IconButton
+                icon={<DeleteIcon />}
+                onClick={async () => {
+                  if (await showConfirm(Locale.Home.DeleteChat)) {
+                    chatStore.deleteSession(chatStore.currentSessionIndex);
+                  }
+                }}
+              />
+            </div>
+          )}
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />

@@ -494,6 +494,7 @@ const cn = {
     AIModel: "AI模型",
     ModelVersion: "模型版本",
     Submit: "提交生成",
+    ParamIsRequired: (name: string) => `${name}不能为空`,
     Styles: {
       D3Model: "3D模型",
       AnalogFilm: "模拟电影",
@@ -512,6 +513,26 @@ const cn = {
       Photographic: "摄影",
       PixelArt: "像素艺术",
       TileTexture: "贴图",
+    },
+  },
+  Sd: {
+    SubTitle: (count: number) => `共 ${count} 条绘画`,
+    Actions: {
+      Params: "查看参数",
+      Copy: "复制提示词",
+      Delete: "删除",
+      Retry: "重试",
+    },
+    EmptyRecord: "暂无绘画记录",
+    Status: {
+      Name: "状态",
+      Success: "成功",
+      Error: "失败",
+      Wait: "等待中",
+      Running: "运行中",
+    },
+    Danger: {
+      Delete: "确认删除？",
     },
   },
 };

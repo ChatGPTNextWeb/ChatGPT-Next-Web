@@ -5110,6 +5110,11 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
+react-indexed-db-hook@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.npmmirror.com/react-indexed-db-hook/-/react-indexed-db-hook-1.0.14.tgz#a29cd732d592735b6a68dfc94316b7a4a091e6be"
+  integrity sha512-tQ6rWofgXUCBhZp9pRpWzthzPbjqcll5uXMo07lbQTKl47VyL9nw9wfVswRxxzS5yj5Sq/VHUkNUjamWbA/M/w==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
