@@ -106,23 +106,23 @@ Azure 密钥。
 
 Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
 
-### `GOOGLE_API_KEY` (optional)
+### `GOOGLE_API_KEY` (可选)
 
 Google Gemini Pro 密钥.
 
-### `GOOGLE_URL` (optional)
+### `GOOGLE_URL` (可选)
 
 Google Gemini Pro Api Url.
 
-### `ANTHROPIC_API_KEY` (optional)
+### `ANTHROPIC_API_KEY` (可选)
 
 anthropic claude Api Key.
 
-### `ANTHROPIC_API_VERSION` (optional)
+### `ANTHROPIC_API_VERSION` (可选)
 
 anthropic claude Api version.
 
-### `ANTHROPIC_URL` (optional)
+### `ANTHROPIC_URL` (可选)
 
 anthropic claude Api Url.
 
