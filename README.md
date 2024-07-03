@@ -245,7 +245,7 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 
 User `-all` to disable all default models, `+all` to enable all default models.
 
-### `DEFAULT_MODEL` （可选）
+### `DEFAULT_MODEL` （optional）
 
 Change default model
 
