@@ -2,7 +2,7 @@ import { LLMModel } from "../client/api";
 
 const customProvider = (modelName: string) => ({
   id: modelName,
-  providerName: "",
+  providerName: "Custom",
   providerType: "custom",
 });
 
@@ -23,9 +23,14 @@ export function collectModelTable(
 
   // default models
   models.forEach((m) => {
+    const displayName =
+      m.provider.providerName === "Azure"
+        ? m.name.replace("@azure", "")
+        : m.name;
+
     modelTable[m.name] = {
       ...m,
-      displayName: m.name, // 'provider' is copied over if it exists
+      displayName, // 'provider' is copied over if it exists
     };
   });
 
@@ -97,6 +102,7 @@ export function collectModelsWithDefaultModel(
     customModels,
     defaultModel,
   );
+
   const allModels = Object.values(modelTable);
   return allModels;
 }

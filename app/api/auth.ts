@@ -56,16 +56,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
     const serverConfig = getServerSideConfig();
-
-    // const systemApiKey =
-    //   modelProvider === ModelProvider.GeminiPro
-    //     ? serverConfig.googleApiKey
-    //     : serverConfig.isAzure
-    //     ? serverConfig.azureApiKey
-    //     : serverConfig.apiKey;
-
     let systemApiKey: string | undefined;
-
     switch (modelProvider) {
       case ModelProvider.GeminiPro:
         systemApiKey = serverConfig.googleApiKey;

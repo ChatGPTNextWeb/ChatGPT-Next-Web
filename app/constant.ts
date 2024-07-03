@@ -74,7 +74,7 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
-  Baidu = "Baidu",
+  //   Baidu = "Baidu",
 }
 
 export enum ModelProvider {
@@ -181,7 +181,7 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
-const baiduModels = ["completions_pro"];
+// const baiduModels = ["completions_pro"];
 
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -191,6 +191,15 @@ export const DEFAULT_MODELS = [
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+    },
+  })),
+  ...openaiModels.map((name) => ({
+    name: `${name}@azure`, // make different from openai model name
+    available: true,
+    provider: {
+      id: "azure",
+      providerName: "Azure",
+      providerType: "Azure",
     },
   })),
   ...googleModels.map((name) => ({
@@ -211,15 +220,15 @@ export const DEFAULT_MODELS = [
       providerType: "anthropic",
     },
   })),
-  ...baiduModels.map((name) => ({
-    name,
-    available: true,
-    provider: {
-      id: "baidu",
-      providerName: "Baidu",
-      providerType: "baidu",
-    },
-  })),
+  //   ...baiduModels.map((name) => ({
+  //     name,
+  //     available: true,
+  //     provider: {
+  //       id: "baidu",
+  //       providerName: "Baidu",
+  //       providerType: "baidu",
+  //     },
+  //   })),
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
