@@ -323,6 +323,8 @@ export function PreviewActions(props: {
       api = new ClientApi(ModelProvider.Claude);
     } else if (identifyDefaultBaiduModel(config.modelConfig.model)) {
       api = new ClientApi(ModelProvider.Ernie);
+    } else if (config.modelConfig.model.endsWith("@azure")) {
+      api = new ClientApi(ModelProvider.Azure);
     } else {
       api = new ClientApi(ModelProvider.GPT);
     }

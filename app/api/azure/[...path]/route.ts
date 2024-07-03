@@ -3,8 +3,8 @@ import { getServerSideConfig } from "@/app/config/server";
 import {
   ModelProvider,
   OpenaiPath,
-  OPENAI_BASE_URL,
   DEFAULT_MODELS,
+  Azure,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
@@ -13,7 +13,7 @@ import { makeAzurePath } from "@/app/azure";
 import { collectModelTable } from "@/app/utils/model";
 import { getModels } from "@/app/api/common";
 
-const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
+const ALLOWD_PATH = new Set([Azure.ChatPath]);
 
 const serverConfig = getServerSideConfig();
 
@@ -42,7 +42,7 @@ async function handle(
     );
   }
 
-  const authResult = auth(req, ModelProvider.GPT);
+  const authResult = auth(req, ModelProvider.Azure);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -51,8 +51,7 @@ async function handle(
 
   try {
     const response = await request(req);
-
-    // list models
+    // // list models
     if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
       const resJson = (await response.json()) as OpenAIListModelResponse;
       const availableModels = getModels(resJson);
@@ -60,7 +59,6 @@ async function handle(
         status: response.status,
       });
     }
-
     return response;
   } catch (e) {
     console.error("[Azure] ", e);
@@ -106,10 +104,16 @@ export async function request(req: NextRequest) {
     "",
   );
 
-  let baseUrl =
-    serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
+  if (!serverConfig.azureUrl) {
+    return NextResponse.json({
+      error: true,
+      message: `missing AZURE_URL in server env vars`,
+    });
+  }
 
-  if (!baseUrl.startsWith("http")) {
+  let baseUrl = serverConfig.azureUrl;
+
+  if (!baseUrl?.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
   }
 

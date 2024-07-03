@@ -10,6 +10,8 @@ import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
+import { AzureApi } from "./platforms/azure";
+
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -105,6 +107,9 @@ export class ClientApi {
         break;
       case ModelProvider.Ernie:
         this.llm = new ErnieApi();
+        break;
+      case ModelProvider.Azure:
+        this.llm = new AzureApi();
         break;
       default:
         this.llm = new ChatGPTApi();

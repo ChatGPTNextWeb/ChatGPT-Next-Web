@@ -34,6 +34,8 @@ import {
   identifyDefaultBaiduModel,
 } from "../utils/checkers";
 
+import { renameProviderModels } from "../utils/model";
+
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={styles["loading-content"] + " no-dark"}>
@@ -187,7 +189,8 @@ export function useLoadData() {
   useEffect(() => {
     (async () => {
       const models = await api.llm.models();
-      config.mergeModels(models);
+      const renameModels = renameProviderModels(models);
+      config.mergeModels(renameModels);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

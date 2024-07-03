@@ -373,6 +373,8 @@ export const useChatStore = createPersistStore(
           api = new ClientApi(ModelProvider.Claude);
         } else if (identifyDefaultBaiduModel(modelConfig.model)) {
           api = new ClientApi(ModelProvider.Ernie);
+        } else if (modelConfig.model.endsWith("@azure")) {
+          api = new ClientApi(ModelProvider.Azure);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
@@ -559,6 +561,8 @@ export const useChatStore = createPersistStore(
           api = new ClientApi(ModelProvider.Claude);
         } else if (modelConfig.model.startsWith("ernie")) {
           api = new ClientApi(ModelProvider.Ernie);
+        } else if (modelConfig.model.endsWith("@azure")) {
+          api = new ClientApi(ModelProvider.Azure);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }

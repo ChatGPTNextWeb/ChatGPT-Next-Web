@@ -24,10 +24,9 @@ export function collectModelTable(
   // default models
   models.forEach((m) => {
     const displayName =
-      m.provider.providerName === "Azure"
+      m?.provider?.providerName === "Azure"
         ? m.name.replace("@azure", "")
         : m.name;
-
     modelTable[m.name] = {
       ...m,
       displayName, // 'provider' is copied over if it exists
@@ -105,4 +104,24 @@ export function collectModelsWithDefaultModel(
 
   const allModels = Object.values(modelTable);
   return allModels;
+}
+
+/**
+ * Renames the provider models.
+ * @param models - An array of LLMModel objects.
+ * @returns An array of renamed LLMModel objects.
+ */
+export function renameProviderModels(models: readonly LLMModel[]) {
+  return models.map((m) => {
+    const providerName = m?.provider?.providerName;
+    if (providerName === "Azure") {
+      // make different name for azure models from openai models
+      const name = `${m.name}@azure`;
+      return {
+        ...m,
+        name,
+      };
+    }
+    return m;
+  });
 }

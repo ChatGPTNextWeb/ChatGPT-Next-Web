@@ -28,6 +28,7 @@ export enum Path {
 export enum ApiPath {
   Cors = "",
   OpenAI = "/api/openai",
+  Azure = "/api/azure",
   Anthropic = "/api/anthropic",
   Google = "/api/google",
   Baidu = "/api/baidu",
@@ -74,7 +75,7 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
-  //   Baidu = "Baidu",
+  Baidu = "Baidu",
 }
 
 export enum ModelProvider {
@@ -82,6 +83,7 @@ export enum ModelProvider {
   GeminiPro = "GeminiPro",
   Claude = "Claude",
   Ernie = "Ernie",
+  Azure = "Azure",
 }
 
 export const Anthropic = {
@@ -99,6 +101,7 @@ export const OpenaiPath = {
 };
 
 export const Azure = {
+  ChatPath: "v1/chat/completions",
   ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
 };
 
@@ -162,6 +165,7 @@ const openaiModels = [
   "gpt-4o-2024-05-13",
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
+  "gpt-4-1106-preview",
 ];
 
 const googleModels = [
@@ -181,7 +185,7 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
-// const baiduModels = ["completions_pro"];
+const baiduModels = ["completions_pro"];
 
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -194,12 +198,12 @@ export const DEFAULT_MODELS = [
     },
   })),
   ...openaiModels.map((name) => ({
-    name: `${name}@azure`, // make different from openai model name
+    name,
     available: true,
     provider: {
       id: "azure",
       providerName: "Azure",
-      providerType: "Azure",
+      providerType: "azure",
     },
   })),
   ...googleModels.map((name) => ({
@@ -220,15 +224,15 @@ export const DEFAULT_MODELS = [
       providerType: "anthropic",
     },
   })),
-  //   ...baiduModels.map((name) => ({
-  //     name,
-  //     available: true,
-  //     provider: {
-  //       id: "baidu",
-  //       providerName: "Baidu",
-  //       providerType: "baidu",
-  //     },
-  //   })),
+  ...baiduModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "baidu",
+      providerName: "Baidu",
+      providerType: "baidu",
+    },
+  })),
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;

@@ -64,13 +64,12 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.Claude:
         systemApiKey = serverConfig.anthropicApiKey;
         break;
+      case ModelProvider.Azure:
+        systemApiKey = serverConfig.azureApiKey;
+        break;
       case ModelProvider.GPT:
       default:
-        if (serverConfig.isAzure) {
-          systemApiKey = serverConfig.azureApiKey;
-        } else {
-          systemApiKey = serverConfig.apiKey;
-        }
+        systemApiKey = serverConfig.apiKey;
     }
 
     if (systemApiKey) {
