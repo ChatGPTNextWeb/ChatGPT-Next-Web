@@ -142,7 +142,9 @@ async function request(req: NextRequest) {
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (isModelAvailableInServer(jsonBody?.model ?? "")) {
+      if (
+        isModelAvailableInServer(serverConfig.customModels, jsonBody?.model)
+      ) {
         return NextResponse.json(
           {
             error: true,
