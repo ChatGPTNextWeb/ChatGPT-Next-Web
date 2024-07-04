@@ -594,7 +594,7 @@ export function ChatActions(props: {
             });
             showToast(s[0]);
           }}
-          setSeleted={(value) => {
+          setSelected={(value) => {
             const [name, providerName] = value.split("@");
             return (
               name === currentModel && providerName === currentProviderName
