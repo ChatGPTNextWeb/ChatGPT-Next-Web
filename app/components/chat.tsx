@@ -85,6 +85,7 @@ import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
   LAST_INPUT_KEY,
+  ModelProvider,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
@@ -448,6 +449,9 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const currentProviderName =
+    chatStore.currentSession().mask.modelConfig.providerName;
+
   const allModels = useAllModels();
   const models = useMemo(() => {
     const filteredModels = allModels.filter((m) => m.available);
@@ -575,17 +579,26 @@ export function ChatActions(props: {
         <Selector
           defaultSelectedValue={currentModel}
           items={models.map((m) => ({
-            title: m.displayName,
-            value: m.name,
+            title: `${m.displayName}(${m.provider?.providerName})`,
+            value: `${m.displayName}@${m.provider?.providerName}`,
           }))}
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
             if (s.length === 0) return;
+            const [name, providerName] = s[0].split("@");
             chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
+              session.mask.modelConfig.model = name as ModelType;
+              session.mask.modelConfig.providerName =
+                providerName as ModelProvider;
               session.mask.syncGlobalConfig = false;
             });
             showToast(s[0]);
+          }}
+          setSeleted={(value) => {
+            const [name, providerName] = value.split("@");
+            return (
+              name === currentModel && providerName === currentProviderName
+            );
           }}
         />
       )}

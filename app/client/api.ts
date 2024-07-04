@@ -220,3 +220,7 @@ export function getHeaders() {
 
   return headers;
 }
+
+export function getApiClient(provider: ModelProvider): ClientApi {
+  return new ClientApi(provider);
+}

@@ -14,18 +14,20 @@ import {
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
 } from "../constant";
-import { ClientApi, RequestMessage, MultimodalContent } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
-import {
-  identifyDefaultClaudeModel,
-  identifyDefaultBaiduModel,
-} from "../utils/checkers";
+
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
+import {
+  ClientApi,
+  RequestMessage,
+  MultimodalContent,
+  getApiClient,
+} from "@/app/client/api";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -366,18 +368,7 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
-        var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Claude);
-        } else if (identifyDefaultBaiduModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Ernie);
-        } else if (modelConfig.model.endsWith("@azure")) {
-          api = new ClientApi(ModelProvider.Azure);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
+        const api: ClientApi = getApiClient(modelConfig.providerName);
 
         // make request
         api.llm.chat({
@@ -554,18 +545,7 @@ export const useChatStore = createPersistStore(
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
-        var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Claude);
-        } else if (modelConfig.model.startsWith("ernie")) {
-          api = new ClientApi(ModelProvider.Ernie);
-        } else if (modelConfig.model.endsWith("@azure")) {
-          api = new ClientApi(ModelProvider.Azure);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
+        const api: ClientApi = getApiClient(modelConfig.providerName);
 
         // remove error messages if any
         const messages = session.messages;

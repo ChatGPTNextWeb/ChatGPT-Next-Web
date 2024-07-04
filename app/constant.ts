@@ -84,6 +84,7 @@ export enum ModelProvider {
   Claude = "Claude",
   Ernie = "Ernie",
   Azure = "Azure",
+  Default = "",
 }
 
 export const Anthropic = {

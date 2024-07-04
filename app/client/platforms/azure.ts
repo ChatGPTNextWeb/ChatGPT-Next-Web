@@ -77,8 +77,6 @@ export class AzureApi implements LLMApi {
         model: options.config.model,
       },
     };
-    // remove @azure from model name
-    modelConfig.model = modelConfig.model.replace("@azure", "");
     const requestPayload: RequestPayload = {
       messages,
       stream: options.config.stream,

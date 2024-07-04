@@ -5,6 +5,7 @@ import {
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
   StoreKey,
+  ModelProvider,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 
@@ -58,6 +59,7 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
+    providerName: ModelProvider.Default,
   },
 };
 

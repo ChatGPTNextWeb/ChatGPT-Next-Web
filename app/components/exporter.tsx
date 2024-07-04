@@ -38,12 +38,8 @@ import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME, ModelProvider } from "../constant";
 import { getClientConfig } from "../config/client";
-import { ClientApi } from "../client/api";
+import { ClientApi, getApiClient } from "../client/api";
 import { getMessageTextContent } from "../utils";
-import {
-  identifyDefaultClaudeModel,
-  identifyDefaultBaiduModel,
-} from "../utils/checkers";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -316,18 +312,7 @@ export function PreviewActions(props: {
   const onRenderMsgs = (msgs: ChatMessage[]) => {
     setShouldExport(false);
 
-    var api: ClientApi;
-    if (config.modelConfig.model.startsWith("gemini")) {
-      api = new ClientApi(ModelProvider.GeminiPro);
-    } else if (identifyDefaultClaudeModel(config.modelConfig.model)) {
-      api = new ClientApi(ModelProvider.Claude);
-    } else if (identifyDefaultBaiduModel(config.modelConfig.model)) {
-      api = new ClientApi(ModelProvider.Ernie);
-    } else if (config.modelConfig.model.endsWith("@azure")) {
-      api = new ClientApi(ModelProvider.Azure);
-    } else {
-      api = new ClientApi(ModelProvider.GPT);
-    }
+    const api: ClientApi = getApiClient(config.modelConfig.providerName);
 
     api
       .share(msgs)
