@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
+import {
+  DEFAULT_MODELS,
+  OPENAI_BASE_URL,
+  GEMINI_BASE_URL,
+  ServiceProvider,
+} from "../constant";
 import { isModelAvailableInServer } from "../utils/model";
 import { makeAzurePath } from "../azure";
 
@@ -90,7 +95,16 @@ export async function requestOpenai(req: NextRequest) {
 
       // not undefined and is false
       if (
-        isModelAvailableInServer(serverConfig.customModels, jsonBody?.model)
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model,
+          ServiceProvider.OpenAI,
+        ) ||
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model,
+          ServiceProvider.Azure,
+        )
       ) {
         return NextResponse.json(
           {

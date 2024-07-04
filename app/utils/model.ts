@@ -118,7 +118,12 @@ export function collectModelsWithDefaultModel(
   return allModels;
 }
 
-export function isModelAvailableInServer(customModels, modelName) {
+export function isModelAvailableInServer(
+  customModels,
+  modelName,
+  providerName,
+) {
+  const fullName = `${modelName}@${providerName}`;
   const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
-  return modelTable[modelName ?? ""].available === false;
+  return modelTable[fullName]?.available === false;
 }

@@ -4,6 +4,7 @@ import {
   Anthropic,
   ApiPath,
   DEFAULT_MODELS,
+  ServiceProvider,
   ModelProvider,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
@@ -143,7 +144,11 @@ async function request(req: NextRequest) {
 
       // not undefined and is false
       if (
-        isModelAvailableInServer(serverConfig.customModels, jsonBody?.model)
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model,
+          ServiceProvider.Anthropic,
+        )
       ) {
         return NextResponse.json(
           {
