@@ -24,7 +24,8 @@ export function collectModelTable(
 
   // default models
   models.forEach((m) => {
-    modelTable[m.name] = {
+    // using <modelName>@<providerName> as fullName
+    modelTable[`${m.name}@${m?.provider?.name}`] = {
       ...m,
       displayName: m.name, // 'provider' is copied over if it exists
     };
@@ -46,12 +47,27 @@ export function collectModelTable(
           (model) => (model.available = available),
         );
       } else {
-        modelTable[name] = {
-          name,
-          displayName: displayName || name,
-          available,
-          provider: modelTable[name]?.provider ?? customProvider(name), // Use optional chaining
-        };
+        // 1. find model by name(), and set available value
+        let count = 0;
+        for (const fullName in modelTable) {
+          if (fullName.includes(name)) {
+            count += 1;
+            modelTable[fullName]["available"] = available;
+            if (displayName) {
+              modelTable[fullName]["displayName"] = displayName;
+            }
+          }
+        }
+        // 2. if model not exists, create new model with available value
+        if (count === 0) {
+          const provider = customProvider(name);
+          modelTable[`${name}@${provider.name}`] = {
+            name,
+            displayName: displayName || name,
+            available,
+            provider, // Use optional chaining
+          };
+        }
       }
     });
 
