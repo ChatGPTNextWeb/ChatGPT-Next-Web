@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL } from "../constant";
-import { collectModelTable } from "../utils/model";
 import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
+import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
+import { isModelAvailableInServer } from "../utils/model";
 
 const serverConfig = getServerSideConfig();
 
@@ -71,17 +71,19 @@ export async function requestOpenai(req: NextRequest) {
   // #1815 try to refuse gpt4 request
   if (serverConfig.customModels && req.body) {
     try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""].available === false) {
+      if (
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model as string,
+          ServiceProvider.OpenAI as string,
+        )
+      ) {
         return NextResponse.json(
           {
             error: true,
