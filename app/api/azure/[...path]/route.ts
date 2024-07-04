@@ -3,14 +3,14 @@ import { getServerSideConfig } from "@/app/config/server";
 import {
   ModelProvider,
   OpenaiPath,
-  DEFAULT_MODELS,
+  ServiceProvider,
   Azure,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { makeAzurePath } from "@/app/azure";
-import { collectModelTable } from "@/app/utils/model";
+import { isModelAvailableInServer } from "@/app/utils/model";
 import { getModels } from "@/app/api/common";
 
 const ALLOWD_PATH = new Set([Azure.ChatPath]);
@@ -161,17 +161,19 @@ export async function request(req: NextRequest) {
   // #1815 try to refuse gpt4 request
   if (serverConfig.customModels && req.body) {
     try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""].available === false) {
+      if (
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model as string,
+          ServiceProvider.Azure as string,
+        )
+      ) {
         return NextResponse.json(
           {
             error: true,
