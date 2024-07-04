@@ -119,9 +119,9 @@ export function collectModelsWithDefaultModel(
 }
 
 export function isModelAvailableInServer(
-  customModels,
-  modelName,
-  providerName,
+  customModels: string,
+  modelName: string,
+  providerName: string,
 ) {
   const fullName = `${modelName}@${providerName}`;
   const modelTable = collectModelTable(DEFAULT_MODELS, customModels);

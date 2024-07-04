@@ -97,13 +97,13 @@ export async function requestOpenai(req: NextRequest) {
       if (
         isModelAvailableInServer(
           serverConfig.customModels,
-          jsonBody?.model,
-          ServiceProvider.OpenAI,
+          jsonBody?.model as string,
+          ServiceProvider.OpenAI as string,
         ) ||
         isModelAvailableInServer(
           serverConfig.customModels,
-          jsonBody?.model,
-          ServiceProvider.Azure,
+          jsonBody?.model as string,
+          ServiceProvider.Azure as string,
         )
       ) {
         return NextResponse.json(

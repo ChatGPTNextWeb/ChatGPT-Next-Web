@@ -146,8 +146,8 @@ async function request(req: NextRequest) {
       if (
         isModelAvailableInServer(
           serverConfig.customModels,
-          jsonBody?.model,
-          ServiceProvider.Anthropic,
+          jsonBody?.model as string,
+          ServiceProvider.Anthropic as string,
         )
       ) {
         return NextResponse.json(
