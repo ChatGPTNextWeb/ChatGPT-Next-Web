@@ -24,11 +24,10 @@ export async function requestOpenai(req: NextRequest) {
     authValue = req.headers.get("Authorization") ?? "";
     authHeaderName = "Authorization";
   }
-
-  let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
-    "/api/openai/",
-    "",
-  );
+  const requestUrl = `${req.nextUrl.pathname}${req.nextUrl.search}`;
+  let path = requestUrl.startsWith("https://gateway.ai.cloudflare.com")
+    ? requestUrl.replaceAll("/api/openai/v1/", "")
+    : requestUrl.replaceAll("/api/openai/", "");
 
   let baseUrl =
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
