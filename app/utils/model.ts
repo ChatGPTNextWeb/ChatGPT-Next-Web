@@ -1,3 +1,4 @@
+import { DEFAULT_MODELS } from "../constant";
 import { LLMModel } from "../client/api";
 
 const customProvider = (modelName: string) => ({
@@ -99,4 +100,9 @@ export function collectModelsWithDefaultModel(
   );
   const allModels = Object.values(modelTable);
   return allModels;
+}
+
+export function isModelAvailableInServer(customModels, modelName) {
+  const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
+  return modelTable[modelName ?? ""].available === false;
 }
