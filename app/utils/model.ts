@@ -24,8 +24,8 @@ export function collectModelTable(
 
   // default models
   models.forEach((m) => {
-    // using <modelName>@<providerName> as fullName
-    modelTable[`${m.name}@${m?.provider?.name}`] = {
+    // using <modelName>@<providerId> as fullName
+    modelTable[`${m.name}@${m?.provider?.id}`] = {
       ...m,
       displayName: m.name, // 'provider' is copied over if it exists
     };
@@ -61,7 +61,7 @@ export function collectModelTable(
         // 2. if model not exists, create new model with available value
         if (count === 0) {
           const provider = customProvider(name);
-          modelTable[`${name}@${provider.name}`] = {
+          modelTable[`${name}@${provider?.id}`] = {
             name,
             displayName: displayName || name,
             available,
