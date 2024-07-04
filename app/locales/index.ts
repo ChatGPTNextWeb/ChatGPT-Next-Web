@@ -103,7 +103,7 @@ function getLanguage() {
     if (AllLangs.includes(region as Lang)) {
       return region as Lang;
     }
-    // 1. check language code in ALL_LANGS
+    // 2. check language code in ALL_LANGS
     if (AllLangs.includes(locale.language as Lang)) {
       return locale.language as Lang;
     }
