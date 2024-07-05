@@ -1,13 +1,16 @@
 "use client";
+// azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
   OpenaiPath,
+  Azure,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
+import { collectModelsWithDefaultModel } from "@/app/utils/model";
 
 import {
   ChatOptions,
@@ -97,6 +100,15 @@ export class ChatGPTApi implements LLMApi {
     return [baseUrl, path].join("/");
   }
 
+  getBaseUrl(apiPath: string) {
+    const isApp = !!getClientConfig()?.isApp;
+    let baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
+    }
+    return baseUrl + "/";
+  }
+
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
   }
@@ -113,6 +125,7 @@ export class ChatGPTApi implements LLMApi {
       ...useChatStore.getState().currentSession().mask.modelConfig,
       ...{
         model: options.config.model,
+        providerName: options.config.providerName,
       },
     };
 
@@ -140,7 +153,33 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      let chatPath = "";
+      if (modelConfig.providerName == ServiceProvider.Azure) {
+        // find model, and get displayName as deployName
+        const { models: configModels, customModels: configCustomModels } =
+          useAppConfig.getState();
+        const { defaultModel, customModels: accessCustomModels } =
+          useAccessStore.getState();
+
+        const models = collectModelsWithDefaultModel(
+          configModels,
+          [configCustomModels, accessCustomModels].join(","),
+          defaultModel,
+        );
+        const model = models.find(
+          (model) =>
+            model.name == modelConfig.model &&
+            model?.provider.providerName == ServiceProvider.Azure,
+        );
+        chatPath =
+          this.getBaseUrl(ApiPath.Azure) +
+          Azure.ChatPath(
+            model?.displayName ?? model.name,
+            useAccessStore.getState().azureApiVersion,
+          );
+      } else {
+        chatPath = this.getBaseUrl(ApiPath.OpenAI) + OpenaiPath.ChatPath;
+      }
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
