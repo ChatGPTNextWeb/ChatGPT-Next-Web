@@ -157,11 +157,11 @@ export class ChatGPTApi implements LLMApi {
         const model = models.find(
           (model) =>
             model.name == modelConfig.model &&
-            model?.provider.providerName == ServiceProvider.Azure,
+            model?.provider?.providerName == ServiceProvider.Azure,
         );
         chatPath = this.path(
           Azure.ChatPath(
-            model?.displayName ?? model.name,
+            (model?.displayName ?? model?.name) as string,
             useAccessStore.getState().azureApiVersion,
           ),
         );
