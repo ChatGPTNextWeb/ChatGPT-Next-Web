@@ -30,11 +30,6 @@ export async function requestOpenai(req: NextRequest) {
     authHeaderName = "Authorization";
   }
 
-  let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
-    "/api/openai/",
-    "",
-  );
-
   let baseUrl =
     serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
 
@@ -45,16 +40,21 @@ export async function requestOpenai(req: NextRequest) {
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
   }
-
+  let path = baseUrl.startsWith("https://gateway.ai.cloudflare.com")
+    ? `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
+        "/api/openai/v1/",
+        "",
+      )
+    : `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
+        "/api/openai/",
+        "",
+      );
   console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
 
-  const timeoutId = setTimeout(
-    () => {
-      controller.abort();
-    },
-    10 * 60 * 1000,
-  );
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, 10 * 60 * 1000);
 
   if (serverConfig.isAzure) {
     if (!serverConfig.azureApiVersion) {
