@@ -27,7 +27,6 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { makeAzurePath } from "@/app/azure";
 import {
   getMessageTextContent,
   getMessageImages,
@@ -65,17 +64,12 @@ export class ChatGPTApi implements LLMApi {
 
     let baseUrl = "";
 
+    const isAzure = path.includes("deployments");
     if (accessStore.useCustomConfig) {
-      const isAzure = accessStore.provider === ServiceProvider.Azure;
-
       if (isAzure && !accessStore.isValidAzure()) {
         throw Error(
           "incomplete azure config, please check it in your settings page",
         );
-      }
-
-      if (isAzure) {
-        path = makeAzurePath(path, accessStore.azureApiVersion);
       }
 
       baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
@@ -83,30 +77,24 @@ export class ChatGPTApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
-        : ApiPath.OpenAI;
+      const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
+      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.OpenAI)) {
+    if (
+      !baseUrl.startsWith("http") &&
+      !isAzure &&
+      !baseUrl.startsWith(ApiPath.OpenAI)
+    ) {
       baseUrl = "https://" + baseUrl;
     }
 
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
     return [baseUrl, path].join("/");
-  }
-
-  getBaseUrl(apiPath: string) {
-    const isApp = !!getClientConfig()?.isApp;
-    let baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
-    if (baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
-    }
-    return baseUrl + "/";
   }
 
   extractMessage(res: any) {
@@ -171,14 +159,14 @@ export class ChatGPTApi implements LLMApi {
             model.name == modelConfig.model &&
             model?.provider.providerName == ServiceProvider.Azure,
         );
-        chatPath =
-          this.getBaseUrl(ApiPath.Azure) +
+        chatPath = this.path(
           Azure.ChatPath(
             model?.displayName ?? model.name,
             useAccessStore.getState().azureApiVersion,
-          );
+          ),
+        );
       } else {
-        chatPath = this.getBaseUrl(ApiPath.OpenAI) + OpenaiPath.ChatPath;
+        chatPath = this.path(OpenaiPath.ChatPath);
       }
       const chatPayload = {
         method: "POST",

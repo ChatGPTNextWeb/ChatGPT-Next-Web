@@ -7,7 +7,6 @@ import {
   ServiceProvider,
 } from "../constant";
 import { isModelAvailableInServer } from "../utils/model";
-import { makeAzurePath } from "../azure";
 
 const serverConfig = getServerSideConfig();
 
