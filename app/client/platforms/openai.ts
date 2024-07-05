@@ -146,8 +146,11 @@ export class ChatGPTApi implements LLMApi {
         // find model, and get displayName as deployName
         const { models: configModels, customModels: configCustomModels } =
           useAppConfig.getState();
-        const { defaultModel, customModels: accessCustomModels } =
-          useAccessStore.getState();
+        const {
+          defaultModel,
+          customModels: accessCustomModels,
+          useCustomConfig,
+        } = useAccessStore.getState();
         const models = collectModelsWithDefaultModel(
           configModels,
           [configCustomModels, accessCustomModels].join(","),
@@ -161,7 +164,7 @@ export class ChatGPTApi implements LLMApi {
         chatPath = this.path(
           Azure.ChatPath(
             (model?.displayName ?? model?.name) as string,
-            useAccessStore.getState().azureApiVersion,
+            useCustomConfig ? useAccessStore.getState().azureApiVersion : "",
           ),
         );
       } else {

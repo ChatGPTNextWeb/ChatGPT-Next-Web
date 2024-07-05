@@ -58,7 +58,9 @@ export async function requestOpenai(req: NextRequest) {
   );
 
   if (isAzure) {
-    const azureApiVersion = req?.nextUrl?.searchParams?.get("api-version");
+    const azureApiVersion =
+      req?.nextUrl?.searchParams?.get("api-version") ||
+      serverConfig.azureApiVersion;
     baseUrl = baseUrl.split("/deployments").shift() as string;
     path = `${req.nextUrl.pathname.replaceAll(
       "/api/azure/",
