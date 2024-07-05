@@ -142,13 +142,12 @@ export class ChatGPTApi implements LLMApi {
 
     try {
       let chatPath = "";
-      if (modelConfig.providerName == ServiceProvider.Azure) {
+      if (modelConfig.providerName === ServiceProvider.Azure) {
         // find model, and get displayName as deployName
         const { models: configModels, customModels: configCustomModels } =
           useAppConfig.getState();
         const { defaultModel, customModels: accessCustomModels } =
           useAccessStore.getState();
-
         const models = collectModelsWithDefaultModel(
           configModels,
           [configCustomModels, accessCustomModels].join(","),
@@ -156,8 +155,8 @@ export class ChatGPTApi implements LLMApi {
         );
         const model = models.find(
           (model) =>
-            model.name == modelConfig.model &&
-            model?.provider?.providerName == ServiceProvider.Azure,
+            model.name === modelConfig.model &&
+            model?.provider?.providerName === ServiceProvider.Azure,
         );
         chatPath = this.path(
           Azure.ChatPath(
