@@ -32,6 +32,10 @@ declare global {
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
 
+      // bytedance only
+      BYTEDANCE_URL?: string;
+      BYTEDANCE_API_KEY?: string;
+
       // google tag manager
       GTM_ID?: string;
 
@@ -92,6 +96,7 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isBytedance = !!process.env.BYTEDANCE_API_KEY;
 
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -125,6 +130,10 @@ export const getServerSideConfig = () => {
     anthropicUrl: process.env.ANTHROPIC_URL,
 
     gtmId: process.env.GTM_ID,
+
+    isBytedance,
+    bytedanceApiKey: getApiKey(process.env.BYTEDANCE_API_KEY),
+    bytedanceUrl: process.env.BYTEDANCE_URL,
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,

@@ -321,6 +321,8 @@ export function PreviewActions(props: {
       api = new ClientApi(ModelProvider.GeminiPro);
     } else if (config.modelConfig.providerName == ServiceProvider.Anthropic) {
       api = new ClientApi(ModelProvider.Claude);
+    } else if (config.modelConfig.providerName == ServiceProvider.ByteDance) {
+      api = new ClientApi(ModelProvider.Doubao);
     } else {
       api = new ClientApi(ModelProvider.GPT);
     }

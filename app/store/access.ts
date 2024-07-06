@@ -47,6 +47,10 @@ const DEFAULT_ACCESS_STATE = {
   anthropicApiVersion: "2023-06-01",
   anthropicUrl: "",
 
+  // bytedance
+  bytedanceApiKey: "",
+  bytedanceUrl: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -83,6 +87,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["anthropicApiKey"]);
     },
 
+    isValidByteDance() {
+      return ensure(get(), ["bytedanceApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -92,6 +100,7 @@ export const useAccessStore = createPersistStore(
         this.isValidAzure() ||
         this.isValidGoogle() ||
         this.isValidAnthropic() ||
+        this.isValidByteDance() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );

@@ -14,6 +14,8 @@ export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
+export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -28,6 +30,7 @@ export enum ApiPath {
   Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
+  ByteDance = "/api/bytedance",
 }
 
 export enum SlotID {
@@ -71,12 +74,14 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  ByteDance = "ByteDance",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Doubao = "Doubao",
 }
 
 export const Anthropic = {
@@ -102,6 +107,11 @@ export const Azure = {
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+};
+
+export const ByteDance = {
+  ExampleEndpoint: "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+  ChatPath: "/api/v3/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -173,6 +183,8 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
+const bytedanceModels = ["ep-20240520082937-424bw=Doubao-lite-4k"];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -208,6 +220,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...bytedanceModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "bytedance",
+      providerName: "ByteDance",
+      providerType: "bytedance",
     },
   })),
 ] as const;
