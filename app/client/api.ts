@@ -200,3 +200,14 @@ export function getHeaders() {
 
   return headers;
 }
+
+export function getClientApi(provider: ServiceProvider): ClientApi {
+  switch (provider) {
+    case ServiceProvider.Google:
+      return new ClientApi(ModelProvider.GeminiPro);
+    case ServiceProvider.Anthropic:
+      return new ClientApi(ModelProvider.Claude);
+    default:
+      return new ClientApi(ModelProvider.GPT);
+  }
+}
