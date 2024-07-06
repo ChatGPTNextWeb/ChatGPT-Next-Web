@@ -52,7 +52,7 @@ export const DEFAULT_CONFIG = {
 
     model: "gpt-4o" as ModelType,
     providerName: "Openai" as ServiceProvider,
-    temperature: 0.01,
+    temperature: 0.2,
     top_p: 1,
     max_tokens: 4000,
     presence_penalty: 0,
