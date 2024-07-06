@@ -175,6 +175,8 @@ export function useLoadData() {
     api = new ClientApi(ModelProvider.GeminiPro);
   } else if (config.modelConfig.providerName == ServiceProvider.Anthropic) {
     api = new ClientApi(ModelProvider.Claude);
+  } else if (config.modelConfig.providerName == ServiceProvider.Baidu) {
+    api = new ClientApi(ModelProvider.Ernie);
   } else {
     api = new ClientApi(ModelProvider.GPT);
   }
