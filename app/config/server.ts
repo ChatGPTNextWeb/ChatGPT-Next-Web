@@ -32,12 +32,12 @@ declare global {
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
 
+      // google tag manager
+      GTM_ID?: string;
+
       // bytedance only
       BYTEDANCE_URL?: string;
       BYTEDANCE_API_KEY?: string;
-
-      // google tag manager
-      GTM_ID?: string;
 
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;

@@ -225,6 +225,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:
       return new ClientApi(ModelProvider.Claude);
+    case ServiceProvider.ByteDance:
+      return new ClientApi(ModelProvider.Doubao);
     default:
       return new ClientApi(ModelProvider.GPT);
   }

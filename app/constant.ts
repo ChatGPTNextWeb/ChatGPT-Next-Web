@@ -183,7 +183,14 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
-const bytedanceModels = ["ep-20240520082937-424bw=Doubao-lite-4k"];
+const bytedanceModels = [
+  "Doubao-lite-4k",
+  "Doubao-lite-32k",
+  "Doubao-lite-128k",
+  "Doubao-pro-4k",
+  "Doubao-pro-32k",
+  "Doubao-pro-128k",
+];
 
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
