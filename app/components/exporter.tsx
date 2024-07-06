@@ -36,13 +36,9 @@ import { toBlob, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
 
 import { prettyObject } from "../utils/format";
-import {
-  EXPORT_MESSAGE_CLASS_NAME,
-  ModelProvider,
-  ServiceProvider,
-} from "../constant";
+import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
 import { getClientConfig } from "../config/client";
-import { ClientApi } from "../client/api";
+import { type ClientApi, getClientApi } from "../client/api";
 import { getMessageTextContent } from "../utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
@@ -316,14 +312,7 @@ export function PreviewActions(props: {
   const onRenderMsgs = (msgs: ChatMessage[]) => {
     setShouldExport(false);
 
-    var api: ClientApi;
-    if (config.modelConfig.providerName == ServiceProvider.Google) {
-      api = new ClientApi(ModelProvider.GeminiPro);
-    } else if (config.modelConfig.providerName == ServiceProvider.Anthropic) {
-      api = new ClientApi(ModelProvider.Claude);
-    } else {
-      api = new ClientApi(ModelProvider.GPT);
-    }
+    const api: ClientApi = getClientApi(config.modelConfig.providerName);
 
     api
       .share(msgs)

@@ -12,7 +12,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
-import { ServiceProvider, ModelProvider, Path, SlotID } from "../constant";
+import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
@@ -27,7 +27,7 @@ import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
-import { ClientApi } from "../client/api";
+import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -170,14 +170,8 @@ function Screen() {
 export function useLoadData() {
   const config = useAppConfig();
 
-  var api: ClientApi;
-  if (config.modelConfig.providerName == ServiceProvider.Google) {
-    api = new ClientApi(ModelProvider.GeminiPro);
-  } else if (config.modelConfig.providerName == ServiceProvider.Anthropic) {
-    api = new ClientApi(ModelProvider.Claude);
-  } else {
-    api = new ClientApi(ModelProvider.GPT);
-  }
+  const api: ClientApi = getClientApi(config.modelConfig.providerName);
+
   useEffect(() => {
     (async () => {
       const models = await api.llm.models();
