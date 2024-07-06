@@ -157,6 +157,7 @@ export class ClientApi {
 
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
+  const chatStore = useChatStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -165,8 +166,7 @@ export function getHeaders() {
   const clientConfig = getClientConfig();
 
   function getConfig() {
-    const modelConfig = useChatStore.getState().currentSession()
-      .mask.modelConfig;
+    const modelConfig = chatStore.currentSession().mask.modelConfig;
     const isGoogle = modelConfig.providerName == ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
