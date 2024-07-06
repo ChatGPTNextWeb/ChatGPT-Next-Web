@@ -161,41 +161,54 @@ export function getHeaders() {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
-  const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isGoogle = modelConfig.providerName == ServiceProvider.Google;
-  const isAzure = modelConfig.providerName === ServiceProvider.Azure;
-  const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
-  const authHeader = isAzure
-    ? "api-key"
-    : isAnthropic
-    ? "x-api-key"
-    : "Authorization";
-  const apiKey = isGoogle
-    ? accessStore.googleApiKey
-    : isAzure
-    ? accessStore.azureApiKey
-    : isAnthropic
-    ? accessStore.anthropicApiKey
-    : accessStore.openaiApiKey;
-  const clientConfig = getClientConfig();
-  const makeBearer = (s: string) =>
-    `${isAzure || isAnthropic ? "" : "Bearer "}${s.trim()}`;
-  const validString = (x: string) => x && x.length > 0;
 
+  const clientConfig = getClientConfig();
+
+  function getConfig() {
+    const modelConfig = useChatStore.getState().currentSession()
+      .mask.modelConfig;
+    const isGoogle = modelConfig.providerName == ServiceProvider.Google;
+    const isAzure = modelConfig.providerName === ServiceProvider.Azure;
+    const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
+    const isEnabledAccessControl = accessStore.enabledAccessControl();
+    const apiKey = isGoogle
+      ? accessStore.googleApiKey
+      : isAzure
+      ? accessStore.azureApiKey
+      : isAnthropic
+      ? accessStore.anthropicApiKey
+      : accessStore.openaiApiKey;
+    return { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl };
+  }
+
+  function getAuthHeader(): string {
+    return isAzure ? "api-key" : isAnthropic ? "x-api-key" : "Authorization";
+  }
+
+  function getBearerToken(apiKey: string, noBearer: boolean = false): string {
+    return validString(apiKey)
+      ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
+      : "";
+  }
+
+  function validString(x: string): boolean {
+    return x?.length > 0;
+  }
+  const { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl } =
+    getConfig();
   // when using google api in app, not set auth header
-  if (!(isGoogle && clientConfig?.isApp)) {
-    // use user's api key first
-    if (validString(apiKey)) {
-      headers[authHeader] = makeBearer(apiKey);
-    } else if (
-      accessStore.enabledAccessControl() &&
-      validString(accessStore.accessCode)
-    ) {
-      // access_code must send with header named `Authorization`, will using in auth middleware.
-      headers["Authorization"] = makeBearer(
-        ACCESS_CODE_PREFIX + accessStore.accessCode,
-      );
-    }
+  if (isGoogle && clientConfig?.isApp) return headers;
+
+  const authHeader = getAuthHeader();
+
+  const bearerToken = getBearerToken(apiKey, isAzure || isAnthropic);
+
+  if (bearerToken) {
+    headers[authHeader] = bearerToken;
+  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+    headers["Authorization"] = getBearerToken(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
+    );
   }
 
   return headers;
