@@ -255,6 +255,8 @@ export function isVisionModel(model: string) {
     "claude-3",
     "gemini-1.5-pro",
     "gemini-1.5-flash",
+    "gemini-pro-1.5",
+    "gemini-flash-1.5",
     "gpt-4o",
   ];
   const isGpt4Turbo =
