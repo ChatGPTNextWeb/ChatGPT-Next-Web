@@ -36,7 +36,52 @@
 1. 登录 https://supabase.com 并创建一个账户
 2. 在控制面板中创建一个项目
 3. 在 `Project Settings` `API Settings` 中获取 `URL` 和 `service_role secret`
-4. 完善下面的环境变量配置后即可使用
+4. 在 `SQL Editor` 中执行下面脚本创建表和函数
+
+```sql
+-- Enable the pgvector extension to work with embedding vectors
+create extension vector;
+
+-- Create a table to store your documents
+create table documents (
+  id bigserial primary key,
+  content text, -- corresponds to Document.pageContent
+  metadata jsonb, -- corresponds to Document.metadata
+  embedding vector(1536) -- 1536 works for OpenAI embeddings, change if needed
+);
+
+-- Create a function to search for documents
+create function match_documents (
+  query_embedding vector(1536),
+  match_count int DEFAULT null,
+  filter jsonb DEFAULT '{}'
+) returns table (
+  id bigint,
+  content text,
+  metadata jsonb,
+  embedding jsonb,
+  similarity float
+)
+language plpgsql
+as $$
+#variable_conflict use_column
+begin
+  return query
+  select
+    id,
+    content,
+    metadata,
+    (embedding::text)::jsonb as embedding,
+    1 - (documents.embedding <=> query_embedding) as similarity
+  from documents
+  where metadata @> filter
+  order by documents.embedding <=> query_embedding
+  limit match_count;
+end;
+$$;
+```
+
+5. 完善下面的环境变量配置后即可使用
 
 ## 环境变量
 
@@ -80,3 +125,5 @@ supabase 项目 service_role secret。
 此处配置为 ollama 服务地址，如：http://localhost:11434
 
 配置后请修改参数 `RAG_EMBEDDING_MODEL` 为 ollama 的 embedding 模型名。
+
+上面的数据库初始化语句中的 `vector(1536)` 也要修改为你的向量模型所使用的维度。
