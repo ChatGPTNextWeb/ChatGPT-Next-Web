@@ -35,6 +35,11 @@ declare global {
       // google tag manager
       GTM_ID?: string;
 
+      // tencent only
+      TENCENT_URL?: string;
+      TENCENT_SECRET_KEY?: string;
+      TENCENT_SECRET_ID?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -92,6 +97,7 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isTencent = !!process.env.TENCENT_API_KEY;
 
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -123,6 +129,11 @@ export const getServerSideConfig = () => {
     anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
+
+    isTencent,
+    tencentUrl: process.env.TENCENT_URL,
+    tencentSecretKey: getApiKey(process.env.TENCENT_SECRET_KEY),
+    tencentSecretId: process.env.TENCENT_SECRET_ID,
 
     gtmId: process.env.GTM_ID,
 

@@ -14,6 +14,8 @@ export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
+export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -28,6 +30,7 @@ export enum ApiPath {
   Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
+  Tencent = "/api/tencent",
 }
 
 export enum SlotID {
@@ -71,12 +74,14 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  Tencent = "Tencent",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Hunyuan = "Hunyuan",
 }
 
 export const Anthropic = {
@@ -102,6 +107,10 @@ export const Azure = {
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+};
+
+export const Tencent = {
+  ChatPath: "chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -173,6 +182,16 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
+const tencentModels = [
+  "hunyuan-pro",
+  "hunyuan-standard",
+  "hunyuan-lite",
+  "hunyuan-role",
+  "hunyuan-functioncall",
+  "hunyuan-code",
+  "hunyuan-vision",
+];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -208,6 +227,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...tencentModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "tencent",
+      providerName: "Tencent",
+      providerType: "tencent",
     },
   })),
 ] as const;

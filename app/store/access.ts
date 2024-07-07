@@ -47,6 +47,11 @@ const DEFAULT_ACCESS_STATE = {
   anthropicApiVersion: "2023-06-01",
   anthropicUrl: "",
 
+  // tencent
+  tencentUrl: "",
+  tencentSecretKey: "",
+  tencentSecretId: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -83,6 +88,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["anthropicApiKey"]);
     },
 
+    isValidTencent() {
+      return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -92,6 +101,7 @@ export const useAccessStore = createPersistStore(
         this.isValidAzure() ||
         this.isValidGoogle() ||
         this.isValidAnthropic() ||
+        this.isValidTencent ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
