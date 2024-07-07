@@ -1,10 +1,13 @@
-import { getHeaders } from "../api";
+import { getClientApi } from "@/app/utils";
+import { ClientApi, getHeaders } from "../api";
+import { ChatSession } from "@/app/store";
 
 export interface FileInfo {
   originalFilename: string;
   fileName: string;
   filePath: string;
   size: number;
+  partial?: string;
 }
 
 export class FileApi {
@@ -30,5 +33,16 @@ export class FileApi {
       fileName: resJson.fileName,
       filePath: resJson.filePath,
     };
+  }
+
+  async uploadForRag(file: any, session: ChatSession): Promise<FileInfo> {
+    var fileInfo = await this.upload(file);
+    var api: ClientApi = getClientApi(session.mask.modelConfig.model);
+    let partial = await api.llm.createRAGStore({
+      chatSessionId: session.id,
+      fileInfos: [fileInfo],
+    });
+    fileInfo.partial = partial;
+    return fileInfo;
   }
 }

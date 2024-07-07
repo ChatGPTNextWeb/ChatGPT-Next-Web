@@ -10,7 +10,7 @@ import { WolframAlphaTool } from "@/app/api/langchain-tools/wolframalpha";
 import { BilibiliVideoInfoTool } from "./bilibili_vid_info";
 import { BilibiliVideoSearchTool } from "./bilibili_vid_search";
 import { BilibiliMusicRecognitionTool } from "./bilibili_music_recognition";
-import { RAGSearch } from "./rag_search";
+import { MyFilesBrowser } from "./myfiles_browser";
 import { BilibiliVideoConclusionTool } from "./bilibili_vid_conclusion";
 
 export class NodeJSTool {
@@ -59,7 +59,7 @@ export class NodeJSTool {
     const bilibiliVideoSearchTool = new BilibiliVideoSearchTool();
     const bilibiliVideoConclusionTool = new BilibiliVideoConclusionTool();
     const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
-    let tools = [
+    let tools: any = [
       calculatorTool,
       webBrowserTool,
       dallEAPITool,
@@ -73,7 +73,9 @@ export class NodeJSTool {
       bilibiliVideoConclusionTool,
     ];
     if (!!process.env.ENABLE_RAG) {
-      tools.push(new RAGSearch(this.sessionId, this.model, this.ragEmbeddings));
+      tools.push(
+        new MyFilesBrowser(this.sessionId, this.model, this.ragEmbeddings),
+      );
     }
     return tools;
   }

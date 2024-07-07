@@ -27,6 +27,7 @@
     "@next/third-parties": "^14.1.0",
     "@pinecone-database/pinecone": "^2.2.0",
     "@qdrant/js-client-rest": "^1.8.2",
+    "@supabase/supabase-js": "^2.44.2",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",

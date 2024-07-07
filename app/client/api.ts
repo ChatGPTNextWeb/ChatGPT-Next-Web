@@ -116,7 +116,7 @@ export abstract class LLMApi {
   abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
   abstract transcription(options: TranscriptionOptions): Promise<string>;
   abstract toolAgentChat(options: AgentChatOptions): Promise<void>;
-  abstract createRAGStore(options: CreateRAGStoreOptions): Promise<void>;
+  abstract createRAGStore(options: CreateRAGStoreOptions): Promise<string>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }

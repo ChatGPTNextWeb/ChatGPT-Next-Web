@@ -1398,32 +1398,25 @@ function _Chat() {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = ".pdf,.txt,.md,.json,.csv,.docx,.srt,.mp3";
-        fileInput.multiple = true;
+        fileInput.multiple = false;
         fileInput.onchange = (event: any) => {
           setUploading(true);
-          const files = event.target.files;
+          const file = event.target.files[0];
           const api = new ClientApi();
           const fileDatas: FileInfo[] = [];
-          for (let i = 0; i < files.length; i++) {
-            const file = event.target.files[i];
-            api.file
-              .upload(file)
-              .then((fileInfo) => {
-                console.log(fileInfo);
-                fileDatas.push(fileInfo);
-                if (
-                  fileDatas.length === 3 ||
-                  fileDatas.length === files.length
-                ) {
-                  setUploading(false);
-                  res(fileDatas);
-                }
-              })
-              .catch((e) => {
-                setUploading(false);
-                rej(e);
-              });
-          }
+          api.file
+            .uploadForRag(file, session)
+            .then((fileInfo) => {
+              console.log(fileInfo);
+              fileDatas.push(fileInfo);
+              session.attachFiles.push(fileInfo);
+              setUploading(false);
+              res(fileDatas);
+            })
+            .catch((e) => {
+              setUploading(false);
+              rej(e);
+            });
         };
         fileInput.click();
       })),
@@ -1694,7 +1687,7 @@ function _Chat() {
                       parentRef={scrollRef}
                       defaultShow={i >= messages.length - 6}
                     />
-                    {message.fileInfos && message.fileInfos.length > 0 && (
+                    {/* {message.fileInfos && message.fileInfos.length > 0 && (
                       <nav
                         className={styles["chat-message-item-files"]}
                         style={
@@ -1716,7 +1709,7 @@ function _Chat() {
                           );
                         })}
                       </nav>
-                    )}
+                    )} */}
                     {getMessageImages(message).length == 1 && (
                       <img
                         className={styles["chat-message-item-image"]}

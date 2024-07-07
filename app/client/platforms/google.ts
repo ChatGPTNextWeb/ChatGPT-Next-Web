@@ -20,7 +20,7 @@ import {
 } from "@/app/utils";
 
 export class GeminiProApi implements LLMApi {
-  createRAGStore(options: CreateRAGStoreOptions): Promise<void> {
+  createRAGStore(options: CreateRAGStoreOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
   transcription(options: TranscriptionOptions): Promise<string> {

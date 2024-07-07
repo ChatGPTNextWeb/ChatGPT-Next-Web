@@ -35,7 +35,7 @@
 
 ## 主要功能
 
-- RAG 功能 （预览）
+- RAG 功能
   - 配置请参考文档[RAG 功能配置说明](./docs/rag-cn.md)
 
 - 除插件工具外，与原项目保持一致 [ChatGPT-Next-Web 主要功能](https://github.com/Yidadaa/ChatGPT-Next-Web#主要功能)

@@ -89,7 +89,7 @@ export class ClaudeApi implements LLMApi {
   toolAgentChat(options: AgentChatOptions): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  createRAGStore(options: CreateRAGStoreOptions): Promise<void> {
+  createRAGStore(options: CreateRAGStoreOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
   extractMessage(res: any) {

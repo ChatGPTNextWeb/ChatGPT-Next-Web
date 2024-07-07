@@ -373,7 +373,7 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
-  async createRAGStore(options: CreateRAGStoreOptions): Promise<void> {
+  async createRAGStore(options: CreateRAGStoreOptions): Promise<string> {
     try {
       const accessStore = useAccessStore.getState();
       const isAzure = accessStore.provider === ServiceProvider.Azure;
@@ -395,9 +395,12 @@ export class ChatGPTApi implements LLMApi {
       };
       const res = await fetch(path, chatPayload);
       if (res.status !== 200) throw new Error(await res.text());
+      const resJson = await res.json();
+      return resJson.partial;
     } catch (e) {
       console.log("[Request] failed to make a chat reqeust", e);
       options.onError?.(e as Error);
+      return "";
     }
   }
 
