@@ -5,7 +5,7 @@
 
 ## 效果图
 
-![image-20240707152914436](C:\project\github\ChatGPT-Next-Web-LangChain\docs\images\rag-example-2.jpg)
+![image-20240707152914436](./images/rag-example-2.jpg)
 
 ## 原理
 
