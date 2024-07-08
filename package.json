@@ -61,7 +61,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
     "prettier": "^3.0.2",
-    "tsx": "^4.16.0",
+    "tsx": "^4.16.2",
     "typescript": "5.2.2",
     "watch": "^1.0.2",
     "webpack": "^5.88.1"
