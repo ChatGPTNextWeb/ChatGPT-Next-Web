@@ -14,6 +14,8 @@ import { showToast } from "../components/ui-lib";
 import Locale from "../locales";
 import { createSyncClient, ProviderType } from "../utils/cloud";
 import { corsPath } from "../utils/cors";
+import Cookies from "js-cookie";
+import { ChatMessage, useChatStore } from "./chat";
 
 export interface WebDavConfig {
   server: string;
@@ -45,6 +47,80 @@ const DEFAULT_SYNC_STATE = {
   lastProvider: "",
 };
 
+interface Message {
+  chat_id: string;
+  created_at: string;
+  id: string;
+  model_id: string;
+  regenerated: boolean;
+  role: string;
+  text: string;
+  updated_at: string;
+  user_id: string;
+}
+interface OrganizedData {
+  [chatId: string]: any[];
+}
+function organizeChatMessages(messages: Message[]): OrganizedData {
+  const organizedData: OrganizedData = {};
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+
+  // Organize messages by chat ID
+  for (const message of messages) {
+    const chatId = message.chat_id;
+    if (!organizedData[chatId]) {
+      organizedData[chatId] = [];
+    }
+    organizedData[chatId].push({
+      id: message.id,
+      role: message.role,
+      content: message.text,
+      date: message.created_at,
+    });
+  }
+
+  for (const chatId in organizedData) {
+    organizedData[chatId].sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+
+    organizedData[chatId].forEach((message) => {
+      message.date = new Intl.DateTimeFormat("en-US", options).format(
+        new Date(message.date),
+      );
+    });
+  }
+  return organizedData;
+}
+// Sort messages within each chat ID array based on creation time
+// for (const chatId in organizedData) {
+//   organizedData[chatId].sort((a, b) => {
+//     const dateComparison =
+//       new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+
+//     if (dateComparison === 0) {
+//       // If the dates are the same, sort by user type
+//       if (a.role === "user" && b.role === "assistant") {
+//         return -1; // User comes first
+//       } else if (a.role === "assistant" && b.role === "user") {
+//         return 1; // Assistant comes first
+//       } else {
+//         // If both are users or both are assistants, maintain the original order
+//         return 0;
+//       }
+//     } else {
+//       return dateComparison;
+//     }
+//   });
+// }
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
   (set, get) => ({
@@ -92,31 +168,49 @@ export const useSyncStore = createPersistStore(
 
     async sync() {
       const localState = getLocalAppState();
-      const provider = get().provider;
-      const config = get()[provider];
-      const client = this.getClient();
+      const authToken = Cookies.get("auth_token");
 
       try {
-        const remoteState = await client.get(config.username);
-        if (!remoteState || remoteState === "") {
-          await client.set(config.username, JSON.stringify(localState));
-          console.log("[Sync] Remote state is empty, using local state instead.");
-          return
-        } else {
-          const parsedRemoteState = JSON.parse(
-            await client.get(config.username),
-          ) as AppState;
-          mergeAppState(localState, parsedRemoteState);
-          setLocalAppState(localState);
-       } 
+        const response = await fetch("https://cloak.i.inc/sync/all", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to sync messages");
+        }
+        const fetchedMessages = await response.json();
+        const extracted = organizeChatMessages(fetchedMessages.messages);
+        const chatIdSet = new Set(Object.keys(extracted));
+        const updatedSet: Set<string> = new Set();
+
+        for (const session of localState["chat-next-web-store"].sessions) {
+          const currChatId = session["chat_id"];
+          if (chatIdSet.has(currChatId)) {
+            updatedSet.add(currChatId);
+            session.messages = extracted[currChatId];
+          }
+        }
+        const difference = [...chatIdSet];
+        for (const element of updatedSet) {
+          const index = difference.indexOf(element);
+          if (index !== -1) {
+            difference.splice(index, 1);
+          }
+        }
+
+        for (const chatId of difference) {
+          const messages: ChatMessage[] = extracted[chatId];
+          useChatStore.getState().newSession(undefined, chatId, messages);
+        }
+        // setLocalAppState(localState);
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
         throw e;
       }
 
-      await client.set(config.username, JSON.stringify(localState));
-
-      this.markSyncTime();
+      // this.markSyncTime();
     },
 
     async check() {
