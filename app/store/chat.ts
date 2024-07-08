@@ -23,6 +23,7 @@ import { createPersistStore } from "../utils/store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
+import Cookies from "js-cookie";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -58,7 +59,7 @@ export interface ChatSession {
   lastUpdate: number;
   lastSummarizeIndex: number;
   clearContextIndex?: number;
-
+  chat_id: string;
   mask: Mask;
 }
 
@@ -81,7 +82,7 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
-
+    chat_id: crypto.randomUUID(),
     mask: createEmptyMask(),
   };
 }
@@ -212,9 +213,13 @@ export const useChatStore = createPersistStore(
         });
       },
 
-      newSession(mask?: Mask) {
+      newSession(mask?: Mask, chat_id?: string, messages?: ChatMessage[]) {
         const session = createEmptySession();
-
+        if (chat_id && messages) {
+          session.messages;
+          session.chat_id = chat_id;
+        }
+        session.messages = [];
         if (mask) {
           const config = useAppConfig.getState();
           const globalModelConfig = config.modelConfig;
@@ -242,10 +247,17 @@ export const useChatStore = createPersistStore(
         get().selectSession(limit(i + delta));
       },
 
-      deleteSession(index: number) {
+      async deleteSession(index: number) {
         const deletingLastSession = get().sessions.length === 1;
         const deletedSession = get().sessions.at(index);
+        const authToken = Cookies.get("auth_token");
 
+        await fetch(`https://cloak.i.inc/chats/${deletedSession?.chat_id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         if (!deletedSession) return;
 
         const sessions = get().sessions.slice();
@@ -299,15 +311,36 @@ export const useChatStore = createPersistStore(
         return session;
       },
 
-      onNewMessage(message: ChatMessage) {
+      async onNewMessage(message: ChatMessage) {
         get().updateCurrentSession((session) => {
           session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
-        get().summarizeSession();
+        // get().summarizeSession();
+        const sessions: ChatSession[] = get().sessions;
+        const index: number = get().currentSessionIndex;
+        const authToken = Cookies.get("auth_token");
+        const currentSession: any = get().sessions.at(index);
+        const chatId: string = currentSession.chat_id;
+        //what should be present in payload ask
+        if (sessions[index].messages.length === 4) {
+          const response = await fetch(
+            `https://cloak.i.inc/chats/${chatId}/autorename`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            },
+          );
+          if (!response.ok) console.log("Error while fetching autorename");
+          const chat = await response.json();
+          get().updateCurrentSession((session) => {
+            session.topic = chat.name;
+          });
+        }
       },
-
       async onUserInput(content: string, attachImages?: string[]) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
