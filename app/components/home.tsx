@@ -28,9 +28,10 @@ import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
-import { useAccessStore } from "../store";
+import { useAccessStore, useChatStore } from "../store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
 import { useTokenRefresh } from "../utils/hooks";
+import { useSyncStore } from "../store/sync";
 
 export function Loading(props: { noLogo?: boolean }) {
   // TODO fix this loading thing
@@ -135,6 +136,10 @@ function Screen() {
   const shouldTightBorder = true;
   // getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
+  const sync = useSyncStore().sync;
+  useEffect(() => {
+    sync();
+  }, [useChatStore]);
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
