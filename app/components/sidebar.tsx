@@ -162,7 +162,7 @@ export function SideBar(props: { className?: string }) {
           Invisibility
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Open source web chat app
+          Chat with your Invisible AI{" "}
         </div>
         {/* <div className={styles["sidebar-logo"] + " no-dark"}> */}
         {/*     <img */}
@@ -202,10 +202,19 @@ export function SideBar(props: { className?: string }) {
         )}
 
         <IconButton
-          icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          icon={<AddIcon />}
+          text={shouldNarrow ? undefined : Locale.Home.NewChat}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => {
+            chatStore.newSession();
+            navigate(Path.Chat);
+            // if (config.dontShowMaskSplashScreen) {
+            //   chatStore.newSession();
+            //   navigate(Path.Chat);
+            // } else {
+            //   navigate(Path.NewChat);
+            // }
+          }}
           shadow
         />
       </div>
@@ -233,11 +242,11 @@ export function SideBar(props: { className?: string }) {
               }}
             />
           </div>
-          <div className={styles["sidebar-action"]}>
+          {/* <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
-          </div>
+          </div> */}
           <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
@@ -248,23 +257,6 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<DiscordIcon />} shadow />
             </a>
           </div>
-        </div>
-        <div>
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              chatStore.newSession();
-              navigate(Path.Chat);
-              // if (config.dontShowMaskSplashScreen) {
-              //   chatStore.newSession();
-              //   navigate(Path.Chat);
-              // } else {
-              //   navigate(Path.NewChat);
-              // }
-            }}
-            shadow
-          />
         </div>
       </div>
 
