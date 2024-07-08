@@ -30,7 +30,7 @@ export interface MultimodalContent {
 }
 
 export interface RequestMessage {
-  role: MessageRole;
+  role: any;
   content: string | MultimodalContent[];
 }
 
