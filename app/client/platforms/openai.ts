@@ -45,6 +45,10 @@ interface RequestPayload {
     role: "system" | "user" | "assistant";
     content: string | MultimodalContent[];
   }[];
+  invisibility: {
+    chat_id: string;
+    user_message_id: string;
+  };
   stream?: boolean;
   model: string;
   temperature: number;
@@ -116,6 +120,10 @@ export class ChatGPTApi implements LLMApi {
 
     const requestPayload: RequestPayload = {
       messages,
+      invisibility: {
+        chat_id: useChatStore.getState().currentSession().chat_id,
+        user_message_id: crypto.randomUUID(),
+      },
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
