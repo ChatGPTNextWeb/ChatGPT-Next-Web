@@ -137,9 +137,10 @@ function Screen() {
   // getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   const sync = useSyncStore().sync;
+  const sessions = useChatStore.getState().sessions;
   useEffect(() => {
     sync();
-  }, [useChatStore]);
+  }, [sessions, sync]);
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
