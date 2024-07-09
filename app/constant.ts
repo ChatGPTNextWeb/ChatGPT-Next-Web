@@ -1,3 +1,5 @@
+import { stabilityRequestCall } from "@/app/store/sd";
+
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
@@ -13,6 +15,7 @@ export const OPENAI_BASE_URL = "https://api.openai.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
+export const STABILITY_BASE_URL = "https://api.stability.ai";
 
 export enum Path {
   Home = "/",
@@ -79,6 +82,7 @@ export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Stability = "Stability",
 }
 
 export const Anthropic = {
@@ -102,6 +106,10 @@ export const Azure = {
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+};
+
+export const StabilityPath = {
+  GeneratePath: "v2beta/stable-image/generate",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang

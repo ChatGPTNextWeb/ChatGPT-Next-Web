@@ -1,6 +1,7 @@
 import { initDB, useIndexedDB } from "react-indexed-db-hook";
-import { StoreKey } from "@/app/constant";
+import { StabilityPath, StoreKey } from "@/app/constant";
 import { create, StoreApi } from "zustand";
+import { showToast } from "@/app/components/ui-lib";
 
 export const SdDbConfig = {
   name: "@chatgpt-next-web/sd",
@@ -44,12 +45,28 @@ export const useSdStore = create<SdStore>()((set) => ({
   execCountInc: () => set((state) => ({ execCount: state.execCount + 1 })),
 }));
 
-export function sendSdTask(data: any, db: any, inc: any) {
+export function sendSdTask(data: any, db: any, inc: any, okCall?: Function) {
+  db.add(data).then(
+    (id: number) => {
+      data = { ...data, id, status: "running" };
+      db.update(data);
+      inc();
+      stabilityRequestCall(data, db, inc);
+      okCall?.();
+    },
+    (error: any) => {
+      console.error(error);
+      showToast(`error: ` + error.message);
+    },
+  );
+}
+
+export function stabilityRequestCall(data: any, db: any, inc: any) {
   const formData = new FormData();
   for (let paramsKey in data.params) {
     formData.append(paramsKey, data.params[paramsKey]);
   }
-  fetch("https://api.stability.ai/v2beta/stable-image/generate/" + data.model, {
+  fetch(`/api/stability/${StabilityPath.GeneratePath}/${data.model}`, {
     method: "POST",
     headers: {
       Accept: "application/json",

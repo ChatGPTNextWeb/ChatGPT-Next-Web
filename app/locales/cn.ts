@@ -534,6 +534,8 @@ const cn = {
     Danger: {
       Delete: "确认删除？",
     },
+    GenerateParams: "生成参数",
+    Detail: "详情",
   },
 };
 

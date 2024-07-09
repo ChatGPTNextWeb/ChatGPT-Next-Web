@@ -425,11 +425,12 @@ export function showPrompt(content: any, value = "", rows = 3) {
   });
 }
 
-export function showImageModal(img: string) {
+export function showImageModal(img: string, defaultMax?: boolean) {
   showModal({
     title: Locale.Export.Image.Modal,
+    defaultMax: defaultMax,
     children: (
-      <div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <img
           src={img}
           alt="preview"

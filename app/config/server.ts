@@ -124,6 +124,9 @@ export const getServerSideConfig = () => {
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
 
+    stabilityUrl: process.env.STABILITY_URL,
+    stabilityApiKey: process.env.STABILITY_API_KEY,
+
     gtmId: process.env.GTM_ID,
 
     needCode: ACCESS_CODES.size > 0,

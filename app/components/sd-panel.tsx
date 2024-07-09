@@ -307,22 +307,12 @@ export function SdPanel() {
       model_name: currentModel.name,
       status: "wait",
       params: reqParams,
-      created_at: new Date().toISOString(),
+      created_at: new Date().toLocaleString(),
       img_data: "",
     };
-    sdListDb.add(data).then(
-      (id) => {
-        data = { ...data, id, status: "running" };
-        sdListDb.update(data);
-        execCountInc();
-        sendSdTask(data, sdListDb, execCountInc);
-        setParams(getModelParamBasicData(columns, params, true));
-      },
-      (error) => {
-        console.error(error);
-        showToast(`error: ` + error.message);
-      },
-    );
+    sendSdTask(data, sdListDb, execCountInc, () => {
+      setParams(getModelParamBasicData(columns, params, true));
+    });
   };
   return (
     <>

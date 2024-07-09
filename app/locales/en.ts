@@ -540,6 +540,8 @@ const en: LocaleType = {
     Danger: {
       Delete: "Confirm to delete?",
     },
+    GenerateParams: "Generate Params",
+    Detail: "Detail",
   },
 };
 

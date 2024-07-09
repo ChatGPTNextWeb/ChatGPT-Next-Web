@@ -9,7 +9,6 @@ import {
   copyToClipboard,
   getMessageTextContent,
   useMobileScreen,
-  useWindowSize,
 } from "@/app/utils";
 import { useNavigate } from "react-router-dom";
 import { useAppConfig } from "@/app/store";
@@ -22,14 +21,18 @@ import CopyIcon from "@/app/icons/copy.svg";
 import PromptIcon from "@/app/icons/prompt.svg";
 import ResetIcon from "@/app/icons/reload.svg";
 import { useIndexedDB } from "react-indexed-db-hook";
-import { useSdStore } from "@/app/store/sd";
+import { sendSdTask, useSdStore } from "@/app/store/sd";
 import locales from "@/app/locales";
 import LoadingIcon from "../icons/three-dots.svg";
 import ErrorIcon from "../icons/delete.svg";
 import { Property } from "csstype";
-import { showConfirm } from "@/app/components/ui-lib";
+import {
+  showConfirm,
+  showImageModal,
+  showModal,
+} from "@/app/components/ui-lib";
 
-function openBase64ImgUrl(base64Data: string, contentType: string) {
+function getBase64ImgUrl(base64Data: string, contentType: string) {
   const byteCharacters = atob(base64Data);
   const byteNumbers = new Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
@@ -37,8 +40,7 @@ function openBase64ImgUrl(base64Data: string, contentType: string) {
   }
   const byteArray = new Uint8Array(byteNumbers);
   const blob = new Blob([byteArray], { type: contentType });
-  const blobUrl = URL.createObjectURL(blob);
-  window.open(blobUrl);
+  return URL.createObjectURL(blob);
 }
 
 function getSdTaskStatus(item: any) {
@@ -69,7 +71,24 @@ function getSdTaskStatus(item: any) {
       <span>
         {locales.Sd.Status.Name}: {s}
       </span>
-      {item.status === "error" && <span> - {item.error}</span>}
+      {item.status === "error" && (
+        <span
+          className="clickable"
+          onClick={() => {
+            showModal({
+              title: locales.Sd.Detail,
+              children: (
+                <div style={{ color: color, userSelect: "text" }}>
+                  {item.error}
+                </div>
+              ),
+            });
+          }}
+        >
+          {" "}
+          - {item.error}
+        </span>
+      )}
     </p>
   );
 }
@@ -83,7 +102,7 @@ export function Sd() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sdListDb = useIndexedDB(StoreKey.SdList);
   const [sdImages, setSdImages] = useState([]);
-  const { execCount } = useSdStore();
+  const { execCount, execCountInc } = useSdStore();
 
   useEffect(() => {
     sdListDb.getAll().then((data) => {
@@ -145,7 +164,10 @@ export function Sd() {
                       src={`data:image/png;base64,${item.img_data}`}
                       alt={`${item.id}`}
                       onClick={(e) => {
-                        openBase64ImgUrl(item.img_data, "image/png");
+                        showImageModal(
+                          getBase64ImgUrl(item.img_data, "image/png"),
+                          true,
+                        );
                       }}
                     />
                   ) : item.status === "error" ? (
@@ -163,7 +185,20 @@ export function Sd() {
                   >
                     <p className={styles["line-1"]}>
                       {locales.SdPanel.Prompt}:{" "}
-                      <span title={item.params.prompt}>
+                      <span
+                        className="clickable"
+                        title={item.params.prompt}
+                        onClick={() => {
+                          showModal({
+                            title: locales.Sd.Detail,
+                            children: (
+                              <div style={{ userSelect: "text" }}>
+                                {item.params.prompt}
+                              </div>
+                            ),
+                          });
+                        }}
+                      >
                         {item.params.prompt}
                       </span>
                     </p>
@@ -177,7 +212,21 @@ export function Sd() {
                         <ChatAction
                           text={Locale.Sd.Actions.Params}
                           icon={<PromptIcon />}
-                          onClick={() => console.log(1)}
+                          onClick={() => {
+                            showModal({
+                              title: locales.Sd.GenerateParams,
+                              children: (
+                                <div style={{ userSelect: "text" }}>
+                                  {Object.keys(item.params).map((key) => (
+                                    <div key={key} style={{ margin: "10px" }}>
+                                      <strong>{key}: </strong>
+                                      {item.params[key]}
+                                    </div>
+                                  ))}
+                                </div>
+                              ),
+                            });
+                          }}
                         />
                         <ChatAction
                           text={Locale.Sd.Actions.Copy}
@@ -194,7 +243,17 @@ export function Sd() {
                         <ChatAction
                           text={Locale.Sd.Actions.Retry}
                           icon={<ResetIcon />}
-                          onClick={() => console.log(1)}
+                          onClick={() => {
+                            const reqData = {
+                              model: item.model,
+                              model_name: item.model_name,
+                              status: "wait",
+                              params: { ...item.params },
+                              created_at: new Date().toLocaleString(),
+                              img_data: "",
+                            };
+                            sendSdTask(reqData, sdListDb, execCountInc);
+                          }}
                         />
                         <ChatAction
                           text={Locale.Sd.Actions.Delete}
