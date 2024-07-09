@@ -233,6 +233,14 @@ ByteDance Api Key.
 
 ByteDance Api Url.
 
+### `ALIBABA_API_KEY` (optional)
+
+Alibaba Cloud Api Key.
+
+### `ALIBABA_URL` (optional)
+
+Alibaba Cloud Api Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
