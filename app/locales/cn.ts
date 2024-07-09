@@ -350,12 +350,12 @@ const cn = {
       Baidu: {
         ApiKey: {
           Title: "接口密钥",
-          SubTitle: "使用自定义 Baidu API Key 绕过密码访问限制",
+          SubTitle: "使用自定义 Baidu API Key",
           Placeholder: "Baidu API Key",
         },
         SecretKey: {
           Title: "接口密钥",
-          SubTitle: "使用自定义 Baidu Secret Key 绕过密码访问限制",
+          SubTitle: "使用自定义 Baidu Secret Key",
           Placeholder: "Baidu Secret Key",
         },
         Endpoint: {
