@@ -27,7 +27,6 @@ export function collectModelTable(
     // using <modelName>@<providerId> as fullName
     modelTable[`${m.name}@${m?.provider?.id}`] = {
       ...m,
-      name,
       displayName: m.name, // 'provider' is copied over if it exists
     };
   });
