@@ -127,6 +127,18 @@ anthropic claude Api version.
 
 anthropic claude Api Url.
 
+### `BAIDU_API_KEY` (可选)
+
+Baidu Api Key.
+
+### `BAIDU_SECRET_KEY` (可选)
+
+Baidu Secret Key.
+
+### `BAIDU_URL` (可选)
+
+Baidu Api Url.
+
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。

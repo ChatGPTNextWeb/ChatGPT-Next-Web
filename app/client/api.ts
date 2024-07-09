@@ -9,6 +9,8 @@ import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
+import { ErnieApi } from "./platforms/baidu";
+
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -103,6 +105,9 @@ export class ClientApi {
         break;
       case ModelProvider.Claude:
         this.llm = new ClaudeApi();
+        break;
+      case ModelProvider.Ernie:
+        this.llm = new ErnieApi();
         break;
       default:
         this.llm = new ChatGPTApi();
@@ -220,6 +225,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:
       return new ClientApi(ModelProvider.Claude);
+    case ServiceProvider.Baidu:
+      return new ClientApi(ModelProvider.Ernie);
     default:
       return new ClientApi(ModelProvider.GPT);
   }
