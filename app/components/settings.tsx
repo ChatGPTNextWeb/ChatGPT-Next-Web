@@ -53,6 +53,7 @@ import Link from "next/link";
 import {
   Anthropic,
   Azure,
+  Baidu,
   Google,
   OPENAI_BASE_URL,
   Path,
@@ -1184,6 +1185,67 @@ export function Settings() {
                             )
                           }
                         ></input>
+                      </ListItem>
+                    </>
+                  )}
+                  {accessStore.provider === ServiceProvider.Baidu && (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.Baidu.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
+                          Baidu.ExampleEndpoint
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.baiduUrl}
+                          placeholder={Baidu.ExampleEndpoint}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.baiduUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Baidu.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.Baidu.ApiKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.baiduApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.Baidu.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.baiduApiKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Baidu.SecretKey.Title}
+                        subTitle={
+                          Locale.Settings.Access.Baidu.SecretKey.SubTitle
+                        }
+                      >
+                        <PasswordInput
+                          value={accessStore.baiduSecretKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.Baidu.SecretKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.baiduSecretKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
                       </ListItem>
                     </>
                   )}

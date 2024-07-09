@@ -213,6 +213,18 @@ anthropic claude Api version.
 
 anthropic claude Api Url.
 
+### `BAIDU_API_KEY` (optional)
+
+Baidu Api Key.
+
+### `BAIDU_SECRET_KEY` (optional)
+
+Baidu Secret Key.
+
+### `BAIDU_URL` (optional)
+
+Baidu Api Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
