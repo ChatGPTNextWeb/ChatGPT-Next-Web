@@ -2,7 +2,7 @@
 import {
   ApiPath,
   ByteDance,
-  DEFAULT_API_HOST,
+  BYTEDANCE_BASE_URL,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
@@ -58,9 +58,7 @@ export class DoubaoApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/bytedance"
-        : ApiPath.ByteDance;
+      baseUrl = isApp ? BYTEDANCE_BASE_URL : ApiPath.ByteDance;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -94,9 +92,10 @@ export class DoubaoApi implements LLMApi {
       },
     };
 
+    const shouldStream = !!options.config.stream;
     const requestPayload: RequestPayload = {
       messages,
-      stream: options.config.stream,
+      stream: shouldStream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
@@ -104,9 +103,6 @@ export class DoubaoApi implements LLMApi {
       top_p: modelConfig.top_p,
     };
 
-    console.log("[Request] ByteDance payload: ", requestPayload);
-
-    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 

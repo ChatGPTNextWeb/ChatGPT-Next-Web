@@ -132,17 +132,10 @@ async function request(req: NextRequest) {
       console.error(`[ByteDance] filter`, e);
     }
   }
-  console.log("[ByteDance request]", fetchOptions.headers, req.method);
+
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
-    console.log(
-      "[ByteDance response]",
-      res.status,
-      "   ",
-      res.headers,
-      res.url,
-    );
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");
