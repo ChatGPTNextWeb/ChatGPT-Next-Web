@@ -1302,7 +1302,7 @@ export function Settings() {
                       <ListItem
                         title={Locale.Settings.Access.Alibaba.Endpoint.Title}
                         subTitle={
-                          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
+                          Locale.Settings.Access.Alibaba.Endpoint.SubTitle +
                           Alibaba.ExampleEndpoint
                         }
                       >
