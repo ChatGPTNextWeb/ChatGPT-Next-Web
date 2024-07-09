@@ -54,6 +54,7 @@ import {
   Anthropic,
   Azure,
   Baidu,
+  ByteDance,
   Google,
   OPENAI_BASE_URL,
   Path,
@@ -1243,6 +1244,51 @@ export function Settings() {
                             accessStore.update(
                               (access) =>
                                 (access.baiduSecretKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                    </>
+                  )}
+
+                  {accessStore.provider === ServiceProvider.ByteDance && (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.ByteDance.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
+                          ByteDance.ExampleEndpoint
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.bytedanceUrl}
+                          placeholder={ByteDance.ExampleEndpoint}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.bytedanceUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.ByteDance.ApiKey.Title}
+                        subTitle={
+                          Locale.Settings.Access.ByteDance.ApiKey.SubTitle
+                        }
+                      >
+                        <PasswordInput
+                          value={accessStore.bytedanceApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.ByteDance.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.bytedanceApiKey =
+                                  e.currentTarget.value),
                             );
                           }}
                         />
