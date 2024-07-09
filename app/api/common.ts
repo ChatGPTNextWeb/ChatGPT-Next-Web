@@ -70,7 +70,7 @@ export async function requestOpenai(req: NextRequest) {
     // Forward compatibility:
     // if display_name(deployment_name) not set, and '{deploy-id}' in AZURE_URL
     // then using default '{deploy-id}'
-    if (serverConfig.customModels) {
+    if (serverConfig.customModels && serverConfig.azureUrl) {
       const modelName = path.split("/")[1];
       let realDeployName = "";
       serverConfig.customModels
@@ -80,7 +80,9 @@ export async function requestOpenai(req: NextRequest) {
           const [fullName, displayName] = m.split("=");
           const [_, providerName] = fullName.split("@");
           if (providerName === "azure" && !displayName) {
-            const [_, deployId] = serverConfig.azureUrl.split("deployments/");
+            const [_, deployId] = (serverConfig?.azureUrl ?? "").split(
+              "deployments/",
+            );
             if (deployId) {
               realDeployName = deployId;
             }

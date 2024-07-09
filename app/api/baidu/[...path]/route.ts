@@ -102,8 +102,8 @@ async function request(req: NextRequest) {
   );
 
   const { access_token } = await getAccessToken(
-    serverConfig.baiduApiKey,
-    serverConfig.baiduSecretKey,
+    serverConfig.baiduApiKey as string,
+    serverConfig.baiduSecretKey as string,
   );
   const fetchUrl = `${baseUrl}${path}?access_token=${access_token}`;
 
