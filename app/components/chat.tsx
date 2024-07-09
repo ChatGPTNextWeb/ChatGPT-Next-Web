@@ -611,7 +611,7 @@ export function ChatActions(props: {
             if (providerName == "ByteDance") {
               const selectedModel = models.find(
                 (m) =>
-                  m.name == model && m?.provider.providerName == providerName,
+                  m.name == model && m?.provider?.providerName == providerName,
               );
               showToast(selectedModel?.displayName ?? "");
             } else {
