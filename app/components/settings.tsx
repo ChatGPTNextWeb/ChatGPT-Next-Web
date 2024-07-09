@@ -1256,7 +1256,7 @@ export function Settings() {
                       <ListItem
                         title={Locale.Settings.Access.ByteDance.Endpoint.Title}
                         subTitle={
-                          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
+                          Locale.Settings.Access.ByteDance.Endpoint.SubTitle +
                           ByteDance.ExampleEndpoint
                         }
                       >
