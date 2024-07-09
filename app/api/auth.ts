@@ -76,6 +76,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.Doubao:
         systemApiKey = serverConfig.bytedanceApiKey;
         break;
+      case ModelProvider.Ernie:
+        systemApiKey = serverConfig.baiduApiKey;
+        break;
       case ModelProvider.GPT:
       default:
         if (req.nextUrl.pathname.includes("azure/deployments")) {

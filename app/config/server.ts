@@ -35,6 +35,16 @@ declare global {
       // google tag manager
       GTM_ID?: string;
 
+      // anthropic only
+      ANTHROPIC_URL?: string;
+      ANTHROPIC_API_KEY?: string;
+      ANTHROPIC_API_VERSION?: string;
+
+      // baidu only
+      BAIDU_URL?: string;
+      BAIDU_API_KEY?: string;
+      BAIDU_SECRET_KEY?: string;
+
       // bytedance only
       BYTEDANCE_URL?: string;
       BYTEDANCE_API_KEY?: string;
@@ -96,8 +106,8 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
-
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -129,11 +139,16 @@ export const getServerSideConfig = () => {
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
 
-    gtmId: process.env.GTM_ID,
+    isBaidu,
+    baiduUrl: process.env.BAIDU_URL,
+    baiduApiKey: getApiKey(process.env.BAIDU_API_KEY),
+    baiduSecretKey: process.env.BAIDU_SECRET_KEY,
 
     isBytedance,
     bytedanceApiKey: getApiKey(process.env.BYTEDANCE_API_KEY),
     bytedanceUrl: process.env.BYTEDANCE_URL,
+
+    gtmId: process.env.GTM_ID,
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,

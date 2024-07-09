@@ -334,6 +334,22 @@ const en: LocaleType = {
           SubTitle: "Select and input a specific API version",
         },
       },
+      Baidu: {
+        ApiKey: {
+          Title: "Baidu API Key",
+          SubTitle: "Use a custom Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Baidu Secret Key",
+          SubTitle: "Use a custom Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example:",
+        },
+      },
       CustomModel: {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",

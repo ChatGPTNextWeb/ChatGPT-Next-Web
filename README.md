@@ -181,6 +181,7 @@ Specify OpenAI organization ID.
 ### `AZURE_URL` (optional)
 
 > Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
+> if you config deployment name in `CUSTOM_MODELS`, you can remove `{deploy-name}` in `AZURE_URL`
 
 Azure deploy url.
 
@@ -211,6 +212,18 @@ anthropic claude Api version.
 ### `ANTHROPIC_URL` (optional)
 
 anthropic claude Api Url.
+
+### `BAIDU_API_KEY` (optional)
+
+Baidu Api Key.
+
+### `BAIDU_SECRET_KEY` (optional)
+
+Baidu Secret Key.
+
+### `BAIDU_URL` (optional)
+
+Baidu Api Url.
 
 ### `HIDE_USER_API_KEY` (optional)
 
@@ -244,6 +257,9 @@ If you want to disable parse settings from url, set this to 1.
 To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name=displayName` to customize model name, separated by comma.
 
 User `-all` to disable all default models, `+all` to enable all default models.
+
+For Azure: use `modelName@azure=deploymentName` to customize model name and deployment name.
+> Example: `+gpt-3.5-turbo@azure=gpt35` will show option `gpt35(Azure)` in model list.
 
 ### `DEFAULT_MODEL` （optional）
 
