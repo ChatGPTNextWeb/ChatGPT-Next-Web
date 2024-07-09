@@ -21,7 +21,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { getMessageTextContent } from "@/app/utils";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -78,10 +78,9 @@ export class DoubaoApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    const visionModel = isVisionModel(options.config.model);
     const messages = options.messages.map((v) => ({
       role: v.role,
-      content: visionModel ? v.content : getMessageTextContent(v),
+      content: getMessageTextContent(v),
     }));
 
     const modelConfig = {
