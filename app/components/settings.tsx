@@ -55,6 +55,7 @@ import {
   Azure,
   Baidu,
   ByteDance,
+  Alibaba,
   Google,
   OPENAI_BASE_URL,
   Path,
@@ -1289,6 +1290,50 @@ export function Settings() {
                               (access) =>
                                 (access.bytedanceApiKey =
                                   e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                    </>
+                  )}
+
+                  {accessStore.provider === ServiceProvider.Alibaba && (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.Alibaba.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
+                          Alibaba.ExampleEndpoint
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.alibabaUrl}
+                          placeholder={Alibaba.ExampleEndpoint}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.alibabaUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Alibaba.ApiKey.Title}
+                        subTitle={
+                          Locale.Settings.Access.Alibaba.ApiKey.SubTitle
+                        }
+                      >
+                        <PasswordInput
+                          value={accessStore.alibabaApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.Alibaba.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.alibabaApiKey = e.currentTarget.value),
                             );
                           }}
                         />
