@@ -15,8 +15,9 @@ export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
 export const BAIDU_BASE_URL = "https://aip.baidubce.com";
-
 export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
+
+export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export enum Path {
   Home = "/",
@@ -33,6 +34,7 @@ export enum ApiPath {
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
   Baidu = "/api/baidu",
+  ByteDance = "/api/bytedance",
 }
 
 export enum SlotID {
@@ -77,6 +79,7 @@ export enum ServiceProvider {
   Google = "Google",
   Anthropic = "Anthropic",
   Baidu = "Baidu",
+  ByteDance = "ByteDance",
 }
 
 export enum ModelProvider {
@@ -84,6 +87,7 @@ export enum ModelProvider {
   GeminiPro = "GeminiPro",
   Claude = "Claude",
   Ernie = "Ernie",
+  Doubao = "Doubao",
 }
 
 export const Anthropic = {
@@ -126,6 +130,11 @@ export const Baidu = {
     }
     return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
   },
+};
+
+export const ByteDance = {
+  ExampleEndpoint: "https://ark.cn-beijing.volces.com/api/",
+  ChatPath: "api/v3/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -207,6 +216,15 @@ const baiduModels = [
   "ernie-3.5-8k-0205",
 ];
 
+const bytedanceModels = [
+  "Doubao-lite-4k",
+  "Doubao-lite-32k",
+  "Doubao-lite-128k",
+  "Doubao-pro-4k",
+  "Doubao-pro-32k",
+  "Doubao-pro-128k",
+];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -251,6 +269,15 @@ export const DEFAULT_MODELS = [
       id: "baidu",
       providerName: "Baidu",
       providerType: "baidu",
+    },
+  })),
+  ...bytedanceModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "bytedance",
+      providerName: "ByteDance",
+      providerType: "bytedance",
     },
   })),
 ] as const;

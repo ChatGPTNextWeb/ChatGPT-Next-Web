@@ -45,6 +45,10 @@ declare global {
       BAIDU_API_KEY?: string;
       BAIDU_SECRET_KEY?: string;
 
+      // bytedance only
+      BYTEDANCE_URL?: string;
+      BYTEDANCE_API_KEY?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -103,6 +107,7 @@ export const getServerSideConfig = () => {
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
   const isBaidu = !!process.env.BAIDU_API_KEY;
+  const isBytedance = !!process.env.BYTEDANCE_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -138,6 +143,10 @@ export const getServerSideConfig = () => {
     baiduUrl: process.env.BAIDU_URL,
     baiduApiKey: getApiKey(process.env.BAIDU_API_KEY),
     baiduSecretKey: process.env.BAIDU_SECRET_KEY,
+
+    isBytedance,
+    bytedanceApiKey: getApiKey(process.env.BYTEDANCE_API_KEY),
+    bytedanceUrl: process.env.BYTEDANCE_URL,
 
     gtmId: process.env.GTM_ID,
 

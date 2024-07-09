@@ -39,7 +39,7 @@ export function collectModelTable(
       const available = !m.startsWith("-");
       const nameConfig =
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
-      const [name, displayName] = nameConfig.split("=");
+      let [name, displayName] = nameConfig.split("=");
 
       // enable or disable all models
       if (name === "all") {
@@ -59,6 +59,11 @@ export function collectModelTable(
           ) {
             count += 1;
             modelTable[fullName]["available"] = available;
+            // swap name and displayName for bytedance
+            if (providerName === "bytedance") {
+              [name, displayName] = [displayName, name];
+              modelTable[fullName]["name"] = name;
+            }
             if (displayName) {
               modelTable[fullName]["displayName"] = displayName;
             }

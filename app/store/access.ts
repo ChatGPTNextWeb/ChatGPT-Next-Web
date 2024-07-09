@@ -52,6 +52,10 @@ const DEFAULT_ACCESS_STATE = {
   baiduApiKey: "",
   baiduSecretKey: "",
 
+  // bytedance
+  bytedanceApiKey: "",
+  bytedanceUrl: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -92,6 +96,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["baiduApiKey", "baiduSecretKey"]);
     },
 
+    isValidByteDance() {
+      return ensure(get(), ["bytedanceApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -102,6 +110,7 @@ export const useAccessStore = createPersistStore(
         this.isValidGoogle() ||
         this.isValidAnthropic() ||
         this.isValidBaidu() ||
+        this.isValidByteDance() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
