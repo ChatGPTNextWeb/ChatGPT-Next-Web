@@ -19,8 +19,7 @@ export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 
 export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
-export const ALIBABA_BASE_URL =
-  "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation";
+export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
 export enum Path {
   Home = "/",
@@ -144,7 +143,8 @@ export const ByteDance = {
 };
 
 export const Alibaba = {
-  ChatPath: "chat/completions",
+  ExampleEndpoint: ALIBABA_BASE_URL,
+  ChatPath: "v1/services/aigc/text-generation/generation",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang

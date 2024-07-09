@@ -68,10 +68,7 @@ async function request(req: NextRequest) {
   const controller = new AbortController();
 
   // alibaba use base url or just remove the path
-  let path = `${req.nextUrl.pathname}`.replaceAll(
-    ApiPath.Alibaba + "/" + Alibaba.ChatPath,
-    "",
-  );
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Alibaba, "");
 
   let baseUrl = serverConfig.alibabaUrl || ALIBABA_BASE_URL;
 
@@ -153,11 +150,9 @@ async function request(req: NextRequest) {
       console.error(`[Alibaba] filter`, e);
     }
   }
-  console.log("[Alibaba request]", fetchOptions.headers, req.method);
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
-    console.log("[Alibaba response]", res.status, "   ", res.headers, res.url);
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");

@@ -185,6 +185,7 @@ export function getHeaders() {
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
     const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
     const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
+    const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -194,6 +195,8 @@ export function getHeaders() {
       ? accessStore.anthropicApiKey
       : isByteDance
       ? accessStore.bytedanceApiKey
+      : isAlibaba
+      ? accessStore.alibabaApiKey
       : accessStore.openaiApiKey;
     return {
       isGoogle,
@@ -201,6 +204,7 @@ export function getHeaders() {
       isAnthropic,
       isBaidu,
       isByteDance,
+      isAlibaba,
       apiKey,
       isEnabledAccessControl,
     };

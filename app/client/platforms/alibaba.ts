@@ -2,7 +2,7 @@
 import {
   ApiPath,
   Alibaba,
-  DEFAULT_API_HOST,
+  ALIBABA_BASE_URL,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
@@ -58,9 +58,7 @@ export class QwenApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/alibaba"
-        : ApiPath.Alibaba;
+      baseUrl = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -76,14 +74,13 @@ export class QwenApi implements LLMApi {
   }
 
   extractMessage(res: any) {
-    return res.choices?.at(0)?.message?.content ?? "";
+    return res?.output?.choices?.at(0)?.message?.content ?? "";
   }
 
   async chat(options: ChatOptions) {
-    const visionModel = isVisionModel(options.config.model);
     const messages = options.messages.map((v) => ({
       role: v.role,
-      content: visionModel ? v.content : getMessageTextContent(v),
+      content: getMessageTextContent(v),
     }));
 
     const modelConfig = {
@@ -103,8 +100,6 @@ export class QwenApi implements LLMApi {
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
     };
-
-    console.log("[Request] Alibaba payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
