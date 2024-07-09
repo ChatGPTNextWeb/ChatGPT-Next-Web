@@ -47,10 +47,16 @@ export function collectModelTable(
           (model) => (model.available = available),
         );
       } else {
-        // 1. find model by name(), and set available value
+        // 1. find model by name, and set available value
+        const [customModelName, customProviderName] = name.split("@");
         let count = 0;
         for (const fullName in modelTable) {
-          if (fullName.split("@").shift() == name) {
+          const [modelName, providerName] = fullName.split("@");
+          if (
+            customModelName == modelName &&
+            (customProviderName === undefined ||
+              customProviderName === providerName)
+          ) {
             count += 1;
             modelTable[fullName]["available"] = available;
             if (displayName) {
