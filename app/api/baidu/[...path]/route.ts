@@ -10,6 +10,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
+import { getAccessToken } from "@/app/utils/baidu";
 
 const serverConfig = getServerSideConfig();
 
@@ -28,6 +29,18 @@ async function handle(
     return NextResponse.json(authResult, {
       status: 401,
     });
+  }
+
+  if (!serverConfig.baiduApiKey || !serverConfig.baiduSecretKey) {
+    return NextResponse.json(
+      {
+        error: true,
+        message: `missing BAIDU_API_KEY or BAIDU_SECRET_KEY in server env vars`,
+      },
+      {
+        status: 401,
+      },
+    );
   }
 
   try {
@@ -88,7 +101,10 @@ async function request(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  const { access_token } = await getAccessToken();
+  const { access_token } = await getAccessToken(
+    serverConfig.baiduApiKey,
+    serverConfig.baiduSecretKey,
+  );
   const fetchUrl = `${baseUrl}${path}?access_token=${access_token}`;
 
   const fetchOptions: RequestInit = {
@@ -133,11 +149,9 @@ async function request(req: NextRequest) {
       console.error(`[Baidu] filter`, e);
     }
   }
-  console.log("[Baidu request]", fetchOptions.headers, req.method);
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
-    console.log("[Baidu response]", res.status, "   ", res.headers, res.url);
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");
@@ -152,25 +166,4 @@ async function request(req: NextRequest) {
   } finally {
     clearTimeout(timeoutId);
   }
-}
-
-/**
- * 使用 AK，SK 生成鉴权签名（Access Token）
- * @return 鉴权签名信息
- */
-async function getAccessToken(): Promise<{
-  access_token: string;
-  expires_in: number;
-  error?: number;
-}> {
-  const AK = serverConfig.baiduApiKey;
-  const SK = serverConfig.baiduSecretKey;
-  const res = await fetch(
-    `${BAIDU_OATUH_URL}?grant_type=client_credentials&client_id=${AK}&client_secret=${SK}`,
-    {
-      method: "POST",
-    },
-  );
-  const resJson = await res.json();
-  return resJson;
 }

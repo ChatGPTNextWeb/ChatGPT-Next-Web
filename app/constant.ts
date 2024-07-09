@@ -124,7 +124,7 @@ export const Baidu = {
     if (modelName === "ernie-3.5-8k") {
       endpoint = "completions";
     }
-    return `/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
+    return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
   },
 };
 
