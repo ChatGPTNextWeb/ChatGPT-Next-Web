@@ -19,6 +19,8 @@ export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 
 export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
+export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -35,6 +37,7 @@ export enum ApiPath {
   Anthropic = "/api/anthropic",
   Baidu = "/api/baidu",
   ByteDance = "/api/bytedance",
+  Alibaba = "/api/alibaba",
 }
 
 export enum SlotID {
@@ -80,6 +83,7 @@ export enum ServiceProvider {
   Anthropic = "Anthropic",
   Baidu = "Baidu",
   ByteDance = "ByteDance",
+  Alibaba = "Alibaba",
 }
 
 export enum ModelProvider {
@@ -88,6 +92,7 @@ export enum ModelProvider {
   Claude = "Claude",
   Ernie = "Ernie",
   Doubao = "Doubao",
+  Qwen = "Qwen",
 }
 
 export const Anthropic = {
@@ -135,6 +140,11 @@ export const Baidu = {
 export const ByteDance = {
   ExampleEndpoint: "https://ark.cn-beijing.volces.com/api/",
   ChatPath: "api/v3/chat/completions",
+};
+
+export const Alibaba = {
+  ExampleEndpoint: ALIBABA_BASE_URL,
+  ChatPath: "v1/services/aigc/text-generation/generation",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -225,6 +235,16 @@ const bytedanceModels = [
   "Doubao-pro-128k",
 ];
 
+const alibabaModes = [
+  "qwen-turbo",
+  "qwen-plus",
+  "qwen-max",
+  "qwen-max-0428",
+  "qwen-max-0403",
+  "qwen-max-0107",
+  "qwen-max-longcontext",
+];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -278,6 +298,15 @@ export const DEFAULT_MODELS = [
       id: "bytedance",
       providerName: "ByteDance",
       providerType: "bytedance",
+    },
+  })),
+  ...alibabaModes.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "alibaba",
+      providerName: "Alibaba",
+      providerType: "alibaba",
     },
   })),
 ] as const;

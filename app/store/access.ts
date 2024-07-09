@@ -56,6 +56,10 @@ const DEFAULT_ACCESS_STATE = {
   bytedanceApiKey: "",
   bytedanceUrl: "",
 
+  // alibaba
+  alibabaUrl: "",
+  alibabaApiKey: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -100,6 +104,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["bytedanceApiKey"]);
     },
 
+    isValidAlibaba() {
+      return ensure(get(), ["alibabaApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -111,6 +119,7 @@ export const useAccessStore = createPersistStore(
         this.isValidAnthropic() ||
         this.isValidBaidu() ||
         this.isValidByteDance() ||
+        this.isValidAlibaba() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
