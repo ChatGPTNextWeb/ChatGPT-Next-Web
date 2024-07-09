@@ -112,9 +112,20 @@ export const Google = {
 };
 
 export const Baidu = {
-  ExampleEndpoint: "https://aip.baidubce.com",
-  ChatPath: (modelName: string) =>
-    `/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${modelName}`,
+  ExampleEndpoint: BAIDU_BASE_URL,
+  ChatPath: (modelName: string) => {
+    let endpoint = modelName;
+    if (modelName === "ernie-4.0-8k") {
+      endpoint = "completions_pro";
+    }
+    if (modelName === "ernie-4.0-8k-preview-0518") {
+      endpoint = "completions_adv_pro";
+    }
+    if (modelName === "ernie-3.5-8k") {
+      endpoint = "completions";
+    }
+    return `/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
+  },
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -188,11 +199,11 @@ const anthropicModels = [
 
 const baiduModels = [
   "ernie-4.0-turbo-8k",
-  "completions_pro=ernie-4.0-8k",
+  "ernie-4.0-8k",
   "ernie-4.0-8k-preview",
-  "completions_adv_pro=ernie-4.0-8k-preview-0518",
+  "ernie-4.0-8k-preview-0518",
   "ernie-4.0-8k-latest",
-  "completions=ernie-3.5-8k",
+  "ernie-3.5-8k",
   "ernie-3.5-8k-0205",
 ];
 
