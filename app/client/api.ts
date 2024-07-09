@@ -179,6 +179,8 @@ export function getHeaders() {
     const isGoogle = modelConfig.providerName == ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
+    const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
+    const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -186,8 +188,18 @@ export function getHeaders() {
       ? accessStore.azureApiKey
       : isAnthropic
       ? accessStore.anthropicApiKey
+      : isByteDance
+      ? accessStore.bytedanceApiKey
       : accessStore.openaiApiKey;
-    return { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl };
+    return {
+      isGoogle,
+      isAzure,
+      isAnthropic,
+      isBaidu,
+      isByteDance,
+      apiKey,
+      isEnabledAccessControl,
+    };
   }
 
   function getAuthHeader(): string {
@@ -203,10 +215,18 @@ export function getHeaders() {
   function validString(x: string): boolean {
     return x?.length > 0;
   }
-  const { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl } =
-    getConfig();
+  const {
+    isGoogle,
+    isAzure,
+    isAnthropic,
+    isBaidu,
+    apiKey,
+    isEnabledAccessControl,
+  } = getConfig();
   // when using google api in app, not set auth header
   if (isGoogle && clientConfig?.isApp) return headers;
+  // when using baidu api in app, not set auth header
+  if (isBaidu && clientConfig?.isApp) return headers;
 
   const authHeader = getAuthHeader();
 
