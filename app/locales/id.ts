@@ -7,13 +7,25 @@ const id: PartialLocaleType = {
     Unauthorized:
       "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/#/auth) atau di halaman [Pengaturan](/#/settings).",
   },
-  Auth: {
-    Title: "Diperlukan Kode Akses",
-    Tips: "Masukkan kode akses di bawah",
-    SubTips: "Atau masukkan kunci API OpenAI Anda",
-    Input: "Kode Akses",
-    Confirm: "Konfirmasi",
-    Later: "Nanti",
+  Login: {
+    Title: "需要登陆",
+    Confirm: "确认",
+    Later: "稍后再说",
+    Switch: "切换注册/登录",
+    LoginTitle: "用户登录",
+    RegisterTitle: "用户注册",
+    LoginTips: "请输入您的用户名和密码登录",
+    RegisterTips: "请输入您的用户名和密码进行注册",
+    Username: "用户名",
+    Password: "密码",
+    ConfirmPassword: "确认密码",
+    Login: "登录",
+    Register: "注册",
+    LoginFail: "登录失败，请检查用户名和密码",
+    SystemFail: "请求失败，请重试",
+    ResisterSuc: "注册成功，请登录",
+    ResisterFail: "注册失败，请稍后重试",
+    PasswordFail: "密码前后不一致",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} pesan`,
@@ -369,8 +381,8 @@ const id: PartialLocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
-    },  
+      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan",
+    },
     Model: "Model",
     Messages: "Pesan",
     Topic: "Topik",
