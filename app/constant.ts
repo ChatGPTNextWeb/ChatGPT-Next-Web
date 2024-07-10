@@ -187,6 +187,7 @@ const openaiModels = [
   "gpt-3.5-turbo-1106",
   "gpt-3.5-turbo-0125",
   "gpt-4",
+  "gpt-4-all",
   "gpt-4-0613",
   "gpt-4-32k",
   "gpt-4-32k-0613",
