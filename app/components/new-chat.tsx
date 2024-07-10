@@ -148,13 +148,13 @@ export function NewChat() {
       <div className={styles["sub-title"]}>{Locale.NewChat.SubTitle}</div>
 
       <div className={styles["actions"]}>
-        <IconButton
+        {/* <IconButton
           text={Locale.NewChat.More}
           onClick={() => navigate(Path.Masks)}
           icon={<EyeIcon />}
           bordered
           shadow
-        />
+        /> */}
 
         <IconButton
           text={Locale.NewChat.Skip}
