@@ -47,7 +47,7 @@ export function AuthPage() {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
         body: formData.toString(),
       });
@@ -62,7 +62,7 @@ export function AuthPage() {
         goChat(); // 导航到聊天页面或其他逻辑
       } else {
         // 登录失败
-        showToast(Locale.Login.LoginFail);
+        showToast(data.status.msg);
       }
     } catch (error) {
       console.error("API 请求失败", error);

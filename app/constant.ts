@@ -18,11 +18,11 @@ export const BAIDU_BASE_URL = "https://aip.baidubce.com";
 
 export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 
-export const BASE_URL = `http://127.0.0.1:8080`;
+export const BASE_URL = `https://buoucoding.com/ai`;
 
 export enum Login {
-  Register = "/login/register",
-  Login = "/login/username",
+  Register = "/register",
+  Login = "/login",
 }
 
 export enum Path {
