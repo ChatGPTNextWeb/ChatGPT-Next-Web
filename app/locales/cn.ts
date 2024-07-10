@@ -8,15 +8,27 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      : "请先登录后使用，请前往[登录](/#/login)页输入正确的用户名密码",
   },
-  Auth: {
-    Title: "需要密码",
-    Tips: "管理员开启了密码验证，请在下方填入访问码",
-    SubTips: "或者输入你的 OpenAI 或 Google API 密钥",
-    Input: "在此处填写访问码",
+  Login: {
+    Title: "需要登陆",
     Confirm: "确认",
     Later: "稍后再说",
+    Switch: "切换注册/登录",
+    LoginTitle: "用户登录",
+    RegisterTitle: "用户注册",
+    LoginTips: "请输入您的用户名和密码登录",
+    RegisterTips: "请输入您的用户名和密码进行注册",
+    Username: "用户名",
+    Password: "密码",
+    ConfirmPassword: "确认密码",
+    Login: "登录",
+    Register: "注册",
+    LoginFail: "登录失败，请检查用户名和密码",
+    SystemFail: "请求失败，请重试",
+    ResisterSuc: "注册成功，请登录",
+    ResisterFail: "注册失败，请稍后重试",
+    PasswordFail: "密码前后不一致",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
