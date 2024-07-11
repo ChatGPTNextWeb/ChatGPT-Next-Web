@@ -15,10 +15,12 @@ import {
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
 } from "../constant";
-import { getClientApi } from "../client/api";
-import type {
+import {
+  getClientApi,
   getHeaders,
   useGetMidjourneySelfProxyUrl,
+} from "../client/api";
+import type {
   ClientApi,
   RequestMessage,
   MultimodalContent,

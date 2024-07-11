@@ -20,8 +20,8 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(
   req: NextRequest,
   cloneBody: any,
-  isAzure: boolean,
-  current_model: string,
+  // isAzure: boolean,
+  current_model?: string,
 ) {
   const controller = new AbortController();
 

@@ -2,7 +2,7 @@ import { getClientConfig } from "../config/client";
 import {
   ACCESS_CODE_PREFIX,
   Azure,
-  AZURE_MODELS,
+  // AZURE_MODELS,
   ModelProvider,
   ServiceProvider,
 } from "../constant";
@@ -176,7 +176,7 @@ export class ClientApi {
   }
 }
 
-export function getHeaders(isAzure?: boolean) {
+export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
   const headers: Record<string, string> = {
@@ -189,7 +189,7 @@ export function getHeaders(isAzure?: boolean) {
   function getConfig() {
     const modelConfig = chatStore.currentSession().mask.modelConfig;
     const isGoogle = modelConfig.providerName == ServiceProvider.Google;
-    // const isAzure = modelConfig.providerName === ServiceProvider.Azure;
+    const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
     const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
     const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
@@ -233,7 +233,7 @@ export function getHeaders(isAzure?: boolean) {
   }
   const {
     isGoogle,
-    // isAzure,
+    isAzure,
     isAnthropic,
     isBaidu,
     apiKey,

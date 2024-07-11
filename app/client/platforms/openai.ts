@@ -2,7 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  AZURE_MODELS,
+  // AZURE_MODELS,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
   OpenaiPath,
@@ -60,12 +60,12 @@ export interface RequestPayload {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string, isAzure?: boolean, azureModel?: string): string {
+  path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
 
-    // const isAzure = path.includes("deployments");
+    const isAzure = path.includes("deployments");
     if (accessStore.useCustomConfig) {
       if (isAzure && !accessStore.isValidAzure()) {
         throw Error(
@@ -93,10 +93,6 @@ export class ChatGPTApi implements LLMApi {
       baseUrl = "https://" + baseUrl;
     }
 
-    if (isAzure) {
-      path = makeAzurePath(path, accessStore.azureApiVersion, azureModel);
-    }
-
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
     return [baseUrl, path].join("/");
@@ -121,7 +117,6 @@ export class ChatGPTApi implements LLMApi {
         providerName: options.config.providerName,
       },
     };
-    const is_azure = AZURE_MODELS.includes(modelConfig.model);
     const requestPayload: RequestPayload = {
       messages,
       stream: options.config.stream,
@@ -172,8 +167,6 @@ export class ChatGPTApi implements LLMApi {
             (model?.displayName ?? model?.name) as string,
             useCustomConfig ? useAccessStore.getState().azureApiVersion : "",
           ),
-          is_azure,
-          modelConfig.model,
         );
       } else {
         chatPath = this.path(OpenaiPath.ChatPath);
@@ -182,7 +175,7 @@ export class ChatGPTApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(is_azure),
+        headers: getHeaders(),
       };
       // make a fetch request
       const requestTimeoutId = setTimeout(

@@ -267,9 +267,9 @@ export const DEFAULT_MODELS = [
     describe: "GPT-4o,最新版,全能,快速,推荐",
     available: true,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
     },
   },
   {
@@ -277,9 +277,9 @@ export const DEFAULT_MODELS = [
     describe: "GPT-4,标准版",
     available: true,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
     },
   },
   {
@@ -324,20 +324,20 @@ export const DEFAULT_MODELS = [
   },
 ] as const;
 
-export const AZURE_MODELS: string[] = [
-  //"gpt-35-turbo-0125",
-  "gpt-4-turbo-2024-04-09",
-  "gpt-4o",
-];
+// export const AZURE_MODELS: string[] = [
+//   //"gpt-35-turbo-0125",
+//   "gpt-4-turbo-2024-04-09",
+//   "gpt-4o",
+// ];
 // export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
 // export const AZURE_PATH = AZURE_MODELS.map((m) => ({ m: `openai/deployments/${m}/chat/completions`} ));
-export const AZURE_PATH = AZURE_MODELS.reduce(
-  (acc, item) => ({
-    ...acc,
-    [item]: `openai/deployments/${item}/chat/completions`,
-  }),
-  {},
-);
+// export const AZURE_PATH = AZURE_MODELS.reduce(
+//   (acc, item) => ({
+//     ...acc,
+//     [item]: `openai/deployments/${item}/chat/completions`,
+//   }),
+//   {},
+// );
 // console.log(AZURE_PATH);
 
 export const DISABLE_MODELS = DEFAULT_MODELS.filter(
