@@ -20,7 +20,7 @@ async function handle(
     try {
       const skip = Number(searchParams.get("skip"));
       const take = Number(searchParams.get("take"));
-      console.log("-----", skip, take);
+      // console.log("-----", skip, take);
       const result = searchText
         ? await prisma.user.findMany({
             orderBy: {

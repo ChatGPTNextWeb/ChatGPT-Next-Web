@@ -76,7 +76,7 @@ export default function UserLoginCore() {
         redirect: false,
         email: values.email,
       }).then((result) => {
-        console.log("33333333333", result);
+        // console.log("33333333333", result);
         setCapLoading(false);
         setTimeLeft(60);
       });
@@ -110,7 +110,7 @@ export default function UserLoginCore() {
       fetch(
         `/api/auth/callback/email?token=${values.cap}&email=${values.email}`,
       ).then((result) => {
-        console.log("------------", result);
+        // console.log("------------", result);
         if (result.redirected) {
           window.location.href = result.url;
         }

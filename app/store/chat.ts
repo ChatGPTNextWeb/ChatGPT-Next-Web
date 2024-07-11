@@ -227,7 +227,7 @@ export const useChatStore = createPersistStore(
       newSession(mask?: Mask, currentModel?: Mask["modelConfig"]["model"]) {
         const session = createEmptySession();
         const config = useAppConfig.getState();
-        console.log("------", session, "2222", config);
+        // console.log("------", session, "2222", config);
         // 继承当前会话的模型
         if (currentModel) {
           session.mask.modelConfig.model = currentModel;
