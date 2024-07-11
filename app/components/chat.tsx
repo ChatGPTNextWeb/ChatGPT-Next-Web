@@ -366,7 +366,6 @@ function ChatAction(props: {
   if (props.text.includes("使用") || allModels.includes(props.text)) {
     customModelClassName = "chat-input-action-long-weight";
   }
-  console.log("123123123", props.text);
 
   function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
