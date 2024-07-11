@@ -1,22 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
-import { collectModelTable } from "../utils/model";
-import { makeAzurePath } from "../azure";
+import {
+  DEFAULT_MODELS,
+  OPENAI_BASE_URL,
+  GEMINI_BASE_URL,
+  ServiceProvider,
+} from "../constant";
+
+// import { makeAzurePath } from "../azure";
 import { getIP } from "@/app/api/auth";
 import { getSessionName } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getTokenLength } from "@/lib/utils";
 
+import { isModelAvailableInServer } from "../utils/model";
+
 const serverConfig = getServerSideConfig();
 
 export async function requestOpenai(
   req: NextRequest,
-  cloneBody: any,
-  isAzure: boolean,
-  current_model: string,
+  // cloneBody: any,
+  // isAzure: boolean,
+  // current_model?: string,
 ) {
   const controller = new AbortController();
+
+  const isAzure = req.nextUrl.pathname.includes("azure/deployments");
 
   var authValue,
     authHeaderName = "";
@@ -62,7 +71,46 @@ export async function requestOpenai(
     10 * 60 * 1000,
   );
 
+  if (isAzure) {
+    const azureApiVersion =
+      req?.nextUrl?.searchParams?.get("api-version") ||
+      serverConfig.azureApiVersion;
+    baseUrl = baseUrl.split("/deployments").shift() as string;
+    path = `${req.nextUrl.pathname.replaceAll(
+      "/api/azure/",
+      "openai/",
+    )}?api-version=${azureApiVersion}`;
+
+    // Forward compatibility:
+    // if display_name(deployment_name) not set, and '{deploy-id}' in AZURE_URL
+    // then using default '{deploy-id}'
+    if (serverConfig.customModels && serverConfig.azureUrl) {
+      const modelName = path.split("/")[1];
+      let realDeployName = "";
+      serverConfig.customModels
+        .split(",")
+        .filter((v) => !!v && !v.startsWith("-") && v.includes(modelName))
+        .forEach((m) => {
+          const [fullName, displayName] = m.split("=");
+          const [_, providerName] = fullName.split("@");
+          if (providerName === "azure" && !displayName) {
+            const [_, deployId] = (serverConfig?.azureUrl ?? "").split(
+              "deployments/",
+            );
+            if (deployId) {
+              realDeployName = deployId;
+            }
+          }
+        });
+      if (realDeployName) {
+        console.log("[Replace with DeployId", realDeployName);
+        path = path.replaceAll(modelName, realDeployName);
+      }
+    }
+  }
+
   const fetchUrl = `${baseUrl}/${path}`;
+  const jsonBody = await req.json();
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -73,7 +121,7 @@ export async function requestOpenai(
       }),
     },
     method: req.method,
-    body: cloneBody,
+    body: JSON.stringify(jsonBody),
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
@@ -81,20 +129,33 @@ export async function requestOpenai(
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some model request
-  if (current_model) {
+  // console.log('4444444444444444', fetchUrl, req.body)
+  requestLog(req, jsonBody, path);
+  // #1815 try to refuse gpt4 request
+  if (serverConfig.customModels && req.body) {
     try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
+      const clonedBody = await req.text();
+      fetchOptions.body = clonedBody;
+
+      const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (!modelTable[current_model ?? ""].available) {
+      if (
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model as string,
+          ServiceProvider.OpenAI as string,
+        ) ||
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model as string,
+          ServiceProvider.Azure as string,
+        )
+      ) {
         return NextResponse.json(
           {
             error: true,
-            message: `you are not allowed to use ${current_model} model`,
+            message: `you are not allowed to use ${jsonBody?.model} model`,
           },
           {
             status: 403,
@@ -102,7 +163,7 @@ export async function requestOpenai(
         );
       }
     } catch (e) {
-      console.error("[OpenAI] gpt model filter", e);
+      console.error("[OpenAI] gpt4 filter", e);
     }
   }
 

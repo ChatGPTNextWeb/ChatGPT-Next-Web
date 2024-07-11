@@ -3,15 +3,16 @@ import { getServerSideConfig } from "@/app/config/server";
 import {
   ModelProvider,
   OpenaiPath,
-  AZURE_PATH,
-  AZURE_MODELS,
+  // AZURE_PATH,
+  // AZURE_MODELS,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestLog, requestOpenai } from "../../common";
 
-const ALLOWD_PATH = new Set(Object.values({ ...OpenaiPath, ...AZURE_PATH }));
+// const ALLOWED_PATH = new Set(Object.values({ ...OpenaiPath, ...AZURE_PATH }));
+const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
 
 function getModels(remoteModelRes: OpenAIListModelResponse) {
   const config = getServerSideConfig();
@@ -58,38 +59,26 @@ async function handle(
     );
   }
 
-  // const authResult = auth(req, ModelProvider.GPT);
-  // if (authResult.error) {
-  //   return NextResponse.json(authResult, {
-  //     status: 401,
-  //   });
+  //
+  // let cloneBody, jsonBody;
+  //
+  // try {
+  //   cloneBody = (await req.text()) as any;
+  //   jsonBody = JSON.parse(cloneBody) as { model?: string };
+  // } catch (e) {
+  //   jsonBody = {};
   // }
-  let cloneBody, jsonBody;
 
-  try {
-    cloneBody = (await req.text()) as any;
-    jsonBody = JSON.parse(cloneBody) as { model?: string };
-  } catch (e) {
-    jsonBody = {};
-  }
+  // await requestLog(req, jsonBody, subpath);
 
-  await requestLog(req, jsonBody, subpath);
-
-  const isAzure = AZURE_MODELS.includes(jsonBody?.model as string);
-  // console.log("[Models]", jsonBody?.model);
-  const authResult = auth(req, ModelProvider.GPT, isAzure);
-  // if (authResult.error) {
-  //   return NextResponse.json(authResult, {
-  //     status: 401,
-  //   });
-  // }
+  const authResult = auth(req, ModelProvider.GPT);
 
   try {
     const response = await requestOpenai(
       req,
-      cloneBody,
-      isAzure,
-      jsonBody?.model ?? "",
+      // cloneBody,
+      // isAzure,
+      // jsonBody?.model ?? "",
     );
 
     // list models
