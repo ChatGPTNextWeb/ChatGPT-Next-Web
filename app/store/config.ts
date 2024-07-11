@@ -6,6 +6,7 @@ import {
   DEFAULT_SIDEBAR_WIDTH,
   DISABLE_MODELS,
   StoreKey,
+  ServiceProvider,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 import { get } from "immutable";
@@ -53,6 +54,7 @@ export const DEFAULT_CONFIG = {
 
   modelConfig: {
     model: "gpt-3.5-turbo-0125" as ModelType,
+    providerName: "OpenAI" as ServiceProvider,
     temperature: 0.8,
     top_p: 1,
     max_tokens: 2000,
@@ -121,12 +123,12 @@ export const useAppConfig = createPersistStore(
 
       for (const model of oldModels) {
         model.available = false;
-        modelMap[model.name] = model;
+        modelMap[`${model.name}@${model?.provider?.id}`] = model;
       }
 
       for (const model of newModels) {
         model.available = true;
-        modelMap[model.name] = model;
+        modelMap[`${model.name}@${model?.provider?.id}`] = model;
       }
 
       set(() => ({

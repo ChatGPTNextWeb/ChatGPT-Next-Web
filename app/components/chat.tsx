@@ -92,6 +92,7 @@ import {
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
+  ServiceProvider,
 } from "../constant";
 import { Avatar } from "./emoji";
 // import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -471,6 +472,9 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const currentProviderName =
+    chatStore.currentSession().mask.modelConfig?.providerName ||
+    ServiceProvider.OpenAI;
   const allModels = useAllModels();
   const models = useMemo(() => {
     const filteredModels = allModels.filter((m) => m.available);
@@ -486,6 +490,14 @@ export function ChatActions(props: {
       return filteredModels;
     }
   }, [allModels]);
+  const currentModelName = useMemo(() => {
+    const model = models.find(
+      (m) =>
+        m.name == currentModel &&
+        m?.provider?.providerName == currentProviderName,
+    );
+    return model?.displayName ?? "";
+  }, [models, currentModel, currentProviderName]);
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
   const current_day_token = localStorage.getItem("current_day_token") ?? "";
@@ -503,13 +515,17 @@ export function ChatActions(props: {
     const isUnavaliableModel = !models.some((m) => m.name === currentModel);
     if (isUnavaliableModel && models.length > 0) {
       // show next model to default model if exist
-      let nextModel: ModelType = (
-        models.find((model) => model.isDefault) || models[0]
-      ).name as ModelType;
-      chatStore.updateCurrentSession(
-        (session) => (session.mask.modelConfig.model = nextModel),
+      let nextModel = models.find((model) => model.isDefault) || models[0];
+      chatStore.updateCurrentSession((session) => {
+        session.mask.modelConfig.model = nextModel.name;
+        session.mask.modelConfig.providerName = nextModel?.provider
+          ?.providerName as ServiceProvider;
+      });
+      showToast(
+        nextModel?.provider?.providerName == "ByteDance"
+          ? nextModel.displayName
+          : nextModel.name,
       );
-      showToast(nextModel);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatStore, currentModel, models]);
@@ -592,7 +608,7 @@ export function ChatActions(props: {
 
       <ChatAction
         onClick={() => setShowModelSelector(true)}
-        text={currentModel}
+        text={currentModelName}
         icon={<RobotIcon />}
       />
 
@@ -610,21 +626,36 @@ export function ChatActions(props: {
       {/*/>*/}
 
       {showModelSelector && (
-        <ModalSelector
-          defaultSelectedValue={currentModel}
+        <Selector
+          defaultSelectedValue={`${currentModel}@${currentProviderName}`}
           items={models.map((m) => ({
-            title: m.displayName,
+            title: `${m.displayName}${
+              m?.provider?.providerName
+                ? "(" + m?.provider?.providerName + ")"
+                : ""
+            }`,
             subTitle: m.describe,
-            value: m.name,
+            value: `${m.name}@${m?.provider?.providerName}`,
           }))}
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
             if (s.length === 0) return;
+            const [model, providerName] = s[0].split("@");
             chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
+              session.mask.modelConfig.model = model as ModelType;
+              session.mask.modelConfig.providerName =
+                providerName as ServiceProvider;
               session.mask.syncGlobalConfig = false;
             });
-            showToast(s[0]);
+            if (providerName == "ByteDance") {
+              const selectedModel = models.find(
+                (m) =>
+                  m.name == model && m?.provider?.providerName == providerName,
+              );
+              showToast(selectedModel?.displayName ?? "");
+            } else {
+              showToast(model);
+            }
           }}
         />
       )}

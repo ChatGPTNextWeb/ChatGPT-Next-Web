@@ -3,13 +3,32 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
-import { type Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
 import { GoogleTagManager } from "@next/third-parties/google";
 const serverConfig = getServerSideConfig();
 import { Providers } from "@/app/providers";
-import { Viewport } from "next";
+// import { Viewport } from "next";
+
+// export const metadata: Metadata = {
+//     title: "NextChat",
+//     description: "Your personal ChatGPT Chat Bot.",
+//     appleWebApp: {
+//         title: "NextChat",
+//         statusBarStyle: "default",
+//     },
+// };
+//
+// export const viewport: Viewport = {
+//     width: "device-width",
+//     initialScale: 1,
+//     maximumScale: 1,
+//     themeColor: [
+//         { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+//         { media: "(prefers-color-scheme: dark)", color: "#151515" },
+//     ],
+// };
 
 export const viewport: Viewport = {
   themeColor: [
@@ -29,7 +48,6 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
 };
-
 export default function RootLayout({
   children,
 }: {
@@ -44,14 +62,19 @@ export default function RootLayout({
           type="image/x-icon"
           href="https://oss.xiaosi.cc/chat/public/favicon.ico"
         />
-        <link
-          rel="manifest"
-          href="https://oss.xiaosi.cc/chat/public/site.webmanifest"
-        ></link>
-        <script
-          src="https://oss.xiaosi.cc/chat/public/serviceWorkerRegister.js"
-          defer
-        ></script>
+        {/*<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />*/}
+
+        {/*<link*/}
+        {/*  rel="manifest"*/}
+        {/*  href="https://oss.xiaosi.cc/chat/public/site.webmanifest"*/}
+        {/*></link>*/}
+        <link rel="manifest" href="/site.webmanifest"></link>
+        <script src="/serviceWorkerRegister.js" defer></script>
+
+        {/*  <script*/}
+        {/*  src="https://oss.xiaosi.cc/chat/public/serviceWorkerRegister.js"*/}
+        {/*  defer*/}
+        {/*></script>*/}
       </head>
       <body>
         <Providers>{children}</Providers>

@@ -14,6 +14,13 @@ export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
 
+export const BAIDU_BASE_URL = "https://aip.baidubce.com";
+export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
+
+export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
+
+export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -26,8 +33,12 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "",
+  Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
+  Baidu = "/api/baidu",
+  ByteDance = "/api/bytedance",
+  Alibaba = "/api/alibaba",
 }
 
 export enum SlotID {
@@ -71,12 +82,18 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  Baidu = "Baidu",
+  ByteDance = "ByteDance",
+  Alibaba = "Alibaba",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Ernie = "Ernie",
+  Doubao = "Doubao",
+  Qwen = "Qwen",
 }
 
 export const Anthropic = {
@@ -97,6 +114,8 @@ export const OpenaiPath = {
 };
 
 export const Azure = {
+  ChatPath: (deployName: string, apiVersion: string) =>
+    `deployments/${deployName}/chat/completions?api-version=${apiVersion}`,
   ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
 };
 
@@ -105,6 +124,33 @@ export const Google = {
   ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
   // VisionChatPath: (modelName: string) =>
   //   `v1beta/models/${modelName}:generateContent`,
+};
+
+export const Baidu = {
+  ExampleEndpoint: BAIDU_BASE_URL,
+  ChatPath: (modelName: string) => {
+    let endpoint = modelName;
+    if (modelName === "ernie-4.0-8k") {
+      endpoint = "completions_pro";
+    }
+    if (modelName === "ernie-4.0-8k-preview-0518") {
+      endpoint = "completions_adv_pro";
+    }
+    if (modelName === "ernie-3.5-8k") {
+      endpoint = "completions";
+    }
+    return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
+  },
+};
+
+export const ByteDance = {
+  ExampleEndpoint: "https://ark.cn-beijing.volces.com/api/",
+  ChatPath: "api/v3/chat/completions",
+};
+
+export const Alibaba = {
+  ExampleEndpoint: ALIBABA_BASE_URL,
+  ChatPath: "v1/services/aigc/text-generation/generation",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -156,6 +202,7 @@ const openaiModels = [
   "gpt-4o-2024-05-13",
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
+  "gpt-4-1106-preview",
 ];
 
 const googleModels = [
@@ -175,35 +222,34 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
-// export const DEFAULT_MODELS = [
-//   ...openaiModels.map((name) => ({
-//     name,
-//     available: true,
-//     provider: {
-//       id: "openai",
-//       providerName: "OpenAI",
-//       providerType: "openai",
-//     },
-//   })),
-//   ...googleModels.map((name) => ({
-//     name,
-//     available: true,
-//     provider: {
-//       id: "google",
-//       providerName: "Google",
-//       providerType: "google",
-//     },
-//   })),
-//   ...anthropicModels.map((name) => ({
-//     name,
-//     available: true,
-//     provider: {
-//       id: "anthropic",
-//       providerName: "Anthropic",
-//       providerType: "anthropic",
-//     },
-//   })),
-// ] as const;
+const baiduModels = [
+  "ernie-4.0-turbo-8k",
+  "ernie-4.0-8k",
+  "ernie-4.0-8k-preview",
+  "ernie-4.0-8k-preview-0518",
+  "ernie-4.0-8k-latest",
+  "ernie-3.5-8k",
+  "ernie-3.5-8k-0205",
+];
+
+const bytedanceModels = [
+  "Doubao-lite-4k",
+  "Doubao-lite-32k",
+  "Doubao-lite-128k",
+  "Doubao-pro-4k",
+  "Doubao-pro-32k",
+  "Doubao-pro-128k",
+];
+
+const alibabaModes = [
+  "qwen-turbo",
+  "qwen-plus",
+  "qwen-max",
+  "qwen-max-0428",
+  "qwen-max-0403",
+  "qwen-max-0107",
+  "qwen-max-longcontext",
+];
 
 export const DEFAULT_MODELS = [
   {
@@ -236,16 +282,6 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  // {
-  //   name: "gpt-35-turbo-0125",
-  //   describe: "GPT-3,微软,备用",
-  //   available: true,
-  //   provider: {
-  //     id: "openai",
-  //     providerName: "OpenAI",
-  //     providerType: "openai",
-  //   },
-  // },
   {
     name: "claude-3-5-sonnet-20240620",
     describe: "claude第三代模型最强版",
@@ -256,16 +292,6 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  // {
-  //   name: "gpt-4o-2024-05-13",
-  //   available: true,
-  //   describe: "GPT-4多模态,原生代理",
-  //   provider: {
-  //     id: "openai",
-  //     providerName: "OpenAI",
-  //     providerType: "openai",
-  //   },
-  // },
   {
     name: "gemini-1.5-pro-latest",
     available: true,
@@ -286,26 +312,6 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  // {
-  //   name: "gpt-4-32k",
-  //   describe: "GPT-4,聪明,慢,但是白嫖",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4-all",
-  //   describe: "GPT-4全能版,联网绘图多模态,又慢又贵",
-  //   available: false,
-  // },
-  // {
-  //   name: "gpt-4v",
-  //   describe: "GPT-4,官方网页版,最聪明,贵且慢",
-  //   available: true,
-  // },
-  // {
-  //   name: "net-gpt-4",
-  //   describe: "GPT-4,联网版,最慢",
-  //   available: true,
-  // },
   {
     name: "midjourney",
     describe: "绘图用,不用选",
