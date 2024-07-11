@@ -19,9 +19,9 @@ const serverConfig = getServerSideConfig();
 
 export async function requestOpenai(
   req: NextRequest,
-  cloneBody: any,
+  // cloneBody: any,
   // isAzure: boolean,
-  current_model?: string,
+  // current_model?: string,
 ) {
   const controller = new AbortController();
 
@@ -120,7 +120,7 @@ export async function requestOpenai(
       }),
     },
     method: req.method,
-    body: cloneBody,
+    body: req.body,
     // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
@@ -128,8 +128,8 @@ export async function requestOpenai(
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some model request
-  if (current_model) {
+  // #1815 try to refuse gpt4 request
+  if (serverConfig.customModels && req.body) {
     try {
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
@@ -152,7 +152,7 @@ export async function requestOpenai(
         return NextResponse.json(
           {
             error: true,
-            message: `you are not allowed to use ${current_model} model`,
+            message: `you are not allowed to use ${jsonBody?.model} model`,
           },
           {
             status: 403,
@@ -160,7 +160,7 @@ export async function requestOpenai(
         );
       }
     } catch (e) {
-      console.error("[OpenAI] gpt model filter", e);
+      console.error("[OpenAI] gpt4 filter", e);
     }
   }
 

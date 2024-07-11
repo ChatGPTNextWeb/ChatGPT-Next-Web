@@ -25,7 +25,7 @@ async function handle(
   }
 
   try {
-    return await requestOpenai(req, (await req.text()) as any);
+    return await requestOpenai(req);
   } catch (e) {
     console.error("[Azure] ", e);
     return res.json(prettyObject(e));

@@ -87,9 +87,9 @@ async function handle(
   try {
     const response = await requestOpenai(
       req,
-      cloneBody,
+      // cloneBody,
       // isAzure,
-      jsonBody?.model ?? "",
+      // jsonBody?.model ?? "",
     );
 
     // list models
