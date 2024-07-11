@@ -59,30 +59,19 @@ async function handle(
     );
   }
 
-  // const authResult = auth(req, ModelProvider.GPT);
-  // if (authResult.error) {
-  //   return NextResponse.json(authResult, {
-  //     status: 401,
-  //   });
+  //
+  // let cloneBody, jsonBody;
+  //
+  // try {
+  //   cloneBody = (await req.text()) as any;
+  //   jsonBody = JSON.parse(cloneBody) as { model?: string };
+  // } catch (e) {
+  //   jsonBody = {};
   // }
-  let cloneBody, jsonBody;
 
-  try {
-    cloneBody = (await req.text()) as any;
-    jsonBody = JSON.parse(cloneBody) as { model?: string };
-  } catch (e) {
-    jsonBody = {};
-  }
+  // await requestLog(req, jsonBody, subpath);
 
-  await requestLog(req, jsonBody, subpath);
-
-  // const isAzure = AZURE_MODELS.includes(jsonBody?.model as string);
   const authResult = auth(req, ModelProvider.GPT);
-  // if (authResult.error) {
-  //   return NextResponse.json(authResult, {
-  //     status: 401,
-  //   });
-  // }
 
   try {
     const response = await requestOpenai(

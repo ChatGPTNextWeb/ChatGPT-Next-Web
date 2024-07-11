@@ -8,27 +8,27 @@ import { requestOpenai } from "../../common";
 
 async function handle(
   req: NextRequest,
-  res: NextApiResponse,
+  // res: NextApiResponse,
   { params }: { params: { path: string[] } },
 ) {
+  console.log("");
   console.log("[Azure Route] params ", params);
-
   if (req.method === "OPTIONS") {
-    return res.status(200).json({ body: "OK" });
+    return NextResponse.json({ body: "OK" });
   }
 
   const subpath = params.path.join("/");
 
   const authResult = auth(req, ModelProvider.GPT);
   if (authResult.error) {
-    return res.status(401).json(authResult);
+    return NextResponse.json(authResult, { status: 401 });
   }
 
   try {
     return await requestOpenai(req);
   } catch (e) {
     console.error("[Azure] ", e);
-    return res.json(prettyObject(e));
+    return NextResponse.json(prettyObject(e));
   }
 }
 
