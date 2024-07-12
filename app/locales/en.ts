@@ -366,7 +366,7 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVerion: {
@@ -387,7 +387,7 @@ const en: LocaleType = {
         },
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "not supported, configure in .env",
         },
       },
       ByteDance: {
@@ -398,7 +398,7 @@ const en: LocaleType = {
         },
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
       },
       Alibaba: {
@@ -409,7 +409,7 @@ const en: LocaleType = {
         },
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
       },
       CustomModel: {
@@ -425,7 +425,7 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVersion: {
