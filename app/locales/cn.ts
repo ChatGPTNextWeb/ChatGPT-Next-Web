@@ -349,12 +349,12 @@ const cn = {
       },
       Baidu: {
         ApiKey: {
-          Title: "接口密钥",
+          Title: "API Key",
           SubTitle: "使用自定义 Baidu API Key",
           Placeholder: "Baidu API Key",
         },
         SecretKey: {
-          Title: "接口密钥",
+          Title: "Secret Key",
           SubTitle: "使用自定义 Baidu Secret Key",
           Placeholder: "Baidu Secret Key",
         },
