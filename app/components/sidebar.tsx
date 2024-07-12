@@ -23,6 +23,7 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   REPO_URL,
+  ServiceProvider,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -131,6 +132,10 @@ export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const currentProviderName =
+    chatStore.currentSession().mask.modelConfig?.providerName ||
+    ServiceProvider.OpenAI;
+
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -249,7 +254,11 @@ export function SideBar(props: { className?: string }) {
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession(undefined, currentModel);
+                chatStore.newSession(
+                  undefined,
+                  currentModel,
+                  currentProviderName,
+                );
                 navigate(Path.Chat);
               } else {
                 navigate(Path.NewChat);

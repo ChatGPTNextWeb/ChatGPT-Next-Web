@@ -472,9 +472,11 @@ export function ChatActions(props: {
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  // 这里获取的不准确，看起来没有什么地方可以更新这个providerName
   const currentProviderName =
     chatStore.currentSession().mask.modelConfig?.providerName ||
     ServiceProvider.OpenAI;
+  console.log("222222222", currentModel, currentProviderName);
   const allModels = useAllModels();
   const models = useMemo(() => {
     const filteredModels = allModels.filter((m) => m.available);
@@ -609,7 +611,7 @@ export function ChatActions(props: {
 
       <ChatAction
         onClick={() => setShowModelSelector(true)}
-        text={currentModel}
+        text={currentModelName}
         icon={<RobotIcon />}
       />
 
@@ -627,7 +629,7 @@ export function ChatActions(props: {
       {/*/>*/}
 
       {showModelSelector && (
-        <Selector
+        <ModalSelector
           defaultSelectedValue={`${currentModel}@${currentProviderName}`}
           items={models.map((m) => ({
             title: `${m.displayName}${
