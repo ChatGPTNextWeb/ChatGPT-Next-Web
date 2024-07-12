@@ -1,8 +1,9 @@
+import { DEFAULT_MODELS } from "../constant";
 import { LLMModel } from "../client/api";
 
 const customProvider = (modelName: string) => ({
   id: modelName,
-  providerName: "",
+  providerName: "Custom",
   providerType: "custom",
 });
 
@@ -23,7 +24,8 @@ export function collectModelTable(
 
   // default models
   models.forEach((m) => {
-    modelTable[m.name] = {
+    // using <modelName>@<providerId> as fullName
+    modelTable[`${m.name}@${m?.provider?.id}`] = {
       ...m,
       displayName: m.name, // 'provider' is copied over if it exists
     };
@@ -37,7 +39,7 @@ export function collectModelTable(
       const available = !m.startsWith("-");
       const nameConfig =
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
-      const [name, displayName] = nameConfig.split("=");
+      let [name, displayName] = nameConfig.split("=");
 
       // enable or disable all models
       if (name === "all") {
@@ -45,12 +47,38 @@ export function collectModelTable(
           (model) => (model.available = available),
         );
       } else {
-        modelTable[name] = {
-          name,
-          displayName: displayName || name,
-          available,
-          provider: modelTable[name]?.provider ?? customProvider(name), // Use optional chaining
-        };
+        // 1. find model by name, and set available value
+        const [customModelName, customProviderName] = name.split("@");
+        let count = 0;
+        for (const fullName in modelTable) {
+          const [modelName, providerName] = fullName.split("@");
+          if (
+            customModelName == modelName &&
+            (customProviderName === undefined ||
+              customProviderName === providerName)
+          ) {
+            count += 1;
+            modelTable[fullName]["available"] = available;
+            // swap name and displayName for bytedance
+            if (providerName === "bytedance") {
+              [name, displayName] = [displayName, modelName];
+              modelTable[fullName]["name"] = name;
+            }
+            if (displayName) {
+              modelTable[fullName]["displayName"] = displayName;
+            }
+          }
+        }
+        // 2. if model not exists, create new model with available value
+        if (count === 0) {
+          const provider = customProvider(name);
+          modelTable[`${name}@${provider?.id}`] = {
+            name,
+            displayName: displayName || name,
+            available,
+            provider, // Use optional chaining
+          };
+        }
       }
     });
 
@@ -99,4 +127,14 @@ export function collectModelsWithDefaultModel(
   );
   const allModels = Object.values(modelTable);
   return allModels;
+}
+
+export function isModelAvailableInServer(
+  customModels: string,
+  modelName: string,
+  providerName: string,
+) {
+  const fullName = `${modelName}@${providerName}`;
+  const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
+  return modelTable[fullName]?.available === false;
 }
