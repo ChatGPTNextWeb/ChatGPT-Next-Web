@@ -17,10 +17,10 @@ const DEFAULT_OPENAI_URL =
     ? DEFAULT_API_HOST + "/api/proxy/openai"
     : ApiPath.OpenAI;
 
-const DEFAULT_AZURE_URL =
+const DEFAULT_GOOGLE_URL =
   getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/azure/{resource_name}"
-    : ApiPath.Azure;
+    ? DEFAULT_API_HOST + "/api/proxy/google"
+    : ApiPath.Google;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -33,12 +33,12 @@ const DEFAULT_ACCESS_STATE = {
   openaiApiKey: "",
 
   // azure
-  azureUrl: DEFAULT_AZURE_URL,
+  azureUrl: "",
   azureApiKey: "",
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: "",
+  googleUrl: DEFAULT_GOOGLE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
 
