@@ -13,7 +13,13 @@ import MinIcon from "../icons/min.svg";
 import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
-import React, { HTMLProps, MouseEvent, useEffect, useState } from "react";
+import React, {
+  CSSProperties,
+  HTMLProps,
+  MouseEvent,
+  useEffect,
+  useState,
+} from "react";
 import { IconButton } from "./button";
 
 export function Popover(props: {
@@ -425,18 +431,25 @@ export function showPrompt(content: any, value = "", rows = 3) {
   });
 }
 
-export function showImageModal(img: string, defaultMax?: boolean) {
+export function showImageModal(
+  img: string,
+  defaultMax?: boolean,
+  style?: CSSProperties,
+  boxStyle?: CSSProperties,
+) {
   showModal({
     title: Locale.Export.Image.Modal,
     defaultMax: defaultMax,
     children: (
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "center", ...boxStyle }}>
         <img
           src={img}
           alt="preview"
-          style={{
-            maxWidth: "100%",
-          }}
+          style={
+            style ?? {
+              maxWidth: "100%",
+            }
+          }
         ></img>
       </div>
     ),

@@ -167,6 +167,12 @@ export function Sd() {
                         showImageModal(
                           getBase64ImgUrl(item.img_data, "image/png"),
                           true,
+                          isMobileScreen
+                            ? { width: "100%", height: "fit-content" }
+                            : { maxWidth: "100%", maxHeight: "100%" },
+                          isMobileScreen
+                            ? { width: "100%", height: "fit-content" }
+                            : { width: "100%", height: "100%" },
                         );
                       }}
                     />
