@@ -23,7 +23,7 @@ const sdCommonParams = (model: string, data: any) => {
       name: locales.SdPanel.ModelVersion,
       value: "model",
       type: "select",
-      default: 0,
+      default: "sd3-medium",
       support: ["sd3"],
       options: [
         { name: "SD3 Medium", value: "sd3-medium" },
@@ -311,6 +311,7 @@ export function SdPanel() {
       img_data: "",
     };
     sendSdTask(data, sdListDb, execCountInc, () => {
+      console.log(currentModel.value);
       setParams(getModelParamBasicData(columns, params, true));
     });
   };

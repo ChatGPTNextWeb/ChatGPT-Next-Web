@@ -2,6 +2,7 @@ import { initDB, useIndexedDB } from "react-indexed-db-hook";
 import { StabilityPath, StoreKey } from "@/app/constant";
 import { create, StoreApi } from "zustand";
 import { showToast } from "@/app/components/ui-lib";
+import { getHeaders } from "@/app/client/api";
 
 export const SdDbConfig = {
   name: "@chatgpt-next-web/sd",
@@ -66,9 +67,12 @@ export function stabilityRequestCall(data: any, db: any, inc: any) {
   for (let paramsKey in data.params) {
     formData.append(paramsKey, data.params[paramsKey]);
   }
+  const headers = getHeaders();
+  delete headers["Content-Type"];
   fetch(`/api/stability/${StabilityPath.GeneratePath}/${data.model}`, {
     method: "POST",
     headers: {
+      ...headers,
       Accept: "application/json",
     },
     body: formData,
