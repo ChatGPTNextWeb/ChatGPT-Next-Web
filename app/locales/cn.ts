@@ -360,7 +360,7 @@ const cn = {
         },
         Endpoint: {
           Title: "接口地址",
-          SubTitle: "样例：",
+          SubTitle: "不支持自定义前往.env配置",
         },
       },
       ByteDance: {
