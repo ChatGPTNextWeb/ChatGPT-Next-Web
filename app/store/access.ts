@@ -12,15 +12,33 @@ import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
-const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/openai"
-    : ApiPath.OpenAI;
+const isApp = getClientConfig()?.buildMode === "export";
 
-const DEFAULT_GOOGLE_URL =
-  getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/google"
-    : ApiPath.Google;
+const DEFAULT_OPENAI_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/openai"
+  : ApiPath.OpenAI;
+
+const DEFAULT_GOOGLE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/google"
+  : ApiPath.Google;
+
+const DEFAULT_ANTHROPIC_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/anthropic"
+  : ApiPath.Anthropic;
+
+const DEFAULT_BAIDU_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/baidu"
+  : ApiPath.Baidu;
+
+const DEFAULT_BYTEDANCE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/bytedance"
+  : ApiPath.ByteDance;
+
+const DEFAULT_ALIBABA_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/alibaba"
+  : ApiPath.Alibaba;
+
+console.log("DEFAULT_ANTHROPIC_URL", DEFAULT_ANTHROPIC_URL);
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -43,21 +61,21 @@ const DEFAULT_ACCESS_STATE = {
   googleApiVersion: "v1",
 
   // anthropic
+  anthropicUrl: DEFAULT_ANTHROPIC_URL,
   anthropicApiKey: "",
   anthropicApiVersion: "2023-06-01",
-  anthropicUrl: "",
 
   // baidu
-  baiduUrl: "",
+  baiduUrl: DEFAULT_BAIDU_URL,
   baiduApiKey: "",
   baiduSecretKey: "",
 
   // bytedance
+  bytedanceUrl: DEFAULT_BYTEDANCE_URL,
   bytedanceApiKey: "",
-  bytedanceUrl: "",
 
   // alibaba
-  alibabaUrl: "",
+  alibabaUrl: DEFAULT_ALIBABA_URL,
   alibabaApiKey: "",
 
   // server config
