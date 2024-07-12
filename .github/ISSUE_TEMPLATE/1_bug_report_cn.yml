@@ -1,7 +1,7 @@
 name: '🐛 反馈缺陷'
 description: '反馈一个问题/缺陷'
 title: '[Bug] '
-labels: ['🐛 Bug']
+labels: ['bug']
 body:
   - type: dropdown
     attributes:

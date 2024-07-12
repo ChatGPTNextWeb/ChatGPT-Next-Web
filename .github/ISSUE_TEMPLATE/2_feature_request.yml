@@ -1,7 +1,7 @@
 name: '🌠 Feature Request'
 description: 'Suggest an idea'
-title: '[Request] '
-labels: ['🌠 Feature Request']
+title: '[Feature Request] '
+labels: ['enhancement']
 body:
   - type: textarea
     attributes:
