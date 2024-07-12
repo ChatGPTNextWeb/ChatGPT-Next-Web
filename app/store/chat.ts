@@ -224,13 +224,21 @@ export const useChatStore = createPersistStore(
         });
       },
 
-      newSession(mask?: Mask, currentModel?: Mask["modelConfig"]["model"]) {
+      newSession(
+        mask?: Mask,
+        currentModel?: Mask["modelConfig"]["model"],
+        currentProviderName?: ServiceProvider,
+      ) {
         const session = createEmptySession();
         const config = useAppConfig.getState();
         // console.log("------", session, "2222", config);
-        // 继承当前会话的模型
+        // 继承当前会话的模型,
+        // 新增继承模型提供者
         if (currentModel) {
           session.mask.modelConfig.model = currentModel;
+        }
+        if (currentProviderName) {
+          session.mask.modelConfig.providerName = currentProviderName;
         }
         if (mask) {
           const config = useAppConfig.getState();
