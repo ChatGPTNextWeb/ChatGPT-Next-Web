@@ -301,7 +301,6 @@ export function SdPanel() {
         }
       }
     }
-    // console.log(JSON.stringify(reqParams, null, 4));
     let data: any = {
       model: currentModel.value,
       model_name: currentModel.name,
@@ -311,7 +310,6 @@ export function SdPanel() {
       img_data: "",
     };
     sendSdTask(data, sdListDb, execCountInc, () => {
-      console.log(currentModel.value);
       setParams(getModelParamBasicData(columns, params, true));
     });
   };
