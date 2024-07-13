@@ -9,18 +9,23 @@ import {
   DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
   KnowledgeCutOffDate,
+  ServiceProvider,
   ModelProvider,
   StoreKey,
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
 } from "../constant";
-import { ClientApi, RequestMessage, MultimodalContent } from "../client/api";
+import { getClientApi } from "../client/api";
+import type {
+  ClientApi,
+  RequestMessage,
+  MultimodalContent,
+} from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
-import { identifyDefaultClaudeModel } from "../utils/checkers";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
 
@@ -363,15 +368,7 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
-        var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Claude);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
-
+        const api: ClientApi = getClientApi(modelConfig.providerName);
         // make request
         api.llm.chat({
           messages: sendMessages,
@@ -428,14 +425,13 @@ export const useChatStore = createPersistStore(
       getMemoryPrompt() {
         const session = get().currentSession();
 
-        return {
-          role: "system",
-          content:
-            session.memoryPrompt.length > 0
-              ? Locale.Store.Prompt.History(session.memoryPrompt)
-              : "",
-          date: "",
-        } as ChatMessage;
+        if (session.memoryPrompt.length) {
+          return {
+            role: "system",
+            content: Locale.Store.Prompt.History(session.memoryPrompt),
+            date: "",
+          } as ChatMessage;
+        }
       },
 
       getMessagesWithMemory() {
@@ -471,16 +467,15 @@ export const useChatStore = createPersistStore(
             systemPrompts.at(0)?.content ?? "empty",
           );
         }
-
+        const memoryPrompt = get().getMemoryPrompt();
         // long term memory
         const shouldSendLongTermMemory =
           modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0 &&
           session.lastSummarizeIndex > clearContextIndex;
-        const longTermMemoryPrompts = shouldSendLongTermMemory
-          ? [get().getMemoryPrompt()]
-          : [];
+        const longTermMemoryPrompts =
+          shouldSendLongTermMemory && memoryPrompt ? [memoryPrompt] : [];
         const longTermMemoryStartIndex = session.lastSummarizeIndex;
 
         // short term memory
@@ -549,14 +544,7 @@ export const useChatStore = createPersistStore(
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
-        var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (identifyDefaultClaudeModel(modelConfig.model)) {
-          api = new ClientApi(ModelProvider.Claude);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
+        const api: ClientApi = getClientApi(modelConfig.providerName);
 
         // remove error messages if any
         const messages = session.messages;
@@ -605,9 +593,11 @@ export const useChatStore = createPersistStore(
             Math.max(0, n - modelConfig.historyMessageCount),
           );
         }
-
-        // add memory prompt
-        toBeSummarizedMsgs.unshift(get().getMemoryPrompt());
+        const memoryPrompt = get().getMemoryPrompt();
+        if (memoryPrompt) {
+          // add memory prompt
+          toBeSummarizedMsgs.unshift(memoryPrompt);
+        }
 
         const lastSummarizeIndex = session.messages.length;
 
