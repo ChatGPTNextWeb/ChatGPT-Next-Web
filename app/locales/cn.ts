@@ -24,7 +24,7 @@ const cn = {
     ConfirmPassword: "确认密码",
     Login: "登录",
     Register: "注册",
-    LoginFail: "登录失败，请检查用户名和密码",
+    LoginFail: "登录成功，但未找到会话信息。",
     SystemFail: "请求失败，请重试",
     ResisterSuc: "注册成功，请登录",
     ResisterFail: "注册失败，请稍后重试",

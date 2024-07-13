@@ -24,7 +24,6 @@ export function AuthPage() {
   const goChat = () => navigate(Path.Chat);
   const resetAccessCode = () => {
     accessStore.update((access) => {
-      access.openaiApiKey = "";
       access.accessCode = "";
     });
   };
@@ -47,18 +46,29 @@ export function AuthPage() {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: formData.toString(),
+        credentials: "include", // 处理cookies
       });
 
       const data = await response.json();
 
       if (data.status.code === 0 && data.result === true) {
         // 登录成功逻辑
-        accessStore.update((access) => {
-          access.accessCode = data.accessCode; // 如果需要从响应中获取 accessCode 的话
-        });
+        // 从响应中读取 session cookies
+        const cookies = response.headers.get("Set-Cookie");
+
+        if (cookies) {
+          console.log("Session cookies:", cookies);
+
+          accessStore.update((access) => {
+            access.accessCode = cookies; // 将cookies赋值给access.accessCode
+          });
+        } else {
+          console.warn("No cookies found in the response.");
+          showToast(Locale.Login.LoginFail);
+        }
         goChat(); // 导航到聊天页面或其他逻辑
       } else {
         // 登录失败
