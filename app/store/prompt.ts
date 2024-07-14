@@ -154,10 +154,10 @@ export const usePromptStore = createPersistStore(
       fetch(PROMPT_URL)
         .then((res) => res.json())
         .then((res) => {
-          let fetchPrompts = [res.en, res.tw, res.cn];
-          if (getLang() === "cn") {
-            fetchPrompts = fetchPrompts.reverse();
-          }
+          const lang = getLang();
+          const fetchPrompts = [res[lang], res.en, res.tw, res.cn].filter(
+            Boolean,
+          );
           const builtinPrompts = fetchPrompts.map((promptList: PromptList) => {
             return promptList.map(
               ([title, content]) =>
