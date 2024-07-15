@@ -19,7 +19,6 @@ import React, {
   MouseEvent,
   useEffect,
   useState,
-  useMemo,
 } from "react";
 import { IconButton } from "./button";
 
