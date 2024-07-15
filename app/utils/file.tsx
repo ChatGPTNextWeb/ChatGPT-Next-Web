@@ -32,6 +32,16 @@ export function useFileDB() {
   return useIndexedDB(StoreKey.File);
 }
 
+export function base64Image2Blob(base64Data: string, contentType: string) {
+  const byteCharacters = atob(base64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: contentType });
+}
+
 export function saveFileData(db, fileId, data) {
   // save file content and return url start with `indexeddb://`
   db.add({ id: fileId, data });
@@ -40,6 +50,9 @@ export function saveFileData(db, fileId, data) {
 
 export async function getFileData(db, fileId, contentType = "image/png") {
   const { data } = await db.getByID(fileId);
+  if (typeof data == "object") {
+    return URL.createObjectURL(data);
+  }
   return `data:${contentType};base64,${data}`;
 }
 

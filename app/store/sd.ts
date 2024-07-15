@@ -3,7 +3,7 @@ import { showToast } from "@/app/components/ui-lib";
 import { getHeaders } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
-import { saveFileData } from "@/app/utils/file";
+import { saveFileData, base64Image2Blob } from "@/app/utils/file";
 
 export const useSdStore = createPersistStore<
   {
@@ -72,7 +72,12 @@ export const useSdStore = createPersistStore<
               this.updateDraw({
                 ...data,
                 status: "success",
-                img_data: saveFileData(db, data.id, resData.image),
+                // save blob to indexeddb instead of base64 image string
+                img_data: saveFileData(
+                  db,
+                  data.id,
+                  base64Image2Blob(resData.image, "image/png"),
+                ),
               });
             } else {
               this.updateDraw({
