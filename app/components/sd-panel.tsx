@@ -4,12 +4,8 @@ import { Select, showToast } from "@/app/components/ui-lib";
 import { IconButton } from "@/app/components/button";
 import locales from "@/app/locales";
 import { nanoid } from "nanoid";
-import { useIndexedDB } from "react-indexed-db-hook";
 import { StoreKey } from "@/app/constant";
 import { useSdStore } from "@/app/store/sd";
-import { FileDbInit } from "@/app/utils/file";
-
-FileDbInit();
 
 const sdCommonParams = (model: string, data: any) => {
   return [
@@ -287,7 +283,6 @@ export function SdPanel() {
     setCurrentModel(model);
     setParams(getModelParamBasicData(model.params({}), params));
   };
-  const sdListDb = useIndexedDB(StoreKey.SdList);
   const sdStore = useSdStore();
   const handleSubmit = () => {
     const columns = currentModel.params(params);
@@ -310,7 +305,7 @@ export function SdPanel() {
       created_at: new Date().toLocaleString(),
       img_data: "",
     };
-    sdStore.sendTask(data, sdListDb, () => {
+    sdStore.sendTask(data, () => {
       setParams(getModelParamBasicData(columns, params, true));
     });
   };

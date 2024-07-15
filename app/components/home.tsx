@@ -29,7 +29,6 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
-import { initDB } from "react-indexed-db-hook";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (

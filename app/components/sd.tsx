@@ -30,8 +30,7 @@ import {
   showImageModal,
   showModal,
 } from "@/app/components/ui-lib";
-import { func } from "prop-types";
-import { useFileDB, IndexDBImage } from "@/app/utils/file";
+import { removeImage } from "@/app/utils/chat";
 
 function getSdTaskStatus(item: any) {
   let s: string;
@@ -90,7 +89,6 @@ export function Sd() {
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
   const config = useAppConfig();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const fileDb = useFileDB();
   const sdStore = useSdStore();
   const [sdImages, setSdImages] = useState(sdStore.draw);
 
@@ -147,14 +145,13 @@ export function Sd() {
                   className={styles["sd-img-item"]}
                 >
                   {item.status === "success" ? (
-                    <IndexDBImage
+                    <img
                       className={styles["img"]}
-                      db={fileDb}
                       src={item.img_data}
                       alt={item.id}
-                      onClick={(data: any, e: any) => {
+                      onClick={(e) =>
                         showImageModal(
-                          data,
+                          item.img_data,
                           true,
                           isMobileScreen
                             ? { width: "100%", height: "fit-content" }
@@ -162,8 +159,8 @@ export function Sd() {
                           isMobileScreen
                             ? { width: "100%", height: "fit-content" }
                             : { width: "100%", height: "100%" },
-                        );
-                      }}
+                        )
+                      }
                     />
                   ) : item.status === "error" ? (
                     <div className={styles["pre-img"]}>
@@ -247,7 +244,7 @@ export function Sd() {
                               created_at: new Date().toLocaleString(),
                               img_data: "",
                             };
-                            sdStore.sendTask(reqData, fileDb);
+                            sdStore.sendTask(reqData);
                           }}
                         />
                         <ChatAction
@@ -256,7 +253,7 @@ export function Sd() {
                           onClick={async () => {
                             if (await showConfirm(Locale.Sd.Danger.Delete)) {
                               // remove img_data + remove item in list
-                              fileDb.deleteRecord(item.id).then(
+                              removeImage(item.img_data).finally(
                                 () => {
                                   sdStore.draw = sdImages.filter(
                                     (i: any) => i.id !== item.id,

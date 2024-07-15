@@ -23,6 +23,8 @@ export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
+export const UPLOAD_URL = "/api/cache/upload";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",

@@ -3,7 +3,7 @@ import { showToast } from "@/app/components/ui-lib";
 import { getHeaders } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
-import { saveFileData, base64Image2Blob } from "@/app/utils/file";
+import { uploadImage, base64Image2Blob } from "@/app/utils/chat";
 
 export const useSdStore = createPersistStore<
   {
@@ -12,7 +12,7 @@ export const useSdStore = createPersistStore<
   },
   {
     getNextId: () => number;
-    sendTask: (data: any, db: any, okCall?: Function) => void;
+    sendTask: (data: any, okCall?: Function) => void;
     updateDraw: (draw: any) => void;
   }
 >(
@@ -34,15 +34,14 @@ export const useSdStore = createPersistStore<
         set({ currentId: id });
         return id;
       },
-      sendTask(data: any, db: any, okCall?: Function) {
+      sendTask(data: any, okCall?: Function) {
         data = { ...data, id: nanoid(), status: "running" };
         set({ draw: [data, ..._get().draw] });
-        // db.update(data);
         this.getNextId();
-        this.stabilityRequestCall(data, db);
+        this.stabilityRequestCall(data);
         okCall?.();
       },
-      stabilityRequestCall(data: any, db: any) {
+      stabilityRequestCall(data: any) {
         const formData = new FormData();
         for (let paramsKey in data.params) {
           formData.append(paramsKey, data.params[paramsKey]);
@@ -69,18 +68,26 @@ export const useSdStore = createPersistStore<
               return;
             }
             if (resData.finish_reason === "SUCCESS") {
-              this.updateDraw({
-                ...data,
-                status: "success",
-                // save blob to indexeddb instead of base64 image string
-                img_data: saveFileData(
-                  db,
-                  data.id,
-                  base64Image2Blob(resData.image, "image/png"),
-                ),
-              });
+              const self = this;
+              uploadImage(base64Image2Blob(resData.image, "image/png"))
+                .then((img_data) => {
+                  console.debug("uploadImage success", img_data, self);
+                  self.updateDraw({
+                    ...data,
+                    status: "success",
+                    img_data,
+                  });
+                })
+                .catch((e) => {
+                  console.error("uploadImage error", e);
+                  self.updateDraw({
+                    ...data,
+                    status: "error",
+                    error: JSON.stringify(resData),
+                  });
+                });
             } else {
-              this.updateDraw({
+              self.updateDraw({
                 ...data,
                 status: "error",
                 error: JSON.stringify(resData),
@@ -94,10 +101,12 @@ export const useSdStore = createPersistStore<
             this.getNextId();
           });
       },
-      updateDraw(draw: any) {
-        _get().draw.some((item, index) => {
-          if (item.id === draw.id) {
-            _get().draw[index] = draw;
+      updateDraw(_draw: any) {
+        const draw = _get().draw || [];
+        draw.some((item, index) => {
+          if (item.id === _draw.id) {
+            draw[index] = _draw;
+            set(() => ({ draw }));
             return true;
           }
         });
