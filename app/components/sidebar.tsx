@@ -159,7 +159,7 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-sub-title"]}>{siteDescription}</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          {!!siteLogURL ? <img src={siteLogURL}></img> : <ChatGptIcon />}
+          {siteLogURL ? <img src={siteLogURL}></img> : <ChatGptIcon />}
         </div>
       </div>
 
