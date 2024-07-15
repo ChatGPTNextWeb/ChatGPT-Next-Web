@@ -64,7 +64,7 @@ export function base64Image2Blob(base64Data: string, contentType: string) {
   return new Blob([byteArray], { type: contentType });
 }
 
-export function uploadImage(file: File): Promise<string> {
+export function uploadImage(file: Blob): Promise<string> {
   const body = new FormData();
   body.append("file", file);
   return fetch(UPLOAD_URL, {

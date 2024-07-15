@@ -253,17 +253,12 @@ export function Sd() {
                           onClick={async () => {
                             if (await showConfirm(Locale.Sd.Danger.Delete)) {
                               // remove img_data + remove item in list
-                              removeImage(item.img_data).finally(
-                                () => {
-                                  sdStore.draw = sdImages.filter(
-                                    (i: any) => i.id !== item.id,
-                                  );
-                                  sdStore.getNextId();
-                                },
-                                (error) => {
-                                  console.error(error);
-                                },
-                              );
+                              removeImage(item.img_data).finally(() => {
+                                sdStore.draw = sdImages.filter(
+                                  (i: any) => i.id !== item.id,
+                                );
+                                sdStore.getNextId();
+                              });
                             }
                           }}
                         />
