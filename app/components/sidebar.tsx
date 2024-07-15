@@ -140,7 +140,7 @@ export function SideBar(props: { className?: string }) {
     () => isIOS() && isMobileScreen,
     [isMobileScreen],
   );
-  const serverConfig = getServerSideConfig();
+  const { siteTitle, siteDescription, siteLogURL } = getServerSideConfig();
   useHotKey();
 
   return (
@@ -155,13 +155,15 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          {serverConfig.sidebarTitle}
+          {siteTitle}
         </div>
-        <div className={styles["sidebar-sub-title"]}>
-          {serverConfig.sidebarSubTitle}
-        </div>
+        <div className={styles["sidebar-sub-title"]}>{siteDescription}</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          {!!siteLogURL ? (
+            <img src={"https://unsplash.it/40/43?random"}></img>
+          ) : (
+            <ChatGptIcon />
+          )}
         </div>
       </div>
 

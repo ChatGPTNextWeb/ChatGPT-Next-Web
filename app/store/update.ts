@@ -11,9 +11,11 @@ import Locale from "../locales";
 import { use } from "react";
 import { useAppConfig } from ".";
 import { ClientApi } from "../client/api";
+import { getServerSideConfig } from "@/app/config/server";
 
 const ONE_MINUTE = 60 * 1000;
 const isApp = !!getClientConfig()?.isApp;
+const serverConfig = getServerSideConfig();
 
 function formatVersionDate(t: string) {
   const d = new Date(+t);
@@ -106,7 +108,7 @@ export const useUpdateStore = createPersistStore(
                       if (version === remoteId) {
                         // Show a notification using Tauri
                         window.__TAURI__?.notification.sendNotification({
-                          title: "NextChat",
+                          title: `${serverConfig.siteTitle}`,
                           body: `${Locale.Settings.Update.IsLatest}`,
                           icon: `${ChatGptIcon.src}`,
                           sound: "Default",
@@ -116,7 +118,7 @@ export const useUpdateStore = createPersistStore(
                           Locale.Settings.Update.FoundUpdate(`${remoteId}`);
                         // Show a notification for the new version using Tauri
                         window.__TAURI__?.notification.sendNotification({
-                          title: "NextChat",
+                          title: `${serverConfig.siteTitle}`,
                           body: updateMessage,
                           icon: `${ChatGptIcon.src}`,
                           sound: "Default",

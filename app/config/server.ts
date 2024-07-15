@@ -56,10 +56,11 @@ declare global {
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
 
-      // custom sidebar title
-      SIDEBAR_TITLE?: string;
-      // custom sidebar sub-title
-      SIDEBAR_SUB_TITLE?: string;
+      // custom site title
+      SITE_TITLE?: string;
+      // custom site description
+      SITE_DESCRIPTION?: string;
+      SITE_LOGO_URL?: string;
     }
   }
 }
@@ -129,10 +130,11 @@ export const getServerSideConfig = () => {
   const allowedWebDevEndpoints = (
     process.env.WHITE_WEBDEV_ENDPOINTS ?? ""
   ).split(",");
-  // custom title
-  const sidebarTitle = process.env.SIDEBAR_TITLE ?? "NextChat";
-  const sidebarSubTitle =
-    process.env.SIDEBAR_SUB_TITLE ?? "Build your own AI assistant.";
+  // custom site
+  const siteTitle = process.env.SITE_TITLE ?? "NextChat";
+  const siteDescription =
+    process.env.SITE_DESCRIPTION ?? "Build your own AI assistant.";
+  const siteLogURL = process.env.SITE_LOGO_URL ?? "";
   return {
     baseUrl: process.env.BASE_URL,
     apiKey: getApiKey(process.env.OPENAI_API_KEY),
@@ -181,7 +183,8 @@ export const getServerSideConfig = () => {
     customModels,
     defaultModel,
     allowedWebDevEndpoints,
-    sidebarTitle,
-    sidebarSubTitle,
+    siteTitle,
+    siteDescription,
+    siteLogURL,
   };
 };

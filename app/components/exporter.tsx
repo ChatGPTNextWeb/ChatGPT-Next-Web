@@ -40,6 +40,7 @@ import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { getMessageTextContent } from "../utils";
+import { getServerSideConfig } from "@/app/config/server";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -515,7 +516,7 @@ export function ImagePreviewer(props: {
       dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
     }
   };
-
+  const { siteTitle, siteDescription } = getServerSideConfig();
   return (
     <div className={styles["image-previewer"]}>
       <PreviewActions
@@ -539,10 +540,8 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>NextChat</div>
-            <div className={styles["sub-title"]}>
-              github.com/Yidadaa/ChatGPT-Next-Web
-            </div>
+            <div className={styles["main-title"]}>{siteTitle}</div>
+            <div className={styles["sub-title"]}>{siteDescription}</div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
               <span className={styles["icon-space"]}>&</span>
