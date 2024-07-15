@@ -29,10 +29,9 @@ import {
   showConfirm,
   showImageModal,
   showModal,
-  IndexDBImage,
 } from "@/app/components/ui-lib";
 import { func } from "prop-types";
-import { useFileDB } from "@/app/utils/file";
+import { useFileDB, IndexDBImage } from "@/app/utils/file";
 
 function getSdTaskStatus(item: any) {
   let s: string;

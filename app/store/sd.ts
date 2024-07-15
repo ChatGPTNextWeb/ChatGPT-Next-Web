@@ -3,6 +3,7 @@ import { showToast } from "@/app/components/ui-lib";
 import { getHeaders } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
+import { saveFileData } from "@/app/utils/file";
 
 export const useSdStore = createPersistStore<
   {
@@ -68,11 +69,10 @@ export const useSdStore = createPersistStore<
               return;
             }
             if (resData.finish_reason === "SUCCESS") {
-              db.add({ id: data.id, data: resData.image });
               this.updateDraw({
                 ...data,
                 status: "success",
-                img_data: `indexeddb://${StoreKey.File}@${data.id}`,
+                img_data: saveFileData(db, data.id, resData.image),
               });
             } else {
               this.updateDraw({
