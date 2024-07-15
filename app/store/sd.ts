@@ -1,32 +1,8 @@
-import { initDB } from "react-indexed-db-hook";
 import { StabilityPath, StoreKey } from "@/app/constant";
 import { showToast } from "@/app/components/ui-lib";
 import { getHeaders } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
-
-export const SdDbConfig = {
-  name: "@chatgpt-next-web/sd",
-  version: 1,
-  objectStoresMeta: [
-    {
-      store: StoreKey.SdList,
-      storeConfig: { keyPath: "id", autoIncrement: true },
-      storeSchema: [
-        { name: "data", keypath: "data", options: { unique: false } },
-        {
-          name: "created_at",
-          keypath: "created_at",
-          options: { unique: false },
-        },
-      ],
-    },
-  ],
-};
-
-export function SdDbInit() {
-  initDB(SdDbConfig);
-}
 
 export const useSdStore = createPersistStore<
   {
@@ -96,7 +72,7 @@ export const useSdStore = createPersistStore<
               this.updateDraw({
                 ...data,
                 status: "success",
-                img_data: `indexeddb://${StoreKey.SdList}@${data.id}`,
+                img_data: `indexeddb://${StoreKey.File}@${data.id}`,
               });
             } else {
               this.updateDraw({

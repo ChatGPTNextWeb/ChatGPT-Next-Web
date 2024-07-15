@@ -6,9 +6,10 @@ import locales from "@/app/locales";
 import { nanoid } from "nanoid";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { StoreKey } from "@/app/constant";
-import { SdDbInit, useSdStore } from "@/app/store/sd";
+import { useSdStore } from "@/app/store/sd";
+import { FileDbInit } from "@/app/utils/file";
 
-SdDbInit();
+FileDbInit();
 
 const sdCommonParams = (model: string, data: any) => {
   return [

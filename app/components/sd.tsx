@@ -3,7 +3,7 @@ import styles from "@/app/components/sd.module.scss";
 import { IconButton } from "@/app/components/button";
 import ReturnIcon from "@/app/icons/return.svg";
 import Locale from "@/app/locales";
-import { Path, StoreKey } from "@/app/constant";
+import { Path } from "@/app/constant";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   copyToClipboard,
@@ -20,7 +20,6 @@ import DeleteIcon from "@/app/icons/clear.svg";
 import CopyIcon from "@/app/icons/copy.svg";
 import PromptIcon from "@/app/icons/prompt.svg";
 import ResetIcon from "@/app/icons/reload.svg";
-import { useIndexedDB } from "react-indexed-db-hook";
 import { useSdStore } from "@/app/store/sd";
 import locales from "@/app/locales";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -30,19 +29,10 @@ import {
   showConfirm,
   showImageModal,
   showModal,
+  IndexDBImage,
 } from "@/app/components/ui-lib";
 import { func } from "prop-types";
-
-function getBase64ImgUrl(base64Data: string, contentType: string) {
-  const byteCharacters = atob(base64Data);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: contentType });
-  return URL.createObjectURL(blob);
-}
+import { useFileDB } from "@/app/utils/file";
 
 function getSdTaskStatus(item: any) {
   let s: string;
@@ -94,45 +84,6 @@ function getSdTaskStatus(item: any) {
   );
 }
 
-function IndexDBImage({ img_data, title, isMobileScreen }) {
-  const [src, setSrc] = useState(img_data);
-  const sdListDb = useIndexedDB(StoreKey.SdList);
-  const img_id = useMemo(
-    () => img_data.replace("indexeddb://", "").split("@").pop(),
-    [img_data],
-  );
-  useEffect(() => {
-    sdListDb
-      .getByID(img_id)
-      .then(({ data }) => {
-        setSrc(data);
-      })
-      .catch((e) => {
-        setSrc(img_data);
-      });
-  }, [img_data, img_id]);
-
-  return (
-    <img
-      className={styles["img"]}
-      src={`data:image/png;base64,${src}`}
-      alt={title}
-      onClick={(e) => {
-        showImageModal(
-          getBase64ImgUrl(src, "image/png"),
-          true,
-          isMobileScreen
-            ? { width: "100%", height: "fit-content" }
-            : { maxWidth: "100%", maxHeight: "100%" },
-          isMobileScreen
-            ? { width: "100%", height: "fit-content" }
-            : { width: "100%", height: "100%" },
-        );
-      }}
-    />
-  );
-}
-
 export function Sd() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
@@ -140,7 +91,7 @@ export function Sd() {
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
   const config = useAppConfig();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sdListDb = useIndexedDB(StoreKey.SdList);
+  const fileDb = useFileDB();
   const sdStore = useSdStore();
   const [sdImages, setSdImages] = useState(sdStore.draw);
 
@@ -197,13 +148,25 @@ export function Sd() {
                   className={styles["sd-img-item"]}
                 >
                   {item.status === "success" ? (
-                    <>
-                      <IndexDBImage
-                        img_data={item.img_data}
-                        title={item.id}
-                        isMobileScreen={isMobileScreen}
-                      />
-                    </>
+                    <IndexDBImage
+                      className={styles["img"]}
+                      db={fileDb}
+                      src={item.img_data}
+                      alt={item.id}
+                      onClick={(data, e) => {
+                        showImageModal(
+                          data,
+                          true,
+                          isMobileScreen
+                            ? { width: "100%", height: "fit-content" }
+                            : { maxWidth: "100%", maxHeight: "100%" },
+                          isMobileScreen
+                            ? { width: "100%", height: "fit-content" }
+                            : { width: "100%", height: "100%" },
+                        );
+                      }}
+                      isMobileScreen={isMobileScreen}
+                    />
                   ) : item.status === "error" ? (
                     <div className={styles["pre-img"]}>
                       <ErrorIcon />
@@ -286,7 +249,7 @@ export function Sd() {
                               created_at: new Date().toLocaleString(),
                               img_data: "",
                             };
-                            sdStore.sendTask(reqData, sdListDb);
+                            sdStore.sendTask(reqData, fileDb);
                           }}
                         />
                         <ChatAction
@@ -295,7 +258,7 @@ export function Sd() {
                           onClick={async () => {
                             if (await showConfirm(Locale.Sd.Danger.Delete)) {
                               // remove img_data + remove item in list
-                              sdListDb.deleteRecord(item.id).then(
+                              fileDb.deleteRecord(item.id).then(
                                 () => {
                                   sdStore.draw = sdImages.filter(
                                     (i: any) => i.id !== item.id,

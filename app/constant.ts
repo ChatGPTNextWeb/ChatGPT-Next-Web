@@ -55,6 +55,7 @@ export enum FileName {
 }
 
 export enum StoreKey {
+  File = "chat-next-web-file",
   Chat = "chat-next-web-store",
   Access = "access-control",
   Config = "app-config",

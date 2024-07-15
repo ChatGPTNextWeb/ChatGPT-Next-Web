@@ -19,6 +19,7 @@ import React, {
   MouseEvent,
   useEffect,
   useState,
+  useMemo,
 } from "react";
 import { IconButton } from "./button";
 
@@ -508,5 +509,31 @@ export function Selector<T>(props: {
         </List>
       </div>
     </div>
+  );
+}
+
+export function IndexDBImage({ src, alt, onClick, db, className }) {
+  const [data, setData] = useState(src);
+  const imgId = useMemo(
+    () => src.replace("indexeddb://", "").split("@").pop(),
+    [src],
+  );
+  useEffect(() => {
+    db.getByID(imgId)
+      .then(({ data }) => {
+        setData(`data:image/png;base64,${data}`);
+      })
+      .catch((e) => {
+        setData(src);
+      });
+  }, [src, imgId]);
+
+  return (
+    <img
+      className={className}
+      src={data}
+      alt={alt}
+      onClick={(e) => onClick(data, e)}
+    />
   );
 }
