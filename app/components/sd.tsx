@@ -94,7 +94,46 @@ function getSdTaskStatus(item: any) {
   );
 }
 
-export async function Sd() {
+function IndexDBImage({ img_data, title, isMobileScreen }) {
+  const [src, setSrc] = useState(img_data);
+  const sdListDb = useIndexedDB(StoreKey.SdList);
+  const img_id = useMemo(
+    () => img_data.replace("indexeddb://", "").split("@").pop(),
+    [img_data],
+  );
+  useEffect(() => {
+    sdListDb
+      .getByID(img_id)
+      .then(({ data }) => {
+        setSrc(data);
+      })
+      .catch((e) => {
+        setSrc(img_data);
+      });
+  }, [img_data, img_id]);
+
+  return (
+    <img
+      className={styles["img"]}
+      src={`data:image/png;base64,${src}`}
+      alt={title}
+      onClick={(e) => {
+        showImageModal(
+          getBase64ImgUrl(src, "image/png"),
+          true,
+          isMobileScreen
+            ? { width: "100%", height: "fit-content" }
+            : { maxWidth: "100%", maxHeight: "100%" },
+          isMobileScreen
+            ? { width: "100%", height: "fit-content" }
+            : { width: "100%", height: "100%" },
+        );
+      }}
+    />
+  );
+}
+
+export function Sd() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
   const clientConfig = useMemo(() => getClientConfig(), []);
@@ -108,35 +147,6 @@ export async function Sd() {
   useEffect(() => {
     setSdImages(sdStore.draw);
   }, [sdStore.currentId]);
-
-  const useIndexeddb: any = {};
-
-  async function getImageData(item: any) {
-    let id = item.img_data;
-    if (id.indexOf("indexeddb://")) {
-      id = id.replace("indexeddb://", "");
-    }
-    const link = id.split("@");
-    if (link.length != 2) {
-      return id;
-    }
-    let db = useIndexeddb[link[0]];
-    if (!db) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      db = useIndexedDB(link[0]);
-      useIndexeddb[link[0]] = db;
-    }
-    db.getByID(link[1]).then((data: any) => {
-      console.log(data);
-      item.img = data;
-    });
-  }
-
-  sdImages.forEach((item: any) => {
-    if (item.status === "success") {
-      getImageData(item);
-    }
-  });
 
   return (
     <div className={chatStyles.chat} key={"1"}>
@@ -187,23 +197,13 @@ export async function Sd() {
                   className={styles["sd-img-item"]}
                 >
                   {item.status === "success" ? (
-                    <img
-                      className={styles["img"]}
-                      src={`data:image/png;base64,${item.img}`}
-                      alt={`${item.id}`}
-                      onClick={(e) => {
-                        showImageModal(
-                          getBase64ImgUrl(item.img, "image/png"),
-                          true,
-                          isMobileScreen
-                            ? { width: "100%", height: "fit-content" }
-                            : { maxWidth: "100%", maxHeight: "100%" },
-                          isMobileScreen
-                            ? { width: "100%", height: "fit-content" }
-                            : { width: "100%", height: "100%" },
-                        );
-                      }}
-                    />
+                    <>
+                      <IndexDBImage
+                        img_data={item.img_data}
+                        title={item.id}
+                        isMobileScreen={isMobileScreen}
+                      />
+                    </>
                   ) : item.status === "error" ? (
                     <div className={styles["pre-img"]}>
                       <ErrorIcon />
@@ -294,6 +294,7 @@ export async function Sd() {
                           icon={<DeleteIcon />}
                           onClick={async () => {
                             if (await showConfirm(Locale.Sd.Danger.Delete)) {
+                              // remove img_data + remove item in list
                               sdListDb.deleteRecord(item.id).then(
                                 () => {
                                   sdStore.draw = sdImages.filter(

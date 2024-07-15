@@ -92,12 +92,11 @@ export const useSdStore = createPersistStore<
               return;
             }
             if (resData.finish_reason === "SUCCESS") {
-              const imgId = nanoid();
               db.add({ id: data.id, data: resData.image });
               this.updateDraw({
                 ...data,
                 status: "success",
-                img_data: `indexeddb://${StoreKey.SdList}@${imgId}`,
+                img_data: `indexeddb://${StoreKey.SdList}@${data.id}`,
               });
             } else {
               this.updateDraw({
