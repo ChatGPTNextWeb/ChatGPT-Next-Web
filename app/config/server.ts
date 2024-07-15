@@ -55,13 +55,17 @@ declare global {
 
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
+
+      // custom sidebar title
+      SIDEBAR_TITLE?: string;
+      // custom sidebar sub-title
+      SIDEBAR_SUB_TITLE?: string;
     }
   }
 }
 
 const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   const code = process.env.CODE;
-
   try {
     const codes = (code?.split(",") ?? [])
       .filter((v) => !!v)
@@ -125,7 +129,10 @@ export const getServerSideConfig = () => {
   const allowedWebDevEndpoints = (
     process.env.WHITE_WEBDEV_ENDPOINTS ?? ""
   ).split(",");
-
+  // custom title
+  const sidebarTitle = process.env.SIDEBAR_TITLE ?? "NextChat";
+  const sidebarSubTitle =
+    process.env.SIDEBAR_SUB_TITLE ?? "Build your own AI assistant.";
   return {
     baseUrl: process.env.BASE_URL,
     apiKey: getApiKey(process.env.OPENAI_API_KEY),
@@ -174,5 +181,7 @@ export const getServerSideConfig = () => {
     customModels,
     defaultModel,
     allowedWebDevEndpoints,
+    sidebarTitle,
+    sidebarSubTitle,
   };
 };

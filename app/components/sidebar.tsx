@@ -30,6 +30,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import { getServerSideConfig } from "../config/server";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -130,7 +131,6 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
-
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
@@ -140,7 +140,7 @@ export function SideBar(props: { className?: string }) {
     () => isIOS() && isMobileScreen,
     [isMobileScreen],
   );
-
+  const serverConfig = getServerSideConfig();
   useHotKey();
 
   return (
@@ -155,10 +155,10 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          NextChat
+          {serverConfig.sidebarTitle}
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          {serverConfig.sidebarSubTitle}
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
