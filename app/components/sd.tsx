@@ -152,7 +152,7 @@ export function Sd() {
                       db={fileDb}
                       src={item.img_data}
                       alt={item.id}
-                      onClick={(data, e) => {
+                      onClick={(data: any, e: any) => {
                         showImageModal(
                           data,
                           true,
@@ -164,7 +164,6 @@ export function Sd() {
                             : { width: "100%", height: "100%" },
                         );
                       }}
-                      isMobileScreen={isMobileScreen}
                     />
                   ) : item.status === "error" ? (
                     <div className={styles["pre-img"]}>

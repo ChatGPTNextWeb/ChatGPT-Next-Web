@@ -42,13 +42,17 @@ export function base64Image2Blob(base64Data: string, contentType: string) {
   return new Blob([byteArray], { type: contentType });
 }
 
-export function saveFileData(db, fileId, data) {
+export function saveFileData(db: any, fileId: string, data: Blob | string) {
   // save file content and return url start with `indexeddb://`
   db.add({ id: fileId, data });
   return `indexeddb://${StoreKey.File}@${fileId}`;
 }
 
-export async function getFileData(db, fileId, contentType = "image/png") {
+export async function getFileData(
+  db: any,
+  fileId: string,
+  contentType = "image/png",
+) {
   const { data } = await db.getByID(fileId);
   if (typeof data == "object") {
     return URL.createObjectURL(data);
@@ -56,14 +60,26 @@ export async function getFileData(db, fileId, contentType = "image/png") {
   return `data:${contentType};base64,${data}`;
 }
 
-export function IndexDBImage({ src, alt, onClick, db, className }) {
+export function IndexDBImage({
+  src,
+  alt,
+  onClick,
+  db,
+  className,
+}: {
+  src: string;
+  alt: string;
+  onClick: any;
+  db: any;
+  className: string;
+}) {
   const [data, setData] = useState(src);
   const imgId = useMemo(
     () => src.replace("indexeddb://", "").split("@").pop(),
     [src],
   );
   useEffect(() => {
-    getFileData(db, imgId)
+    getFileData(db, imgId as string)
       .then((data) => setData(data))
       .catch((e) => setData(src));
   }, [src, imgId]);
