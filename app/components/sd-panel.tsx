@@ -6,7 +6,7 @@ import locales from "@/app/locales";
 import { nanoid } from "nanoid";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { StoreKey } from "@/app/constant";
-import { SdDbInit, sendSdTask, useSdStore } from "@/app/store/sd";
+import { SdDbInit, useSdStore } from "@/app/store/sd";
 
 SdDbInit();
 
@@ -287,7 +287,7 @@ export function SdPanel() {
     setParams(getModelParamBasicData(model.params({}), params));
   };
   const sdListDb = useIndexedDB(StoreKey.SdList);
-  const { execCountInc } = useSdStore();
+  const sdStore = useSdStore();
   const handleSubmit = () => {
     const columns = currentModel.params(params);
     const reqParams: any = {};
@@ -309,7 +309,7 @@ export function SdPanel() {
       created_at: new Date().toLocaleString(),
       img_data: "",
     };
-    sendSdTask(data, sdListDb, execCountInc, () => {
+    sdStore.sendTask(data, sdListDb, () => {
       setParams(getModelParamBasicData(columns, params, true));
     });
   };

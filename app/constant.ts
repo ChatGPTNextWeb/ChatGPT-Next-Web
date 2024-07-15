@@ -1,5 +1,3 @@
-import { stabilityRequestCall } from "@/app/store/sd";
-
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;

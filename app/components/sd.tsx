@@ -21,7 +21,7 @@ import CopyIcon from "@/app/icons/copy.svg";
 import PromptIcon from "@/app/icons/prompt.svg";
 import ResetIcon from "@/app/icons/reload.svg";
 import { useIndexedDB } from "react-indexed-db-hook";
-import { sendSdTask, useSdStore } from "@/app/store/sd";
+import { useSdStore } from "@/app/store/sd";
 import locales from "@/app/locales";
 import LoadingIcon from "../icons/three-dots.svg";
 import ErrorIcon from "../icons/delete.svg";
@@ -31,6 +31,7 @@ import {
   showImageModal,
   showModal,
 } from "@/app/components/ui-lib";
+import { func } from "prop-types";
 
 function getBase64ImgUrl(base64Data: string, contentType: string) {
   const byteCharacters = atob(base64Data);
@@ -93,7 +94,7 @@ function getSdTaskStatus(item: any) {
   );
 }
 
-export function Sd() {
+export async function Sd() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
   const clientConfig = useMemo(() => getClientConfig(), []);
@@ -101,14 +102,41 @@ export function Sd() {
   const config = useAppConfig();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sdListDb = useIndexedDB(StoreKey.SdList);
-  const [sdImages, setSdImages] = useState([]);
-  const { execCount, execCountInc } = useSdStore();
+  const sdStore = useSdStore();
+  const [sdImages, setSdImages] = useState(sdStore.draw);
 
   useEffect(() => {
-    sdListDb.getAll().then((data) => {
-      setSdImages(((data as never[]) || []).reverse());
+    setSdImages(sdStore.draw);
+  }, [sdStore.currentId]);
+
+  const useIndexeddb: any = {};
+
+  async function getImageData(item: any) {
+    let id = item.img_data;
+    if (id.indexOf("indexeddb://")) {
+      id = id.replace("indexeddb://", "");
+    }
+    const link = id.split("@");
+    if (link.length != 2) {
+      return id;
+    }
+    let db = useIndexeddb[link[0]];
+    if (!db) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      db = useIndexedDB(link[0]);
+      useIndexeddb[link[0]] = db;
+    }
+    db.getByID(link[1]).then((data: any) => {
+      console.log(data);
+      item.img = data;
     });
-  }, [execCount]);
+  }
+
+  sdImages.forEach((item: any) => {
+    if (item.status === "success") {
+      getImageData(item);
+    }
+  });
 
   return (
     <div className={chatStyles.chat} key={"1"}>
@@ -161,11 +189,11 @@ export function Sd() {
                   {item.status === "success" ? (
                     <img
                       className={styles["img"]}
-                      src={`data:image/png;base64,${item.img_data}`}
+                      src={`data:image/png;base64,${item.img}`}
                       alt={`${item.id}`}
                       onClick={(e) => {
                         showImageModal(
-                          getBase64ImgUrl(item.img_data, "image/png"),
+                          getBase64ImgUrl(item.img, "image/png"),
                           true,
                           isMobileScreen
                             ? { width: "100%", height: "fit-content" }
@@ -258,7 +286,7 @@ export function Sd() {
                               created_at: new Date().toLocaleString(),
                               img_data: "",
                             };
-                            sendSdTask(reqData, sdListDb, execCountInc);
+                            sdStore.sendTask(reqData, sdListDb);
                           }}
                         />
                         <ChatAction
@@ -268,11 +296,10 @@ export function Sd() {
                             if (await showConfirm(Locale.Sd.Danger.Delete)) {
                               sdListDb.deleteRecord(item.id).then(
                                 () => {
-                                  setSdImages(
-                                    sdImages.filter(
-                                      (i: any) => i.id !== item.id,
-                                    ),
+                                  sdStore.draw = sdImages.filter(
+                                    (i: any) => i.id !== item.id,
                                   );
+                                  sdStore.getNextId();
                                 },
                                 (error) => {
                                   console.error(error);
