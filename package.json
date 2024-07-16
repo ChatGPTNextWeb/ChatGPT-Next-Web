@@ -75,8 +75,8 @@
     "autoprefixer": "^10.4.17",
     "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
-    "eslint": "9.6.0",
-    "eslint-config-next": "^14.2.3",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "husky": "^9.0.7",
@@ -95,6 +95,5 @@
   "resolutions": {
     "lint-staged/yaml": "^2.2.2"
   },
-  "type": "module",
   "packageManager": "yarn@1.22.19"
 }
