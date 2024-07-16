@@ -1,46 +1,30 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  ANTHROPIC_BASE_URL,
-  Anthropic,
+  Alibaba,
+  ALIBABA_BASE_URL,
   ApiPath,
-  DEFAULT_MODELS,
-  ServiceProvider,
   ModelProvider,
+  ServiceProvider,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth";
+import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
-import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+import type { RequestPayload } from "@/app/client/platforms/openai";
 
-const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
+const serverConfig = getServerSideConfig();
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Anthropic Route] params ", params);
+  console.log("[Alibaba Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const subpath = params.path.join("/");
-
-  if (!ALLOWD_PATH.has(subpath)) {
-    console.log("[Anthropic Route] forbidden path ", subpath);
-    return NextResponse.json(
-      {
-        error: true,
-        msg: "you are not allowed to request " + subpath,
-      },
-      {
-        status: 403,
-      },
-    );
-  }
-
-  const authResult = auth(req, ModelProvider.Claude);
+  const authResult = auth(req, ModelProvider.Qwen);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -51,7 +35,7 @@ async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[Anthropic] ", e);
+    console.error("[Alibaba] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
@@ -80,22 +64,13 @@ export const preferredRegion = [
   "syd1",
 ];
 
-const serverConfig = getServerSideConfig();
-
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let authHeaderName = "x-api-key";
-  let authValue =
-    req.headers.get(authHeaderName) ||
-    req.headers.get("Authorization")?.replaceAll("Bearer ", "").trim() ||
-    serverConfig.anthropicApiKey ||
-    "";
+  // alibaba use base url or just remove the path
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Alibaba, "");
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Anthropic, "");
-
-  let baseUrl =
-    serverConfig.anthropicUrl || serverConfig.baseUrl || ANTHROPIC_BASE_URL;
+  let baseUrl = serverConfig.alibabaUrl || ALIBABA_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -115,18 +90,12 @@ async function request(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  // try rebuild url, when using cloudflare ai gateway in server
-  const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}${path}`);
-
+  const fetchUrl = `${baseUrl}${path}`;
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "no-store",
-      [authHeaderName]: authValue,
-      "anthropic-version":
-        req.headers.get("anthropic-version") ||
-        serverConfig.anthropicApiVersion ||
-        Anthropic.Vision,
+      Authorization: req.headers.get("Authorization") ?? "",
+      "X-DashScope-SSE": req.headers.get("X-DashScope-SSE") ?? "disable",
     },
     method: req.method,
     body: req.body,
@@ -149,7 +118,7 @@ async function request(req: NextRequest) {
         isModelAvailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.Anthropic as string,
+          ServiceProvider.Alibaba as string,
         )
       ) {
         return NextResponse.json(
@@ -163,20 +132,12 @@ async function request(req: NextRequest) {
         );
       }
     } catch (e) {
-      console.error(`[Anthropic] filter`, e);
+      console.error(`[Alibaba] filter`, e);
     }
   }
-  // console.log("[Anthropic request]", fetchOptions.headers, req.method);
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
-    // console.log(
-    //   "[Anthropic response]",
-    //   res.status,
-    //   "   ",
-    //   res.headers,
-    //   res.url,
-    // );
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");

@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import SessionProvider from "./components/session-provider";
 
 import { getClientConfig } from "./config/client";
-import { type Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
 import { GoogleTagManager } from "@next/third-parties/google";
