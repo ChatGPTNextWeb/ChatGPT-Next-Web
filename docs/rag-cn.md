@@ -127,3 +127,14 @@ supabase 项目 service_role secret。
 配置后请修改参数 `RAG_EMBEDDING_MODEL` 为 ollama 的 embedding 模型名。
 
 上面的数据库初始化语句中的 `vector(1536)` 也要修改为你的向量模型所使用的维度。
+
+## 模型维度参考
+
+| 嵌入模型名             | 维度 | 提供者 |
+| ---------------------- | ---- | ------ |
+| text-embedding-3-small | 1536 | openai |
+| text-embedding-3-large | 3072 | openai |
+| text-embedding-ada-002 | 1536 | openai |
+| snowflake-arctic-embed | 1024 | ollama |
+| mxbai-embed-large      | 1024 | ollama |
+| nomic-embed-text       | 768  | ollama |
