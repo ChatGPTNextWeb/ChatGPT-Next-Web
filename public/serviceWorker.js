@@ -22,9 +22,16 @@ async function upload(request, url) {
     ext = file.type.split('/').pop()
   }
   const fileUrl = `${url.origin}/api/cache/${nanoid()}.${ext}`
-  // console.debug('file', file, fileUrl)
+  // console.debug('file', file, fileUrl, request)
   const cache = await caches.open(CHATGPT_NEXT_WEB_FILE_CACHE)
-  await cache.put(new Request(fileUrl), new Response(file))
+  await cache.put(new Request(fileUrl), new Response(file, {
+    headers: {
+      'content-type': file.type,
+      'content-length': file.size,
+      'cache-control': 'no-cache', // file already store in disk
+      'server': 'ServiceWorker',
+    }
+  }))
   return Response.json({ code: 0, data: fileUrl })
 }
 
