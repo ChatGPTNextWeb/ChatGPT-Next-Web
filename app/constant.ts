@@ -1,5 +1,3 @@
-import { stabilityRequestCall } from "@/app/store/sd";
-
 export const OWNER = "Yidadaa";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
@@ -24,6 +22,8 @@ export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+
+export const UPLOAD_URL = "/api/cache/upload";
 
 export enum Path {
   Home = "/",
@@ -57,6 +57,7 @@ export enum FileName {
 }
 
 export enum StoreKey {
+  File = "chat-next-web-file",
   Chat = "chat-next-web-store",
   Access = "access-control",
   Config = "app-config",

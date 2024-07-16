@@ -1,3 +1,4 @@
+import { UPLOAD_URL } from "@/app/constant";
 import heic2any from "heic2any";
 
 export function compressImage(file: File, maxSize: number): Promise<string> {
@@ -50,5 +51,42 @@ export function compressImage(file: File, maxSize: number): Promise<string> {
     }
 
     reader.readAsDataURL(file);
+  });
+}
+
+export function base64Image2Blob(base64Data: string, contentType: string) {
+  const byteCharacters = atob(base64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: contentType });
+}
+
+export function uploadImage(file: Blob): Promise<string> {
+  const body = new FormData();
+  body.append("file", file);
+  return fetch(UPLOAD_URL, {
+    method: "post",
+    body,
+    mode: "cors",
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log("res", res);
+      if (res?.code == 0 && res?.data) {
+        return res?.data;
+      }
+      throw Error(`upload Error: ${res?.msg}`);
+    });
+}
+
+export function removeImage(imageUrl: string) {
+  return fetch(imageUrl, {
+    method: "DELETE",
+    mode: "cors",
+    credentials: "include",
   });
 }

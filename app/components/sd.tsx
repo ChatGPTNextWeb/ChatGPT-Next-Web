@@ -3,7 +3,7 @@ import styles from "@/app/components/sd.module.scss";
 import { IconButton } from "@/app/components/button";
 import ReturnIcon from "@/app/icons/return.svg";
 import Locale from "@/app/locales";
-import { Path, StoreKey } from "@/app/constant";
+import { Path } from "@/app/constant";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   copyToClipboard,
@@ -20,8 +20,7 @@ import DeleteIcon from "@/app/icons/clear.svg";
 import CopyIcon from "@/app/icons/copy.svg";
 import PromptIcon from "@/app/icons/prompt.svg";
 import ResetIcon from "@/app/icons/reload.svg";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { sendSdTask, useSdStore } from "@/app/store/sd";
+import { useSdStore } from "@/app/store/sd";
 import locales from "@/app/locales";
 import LoadingIcon from "../icons/three-dots.svg";
 import ErrorIcon from "../icons/delete.svg";
@@ -31,17 +30,7 @@ import {
   showImageModal,
   showModal,
 } from "@/app/components/ui-lib";
-
-function getBase64ImgUrl(base64Data: string, contentType: string) {
-  const byteCharacters = atob(base64Data);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: contentType });
-  return URL.createObjectURL(blob);
-}
+import { removeImage } from "@/app/utils/chat";
 
 function getSdTaskStatus(item: any) {
   let s: string;
@@ -100,15 +89,12 @@ export function Sd() {
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
   const config = useAppConfig();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sdListDb = useIndexedDB(StoreKey.SdList);
-  const [sdImages, setSdImages] = useState([]);
-  const { execCount, execCountInc } = useSdStore();
+  const sdStore = useSdStore();
+  const [sdImages, setSdImages] = useState(sdStore.draw);
 
   useEffect(() => {
-    sdListDb.getAll().then((data) => {
-      setSdImages(((data as never[]) || []).reverse());
-    });
-  }, [execCount]);
+    setSdImages(sdStore.draw);
+  }, [sdStore.currentId]);
 
   return (
     <div className={chatStyles.chat} key={"1"}>
@@ -161,11 +147,11 @@ export function Sd() {
                   {item.status === "success" ? (
                     <img
                       className={styles["img"]}
-                      src={`data:image/png;base64,${item.img_data}`}
-                      alt={`${item.id}`}
-                      onClick={(e) => {
+                      src={item.img_data}
+                      alt={item.id}
+                      onClick={(e) =>
                         showImageModal(
-                          getBase64ImgUrl(item.img_data, "image/png"),
+                          item.img_data,
                           true,
                           isMobileScreen
                             ? { width: "100%", height: "fit-content" }
@@ -173,8 +159,8 @@ export function Sd() {
                           isMobileScreen
                             ? { width: "100%", height: "fit-content" }
                             : { width: "100%", height: "100%" },
-                        );
-                      }}
+                        )
+                      }
                     />
                   ) : item.status === "error" ? (
                     <div className={styles["pre-img"]}>
@@ -258,7 +244,7 @@ export function Sd() {
                               created_at: new Date().toLocaleString(),
                               img_data: "",
                             };
-                            sendSdTask(reqData, sdListDb, execCountInc);
+                            sdStore.sendTask(reqData);
                           }}
                         />
                         <ChatAction
@@ -266,18 +252,13 @@ export function Sd() {
                           icon={<DeleteIcon />}
                           onClick={async () => {
                             if (await showConfirm(Locale.Sd.Danger.Delete)) {
-                              sdListDb.deleteRecord(item.id).then(
-                                () => {
-                                  setSdImages(
-                                    sdImages.filter(
-                                      (i: any) => i.id !== item.id,
-                                    ),
-                                  );
-                                },
-                                (error) => {
-                                  console.error(error);
-                                },
-                              );
+                              // remove img_data + remove item in list
+                              removeImage(item.img_data).finally(() => {
+                                sdStore.draw = sdImages.filter(
+                                  (i: any) => i.id !== item.id,
+                                );
+                                sdStore.getNextId();
+                              });
                             }
                           }}
                         />
