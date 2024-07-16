@@ -34,7 +34,7 @@ if (typeof window != "undefined") {
     })
     .then((masks) => {
       const {en = [] } = masks;
-      return [...cn, ...tw, ...en].map((m) => {
+      return [ ...en].map((m) => {
         BUILTIN_MASKS.push(BUILTIN_MASK_STORE.add(m));
       });
     });
