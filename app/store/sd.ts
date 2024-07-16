@@ -67,8 +67,8 @@ export const useSdStore = createPersistStore<
               this.getNextId();
               return;
             }
+            const self = this;
             if (resData.finish_reason === "SUCCESS") {
-              const self = this;
               uploadImage(base64Image2Blob(resData.image, "image/png"))
                 .then((img_data) => {
                   console.debug("uploadImage success", img_data, self);
