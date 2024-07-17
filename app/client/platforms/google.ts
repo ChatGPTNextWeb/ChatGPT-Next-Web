@@ -1,4 +1,4 @@
-import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { Google, REQUEST_TIMEOUT_MS, ApiPath } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
@@ -110,7 +110,7 @@ export class GeminiProApi implements LLMApi {
 
     const accessStore = useAccessStore.getState();
 
-    let baseUrl = "";
+    let baseUrl: string = ApiPath.Google;
 
     if (accessStore.useCustomConfig) {
       baseUrl = accessStore.googleUrl;
