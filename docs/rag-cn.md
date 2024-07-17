@@ -36,7 +36,7 @@
 1. 登录 https://supabase.com 并创建一个账户
 2. 在控制面板中创建一个项目
 3. 在 `Project Settings` `API Settings` 中获取 `URL` 和 `service_role secret`
-4. 在 `SQL Editor` 中执行下面脚本创建表和函数
+4. 在 `SQL Editor` 中执行下面脚本创建表和函数(需根据[模型维度参考]修改vector(1536)中的维度数据)
 
 ```sql
 -- Enable the pgvector extension to work with embedding vectors
