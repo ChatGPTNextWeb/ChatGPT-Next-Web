@@ -967,290 +967,289 @@ export function Settings() {
         {/*          </Select>*/}
         {/*        </ListItem>*/}
 
-        {/*        {accessStore.provider === ServiceProvider.OpenAI && (*/}
-        {/*          <>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.OpenAI.Endpoint.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.OpenAI.Endpoint.SubTitle*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.openaiUrl}*/}
-        {/*                placeholder={OPENAI_BASE_URL}*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.openaiUrl = e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.OpenAI.ApiKey.Title}*/}
-        {/*              subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}*/}
-        {/*            >*/}
-        {/*              <PasswordInput*/}
-        {/*                value={accessStore.openaiApiKey}*/}
-        {/*                type="text"*/}
-        {/*                placeholder={*/}
-        {/*                  Locale.Settings.Access.OpenAI.ApiKey.Placeholder*/}
-        {/*                }*/}
-        {/*                onChange={(e) => {*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.openaiApiKey = e.currentTarget.value),*/}
-        {/*                  );*/}
-        {/*                }}*/}
-        {/*              />*/}
-        {/*            </ListItem>*/}
-        {/*          </>*/}
-        {/*        )}*/}
-        {/*        {accessStore.provider === ServiceProvider.Azure && (*/}
-        {/*          <>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Azure.Endpoint.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Azure.Endpoint.SubTitle +*/}
-        {/*                Azure.ExampleEndpoint*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.azureUrl}*/}
-        {/*                placeholder={Azure.ExampleEndpoint}*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.azureUrl = e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Azure.ApiKey.Title}*/}
-        {/*              subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}*/}
-        {/*            >*/}
-        {/*              <PasswordInput*/}
-        {/*                value={accessStore.azureApiKey}*/}
-        {/*                type="text"*/}
-        {/*                placeholder={*/}
-        {/*                  Locale.Settings.Access.Azure.ApiKey.Placeholder*/}
-        {/*                }*/}
-        {/*                onChange={(e) => {*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.azureApiKey = e.currentTarget.value),*/}
-        {/*                  );*/}
-        {/*                }}*/}
-        {/*              />*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Azure.ApiVerion.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Azure.ApiVerion.SubTitle*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.azureApiVersion}*/}
-        {/*                placeholder="2023-08-01-preview"*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.azureApiVersion =*/}
-        {/*                        e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*          </>*/}
-        {/*        )}*/}
-        {/*        {accessStore.provider === ServiceProvider.Google && (*/}
-        {/*          <>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Google.Endpoint.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Google.Endpoint.SubTitle +*/}
-        {/*                Google.ExampleEndpoint*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.googleUrl}*/}
-        {/*                placeholder={Google.ExampleEndpoint}*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.googleUrl = e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Google.ApiKey.Title}*/}
-        {/*              subTitle={Locale.Settings.Access.Google.ApiKey.SubTitle}*/}
-        {/*            >*/}
-        {/*              <PasswordInput*/}
-        {/*                value={accessStore.googleApiKey}*/}
-        {/*                type="text"*/}
-        {/*                placeholder={*/}
-        {/*                  Locale.Settings.Access.Google.ApiKey.Placeholder*/}
-        {/*                }*/}
-        {/*                onChange={(e) => {*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.googleApiKey = e.currentTarget.value),*/}
-        {/*                  );*/}
-        {/*                }}*/}
-        {/*              />*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Google.ApiVersion.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Google.ApiVersion.SubTitle*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.googleApiVersion}*/}
-        {/*                placeholder="2023-08-01-preview"*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.googleApiVersion =*/}
-        {/*                        e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*          </>*/}
-        {/*        )}*/}
-        {/*        {accessStore.provider === ServiceProvider.Anthropic && (*/}
-        {/*          <>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Anthropic.Endpoint.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Anthropic.Endpoint.SubTitle +*/}
-        {/*                Anthropic.ExampleEndpoint*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.anthropicUrl}*/}
-        {/*                placeholder={Anthropic.ExampleEndpoint}*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.anthropicUrl = e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Anthropic.ApiKey.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Anthropic.ApiKey.SubTitle*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <PasswordInput*/}
-        {/*                value={accessStore.anthropicApiKey}*/}
-        {/*                type="text"*/}
-        {/*                placeholder={*/}
-        {/*                  Locale.Settings.Access.Anthropic.ApiKey.Placeholder*/}
-        {/*                }*/}
-        {/*                onChange={(e) => {*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.anthropicApiKey =*/}
-        {/*                        e.currentTarget.value),*/}
-        {/*                  );*/}
-        {/*                }}*/}
-        {/*              />*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Anthropic.ApiVerion.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Anthropic.ApiVerion.SubTitle*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.anthropicApiVersion}*/}
-        {/*                placeholder={Anthropic.Vision}*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.anthropicApiVersion =*/}
-        {/*                        e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*          </>*/}
-        {/*        )}*/}
-        {/*        {accessStore.provider === ServiceProvider.Baidu && (*/}
-        {/*          <>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Baidu.Endpoint.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Anthropic.Endpoint.SubTitle +*/}
-        {/*                Baidu.ExampleEndpoint*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <input*/}
-        {/*                type="text"*/}
-        {/*                value={accessStore.baiduUrl}*/}
-        {/*                placeholder={Baidu.ExampleEndpoint}*/}
-        {/*                onChange={(e) =>*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.baiduUrl = e.currentTarget.value),*/}
-        {/*                  )*/}
-        {/*                }*/}
-        {/*              ></input>*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Baidu.ApiKey.Title}*/}
-        {/*              subTitle={Locale.Settings.Access.Baidu.ApiKey.SubTitle}*/}
-        {/*            >*/}
-        {/*              <PasswordInput*/}
-        {/*                value={accessStore.baiduApiKey}*/}
-        {/*                type="text"*/}
-        {/*                placeholder={*/}
-        {/*                  Locale.Settings.Access.Baidu.ApiKey.Placeholder*/}
-        {/*                }*/}
-        {/*                onChange={(e) => {*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.baiduApiKey = e.currentTarget.value),*/}
-        {/*                  );*/}
-        {/*                }}*/}
-        {/*              />*/}
-        {/*            </ListItem>*/}
-        {/*            <ListItem*/}
-        {/*              title={Locale.Settings.Access.Baidu.SecretKey.Title}*/}
-        {/*              subTitle={*/}
-        {/*                Locale.Settings.Access.Baidu.SecretKey.SubTitle*/}
-        {/*              }*/}
-        {/*            >*/}
-        {/*              <PasswordInput*/}
-        {/*                value={accessStore.baiduSecretKey}*/}
-        {/*                type="text"*/}
-        {/*                placeholder={*/}
-        {/*                  Locale.Settings.Access.Baidu.SecretKey.Placeholder*/}
-        {/*                }*/}
-        {/*                onChange={(e) => {*/}
-        {/*                  accessStore.update(*/}
-        {/*                    (access) =>*/}
-        {/*                      (access.baiduSecretKey = e.currentTarget.value),*/}
-        {/*                  );*/}
-        {/*                }}*/}
-        {/*              />*/}
-        {/*            </ListItem>*/}
-        {/*          </>*/}
-        {/*        )}*/}
+                  {/*{accessStore.provider === ServiceProvider.OpenAI && (*/}
+                  {/*  <>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.OpenAI.Endpoint.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.OpenAI.Endpoint.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.openaiUrl}*/}
+                  {/*        placeholder={OPENAI_BASE_URL}*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.openaiUrl = e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.OpenAI.ApiKey.Title}*/}
+                  {/*      subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}*/}
+                  {/*    >*/}
+                  {/*      <PasswordInput*/}
+                  {/*        value={accessStore.openaiApiKey}*/}
+                  {/*        type="text"*/}
+                  {/*        placeholder={*/}
+                  {/*          Locale.Settings.Access.OpenAI.ApiKey.Placeholder*/}
+                  {/*        }*/}
+                  {/*        onChange={(e) => {*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.openaiApiKey = e.currentTarget.value),*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      />*/}
+                  {/*    </ListItem>*/}
+                  {/*  </>*/}
+                  {/*)}*/}
+                  {/*{accessStore.provider === ServiceProvider.Azure && (*/}
+                  {/*  <>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Azure.Endpoint.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Azure.Endpoint.SubTitle +*/}
+                  {/*        Azure.ExampleEndpoint*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.azureUrl}*/}
+                  {/*        placeholder={Azure.ExampleEndpoint}*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.azureUrl = e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Azure.ApiKey.Title}*/}
+                  {/*      subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}*/}
+                  {/*    >*/}
+                  {/*      <PasswordInput*/}
+                  {/*        value={accessStore.azureApiKey}*/}
+                  {/*        type="text"*/}
+                  {/*        placeholder={*/}
+                  {/*          Locale.Settings.Access.Azure.ApiKey.Placeholder*/}
+                  {/*        }*/}
+                  {/*        onChange={(e) => {*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.azureApiKey = e.currentTarget.value),*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      />*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Azure.ApiVerion.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Azure.ApiVerion.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.azureApiVersion}*/}
+                  {/*        placeholder="2023-08-01-preview"*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.azureApiVersion =*/}
+                  {/*                e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*  </>*/}
+                  {/*)}*/}
+                  {/*{accessStore.provider === ServiceProvider.Google && (*/}
+                  {/*  <>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Google.Endpoint.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Google.Endpoint.SubTitle +*/}
+                  {/*        Google.ExampleEndpoint*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.googleUrl}*/}
+                  {/*        placeholder={Google.ExampleEndpoint}*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.googleUrl = e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Google.ApiKey.Title}*/}
+                  {/*      subTitle={Locale.Settings.Access.Google.ApiKey.SubTitle}*/}
+                  {/*    >*/}
+                  {/*      <PasswordInput*/}
+                  {/*        value={accessStore.googleApiKey}*/}
+                  {/*        type="text"*/}
+                  {/*        placeholder={*/}
+                  {/*          Locale.Settings.Access.Google.ApiKey.Placeholder*/}
+                  {/*        }*/}
+                  {/*        onChange={(e) => {*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.googleApiKey = e.currentTarget.value),*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      />*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Google.ApiVersion.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Google.ApiVersion.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.googleApiVersion}*/}
+                  {/*        placeholder="2023-08-01-preview"*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.googleApiVersion =*/}
+                  {/*                e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*  </>*/}
+                  {/*)}*/}
+                  {/*{accessStore.provider === ServiceProvider.Anthropic && (*/}
+                  {/*  <>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Anthropic.Endpoint.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Anthropic.Endpoint.SubTitle +*/}
+                  {/*        Anthropic.ExampleEndpoint*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.anthropicUrl}*/}
+                  {/*        placeholder={Anthropic.ExampleEndpoint}*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.anthropicUrl = e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Anthropic.ApiKey.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Anthropic.ApiKey.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <PasswordInput*/}
+                  {/*        value={accessStore.anthropicApiKey}*/}
+                  {/*        type="text"*/}
+                  {/*        placeholder={*/}
+                  {/*          Locale.Settings.Access.Anthropic.ApiKey.Placeholder*/}
+                  {/*        }*/}
+                  {/*        onChange={(e) => {*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.anthropicApiKey =*/}
+                  {/*                e.currentTarget.value),*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      />*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Anthropic.ApiVerion.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Anthropic.ApiVerion.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.anthropicApiVersion}*/}
+                  {/*        placeholder={Anthropic.Vision}*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.anthropicApiVersion =*/}
+                  {/*                e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*  </>*/}
+                  {/*)}*/}
+                  {/*{accessStore.provider === ServiceProvider.Baidu && (*/}
+                  {/*  <>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Baidu.Endpoint.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Baidu.Endpoint.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <input*/}
+                  {/*        type="text"*/}
+                  {/*        value={accessStore.baiduUrl}*/}
+                  {/*        placeholder={Baidu.ExampleEndpoint}*/}
+                  {/*        onChange={(e) =>*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.baiduUrl = e.currentTarget.value),*/}
+                  {/*          )*/}
+                  {/*        }*/}
+                  {/*      ></input>*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Baidu.ApiKey.Title}*/}
+                  {/*      subTitle={Locale.Settings.Access.Baidu.ApiKey.SubTitle}*/}
+                  {/*    >*/}
+                  {/*      <PasswordInput*/}
+                  {/*        value={accessStore.baiduApiKey}*/}
+                  {/*        type="text"*/}
+                  {/*        placeholder={*/}
+                  {/*          Locale.Settings.Access.Baidu.ApiKey.Placeholder*/}
+                  {/*        }*/}
+                  {/*        onChange={(e) => {*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.baiduApiKey = e.currentTarget.value),*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      />*/}
+                  {/*    </ListItem>*/}
+                  {/*    <ListItem*/}
+                  {/*      title={Locale.Settings.Access.Baidu.SecretKey.Title}*/}
+                  {/*      subTitle={*/}
+                  {/*        Locale.Settings.Access.Baidu.SecretKey.SubTitle*/}
+                  {/*      }*/}
+                  {/*    >*/}
+                  {/*      <PasswordInput*/}
+                  {/*        value={accessStore.baiduSecretKey}*/}
+                  {/*        type="text"*/}
+                  {/*        placeholder={*/}
+                  {/*          Locale.Settings.Access.Baidu.SecretKey.Placeholder*/}
+                  {/*        }*/}
+                  {/*        onChange={(e) => {*/}
+                  {/*          accessStore.update(*/}
+                  {/*            (access) =>*/}
+                  {/*              (access.baiduSecretKey = e.currentTarget.value),*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      />*/}
+                  {/*    </ListItem>*/}
+                  {/*  </>*/}
+                  {/*)}*/}
 
         {/*        {accessStore.provider === ServiceProvider.ByteDance && (*/}
         {/*          <>*/}
