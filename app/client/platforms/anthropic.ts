@@ -12,6 +12,7 @@ import {
 import Locale from "../../locales";
 import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -375,7 +376,8 @@ export class ClaudeApi implements LLMApi {
 
     baseUrl = trimEnd(baseUrl, "/");
 
-    return `${baseUrl}/${path}`;
+    // try rebuild url, when using cloudflare ai gateway in client
+    return cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   }
 }
 

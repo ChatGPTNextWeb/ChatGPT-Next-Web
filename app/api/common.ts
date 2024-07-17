@@ -14,6 +14,7 @@ import prisma from "@/lib/prisma";
 import { getTokenLength } from "@/lib/utils";
 
 import { isModelAvailableInServer } from "../utils/model";
+import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 
 const serverConfig = getServerSideConfig();
 
@@ -109,8 +110,10 @@ export async function requestOpenai(
     }
   }
 
-  const fetchUrl = `${baseUrl}/${path}`;
+  // const fetchUrl = `${baseUrl}/${path}`;
   const jsonBody = await req.json();
+  const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
+  console.log("fetchUrl", fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
