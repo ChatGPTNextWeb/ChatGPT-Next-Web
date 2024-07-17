@@ -134,6 +134,9 @@ export const Baidu = {
     if (modelName === "ernie-3.5-8k") {
       endpoint = "completions";
     }
+    if (modelName === "ernie-speed") {
+      endpoint = "ernie_speed";
+    }
     return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
   },
 };
@@ -225,6 +228,7 @@ const baiduModels = [
   "ernie-4.0-8k-latest",
   "ernie-3.5-8k",
   "ernie-3.5-8k-0205",
+  "ernie-speed"
 ];
 
 const bytedanceModels = [
