@@ -706,7 +706,9 @@ export const useChatStore = createPersistStore(
           set(() => ({}));
           extAttr?.setAutoScroll(true);
         } else {
-          const api: ClientApi = getClientApi(modelConfig.providerName);
+          const api: ClientApi = getClientApi(modelConfig.providerName)
+          console.log('-------', modelConfig, '-----', api)
+
           // make request
           api.llm.chat({
             messages: sendMessages,

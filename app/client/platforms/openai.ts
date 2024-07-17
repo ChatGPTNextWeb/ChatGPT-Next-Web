@@ -173,6 +173,7 @@ export class ChatGPTApi implements LLMApi {
       } else {
         chatPath = this.path(OpenaiPath.ChatPath);
       }
+      console.log('333333', chatPath)
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
