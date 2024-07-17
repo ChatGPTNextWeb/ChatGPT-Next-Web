@@ -50,9 +50,9 @@ export async function requestOpenai(
     "/api/openai/",
     "",
   );
-  let baseUrl = isAzure
-    ? serverConfig.azureUrl
-    : serverConfig.baseUrl || OPENAI_BASE_URL;
+
+  let baseUrl =
+    (isAzure ? serverConfig.azureUrl : serverConfig.baseUrl) || OPENAI_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -110,10 +110,9 @@ export async function requestOpenai(
     }
   }
 
-  // const fetchUrl = `${baseUrl}/${path}`;
-  const jsonBody = await req.json();
   const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   console.log("fetchUrl", fetchUrl);
+  const jsonBody = await req.json();
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
