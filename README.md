@@ -180,8 +180,7 @@ Specify OpenAI organization ID.
 
 ### `AZURE_URL` (optional)
 
-> Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
-> if you config deployment name in `CUSTOM_MODELS`, you can remove `{deploy-name}` in `AZURE_URL`
+> Example: https://{azure-resource-url}/openai
 
 Azure deploy url.
 
@@ -276,6 +275,7 @@ User `-all` to disable all default models, `+all` to enable all default models.
 
 For Azure: use `modelName@azure=deploymentName` to customize model name and deployment name.
 > Example: `+gpt-3.5-turbo@azure=gpt35` will show option `gpt35(Azure)` in model list.
+> If you only can use Azure model, `-all,+gpt-3.5-turbo@azure=gpt35` will `gpt35(Azure)` the only option in model list.
 
 For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
 > Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list.

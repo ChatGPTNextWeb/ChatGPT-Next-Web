@@ -94,8 +94,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 ### `AZURE_URL` （可选）
 
-> 形如：https://{azure-resource-url}/openai/deployments/{deploy-name}
-> 如果你已经在`CUSTOM_MODELS`中参考`displayName`的方式配置了{deploy-name}，那么可以从`AZURE_URL`中移除`{deploy-name}`
+> 形如：https://{azure-resource-url}/openai
 
 Azure 部署地址。
 
@@ -186,7 +185,8 @@ ByteDance Api Url.
 用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名=展示名` 来自定义模型的展示名，用英文逗号隔开。
 
 在Azure的模式下，支持使用`modelName@azure=deploymentName`的方式配置模型名称和部署名称(deploy-name)
-> 示例：`+gpt-3.5-turbo@azure=gpt35`这个配置会在模型列表显示一个`gpt35(Azure)`的选项
+> 示例：`+gpt-3.5-turbo@azure=gpt35`这个配置会在模型列表显示一个`gpt35(Azure)`的选项。
+> 如果你只能使用Azure模式，那么设置 `-all,+gpt-3.5-turbo@azure=gpt35` 则可以让对话的默认使用 `gpt35(Azure)`
 
 在ByteDance的模式下，支持使用`modelName@bytedance=deploymentName`的方式配置模型名称和部署名称(deploy-name)
 > 示例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx`这个配置会在模型列表显示一个`Doubao-lite-4k(ByteDance)`的选项
