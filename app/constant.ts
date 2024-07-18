@@ -164,7 +164,7 @@ export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lan
 // Latex block: $$e=mc^2$$
 // `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+You are AdExGPT, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
@@ -172,7 +172,7 @@ Latex inline: \\(x^2\\)
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+export const SUMMARIZE_MODEL = "gpt-4o-mini";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
@@ -202,7 +202,7 @@ const openaiModels = [
   "gpt-4-turbo",
   // "gpt-4-turbo-preview",
   "gpt-4o",
-	"gpt-4o-mini",
+  "gpt-4o-mini",
   // "gpt-4o-2024-05-13",
   // "gpt-4-vision-preview",
   // "gpt-4-turbo-2024-04-09"
@@ -267,15 +267,6 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
-  {
-    name: "gpt-4-turbo",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
   ...openaiModels.map((name) => ({
     name,
     available: true,
@@ -283,15 +274,6 @@ export const DEFAULT_MODELS = [
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
-    },
-  })),
-  ...openaiModels.map((name) => ({
-    name,
-    available: true,
-    provider: {
-      id: "azure",
-      providerName: "Azure",
-      providerType: "azure",
     },
   })),
   ...googleModels.map((name) => ({
@@ -314,7 +296,7 @@ export const DEFAULT_MODELS = [
   })),
   ...baiduModels.map((name) => ({
     name,
-    available: true,
+    available: false,
     provider: {
       id: "baidu",
       providerName: "Baidu",
@@ -323,7 +305,7 @@ export const DEFAULT_MODELS = [
   })),
   ...bytedanceModels.map((name) => ({
     name,
-    available: true,
+    available: false,
     provider: {
       id: "bytedance",
       providerName: "ByteDance",
@@ -332,7 +314,7 @@ export const DEFAULT_MODELS = [
   })),
   ...alibabaModes.map((name) => ({
     name,
-    available: true,
+    available: false,
     provider: {
       id: "alibaba",
       providerName: "Alibaba",
