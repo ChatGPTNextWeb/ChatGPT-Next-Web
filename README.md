@@ -71,6 +71,12 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어, Indonesia
 
+<div align="center">
+   
+![主界面](./docs/images/cover.png)
+
+</div>
+
 ## Roadmap
 
 - [x] System Prompt: pin a user defined prompt as system prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
