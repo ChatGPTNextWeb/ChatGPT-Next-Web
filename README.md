@@ -238,7 +238,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 Google Gemini Pro Api Key.
 
-### ~~ `GOOGLE_BASE_URL` （可选）~~  `GEMINI_BASE_URL` （可选）
+### `GEMINI_BASE_URL` （可选）
 
 Google Gemini Pro Api Url.
 
