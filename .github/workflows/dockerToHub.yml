@@ -17,14 +17,14 @@ jobs:
     name: build image to aly
     # runs-on: "103.200"
     # runs-on: thinkpad
-    runs-on: self
+    runs-on: ubuntu-latest
     #    runs-on: self-hosted
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
           clean: true
-          github-server-url: 'https://gh.sivpn.cn'
+          #github-server-url: 'https://gh.sivpn.cn'
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
