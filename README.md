@@ -31,20 +31,20 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 
 
 ## Enterprise Edition
 
-Meeting Your Company's Private Deployment and Customization Needs:
+Meeting Your Company's Privatization and Customization Deployment Requirements:
 - **Brand Customization**: Tailored VI/UI to seamlessly align with your corporate brand image.
 - **Resource Integration**: Unified configuration and management of dozens of AI resources by company administrators, ready for use by team members.
 - **Permission Control**: Clearly defined member permissions, resource permissions, and knowledge base permissions, all controlled via a corporate-grade Admin Panel.
 - **Knowledge Integration**: Combining your internal knowledge base with AI capabilities, making it more relevant to your company's specific business needs compared to general AI.
-- **Security Auditing**: Automatic interception of sensitive inquiries, supporting the traceability of all historical conversation records, ensuring AI adheres to your company’s information security standards.
-- **Private Deployment**: Enterprise-grade private deployment supporting various mainstream private cloud deployments, ensuring data security and privacy protection.
-- **Continuous Updates**: Provision of continuous updates and upgrades for cutting-edge capabilities such as multimodal and intelligent agents, ensuring frequent innovation and sustained advancement.
+- **Security Auditing**: Automatically intercept sensitive inquiries and trace all historical conversation records, ensuring AI adherence to corporate information security standards.
+- **Private Deployment**: Enterprise-level private deployment supporting various mainstream private cloud solutions, ensuring data security and privacy protection.
+- **Continuous Updates**: Ongoing updates and upgrades in cutting-edge capabilities like multimodal AI, ensuring consistent innovation and advancement.
 
 For enterprise inquiries, please contact: **business@nextchat.dev**
 
 ## 企业版
 
-满足您公司私有化部署和定制需求
+满足企业用户私有化部署和个性化定制需求：
 - **品牌定制**：企业量身定制 VI/UI，与企业品牌形象无缝契合
 - **资源集成**：由企业管理人员统一配置和管理数十种 AI 资源，团队成员开箱即用
 - **权限管理**：成员权限、资源权限、知识库权限层级分明，企业级 Admin Panel 统一控制
