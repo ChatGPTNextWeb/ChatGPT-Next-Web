@@ -226,6 +226,7 @@ const anthropicModels = [
 
 const baiduModels = [
   "ernie-4.0-turbo-8k",
+	/*
   "ernie-4.0-8k",
   "ernie-4.0-8k-preview",
   "ernie-4.0-8k-preview-0518",
@@ -235,25 +236,30 @@ const baiduModels = [
   "ernie-speed-128k",
   "ernie-speed-8k",
   "ernie-lite-8k",
+  */
   "ernie-tiny-8k"
 ];
 
 const bytedanceModels = [
-  "Doubao-lite-4k",
+/*
+"Doubao-lite-4k",
   "Doubao-lite-32k",
   "Doubao-lite-128k",
   "Doubao-pro-4k",
   "Doubao-pro-32k",
+  */
   "Doubao-pro-128k",
 ];
 
 const alibabaModes = [
+/*
   "qwen-turbo",
   "qwen-plus",
   "qwen-max",
   "qwen-max-0428",
   "qwen-max-0403",
   "qwen-max-0107",
+  */
   "qwen-max-longcontext",
 ];
 
