@@ -31,9 +31,19 @@ jobs:
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.gitlab.si.icu -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           echo "${{ secrets.DOCKER_ENV }}" > .env
           #bash ./start.sh
-          docker-compose build
-          docker-compose push
+          #docker-compose build
+          #docker-compose push
           #yes | docker system prune --filter "until=168h"
+      - name: Get current date
+        run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            registry.gitlab.si.icu/sijinhui/chatgpt-next-web:latest
+            registry.gitlab.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
 #  download-repo:
 #    name: 下载仓库
 #    needs: build
