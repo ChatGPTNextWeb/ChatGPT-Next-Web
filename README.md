@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/images/head-cover.png" alt="icon"/>
+<img src="./docs/images/ent.svg" alt="icon"/>
 
 <h1 align="center">NextChat (ChatGPT Next Web)</h1>
 
@@ -14,9 +14,9 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[Web App](https://app.nextchat.dev/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/NextChatDev)
+[Web App](https://app.nextchat.dev/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Enterprise Edition](#enterprise-edition) / [Twitter](https://twitter.com/NextChatDev)
 
-[网页版](https://app.nextchat.dev/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
+[网页版](https://app.nextchat.dev/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [企业版](#%E4%BC%81%E4%B8%9A%E7%89%88) /[反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues)
 
 [web-url]: https://app.nextchat.dev/
 [download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
@@ -25,15 +25,37 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 
 [MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat)
-
-[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBUEFA)
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
-
-![cover](./docs/images/cover.png)
+[<img src="https://vercel.com/button" alt="Deploy on Zeabur" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur" height="30">](https://zeabur.com/templates/ZBUEFA)  [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" height="30">](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
 </div>
+
+## Enterprise Edition
+
+Meeting Your Company's Private Deployment and Customization Needs:
+- **Brand Customization**: Tailored VI/UI to seamlessly align with your corporate brand image.
+- **Resource Integration**: Unified configuration and management of dozens of AI resources by company administrators, ready for use by team members.
+- **Permission Control**: Clearly defined member permissions, resource permissions, and knowledge base permissions, all controlled via a corporate-grade Admin Panel.
+- **Knowledge Integration**: Combining your internal knowledge base with AI capabilities, making it more relevant to your company's specific business needs compared to general AI.
+- **Security Auditing**: Automatic interception of sensitive inquiries, supporting the traceability of all historical conversation records, ensuring AI adheres to your company’s information security standards.
+- **Private Deployment**: Enterprise-grade private deployment supporting various mainstream private cloud deployments, ensuring data security and privacy protection.
+- **Continuous Updates**: Provision of continuous updates and upgrades for cutting-edge capabilities such as multimodal and intelligent agents, ensuring frequent innovation and sustained advancement.
+
+For enterprise inquiries, please contact: **business@nextchat.dev**
+
+## 企业版
+
+满足您公司私有化部署和定制需求
+- **品牌定制**：企业量身定制 VI/UI，与企业品牌形象无缝契合
+- **资源集成**：由企业管理人员统一配置和管理数十种 AI 资源，团队成员开箱即用
+- **权限管理**：成员权限、资源权限、知识库权限层级分明，企业级 Admin Panel 统一控制
+- **知识接入**：企业内部知识库与 AI 能力相结合，比通用 AI 更贴近企业自身业务需求
+- **安全审计**：自动拦截敏感提问，支持追溯全部历史对话记录，让 AI 也能遵循企业信息安全规范
+- **私有部署**：企业级私有部署，支持各类主流私有云部署，确保数据安全和隐私保护
+- **持续更新**：提供多模态、智能体等前沿能力持续更新升级服务，常用常新、持续先进
+
+企业版咨询: **business@nextchat.dev**
+
+<img width="300" src="https://github.com/user-attachments/assets/3daeb7b6-ab63-4542-9141-2e4a12c80601">
 
 ## Features
 
