@@ -119,6 +119,7 @@ export class ChatGPTApi implements LLMApi {
         providerName: options.config.providerName,
       },
     };
+    console.log('-------', modelConfig, options)
     const requestPayload: RequestPayload = {
       messages,
       stream: options.config.stream,
