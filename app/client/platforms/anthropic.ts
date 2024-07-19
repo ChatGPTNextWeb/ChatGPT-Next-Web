@@ -141,7 +141,6 @@ export class ClaudeApi implements LLMApi {
           content: content
             .filter((v) => v.image_url || v.text)
             .map(({ type, text, image_url }) => {
-              console.log("process message", type, text, image_url);
               if (type === "text") {
                 return {
                   type,
