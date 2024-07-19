@@ -287,6 +287,16 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "gpt-4o-mini",
+    describe: "新出的，可以尝鲜",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
     name: "gpt-4-turbo-2024-04-09",
     describe: "GPT-4,标准版",
     available: true,

@@ -140,7 +140,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.98,
+    version: 3.99,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -176,7 +176,7 @@ export const useAppConfig = createPersistStore(
       //   return { ...DEFAULT_CONFIG };
       // }
 
-      if (version < 3.98) {
+      if (version < 3.99) {
         // state.modelConfig = DEFAULT_CONFIG.modelConfig;
         return { ...DEFAULT_CONFIG };
         // state.modelConfig.template =
