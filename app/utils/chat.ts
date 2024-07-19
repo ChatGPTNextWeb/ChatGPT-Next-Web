@@ -1,7 +1,8 @@
 import { CACHE_URL_PREFIX, UPLOAD_URL } from "@/app/constant";
 // import heic2any from "heic2any";
+import { RequestMessage } from "@/app/client/api";
 
-export function compressImage(file: File, maxSize: number): Promise<string> {
+export function compressImage(file: Blob, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (readerEvent: any) => {
@@ -43,10 +44,10 @@ export function compressImage(file: File, maxSize: number): Promise<string> {
     if (file.type.includes("heic")) {
       const heic2any = require("heic2any");
       heic2any({ blob: file, toType: "image/jpeg" })
-        .then((blob) => {
-          reader.readAsDataURL(blob as Blob);
+        .then((blob: Blob) => {
+          reader.readAsDataURL(blob);
         })
-        .catch((e) => {
+        .catch((e: any) => {
           reject(e);
         });
     }
@@ -73,7 +74,7 @@ export async function preProcessImageContent(
   return result;
 }
 
-const imageCaches = {};
+const imageCaches: Record<string, string> = {};
 export function cacheImageToBase64Image(imageUrl: string) {
   if (imageUrl.includes(CACHE_URL_PREFIX)) {
     if (!imageCaches[imageUrl]) {
@@ -85,7 +86,8 @@ export function cacheImageToBase64Image(imageUrl: string) {
       })
         .then((res) => res.blob())
         .then(
-          (blob) => (imageCaches[imageUrl] = compressImage(blob, 256 * 1024)),
+          async (blob) =>
+            (imageCaches[imageUrl] = await compressImage(blob, 256 * 1024)),
         ); // compressImage
     }
     return Promise.resolve(imageCaches[imageUrl]);
