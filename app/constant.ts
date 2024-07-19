@@ -21,6 +21,9 @@ export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
+export const CACHE_URL_PREFIX = "/api/cache";
+export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -118,7 +121,8 @@ export const Azure = {
 
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
-  ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+  ChatPath: (modelName: string) =>
+    `v1beta/models/${modelName}:streamGenerateContent`,
 };
 
 export const Baidu = {
@@ -182,6 +186,8 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gpt-4-turbo-preview": "2023-12",
   "gpt-4o": "2023-10",
   "gpt-4o-2024-05-13": "2023-10",
+  "gpt-4o-mini": "2023-10",
+  "gpt-4o-mini-2024-07-18": "2023-10",
   "gpt-4-vision-preview": "2023-04",
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
@@ -201,6 +207,8 @@ const openaiModels = [
   "gpt-4-turbo-preview",
   "gpt-4o",
   "gpt-4o-2024-05-13",
+  "gpt-4o-mini",
+  "gpt-4o-mini-2024-07-18",
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
   "gpt-4-1106-preview",
@@ -234,7 +242,7 @@ const baiduModels = [
   "ernie-speed-128k",
   "ernie-speed-8k",
   "ernie-lite-8k",
-  "ernie-tiny-8k"
+  "ernie-tiny-8k",
 ];
 
 const bytedanceModels = [
