@@ -12,6 +12,7 @@ import {
 import Locale from "../../locales";
 import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { preProcessImageContent } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 export type MultiBlockContent = {
@@ -93,7 +94,12 @@ export class ClaudeApi implements LLMApi {
       },
     };
 
-    const messages = [...options.messages];
+    // try get base64image from local cache image_url
+    const messages = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      messages.push({ role: v.role, content });
+    }
 
     const keys = ["system", "user"];
 
@@ -135,6 +141,7 @@ export class ClaudeApi implements LLMApi {
           content: content
             .filter((v) => v.image_url || v.text)
             .map(({ type, text, image_url }) => {
+              console.log("process message", type, text, image_url);
               if (type === "text") {
                 return {
                   type,

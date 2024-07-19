@@ -1,4 +1,5 @@
-import heic2any from "heic2any";
+import { CACHE_URL_PREFIX, UPLOAD_URL } from "@/app/constant";
+// import heic2any from "heic2any";
 
 export function compressImage(file: File, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -40,6 +41,7 @@ export function compressImage(file: File, maxSize: number): Promise<string> {
     reader.onerror = reject;
 
     if (file.type.includes("heic")) {
+      const heic2any = require("heic2any");
       heic2any({ blob: file, toType: "image/jpeg" })
         .then((blob) => {
           reader.readAsDataURL(blob as Blob);
@@ -50,5 +52,80 @@ export function compressImage(file: File, maxSize: number): Promise<string> {
     }
 
     reader.readAsDataURL(file);
+  });
+}
+
+export async function preProcessImageContent(
+  content: RequestMessage["content"],
+) {
+  if (typeof content === "string") {
+    return content;
+  }
+  const result = [];
+  for (const part of content) {
+    if (part?.type == "image_url" && part?.image_url?.url) {
+      const url = await cacheImageToBase64Image(part?.image_url?.url);
+      result.push({ type: part.type, image_url: { url } });
+    } else {
+      result.push({ ...part });
+    }
+  }
+  return result;
+}
+
+const imageCaches = {};
+export function cacheImageToBase64Image(imageUrl: string) {
+  if (imageUrl.includes(CACHE_URL_PREFIX)) {
+    if (!imageCaches[imageUrl]) {
+      const reader = new FileReader();
+      return fetch(imageUrl, {
+        method: "GET",
+        mode: "cors",
+        credentials: "include",
+      })
+        .then((res) => res.blob())
+        .then(
+          (blob) => (imageCaches[imageUrl] = compressImage(blob, 256 * 1024)),
+        ); // compressImage
+    }
+    return Promise.resolve(imageCaches[imageUrl]);
+  }
+  return imageUrl;
+}
+
+export function base64Image2Blob(base64Data: string, contentType: string) {
+  const byteCharacters = atob(base64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: contentType });
+}
+
+export function uploadImage(file: File): Promise<string> {
+  const body = new FormData();
+  body.append("file", file);
+  return fetch(UPLOAD_URL, {
+    method: "post",
+    body,
+    mode: "cors",
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log("res", res);
+      if (res?.code == 0 && res?.data) {
+        return res?.data;
+      }
+      throw Error(`upload Error: ${res?.msg}`);
+    });
+}
+
+export function removeImage(imageUrl: string) {
+  return fetch(imageUrl, {
+    method: "DELETE",
+    mode: "cors",
+    credentials: "include",
   });
 }
