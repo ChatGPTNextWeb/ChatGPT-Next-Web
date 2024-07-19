@@ -168,7 +168,7 @@ export const usePromptStore = createPersistStore(
       fetch(PROMPT_URL)
         .then((res) => res.json())
         .then((res) => {
-          let fetchPrompts = [res.en, res.cn];
+          let fetchPrompts = [res.en, res.tw, res.cn];
           if (getLang() === "cn") {
             fetchPrompts = fetchPrompts.reverse();
           }
@@ -183,50 +183,59 @@ export const usePromptStore = createPersistStore(
                 }) as Prompt,
             );
           });
+
+          const userPrompts = usePromptStore.getState().getUserPrompts() ?? [];
+
+          const allPromptsForSearch = builtinPrompts
+            .reduce((pre, cur) => pre.concat(cur), [])
+            .filter((v) => !!v.title && !!v.content);
+          SearchService.count.builtin =
+            res.en.length + res.cn.length + res.tw.length;
+          SearchService.init(allPromptsForSearch, userPrompts);
           // let gptPrompts: Prompt[] = [];
-          try {
-            fetch(GPT_PROMPT_URL)
-              .then((res2) => res2.json())
-              .then((res2) => {
-                const gptPrompts: Prompt[] = res2["items"].map(
-                  (prompt: {
-                    id: string;
-                    title: string;
-                    description: string;
-                    prompt: string;
-                    category: string;
-                  }) => {
-                    return {
-                      id: prompt["id"],
-                      title: prompt["title"],
-                      content: prompt["prompt"],
-                      createdAt: Date.now(),
-                    };
-                  },
-                );
-                const userPrompts =
-                  usePromptStore.getState().getUserPrompts() ?? [];
-                const allPromptsForSearch = builtinPrompts
-                  .reduce((pre, cur) => pre.concat(cur), [])
-                  .filter((v) => !!v.title && !!v.content);
-                SearchService.count.builtin =
-                  res.en.length + res.cn.length + res["total"];
-                SearchService.init(
-                  allPromptsForSearch,
-                  userPrompts,
-                  gptPrompts,
-                );
-              });
-          } catch (e) {
-            console.log("[gpt prompt]", e);
-            const userPrompts =
-              usePromptStore.getState().getUserPrompts() ?? [];
-            const allPromptsForSearch = builtinPrompts
-              .reduce((pre, cur) => pre.concat(cur), [])
-              .filter((v) => !!v.title && !!v.content);
-            SearchService.count.builtin = res.en.length + res.cn.length;
-            SearchService.init(allPromptsForSearch, userPrompts);
-          }
+          // try {
+          //   fetch(GPT_PROMPT_URL)
+          //     .then((res2) => res2.json())
+          //     .then((res2) => {
+          //       const gptPrompts: Prompt[] = res2["items"].map(
+          //         (prompt: {
+          //           id: string;
+          //           title: string;
+          //           description: string;
+          //           prompt: string;
+          //           category: string;
+          //         }) => {
+          //           return {
+          //             id: prompt["id"],
+          //             title: prompt["title"],
+          //             content: prompt["prompt"],
+          //             createdAt: Date.now(),
+          //           };
+          //         },
+          //       );
+          //       const userPrompts =
+          //         usePromptStore.getState().getUserPrompts() ?? [];
+          //       const allPromptsForSearch = builtinPrompts
+          //         .reduce((pre, cur) => pre.concat(cur), [])
+          //         .filter((v) => !!v.title && !!v.content);
+          //       SearchService.count.builtin =
+          //         res.en.length + res.cn.length + res["total"];
+          //       SearchService.init(
+          //         allPromptsForSearch,
+          //         userPrompts,
+          //         gptPrompts,
+          //       );
+          //     });
+          // } catch (e) {
+          //   console.log("[gpt prompt]", e);
+          //   const userPrompts =
+          //     usePromptStore.getState().getUserPrompts() ?? [];
+          //   const allPromptsForSearch = builtinPrompts
+          //     .reduce((pre, cur) => pre.concat(cur), [])
+          //     .filter((v) => !!v.title && !!v.content);
+          //   SearchService.count.builtin = res.en.length + res.cn.length;
+          //   SearchService.init(allPromptsForSearch, userPrompts);
+          // }
         });
     },
   },
