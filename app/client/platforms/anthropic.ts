@@ -3,7 +3,6 @@ import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
-import { RequestMessage } from "@/app/typing";
 import {
   EventStreamContentType,
   fetchEventSource,
@@ -95,7 +94,7 @@ export class ClaudeApi implements LLMApi {
     };
 
     // try get base64image from local cache image_url
-    const messages = [];
+    const messages: ChatOptions["messages"] = [];
     for (const v of options.messages) {
       const content = await preProcessImageContent(v.content);
       messages.push({ role: v.role, content });
