@@ -1,5 +1,4 @@
 import { CACHE_URL_PREFIX, UPLOAD_URL } from "@/app/constant";
-// import heic2any from "heic2any";
 import { RequestMessage } from "@/app/client/api";
 
 export function compressImage(file: Blob, maxSize: number): Promise<string> {
@@ -42,14 +41,18 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
     reader.onerror = reject;
 
     if (file.type.includes("heic")) {
-      const heic2any = require("heic2any");
-      heic2any({ blob: file, toType: "image/jpeg" })
-        .then((blob: Blob) => {
-          reader.readAsDataURL(blob);
-        })
-        .catch((e: any) => {
-          reject(e);
-        });
+      try {
+        const heic2any = require("heic2any");
+        heic2any({ blob: file, toType: "image/jpeg" })
+          .then((blob: Blob) => {
+            reader.readAsDataURL(blob);
+          })
+          .catch((e: any) => {
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+      }
     }
 
     reader.readAsDataURL(file);
@@ -65,8 +68,12 @@ export async function preProcessImageContent(
   const result = [];
   for (const part of content) {
     if (part?.type == "image_url" && part?.image_url?.url) {
-      const url = await cacheImageToBase64Image(part?.image_url?.url);
-      result.push({ type: part.type, image_url: { url } });
+      try {
+        const url = await cacheImageToBase64Image(part?.image_url?.url);
+        result.push({ type: part.type, image_url: { url } });
+      } catch (error) {
+        console.error("Error processing image URL:", error);
+      }
     } else {
       result.push({ ...part });
     }
@@ -92,7 +99,7 @@ export function cacheImageToBase64Image(imageUrl: string) {
     }
     return Promise.resolve(imageCaches[imageUrl]);
   }
-  return imageUrl;
+  return Promise.resolve(imageUrl);
 }
 
 export function base64Image2Blob(base64Data: string, contentType: string) {
