@@ -14,6 +14,7 @@ import {
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
+import { preProcessImageContent } from "@/app/utils/chat";
 
 export class GeminiProApi implements LLMApi {
   path(path: string): string {
@@ -56,7 +57,14 @@ export class GeminiProApi implements LLMApi {
   async chat(options: ChatOptions): Promise<void> {
     const apiClient = this;
     let multimodal = false;
-    const messages = options.messages.map((v) => {
+
+    // try get base64image from local cache image_url
+    const _messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      _messages.push({ role: v.role, content });
+    }
+    const messages = _messages.map((v) => {
       let parts: any[] = [{ text: getMessageTextContent(v) }];
       if (isVisionModel(options.config.model)) {
         const images = getMessageImages(v);
