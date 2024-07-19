@@ -15,6 +15,7 @@ if ('serviceWorker' in navigator) {
       registration.update().then(res => {
         console.log('ServiceWorker registration update: ', res);
       });
+      window._SW_ENABLED = true
     }, function (err) {
       console.error('ServiceWorker registration failed: ', err);
     });
