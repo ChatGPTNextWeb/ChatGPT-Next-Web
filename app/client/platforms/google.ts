@@ -106,6 +106,9 @@ export class GeminiProApi implements LLMApi {
     // if (visionModel && messages.length > 1) {
     //   options.onError?.(new Error("Multiturn chat is not enabled for models/gemini-pro-vision"));
     // }
+
+    const accessStore = useAccessStore.getState();
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -127,19 +130,19 @@ export class GeminiProApi implements LLMApi {
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_HATE_SPEECH",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
       ],
     };
