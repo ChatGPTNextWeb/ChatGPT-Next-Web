@@ -95,6 +95,7 @@ function createEmptySession(): ChatSession {
   };
 }
 
+  // if it is using gpt-* models, force to use 4o-mini to summarize
 const ChatFetchTaskPool: Record<string, any> = {};
 
 function getSummarizeModel(currentModel: string): {
