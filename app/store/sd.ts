@@ -83,7 +83,7 @@ export const useSdStore = createPersistStore<
                   self.updateDraw({
                     ...data,
                     status: "error",
-                    error: JSON.stringify(resData),
+                    error: JSON.stringify(e),
                   });
                 });
             } else {
