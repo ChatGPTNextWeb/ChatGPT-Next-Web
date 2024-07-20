@@ -11,6 +11,8 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { collectModelsWithDefaultModel } from "@/app/utils/model";
+import { preProcessImageContent } from "@/app/utils/chat";
+import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 import {
   ChatOptions,
@@ -94,7 +96,8 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
-    return [baseUrl, path].join("/");
+    // try rebuild url, when using cloudflare ai gateway in client
+    return cloudflareAIGatewayUrl([baseUrl, path].join("/"));
   }
 
   extractMessage(res: any) {
@@ -103,10 +106,13 @@ export class ChatGPTApi implements LLMApi {
 
   async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
-    const messages = options.messages.map((v) => ({
-      role: v.role,
-      content: visionModel ? v.content : getMessageTextContent(v),
-    }));
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = visionModel
+        ? await preProcessImageContent(v.content)
+        : getMessageTextContent(v);
+      messages.push({ role: v.role, content });
+    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,

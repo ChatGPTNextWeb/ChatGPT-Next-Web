@@ -7,7 +7,7 @@ self.addEventListener("activate", function (event) {
 });
 
 self.addEventListener("install", function (event) {
-  self.skipWaiting();  // 立即启用新的版本
+  self.skipWaiting();  // enable new version
   event.waitUntil(
     caches.open(CHATGPT_NEXT_WEB_CACHE).then(function (cache) {
       return cache.addAll([]);
