@@ -95,9 +95,13 @@ function createEmptySession(): ChatSession {
   };
 }
 
+  // if it is using gpt-* models, force to use 4o-mini to summarize
 const ChatFetchTaskPool: Record<string, any> = {};
 
-function getSummarizeModel(currentModel: string) {
+function getSummarizeModel(currentModel: string): {
+  name: string,
+  providerName: string | undefined,
+} {
   // if it is using gpt-* models, force to use 3.5 to summarize
   if (currentModel.startsWith("gpt")) {
     const configStore = useAppConfig.getState();
@@ -110,12 +114,21 @@ function getSummarizeModel(currentModel: string) {
     const summarizeModel = allModel.find(
       (m) => m.name === SUMMARIZE_MODEL && m.available,
     );
-    return summarizeModel?.name ?? currentModel;
+    return {
+      name: summarizeModel?.name ?? currentModel,
+      providerName: summarizeModel?.provider?.providerName,
+    }
   }
   if (currentModel.startsWith("gemini")) {
-    return GEMINI_SUMMARIZE_MODEL;
+    return {
+      name: GEMINI_SUMMARIZE_MODEL,
+      providerName: ServiceProvider.Google,
+    }
   }
-  return currentModel;
+  return {
+    name: currentModel,
+    providerName: undefined,
+  }
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -905,7 +918,8 @@ export const useChatStore = createPersistStore(
           api.llm.chat({
             messages: topicMessages,
             config: {
-              model: getSummarizeModel(session.mask.modelConfig.model),
+              model: getSummarizeModel(session.mask.modelConfig.model).name,
+              providerName: getSummarizeModel(session.mask.modelConfig.model).providerName,
               stream: false,
             },
             onFinish(message) {
@@ -967,7 +981,8 @@ export const useChatStore = createPersistStore(
             config: {
               ...modelcfg,
               stream: true,
-              model: getSummarizeModel(session.mask.modelConfig.model),
+              model: getSummarizeModel(session.mask.modelConfig.model).name,
+              providerName: getSummarizeModel(session.mask.modelConfig.model).providerName,
             },
             onUpdate(message) {
               session.memoryPrompt = message;

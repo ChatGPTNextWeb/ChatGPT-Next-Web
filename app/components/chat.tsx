@@ -64,7 +64,7 @@ import {
   isVisionModel,
 } from "../utils";
 
-import { compressImage } from "@/app/utils/chat";
+import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
 
 import dynamic from "next/dynamic";
 
@@ -1234,7 +1234,7 @@ function _Chat() {
               ...(await new Promise<string[]>((res, rej) => {
                 setUploading(true);
                 const imagesData: string[] = [];
-                compressImage(file, 256 * 1024)
+                uploadImageRemote(file)
                   .then((dataUrl) => {
                     imagesData.push(dataUrl);
                     setUploading(false);
@@ -1276,7 +1276,7 @@ function _Chat() {
           const imagesData: string[] = [];
           for (let i = 0; i < files.length; i++) {
             const file = event.target.files[i];
-            compressImage(file, 256 * 1024)
+            uploadImageRemote(file)
               .then((dataUrl) => {
                 imagesData.push(dataUrl);
                 if (

@@ -21,6 +21,9 @@ export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
+export const CACHE_URL_PREFIX = "/api/cache";
+export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -86,6 +89,15 @@ export enum ServiceProvider {
   Baidu = "Baidu",
   ByteDance = "ByteDance",
   Alibaba = "Alibaba",
+}
+
+// Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
+// BLOCK_NONE will not block any content, and BLOCK_ONLY_HIGH will block only high-risk content.
+export enum GoogleSafetySettingsThreshold {
+  BLOCK_NONE = "BLOCK_NONE",
+  BLOCK_ONLY_HIGH = "BLOCK_ONLY_HIGH",
+  BLOCK_MEDIUM_AND_ABOVE = "BLOCK_MEDIUM_AND_ABOVE",
+  BLOCK_LOW_AND_ABOVE = "BLOCK_LOW_AND_ABOVE",
 }
 
 export enum ModelProvider {
@@ -177,6 +189,7 @@ Latex inline: \\(x^2\\)
 Latex block: $$e=mc^2$$
 `;
 
+// export const SUMMARIZE_MODEL = "gpt-4o-mini";
 export const SUMMARIZE_MODEL = "gpt-4o";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
@@ -243,7 +256,7 @@ const baiduModels = [
   "ernie-speed-128k",
   "ernie-speed-8k",
   "ernie-lite-8k",
-  "ernie-tiny-8k"
+  "ernie-tiny-8k",
 ];
 
 const bytedanceModels = [
@@ -269,6 +282,16 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo",
     describe: "GPT-3,质量一般,便宜",
+    available: false,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4o-mini",
+    describe: "新出的，可以尝鲜",
     available: true,
     provider: {
       id: "openai",
@@ -284,16 +307,6 @@ export const DEFAULT_MODELS = [
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
-    },
-  },
-  {
-    name: "gpt-4o-mini",
-    describe: "新出的，可以尝鲜",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
     },
   },
   {
