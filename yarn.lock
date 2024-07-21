@@ -53,7 +53,7 @@
 
 "@ant-design/nextjs-registry@^1.0.0":
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ant-design/nextjs-registry/-/nextjs-registry-1.0.0.tgz#d0c80ea57d145a3867cea4e19d9ec71f830e7e9d"
+  resolved "https://registry.npmmirror.com/@ant-design/nextjs-registry/-/nextjs-registry-1.0.0.tgz#d0c80ea57d145a3867cea4e19d9ec71f830e7e9d"
   integrity sha512-kU1K1UOhwrF6DPv73MhuL5a6U4e6/TiFapeLUt/c/kch9h5qFwEaJPb4RSJKNw0PRBfqCAPS011wVm4wYcrqbQ==
 
 "@ant-design/pro-card@2.8.4":
@@ -8583,7 +8583,7 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml@^2.2.2, yaml@^2.3.4, yaml@~2.4.2:
+yaml@^2.3.4, yaml@~2.4.2:
   version "2.4.5"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.4.5.tgz#60630b206dd6d84df97003d33fc1ddf6296cca5e"
   integrity sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==
