@@ -21,7 +21,6 @@ import { IconButton } from "./button";
 import {
   copyToClipboard,
   downloadAs,
-  getClientApi,
   getMessageImages,
   useMobileScreen,
 } from "../utils";
@@ -43,11 +42,10 @@ import { toBlob, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
 
 import { prettyObject } from "../utils/format";
-import { EXPORT_MESSAGE_CLASS_NAME, ModelProvider } from "../constant";
+import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
 import { getClientConfig } from "../config/client";
-import { ClientApi } from "../client/api";
+import { type ClientApi, getClientApi } from "../client/api";
 import { getMessageTextContent } from "../utils";
-import { identifyDefaultClaudeModel } from "../utils/checkers";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -284,7 +282,7 @@ export function RenderExport(props: {
       return {
         id: i.toString(),
         role: role as any,
-        content: role === "user" ? v.textContent ?? "" : v.innerHTML,
+        content: role === "user" ? (v.textContent ?? "") : v.innerHTML,
         date: "",
       };
     });
@@ -320,7 +318,7 @@ export function PreviewActions(props: {
   const onRenderMsgs = (msgs: ChatMessage[]) => {
     setShouldExport(false);
 
-    var api: ClientApi = getClientApi(config.modelConfig.model);
+    const api: ClientApi = getClientApi(config.modelConfig.providerName);
 
     api
       .share(msgs)

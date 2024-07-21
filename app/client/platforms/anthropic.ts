@@ -3,6 +3,7 @@ import {
   AgentChatOptions,
   ChatOptions,
   CreateRAGStoreOptions,
+  getHeaders,
   LLMApi,
   MultimodalContent,
   SpeechOptions,
@@ -11,7 +12,6 @@ import {
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
-import { RequestMessage } from "@/app/typing";
 import {
   EventStreamContentType,
   fetchEventSource,
@@ -20,6 +20,8 @@ import {
 import Locale from "../../locales";
 import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { preProcessImageContent } from "@/app/utils/chat";
+import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -112,7 +114,12 @@ export class ClaudeApi implements LLMApi {
       },
     };
 
-    const messages = [...options.messages];
+    // try get base64image from local cache image_url
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      messages.push({ role: v.role, content });
+    }
 
     const keys = ["system", "user"];
 
@@ -210,11 +217,10 @@ export class ClaudeApi implements LLMApi {
       body: JSON.stringify(requestBody),
       signal: controller.signal,
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "x-api-key": accessStore.anthropicApiKey,
+        ...getHeaders(), // get common headers
         "anthropic-version": accessStore.anthropicApiVersion,
-        Authorization: getAuthKey(accessStore.anthropicApiKey),
+        // do not send `anthropicApiKey` in browser!!!
+        // Authorization: getAuthKey(accessStore.anthropicApiKey),
       },
     };
 
@@ -396,7 +402,8 @@ export class ClaudeApi implements LLMApi {
 
     baseUrl = trimEnd(baseUrl, "/");
 
-    return `${baseUrl}/${path}`;
+    // try rebuild url, when using cloudflare ai gateway in client
+    return cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   }
 }
 
@@ -408,28 +415,4 @@ function trimEnd(s: string, end = " ") {
   }
 
   return s;
-}
-
-function bearer(value: string) {
-  return `Bearer ${value.trim()}`;
-}
-
-function getAuthKey(apiKey = "") {
-  const accessStore = useAccessStore.getState();
-  const isApp = !!getClientConfig()?.isApp;
-  let authKey = "";
-
-  if (apiKey) {
-    // use user's api key first
-    authKey = bearer(apiKey);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    !isApp &&
-    !!accessStore.accessCode
-  ) {
-    // or use access code
-    authKey = bearer(ACCESS_CODE_PREFIX + accessStore.accessCode);
-  }
-
-  return authKey;
 }

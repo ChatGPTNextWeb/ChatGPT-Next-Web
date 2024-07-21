@@ -97,10 +97,45 @@ function setItem(key: string, value: string) {
 
 function getLanguage() {
   try {
-    return navigator.language.toLowerCase();
+    const locale = new Intl.Locale(navigator.language).maximize();
+    const region = locale?.region?.toLowerCase();
+    // 1. check region code in ALL_LANGS
+    if (AllLangs.includes(region as Lang)) {
+      return region as Lang;
+    }
+    // 2. check language code in ALL_LANGS
+    if (AllLangs.includes(locale.language as Lang)) {
+      return locale.language as Lang;
+    }
+    return DEFAULT_LANG;
   } catch {
     return DEFAULT_LANG;
   }
+}
+
+export function getLang(): Lang {
+  const savedLang = getItem(LANG_KEY);
+
+  if (AllLangs.includes((savedLang ?? "") as Lang)) {
+    return savedLang as Lang;
+  }
+
+  return getLanguage();
+}
+
+export function changeLang(lang: Lang) {
+  setItem(LANG_KEY, lang);
+  location.reload();
+}
+
+export function getISOLang() {
+  const isoLangString: Record<string, string> = {
+    cn: "zh-Hans",
+    tw: "zh-Hant",
+  };
+
+  const lang = getLang();
+  return isoLangString[lang] ?? lang;
 }
 
 const DEFAULT_STT_LANG = "zh-CN";
@@ -125,43 +160,11 @@ export const STT_LANG_MAP: Record<Lang, string> = {
   bn: "bn-BD",
   sk: "sk-SK",
 };
+
 export function getSTTLang(): string {
   try {
     return STT_LANG_MAP[getLang()];
   } catch {
     return DEFAULT_STT_LANG;
   }
-}
-
-export function getLang(): Lang {
-  const savedLang = getItem(LANG_KEY);
-
-  if (AllLangs.includes((savedLang ?? "") as Lang)) {
-    return savedLang as Lang;
-  }
-
-  const lang = getLanguage();
-
-  for (const option of AllLangs) {
-    if (lang.includes(option)) {
-      return option;
-    }
-  }
-
-  return DEFAULT_LANG;
-}
-
-export function changeLang(lang: Lang) {
-  setItem(LANG_KEY, lang);
-  location.reload();
-}
-
-export function getISOLang() {
-  const isoLangString: Record<string, string> = {
-    cn: "zh-Hans",
-    tw: "zh-Hant",
-  };
-
-  const lang = getLang();
-  return isoLangString[lang] ?? lang;
 }

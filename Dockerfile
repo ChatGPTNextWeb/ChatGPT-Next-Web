@@ -44,7 +44,7 @@ COPY --from=builder /app/.next/server ./.next/server
 EXPOSE 3000
 
 CMD if [ -n "$PROXY_URL" ]; then \
-    unset HOSTNAME; \
+    export HOSTNAME="0.0.0.0"; \
     protocol=$(echo $PROXY_URL | cut -d: -f1); \
     host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
     port=$(echo $PROXY_URL | cut -d: -f3); \
@@ -59,7 +59,7 @@ CMD if [ -n "$PROXY_URL" ]; then \
     echo "[ProxyList]" >> $conf; \
     echo "$protocol $host $port" >> $conf; \
     cat /etc/proxychains.conf; \
-    proxychains -f $conf node server.js --host 0.0.0.0; \
+    proxychains -f $conf node server.js; \
     else \
     node server.js; \
     fi

@@ -334,12 +334,50 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVerion: {
           Title: "API Version (claude api version)",
           SubTitle: "Select and input a specific API version",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "Baidu API Key",
+          SubTitle: "Use a custom Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Baidu Secret Key",
+          SubTitle: "Use a custom Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "not supported, configure in .env",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "ByteDance API Key",
+          SubTitle: "Use a custom ByteDance API Key",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "Alibaba API Key",
+          SubTitle: "Use a custom Alibaba Cloud API Key",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
         },
       },
       CustomModel: {
@@ -355,12 +393,16 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVersion: {
           Title: "API Version (specific to gemini-pro)",
           SubTitle: "Select a specific API version",
+        },
+        GoogleSafetySettings: {
+          Title: "Google Safety Settings",
+          SubTitle: "Select a safety filtering level",
         },
       },
     },

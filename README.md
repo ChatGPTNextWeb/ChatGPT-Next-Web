@@ -1,5 +1,8 @@
 <div align="center">
-<img src="./docs/images/head-cover.png" alt="icon"/>
+
+<a href='#企业版'>
+  <img src="./docs/images/ent.svg" alt="icon"/>
+</a>
 
 <h1 align="center">ChatGPT Next Web LangChain</h1>
 
@@ -283,6 +286,17 @@ anthropic claude Api Url.
 ### `DISABLE_FAST_LINK` （可选）
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
+
+For Azure: use `modelName@azure=deploymentName` to customize model name and deployment name.
+> Example: `+gpt-3.5-turbo@azure=gpt35` will show option `gpt35(Azure)` in model list.
+> If you only can use Azure model, `-all,+gpt-3.5-turbo@azure=gpt35` will `gpt35(Azure)` the only option in model list.
+
+For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
+> Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list.
+
+### `DEFAULT_MODEL` （optional）
+
+Change default model
 
 ### `WHITE_WEBDEV_ENDPOINTS` (optional)
 
