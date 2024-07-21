@@ -282,6 +282,16 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo",
     describe: "GPT-3,质量一般,便宜",
+    available: false,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4o-mini",
+    describe: "新出的，可以尝鲜",
     available: true,
     provider: {
       id: "openai",
@@ -297,16 +307,6 @@ export const DEFAULT_MODELS = [
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
-    },
-  },
-  {
-    name: "gpt-4o-mini",
-    describe: "新出的，可以尝鲜",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
     },
   },
   {

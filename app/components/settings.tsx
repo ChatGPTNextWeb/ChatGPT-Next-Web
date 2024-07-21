@@ -1286,95 +1286,94 @@ export function Settings() {
           </ListItem>
         </List>
 
-          <!--
 
-        <List id={SlotID.CustomModel}>
-          {accessCodeComponent}
+        {/*<List id={SlotID.CustomModel}>*/}
+        {/*  {accessCodeComponent}*/}
 
-          {!accessStore.hideUserApiKey && (
-            <>
-              {useCustomConfigComponent}
+        {/*  {!accessStore.hideUserApiKey && (*/}
+        {/*    <>*/}
+        {/*      {useCustomConfigComponent}*/}
 
-              {accessStore.useCustomConfig && (
-                <>
-                  <ListItem
-                    title={Locale.Settings.Access.Provider.Title}
-                    subTitle={Locale.Settings.Access.Provider.SubTitle}
-                  >
-                    <Select
-                      value={accessStore.provider}
-                      onChange={(e) => {
-                        accessStore.update(
-                          (access) =>
-                            (access.provider = e.target
-                              .value as ServiceProvider),
-                        );
-                      }}
-                    >
-                      {Object.entries(ServiceProvider).map(([k, v]) => (
-                        <option value={v} key={k}>
-                          {k}
-                        </option>
-                      ))}
-                    </Select>
-                  </ListItem>
+        {/*      {accessStore.useCustomConfig && (*/}
+        {/*        <>*/}
+        {/*          <ListItem*/}
+        {/*            title={Locale.Settings.Access.Provider.Title}*/}
+        {/*            subTitle={Locale.Settings.Access.Provider.SubTitle}*/}
+        {/*          >*/}
+        {/*            <Select*/}
+        {/*              value={accessStore.provider}*/}
+        {/*              onChange={(e) => {*/}
+        {/*                accessStore.update(*/}
+        {/*                  (access) =>*/}
+        {/*                    (access.provider = e.target*/}
+        {/*                      .value as ServiceProvider),*/}
+        {/*                );*/}
+        {/*              }}*/}
+        {/*            >*/}
+        {/*              {Object.entries(ServiceProvider).map(([k, v]) => (*/}
+        {/*                <option value={v} key={k}>*/}
+        {/*                  {k}*/}
+        {/*                </option>*/}
+        {/*              ))}*/}
+        {/*            </Select>*/}
+        {/*          </ListItem>*/}
 
-                  {openAIConfigComponent}
-                  {azureConfigComponent}
-                  {googleConfigComponent}
-                  {anthropicConfigComponent}
-                  {baiduConfigComponent}
-                  {byteDanceConfigComponent}
-                  {alibabaConfigComponent}
-                </>
-              )}
-            </>
-          )}
--->
-<!-- 多行注释
-          {!shouldHideBalanceQuery && !clientConfig?.isApp ? (
-            <ListItem
-              title={Locale.Settings.Usage.Title}
-              subTitle={
-                showUsage
-                  ? loadingUsage
-                    ? Locale.Settings.Usage.IsChecking
-                    : Locale.Settings.Usage.SubTitle(
-                        usage?.used ?? "[?]",
-                        usage?.subscription ?? "[?]",
-                      )
-                  : Locale.Settings.Usage.NoAccess
-              }
-            >
-              {!showUsage || loadingUsage ? (
-                <div />
-              ) : (
-                <IconButton
-                  icon={<ResetIcon></ResetIcon>}
-                  text={Locale.Settings.Usage.Check}
-                  onClick={() => checkUsage(true)}
-                />
-              )}
-            </ListItem>
-          ) : null}
+        {/*          {openAIConfigComponent}*/}
+        {/*          {azureConfigComponent}*/}
+        {/*          {googleConfigComponent}*/}
+        {/*          {anthropicConfigComponent}*/}
+        {/*          {baiduConfigComponent}*/}
+        {/*          {byteDanceConfigComponent}*/}
+        {/*          {alibabaConfigComponent}*/}
+        {/*        </>*/}
+        {/*      )}*/}
+        {/*    </>*/}
+        {/*  )}*/}
 
-          <ListItem
-            title={Locale.Settings.Access.CustomModel.Title}
-            subTitle={Locale.Settings.Access.CustomModel.SubTitle}
-          >
-            <input
-              type="text"
-              value={config.customModels}
-              placeholder="model1,model2,model3"
-              onChange={(e) =>
-                config.update(
-                  (config) => (config.customModels = e.currentTarget.value),
-                )
-              }
-            ></input>
-          </ListItem>
-        </List>
- -->
+
+        {/*  {!shouldHideBalanceQuery && !clientConfig?.isApp ? (*/}
+        {/*    <ListItem*/}
+        {/*      title={Locale.Settings.Usage.Title}*/}
+        {/*      subTitle={*/}
+        {/*        showUsage*/}
+        {/*          ? loadingUsage*/}
+        {/*            ? Locale.Settings.Usage.IsChecking*/}
+        {/*            : Locale.Settings.Usage.SubTitle(*/}
+        {/*                usage?.used ?? "[?]",*/}
+        {/*                usage?.subscription ?? "[?]",*/}
+        {/*              )*/}
+        {/*          : Locale.Settings.Usage.NoAccess*/}
+        {/*      }*/}
+        {/*    >*/}
+        {/*      {!showUsage || loadingUsage ? (*/}
+        {/*        <div />*/}
+        {/*      ) : (*/}
+        {/*        <IconButton*/}
+        {/*          icon={<ResetIcon></ResetIcon>}*/}
+        {/*          text={Locale.Settings.Usage.Check}*/}
+        {/*          onClick={() => checkUsage(true)}*/}
+        {/*        />*/}
+        {/*      )}*/}
+        {/*    </ListItem>*/}
+        {/*  ) : null}*/}
+
+        {/*  <ListItem*/}
+        {/*    title={Locale.Settings.Access.CustomModel.Title}*/}
+        {/*    subTitle={Locale.Settings.Access.CustomModel.SubTitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="text"*/}
+        {/*      value={config.customModels}*/}
+        {/*      placeholder="model1,model2,model3"*/}
+        {/*      onChange={(e) =>*/}
+        {/*        config.update(*/}
+        {/*          (config) => (config.customModels = e.currentTarget.value),*/}
+        {/*        )*/}
+        {/*      }*/}
+        {/*    ></input>*/}
+        {/*  </ListItem>*/}
+        {/*</List>*/}
+
         <List>
           <ModelConfigList
             modelConfig={config.modelConfig}
