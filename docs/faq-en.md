@@ -7,6 +7,8 @@
 
 # Deployment Related Questions
 
+For detailed tutorials on various deployment methods, please refer to: [link](https://rptzik3toh.feishu.cn/docx/XtrdduHwXoSCGIxeFLlcEPsdn8b)  
+
 ## Why does the Docker deployment version always prompt for updates
 
 The Docker version is equivalent to the stable version, and the latest Docker is always consistent with the latest release version. Currently, our release frequency is once every one to two days, so the Docker version will always be one to two days behind the latest commit, which is expected.
@@ -62,62 +64,67 @@ Please check and troubleshoot the following issues:
 - Is the route to the server okay?
 - Is the domain name resolved correctly?
 
-## You may encounter an "Error: Loading CSS chunk xxx failed..."
+## What is a proxy and how do I use it?
 
-To reduce the initial white screen time, Next.js enables chunking by default. You can find the technical details here:
+Due to OpenAI's IP restrictions, China and some other countries/regions cannot directly connect to the OpenAI API and need to use a proxy. You can use a proxy server (forward proxy), or a pre-configured OpenAI API reverse proxy.
 
-- https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading
-- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
-- https://github.com/vercel/next.js/issues/38507
-- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
+- Example of forward proxy: scientific internet access VPN. In the case of docker deployment, set the environment variable HTTP_PROXY to your proxy address (for example: 10.10.10.10:8002).
+- Example of reverse proxy: you can use someone else's built-in proxy address, or set it up through Cloudflare for free. Set the project environment variable BASE_URL to your proxy address.
 
-However, Next.js has limited compatibility with older browsers, which can result in this error.
+## Can I deploy on a domestic server?
 
-You can disable chunking during building.
+You can, but you need to solve the following problems:
 
-For Vercel platform, you can add `DISABLE_CHUNK=1` to the environment variables and redeploy.
-For self-deployed projects, you can use `DISABLE_CHUNK=1 yarn build` during the build process.
-For Docker users, as the build is already completed during packaging, disabling this feature is currently not supported.
+- You need a proxy to connect to websites like github and openAI;
+- If you set up domain name resolution on a domestic server, you need to go through the process of domain name registration;
+- Domestic policies restrict proxy access to foreign networks/ChatGPT related applications, which may lead to blocking.
 
-Note that when you disable this feature, all resources will be loaded on the user's first visit. This may result in a longer white screen time if the user has a poor network connection, affecting the user experience. Please consider this when making a decision.
+## Why do I get network errors after Docker deployment?
 
-# Usage Related Questions
+See discussion: [link](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569) 
 
-## Why does it always prompt "An error occurred, please try again later"
+# Usage Related Issues
 
-There could be many reasons, please check the following in order:
+## Why does it keep prompting "Something went wrong, please try again later"?
 
-- First, check if your code version is the latest version, update to the latest version and try again;
-- Check if the api key is set correctly, the environment variable name must be uppercase with underscores;
-- Check if the api key is available;
-- If you still cannot determine the problem after going through the above steps, please submit a new issue in the issue area and attach the runtime log of vercel or the log of docker runtime.
+There could be many reasons. Please troubleshoot them in order:
 
-## Why does ChatGPT's reply get garbled
+- Please check if your code version is the latest version. Update to the latest version and try again;
+- Please check if your api key is set correctly. The environment variable name must be in all uppercase with an underscore;
+- Please check if your api key is valid;
+- If you have gone through the above steps and still cannot determine the problem, please submit a new issue in the issue section and attach the runtime log of vercel or the log of docker running.
 
-In the settings page - model settings, there is an item called `temperature`. If this value is greater than 1, it may cause garbled replies. Adjust it back to within 1.
+## Why is the ChatGPT reply garbled?
 
-## It prompts "Now it's unauthorized, please enter the access password on the settings page" when using?
+In the settings interface - model settings section, there is an item called `temperature`. If this value is greater than 1, it may cause the reply to be garbled. Setting it back to 1 or less will solve the issue.
 
-The project has set an access password through the environment variable CODE. When using it for the first time, you need to go to settings and enter the access code to use.
+## When using it, it prompts "Unauthorized state, please enter the access code in the settings page"?
 
-## It prompts "You exceeded your current quota, ..." when using?
+The project has set an access password through the environment variable CODE. The first time you use it, you need to go to the settings and enter the access code to use it.
 
-The API KEY is problematic. Insufficient balance.
+## When using it, it prompts "You exceeded your current quota, ..."
 
-## What is a proxy and how to use it?
+There is a problem with the API KEY. Insufficient balance.
 
-Due to IP restrictions of OpenAI, China and some other countries/regions cannot directly connect to OpenAI API and need to go through a proxy. You can use a proxy server (forward proxy) or a pre-configured OpenAI API reverse proxy.
+## When using it, it prompts "Error: Loading CSS chunk xxx failed..."
 
-- Forward proxy example: VPN ladder. In the case of docker deployment, set the environment variable HTTP_PROXY to your proxy address (http://address:port).
-- Reverse proxy example: You can use someone else's proxy address or set it up for free through Cloudflare. Set the project environment variable BASE_URL to your proxy address.
+In order to reduce the white screen time on the first screen, chunk compilation is enabled by default. The technical principle is as follows:
 
-## Can I deploy it on a server in China?
+- [Next.js Lazy Loading](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading)  
+- [Stack Overflow: Disable Chunk Code Splitting](https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4)  
+- [Vercel Issue 38507](https://github.com/vercel/next.js/issues/38507)  
+- [Stack Overflow: Disable Chunk Code Splitting](https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4)  
 
-It is possible but there are issues to be addressed:
+However, Next.js's compatibility is relatively poor, which can cause this error on older browsers. You can turn off chunk compilation during compilation.
 
-- Proxy is required to connect to websites such as Github and OpenAI;
-- Domain name resolution requires filing for servers in China;
-- Chinese policy restricts proxy access to foreign websites/ChatGPT-related applications, which may be blocked.
+For the Vercel platform, add `DISABLE_CHUNK=1` to the environment variables and redeploy.
+For self-compiled deployment projects, use `DISABLE_CHUNK=1 yarn build` to build during construction.
+For Docker users, chunk compilation is completed during Docker packaging, so this feature is not supported for the time being.
+
+Note: If you disable this feature, users will load all resources on the first visit to the website. If the user's network condition is poor, it may cause a long white screen, which will affect the user experience. Please consider this carefully.
+
+## When using it, it prompts "NotFoundError: Failed to execute 'removeChild' on 'Node': The node...."
+Please disable the browser's own automatic translation function and disable all automatic translation plugins.
 
 # Network Service Related Questions
 
@@ -169,11 +176,6 @@ OpenAI only accepts credit cards from designated regions (Chinese credit cards c
 2. Apply for a foreign credit card
 3. Find someone online to top up
 
-## How to access the GPT-4 API?
-
-(Updated April 6th) Access to the GPT-4 API requires a separate application. Go to the following address and enter your information to join the waitlist (prepare your OpenAI organization ID): https://openai.com/waitlist/gpt-4-api
-Wait for email updates afterwards.
-
 ## How to use the Azure OpenAI interface
 
 Please refer to: [#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
@@ -189,3 +191,9 @@ Please refer to: [#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
 - By following these two methods, you can locate the reason for your token's rapid consumption:
   - If the OpenAI consumption record is abnormal but the Docker log has no issues, it means your API key has been leaked;
   - If the Docker log shows a large number of got access code brute-force attempts, your password has been cracked.
+| Model | User input (Prompt) billing | Model output (Completion) billing | Maximum number of tokens per interaction |
+|----|----|----|----|
+| gpt-3.5-turbo | $0.0005 / 1k tokens | $0.0015 / 1k tokens | 16384 |
+| gpt-4 | $0.030 / 1k tokens | $0.060 / 1k tokens | 8192 |
+| gpt-4-turbo | $0.010 / 1k tokens | $0.030 / 1k tokens | 128000 |
+| gpt-4o | $0.005 / 1k tokens | $0.015 / 1k tokens | 128000 |

@@ -7,7 +7,7 @@
 
 # Problemas relacionados con la implementación
 
-Referencia tutorial detallada para varios métodos de implementación: https://rptzik3toh.feishu.cn/docx/XtrdduHwXoSCGIxeFLlcEPsdn8b
+Referencia tutorial detallada para varios métodos de implementación: [link](https://rptzik3toh.feishu.cn/docx/XtrdduHwXoSCGIxeFLlcEPsdn8b)
 
 ## ¿Por qué la versión de implementación de Docker sigue solicitando actualizaciones?
 
@@ -33,7 +33,7 @@ La versión de Docker es equivalente a la versión estable, la última versión 
 Esta es su contraseña de acceso personalizada, puede elegir:
 
 1.  Si no es así, elimine la variable de entorno. Precaución: Cualquier persona puede acceder a tu proyecto en este momento.
-2.  Cuando implemente el proyecto, establezca la variable de entorno CODE (admite varias comas de contraseña separadas). Después de establecer la contraseña de acceso, debe ingresar la contraseña de acceso en la interfaz de configuración antes de poder usarla. Ver[Instrucciones relacionadas](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
+2.  Cuando implemente el proyecto, establezca la variable de entorno CODE (admite varias comas de contraseña separadas). Después de establecer la contraseña de acceso, debe ingresar la contraseña de acceso en la interfaz de configuración antes de poder usarla. Ver[Instrucciones relacionadas](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/blob/main/README.md#access-password)
 
 ## ¿Por qué la versión que implementé no transmite respuestas?
 
@@ -41,13 +41,15 @@ Esta es su contraseña de acceso personalizada, puede elegir:
 
 Si utiliza el proxy inverso nginx, debe agregar el siguiente código al archivo de configuración:
 
-    # 不缓存，支持流式输出
-    proxy_cache off;  # 关闭缓存
-    proxy_buffering off;  # 关闭代理缓冲
-    chunked_transfer_encoding on;  # 开启分块传输编码
-    tcp_nopush on;  # 开启TCP NOPUSH选项，禁止Nagle算法
-    tcp_nodelay on;  # 开启TCP NODELAY选项，禁止延迟ACK算法
-    keepalive_timeout 300;  # 设定keep-alive超时时间为65秒
+```
+# Sin caché, soporte para salida en flujo
+proxy_cache off;  # Desactivar caché
+proxy_buffering off;  # Desactivar almacenamiento en búfer de proxy
+chunked_transfer_encoding on;  # Activar codificación de transferencia en bloques
+tcp_nopush on;  # Activar opción TCP NOPUSH, desactivar el algoritmo Nagle
+tcp_nodelay on;  # Activar opción TCP NODELAY, desactivar el algoritmo de ACK retardado
+keepalive_timeout 300;  # Establecer tiempo de espera de keep-alive en 300 segundos
+```
 
 Si está implementando en Netlify y este problema aún está pendiente de resolución, tenga paciencia.
 
@@ -78,7 +80,7 @@ Sí, pero hay que resolverlo:
 
 ## ¿Por qué recibo un error de red después de la implementación de Docker?
 
-Ver Discusión: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569 para más detalles
+Ver Discusión: [link](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569) para más detalles
 
 # Problemas relacionados con el uso
 
@@ -93,15 +95,36 @@ Puede haber muchas razones, por favor solucione los problemas en orden:
 
 ## ¿Por qué la respuesta de ChatGPT es confusa?
 
-Interfaz de configuración: uno de los elementos de configuración del modelo es `temperature`, si este valor es mayor que 1, entonces existe el riesgo de una respuesta confusa, simplemente vuelva a llamarlo a dentro de 1.
+En la interfaz de configuración del modelo, hay una opción llamada `temperature`. Si este valor es mayor que 1, es posible que las respuestas sean confusas. Ajusta este valor a 1 o menos para evitarlo.
 
-## Al usarlo, aparece "Ahora en un estado no autorizado, ingrese la contraseña de acceso en la pantalla de configuración"?
+## Al usarlo, aparece "Ahora en un estado no autorizado, ingrese la contraseña de acceso en la pantalla de configuración"
 
-El proyecto establece la contraseña de acceso a través de la variable de entorno CODE. Cuando lo use por primera vez, debe ingresar el código de acceso en la configuración para usarlo.
+El proyecto requiere una contraseña de acceso configurada a través de la variable de entorno CODE. La primera vez que lo uses, debes ingresar este código en la configuración para poder utilizar la herramienta.
 
-## Use el mensaje "Excedió su cuota actual, ..."
+## Al usarlo, aparece "Excedió su cuota actual, ..."
 
-Hay un problema con la API KEY. Saldo insuficiente.
+Hay un problema con la API KEY, probablemente saldo insuficiente.
+
+## Al usarlo, aparece "Error: Loading CSS chunk xxx failed..."
+
+Para reducir el tiempo de carga inicial, se ha habilitado la compilación en bloques. Aquí tienes algunas referencias técnicas:
+
+- [Next.js Lazy Loading](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading)
+- [Stack Overflow: Disable Chunk Code Splitting](https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4)
+- [Vercel Issue 38507](https://github.com/vercel/next.js/issues/38507)
+- [Stack Overflow: Disable Chunk Code Splitting](https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4)
+
+Sin embargo, la compatibilidad de Next.JS es limitada en navegadores antiguos, lo que puede causar este error. Puedes deshabilitar la compilación en bloques durante la compilación para evitar esto.
+
+Para la plataforma Vercel, agrega la variable de entorno `DISABLE_CHUNK=1` y vuelve a desplegar;
+Para proyectos compilados y desplegados manualmente, usa `DISABLE_CHUNK=1 yarn build` durante la compilación;
+Para usuarios de Docker, esta opción no es compatible ya que el empaquetado Docker incluye la compilación.
+
+Nota: Deshabilitar esta función cargará todos los recursos en el primer acceso, lo que puede causar tiempos de carga largos en conexiones lentas y afectar la experiencia del usuario, por lo que se debe considerar con cuidado.
+
+## Al usarlo, aparece "NotFoundError: Failed to execute 'removeChild' on 'Node': The node...."
+
+Desactiva la función de traducción automática del navegador y desactiva cualquier extensión de traducción automática.
 
 # Problemas relacionados con el servicio de red
 
@@ -165,11 +188,6 @@ OpenAI solo acepta tarjetas de crédito en regiones seleccionadas (no se pueden 
 2.  Solicitar una tarjeta de crédito extranjera
 3.  Encuentra a alguien para cobrar en línea
 
-## ¿Cómo utilizo el acceso a la API de GPT-4?
-
-*   El acceso a la API para GPT-4 requiere una solicitud independiente. Ingrese a la cola de la solicitud completando su información en la lista de espera (prepare su ID de organización OpenAI): https://openai.com/waitlist/gpt-4-api
-    Espere el mensaje de correo después.
-*   Habilitar ChatGPT Plus no significa permisos GPT-4, y los dos no tienen nada que ver entre sí.
 
 ## Uso de la interfaz de Azure OpenAI
 
@@ -193,13 +211,7 @@ Instrucciones de facturación del sitio web de OpenAI: https://openai.com/pricin
 OpenAI cobra en función del número de tokens, y 1,000 tokens generalmente representan 750 palabras en inglés o 500 caracteres chinos. Prompt y Completion cuentan los costos por separado.\
 |Modelo|Facturación de entrada de usuario (aviso)|Facturación de salida del modelo (finalización)|Número máximo de tokens por interacción|
 |----|----|----|----|
-|gpt-3.5|$0.002 / 1 mil tokens|$0.002 / 1 mil tokens|4096|
-|gpt-4|$0.03 / 1 mil tokens|$0.06 / 1 mil tokens|8192|
-|gpt-4-32K|$0.06 / 1 mil tokens|$0.12 / 1 mil tokens|32768|
-
-## ¿Cuál es la diferencia entre los modelos GPT-3.5-TURBO y GPT3.5-TURBO-0301 (o GPT3.5-TURBO-MMDD)?
-
-Descripción de la documentación oficial: https://platform.openai.com/docs/models/gpt-3-5
-
-*   GPT-3.5-Turbo es el último modelo y se actualiza constantemente.
-*   GPT-3.5-turbo-0301 es una instantánea del modelo congelada el 1 de marzo, no cambiará y se espera que sea reemplazada por una nueva instantánea en 3 meses.
+|gpt-3.5-turbo|$0.0005 / 1k tokens|$0.0015 / 1k tokens|16384|
+|gpt-4|$0.030 / 1k tokens|$0.060 / 1k tokens|8192|
+|gpt-4-turbo|$0.010 / 1k tokens|$0.030 / 1k tokens|128000|
+|gpt-4o|$0.005 / 1k tokens|$0.015 / 1k tokens|128000|

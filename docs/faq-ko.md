@@ -7,7 +7,7 @@
 
 # 배포 관련 질문
 
-각종 배포 방법에 대한 자세한 튜토리얼 참조: [링크](https://rptzik3toh.feishu.cn/docx/XtrdduHwXoSCGIxeFLlcEPsdn8b)
+각종 배포 방법에 대한 자세한 튜토리얼 참조: [link](https://rptzik3toh.feishu.cn/docx/XtrdduHwXoSCGIxeFLlcEPsdn8b)
 
 ## 왜 Docker 배포 버전이 계속 업데이트 알림을 주나요?
 
@@ -33,7 +33,7 @@ Docker 버전은 사실상 안정된 버전과 같습니다. latest Docker는 �
 이것은 당신이 사용자 정의한 접근 비밀번호입니다. 다음 중 하나를 선택할 수 있습니다:
 
 1. 설정하지 않습니다. 해당 환경 변수를 삭제합니다. 주의: 이 경우 누구나 프로젝트에 접근할 수 있습니다.
-2. 프로젝트를 배포할 때 환경 변수 CODE를 설정합니다(여러 비밀번호는 쉼표로 구분). 접근 비밀번호를 설정하면 사용자는 설정 페이지에서 접근 비밀번호를 입력해야만 사용할 수 있습니다. [관련 설명 참조](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
+2. 프로젝트를 배포할 때 환경 변수 CODE를 설정합니다(여러 비밀번호는 쉼표로 구분). 접근 비밀번호를 설정하면 사용자는 설정 페이지에서 접근 비밀번호를 입력해야만 사용할 수 있습니다. [관련 설명 참조](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/blob/main/README.md#access-password)
 
 ## 왜 내 배포 버전에 스트리밍 응답이 없나요?
 
@@ -80,7 +80,7 @@ netlify에서 배포하는 경우, 이 문제는 아직 해결되지 않았습�
 
 ## 도커 배포 후 네트워크 오류가 발생하는 이유는 무엇인가요?
 
-https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569 에서 토론을 참조하세요.
+[link](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569)  에서 토론을 참조하세요.
 
 ## 사용 관련 문제
 
@@ -109,12 +109,12 @@ API 키에 문제가 있습니다. 잔액이 부족합니다.
 
 첫 번째 화이트 스크린 시간을 줄이기 위해 청크 컴파일이 기본적으로 활성화되어 있으며, 기술 원칙은 아래를 참조하세요:
 
-- https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading
-- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
-- https://github.com/vercel/next.js/issues/38507
-- https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
+- [Next.js Lazy Loading](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading)  
+- [Stack Overflow: Disable Chunk Code Splitting](https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4)  
+- [Vercel Issue 38507](https://github.com/vercel/next.js/issues/38507)  
+- [Stack Overflow: Disable Chunk Code Splitting](https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4)
 
-그러나 NextJS는 호환성이 좋지 않아 구형 브라우저에서 이 오류가 발생할 수 있으므로 컴파일 시 청크 컴파일을 비활성화할 수 있습니다.
+그러나 Next.JS는 호환성이 좋지 않아 구형 브라우저에서 이 오류가 발생할 수 있으므로 컴파일 시 청크 컴파일을 비활성화할 수 있습니다.
 
 버셀 플랫폼의 경우 환경 변수에 `DISABLE_CHUNK=1`을 추가하고 다시 배포합니다;
 자체 컴파일 및 배포한 프로젝트의 경우, 빌드 시 `DISABLE_CHUNK=1 yarn build`를 사용하여 빌드합니다;
@@ -187,12 +187,6 @@ OpenAI는 특정 지역의 신용카드만 사용할 수 있습니다(중국 신
 2. 해외 신용카드 신청
 3. 온라인에서 신용카드를 충전할 사람 찾기
 
-## GPT-4 API 액세스는 어떻게 사용하나요?
-
-- GPT-4 API 액세스는 별도의 신청이 필요합니다. 다음 주소로 이동하여 정보를 입력하여 신청 대기열 대기자 명단에 들어가세요(OpenAI 조직 ID를 준비하세요): https://openai.com/waitlist/gpt-4-api.
-  그런 다음 이메일 메시지를 기다립니다.
-- ChatGPT Plus를 사용하도록 설정했다고 해서 GPT-4 권한이 있는 것은 아니며, 서로 관련이 없습니다.
-
 ## Azure OpenAI 인터페이스 사용 방법
 
 참조: [#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
@@ -217,14 +211,7 @@ OpenAI는 토큰 수에 따라 요금을 청구하며, 일반적으로 1000토�
 
 |모델|사용자 입력(프롬프트) 청구 |모델 출력(완료) 청구 |인터랙션당 최대 토큰 수 |
 |----|----|----|----|
-|GPT-3.5-TURBO|$0.0015 / 1천 토큰|$0.002 / 1천 토큰|4096|
-|GPT-3.5-TURBO-16K|$0.003 / 1천 토큰|$0.004 / 1천 토큰|16384| |GPT-4|$0.004 / 1천 토큰|16384
-|GPT-3.5-TURBO-16K|$0.003 / 1천 토큰|$0.004 / 1천 토큰|16384| |GPT-4|$0.03 / 1천 토큰|$0.06 / 1천 토큰|8192
-|GPT-4-32K|$0.06 / 1천 토큰|$0.12 / 1천 토큰|32768|
-
-## gpt-3.5-터보와 gpt3.5-터보-0301(또는 gpt3.5-터보-mmdd) 모델의 차이점은 무엇인가요?
-
-공식 문서 설명: https://platform.openai.com/docs/models/gpt-3-5
-
-- GPT-3.5-TURBO는 최신 모델이며 지속적으로 업데이트될 예정입니다.
-- gpt-3.5-turbo-0301은 3월 1일에 고정된 모델의 스냅샷으로, 변경되지 않으며 3개월 후에 새로운 스냅샷으로 대체될 예정입니다.
+|gpt-3.5-turbo|$0.0005 / 1k tokens|$0.0015 / 1k tokens|16384|
+|gpt-4|$0.030 / 1k tokens|$0.060 / 1k tokens|8192|
+|gpt-4-turbo|$0.010 / 1k tokens|$0.030 / 1k tokens|128000|
+|gpt-4o|$0.005 / 1k tokens|$0.015 / 1k tokens|128000|
