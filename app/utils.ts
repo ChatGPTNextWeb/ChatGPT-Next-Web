@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { showToast } from "@/app/components/ui-lib";
+import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
 
