@@ -1,7 +1,7 @@
 import { trimTopic, getMessageTextContent } from "../utils";
 
 import Locale, { getLang } from "../locales";
-import { showToast } from "../components/ui-lib";
+import { showToast } from "@/app/components/ui-lib";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import {
