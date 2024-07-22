@@ -98,9 +98,11 @@ export function collectModelTableWithDefaultModel(
   defaultModel: string,
 ) {
   let modelTable = collectModelTable(models, customModels);
-  if (defaultModel && defaultModel !== "" && defaultModel in modelTable) {
+  if (defaultModel && defaultModel !== "") {
     modelTable[defaultModel] = {
       ...modelTable[defaultModel],
+      name: modelTable[defaultModel]?.name ?? defaultModel,
+      displayName: modelTable[defaultModel]?.displayName ?? defaultModel,
       available: true,
       isDefault: true,
     };
