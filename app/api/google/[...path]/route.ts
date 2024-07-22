@@ -57,6 +57,11 @@ export const GET = handle;
 export const POST = handle;
 
 export const runtime = "edge";
+
+// due to Gemini-1.5-pro is not available in Hong Kong, we need to set the preferred region to exclude "Hong Kong (hkg1)".
+// the paid service of the Gemini API is required in the following regions until 8 July 2024. The free service is not available. Therefore, the regions is temporarily disabled.
+// regions include Dublin (dub1, Ireland), Paris (cdg1, France), Frankfurt (fra1, Germany), London (lhr1, UK), and Stockholm (arn1, Sweden).
+// refs: https://ai.google.dev/gemini-api/docs/available-regions
 export const preferredRegion = [
   "bom1",
   "cle1",
