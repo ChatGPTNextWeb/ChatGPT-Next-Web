@@ -1,8 +1,6 @@
 <div align="center">
 
-<a href='#企业版'>
-  <img src="./docs/images/ent.svg" alt="icon"/>
-</a>
+<img src="./docs/images/head-cover.png" alt="icon"/>
 
 <h1 align="center">ChatGPT Next Web LangChain</h1>
 
