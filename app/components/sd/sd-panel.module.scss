@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
 
-    .ctrl-param-item-title{
+    .ctrl-param-item-title {
       font-size: 14px;
       font-weight: bolder;
       margin-bottom: 5px;
@@ -22,12 +22,24 @@
     font-weight: normal;
     margin-top: 3px;
   }
+  textarea {
+    appearance: none;
+    border-radius: 10px;
+    border: var(--border-in-light);
+    min-height: 36px;
+    box-sizing: border-box;
+    background: var(--white);
+    color: var(--black);
+    padding: 0 10px;
+    max-width: 50%;
+    font-family: inherit;
+  }
 }
 
-.ai-models{
-  button{
+.ai-models {
+  button {
     margin-bottom: 10px;
-    padding:10px;
+    padding: 10px;
     width: 100%;
   }
 }

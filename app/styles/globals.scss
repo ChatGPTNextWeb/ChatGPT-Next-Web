@@ -226,8 +226,7 @@ input[type="range"]::-ms-thumb:hover {
 
 input[type="number"],
 input[type="text"],
-input[type="password"],
-textarea {
+input[type="password"] {
   appearance: none;
   border-radius: 10px;
   border: var(--border-in-light);
