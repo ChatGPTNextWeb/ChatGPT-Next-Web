@@ -116,8 +116,9 @@ export enum ModelProvider {
   Qwen = "Qwen",
 }
 
-export const StabilityPath = {
+export const Stability = {
   GeneratePath: "v2beta/stable-image/generate",
+  ExampleEndpoint: "https://api.stability.ai",
 };
 
 export const Anthropic = {

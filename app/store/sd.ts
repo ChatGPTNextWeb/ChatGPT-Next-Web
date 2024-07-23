@@ -1,4 +1,4 @@
-import { StabilityPath, StoreKey } from "@/app/constant";
+import { Stability, StoreKey } from "@/app/constant";
 import { getHeaders } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
@@ -63,7 +63,7 @@ export const useSdStore = createPersistStore<
         }
         const headers = getHeaders();
         delete headers["Content-Type"];
-        fetch(`/api/stability/${StabilityPath.GeneratePath}/${data.model}`, {
+        fetch(`/api/stability/${Stability.GeneratePath}/${data.model}`, {
           method: "POST",
           headers: {
             ...headers,
