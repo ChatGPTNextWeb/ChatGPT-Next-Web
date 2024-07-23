@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -29,7 +29,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { showConfirm, showToast } from "./ui-lib";
+import { SearchInput, showConfirm, showToast } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -141,6 +141,8 @@ export function SideBar(props: { className?: string }) {
     [isMobileScreen],
   );
 
+  const [chatListSearch, setChatListSearch] = useState("");
+
   useHotKey();
 
   return (
@@ -188,6 +190,16 @@ export function SideBar(props: { className?: string }) {
         />
       </div>
 
+      <div className={styles["chat-list-search"]}>
+        <SearchInput
+          value={chatListSearch}
+          onChange={(e) => {
+            setChatListSearch(e.currentTarget.value);
+          }}
+          placeholder={Locale.Home.Search}
+        ></SearchInput>
+      </div>
+
       <div
         className={styles["sidebar-body"]}
         onClick={(e) => {
@@ -196,7 +208,7 @@ export function SideBar(props: { className?: string }) {
           }
         }}
       >
-        <ChatList narrow={shouldNarrow} />
+        <ChatList narrow={shouldNarrow} search={chatListSearch} />
       </div>
 
       <div className={styles["sidebar-tail"]}>
