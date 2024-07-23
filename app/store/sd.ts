@@ -1,25 +1,40 @@
 import { StabilityPath, StoreKey } from "@/app/constant";
-import { showToast } from "@/app/components/ui-lib";
 import { getHeaders } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
 import { uploadImage, base64Image2Blob } from "@/app/utils/chat";
+import { models, getModelParamBasicData } from "@/app/components/sd/sd-panel";
+
+const defaultModel = {
+  name: models[0].name,
+  value: models[0].value,
+};
+
+const defaultParams = getModelParamBasicData(models[0].params({}), {});
+
+const DEFAULT_SD_STATE = {
+  currentId: 0,
+  draw: [],
+  currentModel: defaultModel,
+  currentParams: defaultParams,
+};
 
 export const useSdStore = createPersistStore<
   {
     currentId: number;
     draw: any[];
+    currentModel: typeof defaultModel;
+    currentParams: any;
   },
   {
     getNextId: () => number;
     sendTask: (data: any, okCall?: Function) => void;
     updateDraw: (draw: any) => void;
+    setCurrentModel: (model: any) => void;
+    setCurrentParams: (data: any) => void;
   }
 >(
-  {
-    currentId: 0,
-    draw: [],
-  },
+  DEFAULT_SD_STATE,
   (set, _get) => {
     function get() {
       return {
@@ -109,6 +124,14 @@ export const useSdStore = createPersistStore<
             set(() => ({ draw }));
             return true;
           }
+        });
+      },
+      setCurrentModel(model: any) {
+        set({ currentModel: model });
+      },
+      setCurrentParams(data: any) {
+        set({
+          currentParams: data,
         });
       },
     };

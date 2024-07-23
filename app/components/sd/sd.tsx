@@ -33,6 +33,7 @@ import {
 import { removeImage } from "@/app/utils/chat";
 import { SideBar } from "./sd-sidebar";
 import { WindowContent } from "@/app/components/home";
+import { params } from "./sd-panel";
 
 function getSdTaskStatus(item: any) {
   let s: string;
@@ -216,15 +217,53 @@ export function Sd() {
                                   title: locales.Sd.GenerateParams,
                                   children: (
                                     <div style={{ userSelect: "text" }}>
-                                      {Object.keys(item.params).map((key) => (
-                                        <div
-                                          key={key}
-                                          style={{ margin: "10px" }}
-                                        >
-                                          <strong>{key}: </strong>
-                                          {item.params[key]}
-                                        </div>
-                                      ))}
+                                      {Object.keys(item.params).map((key) => {
+                                        let label = key;
+                                        let value = item.params[key];
+                                        switch (label) {
+                                          case "prompt":
+                                            label = Locale.SdPanel.Prompt;
+                                            break;
+                                          case "negative_prompt":
+                                            label =
+                                              Locale.SdPanel.NegativePrompt;
+                                            break;
+                                          case "aspect_ratio":
+                                            label = Locale.SdPanel.AspectRatio;
+                                            break;
+                                          case "seed":
+                                            label = "Seed";
+                                            value = value || 0;
+                                            break;
+                                          case "output_format":
+                                            label = Locale.SdPanel.OutFormat;
+                                            value = value?.toUpperCase();
+                                            break;
+                                          case "style":
+                                            label = Locale.SdPanel.ImageStyle;
+                                            value = params
+                                              .find(
+                                                (item) =>
+                                                  item.value === "style",
+                                              )
+                                              ?.options?.find(
+                                                (item) => item.value === value,
+                                              )?.name;
+                                            break;
+                                          default:
+                                            break;
+                                        }
+
+                                        return (
+                                          <div
+                                            key={key}
+                                            style={{ margin: "10px" }}
+                                          >
+                                            <strong>{label}: </strong>
+                                            {value}
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                   ),
                                 });

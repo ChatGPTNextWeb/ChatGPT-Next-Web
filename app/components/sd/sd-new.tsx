@@ -17,6 +17,9 @@ import {
   useDragSideBar,
   useHotKey,
 } from "@/app/components/sidebar";
+import { getParams, getModelParamBasicData } from "./sd-panel";
+import { useSdStore } from "@/app/store/sd";
+import { showToast } from "@/app/components/ui-lib";
 
 const SdPanel = dynamic(
   async () => (await import("@/app/components/sd")).SdPanel,
@@ -29,6 +32,37 @@ export function SdNew() {
   useHotKey();
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
+  const sdStore = useSdStore();
+  const currentModel = sdStore.currentModel;
+  const params = sdStore.currentParams;
+  const setParams = sdStore.setCurrentParams;
+
+  const handleSubmit = () => {
+    const columns = getParams?.(currentModel, params);
+    const reqParams: any = {};
+    for (let i = 0; i < columns.length; i++) {
+      const item = columns[i];
+      reqParams[item.value] = params[item.value] ?? null;
+      if (item.required) {
+        if (!reqParams[item.value]) {
+          showToast(Locale.SdPanel.ParamIsRequired(item.name));
+          return;
+        }
+      }
+    }
+    let data: any = {
+      model: currentModel.value,
+      model_name: currentModel.name,
+      status: "wait",
+      params: reqParams,
+      created_at: new Date().toLocaleString(),
+      img_data: "",
+    };
+    sdStore.sendTask(data, () => {
+      setParams(getModelParamBasicData(columns, params, true));
+      navigate(Path.Sd);
+    });
+  };
   return (
     <SideBarContainer
       onDragStart={onDragStart}
@@ -78,6 +112,14 @@ export function SdNew() {
           <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
             <IconButton icon={<GithubIcon />} shadow />
           </a>
+        }
+        secondaryAction={
+          <IconButton
+            text={Locale.SdPanel.Submit}
+            type="primary"
+            shadow
+            onClick={handleSubmit}
+          ></IconButton>
         }
       />
     </SideBarContainer>
