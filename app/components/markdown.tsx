@@ -99,7 +99,7 @@ export function HTMLPreview(props: { code: string }) {
       onClick={(e) => e.stopPropagation()}
     >
       <iframe
-        id={frameId}
+        id={frameId.current}
         ref={ref}
         frameBorder={0}
         sandbox="allow-forms allow-modals allow-scripts"
