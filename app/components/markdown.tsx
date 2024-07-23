@@ -96,7 +96,7 @@ export function HTMLPreview(props: { code: string }) {
         cursor: "pointer",
         overflow: "auto",
       }}
-      onClick={(e) => e.stopPropapation()}
+      onClick={(e) => e.stopPropagation()}
     >
       <iframe
         id={frameId}
