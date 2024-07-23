@@ -60,21 +60,49 @@ export function Mermaid(props: { code: string }) {
   );
 }
 
+export function HTMLPreview(props: { code: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      className="no-dark html"
+      style={{
+        cursor: "pointer",
+        overflow: "auto",
+      }}
+      ref={ref}
+      onClick={() => console.log("click")}
+    >
+      <iframe
+        frameBorder={0}
+        sandbox="allow-scripts"
+        style={{ width: "100%", height: 400 }}
+        srcdoc={props.code}
+      ></iframe>
+    </div>
+  );
+}
+
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
   const refText = ref.current?.innerText;
   const [mermaidCode, setMermaidCode] = useState("");
+  const [htmlCode, setHtmlCode] = useState("");
 
-  const renderMermaid = useDebouncedCallback(() => {
+  const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
     if (mermaidDom) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
+    const htmlDom = ref.current.querySelector("code.language-html");
+    if (htmlDom) {
+      setHtmlCode((htmlDom as HTMLElement).innerText);
+    }
   }, 600);
 
   useEffect(() => {
-    setTimeout(renderMermaid, 1);
+    setTimeout(renderArtifacts, 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refText]);
 
@@ -83,6 +111,7 @@ export function PreCode(props: { children: any }) {
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
+      {htmlCode.length > 0 && <HTMLPreview code={htmlCode} key={htmlCode} />}
       <pre ref={ref}>
         <span
           className="copy-code-button"
