@@ -1,5 +1,7 @@
 import chatStyles from "@/app/components/chat.module.scss";
 import styles from "@/app/components/sd/sd.module.scss";
+import homeStyles from "@/app/components/home.module.scss";
+
 import { IconButton } from "@/app/components/button";
 import ReturnIcon from "@/app/icons/return.svg";
 import Locale from "@/app/locales";
@@ -10,7 +12,7 @@ import {
   getMessageTextContent,
   useMobileScreen,
 } from "@/app/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAppConfig } from "@/app/store";
 import MinIcon from "@/app/icons/min.svg";
 import MaxIcon from "@/app/icons/max.svg";
@@ -24,6 +26,7 @@ import { useSdStore } from "@/app/store/sd";
 import locales from "@/app/locales";
 import LoadingIcon from "@/app/icons/three-dots.svg";
 import ErrorIcon from "@/app/icons/delete.svg";
+import SDIcon from "@/app/icons/sd.svg";
 import { Property } from "csstype";
 import {
   showConfirm,
@@ -88,12 +91,14 @@ function getSdTaskStatus(item: any) {
 export function Sd() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
+  const location = useLocation();
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
   const config = useAppConfig();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sdStore = useSdStore();
   const [sdImages, setSdImages] = useState(sdStore.draw);
+  const isSd = location.pathname === Path.Sd;
 
   useEffect(() => {
     setSdImages(sdStore.draw);
@@ -101,7 +106,7 @@ export function Sd() {
 
   return (
     <>
-      <SideBar />
+      <SideBar className={isSd ? homeStyles["sidebar-show"] : ""} />
       <WindowContent>
         <div className={chatStyles.chat} key={"1"}>
           <div className="window-header" data-tauri-drag-region>
@@ -112,7 +117,7 @@ export function Sd() {
                     icon={<ReturnIcon />}
                     bordered
                     title={Locale.Chat.Actions.ChatList}
-                    onClick={() => navigate(Path.SdNew)}
+                    onClick={() => navigate(Path.Sd)}
                   />
                 </div>
               </div>
@@ -140,6 +145,7 @@ export function Sd() {
                   />
                 </div>
               )}
+              {isMobileScreen && <SDIcon width={50} height={50} />}
             </div>
           </div>
           <div className={chatStyles["chat-body"]} ref={scrollRef}>

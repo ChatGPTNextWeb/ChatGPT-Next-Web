@@ -59,10 +59,6 @@ const Sd = dynamic(async () => (await import("./sd")).Sd, {
   loading: () => <Loading noLogo />,
 });
 
-const SdNew = dynamic(async () => (await import("./sd")).SdNew, {
-  loading: () => <Loading noLogo />,
-});
-
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -157,7 +153,7 @@ function Screen() {
   const renderContent = () => {
     if (isAuth) return <AuthPage />;
     if (isSd) return <Sd />;
-    if (isSdNew) return <SdNew />;
+    if (isSdNew) return <Sd />;
     return (
       <>
         <SideBar className={isHome ? styles["sidebar-show"] : ""} />

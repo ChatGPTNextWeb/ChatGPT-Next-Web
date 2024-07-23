@@ -2,6 +2,7 @@ import { IconButton } from "@/app/components/button";
 import GithubIcon from "@/app/icons/github.svg";
 import SDIcon from "@/app/icons/sd.svg";
 import ReturnIcon from "@/app/icons/return.svg";
+import HistoryIcon from "@/app/icons/history.svg";
 import Locale from "@/app/locales";
 
 import { Path, REPO_URL } from "@/app/constant";
@@ -20,6 +21,7 @@ import {
 import { getParams, getModelParamBasicData } from "./sd-panel";
 import { useSdStore } from "@/app/store/sd";
 import { showToast } from "@/app/components/ui-lib";
+import { useMobileScreen } from "@/app/utils";
 
 const SdPanel = dynamic(
   async () => (await import("@/app/components/sd")).SdPanel,
@@ -30,6 +32,7 @@ const SdPanel = dynamic(
 
 export function SideBar(props: { className?: string }) {
   useHotKey();
+  const isMobileScreen = useMobileScreen();
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const sdStore = useSdStore();
@@ -69,17 +72,50 @@ export function SideBar(props: { className?: string }) {
       shouldNarrow={shouldNarrow}
       {...props}
     >
-      <SideBarHeader
-        title={
-          <IconButton
-            icon={<ReturnIcon />}
-            bordered
-            title={Locale.Sd.Actions.ReturnHome}
-            onClick={() => navigate(Path.Home)}
-          />
-        }
-        logo={<SDIcon width={38} height={38} />}
-      ></SideBarHeader>
+      {isMobileScreen ? (
+        <div
+          className="window-header"
+          data-tauri-drag-region
+          style={{
+            paddingLeft: 0,
+            paddingRight: 0,
+          }}
+        >
+          <div className="window-actions">
+            <div className="window-action-button">
+              <IconButton
+                icon={<ReturnIcon />}
+                bordered
+                title={Locale.Sd.Actions.ReturnHome}
+                onClick={() => navigate(Path.Home)}
+              />
+            </div>
+          </div>
+          <SDIcon width={50} height={50} />
+          <div className="window-actions">
+            <div className="window-action-button">
+              <IconButton
+                icon={<HistoryIcon />}
+                bordered
+                title={Locale.Sd.Actions.History}
+                onClick={() => navigate(Path.SdNew)}
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <SideBarHeader
+          title={
+            <IconButton
+              icon={<ReturnIcon />}
+              bordered
+              title={Locale.Sd.Actions.ReturnHome}
+              onClick={() => navigate(Path.Home)}
+            />
+          }
+          logo={<SDIcon width={38} height={38} />}
+        ></SideBarHeader>
+      )}
       <SideBarBody>
         <SdPanel />
       </SideBarBody>
