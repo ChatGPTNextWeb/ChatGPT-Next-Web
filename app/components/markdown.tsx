@@ -13,6 +13,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
+import { nanoid } from "nanoid";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -62,6 +63,31 @@ export function Mermaid(props: { code: string }) {
 
 export function HTMLPreview(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const frameId = useRef<string>(nanoid());
+  const [height, setHeight] = useState(600);
+  /*
+   * https://stackoverflow.com/questions/19739001/what-is-the-difference-between-srcdoc-and-src-datatext-html-in-an
+   * 1. using srcdoc
+   * 2. using src with dataurl:
+   *    easy to share
+   *    length limit (Data URIs cannot be larger than 32,768 characters.)
+   */
+
+  useEffect(() => {
+    window.addEventListener("message", (e) => {
+      const { id, height } = e.data;
+      if (id == frameId.current) {
+        console.log("setHeight", height);
+        if (height < 600) {
+          setHeight(height + 40);
+        }
+      }
+    });
+  }, []);
+
+  const script = encodeURIComponent(
+    `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId.current}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`,
+  );
 
   return (
     <div
@@ -70,14 +96,16 @@ export function HTMLPreview(props: { code: string }) {
         cursor: "pointer",
         overflow: "auto",
       }}
-      ref={ref}
-      onClick={() => console.log("click")}
+      onClick={(e) => e.stopPropapation()}
     >
       <iframe
+        id={frameId}
+        ref={ref}
         frameBorder={0}
-        sandbox="allow-scripts"
-        style={{ width: "100%", height: 400 }}
-        srcDoc={props.code}
+        sandbox="allow-forms allow-modals allow-scripts"
+        style={{ width: "100%", height }}
+        src={`data:text/html,${encodeURIComponent(props.code)}${script}`}
+        // srcDoc={props.code + script}
       ></iframe>
     </div>
   );
@@ -108,10 +136,6 @@ export function PreCode(props: { children: any }) {
 
   return (
     <>
-      {mermaidCode.length > 0 && (
-        <Mermaid code={mermaidCode} key={mermaidCode} />
-      )}
-      {htmlCode.length > 0 && <HTMLPreview code={htmlCode} key={htmlCode} />}
       <pre ref={ref}>
         <span
           className="copy-code-button"
@@ -124,6 +148,10 @@ export function PreCode(props: { children: any }) {
         ></span>
         {props.children}
       </pre>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      {htmlCode.length > 0 && <HTMLPreview code={htmlCode} key={htmlCode} />}
     </>
   );
 }
