@@ -77,7 +77,7 @@ export function HTMLPreview(props: { code: string }) {
         frameBorder={0}
         sandbox="allow-scripts"
         style={{ width: "100%", height: 400 }}
-        srcdoc={props.code}
+        srcDoc={props.code}
       ></iframe>
     </div>
   );
