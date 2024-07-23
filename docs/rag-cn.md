@@ -2,6 +2,8 @@
 
 > [!WARNING]
 > 新版本将向量库从 qdrant  变更为 supabase，请注意相关参数变更！
+> 
+> vercel 部署需要配置环境变量 NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN=1 来强制开启 node 运行时，不过免费版本的 vercel 对 node 运行时限制较多，不建议在 vercel 下使用。
 
 ## 效果图
 
