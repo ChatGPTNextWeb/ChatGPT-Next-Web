@@ -62,7 +62,7 @@ export function Mermaid(props: { code: string }) {
 }
 
 export function HTMLPreview(props: { code: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLIFrameElement>(null);
   const frameId = useRef<string>(nanoid());
   const [height, setHeight] = useState(600);
   /*
