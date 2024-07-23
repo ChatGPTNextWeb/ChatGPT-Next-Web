@@ -59,7 +59,7 @@ const Sd = dynamic(async () => (await import("./sd")).Sd, {
   loading: () => <Loading noLogo />,
 });
 
-const SdPanel = dynamic(async () => (await import("./sd")).SdPanel, {
+const SdNew = dynamic(async () => (await import("./sd")).SdNew, {
   loading: () => <Loading noLogo />,
 });
 
@@ -144,7 +144,7 @@ function Screen() {
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isSd = location.pathname === Path.Sd;
-  const isSdPanel = location.pathname === Path.SdPanel;
+  const isSdNew = location.pathname === Path.SdNew;
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
@@ -157,7 +157,7 @@ function Screen() {
   const renderContent = () => {
     if (isAuth) return <AuthPage />;
     if (isSd) return <Sd />;
-    if (isSdPanel) return <SdPanel />;
+    if (isSdNew) return <SdNew />;
     return (
       <>
         <SideBar className={isHome ? styles["sidebar-show"] : ""} />
@@ -167,8 +167,6 @@ function Screen() {
             <Route path={Path.NewChat} element={<NewChat />} />
             <Route path={Path.Masks} element={<MaskPage />} />
             <Route path={Path.Chat} element={<Chat />} />
-            <Route path={Path.Sd} element={<Sd />} />
-            <Route path={Path.SdPanel} element={<Sd />} />
             <Route path={Path.Settings} element={<Settings />} />
           </Routes>
         </WindowContent>

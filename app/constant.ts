@@ -34,7 +34,7 @@ export enum Path {
   Masks = "/masks",
   Auth = "/auth",
   Sd = "/sd",
-  SdPanel = "/sd-panel",
+  SdNew = "/sd-new",
 }
 
 export enum ApiPath {

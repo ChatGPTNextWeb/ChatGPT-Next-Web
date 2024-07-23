@@ -111,7 +111,7 @@ export function Sd() {
                     icon={<ReturnIcon />}
                     bordered
                     title={Locale.Chat.Actions.ChatList}
-                    onClick={() => navigate(Path.SdPanel)}
+                    onClick={() => navigate(Path.SdNew)}
                   />
                 </div>
               </div>

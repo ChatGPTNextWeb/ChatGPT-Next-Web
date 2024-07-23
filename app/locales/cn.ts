@@ -564,6 +564,8 @@ const cn = {
       Copy: "复制提示词",
       Delete: "删除",
       Retry: "重试",
+      ReturnHome: "返回首页",
+      History: "查看历史",
     },
     EmptyRecord: "暂无绘画记录",
     Status: {

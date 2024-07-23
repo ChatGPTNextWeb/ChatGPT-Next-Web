@@ -570,6 +570,8 @@ const en: LocaleType = {
       Copy: "Copy Prompt",
       Delete: "Delete",
       Retry: "Retry",
+      ReturnHome: "Return Home",
+      History: "History",
     },
     EmptyRecord: "No images yet",
     Status: {

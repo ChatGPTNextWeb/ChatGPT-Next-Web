@@ -1,5 +1,3 @@
-import styles from "@/app/components/home.module.scss";
-
 import { IconButton } from "@/app/components/button";
 import GithubIcon from "@/app/icons/github.svg";
 import SDIcon from "@/app/icons/sd.svg";
@@ -13,12 +11,14 @@ import dynamic from "next/dynamic";
 import {
   SideBarContainer,
   SideBarBody,
+  SideBarHeader,
+  SideBarTail,
   useDragSideBar,
   useHotKey,
 } from "@/app/components/sidebar";
 
 const SdPanel = dynamic(
-  async () => (await import("@/app/components/sd/sd-panel")).SdPanel,
+  async () => (await import("@/app/components/sd")).SdPanel,
   {
     loading: () => null,
   },
@@ -35,31 +35,27 @@ export function SideBar(props: { className?: string }) {
       shouldNarrow={shouldNarrow}
       {...props}
     >
-      <div className={styles["sidebar-header"]} data-tauri-drag-region>
-        <div className={styles["sidebar-title"]} data-tauri-drag-region>
+      <SideBarHeader
+        title={
           <IconButton
             icon={<ReturnIcon />}
             bordered
-            title={Locale.Chat.Actions.ChatList}
-            onClick={() => navigate(Path.Chat)}
+            title={Locale.Sd.Actions.ReturnHome}
+            onClick={() => navigate(Path.Home)}
           />
-        </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          <SDIcon width={38} height={38} />
-        </div>
-      </div>
+        }
+        logo={<SDIcon width={38} height={38} />}
+      ></SideBarHeader>
       <SideBarBody>
         <SdPanel />
       </SideBarBody>
-      <div className={styles["sidebar-tail"]}>
-        <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-              <IconButton icon={<GithubIcon />} shadow />
-            </a>
-          </div>
-        </div>
-      </div>
+      <SideBarTail
+        primaryAction={
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+            <IconButton icon={<GithubIcon />} shadow />
+          </a>
+        }
+      />
     </SideBarContainer>
   );
 }
