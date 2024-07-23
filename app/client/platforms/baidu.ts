@@ -7,6 +7,7 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getAccessToken } from "@/app/utils/baidu";
+import { ChatCompletion } from "@baiducloud/qianfan";
 
 import {
   ChatOptions,
@@ -247,12 +248,24 @@ export class ErnieApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        const res = await fetch(chatPath, chatPayload);
-        clearTimeout(requestTimeoutId);
+        // SDK替换
+        const accessStore = useAccessStore.getState();
+        const client = new ChatCompletion({
+          QIANFAN_AK: accessStore.baiduApiKey,
+          QIANFAN_SK: accessStore.baiduSecretKey,
+          QIANFAN_BASE_URL: `${window.location.origin}${
+            accessStore.baiduUrl || "/api/baidu"
+          }`,
+        });
 
-        const resJson = await res.json();
-        const message = resJson?.result;
-        options.onFinish(message);
+        const resp = await client.chat(
+          {
+            ...requestPayload,
+          },
+          modelConfig.model.toUpperCase(),
+        );
+
+        options.onFinish(resp?.result);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
