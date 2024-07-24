@@ -23,7 +23,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn config set registry 'https://mirrors.cloud.tencent.com/npm/'
+RUN yarn config set registry 'https://registry.npmmirror.com'
 RUN yarn config set sharp_binary_host "https://cdn.npmmirror.com/binaries/sharp"
 RUN yarn config set sharp_libvips_binary_host "https://cdn.npmmirror.com/binaries/sharp-libvips"
 #RUN # 清理遗留的缓存
