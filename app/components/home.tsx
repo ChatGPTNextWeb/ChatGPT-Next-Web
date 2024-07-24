@@ -143,7 +143,7 @@ function Screen() {
   if (isArtifact) {
     return (
       <Routes>
-        <Route exact path="/artifact/:id" element={<Artifact />} />
+        <Route path="/artifact/:id" element={<Artifact />} />
       </Routes>
     );
   }

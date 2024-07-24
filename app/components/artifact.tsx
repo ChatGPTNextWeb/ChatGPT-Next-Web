@@ -67,23 +67,34 @@ export function HTMLPreview(props: {
       style={{ width: "100%", height }}
       // src={`data:text/html,${encodeURIComponent(srcDoc)}`}
       srcDoc={srcDoc}
-      onLoad={(e) => props?.onLoad(title)}
+      onLoad={(e) => props?.onLoad && props?.onLoad(title)}
     ></iframe>
   );
 }
 
-export function ArtifactShareButton({ getCode, id, style, fileName }) {
+export function ArtifactShareButton({
+  getCode,
+  id,
+  style,
+  fileName,
+}: {
+  getCode: () => string;
+  id?: string;
+  style?: any;
+  fileName?: string;
+}) {
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
-  const shareUrl = useMemo(() =>
-    [location.origin, "#", Path.Artifact, "/", name].join(""),
+  const shareUrl = useMemo(
+    () => [location.origin, "#", Path.Artifact, "/", name].join(""),
+    [name],
   );
-  const upload = (code) =>
+  const upload = (code: string) =>
     id
       ? Promise.resolve({ id })
       : fetch(ApiPath.Artifact, {
           method: "POST",
-          body: getCode(),
+          body: code,
         })
           .then((res) => res.json())
           .then(({ id }) => {
@@ -103,9 +114,11 @@ export function ArtifactShareButton({ getCode, id, style, fileName }) {
           bordered
           title={Locale.Export.Artifact.Title}
           onClick={() => {
-            upload(getCode()).then(({ id }) => {
-              setShow(true);
-              setName(id);
+            upload(getCode()).then((res) => {
+              if (res?.id) {
+                setShow(true);
+                setName(res?.id);
+              }
             });
           }}
         />
@@ -168,7 +181,7 @@ export function Artifact() {
   return (
     <div
       style={{
-        disply: "block",
+        display: "block",
         width: "100%",
         height: "100%",
         position: "relative",
@@ -195,7 +208,7 @@ export function Artifact() {
           autoHeight={false}
           height={height - 36}
           onLoad={(title) => {
-            setFileName(title);
+            setFileName(title as string);
             setLoading(false);
           }}
         />

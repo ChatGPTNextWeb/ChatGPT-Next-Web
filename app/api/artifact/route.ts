@@ -4,7 +4,7 @@ import { getServerSideConfig } from "@/app/config/server";
 
 async function handle(req: NextRequest, res: NextResponse) {
   const serverConfig = getServerSideConfig();
-  const storeUrl = (key) =>
+  const storeUrl = (key: string) =>
     `https://api.cloudflare.com/client/v4/accounts/${serverConfig.cloudflareAccountId}/storage/kv/namespaces/${serverConfig.cloudflareKVNamespaceId}/values/${key}`;
   const storeHeaders = () => ({
     Authorization: `Bearer ${serverConfig.cloudflareKVApiKey}`,
@@ -32,7 +32,7 @@ async function handle(req: NextRequest, res: NextResponse) {
   }
   if (req.method === "GET") {
     const id = req?.nextUrl?.searchParams?.get("id");
-    const res = await fetch(storeUrl(id), {
+    const res = await fetch(storeUrl(id as string), {
       headers: storeHeaders(),
       method: "GET",
     });
