@@ -63,6 +63,7 @@ export function SideBar(props: { className?: string }) {
     };
     sdStore.sendTask(data, () => {
       setParams(getModelParamBasicData(columns, params, true));
+      navigate(Path.SdNew);
     });
   };
 
@@ -113,7 +114,7 @@ export function SideBar(props: { className?: string }) {
               onClick={() => navigate(Path.Home)}
             />
           }
-          logo={<SDIcon width={38} height={38} />}
+          logo={<SDIcon width={38} height={"100%"} />}
         ></SideBarHeader>
       )}
       <SideBarBody>

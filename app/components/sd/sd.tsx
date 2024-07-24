@@ -80,7 +80,6 @@ function getSdTaskStatus(item: any) {
             });
           }}
         >
-          {" "}
           - {item.error}
         </span>
       )}
