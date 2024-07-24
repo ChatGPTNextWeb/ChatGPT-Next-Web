@@ -458,6 +458,9 @@ const cn = {
   Plugin: {
     Name: "插件",
   },
+  Discovery: {
+    Name: "发现",
+  },
   FineTuned: {
     Sysmessage: "你是一个助手",
   },
