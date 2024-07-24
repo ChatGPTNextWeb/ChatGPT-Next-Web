@@ -17,10 +17,12 @@ export function HTMLPreview(props: {
   code: string;
   autoHeight?: boolean;
   height?: number;
+  onLoad?: (title?: string) => void;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const frameId = useRef<string>(nanoid());
   const [iframeHeight, setIframeHeight] = useState(600);
+  const [title, setTitle] = useState("");
   /*
    * https://stackoverflow.com/questions/19739001/what-is-the-difference-between-srcdoc-and-src-datatext-html-in-an
    * 1. using srcdoc
@@ -31,9 +33,9 @@ export function HTMLPreview(props: {
 
   useEffect(() => {
     window.addEventListener("message", (e) => {
-      const { id, height } = e.data;
+      const { id, height, title } = e.data;
+      setTitle(title);
       if (id == frameId.current) {
-        console.log("setHeight", height);
         setIframeHeight(height);
       }
     });
@@ -65,32 +67,34 @@ export function HTMLPreview(props: {
       style={{ width: "100%", height }}
       // src={`data:text/html,${encodeURIComponent(srcDoc)}`}
       srcDoc={srcDoc}
+      onLoad={(e) => props?.onLoad(title)}
     ></iframe>
   );
 }
 
-export function ArtifactShareButton({ getCode, id, style }) {
+export function ArtifactShareButton({ getCode, id, style, fileName }) {
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
   const shareUrl = useMemo(() =>
     [location.origin, "#", Path.Artifact, "/", name].join(""),
   );
   const upload = (code) =>
-    fetch(ApiPath.Artifact, {
-      method: "POST",
-      body: getCode(),
-    })
-      .then((res) => res.json())
-      .then(({ id }) => {
-        if (id) {
-          setShow(true);
-          return setName(id);
-        }
-        throw Error();
-      })
-      .catch((e) => {
-        showToast(Locale.Export.Artifact.Error);
-      });
+    id
+      ? Promise.resolve({ id })
+      : fetch(ApiPath.Artifact, {
+          method: "POST",
+          body: getCode(),
+        })
+          .then((res) => res.json())
+          .then(({ id }) => {
+            if (id) {
+              return { id };
+            }
+            throw Error();
+          })
+          .catch((e) => {
+            showToast(Locale.Export.Artifact.Error);
+          });
   return (
     <>
       <div className="window-action-button" style={style}>
@@ -99,7 +103,10 @@ export function ArtifactShareButton({ getCode, id, style }) {
           bordered
           title={Locale.Export.Artifact.Title}
           onClick={() => {
-            upload(getCode());
+            upload(getCode()).then(({ id }) => {
+              setShow(true);
+              setName(id);
+            });
           }}
         />
       </div>
@@ -115,7 +122,7 @@ export function ArtifactShareButton({ getCode, id, style }) {
                 bordered
                 text={Locale.Export.Download}
                 onClick={() => {
-                  downloadAs(getCode(), `${id}.html`).then(() =>
+                  downloadAs(getCode(), `${fileName || name}.html`).then(() =>
                     setShow(false),
                   );
                 }}
@@ -146,6 +153,8 @@ export function ArtifactShareButton({ getCode, id, style }) {
 export function Artifact() {
   const { id } = useParams();
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [fileName, setFileName] = useState("");
   const { height } = useWindowSize();
 
   useEffect(() => {
@@ -167,23 +176,29 @@ export function Artifact() {
     >
       <div
         style={{
-          height: 40,
+          height: 36,
           display: "flex",
           alignItems: "center",
           padding: 12,
         }}
       >
-        <div style={{ flex: 1 }}>
-          <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-            <IconButton bordered icon={<GithubIcon />} shadow />
-          </a>
-        </div>
-        <ArtifactShareButton id={id} getCode={() => code} />
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+          <IconButton bordered icon={<GithubIcon />} shadow />
+        </a>
+        <div style={{ flex: 1, textAlign: "center" }}>NextChat Artifact</div>
+        <ArtifactShareButton id={id} getCode={() => code} fileName={fileName} />
       </div>
-      {code ? (
-        <HTMLPreview code={code} autoHeight={false} height={height - 40} />
-      ) : (
-        <Loading />
+      {loading && <Loading />}
+      {code && (
+        <HTMLPreview
+          code={code}
+          autoHeight={false}
+          height={height - 36}
+          onLoad={(title) => {
+            setFileName(title);
+            setLoading(false);
+          }}
+        />
       )}
     </div>
   );
