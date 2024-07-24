@@ -3,7 +3,7 @@ import { SubmitKey } from "../store/config";
 
 const isApp = !!getClientConfig()?.isApp;
 
-const tw: PartialLocaleType = {
+const tw = {
   WIP: "此功能仍在開發中……",
   Error: {
     Unauthorized: isApp
