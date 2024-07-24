@@ -21,7 +21,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
-          clean: true
+          clean: false
           github-server-url: 'https://gh.sivpn.cn'
       - name: build and deploy to Docker Hub
         run: |
