@@ -1,4 +1,4 @@
-name: PRO DEPLOY TO TY
+name: PRO DEPLOY
 on:
   workflow_dispatch:
   push:
@@ -14,15 +14,15 @@ on:
 
 jobs:
   build:
-    name: build image to aly
+    name: build image
     #runs-on: ubuntu-latest
     runs-on: self
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: gh.sivpn.cn/actions/checkout@v4
         with:
           clean: true
-          #github-server-url: 'https://gh.sivpn.cn'
+          github-server-url: 'https://gh.sivpn.cn'
       - name: build and deploy to Docker Hub
         run: |
           echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
@@ -35,7 +35,7 @@ jobs:
       - name: Get current date
         run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: gh.sivpn.cn/docker/build-push-action@v4
         with:
           context: .
           push: true
