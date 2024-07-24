@@ -13,6 +13,8 @@ ENV TZ=Asia/Chongqing
 # 更新并安装时区工具
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+ENV PRISMA_ENGINES_MIRROR=https://registry.npmmirror.com/-/binary/prisma
+
 FROM base AS deps
 
 RUN apk add --no-cache libc6-compat
