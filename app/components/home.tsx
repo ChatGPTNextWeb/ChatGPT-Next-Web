@@ -39,6 +39,10 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
+const Artifact = dynamic(async () => (await import("./artifact")).Artifact, {
+  loading: () => <Loading noLogo />,
+});
+
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
 });
@@ -125,6 +129,7 @@ const loadAsyncGoogleFont = () => {
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
+  const isArtifact = location.pathname.includes(Path.Artifact);
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
@@ -134,6 +139,14 @@ function Screen() {
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+
+  if (isArtifact) {
+    return (
+      <Routes>
+        <Route exact path="/artifact/:id" element={<Artifact />} />
+      </Routes>
+    );
+  }
 
   return (
     <div

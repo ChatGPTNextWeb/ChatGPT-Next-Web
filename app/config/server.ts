@@ -158,6 +158,10 @@ export const getServerSideConfig = () => {
     alibabaUrl: process.env.ALIBABA_URL,
     alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
 
+    cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+    cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
+    cloudflareKVApiKey: getApiKey(process.env.CLOUDFLARE_KV_API_KEY),
+
     gtmId: process.env.GTM_ID,
 
     needCode: ACCESS_CODES.size > 0,

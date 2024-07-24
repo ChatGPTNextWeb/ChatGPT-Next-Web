@@ -8,6 +8,7 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
+export const PREVIEW_URL = "https://app.nextchat.dev";
 export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
@@ -31,6 +32,7 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Auth = "/auth",
+  Artifact = "/artifact",
 }
 
 export enum ApiPath {
@@ -42,6 +44,7 @@ export enum ApiPath {
   Baidu = "/api/baidu",
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
+  Artifact = "/api/artifact",
 }
 
 export enum SlotID {

@@ -13,7 +13,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal } from "./ui-lib";
-import { nanoid } from "nanoid";
+import { ArtifactShareButton, HTMLPreview } from "./artifact";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -61,56 +61,6 @@ export function Mermaid(props: { code: string }) {
   );
 }
 
-export function HTMLPreview(props: { code: string }) {
-  const ref = useRef<HTMLIFrameElement>(null);
-  const frameId = useRef<string>(nanoid());
-  const [height, setHeight] = useState(600);
-  /*
-   * https://stackoverflow.com/questions/19739001/what-is-the-difference-between-srcdoc-and-src-datatext-html-in-an
-   * 1. using srcdoc
-   * 2. using src with dataurl:
-   *    easy to share
-   *    length limit (Data URIs cannot be larger than 32,768 characters.)
-   */
-
-  useEffect(() => {
-    window.addEventListener("message", (e) => {
-      const { id, height } = e.data;
-      if (id == frameId.current) {
-        console.log("setHeight", height);
-        if (height < 600) {
-          setHeight(height + 40);
-        }
-      }
-    });
-  }, []);
-
-  const script = encodeURIComponent(
-    `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId.current}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`,
-  );
-
-  return (
-    <div
-      className="no-dark html"
-      style={{
-        cursor: "pointer",
-        overflow: "auto",
-      }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <iframe
-        id={frameId.current}
-        ref={ref}
-        frameBorder={0}
-        sandbox="allow-forms allow-modals allow-scripts"
-        style={{ width: "100%", height }}
-        src={`data:text/html,${encodeURIComponent(props.code)}${script}`}
-        // srcDoc={props.code + script}
-      ></iframe>
-    </div>
-  );
-}
-
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
   const refText = ref.current?.innerText;
@@ -151,7 +101,22 @@ export function PreCode(props: { children: any }) {
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
-      {htmlCode.length > 0 && <HTMLPreview code={htmlCode} key={htmlCode} />}
+      {htmlCode.length > 0 && (
+        <div
+          className="no-dark html"
+          style={{
+            overflow: "auto",
+            position: "relative",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ArtifactShareButton
+            style={{ position: "absolute", right: 10, top: 10 }}
+            getCode={() => htmlCode}
+          />
+          <HTMLPreview code={htmlCode} />
+        </div>
+      )}
     </>
   );
 }
