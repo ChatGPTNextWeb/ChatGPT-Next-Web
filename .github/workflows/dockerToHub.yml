@@ -15,10 +15,8 @@ on:
 jobs:
   build:
     name: build image to aly
-    # runs-on: "103.200"
-    # runs-on: thinkpad
-    runs-on: ubuntu-latest
-    #    runs-on: self-hosted
+    #runs-on: ubuntu-latest
+    runs-on: self
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
