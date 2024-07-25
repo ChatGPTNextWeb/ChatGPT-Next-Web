@@ -99,20 +99,13 @@ export function collectModelTableWithDefaultModel(
 ) {
   let modelTable = collectModelTable(models, customModels);
   if (defaultModel && defaultModel !== "") {
-    const [modelName, providerName] = defaultModel.split("@");
-    if (providerName && providerName != "") {
-      modelTable[defaultModel] = {
-        ...modelTable[defaultModel],
-        name: modelTable[defaultModel]?.name ?? modelName,
-        displayName:
-          modelTable[defaultModel]?.displayName ??
-          modelName + "(" + providerName + ")",
-        available: true,
-        isDefault: true,
-      };
+    if (defaultModel.includes('@')) {
+      if (defaultModel in modelTable) {
+        modelTable[defaultModel].isDefault = true;
+      }
     } else {
       for (const key of Object.keys(modelTable)) {
-        if (modelTable[key].available && key.startsWith(modelName)) {
+        if (modelTable[key].available && key.split('@').shift() == defaultModel) {
           modelTable[key].isDefault = true;
           break;
         }
