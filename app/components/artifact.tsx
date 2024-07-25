@@ -37,9 +37,7 @@ export function HTMLPreview(props: {
       const { id, height, title } = e.data;
       setTitle(title);
       if (id == frameId.current) {
-        if (height != iframeHeight + 40) {
-          setIframeHeight(height);
-        }
+        setIframeHeight(height);
       }
     });
   }, [iframeHeight]);
@@ -47,7 +45,9 @@ export function HTMLPreview(props: {
   const height = useMemo(() => {
     const parentHeight = props.height || 600;
     if (props.autoHeight !== false) {
-      return iframeHeight > parentHeight ? parentHeight : iframeHeight + 40;
+      return iframeHeight + 40 > parentHeight
+        ? parentHeight
+        : iframeHeight + 40;
     } else {
       return parentHeight;
     }
