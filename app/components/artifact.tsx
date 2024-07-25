@@ -37,10 +37,12 @@ export function HTMLPreview(props: {
       const { id, height, title } = e.data;
       setTitle(title);
       if (id == frameId.current) {
-        setIframeHeight(height);
+        if (height != iframeHeight + 40) {
+          setIframeHeight(height);
+        }
       }
     });
-  }, []);
+  }, [iframeHeight]);
 
   const height = useMemo(() => {
     const parentHeight = props.height || 600;
