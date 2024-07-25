@@ -34,14 +34,18 @@ export function HTMLPreview(props: {
    */
 
   useEffect(() => {
-    window.addEventListener("message", (e) => {
+    const handleMessage = (e: any) => {
       const { id, height, title } = e.data;
       setTitle(title);
       if (id == frameId.current) {
         setIframeHeight(height);
       }
-    });
-  }, [iframeHeight]);
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   const height = useMemo(() => {
     const parentHeight = props.height || 600;
@@ -186,8 +190,17 @@ export function Artifact() {
   useEffect(() => {
     if (id) {
       fetch(`${ApiPath.Artifact}?id=${id}`)
+        .then((res) => {
+          if (res.status > 300) {
+            throw Error("can not get content");
+          }
+          return res;
+        })
         .then((res) => res.text())
-        .then(setCode);
+        .then(setCode)
+        .catch((e) => {
+          showToast(Locale.Export.Artifact.Error);
+        });
     }
   }, [id]);
 

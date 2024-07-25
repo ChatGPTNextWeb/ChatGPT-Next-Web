@@ -14,7 +14,9 @@ import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
 import React, {
+  CSSProperties,
   HTMLProps,
+  MouseEvent,
   useEffect,
   useState,
   useCallback,
@@ -53,11 +55,16 @@ export function ListItem(props: {
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick?: (e: MouseEvent) => void;
+  vertical?: boolean;
 }) {
   return (
     <div
-      className={styles["list-item"] + ` ${props.className || ""}`}
+      className={
+        styles["list-item"] +
+        ` ${props.vertical ? styles["vertical"] : ""} ` +
+        ` ${props.className || ""}`
+      }
       onClick={props.onClick}
     >
       <div className={styles["list-header"]}>
@@ -426,17 +433,25 @@ export function showPrompt(content: any, value = "", rows = 3) {
   });
 }
 
-export function showImageModal(img: string) {
+export function showImageModal(
+  img: string,
+  defaultMax?: boolean,
+  style?: CSSProperties,
+  boxStyle?: CSSProperties,
+) {
   showModal({
     title: Locale.Export.Image.Modal,
+    defaultMax: defaultMax,
     children: (
-      <div>
+      <div style={{ display: "flex", justifyContent: "center", ...boxStyle }}>
         <img
           src={img}
           alt="preview"
-          style={{
-            maxWidth: "100%",
-          }}
+          style={
+            style ?? {
+              maxWidth: "100%",
+            }
+          }
         ></img>
       </div>
     ),
@@ -448,6 +463,7 @@ export function Selector<T>(props: {
     title: string;
     subTitle?: string;
     value: T;
+    disable?: boolean;
   }>;
   defaultSelectedValue?: T[] | T;
   onSelection?: (selection: T[]) => void;
@@ -462,10 +478,7 @@ export function Selector<T>(props: {
       : [],
   );
 
-  const handleSelection = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    value: T,
-  ) => {
+  const handleSelection = (e: MouseEvent, value: T) => {
     if (props.multiple) {
       e.stopPropagation();
       const newSelectedValues = selectedValues.includes(value)
@@ -488,11 +501,19 @@ export function Selector<T>(props: {
             const selected = selectedValues.includes(item.value);
             return (
               <ListItem
-                className={styles["selector-item"]}
+                className={`${styles["selector-item"]} ${
+                  item.disable && styles["selector-item-disabled"]
+                }`}
                 key={i}
                 title={item.title}
                 subTitle={item.subTitle}
-                onClick={(e) => handleSelection(e, item.value)}
+                onClick={(e) => {
+                  if (item.disable) {
+                    e.stopPropagation();
+                  } else {
+                    handleSelection(e, item.value);
+                  }
+                }}
               >
                 {selected ? (
                   <div
@@ -526,11 +547,15 @@ export function FullScreen(props: any) {
     }
   }, []);
   useEffect(() => {
-    document.addEventListener("fullscreenchange", (e) => {
+    const handleScreenChange = (e: any) => {
       if (e.target === ref.current) {
         setFullScreen(!!document.fullscreenElement);
       }
-    });
+    };
+    document.addEventListener("fullscreenchange", handleScreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleScreenChange);
+    };
   }, []);
   return (
     <div ref={ref} style={{ position: "relative" }} {...rest}>
