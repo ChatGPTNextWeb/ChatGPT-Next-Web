@@ -641,12 +641,13 @@ export function ChatActions(props: {
           ]}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {
-            if (s.length === 0) return;
             const plugin = s[0];
             chatStore.updateCurrentSession((session) => {
               session.mask.plugin = s;
             });
-            showToast(plugin);
+            if (plugin) {
+              showToast(plugin);
+            }
           }}
         />
       )}

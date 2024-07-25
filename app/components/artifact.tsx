@@ -18,7 +18,7 @@ import styles from "./artifact.module.scss";
 export function HTMLPreview(props: {
   code: string;
   autoHeight?: boolean;
-  height?: number;
+  height?: number | string;
   onLoad?: (title?: string) => void;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
@@ -185,7 +185,6 @@ export function Artifact() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [fileName, setFileName] = useState("");
-  const { height } = useWindowSize();
 
   useEffect(() => {
     if (id) {
@@ -205,33 +204,28 @@ export function Artifact() {
   }, [id]);
 
   return (
-    <div className={styles.artifact}>
-      <div
-        style={{
-          height: 36,
-          display: "flex",
-          alignItems: "center",
-          padding: 12,
-        }}
-      >
+    <div className={styles["artifact"]}>
+      <div className={styles["artifact-header"]}>
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
           <IconButton bordered icon={<GithubIcon />} shadow />
         </a>
-        <div style={{ flex: 1, textAlign: "center" }}>NextChat Artifact</div>
+        <div className={styles["artifact-title"]}>NextChat Artifact</div>
         <ArtifactShareButton id={id} getCode={() => code} fileName={fileName} />
       </div>
-      {loading && <Loading />}
-      {code && (
-        <HTMLPreview
-          code={code}
-          autoHeight={false}
-          height={height - 36}
-          onLoad={(title) => {
-            setFileName(title as string);
-            setLoading(false);
-          }}
-        />
-      )}
+      <div className={styles["artifact-content"]}>
+        {loading && <Loading />}
+        {code && (
+          <HTMLPreview
+            code={code}
+            autoHeight={false}
+            height={"100%"}
+            onLoad={(title) => {
+              setFileName(title as string);
+              setLoading(false);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
