@@ -14,7 +14,8 @@ import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
 import { ArtifactShareButton, HTMLPreview } from "./artifact";
-
+import { Plugin } from "../constant";
+import { useChatStore } from "../store";
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -67,6 +68,9 @@ export function PreCode(props: { children: any }) {
   const [mermaidCode, setMermaidCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const plugins = session.mask?.plugin;
 
   const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
@@ -87,6 +91,11 @@ export function PreCode(props: { children: any }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refText]);
 
+  const enableArtifacts = useMemo(
+    () => plugins?.includes(Plugin.Artifact),
+    [plugins],
+  );
+
   return (
     <>
       <pre ref={ref}>
@@ -104,10 +113,10 @@ export function PreCode(props: { children: any }) {
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
-      {htmlCode.length > 0 && (
-        <FullScreen className="no-dark html" right={60}>
+      {htmlCode.length > 0 && enableArtifacts && (
+        <FullScreen className="no-dark html" right={70}>
           <ArtifactShareButton
-            style={{ position: "absolute", right: 10, top: 10 }}
+            style={{ position: "absolute", right: 20, top: 10 }}
             getCode={() => htmlCode}
           />
           <HTMLPreview
