@@ -457,6 +457,7 @@ const en: LocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+    Artifact: "Artifact",
   },
   FineTuned: {
     Sysmessage: "You are an assistant that",

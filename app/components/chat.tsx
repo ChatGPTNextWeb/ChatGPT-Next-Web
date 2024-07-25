@@ -37,6 +37,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import PluginIcon from "../icons/plugin.svg";
 
 import {
   ChatMessage,
@@ -89,6 +90,7 @@ import {
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
   ServiceProvider,
+  Plugin,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -476,6 +478,7 @@ export function ChatActions(props: {
     return model?.displayName ?? "";
   }, [models, currentModel, currentProviderName]);
   const [showModelSelector, setShowModelSelector] = useState(false);
+  const [showPluginSelector, setShowPluginSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
   useEffect(() => {
@@ -617,6 +620,33 @@ export function ChatActions(props: {
             } else {
               showToast(model);
             }
+          }}
+        />
+      )}
+
+      <ChatAction
+        onClick={() => setShowPluginSelector(true)}
+        text={Locale.Plugin.Name}
+        icon={<PluginIcon />}
+      />
+      {showPluginSelector && (
+        <Selector
+          multiple
+          defaultSelectedValue={chatStore.currentSession().mask?.plugin}
+          items={[
+            {
+              title: Locale.Plugin.Artifact,
+              value: Plugin.Artifact,
+            },
+          ]}
+          onClose={() => setShowPluginSelector(false)}
+          onSelection={(s) => {
+            if (s.length === 0) return;
+            const plugin = s[0];
+            chatStore.updateCurrentSession((session) => {
+              session.mask.plugin = s;
+            });
+            showToast(plugin);
           }}
         />
       )}

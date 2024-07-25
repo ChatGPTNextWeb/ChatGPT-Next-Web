@@ -57,6 +57,10 @@ export enum FileName {
   Prompts = "prompts.json",
 }
 
+export enum Plugin {
+  Artifact = "artifact",
+}
+
 export enum StoreKey {
   Chat = "chat-next-web-store",
   Access = "access-control",

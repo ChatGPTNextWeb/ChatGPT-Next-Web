@@ -450,6 +450,7 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
+    Artifact: "Artifact",
   },
   FineTuned: {
     Sysmessage: "你是一个助手",

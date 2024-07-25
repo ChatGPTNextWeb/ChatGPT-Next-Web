@@ -443,7 +443,7 @@ export function Selector<T>(props: {
     subTitle?: string;
     value: T;
   }>;
-  defaultSelectedValue?: T;
+  defaultSelectedValue?: T[] | T;
   onSelection?: (selection: T[]) => void;
   onClose?: () => void;
   multiple?: boolean;
@@ -453,7 +453,10 @@ export function Selector<T>(props: {
       <div className={styles["selector-content"]}>
         <List>
           {props.items.map((item, i) => {
-            const selected = props.defaultSelectedValue === item.value;
+            // @ts-ignore
+            const selected = props.multiple
+              ? props.defaultSelectedValue?.includes(item.value)
+              : props.defaultSelectedValue === item.value;
             return (
               <ListItem
                 className={styles["selector-item"]}
