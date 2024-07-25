@@ -16,7 +16,7 @@ self.addEventListener("install", function (event) {
 });
 
 function jsonify(data) {
-  return Response(JSON.stringify(data), { headers: { 'content-type': 'application/json' } })
+  return new Response(JSON.stringify(data), { headers: { 'content-type': 'application/json' } })
 }
 
 async function upload(request, url) {
