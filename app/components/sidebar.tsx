@@ -157,23 +157,23 @@ export function SideBarContainer(props: {
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
       }}
     >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>这里开始……</div>
-        <div className={styles["sidebar-sub-title"]}>
-          选择一个你自己的助理
-          <br />
-          <br />
-          1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
-          <br />
-          2. 绘图：“/mj 提示词”
-          的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
-          <br />
-          3. 如果觉得还不错，可以给作者赏杯咖啡
-        </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
-        </div>
-      </div>
+      {/*<div className={styles["sidebar-header"]}>*/}
+      {/*  <div className={styles["sidebar-title"]}>这里开始……</div>*/}
+      {/*  <div className={styles["sidebar-sub-title"]}>*/}
+      {/*    选择一个你自己的助理*/}
+      {/*    <br />*/}
+      {/*    <br />*/}
+      {/*    1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧*/}
+      {/*    <br />*/}
+      {/*    2. 绘图：“/mj 提示词”*/}
+      {/*    的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）*/}
+      {/*    <br />*/}
+      {/*    3. 如果觉得还不错，可以给作者赏杯咖啡*/}
+      {/*  </div>*/}
+      {/*  <div className={styles["sidebar-logo"] + " no-dark"}>*/}
+      {/*    <ChatGptIcon />*/}
+      {/*  </div>*/}
+      {/*</div>*/}
 
       {children}
       <div
@@ -241,6 +241,11 @@ export function SideBar(props: { className?: string }) {
   const config = useAppConfig();
   const chatStore = useChatStore();
 
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const currentProviderName =
+    chatStore.currentSession().mask.modelConfig?.providerName ||
+    ServiceProvider.OpenAI;
+
   return (
     <SideBarContainer
       onDragStart={onDragStart}
@@ -248,8 +253,20 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="NextChat"
-        subTitle="Build your own AI assistant."
+        title="这里开始……"
+        subTitle={
+          <span>
+            选择一个你自己的助理
+            <br />
+            <br />
+            1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
+            <br />
+            2. 绘图：“/mj 提示词”
+            的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
+            <br />
+            3. 如果觉得还不错，可以给作者赏杯咖啡
+          </span>
+        }
         logo={<ChatGptIcon />}
       >
         <div className={styles["sidebar-header-bar"]}>
