@@ -15,7 +15,7 @@ async function handle(req: NextRequest, res: NextResponse) {
     const body: {
       key: string;
       value: string;
-      expiration_ttl?: Number;
+      expiration_ttl?: number;
     } = {
       key: hashedCode,
       value: clonedBody,

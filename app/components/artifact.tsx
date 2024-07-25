@@ -33,7 +33,7 @@ export function HTMLPreview(props: {
    */
 
   useEffect(() => {
-    const handleMessage = (e) => {
+    const handleMessage = (e: any) => {
       const { id, height, title } = e.data;
       setTitle(title);
       if (id == frameId.current) {

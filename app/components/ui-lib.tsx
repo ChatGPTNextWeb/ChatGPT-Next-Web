@@ -528,7 +528,7 @@ export function FullScreen(props: any) {
     }
   }, []);
   useEffect(() => {
-    const handleScreenChange = (e) => {
+    const handleScreenChange = (e: any) => {
       if (e.target === ref.current) {
         setFullScreen(!!document.fullscreenElement);
       }
