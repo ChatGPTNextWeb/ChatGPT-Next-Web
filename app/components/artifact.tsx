@@ -7,6 +7,7 @@ import ExportIcon from "../icons/share.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import GithubIcon from "../icons/github.svg";
+import LoadingButtonIcon from "../icons/loading.svg";
 import Locale from "../locales";
 import { Modal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs } from "../utils";
@@ -83,6 +84,7 @@ export function ArtifactShareButton({
   style?: any;
   fileName?: string;
 }) {
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
   const shareUrl = useMemo(
@@ -110,16 +112,19 @@ export function ArtifactShareButton({
     <>
       <div className="window-action-button" style={style}>
         <IconButton
-          icon={<ExportIcon />}
+          icon={loading ? <LoadingButtonIcon /> : <ExportIcon />}
           bordered
           title={Locale.Export.Artifact.Title}
           onClick={() => {
-            upload(getCode()).then((res) => {
-              if (res?.id) {
-                setShow(true);
-                setName(res?.id);
-              }
-            });
+            setLoading(true);
+            upload(getCode())
+              .then((res) => {
+                if (res?.id) {
+                  setShow(true);
+                  setName(res?.id);
+                }
+              })
+              .finally(() => setLoading(false));
           }}
         />
       </div>
