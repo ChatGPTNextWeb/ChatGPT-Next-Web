@@ -13,7 +13,13 @@ import MinIcon from "../icons/min.svg";
 import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
-import React, { HTMLProps, useEffect, useState } from "react";
+import React, {
+  HTMLProps,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { IconButton } from "./button";
 
 export function Popover(props: {
@@ -485,6 +491,38 @@ export function Selector<T>(props: {
           })}
         </List>
       </div>
+    </div>
+  );
+}
+
+export function FullScreen(props: any) {
+  const { children, right = 10, top = 10, ...rest } = props;
+  const ref = useRef<HTMLDivElement>();
+  const [fullScreen, setFullScreen] = useState(false);
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      ref.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
+  useEffect(() => {
+    document.addEventListener("fullscreenchange", (e) => {
+      if (e.target === ref.current) {
+        setFullScreen(!!document.fullscreenElement);
+      }
+    });
+  }, []);
+  return (
+    <div ref={ref} style={{ position: "relative" }} {...rest}>
+      <div style={{ position: "absolute", right, top }}>
+        <IconButton
+          icon={fullScreen ? <MinIcon /> : <MaxIcon />}
+          onClick={toggleFullscreen}
+          bordered
+        />
+      </div>
+      {children}
     </div>
   );
 }
