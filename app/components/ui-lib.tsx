@@ -528,11 +528,15 @@ export function FullScreen(props: any) {
     }
   }, []);
   useEffect(() => {
-    document.addEventListener("fullscreenchange", (e) => {
+    const handleScreenChange = (e) => {
       if (e.target === ref.current) {
         setFullScreen(!!document.fullscreenElement);
       }
-    });
+    };
+    document.addEventListener("fullscreenchange", handleScreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleScreenChange);
+    };
   }, []);
   return (
     <div ref={ref} style={{ position: "relative" }} {...rest}>

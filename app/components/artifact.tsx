@@ -33,14 +33,18 @@ export function HTMLPreview(props: {
    */
 
   useEffect(() => {
-    window.addEventListener("message", (e) => {
+    const handleMessage = (e) => {
       const { id, height, title } = e.data;
       setTitle(title);
       if (id == frameId.current) {
         setIframeHeight(height);
       }
-    });
-  }, [iframeHeight]);
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   const height = useMemo(() => {
     const parentHeight = props.height || 600;
