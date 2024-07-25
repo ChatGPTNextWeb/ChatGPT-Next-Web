@@ -24,6 +24,10 @@ declare global {
       CUSTOM_MODELS?: string; // to control custom models
       DEFAULT_MODEL?: string; // to control default model in every new chat window
 
+      // stability only
+      STABILITY_URL?: string;
+      STABILITY_API_KEY?: string;
+
       // azure only
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
       AZURE_API_KEY?: string;
@@ -109,7 +113,9 @@ export const getServerSideConfig = () => {
     if (defaultModel.startsWith("gpt-4")) defaultModel = "";
   }
 
-  // const isAzure = !!process.env.AZURE_URL;
+  const isStability = !!process.env.STABILITY_API_KEY;
+
+  const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
   // 需要一个函数来判断请求中模型是否为微软的。
@@ -137,9 +143,14 @@ export const getServerSideConfig = () => {
     apiKey: getApiKey(process.env.OPENAI_API_KEY),
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
-    azureUrl: process.env.AZURE_URL ?? "",
-    azureApiKey: getApiKey(process.env.AZURE_API_KEY) ?? "",
-    azureApiVersion: process.env.AZURE_API_VERSION ?? "",
+    isStability,
+    stabilityUrl: process.env.STABILITY_URL,
+    stabilityApiKey: getApiKey(process.env.STABILITY_API_KEY),
+
+    isAzure,
+    azureUrl: process.env.AZURE_URL,
+    azureApiKey: getApiKey(process.env.AZURE_API_KEY),
+    azureApiVersion: process.env.AZURE_API_VERSION,
 
     azureVoiceKey: process.env.AZURE_VOICE_KEY ?? "",
 

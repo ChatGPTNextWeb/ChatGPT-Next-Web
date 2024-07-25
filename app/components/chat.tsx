@@ -37,6 +37,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import PluginIcon from "../icons/plugin.svg";
 // import UploadIcon from "../icons/upload.svg";
 
 import {
@@ -350,7 +351,7 @@ function ClearContextDivider() {
   );
 }
 
-function ChatAction(props: {
+export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
@@ -613,18 +614,11 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
-      {/*<ChatAction*/}
-      {/*  onClick={selectImage}*/}
-      {/*  text={Locale.Chat.InputActions.UploadImage}*/}
-      {/*  icon={<UploadIcon />}*/}
-      {/*/>*/}
-      {/*<input*/}
-      {/*  type="file"*/}
-      {/*  accept=".png,.jpg,.webp,.jpeg"*/}
-      {/*  id="chat-image-file-select-upload"*/}
-      {/*  style={{ display: "none" }}*/}
-      {/*  onChange={onImageSelected}*/}
-      {/*/>*/}
+      <ChatAction
+        onClick={() => showToast(Locale.WIP)}
+        text={Locale.Plugin.Name}
+        icon={<PluginIcon />}
+      />
 
       {showModelSelector && (
         <ModalSelector

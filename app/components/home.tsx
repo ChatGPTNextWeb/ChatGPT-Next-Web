@@ -55,6 +55,10 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
+const Sd = dynamic(async () => (await import("./sd")).Sd, {
+  loading: () => <Loading noLogo />,
+});
+
 const Reward = dynamic(async () => (await import("./reward")).RewardPage, {
   loading: () => <Loading noLogo />,
 });
@@ -126,11 +130,22 @@ const loadAsyncGoogleFont = () => {
   // document.head.appendChild(linkEl);
 };
 
+export function WindowContent(props: { children: React.ReactNode }) {
+  return (
+    <div className={styles["window-content"]} id={SlotID.AppBody}>
+      {props?.children}
+    </div>
+  );
+}
+
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
+  const isSd = location.pathname === Path.Sd;
+  const isSdNew = location.pathname === Path.SdNew;
+
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -139,33 +154,33 @@ function Screen() {
     loadAsyncGoogleFont();
   }, []);
 
+  const renderContent = () => {
+    if (isAuth) return <AuthPage />;
+    if (isSd) return <Sd />;
+    if (isSdNew) return <Sd />;
+    return (
+      <>
+        <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+        <WindowContent>
+          <Routes>
+            <Route path={Path.Home} element={<Chat />} />
+            <Route path={Path.NewChat} element={<NewChat />} />
+            <Route path={Path.Masks} element={<MaskPage />} />
+            <Route path={Path.Chat} element={<Chat />} />
+            <Route path={Path.Settings} element={<Settings />} />
+          </Routes>
+        </WindowContent>
+      </>
+    );
+  };
+
   return (
     <div
-      className={
-        styles.container +
-        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} `
-      }
+      className={`${styles.container} ${
+        shouldTightBorder ? styles["tight-container"] : styles.container
+      } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`}
     >
-      {isAuth ? (
-        <>
-          <AuthPage />
-        </>
-      ) : (
-        <>
-          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
-          <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <Routes>
-              <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              {/*<Route path={Path.Masks} element={<MaskPage />} />*/}
-              <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
-              <Route path={Path.Reward} element={<Reward />} />
-            </Routes>
-          </div>
-        </>
-      )}
+      {renderContent()}
     </div>
   );
 }
