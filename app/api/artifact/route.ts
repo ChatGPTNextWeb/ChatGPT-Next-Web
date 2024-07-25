@@ -12,12 +12,16 @@ async function handle(req: NextRequest, res: NextResponse) {
   if (req.method === "POST") {
     const clonedBody = await req.text();
     const hashedCode = md5.hash(clonedBody).trim();
-    const body = {
+    const body: {
+      key: string;
+      value: string;
+      expiration_ttl?: Number;
+    } = {
       key: hashedCode,
       value: clonedBody,
     };
     try {
-      const ttl = parseInt(serverConfig.cloudflareKVTTL);
+      const ttl = parseInt(serverConfig.cloudflareKVTTL as string);
       if (ttl > 60) {
         body["expiration_ttl"] = ttl;
       }
