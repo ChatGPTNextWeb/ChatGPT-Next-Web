@@ -14,7 +14,9 @@ import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
 import React, {
+  CSSProperties,
   HTMLProps,
+  MouseEvent,
   useEffect,
   useState,
   useCallback,
@@ -53,11 +55,16 @@ export function ListItem(props: {
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent) => void;
+  vertical?: boolean;
 }) {
   return (
     <div
-      className={styles["list-item"] + ` ${props.className || ""}`}
+      className={
+        styles["list-item"] +
+        ` ${props.vertical ? styles["vertical"] : ""} ` +
+        ` ${props.className || ""}`
+      }
       onClick={props.onClick}
     >
       <div className={styles["list-header"]}>
@@ -426,17 +433,25 @@ export function showPrompt(content: any, value = "", rows = 3) {
   });
 }
 
-export function showImageModal(img: string) {
+export function showImageModal(
+  img: string,
+  defaultMax?: boolean,
+  style?: CSSProperties,
+  boxStyle?: CSSProperties,
+) {
   showModal({
     title: Locale.Export.Image.Modal,
+    defaultMax: defaultMax,
     children: (
-      <div>
+      <div style={{ display: "flex", justifyContent: "center", ...boxStyle }}>
         <img
           src={img}
           alt="preview"
-          style={{
-            maxWidth: "100%",
-          }}
+          style={
+            style ?? {
+              maxWidth: "100%",
+            }
+          }
         ></img>
       </div>
     ),
@@ -448,6 +463,7 @@ export function Selector<T>(props: {
     title: string;
     subTitle?: string;
     value: T;
+    disable?: boolean;
   }>;
   defaultSelectedValue?: T[] | T;
   onSelection?: (selection: T[]) => void;
@@ -465,13 +481,18 @@ export function Selector<T>(props: {
               : props.defaultSelectedValue === item.value;
             return (
               <ListItem
-                className={styles["selector-item"]}
+                className={`${styles["selector-item"]} ${
+                  item.disable && styles["selector-item-disabled"]
+                }`}
                 key={i}
                 title={item.title}
                 subTitle={item.subTitle}
-                onClick={() => {
-                  props.onSelection?.([item.value]);
-                  props.onClose?.();
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (!item.disable) {
+                    props.onSelection?.([item.value]);
+                    props.onClose?.();
+                  }
                 }}
               >
                 {selected ? (
