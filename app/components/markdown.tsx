@@ -76,6 +76,8 @@ export function PreCode(props: { children: any }) {
     const htmlDom = ref.current.querySelector("code.language-html");
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
+    } else if (refText?.startsWith("<!DOCTYPE")) {
+      setHtmlCode(refText);
     }
   }, 600);
 
