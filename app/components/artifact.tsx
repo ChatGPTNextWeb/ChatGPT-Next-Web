@@ -13,6 +13,7 @@ import { Modal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs } from "../utils";
 import { Path, ApiPath, REPO_URL } from "@/app/constant";
 import { Loading } from "./home";
+import styles from "./artifact.module.scss";
 
 export function HTMLPreview(props: {
   code: string;
@@ -61,17 +62,22 @@ export function HTMLPreview(props: {
     return props.code + script;
   }, [props.code]);
 
+  const handleOnLoad = () => {
+    if (props?.onLoad) {
+      props.onLoad(title);
+    }
+  };
+
   return (
     <iframe
+      className={styles["artifact-iframe"]}
       id={frameId.current}
       ref={ref}
-      frameBorder={0}
       sandbox="allow-forms allow-modals allow-scripts"
-      style={{ width: "100%", height }}
-      // src={`data:text/html,${encodeURIComponent(srcDoc)}`}
+      style={{ height }}
       srcDoc={srcDoc}
-      onLoad={(e) => props?.onLoad && props?.onLoad(title)}
-    ></iframe>
+      onLoad={handleOnLoad}
+    />
   );
 }
 
@@ -186,14 +192,7 @@ export function Artifact() {
   }, [id]);
 
   return (
-    <div
-      style={{
-        display: "block",
-        width: "100%",
-        height: "100%",
-        position: "relative",
-      }}
-    >
+    <div className={styles.artifact}>
       <div
         style={{
           height: 36,

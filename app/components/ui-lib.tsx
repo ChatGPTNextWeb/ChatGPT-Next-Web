@@ -53,7 +53,7 @@ export function ListItem(props: {
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }) {
   return (
     <div
@@ -454,25 +454,45 @@ export function Selector<T>(props: {
   onClose?: () => void;
   multiple?: boolean;
 }) {
+  const [selectedValues, setSelectedValues] = useState<T[]>(
+    Array.isArray(props.defaultSelectedValue)
+      ? props.defaultSelectedValue
+      : props.defaultSelectedValue !== undefined
+      ? [props.defaultSelectedValue]
+      : [],
+  );
+
+  const handleSelection = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    value: T,
+  ) => {
+    if (props.multiple) {
+      e.stopPropagation();
+      const newSelectedValues = selectedValues.includes(value)
+        ? selectedValues.filter((v) => v !== value)
+        : [...selectedValues, value];
+      setSelectedValues(newSelectedValues);
+      props.onSelection?.(newSelectedValues);
+    } else {
+      setSelectedValues([value]);
+      props.onSelection?.([value]);
+      props.onClose?.();
+    }
+  };
+
   return (
     <div className={styles["selector"]} onClick={() => props.onClose?.()}>
       <div className={styles["selector-content"]}>
         <List>
           {props.items.map((item, i) => {
-            const selected = props.multiple
-              ? // @ts-ignore
-                props.defaultSelectedValue?.includes(item.value)
-              : props.defaultSelectedValue === item.value;
+            const selected = selectedValues.includes(item.value);
             return (
               <ListItem
                 className={styles["selector-item"]}
                 key={i}
                 title={item.title}
                 subTitle={item.subTitle}
-                onClick={() => {
-                  props.onSelection?.([item.value]);
-                  props.onClose?.();
-                }}
+                onClick={(e) => handleSelection(e, item.value)}
               >
                 {selected ? (
                   <div
@@ -494,7 +514,6 @@ export function Selector<T>(props: {
     </div>
   );
 }
-
 export function FullScreen(props: any) {
   const { children, right = 10, top = 10, ...rest } = props;
   const ref = useRef<HTMLDivElement>();

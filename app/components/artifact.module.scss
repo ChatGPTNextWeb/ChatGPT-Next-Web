@@ -1,0 +1,12 @@
+.artifact {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.artifact-iframe {
+  width: 100%;
+  border: var(--border-in-light);
+  border-radius: 6px;
+}

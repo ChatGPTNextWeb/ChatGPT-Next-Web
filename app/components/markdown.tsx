@@ -105,9 +105,9 @@ export function PreCode(props: { children: any }) {
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
       {htmlCode.length > 0 && (
-        <FullScreen className="no-dark html" right={60}>
+        <FullScreen className="no-dark html" right={70}>
           <ArtifactShareButton
-            style={{ position: "absolute", right: 10, top: 10 }}
+            style={{ position: "absolute", right: 20, top: 10 }}
             getCode={() => htmlCode}
           />
           <HTMLPreview
