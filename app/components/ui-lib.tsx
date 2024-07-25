@@ -453,9 +453,9 @@ export function Selector<T>(props: {
       <div className={styles["selector-content"]}>
         <List>
           {props.items.map((item, i) => {
-            // @ts-ignore
             const selected = props.multiple
-              ? props.defaultSelectedValue?.includes(item.value)
+              ? // @ts-ignore
+                props.defaultSelectedValue?.includes(item.value)
               : props.defaultSelectedValue === item.value;
             return (
               <ListItem
