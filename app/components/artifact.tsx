@@ -180,8 +180,17 @@ export function Artifact() {
   useEffect(() => {
     if (id) {
       fetch(`${ApiPath.Artifact}?id=${id}`)
+        .then((res) => {
+          if (res.status > 300) {
+            throw Error("can not get content");
+          }
+          return res;
+        })
         .then((res) => res.text())
-        .then(setCode);
+        .then(setCode)
+        .catch((e) => {
+          showToast(Locale.Export.Artifact.Error);
+        });
     }
   }, [id]);
 

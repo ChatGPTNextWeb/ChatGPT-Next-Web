@@ -161,6 +161,7 @@ export const getServerSideConfig = () => {
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
     cloudflareKVApiKey: getApiKey(process.env.CLOUDFLARE_KV_API_KEY),
+    cloudflareKVTTL: process.env.CLOUDFLARE_KV_TTL,
 
     gtmId: process.env.GTM_ID,
 
