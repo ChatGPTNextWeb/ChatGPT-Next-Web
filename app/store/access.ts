@@ -39,6 +39,10 @@ const DEFAULT_ALIBABA_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/alibaba"
   : ApiPath.Alibaba;
 
+const DEFAULT_STABILITY_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/stability"
+  : ApiPath.Stability;
+
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
@@ -79,7 +83,7 @@ const DEFAULT_ACCESS_STATE = {
   alibabaApiKey: "",
 
   //stability
-  stabilityUrl: "",
+  stabilityUrl: DEFAULT_STABILITY_URL,
   stabilityApiKey: "",
 
   // server config

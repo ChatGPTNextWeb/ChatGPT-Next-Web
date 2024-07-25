@@ -1,9 +1,15 @@
-import { Stability, StoreKey } from "@/app/constant";
-import { getHeaders } from "@/app/client/api";
+import {
+  Stability,
+  StoreKey,
+  ACCESS_CODE_PREFIX,
+  ApiPath,
+} from "@/app/constant";
+import { getBearerToken } from "@/app/client/api";
 import { createPersistStore } from "@/app/utils/store";
 import { nanoid } from "nanoid";
 import { uploadImage, base64Image2Blob } from "@/app/utils/chat";
 import { models, getModelParamBasicData } from "@/app/components/sd/sd-panel";
+import { useAccessStore } from "./access";
 
 const defaultModel = {
   name: models[0].name,
@@ -57,18 +63,30 @@ export const useSdStore = createPersistStore<
         okCall?.();
       },
       stabilityRequestCall(data: any) {
+        const accessStore = useAccessStore.getState();
+        let prefix = ApiPath.Stability;
+        let bearerToken = "";
+        if (accessStore.useCustomConfig) {
+          prefix = accessStore.stabilityUrl || ApiPath.Stability;
+          bearerToken = getBearerToken(accessStore.stabilityApiKey);
+        }
+        if (!bearerToken && accessStore.enabledAccessControl()) {
+          bearerToken = getBearerToken(
+            ACCESS_CODE_PREFIX + accessStore.accessCode,
+          );
+        }
+        const headers = {
+          Accept: "application/json",
+          Authorization: bearerToken,
+        };
+        const path = `${prefix}/${Stability.GeneratePath}/${data.model}`;
         const formData = new FormData();
         for (let paramsKey in data.params) {
           formData.append(paramsKey, data.params[paramsKey]);
         }
-        const headers = getHeaders();
-        delete headers["Content-Type"];
-        fetch(`/api/stability/${Stability.GeneratePath}/${data.model}`, {
+        fetch(path, {
           method: "POST",
-          headers: {
-            ...headers,
-            Accept: "application/json",
-          },
+          headers,
           body: formData,
         })
           .then((response) => response.json())

@@ -46,6 +46,7 @@ export enum ApiPath {
   Baidu = "/api/baidu",
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
+  Stability = "/api/stability",
 }
 
 export enum SlotID {
