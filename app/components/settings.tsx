@@ -57,6 +57,7 @@ import {
   ByteDance,
   Alibaba,
   Google,
+  GoogleSafetySettingsThreshold,
   OPENAI_BASE_URL,
   Path,
   RELEASE_URL,
@@ -64,6 +65,7 @@ import {
   ServiceProvider,
   SlotID,
   UPDATE_URL,
+  Stability,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -657,6 +659,428 @@ export function Settings() {
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
 
+  const accessCodeComponent = showAccessCode && (
+    <ListItem
+      title={Locale.Settings.Access.AccessCode.Title}
+      subTitle={Locale.Settings.Access.AccessCode.SubTitle}
+    >
+      <PasswordInput
+        value={accessStore.accessCode}
+        type="text"
+        placeholder={Locale.Settings.Access.AccessCode.Placeholder}
+        onChange={(e) => {
+          accessStore.update(
+            (access) => (access.accessCode = e.currentTarget.value),
+          );
+        }}
+      />
+    </ListItem>
+  );
+
+  const useCustomConfigComponent = // Conditionally render the following ListItem based on clientConfig.isApp
+    !clientConfig?.isApp && ( // only show if isApp is false
+      <ListItem
+        title={Locale.Settings.Access.CustomEndpoint.Title}
+        subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
+      >
+        <input
+          type="checkbox"
+          checked={accessStore.useCustomConfig}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.useCustomConfig = e.currentTarget.checked),
+            )
+          }
+        ></input>
+      </ListItem>
+    );
+
+  const openAIConfigComponent = accessStore.provider ===
+    ServiceProvider.OpenAI && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.OpenAI.Endpoint.Title}
+        subTitle={Locale.Settings.Access.OpenAI.Endpoint.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.openaiUrl}
+          placeholder={OPENAI_BASE_URL}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.openaiUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.OpenAI.ApiKey.Title}
+        subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.openaiApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.openaiApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const azureConfigComponent = accessStore.provider ===
+    ServiceProvider.Azure && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Azure.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Azure.Endpoint.SubTitle + Azure.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.azureUrl}
+          placeholder={Azure.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.azureUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Azure.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.azureApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Azure.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.azureApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Azure.ApiVerion.Title}
+        subTitle={Locale.Settings.Access.Azure.ApiVerion.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.azureApiVersion}
+          placeholder="2023-08-01-preview"
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.azureApiVersion = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+    </>
+  );
+
+  const googleConfigComponent = accessStore.provider ===
+    ServiceProvider.Google && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Google.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Google.Endpoint.SubTitle +
+          Google.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.googleUrl}
+          placeholder={Google.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.googleUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Google.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Google.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.googleApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Google.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.googleApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Google.ApiVersion.Title}
+        subTitle={Locale.Settings.Access.Google.ApiVersion.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.googleApiVersion}
+          placeholder="2023-08-01-preview"
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.googleApiVersion = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Google.GoogleSafetySettings.Title}
+        subTitle={Locale.Settings.Access.Google.GoogleSafetySettings.SubTitle}
+      >
+        <Select
+          value={accessStore.googleSafetySettings}
+          onChange={(e) => {
+            accessStore.update(
+              (access) =>
+                (access.googleSafetySettings = e.target
+                  .value as GoogleSafetySettingsThreshold),
+            );
+          }}
+        >
+          {Object.entries(GoogleSafetySettingsThreshold).map(([k, v]) => (
+            <option value={v} key={k}>
+              {k}
+            </option>
+          ))}
+        </Select>
+      </ListItem>
+    </>
+  );
+
+  const anthropicConfigComponent = accessStore.provider ===
+    ServiceProvider.Anthropic && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Anthropic.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
+          Anthropic.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.anthropicUrl}
+          placeholder={Anthropic.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.anthropicUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Anthropic.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Anthropic.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.anthropicApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Anthropic.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.anthropicApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Anthropic.ApiVerion.Title}
+        subTitle={Locale.Settings.Access.Anthropic.ApiVerion.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.anthropicApiVersion}
+          placeholder={Anthropic.Vision}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.anthropicApiVersion = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+    </>
+  );
+
+  const baiduConfigComponent = accessStore.provider ===
+    ServiceProvider.Baidu && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Baidu.Endpoint.Title}
+        subTitle={Locale.Settings.Access.Baidu.Endpoint.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.baiduUrl}
+          placeholder={Baidu.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.baiduUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Baidu.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Baidu.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.baiduApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Baidu.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.baiduApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Baidu.SecretKey.Title}
+        subTitle={Locale.Settings.Access.Baidu.SecretKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.baiduSecretKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Baidu.SecretKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.baiduSecretKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const byteDanceConfigComponent = accessStore.provider ===
+    ServiceProvider.ByteDance && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.ByteDance.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.ByteDance.Endpoint.SubTitle +
+          ByteDance.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.bytedanceUrl}
+          placeholder={ByteDance.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.bytedanceUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.ByteDance.ApiKey.Title}
+        subTitle={Locale.Settings.Access.ByteDance.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.bytedanceApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.ByteDance.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.bytedanceApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const alibabaConfigComponent = accessStore.provider ===
+    ServiceProvider.Alibaba && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Alibaba.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Alibaba.Endpoint.SubTitle +
+          Alibaba.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.alibabaUrl}
+          placeholder={Alibaba.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.alibabaUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Alibaba.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Alibaba.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.alibabaApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Alibaba.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.alibabaApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const stabilityConfigComponent = accessStore.provider ===
+    ServiceProvider.Stability && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Stability.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Stability.Endpoint.SubTitle +
+          Stability.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.stabilityUrl}
+          placeholder={Stability.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.stabilityUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Stability.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Stability.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.stabilityApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Stability.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.stabilityApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -903,46 +1327,12 @@ export function Settings() {
         </List>
 
         <List id={SlotID.CustomModel}>
-          {showAccessCode && (
-            <ListItem
-              title={Locale.Settings.Access.AccessCode.Title}
-              subTitle={Locale.Settings.Access.AccessCode.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.accessCode}
-                type="text"
-                placeholder={Locale.Settings.Access.AccessCode.Placeholder}
-                onChange={(e) => {
-                  accessStore.update(
-                    (access) => (access.accessCode = e.currentTarget.value),
-                  );
-                }}
-              />
-            </ListItem>
-          )}
+          {accessCodeComponent}
 
           {!accessStore.hideUserApiKey && (
             <>
-              {
-                // Conditionally render the following ListItem based on clientConfig.isApp
-                !clientConfig?.isApp && ( // only show if isApp is false
-                  <ListItem
-                    title={Locale.Settings.Access.CustomEndpoint.Title}
-                    subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={accessStore.useCustomConfig}
-                      onChange={(e) =>
-                        accessStore.update(
-                          (access) =>
-                            (access.useCustomConfig = e.currentTarget.checked),
-                        )
-                      }
-                    ></input>
-                  </ListItem>
-                )
-              }
+              {useCustomConfigComponent}
+
               {accessStore.useCustomConfig && (
                 <>
                   <ListItem
@@ -967,378 +1357,14 @@ export function Settings() {
                     </Select>
                   </ListItem>
 
-                  {accessStore.provider === ServiceProvider.OpenAI && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.OpenAI.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.OpenAI.Endpoint.SubTitle
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.openaiUrl}
-                          placeholder={OPENAI_BASE_URL}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.openaiUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.OpenAI.ApiKey.Title}
-                        subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}
-                      >
-                        <PasswordInput
-                          value={accessStore.openaiApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.OpenAI.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.openaiApiKey = e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                    </>
-                  )}
-                  {accessStore.provider === ServiceProvider.Azure && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.Azure.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.Azure.Endpoint.SubTitle +
-                          Azure.ExampleEndpoint
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.azureUrl}
-                          placeholder={Azure.ExampleEndpoint}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.azureUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Azure.ApiKey.Title}
-                        subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
-                      >
-                        <PasswordInput
-                          value={accessStore.azureApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.Azure.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.azureApiKey = e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Azure.ApiVerion.Title}
-                        subTitle={
-                          Locale.Settings.Access.Azure.ApiVerion.SubTitle
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.azureApiVersion}
-                          placeholder="2023-08-01-preview"
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.azureApiVersion =
-                                  e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                    </>
-                  )}
-                  {accessStore.provider === ServiceProvider.Google && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.Google.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.Google.Endpoint.SubTitle +
-                          Google.ExampleEndpoint
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.googleUrl}
-                          placeholder={Google.ExampleEndpoint}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.googleUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Google.ApiKey.Title}
-                        subTitle={Locale.Settings.Access.Google.ApiKey.SubTitle}
-                      >
-                        <PasswordInput
-                          value={accessStore.googleApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.Google.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.googleApiKey = e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Google.ApiVersion.Title}
-                        subTitle={
-                          Locale.Settings.Access.Google.ApiVersion.SubTitle
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.googleApiVersion}
-                          placeholder="2023-08-01-preview"
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.googleApiVersion =
-                                  e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                    </>
-                  )}
-                  {accessStore.provider === ServiceProvider.Anthropic && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.Anthropic.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
-                          Anthropic.ExampleEndpoint
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.anthropicUrl}
-                          placeholder={Anthropic.ExampleEndpoint}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.anthropicUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Anthropic.ApiKey.Title}
-                        subTitle={
-                          Locale.Settings.Access.Anthropic.ApiKey.SubTitle
-                        }
-                      >
-                        <PasswordInput
-                          value={accessStore.anthropicApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.Anthropic.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.anthropicApiKey =
-                                  e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Anthropic.ApiVerion.Title}
-                        subTitle={
-                          Locale.Settings.Access.Anthropic.ApiVerion.SubTitle
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.anthropicApiVersion}
-                          placeholder={Anthropic.Vision}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.anthropicApiVersion =
-                                  e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                    </>
-                  )}
-                  {accessStore.provider === ServiceProvider.Baidu && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.Baidu.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.Baidu.Endpoint.SubTitle
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.baiduUrl}
-                          placeholder={Baidu.ExampleEndpoint}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.baiduUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Baidu.ApiKey.Title}
-                        subTitle={Locale.Settings.Access.Baidu.ApiKey.SubTitle}
-                      >
-                        <PasswordInput
-                          value={accessStore.baiduApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.Baidu.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.baiduApiKey = e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Baidu.SecretKey.Title}
-                        subTitle={
-                          Locale.Settings.Access.Baidu.SecretKey.SubTitle
-                        }
-                      >
-                        <PasswordInput
-                          value={accessStore.baiduSecretKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.Baidu.SecretKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.baiduSecretKey = e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                    </>
-                  )}
-
-                  {accessStore.provider === ServiceProvider.ByteDance && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.ByteDance.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.ByteDance.Endpoint.SubTitle +
-                          ByteDance.ExampleEndpoint
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.bytedanceUrl}
-                          placeholder={ByteDance.ExampleEndpoint}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.bytedanceUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.ByteDance.ApiKey.Title}
-                        subTitle={
-                          Locale.Settings.Access.ByteDance.ApiKey.SubTitle
-                        }
-                      >
-                        <PasswordInput
-                          value={accessStore.bytedanceApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.ByteDance.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.bytedanceApiKey =
-                                  e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                    </>
-                  )}
-
-                  {accessStore.provider === ServiceProvider.Alibaba && (
-                    <>
-                      <ListItem
-                        title={Locale.Settings.Access.Alibaba.Endpoint.Title}
-                        subTitle={
-                          Locale.Settings.Access.Alibaba.Endpoint.SubTitle +
-                          Alibaba.ExampleEndpoint
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.alibabaUrl}
-                          placeholder={Alibaba.ExampleEndpoint}
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.alibabaUrl = e.currentTarget.value),
-                            )
-                          }
-                        ></input>
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Alibaba.ApiKey.Title}
-                        subTitle={
-                          Locale.Settings.Access.Alibaba.ApiKey.SubTitle
-                        }
-                      >
-                        <PasswordInput
-                          value={accessStore.alibabaApiKey}
-                          type="text"
-                          placeholder={
-                            Locale.Settings.Access.Alibaba.ApiKey.Placeholder
-                          }
-                          onChange={(e) => {
-                            accessStore.update(
-                              (access) =>
-                                (access.alibabaApiKey = e.currentTarget.value),
-                            );
-                          }}
-                        />
-                      </ListItem>
-                    </>
-                  )}
+                  {openAIConfigComponent}
+                  {azureConfigComponent}
+                  {googleConfigComponent}
+                  {anthropicConfigComponent}
+                  {baiduConfigComponent}
+                  {byteDanceConfigComponent}
+                  {alibabaConfigComponent}
+                  {stabilityConfigComponent}
                 </>
               )}
             </>
