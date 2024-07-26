@@ -39,6 +39,10 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
+const Artifacts = dynamic(async () => (await import("./artifacts")).Artifacts, {
+  loading: () => <Loading noLogo />,
+});
+
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
 });
@@ -141,6 +145,7 @@ export function WindowContent(props: { children: React.ReactNode }) {
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
+  const isArtifact = location.pathname.includes(Path.Artifacts);
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isSd = location.pathname === Path.Sd;
@@ -154,6 +159,13 @@ function Screen() {
     loadAsyncGoogleFont();
   }, []);
 
+  if (isArtifact) {
+    return (
+      <Routes>
+        <Route path="/artifacts/:id" element={<Artifacts />} />
+      </Routes>
+    );
+  }
   const renderContent = () => {
     if (isAuth) return <AuthPage />;
     if (isSd) return <Sd />;
