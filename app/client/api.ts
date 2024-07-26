@@ -314,6 +314,10 @@ export function getHeaders(ignoreHeaders?: boolean) {
 }
 
 export function getClientApi(provider: ServiceProvider): ClientApi {
+  const accessStore = useAccessStore.getState();
+  if (accessStore.isUseOpenAIEndpointForAllModels) {
+    return new ClientApi(ModelProvider.GPT);
+  }
   switch (provider) {
     case ServiceProvider.Google:
       return new ClientApi(ModelProvider.GeminiPro);
