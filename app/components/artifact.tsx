@@ -126,6 +126,7 @@ export function ArtifactShareButton({
           bordered
           title={Locale.Export.Artifact.Title}
           onClick={() => {
+            if (loading) return;
             setLoading(true);
             upload(getCode())
               .then((res) => {
