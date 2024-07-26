@@ -35,6 +35,7 @@ export enum Path {
   Auth = "/auth",
   Sd = "/sd",
   SdNew = "/sd-new",
+  Artifacts = "/artifacts",
   Reward = "/reward",
 }
 
@@ -48,6 +49,7 @@ export enum ApiPath {
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
   Stability = "/api/stability",
+  Artifacts = "/api/artifacts",
 }
 
 export enum SlotID {
@@ -58,6 +60,10 @@ export enum SlotID {
 export enum FileName {
   Masks = "masks.json",
   Prompts = "prompts.json",
+}
+
+export enum Plugin {
+  Artifacts = "artifacts",
 }
 
 export enum StoreKey {
