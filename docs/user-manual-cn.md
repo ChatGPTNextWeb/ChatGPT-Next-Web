@@ -69,7 +69,7 @@
 ### 全局设置项的含义
 
 - model / temperature / top_p / max_tokens / presence_penalty / frequency_penalty 均为 ChatGPT 的设置参数，详情请查阅 OpenAI 官方文档，再次不再赘述；
-- 注入系统级提示信息、用户输入预处理：详情请看 [https://github.com/Yidadaa/ChatGPT-Next-Web/issues/2144](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/2144)
+- 注入系统级提示信息、用户输入预处理：详情请看 [https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/2144](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/2144)
 - 附带历史消息数：用户每次输入消息并发送时，所携带的最近 n 条消息数量；
 - 历史消息长度压缩阈值：当已经产生的聊天字数达到该数值以后，则自动触发历史摘要功能；
 - 历史摘要：是否启用历史摘要功能。

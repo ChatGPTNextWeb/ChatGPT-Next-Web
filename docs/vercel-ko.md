@@ -14,7 +14,7 @@
 
 ![vercel-create-3](./images/vercel/vercel-create-3.jpg)
 1. 프로젝트 구성 페이지에서 환경 변수 설정을 클릭하여 환경 변수 설정을 시작합니다;
-2. OPENAI_API_KEY, CODE ([Access Code](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/357296986609c14de10bf210871d30e2f67a8784/docs/faq-cn.md#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F-code-%E6%98%AF%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E8%AE%BE%E7%BD%AE%E5%90%97)). 환경 변수를 설정합니다;
+2. OPENAI_API_KEY, CODE ([Access Code](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/blob/357296986609c14de10bf210871d30e2f67a8784/docs/faq-cn.md#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F-code-%E6%98%AF%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E8%AE%BE%E7%BD%AE%E5%90%97)). 환경 변수를 설정합니다;
 3. 환경 변수의 값을 입력합니다;
 4. 추가를 클릭하여 환경 변수 추가를 확인합니다;
 5. OPENAI_API_KEY를 추가해야 하며, 그렇지 않으면 작동하지 않습니다;
