@@ -38,6 +38,7 @@ export const createEmptyMask = () =>
     lang: getLang(),
     builtin: false,
     createdAt: Date.now(),
+    plugin: [Plugin.Artifacts],
   }) as Mask;
 
 export const useMaskStore = createPersistStore(
