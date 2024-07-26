@@ -635,8 +635,8 @@ export function ChatActions(props: {
           defaultSelectedValue={chatStore.currentSession().mask?.plugin}
           items={[
             {
-              title: Locale.Plugin.Artifact,
-              value: Plugin.Artifact,
+              title: Locale.Plugin.Artifacts,
+              value: Plugin.Artifacts,
             },
           ]}
           onClose={() => setShowPluginSelector(false)}

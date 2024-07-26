@@ -106,8 +106,8 @@ const en: LocaleType = {
       Toast: "Capturing Image...",
       Modal: "Long press or right click to save image",
     },
-    Artifact: {
-      Title: "Share Artifact",
+    Artifacts: {
+      Title: "Share Artifacts",
       Error: "Share Error",
     },
   },
@@ -468,7 +468,7 @@ const en: LocaleType = {
   },
   Plugin: {
     Name: "Plugin",
-    Artifact: "Artifact",
+    Artifacts: "Artifacts",
   },
   Discovery: {
     Name: "Discovery",

@@ -13,7 +13,7 @@ import { Modal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs } from "../utils";
 import { Path, ApiPath, REPO_URL } from "@/app/constant";
 import { Loading } from "./home";
-import styles from "./artifact.module.scss";
+import styles from "./artifacts.module.scss";
 
 export function HTMLPreview(props: {
   code: string;
@@ -72,7 +72,7 @@ export function HTMLPreview(props: {
 
   return (
     <iframe
-      className={styles["artifact-iframe"]}
+      className={styles["artifacts-iframe"]}
       id={frameId.current}
       ref={ref}
       sandbox="allow-forms allow-modals allow-scripts"
@@ -83,7 +83,7 @@ export function HTMLPreview(props: {
   );
 }
 
-export function ArtifactShareButton({
+export function ArtifactsShareButton({
   getCode,
   id,
   style,
@@ -98,13 +98,13 @@ export function ArtifactShareButton({
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
   const shareUrl = useMemo(
-    () => [location.origin, "#", Path.Artifact, "/", name].join(""),
+    () => [location.origin, "#", Path.Artifacts, "/", name].join(""),
     [name],
   );
   const upload = (code: string) =>
     id
       ? Promise.resolve({ id })
-      : fetch(ApiPath.Artifact, {
+      : fetch(ApiPath.Artifacts, {
           method: "POST",
           body: code,
         })
@@ -116,7 +116,7 @@ export function ArtifactShareButton({
             throw Error();
           })
           .catch((e) => {
-            showToast(Locale.Export.Artifact.Error);
+            showToast(Locale.Export.Artifacts.Error);
           });
   return (
     <>
@@ -124,7 +124,7 @@ export function ArtifactShareButton({
         <IconButton
           icon={loading ? <LoadingButtonIcon /> : <ExportIcon />}
           bordered
-          title={Locale.Export.Artifact.Title}
+          title={Locale.Export.Artifacts.Title}
           onClick={() => {
             if (loading) return;
             setLoading(true);
@@ -142,7 +142,7 @@ export function ArtifactShareButton({
       {show && (
         <div className="modal-mask">
           <Modal
-            title={Locale.Export.Artifact.Title}
+            title={Locale.Export.Artifacts.Title}
             onClose={() => setShow(false)}
             actions={[
               <IconButton
@@ -179,7 +179,7 @@ export function ArtifactShareButton({
   );
 }
 
-export function Artifact() {
+export function Artifacts() {
   const { id } = useParams();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
@@ -187,7 +187,7 @@ export function Artifact() {
 
   useEffect(() => {
     if (id) {
-      fetch(`${ApiPath.Artifact}?id=${id}`)
+      fetch(`${ApiPath.Artifacts}?id=${id}`)
         .then((res) => {
           if (res.status > 300) {
             throw Error("can not get content");
@@ -197,21 +197,25 @@ export function Artifact() {
         .then((res) => res.text())
         .then(setCode)
         .catch((e) => {
-          showToast(Locale.Export.Artifact.Error);
+          showToast(Locale.Export.Artifacts.Error);
         });
     }
   }, [id]);
 
   return (
-    <div className={styles["artifact"]}>
-      <div className={styles["artifact-header"]}>
+    <div className={styles["artifacts"]}>
+      <div className={styles["artifacts-header"]}>
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
           <IconButton bordered icon={<GithubIcon />} shadow />
         </a>
-        <div className={styles["artifact-title"]}>NextChat Artifact</div>
-        <ArtifactShareButton id={id} getCode={() => code} fileName={fileName} />
+        <div className={styles["artifacts-title"]}>NextChat Artifacts</div>
+        <ArtifactsShareButton
+          id={id}
+          getCode={() => code}
+          fileName={fileName}
+        />
       </div>
-      <div className={styles["artifact-content"]}>
+      <div className={styles["artifacts-content"]}>
         {loading && <Loading />}
         {code && (
           <HTMLPreview

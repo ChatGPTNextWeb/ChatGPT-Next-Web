@@ -39,7 +39,7 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
-const Artifact = dynamic(async () => (await import("./artifact")).Artifact, {
+const Artifacts = dynamic(async () => (await import("./artifacts")).Artifacts, {
   loading: () => <Loading noLogo />,
 });
 
@@ -141,7 +141,7 @@ export function WindowContent(props: { children: React.ReactNode }) {
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
-  const isArtifact = location.pathname.includes(Path.Artifact);
+  const isArtifact = location.pathname.includes(Path.Artifacts);
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
   const isSd = location.pathname === Path.Sd;
@@ -158,7 +158,7 @@ function Screen() {
   if (isArtifact) {
     return (
       <Routes>
-        <Route path="/artifact/:id" element={<Artifact />} />
+        <Route path="/artifacts/:id" element={<Artifacts />} />
       </Routes>
     );
   }

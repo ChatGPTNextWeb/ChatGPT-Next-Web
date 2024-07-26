@@ -13,7 +13,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
-import { ArtifactShareButton, HTMLPreview } from "./artifact";
+import { ArtifactsShareButton, HTMLPreview } from "./artifacts";
 import { Plugin } from "../constant";
 import { useChatStore } from "../store";
 export function Mermaid(props: { code: string }) {
@@ -92,7 +92,7 @@ export function PreCode(props: { children: any }) {
   }, [refText]);
 
   const enableArtifacts = useMemo(
-    () => plugins?.includes(Plugin.Artifact),
+    () => plugins?.includes(Plugin.Artifacts),
     [plugins],
   );
 
@@ -115,7 +115,7 @@ export function PreCode(props: { children: any }) {
       )}
       {htmlCode.length > 0 && enableArtifacts && (
         <FullScreen className="no-dark html" right={70}>
-          <ArtifactShareButton
+          <ArtifactsShareButton
             style={{ position: "absolute", right: 20, top: 10 }}
             getCode={() => htmlCode}
           />

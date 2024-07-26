@@ -104,7 +104,7 @@ const cn = {
       Toast: "正在生成截图",
       Modal: "长按或右键保存图片",
     },
-    Artifact: {
+    Artifacts: {
       Title: "分享页面",
       Error: "分享失败",
     },
@@ -461,7 +461,7 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
-    Artifact: "Artifact",
+    Artifacts: "Artifacts",
   },
   Discovery: {
     Name: "发现",

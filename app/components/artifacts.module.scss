@@ -1,4 +1,4 @@
-.artifact {
+.artifacts {
   display: flex;
   width: 100%;
   height: 100%;
@@ -23,7 +23,7 @@
   }
 }
 
-.artifact-iframe {
+.artifacts-iframe {
   width: 100%;
   border: var(--border-in-light);
   border-radius: 6px;
