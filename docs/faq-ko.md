@@ -33,11 +33,11 @@ Docker 버전은 사실상 안정된 버전과 같습니다. latest Docker는 �
 이것은 당신이 사용자 정의한 접근 비밀번호입니다. 다음 중 하나를 선택할 수 있습니다:
 
 1. 설정하지 않습니다. 해당 환경 변수를 삭제합니다. 주의: 이 경우 누구나 프로젝트에 접근할 수 있습니다.
-2. 프로젝트를 배포할 때 환경 변수 CODE를 설정합니다(여러 비밀번호는 쉼표로 구분). 접근 비밀번호를 설정하면 사용자는 설정 페이지에서 접근 비밀번호를 입력해야만 사용할 수 있습니다. [관련 설명 참조](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
+2. 프로젝트를 배포할 때 환경 변수 CODE를 설정합니다(여러 비밀번호는 쉼표로 구분). 접근 비밀번호를 설정하면 사용자는 설정 페이지에서 접근 비밀번호를 입력해야만 사용할 수 있습니다. [관련 설명 참조](https://github.com/ChatGPT-Next-Web/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
 
 ## 왜 내 배포 버전에 스트리밍 응답이 없나요?
 
-> 관련 토론: [#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
+> 관련 토론: [#386](https://github.com/ChatGPT-Next-Web/ChatGPT-Next-Web/issues/386)
 
 nginx 리버스 프록시를 사용하는 경우, 설정 파일에 다음 코드를 추가해야 합니다:
 
@@ -80,7 +80,7 @@ netlify에서 배포하는 경우, 이 문제는 아직 해결되지 않았습�
 
 ## 도커 배포 후 네트워크 오류가 발생하는 이유는 무엇인가요?
 
-https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569 에서 토론을 참조하세요.
+https://github.com/ChatGPT-Next-Web/ChatGPT-Next-Web/issues/1569 에서 토론을 참조하세요.
 
 ## 사용 관련 문제
 
@@ -195,11 +195,11 @@ OpenAI는 특정 지역의 신용카드만 사용할 수 있습니다(중국 신
 
 ## Azure OpenAI 인터페이스 사용 방법
 
-참조: [#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
+참조: [#371](https://github.com/ChatGPT-Next-Web/ChatGPT-Next-Web/issues/371)
 
 ## 내 토큰이 왜 이렇게 빨리 소모되나요?
 
-> 관련 토론: [#518](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/518)
+> 관련 토론: [#518](https://github.com/ChatGPT-Next-Web/ChatGPT-Next-Web/issues/518)
 
 - GPT 4에 액세스 권한이 있고 매일 GPT 4 API를 사용하는 경우, GPT 4 가격이 GPT 3.5의 약 15배이기 때문에 청구 금액이 급격히 증가합니다;
 - GPT 3.5를 자주 사용하지 않는데도 요금이 급격하게 증가하는 경우 아래 단계를 따라 확인하시기 바랍니다:
