@@ -441,10 +441,13 @@ export class ChatGPTApi implements LLMApi {
 
   async toolAgentChat(options: AgentChatOptions) {
     const visionModel = isVisionModel(options.config.model);
-    const messages = options.messages.map((v) => ({
-      role: v.role,
-      content: visionModel ? v.content : getMessageTextContent(v),
-    }));
+    const messages: AgentChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = visionModel
+        ? await preProcessImageContent(v.content)
+        : getMessageTextContent(v);
+      messages.push({ role: v.role, content });
+    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
