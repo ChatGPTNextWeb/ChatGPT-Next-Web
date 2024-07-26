@@ -48,14 +48,12 @@ export function HTMLPreview(props: {
   }, []);
 
   const height = useMemo(() => {
-    const parentHeight = props.height || 600;
-    if (props.autoHeight !== false) {
-      return iframeHeight + 40 > parentHeight
-        ? parentHeight
-        : iframeHeight + 40;
-    } else {
-      return parentHeight;
+    if (!props.autoHeight) return props.height || 600;
+    if (typeof props.height === "string") {
+      return props.height;
     }
+    const parentHeight = props.height || 600;
+    return iframeHeight + 40 > parentHeight ? parentHeight : iframeHeight + 40;
   }, [props.autoHeight, props.height, iframeHeight]);
 
   const srcDoc = useMemo(() => {
