@@ -7,7 +7,6 @@ import CloseIcon from "../icons/close.svg";
 import DragIcon from "../icons/drag.svg";
 import GithubIcon from "../icons/github.svg";
 import MaskIcon from "../icons/mask.svg";
-import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
 import Locale from "../locales";
@@ -28,7 +27,6 @@ import { signOut } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
-import dynamic from "next/dynamic";
 import { showConfirm, Selector } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
