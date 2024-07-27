@@ -1,5 +1,8 @@
 <div align="center">
-<img src="./docs/images/ent.svg" alt="icon"/>
+
+<a href='#企业版'>
+  <img src="./docs/images/ent.svg" alt="icon"/>
+</a>
 
 <h1 align="center">NextChat (ChatGPT Next Web)</h1>
 
@@ -322,6 +325,14 @@ You can use this option if you want to increase the number of webdav service add
 ### `DEFAULT_INPUT_TEMPLATE` (optional)
 
 Customize the default template used to initialize the User Input Preprocessing configuration item in Settings.
+
+### `STABILITY_API_KEY` (optional)
+
+Stability API key.
+
+### `STABILITY_URL` (optional)
+
+Customize Stability API url.
 
 ## Requirements
 
