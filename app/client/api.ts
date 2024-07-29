@@ -1,7 +1,17 @@
 import { getClientConfig } from "../config/client";
-import { ACCESS_CODE_PREFIX } from "../constant";
-import { ChatMessage, ModelType, useAccessStore } from "../store";
+import {
+  ACCESS_CODE_PREFIX,
+  Azure,
+  ModelProvider,
+  ServiceProvider,
+} from "../constant";
+import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { GeminiProApi } from "./platforms/google";
+import { ClaudeApi } from "./platforms/anthropic";
+import { ErnieApi } from "./platforms/baidu";
+import { DoubaoApi } from "./platforms/bytedance";
+import { QwenApi } from "./platforms/alibaba";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -9,13 +19,22 @@ export type MessageRole = (typeof ROLES)[number];
 export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
 export type ChatModel = ModelType;
 
+export interface MultimodalContent {
+  type: "text" | "image_url";
+  text?: string;
+  image_url?: {
+    url: string;
+  };
+}
+
 export interface RequestMessage {
   role: MessageRole;
-  content: string;
+  content: string | MultimodalContent[];
 }
 
 export interface LLMConfig {
   model: string;
+  providerName?: string;
   temperature?: number;
   top_p?: number;
   stream?: boolean;
@@ -40,7 +59,15 @@ export interface LLMUsage {
 
 export interface LLMModel {
   name: string;
+  displayName?: string;
   available: boolean;
+  provider: LLMModelProvider;
+}
+
+export interface LLMModelProvider {
+  id: string;
+  providerName: string;
+  providerType: string;
 }
 
 export abstract class LLMApi {
@@ -73,8 +100,26 @@ interface ChatProvider {
 export class ClientApi {
   public llm: LLMApi;
 
-  constructor() {
-    this.llm = new ChatGPTApi();
+  constructor(provider: ModelProvider = ModelProvider.GPT) {
+    switch (provider) {
+      case ModelProvider.GeminiPro:
+        this.llm = new GeminiProApi();
+        break;
+      case ModelProvider.Claude:
+        this.llm = new ClaudeApi();
+        break;
+      case ModelProvider.Ernie:
+        this.llm = new ErnieApi();
+        break;
+      case ModelProvider.Doubao:
+        this.llm = new DoubaoApi();
+        break;
+      case ModelProvider.Qwen:
+        this.llm = new QwenApi();
+        break;
+      default:
+        this.llm = new ChatGPTApi();
+    }
   }
 
   config() {}
@@ -93,7 +138,7 @@ export class ClientApi {
         {
           from: "human",
           value:
-            "Share from [ChatGPT Next Web]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+            "Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web",
         },
       ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
@@ -123,29 +168,106 @@ export class ClientApi {
   }
 }
 
-export const api = new ClientApi();
+export function getBearerToken(
+  apiKey: string,
+  noBearer: boolean = false,
+): string {
+  return validString(apiKey)
+    ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
+    : "";
+}
+
+export function validString(x: string): boolean {
+  return x?.length > 0;
+}
 
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
-  let headers: Record<string, string> = {
+  const chatStore = useChatStore.getState();
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "x-requested-with": "XMLHttpRequest",
+    Accept: "application/json",
   };
 
-  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
-  const validString = (x: string) => x && x.length > 0;
+  const clientConfig = getClientConfig();
 
-  // use user's api key first
-  if (validString(accessStore.token)) {
-    headers.Authorization = makeBearer(accessStore.token);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    validString(accessStore.accessCode)
-  ) {
-    headers.Authorization = makeBearer(
+  function getConfig() {
+    const modelConfig = chatStore.currentSession().mask.modelConfig;
+    const isGoogle = modelConfig.providerName == ServiceProvider.Google;
+    const isAzure = modelConfig.providerName === ServiceProvider.Azure;
+    const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
+    const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
+    const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
+    const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
+    const isEnabledAccessControl = accessStore.enabledAccessControl();
+    const apiKey = isGoogle
+      ? accessStore.googleApiKey
+      : isAzure
+      ? accessStore.azureApiKey
+      : isAnthropic
+      ? accessStore.anthropicApiKey
+      : isByteDance
+      ? accessStore.bytedanceApiKey
+      : isAlibaba
+      ? accessStore.alibabaApiKey
+      : accessStore.openaiApiKey;
+    return {
+      isGoogle,
+      isAzure,
+      isAnthropic,
+      isBaidu,
+      isByteDance,
+      isAlibaba,
+      apiKey,
+      isEnabledAccessControl,
+    };
+  }
+
+  function getAuthHeader(): string {
+    return isAzure ? "api-key" : isAnthropic ? "x-api-key" : "Authorization";
+  }
+
+  const {
+    isGoogle,
+    isAzure,
+    isAnthropic,
+    isBaidu,
+    apiKey,
+    isEnabledAccessControl,
+  } = getConfig();
+  // when using google api in app, not set auth header
+  if (isGoogle && clientConfig?.isApp) return headers;
+  // when using baidu api in app, not set auth header
+  if (isBaidu && clientConfig?.isApp) return headers;
+
+  const authHeader = getAuthHeader();
+
+  const bearerToken = getBearerToken(apiKey, isAzure || isAnthropic);
+
+  if (bearerToken) {
+    headers[authHeader] = bearerToken;
+  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+    headers["Authorization"] = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }
 
   return headers;
+}
+
+export function getClientApi(provider: ServiceProvider): ClientApi {
+  switch (provider) {
+    case ServiceProvider.Google:
+      return new ClientApi(ModelProvider.GeminiPro);
+    case ServiceProvider.Anthropic:
+      return new ClientApi(ModelProvider.Claude);
+    case ServiceProvider.Baidu:
+      return new ClientApi(ModelProvider.Ernie);
+    case ServiceProvider.ByteDance:
+      return new ClientApi(ModelProvider.Doubao);
+    case ServiceProvider.Alibaba:
+      return new ClientApi(ModelProvider.Qwen);
+    default:
+      return new ClientApi(ModelProvider.GPT);
+  }
 }

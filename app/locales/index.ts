@@ -1,6 +1,8 @@
 import cn from "./cn";
 import en from "./en";
+import pt from "./pt";
 import tw from "./tw";
+import id from "./id";
 import fr from "./fr";
 import es from "./es";
 import it from "./it";
@@ -14,6 +16,7 @@ import cs from "./cs";
 import ko from "./ko";
 import ar from "./ar";
 import bn from "./bn";
+import sk from "./sk";
 import { merge } from "../utils/merge";
 
 import type { LocaleType } from "./cn";
@@ -23,8 +26,10 @@ const ALL_LANGS = {
   cn,
   en,
   tw,
+  pt,
   jp,
   ko,
+  id,
   fr,
   es,
   it,
@@ -36,6 +41,7 @@ const ALL_LANGS = {
   no,
   ar,
   bn,
+  sk,
 };
 
 export type Lang = keyof typeof ALL_LANGS;
@@ -45,9 +51,11 @@ export const AllLangs = Object.keys(ALL_LANGS) as Lang[];
 export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   cn: "简体中文",
   en: "English",
+  pt: "Português",
   tw: "繁體中文",
   jp: "日本語",
   ko: "한국어",
+  id: "Indonesia",
   fr: "Français",
   es: "Español",
   it: "Italiano",
@@ -59,6 +67,7 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   no: "Nynorsk",
   ar: "العربية",
   bn: "বাংলা",
+  sk: "Slovensky",
 };
 
 const LANG_KEY = "lang";
@@ -88,7 +97,17 @@ function setItem(key: string, value: string) {
 
 function getLanguage() {
   try {
-    return navigator.language.toLowerCase();
+    const locale = new Intl.Locale(navigator.language).maximize();
+    const region = locale?.region?.toLowerCase();
+    // 1. check region code in ALL_LANGS
+    if (AllLangs.includes(region as Lang)) {
+      return region as Lang;
+    }
+    // 2. check language code in ALL_LANGS
+    if (AllLangs.includes(locale.language as Lang)) {
+      return locale.language as Lang;
+    }
+    return DEFAULT_LANG;
   } catch {
     return DEFAULT_LANG;
   }
@@ -101,18 +120,20 @@ export function getLang(): Lang {
     return savedLang as Lang;
   }
 
-  const lang = getLanguage();
-
-  for (const option of AllLangs) {
-    if (lang.includes(option)) {
-      return option;
-    }
-  }
-
-  return DEFAULT_LANG;
+  return getLanguage();
 }
 
 export function changeLang(lang: Lang) {
   setItem(LANG_KEY, lang);
   location.reload();
+}
+
+export function getISOLang() {
+  const isoLangString: Record<string, string> = {
+    cn: "zh-Hans",
+    tw: "zh-Hant",
+  };
+
+  const lang = getLang();
+  return isoLangString[lang] ?? lang;
 }

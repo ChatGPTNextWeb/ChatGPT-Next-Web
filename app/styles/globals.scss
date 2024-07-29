@@ -86,10 +86,11 @@
     @include dark;
   }
 }
+
 html {
   height: var(--full-height);
 
-  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+  font-family: "Noto Sans", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
     "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
@@ -105,14 +106,19 @@ body {
   align-items: center;
   user-select: none;
   touch-action: pan-x pan-y;
+  overflow: hidden;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
   }
+
+  *:focus-visible {
+    outline: none;
+  }
 }
 
 ::-webkit-scrollbar {
-  --bar-width: 5px;
+  --bar-width: 10px;
   width: var(--bar-width);
   height: var(--bar-width);
 }
@@ -348,11 +354,15 @@ pre {
   justify-content: center;
   border: var(--border-in-light);
   box-shadow: var(--card-shadow);
-  border-radius: 10px;
+  border-radius: 11px;
 }
 
 .one-line {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.copyable {
+  user-select: text;
 }

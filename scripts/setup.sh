@@ -10,7 +10,7 @@ case "$(uname -s)" in
         exit 1
       fi
     else
-      if [[ ! "$(cat /etc/*-release | grep '^ID=')" =~ ^(ID=\"ubuntu\")|(ID=\"centos\")|(ID=\"arch\")$ ]]; then
+      if [[ !"$(cat /etc/*-release | grep '^ID=')" =~ ^(ID=\"ubuntu\")|(ID=\"centos\")|(ID=\"arch\")|(ID=\"debian\")$ ]]; then
         echo "Unsupported Linux distribution."
         exit 1
       fi
@@ -32,6 +32,9 @@ if ! command -v node >/dev/null || ! command -v git >/dev/null || ! command -v y
       if [[ "$(cat /etc/*-release | grep '^ID=')" = "ID=ubuntu" ]]; then
         sudo apt-get update
         sudo apt-get -y install nodejs git yarn
+      elif [[ "$(cat /etc/*-release | grep '^ID=')" = "ID=debian" ]]; then
+        sudo apt-get update
+        sudo apt-get -y install nodejs git yarn
       elif [[ "$(cat /etc/*-release | grep '^ID=')" = "ID=centos" ]]; then
         sudo yum -y install epel-release
         sudo yum -y install nodejs git yarn
@@ -51,7 +54,7 @@ if ! command -v node >/dev/null || ! command -v git >/dev/null || ! command -v y
 fi
 
 # Clone the repository and install dependencies
-git clone https://github.com/Yidadaa/ChatGPT-Next-Web
+git clone https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web
 cd ChatGPT-Next-Web
 yarn install
 

@@ -12,12 +12,13 @@ import {
 import { useChatStore } from "../store";
 
 import Locale from "../locales";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
 import { useRef, useEffect } from "react";
 import { showConfirm } from "./ui-lib";
+import { useMobileScreen } from "../utils";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -39,12 +40,16 @@ export function ChatItem(props: {
       });
     }
   }, [props.selected]);
+
+  const { pathname: currentPath } = useLocation();
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
           className={`${styles["chat-item"]} ${
-            props.selected && styles["chat-item-selected"]
+            props.selected &&
+            (currentPath === Path.Chat || currentPath === Path.Home) &&
+            styles["chat-item-selected"]
           }`}
           onClick={props.onClick}
           ref={(ele) => {
@@ -60,7 +65,10 @@ export function ChatItem(props: {
           {props.narrow ? (
             <div className={styles["chat-item-narrow"]}>
               <div className={styles["chat-item-avatar"] + " no-dark"}>
-                <MaskAvatar mask={props.mask} />
+                <MaskAvatar
+                  avatar={props.mask.avatar}
+                  model={props.mask.modelConfig.model}
+                />
               </div>
               <div className={styles["chat-item-narrow-count"]}>
                 {props.count}
@@ -80,7 +88,11 @@ export function ChatItem(props: {
 
           <div
             className={styles["chat-item-delete"]}
-            onClickCapture={props.onDelete}
+            onClickCapture={(e) => {
+              props.onDelete?.();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
           >
             <DeleteIcon />
           </div>
@@ -101,6 +113,7 @@ export function ChatList(props: { narrow?: boolean }) {
   );
   const chatStore = useChatStore();
   const navigate = useNavigate();
+  const isMobileScreen = useMobileScreen();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -142,7 +155,7 @@ export function ChatList(props: { narrow?: boolean }) {
                 }}
                 onDelete={async () => {
                   if (
-                    !props.narrow ||
+                    (!props.narrow && !isMobileScreen) ||
                     (await showConfirm(Locale.Home.DeleteChat))
                   ) {
                     chatStore.deleteSession(i);
