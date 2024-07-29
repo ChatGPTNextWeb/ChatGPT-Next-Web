@@ -62,7 +62,7 @@
     "lint-staged": "^13.2.2",
     "prettier": "^3.0.2",
     "tsx": "^4.16.0",
-    "typescript": "5.2.2",
+    "typescript": "5.5.4",
     "watch": "^1.0.2",
     "webpack": "^5.88.1"
   },
