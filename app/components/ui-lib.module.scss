@@ -61,6 +61,19 @@
       font-weight: normal;
     }
   }
+
+  &.vertical{
+    flex-direction: column;
+    align-items: start;
+    .list-header{
+      .list-item-title{
+        margin-bottom: 5px;
+      }
+      .list-item-sub-title{
+        margin-bottom: 2px;
+      }
+    }
+  }
 }
 
 .list {
@@ -291,7 +304,12 @@
   justify-content: center;
   z-index: 999;
 
+  .selector-item-disabled{
+    opacity: 0.6;
+  }
+
   &-content {
+    min-width: 300px;
     .list {
       max-height: 90vh;
       overflow-x: hidden;

@@ -8,11 +8,23 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
+export const STABILITY_BASE_URL = "https://api.stability.ai";
+
 export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
+
+export const BAIDU_BASE_URL = "https://aip.baidubce.com";
+export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
+
+export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
+
+export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+
+export const CACHE_URL_PREFIX = "/api/cache";
+export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
 export enum Path {
   Login = "/login",
@@ -21,13 +33,23 @@ export enum Path {
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
-  Auth = "/b-auth", //暂时修改
+  Auth = "/auth",
+  Sd = "/sd",
+  SdNew = "/sd-new",
+  Artifacts = "/artifacts",
 }
 
 export enum ApiPath {
   Cors = "",
+  Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
+  Google = "/api/google",
+  Baidu = "/api/baidu",
+  ByteDance = "/api/bytedance",
+  Alibaba = "/api/alibaba",
+  Stability = "/api/stability",
+  Artifacts = "/api/artifacts",
 }
 
 export enum SlotID {
@@ -40,6 +62,10 @@ export enum FileName {
   Prompts = "prompts.json",
 }
 
+export enum Plugin {
+  Artifacts = "artifacts",
+}
+
 export enum StoreKey {
   Chat = "chat-next-web-store",
   Access = "access-control",
@@ -48,6 +74,7 @@ export enum StoreKey {
   Prompt = "prompt-store",
   Update = "chat-update",
   Sync = "sync",
+  SdList = "sd-list",
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;
@@ -71,15 +98,37 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  Baidu = "Baidu",
+  ByteDance = "ByteDance",
+  Alibaba = "Alibaba",
+  Stability = "Stability",
+}
+
+// Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
+// BLOCK_NONE will not block any content, and BLOCK_ONLY_HIGH will block only high-risk content.
+export enum GoogleSafetySettingsThreshold {
+  BLOCK_NONE = "BLOCK_NONE",
+  BLOCK_ONLY_HIGH = "BLOCK_ONLY_HIGH",
+  BLOCK_MEDIUM_AND_ABOVE = "BLOCK_MEDIUM_AND_ABOVE",
+  BLOCK_LOW_AND_ABOVE = "BLOCK_LOW_AND_ABOVE",
   AWS = "AWS",
 }
 
 export enum ModelProvider {
+  Stability = "Stability",
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Ernie = "Ernie",
+  Doubao = "Doubao",
+  Qwen = "Qwen",
   Bedrock = "Bedrock",
 }
+
+export const Stability = {
+  GeneratePath: "v2beta/stable-image/generate",
+  ExampleEndpoint: "https://api.stability.ai",
+};
 
 export const Anthropic = {
   ChatPath: "v1/messages",
@@ -96,12 +145,45 @@ export const OpenaiPath = {
 };
 
 export const Azure = {
+  ChatPath: (deployName: string, apiVersion: string) =>
+    `deployments/${deployName}/chat/completions?api-version=${apiVersion}`,
   ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
 };
 
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
-  ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
+  ChatPath: (modelName: string) =>
+    `v1beta/models/${modelName}:streamGenerateContent`,
+};
+
+export const Baidu = {
+  ExampleEndpoint: BAIDU_BASE_URL,
+  ChatPath: (modelName: string) => {
+    let endpoint = modelName;
+    if (modelName === "ernie-4.0-8k") {
+      endpoint = "completions_pro";
+    }
+    if (modelName === "ernie-4.0-8k-preview-0518") {
+      endpoint = "completions_adv_pro";
+    }
+    if (modelName === "ernie-3.5-8k") {
+      endpoint = "completions";
+    }
+    if (modelName === "ernie-speed-8k") {
+      endpoint = "ernie_speed";
+    }
+    return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
+  },
+};
+
+export const ByteDance = {
+  ExampleEndpoint: "https://ark.cn-beijing.volces.com/api/",
+  ChatPath: "api/v3/chat/completions",
+};
+
+export const Alibaba = {
+  ExampleEndpoint: ALIBABA_BASE_URL,
+  ChatPath: "v1/services/aigc/text-generation/generation",
 };
 
 export const AWS = {
@@ -128,7 +210,7 @@ Latex inline: \\(x^2\\)
 Latex block: $$e=mc^2$$
 `;
 
-export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+export const SUMMARIZE_MODEL = "gpt-4o-mini";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
@@ -138,6 +220,8 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gpt-4-turbo-preview": "2023-12",
   "gpt-4o": "2023-10",
   "gpt-4o-2024-05-13": "2023-10",
+  "gpt-4o-mini": "2023-10",
+  "gpt-4o-mini-2024-07-18": "2023-10",
   "gpt-4-vision-preview": "2023-04",
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
@@ -157,8 +241,11 @@ const openaiModels = [
   "gpt-4-turbo-preview",
   "gpt-4o",
   "gpt-4o-2024-05-13",
+  "gpt-4o-mini",
+  "gpt-4o-mini-2024-07-18",
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
+  "gpt-4-1106-preview",
 ];
 
 const googleModels = [
@@ -175,6 +262,40 @@ const anthropicModels = [
   "claude-3-sonnet-20240229",
   "claude-3-opus-20240229",
   "claude-3-haiku-20240307",
+  "claude-3-5-sonnet-20240620",
+];
+
+const baiduModels = [
+  "ernie-4.0-turbo-8k",
+  "ernie-4.0-8k",
+  "ernie-4.0-8k-preview",
+  "ernie-4.0-8k-preview-0518",
+  "ernie-4.0-8k-latest",
+  "ernie-3.5-8k",
+  "ernie-3.5-8k-0205",
+  "ernie-speed-128k",
+  "ernie-speed-8k",
+  "ernie-lite-8k",
+  "ernie-tiny-8k",
+];
+
+const bytedanceModels = [
+  "Doubao-lite-4k",
+  "Doubao-lite-32k",
+  "Doubao-lite-128k",
+  "Doubao-pro-4k",
+  "Doubao-pro-32k",
+  "Doubao-pro-128k",
+];
+
+const alibabaModes = [
+  "qwen-turbo",
+  "qwen-plus",
+  "qwen-max",
+  "qwen-max-0428",
+  "qwen-max-0403",
+  "qwen-max-0107",
+  "qwen-max-longcontext",
 ];
 
 const bedrockModels = [
@@ -196,6 +317,15 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   })),
+  ...openaiModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
+    },
+  })),
   ...googleModels.map((name) => ({
     name,
     available: true,
@@ -214,13 +344,31 @@ export const DEFAULT_MODELS = [
       providerType: "anthropic",
     },
   })),
-  ...bedrockModels.map((name) => ({
+  ...baiduModels.map((name) => ({
     name,
     available: true,
     provider: {
-      id: "AWS",
-      providerName: "Bedrock",
-      providerType: "bedrock",
+      id: "baidu",
+      providerName: "Baidu",
+      providerType: "baidu",
+    },
+  })),
+  ...bytedanceModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "bytedance",
+      providerName: "ByteDance",
+      providerType: "bytedance",
+    },
+  })),
+  ...alibabaModes.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "alibaba",
+      providerName: "Alibaba",
+      providerType: "alibaba",
     },
   })),
 ] as const;
@@ -240,3 +388,5 @@ export const internalAllowedWebDavEndpoints = [
   "https://webdav.yandex.com",
   "https://app.koofr.net/dav/Koofr",
 ];
+
+export const PLUGINS = [{ name: "Stable Diffusion", path: Path.Sd }];

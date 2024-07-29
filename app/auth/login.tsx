@@ -15,39 +15,10 @@ import {
   type ConfirmSignInOutput,
 } from "aws-amplify/auth";
 
-// Hub.listen("auth", ({ payload }) => {
-//   switch (payload.event) {
-//     case "signedIn":
-//       console.log("user have been signedIn successfully.");
-//       const router = useRouter();
-//       router.push(Path.Home);
-//       break;
-//     case "signedOut":
-//       console.log("user have been signedOut successfully.");
-//       break;
-//     case "tokenRefresh":
-//       console.log("auth tokens have been refreshed.");
-//       break;
-//     case "tokenRefresh_failure":
-//       console.log("failure while refreshing auth tokens.");
-//       break;
-//     case "signInWithRedirect":
-//       console.log("signInWithRedirect API has successfully been resolved.");
-//       break;
-//     case "signInWithRedirect_failure":
-//       console.log("failure while trying to resolve signInWithRedirect API.");
-//       break;
-//     case "customOAuthState":
-//       console.info("custom state returned from CognitoHosted UI");
-//       break;
-//   }
-// });
-
 const authConfig: ResourcesConfig["Auth"] = {
   Cognito: {
     userPoolId: "eu-central-1_vu74Tv7SY",
     userPoolClientId: "6f4c2hie09ms17uvmo2qn1kmkh",
-    //identityPoolId: "eu-central-1:d988e88f-5c19-4c89-841b-63c7a8d50b27",
   },
 };
 
@@ -73,6 +44,37 @@ export function Login() {
   //   },
   // };
   const router = useRouter();
+  // 监听事件
+  useEffect(() => {
+    Hub.listen("auth", ({ payload }) => {
+      switch (payload.event) {
+        case "signedIn":
+          console.log("user have been signedIn successfully.");
+          router.push(Path.Home);
+          break;
+        case "signedOut":
+          console.log("user have been signedOut successfully.");
+          break;
+        case "tokenRefresh":
+          console.log("auth tokens have been refreshed.");
+          break;
+        case "tokenRefresh_failure":
+          console.log("failure while refreshing auth tokens.");
+          break;
+        case "signInWithRedirect":
+          console.log("signInWithRedirect API has successfully been resolved.");
+          break;
+        case "signInWithRedirect_failure":
+          console.log(
+            "failure while trying to resolve signInWithRedirect API.",
+          );
+          break;
+        case "customOAuthState":
+          console.info("custom state returned from CognitoHosted UI");
+          break;
+      }
+    });
+  }, []);
 
   return (
     <div className={styles.loginContainer}>

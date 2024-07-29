@@ -7,7 +7,6 @@ import { fetchAuthSession } from "aws-amplify/auth";
 export async function middleware(request: NextRequest) {
   try {
     const session = await fetchAuthSession();
-    console.log("session", session);
     if (session) {
       //return NextResponse.redirect(new URL("/auth", request.url));
       return NextResponse.next();
