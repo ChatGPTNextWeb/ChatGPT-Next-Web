@@ -172,7 +172,7 @@ export function SideBarHeader(props: {
     <Fragment>
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          {title}
+          7li-AI
         </div>
         <div className={styles["sidebar-sub-title"]}>
         本站由7li7li提供支持，公众号“享生活爱羊毛”回复“7liai”获取访问密码，点击<a href="https://www.7li7li.cn/support/" target="_blank" rel="noopener noreferrer">赞助本站</a>。
@@ -225,7 +225,7 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="NextChat"
+        title="7li-AI"
         subTitle="Build your own AI assistant."
         logo={<ChatGptIcon />}
       >
@@ -301,7 +301,7 @@ export function SideBar(props: { className?: string }) {
               </Link>
             </div>
             <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+              <a href="https://www.7li7li.cn"  target="_blank" rel="noopener noreferrer">
                 <IconButton icon={<GithubIcon />} shadow />
               </a>
             </div>
