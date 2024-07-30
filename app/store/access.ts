@@ -62,7 +62,7 @@ const DEFAULT_ACCESS_STATE = {
   googleUrl: DEFAULT_GOOGLE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
-  googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
+  googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_NONE,
 
   // anthropic
   anthropicUrl: DEFAULT_ANTHROPIC_URL,
