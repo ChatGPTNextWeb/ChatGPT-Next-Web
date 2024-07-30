@@ -174,7 +174,7 @@ export function SideBarHeader(props: {
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
           CatGPT
         </div>
-        <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
+        <div className={styles["sidebar-sub-title"]}>Nya~</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>{logo}</div>
       </div>
       {children}
