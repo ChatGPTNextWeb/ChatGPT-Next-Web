@@ -174,7 +174,9 @@ export function SideBarHeader(props: {
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
           {title}
         </div>
-        <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
+        <div className={styles["sidebar-sub-title"]}>
+        本站由7li7li提供支持，公众号“享生活爱羊毛”回复“7liai”获取访问密码，点击<a href="https://www.7li7li.cn/support/" target="_blank" rel="noopener noreferrer">赞助本站</a>。
+        </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>{logo}</div>
       </div>
       {children}
