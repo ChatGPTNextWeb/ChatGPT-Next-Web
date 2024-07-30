@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   title: "CatGPT",
   description: "Nya~",
   appleWebApp: {
-    title: "NextChat",
+  title: "CatGPT",
+    title: "CatGPT",
     statusBarStyle: "default",
   },
 };
