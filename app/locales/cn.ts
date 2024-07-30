@@ -104,6 +104,10 @@ const cn = {
       Toast: "正在生成截图",
       Modal: "长按或右键保存图片",
     },
+    Artifacts: {
+      Title: "分享页面",
+      Error: "分享失败",
+    },
   },
   Select: {
     Search: "搜索消息",
@@ -346,6 +350,59 @@ const cn = {
           Title: "API 版本（仅适用于 gemini-pro）",
           SubTitle: "选择一个特定的 API 版本",
         },
+        GoogleSafetySettings: {
+          Title: "Google 安全过滤级别",
+          SubTitle: "设置内容过滤级别",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定义 Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "使用自定义 Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "不支持自定义前往.env配置",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 ByteDance API Key",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义阿里云API Key",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Stability: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 Stability API Key",
+          Placeholder: "Stability API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
       },
       CustomModel: {
         Title: "自定义模型名",
@@ -404,6 +461,10 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
+    Artifacts: "Artifacts",
+  },
+  Discovery: {
+    Name: "发现",
   },
   FineTuned: {
     Sysmessage: "你是一个助手",
@@ -483,6 +544,61 @@ const cn = {
     Messages: "消息",
     Topic: "主题",
     Time: "时间",
+  },
+  SdPanel: {
+    Prompt: "画面提示",
+    NegativePrompt: "否定提示",
+    PleaseInput: (name: string) => `请输入${name}`,
+    AspectRatio: "横纵比",
+    ImageStyle: "图像风格",
+    OutFormat: "输出格式",
+    AIModel: "AI模型",
+    ModelVersion: "模型版本",
+    Submit: "提交生成",
+    ParamIsRequired: (name: string) => `${name}不能为空`,
+    Styles: {
+      D3Model: "3D模型",
+      AnalogFilm: "模拟电影",
+      Anime: "动漫",
+      Cinematic: "电影风格",
+      ComicBook: "漫画书",
+      DigitalArt: "数字艺术",
+      Enhance: "增强",
+      FantasyArt: "幻想艺术",
+      Isometric: "等角",
+      LineArt: "线描",
+      LowPoly: "低多边形",
+      ModelingCompound: "建模材料",
+      NeonPunk: "霓虹朋克",
+      Origami: "折纸",
+      Photographic: "摄影",
+      PixelArt: "像素艺术",
+      TileTexture: "贴图",
+    },
+  },
+  Sd: {
+    SubTitle: (count: number) => `共 ${count} 条绘画`,
+    Actions: {
+      Params: "查看参数",
+      Copy: "复制提示词",
+      Delete: "删除",
+      Retry: "重试",
+      ReturnHome: "返回首页",
+      History: "查看历史",
+    },
+    EmptyRecord: "暂无绘画记录",
+    Status: {
+      Name: "状态",
+      Success: "成功",
+      Error: "失败",
+      Wait: "等待中",
+      Running: "运行中",
+    },
+    Danger: {
+      Delete: "确认删除？",
+    },
+    GenerateParams: "生成参数",
+    Detail: "详情",
   },
 };
 

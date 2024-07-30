@@ -7,16 +7,18 @@ import {
   ServiceProvider,
 } from "../constant";
 import { isModelAvailableInServer } from "../utils/model";
-import { makeAzurePath } from "../azure";
+import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 
 const serverConfig = getServerSideConfig();
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
+  const isAzure = req.nextUrl.pathname.includes("azure/deployments");
+
   var authValue,
     authHeaderName = "";
-  if (serverConfig.isAzure) {
+  if (isAzure) {
     authValue =
       req.headers
         .get("Authorization")
@@ -36,7 +38,7 @@ export async function requestOpenai(req: NextRequest) {
   );
 
   let baseUrl =
-    serverConfig.azureUrl || serverConfig.baseUrl || OPENAI_BASE_URL;
+    (isAzure ? serverConfig.azureUrl : serverConfig.baseUrl) || OPENAI_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -56,17 +58,46 @@ export async function requestOpenai(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  if (serverConfig.isAzure) {
-    if (!serverConfig.azureApiVersion) {
-      return NextResponse.json({
-        error: true,
-        message: `missing AZURE_API_VERSION in server env vars`,
-      });
+  if (isAzure) {
+    const azureApiVersion =
+      req?.nextUrl?.searchParams?.get("api-version") ||
+      serverConfig.azureApiVersion;
+    baseUrl = baseUrl.split("/deployments").shift() as string;
+    path = `${req.nextUrl.pathname.replaceAll(
+      "/api/azure/",
+      "",
+    )}?api-version=${azureApiVersion}`;
+
+    // Forward compatibility:
+    // if display_name(deployment_name) not set, and '{deploy-id}' in AZURE_URL
+    // then using default '{deploy-id}'
+    if (serverConfig.customModels && serverConfig.azureUrl) {
+      const modelName = path.split("/")[1];
+      let realDeployName = "";
+      serverConfig.customModels
+        .split(",")
+        .filter((v) => !!v && !v.startsWith("-") && v.includes(modelName))
+        .forEach((m) => {
+          const [fullName, displayName] = m.split("=");
+          const [_, providerName] = fullName.split("@");
+          if (providerName === "azure" && !displayName) {
+            const [_, deployId] = (serverConfig?.azureUrl ?? "").split(
+              "deployments/",
+            );
+            if (deployId) {
+              realDeployName = deployId;
+            }
+          }
+        });
+      if (realDeployName) {
+        console.log("[Replace with DeployId", realDeployName);
+        path = path.replaceAll(modelName, realDeployName);
+      }
     }
-    path = makeAzurePath(path, serverConfig.azureApiVersion);
   }
 
-  const fetchUrl = `${baseUrl}/${path}`;
+  const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
+  console.log("fetchUrl", fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",

@@ -1,9 +1,9 @@
 import { DEFAULT_MODELS } from "../constant";
 import { LLMModel } from "../client/api";
 
-const customProvider = (modelName: string) => ({
-  id: modelName,
-  providerName: "Custom",
+const customProvider = (providerName: string) => ({
+  id: providerName.toLowerCase(),
+  providerName: providerName,
   providerType: "custom",
 });
 
@@ -39,7 +39,7 @@ export function collectModelTable(
       const available = !m.startsWith("-");
       const nameConfig =
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
-      const [name, displayName] = nameConfig.split("=");
+      let [name, displayName] = nameConfig.split("=");
 
       // enable or disable all models
       if (name === "all") {
@@ -47,12 +47,23 @@ export function collectModelTable(
           (model) => (model.available = available),
         );
       } else {
-        // 1. find model by name(), and set available value
+        // 1. find model by name, and set available value
+        const [customModelName, customProviderName] = name.split("@");
         let count = 0;
         for (const fullName in modelTable) {
-          if (fullName.split("@").shift() == name) {
+          const [modelName, providerName] = fullName.split("@");
+          if (
+            customModelName == modelName &&
+            (customProviderName === undefined ||
+              customProviderName === providerName)
+          ) {
             count += 1;
             modelTable[fullName]["available"] = available;
+            // swap name and displayName for bytedance
+            if (providerName === "bytedance") {
+              [name, displayName] = [displayName, modelName];
+              modelTable[fullName]["name"] = name;
+            }
             if (displayName) {
               modelTable[fullName]["displayName"] = displayName;
             }
@@ -60,10 +71,17 @@ export function collectModelTable(
         }
         // 2. if model not exists, create new model with available value
         if (count === 0) {
-          const provider = customProvider(name);
-          modelTable[`${name}@${provider?.id}`] = {
-            name,
-            displayName: displayName || name,
+          let [customModelName, customProviderName] = name.split("@");
+          const provider = customProvider(
+            customProviderName || customModelName,
+          );
+          // swap name and displayName for bytedance
+          if (displayName && provider.providerName == "ByteDance") {
+            [customModelName, displayName] = [displayName, customModelName];
+          }
+          modelTable[`${customModelName}@${provider?.id}`] = {
+            name: customModelName,
+            displayName: displayName || customModelName,
             available,
             provider, // Use optional chaining
           };
@@ -81,12 +99,18 @@ export function collectModelTableWithDefaultModel(
 ) {
   let modelTable = collectModelTable(models, customModels);
   if (defaultModel && defaultModel !== "") {
-    modelTable[defaultModel] = {
-      ...modelTable[defaultModel],
-      name: defaultModel,
-      available: true,
-      isDefault: true,
-    };
+    if (defaultModel.includes('@')) {
+      if (defaultModel in modelTable) {
+        modelTable[defaultModel].isDefault = true;
+      }
+    } else {
+      for (const key of Object.keys(modelTable)) {
+        if (modelTable[key].available && key.split('@').shift() == defaultModel) {
+          modelTable[key].isDefault = true;
+          break;
+        }
+      }
+    }
   }
   return modelTable;
 }
