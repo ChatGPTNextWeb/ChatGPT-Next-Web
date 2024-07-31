@@ -122,7 +122,7 @@ export function SideBar(props: { className?: string }) {
       </SideBarBody>
       <SideBarTail
         primaryAction={
-          <a href="https://ai.lolis.dev" target="_blank" rel="noopener noreferrer">
+          <a href="https://ai.lolis.dev" rel="noopener noreferrer">
             <IconButton icon={<GithubIcon />} shadow />
           </a>
         }
