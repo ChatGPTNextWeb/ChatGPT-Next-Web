@@ -30,7 +30,6 @@ import {
 } from "../constant";
 
 import { signOut } from "next-auth/react";
-import dynamic from "next/dynamic";
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
