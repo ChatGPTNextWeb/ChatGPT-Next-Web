@@ -6,6 +6,7 @@ import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
+import AdExIcon from "../icons/adex_logo.jpg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -227,7 +228,7 @@ export function SideBar(props: { className?: string }) {
       <SideBarHeader
         title="AdExGPT - via API"
         subTitle="secure local UI for OpenAI API."
-        logo={<ChatGptIcon />}
+        logo={<AdExIcon />}
       >
         <div className={styles["sidebar-header-bar"]}>
           <IconButton
