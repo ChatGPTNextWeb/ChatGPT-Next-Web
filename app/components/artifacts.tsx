@@ -205,7 +205,7 @@ export function Artifacts() {
   return (
     <div className={styles["artifacts"]}>
       <div className={styles["artifacts-header"]}>
-        <a href="ai.lolis.dev" target="_blank" rel="noopener noreferrer">
+        <a href="https://lolis.dev" target="_blank" rel="noopener noreferrer">
           <IconButton bordered icon={<GithubIcon />} shadow />
         </a>
         <div className={styles["artifacts-title"]}>CatGPT Artifacts</div>
