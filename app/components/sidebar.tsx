@@ -17,8 +17,6 @@ import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
 
-
-
 import {
   DEFAULT_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
@@ -30,12 +28,11 @@ import {
 } from "../constant";
 
 import { signOut } from "next-auth/react";
+
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, Selector } from "./ui-lib";
-
-
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -78,6 +75,101 @@ export function useDragSideBar() {
     });
   };
 
+  const onDragStart = (e: MouseEvent) => {
+    // Remembers the initial width each time the mouse is pressed
+    startX.current = e.clientX;
+    startDragWidth.current = config.sidebarWidth;
+    const dragStartTime = Date.now();
+
+    const handleDragMove = (e: MouseEvent) => {
+      if (Date.now() < lastUpdateTime.current + 20) {
+        return;
+      }
+      lastUpdateTime.current = Date.now();
+      const d = e.clientX - startX.current;
+      const nextWidth = limit(startDragWidth.current + d);
+      config.update((config) => {
+        if (nextWidth < MIN_SIDEBAR_WIDTH) {
+          config.sidebarWidth = NARROW_SIDEBAR_WIDTH;
+        } else {
+          config.sidebarWidth = nextWidth;
+        }
+      });
+    };
+
+    const handleDragEnd = () => {
+      // In useRef the data is non-responsive, so `config.sidebarWidth` can't get the dynamic sidebarWidth
+      window.removeEventListener("pointermove", handleDragMove);
+      window.removeEventListener("pointerup", handleDragEnd);
+
+      // if user click the drag icon, should toggle the sidebar
+      const shouldFireClick = Date.now() - dragStartTime < 300;
+      if (shouldFireClick) {
+        toggleSideBar();
+      }
+    };
+
+    window.addEventListener("pointermove", handleDragMove);
+    window.addEventListener("pointerup", handleDragEnd);
+  };
+
+  const isMobileScreen = useMobileScreen();
+  const shouldNarrow =
+    !isMobileScreen && config.sidebarWidth < MIN_SIDEBAR_WIDTH;
+
+  useEffect(() => {
+    const barWidth = shouldNarrow
+      ? NARROW_SIDEBAR_WIDTH
+      : limit(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
+    const sideBarWidth = isMobileScreen ? "100vw" : `${barWidth}px`;
+    document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
+  }, [config.sidebarWidth, isMobileScreen, shouldNarrow]);
+
+  return {
+    onDragStart,
+    shouldNarrow,
+  };
+}
+export function SideBarContainer(props: {
+  children: React.ReactNode;
+  onDragStart: (e: MouseEvent) => void;
+  shouldNarrow: boolean;
+  className?: string;
+}) {
+  const isMobileScreen = useMobileScreen();
+  const isIOSMobile = useMemo(
+    () => isIOS() && isMobileScreen,
+    [isMobileScreen],
+  );
+  const { children, className, onDragStart, shouldNarrow } = props;
+  return (
+    <div
+      className={`${styles.sidebar} ${className} ${
+        shouldNarrow && styles["narrow-sidebar"]
+      }`}
+      style={{
+        // #3016 disable transition on ios mobile screen
+        transition: isMobileScreen && isIOSMobile ? "none" : undefined,
+      }}
+    >
+      {children}
+      <div
+        className={styles["sidebar-drag"]}
+        onPointerDown={(e) => onDragStart(e as any)}
+      >
+        <DragIcon />
+      </div>
+    </div>
+  );
+}
+
+export function SideBarHeader(props: {
+  title?: string | React.ReactNode;
+  subTitle?: string | React.ReactNode;
+  logo?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
+  const { title, subTitle, logo, children } = props;
   return (
     <Fragment>
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
