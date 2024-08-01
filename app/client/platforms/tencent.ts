@@ -1,10 +1,5 @@
 "use client";
-import {
-  ApiPath,
-  DEFAULT_API_HOST,
-  REQUEST_TIMEOUT_MS,
-  Tencent,
-} from "@/app/constant";
+import { ApiPath, DEFAULT_API_HOST, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import {
@@ -67,7 +62,7 @@ function capitalizeKeys(obj: any): any {
 }
 
 export class HunyuanApi implements LLMApi {
-  path(path: string): string {
+  path(): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
@@ -79,7 +74,7 @@ export class HunyuanApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/bytedance"
+        ? DEFAULT_API_HOST + "/api/proxy/tencent"
         : ApiPath.Tencent;
     }
 
@@ -128,7 +123,7 @@ export class HunyuanApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(Tencent.ChatPath);
+      const chatPath = this.path();
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
