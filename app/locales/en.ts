@@ -354,6 +354,22 @@ const en: LocaleType = {
           SubTitle: "not supported, configure in .env",
         },
       },
+      Tencent: {
+        ApiKey: {
+          Title: "Tencent API Key",
+          SubTitle: "Use a custom Tencent API Key",
+          Placeholder: "Tencent API Key",
+        },
+        SecretKey: {
+          Title: "Tencent Secret Key",
+          SubTitle: "Use a custom Tencent Secret Key",
+          Placeholder: "Tencent Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "not supported, configure in .env",
+        },
+      },
       ByteDance: {
         ApiKey: {
           Title: "ByteDance API Key",

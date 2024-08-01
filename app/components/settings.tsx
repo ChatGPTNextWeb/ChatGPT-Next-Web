@@ -54,6 +54,7 @@ import {
   Anthropic,
   Azure,
   Baidu,
+  Tencent,
   ByteDance,
   Alibaba,
   Moonshot,
@@ -965,6 +966,57 @@ export function Settings() {
     </>
   );
 
+  const tencentConfigComponent = accessStore.provider ===
+    ServiceProvider.Tencent && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Tencent.Endpoint.Title}
+        subTitle={Locale.Settings.Access.Tencent.Endpoint.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.tencentUrl}
+          placeholder={Tencent.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.tencentUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Tencent.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Tencent.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.tencentSecretId}
+          type="text"
+          placeholder={Locale.Settings.Access.Tencent.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.tencentSecretId = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Tencent.SecretKey.Title}
+        subTitle={Locale.Settings.Access.Tencent.SecretKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.tencentSecretKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Tencent.SecretKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.tencentSecretKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const byteDanceConfigComponent = accessStore.provider ===
     ServiceProvider.ByteDance && (
     <>
@@ -1404,6 +1456,7 @@ export function Settings() {
                   {baiduConfigComponent}
                   {byteDanceConfigComponent}
                   {alibabaConfigComponent}
+                  {tencentConfigComponent}
                   {moonshotConfigComponent}
                   {stabilityConfigComponent}
                 </>
