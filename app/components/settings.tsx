@@ -989,12 +989,12 @@ export function Settings() {
         subTitle={Locale.Settings.Access.Tencent.ApiKey.SubTitle}
       >
         <PasswordInput
-          value={accessStore.tencentApiKey}
+          value={accessStore.tencentSecretId}
           type="text"
           placeholder={Locale.Settings.Access.Tencent.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.tencentApiKey = e.currentTarget.value),
+              (access) => (access.tencentSecretId = e.currentTarget.value),
             );
           }}
         />
