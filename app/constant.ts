@@ -22,6 +22,7 @@ export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+export const MOONSHOT_BASE_URL = "https://api.moonshot.cn";
 
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
@@ -46,6 +47,7 @@ export enum ApiPath {
   Baidu = "/api/baidu",
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
+  Moonshot = "/api/moonshot",
   Stability = "/api/stability",
 }
 
@@ -94,6 +96,7 @@ export enum ServiceProvider {
   Baidu = "Baidu",
   ByteDance = "ByteDance",
   Alibaba = "Alibaba",
+  Moonshot = "Moonshot",
   Stability = "Stability",
 }
 
@@ -114,6 +117,7 @@ export enum ModelProvider {
   Ernie = "Ernie",
   Doubao = "Doubao",
   Qwen = "Qwen",
+  Moonshot = "Moonshot",
 }
 
 export const Stability = {
@@ -175,6 +179,11 @@ export const ByteDance = {
 export const Alibaba = {
   ExampleEndpoint: ALIBABA_BASE_URL,
   ChatPath: "v1/services/aigc/text-generation/generation",
+};
+
+export const Moonshot = {
+  ExampleEndpoint: MOONSHOT_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -283,6 +292,8 @@ const alibabaModes = [
   "qwen-max-longcontext",
 ];
 
+const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -345,6 +356,15 @@ export const DEFAULT_MODELS = [
       id: "alibaba",
       providerName: "Alibaba",
       providerType: "alibaba",
+    },
+  })),
+  ...moonshotModes.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "moonshot",
+      providerName: "Moonshot",
+      providerType: "moonshot",
     },
   })),
 ] as const;
