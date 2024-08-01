@@ -57,6 +57,10 @@ declare global {
       ALIBABA_URL?: string;
       ALIBABA_API_KEY?: string;
 
+      // moonshot only
+      MOONSHOT_URL?: string;
+      MOONSHOT_API_KEY?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -120,6 +124,7 @@ export const getServerSideConfig = () => {
   const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
+  const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -167,6 +172,10 @@ export const getServerSideConfig = () => {
     isAlibaba,
     alibabaUrl: process.env.ALIBABA_URL,
     alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
+
+    isMoonshot,
+    moonshotUrl: process.env.MOONSHOT_URL,
+    moonshotApiKey: getApiKey(process.env.MOONSHOT_API_KEY),
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
