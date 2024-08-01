@@ -1,27 +1,10 @@
 "use client";
-import {
-  ApiPath,
-  Baidu,
-  BAIDU_BASE_URL,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
+import { ApiPath, Baidu, BAIDU_BASE_URL } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getAccessToken } from "@/app/utils/baidu";
 import { ChatCompletion } from "@baiducloud/qianfan";
 
-import {
-  ChatOptions,
-  getHeaders,
-  LLMApi,
-  LLMModel,
-  MultimodalContent,
-} from "../api";
-import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
+import { ChatOptions, LLMApi, LLMModel, MultimodalContent } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
 
@@ -132,141 +115,34 @@ export class ErnieApi implements LLMApi {
           }
         }
       }
-      const chatPayload = {
-        method: "POST",
-        body: JSON.stringify(requestPayload),
-        signal: controller.signal,
-        headers: getHeaders(),
-      };
 
-      // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+      // SDK替换
+      const accessStore = useAccessStore.getState();
+      const client = new ChatCompletion({
+        QIANFAN_AK: accessStore.baiduApiKey,
+        QIANFAN_SK: accessStore.baiduSecretKey,
+        QIANFAN_BASE_URL: `${window.location.origin}${
+          accessStore.baiduUrl || "/api/baidu"
+        }`,
+      });
+
+      const stream = await client.chat(
+        {
+          ...requestPayload,
+        },
+        modelConfig.model.toUpperCase(),
       );
 
+      let result = "";
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
-        let finished = false;
-
-        // animate response to make it looks smooth
-        function animateResponseText() {
-          if (finished || controller.signal.aborted) {
-            responseText += remainText;
-            console.log("[Response Animation] finished");
-            if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
-            }
-            return;
-          }
-
-          if (remainText.length > 0) {
-            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-            const fetchText = remainText.slice(0, fetchCount);
-            responseText += fetchText;
-            remainText = remainText.slice(fetchCount);
-            options.onUpdate?.(responseText, fetchText);
-          }
-
-          requestAnimationFrame(animateResponseText);
+        for await (const chunk of stream) {
+          result = result + chunk?.result || "";
         }
-
-        // start animaion
-        animateResponseText();
-
-        const finish = () => {
-          if (!finished) {
-            finished = true;
-            options.onFinish(responseText + remainText);
-          }
-        };
-
-        controller.signal.onabort = finish;
-
-        fetchEventSource(chatPath, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log("[Baidu] request response content type: ", contentType);
-
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
-            const text = msg.data;
-            try {
-              const json = JSON.parse(text);
-              const delta = json?.result;
-              if (delta) {
-                remainText += delta;
-              }
-            } catch (e) {
-              console.error("[Request] parse error", text, msg);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
       } else {
-        // SDK替换
-        const accessStore = useAccessStore.getState();
-        const client = new ChatCompletion({
-          QIANFAN_AK: accessStore.baiduApiKey,
-          QIANFAN_SK: accessStore.baiduSecretKey,
-          QIANFAN_BASE_URL: `${window.location.origin}${
-            accessStore.baiduUrl || "/api/baidu"
-          }`,
-        });
-
-        const resp = await client.chat(
-          {
-            ...requestPayload,
-          },
-          modelConfig.model.toUpperCase(),
-        );
-
-        options.onFinish(resp?.result);
+        result = stream?.result || "";
       }
+
+      options.onFinish(result);
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
       options.onError?.(e as Error);
