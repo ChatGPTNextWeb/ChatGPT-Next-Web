@@ -12,6 +12,7 @@ import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
 import { DoubaoApi } from "./platforms/bytedance";
 import { QwenApi } from "./platforms/alibaba";
+import { MoonshotApi } from "./platforms/moonshot";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -117,6 +118,9 @@ export class ClientApi {
       case ModelProvider.Qwen:
         this.llm = new QwenApi();
         break;
+      case ModelProvider.Moonshot:
+        this.llm = new MoonshotApi();
+        break;
       default:
         this.llm = new ChatGPTApi();
     }
@@ -199,6 +203,7 @@ export function getHeaders() {
     const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
     const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
     const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
+    const isMoonshot = modelConfig.providerName === ServiceProvider.Moonshot;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -210,6 +215,8 @@ export function getHeaders() {
       ? accessStore.bytedanceApiKey
       : isAlibaba
       ? accessStore.alibabaApiKey
+      : isMoonshot
+      ? accessStore.moonshotApiKey
       : accessStore.openaiApiKey;
     return {
       isGoogle,
@@ -218,6 +225,7 @@ export function getHeaders() {
       isBaidu,
       isByteDance,
       isAlibaba,
+      isMoonshot,
       apiKey,
       isEnabledAccessControl,
     };
@@ -267,6 +275,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.Doubao);
     case ServiceProvider.Alibaba:
       return new ClientApi(ModelProvider.Qwen);
+    case ServiceProvider.Moonshot:
+      return new ClientApi(ModelProvider.Moonshot);
     default:
       return new ClientApi(ModelProvider.GPT);
   }
