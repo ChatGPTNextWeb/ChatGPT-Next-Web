@@ -56,6 +56,7 @@ import {
   Baidu,
   ByteDance,
   Alibaba,
+  Moonshot,
   Google,
   GoogleSafetySettingsThreshold,
   OPENAI_BASE_URL,
@@ -65,6 +66,7 @@ import {
   ServiceProvider,
   SlotID,
   UPDATE_URL,
+  Stability,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1041,6 +1043,84 @@ export function Settings() {
     </>
   );
 
+  const moonshotConfigComponent = accessStore.provider ===
+    ServiceProvider.Moonshot && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Moonshot.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Moonshot.Endpoint.SubTitle +
+          Moonshot.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.moonshotUrl}
+          placeholder={Moonshot.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.moonshotUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Moonshot.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Moonshot.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.moonshotApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Moonshot.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.moonshotApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const stabilityConfigComponent = accessStore.provider ===
+    ServiceProvider.Stability && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Stability.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Stability.Endpoint.SubTitle +
+          Stability.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.stabilityUrl}
+          placeholder={Stability.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.stabilityUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Stability.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Stability.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.stabilityApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Stability.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.stabilityApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1324,6 +1404,8 @@ export function Settings() {
                   {baiduConfigComponent}
                   {byteDanceConfigComponent}
                   {alibabaConfigComponent}
+                  {moonshotConfigComponent}
+                  {stabilityConfigComponent}
                 </>
               )}
             </>
