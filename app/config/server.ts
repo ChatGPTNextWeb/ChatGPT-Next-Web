@@ -57,6 +57,11 @@ declare global {
       ALIBABA_URL?: string;
       ALIBABA_API_KEY?: string;
 
+      // tencent only
+      TENCENT_URL?: string;
+      TENCENT_SECRET_KEY?: string;
+      TENCENT_SECRET_ID?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -116,6 +121,7 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isTencent = !!process.env.TENCENT_API_KEY;
 
   const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
@@ -167,6 +173,11 @@ export const getServerSideConfig = () => {
     isAlibaba,
     alibabaUrl: process.env.ALIBABA_URL,
     alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
+
+    isTencent,
+    tencentUrl: process.env.TENCENT_URL,
+    tencentSecretKey: getApiKey(process.env.TENCENT_SECRET_KEY),
+    tencentSecretId: process.env.TENCENT_SECRET_ID,
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,

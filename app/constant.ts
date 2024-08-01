@@ -23,6 +23,8 @@ export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
+export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -47,6 +49,7 @@ export enum ApiPath {
   Baidu = "/api/baidu",
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
+  Tencent = "/api/tencent",
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
 }
@@ -100,6 +103,7 @@ export enum ServiceProvider {
   Baidu = "Baidu",
   ByteDance = "ByteDance",
   Alibaba = "Alibaba",
+  Tencent = "Tencent",
   Stability = "Stability",
 }
 
@@ -120,6 +124,7 @@ export enum ModelProvider {
   Ernie = "Ernie",
   Doubao = "Doubao",
   Qwen = "Qwen",
+  Hunyuan = "Hunyuan",
 }
 
 export const Stability = {
@@ -181,6 +186,10 @@ export const ByteDance = {
 export const Alibaba = {
   ExampleEndpoint: ALIBABA_BASE_URL,
   ChatPath: "v1/services/aigc/text-generation/generation",
+};
+
+export const Tencent = {
+  ChatPath: "chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -289,6 +298,16 @@ const alibabaModes = [
   "qwen-max-longcontext",
 ];
 
+const tencentModels = [
+  "hunyuan-pro",
+  "hunyuan-standard",
+  "hunyuan-lite",
+  "hunyuan-role",
+  "hunyuan-functioncall",
+  "hunyuan-code",
+  "hunyuan-vision",
+];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -351,6 +370,15 @@ export const DEFAULT_MODELS = [
       id: "alibaba",
       providerName: "Alibaba",
       providerType: "alibaba",
+    },
+  })),
+  ...tencentModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "tencent",
+      providerName: "Tencent",
+      providerType: "tencent",
     },
   })),
 ] as const;

@@ -86,6 +86,11 @@ const DEFAULT_ACCESS_STATE = {
   stabilityUrl: DEFAULT_STABILITY_URL,
   stabilityApiKey: "",
 
+  // tencent
+  tencentUrl: "",
+  tencentSecretKey: "",
+  tencentSecretId: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -134,6 +139,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["alibabaApiKey"]);
     },
 
+    isValidTencent() {
+      return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -146,6 +155,7 @@ export const useAccessStore = createPersistStore(
         this.isValidBaidu() ||
         this.isValidByteDance() ||
         this.isValidAlibaba() ||
+        this.isValidTencent ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
