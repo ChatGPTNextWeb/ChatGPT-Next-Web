@@ -39,6 +39,10 @@ const DEFAULT_ALIBABA_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/alibaba"
   : ApiPath.Alibaba;
 
+const DEFAULT_TENCENT_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/tencent"
+  : ApiPath.Tencent;
+
 const DEFAULT_STABILITY_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/stability"
   : ApiPath.Stability;
@@ -87,7 +91,7 @@ const DEFAULT_ACCESS_STATE = {
   stabilityApiKey: "",
 
   // tencent
-  tencentUrl: "",
+  tencentUrl: DEFAULT_TENCENT_URL,
   tencentSecretKey: "",
   tencentSecretId: "",
 

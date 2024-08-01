@@ -22,6 +22,10 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import mapKeys from "lodash-es/mapKeys";
+import mapValues from "lodash-es/mapValues";
+import isArray from "lodash-es/isArray";
+import isObject from "lodash-es/isObject";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -33,17 +37,29 @@ export interface OpenAIListModelResponse {
 }
 
 interface RequestPayload {
-  messages: {
-    role: "system" | "user" | "assistant";
-    content: string | MultimodalContent[];
+  Messages: {
+    Role: "system" | "user" | "assistant";
+    Content: string | MultimodalContent[];
   }[];
-  stream?: boolean;
-  model: string;
-  temperature: number;
-  presence_penalty: number;
-  frequency_penalty: number;
-  top_p: number;
-  max_tokens?: number;
+  Stream?: boolean;
+  Model: string;
+  Temperature: number;
+  TopP: number;
+}
+
+function capitalizeKeys(obj: any): any {
+  if (isArray(obj)) {
+    return obj.map(capitalizeKeys);
+  } else if (isObject(obj)) {
+    return mapValues(
+      mapKeys(obj, (value: any, key: string) =>
+        key.replace(/(^|_)(\w)/g, (m, $1, $2) => $2.toUpperCase()),
+      ),
+      capitalizeKeys,
+    );
+  } else {
+    return obj;
+  }
 }
 
 export class HunyuanApi implements LLMApi {
@@ -76,7 +92,7 @@ export class HunyuanApi implements LLMApi {
   }
 
   extractMessage(res: any) {
-    return res.choices?.at(0)?.message?.content ?? "";
+    return res.Choices?.at(0)?.Message?.Content ?? "";
   }
 
   async chat(options: ChatOptions) {
@@ -94,15 +110,13 @@ export class HunyuanApi implements LLMApi {
       },
     };
 
-    const requestPayload: RequestPayload = {
+    const requestPayload: RequestPayload = capitalizeKeys({
       messages,
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
-    };
+    });
 
     console.log("[Request] Tencent payload: ", requestPayload);
 
@@ -213,10 +227,10 @@ export class HunyuanApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              const choices = json.choices as Array<{
-                delta: { content: string };
+              const choices = json.Choices as Array<{
+                Delta: { Content: string };
               }>;
-              const delta = choices[0]?.delta?.content;
+              const delta = choices[0]?.Delta?.Content;
               if (delta) {
                 remainText += delta;
               }

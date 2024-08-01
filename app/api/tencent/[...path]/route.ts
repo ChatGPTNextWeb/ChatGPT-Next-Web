@@ -1,3 +1,4 @@
+"use server";
 import { getServerSideConfig } from "@/app/config/server";
 import {
   TENCENT_BASE_URL,
@@ -10,11 +11,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
-import CryptoJS from "crypto-js";
-import mapKeys from "lodash-es/mapKeys";
-import mapValues from "lodash-es/mapValues";
-import isArray from "lodash-es/isArray";
-import isObject from "lodash-es/isObject";
+import * as crypto from "node:crypto";
 
 const serverConfig = getServerSideConfig();
 
@@ -47,27 +44,6 @@ async function handle(
 export const GET = handle;
 export const POST = handle;
 
-export const runtime = "edge";
-export const preferredRegion = [
-  "arn1",
-  "bom1",
-  "cdg1",
-  "cle1",
-  "cpt1",
-  "dub1",
-  "fra1",
-  "gru1",
-  "hnd1",
-  "iad1",
-  "icn1",
-  "kix1",
-  "lhr1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-];
-
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
@@ -99,63 +75,22 @@ async function request(req: NextRequest) {
 
   const fetchUrl = `${baseUrl}${path}`;
 
-  let body = null;
-  if (req.body) {
-    const bodyText = await req.text();
-    console.log(
-      "Dogtiti ~ request ~ capitalizeKeys(JSON.parse(bodyText):",
-      capitalizeKeys(JSON.parse(bodyText)),
-    );
-    body = JSON.stringify(capitalizeKeys(JSON.parse(bodyText)));
-  }
-
+  const body = await req.text();
   const fetchOptions: RequestInit = {
     headers: {
       ...getHeader(body),
     },
     method: req.method,
-    body: '{"Model":"hunyuan-pro","Messages":[{"Role":"user","Content":"你好"}]}', // FIXME
+    body,
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some request to some models
-  if (serverConfig.customModels && req.body) {
-    try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
-      // not undefined and is false
-      if (
-        isModelAvailableInServer(
-          serverConfig.customModels,
-          jsonBody?.model as string,
-          ServiceProvider.Tencent as string,
-        )
-      ) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error(`[Tencent] filter`, e);
-    }
-  }
-  console.log("[Tencent request]", fetchOptions.headers, req.method);
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
-    console.log("[Tencent response]", res.status, "   ", res.headers, res.url);
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");
@@ -172,45 +107,16 @@ async function request(req: NextRequest) {
   }
 }
 
-function capitalizeKeys(obj: any): any {
-  if (isArray(obj)) {
-    return obj.map(capitalizeKeys);
-  } else if (isObject(obj)) {
-    return mapValues(
-      mapKeys(
-        obj,
-        (value: any, key: string) => key.charAt(0).toUpperCase() + key.slice(1),
-      ),
-      capitalizeKeys,
-    );
-  } else {
-    return obj;
-  }
-}
-
 // 使用 SHA-256 和 secret 进行 HMAC 加密
-function sha256(message: any, secret = "", encoding = "hex") {
-  const hmac = CryptoJS.HmacSHA256(message, secret);
-  if (encoding === "hex") {
-    return hmac.toString(CryptoJS.enc.Hex);
-  } else if (encoding === "base64") {
-    return hmac.toString(CryptoJS.enc.Base64);
-  } else {
-    return hmac.toString();
-  }
+function sha256(message: any, secret = "", encoding?: string) {
+  return crypto.createHmac("sha256", secret).update(message).digest(encoding);
 }
 
 // 使用 SHA-256 进行哈希
 function getHash(message: any, encoding = "hex") {
-  const hash = CryptoJS.SHA256(message);
-  if (encoding === "hex") {
-    return hash.toString(CryptoJS.enc.Hex);
-  } else if (encoding === "base64") {
-    return hash.toString(CryptoJS.enc.Base64);
-  } else {
-    return hash.toString();
-  }
+  return crypto.createHash("sha256").update(message).digest(encoding);
 }
+
 function getDate(timestamp: number) {
   const date = new Date(timestamp * 1000);
   const year = date.getUTCFullYear();
@@ -238,10 +144,11 @@ function getHeader(payload: any) {
 
   const hashedRequestPayload = getHash(payload);
   const httpRequestMethod = "POST";
+  const contentType = "application/json";
   const canonicalUri = "/";
   const canonicalQueryString = "";
   const canonicalHeaders =
-    "content-type:application/json; charset=utf-8\n" +
+    `content-type:${contentType}\n` +
     "host:" +
     endpoint +
     "\n" +
@@ -250,18 +157,14 @@ function getHeader(payload: any) {
     "\n";
   const signedHeaders = "content-type;host;x-tc-action";
 
-  const canonicalRequest =
-    httpRequestMethod +
-    "\n" +
-    canonicalUri +
-    "\n" +
-    canonicalQueryString +
-    "\n" +
-    canonicalHeaders +
-    "\n" +
-    signedHeaders +
-    "\n" +
-    hashedRequestPayload;
+  const canonicalRequest = [
+    httpRequestMethod,
+    canonicalUri,
+    canonicalQueryString,
+    canonicalHeaders,
+    signedHeaders,
+    hashedRequestPayload,
+  ].join("\n");
 
   // ************* 步骤 2：拼接待签名字符串 *************
   const algorithm = "TC3-HMAC-SHA256";
@@ -299,7 +202,7 @@ function getHeader(payload: any) {
 
   return {
     Authorization: authorization,
-    "Content-Type": "application/json; charset=utf-8",
+    "Content-Type": contentType,
     Host: endpoint,
     "X-TC-Action": action,
     "X-TC-Timestamp": timestamp.toString(),
