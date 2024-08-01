@@ -195,7 +195,6 @@ export const Alibaba = {
 
 export const Tencent = {
   ExampleEndpoint: TENCENT_BASE_URL,
-  ChatPath: "v1/chat/completions",
 };
 
 export const Moonshot = {

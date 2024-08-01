@@ -91,8 +91,7 @@ export class HunyuanApi implements LLMApi {
     }
 
     console.log("[Proxy Endpoint] ", baseUrl);
-
-    return [baseUrl, path].join("/");
+    return baseUrl;
   }
 
   extractMessage(res: any) {
@@ -115,11 +114,11 @@ export class HunyuanApi implements LLMApi {
     };
 
     const requestPayload: RequestPayload = capitalizeKeys({
-      messages,
-      stream: options.config.stream,
       model: modelConfig.model,
+      messages,
       temperature: modelConfig.temperature,
       top_p: modelConfig.top_p,
+      stream: options.config.stream,
     });
 
     console.log("[Request] Tencent payload: ", requestPayload);

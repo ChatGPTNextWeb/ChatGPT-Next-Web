@@ -67,12 +67,6 @@ export const preferredRegion = [
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  // tencent just use base url or just remove the path
-  let path = `${req.nextUrl.pathname}`.replaceAll(
-    ApiPath.Tencent + "/" + Tencent.ChatPath,
-    "",
-  );
-
   let baseUrl = serverConfig.tencentUrl || TENCENT_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
@@ -83,7 +77,6 @@ async function request(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
 
   const timeoutId = setTimeout(
@@ -93,7 +86,7 @@ async function request(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  const fetchUrl = `${baseUrl}${path}`;
+  const fetchUrl = baseUrl;
 
   const body = await req.text();
   const headers = await getHeader(
