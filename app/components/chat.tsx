@@ -651,11 +651,11 @@ export function ChatActions(props: {
         />
       )}
 
-      {/*<ChatAction*/}
-      {/*  onClick={() => setShowPluginSelector(true)}*/}
-      {/*  text={Locale.Plugin.Name}*/}
-      {/*  icon={<PluginIcon />}*/}
-      {/*/>*/}
+      <ChatAction
+        onClick={() => setShowPluginSelector(true)}
+        text={Locale.Plugin.Name}
+        icon={<PluginIcon />}
+      />
       {showPluginSelector && (
         <Selector
           multiple

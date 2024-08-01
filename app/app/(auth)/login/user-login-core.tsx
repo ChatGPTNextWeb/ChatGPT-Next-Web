@@ -21,7 +21,6 @@ import {
 import type { FormProps, TabsProps } from "antd";
 import { SignInOptions } from "next-auth/react";
 import { getSession } from "next-auth/react";
-import { FieldData } from "rc-field-form/es/interface";
 
 export default function UserLoginCore() {
   const [loading, setLoading] = useState(false);
@@ -154,7 +153,7 @@ export default function UserLoginCore() {
                 <span>
                   无权限，请确认用户名正确并等待审批
                   <br />
-                  <span style={{ color: "red" }}>或联系管理员&nbsp;小司</span>
+                  <span style={{ color: "red" }}>或联系管理员</span>
                 </span>
               ),
             });
@@ -173,7 +172,7 @@ export default function UserLoginCore() {
               name: "password",
               errors: [result.error],
             },
-          ] as FieldData[]);
+          ]);
         }
         if (loginProvider === "email") {
           loginForm.setFields([
@@ -181,7 +180,7 @@ export default function UserLoginCore() {
               name: "email",
               errors: [result.error],
             },
-          ] as FieldData[]);
+          ]);
         }
       }
       console.log("response,", result);
