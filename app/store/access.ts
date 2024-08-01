@@ -43,6 +43,10 @@ const DEFAULT_TENCENT_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/tencent"
   : ApiPath.Tencent;
 
+const DEFAULT_MOONSHOT_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/moonshot"
+  : ApiPath.Moonshot;
+
 const DEFAULT_STABILITY_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/stability"
   : ApiPath.Stability;
@@ -85,6 +89,10 @@ const DEFAULT_ACCESS_STATE = {
   // alibaba
   alibabaUrl: DEFAULT_ALIBABA_URL,
   alibabaApiKey: "",
+
+  // moonshot
+  moonshotUrl: DEFAULT_MOONSHOT_URL,
+  moonshotApiKey: "",
 
   //stability
   stabilityUrl: DEFAULT_STABILITY_URL,
@@ -147,6 +155,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
     },
 
+    isValidMoonshot() {
+      return ensure(get(), ["moonshotApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -160,6 +172,7 @@ export const useAccessStore = createPersistStore(
         this.isValidByteDance() ||
         this.isValidAlibaba() ||
         this.isValidTencent ||
+        this.isValidMoonshot() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );

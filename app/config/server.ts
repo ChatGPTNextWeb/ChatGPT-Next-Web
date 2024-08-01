@@ -62,6 +62,10 @@ declare global {
       TENCENT_SECRET_KEY?: string;
       TENCENT_SECRET_ID?: string;
 
+      // moonshot only
+      MOONSHOT_URL?: string;
+      MOONSHOT_API_KEY?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -126,6 +130,7 @@ export const getServerSideConfig = () => {
   const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
+  const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -178,6 +183,10 @@ export const getServerSideConfig = () => {
     tencentUrl: process.env.TENCENT_URL,
     tencentSecretKey: getApiKey(process.env.TENCENT_SECRET_KEY),
     tencentSecretId: process.env.TENCENT_SECRET_ID,
+
+    isMoonshot,
+    moonshotUrl: process.env.MOONSHOT_URL,
+    moonshotApiKey: getApiKey(process.env.MOONSHOT_API_KEY),
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,

@@ -25,6 +25,8 @@ export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
 export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
 
+export const MOONSHOT_BASE_URL = "https://api.moonshot.cn";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -50,6 +52,7 @@ export enum ApiPath {
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
   Tencent = "/api/tencent",
+  Moonshot = "/api/moonshot",
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
 }
@@ -104,6 +107,7 @@ export enum ServiceProvider {
   ByteDance = "ByteDance",
   Alibaba = "Alibaba",
   Tencent = "Tencent",
+  Moonshot = "Moonshot",
   Stability = "Stability",
 }
 
@@ -125,6 +129,7 @@ export enum ModelProvider {
   Doubao = "Doubao",
   Qwen = "Qwen",
   Hunyuan = "Hunyuan",
+  Moonshot = "Moonshot",
 }
 
 export const Stability = {
@@ -189,7 +194,13 @@ export const Alibaba = {
 };
 
 export const Tencent = {
-  ChatPath: "chat/completions",
+  ExampleEndpoint: TENCENT_BASE_URL,
+  ChatPath: "v1/chat/completions",
+};
+
+export const Moonshot = {
+  ExampleEndpoint: MOONSHOT_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -308,6 +319,8 @@ const tencentModels = [
   "hunyuan-vision",
 ];
 
+const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -379,6 +392,15 @@ export const DEFAULT_MODELS = [
       id: "tencent",
       providerName: "Tencent",
       providerType: "tencent",
+    },
+  })),
+  ...moonshotModes.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "moonshot",
+      providerName: "Moonshot",
+      providerType: "moonshot",
     },
   })),
 ] as const;
