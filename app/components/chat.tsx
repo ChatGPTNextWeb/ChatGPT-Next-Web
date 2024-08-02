@@ -1470,6 +1470,7 @@ function _Chat() {
                   )}
                   <div className={styles["chat-message-item"]}>
                     <Markdown
+                      key={message.streaming ? "loading" : "done"}
                       content={getMessageTextContent(message)}
                       loading={
                         (message.preview || message.streaming) &&
