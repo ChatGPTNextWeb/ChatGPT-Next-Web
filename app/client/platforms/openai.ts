@@ -135,7 +135,7 @@ export class ChatGPTApi implements LLMApi {
         },
       ];
     }
-    return res.choices?.at(0)?.message?.content ?? "";
+    return res.choices?.at(0)?.message?.content ?? res;
   }
 
   async chat(options: ChatOptions) {
