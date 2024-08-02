@@ -13,6 +13,7 @@ import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { collectModelsWithDefaultModel } from "@/app/utils/model";
 import { preProcessImageContent } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+import { DalleSize } from "@/app/typing";
 
 import {
   ChatOptions,
@@ -63,7 +64,7 @@ export interface DalleRequestPayload {
   model: string;
   prompt: string;
   n: number;
-  size: "1024x1024" | "1792x1024" | "1024x1792";
+  size: DalleSize;
 }
 
 export class ChatGPTApi implements LLMApi {
@@ -141,7 +142,9 @@ export class ChatGPTApi implements LLMApi {
 
     const isDalle3 = _isDalle3(options.config.model);
     if (isDalle3) {
-      const prompt = getMessageTextContent(options.messages.slice(-1)?.pop());
+      const prompt = getMessageTextContent(
+        options.messages.slice(-1)?.pop() as any,
+      );
       requestPayload = {
         model: options.config.model,
         prompt,
