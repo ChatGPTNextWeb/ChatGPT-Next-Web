@@ -22,6 +22,9 @@ export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+
+export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
+
 export const MOONSHOT_BASE_URL = "https://api.moonshot.cn";
 
 export const CACHE_URL_PREFIX = "/api/cache";
@@ -49,6 +52,7 @@ export enum ApiPath {
   Baidu = "/api/baidu",
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
+  Tencent = "/api/tencent",
   Moonshot = "/api/moonshot",
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
@@ -103,6 +107,7 @@ export enum ServiceProvider {
   Baidu = "Baidu",
   ByteDance = "ByteDance",
   Alibaba = "Alibaba",
+  Tencent = "Tencent",
   Moonshot = "Moonshot",
   Stability = "Stability",
 }
@@ -124,6 +129,7 @@ export enum ModelProvider {
   Ernie = "Ernie",
   Doubao = "Doubao",
   Qwen = "Qwen",
+  Hunyuan = "Hunyuan",
   Moonshot = "Moonshot",
 }
 
@@ -189,6 +195,10 @@ export const ByteDance = {
 export const Alibaba = {
   ExampleEndpoint: ALIBABA_BASE_URL,
   ChatPath: "v1/services/aigc/text-generation/generation",
+};
+
+export const Tencent = {
+  ExampleEndpoint: TENCENT_BASE_URL,
 };
 
 export const Moonshot = {
@@ -303,6 +313,16 @@ const alibabaModes = [
   "qwen-max-longcontext",
 ];
 
+const tencentModels = [
+  "hunyuan-pro",
+  "hunyuan-standard",
+  "hunyuan-lite",
+  "hunyuan-role",
+  "hunyuan-functioncall",
+  "hunyuan-code",
+  "hunyuan-vision",
+];
+
 const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
 
 export const DEFAULT_MODELS = [
@@ -396,6 +416,15 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
+  // ...tencentModels.map((name) => ({
+  //   name,
+  //   available: true,
+  //   provider: {
+  //     id: "tencent",
+  //     providerName: "Tencent",
+  //     providerType: "tencent",
+  //   },
+  // })),
   // ...moonshotModes.map((name) => ({
   //   name,
   //   available: true,
