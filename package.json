@@ -34,8 +34,10 @@
     "echarts": "^5.4.3",
     "emoji-picker-react": "^4.9.2",
     "fuse.js": "^7.0.0",
+    "hash.js": "^1.1.7",
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
+    "lodash-es": "^4.17.21",
     "mermaid": "^10.7.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
     "nanoid": "^5.0.3",
@@ -63,6 +65,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "1.6.0",
+    "@types/lodash-es": "^4.17.12",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie": "^0.6.0",
     "@types/node": "20.14.10",

@@ -59,6 +59,11 @@ declare global {
       ALIBABA_URL?: string;
       ALIBABA_API_KEY?: string;
 
+      // tencent only
+      TENCENT_URL?: string;
+      TENCENT_SECRET_KEY?: string;
+      TENCENT_SECRET_ID?: string;
+
       // moonshot only
       MOONSHOT_URL?: string;
       MOONSHOT_API_KEY?: string;
@@ -122,6 +127,7 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isTencent = !!process.env.TENCENT_API_KEY;
   // 需要一个函数来判断请求中模型是否为微软的。
   // 当前逻辑，gpt-4-32k模型为微软，别的不是
   // const isAzure = !!process.env.AZURE_URL;
@@ -180,6 +186,11 @@ export const getServerSideConfig = () => {
     isAlibaba,
     alibabaUrl: process.env.ALIBABA_URL,
     alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
+
+    isTencent,
+    tencentUrl: process.env.TENCENT_URL,
+    tencentSecretKey: getApiKey(process.env.TENCENT_SECRET_KEY),
+    tencentSecretId: process.env.TENCENT_SECRET_ID,
 
     isMoonshot,
     moonshotUrl: process.env.MOONSHOT_URL,
