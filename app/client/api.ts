@@ -260,6 +260,18 @@ export function getHeaders(ignoreHeaders?: boolean) {
             : isAlibaba
               ? accessStore.alibabaApiKey
               : accessStore.openaiApiKey;
+    if (accessStore.isUseOpenAIEndpointForAllModels) {
+      return {
+        isGoogle: false,
+        isAzure: false,
+        isAnthropic: false,
+        isBaidu: false,
+        isByteDance: false,
+        isAlibaba: false,
+        apiKey: accessStore.openaiApiKey,
+        isEnabledAccessControl,
+      };
+    }
     return {
       isGoogle,
       isAzure,
