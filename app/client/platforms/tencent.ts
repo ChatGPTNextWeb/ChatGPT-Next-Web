@@ -17,13 +17,9 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
-// @ts-ignore
 import mapKeys from "lodash-es/mapKeys";
-// @ts-ignore
 import mapValues from "lodash-es/mapValues";
-// @ts-ignore
 import isArray from "lodash-es/isArray";
-// @ts-ignore
 import isObject from "lodash-es/isObject";
 
 export interface OpenAIListModelResponse {
