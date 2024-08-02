@@ -27,7 +27,7 @@ jobs:
         with:
           images: 15732060266/chatgpt-next-web
           tags: |
-            type=raw,value=latest
+            type=raw,value=2.14.0
             type=ref,event=tag
       
       - 
@@ -49,4 +49,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-            
+          no-cache: true
