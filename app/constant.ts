@@ -341,9 +341,9 @@ export const DEFAULT_MODELS = [
     describe: "新出的，可以尝鲜",
     available: true,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
     },
   },
   {
@@ -357,17 +357,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4o-gl",
-    describe: "同GPT-4o,备用",
-    available: true,
-    provider: {
-      id: "azure",
-      providerName: "Azure",
-      providerType: "azure",
-    },
-  },
-  {
-    name: "gpt-4-turbo-2024-04-09",
+    name: "gpt-4",
     describe: "GPT-4,标准版",
     available: true,
     provider: {
