@@ -1,4 +1,8 @@
-import { trimTopic, getMessageTextContent } from "../utils";
+import {
+  trimTopic,
+  getMessageTextContent,
+  removeOutdatedEntries,
+} from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
@@ -61,6 +65,7 @@ export interface ChatSession {
   lastUpdate: number;
   lastSummarizeIndex: number;
   clearContextIndex?: number;
+  deletedMessageIds?: Record<string, number>;
 
   mask: Mask;
 }
@@ -84,6 +89,7 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
+    deletedMessageIds: {},
 
     mask: createEmptyMask(),
   };
@@ -164,6 +170,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
+  deletedSessionIds: {} as Record<string, number>,
 };
 
 export const useChatStore = createPersistStore(
@@ -252,7 +259,18 @@ export const useChatStore = createPersistStore(
         if (!deletedSession) return;
 
         const sessions = get().sessions.slice();
-        sessions.splice(index, 1);
+        const deletedSessionIds = { ...get().deletedSessionIds };
+
+        removeOutdatedEntries(deletedSessionIds);
+
+        const hasDelSessions = sessions.splice(index, 1);
+        if (hasDelSessions?.length) {
+          hasDelSessions.forEach((session) => {
+            if (session.messages.length > 0) {
+              deletedSessionIds[session.id] = Date.now();
+            }
+          });
+        }
 
         const currentIndex = get().currentSessionIndex;
         let nextIndex = Math.min(
@@ -269,11 +287,13 @@ export const useChatStore = createPersistStore(
         const restoreState = {
           currentSessionIndex: get().currentSessionIndex,
           sessions: get().sessions.slice(),
+          deletedSessionIds: get().deletedSessionIds,
         };
 
         set(() => ({
           currentSessionIndex: nextIndex,
           sessions,
+          deletedSessionIds,
         }));
 
         showToast(

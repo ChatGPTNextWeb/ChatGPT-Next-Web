@@ -8,6 +8,7 @@ import { useMaskStore } from "../store/mask";
 import { usePromptStore } from "../store/prompt";
 import { StoreKey } from "../constant";
 import { merge } from "./merge";
+import { removeOutdatedEntries } from "@/app/utils";
 
 type NonFunctionKeys<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K;
@@ -66,6 +67,7 @@ const MergeStates: StateMerger = {
   [StoreKey.Chat]: (localState, remoteState) => {
     // merge sessions
     const localSessions: Record<string, ChatSession> = {};
+    const localDeletedSessionIds = localState.deletedSessionIds || {};
     localState.sessions.forEach((s) => (localSessions[s.id] = s));
 
     remoteState.sessions.forEach((remoteSession) => {
@@ -75,21 +77,56 @@ const MergeStates: StateMerger = {
       const localSession = localSessions[remoteSession.id];
       if (!localSession) {
         // if remote session is new, just merge it
-        localState.sessions.push(remoteSession);
+        if (
+          (localDeletedSessionIds[remoteSession.id] || -1) <
+          remoteSession.lastUpdate
+        ) {
+          localState.sessions.push(remoteSession);
+        }
       } else {
         // if both have the same session id, merge the messages
         const localMessageIds = new Set(localSession.messages.map((v) => v.id));
+        const localDeletedMessageIds = localSession.deletedMessageIds || {};
         remoteSession.messages.forEach((m) => {
           if (!localMessageIds.has(m.id)) {
-            localSession.messages.push(m);
+            if (
+              !localDeletedMessageIds[m.id] ||
+              new Date(localDeletedMessageIds[m.id]).toLocaleString() < m.date
+            ) {
+              localSession.messages.push(m);
+            }
           }
+        });
+
+        const remoteDeletedMessageIds = remoteSession.deletedMessageIds || {};
+        localSession.messages = localSession.messages.filter((localMessage) => {
+          return (
+            !remoteDeletedMessageIds[localMessage.id] ||
+            new Date(localDeletedMessageIds[localMessage.id]).toLocaleString() <
+              localMessage.date
+          );
         });
 
         // sort local messages with date field in asc order
         localSession.messages.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
+
+        const deletedMessageIds = {
+          ...remoteDeletedMessageIds,
+          ...localDeletedMessageIds,
+        };
+        removeOutdatedEntries(deletedMessageIds);
+        localSession.deletedMessageIds = deletedMessageIds;
       }
+    });
+
+    const remoteDeletedSessionIds = remoteState.deletedSessionIds || {};
+    localState.sessions = localState.sessions.filter((localSession) => {
+      return (
+        (remoteDeletedSessionIds[localSession.id] || -1) <=
+        localSession.lastUpdate
+      );
     });
 
     // sort local sessions with date field in desc order
@@ -97,6 +134,13 @@ const MergeStates: StateMerger = {
       (a, b) =>
         new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
     );
+
+    const deletedSessionIds = {
+      ...remoteDeletedSessionIds,
+      ...localDeletedSessionIds,
+    };
+    removeOutdatedEntries(deletedSessionIds);
+    localState.deletedSessionIds = deletedSessionIds;
 
     return localState;
   },
