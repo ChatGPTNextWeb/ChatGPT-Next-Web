@@ -71,7 +71,7 @@ import {
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
-// import { InputRange } from "./input-range";
+import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
@@ -1297,24 +1297,40 @@ export function Settings() {
           {/*  </Select>*/}
           {/*</ListItem>*/}
 
-          {/*<ListItem*/}
-          {/*  title={Locale.Settings.FontSize.Title}*/}
-          {/*  subTitle={Locale.Settings.FontSize.SubTitle}*/}
-          {/*>*/}
-          {/*  <InputRange*/}
-          {/*    title={`${config.fontSize ?? 14}px`}*/}
-          {/*    value={config.fontSize}*/}
-          {/*    min="12"*/}
-          {/*    max="40"*/}
-          {/*    step="1"*/}
-          {/*    onChange={(e) =>*/}
-          {/*      updateConfig(*/}
-          {/*        (config) =>*/}
-          {/*          (config.fontSize = Number.parseInt(e.currentTarget.value)),*/}
-          {/*      )*/}
-          {/*    }*/}
-          {/*  ></InputRange>*/}
-          {/*</ListItem>*/}
+          <ListItem
+            title={Locale.Settings.FontSize.Title}
+            subTitle={Locale.Settings.FontSize.SubTitle}
+          >
+            <InputRange
+              title={`${config.fontSize ?? 14}px`}
+              value={config.fontSize}
+              min="12"
+              max="40"
+              step="1"
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.fontSize = Number.parseInt(e.currentTarget.value)),
+                )
+              }
+            ></InputRange>
+          </ListItem>
+
+          <ListItem
+            title={Locale.Settings.FontFamily.Title}
+            subTitle={Locale.Settings.FontFamily.SubTitle}
+          >
+            <input
+              type="text"
+              value={config.fontFamily}
+              placeholder={Locale.Settings.FontFamily.Placeholder}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.fontFamily = e.currentTarget.value),
+                )
+              }
+            ></input>
+          </ListItem>
 
           {/*<ListItem*/}
           {/*  title={Locale.Settings.AutoGenerateTitle.Title}*/}

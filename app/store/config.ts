@@ -36,6 +36,7 @@ export const DEFAULT_CONFIG = {
   // submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
   avatar: "1f603",
   fontSize: 14,
+  fontFamily: "",
   theme: Theme.Auto as Theme,
   tightBorder: !!config?.isApp,
   sendPreviewBubble: false,
