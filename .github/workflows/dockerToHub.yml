@@ -25,7 +25,6 @@ jobs:
           github-server-url: 'https://gh.sivpn.cn'
       - name: build and deploy to Docker Hub
         run: |
-          echo ${{ secrets.ALY_DOCKER_PASSWORD }} | docker login registry.cn-hangzhou.aliyuncs.com -u ${{ secrets.ALY_DOCKER_USERNAME }} --password-stdin
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.gitlab.si.icu -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           echo "${{ secrets.DOCKER_ENV }}" > .env
       - name: Get current date
