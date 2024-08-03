@@ -112,7 +112,7 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 内置提示词";
+      return inputHints + "，: 快捷功能";
     },
     Send: "发送",
     Config: {
@@ -195,6 +195,11 @@ const cn = {
     FontSize: {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
+    },
+    FontFamily: {
+      Title: "聊天字体",
+      SubTitle: "聊天内容的字体，若置空则应用全局默认字体",
+      Placeholder: "字体名称",
     },
     InjectSystemPrompts: {
       Title: "注入系统级提示信息",
