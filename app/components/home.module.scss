@@ -143,12 +143,21 @@
   position: relative;
   padding-top: 20px;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sidebar-logo {
+  display: inline-flex;
   position: absolute;
-  right: 0;
-  bottom: 18px;
+  right: 10px;
+  top: 20px;
+}
+
+.sidebar-title-container {
+  display: inline-flex;
+  flex-direction: column;
 }
 
 .sidebar-title {
