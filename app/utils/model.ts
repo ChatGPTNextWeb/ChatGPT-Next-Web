@@ -22,15 +22,6 @@ export function collectModelTable(
     }
   > = {};
 
-  // default models
-  models.forEach((m) => {
-    // using <modelName>@<providerId> as fullName
-    modelTable[`${m.name}@${m?.provider?.id}`] = {
-      ...m,
-      displayName: m.name, // 'provider' is copied over if it exists
-    };
-  });
-
   // server custom models
   customModels
     .split(",")
@@ -89,6 +80,15 @@ export function collectModelTable(
       }
     });
 
+  // default models
+  models.forEach((m) => {
+    // using <modelName>@<providerId> as fullName
+    modelTable[`${m.name}@${m?.provider?.id}`] = {
+      ...m,
+      displayName: m.name, // 'provider' is copied over if it exists
+    };
+  });
+
   return modelTable;
 }
 
@@ -99,13 +99,16 @@ export function collectModelTableWithDefaultModel(
 ) {
   let modelTable = collectModelTable(models, customModels);
   if (defaultModel && defaultModel !== "") {
-    if (defaultModel.includes('@')) {
+    if (defaultModel.includes("@")) {
       if (defaultModel in modelTable) {
         modelTable[defaultModel].isDefault = true;
       }
     } else {
       for (const key of Object.keys(modelTable)) {
-        if (modelTable[key].available && key.split('@').shift() == defaultModel) {
+        if (
+          modelTable[key].available &&
+          key.split("@").shift() == defaultModel
+        ) {
           modelTable[key].isDefault = true;
           break;
         }
