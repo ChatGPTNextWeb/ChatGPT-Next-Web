@@ -1316,6 +1316,19 @@ export function Settings() {
             ></InputRange>
           </ListItem>
 
+          <ListItem title="字体" subTitle="设置全局字体">
+            <input
+              type="text"
+              value={config.fontFamily}
+              placeholder="CSS Font Family"
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.fontFamily = e.currentTarget.value),
+                )
+              }
+            ></input>
+          </ListItem>
+
           <ListItem
             title={Locale.Settings.AutoGenerateTitle.Title}
             subTitle={Locale.Settings.AutoGenerateTitle.SubTitle}
