@@ -474,6 +474,7 @@ export class ChatGPTApi implements LLMApi {
       maxIterations: options.agentConfig.maxIterations,
       returnIntermediateSteps: options.agentConfig.returnIntermediateSteps,
       useTools: options.agentConfig.useTools,
+      provider: ServiceProvider.OpenAI,
     };
 
     console.log("[Request] openai payload: ", requestPayload);

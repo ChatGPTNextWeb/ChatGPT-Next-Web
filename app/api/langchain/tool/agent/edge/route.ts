@@ -3,7 +3,7 @@ import { AgentApi, RequestBody, ResponseBody } from "../agentapi";
 import { auth } from "@/app/api/auth";
 import { EdgeTool } from "../../../../langchain-tools/edge_tools";
 import { ModelProvider } from "@/app/constant";
-import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
@@ -30,7 +30,7 @@ async function handle(req: NextRequest) {
     const apiKey = await agentApi.getOpenAIApiKey(token);
     const baseUrl = await agentApi.getOpenAIBaseUrl(reqBody.baseUrl);
 
-    const model = new OpenAI(
+    const model = new ChatOpenAI(
       {
         temperature: 0,
         modelName: reqBody.model,

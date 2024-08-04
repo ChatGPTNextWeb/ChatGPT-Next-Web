@@ -13,8 +13,6 @@ import { OpenAIWhisperAudio } from "langchain/document_loaders/fs/openai_whisper
 // import { PPTXLoader } from "langchain/document_loaders/fs/pptx";
 import { SRTLoader } from "langchain/document_loaders/fs/srt";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { Pinecone } from "@pinecone-database/pinecone";
-import { PineconeStore } from "@langchain/pinecone";
 import { getServerSideConfig } from "@/app/config/server";
 import { FileInfo } from "@/app/client/platforms/utils";
 import mime from "mime";

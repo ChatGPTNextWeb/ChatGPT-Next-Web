@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { ACCESS_CODE_PREFIX, ModelProvider } from "@/app/constant";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import { Pinecone } from "@pinecone-database/pinecone";
-import { PineconeStore } from "@langchain/pinecone";
 import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 import { getServerSideConfig } from "@/app/config/server";
 

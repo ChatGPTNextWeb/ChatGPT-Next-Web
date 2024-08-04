@@ -3,7 +3,7 @@ import { AgentApi, RequestBody, ResponseBody } from "../agentapi";
 import { auth } from "@/app/api/auth";
 import { NodeJSTool } from "@/app/api/langchain-tools/nodejs_tools";
 import { ModelProvider } from "@/app/constant";
-import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { Embeddings } from "langchain/dist/embeddings/base";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 
@@ -32,7 +32,7 @@ async function handle(req: NextRequest) {
     const apiKey = await agentApi.getOpenAIApiKey(token);
     const baseUrl = await agentApi.getOpenAIBaseUrl(reqBody.baseUrl);
 
-    const model = new OpenAI(
+    const model = new ChatOpenAI(
       {
         temperature: 0,
         modelName: reqBody.model,
