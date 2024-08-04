@@ -22,4 +22,4 @@ jobs:
       uses: docker/build-push-action@v5  # 更新到 v5
       with:
         push: true
-        tags: mos98/ok_moss_best:latest
+        tags: mos98/mos:latest
