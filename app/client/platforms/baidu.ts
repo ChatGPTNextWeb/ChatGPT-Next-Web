@@ -77,7 +77,8 @@ export class ErnieApi implements LLMApi {
 
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
-      role: v.role,
+      // "error_code": 336006, "error_msg": "the role of message with odd index in the messages must be assistant",
+      role: v.role === "system" ? "assistant" : v.role,
       content: getMessageTextContent(v),
     }));
 
