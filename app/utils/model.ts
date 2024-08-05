@@ -1,32 +1,39 @@
 import { DEFAULT_MODELS } from "../constant";
 import { LLMModel } from "../client/api";
 
+const CustomSeq = {
+  val: -1000, //To ensure the custom model located at front, start from -1000, refer to constant.ts
+  cache: new Map<string, number>(),
+  next: (id: string) => {
+    if (CustomSeq.cache.has(id)) {
+      return CustomSeq.cache.get(id) as number;
+    } else {
+      let seq = CustomSeq.val++;
+      CustomSeq.cache.set(id, seq);
+      return seq;
+    }
+  },
+};
+
 const customProvider = (providerName: string) => ({
   id: providerName.toLowerCase(),
   providerName: providerName,
   providerType: "custom",
+  sorted: CustomSeq.next(providerName),
 });
 
-const sortModelTable = (
-  models: ReturnType<typeof collectModels>,
-  rule: "custom-first" | "default-first",
-) =>
+/**
+ * Sorts an array of models based on specified rules.
+ *
+ * First, sorted by provider; if the same, sorted by model
+ */
+const sortModelTable = (models: ReturnType<typeof collectModels>) =>
   models.sort((a, b) => {
-    if (a.provider === undefined && b.provider === undefined) {
-      return 0;
-    }
-
-    let aIsCustom = a.provider?.providerType === "custom";
-    let bIsCustom = b.provider?.providerType === "custom";
-
-    if (aIsCustom === bIsCustom) {
-      return 0;
-    }
-
-    if (aIsCustom) {
-      return rule === "custom-first" ? -1 : 1;
+    if (a.provider && b.provider) {
+      let cmp = a.provider.sorted - b.provider.sorted;
+      return cmp === 0 ? a.sorted - b.sorted : cmp;
     } else {
-      return rule === "custom-first" ? 1 : -1;
+      return a.sorted - b.sorted;
     }
   });
 
@@ -40,6 +47,7 @@ export function collectModelTable(
       available: boolean;
       name: string;
       displayName: string;
+      sorted: number;
       provider?: LLMModel["provider"]; // Marked as optional
       isDefault?: boolean;
     }
@@ -107,6 +115,7 @@ export function collectModelTable(
             displayName: displayName || customModelName,
             available,
             provider, // Use optional chaining
+            sorted: CustomSeq.next(`${customModelName}@${provider?.id}`),
           };
         }
       }
@@ -151,7 +160,7 @@ export function collectModels(
   const modelTable = collectModelTable(models, customModels);
   let allModels = Object.values(modelTable);
 
-  allModels = sortModelTable(allModels, "custom-first");
+  allModels = sortModelTable(allModels);
 
   return allModels;
 }
@@ -168,7 +177,7 @@ export function collectModelsWithDefaultModel(
   );
   let allModels = Object.values(modelTable);
 
-  allModels = sortModelTable(allModels, "custom-first");
+  allModels = sortModelTable(allModels);
 
   return allModels;
 }
