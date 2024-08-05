@@ -118,6 +118,7 @@ export class ClientApi {
         break;
       case ModelProvider.Qwen:
         this.llm = new QwenApi();
+        break;
       case ModelProvider.Hunyuan:
         this.llm = new HunyuanApi();
         break;
