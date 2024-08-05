@@ -1,6 +1,7 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  BYTEDANCE_BASE_URL,
+  Moonshot,
+  MOONSHOT_BASE_URL,
   ApiPath,
   ModelProvider,
   ServiceProvider,
@@ -9,20 +10,21 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
+import type { RequestPayload } from "@/app/client/platforms/openai";
 
 const serverConfig = getServerSideConfig();
 
-async function handle(
+export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[ByteDance Route] params ", params);
+  console.log("[Moonshot Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.Doubao);
+  const authResult = auth(req, ModelProvider.Moonshot);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -33,41 +35,18 @@ async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[ByteDance] ", e);
+    console.error("[Moonshot] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
 
-export const GET = handle;
-export const POST = handle;
-
-// export const runtime = "edge";
-export const preferredRegion = [
-  "arn1",
-  "bom1",
-  "cdg1",
-  "cle1",
-  "cpt1",
-  "dub1",
-  "fra1",
-  "gru1",
-  "hnd1",
-  "iad1",
-  "icn1",
-  "kix1",
-  "lhr1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-];
-
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.ByteDance, "");
+  // alibaba use base url or just remove the path
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Moonshot, "");
 
-  let baseUrl = serverConfig.bytedanceUrl || BYTEDANCE_BASE_URL;
+  let baseUrl = serverConfig.moonshotUrl || MOONSHOT_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -88,7 +67,6 @@ async function request(req: NextRequest) {
   );
 
   const fetchUrl = `${baseUrl}${path}`;
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -115,7 +93,7 @@ async function request(req: NextRequest) {
         isModelAvailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.ByteDance as string,
+          ServiceProvider.Moonshot as string,
         )
       ) {
         return NextResponse.json(
@@ -129,10 +107,9 @@ async function request(req: NextRequest) {
         );
       }
     } catch (e) {
-      console.error(`[ByteDance] filter`, e);
+      console.error(`[Moonshot] filter`, e);
     }
   }
-
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
