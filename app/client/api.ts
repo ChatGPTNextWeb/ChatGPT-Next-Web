@@ -10,6 +10,10 @@ import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
+import { DoubaoApi } from "./platforms/bytedance";
+import { QwenApi } from "./platforms/alibaba";
+import { HunyuanApi } from "./platforms/tencent";
+import { MoonshotApi } from "./platforms/moonshot";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -109,6 +113,17 @@ export class ClientApi {
       case ModelProvider.Ernie:
         this.llm = new ErnieApi();
         break;
+      case ModelProvider.Doubao:
+        this.llm = new DoubaoApi();
+        break;
+      case ModelProvider.Qwen:
+        this.llm = new QwenApi();
+      case ModelProvider.Hunyuan:
+        this.llm = new HunyuanApi();
+        break;
+      case ModelProvider.Moonshot:
+        this.llm = new MoonshotApi();
+        break;
       default:
         this.llm = new ChatGPTApi();
     }
@@ -160,6 +175,19 @@ export class ClientApi {
   }
 }
 
+export function getBearerToken(
+  apiKey: string,
+  noBearer: boolean = false,
+): string {
+  return validString(apiKey)
+    ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
+    : "";
+}
+
+export function validString(x: string): boolean {
+  return x?.length > 0;
+}
+
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
@@ -175,6 +203,10 @@ export function getHeaders() {
     const isGoogle = modelConfig.providerName == ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
+    const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
+    const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
+    const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
+    const isMoonshot = modelConfig.providerName === ServiceProvider.Moonshot;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -182,27 +214,42 @@ export function getHeaders() {
       ? accessStore.azureApiKey
       : isAnthropic
       ? accessStore.anthropicApiKey
+      : isByteDance
+      ? accessStore.bytedanceApiKey
+      : isAlibaba
+      ? accessStore.alibabaApiKey
+      : isMoonshot
+      ? accessStore.moonshotApiKey
       : accessStore.openaiApiKey;
-    return { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl };
+    return {
+      isGoogle,
+      isAzure,
+      isAnthropic,
+      isBaidu,
+      isByteDance,
+      isAlibaba,
+      isMoonshot,
+      apiKey,
+      isEnabledAccessControl,
+    };
   }
 
   function getAuthHeader(): string {
     return isAzure ? "api-key" : isAnthropic ? "x-api-key" : "Authorization";
   }
 
-  function getBearerToken(apiKey: string, noBearer: boolean = false): string {
-    return validString(apiKey)
-      ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
-      : "";
-  }
-
-  function validString(x: string): boolean {
-    return x?.length > 0;
-  }
-  const { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl } =
-    getConfig();
+  const {
+    isGoogle,
+    isAzure,
+    isAnthropic,
+    isBaidu,
+    apiKey,
+    isEnabledAccessControl,
+  } = getConfig();
   // when using google api in app, not set auth header
   if (isGoogle && clientConfig?.isApp) return headers;
+  // when using baidu api in app, not set auth header
+  if (isBaidu && clientConfig?.isApp) return headers;
 
   const authHeader = getAuthHeader();
 
@@ -227,6 +274,14 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.Claude);
     case ServiceProvider.Baidu:
       return new ClientApi(ModelProvider.Ernie);
+    case ServiceProvider.ByteDance:
+      return new ClientApi(ModelProvider.Doubao);
+    case ServiceProvider.Alibaba:
+      return new ClientApi(ModelProvider.Qwen);
+    case ServiceProvider.Tencent:
+      return new ClientApi(ModelProvider.Hunyuan);
+    case ServiceProvider.Moonshot:
+      return new ClientApi(ModelProvider.Moonshot);
     default:
       return new ClientApi(ModelProvider.GPT);
   }

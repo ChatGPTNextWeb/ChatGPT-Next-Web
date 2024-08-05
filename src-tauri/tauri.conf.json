@@ -8,8 +8,10 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "BuouChat",
-    "version": "2.12.4"
+
+    "productName": "NextChat",
+    "version": "2.14.0"
+
   },
   "tauri": {
     "allowlist": {

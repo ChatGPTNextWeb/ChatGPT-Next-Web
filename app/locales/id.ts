@@ -152,6 +152,12 @@ const id: PartialLocaleType = {
       Title: "Ukuran Font",
       SubTitle: "Ubah ukuran font konten chat",
     },
+    FontFamily: {
+      Title: "Font Obrolan",
+      SubTitle:
+        "Font dari konten obrolan, biarkan kosong untuk menerapkan font default global",
+      Placeholder: "Nama Font",
+    },
     InjectSystemPrompts: {
       Title: "Suntikkan Petunjuk Sistem",
       SubTitle:

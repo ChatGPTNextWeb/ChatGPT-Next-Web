@@ -1,6 +1,7 @@
 import {
   ApiPath,
   DEFAULT_API_HOST,
+  GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
 } from "../constant";
@@ -12,15 +13,43 @@ import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
-const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/openai"
-    : ApiPath.OpenAI;
+const isApp = getClientConfig()?.buildMode === "export";
 
-const DEFAULT_AZURE_URL =
-  getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/azure/{resource_name}"
-    : ApiPath.Azure;
+const DEFAULT_OPENAI_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/openai"
+  : ApiPath.OpenAI;
+
+const DEFAULT_GOOGLE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/google"
+  : ApiPath.Google;
+
+const DEFAULT_ANTHROPIC_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/anthropic"
+  : ApiPath.Anthropic;
+
+const DEFAULT_BAIDU_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/baidu"
+  : ApiPath.Baidu;
+
+const DEFAULT_BYTEDANCE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/bytedance"
+  : ApiPath.ByteDance;
+
+const DEFAULT_ALIBABA_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/alibaba"
+  : ApiPath.Alibaba;
+
+const DEFAULT_TENCENT_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/tencent"
+  : ApiPath.Tencent;
+
+const DEFAULT_MOONSHOT_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/moonshot"
+  : ApiPath.Moonshot;
+
+const DEFAULT_STABILITY_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/stability"
+  : ApiPath.Stability;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -33,24 +62,46 @@ const DEFAULT_ACCESS_STATE = {
   openaiApiKey: "",
 
   // azure
-  azureUrl: DEFAULT_AZURE_URL,
+  azureUrl: "",
   azureApiKey: "",
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: "",
+  googleUrl: DEFAULT_GOOGLE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
+  googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
 
   // anthropic
+  anthropicUrl: DEFAULT_ANTHROPIC_URL,
   anthropicApiKey: "",
   anthropicApiVersion: "2023-06-01",
-  anthropicUrl: "",
 
   // baidu
-  baiduUrl: "",
+  baiduUrl: DEFAULT_BAIDU_URL,
   baiduApiKey: "",
   baiduSecretKey: "",
+
+  // bytedance
+  bytedanceUrl: DEFAULT_BYTEDANCE_URL,
+  bytedanceApiKey: "",
+
+  // alibaba
+  alibabaUrl: DEFAULT_ALIBABA_URL,
+  alibabaApiKey: "",
+
+  // moonshot
+  moonshotUrl: DEFAULT_MOONSHOT_URL,
+  moonshotApiKey: "",
+
+  //stability
+  stabilityUrl: DEFAULT_STABILITY_URL,
+  stabilityApiKey: "",
+
+  // tencent
+  tencentUrl: DEFAULT_TENCENT_URL,
+  tencentSecretKey: "",
+  tencentSecretId: "",
 
   // server config
   needCode: true,
@@ -92,6 +143,22 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["baiduApiKey", "baiduSecretKey"]);
     },
 
+    isValidByteDance() {
+      return ensure(get(), ["bytedanceApiKey"]);
+    },
+
+    isValidAlibaba() {
+      return ensure(get(), ["alibabaApiKey"]);
+    },
+
+    isValidTencent() {
+      return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
+    },
+
+    isValidMoonshot() {
+      return ensure(get(), ["moonshotApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -102,6 +169,10 @@ export const useAccessStore = createPersistStore(
         this.isValidGoogle() ||
         this.isValidAnthropic() ||
         this.isValidBaidu() ||
+        this.isValidByteDance() ||
+        this.isValidAlibaba() ||
+        this.isValidTencent ||
+        this.isValidMoonshot() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );

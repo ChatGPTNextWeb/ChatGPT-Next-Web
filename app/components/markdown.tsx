@@ -6,14 +6,16 @@ import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
-import { copyToClipboard } from "../utils";
+import { copyToClipboard, useWindowSize } from "../utils";
 import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { showImageModal } from "./ui-lib";
-
+import { showImageModal, FullScreen } from "./ui-lib";
+import { ArtifactsShareButton, HTMLPreview } from "./artifacts";
+import { Plugin } from "../constant";
+import { useChatStore } from "../store";
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -64,25 +66,64 @@ export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
   const refText = ref.current?.innerText;
   const [mermaidCode, setMermaidCode] = useState("");
+  const [htmlCode, setHtmlCode] = useState("");
+  const { height } = useWindowSize();
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const plugins = session.mask?.plugin;
 
-  const renderMermaid = useDebouncedCallback(() => {
+  const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
     if (mermaidDom) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
+    const htmlDom = ref.current.querySelector("code.language-html");
+    if (htmlDom) {
+      setHtmlCode((htmlDom as HTMLElement).innerText);
+    } else if (refText?.startsWith("<!DOCTYPE")) {
+      setHtmlCode(refText);
+    }
   }, 600);
 
   useEffect(() => {
-    setTimeout(renderMermaid, 1);
+    setTimeout(renderArtifacts, 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refText]);
 
+  const enableArtifacts = useMemo(
+    () => plugins?.includes(Plugin.Artifacts),
+    [plugins],
+  );
+
+  //Wrap the paragraph for plain-text
+  useEffect(() => {
+    if (ref.current) {
+      const codeElements = ref.current.querySelectorAll(
+        "code",
+      ) as NodeListOf<HTMLElement>;
+      const wrapLanguages = [
+        "",
+        "md",
+        "markdown",
+        "text",
+        "txt",
+        "plaintext",
+        "tex",
+        "latex",
+      ];
+      codeElements.forEach((codeElement) => {
+        let languageClass = codeElement.className.match(/language-(\w+)/);
+        let name = languageClass ? languageClass[1] : "";
+        if (wrapLanguages.includes(name)) {
+          codeElement.style.whiteSpace = "pre-wrap";
+        }
+      });
+    }
+  }, []);
+
   return (
     <>
-      {mermaidCode.length > 0 && (
-        <Mermaid code={mermaidCode} key={mermaidCode} />
-      )}
       <pre ref={ref}>
         <span
           className="copy-code-button"
@@ -95,6 +136,22 @@ export function PreCode(props: { children: any }) {
         ></span>
         {props.children}
       </pre>
+      {mermaidCode.length > 0 && (
+        <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      {htmlCode.length > 0 && enableArtifacts && (
+        <FullScreen className="no-dark html" right={70}>
+          <ArtifactsShareButton
+            style={{ position: "absolute", right: 20, top: 10 }}
+            getCode={() => htmlCode}
+          />
+          <HTMLPreview
+            code={htmlCode}
+            autoHeight={!document.fullscreenElement}
+            height={!document.fullscreenElement ? 600 : height}
+          />
+        </FullScreen>
+      )}
     </>
   );
 }
@@ -175,6 +232,7 @@ export function Markdown(
     content: string;
     loading?: boolean;
     fontSize?: number;
+    fontFamily?: string;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
@@ -186,6 +244,7 @@ export function Markdown(
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
+        fontFamily: props.fontFamily || "inherit",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
