@@ -27,7 +27,7 @@ jobs:
         with:
           images: 15732060266/chatgpt-next-web
           tags: |
-            type=raw,value=2.14.0
+            type=raw,value=2.14.1
             type=ref,event=tag
       
       - 
