@@ -411,13 +411,17 @@ export class ChatGPTApi implements LLMApi {
       return [];
     }
 
+    //由于目前 OpenAI 的 disableListModels 默认为 true，所以当前实际不会运行到这场
+    let seq = 1000; //同 Constant.ts 中的排序保持一致
     return chatModels.map((m) => ({
       name: m.id,
       available: true,
+      sorted: seq++,
       provider: {
         id: "openai",
         providerName: "OpenAI",
         providerType: "openai",
+        sorted: 1,
       },
     }));
   }
