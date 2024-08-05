@@ -96,6 +96,32 @@ export function PreCode(props: { children: any }) {
     [plugins],
   );
 
+  //Wrap the paragraph for plain-text
+  useEffect(() => {
+    if (ref.current) {
+      const codeElements = ref.current.querySelectorAll(
+        "code",
+      ) as NodeListOf<HTMLElement>;
+      const wrapLanguages = [
+        "",
+        "md",
+        "markdown",
+        "text",
+        "txt",
+        "plaintext",
+        "tex",
+        "latex",
+      ];
+      codeElements.forEach((codeElement) => {
+        let languageClass = codeElement.className.match(/language-(\w+)/);
+        let name = languageClass ? languageClass[1] : "";
+        if (wrapLanguages.includes(name)) {
+          codeElement.style.whiteSpace = "pre-wrap";
+        }
+      });
+    }
+  }, []);
+
   return (
     <>
       <pre ref={ref}>
@@ -206,6 +232,7 @@ export function Markdown(
     content: string;
     loading?: boolean;
     fontSize?: number;
+    fontFamily?: string;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
@@ -217,6 +244,7 @@ export function Markdown(
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
+        fontFamily: props.fontFamily || "inherit",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}
