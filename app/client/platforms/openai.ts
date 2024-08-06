@@ -201,7 +201,7 @@ export class ChatGPTApi implements LLMApi {
         size: options.config?.size ?? "1024x1024",
       };
     } else {
-      const visionModel = isVisionModel(options.config.model);
+      const visionModel = isVisionModel(finalModel);
       const messages: ChatOptions["messages"] = [];
       for (const v of options.messages) {
         const content = visionModel
@@ -213,7 +213,7 @@ export class ChatGPTApi implements LLMApi {
       requestPayload = {
         messages,
         stream: options.config.stream,
-        model: modelConfig.model,
+        model: finalModel,
         temperature: modelConfig.temperature,
         presence_penalty: modelConfig.presence_penalty,
         frequency_penalty: modelConfig.frequency_penalty,
@@ -223,14 +223,14 @@ export class ChatGPTApi implements LLMApi {
       };
 
       // add max_tokens to vision model
-      if (visionModel && modelConfig.model.includes("preview")) {
-        requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
+      if (visionModel && finalModel.includes("preview")) {
+        requestPayload["max_tokens"] = Math.max(finalModel.max_tokens, 4000);
       }
     }
 
     console.log("[Request] openai payload: ", requestPayload);
 
-    const modelIdentifier = modelConfig.model; 
+    const modelIdentifier = finalModel; 
     console.log("API Call: session or email is not available - model: ", modelIdentifier);
 
 /*
