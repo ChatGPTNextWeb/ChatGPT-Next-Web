@@ -1,12 +1,6 @@
 "use client";
-import {
-  ApiPath,
-  Baidu,
-  BAIDU_BASE_URL,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
+import { ApiPath, DEFAULT_API_HOST, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import { getAccessToken } from "@/app/utils/baidu";
 
 import {
   ChatOptions,
@@ -22,7 +16,11 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
+import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import mapKeys from "lodash-es/mapKeys";
+import mapValues from "lodash-es/mapValues";
+import isArray from "lodash-es/isArray";
+import isObject from "lodash-es/isObject";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -34,68 +32,70 @@ export interface OpenAIListModelResponse {
 }
 
 interface RequestPayload {
-  messages: {
-    role: "system" | "user" | "assistant";
-    content: string | MultimodalContent[];
+  Messages: {
+    Role: "system" | "user" | "assistant";
+    Content: string | MultimodalContent[];
   }[];
-  stream?: boolean;
-  model: string;
-  temperature: number;
-  presence_penalty: number;
-  frequency_penalty: number;
-  top_p: number;
-  max_tokens?: number;
+  Stream?: boolean;
+  Model: string;
+  Temperature: number;
+  TopP: number;
 }
 
-export class ErnieApi implements LLMApi {
-  path(path: string): string {
+function capitalizeKeys(obj: any): any {
+  if (isArray(obj)) {
+    return obj.map(capitalizeKeys);
+  } else if (isObject(obj)) {
+    return mapValues(
+      mapKeys(obj, (value: any, key: string) =>
+        key.replace(/(^|_)(\w)/g, (m, $1, $2) => $2.toUpperCase()),
+      ),
+      capitalizeKeys,
+    );
+  } else {
+    return obj;
+  }
+}
+
+export class HunyuanApi implements LLMApi {
+  path(): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.baiduUrl;
+      baseUrl = accessStore.tencentUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      // do not use proxy for baidubce api
-      baseUrl = isApp ? BAIDU_BASE_URL : ApiPath.Baidu;
+      baseUrl = isApp
+        ? DEFAULT_API_HOST + "/api/proxy/tencent"
+        : ApiPath.Tencent;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Baidu)) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Tencent)) {
       baseUrl = "https://" + baseUrl;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
+    console.log("[Proxy Endpoint] ", baseUrl);
+    return baseUrl;
+  }
 
-    return [baseUrl, path].join("/");
+  extractMessage(res: any) {
+    return res.Choices?.at(0)?.Message?.Content ?? "";
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
-      // "error_code": 336006, "error_msg": "the role of message with even index in the messages must be user or function",
-      role: v.role === "system" ? "user" : v.role,
-      content: getMessageTextContent(v),
+    const visionModel = isVisionModel(options.config.model);
+    const messages = options.messages.map((v, index) => ({
+      // "Messages 中 system 角色必须位于列表的最开始"
+      role: index !== 0 && v.role === "system" ? "user" : v.role,
+      content: visionModel ? v.content : getMessageTextContent(v),
     }));
-
-    // "error_code": 336006, "error_msg": "the length of messages must be an odd number",
-    if (messages.length % 2 === 0) {
-      if (messages.at(0)?.role === "user") {
-        messages.splice(1, 0, {
-          role: "assistant",
-          content: " ",
-        });
-      } else {
-        messages.unshift({
-          role: "user",
-          content: " ",
-        });
-      }
-    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -105,40 +105,22 @@ export class ErnieApi implements LLMApi {
       },
     };
 
-    const shouldStream = !!options.config.stream;
-    const requestPayload: RequestPayload = {
-      messages,
-      stream: shouldStream,
+    const requestPayload: RequestPayload = capitalizeKeys({
       model: modelConfig.model,
+      messages,
       temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
-    };
+      stream: options.config.stream,
+    });
 
-    console.log("[Request] Baidu payload: ", requestPayload);
+    console.log("[Request] Tencent payload: ", requestPayload);
 
+    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      let chatPath = this.path(Baidu.ChatPath(modelConfig.model));
-
-      // getAccessToken can not run in browser, because cors error
-      if (!!getClientConfig()?.isApp) {
-        const accessStore = useAccessStore.getState();
-        if (accessStore.useCustomConfig) {
-          if (accessStore.isValidBaidu()) {
-            const { access_token } = await getAccessToken(
-              accessStore.baiduApiKey,
-              accessStore.baiduSecretKey,
-            );
-            chatPath = `${chatPath}${
-              chatPath.includes("?") ? "&" : "?"
-            }access_token=${access_token}`;
-          }
-        }
-      }
+      const chatPath = this.path();
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -196,7 +178,10 @@ export class ErnieApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log("[Baidu] request response content type: ", contentType);
+            console.log(
+              "[Tencent] request response content type: ",
+              contentType,
+            );
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
@@ -237,7 +222,10 @@ export class ErnieApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              const delta = json?.result;
+              const choices = json.Choices as Array<{
+                Delta: { Content: string };
+              }>;
+              const delta = choices[0]?.Delta?.Content;
               if (delta) {
                 remainText += delta;
               }
@@ -259,7 +247,7 @@ export class ErnieApi implements LLMApi {
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
-        const message = resJson?.result;
+        const message = this.extractMessage(resJson);
         options.onFinish(message);
       }
     } catch (e) {
@@ -278,4 +266,3 @@ export class ErnieApi implements LLMApi {
     return [];
   }
 }
-export { Baidu };
