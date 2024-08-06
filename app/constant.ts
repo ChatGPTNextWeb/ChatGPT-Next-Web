@@ -254,14 +254,14 @@ export const KnowledgeCutOffDate: Record<string, string> = {
 };
 
 const openaiModels = [
-  "gpt-3.5-turbo",
+  // "gpt-3.5-turbo",
   // "gpt-3.5-turbo-1106",
   // "gpt-3.5-turbo-0125",
   // "gpt-4",
   // "gpt-4-0613",
   "gpt-4-32k",
   // "gpt-4-32k-0613",
-  "gpt-4-turbo",
+  // "gpt-4-turbo",
   // "gpt-4-turbo-preview",
   "gpt-4o",
   "gpt-4o-mini",
@@ -274,7 +274,7 @@ const openaiModels = [
 const googleModels = [
   // "gemini-1.0-pro",
   // "gemini-1.5-pro-latest",
-  "gemini-1.5-flash-latest",
+  // "gemini-1.5-flash-latest",
   "gemini-pro-vision",
 ];
 
@@ -327,7 +327,7 @@ const alibabaModes = [
 ];
 
 const tencentModels = [
-  "hunyuan-pro",
+  // "hunyuan-pro",
   "hunyuan-standard",
   "hunyuan-lite",
   "hunyuan-role",
@@ -427,7 +427,7 @@ export const DEFAULT_MODELS = [
   })),
   ...tencentModels.map((name) => ({
     name,
-    available: true,
+    available: false,
     sorted: seq++,
     provider: {
       id: "tencent",
@@ -438,7 +438,7 @@ export const DEFAULT_MODELS = [
   })),
   ...moonshotModes.map((name) => ({
     name,
-    available: true,
+    available: false,
     sorted: seq++,
     provider: {
       id: "moonshot",
@@ -449,7 +449,7 @@ export const DEFAULT_MODELS = [
   })),
   ...iflytekModels.map((name) => ({
     name,
-    available: true,
+    available: false,
     sorted: seq++,
     provider: {
       id: "iflytek",
