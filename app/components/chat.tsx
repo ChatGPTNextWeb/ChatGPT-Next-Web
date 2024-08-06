@@ -382,7 +382,7 @@ export function ChatAction(props: {
         } as React.CSSProperties
       }
     >
-      <div ref={iconRef} className={styles["icon"]}>
+      <div ref={iconRef} className={styles["icon"]} aria-label={props.text}>
         {props.icon}
       </div>
       <div className={styles["text"]} ref={textRef}>
@@ -1337,6 +1337,8 @@ function _Chat() {
               <IconButton
                 icon={<RenameIcon />}
                 bordered
+                title={Locale.Chat.EditMessage.Title}
+                aria={Locale.Chat.EditMessage.Title}
                 onClick={() => setIsEditingMessage(true)}
               />
             </div>
@@ -1356,6 +1358,8 @@ function _Chat() {
               <IconButton
                 icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
                 bordered
+                title={Locale.Chat.Actions.FullScreen}
+                aria={Locale.Chat.Actions.FullScreen}
                 onClick={() => {
                   config.update(
                     (config) => (config.tightBorder = !config.tightBorder),
@@ -1407,6 +1411,7 @@ function _Chat() {
                       <div className={styles["chat-message-edit"]}>
                         <IconButton
                           icon={<EditIcon />}
+                          aria={Locale.Chat.Actions.Edit}
                           onClick={async () => {
                             const newMessage = await showPrompt(
                               Locale.Chat.Actions.Edit,
