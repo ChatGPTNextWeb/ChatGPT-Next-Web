@@ -147,9 +147,7 @@ export const Anthropic = {
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
-  // Azure32kPath:
-  //   "openai/deployments/gpt-4-32k/chat/completions?api-version=2023-05-15",
-  // Azure32kPathCheck: "openai/deployments/gpt-4-32k/chat/completions",
+  ImagePath: "v1/images/generations",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
@@ -158,7 +156,10 @@ export const OpenaiPath = {
 export const Azure = {
   ChatPath: (deployName: string, apiVersion: string) =>
     `deployments/${deployName}/chat/completions?api-version=${apiVersion}`,
-  ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
+  // https://<your_resource_name>.openai.azure.com/openai/deployments/<your_deployment_name>/images/generations?api-version=<api_version>
+  ImagePath: (deployName: string, apiVersion: string) =>
+    `deployments/${deployName}/images/generations?api-version=${apiVersion}`,
+  ExampleEndpoint: "https://{resource-url}/openai",
 };
 
 export const Google = {
@@ -261,6 +262,7 @@ const openaiModels = [
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
   "gpt-4-1106-preview",
+  "dall-e-3",
 ];
 
 const googleModels = [
@@ -325,105 +327,104 @@ const tencentModels = [
 
 const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
 
+let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   {
     name: "gpt-3.5-turbo",
     describe: "GPT-3,质量一般,便宜",
     available: false,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gpt-4o-mini",
     describe: "新出的，可以尝鲜",
     available: true,
+    sorted: seq++,
     provider: {
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gpt-4o",
     describe: "GPT-4o,最新版,全能,快速,推荐",
     available: true,
+    sorted: seq++,
     provider: {
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gpt-4",
     describe: "GPT-4,标准版",
     available: true,
+    sorted: seq++,
     provider: {
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "claude-3-5-sonnet-20240620",
     describe: "claude第三代模型最强版",
     available: true,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 2, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gemini-1.5-pro-latest",
     available: true,
+    sorted: seq++,
     describe: "谷歌的,不要钱,质量还不错",
     provider: {
       id: "google",
       providerName: "Google",
       providerType: "google",
+      sorted: 3,
     },
   },
   {
     name: "gpt-4o-all",
     describe: "GPT-4,最新版,省着点用",
     available: true,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 1,
     },
   },
   {
     name: "midjourney",
     describe: "绘图用,不用选",
     available: false,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 1,
     },
   },
-  // ...tencentModels.map((name) => ({
-  //   name,
-  //   available: true,
-  //   provider: {
-  //     id: "tencent",
-  //     providerName: "Tencent",
-  //     providerType: "tencent",
-  //   },
-  // })),
-  // ...moonshotModes.map((name) => ({
-  //   name,
-  //   available: true,
-  //   provider: {
-  //     id: "moonshot",
-  //     providerName: "Moonshot",
-  //     providerType: "moonshot",
-  //   },
-  // })),
 ] as const;
 
 // export const AZURE_MODELS: string[] = [
