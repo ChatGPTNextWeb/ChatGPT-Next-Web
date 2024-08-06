@@ -333,80 +333,96 @@ export const DEFAULT_MODELS = [
     name: "gpt-3.5-turbo",
     describe: "GPT-3,质量一般,便宜",
     available: false,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gpt-4o-mini",
     describe: "新出的，可以尝鲜",
     available: true,
+    sorted: seq++,
     provider: {
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gpt-4o",
     describe: "GPT-4o,最新版,全能,快速,推荐",
     available: true,
+    sorted: seq++,
     provider: {
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gpt-4",
     describe: "GPT-4,标准版",
     available: true,
+    sorted: seq++,
     provider: {
       id: "azure",
       providerName: "Azure",
       providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "claude-3-5-sonnet-20240620",
     describe: "claude第三代模型最强版",
     available: true,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 2, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "gemini-1.5-pro-latest",
     available: true,
+    sorted: seq++,
     describe: "谷歌的,不要钱,质量还不错",
     provider: {
       id: "google",
       providerName: "Google",
       providerType: "google",
+      sorted: 3,
     },
   },
   {
     name: "gpt-4o-all",
     describe: "GPT-4,最新版,省着点用",
     available: true,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 1,
     },
   },
   {
     name: "midjourney",
     describe: "绘图用,不用选",
     available: false,
+    sorted: seq++,
     provider: {
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
+      sorted: 1,
     },
   },
 ] as const;

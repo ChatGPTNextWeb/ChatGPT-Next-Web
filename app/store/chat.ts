@@ -928,7 +928,6 @@ export const useChatStore = createPersistStore(
               providerName: getSummarizeModel(session.mask.modelConfig.model)
                 .providerName,
               stream: false,
-              providerName,
             },
             onFinish(message) {
               get().updateCurrentSession(
