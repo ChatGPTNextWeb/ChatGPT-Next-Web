@@ -292,29 +292,31 @@ export function SideBar(props: { className?: string }) {
           {/*  }}*/}
           {/*  shadow*/}
           {/*/>*/}
-          {/*<IconButton*/}
-          {/*  icon={<DiscoveryIcon />}*/}
-          {/*  text={shouldNarrow ? undefined : Locale.Discovery.Name}*/}
-          {/*  className={styles["sidebar-bar-button"]}*/}
-          {/*  onClick={() => setShowPluginSelector(true)}*/}
-          {/*  shadow*/}
-          {/*/>*/}
+          <IconButton
+            icon={<DiscoveryIcon />}
+            text={shouldNarrow ? undefined : Locale.Discovery.Name}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => setShowPluginSelector(true)}
+            shadow
+          />
         </div>
         {showPluginSelector && (
           <Selector
-            items={[
-              {
-                title: "👇 Please select the plugin you need to use",
-                value: "-",
-                disable: true,
-              },
-              ...PLUGINS.map((item) => {
-                return {
-                  title: item.name,
-                  value: item.path,
-                };
-              }),
-            ]}
+            items={
+              [
+                {
+                  title: "👇 Please select the plugin you need to use",
+                  value: "-",
+                  disable: true,
+                },
+                ...PLUGINS.map((item) => {
+                  return {
+                    title: item.name,
+                    value: item.path,
+                  };
+                }),
+              ] as any
+            }
             onClose={() => setShowPluginSelector(false)}
             onSelection={(s) => {
               navigate(s[0], { state: { fromHome: true } });

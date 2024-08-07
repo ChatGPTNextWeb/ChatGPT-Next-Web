@@ -88,7 +88,7 @@ export const useSdStore = createPersistStore<
           method: "POST",
           headers,
           body: formData,
-        })
+        } as RequestInit)
           .then((response) => response.json())
           .then((resData) => {
             if (resData.errors && resData.errors.length > 0) {
