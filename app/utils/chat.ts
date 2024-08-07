@@ -145,7 +145,7 @@ export function uploadImage(file: Blob): Promise<string> {
     body,
     mode: "cors",
     credentials: "include",
-  })
+  } as RequestInit)
     .then((res) => res.json())
     .then((res) => {
       console.log("res", res);

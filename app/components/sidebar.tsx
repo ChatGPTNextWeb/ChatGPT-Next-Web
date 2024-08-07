@@ -319,7 +319,7 @@ export function SideBar(props: { className?: string }) {
             }
             onClose={() => setShowPluginSelector(false)}
             onSelection={(s) => {
-              navigate(s[0], { state: { fromHome: true } });
+              navigate(s[0] as any, { state: { fromHome: true } });
             }}
           />
         )}
