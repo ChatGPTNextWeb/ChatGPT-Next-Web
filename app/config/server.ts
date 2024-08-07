@@ -68,6 +68,11 @@ declare global {
       MOONSHOT_URL?: string;
       MOONSHOT_API_KEY?: string;
 
+      // iflytek only
+      IFLYTEK_URL?: string;
+      IFLYTEK_API_KEY?: string;
+      IFLYTEK_API_SECRET?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -116,10 +121,16 @@ export const getServerSideConfig = () => {
 
   if (disableGPT4) {
     if (customModels) customModels += ",";
-    customModels += DEFAULT_MODELS.filter((m) => m.name.startsWith("gpt-4"))
+    customModels += DEFAULT_MODELS.filter(
+      (m) => m.name.startsWith("gpt-4") && !m.name.startsWith("gpt-4o-mini"),
+    )
       .map((m) => "-" + m.name)
       .join(",");
-    if (defaultModel.startsWith("gpt-4")) defaultModel = "";
+    if (
+      defaultModel.startsWith("gpt-4") &&
+      !defaultModel.startsWith("gpt-4o-mini")
+    )
+      defaultModel = "";
   }
 
   const isStability = !!process.env.STABILITY_API_KEY;
@@ -137,6 +148,7 @@ export const getServerSideConfig = () => {
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
+  const isIflytek = !!process.env.IFLYTEK_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -195,6 +207,11 @@ export const getServerSideConfig = () => {
     isMoonshot,
     moonshotUrl: process.env.MOONSHOT_URL,
     moonshotApiKey: getApiKey(process.env.MOONSHOT_API_KEY),
+
+    isIflytek,
+    iflytekUrl: process.env.IFLYTEK_URL,
+    iflytekApiKey: process.env.IFLYTEK_API_KEY,
+    iflytekApiSecret: process.env.IFLYTEK_API_SECRET,
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,

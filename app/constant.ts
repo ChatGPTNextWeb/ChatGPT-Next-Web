@@ -26,6 +26,7 @@ export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
 
 export const MOONSHOT_BASE_URL = "https://api.moonshot.cn";
+export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
@@ -54,6 +55,7 @@ export enum ApiPath {
   Alibaba = "/api/alibaba",
   Tencent = "/api/tencent",
   Moonshot = "/api/moonshot",
+  Iflytek = "/api/iflytek",
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
 }
@@ -110,6 +112,7 @@ export enum ServiceProvider {
   Tencent = "Tencent",
   Moonshot = "Moonshot",
   Stability = "Stability",
+  Iflytek = "Iflytek",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -131,6 +134,7 @@ export enum ModelProvider {
   Qwen = "Qwen",
   Hunyuan = "Hunyuan",
   Moonshot = "Moonshot",
+  Iflytek = "Iflytek",
 }
 
 export const Stability = {
@@ -204,6 +208,11 @@ export const Tencent = {
 
 export const Moonshot = {
   ExampleEndpoint: MOONSHOT_BASE_URL,
+  ChatPath: "v1/chat/completions",
+};
+
+export const Iflytek = {
+  ExampleEndpoint: IFLYTEK_BASE_URL,
   ChatPath: "v1/chat/completions",
 };
 
@@ -326,6 +335,14 @@ const tencentModels = [
 ];
 
 const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
+
+const iflytekModels = [
+  "general",
+  "generalv3",
+  "pro-128k",
+  "generalv3.5",
+  "4.0Ultra",
+];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [

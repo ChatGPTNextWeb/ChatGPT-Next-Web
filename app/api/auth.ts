@@ -93,6 +93,10 @@ export function auth(
       case ModelProvider.Moonshot:
         systemApiKey = serverConfig.moonshotApiKey;
         break;
+      case ModelProvider.Iflytek:
+        systemApiKey =
+          serverConfig.iflytekApiKey + ":" + serverConfig.iflytekApiSecret;
+        break;
       case ModelProvider.GPT:
       default:
         // isAzure
