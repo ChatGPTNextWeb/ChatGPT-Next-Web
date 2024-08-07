@@ -74,6 +74,7 @@ const nextConfig = {
     unoptimized: mode === "export",
     // domains: ["cos.xiaosi.cc"],
     remotePatterns: [
+      { hostname: "localhost" },
       { hostname: "**.xiaosi.cc" },
       { hostname: "public.blob.vercel-storage.com" },
       { hostname: "res.cloudinary.com" },
