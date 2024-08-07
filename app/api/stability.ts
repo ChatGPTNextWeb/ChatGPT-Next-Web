@@ -10,7 +10,7 @@ export async function handle(
   console.log("[Stability] params ", params);
 
   if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+    return NextResponse.json({ body: "OK" }, { status: 200 } as any);
   }
 
   const controller = new AbortController();
@@ -44,7 +44,7 @@ export async function handle(
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
-    });
+    } as any);
   }
 
   const bearToken = req.headers.get("Authorization") ?? "";
@@ -60,7 +60,7 @@ export async function handle(
       },
       {
         status: 401,
-      },
+      } as any,
     );
   }
 
@@ -79,19 +79,20 @@ export async function handle(
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
-  };
-
+  } as any;
   try {
     const res = await fetch(fetchUrl, fetchOptions);
-    // to prevent browser prompt for credentials
-    const newHeaders = new Headers(res.headers);
-    newHeaders.delete("www-authenticate");
-    // to disable nginx buffering
-    newHeaders.set("X-Accel-Buffering", "no");
+    // // to prevent browser prompt for credentials
+
+    // const newHeaders = new Headers(res.headers);
+    // newHeaders.delete("www-authenticate");
+    // // to disable nginx buffering
+    // newHeaders.set("X-Accel-Buffering", "no");
+
     return new Response(res.body, {
       status: res.status,
       statusText: res.statusText,
-      headers: newHeaders,
+      // headers: newHeaders,
     });
   } finally {
     clearTimeout(timeoutId);

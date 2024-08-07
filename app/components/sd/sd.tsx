@@ -163,6 +163,8 @@ export function Sd() {
                           className={styles["img"]}
                           src={item.img_data}
                           alt={item.id}
+                          width={130}
+                          height={130}
                           onClick={(e) =>
                             showImageModal(
                               item.img_data,
