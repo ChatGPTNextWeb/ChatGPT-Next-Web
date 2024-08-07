@@ -50,7 +50,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-4o" as ModelType,
+    model: "gpt-4o-mini" as ModelType, 
     providerName: "OpenAI" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
@@ -59,7 +59,7 @@ export const DEFAULT_CONFIG = {
     frequency_penalty: 0,
     sendMemory: false,
     historyMessageCount: 42,
-    compressMessageLengthThreshold: 90001,
+    compressMessageLengthThreshold: 90002,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as DalleSize,
