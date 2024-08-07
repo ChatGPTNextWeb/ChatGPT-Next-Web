@@ -159,7 +159,8 @@ export function Sd() {
                       className={styles["sd-img-item"]}
                     >
                       {item.status === "success" ? (
-                        <Image
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
                           className={styles["img"]}
                           src={item.img_data}
                           alt={item.id}
