@@ -568,15 +568,22 @@ export function ImagePreviewer(props: {
           </div>
         </div>
         {props.messages.map((m, i) => {
+          const isUserMessage = m.role === "user";
+          const isSystemMessage = m.role === "system";
+          const avatar =
+            isUserMessage && config.avatar
+              ? config.avatar
+              : isSystemMessage
+              ? "2699-fe0f"
+              : mask.avatar;
+          const messageClass = `${styles["message"]} ${
+            styles["message-" + m.role]
+          }`;
+
           return (
-            <div
-              className={styles["message"] + " " + styles["message-" + m.role]}
-              key={i}
-            >
+            <div className={messageClass} key={i}>
               <div className={styles["avatar"]}>
-                <ExportAvatar
-                  avatar={m.role === "user" ? config.avatar : mask.avatar}
-                />
+                <ExportAvatar avatar={avatar} />
               </div>
 
               <div className={styles["body"]}>
@@ -665,10 +672,6 @@ export function JsonPreviewer(props: {
 }) {
   const msgs = {
     messages: [
-      {
-        role: "system",
-        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
-      },
       ...props.messages.map((m) => ({
         role: m.role,
         content: m.content,
