@@ -270,3 +270,16 @@ export function isVisionModel(model: string) {
 export function isDalle3(model: string) {
   return "dall-e-3" === model;
 }
+
+export function removeOutdatedEntries(
+  timeMap: Record<string, number>,
+): Record<string, number> {
+  const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  // Delete data from a month ago
+  Object.keys(timeMap).forEach((id) => {
+    if (timeMap[id] < oneMonthAgo) {
+      delete timeMap[id];
+    }
+  });
+  return timeMap;
+}
