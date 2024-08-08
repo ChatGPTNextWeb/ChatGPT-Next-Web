@@ -31,11 +31,11 @@ const config = getClientConfig();
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: SubmitKey.Enter,
+  submitKey: SubmitKey.CtrlEnter,
   avatar: "1f603",
   fontSize: 14,
-  fontFamily: "",
-  theme: Theme.Auto as Theme,
+  fontFamily: "Overpass",
+  theme: Theme.Light as Theme,
   tightBorder: !!config?.isApp,
   sendPreviewBubble: false,
   enableAutoGenerateTitle: true,
@@ -154,7 +154,7 @@ export const useAppConfig = createPersistStore(
       }
 
       if (version < 3.5) {
-        state.customModels = "claude,claude-100k";
+//        state.customModels = "claude,claude-100k";
       }
 
       if (version < 3.6) {
