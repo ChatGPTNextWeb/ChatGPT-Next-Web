@@ -1,3 +1,4 @@
+import pako from "pako";
 import { getClientConfig } from "../config/client";
 import { Updater } from "../typing";
 import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
@@ -44,10 +45,52 @@ const DEFAULT_SYNC_STATE = {
   lastSyncTime: 0,
   lastProvider: "",
 };
-
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
   (set, get) => ({
+    async exportSyncConfig() {
+      const currentProvider = get().provider;
+      const exportData = {
+        provider: currentProvider,
+        config: get()[currentProvider],
+        useProxy: get().useProxy,
+        proxyUrl: get().proxyUrl,
+      };
+
+      const jsonString = JSON.stringify(exportData);
+      const compressed = pako.deflate(jsonString);
+      const encoded = btoa(
+        String.fromCharCode.apply(null, Array.from(compressed)),
+      );
+      try {
+        await navigator.clipboard.writeText(encoded);
+        showToast(Locale.Settings.Sync.ExportSuccess);
+      } catch (e) {
+        console.log("[Sync] failed to copy", e);
+        showToast(Locale.Settings.Sync.ExportFail);
+      }
+    },
+    importSyncConfig(encodedString: string) {
+      try {
+        const decoded = atob(encodedString);
+        const decompressed = pako.inflate(
+          new Uint8Array(decoded.split("").map((char) => char.charCodeAt(0))),
+          { to: "string" },
+        );
+        const importedData = JSON.parse(decompressed);
+
+        set({
+          provider: importedData.provider,
+          [importedData.provider]: importedData.config,
+          useProxy: importedData.useProxy,
+          proxyUrl: importedData.proxyUrl,
+        });
+      } catch (e) {
+        console.log("[Sync] failed to set sync config", e);
+        throw e;
+      }
+    },
+
     cloudSync() {
       const config = get()[get().provider];
       return Object.values(config).every((c) => c.toString().length > 0);
@@ -100,15 +143,17 @@ export const useSyncStore = createPersistStore(
         const remoteState = await client.get(config.username);
         if (!remoteState || remoteState === "") {
           await client.set(config.username, JSON.stringify(localState));
-          console.log("[Sync] Remote state is empty, using local state instead.");
-          return
+          console.log(
+            "[Sync] Remote state is empty, using local state instead.",
+          );
+          return;
         } else {
           const parsedRemoteState = JSON.parse(
             await client.get(config.username),
           ) as AppState;
           mergeAppState(localState, parsedRemoteState);
           setLocalAppState(localState);
-       } 
+        }
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
         throw e;
