@@ -122,9 +122,29 @@ export function PreCode(props: { children: any }) {
     }
   }, []);
 
+  const [collapsed, setCollapsed] = useState(true);
+  const [showToggle, setShowToggle] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      // 获取代码块的实际高度
+      const screenHeight = window.innerHeight;
+      const codeHeight = ref.current.scrollHeight;
+      setShowToggle(codeHeight > screenHeight * 0.3);
+    }
+  }, [props.children]);
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+  console.log(props.children);
+
   return (
     <>
-      <pre ref={ref}>
+      <pre
+        ref={ref}
+        style={{ maxHeight: collapsed ? "30vh" : "none", overflow: "hidden" }}
+      >
         <span
           className="copy-code-button"
           onClick={() => {
@@ -135,6 +155,15 @@ export function PreCode(props: { children: any }) {
           }}
         ></span>
         {props.children}
+        {showToggle && collapsed && (
+          <p
+            style={{ margin: 0 }}
+            className="show-hide-button"
+            onClick={toggleCollapsed}
+          >
+            展开全部
+          </p>
+        )}
       </pre>
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />

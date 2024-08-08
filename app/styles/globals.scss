@@ -272,7 +272,6 @@ div.math {
 
 pre {
   position: relative;
-
   &:hover .copy-code-button {
     pointer-events: all;
     transform: translateX(0px);
@@ -301,6 +300,17 @@ pre {
     &:hover {
       opacity: 1;
     }
+  }
+  .show-hide-button {
+     width: 100%;
+     height: 20px;
+     line-height: 20px;
+     position: absolute;
+     text-align: center;
+     bottom: 0;
+     cursor: pointer;
+     color: white;
+     background: linear-gradient(rgba(0,0,0,.3), #1a1b26); 
   }
 }
 
