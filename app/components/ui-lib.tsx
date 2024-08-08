@@ -265,16 +265,9 @@ export function Input(props: InputProps) {
   );
 }
 
-// 定义一个接口 AriaProps，包含一个可选的 aria 属性
-interface AriaProps {
-  aria?: string;
-}
-
-// 定义一个接口 PasswordInputProps，继承自 HTMLProps<HTMLInputElement> 和 AriaProps
-// 用于描述密码输入框组件的属性
-interface PasswordInputProps extends HTMLProps<HTMLInputElement>, AriaProps {}
-
-export function PasswordInput(props: PasswordInputProps) {
+export function PasswordInput(
+  props: HTMLProps<HTMLInputElement> & { aria?: string },
+) {
   const [visible, setVisible] = useState(false);
   function changeVisibility() {
     setVisible(!visible);
