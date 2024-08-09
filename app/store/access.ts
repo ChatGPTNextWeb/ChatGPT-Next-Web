@@ -124,9 +124,11 @@ const DEFAULT_ACCESS_STATE = {
   customModels: "",
   defaultModel: "gpt-4o-mini",
 
-  console.log("defaultModel set (access.ts): ", defaultModel);
-    
 };
+
+
+console.log("DEFAULT_ACCESS_STATE incl. defaultModel (access.ts): ", DEFAULT_ACCESS_STATE);
+    
 
 export const useAccessStore = createPersistStore(
   { ...DEFAULT_ACCESS_STATE },
