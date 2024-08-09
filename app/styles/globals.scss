@@ -271,8 +271,7 @@ div.math {
 }
 
 pre {
-  position: relative;
-
+  // position: relative;
   &:hover .copy-code-button {
     pointer-events: all;
     transform: translateX(0px);
@@ -302,7 +301,31 @@ pre {
       opacity: 1;
     }
   }
+
+  .show-hide-button {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    margin: auto;
+    height: fit-content;
+    display: inline-flex;
+    justify-content: center;
+    button{
+      margin-top: 3em;
+      margin-bottom: 4em;
+      padding: 5px 16px;
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      text-align: center;
+      color: white;
+      background: #464e4e;
+    } 
+  }
+
 }
+
+
 
 .clickable {
   cursor: pointer;

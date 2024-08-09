@@ -122,20 +122,55 @@ export function PreCode(props: { children: any }) {
     }
   }, []);
 
+  const [collapsed, setCollapsed] = useState(true);
+  const [showToggle, setShowToggle] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      const codeHeight = ref.current.scrollHeight;
+      setShowToggle(codeHeight > 400);
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  }, [props.children]);
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
   return (
     <>
-      <pre ref={ref}>
-        <span
-          className="copy-code-button"
-          onClick={() => {
-            if (ref.current) {
-              const code = ref.current.innerText;
-              copyToClipboard(code);
-            }
+      <div style={{ position: "relative" }}>
+        <pre
+          ref={ref}
+          style={{
+            maxHeight: collapsed ? "400px" : "none",
+            overflow: "hidden",
           }}
-        ></span>
-        {props.children}
-      </pre>
+        >
+          <span
+            className="copy-code-button"
+            onClick={() => {
+              if (ref.current) {
+                const code = ref.current.innerText;
+                copyToClipboard(code);
+              }
+            }}
+          ></span>
+          {props.children}
+          {showToggle && collapsed && (
+            <div
+              className="show-hide-button"
+              style={{
+                backgroundImage: collapsed
+                  ? "linear-gradient(to bottom, rgba(0,0,0,.8), rgba(0,0,0,.06))"
+                  : "none",
+              }}
+            >
+              <button onClick={toggleCollapsed}>查看全部</button>
+            </div>
+          )}
+        </pre>
+      </div>
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
