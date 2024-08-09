@@ -129,6 +129,8 @@ export const useAppConfig = createPersistStore(
         modelMap[`${model.name}@${model?.provider?.id}`] = model;
       }
 
+      console.log("set useAppConfig: ", state);
+
       set(() => ({
         models: Object.values(modelMap),
       }));
@@ -141,6 +143,8 @@ export const useAppConfig = createPersistStore(
     version: 3.9,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
+
+      console.log("get useAppConfig: ", state);
 
       if (version < 3.4) {
         state.modelConfig.sendMemory = true;
