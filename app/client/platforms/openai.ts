@@ -184,7 +184,7 @@ export class ChatGPTApi implements LLMApi {
     ];
 
     // Check if the current model is in the list of models to replace
-    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4o-2024-08-06" : modelConfig.model;
+    const finalModel = modelsToReplace.includes(modelConfig.model) ? "gpt-4o-mini" : modelConfig.model;
 
     let requestPayload: RequestPayload | DalleRequestPayload;
 

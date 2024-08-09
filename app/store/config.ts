@@ -142,6 +142,9 @@ export const useAppConfig = createPersistStore(
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
+      // optionally: hard set/reset model for everyone
+      state.modelConfig.model = "gpt-4o-mini";
+
       if (version < 3.4) {
         state.modelConfig.sendMemory = true;
         state.modelConfig.historyMessageCount = 4;
