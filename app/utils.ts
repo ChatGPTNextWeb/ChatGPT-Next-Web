@@ -145,14 +145,12 @@ export function isFirefox() {
   );
 }
 
-export function selectOrCopy(el: HTMLElement, content: string) {
+export function isNotSelectRange() {
   const currentSelection = window.getSelection();
 
   if (currentSelection?.type === "Range") {
     return false;
   }
-
-  copyToClipboard(content);
 
   return true;
 }

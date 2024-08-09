@@ -55,7 +55,7 @@ import {
 
 import {
   copyToClipboard,
-  selectOrCopy,
+  isNotSelectRange,
   autoGrowTextArea,
   useMobileScreen,
   getMessageTextContent,
@@ -248,6 +248,108 @@ function useSubmitHandler() {
     submitKey,
     shouldSubmit,
   };
+}
+
+function ChatMessageActions(props: {
+  index: number;
+  message: ChatMessage;
+  position: { x: number; y: number };
+  isHover: boolean;
+  onUserStop: (messageId: string) => void;
+  onResend: (message: ChatMessage) => void;
+  onDelete: (messageId: string) => void;
+  onPinMessage: (message: ChatMessage) => void;
+}) {
+  const {
+    index,
+    message,
+    position,
+    isHover,
+    onUserStop,
+    onResend,
+    onDelete,
+    onPinMessage,
+  } = props;
+
+  const actionsRef = useRef<HTMLDivElement>(null);
+
+  const [rect, setRect] = useState<DOMRect>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    toJSON: () => ({}),
+  });
+
+  const isUserMessage = message.role === "user";
+
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (position.x && position.y && isHover) {
+      const x = position.x - rect.x - (isUserMessage ? rect.width : 0);
+      const y = position.y - rect.y - (isUserMessage ? rect.height : 0);
+      setTranslate({ x, y });
+    } else {
+      setTranslate({ x: 0, y: 0 });
+    }
+  }, [position, isHover]);
+
+  useEffect(() => {
+    const div = actionsRef.current;
+    if (div) {
+      const rect = div.getBoundingClientRect();
+      setRect(rect);
+    }
+  }, []);
+
+  return (
+    <div ref={actionsRef} className={styles["chat-message-actions"]}>
+      <div
+        className={`${styles["chat-input-actions"]}`}
+        style={{
+          transform: `translate3d(${translate.x}px, ${translate.y}px, 0)`,
+        }}
+      >
+        {message.streaming ? (
+          <ChatAction
+            text={Locale.Chat.Actions.Stop}
+            icon={<StopIcon />}
+            onClick={() => onUserStop(message.id ?? index)}
+          />
+        ) : (
+          <>
+            <ChatAction
+              text={Locale.Chat.Actions.Retry}
+              icon={<ResetIcon />}
+              onClick={() => onResend(message)}
+            />
+
+            <ChatAction
+              text={Locale.Chat.Actions.Delete}
+              icon={<DeleteIcon />}
+              onClick={() => onDelete(message.id ?? index)}
+            />
+
+            <ChatAction
+              text={Locale.Chat.Actions.Pin}
+              icon={<PinIcon />}
+              onClick={() => onPinMessage(message)}
+            />
+            <ChatAction
+              text={Locale.Chat.Actions.Copy}
+              icon={<CopyIcon />}
+              onClick={() => copyToClipboard(getMessageTextContent(message))}
+            />
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export type RenderPrompt = Pick<Prompt, "title" | "content">;
@@ -792,6 +894,13 @@ function _Chat() {
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
+  const [isMessageContainerHover, setIsMessageContainerHover] =
+    useState<boolean>(false);
+  const [actionsPosition, setActionsPosition] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+
   // prompt hints
   const promptStore = usePromptStore();
   const [promptHints, setPromptHints] = useState<RenderPrompt[]>([]);
@@ -947,16 +1056,24 @@ function _Chat() {
       e.preventDefault();
     }
   };
-  const onRightClick = (e: any, message: ChatMessage) => {
-    // copy to clipboard
-    if (selectOrCopy(e.currentTarget, getMessageTextContent(message))) {
-      if (userInput.length === 0) {
-        setUserInput(getMessageTextContent(message));
-      }
 
+  const onRightClick = (e: any) => {
+    // move actions to the right click position
+    if (isNotSelectRange()) {
       e.preventDefault();
+
+      setActionsPosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
     }
   };
+  // handle mouse hover to reset actions position
+  useEffect(() => {
+    if (!isMessageContainerHover) {
+      setActionsPosition({ x: 0, y: 0 });
+    }
+  }, [isMessageContainerHover]);
 
   const deleteMessage = (msgId?: string) => {
     chatStore.updateCurrentSession(
@@ -1405,7 +1522,14 @@ function _Chat() {
                   isUser ? styles["chat-message-user"] : styles["chat-message"]
                 }
               >
-                <div className={styles["chat-message-container"]}>
+                <div
+                  className={styles["chat-message-container"]}
+                  onClick={() => {
+                    setActionsPosition({ x: 0, y: 0 });
+                  }}
+                  onMouseEnter={() => setIsMessageContainerHover(true)}
+                  onMouseLeave={() => setIsMessageContainerHover(false)}
+                >
                   <div className={styles["chat-message-header"]}>
                     <div className={styles["chat-message-avatar"]}>
                       <div className={styles["chat-message-edit"]}>
@@ -1462,46 +1586,16 @@ function _Chat() {
                     </div>
 
                     {showActions && (
-                      <div className={styles["chat-message-actions"]}>
-                        <div className={styles["chat-input-actions"]}>
-                          {message.streaming ? (
-                            <ChatAction
-                              text={Locale.Chat.Actions.Stop}
-                              icon={<StopIcon />}
-                              onClick={() => onUserStop(message.id ?? i)}
-                            />
-                          ) : (
-                            <>
-                              <ChatAction
-                                text={Locale.Chat.Actions.Retry}
-                                icon={<ResetIcon />}
-                                onClick={() => onResend(message)}
-                              />
-
-                              <ChatAction
-                                text={Locale.Chat.Actions.Delete}
-                                icon={<DeleteIcon />}
-                                onClick={() => onDelete(message.id ?? i)}
-                              />
-
-                              <ChatAction
-                                text={Locale.Chat.Actions.Pin}
-                                icon={<PinIcon />}
-                                onClick={() => onPinMessage(message)}
-                              />
-                              <ChatAction
-                                text={Locale.Chat.Actions.Copy}
-                                icon={<CopyIcon />}
-                                onClick={() =>
-                                  copyToClipboard(
-                                    getMessageTextContent(message),
-                                  )
-                                }
-                              />
-                            </>
-                          )}
-                        </div>
-                      </div>
+                      <ChatMessageActions
+                        index={i}
+                        message={message}
+                        position={actionsPosition}
+                        isHover={isMessageContainerHover}
+                        onUserStop={onUserStop}
+                        onResend={onResend}
+                        onDelete={onDelete}
+                        onPinMessage={onPinMessage}
+                      />
                     )}
                   </div>
                   {showTyping && (
@@ -1518,7 +1612,7 @@ function _Chat() {
                         message.content.length === 0 &&
                         !isUser
                       }
-                      onContextMenu={(e) => onRightClick(e, message)}
+                      onContextMenu={(e) => onRightClick(e)}
                       onDoubleClickCapture={() => {
                         if (!isMobileScreen) return;
                         setUserInput(getMessageTextContent(message));
