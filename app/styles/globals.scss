@@ -271,7 +271,7 @@ div.math {
 }
 
 pre {
-  position: relative;
+  // position: relative;
   &:hover .copy-code-button {
     pointer-events: all;
     transform: translateX(0px);
@@ -301,18 +301,31 @@ pre {
       opacity: 1;
     }
   }
+
   .show-hide-button {
-     width: 100%;
-     height: 20px;
-     line-height: 20px;
-     position: absolute;
-     text-align: center;
-     bottom: 0;
-     cursor: pointer;
-     color: white;
-     background: linear-gradient(rgba(0,0,0,.3), #1a1b26); 
+    position: absolute;
+    top: 0;
+    width: 100%;
+    margin: auto;
+    height: fit-content;
+    display: inline-flex;
+    justify-content: center;
+    button{
+      margin-top: 3em;
+      margin-bottom: 4em;
+      padding: 5px 16px;
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      text-align: center;
+      color: white;
+      background: #464e4e;
+    } 
   }
+
 }
+
+
 
 .clickable {
   cursor: pointer;

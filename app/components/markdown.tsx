@@ -127,44 +127,50 @@ export function PreCode(props: { children: any }) {
 
   useEffect(() => {
     if (ref.current) {
-      // 获取代码块的实际高度
-      const screenHeight = window.innerHeight;
       const codeHeight = ref.current.scrollHeight;
-      setShowToggle(codeHeight > screenHeight * 0.3);
+      setShowToggle(codeHeight > 400);
+      ref.current.scrollTop = ref.current.scrollHeight;
     }
   }, [props.children]);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
-  console.log(props.children);
 
   return (
     <>
-      <pre
-        ref={ref}
-        style={{ maxHeight: collapsed ? "30vh" : "none", overflow: "hidden" }}
-      >
-        <span
-          className="copy-code-button"
-          onClick={() => {
-            if (ref.current) {
-              const code = ref.current.innerText;
-              copyToClipboard(code);
-            }
+      <div style={{ position: "relative" }}>
+        <pre
+          ref={ref}
+          style={{
+            maxHeight: collapsed ? "400px" : "none",
+            overflow: "hidden",
           }}
-        ></span>
-        {props.children}
-        {showToggle && collapsed && (
-          <p
-            style={{ margin: 0 }}
-            className="show-hide-button"
-            onClick={toggleCollapsed}
-          >
-            展开全部
-          </p>
-        )}
-      </pre>
+        >
+          <span
+            className="copy-code-button"
+            onClick={() => {
+              if (ref.current) {
+                const code = ref.current.innerText;
+                copyToClipboard(code);
+              }
+            }}
+          ></span>
+          {props.children}
+          {showToggle && collapsed && (
+            <div
+              className="show-hide-button"
+              style={{
+                backgroundImage: collapsed
+                  ? "linear-gradient(to bottom, rgba(0,0,0,.8), rgba(0,0,0,.06))"
+                  : "none",
+              }}
+            >
+              <button onClick={toggleCollapsed}>查看全部</button>
+            </div>
+          )}
+        </pre>
+      </div>
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
