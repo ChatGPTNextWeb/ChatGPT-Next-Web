@@ -108,7 +108,7 @@ export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
   (set, get) => ({
     reset() {
-      set(() => ({ ...DEFAULT_CONFIG }));
+      set(() => ({ ...DEFAULT_CONFIG }));      
     },
 
     mergeModels(newModels: LLMModel[]) {
@@ -129,7 +129,7 @@ export const useAppConfig = createPersistStore(
         modelMap[`${model.name}@${model?.provider?.id}`] = model;
       }
 
-      console.log("set useAppConfig: ", state);
+      console.log("modelMap useAppConfig: ", modelMap);
 
       set(() => ({
         models: Object.values(modelMap),
