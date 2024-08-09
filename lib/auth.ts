@@ -131,21 +131,21 @@ export const authOptions: NextAuthOptions = {
     },
     adapter: PrismaAdapter(prisma),
     session: { strategy: "jwt", maxAge: 3 * 24 * 60 * 60 },
-    cookies: {
-        sessionToken: {
-            name: `${SECURE_COOKIES ? "__Secure-" : ""}next-auth.session-token`,
-            options: {
-                httpOnly: true,
-                sameSite: "lax",
-                path: "/",
-                // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-                // domain: VERCEL_DEPLOYMENT
-                //     ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-                //     : undefined,
-                secure: SECURE_COOKIES,
-            },
-        },
-    },
+    // cookies: {
+    //     sessionToken: {
+    //         name: `${SECURE_COOKIES ? "__Secure-" : ""}next-auth.session-token`,
+    //         options: {
+    //             httpOnly: true,
+    //             sameSite: "lax",
+    //             path: "/",
+    //             // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
+    //             // domain: VERCEL_DEPLOYMENT
+    //             //     ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
+    //             //     : undefined,
+    //             secure: SECURE_COOKIES,
+    //         },
+    //     },
+    // },
     callbacks: {
         jwt: async ({ token, user }) => {
             // const current_time =  Math.floor(Date.now() / 1000);
