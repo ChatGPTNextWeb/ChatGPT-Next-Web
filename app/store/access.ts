@@ -112,6 +112,9 @@ const DEFAULT_ACCESS_STATE = {
   iflytekApiKey: "",
   iflytekApiSecret: "",
 
+  
+  // optionally: hard set/reset model for everyone
+  
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -119,7 +122,10 @@ const DEFAULT_ACCESS_STATE = {
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
-  defaultModel: "",
+  defaultModel: "gpt-4o-mini",
+
+  console.log("defaultModel set (access.ts): ", defaultModel);
+    
 };
 
 export const useAccessStore = createPersistStore(
