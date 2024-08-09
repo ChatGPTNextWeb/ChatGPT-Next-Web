@@ -1,16 +1,16 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  BAIDU_BASE_URL,
+  TENCENT_BASE_URL,
   ApiPath,
   ModelProvider,
-  BAIDU_OATUH_URL,
   ServiceProvider,
+  Tencent,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
-import { getAccessToken } from "@/app/utils/baidu";
+import { getHeader } from "@/app/utils/tencent";
 
 const serverConfig = getServerSideConfig();
 
@@ -18,36 +18,24 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Baidu Route] params ", params);
+  console.log("[Tencent Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.Ernie);
+  const authResult = auth(req, ModelProvider.Hunyuan);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
     });
   }
 
-  if (!serverConfig.baiduApiKey || !serverConfig.baiduSecretKey) {
-    return NextResponse.json(
-      {
-        error: true,
-        message: `missing BAIDU_API_KEY or BAIDU_SECRET_KEY in server env vars`,
-      },
-      {
-        status: 401,
-      },
-    );
-  }
-
   try {
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[Baidu] ", e);
+    console.error("[Tencent] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
@@ -79,9 +67,7 @@ export const preferredRegion = [
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Baidu, "");
-
-  let baseUrl = serverConfig.baiduUrl || BAIDU_BASE_URL;
+  let baseUrl = serverConfig.tencentUrl || TENCENT_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -91,7 +77,6 @@ async function request(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
 
   const timeoutId = setTimeout(
@@ -101,54 +86,24 @@ async function request(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  const { access_token } = await getAccessToken(
-    serverConfig.baiduApiKey as string,
-    serverConfig.baiduSecretKey as string,
-  );
-  const fetchUrl = `${baseUrl}${path}?access_token=${access_token}`;
+  const fetchUrl = baseUrl;
 
+  const body = await req.text();
+  const headers = await getHeader(
+    body,
+    serverConfig.tencentSecretId as string,
+    serverConfig.tencentSecretKey as string,
+  );
   const fetchOptions: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
     method: req.method,
-    body: req.body,
+    body,
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some request to some models
-  if (serverConfig.customModels && req.body) {
-    try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
-      // not undefined and is false
-      if (
-        isModelAvailableInServer(
-          serverConfig.customModels,
-          jsonBody?.model as string,
-          ServiceProvider.Baidu as string,
-        )
-      ) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error(`[Baidu] filter`, e);
-    }
-  }
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 

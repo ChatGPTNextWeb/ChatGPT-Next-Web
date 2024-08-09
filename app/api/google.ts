@@ -1,41 +1,54 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./auth";
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  Alibaba,
-  ALIBABA_BASE_URL,
   ApiPath,
+  GEMINI_BASE_URL,
+  Google,
   ModelProvider,
-  ServiceProvider,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/app/api/auth";
-import { isModelAvailableInServer } from "@/app/utils/model";
-import type { RequestPayload } from "@/app/client/platforms/openai";
 
 const serverConfig = getServerSideConfig();
 
-async function handle(
+export async function handle(
   req: NextRequest,
-  { params }: { params: { path: string[] } },
+  { params }: { params: { provider: string; path: string[] } },
 ) {
-  console.log("[Alibaba Route] params ", params);
+  console.log("[Google Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.Qwen);
+  const authResult = auth(req, ModelProvider.GeminiPro);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
     });
   }
 
+  const bearToken = req.headers.get("Authorization") ?? "";
+  const token = bearToken.trim().replaceAll("Bearer ", "").trim();
+
+  const apiKey = token ? token : serverConfig.googleApiKey;
+
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error: true,
+        message: `missing GOOGLE_API_KEY in server env vars`,
+      },
+      {
+        status: 401,
+      },
+    );
+  }
   try {
-    const response = await request(req);
+    const response = await request(req, apiKey);
     return response;
   } catch (e) {
-    console.error("[Alibaba] ", e);
+    console.error("[Google] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
@@ -45,32 +58,26 @@ export const POST = handle;
 
 export const runtime = "edge";
 export const preferredRegion = [
-  "arn1",
   "bom1",
-  "cdg1",
   "cle1",
   "cpt1",
-  "dub1",
-  "fra1",
   "gru1",
   "hnd1",
   "iad1",
   "icn1",
   "kix1",
-  "lhr1",
   "pdx1",
   "sfo1",
   "sin1",
   "syd1",
 ];
 
-async function request(req: NextRequest) {
+async function request(req: NextRequest, apiKey: string) {
   const controller = new AbortController();
 
-  // alibaba use base url or just remove the path
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Alibaba, "");
+  let baseUrl = serverConfig.googleUrl || GEMINI_BASE_URL;
 
-  let baseUrl = serverConfig.alibabaUrl || ALIBABA_BASE_URL;
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Google, "");
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -89,55 +96,27 @@ async function request(req: NextRequest) {
     },
     10 * 60 * 1000,
   );
+  const fetchUrl = `${baseUrl}${path}?key=${apiKey}${
+    req?.nextUrl?.searchParams?.get("alt") === "sse" ? "&alt=sse" : ""
+  }`;
 
-  const fetchUrl = `${baseUrl}${path}`;
+  console.log("[Fetch Url] ", fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: req.headers.get("Authorization") ?? "",
-      "X-DashScope-SSE": req.headers.get("X-DashScope-SSE") ?? "disable",
+      "Cache-Control": "no-store",
     },
     method: req.method,
     body: req.body,
+    // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some request to some models
-  if (serverConfig.customModels && req.body) {
-    try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
-      // not undefined and is false
-      if (
-        isModelAvailableInServer(
-          serverConfig.customModels,
-          jsonBody?.model as string,
-          ServiceProvider.Alibaba as string,
-        )
-      ) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error(`[Alibaba] filter`, e);
-    }
-  }
   try {
     const res = await fetch(fetchUrl, fetchOptions);
-
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");
