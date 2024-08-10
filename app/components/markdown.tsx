@@ -122,20 +122,20 @@ export function PreCode(props: { children: any }) {
     }
   }, []);
 
-  const [collapsed, setCollapsed] = useState(true);
-  const [showToggle, setShowToggle] = useState(false);
+  // const [collapsed, setCollapsed] = useState(true);
+  // const [showToggle, setShowToggle] = useState(false);
 
-  useEffect(() => {
-    if (ref.current) {
-      const codeHeight = ref.current.scrollHeight;
-      setShowToggle(codeHeight > 400);
-      ref.current.scrollTop = ref.current.scrollHeight;
-    }
-  }, [props.children]);
+  // useEffect(() => {
+  //   if (ref.current) {
+  //     const codeHeight = ref.current.scrollHeight;
+  //     setShowToggle(codeHeight > 400);
+  //     ref.current.scrollTop = ref.current.scrollHeight;
+  //   }
+  // }, [props.children]);
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
+  // const toggleCollapsed = () => {
+  //   setCollapsed(collapsed=>!collapsed);
+  // };
 
   return (
     <>
@@ -143,8 +143,8 @@ export function PreCode(props: { children: any }) {
         <pre
           ref={ref}
           style={{
-            maxHeight: collapsed ? "400px" : "none",
-            overflow: "hidden",
+            // maxHeight: collapsed ? "400px" : "none",
+            overflowY: "hidden",
           }}
         >
           <span
@@ -157,18 +157,13 @@ export function PreCode(props: { children: any }) {
             }}
           ></span>
           {props.children}
-          {showToggle && collapsed && (
+          {/* {showToggle && collapsed && (
             <div
-              className="show-hide-button"
-              style={{
-                backgroundImage: collapsed
-                  ? "linear-gradient(to bottom, rgba(0,0,0,.8), rgba(0,0,0,.06))"
-                  : "none",
-              }}
+            className={`show-hide-button ${collapsed ? 'collapsed' : 'expanded'}`}
             >
               <button onClick={toggleCollapsed}>查看全部</button>
             </div>
-          )}
+          )} */}
         </pre>
       </div>
       {mermaidCode.length > 0 && (
@@ -187,6 +182,46 @@ export function PreCode(props: { children: any }) {
           />
         </FullScreen>
       )}
+    </>
+  );
+}
+
+function CustomCode(props: { children: any }) {
+  const ref = useRef<HTMLPreElement>(null);
+  const [collapsed, setCollapsed] = useState(true);
+  const [showToggle, setShowToggle] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      const codeHeight = ref.current.scrollHeight;
+      setShowToggle(codeHeight > 400);
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  }, [props.children]);
+
+  const toggleCollapsed = () => {
+    setCollapsed((collapsed) => !collapsed);
+  };
+  return (
+    <>
+      <code
+        ref={ref}
+        style={{
+          maxHeight: collapsed ? "400px" : "none",
+          overflowY: "hidden",
+        }}
+      >
+        {props.children}
+        {showToggle && collapsed && (
+          <div
+            className={`show-hide-button ${
+              collapsed ? "collapsed" : "expanded"
+            }`}
+          >
+            <button onClick={toggleCollapsed}>查看全部</button>
+          </div>
+        )}
+      </code>
     </>
   );
 }
@@ -231,6 +266,8 @@ function _MarkDownContent(props: { content: string }) {
     return escapeBrackets(escapeDollarNumber(props.content));
   }, [props.content]);
 
+  console.log(escapedContent, 11233);
+
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
@@ -246,6 +283,7 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        code: CustomCode,
         p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";
