@@ -599,7 +599,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
   onClose?: () => void;
   multiple?: boolean;
 }) {
-  console.log("-----", props);
+  // console.log("-----", props);
 
   const getCheckCardAvatar = (value: string): React.ReactNode => {
     if (value.startsWith("gpt")) {

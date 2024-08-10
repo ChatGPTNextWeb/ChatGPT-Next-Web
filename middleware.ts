@@ -11,7 +11,6 @@ export default async function middleware(req: NextRequest) {
     const path = `${url.pathname}${
         searchParams.length > 0 ? `?${searchParams}` : ""
     }`;
-    console.log('----', url)
     // 直接将/app/下面路由重定向到顶层
     if (path.startsWith('/app')) {
         return NextResponse.redirect(new URL(path.replace('/app', ''), req.url), 301);

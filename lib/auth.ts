@@ -183,6 +183,10 @@ export const authOptions: NextAuthOptions = {
             // console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
             // 顺便过滤掉不允许登录的用户
             return !!existingUser && existingUser.allowToLogin;
+        },
+        // 重定向
+        async redirect({ url, baseUrl }) {
+            return baseUrl;
         }
     },
 };
