@@ -1,5 +1,5 @@
 import axiosMod, { AxiosStatic } from "axios";
-import { WebPDFLoader } from "langchain/document_loaders/web/pdf";
+import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { Tool } from "@langchain/core/tools";
 import {

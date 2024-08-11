@@ -8,6 +8,7 @@ import {
   AgentExecutor,
   AgentStep,
   createToolCallingAgent,
+  createReactAgent,
 } from "langchain/agents";
 import { ACCESS_CODE_PREFIX, ServiceProvider } from "@/app/constant";
 
@@ -414,10 +415,10 @@ export class AgentApi {
       ]);
 
       const lastMessageContent = reqBody.messages.slice(-1)[0].content;
-      const lastHumanMessage =
-        typeof lastMessageContent === "string"
-          ? new HumanMessage(lastMessageContent)
-          : new HumanMessage({ content: lastMessageContent });
+      // const lastHumanMessage =
+      //   typeof lastMessageContent === "string"
+      //     ? new HumanMessage(lastMessageContent)
+      //     : new HumanMessage({ content: lastMessageContent });
       const agent = createToolCallingAgent({
         llm,
         tools,
@@ -432,7 +433,7 @@ export class AgentApi {
           {
             input: lastMessageContent,
             chat_history: pastMessages,
-            // signal: this.controller.signal,
+            signal: this.controller.signal,
           },
           { callbacks: [handler] },
         )
