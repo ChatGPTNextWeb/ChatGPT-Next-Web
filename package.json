@@ -23,12 +23,13 @@
     "@aws-sdk/s3-request-presigner": "^3.414.0",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
-    "@langchain/anthropic": "^0.2.11",
-    "@langchain/community": "0.2.22",
-    "@langchain/groq": "^0.0.15",
-    "@langchain/langgraph": "^0.0.31",
-    "@langchain/ollama": "^0.0.2",
-    "@langchain/openai": "^0.2.5",
+    "@langchain/anthropic": "^0.2.14",
+    "@langchain/community": "0.2.25",
+    "@langchain/groq": "^0.0.16",
+    "@langchain/langgraph": "^0.0.33",
+    "@langchain/ollama": "^0.0.4",
+    "@langchain/openai": "^0.2.6",
+    "langchain": "0.2.15",
     "@next/third-parties": "^14.1.0",
     "@pinecone-database/pinecone": "^2.2.0",
     "@qdrant/js-client-rest": "^1.8.2",
@@ -49,7 +50,6 @@
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",
-    "langchain": "0.1.37",
     "mammoth": "^1.7.1",
     "markdown-to-txt": "^2.0.1",
     "md5": "^2.3.0",
@@ -100,7 +100,7 @@
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2",
-    "@langchain/core": "0.2.18"
+    "@langchain/core": "0.2.23"
   },
   "packageManager": "yarn@1.22.19"
 }

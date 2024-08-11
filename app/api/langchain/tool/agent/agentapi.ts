@@ -104,6 +104,7 @@ export class AgentApi {
     var controller = this.controller;
     return BaseCallbackHandler.fromMethods({
       async handleLLMNewToken(token: string) {
+        console.log(token);
         if (token && !controller.signal.aborted) {
           var response = new ResponseBody();
           response.message = token;
@@ -220,13 +221,14 @@ export class AgentApi {
       baseUrl = reqBaseUrl;
     if (!baseUrl.endsWith("/v1"))
       baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
-    console.log("[baseUrl]", baseUrl);
+    console.log("[openai baseUrl]", baseUrl);
     return baseUrl;
   }
 
   getLLM(reqBody: RequestBody, apiKey: string, baseUrl: string) {
     const serverConfig = getServerSideConfig();
-    if (reqBody.isAzure || serverConfig.isAzure)
+    if (reqBody.isAzure || serverConfig.isAzure) {
+      console.log("[use Azure ChatOpenAI]");
       return new ChatOpenAI({
         temperature: reqBody.temperature,
         streaming: reqBody.stream,
@@ -240,7 +242,9 @@ export class AgentApi {
         azureOpenAIApiDeploymentName: reqBody.model,
         azureOpenAIBasePath: baseUrl,
       });
-    if (reqBody.provider === ServiceProvider.OpenAI)
+    }
+    if (reqBody.provider === ServiceProvider.OpenAI) {
+      console.log("[use ChatOpenAI]");
       return new ChatOpenAI(
         {
           modelName: reqBody.model,
@@ -253,7 +257,9 @@ export class AgentApi {
         },
         { basePath: baseUrl },
       );
-    if (reqBody.provider === ServiceProvider.Anthropic)
+    }
+    if (reqBody.provider === ServiceProvider.Anthropic) {
+      console.log("[use ChatAnthropic]");
       return new ChatAnthropic({
         model: reqBody.model,
         apiKey: apiKey,
@@ -265,6 +271,7 @@ export class AgentApi {
           baseURL: baseUrl,
         },
       });
+    }
     throw new Error("Unsupported model providers");
   }
 
@@ -294,7 +301,10 @@ export class AgentApi {
       ) {
         baseUrl = reqBody.baseUrl;
       }
-      if (!isAzure && !baseUrl.endsWith("/v1")) {
+      if (
+        reqBody.provider === ServiceProvider.OpenAI &&
+        !baseUrl.endsWith("/v1")
+      ) {
         baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
       }
       if (!reqBody.isAzure && serverConfig.isAzure) {
@@ -408,8 +418,7 @@ export class AgentApi {
         typeof lastMessageContent === "string"
           ? new HumanMessage(lastMessageContent)
           : new HumanMessage({ content: lastMessageContent });
-
-      const agent = await createToolCallingAgent({
+      const agent = createToolCallingAgent({
         llm,
         tools,
         prompt,
@@ -423,7 +432,7 @@ export class AgentApi {
           {
             input: lastMessageContent,
             chat_history: pastMessages,
-            signal: this.controller.signal,
+            // signal: this.controller.signal,
           },
           { callbacks: [handler] },
         )

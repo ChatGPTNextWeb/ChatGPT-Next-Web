@@ -1,8 +1,8 @@
 import { Tool } from "@langchain/core/tools";
 import { CallbackManagerForToolRun } from "@langchain/core/callbacks/manager";
-import { BaseLanguageModel } from "langchain/dist/base_language";
+import { BaseLanguageModel } from "@langchain/core/language_models/base";
+import { Embeddings } from "@langchain/core/embeddings";
 import { formatDocumentsAsString } from "langchain/util/document";
-import { Embeddings } from "langchain/dist/embeddings/base.js";
 import { getServerSideConfig } from "@/app/config/server";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { createClient } from "@supabase/supabase-js";

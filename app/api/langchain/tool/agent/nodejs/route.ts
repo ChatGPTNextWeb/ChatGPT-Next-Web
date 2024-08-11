@@ -4,8 +4,8 @@ import { auth } from "@/app/api/auth";
 import { NodeJSTool } from "@/app/api/langchain-tools/nodejs_tools";
 import { ModelProvider } from "@/app/constant";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
-import { Embeddings } from "langchain/dist/embeddings/base";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
+import { Embeddings } from "@langchain/core/embeddings";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {

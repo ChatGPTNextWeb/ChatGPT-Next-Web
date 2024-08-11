@@ -21,7 +21,7 @@ import S3FileStorage from "@/app/utils/s3_file_storage";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { createClient } from "@supabase/supabase-js";
-import { Embeddings } from "langchain/dist/embeddings/base";
+import { Embeddings } from "@langchain/core/embeddings";
 
 interface RequestBody {
   sessionId: string;

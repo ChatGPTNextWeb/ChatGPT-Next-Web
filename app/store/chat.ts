@@ -1,4 +1,8 @@
-import { trimTopic, getMessageTextContent } from "../utils";
+import {
+  trimTopic,
+  getMessageTextContent,
+  isFunctionCallModel,
+} from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
@@ -403,8 +407,7 @@ export const useChatStore = createPersistStore(
           config.pluginConfig.enable &&
           session.mask.usePlugins &&
           (allPlugins.length > 0 || isEnableRAG) &&
-          modelConfig.model.startsWith("gpt") &&
-          modelConfig.model != "gpt-4-vision-preview"
+          isFunctionCallModel(modelConfig.model)
         ) {
           console.log("[ToolAgent] start");
           let pluginToolNames = allPlugins.map((m) => m.toolName);
