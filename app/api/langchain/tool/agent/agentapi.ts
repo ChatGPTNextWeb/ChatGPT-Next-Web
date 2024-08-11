@@ -105,7 +105,6 @@ export class AgentApi {
     var controller = this.controller;
     return BaseCallbackHandler.fromMethods({
       async handleLLMNewToken(token: string) {
-        console.log(token);
         if (token && !controller.signal.aborted) {
           var response = new ResponseBody();
           response.message = token;
@@ -276,6 +275,15 @@ export class AgentApi {
     throw new Error("Unsupported model providers");
   }
 
+  getAuthHeader(reqBody: RequestBody): string {
+    const serverConfig = getServerSideConfig();
+    return reqBody.isAzure || serverConfig.isAzure
+      ? "api-key"
+      : reqBody.provider === ServiceProvider.Anthropic
+        ? "x-api-key"
+        : "Authorization";
+  }
+
   async getApiHandler(
     req: NextRequest,
     reqBody: RequestBody,
@@ -288,7 +296,7 @@ export class AgentApi {
       // const reqBody: RequestBody = await req.json();
       // ui set azure model provider
       const isAzure = reqBody.isAzure;
-      const authHeaderName = isAzure ? "api-key" : "Authorization";
+      const authHeaderName = this.getAuthHeader(reqBody);
       const authToken = req.headers.get(authHeaderName) ?? "";
       const token = authToken.trim().replaceAll("Bearer ", "").trim();
 
@@ -427,6 +435,7 @@ export class AgentApi {
       const agentExecutor = new AgentExecutor({
         agent,
         tools,
+        maxIterations: reqBody.maxIterations,
       });
       await agentExecutor
         .invoke(

@@ -146,7 +146,7 @@ export class ClaudeApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(false, true),
+        headers: getHeaders(),
       };
 
       // make a fetch request

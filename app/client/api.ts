@@ -227,7 +227,7 @@ export class ClientApi {
   }
 }
 
-export function getHeaders(ignoreHeaders?: boolean, isFunctionCall?: boolean) {
+export function getHeaders(ignoreHeaders?: boolean) {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
   let headers: Record<string, string> = {};
@@ -285,7 +285,6 @@ export function getHeaders(ignoreHeaders?: boolean, isFunctionCall?: boolean) {
   }
 
   function getAuthHeader(): string {
-    if (isFunctionCall) return "Authorization";
     return isAzure ? "api-key" : isAnthropic ? "x-api-key" : "Authorization";
   }
 
