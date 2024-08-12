@@ -22,5 +22,8 @@ export function cloudflareAIGatewayUrl(fetchUrl: string) {
     }
     // TODO: Amazon Bedrock, Groq, HuggingFace...
   }
+  if ("api.deepseek.com" == paths[2]) {
+    return paths.slice(0, 3).concat(paths.slice(-3)).join("/");
+  }
   return fetchUrl;
 }

@@ -30,7 +30,7 @@ export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
-
+export const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -42,7 +42,7 @@ export enum Path {
   SdNew = "/sd-new",
   Artifacts = "/artifacts",
 }
-
+// API路径
 export enum ApiPath {
   Cors = "",
   Azure = "/api/azure",
@@ -57,6 +57,7 @@ export enum ApiPath {
   Iflytek = "/api/iflytek",
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
+  Deepseek = "/api/deepseek",
 }
 
 export enum SlotID {
@@ -99,7 +100,7 @@ export const STORAGE_KEY = "chatgpt-next-web";
 export const REQUEST_TIMEOUT_MS = 60000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
-
+// 服务提供商
 export enum ServiceProvider {
   OpenAI = "OpenAI",
   Azure = "Azure",
@@ -112,6 +113,7 @@ export enum ServiceProvider {
   Moonshot = "Moonshot",
   Stability = "Stability",
   Iflytek = "Iflytek",
+  Deepseek = "Deepseek",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -123,6 +125,7 @@ export enum GoogleSafetySettingsThreshold {
   BLOCK_LOW_AND_ABOVE = "BLOCK_LOW_AND_ABOVE",
 }
 
+// 模型提供商
 export enum ModelProvider {
   Stability = "Stability",
   GPT = "GPT",
@@ -134,6 +137,7 @@ export enum ModelProvider {
   Hunyuan = "Hunyuan",
   Moonshot = "Moonshot",
   Iflytek = "Iflytek",
+  Deepseek = "Deepseek",
 }
 
 export const Stability = {
@@ -200,7 +204,10 @@ export const Alibaba = {
   ExampleEndpoint: ALIBABA_BASE_URL,
   ChatPath: "v1/services/aigc/text-generation/generation",
 };
-
+export const Deepseek = {
+  ExampleEndpoint: DEEPSEEK_BASE_URL,
+  ChatPath: "v1/chat/completions",
+};
 export const Tencent = {
   ExampleEndpoint: TENCENT_BASE_URL,
 };
@@ -323,7 +330,7 @@ const alibabaModes = [
   "qwen-max-0107",
   "qwen-max-longcontext",
 ];
-
+const DeepseekModels = ["deepseek-chat", "deepseek-coder"];
 const tencentModels = [
   "hunyuan-pro",
   "hunyuan-standard",
@@ -454,6 +461,17 @@ export const DEFAULT_MODELS = [
       providerName: "Iflytek",
       providerType: "iflytek",
       sorted: 10,
+    },
+  })),
+  ...DeepseekModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "deepseek",
+      providerName: "Deepseek",
+      providerType: "deepseek",
+      sorted: 11,
     },
   })),
 ] as const;

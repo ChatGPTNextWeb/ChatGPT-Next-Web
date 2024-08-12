@@ -56,7 +56,9 @@ declare global {
       // alibaba only
       ALIBABA_URL?: string;
       ALIBABA_API_KEY?: string;
-
+      // deepseek only
+      DEEPSEEK_API_KEY?: string;
+      DEEPSEEK_URL?: string;
       // tencent only
       TENCENT_URL?: string;
       TENCENT_SECRET_KEY?: string;
@@ -141,6 +143,7 @@ export const getServerSideConfig = () => {
   const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
+  const isDeepseek = !!process.env.DEEPSEEK_API_KEY;
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   const isIflytek = !!process.env.IFLYTEK_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
@@ -190,6 +193,10 @@ export const getServerSideConfig = () => {
     isAlibaba,
     alibabaUrl: process.env.ALIBABA_URL,
     alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
+
+    isDeepseek,
+    deepseekApiKey: getApiKey(process.env.DEEPSEEK_API_KEY),
+    deepseekApiUrl: process.env.DEEPSEEK_URL,
 
     isTencent,
     tencentUrl: process.env.TENCENT_URL,

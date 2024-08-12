@@ -12,6 +12,7 @@ import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
 import { DoubaoApi } from "./platforms/bytedance";
 import { QwenApi } from "./platforms/alibaba";
+import { DeepseekApi } from "./platforms/deepseek";
 import { HunyuanApi } from "./platforms/tencent";
 import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
@@ -123,6 +124,9 @@ export class ClientApi {
       case ModelProvider.Qwen:
         this.llm = new QwenApi();
         break;
+      case ModelProvider.Deepseek:
+        this.llm = new DeepseekApi();
+        break;
       case ModelProvider.Hunyuan:
         this.llm = new HunyuanApi();
         break;
@@ -214,6 +218,8 @@ export function getHeaders() {
     const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
     const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
     const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
+    const isDeepseek = modelConfig.providerName === ServiceProvider.Deepseek;
+
     const isMoonshot = modelConfig.providerName === ServiceProvider.Moonshot;
     const isIflytek = modelConfig.providerName === ServiceProvider.Iflytek;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
@@ -227,6 +233,8 @@ export function getHeaders() {
       ? accessStore.bytedanceApiKey
       : isAlibaba
       ? accessStore.alibabaApiKey
+      : isDeepseek
+      ? accessStore.deepseekApiKey
       : isMoonshot
       ? accessStore.moonshotApiKey
       : isIflytek
@@ -241,6 +249,7 @@ export function getHeaders() {
       isBaidu,
       isByteDance,
       isAlibaba,
+      isDeepseek,
       isMoonshot,
       isIflytek,
       apiKey,
@@ -268,7 +277,9 @@ export function getHeaders() {
   const authHeader = getAuthHeader();
 
   const bearerToken = getBearerToken(apiKey, isAzure || isAnthropic);
-
+  console.log("bearerToken", bearerToken);
+  // TODO: remove this 更换 Deepseek 的 api key
+  headers["Authorization"] = `Bearer sk-c8e0505e462f49068758ebcc4331c9ee`;
   if (bearerToken) {
     headers[authHeader] = bearerToken;
   } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
@@ -292,6 +303,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.Doubao);
     case ServiceProvider.Alibaba:
       return new ClientApi(ModelProvider.Qwen);
+    case ServiceProvider.Deepseek:
+      return new ClientApi(ModelProvider.Deepseek);
     case ServiceProvider.Tencent:
       return new ClientApi(ModelProvider.Hunyuan);
     case ServiceProvider.Moonshot:
