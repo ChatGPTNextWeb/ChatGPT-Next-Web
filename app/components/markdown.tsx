@@ -122,28 +122,12 @@ export function PreCode(props: { children: any }) {
     }
   }, []);
 
-  // const [collapsed, setCollapsed] = useState(true);
-  // const [showToggle, setShowToggle] = useState(false);
-
-  // useEffect(() => {
-  //   if (ref.current) {
-  //     const codeHeight = ref.current.scrollHeight;
-  //     setShowToggle(codeHeight > 400);
-  //     ref.current.scrollTop = ref.current.scrollHeight;
-  //   }
-  // }, [props.children]);
-
-  // const toggleCollapsed = () => {
-  //   setCollapsed(collapsed=>!collapsed);
-  // };
-
   return (
     <>
       <div style={{ position: "relative" }}>
         <pre
           ref={ref}
           style={{
-            // maxHeight: collapsed ? "400px" : "none",
             overflowY: "hidden",
           }}
         >
@@ -157,13 +141,6 @@ export function PreCode(props: { children: any }) {
             }}
           ></span>
           {props.children}
-          {/* {showToggle && collapsed && (
-            <div
-            className={`show-hide-button ${collapsed ? 'collapsed' : 'expanded'}`}
-            >
-              <button onClick={toggleCollapsed}>查看全部</button>
-            </div>
-          )} */}
         </pre>
       </div>
       {mermaidCode.length > 0 && (
