@@ -271,7 +271,8 @@ div.math {
 }
 
 pre {
-  // position: relative;
+  position: relative;
+  
   &:hover .copy-code-button {
     pointer-events: all;
     transform: translateX(0px);

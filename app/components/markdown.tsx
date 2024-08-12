@@ -124,25 +124,18 @@ export function PreCode(props: { children: any }) {
 
   return (
     <>
-      <div style={{ position: "relative" }}>
-        <pre
-          ref={ref}
-          style={{
-            overflowY: "hidden",
+      <pre ref={ref}>
+        <span
+          className="copy-code-button"
+          onClick={() => {
+            if (ref.current) {
+              const code = ref.current.innerText;
+              copyToClipboard(code);
+            }
           }}
-        >
-          <span
-            className="copy-code-button"
-            onClick={() => {
-              if (ref.current) {
-                const code = ref.current.innerText;
-                copyToClipboard(code);
-              }
-            }}
-          ></span>
-          {props.children}
-        </pre>
-      </div>
+        ></span>
+        {props.children}
+      </pre>
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
@@ -242,8 +235,6 @@ function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
     return escapeBrackets(escapeDollarNumber(props.content));
   }, [props.content]);
-
-  console.log(escapedContent, 11233);
 
   return (
     <ReactMarkdown
