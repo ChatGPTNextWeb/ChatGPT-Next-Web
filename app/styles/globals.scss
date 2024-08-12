@@ -308,9 +308,7 @@ code{
   .show-hide-button {
     border-radius: 10px;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0 0 auto 0;
     width: 100%;
     margin: auto;
     height: fit-content;
