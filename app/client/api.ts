@@ -51,6 +51,8 @@ export interface LLMConfig {
   presence_penalty?: number;
   frequency_penalty?: number;
   size?: DalleRequestPayload["size"];
+  quality?: DalleRequestPayload["quality"];
+  style?: DalleRequestPayload["style"];
 }
 
 export interface ChatOptions {

@@ -1,5 +1,5 @@
 #FROM registry.cn-hangzhou.aliyuncs.com/sijinhui/node:18-alpine AS base
-FROM hub.sivpn.cn/library/node:22.1-alpine AS base
+FROM hub.si.icu/library/node:22.1-alpine AS base
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 #RUN apk add --no-cache \
