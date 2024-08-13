@@ -1,7 +1,7 @@
 import webpack from "webpack";
 // debug build
-// import { createRequire } from 'module';
-// const require = createRequire(import.meta.url);
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // });
@@ -19,6 +19,8 @@ console.log("[Next] build with chunk: ", disableChunk);
 // const isProd = process.env.NODE_ENV === 'production'
 
 // 为了修复tiktoken的插件问题
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
 const nextConfig = {
   // transpilePackages: ['tiktoken'],
   webpack(config) {
@@ -32,6 +34,19 @@ const nextConfig = {
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       )
     }
+
+    // 为了修复tiktoken的插件问题
+    config.plugins.push(
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: "node_modules/tiktoken/lite/tiktoken_bg.wasm",
+            to: "tiktoken_bg.wasm",
+            toType: "file",
+          },
+        ],
+      })
+    )
     // turn off static file serving of WASM files
     // we need to let Webpack handle WASM import
     // config.module.rules
