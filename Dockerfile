@@ -75,7 +75,7 @@ EXPOSE 23000
 EXPOSE 23001
 ENV KEEP_ALIVE_TIMEOUT=30
 
-CMD if [ -n "$PROXY_URL" ]; then \
+CMD wget -qO- myip.ipip.net ; if [ -n "$PROXY_URL" ]; then \
     export HOSTNAME="0.0.0.0"; \
     protocol=$(echo $PROXY_URL | cut -d: -f1); \
     host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
