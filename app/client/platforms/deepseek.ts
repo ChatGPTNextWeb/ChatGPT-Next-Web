@@ -206,14 +206,14 @@ export class DeepseekApi implements LLMApi {
             }
           },
           onmessage(msg) {
-            console.log("msg", msg);
+            // console.log("msg", msg);
             if (msg.data === "[DONE]" || finished) {
               return finish();
             }
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              console.log("json", json);
+              // console.log("json", json);
 
               const choices = json.choices as Array<{
                 delta: { content: string };

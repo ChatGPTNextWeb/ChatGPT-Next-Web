@@ -33,6 +33,7 @@ export async function handle(
 
   try {
     const response = await request(req);
+    console.log("我是从api这边进入的2", response);
     return response;
   } catch (e) {
     console.error("[Deepseek] ", e);
@@ -42,6 +43,7 @@ export async function handle(
 
 async function request(req: NextRequest) {
   const controller = new AbortController();
+  console.log("我是从api这边进入的", req.nextUrl.pathname);
 
   // alibaba use base url or just remove the path
   let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Deepseek, "");
@@ -57,8 +59,8 @@ async function request(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  console.log("[Deepseek Proxy] ", path);
+  console.log("[Deepseek Base Url]", baseUrl);
 
   const timeoutId = setTimeout(
     () => {

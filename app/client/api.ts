@@ -157,7 +157,7 @@ export class ClientApi {
         {
           from: "human",
           value:
-            "Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+            "Share from [清明上河图小助手]: https://github.com/Yidadaa/ChatGPT-Next-Web",
         },
       ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
@@ -279,7 +279,7 @@ export function getHeaders() {
   const bearerToken = getBearerToken(apiKey, isAzure || isAnthropic);
   console.log("bearerToken", bearerToken);
   // TODO: remove this 更换 Deepseek 的 api key
-  headers["Authorization"] = `Bearer sk-c8e0505e462f49068758ebcc4331c9ee`;
+  headers["Authorization"] = `Bearer sk-94ee98bc9bd14db495d49eb598b69ff0`;
   if (bearerToken) {
     headers[authHeader] = bearerToken;
   } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {

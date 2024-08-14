@@ -157,11 +157,16 @@ export function selectOrCopy(el: HTMLElement, content: string) {
   return true;
 }
 
+// 获取DOM元素的内容宽度
 function getDomContentWidth(dom: HTMLElement) {
+  // 获取元素的计算样式
   const style = window.getComputedStyle(dom);
+  // 计算左右内边距的总宽度
   const paddingWidth =
     parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  // 计算内容宽度：元素客户端宽度减去内边距宽度
   const width = dom.clientWidth - paddingWidth;
+  // 返回计算得到的内容宽度
   return width;
 }
 
