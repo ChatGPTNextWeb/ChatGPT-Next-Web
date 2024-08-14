@@ -34,6 +34,8 @@ jobs:
         with:
           context: .
           push: true
+          cache-from: type=registry,ref=registry.si.icu/sijinhui/chatgpt-next-web:buildcache
+          cache-to: type=registry,ref=registry.si.icu/sijinhui/chatgpt-next-web:buildcache,mode=max
           tags: |
             registry.si.icu/sijinhui/chatgpt-next-web:latest
             registry.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
