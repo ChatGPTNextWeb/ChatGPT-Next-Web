@@ -1,5 +1,11 @@
 FROM sijinhui/chatgpt-next-web:buildcache as deps
 
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+
+RUN yarn install
+
 FROM base AS builder
 
 RUN apk add --no-cache git libc6-compat
