@@ -12,6 +12,7 @@ import {
   StoreKey,
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
+  CLAUDE_SUMMARIZE_MODEL,
 } from "../constant";
 import { getClientApi } from "../client/api";
 import type {
@@ -92,21 +93,31 @@ function createEmptySession(): ChatSession {
 
 function getSummarizeModel(currentModel: string) {
   // if it is using gpt-* models, force to use 4o-mini to summarize
+  const configStore = useAppConfig.getState();
+  const accessStore = useAccessStore.getState();
+  const allModel = collectModelsWithDefaultModel(
+    configStore.models,
+    [configStore.customModels, accessStore.customModels].join(","),
+    accessStore.defaultModel,
+  );
+
   if (currentModel.startsWith("gpt")) {
-    const configStore = useAppConfig.getState();
-    const accessStore = useAccessStore.getState();
-    const allModel = collectModelsWithDefaultModel(
-      configStore.models,
-      [configStore.customModels, accessStore.customModels].join(","),
-      accessStore.defaultModel,
-    );
     const summarizeModel = allModel.find(
       (m) => m.name === SUMMARIZE_MODEL && m.available,
     );
     return summarizeModel?.name ?? currentModel;
   }
   if (currentModel.startsWith("gemini")) {
-    return GEMINI_SUMMARIZE_MODEL;
+    const summarizeModel = allModel.find(
+      (m) => m.name === GEMINI_SUMMARIZE_MODEL && m.available,
+    );
+    return summarizeModel?.name ?? currentModel;
+  }
+  if (currentModel.startsWith("claude")) {
+    const summarizeModel = allModel.find(
+      (m) => m.name === CLAUDE_SUMMARIZE_MODEL && m.available,
+    );
+    return summarizeModel?.name ?? currentModel;
   }
   return currentModel;
 }

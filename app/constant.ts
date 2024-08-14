@@ -235,6 +235,7 @@ Latex block: $$e=mc^2$$
 
 export const SUMMARIZE_MODEL = "gpt-4o-mini";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
+export const CLAUDE_SUMMARIZE_MODEL = "claude-3-haiku-20240307"
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
