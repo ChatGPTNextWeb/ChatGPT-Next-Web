@@ -527,6 +527,22 @@ const en: LocaleType = {
   FineTuned: {
     Sysmessage: "You are an assistant that",
   },
+  SearchChat: {
+    Name: "Search",
+    Page: {
+      Title: "Search Chat History",
+      Search:
+        "Enter multiple keywords (separated by spaces), press Enter to search",
+      NoResult: "No results found",
+      NoData: "No data",
+      Loading: "Loading...",
+
+      SubTitle: (count: number) => `Found ${count} results`,
+    },
+    Item: {
+      View: "View",
+    },
+  },
   Mask: {
     Name: "Mask",
     Page: {

@@ -244,6 +244,22 @@ const jp: PartialLocaleType = {
   },
   Plugin: { Name: "プラグイン" },
   FineTuned: { Sysmessage: "あなたはアシスタントです" },
+  SearchChat: {
+    Name: "検索",
+    Page: {
+      Title: "チャット履歴を検索",
+      Search:
+        "複数のキーワードを入力してください（スペースで区切る）、エンターキーを押して検索",
+      NoResult: "結果が見つかりませんでした",
+      NoData: "データがありません",
+      Loading: "読み込み中...",
+
+      SubTitle: (count: number) => `${count} 件の結果を見つけました`,
+    },
+    Item: {
+      View: "表示",
+    },
+  },
   Mask: {
     Name: "キャラクタープリセット",
     Page: {

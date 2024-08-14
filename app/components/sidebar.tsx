@@ -250,6 +250,15 @@ export function SideBar(props: { className?: string }) {
             onClick={() => setShowPluginSelector(true)}
             shadow
           />
+          <IconButton
+            icon={<DiscoveryIcon />}
+            text={shouldNarrow ? undefined : Locale.SearchChat.Name}
+            className={styles["sidebar-bar-button"]}
+            onClick={() =>
+              navigate(Path.SearchChat, { state: { fromHome: true } })
+            }
+            shadow
+          />
         </div>
         {showPluginSelector && (
           <Selector
