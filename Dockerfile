@@ -1,38 +1,8 @@
-#FROM registry.cn-hangzhou.aliyuncs.com/sijinhui/node:18-alpine AS base
-FROM hub.si.icu/library/node:22.1-alpine AS base
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk add --no-cache tzdata
-#RUN apk add --no-cache \
-#        vips-dev \
-#        fftw-dev \
-#        glib-dev \
-#        glib \
-#        expat-dev
-# 设置时区环境变量
-ENV TZ=Asia/Chongqing
-# 更新并安装时区工具
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-ENV PRISMA_ENGINES_MIRROR=https://registry.npmmirror.com/-/binary/prisma
-
-FROM base AS deps
-
-RUN apk add --no-cache libc6-compat
-
-WORKDIR /app
-
-COPY package.json yarn.lock ./
-
-RUN yarn config set registry 'https://registry.npmmirror.com'
-RUN yarn config set sharp_binary_host "https://cdn.npmmirror.com/binaries/sharp"
-RUN yarn config set sharp_libvips_binary_host "https://cdn.npmmirror.com/binaries/sharp-libvips"
-#RUN # 清理遗留的缓存
-#RUN yarn cache clean
-RUN yarn install
+FROM sijinhui/chatgpt-next-web:buildcache as deps
 
 FROM base AS builder
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git libc6-compat
 
 ENV OPENAI_API_KEY=""
 ENV GOOGLE_API_KEY=""
