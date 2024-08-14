@@ -6,7 +6,7 @@ COPY package.json yarn.lock ./
 
 RUN yarn install
 
-FROM base AS builder
+FROM sijinhui/node:base AS builder
 
 RUN apk add --no-cache git libc6-compat
 
@@ -23,7 +23,7 @@ RUN mkdir -p "/app/node_modules/tiktoken" && mkdir -p "/app/node_modules/sharp"
 ENV NEXT_SHARP_PATH /app/node_modules/sharp
 RUN yarn build
 
-FROM base AS runner
+FROM sijinhui/node:base AS runner
 WORKDIR /app
 
 RUN apk add proxychains-ng
