@@ -18,7 +18,7 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 # 避免下面那个报错
-# RUN mkdir -p "/app/node_modules/tiktoken" && mkdir -p "/app/node_modules/sharp"
+RUN mkdir -p "/app/node_modules/tiktoken" && mkdir -p "/app/node_modules/sharp"
 # RUN yarn add sharp
 # ENV NEXT_SHARP_PATH /app/node_modules/sharp
 RUN yarn build
@@ -38,7 +38,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
 
-# COPY --from=builder /app/node_modules/tiktoken ./node_modules/tiktoken
+COPY --from=builder /app/node_modules/tiktoken ./node_modules/tiktoken
 # COPY --from=builder /app/node_modules/sharp ./node_modules/sharp
 
 RUN rm -f .env
