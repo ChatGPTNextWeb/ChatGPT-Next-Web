@@ -34,12 +34,13 @@ jobs:
         with:
           context: .
           push: true
+          no-cache: true
           tags: |
             registry.si.icu/sijinhui/chatgpt-next-web:latest
             registry.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
-      - name: clean build history
-        run: |
-          yes | docker system prune --filter "until=720h"
+#      - name: clean build history
+#        run: |
+#          yes | docker system prune --filter "until=720h"
 #  download-repo:
 #    name: 下载仓库
 #    needs: build
