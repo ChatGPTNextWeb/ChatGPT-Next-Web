@@ -25,21 +25,6 @@ export function SearchChatPage() {
 
   const [searchResults, setSearchResults] = useState<Item[]>([]);
 
-  // const setDefaultItems = () => {
-  //   setSearchResults(
-  //     sessions.slice(1, 7).map((session, index) => {
-  //       return {
-  //         id: index,
-  //         name: session.topic,
-  //         content: session.messages[0].content as string, //.map((m) => m.content).join("\n")
-  //       };
-  //     }),
-  //   );
-  // };
-  // useEffect(() => {
-  //   setDefaultItems();
-  // }, []);
-
   const previousValueRef = useRef<string>("");
   const searchInputRef = useRef<HTMLInputElement>(null);
   const doSearch = (text: string) => {
@@ -53,7 +38,7 @@ export function SearchChatPage() {
         const content = message.content as string;
         const lowerCaseContent = content.toLowerCase();
 
-        // 全文搜索
+        // full text search
         let pos = lowerCaseContent.indexOf(lowerCaseText);
         while (pos !== -1) {
           const start = Math.max(0, pos - 35);
@@ -70,12 +55,12 @@ export function SearchChatPage() {
         results.push({
           id: index,
           name: session.topic,
-          content: fullTextContents.join("... "), // 使用...连接不同消息中的内容
+          content: fullTextContents.join("... "), // concat content with...
         });
       }
     });
 
-    // 按内容长度排序
+    // sort by length of matching content
     results.sort((a, b) => b.content.length - a.content.length);
 
     return results;
@@ -148,7 +133,15 @@ export function SearchChatPage() {
 
           <div>
             {searchResults.map((item) => (
-              <div className={styles["mask-item"]} key={item.id}>
+              <div
+                className={styles["mask-item"]}
+                key={item.id}
+                onClick={() => {
+                  navigate(Path.Chat);
+                  selectSession(item.id);
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 {/** 搜索匹配的文本 */}
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-title"]}>
@@ -161,10 +154,6 @@ export function SearchChatPage() {
                   <IconButton
                     icon={<EyeIcon />}
                     text={Locale.SearchChat.Item.View}
-                    onClick={() => {
-                      navigate(Path.Chat);
-                      selectSession(item.id);
-                    }}
                   />
                 </div>
               </div>
