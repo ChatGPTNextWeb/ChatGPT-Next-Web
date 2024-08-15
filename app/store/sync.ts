@@ -26,6 +26,7 @@ export type SyncStore = GetStoreState<typeof useSyncStore>;
 
 const DEFAULT_SYNC_STATE = {
   provider: ProviderType.WebDAV,
+  enableAutoSync: true,
   useProxy: true,
   proxyUrl: corsPath(ApiPath.Cors),
 
@@ -91,6 +92,11 @@ export const useSyncStore = createPersistStore(
     },
 
     async sync() {
+      const enableAutoSync = get().enableAutoSync;
+      if (!enableAutoSync) {
+        return;
+      }
+
       const localState = getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
@@ -100,15 +106,17 @@ export const useSyncStore = createPersistStore(
         const remoteState = await client.get(config.username);
         if (!remoteState || remoteState === "") {
           await client.set(config.username, JSON.stringify(localState));
-          console.log("[Sync] Remote state is empty, using local state instead.");
-          return
+          console.log(
+            "[Sync] Remote state is empty, using local state instead.",
+          );
+          return;
         } else {
           const parsedRemoteState = JSON.parse(
             await client.get(config.username),
           ) as AppState;
           mergeAppState(localState, parsedRemoteState);
           setLocalAppState(localState);
-       } 
+        }
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
         throw e;
@@ -122,6 +130,14 @@ export const useSyncStore = createPersistStore(
     async check() {
       const client = this.getClient();
       return await client.check();
+    },
+
+    async autoSync() {
+      const { lastSyncTime, provider } = get();
+      const syncStore = useSyncStore.getState();
+      if (lastSyncTime && syncStore.cloudSync()) {
+        syncStore.sync();
+      }
     },
   }),
   {

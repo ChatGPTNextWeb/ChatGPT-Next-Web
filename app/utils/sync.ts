@@ -130,10 +130,10 @@ const MergeStates: StateMerger = {
     });
 
     // sort local sessions with date field in desc order
-    localState.sessions.sort(
-      (a, b) =>
-        new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
-    );
+    // localState.sessions.sort(
+    //   (a, b) =>
+    //     new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
+    // );
 
     const deletedSessionIds = {
       ...remoteDeletedSessionIds,

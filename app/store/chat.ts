@@ -30,6 +30,7 @@ import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
+import { useSyncStore } from "./sync";
 import { isDalle3 } from "../utils";
 
 export type ChatMessage = RequestMessage & {
@@ -168,6 +169,15 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
+let cloudSyncTimer: any = null;
+function noticeCloudSync(): void {
+  const syncStore = useSyncStore.getState();
+  cloudSyncTimer && clearTimeout(cloudSyncTimer);
+  cloudSyncTimer = setTimeout(() => {
+    syncStore.autoSync();
+  }, 500);
+}
+
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
@@ -297,12 +307,15 @@ export const useChatStore = createPersistStore(
           deletedSessionIds,
         }));
 
+        noticeCloudSync();
+
         showToast(
           Locale.Home.DeleteToast,
           {
             text: Locale.Home.Revert,
             onClick() {
               set(() => restoreState);
+              noticeCloudSync();
             },
           },
           5000,
@@ -330,6 +343,7 @@ export const useChatStore = createPersistStore(
         });
         get().updateStat(message);
         get().summarizeSession();
+        noticeCloudSync();
       },
 
       async onUserInput(content: string, attachImages?: string[]) {
