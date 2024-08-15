@@ -92,7 +92,6 @@ function createEmptySession(): ChatSession {
 }
 
 function getSummarizeModel(currentModel: string) {
-  // if it is using gpt-* models, force to use 4o-mini to summarize
   const configStore = useAppConfig.getState();
   const accessStore = useAccessStore.getState();
   const allModel = collectModelsWithDefaultModel(
@@ -100,7 +99,7 @@ function getSummarizeModel(currentModel: string) {
     [configStore.customModels, accessStore.customModels].join(","),
     accessStore.defaultModel,
   );
-
+  // if it is using gpt-* models, force to use 4o-mini to summarize
   if (currentModel.startsWith("gpt")) {
     const summarizeModel = allModel.find(
       (m) => m.name === SUMMARIZE_MODEL && m.available,
@@ -113,6 +112,7 @@ function getSummarizeModel(currentModel: string) {
     );
     return summarizeModel?.name ?? currentModel;
   }
+  // if it is using claude-* models, use claude-3-haiku-20240307 to summarize
   if (currentModel.startsWith("claude")) {
     const summarizeModel = allModel.find(
       (m) => m.name === CLAUDE_SUMMARIZE_MODEL && m.available,
