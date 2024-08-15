@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ErrorBoundary } from "./error";
 import styles from "./mask.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -25,62 +25,79 @@ export function SearchChatPage() {
 
   const [searchResults, setSearchResults] = useState<Item[]>([]);
 
-  const setDefaultItems = () => {
-    setSearchResults(
-      sessions.slice(1, 7).map((session, index) => {
-        console.log(session.messages[0]);
-        return {
-          id: index,
-          name: session.topic,
-          content: session.messages[0].content as string, //.map((m) => m.content).join("\n")
-        };
-      }),
-    );
-  };
-  useEffect(() => {
-    setDefaultItems();
-  }, []);
+  // const setDefaultItems = () => {
+  //   setSearchResults(
+  //     sessions.slice(1, 7).map((session, index) => {
+  //       return {
+  //         id: index,
+  //         name: session.topic,
+  //         content: session.messages[0].content as string, //.map((m) => m.content).join("\n")
+  //       };
+  //     }),
+  //   );
+  // };
+  // useEffect(() => {
+  //   setDefaultItems();
+  // }, []);
 
+  const previousValueRef = useRef<string>("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const doSearch = (text: string) => {
-    // 分割关键词
-    const keywords = text.split(" ");
-
-    // 存储每个会话的匹配结果
-    const searchResults: Item[] = [];
+    const lowerCaseText = text.toLowerCase();
+    const results: Item[] = [];
 
     sessions.forEach((session, index) => {
-      let matchCount = 0;
-      const contents: string[] = [];
+      const fullTextContents: string[] = [];
 
       session.messages.forEach((message) => {
         const content = message.content as string;
         const lowerCaseContent = content.toLowerCase();
-        keywords.forEach((keyword) => {
-          const pos = lowerCaseContent.indexOf(keyword.toLowerCase());
-          if (pos !== -1) {
-            matchCount++;
-            // 提取关键词前后70个字符的内容
-            const start = Math.max(0, pos - 35);
-            const end = Math.min(content.length, pos + keyword.length + 35);
-            contents.push(content.substring(start, end));
-          }
-        });
+
+        // 全文搜索
+        let pos = lowerCaseContent.indexOf(lowerCaseText);
+        while (pos !== -1) {
+          const start = Math.max(0, pos - 35);
+          const end = Math.min(content.length, pos + lowerCaseText.length + 35);
+          fullTextContents.push(content.substring(start, end));
+          pos = lowerCaseContent.indexOf(
+            lowerCaseText,
+            pos + lowerCaseText.length,
+          );
+        }
       });
 
-      if (matchCount > 0) {
-        searchResults.push({
+      if (fullTextContents.length > 0) {
+        results.push({
           id: index,
           name: session.topic,
-          content: contents.join("... "), // 使用...连接不同消息中的内容
+          content: fullTextContents.join("... "), // 使用...连接不同消息中的内容
         });
       }
     });
 
-    // 按匹配数量排序，取前10个结果
-    return searchResults
-      .sort((a, b) => b.content.length - a.content.length)
-      .slice(0, 10);
+    // 按内容长度排序
+    results.sort((a, b) => b.content.length - a.content.length);
+
+    return results;
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (searchInputRef.current) {
+        const currentValue = searchInputRef.current.value;
+        if (currentValue !== previousValueRef.current) {
+          if (currentValue.length > 0) {
+            const result = doSearch(currentValue);
+            setSearchResults(result);
+          }
+          previousValueRef.current = currentValue;
+        }
+      }
+    }, 1000);
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -115,6 +132,7 @@ export function SearchChatPage() {
               className={styles["search-bar"]}
               placeholder={Locale.SearchChat.Page.Search}
               autoFocus
+              ref={searchInputRef}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();

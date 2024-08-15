@@ -248,8 +248,7 @@ const jp: PartialLocaleType = {
     Name: "検索",
     Page: {
       Title: "チャット履歴を検索",
-      Search:
-        "複数のキーワードを入力してください（スペースで区切る）、エンターキーを押して検索",
+      Search: "キーワードを入力してください",
       NoResult: "結果が見つかりませんでした",
       NoData: "データがありません",
       Loading: "読み込み中...",

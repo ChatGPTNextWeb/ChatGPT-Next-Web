@@ -531,8 +531,7 @@ const en: LocaleType = {
     Name: "Search",
     Page: {
       Title: "Search Chat History",
-      Search:
-        "Enter multiple keywords (separated by spaces), press Enter to search",
+      Search: "Enter search query to search chat history",
       NoResult: "No results found",
       NoData: "No data",
       Loading: "Loading...",
