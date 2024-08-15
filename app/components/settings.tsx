@@ -358,6 +358,21 @@ function SyncConfigModal(props: { onClose?: () => void }) {
           </ListItem>
 
           <ListItem
+            title={Locale.Settings.Sync.Config.EnableAutoSync.Title}
+            subTitle={Locale.Settings.Sync.Config.EnableAutoSync.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={syncStore.enableAutoSync}
+              onChange={(e) => {
+                syncStore.update(
+                  (config) => (config.enableAutoSync = e.currentTarget.checked),
+                );
+              }}
+            ></input>
+          </ListItem>
+
+          <ListItem
             title={Locale.Settings.Sync.Config.Proxy.Title}
             subTitle={Locale.Settings.Sync.Config.Proxy.SubTitle}
           >

@@ -209,6 +209,11 @@ const en: LocaleType = {
           Title: "Sync Type",
           SubTitle: "Choose your favorite sync service",
         },
+        EnableAutoSync: {
+          Title: "Auto Sync Settings",
+          SubTitle:
+            "Automatically synchronize data after replying or deleting messages",
+        },
         Proxy: {
           Title: "Enable CORS Proxy",
           SubTitle: "Enable a proxy to avoid cross-origin restrictions",

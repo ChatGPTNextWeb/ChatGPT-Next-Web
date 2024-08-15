@@ -206,6 +206,10 @@ const cn = {
           Title: "同步类型",
           SubTitle: "选择喜爱的同步服务器",
         },
+        EnableAutoSync: {
+          Title: "自动同步设置",
+          SubTitle: "在回复完成或删除消息后自动同步数据",
+        },
         Proxy: {
           Title: "启用代理",
           SubTitle: "在浏览器中同步时，必须启用代理以避免跨域限制",
