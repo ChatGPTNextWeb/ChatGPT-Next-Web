@@ -1,5 +1,7 @@
 export { default } from "next-auth/middleware";
 
 export const config = {
-  matcher: "/((?!login|static|.*\\..*|_next).*)",
+  matcher: [
+    "/((?!login|static|.*\\..*|_next|api/cache/upload).*)",
+  ],
 };
