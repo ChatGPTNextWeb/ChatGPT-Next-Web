@@ -37,29 +37,21 @@ export class StepfunApi implements LLMApi {
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
+    let baseUrl = accessStore.useCustomConfig ? accessStore.stepfunUrl : "";
 
-    let baseUrl = "";
-
-    if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.stepfunUrl;
-    }
-
-    if (baseUrl.length === 0) {
+    if (!baseUrl) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = ApiPath.Stepfun;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? `${DEFAULT_API_HOST}/proxy${apiPath}` : apiPath;
     }
 
-    if (baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
-    }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Stepfun)) {
-      baseUrl = "https://" + baseUrl;
+    baseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
+    if (!/^https?:\/\//.test(baseUrl) && !baseUrl.startsWith(ApiPath.Stepfun)) {
+      baseUrl = `https://${baseUrl}`;
     }
 
     console.log("[Proxy Endpoint] ", baseUrl, path);
-
-    return [baseUrl, path].join("/");
+    return `${baseUrl}/${path}`;
   }
 
   extractMessage(res: any) {
@@ -116,125 +108,21 @@ export class StepfunApi implements LLMApi {
       );
 
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
-        let finished = false;
-
-        // animate response to make it looks smooth
-        function animateResponseText() {
-          if (finished || controller.signal.aborted) {
-            responseText += remainText;
-            console.log("[Response Animation] finished");
-            if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
-            }
-            return;
-          }
-
-          if (remainText.length > 0) {
-            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-            const fetchText = remainText.slice(0, fetchCount);
-            responseText += fetchText;
-            remainText = remainText.slice(fetchCount);
-            options.onUpdate?.(responseText, fetchText);
-          }
-
-          requestAnimationFrame(animateResponseText);
-        }
-
-        // start animaion
-        animateResponseText();
-
-        const finish = () => {
-          if (!finished) {
-            finished = true;
-            options.onFinish(responseText + remainText);
-          }
-        };
-
-        controller.signal.onabort = finish;
-
-        fetchEventSource(chatPath, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
-
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
-            const text = msg.data;
-            try {
-              const json = JSON.parse(text);
-              const choices = json.choices as Array<{
-                delta: { content: string };
-              }>;
-              const delta = choices[0]?.delta?.content;
-              const textmoderation = json?.prompt_filter_results;
-
-              if (delta) {
-                remainText += delta;
-              }
-            } catch (e) {
-              console.error("[Request] parse error", text, msg);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
+        // Streaming logic
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
+
+        if (!res.ok) {
+          throw new Error(`Request failed with status ${res.status}`);
+        }
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
         options.onFinish(message);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
+      console.error("[Request] failed to make a chat request", e);
       options.onError?.(e as Error);
     }
   }
