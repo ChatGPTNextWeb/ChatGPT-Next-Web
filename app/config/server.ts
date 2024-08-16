@@ -62,6 +62,10 @@ declare global {
       TENCENT_SECRET_KEY?: string;
       TENCENT_SECRET_ID?: string;
 
+      // stepfun only
+      STEPFUN_URL?: string;
+      STEPFUN_API_KEY?: string;
+
       // moonshot only
       MOONSHOT_URL?: string;
       MOONSHOT_API_KEY?: string;
@@ -137,6 +141,7 @@ export const getServerSideConfig = () => {
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
   const isTencent = !!process.env.TENCENT_API_KEY;
+  const isStepfun = !!process.env.STEPFUN_API_KEY;
 
   const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
@@ -195,6 +200,10 @@ export const getServerSideConfig = () => {
     tencentUrl: process.env.TENCENT_URL,
     tencentSecretKey: getApiKey(process.env.TENCENT_SECRET_KEY),
     tencentSecretId: process.env.TENCENT_SECRET_ID,
+
+    isStepfun,
+    stepfunUrl: process.env.STEPFUN_URL,
+    stepfunApiKey: getApiKey(process.env.STEPFUN_API_KEY),
 
     isMoonshot,
     moonshotUrl: process.env.MOONSHOT_URL,

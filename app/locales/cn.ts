@@ -394,6 +394,17 @@ const cn = {
           SubTitle: "不支持自定义前往.env配置",
         },
       },
+      Stepfun: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义阶跃星辰API Key",
+          Placeholder: "Stepfun API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       ByteDance: {
         ApiKey: {
           Title: "接口密钥",

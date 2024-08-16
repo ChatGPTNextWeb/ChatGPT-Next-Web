@@ -7,6 +7,7 @@ import { handle as anthropicHandler } from "../../anthropic";
 import { handle as baiduHandler } from "../../baidu";
 import { handle as bytedanceHandler } from "../../bytedance";
 import { handle as alibabaHandler } from "../../alibaba";
+import { handle as stepfunHandler } from "../../stepfun";
 import { handle as moonshotHandler } from "../../moonshot";
 import { handle as stabilityHandler } from "../../stability";
 import { handle as iflytekHandler } from "../../iflytek";
@@ -30,6 +31,8 @@ async function handle(
     case ApiPath.Alibaba:
       return alibabaHandler(req, { params });
     // case ApiPath.Tencent: using "/api/tencent"
+    case ApiPath.Stepfun:
+      return stepfunHandler(req, { params });
     case ApiPath.Moonshot:
       return moonshotHandler(req, { params });
     case ApiPath.Stability:

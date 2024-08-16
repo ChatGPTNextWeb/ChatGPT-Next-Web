@@ -378,6 +378,17 @@ const en: LocaleType = {
           SubTitle: "not supported, configure in .env",
         },
       },
+      Stepfun: {
+        ApiKey: {
+          Title: "Stepfun API Key",
+          SubTitle: "Use a custom Stepfun API Key",
+          Placeholder: "Stepfun API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       ByteDance: {
         ApiKey: {
           Title: "ByteDance API Key",
