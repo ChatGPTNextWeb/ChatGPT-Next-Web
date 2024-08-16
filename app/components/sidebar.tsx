@@ -252,7 +252,6 @@ export function SideBar(props: { className?: string }) {
           />
           <IconButton
             icon={<SearchIcon />}
-            text={shouldNarrow ? undefined : Locale.SearchChat.Name}
             className={styles["sidebar-bar-button"]}
             onClick={() =>
               navigate(Path.SearchChat, { state: { fromHome: true } })
