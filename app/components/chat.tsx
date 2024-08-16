@@ -256,7 +256,7 @@ function ChatMessageActions(props: {
   index: number;
   message: ChatMessage;
   position: { x: number; y: number };
-  isHover: boolean;
+  hoveringMessage: { hover: boolean; index: number };
   onUserStop: (messageId: string) => void;
   onResend: (message: ChatMessage) => void;
   onDelete: (messageId: string) => void;
@@ -266,7 +266,7 @@ function ChatMessageActions(props: {
     index,
     message,
     position,
-    isHover,
+    hoveringMessage,
     onUserStop,
     onResend,
     onDelete,
@@ -275,39 +275,28 @@ function ChatMessageActions(props: {
 
   const actionsRef = useRef<HTMLDivElement>(null);
 
-  const [rect, setRect] = useState<DOMRect>({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    toJSON: () => ({}),
-  });
-
   const isUserMessage = message.role === "user";
 
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (position.x && position.y && isHover) {
+    const rect = actionsRef.current?.getBoundingClientRect();
+
+    if (
+      rect &&
+      position.x &&
+      position.y &&
+      hoveringMessage.hover &&
+      hoveringMessage.index === index
+    ) {
       const x = position.x - rect.x - (isUserMessage ? rect.width : 0);
-      const y = position.y - rect.y - (isUserMessage ? rect.height : 0);
+      const y = position.y - rect.y - rect.height;
+
       setTranslate({ x, y });
     } else {
       setTranslate({ x: 0, y: 0 });
     }
-  }, [position, isHover]);
-
-  useEffect(() => {
-    const div = actionsRef.current;
-    if (div) {
-      const rect = div.getBoundingClientRect();
-      setRect(rect);
-    }
-  }, []);
+  }, [position, hoveringMessage.index]);
 
   return (
     <div ref={actionsRef} className={styles["chat-message-actions"]}>
@@ -958,8 +947,13 @@ function _Chat() {
   const [attachImages, setAttachImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  const [isMessageContainerHover, setIsMessageContainerHover] =
-    useState<boolean>(false);
+  const [hoveringMessage, setHoveringMessage] = useState<{
+    hover: boolean;
+    index: number;
+  }>({
+    hover: false,
+    index: -1,
+  });
   const [actionsPosition, setActionsPosition] = useState<{
     x: number;
     y: number;
@@ -1132,12 +1126,10 @@ function _Chat() {
       });
     }
   };
-  // handle mouse hover to reset actions position
+  // handle change msg hover to reset actions position
   useEffect(() => {
-    if (!isMessageContainerHover) {
-      setActionsPosition({ x: 0, y: 0 });
-    }
-  }, [isMessageContainerHover]);
+    setActionsPosition({ x: 0, y: 0 });
+  }, [hoveringMessage.index]);
 
   const deleteMessage = (msgId?: string) => {
     chatStore.updateCurrentSession(
@@ -1591,8 +1583,12 @@ function _Chat() {
                   onClick={() => {
                     setActionsPosition({ x: 0, y: 0 });
                   }}
-                  onMouseEnter={() => setIsMessageContainerHover(true)}
-                  onMouseLeave={() => setIsMessageContainerHover(false)}
+                  onMouseEnter={() =>
+                    setHoveringMessage({ hover: true, index: i })
+                  }
+                  onMouseLeave={() =>
+                    setHoveringMessage({ hover: false, index: -1 })
+                  }
                 >
                   <div className={styles["chat-message-header"]}>
                     <div className={styles["chat-message-avatar"]}>
@@ -1659,7 +1655,7 @@ function _Chat() {
                         index={i}
                         message={message}
                         position={actionsPosition}
-                        isHover={isMessageContainerHover}
+                        hoveringMessage={hoveringMessage}
                         onUserStop={onUserStop}
                         onResend={onResend}
                         onDelete={onDelete}
