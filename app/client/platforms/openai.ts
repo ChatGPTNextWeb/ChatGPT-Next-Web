@@ -258,7 +258,7 @@ export class ChatGPTApi implements LLMApi {
     }
 */
 
-    const shouldStream = !!options.config.stream;
+    const shouldStream = !isDalle3 && !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
