@@ -154,6 +154,12 @@ const tr: PartialLocaleType = {
       Title: "Yazı Boyutu",
       SubTitle: "Sohbet içeriğinin yazı boyutu",
     },
+    FontFamily: {
+      Title: "Sohbet Yazı Tipi",
+      SubTitle:
+        "Sohbet içeriğinin yazı tipi, boş bırakıldığında küresel varsayılan yazı tipi uygulanır",
+      Placeholder: "Yazı Tipi Adı",
+    },
     InjectSystemPrompts: {
       Title: "Sistem Seviyesi İpucu Enjeksiyonu",
       SubTitle: "Her isteğin başına ChatGPT benzeri bir sistem ipucu ekle",

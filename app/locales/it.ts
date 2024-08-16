@@ -159,6 +159,12 @@ const it: PartialLocaleType = {
       Title: "Dimensione del carattere",
       SubTitle: "Dimensione del carattere per il contenuto della chat",
     },
+    FontFamily: {
+      Title: "Font della Chat",
+      SubTitle:
+        "Carattere del contenuto della chat, lascia vuoto per applicare il carattere predefinito globale",
+      Placeholder: "Nome del Font",
+    },
     InjectSystemPrompts: {
       Title: "Inserisci suggerimenti di sistema",
       SubTitle:

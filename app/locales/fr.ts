@@ -157,6 +157,12 @@ const fr: PartialLocaleType = {
       Title: "Taille de la police",
       SubTitle: "Taille de la police pour le contenu des discussions",
     },
+    FontFamily: {
+      Title: "Police de Chat",
+      SubTitle:
+        "Police du contenu du chat, laissez vide pour appliquer la police par défaut globale",
+      Placeholder: "Nom de la Police",
+    },
     InjectSystemPrompts: {
       Title: "Injecter des invites système",
       SubTitle:

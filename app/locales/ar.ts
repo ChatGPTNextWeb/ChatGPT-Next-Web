@@ -153,6 +153,11 @@ const ar: PartialLocaleType = {
       Title: "حجم الخط",
       SubTitle: "حجم الخط في محتوى الدردشة",
     },
+    FontFamily: {
+      Title: "خط الدردشة",
+      SubTitle: "خط محتوى الدردشة، اتركه فارغًا لتطبيق الخط الافتراضي العالمي",
+      Placeholder: "اسم الخط",
+    },
     InjectSystemPrompts: {
       Title: "حقن الرسائل النصية النظامية",
       SubTitle:

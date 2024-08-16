@@ -153,6 +153,12 @@ const ru: PartialLocaleType = {
       Title: "Размер шрифта",
       SubTitle: "Размер шрифта в чате",
     },
+    FontFamily: {
+      Title: "Шрифт чата",
+      SubTitle:
+        "Шрифт содержимого чата, оставьте пустым для применения глобального шрифта по умолчанию",
+      Placeholder: "Название шрифта",
+    },
     InjectSystemPrompts: {
       Title: "Вставить системные подсказки",
       SubTitle:

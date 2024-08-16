@@ -155,6 +155,12 @@ const de: PartialLocaleType = {
       Title: "Schriftgröße",
       SubTitle: "Schriftgröße des Chat-Inhalts",
     },
+    FontFamily: {
+      Title: "Chat-Schriftart",
+      SubTitle:
+        "Schriftart des Chat-Inhalts, leer lassen, um die globale Standardschriftart anzuwenden",
+      Placeholder: "Schriftartname",
+    },
     InjectSystemPrompts: {
       Title: "Systemweite Eingabeaufforderungen einfügen",
       SubTitle:

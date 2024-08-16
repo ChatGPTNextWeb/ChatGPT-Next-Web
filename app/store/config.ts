@@ -1,4 +1,5 @@
 import { LLMModel } from "../client/api";
+import { DalleSize, DalleQuality, DalleStyle } from "../typing";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -33,6 +34,7 @@ export const DEFAULT_CONFIG = {
   submitKey: SubmitKey.Enter,
   avatar: "1f603",
   fontSize: 14,
+  fontFamily: "",
   theme: Theme.Auto as Theme,
   tightBorder: !!config?.isApp,
   sendPreviewBubble: true,
@@ -60,6 +62,9 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
+    size: "1024x1024" as DalleSize,
+    quality: "standard" as DalleQuality,
+    style: "vivid" as DalleStyle,
   },
 };
 
