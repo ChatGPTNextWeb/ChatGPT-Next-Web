@@ -83,7 +83,7 @@ export function SearchChatPage() {
 
     // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [doSearch]);
 
   return (
     <ErrorBoundary>
