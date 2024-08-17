@@ -36,6 +36,7 @@ export function SearchChatPage() {
 
       session.messages.forEach((message) => {
         const content = message.content as string;
+        if (!content.toLowerCase || content === "") return;
         const lowerCaseContent = content.toLowerCase();
 
         // full text search
