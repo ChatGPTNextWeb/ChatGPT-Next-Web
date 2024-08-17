@@ -17,7 +17,7 @@ export class NodeJSTool {
   private apiKey: string | undefined;
   private baseUrl: string;
   private model: BaseLanguageModel;
-  private embeddings: Embeddings;
+  private embeddings: Embeddings | null;
   private sessionId: string;
   private ragEmbeddings: Embeddings;
   private callback?: (data: string) => Promise<void>;
@@ -26,7 +26,7 @@ export class NodeJSTool {
     apiKey: string | undefined,
     baseUrl: string,
     model: BaseLanguageModel,
-    embeddings: Embeddings,
+    embeddings: Embeddings | null,
     sessionId: string,
     ragEmbeddings: Embeddings,
     callback?: (data: string) => Promise<void>,
@@ -41,10 +41,6 @@ export class NodeJSTool {
   }
 
   async getCustomTools(): Promise<any[]> {
-    const webBrowserTool = new WebBrowser({
-      model: this.model,
-      embeddings: this.embeddings,
-    });
     const calculatorTool = new Calculator();
     const dallEAPITool = new DallEAPINodeWrapper(
       this.apiKey,
@@ -54,24 +50,32 @@ export class NodeJSTool {
     const stableDiffusionTool = new StableDiffusionNodeWrapper();
     const arxivAPITool = new ArxivAPIWrapper();
     const wolframAlphaTool = new WolframAlphaTool();
-    const pdfBrowserTool = new PDFBrowser(this.model, this.embeddings);
     const bilibiliVideoInfoTool = new BilibiliVideoInfoTool();
     const bilibiliVideoSearchTool = new BilibiliVideoSearchTool();
     const bilibiliVideoConclusionTool = new BilibiliVideoConclusionTool();
     const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
     let tools: any = [
+      // webBrowserTool,
+      // pdfBrowserTool,
       calculatorTool,
-      webBrowserTool,
       dallEAPITool,
       stableDiffusionTool,
       arxivAPITool,
       wolframAlphaTool,
-      pdfBrowserTool,
       bilibiliVideoInfoTool,
       bilibiliVideoSearchTool,
       bilibiliMusicRecognitionTool,
       bilibiliVideoConclusionTool,
     ];
+    if (this.embeddings != null) {
+      const webBrowserTool = new WebBrowser({
+        model: this.model,
+        embeddings: this.embeddings,
+      });
+      const pdfBrowserTool = new PDFBrowser(this.model, this.embeddings);
+      tools.push(webBrowserTool);
+      tools.push(pdfBrowserTool);
+    }
     if (!!process.env.ENABLE_RAG) {
       tools.push(
         new MyFilesBrowser(this.sessionId, this.model, this.ragEmbeddings),

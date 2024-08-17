@@ -18,7 +18,7 @@ export class EdgeTool {
 
   private model: BaseLanguageModel;
 
-  private embeddings: Embeddings;
+  private embeddings: Embeddings | null;
 
   private callback?: (data: string) => Promise<void>;
 
@@ -26,7 +26,7 @@ export class EdgeTool {
     apiKey: string | undefined,
     baseUrl: string,
     model: BaseLanguageModel,
-    embeddings: Embeddings,
+    embeddings: Embeddings | null,
     callback?: (data: string) => Promise<void>,
   ) {
     this.apiKey = apiKey;
@@ -37,10 +37,6 @@ export class EdgeTool {
   }
 
   async getCustomTools(): Promise<any[]> {
-    const webBrowserTool = new WebBrowser({
-      model: this.model,
-      embeddings: this.embeddings,
-    });
     const calculatorTool = new Calculator();
     const dallEAPITool = new DallEAPIWrapper(
       this.apiKey,
@@ -56,7 +52,7 @@ export class EdgeTool {
     const bilibiliMusicRecognitionTool = new BilibiliMusicRecognitionTool();
     let tools = [
       calculatorTool,
-      webBrowserTool,
+      // webBrowserTool,
       dallEAPITool,
       stableDiffusionTool,
       arxivAPITool,
@@ -66,6 +62,13 @@ export class EdgeTool {
       bilibiliMusicRecognitionTool,
       bilibiliVideoConclusionTool,
     ];
+    if (this.embeddings != null) {
+      const webBrowserTool = new WebBrowser({
+        model: this.model,
+        embeddings: this.embeddings,
+      });
+      tools.push(webBrowserTool);
+    }
     return tools;
   }
 }
