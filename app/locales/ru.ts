@@ -474,13 +474,13 @@ const ru: PartialLocaleType = {
   SearchChat: {
     Name: "Поиск",
     Page: {
-      Title: "Поиск в истории чата",
-      Search: "Введите текст для поиска",
-      NoResult: "Результаты не найдены",
-      NoData: "Данные отсутствуют",
-      Loading: "Загрузка...",
+      Title: "Поиск в истории чатов",
+      Search: "Введите ключевые слова для поиска",
+      NoResult: "Результатов не найдено",
+      NoData: "Нет данных",
+      Loading: "Загрузка",
 
-      SubTitle: (count: number) => `Найдено результатов: ${count}`,
+      SubTitle: (count: number) => `Найдено ${count} результатов`,
     },
     Item: {
       View: "Просмотр",
