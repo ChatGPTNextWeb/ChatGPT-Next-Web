@@ -1,7 +1,7 @@
 name: BUILD DOCKER IMAGE
 on:
   workflow_dispatch:
-#  push:
+  push:
 #    branches:
 #      - main
 #    paths:
