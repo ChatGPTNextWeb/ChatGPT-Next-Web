@@ -25,6 +25,10 @@
 
 > [!WARNING]
 > 本项目插件功能基于 [OpenAI API 函数调用](https://platform.openai.com/docs/guides/function-calling) 功能实现，转发 GitHub Copilot 接口或类似实现的模拟接口并不能正常调用插件功能！
+>
+> [实验性] 新增 claude 模型函数调用支持。
+>
+> 由于 Anthropic 不提供嵌入模型，请添加 RAG 功能的 ollama 嵌入模型配置，如不配置，**WebBrowser** 和 **PDFBrowser** 插件将无法使用。
 
 ![cover](./docs/images/rag-example-2.jpg)
 
