@@ -356,6 +356,12 @@
     display: flex;
     flex-wrap: nowrap;
   }
+
+  .chat-model-name {
+    font-size: 12px;
+    color: var(--black);
+    margin-left: 6px;
+  }
 }
 
 .chat-message-container {

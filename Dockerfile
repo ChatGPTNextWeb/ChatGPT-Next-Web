@@ -1,4 +1,4 @@
-FROM sijinhui/chatgpt-next-web:buildcache as deps
+FROM sijinhui/chatgpt-next-web:buildcache AS deps
 
 WORKDIR /app
 
