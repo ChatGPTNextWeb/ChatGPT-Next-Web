@@ -24,7 +24,7 @@
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
-    "emoji-picker-react": "^4.9.2",
+    "emoji-picker-react": "^4.11.1",
     "fuse.js": "^7.0.0",
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
