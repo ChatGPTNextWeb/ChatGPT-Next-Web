@@ -345,7 +345,7 @@ export const useChatStore = createPersistStore(
             new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
         );
         const currentSessionIndex = sessions.findIndex((session) => {
-          return session && currentSession && session.id === session.id;
+          return session && currentSession && session.id === currentSession.id;
         });
 
         set((state) => ({
