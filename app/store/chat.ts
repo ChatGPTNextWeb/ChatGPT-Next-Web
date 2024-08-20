@@ -336,6 +336,24 @@ export const useChatStore = createPersistStore(
         return session;
       },
 
+      sortSessions() {
+        const currentSession = get().currentSession();
+        const sessions = get().sessions.slice();
+
+        sessions.sort(
+          (a, b) =>
+            new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
+        );
+        const currentSessionIndex = sessions.findIndex((session) => {
+          return session && currentSession && session.id === session.id;
+        });
+
+        set((state) => ({
+          currentSessionIndex,
+          sessions,
+        }));
+      },
+
       onNewMessage(message: ChatMessage) {
         get().updateCurrentSession((session) => {
           session.messages = session.messages.concat();
@@ -343,6 +361,7 @@ export const useChatStore = createPersistStore(
         });
         get().updateStat(message);
         get().summarizeSession();
+        get().sortSessions();
         noticeCloudSync();
       },
 

@@ -66,6 +66,8 @@ type StateMerger = {
 const MergeStates: StateMerger = {
   [StoreKey.Chat]: (localState, remoteState) => {
     // merge sessions
+    const currentSession = useChatStore.getState().currentSession();
+
     const localSessions: Record<string, ChatSession> = {};
     const localDeletedSessionIds = localState.deletedSessionIds || {};
     localState.sessions.forEach((s) => (localSessions[s.id] = s));
@@ -111,6 +113,10 @@ const MergeStates: StateMerger = {
         localSession.messages.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
+        localSession.lastUpdate = Math.max(
+          remoteSession.lastUpdate,
+          localSession.lastUpdate,
+        );
 
         const deletedMessageIds = {
           ...remoteDeletedMessageIds,
@@ -130,10 +136,10 @@ const MergeStates: StateMerger = {
     });
 
     // sort local sessions with date field in desc order
-    // localState.sessions.sort(
-    //   (a, b) =>
-    //     new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
-    // );
+    localState.sessions.sort(
+      (a, b) =>
+        new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
+    );
 
     const deletedSessionIds = {
       ...remoteDeletedSessionIds,
@@ -141,6 +147,12 @@ const MergeStates: StateMerger = {
     };
     removeOutdatedEntries(deletedSessionIds);
     localState.deletedSessionIds = deletedSessionIds;
+
+    localState.currentSessionIndex = localState.sessions.findIndex(
+      (session) => {
+        return session && currentSession && session.id === session.id;
+      },
+    );
 
     return localState;
   },
