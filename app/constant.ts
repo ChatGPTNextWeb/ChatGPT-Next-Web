@@ -1,3 +1,5 @@
+import path from "path";
+
 export const OWNER = "ChatGPTNextWeb";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
@@ -476,4 +478,7 @@ export const internalAllowedWebDavEndpoints = [
 ];
 
 export const DEFAULT_GA_ID = "G-89WN60ZK2E";
-export const PLUGINS = [{ name: "Stable Diffusion", path: Path.Sd }];
+export const PLUGINS = [
+  { name: "Stable Diffusion", path: Path.Sd },
+  { name: "Search Chat", path: Path.SearchChat },
+];

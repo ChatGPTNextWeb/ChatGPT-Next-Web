@@ -12,7 +12,6 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
-import SearchIcon from "../icons/zoom.svg";
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
@@ -248,14 +247,6 @@ export function SideBar(props: { className?: string }) {
             text={shouldNarrow ? undefined : Locale.Discovery.Name}
             className={styles["sidebar-bar-button"]}
             onClick={() => setShowPluginSelector(true)}
-            shadow
-          />
-          <IconButton
-            icon={<SearchIcon />}
-            className={styles["sidebar-bar-button"]}
-            onClick={() =>
-              navigate(Path.SearchChat, { state: { fromHome: true } })
-            }
             shadow
           />
         </div>
