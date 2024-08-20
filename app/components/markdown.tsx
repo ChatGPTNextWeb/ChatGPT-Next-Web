@@ -79,17 +79,13 @@ export function PreCode(props: { children: any }) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
     const htmlDom = ref.current.querySelector("code.language-html");
+    const refText = ref.current?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
     } else if (refText?.startsWith("<!DOCTYPE")) {
       setHtmlCode(refText);
     }
   }, 600);
-
-  useEffect(() => {
-    setTimeout(renderArtifacts, 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refText]);
 
   const enableArtifacts = useMemo(
     () => plugins?.includes(Plugin.Artifacts),
@@ -119,6 +115,7 @@ export function PreCode(props: { children: any }) {
           codeElement.style.whiteSpace = "pre-wrap";
         }
       });
+      setTimeout(renderArtifacts, 1);
     }
   }, []);
 
