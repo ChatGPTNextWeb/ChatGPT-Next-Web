@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ErrorBoundary } from "./error";
 import styles from "./mask.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ export function SearchChatPage() {
 
   const previousValueRef = useRef<string>("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const doSearch = (text: string) => {
+  const doSearch = useCallback((text: string) => {
     const lowerCaseText = text.toLowerCase();
     const results: Item[] = [];
 
@@ -65,7 +65,7 @@ export function SearchChatPage() {
     results.sort((a, b) => b.content.length - a.content.length);
 
     return results;
-  };
+  }, []);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
