@@ -64,7 +64,6 @@ export function Mermaid(props: { code: string }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
-  const refText = ref.current?.innerText;
   const [mermaidCode, setMermaidCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
@@ -79,7 +78,7 @@ export function PreCode(props: { children: any }) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
     const htmlDom = ref.current.querySelector("code.language-html");
-    const refText = ref.current?.innerText;
+    const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
     } else if (refText?.startsWith("<!DOCTYPE")) {
@@ -179,16 +178,14 @@ function CustomCode(props: { children: any }) {
         }}
       >
         {props.children}
-        {showToggle && collapsed && (
-          <div
-            className={`show-hide-button ${
-              collapsed ? "collapsed" : "expanded"
-            }`}
-          >
-            <button onClick={toggleCollapsed}>查看全部</button>
-          </div>
-        )}
       </code>
+      {showToggle && collapsed && (
+        <div
+          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
+        >
+          <button onClick={toggleCollapsed}>查看全部</button>
+        </div>
+      )}
     </>
   );
 }
