@@ -150,7 +150,7 @@ const MergeStates: StateMerger = {
 
     localState.currentSessionIndex = localState.sessions.findIndex(
       (session) => {
-        return session && currentSession && session.id === session.id;
+        return session && currentSession && session.id === currentSession.id;
       },
     );
 
