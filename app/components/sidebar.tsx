@@ -12,7 +12,9 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
+
 import Locale from "../locales";
+
 import { useAppConfig, useChatStore } from "../store";
 
 import {
