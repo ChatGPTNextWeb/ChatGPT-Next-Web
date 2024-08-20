@@ -46,6 +46,8 @@ const DEFAULT_SYNC_STATE = {
   lastProvider: "",
 };
 
+let lastSyncTime = 0;
+
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
   (set, get) => ({
@@ -92,6 +94,11 @@ export const useSyncStore = createPersistStore(
     },
 
     async sync() {
+      if (lastSyncTime && lastSyncTime >= Date.now() - 800) {
+        return;
+      }
+      lastSyncTime = Date.now();
+
       const enableAutoSync = get().enableAutoSync;
       if (!enableAutoSync) {
         return;
@@ -111,9 +118,7 @@ export const useSyncStore = createPersistStore(
           );
           return;
         } else {
-          const parsedRemoteState = JSON.parse(
-            await client.get(config.username),
-          ) as AppState;
+          const parsedRemoteState = JSON.parse(remoteState) as AppState;
           mergeAppState(localState, parsedRemoteState);
           setLocalAppState(localState);
         }
