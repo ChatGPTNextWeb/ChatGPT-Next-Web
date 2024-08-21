@@ -65,6 +65,7 @@ export function SearchChatPage() {
     results.sort((a, b) => b.content.length - a.content.length);
 
     return results;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

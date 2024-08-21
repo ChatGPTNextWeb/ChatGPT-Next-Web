@@ -15,6 +15,7 @@ import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
 import Locale from "../locales";
+import { getLang } from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -248,6 +249,38 @@ export function SideBar(props: { className?: string }) {
     chatStore.currentSession().mask.modelConfig?.providerName ||
     ServiceProvider.OpenAI;
 
+  const lange = getLang();
+  const SideBarHeaderTextSubtitle: React.ReactNode = useMemo(() => {
+    if (lange === "en") {
+      return (
+        <span>
+          {" "}
+          Choose Your Own Assistant
+          <br /> <br />
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
+          1. Sometimes it might act up a bit. Click <b>New Chat</b> below to try
+          again. <br /> 2. For drawing: Generate images with the format "/mj
+          prompt" (you can look up tools or methods for using MidJourney
+          prompts). <br /> 3. If you find it helpful, consider buying the author
+          a coffee.
+        </span>
+      );
+    }
+    return (
+      <span>
+        选择一个你自己的助理
+        <br />
+        <br />
+        1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
+        <br />
+        2. 绘图：“/mj 提示词”
+        的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
+        <br />
+        3. 如果觉得还不错，可以给作者赏杯咖啡
+      </span>
+    );
+  }, [lange]);
+
   return (
     <SideBarContainer
       onDragStart={onDragStart}
@@ -255,26 +288,14 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="这里开始……"
-        subTitle={
-          <span>
-            选择一个你自己的助理
-            <br />
-            <br />
-            1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
-            <br />
-            2. 绘图：“/mj 提示词”
-            的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
-            <br />
-            3. 如果觉得还不错，可以给作者赏杯咖啡
-          </span>
-        }
+        title={Locale.SideBarHeader.Title}
+        subTitle={SideBarHeaderTextSubtitle}
         logo={<ChatGptIcon />}
       >
         <div className={styles["sidebar-header-bar"]}>
           <IconButton
             icon={<CoffeeIcon />}
-            text={shouldNarrow ? undefined : "赏杯咖啡️"}
+            text={shouldNarrow ? undefined : Locale.SideBarHeader.Coffee}
             className={styles["sidebar-bar-button"]}
             onClick={() => navigate(Path.Reward)}
             shadow

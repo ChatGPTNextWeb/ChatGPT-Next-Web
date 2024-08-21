@@ -60,10 +60,15 @@ const en: LocaleType = {
     ImageAgentOpenTip:
       "After turning it on, the returned Midjourney image will be proxied by this program itself, so this program needs to be in a network environment that can access cdn.discordapp.com to be effective",
   },
+  SideBarHeader: {
+    Title: "Start Here...",
+    Coffee: "Coffee please",
+  },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
+    UseTip: "day use：",
     SubTitle: (count: number) => `${count} messages`,
     EditMessage: {
       Title: "Edit All Messages",

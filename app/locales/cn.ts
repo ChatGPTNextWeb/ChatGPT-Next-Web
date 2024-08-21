@@ -58,10 +58,15 @@ const cn = {
     ImageAgentOpenTip:
       "开启之后，返回的Midjourney图片将会通过本程序自身代理，所以本程序需要处于可以访问cdn.discordapp.com的网络环境中才有效",
   },
+  SideBarHeader: {
+    Title: "这里开始……",
+    Coffee: "赏杯咖啡",
+  },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
+    UseTip: "当天使用：",
     SubTitle: (count: number) => `共 ${count} 条对话`,
     EditMessage: {
       Title: "编辑消息记录",
