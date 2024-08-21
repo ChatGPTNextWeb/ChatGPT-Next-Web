@@ -235,6 +235,7 @@ export function Artifacts() {
         </a>
         <IconButton
           bordered
+          style={{ marginLeft: 20 }}
           icon={<ReloadButtonIcon />}
           shadow
           onClick={() => previewRef.current?.reload()}
