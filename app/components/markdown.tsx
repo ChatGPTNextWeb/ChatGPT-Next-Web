@@ -10,12 +10,15 @@ import { copyToClipboard, useWindowSize } from "../utils";
 import mermaid from "mermaid";
 
 import LoadingIcon from "../icons/three-dots.svg";
+import ReloadButtonIcon from "../icons/reload.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
 import { ArtifactsShareButton, HTMLPreview } from "./artifacts";
 import { Plugin } from "../constant";
 import { useChatStore } from "../store";
+import { IconButton } from "./button";
+
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -64,6 +67,7 @@ export function Mermaid(props: { code: string }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
+  const previewRef = useRef<typeof HTMLPreview>(null);
   const [mermaidCode, setMermaidCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
@@ -141,7 +145,15 @@ export function PreCode(props: { children: any }) {
             style={{ position: "absolute", right: 20, top: 10 }}
             getCode={() => htmlCode}
           />
+          <IconButton
+            style={{ position: "absolute", right: 120, top: 10 }}
+            bordered
+            icon={<ReloadButtonIcon />}
+            shadow
+            onClick={() => previewRef.current?.reload()}
+          />
           <HTMLPreview
+            ref={previewRef}
             code={htmlCode}
             autoHeight={!document.fullscreenElement}
             height={!document.fullscreenElement ? 600 : height}

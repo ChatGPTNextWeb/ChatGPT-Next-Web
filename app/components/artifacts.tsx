@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { useParams } from "react-router";
 import { useWindowSize } from "@/app/utils";
 import { IconButton } from "./button";
@@ -8,6 +15,7 @@ import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import GithubIcon from "../icons/github.svg";
 import LoadingButtonIcon from "../icons/loading.svg";
+import ReloadButtonIcon from "../icons/reload.svg";
 import Locale from "../locales";
 import { Modal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs } from "../utils";
@@ -15,14 +23,19 @@ import { Path, ApiPath, REPO_URL } from "@/app/constant";
 import { Loading } from "./home";
 import styles from "./artifacts.module.scss";
 
-export function HTMLPreview(props: {
-  code: string;
-  autoHeight?: boolean;
-  height?: number | string;
-  onLoad?: (title?: string) => void;
-}) {
-  const ref = useRef<HTMLIFrameElement>(null);
-  const frameId = useRef<string>(nanoid());
+export const HTMLPreview = forwardRef<
+  {
+    reload: () => void;
+  },
+  {
+    code: string;
+    autoHeight?: boolean;
+    height?: number | string;
+    onLoad?: (title?: string) => void;
+  }
+>(function HTMLPreview(props, ref) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [frameId, setFrameId] = useState<string>(nanoid());
   const [iframeHeight, setIframeHeight] = useState(600);
   const [title, setTitle] = useState("");
   /*
@@ -37,7 +50,7 @@ export function HTMLPreview(props: {
     const handleMessage = (e: any) => {
       const { id, height, title } = e.data;
       setTitle(title);
-      if (id == frameId.current) {
+      if (id == frameId) {
         setIframeHeight(height);
       }
     };
@@ -45,7 +58,13 @@ export function HTMLPreview(props: {
     return () => {
       window.removeEventListener("message", handleMessage);
     };
-  }, []);
+  }, [frameId]);
+
+  useImperativeHandle(ref, () => ({
+    reload: () => {
+      setFrameId(nanoid());
+    },
+  }));
 
   const height = useMemo(() => {
     if (!props.autoHeight) return props.height || 600;
@@ -57,12 +76,12 @@ export function HTMLPreview(props: {
   }, [props.autoHeight, props.height, iframeHeight]);
 
   const srcDoc = useMemo(() => {
-    const script = `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId.current}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`;
+    const script = `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`;
     if (props.code.includes("</head>")) {
       props.code.replace("</head>", "</head>" + script);
     }
     return props.code + script;
-  }, [props.code]);
+  }, [props.code, frameId]);
 
   const handleOnLoad = () => {
     if (props?.onLoad) {
@@ -73,15 +92,15 @@ export function HTMLPreview(props: {
   return (
     <iframe
       className={styles["artifacts-iframe"]}
-      id={frameId.current}
-      ref={ref}
+      key={frameId}
+      ref={iframeRef}
       sandbox="allow-forms allow-modals allow-scripts"
       style={{ height }}
       srcDoc={srcDoc}
       onLoad={handleOnLoad}
     />
   );
-}
+});
 
 export function ArtifactsShareButton({
   getCode,
@@ -184,6 +203,7 @@ export function Artifacts() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [fileName, setFileName] = useState("");
+  const previewRef = useRef<typeof HTMLPreview>(null);
 
   useEffect(() => {
     if (id) {
@@ -208,6 +228,12 @@ export function Artifacts() {
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
           <IconButton bordered icon={<GithubIcon />} shadow />
         </a>
+        <IconButton
+          bordered
+          icon={<ReloadButtonIcon />}
+          shadow
+          onClick={() => previewRef.current?.reload()}
+        />
         <div className={styles["artifacts-title"]}>NextChat Artifacts</div>
         <ArtifactsShareButton
           id={id}
@@ -220,6 +246,7 @@ export function Artifacts() {
         {code && (
           <HTMLPreview
             code={code}
+            ref={previewRef}
             autoHeight={false}
             height={"100%"}
             onLoad={(title) => {
