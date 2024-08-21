@@ -209,6 +209,7 @@ export function Artifacts() {
   const [loading, setLoading] = useState(true);
   const [fileName, setFileName] = useState("");
   const previewRef = useRef<HTMLPreviewHander>(null);
+
   useEffect(() => {
     if (id) {
       fetch(`${ApiPath.Artifacts}?id=${id}`)
@@ -251,6 +252,7 @@ export function Artifacts() {
         {code && (
           <HTMLPreview
             code={code}
+            ref={previewRef}
             autoHeight={false}
             height={"100%"}
             ref={previewRef}

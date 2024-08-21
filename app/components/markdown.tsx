@@ -8,7 +8,7 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard, useWindowSize } from "../utils";
 import mermaid from "mermaid";
-
+import Locale from "../locales";
 import LoadingIcon from "../icons/three-dots.svg";
 import ReloadButtonIcon from "../icons/reload.svg";
 import React from "react";
@@ -199,7 +199,7 @@ function CustomCode(props: { children: any }) {
         <div
           className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
         >
-          <button onClick={toggleCollapsed}>查看全部</button>
+          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
         </div>
       )}
     </>
