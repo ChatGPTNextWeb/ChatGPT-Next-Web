@@ -81,10 +81,10 @@ export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
 
     const srcDoc = useMemo(() => {
       const script = `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`;
-      if (props.code.includes("</head>")) {
-        props.code.replace("</head>", "</head>" + script);
+      if (props.code.includes("<!DOCTYPE html>")) {
+        props.code.replace("<!DOCTYPE html>", "<!DOCTYPE html>" + script);
       }
-      return props.code + script;
+      return script + props.code;
     }, [props.code, frameId]);
 
     const handleOnLoad = () => {
