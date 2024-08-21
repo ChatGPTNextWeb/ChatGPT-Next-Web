@@ -255,7 +255,6 @@ export function Artifacts() {
             ref={previewRef}
             autoHeight={false}
             height={"100%"}
-            ref={previewRef}
             onLoad={(title) => {
               setFileName(title as string);
               setLoading(false);
