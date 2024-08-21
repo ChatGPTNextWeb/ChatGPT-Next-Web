@@ -14,7 +14,11 @@ import ReloadButtonIcon from "../icons/reload.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
-import { ArtifactsShareButton, HTMLPreview } from "./artifacts";
+import {
+  ArtifactsShareButton,
+  HTMLPreview,
+  HTMLPreviewHander,
+} from "./artifacts";
 import { Plugin } from "../constant";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
@@ -67,7 +71,7 @@ export function Mermaid(props: { code: string }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
-  const previewRef = useRef<typeof HTMLPreview>(null);
+  const previewRef = useRef<HTMLPreviewHander>(null);
   const [mermaidCode, setMermaidCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
