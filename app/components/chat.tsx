@@ -1480,7 +1480,7 @@ function _Chat() {
               color={"var(--second)"}
               placement="bottom"
             >
-              当天使用：
+              {Locale.Chat.UseTip}
               <Progress
                 percent={
                   (parseInt(localStorage.getItem("current_day_token") ?? "0") /

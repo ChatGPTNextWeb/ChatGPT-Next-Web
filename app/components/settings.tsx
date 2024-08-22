@@ -1378,21 +1378,21 @@ export function Settings() {
             </Select>
           </ListItem>
 
-          {/*<ListItem title={Locale.Settings.Lang.Name}>*/}
-          {/*  <Select*/}
-          {/*    aria-label={Locale.Settings.Lang.Name}*/}
-          {/*    value={getLang()}*/}
-          {/*    onChange={(e) => {*/}
-          {/*      changeLang(e.target.value as any);*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    {AllLangs.map((lang) => (*/}
-          {/*      <option value={lang} key={lang}>*/}
-          {/*        {ALL_LANG_OPTIONS[lang]}*/}
-          {/*      </option>*/}
-          {/*    ))}*/}
-          {/*  </Select>*/}
-          {/*</ListItem>*/}
+          <ListItem title={Locale.Settings.Lang.Name}>
+            <Select
+              aria-label={Locale.Settings.Lang.Name}
+              value={getLang()}
+              onChange={(e) => {
+                changeLang(e.target.value as any);
+              }}
+            >
+              {AllLangs.map((lang) => (
+                <option value={lang} key={lang}>
+                  {ALL_LANG_OPTIONS[lang]}
+                </option>
+              ))}
+            </Select>
+          </ListItem>
 
           <ListItem
             title={Locale.Settings.FontSize.Title}

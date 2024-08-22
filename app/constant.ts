@@ -1,4 +1,6 @@
-export const OWNER = "Yidadaa";
+import path from "path";
+
+export const OWNER = "ChatGPTNextWeb";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
@@ -41,6 +43,7 @@ export enum Path {
   Sd = "/sd",
   SdNew = "/sd-new",
   Artifacts = "/artifacts",
+  SearchChat = "/search-chat",
   Reward = "/reward",
 }
 
@@ -240,10 +243,10 @@ export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
-  "gpt-4o": "2023-10",
   "gpt-4-turbo": "2023-12",
   "gpt-4-turbo-2024-04-09": "2023-12",
   "gpt-4-turbo-preview": "2023-12",
+  "gpt-4o": "2023-10",
   "gpt-4o-2024-05-13": "2023-10",
   "gpt-4o-2024-08-06": "2023-10",
   "gpt-4o-mini": "2023-10",
@@ -446,27 +449,6 @@ export const DEFAULT_MODELS = [
   },
 ] as const;
 
-// export const AZURE_MODELS: string[] = [
-//   //"gpt-35-turbo-0125",
-//   "gpt-4-turbo-2024-04-09",
-//   "gpt-4o",
-// ];
-// export const AZURE_PATH = AZURE_MODELS.map((m) => { m: `openai/deployments/${m}/chat/completions`});
-// export const AZURE_PATH = AZURE_MODELS.map((m) => ({ m: `openai/deployments/${m}/chat/completions`} ));
-// export const AZURE_PATH = AZURE_MODELS.reduce(
-//   (acc, item) => ({
-//     ...acc,
-//     [item]: `openai/deployments/${item}/chat/completions`,
-//   }),
-//   {},
-// );
-// console.log(AZURE_PATH);
-
-export const DISABLE_MODELS = DEFAULT_MODELS.filter(
-  (item) => !item.available,
-).map((item2) => item2.name);
-
-// console.log('========', DISABLE_MODELS)
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
 
@@ -484,4 +466,11 @@ export const internalAllowedWebDavEndpoints = [
 ];
 
 export const DEFAULT_GA_ID = "G-89WN60ZK2E";
-export const PLUGINS = [{ name: "Stable Diffusion", path: Path.Sd }];
+export const PLUGINS = [
+  { name: "Stable Diffusion", path: Path.Sd },
+  { name: "Search Chat", path: Path.SearchChat },
+];
+
+export const DISABLE_MODELS = DEFAULT_MODELS.filter(
+  (item) => !item.available,
+).map((item2) => item2.name);

@@ -60,10 +60,15 @@ const en: LocaleType = {
     ImageAgentOpenTip:
       "After turning it on, the returned Midjourney image will be proxied by this program itself, so this program needs to be in a network environment that can access cdn.discordapp.com to be effective",
   },
+  SideBarHeader: {
+    Title: "Start Here...",
+    Coffee: "Coffee please",
+  },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
+    UseTip: "day use：",
     SubTitle: (count: number) => `${count} messages`,
     EditMessage: {
       Title: "Edit All Messages",
@@ -567,6 +572,21 @@ const en: LocaleType = {
   },
   FineTuned: {
     Sysmessage: "You are an assistant that",
+  },
+  SearchChat: {
+    Name: "Search",
+    Page: {
+      Title: "Search Chat History",
+      Search: "Enter search query to search chat history",
+      NoResult: "No results found",
+      NoData: "No data",
+      Loading: "Loading...",
+
+      SubTitle: (count: number) => `Found ${count} results`,
+    },
+    Item: {
+      View: "View",
+    },
   },
   Mask: {
     Name: "Mask",
