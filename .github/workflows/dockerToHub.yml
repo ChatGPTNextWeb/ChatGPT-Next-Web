@@ -2,15 +2,10 @@ name: BUILD DOCKER IMAGE
 on:
   workflow_dispatch:
   push:
-#    branches:
-#      - main
-#    paths:
-#      - 'app/**'
-#      - 'public/**'
-#      - '.github/**'
-#      - 'docker-compose.yml'
-#      - 'Dockerfile'
-#      - 'package.json'
+    branches:
+      - main
+      - dev
+
 
 jobs:
   build:
