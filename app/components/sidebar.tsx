@@ -254,15 +254,15 @@ export function SideBar(props: { className?: string }) {
     if (lange === "en") {
       return (
         <span>
-          {" "}
           Choose Your Own Assistant
-          <br /> <br />
-          {/* eslint-disable-next-line react/no-unescaped-entities */}
+          <br />
+          <br />
           1. Sometimes it might act up a bit. Click <b>New Chat</b> below to try
-          again. <br /> 2. For drawing: Generate images with the format "/mj
-          prompt" (you can look up tools or methods for using MidJourney
-          prompts). <br /> 3. If you find it helpful, consider buying the author
-          a coffee.
+          again. <br />{" "}
+          {
+            '2. For drawing: Generate images with the format "/mj prompt" (you can look up tools or methods for using MidJourney prompts). '
+          }
+          <br /> 3. If you find it helpful, consider buying the author a coffee.
         </span>
       );
     }
@@ -273,8 +273,8 @@ export function SideBar(props: { className?: string }) {
         <br />
         1. 有时可能会<b>抽风</b>，点击下方<b>新的聊天</b>试一下吧
         <br />
-        2. 绘图：“/mj 提示词”
-        的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
+        2. 绘图：“/mj
+        提示词”的格式生成图片（可以搜一下midjourney的提示词工具或使用方法）
         <br />
         3. 如果觉得还不错，可以给作者赏杯咖啡
       </span>
