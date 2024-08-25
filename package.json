@@ -15,7 +15,8 @@
     "app:build": "yarn mask && yarn tauri build",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
-    "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
+    "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev",
+    "test": "vitest run"
   },
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
@@ -66,6 +67,7 @@
     "prettier": "^3.0.2",
     "tsx": "^4.16.0",
     "typescript": "5.2.2",
+    "vitest": "^2.0.5",
     "watch": "^1.0.2",
     "webpack": "^5.88.1"
   },

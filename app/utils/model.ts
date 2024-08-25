@@ -37,6 +37,25 @@ const sortModelTable = (models: ReturnType<typeof collectModels>) =>
     }
   });
 
+export function parseModelName(name: string): {
+  customModelName: string;
+  customProviderName: string;
+} {
+  let customModelName = name.split("@")[0];
+  let customProviderName = name.slice(customModelName.length + 1);
+  if (name.startsWith("'") || name.startsWith('"')) {
+    const match = name.match(/^(['"])(.*?)\1(@.*)?$/);
+    if (match) {
+      customModelName = match[2];
+      customProviderName = match[3]?.slice(1) || customModelName;
+    }
+  }
+  return { customModelName, customProviderName } as {
+    customModelName: string;
+    customProviderName: string;
+  };
+}
+
 export function collectModelTable(
   models: readonly LLMModel[],
   customModels: string,
@@ -61,28 +80,6 @@ export function collectModelTable(
       displayName: m.name, // 'provider' is copied over if it exists
     };
   });
-
-  function parseModelName(name: string): {
-    customModelName: string;
-    customProviderName: string;
-  } {
-    let customModelName, customProviderName;
-    if (name.startsWith("'") || name.startsWith('"')) {
-      const match = name.match(/^(['"])(.*?)\1(@.*)?$/);
-      if (match) {
-        customModelName = match[2];
-        customProviderName = match[3]?.slice(1) || customModelName;
-      } else {
-        [customModelName, customProviderName] = name.split("@");
-      }
-    } else {
-      [customModelName, customProviderName] = name.split("@");
-    }
-    return { customModelName, customProviderName } as {
-      customModelName: string;
-      customProviderName: string;
-    };
-  }
 
   // server custom models
   customModels
