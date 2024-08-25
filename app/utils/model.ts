@@ -72,6 +72,8 @@ export function collectModelTable(
       if (match) {
         customModelName = match[2];
         customProviderName = match[3]?.slice(1) || customModelName;
+      } else {
+        [customModelName, customProviderName] = name.split("@");
       }
     } else {
       [customModelName, customProviderName] = name.split("@");
