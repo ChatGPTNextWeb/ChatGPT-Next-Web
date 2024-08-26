@@ -188,7 +188,7 @@ export const useAccessStore = createPersistStore(
         this.isValidBaidu() ||
         this.isValidByteDance() ||
         this.isValidAlibaba() ||
-        this.isValidTencent ||
+        this.isValidTencent() ||
         this.isValidMoonshot() ||
         this.isValidIflytek() ||
         !this.enabledAccessControl() ||

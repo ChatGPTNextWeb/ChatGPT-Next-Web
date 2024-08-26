@@ -8,14 +8,21 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard, useWindowSize } from "../utils";
 import mermaid from "mermaid";
-
+import Locale from "../locales";
 import LoadingIcon from "../icons/three-dots.svg";
+import ReloadButtonIcon from "../icons/reload.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
-import { ArtifactsShareButton, HTMLPreview } from "./artifacts";
+import {
+  ArtifactsShareButton,
+  HTMLPreview,
+  HTMLPreviewHander,
+} from "./artifacts";
 import { Plugin } from "../constant";
 import { useChatStore } from "../store";
+import { IconButton } from "./button";
+
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -64,7 +71,7 @@ export function Mermaid(props: { code: string }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
-  const refText = ref.current?.innerText;
+  const previewRef = useRef<HTMLPreviewHander>(null);
   const [mermaidCode, setMermaidCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
@@ -79,17 +86,13 @@ export function PreCode(props: { children: any }) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
     const htmlDom = ref.current.querySelector("code.language-html");
+    const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
     } else if (refText?.startsWith("<!DOCTYPE")) {
       setHtmlCode(refText);
     }
   }, 600);
-
-  useEffect(() => {
-    setTimeout(renderArtifacts, 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refText]);
 
   const enableArtifacts = useMemo(
     () => plugins?.includes(Plugin.Artifacts),
@@ -119,6 +122,7 @@ export function PreCode(props: { children: any }) {
           codeElement.style.whiteSpace = "pre-wrap";
         }
       });
+      setTimeout(renderArtifacts, 1);
     }
   }, []);
 
@@ -145,12 +149,58 @@ export function PreCode(props: { children: any }) {
             style={{ position: "absolute", right: 20, top: 10 }}
             getCode={() => htmlCode}
           />
+          <IconButton
+            style={{ position: "absolute", right: 120, top: 10 }}
+            bordered
+            icon={<ReloadButtonIcon />}
+            shadow
+            onClick={() => previewRef.current?.reload()}
+          />
           <HTMLPreview
+            ref={previewRef}
             code={htmlCode}
             autoHeight={!document.fullscreenElement}
             height={!document.fullscreenElement ? 600 : height}
           />
         </FullScreen>
+      )}
+    </>
+  );
+}
+
+function CustomCode(props: { children: any }) {
+  const ref = useRef<HTMLPreElement>(null);
+  const [collapsed, setCollapsed] = useState(true);
+  const [showToggle, setShowToggle] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      const codeHeight = ref.current.scrollHeight;
+      setShowToggle(codeHeight > 400);
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  }, [props.children]);
+
+  const toggleCollapsed = () => {
+    setCollapsed((collapsed) => !collapsed);
+  };
+  return (
+    <>
+      <code
+        ref={ref}
+        style={{
+          maxHeight: collapsed ? "400px" : "none",
+          overflowY: "hidden",
+        }}
+      >
+        {props.children}
+      </code>
+      {showToggle && collapsed && (
+        <div
+          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
+        >
+          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
+        </div>
       )}
     </>
   );
@@ -211,6 +261,7 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        code: CustomCode,
         p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";
