@@ -6,8 +6,6 @@ console.log("[Next] build mode", mode);
 const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
 console.log("[Next] build with chunk: ", !disableChunk);
 
-process.env.LANGCHAIN_CALLBACKS_BACKGROUND = true;
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack(config) {
@@ -21,6 +19,12 @@ const nextConfig = {
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       );
     }
+
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.LANGCHAIN_CALLBACKS_BACKGROUND': JSON.stringify('true'),
+      })
+    );
 
     config.resolve.fallback = {
       child_process: false,
