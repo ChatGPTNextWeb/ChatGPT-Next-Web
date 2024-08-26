@@ -1,9 +1,7 @@
 import { StateStorage } from "zustand/middleware";
-import { get, set, del } from "idb-keyval";
+import { get, set, del, clear } from "idb-keyval";
 
 class IndexDBStorage implements StateStorage {
-  constructor() {}
-
   public async getItem(name: string): Promise<string | null> {
     return (await get(name)) || localStorage.getItem(name);
   }
@@ -14,6 +12,10 @@ class IndexDBStorage implements StateStorage {
 
   public async removeItem(name: string): Promise<void> {
     await del(name);
+  }
+
+  public async clear(): Promise<void> {
+    await clear();
   }
 }
 
