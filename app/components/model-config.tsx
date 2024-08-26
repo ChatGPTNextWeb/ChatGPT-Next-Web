@@ -6,12 +6,16 @@ import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
 
+function getModelName(model: { model: string; providerName: string }) {
+  return `${model.model}----${model.providerName}`;
+}
+
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
-  const value = `${props.modelConfig.model}@${props.modelConfig?.providerName}`;
+  const value = getModelName(props.modelConfig);
 
   return (
     <>
@@ -20,7 +24,7 @@ export function ModelConfigList(props: {
           aria-label={Locale.Settings.Model}
           value={value}
           onChange={(e) => {
-            const [model, providerName] = e.currentTarget.value.split("@");
+            const [model, providerName] = e.currentTarget.value.split("----");
             props.updateConfig((config) => {
               config.model = ModalConfigValidator.model(model);
               config.providerName = providerName as ServiceProvider;
@@ -30,7 +34,13 @@ export function ModelConfigList(props: {
           {allModels
             .filter((v) => v.available)
             .map((v, i) => (
-              <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
+              <option
+                value={getModelName({
+                  model: v.name,
+                  providerName: v.provider?.providerName!,
+                })}
+                key={i}
+              >
                 {v.displayName}({v.provider?.providerName})
               </option>
             ))}
