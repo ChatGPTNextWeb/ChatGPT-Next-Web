@@ -20,6 +20,7 @@ export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
 export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
+export const TTSModels = ["tts-1", "tts-1-hd"] as const;
 export type ChatModel = ModelType;
 
 export interface MultimodalContent {
@@ -46,6 +47,25 @@ export interface LLMConfig {
   size?: DalleRequestPayload["size"];
   quality?: DalleRequestPayload["quality"];
   style?: DalleRequestPayload["style"];
+}
+
+export interface SpeechOptions {
+  model: string;
+  input: string;
+  voice: string;
+  response_format?: string;
+  speed?: number;
+  onController?: (controller: AbortController) => void;
+}
+
+export interface TranscriptionOptions {
+  model?: "whisper-1";
+  file: Blob;
+  language?: string;
+  prompt?: string;
+  response_format?: "json" | "text" | "srt" | "verbose_json" | "vtt";
+  temperature?: number;
+  onController?: (controller: AbortController) => void;
 }
 
 export interface ChatOptions {
@@ -80,6 +100,8 @@ export interface LLMModelProvider {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
+  abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
+  abstract transcription(options: TranscriptionOptions): Promise<string>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }

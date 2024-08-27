@@ -43,6 +43,8 @@ const cn = {
       Delete: "删除",
       Edit: "编辑",
       FullScreen: "全屏",
+      Speech: "朗读",
+      StopSpeech: "停止",
     },
     Commands: {
       new: "新建聊天",
@@ -76,6 +78,8 @@ const cn = {
       return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
+    StartSpeak: "说话",
+    StopSpeak: "停止",
     Config: {
       Reset: "清除记忆",
       SaveAs: "存为面具",
@@ -480,6 +484,36 @@ const cn = {
     FrequencyPenalty: {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
+    },
+    TTS: {
+      Enable: {
+        Title: "启用文本转语音",
+        SubTitle: "启用文本生成语音服务",
+      },
+      Autoplay: {
+        Title: "启用自动朗读",
+        SubTitle: "自动生成语音并播放，需先开启文本转语音开关",
+      },
+      Model: "模型",
+      Engine: "转换引擎",
+      Voice: {
+        Title: "声音",
+        SubTitle: "生成语音时使用的声音",
+      },
+      Speed: {
+        Title: "速度",
+        SubTitle: "生成语音的速度",
+      },
+    },
+    STT: {
+      Enable: {
+        Title: "启用语音转文本",
+        SubTitle: "启用语音转文本",
+      },
+      Engine: {
+        Title: "转换引擎",
+        SubTitle: "音频转换引擎",
+      },
     },
   },
   Store: {

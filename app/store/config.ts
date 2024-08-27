@@ -5,12 +5,25 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_STT_ENGINE,
+  DEFAULT_STT_ENGINES,
+  DEFAULT_TTS_ENGINE,
+  DEFAULT_TTS_ENGINES,
+  DEFAULT_TTS_MODEL,
+  DEFAULT_TTS_MODELS,
+  DEFAULT_TTS_VOICE,
+  DEFAULT_TTS_VOICES,
   StoreKey,
   ServiceProvider,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
+export type TTSModelType = (typeof DEFAULT_TTS_MODELS)[number];
+export type TTSVoiceType = (typeof DEFAULT_TTS_VOICES)[number];
+export type TTSEngineType = (typeof DEFAULT_TTS_ENGINES)[number];
+
+export type STTEngineType = (typeof DEFAULT_STT_ENGINES)[number];
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -66,11 +79,26 @@ export const DEFAULT_CONFIG = {
     quality: "standard" as DalleQuality,
     style: "vivid" as DalleStyle,
   },
+
+  ttsConfig: {
+    enable: false,
+    autoplay: false,
+    engine: DEFAULT_TTS_ENGINE,
+    model: DEFAULT_TTS_MODEL,
+    voice: DEFAULT_TTS_VOICE,
+    speed: 1.0,
+  },
+  sttConfig: {
+    enable: false,
+    engine: DEFAULT_STT_ENGINE,
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
 
 export type ModelConfig = ChatConfig["modelConfig"];
+export type TTSConfig = ChatConfig["ttsConfig"];
+export type STTConfig = ChatConfig["sttConfig"];
 
 export function limitNumber(
   x: number,
@@ -84,6 +112,27 @@ export function limitNumber(
 
   return Math.min(max, Math.max(min, x));
 }
+
+export const TTSConfigValidator = {
+  engine(x: string) {
+    return x as TTSEngineType;
+  },
+  model(x: string) {
+    return x as TTSModelType;
+  },
+  voice(x: string) {
+    return x as TTSVoiceType;
+  },
+  speed(x: number) {
+    return limitNumber(x, 0.25, 4.0, 1.0);
+  },
+};
+
+export const STTConfigValidator = {
+  engine(x: string) {
+    return x as STTEngineType;
+  },
+};
 
 export const ModalConfigValidator = {
   model(x: string) {
