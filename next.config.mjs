@@ -8,9 +8,6 @@ console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    LANGCHAIN_CALLBACKS_BACKGROUND: 'true',
-  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -26,7 +23,13 @@ const nextConfig = {
     config.resolve.fallback = {
       child_process: false,
     };
-
+    
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.NEXT_PUBLIC_LANGCHAIN_CALLBACKS_BACKGROUND': true
+      })
+    );
+    
     return config;
   },
   output: mode,
