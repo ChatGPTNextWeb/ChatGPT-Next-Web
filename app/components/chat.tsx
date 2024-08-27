@@ -453,6 +453,7 @@ export function ChatActions(props: {
   showPromptHints: () => void;
   hitBottom: boolean;
   uploading: boolean;
+  setUserInput: (input: string) => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -543,6 +544,44 @@ export function ChatActions(props: {
       );
     }
   }, [chatStore, currentModel, models]);
+
+  const [isListening, setIsListening] = useState(false);
+  const [isTranscription, setIsTranscription] = useState(false);
+  const [speechApi, setSpeechApi] = useState<any>(null);
+
+  useEffect(() => {
+    if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
+    setSpeechApi(
+      config.sttConfig.engine === DEFAULT_STT_ENGINE
+        ? new WebTranscriptionApi((transcription) =>
+            onRecognitionEnd(transcription),
+          )
+        : new OpenAITranscriptionApi((transcription) =>
+            onRecognitionEnd(transcription),
+          ),
+    );
+  }, []);
+
+  const startListening = async () => {
+    if (speechApi) {
+      await speechApi.start();
+      setIsListening(true);
+    }
+  };
+  const stopListening = async () => {
+    if (speechApi) {
+      if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
+        setIsTranscription(true);
+      await speechApi.stop();
+      setIsListening(false);
+    }
+  };
+  const onRecognitionEnd = (finalTranscript: string) => {
+    console.log(finalTranscript);
+    if (finalTranscript) props.setUserInput(finalTranscript);
+    if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
+      setIsTranscription(false);
+  };
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -768,6 +807,16 @@ export function ChatActions(props: {
           }}
         />
       )}
+
+      {config.sttConfig.enable && (
+        <ChatAction
+          onClick={async () =>
+            isListening ? await stopListening() : await startListening()
+          }
+          text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
+          icon={<VoiceWhiteIcon />}
+        />
+      )}
     </div>
   );
 }
@@ -940,33 +989,6 @@ function _Chat() {
     }
   };
 
-  const [isListening, setIsListening] = useState(false);
-  const [isTranscription, setIsTranscription] = useState(false);
-  const [speechApi, setSpeechApi] = useState<any>(null);
-
-  const startListening = async () => {
-    if (speechApi) {
-      await speechApi.start();
-      setIsListening(true);
-    }
-  };
-
-  const stopListening = async () => {
-    if (speechApi) {
-      if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
-        setIsTranscription(true);
-      await speechApi.stop();
-      setIsListening(false);
-    }
-  };
-
-  const onRecognitionEnd = (finalTranscript: string) => {
-    console.log(finalTranscript);
-    if (finalTranscript) setUserInput(finalTranscript);
-    if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
-      setIsTranscription(false);
-  };
-
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
@@ -1037,16 +1059,6 @@ function _Chat() {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
-    setSpeechApi(
-      config.sttConfig.engine === DEFAULT_STT_ENGINE
-        ? new WebTranscriptionApi((transcription) =>
-            onRecognitionEnd(transcription),
-          )
-        : new OpenAITranscriptionApi((transcription) =>
-            onRecognitionEnd(transcription),
-          ),
-    );
   }, []);
 
   // check if should send message
@@ -1784,6 +1796,7 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          setUserInput={setUserInput}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
@@ -1834,35 +1847,13 @@ function _Chat() {
               })}
             </div>
           )}
-          {config.sttConfig.enable ? (
-            <IconButton
-              icon={<VoiceWhiteIcon />}
-              text={
-                isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak
-              }
-              className={styles["chat-input-send"]}
-              type="primary"
-              onClick={async () =>
-                isListening ? await stopListening() : await startListening()
-              }
-              loding={isTranscription}
-            />
-          ) : (
-            <IconButton
-              icon={<SendWhiteIcon />}
-              text={Locale.Chat.Send}
-              className={styles["chat-input-send"]}
-              type="primary"
-              onClick={() => doSubmit(userInput)}
-            />
-          )}
-          {/* <IconButton
+          <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             type="primary"
             onClick={() => doSubmit(userInput)}
-          /> */}
+          />
         </label>
       </div>
 
