@@ -77,6 +77,13 @@ export class DoubaoApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+  transcription(options: TranscriptionOptions): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,

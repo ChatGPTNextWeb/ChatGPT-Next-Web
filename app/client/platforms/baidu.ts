@@ -75,6 +75,13 @@ export class ErnieApi implements LLMApi {
     return [baseUrl, path].join("/");
   }
 
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+  transcription(options: TranscriptionOptions): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
       // "error_code": 336006, "error_msg": "the role of message with even index in the messages must be user or function",

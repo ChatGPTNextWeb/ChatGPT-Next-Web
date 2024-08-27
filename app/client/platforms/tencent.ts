@@ -89,6 +89,13 @@ export class HunyuanApi implements LLMApi {
     return res.Choices?.at(0)?.Message?.Content ?? "";
   }
 
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+  transcription(options: TranscriptionOptions): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
     const messages = options.messages.map((v, index) => ({
