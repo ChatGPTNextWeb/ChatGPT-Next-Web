@@ -8,6 +8,9 @@ console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    LANGCHAIN_CALLBACKS_BACKGROUND: true,
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -19,12 +22,6 @@ const nextConfig = {
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       );
     }
-
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.LANGCHAIN_CALLBACKS_BACKGROUND': JSON.stringify('true'),
-      })
-    );
 
     config.resolve.fallback = {
       child_process: false,
