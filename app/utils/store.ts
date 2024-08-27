@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { combine, persist, createJSONStorage } from "zustand/middleware";
 import { Updater } from "../typing";
 import { deepClone } from "./clone";
-import { indexDBStorage } from "@/app/utils/indexDB-storage";
+import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
 
 type SecondParam<T> = T extends (
   _f: infer _F,
@@ -32,7 +32,7 @@ export function createPersistStore<T extends object, M>(
   ) => M,
   persistOptions: SecondParam<typeof persist<T & M & MakeUpdater<T>>>,
 ) {
-  persistOptions.storage = createJSONStorage(() => indexDBStorage);
+  persistOptions.storage = createJSONStorage(() => indexedDBStorage);
   return create(
     persist(
       combine(
