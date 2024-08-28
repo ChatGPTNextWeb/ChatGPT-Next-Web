@@ -9,7 +9,12 @@ import {
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
 } from "@/app/constant";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
+import {
+  ChatMessageTool,
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+} from "@/app/store";
 import { collectModelsWithDefaultModel } from "@/app/utils/model";
 import {
   preProcessImageContent,
@@ -251,7 +256,7 @@ export class ChatGPTApi implements LLMApi {
         let remainText = "";
         let finished = false;
         let running = false;
-        let runTools = [];
+        let runTools: ChatMessageTool[] = [];
 
         // animate response to make it looks smooth
         function animateResponseText() {
@@ -280,7 +285,7 @@ export class ChatGPTApi implements LLMApi {
 
         // TODO 后面这里是从选择的plugins中获取function列表
         const funcs = {
-          get_current_weather: (args) => {
+          get_current_weather: (args: any) => {
             console.log("call get_current_weather", args);
             return "30";
           },
@@ -297,14 +302,16 @@ export class ChatGPTApi implements LLMApi {
               runTools.splice(0, runTools.length); // empty runTools
               return Promise.all(
                 toolCallMessage.tool_calls.map((tool) => {
-                  options?.onBeforeTool(tool);
+                  options?.onBeforeTool?.(tool);
                   return Promise.resolve(
+                    // @ts-ignore
                     funcs[tool.function.name](
+                      // @ts-ignore
                       JSON.parse(tool.function.arguments),
                     ),
                   )
                     .then((content) => {
-                      options?.onAfterTool({
+                      options?.onAfterTool?.({
                         ...tool,
                         content,
                         isError: false,
@@ -312,7 +319,7 @@ export class ChatGPTApi implements LLMApi {
                       return content;
                     })
                     .catch((e) => {
-                      options?.onAfterTool({ ...tool, isError: true });
+                      options?.onAfterTool?.({ ...tool, isError: true });
                       return e.toString();
                     })
                     .then((content) => ({
@@ -323,8 +330,10 @@ export class ChatGPTApi implements LLMApi {
                 }),
               ).then((toolCallResult) => {
                 console.log("end runTools", toolCallMessage, toolCallResult);
-                requestPayload["messages"].splice(
-                  requestPayload["messages"].length,
+                // @ts-ignore
+                requestPayload?.messages?.splice(
+                  // @ts-ignore
+                  requestPayload?.messages?.length,
                   0,
                   toolCallMessage,
                   ...toolCallResult,
@@ -333,7 +342,7 @@ export class ChatGPTApi implements LLMApi {
                   // call again
                   console.log("start again");
                   running = false;
-                  chatApi(chatPath, requestPayload); // call fetchEventSource
+                  chatApi(chatPath, requestPayload as RequestPayload); // call fetchEventSource
                 }, 0);
               });
               console.log("try run tools", runTools.length, finished);
@@ -349,7 +358,7 @@ export class ChatGPTApi implements LLMApi {
 
         controller.signal.onabort = finish;
 
-        function chatApi(chatPath, requestPayload) {
+        function chatApi(chatPath: string, requestPayload: RequestPayload) {
           const chatPayload = {
             method: "POST",
             body: JSON.stringify({
@@ -434,7 +443,10 @@ export class ChatGPTApi implements LLMApi {
               try {
                 const json = JSON.parse(text);
                 const choices = json.choices as Array<{
-                  delta: { content: string };
+                  delta: {
+                    content: string;
+                    tool_calls: ChatMessageTool[];
+                  };
                 }>;
                 console.log("choices", choices);
                 const delta = choices[0]?.delta?.content;
@@ -453,11 +465,12 @@ export class ChatGPTApi implements LLMApi {
                       id,
                       type: tool_calls[0]?.type,
                       function: {
-                        name: tool_calls[0]?.function?.name,
+                        name: tool_calls[0]?.function?.name as string,
                         arguments: args,
                       },
                     });
                   } else {
+                    // @ts-ignore
                     runTools[index]["function"]["arguments"] += args;
                   }
                 }
@@ -490,7 +503,7 @@ export class ChatGPTApi implements LLMApi {
             openWhenHidden: true,
           });
         }
-        chatApi(chatPath, requestPayload); // call fetchEventSource
+        chatApi(chatPath, requestPayload as RequestPayload); // call fetchEventSource
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);

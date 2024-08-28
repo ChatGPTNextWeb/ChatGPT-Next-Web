@@ -30,6 +30,7 @@ import { isDalle3 } from "../utils";
 
 export type ChatMessageTool = {
   id: string;
+  index?: number;
   type?: string;
   function?: {
     name: string;
