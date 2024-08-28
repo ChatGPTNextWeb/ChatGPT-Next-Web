@@ -400,6 +400,30 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "gpt-4o-2024-08-06",
+    describe: "GPT-4o,最新版,省着点用",
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+      sorted: 2,
+    },
+  },
+  {
+    name: "gpt-4o-all",
+    describe: "GPT-4o,全能版,最贵",
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+      sorted: 2,
+    },
+  },
+  {
     name: "claude-3-5-sonnet-20240620",
     describe: "claude第三代模型最强版",
     available: true,
@@ -424,18 +448,6 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gpt-4o-all",
-    describe: "GPT-4,最新版,省着点用",
-    available: true,
-    sorted: seq++,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-      sorted: 1,
-    },
-  },
-  {
     name: "midjourney",
     describe: "绘图用,不用选",
     available: false,
@@ -444,7 +456,7 @@ export const DEFAULT_MODELS = [
       id: "openai",
       providerName: "OpenAI",
       providerType: "openai",
-      sorted: 1,
+      sorted: 2,
     },
   },
 ] as const;
