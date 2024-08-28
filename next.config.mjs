@@ -8,6 +8,10 @@ console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    LANGCHAIN_CALLBACKS_BACKGROUND: true,
+  },
+
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -16,20 +20,14 @@ const nextConfig = {
 
     if (disableChunk) {
       config.plugins.push(
-        new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+        new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })
       );
     }
 
     config.resolve.fallback = {
       child_process: false,
     };
-    
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.NEXT_PUBLIC_LANGCHAIN_CALLBACKS_BACKGROUND': true
-      })
-    );
-    
+
     return config;
   },
   output: mode,
@@ -77,8 +75,10 @@ if (mode !== "export") {
       },
       {
         // https://{resource_name}.openai.azure.com/openai/deployments/{deploy_name}/chat/completions
-        source: "/api/proxy/azure/:resource_name/deployments/:deploy_name/:path*",
-        destination: "https://:resource_name.openai.azure.com/openai/deployments/:deploy_name/:path*",
+        source:
+          "/api/proxy/azure/:resource_name/deployments/:deploy_name/:path*",
+        destination:
+          "https://:resource_name.openai.azure.com/openai/deployments/:deploy_name/:path*",
       },
       {
         source: "/api/proxy/google/:path*",
