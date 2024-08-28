@@ -287,7 +287,9 @@ export class ChatGPTApi implements LLMApi {
         const funcs = {
           get_current_weather: (args: any) => {
             console.log("call get_current_weather", args);
-            return "30";
+            return new Promise((resolve) => {
+              setTimeout(() => resolve("30"), 3000);
+            });
           },
         };
         const finish = () => {
