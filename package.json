@@ -36,6 +36,7 @@
     "fuse.js": "^7.0.0",
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
+    "idb-keyval": "^6.2.1",
     "lodash-es": "^4.17.21",
     "mermaid": "^10.7.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
