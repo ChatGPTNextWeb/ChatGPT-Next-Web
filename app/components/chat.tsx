@@ -1686,7 +1686,6 @@ function _Chat() {
                                       ? Locale.Chat.Actions.StopSpeech
                                       : Locale.Chat.Actions.Speech
                                   }
-                                  loding={speechLoading}
                                   icon={
                                     speechStatus ? (
                                       <SpeakStopIcon />

@@ -220,13 +220,16 @@ export function validString(x: string): boolean {
   return x?.length > 0;
 }
 
-export function getHeaders() {
+export function getHeaders(ignoreHeaders?: boolean) {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  };
+  let headers: Record<string, string> = {};
+  if (!ignoreHeaders) {
+    headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+  }
 
   const clientConfig = getClientConfig();
 
