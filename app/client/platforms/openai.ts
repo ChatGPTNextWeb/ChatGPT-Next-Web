@@ -343,7 +343,7 @@ export class ChatGPTApi implements LLMApi {
                   console.log("start again");
                   running = false;
                   chatApi(chatPath, requestPayload as RequestPayload); // call fetchEventSource
-                }, 0);
+                }, 5);
               });
               console.log("try run tools", runTools.length, finished);
               return;
