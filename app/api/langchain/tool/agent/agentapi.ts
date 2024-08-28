@@ -481,6 +481,7 @@ export class AgentApi {
         tools,
         maxIterations: reqBody.maxIterations,
       });
+      process.env.LANGCHAIN_CALLBACKS_BACKGROUND = true;
       await agentExecutor
         .invoke(
           {

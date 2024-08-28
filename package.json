@@ -7,7 +7,7 @@
     "mask:watch": "npx watch 'yarn mask' app/masks",
     "dev": "yarn run mask:watch & next dev",
     "dev:https": "yarn run mask:watch & next dev --experimental-https",
-    "build": "yarn mask && cross-env BUILD_MODE=standalone cross-env LANGCHAIN_CALLBACKS_BACKGROUND=true next build",
+    "build": "yarn mask && cross-env BUILD_MODE=standalone next build",
     "start": "next start",
     "lint": "next lint",
     "export": "yarn mask && cross-env BUILD_MODE=export BUILD_APP=1 next build",
