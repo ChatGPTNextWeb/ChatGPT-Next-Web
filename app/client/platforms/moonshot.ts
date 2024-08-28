@@ -20,6 +20,8 @@ import {
   LLMModel,
   LLMUsage,
   MultimodalContent,
+  SpeechOptions,
+  TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
 import {

@@ -7,7 +7,14 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMModel } from "../api";
+import {
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  SpeechOptions,
+  TranscriptionOptions,
+} from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,

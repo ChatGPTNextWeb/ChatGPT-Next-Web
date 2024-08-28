@@ -1,5 +1,12 @@
 import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
+import {
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  MultimodalContent,
+  SpeechOptions,
+  TranscriptionOptions,
+} from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";

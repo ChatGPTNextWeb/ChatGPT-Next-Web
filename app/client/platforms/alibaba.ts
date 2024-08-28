@@ -12,6 +12,8 @@ import {
   getHeaders,
   LLMApi,
   LLMModel,
+  SpeechOptions,
+  TranscriptionOptions,
   MultimodalContent,
 } from "../api";
 import Locale from "../../locales";
