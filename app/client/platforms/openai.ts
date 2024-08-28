@@ -338,12 +338,12 @@ export class ChatGPTApi implements LLMApi {
                   toolCallMessage,
                   ...toolCallResult,
                 );
-                setTimeout(() => {
+                requestAnimationFrame(() => {
                   // call again
                   console.log("start again");
                   running = false;
                   chatApi(chatPath, requestPayload as RequestPayload); // call fetchEventSource
-                }, 5);
+                });
               });
               console.log("try run tools", runTools.length, finished);
               return;
