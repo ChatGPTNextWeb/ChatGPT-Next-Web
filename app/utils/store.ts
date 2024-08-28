@@ -32,7 +32,8 @@ export function createPersistStore<T extends object, M>(
   ) => M,
   persistOptions: SecondParam<typeof persist<T & M & MakeUpdater<T>>>,
 ) {
-  persistOptions.storage = createJSONStorage(() => indexedDBStorage);
+  // merge 报错，很离谱，后续再排查
+  // persistOptions.storage = createJSONStorage(() => indexedDBStorage);
   return create(
     persist(
       combine(
