@@ -28,12 +28,24 @@ import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
 import { isDalle3 } from "../utils";
 
+export type ChatMessageTool = {
+  id: string;
+  type?: string;
+  function?: {
+    name: string;
+    arguments?: string;
+  };
+  content?: string;
+  isError?: boolean;
+};
+
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
   isError?: boolean;
   id: string;
   model?: ModelType;
+  tools?: ChatMessageTool[];
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -388,6 +400,23 @@ export const useChatStore = createPersistStore(
               get().onNewMessage(botMessage);
             }
             ChatControllerPool.remove(session.id, botMessage.id);
+          },
+          onBeforeTool(tool: ChatMessageTool) {
+            (botMessage.tools = botMessage?.tools || []).push(tool);
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+          },
+          onAfterTool(tool: ChatMessageTool) {
+            console.log("onAfterTool", botMessage);
+            botMessage?.tools?.forEach((t, i, tools) => {
+              if (tool.id == t.id) {
+                tools[i] = { ...tool };
+              }
+            });
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
