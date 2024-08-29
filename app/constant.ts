@@ -78,6 +78,7 @@ export enum Plugin {
 
 export enum StoreKey {
   Chat = "chat-next-web-store",
+  Plugin = "chat-next-web-plugin",
   Access = "access-control",
   Config = "app-config",
   Mask = "mask-store",

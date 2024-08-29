@@ -14,6 +14,7 @@ import {
   useAccessStore,
   useAppConfig,
   useChatStore,
+  usePluginStore,
 } from "@/app/store";
 import { collectModelsWithDefaultModel } from "@/app/utils/model";
 import {
@@ -240,6 +241,11 @@ export class ChatGPTApi implements LLMApi {
         );
       }
       if (shouldStream) {
+        const [tools1, funcs2] = usePluginStore
+          .getState()
+          .getAsTools(useChatStore.getState().currentSession().mask?.plugin);
+        console.log("getAsTools", tools1, funcs2);
+        // return
         // TODO mock tools and funcs
         const tools = [
           {
@@ -276,8 +282,8 @@ export class ChatGPTApi implements LLMApi {
           chatPath,
           requestPayload,
           getHeaders(),
-          tools,
-          funcs,
+          tools1,
+          funcs2,
           controller,
           // parseSSE
           (text: string, runTools: ChatMessageTool[]) => {
