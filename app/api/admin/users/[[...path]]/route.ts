@@ -63,6 +63,7 @@ async function handle(
             image: item.image,
             email: item.email,
             emailVerified: item.emailVerified,
+            everyLimitToken: item.everyLimitToken,
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
             allowToLogin: item.allowToLogin,

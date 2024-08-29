@@ -27,6 +27,8 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  // 默认每人每天限额20k，但数据库存储0
+  everyLimitToken Int?     @default(0)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   allowToLogin  Boolean    @default(true)

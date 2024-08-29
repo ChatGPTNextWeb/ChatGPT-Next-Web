@@ -543,8 +543,11 @@ export const useChatStore = createPersistStore(
         const current_day_token = parseInt(
           localStorage.getItem("current_day_token") ?? "0",
         );
+        const current_day_limit_token = parseInt(
+          localStorage.getItem("current_day_limit_token") ?? "200000",
+        );
         // console.log('---------', current_day_token)
-        if (current_day_token >= 200000) {
+        if (current_day_token >= current_day_limit_token) {
           botMessage.content +=
             "\n\n" +
             prettyObject({

@@ -19,7 +19,19 @@ async function handle(
       const user_id = session?.user.id;
       const { startOfTheDayInTimeZone, endOfTheDayInTimeZone } =
         getCurStartEnd();
-      const current_token = await prisma.logEntry
+      let current_day_limit_token = 0;
+      const current_user = await prisma.user.findUnique({
+        where: {
+          id: user_id,
+        },
+      });
+      if (current_user && current_user.everyLimitToken !== 0) {
+        current_day_limit_token = current_user.everyLimitToken * 1000;
+      } else {
+        current_day_limit_token = 0;
+      }
+
+      const current_day_token = await prisma.logEntry
         .findMany({
           where: {
             userID: user_id,
@@ -39,7 +51,12 @@ async function handle(
           );
         });
       // console.log('-----------', user_id, current_token)
-      return NextResponse.json({ result: { current_token: current_token } });
+      return NextResponse.json({
+        result: {
+          current_day_token: current_day_token,
+          current_day_limit_token: current_day_limit_token,
+        },
+      });
     } catch {}
     return NextResponse.json({ error: "未知错误" }, { status: 500 });
   }

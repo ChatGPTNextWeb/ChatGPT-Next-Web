@@ -1420,7 +1420,11 @@ function _Chat() {
             // console.log("请求成功，", result);
             localStorage.setItem(
               "current_day_token",
-              result["result"]["current_token"],
+              result["result"]["current_day_token"],
+            );
+            localStorage.setItem(
+              "current_day_limit_token",
+              result["result"]["current_day_limit_token"],
             );
           });
       } catch {}
@@ -1484,7 +1488,7 @@ function _Chat() {
               <Progress
                 percent={
                   (parseInt(localStorage.getItem("current_day_token") ?? "0") /
-                    200000) *
+                    parseInt(localStorage.getItem("limit_token") ?? "200000")) *
                   100
                 }
                 size="small"
