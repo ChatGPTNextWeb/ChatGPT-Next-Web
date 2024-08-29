@@ -11,7 +11,7 @@ jobs:
   build:
     name: build image
     #runs-on: ubuntu-latest
-    runs-on: yc-hk
+    runs-on: chengdu
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
