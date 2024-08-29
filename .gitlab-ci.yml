@@ -1,0 +1,17 @@
+stages:
+  - build
+
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+
+before_script:
+  - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+
+build:
+  stage: build
+  script:
+    - DATE_TAG=$(date +'%Y%m%d')
+    - docker build --no-cache -t ${IMAGE_NAME}:latest .
+    - docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${DATE_TAG}
+    - docker push ${IMAGE_NAME}:latest
+    - docker push ${IMAGE_NAME}:${DATE_TAG}
