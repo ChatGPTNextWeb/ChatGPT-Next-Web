@@ -31,6 +31,7 @@ jobs:
           GITLAB_PASSWORD: ${{ secrets.GITLAB_PASSWORD }}
         run: |
           git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_PASSWORD}@gitlab.si.icu/${GITHUB_REPOSITORY}.git
+          git fetch --unshallow gitlab
           git push gitlab main --force  # 强制推送以覆盖目标分支内容，可根据需要调整
 
 #      - name: Set up SSH key
