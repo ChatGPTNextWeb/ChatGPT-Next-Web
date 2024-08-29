@@ -10,29 +10,55 @@ on:
 jobs:
   build:
     name: build image
-    #runs-on: ubuntu-latest
-    runs-on: chengdu
+    runs-on: ubuntu-latest
+    #runs-on: chengdu
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+        #with:
+        #  clean: false
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          clean: false
-          github-server-url: 'https://gh.sivpn.cn'
-      - name: build and deploy to Docker Hub
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Sync repository to nm
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.si.icu -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           echo "${{ secrets.DOCKER_ENV }}" > .env
-      - name: Get current date
-        run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.CHENGDU_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
+          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.CHENGDU_SSH_IP }}:/data/ChatGPT-Next-Web/
+#      - name: build and deploy to Docker Hub
+#        run: |
+#          echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.si.icu -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: build-by-chengdu
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
         with:
-          context: .
-          push: true
-          no-cache: true
-          tags: |
-            registry.si.icu/sijinhui/chatgpt-next-web:latest
-            registry.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
+          host: ${{ secrets.CHENGDU_SSH_IP }} #服务器地址
+          username: root #用户名
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
+          envs: SERVER_WORKDIR #使用工作目录变量
+          script: |
+            cd $SERVER_WORKDIR #进入到工作目录
+            IMAGE_NAME="registry.si.icu/sijinhui/chatgpt-next-web"
+            DATE_TAG=$(date +'%Y%m%d')
+            # 构建 Docker 镜像并推送到注册表
+            docker build --no-cache -t ${IMAGE_NAME}:latest .
+            docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${DATE_TAG}
+            docker push ${IMAGE_NAME}:latest
+            docker push ${IMAGE_NAME}:${DATE_TAG}
+#      - name: Get current date
+#        run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          push: true
+#          no-cache: true
+#          tags: |
+#            registry.si.icu/sijinhui/chatgpt-next-web:latest
+#            registry.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
 #      - name: clean build history
 #        run: |
 #          yes | docker system prune --filter "until=720h"
