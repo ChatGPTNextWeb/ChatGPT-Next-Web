@@ -14,69 +14,23 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Get author info
-        id: author_info
+        #with:
+        #  clean: false
+      - name: build and deploy to Docker Hub
         run: |
-          AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
-          AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
-          echo "AUTHOR_NAME=$AUTHOR_NAME" >> $GITHUB_ENV
-          echo "AUTHOR_EMAIL=$AUTHOR_EMAIL" >> $GITHUB_ENV
-      - name: Set up Git configuration
-        run: |
-          git config --global user.name "${{ env.AUTHOR_NAME }}"
-          git config --global user.email "${{ env.AUTHOR_EMAIL }}"
-      - name: Add GitLab remote and push changes
-        env:
-          GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
-          GITLAB_PASSWORD: ${{ secrets.GITLAB_PASSWORD }}
-        run: |
-          git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_PASSWORD}@gitlab.si.icu/${GITHUB_REPOSITORY}.git
-          git fetch --unshallow gitlab
-          git push gitlab main --force  # 强制推送以覆盖目标分支内容，可根据需要调整
-
-#      - name: Set up SSH key
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-#
-#      - name: Sync repository to chengdu
-#        run: |
-#          echo "${{ secrets.DOCKER_ENV }}" > .env
-#          ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }} root@${{ secrets.CHENGDU_SSH_IP }} 'mkdir -p /data/ChatGPT-Next-Web'
-#          rsync -az -e 'ssh -o StrictHostKeyChecking=no -p${{ secrets.SSH_PORT }}' --delete $GITHUB_WORKSPACE/ root@${{ secrets.CHENGDU_SSH_IP }}:/data/ChatGPT-Next-Web/
-##      - name: build and deploy to Docker Hub
-##        run: |
-##          echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.si.icu -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-#      - name: build-by-chengdu
-#        uses: appleboy/ssh-action@master
-#        env:
-#          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }} #传递工作目录变量
-#        with:
-#          host: ${{ secrets.CHENGDU_SSH_IP }} #服务器地址
-#          username: root #用户名
-#          port: ${{ secrets.SSH_PORT }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }} #私钥 安全问题一定都以变量的方式传递！！！
-#          envs: SERVER_WORKDIR #使用工作目录变量
-#          script: |
-#            cd $SERVER_WORKDIR #进入到工作目录
-#            IMAGE_NAME="registry.si.icu/sijinhui/chatgpt-next-web"
-#            DATE_TAG=$(date +'%Y%m%d')
-#            # 构建 Docker 镜像并推送到注册表
-#            docker build --no-cache -t ${IMAGE_NAME}:latest .
-#            docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${DATE_TAG}
-#            docker push ${IMAGE_NAME}:latest
-#            docker push ${IMAGE_NAME}:${DATE_TAG}
-#      - name: Get current date
-#        run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: .
-#          push: true
-#          no-cache: true
-#          tags: |
-#            registry.si.icu/sijinhui/chatgpt-next-web:latest
-#            registry.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry.si.icu -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKER_ENV }}" > .env
+      - name: Get current date
+        run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          no-cache: true
+          tags: |
+            registry.si.icu/sijinhui/chatgpt-next-web:latest
+            registry.si.icu/sijinhui/chatgpt-next-web:${{ env.DATE_TAG }}
 #      - name: clean build history
 #        run: |
 #          yes | docker system prune --filter "until=720h"
