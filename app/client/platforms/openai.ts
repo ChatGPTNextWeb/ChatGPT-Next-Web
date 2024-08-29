@@ -240,6 +240,7 @@ export class ChatGPTApi implements LLMApi {
         );
       }
       if (shouldStream) {
+        // TODO mock tools and funcs
         const tools = [
           {
             type: "function",
@@ -278,8 +279,9 @@ export class ChatGPTApi implements LLMApi {
           tools,
           funcs,
           controller,
+          // parseSSE
           (text: string, runTools: ChatMessageTool[]) => {
-            console.log("parseSSE", text, runTools);
+            // console.log("parseSSE", text, runTools);
             const json = JSON.parse(text);
             const choices = json.choices as Array<{
               delta: {
@@ -306,9 +308,22 @@ export class ChatGPTApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
-
-            console.log("runTools", runTools);
             return choices[0]?.delta?.content;
+          },
+          // processToolMessage, include tool_calls message and tool call results
+          (
+            requestPayload: RequestPayload,
+            toolCallMessage: any,
+            toolCallResult: any[],
+          ) => {
+            // @ts-ignore
+            requestPayload?.messages?.splice(
+              // @ts-ignore
+              requestPayload?.messages?.length,
+              0,
+              toolCallMessage,
+              ...toolCallResult,
+            );
           },
           options,
         );

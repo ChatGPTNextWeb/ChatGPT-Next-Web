@@ -161,6 +161,11 @@ export function stream(
   funcs: any,
   controller: AbortController,
   parseSSE: (text: string, runTools: any[]) => string | undefined,
+  processToolMessage: (
+    requestPayload: any,
+    toolCallMessage: any,
+    toolCallResult: any[],
+  ) => void,
   options: any,
 ) {
   let responseText = "";
@@ -196,7 +201,6 @@ export function stream(
 
   const finish = () => {
     if (!finished) {
-      console.log("try run tools", runTools.length, finished, running);
       if (!running && runTools.length > 0) {
         const toolCallMessage = {
           role: "assistant",
@@ -233,28 +237,20 @@ export function stream(
               }));
           }),
         ).then((toolCallResult) => {
-          console.log("end runTools", toolCallMessage, toolCallResult);
-          // @ts-ignore
-          requestPayload?.messages?.splice(
-            // @ts-ignore
-            requestPayload?.messages?.length,
-            0,
-            toolCallMessage,
-            ...toolCallResult,
-          );
+          processToolMessage(requestPayload, toolCallMessage, toolCallResult);
           setTimeout(() => {
             // call again
-            console.log("start again");
+            console.debug("[ChatAPI] restart");
             running = false;
             chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
           }, 60);
         });
-        console.log("try run tools", runTools.length, finished);
         return;
       }
       if (running) {
         return;
       }
+      console.debug("[ChatAPI] end");
       finished = true;
       options.onFinish(responseText + remainText);
     }
@@ -343,7 +339,7 @@ export function stream(
       },
       openWhenHidden: true,
     });
-    console.log("chatApi", chatPath, requestPayload, tools);
   }
+  console.debug("[ChatAPI] start");
   chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
 }
