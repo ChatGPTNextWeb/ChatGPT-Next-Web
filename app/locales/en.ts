@@ -542,6 +542,47 @@ const en: LocaleType = {
       View: "View",
     },
   },
+  Plugin: {
+    Name: "Plugin",
+    Page: {
+      Title: "Plugins",
+      SubTitle: (count: number) => `${count} plugins`,
+      Search: "Search Plugin",
+      Create: "Create",
+    },
+    Item: {
+      Info: (count: number) => `${count} plugins`,
+      Chat: "Chat",
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Plugin ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
+    Config: {
+      Avatar: "Bot Avatar",
+      Name: "Bot Name",
+      Sync: {
+        Title: "Use Global Config",
+        SubTitle: "Use global config in this chat",
+        Confirm: "Confirm to override custom config with global config?",
+      },
+      HideContext: {
+        Title: "Hide Context Prompts",
+        SubTitle: "Do not show in-context prompts in chat",
+      },
+      Share: {
+        Title: "Share This Plugin",
+        SubTitle: "Generate a link to this mask",
+        Action: "Copy Link",
+      },
+    },
+  },
   Mask: {
     Name: "Mask",
     Page: {
