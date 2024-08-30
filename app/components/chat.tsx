@@ -1478,7 +1478,13 @@ function _Chat() {
               title={
                 <span style={{ color: "black" }}>
                   {localStorage.getItem("current_day_token") ?? 0}{" "}
-                  <span style={{ color: "black" }}>/ 200000</span>
+                  <span style={{ color: "black" }}>
+                    /{" "}
+                    {parseInt(
+                      localStorage.getItem("current_day_limit_token") ??
+                        "200000",
+                    )}
+                  </span>
                 </span>
               }
               color={"var(--second)"}
@@ -1488,7 +1494,10 @@ function _Chat() {
               <Progress
                 percent={
                   (parseInt(localStorage.getItem("current_day_token") ?? "0") /
-                    parseInt(localStorage.getItem("limit_token") ?? "200000")) *
+                    parseInt(
+                      localStorage.getItem("current_day_limit_token") ??
+                        "200000",
+                    )) *
                   100
                 }
                 size="small"

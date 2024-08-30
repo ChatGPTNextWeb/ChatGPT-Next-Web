@@ -25,7 +25,11 @@ async function handle(
           id: user_id,
         },
       });
-      if (current_user && current_user.everyLimitToken !== 0) {
+      if (
+        current_user &&
+        current_user.everyLimitToken &&
+        current_user.everyLimitToken > 0
+      ) {
         current_day_limit_token = current_user.everyLimitToken * 1000;
       } else {
         current_day_limit_token = 0;

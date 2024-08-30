@@ -6,6 +6,7 @@ import {
   Space,
   Table,
   Input,
+  InputNumber,
   Button,
   notification as notificationModule,
   Checkbox,
@@ -127,6 +128,9 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
           <Form.Item name="emailVerified" label="emailVerified">
             <Input disabled />
           </Form.Item>
+          <Form.Item name="everyLimitToken" label="每日限额">
+            <InputNumber addonAfter={"k"} />
+          </Form.Item>
           <Form.Item name="createdAt" label="createdAt">
             <Input disabled />
           </Form.Item>
@@ -163,6 +167,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
             allowToLogin: values.allowToLogin ?? true,
             isAdmin: values.isAdmin ?? false,
             password: values.password ?? null,
+            everyLimitToken: values.everyLimitToken ?? 0,
           };
           fetch(`/api/admin/users/${values.id}`, {
             method: method,
@@ -228,13 +233,20 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       });
   };
   const columns: TableColumnsType<User> = [
-    { title: "姓名", dataIndex: "name", width: 80 },
+    { title: "姓名", dataIndex: "name", width: 80, align: "center" },
     {
       title: "用户名",
       dataIndex: "username",
       width: 80,
+      align: "center",
     },
-    { title: "邮箱", dataIndex: "email", width: 180 },
+    { title: "邮箱", dataIndex: "email", width: 180, align: "right" },
+    {
+      title: "每日限额",
+      dataIndex: "everyLimitToken",
+      width: 60,
+      align: "right",
+    },
     {
       title: "createdAt",
       dataIndex: "createdAt",
@@ -301,7 +313,7 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       <Table
         dataSource={users}
         rowKey="id"
-        size="middle"
+        size="small"
         columns={columns}
         loading={loading as boolean}
         scroll={{
