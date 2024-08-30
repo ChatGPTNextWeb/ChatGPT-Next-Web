@@ -218,6 +218,13 @@ export function stream(
                 JSON.parse(tool.function.arguments),
               ),
             )
+              .then((res) => {
+                const content = JSON.stringify(res.data);
+                if (res.status >= 300) {
+                  return Promise.reject(content);
+                }
+                return content;
+              })
               .then((content) => {
                 options?.onAfterTool?.({
                   ...tool,
