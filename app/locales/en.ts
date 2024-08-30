@@ -517,10 +517,6 @@ const en: LocaleType = {
     Clear: "Context Cleared",
     Revert: "Revert",
   },
-  Plugin: {
-    Name: "Plugin",
-    Artifacts: "Artifacts",
-  },
   Discovery: {
     Name: "Discovery",
   },
@@ -544,6 +540,7 @@ const en: LocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+    Artifacts: "Artifacts",
     Page: {
       Title: "Plugins",
       SubTitle: (count: number) => `${count} plugins`,
@@ -551,8 +548,7 @@ const en: LocaleType = {
       Create: "Create",
     },
     Item: {
-      Info: (count: number) => `${count} plugins`,
-      Chat: "Chat",
+      Info: (count: number) => `${count} method`,
       View: "View",
       Edit: "Edit",
       Delete: "Delete",
@@ -562,25 +558,9 @@ const en: LocaleType = {
       Title: (readonly: boolean) =>
         `Edit Plugin ${readonly ? "(readonly)" : ""}`,
       Download: "Download",
-      Clone: "Clone",
-    },
-    Config: {
-      Avatar: "Bot Avatar",
-      Name: "Bot Name",
-      Sync: {
-        Title: "Use Global Config",
-        SubTitle: "Use global config in this chat",
-        Confirm: "Confirm to override custom config with global config?",
-      },
-      HideContext: {
-        Title: "Hide Context Prompts",
-        SubTitle: "Do not show in-context prompts in chat",
-      },
-      Share: {
-        Title: "Share This Plugin",
-        SubTitle: "Generate a link to this mask",
-        Action: "Copy Link",
-      },
+      Content: "OpenAPI Schema",
+      Method: "Method",
+      Error: "OpenAPI Schema Error",
     },
   },
   Mask: {

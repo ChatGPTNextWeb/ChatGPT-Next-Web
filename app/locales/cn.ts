@@ -509,10 +509,6 @@ const cn = {
     Clear: "上下文已清除",
     Revert: "恢复上下文",
   },
-  Plugin: {
-    Name: "插件",
-    Artifacts: "Artifacts",
-  },
   Discovery: {
     Name: "发现",
   },
@@ -532,6 +528,30 @@ const cn = {
     },
     Item: {
       View: "查看",
+    },
+  },
+  Plugin: {
+    Name: "插件",
+    Artifacts: "Artifacts",
+    Page: {
+      Title: "插件",
+      SubTitle: (count: number) => `${count} 个插件`,
+      Search: "搜索插件",
+      Create: "新建",
+    },
+    Item: {
+      Info: (count: number) => `${count} 方法`,
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    EditModal: {
+      Title: (readonly: boolean) => `编辑插件 ${readonly ? "（只读）" : ""}`,
+      Download: "下载",
+      Content: "OpenAPI Schema",
+      Method: "方法",
+      Error: "格式错误",
     },
   },
   Mask: {

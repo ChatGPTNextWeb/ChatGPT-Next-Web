@@ -241,49 +241,16 @@ export class ChatGPTApi implements LLMApi {
         );
       }
       if (shouldStream) {
-        const [tools1, funcs2] = usePluginStore
+        const [tools, funcs] = usePluginStore
           .getState()
           .getAsTools(useChatStore.getState().currentSession().mask?.plugin);
-        console.log("getAsTools", tools1, funcs2);
-        // return
-        // TODO mock tools and funcs
-        const tools = [
-          {
-            type: "function",
-            function: {
-              name: "get_current_weather",
-              description: "Get the current weather",
-              parameters: {
-                type: "object",
-                properties: {
-                  location: {
-                    type: "string",
-                    description: "The city and country, eg. San Francisco, USA",
-                  },
-                  format: {
-                    type: "string",
-                    enum: ["celsius", "fahrenheit"],
-                  },
-                },
-                required: ["location", "format"],
-              },
-            },
-          },
-        ];
-        const funcs = {
-          get_current_weather: (args: any) => {
-            console.log("call get_current_weather", args);
-            return new Promise((resolve) => {
-              setTimeout(() => resolve("30"), 3000);
-            });
-          },
-        };
+        console.log("getAsTools", tools, funcs);
         stream(
           chatPath,
           requestPayload,
           getHeaders(),
-          tools1,
-          funcs2,
+          tools,
+          funcs,
           controller,
           // parseSSE
           (text: string, runTools: ChatMessageTool[]) => {

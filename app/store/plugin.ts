@@ -10,16 +10,91 @@ export type Plugin = {
   createdAt: number;
   title: string;
   version: string;
-  context: string;
+  content: string;
   builtin: boolean;
+};
+
+export type FunctionToolItem = {
+  type: string;
+  function: {
+    name: string;
+    description?: string;
+    parameters: Object;
+  };
+};
+
+type FunctionToolServiceItem = {
+  api: OpenAPIClientAxios;
+  tools: FunctionToolItem[];
+  funcs: Function[];
+};
+
+export const FunctionToolService = {
+  tools: {} as Record<string, FunctionToolServiceItem>,
+  add(plugin: Plugin, replace = false) {
+    if (!replace && this.tools[plugin.id]) return this.tools[plugin.id];
+    const api = new OpenAPIClientAxios({
+      definition: yaml.load(plugin.content),
+    });
+    console.log("add", plugin, api);
+    try {
+      api.initSync();
+    } catch (e) {}
+    const operations = api.getOperations();
+    return (this.tools[plugin.id] = {
+      api,
+      length: operations.length,
+      tools: operations.map((o) => {
+        const parameters = o?.requestBody?.content["application/json"]
+          ?.schema || {
+          type: "object",
+          properties: {},
+        };
+        if (!parameters["required"]) {
+          parameters["required"] = [];
+        }
+        if (o.parameters instanceof Array) {
+          o.parameters.forEach((p) => {
+            if (p.in == "query" || p.in == "path") {
+              // const name = `${p.in}__${p.name}`
+              const name = p.name;
+              console.log("p", p, p.schema);
+              parameters["properties"][name] = {
+                type: p.schema.type,
+                description: p.description,
+              };
+              if (p.required) {
+                parameters["required"].push(name);
+              }
+            }
+          });
+        }
+        return {
+          type: "function",
+          function: {
+            name: o.operationId,
+            description: o.description,
+            parameters: parameters,
+          },
+        };
+      }),
+      funcs: operations.reduce((s, o) => {
+        s[o.operationId] = api.client[o.operationId];
+        return s;
+      }, {}),
+    });
+  },
+  get(id) {
+    return this.tools[id];
+  },
 };
 
 export const createEmptyPlugin = () =>
   ({
     id: nanoid(),
     title: "",
-    version: "",
-    context: "",
+    version: "1.0.0",
+    content: "",
     builtin: false,
     createdAt: Date.now(),
   }) as Plugin;
@@ -69,46 +144,10 @@ export const usePluginStore = createPersistStore(
       const selected = ids
         .map((id) => plugins[id])
         .filter((i) => i)
-        .map((i) => [
-          i,
-          new OpenAPIClientAxios({ definition: yaml.load(i.content) }),
-        ])
-        .map(([item, api]) => {
-          api.initSync();
-          const operations = api.getOperations().map((o) => {
-            const parameters = o.parameters;
-            return [
-              {
-                type: "function",
-                function: {
-                  name: o.operationId,
-                  description: o.description,
-                  parameters: o.parameters,
-                },
-              },
-              api.client[o.operationId],
-            ];
-            // return [{
-            // }, function(arg) {
-            //   const args = []
-            //   for (const p in parameters) {
-            //     if (p.type === "object") {
-            //       const a = {}
-            //       for (const n of p.)
-            //     }
-            //   }
-            // }]
-          });
-          return [item, api, operations];
-        });
-      console.log("selected", selected);
-      const result = selected.reduce((s, i) => s.concat(i[2]), []);
+        .map((p) => FunctionToolService.add(p));
       return [
-        result.map(([t, _]) => t),
-        result.reduce((s, i) => {
-          s[i[0].function.name] = i[1];
-          return s;
-        }, {}),
+        selected.reduce((s, i) => s.concat(i.tools), []),
+        selected.reduce((s, i) => Object.assign(s, i.funcs), {}),
       ];
     },
     get(id?: string) {

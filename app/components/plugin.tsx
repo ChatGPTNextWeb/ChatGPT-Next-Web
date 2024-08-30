@@ -1,7 +1,11 @@
+import { useDebouncedCallback } from "use-debounce";
+import OpenAPIClientAxios from "openapi-client-axios";
+import yaml from "js-yaml";
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 
 import styles from "./mask.module.scss";
+import pluginStyles from "./plugin.module.scss";
 
 import DownloadIcon from "../icons/download.svg";
 import EditIcon from "../icons/edit.svg";
@@ -11,7 +15,7 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 
-import { Plugin, usePluginStore } from "../store/plugin";
+import { Plugin, usePluginStore, FunctionToolService } from "../store/plugin";
 import {
   Input,
   List,
@@ -20,7 +24,9 @@ import {
   Popover,
   Select,
   showConfirm,
+  showToast,
 } from "./ui-lib";
+import { downloadAs } from "../utils";
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -30,11 +36,55 @@ import { nanoid } from "nanoid";
 export function PluginPage() {
   const navigate = useNavigate();
   const pluginStore = usePluginStore();
-  const plugins = pluginStore.getAll();
+
+  const allPlugins = pluginStore.getAll();
+  const [searchPlugins, setSearchPlugins] = useState<Plugin[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const plugins = searchText.length > 0 ? searchPlugins : allPlugins;
+
+  // refactored already, now it accurate
+  const onSearch = (text: string) => {
+    setSearchText(text);
+    if (text.length > 0) {
+      const result = allPlugins.filter((m) =>
+        m.title.toLowerCase().includes(text.toLowerCase()),
+      );
+      setSearchPlugins(result);
+    } else {
+      setSearchPlugins(allPlugins);
+    }
+  };
 
   const [editingPluginId, setEditingPluginId] = useState<string | undefined>();
   const editingPlugin = pluginStore.get(editingPluginId);
+  const editingPluginTool = FunctionToolService.get(editingPlugin?.id);
   const closePluginModal = () => setEditingPluginId(undefined);
+
+  const onChangePlugin = useDebouncedCallback((editingPlugin, e) => {
+    const content = e.target.innerText;
+    try {
+      const api = new OpenAPIClientAxios({ definition: yaml.load(content) });
+      api
+        .init()
+        .then(() => {
+          if (content != editingPlugin.content) {
+            pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+              plugin.content = content;
+              const tool = FunctionToolService.add(plugin, true);
+              plugin.title = tool.api.definition.info.title;
+              plugin.version = tool.api.definition.info.version;
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          showToast(Locale.Plugin.EditModal.Error);
+        });
+    } catch (e) {
+      console.error(e);
+      showToast(Locale.Plugin.EditModal.Error);
+    }
+  }, 100).bind(null, editingPlugin);
 
   return (
     <ErrorBoundary>
@@ -61,6 +111,27 @@ export function PluginPage() {
         </div>
 
         <div className={styles["mask-page-body"]}>
+          <div className={styles["mask-filter"]}>
+            <input
+              type="text"
+              className={styles["search-bar"]}
+              placeholder={Locale.Plugin.Page.Search}
+              autoFocus
+              onInput={(e) => onSearch(e.currentTarget.value)}
+            />
+
+            <IconButton
+              className={styles["mask-create"]}
+              icon={<AddIcon />}
+              text={Locale.Plugin.Page.Create}
+              bordered
+              onClick={() => {
+                const createdPlugin = pluginStore.create();
+                setEditingPluginId(createdPlugin.id);
+              }}
+            />
+          </div>
+
           <div>
             {plugins.map((m) => (
               <div className={styles["mask-item"]} key={m.id}>
@@ -71,7 +142,9 @@ export function PluginPage() {
                       {m.title}@<small>{m.version}</small>
                     </div>
                     <div className={styles["mask-info"] + " one-line"}>
-                      {`${Locale.Plugin.Item.Info(m.content.length)} / / `}
+                      {Locale.Plugin.Item.Info(
+                        FunctionToolService.add(m).length,
+                      )}
                     </div>
                   </div>
                 </div>
@@ -123,24 +196,48 @@ export function PluginPage() {
                 onClick={() =>
                   downloadAs(
                     JSON.stringify(editingPlugin),
-                    `${editingPlugin.name}.json`,
+                    `${editingPlugin.title}@${editingPlugin.version}.json`,
                   )
                 }
               />,
-              <IconButton
-                key="copy"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Plugin.EditModal.Clone}
-                onClick={() => {
-                  navigate(Path.Plugins);
-                  pluginStore.create(editingPlugin);
-                  setEditingPluginId(undefined);
-                }}
-              />,
             ]}
           >
-            PluginConfig
+            <div className={styles["mask-page"]}>
+              <div className={pluginStyles["plugin-title"]}>
+                {Locale.Plugin.EditModal.Content}
+              </div>
+              <div
+                className={`markdown-body ${pluginStyles["plugin-content"]}`}
+                dir="auto"
+              >
+                <pre>
+                  <code
+                    contentEditable={true}
+                    dangerouslySetInnerHTML={{ __html: editingPlugin.content }}
+                    onBlur={onChangePlugin}
+                  ></code>
+                </pre>
+              </div>
+              <div className={pluginStyles["plugin-title"]}>
+                {Locale.Plugin.EditModal.Method}
+              </div>
+              <div className={styles["mask-page-body"]} style={{ padding: 0 }}>
+                {editingPluginTool?.tools.map((tool, index) => (
+                  <div className={styles["mask-item"]} key={index}>
+                    <div className={styles["mask-header"]}>
+                      <div className={styles["mask-title"]}>
+                        <div className={styles["mask-name"]}>
+                          {tool?.function?.name}
+                        </div>
+                        <div className={styles["mask-info"] + " one-line"}>
+                          {tool?.function?.description}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </Modal>
         </div>
       )}

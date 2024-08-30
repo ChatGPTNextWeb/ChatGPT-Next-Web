@@ -442,70 +442,6 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
   const pluginStore = usePluginStore();
-  console.log("pluginStore", pluginStore.getAll());
-  // test
-  if (pluginStore.getAll().length == 0) {
-    pluginStore.create({
-      title: "Pet API",
-      version: "1.0.0",
-      content: `{
-  "openapi": "3.0.2",
-  "info": {
-    "title": "Pet API",
-    "version": "1.0.0"
-  },
-  "paths": {
-    "/api/pets": {
-      "get": {
-        "operationId": "getPets",
-        "description": "Returns all pets from the system that the user has access to",
-        "responses": {
-          "200": {
-            "description": "List of Pets",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Pet": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "cat",
-              "dog"
-            ]
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "type"
-        ]
-      }
-    }
-  }
-}`,
-    });
-  }
 
   // switch themes
   const theme = config.theme;
@@ -805,12 +741,10 @@ export function ChatActions(props: {
               value: Plugin.Artifacts,
             },
           ].concat(
-            pluginStore
-              .getAll()
-              .map((item) => ({
-                title: `${item.title}@${item.version}`,
-                value: item.id,
-              })),
+            pluginStore.getAll().map((item) => ({
+              title: `${item.title}@${item.version}`,
+              value: item.id,
+            })),
           )}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {
