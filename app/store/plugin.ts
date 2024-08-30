@@ -1,6 +1,6 @@
 import OpenAPIClientAxios from "openapi-client-axios";
 import { getLang, Lang } from "../locales";
-import { StoreKey, Plugin } from "../constant";
+import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import yaml from "js-yaml";
@@ -25,8 +25,9 @@ export type FunctionToolItem = {
 
 type FunctionToolServiceItem = {
   api: OpenAPIClientAxios;
+  length: number;
   tools: FunctionToolItem[];
-  funcs: Function[];
+  funcs: Record<string, Function>;
 };
 
 export const FunctionToolService = {
@@ -34,7 +35,7 @@ export const FunctionToolService = {
   add(plugin: Plugin, replace = false) {
     if (!replace && this.tools[plugin.id]) return this.tools[plugin.id];
     const api = new OpenAPIClientAxios({
-      definition: yaml.load(plugin.content),
+      definition: yaml.load(plugin.content) as any,
     });
     console.log("add", plugin, api);
     try {
@@ -45,6 +46,7 @@ export const FunctionToolService = {
       api,
       length: operations.length,
       tools: operations.map((o) => {
+        // @ts-ignore
         const parameters = o?.requestBody?.content["application/json"]
           ?.schema || {
           type: "object",
@@ -55,14 +57,18 @@ export const FunctionToolService = {
         }
         if (o.parameters instanceof Array) {
           o.parameters.forEach((p) => {
-            if (p.in == "query" || p.in == "path") {
+            // @ts-ignore
+            if (p?.in == "query" || p?.in == "path") {
               // const name = `${p.in}__${p.name}`
-              const name = p.name;
-              console.log("p", p, p.schema);
+              // @ts-ignore
+              const name = p?.name;
               parameters["properties"][name] = {
+                // @ts-ignore
                 type: p.schema.type,
+                // @ts-ignore
                 description: p.description,
               };
+              // @ts-ignore
               if (p.required) {
                 parameters["required"].push(name);
               }
@@ -76,15 +82,16 @@ export const FunctionToolService = {
             description: o.description,
             parameters: parameters,
           },
-        };
+        } as FunctionToolItem;
       }),
       funcs: operations.reduce((s, o) => {
+        // @ts-ignore
         s[o.operationId] = api.client[o.operationId];
         return s;
       }, {}),
     });
   },
-  get(id) {
+  get(id: string) {
     return this.tools[id];
   },
 };
@@ -146,6 +153,7 @@ export const usePluginStore = createPersistStore(
         .filter((i) => i)
         .map((p) => FunctionToolService.add(p));
       return [
+        // @ts-ignore
         selected.reduce((s, i) => s.concat(i.tools), []),
         selected.reduce((s, i) => Object.assign(s, i.funcs), {}),
       ];

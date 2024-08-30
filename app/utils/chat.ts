@@ -158,7 +158,7 @@ export function stream(
   requestPayload: any,
   headers: any,
   tools: any[],
-  funcs: any,
+  funcs: Record<string, Function>,
   controller: AbortController,
   parseSSE: (text: string, runTools: any[]) => string | undefined,
   processToolMessage: (

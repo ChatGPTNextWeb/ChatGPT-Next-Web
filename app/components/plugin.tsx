@@ -46,8 +46,8 @@ export function PluginPage() {
   const onSearch = (text: string) => {
     setSearchText(text);
     if (text.length > 0) {
-      const result = allPlugins.filter((m) =>
-        m.title.toLowerCase().includes(text.toLowerCase()),
+      const result = allPlugins.filter(
+        (m) => m?.title.toLowerCase().includes(text.toLowerCase()),
       );
       setSearchPlugins(result);
     } else {
@@ -63,7 +63,9 @@ export function PluginPage() {
   const onChangePlugin = useDebouncedCallback((editingPlugin, e) => {
     const content = e.target.innerText;
     try {
-      const api = new OpenAPIClientAxios({ definition: yaml.load(content) });
+      const api = new OpenAPIClientAxios({
+        definition: yaml.load(content) as any,
+      });
       api
         .init()
         .then(() => {

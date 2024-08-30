@@ -97,7 +97,7 @@ import {
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
   ServiceProvider,
-  Plugin,
+  ArtifactsPlugin,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -738,22 +738,23 @@ export function ChatActions(props: {
           items={[
             {
               title: Locale.Plugin.Artifacts,
-              value: Plugin.Artifacts,
+              value: ArtifactsPlugin.Artifacts as string,
             },
           ].concat(
             pluginStore.getAll().map((item) => ({
-              title: `${item.title}@${item.version}`,
-              value: item.id,
+              // @ts-ignore
+              title: `${item?.title}@${item?.version}`,
+              // @ts-ignore
+              value: item?.id,
             })),
           )}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {
-            const plugin = s[0];
             chatStore.updateCurrentSession((session) => {
-              session.mask.plugin = s;
+              session.mask.plugin = s as string[];
             });
-            if (s.includes(Plugin.Artifacts)) {
-              showToast(Plugin.Artifacts);
+            if (s.includes(ArtifactsPlugin.Artifacts)) {
+              showToast(ArtifactsPlugin.Artifacts);
             }
           }}
         />

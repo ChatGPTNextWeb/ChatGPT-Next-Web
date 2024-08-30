@@ -19,7 +19,7 @@ import {
   HTMLPreview,
   HTMLPreviewHander,
 } from "./artifacts";
-import { Plugin } from "../constant";
+import { ArtifactsPlugin } from "../constant";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
 
@@ -95,7 +95,7 @@ export function PreCode(props: { children: any }) {
   }, 600);
 
   const enableArtifacts = useMemo(
-    () => plugins?.includes(Plugin.Artifacts),
+    () => plugins?.includes(ArtifactsPlugin.Artifacts),
     [plugins],
   );
 

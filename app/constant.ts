@@ -73,7 +73,7 @@ export enum FileName {
   Prompts = "prompts.json",
 }
 
-export enum Plugin {
+export enum ArtifactsPlugin {
   Artifacts = "artifacts",
 }
 
