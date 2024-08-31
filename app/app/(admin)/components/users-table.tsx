@@ -41,9 +41,12 @@ interface SearchTextProps {
 
 function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
   const [searchText, setSearchText] = useState("");
+  const [searchTrigger, setSearchTrigger] = useState(0); // 新增状态变量
+
   // 这里直接搜索，并获取数据不传递搜索的值给表格了。
   const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
     setSearchText(value);
+    setSearchTrigger((prev) => prev + 1); // 更新 searchTrigger 以触发 useEffect
   };
 
   useEffect(() => {
@@ -57,18 +60,17 @@ function UserTableSearchInput({ users, setUsers, setLoading }: UserInterface) {
         if (response.ok) {
           const data = await response.json();
           setUsers(data["results"]);
-          setLoading(false);
         }
       } catch (e) {
-        setLoading(false);
         console.log("fetch user error: ", e);
       }
     };
 
-    fetchUsers();
-    // console.log(users, "users1");
+    fetchUsers().finally(() => {
+      setLoading(false); // 清理状态
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText]);
+  }, [searchText, searchTrigger]);
 
   return (
     <Search

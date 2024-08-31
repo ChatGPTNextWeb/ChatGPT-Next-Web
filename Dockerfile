@@ -18,7 +18,7 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 # 避免下面那个报错
-RUN mkdir -p "/app/node_modules/tiktoken" && mkdir -p "/app/node_modules/sharp"
+# RUN mkdir -p "/app/node_modules/tiktoken" && mkdir -p "/app/node_modules/sharp"
 # RUN yarn add sharp
 # ENV NEXT_SHARP_PATH /app/node_modules/sharp
 RUN yarn build
@@ -46,9 +46,9 @@ RUN rm -f .env
 ENV HOSTNAME=""
 ENV PORT=23000
 EXPOSE 23000
-EXPOSE 23001
+# EXPOSE 23001
 ENV KEEP_ALIVE_TIMEOUT=30
-ENV NEXT_SHARP_PATH /app/node_modules/sharp
+# ENV NEXT_SHARP_PATH /app/node_modules/sharp
 
 CMD wget -qO- myip.ipip.net ; if [ -n "$PROXY_URL" ]; then \
     export HOSTNAME="0.0.0.0"; \
