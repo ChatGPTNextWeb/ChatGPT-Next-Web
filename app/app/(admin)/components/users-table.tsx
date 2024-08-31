@@ -246,6 +246,8 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       dataIndex: "everyLimitToken",
       width: 60,
       align: "right",
+      sorter: (a, b) => a.everyLimitToken - b.everyLimitToken,
+      sortDirections: ["descend"],
     },
     {
       title: "createdAt",
