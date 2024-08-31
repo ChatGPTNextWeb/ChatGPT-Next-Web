@@ -246,7 +246,12 @@ function UsersTable({ users, setUsers, loading }: UserInterface) {
       dataIndex: "everyLimitToken",
       width: 60,
       align: "right",
-      sorter: (a, b) => a.everyLimitToken - b.everyLimitToken,
+      sorter: (a, b) => {
+        if (a.everyLimitToken !== null && b.everyLimitToken !== null) {
+          return a.everyLimitToken - b.everyLimitToken;
+        }
+        return 0;
+      },
       sortDirections: ["descend"],
     },
     {
