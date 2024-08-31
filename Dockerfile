@@ -38,7 +38,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
 
-COPY --from=builder /app/node_modules/tiktoken ./node_modules/tiktoken
+# COPY --from=builder /app/node_modules/tiktoken ./node_modules/tiktoken
 # COPY --from=builder /app/node_modules/sharp ./node_modules/sharp
 
 RUN rm -f .env

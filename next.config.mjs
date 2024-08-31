@@ -86,6 +86,7 @@ const nextConfig = {
   },
   experimental: {
     forceSwcTransforms: true,
+    serverComponentsExternalPackages: ["tiktoken"]
   },
   // externals: {
   //   'sharp': 'commonjs sharp'
