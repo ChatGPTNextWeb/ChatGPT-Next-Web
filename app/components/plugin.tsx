@@ -14,10 +14,12 @@ import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
+import ConfirmIcon from "../icons/confirm.svg";
 
 import { Plugin, usePluginStore, FunctionToolService } from "../store/plugin";
 import {
   Input,
+  PasswordInput,
   List,
   ListItem,
   Modal,
@@ -191,55 +193,102 @@ export function PluginPage() {
             onClose={closePluginModal}
             actions={[
               <IconButton
-                icon={<DownloadIcon />}
-                text={Locale.Plugin.EditModal.Download}
+                icon={<ConfirmIcon />}
+                text={Locale.UI.Confirm}
                 key="export"
                 bordered
-                onClick={() =>
-                  downloadAs(
-                    JSON.stringify(editingPlugin),
-                    `${editingPlugin.title}@${editingPlugin.version}.json`,
-                  )
-                }
+                onClick={() => setEditingPluginId("")}
               />,
             ]}
           >
-            <div className={styles["mask-page"]}>
-              <div className={pluginStyles["plugin-title"]}>
-                {Locale.Plugin.EditModal.Content}
-              </div>
-              <div
-                className={`markdown-body ${pluginStyles["plugin-content"]}`}
-                dir="auto"
+            <List>
+              <ListItem title={Locale.Plugin.EditModal.Auth}>
+                <select
+                  value={editingPlugin?.authType}
+                  onChange={(e) => {
+                    pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+                      plugin.authType = e.target.value;
+                    });
+                  }}
+                >
+                  <option value="">{Locale.Plugin.Auth.None}</option>
+                  <option value="bearer">{Locale.Plugin.Auth.Bearer}</option>
+                  <option value="basic">{Locale.Plugin.Auth.Basic}</option>
+                  <option value="custom">{Locale.Plugin.Auth.Custom}</option>
+                </select>
+              </ListItem>
+              {editingPlugin.authType == "custom" && (
+                <ListItem title={Locale.Plugin.Auth.CustomHeader}>
+                  <input
+                    type="text"
+                    value={editingPlugin?.authHeader}
+                    onChange={(e) => {
+                      pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+                        plugin.authHeader = e.target.value;
+                      });
+                    }}
+                  ></input>
+                </ListItem>
+              )}
+              {["bearer", "basic", "custom"].includes(
+                editingPlugin.authType as string,
+              ) && (
+                <ListItem title={Locale.Plugin.Auth.Token}>
+                  <PasswordInput
+                    type="text"
+                    value={editingPlugin?.authToken}
+                    onChange={(e) => {
+                      pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+                        plugin.authToken = e.currentTarget.value;
+                      });
+                    }}
+                  ></PasswordInput>
+                </ListItem>
+              )}
+              <ListItem
+                title={Locale.Plugin.Auth.Proxy}
+                subTitle={Locale.Plugin.Auth.ProxyDescription}
               >
-                <pre>
-                  <code
-                    contentEditable={true}
-                    dangerouslySetInnerHTML={{ __html: editingPlugin.content }}
-                    onBlur={onChangePlugin}
-                  ></code>
-                </pre>
-              </div>
-              <div className={pluginStyles["plugin-title"]}>
-                {Locale.Plugin.EditModal.Method}
-              </div>
-              <div className={styles["mask-page-body"]} style={{ padding: 0 }}>
-                {editingPluginTool?.tools.map((tool, index) => (
-                  <div className={styles["mask-item"]} key={index}>
-                    <div className={styles["mask-header"]}>
-                      <div className={styles["mask-title"]}>
-                        <div className={styles["mask-name"]}>
-                          {tool?.function?.name}
-                        </div>
-                        <div className={styles["mask-info"] + " one-line"}>
-                          {tool?.function?.description}
-                        </div>
-                      </div>
-                    </div>
+                <input
+                  type="checkbox"
+                  checked={editingPlugin?.usingProxy}
+                  style={{ minWidth: 16 }}
+                  onChange={(e) => {
+                    pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+                      plugin.usingProxy = e.currentTarget.checked;
+                    });
+                  }}
+                ></input>
+              </ListItem>
+            </List>
+            <List>
+              <ListItem
+                title={Locale.Plugin.EditModal.Content}
+                subTitle={
+                  <div
+                    className={`markdown-body ${pluginStyles["plugin-content"]}`}
+                    dir="auto"
+                  >
+                    <pre>
+                      <code
+                        contentEditable={true}
+                        dangerouslySetInnerHTML={{
+                          __html: editingPlugin.content,
+                        }}
+                        onBlur={onChangePlugin}
+                      ></code>
+                    </pre>
                   </div>
-                ))}
-              </div>
-            </div>
+                }
+              ></ListItem>
+              {editingPluginTool?.tools.map((tool, index) => (
+                <ListItem
+                  key={index}
+                  title={tool?.function?.name}
+                  subTitle={tool?.function?.description}
+                />
+              ))}
+            </List>
           </Modal>
         </div>
       )}

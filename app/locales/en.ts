@@ -554,10 +554,21 @@ const en: LocaleType = {
       Delete: "Delete",
       DeleteConfirm: "Confirm to delete?",
     },
+    Auth: {
+      None: "None",
+      Basic: "Basic",
+      Bearer: "Bearer",
+      Custom: "Custom",
+      CustomHeader: "Custom Header",
+      Token: "Token",
+      Proxy: "Using Proxy",
+      ProxyDescription: "Using proxies to solve CORS error",
+    },
     EditModal: {
       Title: (readonly: boolean) =>
         `Edit Plugin ${readonly ? "(readonly)" : ""}`,
       Download: "Download",
+      Auth: "Authentication Type",
       Content: "OpenAPI Schema",
       Method: "Method",
       Error: "OpenAPI Schema Error",

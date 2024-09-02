@@ -12,6 +12,10 @@ export type Plugin = {
   version: string;
   content: string;
   builtin: boolean;
+  authType?: string;
+  authHeader?: string;
+  authToken?: string;
+  usingProxy?: boolean;
 };
 
 export type FunctionToolItem = {
@@ -34,10 +38,30 @@ export const FunctionToolService = {
   tools: {} as Record<string, FunctionToolServiceItem>,
   add(plugin: Plugin, replace = false) {
     if (!replace && this.tools[plugin.id]) return this.tools[plugin.id];
+    const headerName = (
+      plugin?.authType == "custom" ? plugin?.authHeader : "Authorization"
+    ) as string;
+    const tokenValue =
+      plugin?.authType == "basic"
+        ? `Basic ${plugin?.authToken}`
+        : plugin?.authType == "bearer"
+        ? ` Bearer ${plugin?.authToken}`
+        : plugin?.authToken;
+    const definition = yaml.load(plugin.content) as any;
+    const serverURL = definition.servers?.[0]?.url;
+    const baseURL = !!plugin?.usingProxy ? "/api/proxy" : serverURL;
     const api = new OpenAPIClientAxios({
       definition: yaml.load(plugin.content) as any,
+      axiosConfigDefaults: {
+        baseURL,
+        headers: {
+          // 'Cache-Control': 'no-cache',
+          // 'Content-Type': 'application/json',  // TODO
+          [headerName]: tokenValue,
+          "X-Base-URL": !!plugin?.usingProxy ? serverURL : undefined,
+        },
+      },
     });
-    console.log("add", plugin, api);
     try {
       api.initSync();
     } catch (e) {}
@@ -79,14 +103,29 @@ export const FunctionToolService = {
           type: "function",
           function: {
             name: o.operationId,
-            description: o.description,
+            description: o.description || o.summary,
             parameters: parameters,
           },
         } as FunctionToolItem;
       }),
       funcs: operations.reduce((s, o) => {
         // @ts-ignore
-        s[o.operationId] = api.client[o.operationId];
+        s[o.operationId] = function (args) {
+          const argument = [];
+          if (o.parameters instanceof Array) {
+            o.parameters.forEach((p) => {
+              // @ts-ignore
+              argument.push(args[p?.name]);
+              // @ts-ignore
+              delete args[p?.name];
+            });
+          } else {
+            argument.push(null);
+          }
+          argument.push(args);
+          // @ts-ignore
+          return api.client[o.operationId].apply(null, argument);
+        };
         return s;
       }, {}),
     });
@@ -136,6 +175,7 @@ export const usePluginStore = createPersistStore(
       const updatePlugin = { ...plugin };
       updater(updatePlugin);
       plugins[id] = updatePlugin;
+      FunctionToolService.add(updatePlugin, true);
       set(() => ({ plugins }));
       get().markUpdate();
     },

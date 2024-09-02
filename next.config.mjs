@@ -87,10 +87,6 @@ if (mode !== "export") {
         destination: "https://api.anthropic.com/:path*",
       },
       {
-        source: "/api/proxy/gapier/:path*",
-        destination: "https://a.gapier.com/:path*",
-      },
-      {
         source: "/google-fonts/:path*",
         destination: "https://fonts.googleapis.com/:path*",
       },
