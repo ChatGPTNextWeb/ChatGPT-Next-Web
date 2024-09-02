@@ -48,7 +48,7 @@ export const FunctionToolService = {
         ? ` Bearer ${plugin?.authToken}`
         : plugin?.authToken;
     const definition = yaml.load(plugin.content) as any;
-    const serverURL = definition.servers?.[0]?.url;
+    const serverURL = definition?.servers?.[0]?.url;
     const baseURL = !!plugin?.usingProxy ? "/api/proxy" : serverURL;
     const api = new OpenAPIClientAxios({
       definition: yaml.load(plugin.content) as any,
