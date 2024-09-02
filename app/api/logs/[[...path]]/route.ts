@@ -32,7 +32,7 @@ async function handle(
       ) {
         current_day_limit_token = current_user.everyLimitToken * 1000;
       } else {
-        current_day_limit_token = 0;
+        current_day_limit_token = 200 * 1000;
       }
 
       const current_day_token = await prisma.logEntry
