@@ -246,7 +246,7 @@ export class ChatGPTApi implements LLMApi {
           .getAsTools(
             useChatStore.getState().currentSession().mask?.plugin as string[],
           );
-        console.log("getAsTools", tools, funcs);
+        // console.log("getAsTools", tools, funcs);
         stream(
           chatPath,
           requestPayload,

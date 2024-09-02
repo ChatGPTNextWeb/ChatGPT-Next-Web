@@ -334,7 +334,7 @@ export function stream(
             remainText += chunk;
           }
         } catch (e) {
-          console.error("[Request] parse error", text, msg);
+          console.error("[Request] parse error", text, msg, e);
         }
       },
       onclose() {

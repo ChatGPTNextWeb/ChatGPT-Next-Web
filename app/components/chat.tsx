@@ -66,6 +66,7 @@ import {
   getMessageImages,
   isVisionModel,
   isDalle3,
+  showPlugins,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -741,12 +742,14 @@ export function ChatActions(props: {
               value: ArtifactsPlugin.Artifacts as string,
             },
           ].concat(
-            pluginStore.getAll().map((item) => ({
-              // @ts-ignore
-              title: `${item?.title}@${item?.version}`,
-              // @ts-ignore
-              value: item?.id,
-            })),
+            showPlugins(currentProviderName, currentModel)
+              ? pluginStore.getAll().map((item) => ({
+                  // @ts-ignore
+                  title: `${item?.title}@${item?.version}`,
+                  // @ts-ignore
+                  value: item?.id,
+                }))
+              : [],
           )}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {

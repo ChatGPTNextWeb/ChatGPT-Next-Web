@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
+import { ServiceProvider } from "./constant";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -269,4 +270,14 @@ export function isVisionModel(model: string) {
 
 export function isDalle3(model: string) {
   return "dall-e-3" === model;
+}
+
+export function showPlugins(provider: ServiceProvider, model: string) {
+  if (provider == ServiceProvider.OpenAI || provider == ServiceProvider.Azure) {
+    return true;
+  }
+  if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
+    return true;
+  }
+  return false;
 }
