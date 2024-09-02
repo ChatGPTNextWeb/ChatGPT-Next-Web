@@ -273,7 +273,11 @@ export function isDalle3(model: string) {
 }
 
 export function showPlugins(provider: ServiceProvider, model: string) {
-  if (provider == ServiceProvider.OpenAI || provider == ServiceProvider.Azure) {
+  if (
+    provider == ServiceProvider.OpenAI ||
+    provider == ServiceProvider.Azure ||
+    provider == ServiceProvider.Moonshot
+  ) {
     return true;
   }
   if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
