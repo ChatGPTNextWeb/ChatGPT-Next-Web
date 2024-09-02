@@ -561,6 +561,7 @@ const cn = {
       Download: "下载",
       Auth: "授权方式",
       Content: "OpenAPI Schema",
+      Load: "从网页加载",
       Method: "方法",
       Error: "格式错误",
     },

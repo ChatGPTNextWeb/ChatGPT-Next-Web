@@ -15,6 +15,7 @@ import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
 import CopyIcon from "../icons/copy.svg";
 import ConfirmIcon from "../icons/confirm.svg";
+import ReloadIcon from "../icons/reload.svg";
 
 import { Plugin, usePluginStore, FunctionToolService } from "../store/plugin";
 import {
@@ -31,7 +32,7 @@ import {
 import { downloadAs } from "../utils";
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Path } from "../constant";
 import { nanoid } from "nanoid";
 
@@ -89,6 +90,37 @@ export function PluginPage() {
       showToast(Locale.Plugin.EditModal.Error);
     }
   }, 100).bind(null, editingPlugin);
+
+  const [loadUrl, setLoadUrl] = useState<string>("");
+  const loadFromUrl = (loadUrl: string) =>
+    fetch(loadUrl)
+      .catch((e) => {
+        const p = new URL(loadUrl);
+        return fetch(`/api/proxy/${p.pathname}?${p.search}`, {
+          headers: {
+            "X-Base-URL": p.origin,
+          },
+        });
+      })
+      .then((res) => res.text())
+      .then((content) => {
+        try {
+          return JSON.stringify(JSON.parse(content), null, "  ");
+        } catch (e) {
+          return content;
+        }
+      })
+      .then((content) => {
+        pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+          plugin.content = content;
+          const tool = FunctionToolService.add(plugin, true);
+          plugin.title = tool.api.definition.info.title;
+          plugin.version = tool.api.definition.info.version;
+        });
+      })
+      .catch((e) => {
+        showToast(Locale.Plugin.EditModal.Error);
+      });
 
   return (
     <ErrorBoundary>
@@ -262,8 +294,22 @@ export function PluginPage() {
               </ListItem>
             </List>
             <List>
+              <ListItem title={Locale.Plugin.EditModal.Content}>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <input
+                    type="text"
+                    style={{ minWidth: 200, marginRight: 20 }}
+                    onInput={(e) => setLoadUrl(e.currentTarget.value)}
+                  ></input>
+                  <IconButton
+                    icon={<ReloadIcon />}
+                    text={Locale.Plugin.EditModal.Load}
+                    bordered
+                    onClick={() => loadFromUrl(loadUrl)}
+                  />
+                </div>
+              </ListItem>
               <ListItem
-                title={Locale.Plugin.EditModal.Content}
                 subTitle={
                   <div
                     className={`markdown-body ${pluginStyles["plugin-content"]}`}

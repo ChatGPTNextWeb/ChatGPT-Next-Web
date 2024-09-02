@@ -570,6 +570,7 @@ const en: LocaleType = {
       Download: "Download",
       Auth: "Authentication Type",
       Content: "OpenAPI Schema",
+      Load: "Load From URL",
       Method: "Method",
       Error: "OpenAPI Schema Error",
     },
