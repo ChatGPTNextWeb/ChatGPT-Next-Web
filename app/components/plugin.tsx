@@ -7,34 +7,26 @@ import { ErrorBoundary } from "./error";
 import styles from "./mask.module.scss";
 import pluginStyles from "./plugin.module.scss";
 
-import DownloadIcon from "../icons/download.svg";
 import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EyeIcon from "../icons/eye.svg";
-import CopyIcon from "../icons/copy.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import ReloadIcon from "../icons/reload.svg";
 
 import { Plugin, usePluginStore, FunctionToolService } from "../store/plugin";
 import {
-  Input,
   PasswordInput,
   List,
   ListItem,
   Modal,
-  Popover,
-  Select,
   showConfirm,
   showToast,
 } from "./ui-lib";
-import { downloadAs } from "../utils";
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
-import { Path } from "../constant";
-import { nanoid } from "nanoid";
+import { useEffect, useState } from "react";
 
 export function PluginPage() {
   const navigate = useNavigate();
