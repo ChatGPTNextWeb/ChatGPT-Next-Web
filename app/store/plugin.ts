@@ -48,13 +48,14 @@ export const FunctionToolService = {
         : plugin?.authType == "bearer"
         ? ` Bearer ${plugin?.authToken}`
         : plugin?.authToken;
+    const authLocation = plugin?.authLocation || "header";
     const definition = yaml.load(plugin.content) as any;
     const serverURL = definition?.servers?.[0]?.url;
     const baseURL = !!plugin?.usingProxy ? "/api/proxy" : serverURL;
     const headers: Record<string, string | undefined> = {
       "X-Base-URL": !!plugin?.usingProxy ? serverURL : undefined,
     };
-    if (plugin?.authLocation == "header") {
+    if (authLocation == "header") {
       headers[headerName] = tokenValue;
     }
     const api = new OpenAPIClientAxios({
@@ -122,9 +123,9 @@ export const FunctionToolService = {
               delete args[p?.name];
             });
           }
-          if (plugin?.authLocation == "query") {
+          if (authLocation == "query") {
             parameters[headerName] = tokenValue;
-          } else if (plugin?.authLocation == "body") {
+          } else if (authLocation == "body") {
             args[headerName] = tokenValue;
           }
           // @ts-ignore
