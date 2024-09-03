@@ -5,11 +5,7 @@ class IndexedDBStorage implements StateStorage {
   public async getItem(name: string): Promise<string | null> {
     try {
       const value = (await get(name)) || localStorage.getItem(name);
-      const _value = JSON.parse(value);
-      if (_value?.state) {
-        _value.state._hasHydrated = true;
-      }
-      return JSON.stringify(_value);
+      return value;
     } catch (error) {
       return localStorage.getItem(name);
     }

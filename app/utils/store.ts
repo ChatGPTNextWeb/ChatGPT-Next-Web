@@ -14,9 +14,11 @@ type SecondParam<T> = T extends (
 
 type MakeUpdater<T> = {
   lastUpdateTime: number;
+  _hasHydrated: boolean;
 
   markUpdate: () => void;
   update: Updater<T>;
+  setHasHydrated: (state: boolean) => void;
 };
 
 type SetStoreState<T> = (
@@ -33,12 +35,18 @@ export function createPersistStore<T extends object, M>(
   persistOptions: SecondParam<typeof persist<T & M & MakeUpdater<T>>>,
 ) {
   persistOptions.storage = createJSONStorage(() => indexedDBStorage);
+  persistOptions.onRehydrateStorage = persistOptions.onRehydrateStorage
+    ? persistOptions.onRehydrateStorage
+    : (state) => {
+        return () => state.setHasHydrated(true);
+      };
   return create(
     persist(
       combine(
         {
           ...state,
           lastUpdateTime: 0,
+          _hasHydrated: false,
         },
         (set, get) => {
           return {
@@ -56,6 +64,9 @@ export function createPersistStore<T extends object, M>(
                 ...state,
                 lastUpdateTime: Date.now(),
               });
+            },
+            setHasHydrated: (state: boolean) => {
+              set({ _hasHydrated: state } as Partial<T & M & MakeUpdater<T>>);
             },
           } as M & MakeUpdater<T>;
         },

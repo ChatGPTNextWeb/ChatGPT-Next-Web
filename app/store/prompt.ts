@@ -179,6 +179,8 @@ export const usePromptStore = createPersistStore(
             res.en.length + res.cn.length + res.tw.length;
           SearchService.init(allPromptsForSearch, userPrompts);
         });
+
+      return () => state.setHasHydrated(true);
     },
   },
 );
