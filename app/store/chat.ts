@@ -410,7 +410,6 @@ export const useChatStore = createPersistStore(
             });
           },
           onAfterTool(tool: ChatMessageTool) {
-            console.log("onAfterTool", botMessage);
             botMessage?.tools?.forEach((t, i, tools) => {
               if (tool.id == t.id) {
                 tools[i] = { ...tool };

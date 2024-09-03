@@ -127,7 +127,6 @@ export class MoonshotApi implements LLMApi {
           .getAsTools(
             useChatStore.getState().currentSession().mask?.plugin as string[],
           );
-        console.log("getAsTools", tools, funcs);
         return stream(
           chatPath,
           requestPayload,
