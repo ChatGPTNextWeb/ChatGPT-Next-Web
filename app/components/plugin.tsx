@@ -249,6 +249,30 @@ export function PluginPage() {
                   <option value="custom">{Locale.Plugin.Auth.Custom}</option>
                 </select>
               </ListItem>
+              {["bearer", "basic", "custom"].includes(
+                editingPlugin.authType as string,
+              ) && (
+                <ListItem title={Locale.Plugin.Auth.Location}>
+                  <select
+                    value={editingPlugin?.authLocation}
+                    onChange={(e) => {
+                      pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+                        plugin.authLocation = e.target.value;
+                      });
+                    }}
+                  >
+                    <option value="header">
+                      {Locale.Plugin.Auth.LocationHeader}
+                    </option>
+                    <option value="query">
+                      {Locale.Plugin.Auth.LocationQuery}
+                    </option>
+                    <option value="body">
+                      {Locale.Plugin.Auth.LocationBody}
+                    </option>
+                  </select>
+                </ListItem>
+              )}
               {editingPlugin.authType == "custom" && (
                 <ListItem title={Locale.Plugin.Auth.CustomHeader}>
                   <input

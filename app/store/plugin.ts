@@ -13,6 +13,7 @@ export type Plugin = {
   content: string;
   builtin: boolean;
   authType?: string;
+  authLocation?: string;
   authHeader?: string;
   authToken?: string;
   usingProxy?: boolean;
@@ -50,16 +51,17 @@ export const FunctionToolService = {
     const definition = yaml.load(plugin.content) as any;
     const serverURL = definition?.servers?.[0]?.url;
     const baseURL = !!plugin?.usingProxy ? "/api/proxy" : serverURL;
+    const headers: Record<string, string | undefined> = {
+      "X-Base-URL": !!plugin?.usingProxy ? serverURL : undefined,
+    };
+    if (plugin?.authLocation == "header") {
+      headers[headerName] = tokenValue;
+    }
     const api = new OpenAPIClientAxios({
       definition: yaml.load(plugin.content) as any,
       axiosConfigDefaults: {
         baseURL,
-        headers: {
-          // 'Cache-Control': 'no-cache',
-          // 'Content-Type': 'application/json',  // TODO
-          [headerName]: tokenValue,
-          "X-Base-URL": !!plugin?.usingProxy ? serverURL : undefined,
-        },
+        headers,
       },
     });
     try {
@@ -111,20 +113,26 @@ export const FunctionToolService = {
       funcs: operations.reduce((s, o) => {
         // @ts-ignore
         s[o.operationId] = function (args) {
-          const argument = [];
+          const parameters: Record<string, any> = {};
           if (o.parameters instanceof Array) {
             o.parameters.forEach((p) => {
               // @ts-ignore
-              argument.push(args[p?.name]);
+              parameters[p?.name] = args[p?.name];
               // @ts-ignore
               delete args[p?.name];
             });
-          } else {
-            argument.push(null);
           }
-          argument.push(args);
+          if (plugin?.authLocation == "query") {
+            parameters[headerName] = tokenValue;
+          } else if (plugin?.authLocation == "body") {
+            args[headerName] = tokenValue;
+          }
           // @ts-ignore
-          return api.client[o.operationId].apply(null, argument);
+          return api.client[o.operationId](
+            parameters,
+            args,
+            api.axiosConfigDefaults,
+          );
         };
         return s;
       }, {}),

@@ -559,10 +559,14 @@ const en: LocaleType = {
       Basic: "Basic",
       Bearer: "Bearer",
       Custom: "Custom",
-      CustomHeader: "Custom Header",
+      CustomHeader: "Parameter Name",
       Token: "Token",
       Proxy: "Using Proxy",
       ProxyDescription: "Using proxies to solve CORS error",
+      Location: "Location",
+      LocationHeader: "Header",
+      LocationQuery: "Query",
+      LocationBody: "Body",
     },
     EditModal: {
       Title: (readonly: boolean) =>
