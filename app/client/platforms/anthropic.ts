@@ -271,6 +271,8 @@ export class ClaudeApi implements LLMApi {
           toolCallMessage: any,
           toolCallResult: any[],
         ) => {
+          // reset index value
+          index = -1;
           // @ts-ignore
           requestPayload?.messages?.splice(
             // @ts-ignore
