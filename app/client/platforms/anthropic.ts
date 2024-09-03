@@ -285,7 +285,9 @@ export class ClaudeApi implements LLMApi {
                   type: "tool_use",
                   id: tool.id,
                   name: tool?.function?.name,
-                  input: JSON.parse(tool?.function?.arguments as string),
+                  input: tool?.function?.arguments
+                    ? JSON.parse(tool?.function?.arguments)
+                    : {},
                 }),
               ),
             },

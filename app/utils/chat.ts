@@ -215,7 +215,9 @@ export function stream(
               // @ts-ignore
               funcs[tool.function.name](
                 // @ts-ignore
-                JSON.parse(tool.function.arguments),
+                tool?.function?.arguments
+                  ? JSON.parse(tool?.function?.arguments)
+                  : {},
               ),
             )
               .then((res) => {
