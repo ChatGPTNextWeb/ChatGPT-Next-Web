@@ -420,7 +420,7 @@ export const useChatStore = createPersistStore(
             });
           },
           onError(error) {
-            const isAborted = error.message.includes("aborted");
+            const isAborted = error.message?.includes?.("aborted");
             botMessage.content +=
               "\n\n" +
               prettyObject({

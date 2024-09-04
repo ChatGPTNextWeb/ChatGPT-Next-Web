@@ -27,6 +27,7 @@ import {
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getClientConfig } from "../config/client";
 
 export function PluginPage() {
   const navigate = useNavigate();
@@ -293,21 +294,23 @@ export function PluginPage() {
                   ></PasswordInput>
                 </ListItem>
               )}
-              <ListItem
-                title={Locale.Plugin.Auth.Proxy}
-                subTitle={Locale.Plugin.Auth.ProxyDescription}
-              >
-                <input
-                  type="checkbox"
-                  checked={editingPlugin?.usingProxy}
-                  style={{ minWidth: 16 }}
-                  onChange={(e) => {
-                    pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
-                      plugin.usingProxy = e.currentTarget.checked;
-                    });
-                  }}
-                ></input>
-              </ListItem>
+              {!getClientConfig()?.isApp && (
+                <ListItem
+                  title={Locale.Plugin.Auth.Proxy}
+                  subTitle={Locale.Plugin.Auth.ProxyDescription}
+                >
+                  <input
+                    type="checkbox"
+                    checked={editingPlugin?.usingProxy}
+                    style={{ minWidth: 16 }}
+                    onChange={(e) => {
+                      pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
+                        plugin.usingProxy = e.currentTarget.checked;
+                      });
+                    }}
+                  ></input>
+                </ListItem>
+              )}
             </List>
             <List>
               <ListItem title={Locale.Plugin.EditModal.Content}>
