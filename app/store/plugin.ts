@@ -4,6 +4,7 @@ import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import yaml from "js-yaml";
+import { adapter } from "../utils";
 
 export type Plugin = {
   id: string;
@@ -61,6 +62,7 @@ export const FunctionToolService = {
     const api = new OpenAPIClientAxios({
       definition: yaml.load(plugin.content) as any,
       axiosConfigDefaults: {
+        adapter: adapter as any,
         baseURL,
         headers,
       },
