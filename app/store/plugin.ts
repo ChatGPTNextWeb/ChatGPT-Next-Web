@@ -62,7 +62,7 @@ export const FunctionToolService = {
     const api = new OpenAPIClientAxios({
       definition: yaml.load(plugin.content) as any,
       axiosConfigDefaults: {
-        adapter: adapter as any,
+        adapter: (window.__TAURI__ ? adapter : ["xhr"]) as any,
         baseURL,
         headers,
       },
