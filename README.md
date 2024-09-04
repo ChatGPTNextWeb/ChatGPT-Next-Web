@@ -98,6 +98,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 
 ## What's New
 
+- 🚀 v2.15.0 Now supports Plugins! Read this: [NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
 - 🚀 v2.14.0 Now supports  Artifacts & SD 
 - 🚀 v2.10.1 support Google Gemini Pro model.
 - 🚀 v2.9.11 you can use azure endpoint now.
@@ -135,6 +136,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 
 ## 最新动态
 
+- 🚀 v2.15.0 现在支持插件功能了！了解更多：[NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
 - 🚀 v2.14.0 现在支持 Artifacts & SD 了。
 - 🚀 v2.10.1 现在支持 Gemini Pro 模型。
 - 🚀 v2.9.11 现在可以使用自定义 Azure 服务了。
