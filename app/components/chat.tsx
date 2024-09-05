@@ -98,7 +98,6 @@ import {
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
   ServiceProvider,
-  ArtifactsPlugin,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -727,38 +726,26 @@ export function ChatActions(props: {
         />
       )}
 
-      <ChatAction
-        onClick={() => setShowPluginSelector(true)}
-        text={Locale.Plugin.Name}
-        icon={<PluginIcon />}
-      />
-      {showPluginSelector && (
+      {showPlugins(currentProviderName, currentModel) && (
+        <ChatAction
+          onClick={() => setShowPluginSelector(true)}
+          text={Locale.Plugin.Name}
+          icon={<PluginIcon />}
+        />
+      )}
+      {showPluginSelector && showPlugins(currentProviderName, currentModel) && (
         <Selector
           multiple
           defaultSelectedValue={chatStore.currentSession().mask?.plugin}
-          items={[
-            {
-              title: Locale.Plugin.Artifacts,
-              value: ArtifactsPlugin.Artifacts as string,
-            },
-          ].concat(
-            showPlugins(currentProviderName, currentModel)
-              ? pluginStore.getAll().map((item) => ({
-                  // @ts-ignore
-                  title: `${item?.title}@${item?.version}`,
-                  // @ts-ignore
-                  value: item?.id,
-                }))
-              : [],
-          )}
+          items={pluginStore.getAll().map((item) => ({
+            title: `${item?.title}@${item?.version}`,
+            value: item?.id,
+          }))}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {
             chatStore.updateCurrentSession((session) => {
               session.mask.plugin = s as string[];
             });
-            if (s.includes(ArtifactsPlugin.Artifacts)) {
-              showToast(ArtifactsPlugin.Artifacts);
-            }
           }}
         />
       )}

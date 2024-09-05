@@ -540,7 +540,6 @@ const en: LocaleType = {
   },
   Plugin: {
     Name: "Plugin",
-    Artifacts: "Artifacts",
     Page: {
       Title: "Plugins",
       SubTitle: (count: number) => `${count} plugins`,
@@ -612,6 +611,10 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
+      },
+      Artifacts: {
+        Title: "Enable Artifacts",
+        SubTitle: "Can render HTML page when enable artifacts.",
       },
       Share: {
         Title: "Share This Mask",
