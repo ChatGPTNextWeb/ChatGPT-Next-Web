@@ -208,6 +208,28 @@ export const useChatStore = createPersistStore(
         });
       },
 
+      copySession() {
+        set((state) => {
+          const { sessions, currentSessionIndex } = state;
+          const emptySession = createEmptySession();
+
+          // copy the session
+          const curSession = JSON.parse(
+            JSON.stringify(sessions[currentSessionIndex]),
+          );
+          curSession.id = emptySession.id;
+          curSession.lastUpdate = emptySession.lastUpdate;
+
+          const newSessions = [...sessions];
+          newSessions.splice(0, 0, curSession);
+
+          return {
+            currentSessionIndex: 0,
+            sessions: newSessions,
+          };
+        });
+      },
+
       moveSession(from: number, to: number) {
         set((state) => {
           const { sessions, currentSessionIndex: oldIndex } = state;

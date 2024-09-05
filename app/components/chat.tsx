@@ -894,6 +894,7 @@ function _Chat() {
   const chatCommands = useChatCommand({
     new: () => chatStore.newSession(),
     newm: () => navigate(Path.NewChat),
+    copy: () => chatStore.copySession(),
     prev: () => chatStore.nextSession(-1),
     next: () => chatStore.nextSession(1),
     clear: () =>
