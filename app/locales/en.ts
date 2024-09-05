@@ -199,11 +199,18 @@ const en: LocaleType = {
       NotSyncYet: "Not sync yet",
       Success: "Sync Success",
       Fail: "Sync Fail",
-
+      ExportSuccess: "Sync config copied to clipboard",
+      ExportFail: "Export failed, please retry",
+      ImportSuccess: "Sync config imported successfully",
+      ImportFail: "Import failed, please check config string",
       Config: {
         Modal: {
           Title: "Config Sync",
           Check: "Check Connection",
+        },
+        ImportModal: {
+          Title: "Import Sync Config",
+          Placeholder: "Enter sync config",
         },
         SyncType: {
           Title: "Sync Type",
