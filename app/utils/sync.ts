@@ -128,7 +128,13 @@ const MergeStates: StateMerger = {
     });
 
     const remoteDeletedSessionIds = remoteState.deletedSessionIds || {};
+
+    const finalIds: Record<string, any> = {};
     localState.sessions = localState.sessions.filter((localSession) => {
+      if (finalIds[localSession.id]) {
+        return false;
+      }
+      finalIds[localSession.id] = true;
       return (
         (remoteDeletedSessionIds[localSession.id] || -1) <=
         localSession.lastUpdate
@@ -209,9 +215,9 @@ export function mergeWithUpdate<T extends { lastUpdateTime?: number }>(
   remoteState: T,
 ) {
   const localUpdateTime = localState.lastUpdateTime ?? 0;
-  const remoteUpdateTime = localState.lastUpdateTime ?? 1;
+  const remoteUpdateTime = remoteState.lastUpdateTime ?? 1;
 
-  if (localUpdateTime < remoteUpdateTime) {
+  if (localUpdateTime >= remoteUpdateTime) {
     merge(remoteState, localState);
     return { ...remoteState };
   } else {
