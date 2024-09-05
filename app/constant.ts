@@ -73,10 +73,6 @@ export enum FileName {
   Prompts = "prompts.json",
 }
 
-export enum ArtifactsPlugin {
-  Artifacts = "artifacts",
-}
-
 export enum StoreKey {
   Chat = "chat-next-web-store",
   Plugin = "chat-next-web-plugin",

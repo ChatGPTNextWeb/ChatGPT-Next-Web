@@ -532,7 +532,6 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
-    Artifacts: "Artifacts",
     Page: {
       Title: "插件",
       SubTitle: (count: number) => `${count} 个插件`,
@@ -603,6 +602,10 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+      },
+      Artifacts: {
+        Title: "启用Artifacts",
+        SubTitle: "启用之后可以直接渲染HTML页面",
       },
       Share: {
         Title: "分享此面具",
