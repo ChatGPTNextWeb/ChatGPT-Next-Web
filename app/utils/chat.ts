@@ -277,7 +277,7 @@ export function stream(
       method: "POST",
       body: JSON.stringify({
         ...requestPayload,
-        tools,
+        tools: tools && tools.length ? tools : undefined,
       }),
       signal: controller.signal,
       headers,
