@@ -174,7 +174,7 @@ export function MaskConfig(props: {
           <input
             aria-label={Locale.Mask.Config.Artifacts.Title}
             type="checkbox"
-            checked={props.mask.enableArtifacts}
+            checked={props.mask.enableArtifacts !== false}
             onChange={(e) => {
               props.updateMask((mask) => {
                 mask.enableArtifacts = e.currentTarget.checked;
