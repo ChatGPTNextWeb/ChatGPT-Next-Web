@@ -728,12 +728,18 @@ export function ChatActions(props: {
 
       {showPlugins(currentProviderName, currentModel) && (
         <ChatAction
-          onClick={() => setShowPluginSelector(true)}
+          onClick={() => {
+            if (pluginStore.getAll().length == 0) {
+              navigate(Path.Plugins);
+            } else {
+              setShowPluginSelector(true);
+            }
+          }}
           text={Locale.Plugin.Name}
           icon={<PluginIcon />}
         />
       )}
-      {showPluginSelector && showPlugins(currentProviderName, currentModel) && (
+      {showPluginSelector && (
         <Selector
           multiple
           defaultSelectedValue={chatStore.currentSession().mask?.plugin}

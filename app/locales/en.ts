@@ -545,6 +545,7 @@ const en: LocaleType = {
       SubTitle: (count: number) => `${count} plugins`,
       Search: "Search Plugin",
       Create: "Create",
+      Find: "You can find awesome plugins on github: ",
     },
     Item: {
       Info: (count: number) => `${count} method`,
