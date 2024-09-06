@@ -6,7 +6,7 @@ import { getClientConfig } from "./config/client";
 import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
-import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 const serverConfig = getServerSideConfig();
 import { Providers } from "@/app/providers";
 // import { Viewport } from "next";
@@ -87,16 +87,16 @@ export default function RootLayout({
             <SpeedInsights />
           </>
         )}
-        {serverConfig?.gtmId && (
-          <>
-            <GoogleTagManager gtmId={serverConfig.gtmId} />
-          </>
-        )}
-        {serverConfig?.gaId && (
-          <>
-            <GoogleAnalytics gaId={serverConfig.gaId} />
-          </>
-        )}
+        {/*{serverConfig?.gtmId && (*/}
+        {/*  <>*/}
+        {/*    <GoogleTagManager gtmId={serverConfig.gtmId} />*/}
+        {/*  </>*/}
+        {/*)}*/}
+        {/*{serverConfig?.gaId && (*/}
+        {/*  <>*/}
+        {/*    <GoogleAnalytics gaId={serverConfig.gaId} />*/}
+        {/*  </>*/}
+        {/*)}*/}
       </body>
     </html>
   );
