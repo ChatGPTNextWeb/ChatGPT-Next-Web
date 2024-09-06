@@ -1461,7 +1461,6 @@ export function Settings() {
                   const [model, _providerName] =
                     e.currentTarget.value.split("@");
                   updateConfig((config) => {
-                    console.log("config", config);
                     config.summarizeModel = model;
                   });
                 }}
