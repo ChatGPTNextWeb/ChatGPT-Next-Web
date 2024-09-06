@@ -187,6 +187,7 @@ const ko: PartialLocaleType = {
       Title: "제목 자동 생성",
       SubTitle: "대화 내용에 따라 적절한 제목 생성",
     },
+    SummarizeModel: "제목 자동 생성 모델",
     Sync: {
       CloudState: "클라우드 데이터",
       NotSyncYet: "아직 동기화되지 않았습니다.",

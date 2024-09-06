@@ -194,6 +194,7 @@ const fr: PartialLocaleType = {
       SubTitle:
         "Générer un titre approprié en fonction du contenu de la discussion",
     },
+    SummarizeModel: "Modèle pour générer automatiquement le titre",
     Sync: {
       CloudState: "Données cloud",
       NotSyncYet: "Pas encore synchronisé",

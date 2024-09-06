@@ -194,6 +194,7 @@ const en: LocaleType = {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",
     },
+    SummarizeModel: "Model For Auto Generate Title",
     Sync: {
       CloudState: "Last Update",
       NotSyncYet: "Not sync yet",

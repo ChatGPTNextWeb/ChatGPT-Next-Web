@@ -92,6 +92,11 @@ function createEmptySession(): ChatSession {
 }
 
 function getSummarizeModel(currentModel: string) {
+  const config = useAppConfig.getState();
+  if (config.summarizeModel) {
+    return config.summarizeModel;
+  }
+
   // if it is using gpt-* models, force to use 4o-mini to summarize
   if (currentModel.startsWith("gpt")) {
     const configStore = useAppConfig.getState();

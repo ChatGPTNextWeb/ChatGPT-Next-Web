@@ -195,6 +195,7 @@ const es: PartialLocaleType = {
       Title: "Generar título automáticamente",
       SubTitle: "Generar un título adecuado basado en el contenido del chat",
     },
+    SummarizeModel: "Modelo para generar título automáticamente",
     Sync: {
       CloudState: "Datos en la nube",
       NotSyncYet: "Aún no se ha sincronizado",

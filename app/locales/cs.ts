@@ -188,6 +188,7 @@ const cs: PartialLocaleType = {
       Title: "Automatické generování názvu",
       SubTitle: "Generovat vhodný název na základě obsahu konverzace",
     },
+    SummarizeModel: "Model pro automatické generování názvu",
     Sync: {
       CloudState: "Data na cloudu",
       NotSyncYet: "Ještě nebylo synchronizováno",

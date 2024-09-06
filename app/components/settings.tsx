@@ -81,6 +81,8 @@ import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
 
+import { useAllModels } from "../utils/hooks";
+
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
   const prompt = promptStore.get(props.id);
@@ -577,6 +579,8 @@ export function Settings() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
+
+  const allModels = useAllModels();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -1447,6 +1451,31 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          {config.enableAutoGenerateTitle && (
+            <ListItem title={Locale.Settings.SummarizeModel}>
+              <Select
+                aria-label={Locale.Settings.SummarizeModel}
+                value={config.summarizeModel}
+                onChange={(e) => {
+                  const [model, _providerName] =
+                    e.currentTarget.value.split("@");
+                  updateConfig((config) => {
+                    console.log("config", config);
+                    config.summarizeModel = model;
+                  });
+                }}
+              >
+                {allModels
+                  .filter((v) => v.available)
+                  .map((v, i) => (
+                    <option value={v.name} key={i}>
+                      {v.displayName}({v.provider?.providerName})
+                    </option>
+                  ))}
+              </Select>
+            </ListItem>
+          )}
 
           <ListItem
             title={Locale.Settings.SendPreviewBubble.Title}

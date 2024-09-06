@@ -188,6 +188,7 @@ const vi: PartialLocaleType = {
       Title: "Tự động tạo tiêu đề",
       SubTitle: "Tạo tiêu đề phù hợp dựa trên nội dung cuộc trò chuyện",
     },
+    SummarizeModel: "Mô hình tự động tạo tiêu đề",
     Sync: {
       CloudState: "Dữ liệu đám mây",
       NotSyncYet: "Chưa thực hiện đồng bộ",

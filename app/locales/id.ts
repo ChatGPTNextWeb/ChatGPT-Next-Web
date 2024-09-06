@@ -189,6 +189,7 @@ const id: PartialLocaleType = {
       Title: "Otomatis Membuat Judul",
       SubTitle: "Membuat judul yang sesuai berdasarkan konten obrolan",
     },
+    SummarizeModel: "Model untuk otomatis membuat judul",
     Sync: {
       CloudState: "Data Cloud",
       NotSyncYet: "Belum disinkronkan",

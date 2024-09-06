@@ -39,6 +39,7 @@ export const DEFAULT_CONFIG = {
   tightBorder: !!config?.isApp,
   sendPreviewBubble: true,
   enableAutoGenerateTitle: true,
+  summarizeModel: "gpt-3.5-turbo" as ModelType,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
   disablePromptHint: false,

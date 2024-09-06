@@ -187,6 +187,7 @@ const pt: PartialLocaleType = {
       Title: "Gerar Título Automaticamente",
       SubTitle: "Gerar um título adequado baseado no conteúdo da conversa",
     },
+    SummarizeModel: "Modelo para gerar automaticamente o título",
     Sync: {
       CloudState: "Última Atualização",
       NotSyncYet: "Ainda não sincronizado",

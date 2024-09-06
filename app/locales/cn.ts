@@ -191,6 +191,7 @@ const cn = {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",
     },
+    SummarizeModel: "自动生成标题使用模型",
     Sync: {
       CloudState: "云端数据",
       NotSyncYet: "还没有进行过同步",

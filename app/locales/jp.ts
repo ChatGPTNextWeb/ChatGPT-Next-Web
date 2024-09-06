@@ -188,6 +188,7 @@ const jp: PartialLocaleType = {
       Title: "自動タイトル生成",
       SubTitle: "チャット内容に基づいて適切なタイトルを生成",
     },
+    SummarizeModel: "自動タイトル生成モデル",
     Sync: {
       CloudState: "クラウドデータ",
       NotSyncYet: "まだ同期されていません",

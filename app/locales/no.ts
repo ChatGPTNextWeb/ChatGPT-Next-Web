@@ -193,6 +193,7 @@ const no: PartialLocaleType = {
       Title: "Automatisk generere tittel",
       SubTitle: "Generer en passende tittel basert på samtaleinnholdet",
     },
+    SummarizeModel: "Modell for automatisk generering av tittel",
     Sync: {
       CloudState: "Skydatasynkronisering",
       NotSyncYet: "Har ikke blitt synkronisert ennå",

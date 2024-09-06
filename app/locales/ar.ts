@@ -187,6 +187,7 @@ const ar: PartialLocaleType = {
       Title: "توليد العنوان تلقائيًا",
       SubTitle: "توليد عنوان مناسب بناءً على محتوى الدردشة",
     },
+    SummarizeModel: "النموذج لتوليد العنوان تلقائيًا",
     Sync: {
       CloudState: "بيانات السحابة",
       NotSyncYet: "لم يتم التزامن بعد",

@@ -192,6 +192,7 @@ const de: PartialLocaleType = {
       SubTitle:
         "Basierend auf dem Chat-Inhalt einen passenden Titel generieren",
     },
+    SummarizeModel: "Model für automatische Titelgenerierung",
     Sync: {
       CloudState: "Cloud-Daten",
       NotSyncYet: "Noch nicht synchronisiert",

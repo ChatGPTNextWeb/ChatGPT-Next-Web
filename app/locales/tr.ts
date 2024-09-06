@@ -188,6 +188,7 @@ const tr: PartialLocaleType = {
       Title: "Başlığı Otomatik Oluştur",
       SubTitle: "Sohbet içeriğine göre uygun başlık oluştur",
     },
+    SummarizeModel: "Başlık Otomatik Oluşturma Modeli",
     Sync: {
       CloudState: "Bulut Verisi",
       NotSyncYet: "Henüz senkronize edilmedi",
