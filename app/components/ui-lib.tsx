@@ -34,6 +34,10 @@ import {
   Button,
 } from "antd";
 import { OpenAIOutlined, GoogleOutlined } from "@ant-design/icons";
+// 自定义图标
+import Icon from "@ant-design/icons";
+import MoonShot from "@/app/icons/Moonshot.svg";
+
 const { Meta } = AntCard;
 import { CheckCard } from "@ant-design/pro-components";
 import { CheckGroupValueType } from "@ant-design/pro-card/es/components/CheckCard/Group";
@@ -612,6 +616,9 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
     }
     if (value.startsWith("claude")) {
       return <ClaudeInstantIcon />;
+    }
+    if (value.startsWith("moon")) {
+      return <Icon component={MoonShot} />;
     }
     return <></>;
   };

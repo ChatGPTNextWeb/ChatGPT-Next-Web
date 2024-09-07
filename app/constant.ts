@@ -338,7 +338,11 @@ const tencentModels = [
   "hunyuan-vision",
 ];
 
-const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
+const moonshotModes = [
+  "moonshot-v1-8k",
+  // "moonshot-v1-32k",
+  // "moonshot-v1-128k"
+];
 
 const iflytekModels = [
   "general",
@@ -446,6 +450,18 @@ export const DEFAULT_MODELS = [
       sorted: 3,
     },
   },
+  ...moonshotModes.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    describe: "月之暗面,可以试试",
+    provider: {
+      id: "moonshot",
+      providerName: "Moonshot",
+      providerType: "moonshot",
+      sorted: 9,
+    },
+  })),
   {
     name: "midjourney",
     describe: "绘图用,不用选",
