@@ -44,6 +44,7 @@
     "next": "14.2.5",
     "next-auth": "^4.24.7",
     "node-fetch": "^3.3.1",
+    "openapi-client-axios": "^7.5.5",
     "nodemailer": "^6.9.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -64,6 +65,8 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^1.6.0",
+    "@types/js-yaml": "4.0.9",
     "@tauri-apps/cli": "1.6.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie": "^0.6.0",
