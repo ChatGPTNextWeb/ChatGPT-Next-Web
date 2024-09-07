@@ -28,6 +28,7 @@
     "@svgr/webpack": "^8.1.0",
     "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.9",
+    "axios": "^1.7.5",
     "antd": "^5.15.1",
     "bcryptjs": "^2.4.3",
     "cron": "^3.1.6",

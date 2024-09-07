@@ -398,18 +398,18 @@ export const DEFAULT_MODELS = [
       sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
-  {
-    name: "gpt-4o-2024-08-06",
-    describe: "GPT-4o,最新版,省着点用",
-    available: true,
-    sorted: seq++,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-      sorted: 2,
-    },
-  },
+  // {
+  //   name: "gpt-4o-2024-08-06",
+  //   describe: "GPT-4o,最新版,省着点用",
+  //   available: true,
+  //   sorted: seq++,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //     sorted: 2,
+  //   },
+  // },
   {
     name: "gpt-4o-all",
     describe: "GPT-4o,全能版,最贵",
