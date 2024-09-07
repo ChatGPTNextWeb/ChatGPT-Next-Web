@@ -82,6 +82,9 @@ merge(fallbackLang, targetLang);
 export default fallbackLang as LocaleType;
 
 function getItem(key: string) {
+  if (typeof window === "undefined") {
+    return null;
+  }
   try {
     return localStorage.getItem(key);
   } catch {
@@ -90,6 +93,9 @@ function getItem(key: string) {
 }
 
 function setItem(key: string, value: string) {
+  if (typeof window === "undefined") {
+    return null;
+  }
   try {
     localStorage.setItem(key, value);
   } catch {}

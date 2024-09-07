@@ -3,6 +3,9 @@ import { get, set, del, clear } from "idb-keyval";
 
 class IndexedDBStorage implements StateStorage {
   public async getItem(name: string): Promise<string | null> {
+    if (typeof window === "undefined") {
+      return null;
+    }
     try {
       const value = (await get(name)) || localStorage.getItem(name);
       return value;
@@ -12,6 +15,9 @@ class IndexedDBStorage implements StateStorage {
   }
 
   public async setItem(name: string, value: string): Promise<void> {
+    if (typeof window === "undefined") {
+      return;
+    }
     try {
       const _value = JSON.parse(value);
       if (!_value?.state?._hasHydrated) {
@@ -25,6 +31,9 @@ class IndexedDBStorage implements StateStorage {
   }
 
   public async removeItem(name: string): Promise<void> {
+    if (typeof window === "undefined") {
+      return;
+    }
     try {
       await del(name);
     } catch (error) {
@@ -33,6 +42,9 @@ class IndexedDBStorage implements StateStorage {
   }
 
   public async clear(): Promise<void> {
+    if (typeof window === "undefined") {
+      return;
+    }
     try {
       await clear();
     } catch (error) {

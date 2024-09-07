@@ -48,7 +48,7 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { nanoid } from "nanoid";
+import { useLocalStorage } from "foxact/use-local-storage";
 import {
   DragDropContext,
   Droppable,
@@ -426,16 +426,11 @@ export function MaskPage() {
   const maskStore = useMaskStore();
   const chatStore = useChatStore();
 
-  const [filterLang, setFilterLang] = useState<Lang | undefined>(
-    () => localStorage.getItem("Mask-language") as Lang | undefined,
+  const [filterLang, setFilterLang] = useLocalStorage<Lang | null>(
+    "Mask-language",
+    null,
+    { raw: true },
   );
-  useEffect(() => {
-    if (filterLang) {
-      localStorage.setItem("Mask-language", filterLang);
-    } else {
-      localStorage.removeItem("Mask-language");
-    }
-  }, [filterLang]);
 
   const allMasks = maskStore
     .getAll()
@@ -542,7 +537,7 @@ export function MaskPage() {
               onChange={(e) => {
                 const value = e.currentTarget.value;
                 if (value === Locale.Settings.Lang.All) {
-                  setFilterLang(undefined);
+                  setFilterLang(null);
                 } else {
                   setFilterLang(value as Lang);
                 }
