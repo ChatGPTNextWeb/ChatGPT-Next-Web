@@ -128,7 +128,24 @@ const MergeStates: StateMerger = {
     });
 
     const remoteDeletedSessionIds = remoteState.deletedSessionIds || {};
+
+    const finalIds: Record<string, any> = {};
     localState.sessions = localState.sessions.filter((localSession) => {
+      // 去除掉重复的会话
+      if (finalIds[localSession.id]) {
+        return false;
+      }
+      finalIds[localSession.id] = true;
+
+      // 去除掉非首个空会话，避免多个空会话在中间，不方便管理
+      if (
+        localSession.messages.length === 0 &&
+        localSession != localState.sessions[0]
+      ) {
+        return false;
+      }
+
+      // 去除云端删除并且删除时间小于本地修改时间的会话
       return (
         (remoteDeletedSessionIds[localSession.id] || -1) <=
         localSession.lastUpdate
@@ -209,9 +226,9 @@ export function mergeWithUpdate<T extends { lastUpdateTime?: number }>(
   remoteState: T,
 ) {
   const localUpdateTime = localState.lastUpdateTime ?? 0;
-  const remoteUpdateTime = localState.lastUpdateTime ?? 1;
+  const remoteUpdateTime = remoteState.lastUpdateTime ?? 1;
 
-  if (localUpdateTime < remoteUpdateTime) {
+  if (localUpdateTime >= remoteUpdateTime) {
     merge(remoteState, localState);
     return { ...remoteState };
   } else {
