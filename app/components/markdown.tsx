@@ -8,14 +8,20 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard, useWindowSize } from "../utils";
 import mermaid from "mermaid";
-
+import Locale from "../locales";
 import LoadingIcon from "../icons/three-dots.svg";
+import ReloadButtonIcon from "../icons/reload.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
-import { ArtifactsShareButton, HTMLPreview } from "./artifacts";
-import { Plugin } from "../constant";
+import {
+  ArtifactsShareButton,
+  HTMLPreview,
+  HTMLPreviewHander,
+} from "./artifacts";
 import { useChatStore } from "../store";
+import { IconButton } from "./button";
+
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -64,13 +70,12 @@ export function Mermaid(props: { code: string }) {
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
-  const refText = ref.current?.innerText;
+  const previewRef = useRef<HTMLPreviewHander>(null);
   const [mermaidCode, setMermaidCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const plugins = session.mask?.plugin;
 
   const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
@@ -79,6 +84,7 @@ export function PreCode(props: { children: any }) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
     const htmlDom = ref.current.querySelector("code.language-html");
+    const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
     } else if (refText?.startsWith("<!DOCTYPE")) {
@@ -86,15 +92,7 @@ export function PreCode(props: { children: any }) {
     }
   }, 600);
 
-  useEffect(() => {
-    setTimeout(renderArtifacts, 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refText]);
-
-  const enableArtifacts = useMemo(
-    () => plugins?.includes(Plugin.Artifacts),
-    [plugins],
-  );
+  const enableArtifacts = session.mask?.enableArtifacts !== false;
 
   //Wrap the paragraph for plain-text
   useEffect(() => {
@@ -119,6 +117,7 @@ export function PreCode(props: { children: any }) {
           codeElement.style.whiteSpace = "pre-wrap";
         }
       });
+      setTimeout(renderArtifacts, 1);
     }
   }, []);
 
@@ -145,7 +144,15 @@ export function PreCode(props: { children: any }) {
             style={{ position: "absolute", right: 20, top: 10 }}
             getCode={() => htmlCode}
           />
+          <IconButton
+            style={{ position: "absolute", right: 120, top: 10 }}
+            bordered
+            icon={<ReloadButtonIcon />}
+            shadow
+            onClick={() => previewRef.current?.reload()}
+          />
           <HTMLPreview
+            ref={previewRef}
             code={htmlCode}
             autoHeight={!document.fullscreenElement}
             height={!document.fullscreenElement ? 600 : height}
@@ -156,7 +163,7 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function CustomCode(props: { children: any }) {
+function CustomCode(props: { children: any; className?: string }) {
   const ref = useRef<HTMLPreElement>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [showToggle, setShowToggle] = useState(false);
@@ -175,6 +182,7 @@ function CustomCode(props: { children: any }) {
   return (
     <>
       <code
+        className={props?.className}
         ref={ref}
         style={{
           maxHeight: collapsed ? "400px" : "none",
@@ -182,16 +190,14 @@ function CustomCode(props: { children: any }) {
         }}
       >
         {props.children}
-        {showToggle && collapsed && (
-          <div
-            className={`show-hide-button ${
-              collapsed ? "collapsed" : "expanded"
-            }`}
-          >
-            <button onClick={toggleCollapsed}>查看全部</button>
-          </div>
-        )}
       </code>
+      {showToggle && collapsed && (
+        <div
+          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
+        >
+          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
+        </div>
+      )}
     </>
   );
 }
