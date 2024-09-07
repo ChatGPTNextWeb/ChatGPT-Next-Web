@@ -48,7 +48,7 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { useLocalStorage } from "foxact/use-local-storage";
+import { useLocalStorage } from "../utils";
 import {
   DragDropContext,
   Droppable,
