@@ -46,10 +46,7 @@ export async function requestOpenai(
   // const authValue = req.headers.get("Authorization") ?? "";
   // const authHeaderName = isAzure ? "api-key" : "Authorization";
 
-  let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
-    "/api/openai/",
-    "",
-  );
+  let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
 
   let baseUrl =
     (isAzure ? serverConfig.azureUrl : serverConfig.baseUrl) || OPENAI_BASE_URL;

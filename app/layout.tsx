@@ -62,17 +62,21 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
         <link
-          rel="icon"
-          type="image/x-icon"
-          href="https://oss.xiaosi.cc/chat/public/favicon.ico"
-        />
+          rel="manifest"
+          href="/site.webmanifest"
+          crossOrigin="use-credentials"
+        ></link>
+        {/*<link*/}
+        {/*  rel="icon"*/}
+        {/*  type="image/x-icon"*/}
+        {/*  href="https://oss.xiaosi.cc/chat/public/favicon.ico"*/}
+        {/*/>*/}
         {/*<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />*/}
 
         {/*<link*/}
         {/*  rel="manifest"*/}
         {/*  href="https://oss.xiaosi.cc/chat/public/site.webmanifest"*/}
         {/*></link>*/}
-        <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
 
         {/*  <script*/}

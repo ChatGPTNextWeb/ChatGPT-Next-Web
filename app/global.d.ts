@@ -26,5 +26,11 @@ declare interface Window {
       isPermissionGranted(): Promise<boolean>;
       sendNotification(options: string | Options): void;
     };
+    http: {
+      fetch<T>(
+        url: string,
+        options?: Record<string, unknown>,
+      ): Promise<Response<T>>;
+    };
   };
 }
