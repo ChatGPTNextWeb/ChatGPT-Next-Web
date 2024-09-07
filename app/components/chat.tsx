@@ -1373,6 +1373,43 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  const handleDrop = async (event: React.DragEvent<HTMLTextAreaElement>) => {
+    event.preventDefault(); // 阻止默认行为
+    const acceptedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/heic",
+      "image/heif",
+    ];
+
+    const files = event.dataTransfer.files; // 获取拖拽的文件
+    if (files.length > 0) {
+      const imagesData: string[] = [];
+      setUploading(true);
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // 检查文件类型是否是图片
+        if (!acceptedTypes.includes(file.type)) {
+          console.warn("文件类型不被接受:", file.type);
+          continue; // 如果不是图片类型，跳过这个文件
+        }
+
+        try {
+          const dataUrl = await uploadImageRemote(file); // 上传文件
+          imagesData.push(dataUrl);
+        } catch (error) {
+          console.error("上传文件失败", error);
+        }
+      }
+
+      setAttachImages(imagesData);
+      setUploading(false);
+    }
+  };
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1715,6 +1752,8 @@ function _Chat() {
               fontSize: config.fontSize,
               fontFamily: config.fontFamily,
             }}
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
           />
           {attachImages.length != 0 && (
             <div className={styles["attach-images"]}>
