@@ -10,6 +10,7 @@ import CancelIcon from "../icons/cancel.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ClaudeInstantIcon from "../icons/Claude-Instant.svg";
+import MoonShot from "../icons/Moonshot.svg";
 
 import Locale from "../locales";
 
@@ -36,7 +37,6 @@ import {
 import { OpenAIOutlined, GoogleOutlined } from "@ant-design/icons";
 // 自定义图标
 import Icon from "@ant-design/icons";
-import MoonShot from "@/app/icons/Moonshot.svg";
 
 const { Meta } = AntCard;
 import { CheckCard } from "@ant-design/pro-components";
@@ -615,7 +615,7 @@ export function ModalSelector<T extends CheckGroupValueType>(props: {
       return <GoogleOutlined />;
     }
     if (value.startsWith("claude")) {
-      return <ClaudeInstantIcon />;
+      return <Icon component={ClaudeInstantIcon} />;
     }
     if (value.startsWith("moon")) {
       return <Icon component={MoonShot} />;
