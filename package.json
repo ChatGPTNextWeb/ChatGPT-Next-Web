@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@tauri-apps/api": "^1.6.0",
-    "@tauri-apps/cli": "1.5.11",
+    "@tauri-apps/cli": "1.6.1",
     "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.11.30",
