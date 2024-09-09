@@ -829,6 +829,57 @@ export function DeleteImageButton(props: { deleteImage: () => void }) {
   );
 }
 
+export function ShortcutKeyModal(props: { onClose: () => void }) {
+  const shortcuts = [
+    { title: Locale.Chat.ShortcutKey.newChat, keys: ["⌘", "Shift", "o"] },
+    { title: Locale.Chat.ShortcutKey.focusInput, keys: ["Shift", "Esc"] },
+    { title: Locale.Chat.ShortcutKey.copyLastCode, keys: ["⌘", "Shift", ";"] },
+    {
+      title: Locale.Chat.ShortcutKey.copyLastMessage,
+      keys: ["⌘", "Shift", "c"],
+    },
+    { title: Locale.Chat.ShortcutKey.showShortcutKey, keys: ["⌘", "/"] },
+  ];
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Chat.ShortcutKey.Title}
+        onClose={props.onClose}
+        actions={[
+          <IconButton
+            type="primary"
+            text={Locale.UI.Confirm}
+            icon={<ConfirmIcon />}
+            key="ok"
+            onClick={() => {
+              props.onClose();
+            }}
+          />,
+        ]}
+      >
+        <div className={styles["shortcut-key-container"]}>
+          <div className={styles["shortcut-key-grid"]}>
+            {shortcuts.map((shortcut, index) => (
+              <div key={index} className={styles["shortcut-key-item"]}>
+                <div className={styles["shortcut-key-title"]}>
+                  {shortcut.title}
+                </div>
+                <div className={styles["shortcut-key-keys"]}>
+                  {shortcut.keys.map((key, i) => (
+                    <div key={i} className={styles["shortcut-key"]}>
+                      <span>{key}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -1373,6 +1424,69 @@ function _Chat() {
     setAttachImages(images);
   }
 
+  // 快捷键
+  const [showShortcutKeyModal, setShowShortcutKeyModal] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // 打开新聊天 command + shift + o
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "o"
+      ) {
+        event.preventDefault();
+        setTimeout(() => {
+          chatStore.newSession();
+          navigate(Path.Chat);
+        }, 10);
+      }
+      // 聚焦聊天输入 shift + esc
+      else if (event.shiftKey && event.key.toLowerCase() === "escape") {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+      // 复制最后一个代码块 command + shift + ;
+      else if (
+        (event.metaKey || event.ctrlKey) &&
+        event.shiftKey &&
+        event.code === "Semicolon"
+      ) {
+        event.preventDefault();
+        const copyCodeButton = document.querySelectorAll(".copy-code-button");
+        if (copyCodeButton.length > 0) {
+          copyCodeButton[copyCodeButton.length - 1].click();
+        }
+      }
+      // 复制最后一个回复 command + shift + c
+      else if (
+        (event.metaKey || event.ctrlKey) &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "c"
+      ) {
+        event.preventDefault();
+        const lastNonUserMessage = messages
+          .filter((message) => message.role !== "user")
+          .pop();
+        if (lastNonUserMessage) {
+          const lastMessageContent = getMessageTextContent(lastNonUserMessage);
+          copyToClipboard(lastMessageContent);
+        }
+      }
+      // 展示快捷键 command + /
+      else if ((event.metaKey || event.ctrlKey) && event.key === "/") {
+        event.preventDefault();
+        setShowShortcutKeyModal(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [messages, chatStore, navigate]);
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1759,6 +1873,10 @@ function _Chat() {
             setIsEditingMessage(false);
           }}
         />
+      )}
+
+      {showShortcutKeyModal && (
+        <ShortcutKeyModal onClose={() => setShowShortcutKeyModal(false)} />
       )}
     </div>
   );
