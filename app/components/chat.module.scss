@@ -664,15 +664,17 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #ddd;
+  border: var(--border-in-light);
   border-radius: 10px;
   padding: 10px;
-  background-color: #fff;
+  background-color: var(--white);
+  box-shadow: var(--card-shadow);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .shortcut-key-title {
   font-size: 14px;
-  color: #333;
+  color: var(--black);
   margin-bottom: 8px;
 }
 
@@ -685,13 +687,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ddd;
+  border: var(--border-in-light);
   border-radius: 8px;
   padding: 4px;
-  background-color: #f9f9f9;
+  background-color: var(--gray);
   min-width: 32px;
 }
 
 .shortcut-key span {
   font-size: 12px;
+  color: var(--black);
 }
