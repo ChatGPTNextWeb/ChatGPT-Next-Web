@@ -1428,7 +1428,7 @@ function _Chat() {
   const [showShortcutKeyModal, setShowShortcutKeyModal] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: any) => {
       // 打开新聊天 command + shift + o
       if (
         (event.metaKey || event.ctrlKey) &&
@@ -1453,7 +1453,8 @@ function _Chat() {
         event.code === "Semicolon"
       ) {
         event.preventDefault();
-        const copyCodeButton = document.querySelectorAll(".copy-code-button");
+        const copyCodeButton =
+          document.querySelectorAll<HTMLElement>(".copy-code-button");
         if (copyCodeButton.length > 0) {
           copyCodeButton[copyCodeButton.length - 1].click();
         }
