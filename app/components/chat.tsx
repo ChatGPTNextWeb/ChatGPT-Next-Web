@@ -42,6 +42,7 @@ import SizeIcon from "../icons/size.svg";
 import QualityIcon from "../icons/hd.svg";
 import StyleIcon from "../icons/palette.svg";
 import PluginIcon from "../icons/plugin.svg";
+import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 
 import {
   ChatMessage,
@@ -437,6 +438,7 @@ export function ChatActions(props: {
   showPromptHints: () => void;
   hitBottom: boolean;
   uploading: boolean;
+  setShowShortcutKeyModal: () => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -755,6 +757,12 @@ export function ChatActions(props: {
           }}
         />
       )}
+
+      <ChatAction
+        onClick={() => props.setShowShortcutKeyModal(true)}
+        text={Locale.Chat.ShortcutKey.Title}
+        icon={<ShortcutkeyIcon />}
+      />
     </div>
   );
 }
@@ -1814,6 +1822,7 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          setShowShortcutKeyModal={setShowShortcutKeyModal}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
