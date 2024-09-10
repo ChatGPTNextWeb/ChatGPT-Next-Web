@@ -656,26 +656,22 @@
 
 .shortcut-key-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 16px;
 }
 
 .shortcut-key-item {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   overflow: hidden;
-  border: var(--border-in-light);
-  border-radius: 10px;
   padding: 10px;
   background-color: var(--white);
-  box-shadow: var(--card-shadow);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .shortcut-key-title {
   font-size: 14px;
   color: var(--black);
-  margin-bottom: 8px;
 }
 
 .shortcut-key-keys {

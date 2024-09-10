@@ -830,15 +830,25 @@ export function DeleteImageButton(props: { deleteImage: () => void }) {
 }
 
 export function ShortcutKeyModal(props: { onClose: () => void }) {
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
   const shortcuts = [
-    { title: Locale.Chat.ShortcutKey.newChat, keys: ["⌘", "Shift", "o"] },
+    {
+      title: Locale.Chat.ShortcutKey.newChat,
+      keys: isMac ? ["⌘", "Shift", "O"] : ["Ctrl", "Shift", "O"],
+    },
     { title: Locale.Chat.ShortcutKey.focusInput, keys: ["Shift", "Esc"] },
-    { title: Locale.Chat.ShortcutKey.copyLastCode, keys: ["⌘", "Shift", ";"] },
+    {
+      title: Locale.Chat.ShortcutKey.copyLastCode,
+      keys: isMac ? ["⌘", "Shift", ";"] : ["Ctrl", "Shift", ";"],
+    },
     {
       title: Locale.Chat.ShortcutKey.copyLastMessage,
-      keys: ["⌘", "Shift", "c"],
+      keys: isMac ? ["⌘", "Shift", "C"] : ["Ctrl", "Shift", "C"],
     },
-    { title: Locale.Chat.ShortcutKey.showShortcutKey, keys: ["⌘", "/"] },
+    {
+      title: Locale.Chat.ShortcutKey.showShortcutKey,
+      keys: isMac ? ["⌘", "/"] : ["Ctrl", "/"],
+    },
   ];
   return (
     <div className="modal-mask">
@@ -1424,7 +1434,7 @@ function _Chat() {
     setAttachImages(images);
   }
 
-  // 快捷键
+  // 快捷键 shortcut keys
   const [showShortcutKeyModal, setShowShortcutKeyModal] = useState(false);
 
   useEffect(() => {
