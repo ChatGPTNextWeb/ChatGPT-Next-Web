@@ -312,8 +312,7 @@
     min-width: 300px;
     .list {
       max-height: 90vh;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
 
       .list-item {
         cursor: pointer;
