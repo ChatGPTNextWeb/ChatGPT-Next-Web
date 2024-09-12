@@ -192,7 +192,7 @@ function PromptToast(props: {
 
   return (
     <div className={styles["prompt-toast"]} key="prompt-toast">
-      {props.showToast && (
+      {props.showToast && context.length > 0 && (
         <div
           className={styles["prompt-toast-inner"] + " clickable"}
           role="button"
