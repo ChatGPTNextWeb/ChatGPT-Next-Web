@@ -1563,7 +1563,7 @@ function _Chat() {
       // 展示快捷键 command + /
       else if ((event.metaKey || event.ctrlKey) && event.key === "/") {
         event.preventDefault();
-        setShowShortcutKeyModal(true);
+        setShowShortcutKeyModal(!showShortcutKeyModal);
       }
     };
 
@@ -1572,7 +1572,7 @@ function _Chat() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [messages, chatStore, navigate]);
+  }, [messages, chatStore, navigate, showShortcutKeyModal]);
 
   return (
     <div className={styles.chat} key={session.id}>
