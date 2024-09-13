@@ -422,6 +422,10 @@ const fr: PartialLocaleType = {
     },
 
     Model: "Modèle",
+    CompressModel: {
+      Title: "Modèle de compression",
+      SubTitle: "Modèle utilisé pour compresser l'historique",
+    },
     Temperature: {
       Title: "Aléatoire (temperature)",
       SubTitle: "Plus la valeur est élevée, plus les réponses sont aléatoires",

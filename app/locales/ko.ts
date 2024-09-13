@@ -404,6 +404,10 @@ const ko: PartialLocaleType = {
     },
 
     Model: "모델 (model)",
+    CompressModel: {
+      Title: "압축 모델",
+      SubTitle: "기록을 압축하는 데 사용되는 모델",
+    },
     Temperature: {
       Title: "무작위성 (temperature)",
       SubTitle: "값이 클수록 응답이 더 무작위적",

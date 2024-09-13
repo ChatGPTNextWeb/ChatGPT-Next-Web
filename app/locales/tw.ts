@@ -368,6 +368,10 @@ const tw = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "壓縮模型",
+      SubTitle: "用於壓縮歷史記錄的模型",
+    },
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",
