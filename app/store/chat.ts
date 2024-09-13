@@ -26,8 +26,10 @@ import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
-import { isDalle3 } from "../utils";
+import { isDalle3, safeLocalStorage } from "../utils";
 import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
+
+const localStorage = safeLocalStorage();
 
 export type ChatMessageTool = {
   id: string;
@@ -106,7 +108,7 @@ function createEmptySession(): ChatSession {
 
 function getSummarizeModel(currentModel: string) {
   // if it is using gpt-* models, force to use 4o-mini to summarize
-  if (currentModel.startsWith("gpt")) {
+  if (currentModel.startsWith("gpt") || currentModel.startsWith("chatgpt")) {
     const configStore = useAppConfig.getState();
     const accessStore = useAccessStore.getState();
     const allModel = collectModelsWithDefaultModel(
@@ -179,6 +181,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
+  lastInput: "",
 };
 
 export const useChatStore = createPersistStore(
@@ -476,7 +479,8 @@ export const useChatStore = createPersistStore(
         // system prompts, to get close to OpenAI Web ChatGPT
         const shouldInjectSystemPrompts =
           modelConfig.enableInjectSystemPrompts &&
-          session.mask.modelConfig.model.startsWith("gpt-");
+          (session.mask.modelConfig.model.startsWith("gpt-") ||
+            session.mask.modelConfig.model.startsWith("chatgpt-"));
 
         var systemPrompts: ChatMessage[] = [];
         systemPrompts = shouldInjectSystemPrompts
@@ -699,6 +703,11 @@ export const useChatStore = createPersistStore(
         await indexedDBStorage.clear();
         localStorage.clear();
         location.reload();
+      },
+      setLastInput(lastInput: string) {
+        set({
+          lastInput,
+        });
       },
     };
 
