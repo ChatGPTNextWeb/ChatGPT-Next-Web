@@ -595,9 +595,13 @@ export const useChatStore = createPersistStore(
             countMessages(messages) >= SUMMARIZE_MIN_LEN) ||
           refreshTitle
         ) {
+          const startIndex = Math.max(
+            0,
+            messages.length - modelConfig.historyMessageCount,
+          );
           const topicMessages = messages
             .slice(
-              messages.length - modelConfig.historyMessageCount,
+              startIndex < messages.length ? startIndex : messages.length - 1,
               messages.length,
             )
             .concat(
