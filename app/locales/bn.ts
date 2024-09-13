@@ -43,6 +43,8 @@ const bn: PartialLocaleType = {
       PinToastAction: "দেখুন",
       Delete: "মুছে ফেলুন",
       Edit: "সম্পাদনা করুন",
+      RefreshTitle: "শিরোনাম রিফ্রেশ করুন",
+      RefreshToast: "শিরোনাম রিফ্রেশ অনুরোধ পাঠানো হয়েছে",
     },
     Commands: {
       new: "নতুন চ্যাট",

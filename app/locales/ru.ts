@@ -43,6 +43,8 @@ const ru: PartialLocaleType = {
       PinToastAction: "Просмотреть",
       Delete: "Удалить",
       Edit: "Редактировать",
+      RefreshTitle: "Обновить заголовок",
+      RefreshToast: "Запрос на обновление заголовка отправлен",
     },
     Commands: {
       new: "Новый чат",

@@ -45,6 +45,8 @@ const sk: PartialLocaleType = {
       PinToastAction: "Zobraziť",
       Delete: "Vymazať",
       Edit: "Upraviť",
+      RefreshTitle: "Obnoviť názov",
+      RefreshToast: "Požiadavka na obnovenie názvu bola odoslaná",
     },
     Commands: {
       new: "Začať nový chat",

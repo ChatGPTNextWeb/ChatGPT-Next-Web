@@ -43,6 +43,8 @@ const jp: PartialLocaleType = {
       PinToastAction: "見る",
       Delete: "削除",
       Edit: "編集",
+      RefreshTitle: "タイトルを更新",
+      RefreshToast: "タイトル更新リクエストが送信されました",
     },
     Commands: {
       new: "新しいチャット",

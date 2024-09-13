@@ -43,6 +43,8 @@ const ko: PartialLocaleType = {
       PinToastAction: "보기",
       Delete: "삭제",
       Edit: "편집",
+      RefreshTitle: "제목 새로고침",
+      RefreshToast: "제목 새로고침 요청이 전송되었습니다",
     },
     Commands: {
       new: "새 채팅",
