@@ -516,7 +516,7 @@ export function ChatActions(props: {
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showPluginSelector, setShowPluginSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
-  const current_day_token = localStorage.getItem("current_day_token") ?? "";
+  // const current_day_token = localStorage.getItem("current_day_token") ?? "";
 
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [showQualitySelector, setShowQualitySelector] = useState(false);

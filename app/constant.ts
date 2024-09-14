@@ -421,8 +421,8 @@ export const DEFAULT_MODELS = [
   //   },
   // },
   {
-    name: "gpt-4o-all",
-    describe: "GPT-4o,全能版,最贵",
+    name: "o1-preview-all",
+    describe: "GPT,o1,最新模型,目前较贵",
     available: true,
     sorted: seq++,
     provider: {

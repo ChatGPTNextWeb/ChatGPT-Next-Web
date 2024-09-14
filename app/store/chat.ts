@@ -2,13 +2,6 @@ import { getMessageTextContent, trimTopic } from "../utils";
 
 import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
 import { nanoid } from "nanoid";
-import type {
-  ClientApi,
-  MultimodalContent,
-  RequestMessage,
-} from "../client/api";
-import { getClientApi } from "../client/api";
-import { ChatControllerPool } from "../client/controller";
 import { showToast } from "../components/ui-lib";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -990,9 +983,6 @@ export const useChatStore = createPersistStore(
               ...modelcfg,
               stream: true,
               model: modelConfig.compressModel,
-              // providerName: getSummarizeModel(session.mask.modelConfig.model)
-              //   .providerName,
-              // TODO:
             },
             onUpdate(message) {
               session.memoryPrompt = message;

@@ -56,7 +56,7 @@ export const DEFAULT_CONFIG = {
 
   modelConfig: {
     model: "gpt-4o-mini" as ModelType,
-    providerName: "OpenAI" as ServiceProvider,
+    providerName: "Azure" as ServiceProvider,
     temperature: 0.8,
     top_p: 1,
     max_tokens: 2000,
@@ -66,7 +66,7 @@ export const DEFAULT_CONFIG = {
     historyMessageCount: 5,
     compressMessageLengthThreshold: 4000,
     compressModel: "gpt-4o-mini" as ModelType,
-    compressProviderName: "OpenAI" as ServiceProvider,
+    compressProviderName: "Azure" as ServiceProvider,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as DalleSize,
@@ -178,25 +178,13 @@ export const useAppConfig = createPersistStore(
       if (version < 3.8) {
         state.lastUpdate = Date.now();
       }
-      // if (version < 3.8997) {
-      //   state.lastUpdate = Date.now();
-      //   return { ...DEFAULT_CONFIG };
-      // }
-
-      if (version < 3.993) {
-        // state.modelConfig = DEFAULT_CONFIG.modelConfig;
-        return { ...DEFAULT_CONFIG };
-        // state.modelConfig.template =
-        //   state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
-        //     ? state.modelConfig.template
-        //     : config?.template ?? DEFAULT_INPUT_TEMPLATE;
-      }
 
       if (version < 4) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
           DEFAULT_CONFIG.modelConfig.compressProviderName;
+        return { ...DEFAULT_CONFIG };
       }
 
       return state as any;
