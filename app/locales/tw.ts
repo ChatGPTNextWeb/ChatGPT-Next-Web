@@ -43,6 +43,8 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
+      Addanything: "添加任意內容",
+      AddanythingSub: "將任意文件拖曳到此處添加到對話中",
     },
     Commands: {
       new: "新建聊天",
