@@ -5,12 +5,17 @@ import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
+import { groupBy } from "lodash-es";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
+  const groupModels = groupBy(
+    allModels.filter((v) => v.available),
+    "provider.providerName",
+  );
   const value = `${props.modelConfig.model}@${props.modelConfig?.providerName}`;
 
   return (
@@ -19,6 +24,7 @@ export function ModelConfigList(props: {
         <Select
           aria-label={Locale.Settings.Model}
           value={value}
+          align="left"
           onChange={(e) => {
             const [model, providerName] = e.currentTarget.value.split("@");
             props.updateConfig((config) => {
@@ -27,13 +33,15 @@ export function ModelConfigList(props: {
             });
           }}
         >
-          {allModels
-            .filter((v) => v.available)
-            .map((v, i) => (
-              <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
-                {v.displayName}({v.provider?.providerName})
-              </option>
-            ))}
+          {Object.keys(groupModels).map((providerName, index) => (
+            <optgroup label={providerName} key={index}>
+              {groupModels[providerName].map((v, i) => (
+                <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
+                  {v.displayName}
+                </option>
+              ))}
+            </optgroup>
+          ))}
         </Select>
       </ListItem>
       <ListItem
