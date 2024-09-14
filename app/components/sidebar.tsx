@@ -179,9 +179,8 @@ export function SideBarHeader(props: {
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
-
         </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>{logo}</div>
+        {/* <div className={styles["sidebar-logo"] + " no-dark"}>{logo}</div> */}
       </div>
       {children}
     </Fragment>
@@ -308,7 +307,7 @@ export function SideBar(props: { className?: string }) {
                 />
               </Link>
             </div>
-            <div className={styles["sidebar-action"]}>
+            {/* <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
                 <IconButton
                   aria={Locale.Export.MessageFromChatGPT}
@@ -316,11 +315,10 @@ export function SideBar(props: { className?: string }) {
                   shadow
                 />
               </a>
-            </div>
+            </div> */}
           </>
         }
         secondaryAction={
-
           <IconButton
             icon={<AddIcon />}
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
