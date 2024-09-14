@@ -1,3 +1,4 @@
+import { ShortcutKeyModal } from "../components/chat";
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 
@@ -42,6 +43,7 @@ const cn = {
       PinToastAction: "查看",
       Delete: "删除",
       Edit: "编辑",
+      FullScreen: "全屏",
     },
     Commands: {
       new: "新建聊天",
@@ -80,6 +82,14 @@ const cn = {
       SaveAs: "存为面具",
     },
     IsContext: "预设提示词",
+    ShortcutKey: {
+      Title: "键盘快捷方式",
+      newChat: "打开新聊天",
+      focusInput: "聚焦输入框",
+      copyLastMessage: "复制最后一个回复",
+      copyLastCode: "复制最后一个代码块",
+      showShortcutKey: "显示快捷方式",
+    },
   },
   Export: {
     Title: "分享聊天记录",
@@ -132,6 +142,7 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "所有设置选项",
+    ShowPassword: "显示密码",
 
     Danger: {
       Reset: {
@@ -155,6 +166,11 @@ const cn = {
     FontSize: {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
+    },
+    FontFamily: {
+      Title: "聊天字体",
+      SubTitle: "聊天内容的字体，若置空则应用全局默认字体",
+      Placeholder: "字体名称",
     },
     InjectSystemPrompts: {
       Title: "注入系统级提示信息",
@@ -431,6 +447,22 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      Iflytek: {
+        ApiKey: {
+          Title: "ApiKey",
+          SubTitle: "从讯飞星火控制台获取的 APIKey",
+          Placeholder: "APIKey",
+        },
+        ApiSecret: {
+          Title: "ApiSecret",
+          SubTitle: "从讯飞星火控制台获取的 APISecret",
+          Placeholder: "APISecret",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       CustomModel: {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
@@ -438,6 +470,10 @@ const cn = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "压缩模型",
+      SubTitle: "用于压缩历史记录的模型",
+    },
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
@@ -472,8 +508,8 @@ const cn = {
     },
   },
   Copy: {
-    Success: "已写入剪切板",
-    Failed: "复制失败，请赋予剪切板权限",
+    Success: "已写入剪贴板",
+    Failed: "复制失败，请赋予剪贴板权限",
   },
   Download: {
     Success: "内容已下载到您的目录。",
@@ -486,15 +522,66 @@ const cn = {
     Clear: "上下文已清除",
     Revert: "恢复上下文",
   },
-  Plugin: {
-    Name: "插件",
-    Artifacts: "Artifacts",
-  },
   Discovery: {
     Name: "发现",
   },
   FineTuned: {
     Sysmessage: "你是一个助手",
+  },
+  SearchChat: {
+    Name: "搜索",
+    Page: {
+      Title: "搜索聊天记录",
+      Search: "输入搜索关键词",
+      NoResult: "没有找到结果",
+      NoData: "没有数据",
+      Loading: "加载中",
+
+      SubTitle: (count: number) => `搜索到 ${count} 条结果`,
+    },
+    Item: {
+      View: "查看",
+    },
+  },
+  Plugin: {
+    Name: "插件",
+    Page: {
+      Title: "插件",
+      SubTitle: (count: number) => `${count} 个插件`,
+      Search: "搜索插件",
+      Create: "新建",
+      Find: "您可以在Github上找到优秀的插件：",
+    },
+    Item: {
+      Info: (count: number) => `${count} 方法`,
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    Auth: {
+      None: "不需要授权",
+      Basic: "Basic",
+      Bearer: "Bearer",
+      Custom: "自定义",
+      CustomHeader: "自定义参数名称",
+      Token: "Token",
+      Proxy: "使用代理",
+      ProxyDescription: "使用代理解决 CORS 错误",
+      Location: "位置",
+      LocationHeader: "Header",
+      LocationQuery: "Query",
+      LocationBody: "Body",
+    },
+    EditModal: {
+      Title: (readonly: boolean) => `编辑插件 ${readonly ? "（只读）" : ""}`,
+      Download: "下载",
+      Auth: "授权方式",
+      Content: "OpenAPI Schema",
+      Load: "从网页加载",
+      Method: "方法",
+      Error: "格式错误",
+    },
   },
   Mask: {
     Name: "面具",
@@ -529,6 +616,10 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+      },
+      Artifacts: {
+        Title: "启用Artifacts",
+        SubTitle: "启用之后可以直接渲染HTML页面",
       },
       Share: {
         Title: "分享此面具",

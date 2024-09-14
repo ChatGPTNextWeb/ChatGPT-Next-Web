@@ -50,8 +50,8 @@ export function Card(props: { children: JSX.Element[]; className?: string }) {
 }
 
 export function ListItem(props: {
-  title: string;
-  subTitle?: string;
+  title?: string;
+  subTitle?: string | JSX.Element;
   children?: JSX.Element | JSX.Element[];
   icon?: JSX.Element;
   className?: string;
@@ -265,9 +265,10 @@ export function Input(props: InputProps) {
   );
 }
 
-export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
+export function PasswordInput(
+  props: HTMLProps<HTMLInputElement> & { aria?: string },
+) {
   const [visible, setVisible] = useState(false);
-
   function changeVisibility() {
     setVisible(!visible);
   }
@@ -275,6 +276,7 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
   return (
     <div className={"password-input-container"}>
       <IconButton
+        aria={props.aria}
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
         className={"password-eye"}
@@ -290,13 +292,19 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
 
 export function Select(
   props: React.DetailedHTMLProps<
-    React.SelectHTMLAttributes<HTMLSelectElement>,
+    React.SelectHTMLAttributes<HTMLSelectElement> & {
+      align?: "left" | "center";
+    },
     HTMLSelectElement
   >,
 ) {
-  const { className, children, ...otherProps } = props;
+  const { className, children, align, ...otherProps } = props;
   return (
-    <div className={`${styles["select-with-icon"]} ${className}`}>
+    <div
+      className={`${styles["select-with-icon"]} ${
+        align === "left" ? styles["left-align-option"] : ""
+      } ${className}`}
+    >
       <select className={styles["select-with-icon-select"]} {...otherProps}>
         {children}
       </select>

@@ -81,6 +81,14 @@ const tw = {
       SaveAs: "另存新檔",
     },
     IsContext: "預設提示詞",
+    ShortcutKey: {
+      Title: "鍵盤快捷方式",
+      newChat: "打開新聊天",
+      focusInput: "聚焦輸入框",
+      copyLastMessage: "複製最後一個回覆",
+      copyLastCode: "複製最後一個代碼塊",
+      showShortcutKey: "顯示快捷方式",
+    },
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",
@@ -152,6 +160,11 @@ const tw = {
     FontSize: {
       Title: "字型大小",
       SubTitle: "聊天內容的字型大小",
+    },
+    FontFamily: {
+      Title: "聊天字體",
+      SubTitle: "聊天內容的字體，若置空則應用全局默認字體",
+      Placeholder: "字體名稱",
     },
     InjectSystemPrompts: {
       Title: "匯入系統提示",
@@ -355,6 +368,10 @@ const tw = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "壓縮模型",
+      SubTitle: "用於壓縮歷史記錄的模型",
+    },
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",
@@ -445,6 +462,21 @@ const tw = {
         SubTitle: "產生此角色範本的直達連結",
         Action: "複製連結",
       },
+    },
+  },
+  SearchChat: {
+    Name: "搜索",
+    Page: {
+      Title: "搜索聊天記錄",
+      Search: "輸入搜索關鍵詞",
+      NoResult: "沒有找到結果",
+      NoData: "沒有數據",
+      Loading: "加載中",
+
+      SubTitle: (count: number) => `找到 ${count} 條結果`,
+    },
+    Item: {
+      View: "查看",
     },
   },
   NewChat: {

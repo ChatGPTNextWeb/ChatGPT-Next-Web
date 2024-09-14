@@ -1,7 +1,7 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  Alibaba,
-  ALIBABA_BASE_URL,
+  Iflytek,
+  IFLYTEK_BASE_URL,
   ApiPath,
   ModelProvider,
   ServiceProvider,
@@ -11,20 +11,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
 import type { RequestPayload } from "@/app/client/platforms/openai";
+// iflytek
 
 const serverConfig = getServerSideConfig();
 
-async function handle(
+export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Alibaba Route] params ", params);
+  console.log("[Iflytek Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.Qwen);
+  const authResult = auth(req, ModelProvider.Iflytek);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -35,42 +36,18 @@ async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[Alibaba] ", e);
+    console.error("[Iflytek] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
 
-export const GET = handle;
-export const POST = handle;
-
-export const runtime = "edge";
-export const preferredRegion = [
-  "arn1",
-  "bom1",
-  "cdg1",
-  "cle1",
-  "cpt1",
-  "dub1",
-  "fra1",
-  "gru1",
-  "hnd1",
-  "iad1",
-  "icn1",
-  "kix1",
-  "lhr1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-];
-
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  // alibaba use base url or just remove the path
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Alibaba, "");
+  // iflytek use base url or just remove the path
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Iflytek, "");
 
-  let baseUrl = serverConfig.alibabaUrl || ALIBABA_BASE_URL;
+  let baseUrl = serverConfig.iflytekUrl || IFLYTEK_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -95,7 +72,6 @@ async function request(req: NextRequest) {
     headers: {
       "Content-Type": "application/json",
       Authorization: req.headers.get("Authorization") ?? "",
-      "X-DashScope-SSE": req.headers.get("X-DashScope-SSE") ?? "disable",
     },
     method: req.method,
     body: req.body,
@@ -105,7 +81,7 @@ async function request(req: NextRequest) {
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some request to some models
+  // try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
       const clonedBody = await req.text();
@@ -118,7 +94,7 @@ async function request(req: NextRequest) {
         isModelAvailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.Alibaba as string,
+          ServiceProvider.Iflytek as string,
         )
       ) {
         return NextResponse.json(
@@ -132,7 +108,7 @@ async function request(req: NextRequest) {
         );
       }
     } catch (e) {
-      console.error(`[Alibaba] filter`, e);
+      console.error(`[Iflytek] filter`, e);
     }
   }
   try {
