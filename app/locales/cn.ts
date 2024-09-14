@@ -470,6 +470,10 @@ const cn = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "压缩模型",
+      SubTitle: "用于压缩历史记录的模型",
+    },
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",

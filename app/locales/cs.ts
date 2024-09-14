@@ -410,6 +410,10 @@ const cs: PartialLocaleType = {
     },
 
     Model: "Model (model)",
+    CompressModel: {
+      Title: "Kompresní model",
+      SubTitle: "Model používaný pro kompresi historie",
+    },
     Temperature: {
       Title: "Náhodnost (temperature)",
       SubTitle: "Čím vyšší hodnota, tím náhodnější odpovědi",
