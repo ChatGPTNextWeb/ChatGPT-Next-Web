@@ -508,6 +508,8 @@ export function ChatActions(props: {
   const currentStyle =
     chatStore.currentSession().mask.modelConfig?.style ?? "vivid";
 
+  const isMobileScreen = useMobileScreen();
+
   useEffect(() => {
     const show = isVisionModel(currentModel);
     setShowUploadImage(show);
@@ -762,11 +764,13 @@ export function ChatActions(props: {
         />
       )}
 
-      <ChatAction
-        onClick={() => props.setShowShortcutKeyModal(true)}
-        text={Locale.Chat.ShortcutKey.Title}
-        icon={<ShortcutkeyIcon />}
-      />
+      {!isMobileScreen && (
+        <ChatAction
+          onClick={() => props.setShowShortcutKeyModal(true)}
+          text={Locale.Chat.ShortcutKey.Title}
+          icon={<ShortcutkeyIcon />}
+        />
+      )}
     </div>
   );
 }
