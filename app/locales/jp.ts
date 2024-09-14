@@ -407,6 +407,10 @@ const jp: PartialLocaleType = {
     },
 
     Model: "モデル (model)",
+    CompressModel: {
+      Title: "圧縮モデル",
+      SubTitle: "履歴を圧縮するために使用されるモデル",
+    },
     Temperature: {
       Title: "ランダム性 (temperature)",
       SubTitle: "値が大きいほど応答がランダムになります",
