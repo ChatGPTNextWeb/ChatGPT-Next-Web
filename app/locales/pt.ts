@@ -346,6 +346,10 @@ const pt: PartialLocaleType = {
     },
 
     Model: "Modelo",
+    CompressModel: {
+      Title: "Modelo de Compressão",
+      SubTitle: "Modelo usado para comprimir o histórico",
+    },
     Temperature: {
       Title: "Temperatura",
       SubTitle: "Um valor maior torna a saída mais aleatória",

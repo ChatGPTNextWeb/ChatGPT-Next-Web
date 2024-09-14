@@ -83,6 +83,14 @@ const tw = {
       SaveAs: "另存新檔",
     },
     IsContext: "預設提示詞",
+    ShortcutKey: {
+      Title: "鍵盤快捷方式",
+      newChat: "打開新聊天",
+      focusInput: "聚焦輸入框",
+      copyLastMessage: "複製最後一個回覆",
+      copyLastCode: "複製最後一個代碼塊",
+      showShortcutKey: "顯示快捷方式",
+    },
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",
@@ -362,6 +370,10 @@ const tw = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "壓縮模型",
+      SubTitle: "用於壓縮歷史記錄的模型",
+    },
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",

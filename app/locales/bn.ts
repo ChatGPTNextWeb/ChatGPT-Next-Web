@@ -411,6 +411,10 @@ const bn: PartialLocaleType = {
     },
 
     Model: "মডেল (model)",
+    CompressModel: {
+      Title: "সংকোচন মডেল",
+      SubTitle: "ইতিহাস সংকুচিত করার জন্য ব্যবহৃত মডেল",
+    },
     Temperature: {
       Title: "যাদুকরিতা (temperature)",
       SubTitle: "মান বাড়ালে উত্তর বেশি এলোমেলো হবে",

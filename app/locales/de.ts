@@ -421,6 +421,10 @@ const de: PartialLocaleType = {
     },
 
     Model: "Modell",
+    CompressModel: {
+      Title: "Kompressionsmodell",
+      SubTitle: "Modell zur Komprimierung des Verlaufs",
+    },
     Temperature: {
       Title: "Zufälligkeit (temperature)",
       SubTitle: "Je höher der Wert, desto zufälliger die Antwort",
