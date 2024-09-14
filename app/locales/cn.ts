@@ -515,6 +515,10 @@ const cn = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "压缩模型",
+      SubTitle: "用于压缩历史记录的模型",
+    },
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
@@ -550,8 +554,8 @@ const cn = {
     },
   },
   Copy: {
-    Success: "已写入剪切板",
-    Failed: "复制失败，请赋予剪切板权限",
+    Success: "已写入剪贴板",
+    Failed: "复制失败，请赋予剪贴板权限",
   },
   Download: {
     Success: "内容已下载到您的目录。",

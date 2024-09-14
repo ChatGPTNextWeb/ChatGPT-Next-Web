@@ -1,9 +1,15 @@
-import { trimTopic, getMessageTextContent } from "../utils";
+import { getMessageTextContent, trimTopic } from "../utils";
 
-import Locale, { getLang } from "../locales";
+import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
+import { nanoid } from "nanoid";
+import type {
+  ClientApi,
+  MultimodalContent,
+  RequestMessage,
+} from "../client/api";
+import { getClientApi } from "../client/api";
+import { ChatControllerPool } from "../client/controller";
 import { showToast } from "../components/ui-lib";
-import { ModelConfig, ModelType, useAppConfig } from "./config";
-import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
@@ -11,9 +17,9 @@ import {
   KnowledgeCutOffDate,
   ServiceProvider,
   StoreKey,
-  SUMMARIZE_MODEL,
-  GEMINI_SUMMARIZE_MODEL,
 } from "../constant";
+import Locale, { getLang } from "../locales";
+import { isDalle3, safeLocalStorage } from "../utils";
 import {
   getClientApi,
   getHeaders,
@@ -26,13 +32,10 @@ import type {
 } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
-import { estimateTokenLength } from "../utils/token";
-import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
-import { collectModelsWithDefaultModel } from "../utils/model";
-import { useAccessStore } from "./access";
-import { isDalle3, safeLocalStorage } from "../utils";
-import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
+import { estimateTokenLength } from "../utils/token";
+import { ModelConfig, ModelType, useAppConfig } from "./config";
+import { createEmptyMask, Mask } from "./mask";
 
 const localStorage = safeLocalStorage();
 
@@ -113,39 +116,6 @@ function createEmptySession(): ChatSession {
 }
 // if it is using gpt-* models, force to use 4o-mini to summarize
 const ChatFetchTaskPool: Record<string, any> = {};
-
-function getSummarizeModel(currentModel: string): {
-  name: string;
-  providerName: string | undefined;
-} {
-  // if it is using gpt-* models, force to use 4o-mini to summarize
-  if (currentModel.startsWith("gpt") || currentModel.startsWith("chatgpt")) {
-    const configStore = useAppConfig.getState();
-    const accessStore = useAccessStore.getState();
-    const allModel = collectModelsWithDefaultModel(
-      configStore.models,
-      [configStore.customModels, accessStore.customModels].join(","),
-      accessStore.defaultModel,
-    );
-    const summarizeModel = allModel.find(
-      (m) => m.name === SUMMARIZE_MODEL && m.available,
-    );
-    return {
-      name: summarizeModel?.name ?? currentModel,
-      providerName: summarizeModel?.provider?.providerName,
-    };
-  }
-  if (currentModel.startsWith("gemini")) {
-    return {
-      name: GEMINI_SUMMARIZE_MODEL,
-      providerName: ServiceProvider.Google,
-    };
-  }
-  return {
-    name: currentModel,
-    providerName: undefined,
-  };
-}
 
 function countMessages(msgs: ChatMessage[]) {
   return msgs.reduce(
@@ -935,7 +905,7 @@ export const useChatStore = createPersistStore(
           return;
         }
 
-        const providerName = modelConfig.providerName;
+        const providerName = modelConfig.compressProviderName;
         const api: ClientApi = getClientApi(providerName);
 
         // remove error messages if any
@@ -957,9 +927,7 @@ export const useChatStore = createPersistStore(
           api.llm.chat({
             messages: topicMessages,
             config: {
-              model: getSummarizeModel(session.mask.modelConfig.model).name,
-              providerName: getSummarizeModel(session.mask.modelConfig.model)
-                .providerName,
+              model: modelConfig.compressModel,
               stream: false,
             },
             onFinish(message) {
@@ -1021,9 +989,10 @@ export const useChatStore = createPersistStore(
             config: {
               ...modelcfg,
               stream: true,
-              model: getSummarizeModel(session.mask.modelConfig.model).name,
-              providerName: getSummarizeModel(session.mask.modelConfig.model)
-                .providerName,
+              model: modelConfig.compressModel,
+              // providerName: getSummarizeModel(session.mask.modelConfig.model)
+              //   .providerName,
+              // TODO:
             },
             onUpdate(message) {
               session.memoryPrompt = message;
@@ -1072,7 +1041,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.1,
+    version: 3.2,
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -1116,6 +1085,16 @@ export const useChatStore = createPersistStore(
             s.mask.modelConfig.enableInjectSystemPrompts =
               config.modelConfig.enableInjectSystemPrompts;
           }
+        });
+      }
+
+      // add default summarize model for every session
+      if (version < 3.2) {
+        newState.sessions.forEach((s) => {
+          const config = useAppConfig.getState();
+          s.mask.modelConfig.compressModel = config.modelConfig.compressModel;
+          s.mask.modelConfig.compressProviderName =
+            config.modelConfig.compressProviderName;
         });
       }
 
