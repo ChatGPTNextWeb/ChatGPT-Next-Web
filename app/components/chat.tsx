@@ -42,6 +42,7 @@ import SizeIcon from "../icons/size.svg";
 import QualityIcon from "../icons/hd.svg";
 import StyleIcon from "../icons/palette.svg";
 import PluginIcon from "../icons/plugin.svg";
+import FileUploadIcon from "../icons/file-upload.svg";
 
 import {
   ChatMessage,
@@ -1373,30 +1374,34 @@ function _Chat() {
     setAttachImages(images);
   }
 
-  const handleDrop = async (event: React.DragEvent<HTMLTextAreaElement>) => {
-    event.preventDefault(); // 阻止默认行为
-    const acceptedTypes = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/heic",
-      "image/heif",
-    ];
+  const [showDragOverlay, setShowDragOverlay] = useState(false);
 
-    const files = event.dataTransfer.files; // 获取拖拽的文件
-    if (files.length > 0) {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setShowDragOverlay(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    setShowDragOverlay(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setShowDragOverlay(false);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setShowDragOverlay(false);
+
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
       const imagesData: string[] = [];
       setUploading(true);
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-
-        // 检查文件类型是否是图片
-        if (!acceptedTypes.includes(file.type)) {
-          console.warn("文件类型不被接受:", file.type);
-          continue; // 如果不是图片类型，跳过这个文件
-        }
-
         try {
           const dataUrl = await uploadImageRemote(file); // 上传文件
           imagesData.push(dataUrl);
@@ -1411,7 +1416,25 @@ function _Chat() {
   };
 
   return (
-    <div className={styles.chat} key={session.id}>
+    <div
+      className={styles.chat}
+      key={session.id}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      <div
+        id="drag-overlay"
+        className={
+          showDragOverlay ? styles["drag-overlay-show"] : styles["drag-overlay"]
+        }
+      >
+        <span>
+          <FileUploadIcon />
+        </span>
+        <p>{Locale.Chat.Actions.Addanything}</p>
+        <span>{Locale.Chat.Actions.AddanythingSub}</span>
+      </div>
       <div className="window-header" data-tauri-drag-region>
         {isMobileScreen && (
           <div className="window-actions">
@@ -1752,8 +1775,6 @@ function _Chat() {
               fontSize: config.fontSize,
               fontFamily: config.fontFamily,
             }}
-            onDrop={handleDrop}
-            onDragOver={(e) => e.preventDefault()}
           />
           {attachImages.length != 0 && (
             <div className={styles["attach-images"]}>

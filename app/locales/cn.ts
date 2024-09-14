@@ -43,6 +43,8 @@ const cn = {
       Delete: "删除",
       Edit: "编辑",
       FullScreen: "全屏",
+      Addanything: "添加任意内容",
+      AddanythingSub: "将任意文件拖拽到此处添加到对话中",
     },
     Commands: {
       new: "新建聊天",
