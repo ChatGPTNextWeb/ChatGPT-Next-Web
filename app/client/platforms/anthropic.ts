@@ -262,7 +262,7 @@ export class ClaudeApi implements LLMApi {
             runTools[index]["function"]["arguments"] +=
               chunkJson?.delta?.partial_json;
           }
-          return chunkJson?.delta?.text;
+          return { delta: chunkJson?.delta?.text };
         },
         // processToolMessage, include tool_calls message and tool call results
         (

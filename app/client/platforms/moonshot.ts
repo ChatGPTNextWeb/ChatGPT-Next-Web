@@ -163,7 +163,7 @@ export class MoonshotApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
-            return choices[0]?.delta?.content;
+            return { delta: choices[0]?.delta?.content };
           },
           // processToolMessage, include tool_calls message and tool call results
           (

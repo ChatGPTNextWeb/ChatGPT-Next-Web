@@ -3,7 +3,7 @@ import {
   UPLOAD_URL,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
-import { RequestMessage } from "@/app/client/api";
+import { ChatOptions, RequestMessage } from "@/app/client/api";
 import Locale from "@/app/locales";
 import {
   EventStreamContentType,
@@ -160,17 +160,21 @@ export function stream(
   tools: any[],
   funcs: Record<string, Function>,
   controller: AbortController,
-  parseSSE: (text: string, runTools: any[]) => string | undefined,
+  parseSSE: (
+    text: string,
+    runTools: any[],
+  ) => { delta?: string; finishReason?: string },
   processToolMessage: (
     requestPayload: any,
     toolCallMessage: any,
     toolCallResult: any[],
   ) => void,
-  options: any,
+  options: ChatOptions,
 ) {
   let responseText = "";
   let remainText = "";
   let finished = false;
+  let finishedReason: string | undefined;
   let running = false;
   let runTools: any[] = [];
 
@@ -254,14 +258,13 @@ export function stream(
             chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
           }, 60);
         });
-        return;
       }
       if (running) {
         return;
       }
       console.debug("[ChatAPI] end");
       finished = true;
-      options.onFinish(responseText + remainText);
+      options.onFinish(responseText + remainText, finishedReason);
     }
   };
 
@@ -333,7 +336,11 @@ export function stream(
         try {
           const chunk = parseSSE(msg.data, runTools);
           if (chunk) {
-            remainText += chunk;
+            if (typeof chunk === "string") remainText += chunk;
+            else {
+              if (chunk.delta) remainText += chunk.delta;
+              finishedReason = chunk.finishReason;
+            }
           }
         } catch (e) {
           console.error("[Request] parse error", text, msg, e);
