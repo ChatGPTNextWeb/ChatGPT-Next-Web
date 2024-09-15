@@ -1,5 +1,5 @@
-import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
+import { Anthropic, ApiPath } from "@/app/constant";
+import { ChatOptions, getHeaders, LLMApi } from "../api";
 import {
   useAccessStore,
   useAppConfig,
@@ -9,13 +9,6 @@ import {
 } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-
-import Locale from "../../locales";
-import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
 import { preProcessImageContent, stream } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
