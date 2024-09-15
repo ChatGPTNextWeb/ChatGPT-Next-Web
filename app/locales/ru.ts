@@ -45,6 +45,7 @@ const ru: PartialLocaleType = {
       Edit: "Редактировать",
       RefreshTitle: "Обновить заголовок",
       RefreshToast: "Запрос на обновление заголовка отправлен",
+      Continue: "Продолжить",
     },
     Commands: {
       new: "Новый чат",

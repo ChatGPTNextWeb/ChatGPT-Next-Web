@@ -45,6 +45,7 @@ const jp: PartialLocaleType = {
       Edit: "編集",
       RefreshTitle: "タイトルを更新",
       RefreshToast: "タイトル更新リクエストが送信されました",
+      Continue: "続ける",
     },
     Commands: {
       new: "新しいチャット",

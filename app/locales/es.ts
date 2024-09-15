@@ -46,6 +46,7 @@ const es: PartialLocaleType = {
       Edit: "Editar",
       RefreshTitle: "Actualizar título",
       RefreshToast: "Se ha enviado la solicitud de actualización del título",
+      Continue: "Continuar",
     },
     Commands: {
       new: "Nueva conversación",

@@ -45,6 +45,7 @@ const tw = {
       Edit: "編輯",
       RefreshTitle: "刷新標題",
       RefreshToast: "已發送刷新標題請求",
+      Continue: "繼續",
     },
     Commands: {
       new: "新建聊天",

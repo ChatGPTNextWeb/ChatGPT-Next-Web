@@ -46,6 +46,7 @@ const cn = {
       FullScreen: "全屏",
       RefreshTitle: "刷新标题",
       RefreshToast: "已发送刷新标题请求",
+      Continue: "继续",
     },
     Commands: {
       new: "新建聊天",
