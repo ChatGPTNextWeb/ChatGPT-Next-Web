@@ -43,6 +43,8 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
+      RefreshTitle: "刷新標題",
+      RefreshToast: "已發送刷新標題請求",
     },
     Commands: {
       new: "新建聊天",

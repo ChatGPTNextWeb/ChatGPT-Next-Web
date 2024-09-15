@@ -43,6 +43,8 @@ const cs: PartialLocaleType = {
       PinToastAction: "Zobrazit",
       Delete: "Smazat",
       Edit: "Upravit",
+      RefreshTitle: "Obnovit název",
+      RefreshToast: "Požadavek na obnovení názvu byl odeslán",
     },
     Commands: {
       new: "Nová konverzace",

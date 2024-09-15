@@ -43,6 +43,8 @@ const tr: PartialLocaleType = {
       PinToastAction: "Görünüm",
       Delete: "Sil",
       Edit: "Düzenle",
+      RefreshTitle: "Başlığı Yenile",
+      RefreshToast: "Başlık yenileme isteği gönderildi",
     },
     Commands: {
       new: "Yeni sohbet",

@@ -43,6 +43,8 @@ const id: PartialLocaleType = {
       PinToastAction: "Lihat",
       Delete: "Hapus",
       Edit: "Edit",
+      RefreshTitle: "Segarkan Judul",
+      RefreshToast: "Permintaan penyegaran judul telah dikirim",
     },
     Commands: {
       new: "Obrolan Baru",
