@@ -43,6 +43,8 @@ const fr: PartialLocaleType = {
       PinToastAction: "Voir",
       Delete: "Supprimer",
       Edit: "Modifier",
+      RefreshTitle: "Actualiser le titre",
+      RefreshToast: "Demande d'actualisation du titre envoyée",
     },
     Commands: {
       new: "Nouvelle discussion",

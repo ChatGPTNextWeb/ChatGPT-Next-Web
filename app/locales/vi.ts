@@ -43,6 +43,8 @@ const vi: PartialLocaleType = {
       PinToastAction: "Xem",
       Delete: "Xóa",
       Edit: "Chỉnh sửa",
+      RefreshTitle: "Làm mới tiêu đề",
+      RefreshToast: "Đã gửi yêu cầu làm mới tiêu đề",
     },
     Commands: {
       new: "Tạo cuộc trò chuyện mới",

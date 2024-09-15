@@ -43,6 +43,8 @@ const ar: PartialLocaleType = {
       PinToastAction: "عرض",
       Delete: "حذف",
       Edit: "تحرير",
+      RefreshTitle: "تحديث العنوان",
+      RefreshToast: "تم إرسال طلب تحديث العنوان",
     },
     Commands: {
       new: "دردشة جديدة",

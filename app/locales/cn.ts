@@ -44,6 +44,8 @@ const cn = {
       Delete: "删除",
       Edit: "编辑",
       FullScreen: "全屏",
+      RefreshTitle: "刷新标题",
+      RefreshToast: "已发送刷新标题请求",
     },
     Commands: {
       new: "新建聊天",
