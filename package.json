@@ -31,7 +31,7 @@
     "html-to-image": "^1.11.11",
     "idb-keyval": "^6.2.1",
     "lodash-es": "^4.17.21",
-    "mermaid": "^10.6.1",
+    "mermaid": "^11.2.0",
     "nanoid": "^5.0.3",
     "next": "^14.1.1",
     "node-fetch": "^3.3.1",
