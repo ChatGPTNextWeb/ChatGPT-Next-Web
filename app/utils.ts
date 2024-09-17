@@ -306,7 +306,7 @@ export function isFunctionCallModel(modelName: string) {
     "claude-3-5-sonnet-20240620",
   ];
   if (specialModels.some((keyword) => modelName === keyword)) return true;
-  return DEFAULT_MODELS.filter((model) => model.provider.id === "openai").some(
-    (model) => model.name === modelName,
-  );
+  return DEFAULT_MODELS.filter(
+    (model) => model.provider.id === "openai" && !model.name.includes("o1"),
+  ).some((model) => model.name === modelName);
 }
