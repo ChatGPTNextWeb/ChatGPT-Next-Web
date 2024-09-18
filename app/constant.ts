@@ -501,3 +501,5 @@ export const PLUGINS = [
   { name: "Stable Diffusion", path: Path.Sd },
   { name: "Search Chat", path: Path.SearchChat },
 ];
+
+export const SAAS_CHAT_URL = "https://nextchat.dev/chat";

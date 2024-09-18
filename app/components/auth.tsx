@@ -2,7 +2,7 @@ import styles from "./auth.module.scss";
 import { IconButton } from "./button";
 
 import { useNavigate } from "react-router-dom";
-import { Path } from "../constant";
+import { Path, SAAS_CHAT_URL } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
 
@@ -16,6 +16,7 @@ export function AuthPage() {
 
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
+  const goSaas = () => window.open(SAAS_CHAT_URL);
   const resetAccessCode = () => {
     accessStore.update((access) => {
       access.openaiApiKey = "";
@@ -65,7 +66,7 @@ export function AuthPage() {
             }}
           />
           <input
-            className={styles["auth-input"]}
+            className={styles["auth-input-second"]}
             type="password"
             placeholder={Locale.Settings.Access.Google.ApiKey.Placeholder}
             value={accessStore.googleApiKey}
@@ -85,10 +86,9 @@ export function AuthPage() {
           onClick={goChat}
         />
         <IconButton
-          text={Locale.Auth.Later}
+          text={Locale.Auth.SaasTips}
           onClick={() => {
-            resetAccessCode();
-            goHome();
+            goSaas();
           }}
         />
       </div>
