@@ -8,6 +8,7 @@ import {
   LLMApi,
   LLMModel,
   MultimodalContent,
+  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -87,6 +88,10 @@ export class HunyuanApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.Choices?.at(0)?.Message?.Content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
