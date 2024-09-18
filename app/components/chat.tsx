@@ -96,7 +96,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  LAST_INPUT_KEY,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,

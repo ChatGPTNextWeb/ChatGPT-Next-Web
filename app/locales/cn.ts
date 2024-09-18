@@ -1,4 +1,3 @@
-import { ShortcutKeyModal } from "../components/chat";
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 
