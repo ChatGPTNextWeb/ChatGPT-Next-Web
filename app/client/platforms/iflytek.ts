@@ -23,7 +23,7 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
 
-import { OpenAIListModelResponse, RequestPayload } from "./openai";
+import { RequestPayload } from "./openai";
 
 export class SparkApi implements LLMApi {
   private disableListModels = true;

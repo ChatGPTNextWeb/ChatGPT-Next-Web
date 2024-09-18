@@ -72,7 +72,6 @@ import {
   isDalle3,
   showPlugins,
   safeLocalStorage,
-  isFirefox,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -101,7 +100,6 @@ import {
   CHAT_PAGE_SIZE,
   DEFAULT_TTS_ENGINE,
   ModelProvider,
-  LAST_INPUT_KEY,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,

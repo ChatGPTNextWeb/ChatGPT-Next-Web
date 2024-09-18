@@ -36,15 +36,9 @@ import {
   SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
-  getMessageImages,
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
