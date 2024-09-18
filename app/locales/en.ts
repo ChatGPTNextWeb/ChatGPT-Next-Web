@@ -527,16 +527,6 @@ const en: LocaleType = {
       },
       Engine: "TTS Engine",
     },
-    STT: {
-      Enable: {
-        Title: "Enable STT",
-        SubTitle: "Enable Speech-to-Text",
-      },
-      Engine: {
-        Title: "STT Engine",
-        SubTitle: "Text-to-Speech Engine",
-      },
-    },
   },
   Store: {
     DefaultTopic: "New Conversation",

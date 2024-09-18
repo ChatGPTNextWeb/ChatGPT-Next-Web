@@ -34,7 +34,6 @@ import {
   LLMUsage,
   MultimodalContent,
   SpeechOptions,
-  TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -183,47 +182,6 @@ export class ChatGPTApi implements LLMApi {
       return await res.arrayBuffer();
     } catch (e) {
       console.log("[Request] failed to make a speech request", e);
-      throw e;
-    }
-  }
-
-  async transcription(options: TranscriptionOptions): Promise<string> {
-    const formData = new FormData();
-    formData.append("file", options.file, "audio.wav");
-    formData.append("model", options.model ?? "whisper-1");
-    if (options.language) formData.append("language", options.language);
-    if (options.prompt) formData.append("prompt", options.prompt);
-    if (options.response_format)
-      formData.append("response_format", options.response_format);
-    if (options.temperature)
-      formData.append("temperature", options.temperature.toString());
-
-    console.log("[Request] openai audio transcriptions payload: ", options);
-
-    const controller = new AbortController();
-    options.onController?.(controller);
-
-    try {
-      const path = this.path(OpenaiPath.TranscriptionPath, options.model);
-      const headers = getHeaders(true);
-      const payload = {
-        method: "POST",
-        body: formData,
-        signal: controller.signal,
-        headers: headers,
-      };
-
-      // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
-      const res = await fetch(path, payload);
-      clearTimeout(requestTimeoutId);
-      const json = await res.json();
-      return json.text;
-    } catch (e) {
-      console.log("[Request] failed to make a audio transcriptions request", e);
       throw e;
     }
   }

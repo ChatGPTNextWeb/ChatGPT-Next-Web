@@ -15,7 +15,6 @@ import {
   LLMModel,
   MultimodalContent,
   SpeechOptions,
-  TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -78,9 +77,6 @@ export class ErnieApi implements LLMApi {
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
-  }
-  transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
 

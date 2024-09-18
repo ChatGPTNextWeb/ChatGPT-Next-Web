@@ -10,7 +10,6 @@ import React, {
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
-import VoiceWhiteIcon from "../icons/voice-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
@@ -83,7 +82,7 @@ import dynamic from "next/dynamic";
 import { ChatControllerPool } from "../client/controller";
 import { DalleSize, DalleQuality, DalleStyle } from "../typing";
 import { Prompt, usePromptStore } from "../store/prompt";
-import Locale, { getLang, getSTTLang } from "../locales";
+import Locale from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
@@ -100,9 +99,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  DEFAULT_STT_ENGINE,
   DEFAULT_TTS_ENGINE,
-  FIREFOX_DEFAULT_STT_ENGINE,
   ModelProvider,
   LAST_INPUT_KEY,
   Path,
@@ -123,11 +120,6 @@ import { MultimodalContent } from "../client/api";
 const localStorage = safeLocalStorage();
 import { ClientApi } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
-import {
-  OpenAITranscriptionApi,
-  SpeechApi,
-  WebTranscriptionApi,
-} from "../utils/speech";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 const ttsPlayer = createTTSPlayer();
@@ -556,44 +548,6 @@ export function ChatActions(props: {
     }
   }, [chatStore, currentModel, models]);
 
-  const [isListening, setIsListening] = useState(false);
-  const [isTranscription, setIsTranscription] = useState(false);
-  const [speechApi, setSpeechApi] = useState<any>(null);
-
-  useEffect(() => {
-    if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
-    setSpeechApi(
-      config.sttConfig.engine === DEFAULT_STT_ENGINE
-        ? new WebTranscriptionApi((transcription) =>
-            onRecognitionEnd(transcription),
-          )
-        : new OpenAITranscriptionApi((transcription) =>
-            onRecognitionEnd(transcription),
-          ),
-    );
-  }, []);
-
-  const startListening = async () => {
-    if (speechApi) {
-      await speechApi.start();
-      setIsListening(true);
-    }
-  };
-  const stopListening = async () => {
-    if (speechApi) {
-      if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
-        setIsTranscription(true);
-      await speechApi.stop();
-      setIsListening(false);
-    }
-  };
-  const onRecognitionEnd = (finalTranscript: string) => {
-    console.log(finalTranscript);
-    if (finalTranscript) props.setUserInput(finalTranscript);
-    if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
-      setIsTranscription(false);
-  };
-
   return (
     <div className={styles["chat-input-actions"]}>
       {couldStop && (
@@ -826,16 +780,6 @@ export function ChatActions(props: {
           onClick={() => props.setShowShortcutKeyModal(true)}
           text={Locale.Chat.ShortcutKey.Title}
           icon={<ShortcutkeyIcon />}
-        />
-      )}
-
-      {config.sttConfig.enable && (
-        <ChatAction
-          onClick={async () =>
-            isListening ? await stopListening() : await startListening()
-          }
-          text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
-          icon={<VoiceWhiteIcon />}
         />
       )}
     </div>

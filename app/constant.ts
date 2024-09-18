@@ -153,7 +153,6 @@ export const Anthropic = {
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   SpeechPath: "v1/audio/speech",
-  TranscriptionPath: "v1/audio/transcriptions",
   ImagePath: "v1/images/generations",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
@@ -273,10 +272,6 @@ export const DEFAULT_TTS_VOICES = [
   "nova",
   "shimmer",
 ];
-
-export const DEFAULT_STT_ENGINE = "WebAPI";
-export const DEFAULT_STT_ENGINES = ["WebAPI", "OpenAI Whisper"];
-export const FIREFOX_DEFAULT_STT_ENGINE = "OpenAI Whisper";
 
 const openaiModels = [
   "gpt-3.5-turbo",

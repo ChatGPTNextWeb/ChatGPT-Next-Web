@@ -64,16 +64,6 @@ export interface SpeechOptions {
   onController?: (controller: AbortController) => void;
 }
 
-export interface TranscriptionOptions {
-  model?: "whisper-1";
-  file: Blob;
-  language?: string;
-  prompt?: string;
-  response_format?: "json" | "text" | "srt" | "verbose_json" | "vtt";
-  temperature?: number;
-  onController?: (controller: AbortController) => void;
-}
-
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
@@ -109,7 +99,6 @@ export interface LLMModelProvider {
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
-  abstract transcription(options: TranscriptionOptions): Promise<string>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
