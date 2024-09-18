@@ -3,7 +3,6 @@ import {
   ANTHROPIC_BASE_URL,
   Anthropic,
   ApiPath,
-  DEFAULT_MODELS,
   ServiceProvider,
   ModelProvider,
 } from "@/app/constant";
