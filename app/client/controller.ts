@@ -26,6 +26,10 @@ export const ChatControllerPool = {
     return Object.values(this.controllers).length > 0;
   },
 
+  getPendingMessageId() {
+    return Object.keys(this.controllers).map((v) => v.split(",").at(-1));
+  },
+
   remove(sessionId: string, messageId: string) {
     const key = this.key(sessionId, messageId);
     delete this.controllers[key];

@@ -45,6 +45,7 @@ const id: PartialLocaleType = {
       Edit: "Edit",
       RefreshTitle: "Segarkan Judul",
       RefreshToast: "Permintaan penyegaran judul telah dikirim",
+      Continue: "Lanjutkan",
     },
     Commands: {
       new: "Obrolan Baru",

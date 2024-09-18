@@ -45,6 +45,7 @@ const bn: PartialLocaleType = {
       Edit: "সম্পাদনা করুন",
       RefreshTitle: "শিরোনাম রিফ্রেশ করুন",
       RefreshToast: "শিরোনাম রিফ্রেশ অনুরোধ পাঠানো হয়েছে",
+      Continue: "চালিয়ে যান",
     },
     Commands: {
       new: "নতুন চ্যাট",

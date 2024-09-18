@@ -46,6 +46,7 @@ export type ChatMessage = RequestMessage & {
   id: string;
   model?: ModelType;
   tools?: ChatMessageTool[];
+  finishedReason?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -373,8 +374,10 @@ export const useChatStore = createPersistStore(
               session.messages = session.messages.concat();
             });
           },
-          onFinish(message) {
+          onFinish(message, finishedReason) {
             botMessage.streaming = false;
+            if (finishedReason !== null && finishedReason !== undefined)
+              botMessage.finishedReason = finishedReason;
             if (message) {
               botMessage.content = message;
               get().onNewMessage(botMessage);
@@ -429,6 +432,94 @@ export const useChatStore = createPersistStore(
         });
       },
 
+      async onContinueBotMessage(messageID: string) {
+        const session = get().currentSession();
+        const modelConfig = session.mask.modelConfig;
+
+        // get recent messages
+        const recentMessages = get().getMessagesWithMemory(messageID);
+        const messageIndex = get().currentSession().messages.length + 1;
+
+        const botMessage = session.messages.find((v) => v.id === messageID);
+
+        if (!botMessage) {
+          console.error("[Chat] failed to find bot message");
+          return;
+        }
+
+        const baseContent = botMessage.content;
+
+        const api: ClientApi = getClientApi(modelConfig.providerName);
+        // make request
+        api.llm.chat({
+          messages: recentMessages,
+          config: { ...modelConfig, stream: true },
+          onUpdate(message) {
+            botMessage.streaming = true;
+            if (message) {
+              botMessage.content = baseContent + message;
+            }
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+          },
+          onFinish(message, finishedReason) {
+            botMessage.streaming = false;
+            if (finishedReason !== null && finishedReason !== undefined)
+              botMessage.finishedReason = finishedReason;
+            if (message) {
+              botMessage.content = baseContent + message;
+              get().onNewMessage(botMessage);
+            }
+            ChatControllerPool.remove(session.id, botMessage.id);
+          },
+          onBeforeTool(tool: ChatMessageTool) {
+            (botMessage.tools = botMessage?.tools || []).push(tool);
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+          },
+          onAfterTool(tool: ChatMessageTool) {
+            botMessage?.tools?.forEach((t, i, tools) => {
+              if (tool.id == t.id) {
+                tools[i] = { ...tool };
+              }
+            });
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+          },
+          onError(error) {
+            const isAborted = error.message?.includes?.("aborted");
+            botMessage.content +=
+              "\n\n" +
+              prettyObject({
+                error: true,
+                message: error.message,
+              });
+            botMessage.streaming = false;
+            botMessage.isError = !isAborted;
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+            ChatControllerPool.remove(
+              session.id,
+              botMessage.id ?? messageIndex,
+            );
+
+            console.error("[Chat] failed ", error);
+          },
+          onController(controller) {
+            // collect controller for stop/retry
+            ChatControllerPool.addController(
+              session.id,
+              botMessage.id ?? messageIndex,
+              controller,
+            );
+          },
+        });
+      },
+
       getMemoryPrompt() {
         const session = get().currentSession();
 
@@ -441,12 +532,17 @@ export const useChatStore = createPersistStore(
         }
       },
 
-      getMessagesWithMemory() {
+      getMessagesWithMemory(messageID?: string) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         const clearContextIndex = session.clearContextIndex ?? 0;
         const messages = session.messages.slice();
-        const totalMessageCount = session.messages.length;
+        let messageIdx = session.messages.findIndex((v) => v.id === messageID);
+        if (messageIdx === -1) messageIdx = session.messages.length;
+        const totalMessageCount = Math.min(
+          messageIdx + 1,
+          session.messages.length,
+        );
 
         // in-context prompts
         const contextPrompts = session.mask.context.slice();

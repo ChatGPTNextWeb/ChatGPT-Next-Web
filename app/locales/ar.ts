@@ -45,6 +45,7 @@ const ar: PartialLocaleType = {
       Edit: "تحرير",
       RefreshTitle: "تحديث العنوان",
       RefreshToast: "تم إرسال طلب تحديث العنوان",
+      Continue: "استمر",
     },
     Commands: {
       new: "دردشة جديدة",

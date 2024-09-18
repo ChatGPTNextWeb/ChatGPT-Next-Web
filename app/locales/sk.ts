@@ -46,6 +46,7 @@ const sk: PartialLocaleType = {
       Edit: "Upraviť",
       RefreshTitle: "Obnoviť názov",
       RefreshToast: "Požiadavka na obnovenie názvu bola odoslaná",
+      Continue: "Pokračovať",
     },
     Commands: {
       new: "Začať nový chat",

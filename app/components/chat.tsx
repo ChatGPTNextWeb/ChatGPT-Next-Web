@@ -9,6 +9,7 @@ import React, {
   RefObject,
 } from "react";
 
+import ContinueIcon from "../icons/continue.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -460,7 +461,16 @@ export function ChatActions(props: {
 
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
-  const stopAll = () => ChatControllerPool.stopAll();
+  const stopAll = () => {
+    const stopList = ChatControllerPool.getPendingMessageId();
+    ChatControllerPool.stopAll();
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.messages = session.messages.map((v) =>
+          stopList.includes(v.id) ? { ...v, finishedReason: "aborted" } : v,
+        )),
+    );
+  };
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
@@ -1044,6 +1054,12 @@ function _Chat() {
   // stop response
   const onUserStop = (messageId: string) => {
     ChatControllerPool.stop(session.id, messageId);
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.messages = session.messages.map((v) =>
+          v.id === messageId ? { ...v, finishedReason: "aborted" } : v,
+        )),
+    );
   };
 
   useEffect(() => {
@@ -1168,6 +1184,18 @@ function _Chat() {
     const images = getMessageImages(userMessage);
     chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
     inputRef.current?.focus();
+  };
+
+  const onContinue = (messageID: string) => {
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.messages = session.messages.map((v) =>
+          v.id === messageID ? { ...v, streaming: true } : v,
+        )),
+    );
+    chatStore
+      .onContinueBotMessage(messageID)
+      .finally(() => setIsLoading(false));
   };
 
   const onPinMessage = (message: ChatMessage) => {
@@ -1723,6 +1751,15 @@ function _Chat() {
                                   )
                                 }
                               />
+                              {["length", "aborted"].includes(
+                                message.finishedReason ?? "",
+                              ) ? (
+                                <ChatAction
+                                  text={Locale.Chat.Actions.Continue}
+                                  icon={<ContinueIcon />}
+                                  onClick={() => onContinue(message.id)}
+                                />
+                              ) : null}
                             </>
                           )}
                         </div>

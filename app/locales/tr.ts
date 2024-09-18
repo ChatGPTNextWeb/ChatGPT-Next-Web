@@ -45,6 +45,7 @@ const tr: PartialLocaleType = {
       Edit: "Düzenle",
       RefreshTitle: "Başlığı Yenile",
       RefreshToast: "Başlık yenileme isteği gönderildi",
+      Continue: "Devam et",
     },
     Commands: {
       new: "Yeni sohbet",

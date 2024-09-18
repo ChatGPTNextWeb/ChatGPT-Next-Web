@@ -45,6 +45,7 @@ const ko: PartialLocaleType = {
       Edit: "편집",
       RefreshTitle: "제목 새로고침",
       RefreshToast: "제목 새로고침 요청이 전송되었습니다",
+      Continue: "계속하다",
     },
     Commands: {
       new: "새 채팅",

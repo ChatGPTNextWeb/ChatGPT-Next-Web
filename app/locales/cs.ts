@@ -45,6 +45,7 @@ const cs: PartialLocaleType = {
       Edit: "Upravit",
       RefreshTitle: "Obnovit název",
       RefreshToast: "Požadavek na obnovení názvu byl odeslán",
+      Continue: "Pokračovat",
     },
     Commands: {
       new: "Nová konverzace",

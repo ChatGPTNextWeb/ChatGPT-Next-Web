@@ -260,6 +260,7 @@ export class ChatGPTApi implements LLMApi {
                 content: string;
                 tool_calls: ChatMessageTool[];
               };
+              finish_reason?: string;
             }>;
             const tool_calls = choices[0]?.delta?.tool_calls;
             if (tool_calls?.length > 0) {
@@ -280,7 +281,10 @@ export class ChatGPTApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
-            return choices[0]?.delta?.content;
+            return {
+              delta: choices[0]?.delta?.content,
+              finishReason: choices[0]?.finish_reason,
+            };
           },
           // processToolMessage, include tool_calls message and tool call results
           (
