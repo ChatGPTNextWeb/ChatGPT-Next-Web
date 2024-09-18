@@ -43,6 +43,8 @@ const pt: PartialLocaleType = {
       PinToastAction: "Visualizar",
       Delete: "Deletar",
       Edit: "Editar",
+      RefreshTitle: "Atualizar Título",
+      RefreshToast: "Solicitação de atualização de título enviada",
     },
     Commands: {
       new: "Iniciar um novo chat",
@@ -152,6 +154,12 @@ const pt: PartialLocaleType = {
     FontSize: {
       Title: "Tamanho da Fonte",
       SubTitle: "Ajustar o tamanho da fonte do conteúdo do chat",
+    },
+    FontFamily: {
+      Title: "Fonte do Chat",
+      SubTitle:
+        "Fonte do conteúdo do chat, deixe vazio para aplicar a fonte padrão global",
+      Placeholder: "Nome da Fonte",
     },
     InjectSystemPrompts: {
       Title: "Inserir Prompts de Sistema",
@@ -340,6 +348,10 @@ const pt: PartialLocaleType = {
     },
 
     Model: "Modelo",
+    CompressModel: {
+      Title: "Modelo de Compressão",
+      SubTitle: "Modelo usado para comprimir o histórico",
+    },
     Temperature: {
       Title: "Temperatura",
       SubTitle: "Um valor maior torna a saída mais aleatória",
@@ -398,6 +410,21 @@ const pt: PartialLocaleType = {
   },
   FineTuned: {
     Sysmessage: "Você é um assistente que",
+  },
+  SearchChat: {
+    Name: "Pesquisar",
+    Page: {
+      Title: "Pesquisar histórico de chat",
+      Search: "Digite palavras-chave para pesquisa",
+      NoResult: "Nenhum resultado encontrado",
+      NoData: "Sem dados",
+      Loading: "Carregando",
+
+      SubTitle: (count: number) => `Encontrado ${count} resultados`,
+    },
+    Item: {
+      View: "Ver",
+    },
   },
   Mask: {
     Name: "Máscara",

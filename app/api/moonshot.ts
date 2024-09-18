@@ -1,44 +1,30 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  ANTHROPIC_BASE_URL,
-  Anthropic,
+  Moonshot,
+  MOONSHOT_BASE_URL,
   ApiPath,
-  DEFAULT_MODELS,
   ModelProvider,
+  ServiceProvider,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth";
-import { collectModelTable } from "@/app/utils/model";
+import { auth } from "@/app/api/auth";
+import { isModelAvailableInServer } from "@/app/utils/model";
+import type { RequestPayload } from "@/app/client/platforms/openai";
 
-const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
+const serverConfig = getServerSideConfig();
 
-async function handle(
+export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Anthropic Route] params ", params);
+  console.log("[Moonshot Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const subpath = params.path.join("/");
-
-  if (!ALLOWD_PATH.has(subpath)) {
-    console.log("[Anthropic Route] forbidden path ", subpath);
-    return NextResponse.json(
-      {
-        error: true,
-        msg: "you are not allowed to request " + subpath,
-      },
-      {
-        status: 403,
-      },
-    );
-  }
-
-  const authResult = auth(req, ModelProvider.Claude);
+  const authResult = auth(req, ModelProvider.Moonshot);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -49,51 +35,18 @@ async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[Anthropic] ", e);
+    console.error("[Moonshot] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
 
-export const GET = handle;
-export const POST = handle;
-
-export const runtime = "edge";
-export const preferredRegion = [
-  "arn1",
-  "bom1",
-  "cdg1",
-  "cle1",
-  "cpt1",
-  "dub1",
-  "fra1",
-  "gru1",
-  "hnd1",
-  "iad1",
-  "icn1",
-  "kix1",
-  "lhr1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-];
-
-const serverConfig = getServerSideConfig();
-
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let authHeaderName = "x-api-key";
-  let authValue =
-    req.headers.get(authHeaderName) ||
-    req.headers.get("Authorization")?.replaceAll("Bearer ", "").trim() ||
-    serverConfig.anthropicApiKey ||
-    "";
+  // alibaba use base url or just remove the path
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Moonshot, "");
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Anthropic, "");
-
-  let baseUrl =
-    serverConfig.anthropicUrl || serverConfig.baseUrl || ANTHROPIC_BASE_URL;
+  let baseUrl = serverConfig.moonshotUrl || MOONSHOT_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -114,16 +67,10 @@ async function request(req: NextRequest) {
   );
 
   const fetchUrl = `${baseUrl}${path}`;
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "no-store",
-      [authHeaderName]: authValue,
-      "anthropic-version":
-        req.headers.get("anthropic-version") ||
-        serverConfig.anthropicApiVersion ||
-        Anthropic.Vision,
+      Authorization: req.headers.get("Authorization") ?? "",
     },
     method: req.method,
     body: req.body,
@@ -136,17 +83,19 @@ async function request(req: NextRequest) {
   // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""].available === false) {
+      if (
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model as string,
+          ServiceProvider.Moonshot as string,
+        )
+      ) {
         return NextResponse.json(
           {
             error: true,
@@ -158,20 +107,12 @@ async function request(req: NextRequest) {
         );
       }
     } catch (e) {
-      console.error(`[Anthropic] filter`, e);
+      console.error(`[Moonshot] filter`, e);
     }
   }
-  console.log("[Anthropic request]", fetchOptions.headers, req.method);
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
-    console.log(
-      "[Anthropic response]",
-      res.status,
-      "   ",
-      res.headers,
-      res.url,
-    );
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
     newHeaders.delete("www-authenticate");
