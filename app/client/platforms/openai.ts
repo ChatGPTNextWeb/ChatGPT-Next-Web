@@ -79,7 +79,7 @@ export interface DalleRequestPayload {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string, model?: string): string {
+  path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
@@ -157,7 +157,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const speechPath = this.path(OpenaiPath.SpeechPath, options.model);
+      const speechPath = this.path(OpenaiPath.SpeechPath);
       const speechPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
