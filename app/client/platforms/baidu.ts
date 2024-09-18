@@ -14,6 +14,7 @@ import {
   LLMApi,
   LLMModel,
   MultimodalContent,
+  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -73,6 +74,10 @@ export class ErnieApi implements LLMApi {
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
     return [baseUrl, path].join("/");
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {

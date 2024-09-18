@@ -14,7 +14,13 @@ import {
   usePluginStore,
 } from "@/app/store";
 import { stream } from "@/app/utils/chat";
-import { ChatOptions, getHeaders, LLMApi, LLMModel } from "../api";
+import {
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  SpeechOptions,
+} from "../api";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
 import { RequestPayload } from "./openai";
@@ -51,6 +57,10 @@ export class MoonshotApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
