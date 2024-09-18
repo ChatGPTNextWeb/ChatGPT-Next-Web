@@ -6,11 +6,9 @@ import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
-import DeleteIcon from "../icons/clear.svg";
+import DeleteIcon from "../icons/delete.svg";
 // import MaskIcon from "../icons/mask.svg";
 import CoffeeIcon from "../icons/coffee.svg";
-import MaskIcon from "../icons/mask.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
@@ -26,7 +24,6 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   PLUGINS,
-  REPO_URL,
   ServiceProvider,
 } from "../constant";
 
@@ -324,21 +321,14 @@ export function SideBar(props: { className?: string }) {
         </div>
         {showPluginSelector && (
           <Selector
-            items={
-              [
-                {
-                  title: "👇 Please select the plugin you need to use",
-                  value: "-",
-                  disable: true,
-                },
-                ...PLUGINS.map((item) => {
-                  return {
-                    title: item.name,
-                    value: item.path,
-                  };
-                }),
-              ] as any
-            }
+            items={[
+              ...PLUGINS.map((item) => {
+                return {
+                  title: item.name,
+                  value: item.path,
+                };
+              }),
+            ]}
             onClose={() => setShowPluginSelector(false)}
             onSelection={(s) => {
               navigate(s[0] as any, { state: { fromHome: true } });

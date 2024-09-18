@@ -123,6 +123,9 @@ const DEFAULT_ACCESS_STATE = {
   disableFastLink: false,
   customModels: "",
   defaultModel: "",
+
+  // tts config
+  edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };
 
 export const useAccessStore = createPersistStore(
@@ -133,6 +136,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
+    },
+
+    edgeVoiceName() {
+      this.fetch();
+
+      return get().edgeTTSVoiceName;
     },
 
     isValidOpenAI() {
@@ -197,40 +206,40 @@ export const useAccessStore = createPersistStore(
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
-
-      const res = {
-        needCode: false,
-        hideUserApiKey: true,
-        disableGPT4: false,
-        hideBalanceQuery: true,
-      };
-      set(() => ({ ...res }));
-      fetchState = 2; // 设置 fetchState 值为 "获取已完成"
-      // fetch("/api/config", {
-      //   method: "post",
-      //   body: null,
-      //   headers: {
-      //     ...getHeaders(),
-      //   },
-      // })
-      //   .then((res) => res.json())
-      //   .then((res) => {
-      //     // Set default model from env request
-      //     let defaultModel = res.defaultModel ?? "";
-      //     DEFAULT_CONFIG.modelConfig.model =
-      //       defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
-      //     return res;
-      //   })
-      //   .then((res: DangerConfig) => {
-      //     console.log("[Config] got config from server", res);
-      //     set(() => ({ ...res }));
-      //   })
-      //   .catch(() => {
-      //     console.error("[Config] failed to fetch config");
-      //   })
-      //   .finally(() => {
-      //     fetchState = 2;
-      //   });
+      // const res = {
+      //     needCode: false,
+      //     hideUserApiKey: true,
+      //     disableGPT4: false,
+      //     hideBalanceQuery: true,
+      // };
+      // set(() => ({ ...res }));
+      // fetchState = 2; // 设置 fetchState 值为 "获取已完成"
+      // TODO: 可能有问题
+      fetch("/api/config", {
+        method: "post",
+        body: null,
+        headers: {
+          ...getHeaders(),
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          // Set default model from env request
+          let defaultModel = res.defaultModel ?? "";
+          if (defaultModel !== "")
+            DEFAULT_CONFIG.modelConfig.model = defaultModel;
+          return res;
+        })
+        .then((res: DangerConfig) => {
+          console.log("[Config] got config from server", res);
+          set(() => ({ ...res }));
+        })
+        .catch(() => {
+          console.error("[Config] failed to fetch config");
+        })
+        .finally(() => {
+          fetchState = 2;
+        });
     },
   }),
   {
