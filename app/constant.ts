@@ -3,6 +3,7 @@ import path from "path";
 export const OWNER = "ChatGPTNextWeb";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
+export const PLUGINS_REPO_URL = `https://github.com/${OWNER}/NextChat-Awesome-Plugins`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;
 export const RELEASE_URL = `${REPO_URL}/releases`;
@@ -39,6 +40,7 @@ export enum Path {
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
+  Plugins = "/plugins",
   Auth = "/auth",
   Sd = "/sd",
   SdNew = "/sd-new",
@@ -72,12 +74,9 @@ export enum FileName {
   Prompts = "prompts.json",
 }
 
-export enum Plugin {
-  Artifacts = "artifacts",
-}
-
 export enum StoreKey {
   Chat = "chat-next-web-store",
+  Plugin = "chat-next-web-plugin",
   Access = "access-control",
   Config = "app-config",
   Mask = "mask-store",
@@ -249,9 +248,12 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gpt-4o": "2023-10",
   "gpt-4o-2024-05-13": "2023-10",
   "gpt-4o-2024-08-06": "2023-10",
+  "chatgpt-4o-latest": "2023-10",
   "gpt-4o-mini": "2023-10",
   "gpt-4o-mini-2024-07-18": "2023-10",
   "gpt-4-vision-preview": "2023-04",
+  "o1-mini": "2023-10",
+  "o1-preview": "2023-10",
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
@@ -289,12 +291,15 @@ const openaiModels = [
   "gpt-4o",
   "gpt-4o-2024-05-13",
   "gpt-4o-2024-08-06",
+  "chatgpt-4o-latest",
   "gpt-4o-mini",
   "gpt-4o-mini-2024-07-18",
   "gpt-4-vision-preview",
   "gpt-4-turbo-2024-04-09",
   "gpt-4-1106-preview",
   "dall-e-3",
+  "o1-mini",
+  "o1-preview",
 ];
 
 const googleModels = [
@@ -499,6 +504,7 @@ export const internalAllowedWebDavEndpoints = [
 
 export const DEFAULT_GA_ID = "G-89WN60ZK2E";
 export const PLUGINS = [
+  { name: "Plugins", path: Path.Plugins },
   { name: "Stable Diffusion", path: Path.Sd },
   { name: "Search Chat", path: Path.SearchChat },
 ];

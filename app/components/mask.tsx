@@ -167,6 +167,22 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
 
+        <ListItem
+          title={Locale.Mask.Config.Artifacts.Title}
+          subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+        >
+          <input
+            aria-label={Locale.Mask.Config.Artifacts.Title}
+            type="checkbox"
+            checked={props.mask.enableArtifacts !== false}
+            onChange={(e) => {
+              props.updateMask((mask) => {
+                mask.enableArtifacts = e.currentTarget.checked;
+              });
+            }}
+          ></input>
+        </ListItem>
+
         {!props.shouldSyncFromGlobal ? (
           <ListItem
             title={Locale.Mask.Config.Share.Title}
@@ -410,16 +426,7 @@ export function MaskPage() {
   const maskStore = useMaskStore();
   const chatStore = useChatStore();
 
-  const [filterLang, setFilterLang] = useState<Lang | undefined>(
-    () => localStorage.getItem("Mask-language") as Lang | undefined,
-  );
-  useEffect(() => {
-    if (filterLang) {
-      localStorage.setItem("Mask-language", filterLang);
-    } else {
-      localStorage.removeItem("Mask-language");
-    }
-  }, [filterLang]);
+  const filterLang = maskStore.language;
 
   const allMasks = maskStore
     .getAll()
@@ -526,9 +533,9 @@ export function MaskPage() {
               onChange={(e) => {
                 const value = e.currentTarget.value;
                 if (value === Locale.Settings.Lang.All) {
-                  setFilterLang(undefined);
+                  maskStore.setLanguage(undefined);
                 } else {
-                  setFilterLang(value as Lang);
+                  maskStore.setLanguage(value as Lang);
                 }
               }}
             >

@@ -45,6 +45,8 @@ const en: LocaleType = {
       Delete: "Delete",
       Edit: "Edit",
       FullScreen: "FullScreen",
+      RefreshTitle: "Refresh Title",
+      RefreshToast: "Title refresh request sent",
       Speech: "Play",
       StopSpeech: "Stop",
     },
@@ -87,6 +89,14 @@ const en: LocaleType = {
       SaveAs: "Save as Mask",
     },
     IsContext: "Contextual Prompt",
+    ShortcutKey: {
+      Title: "Keyboard Shortcuts",
+      newChat: "Open New Chat",
+      focusInput: "Focus Input Field",
+      copyLastMessage: "Copy Last Reply",
+      copyLastCode: "Copy Last Code Block",
+      showShortcutKey: "Show Shortcuts",
+    },
   },
   Export: {
     Title: "Export Messages",
@@ -470,6 +480,10 @@ const en: LocaleType = {
     },
 
     Model: "Model",
+    CompressModel: {
+      Title: "Compression Model",
+      SubTitle: "Model used to compress history",
+    },
     Temperature: {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
@@ -552,10 +566,6 @@ const en: LocaleType = {
     Clear: "Context Cleared",
     Revert: "Revert",
   },
-  Plugin: {
-    Name: "Plugin",
-    Artifacts: "Artifacts",
-  },
   Discovery: {
     Name: "Discovery",
   },
@@ -575,6 +585,47 @@ const en: LocaleType = {
     },
     Item: {
       View: "View",
+    },
+  },
+  Plugin: {
+    Name: "Plugin",
+    Page: {
+      Title: "Plugins",
+      SubTitle: (count: number) => `${count} plugins`,
+      Search: "Search Plugin",
+      Create: "Create",
+      Find: "You can find awesome plugins on github: ",
+    },
+    Item: {
+      Info: (count: number) => `${count} method`,
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    Auth: {
+      None: "None",
+      Basic: "Basic",
+      Bearer: "Bearer",
+      Custom: "Custom",
+      CustomHeader: "Parameter Name",
+      Token: "Token",
+      Proxy: "Using Proxy",
+      ProxyDescription: "Using proxies to solve CORS error",
+      Location: "Location",
+      LocationHeader: "Header",
+      LocationQuery: "Query",
+      LocationBody: "Body",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Plugin ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Auth: "Authentication Type",
+      Content: "OpenAPI Schema",
+      Load: "Load From URL",
+      Method: "Method",
+      Error: "OpenAPI Schema Error",
     },
   },
   Mask: {
@@ -610,6 +661,10 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
+      },
+      Artifacts: {
+        Title: "Enable Artifacts",
+        SubTitle: "Can render HTML page when enable artifacts.",
       },
       Share: {
         Title: "Share This Mask",
