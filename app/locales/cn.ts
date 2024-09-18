@@ -360,7 +360,7 @@ const cn = {
         ApiKey: {
           Title: "API 密钥",
           SubTitle: "从 Google AI 获取您的 API 密钥",
-          Placeholder: "输入您的 Google AI Studio API 密钥",
+          Placeholder: "Google AI API KEY",
         },
 
         Endpoint: {
