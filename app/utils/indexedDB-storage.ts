@@ -7,7 +7,7 @@ const localStorage = safeLocalStorage();
 class IndexedDBStorage implements StateStorage {
   public async getItem(name: string): Promise<string | null> {
     if (typeof window === "undefined") {
-      return;
+      return null;
     }
     try {
       const value = (await get(name)) || localStorage.getItem(name);
