@@ -310,7 +310,7 @@ const cn = {
         Title: "使用 NextChat AI",
         Label: "（性价比最高的方案）",
         SubTitle:
-          "由 NextChat 官方维护, 零配置开箱即用，支持最新 GPT-4o、Gemini、Claude3 等最新大模型",
+          "由 NextChat 官方维护, 零配置开箱即用，支持 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
         ChatNow: "立刻对话",
       },
       AccessCode: {

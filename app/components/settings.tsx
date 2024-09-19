@@ -702,6 +702,7 @@ export function Settings() {
           Locale.Settings.Access.SaasStart.ChatNow
         }
         icon={<FireIcon />}
+        type={"primary"}
         text={Locale.Settings.Access.SaasStart.ChatNow}
         onClick={() => {
           window.location.href = SAAS_CHAT_URL;

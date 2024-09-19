@@ -313,7 +313,8 @@ const en: LocaleType = {
         Title: "Use NextChat AI",
         Label: " (Most Cost-Effective Option)",
         SubTitle:
-          "Maintained by NextChat, zero setup needed, supports the latest models like GPT-4o, Gemini, Claude3, and more.",
+          "Maintained by NextChat, zero setup needed, unlock OpenAI o1, GPT-4o," +
+          " Claude-3.5 and more",
         ChatNow: "Start Now",
       },
       AccessCode: {
