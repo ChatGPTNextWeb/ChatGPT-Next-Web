@@ -189,14 +189,16 @@ export class ChatGPTApi implements LLMApi {
 
   async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
+    const isO1 = options.config.model.startsWith("o1");
     const messages: ChatOptions["messages"] = [];
     for (const v of options.messages) {
       const content = visionModel
         ? await preProcessImageContent(v.content)
         : getMessageTextContent(v);
-      messages.push({ role: v.role, content });
+      if (!(isO1 && v.role === "system"))
+        messages.push({ role: v.role, content });
     }
-
+    
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -208,12 +210,12 @@ export class ChatGPTApi implements LLMApi {
 
     const requestPayload: RequestPayload = {
       messages,
-      stream: options.config.stream,
+      stream: !isO1 ? options.config.stream : false,
       model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
+      temperature: !isO1 ? modelConfig.temperature : 1,
+      presence_penalty: !isO1 ? modelConfig.presence_penalty : 0,
+      frequency_penalty: !isO1 ? modelConfig.frequency_penalty : 0,
+      top_p: !isO1 ? modelConfig.top_p : 1,
       // max_tokens: Math.max(modelConfig.max_tokens, 1024),
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
@@ -225,7 +227,7 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
 
-    const shouldStream = !!options.config.stream;
+    const shouldStream = !!options.config.stream && !isO1;
     const controller = new AbortController();
     options.onController?.(controller);
 
@@ -269,7 +271,7 @@ export class ChatGPTApi implements LLMApi {
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        isO1 ? REQUEST_TIMEOUT_MS * 2 : REQUEST_TIMEOUT_MS,
       );
 
       if (shouldStream) {
