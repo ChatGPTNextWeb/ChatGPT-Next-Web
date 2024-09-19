@@ -1,5 +1,6 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
+import { SAAS_CHAT_URL } from "@/app/constant";
 
 const isApp = !!getClientConfig()?.isApp;
 
@@ -7,8 +8,14 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized: isApp
-      ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+      ? `😆 对话遇到了一些问题，不用慌，立刻带你排查:
+       \\ 1️⃣ 如果你是小白，想要开箱即用，[点击这里立刻开启对话 🚀](${SAAS_CHAT_URL})
+       \\ 2️⃣ 如果你想消耗自己的 OpenAI 资源，点击[这里](/#/settings)修改设置 ⚙️`
+      : `😆 对话遇到了一些问题，不用慌，立刻带你排查:
+       \ 1️⃣ 如果你是小白，想要开箱即用，[点击这里立刻开启对话 🚀](${SAAS_CHAT_URL})
+       \ 2️⃣ 如果你在使用私有部署的版本，点击[这里](/#/auth)输入访问秘钥 🔑
+       \ 3️⃣ 如果你想消耗自己的 OpenAI 资源，点击[这里](/#/settings)修改设置 ⚙️
+       `,
   },
   Auth: {
     Return: "返回",
