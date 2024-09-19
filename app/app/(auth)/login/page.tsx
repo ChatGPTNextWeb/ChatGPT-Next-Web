@@ -1,7 +1,5 @@
-import Image from "next/image";
 import LoginByGithub from "./loginByGithub";
 import UserLoginCore from "./user-login-core";
-import { Suspense } from "react";
 
 export default function LoginPage() {
   return (

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, getIP } from "@/app/api/auth";
+import { auth } from "@/app/api/auth";
 import { ModelProvider } from "@/app/constant";
 import { requestLog } from "@/app/api/common";
 

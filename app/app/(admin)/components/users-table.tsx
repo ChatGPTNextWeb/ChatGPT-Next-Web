@@ -13,7 +13,7 @@ import {
   Modal,
   Form,
 } from "antd";
-import type { GetRef, TableColumnsType } from "antd";
+import type { TableColumnsType } from "antd";
 import { LockOutlined } from "@ant-design/icons";
 // import { headers } from 'next/headers'
 import type { NotificationArgsProps } from "antd";

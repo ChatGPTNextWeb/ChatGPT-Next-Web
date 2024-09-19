@@ -9,7 +9,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
-import { requestOpenai, requestLog } from "./common";
+import { requestOpenai } from "./common";
 
 // const ALLOWED_PATH = new Set(Object.values({ ...OpenaiPath, ...AZURE_PATH }));
 const ALLOWD_PATH = new Set(Object.values(OpenaiPath));

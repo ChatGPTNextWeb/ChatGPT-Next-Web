@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Layout, Menu, Button, theme, ConfigProvider, ThemeConfig } from "antd";
+import { Layout, Button, theme, ConfigProvider } from "antd";
 import SideBar from "../components/sidebar";
 
 const { Header, Sider, Content } = Layout;

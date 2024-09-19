@@ -6,29 +6,10 @@ import { getClientConfig } from "./config/client";
 import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
+// eslint-disable-next-line unused-imports/no-unused-imports
 import { GoogleTagManager } from "@next/third-parties/google";
 const serverConfig = getServerSideConfig();
 import { Providers } from "@/app/providers";
-// import { Viewport } from "next";
-
-// export const metadata: Metadata = {
-//     title: "NextChat",
-//     description: "Your personal ChatGPT Chat Bot.",
-//     appleWebApp: {
-//         title: "NextChat",
-//         statusBarStyle: "default",
-//     },
-// };
-//
-// export const viewport: Viewport = {
-//     width: "device-width",
-//     initialScale: 1,
-//     maximumScale: 1,
-//     themeColor: [
-//         { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-//         { media: "(prefers-color-scheme: dark)", color: "#151515" },
-//     ],
-// };
 
 export const viewport: Viewport = {
   themeColor: [

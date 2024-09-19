@@ -7,8 +7,8 @@ import prisma from "@/lib/prisma";
 import { User } from "@prisma/client";
 import { isEmail, isName } from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
-import { comparePassword, hashPassword } from "@/lib/utils";
-import { randomInt, randomBytes } from "crypto";
+import { comparePassword } from "@/lib/utils";
+import { randomBytes } from "crypto";
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 let verificationTokens = new Map();

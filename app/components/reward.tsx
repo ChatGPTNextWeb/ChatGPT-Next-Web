@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "@/app/components/mask.module.scss";
 import Locale from "@/app/locales";
 import { IconButton } from "@/app/components/button";

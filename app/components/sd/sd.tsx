@@ -36,7 +36,7 @@ import { removeImage } from "@/app/utils/chat";
 import { SideBar } from "./sd-sidebar";
 import { WindowContent } from "@/app/components/home";
 import { params } from "./sd-panel";
-import Image from "next/image";
+
 function getSdTaskStatus(item: any) {
   let s: string;
   let color: Property.Color | undefined = undefined;

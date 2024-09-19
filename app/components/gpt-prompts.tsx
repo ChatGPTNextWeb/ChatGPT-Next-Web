@@ -1,5 +1,5 @@
 import styles from "./gpt-prompts.module.scss";
-import { Flex, Radio, Card } from "antd";
+import { Flex, Card } from "antd";
 
 export default function GptPrompts() {
   return (

@@ -1,24 +1,17 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import React, { useState, useEffect, useRef, use, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { isName } from "@/lib/auth_list";
 import {
   Form,
   Tabs,
   Input,
-  Button,
-  InputRef,
   notification as notificationModule,
   NotificationArgsProps,
 } from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  LoadingOutlined,
-  AudioOutlined,
-} from "@ant-design/icons";
-import type { FormProps, TabsProps } from "antd";
+import { UserOutlined, MailOutlined, LoadingOutlined } from "@ant-design/icons";
+import type { FormProps } from "antd";
 import { SignInOptions } from "next-auth/react";
 import { getSession } from "next-auth/react";
 

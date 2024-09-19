@@ -25,20 +25,12 @@ import React, {
   useRef,
 } from "react";
 import { IconButton } from "./button";
-import {
-  Card as AntCard,
-  List as AntList,
-  Row,
-  Col,
-  Grid,
-  Avatar,
-  Button,
-} from "antd";
+import { List as AntList, Row, Col } from "antd";
 import { OpenAIOutlined, GoogleOutlined } from "@ant-design/icons";
 // 自定义图标
 import Icon from "@ant-design/icons";
 
-const { Meta } = AntCard;
+// const { Meta } = AntCard;
 import { CheckCard } from "@ant-design/pro-components";
 import { CheckGroupValueType } from "@ant-design/pro-card/es/components/CheckCard/Group";
 

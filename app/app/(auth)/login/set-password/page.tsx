@@ -1,18 +1,17 @@
 "use client";
-import { redirect } from "next/navigation";
 // import { getSession } from "@/lib/auth";
 import { useSession } from "next-auth/react";
-import { Button, Checkbox, Form, FormProps, Input } from "antd";
+import { Form, FormProps, Input } from "antd";
 import { LockOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+// import React from "react";
 import { signOut } from "next-auth/react";
 
 type LoginType = "phone" | "account";
 
 export default function SetPasswordPage() {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const { data: session, status } = useSession();
-  const [showOldPassword, setShowOldPassword] = useState<Boolean>(true);
+  // const [showOldPassword, setShowOldPassword] = useState<Boolean>(true);
   const [setPasswordForm] = Form.useForm();
   // if (typeof window !== "undefined" && loading) return null;
   // console.log("2222222", session);
@@ -34,7 +33,7 @@ export default function SetPasswordPage() {
     "user[password_confirmation]"?: string;
   };
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    setLoading(true);
+    // setLoading(true);
     // console.log('-------------', values)
     // @ts-expect-error
     fetch(`/api/user/${session?.user?.id}`, {
