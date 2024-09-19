@@ -35,7 +35,7 @@ export function createPersistStore<T extends object, M>(
   persistOptions: SecondParam<typeof persist<T & M & MakeUpdater<T>>>,
 ) {
   // TODO: merge 报错，很离谱，后续再排查
-  // persistOptions.storage = createJSONStorage(() => indexedDBStorage);
+  persistOptions.storage = createJSONStorage(() => indexedDBStorage);
   const oldOonRehydrateStorage = persistOptions?.onRehydrateStorage;
   persistOptions.onRehydrateStorage = (state) => {
     oldOonRehydrateStorage?.(state);

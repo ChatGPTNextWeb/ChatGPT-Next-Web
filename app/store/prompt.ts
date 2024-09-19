@@ -1,7 +1,7 @@
 import Fuse from "fuse.js";
-import { getLang } from "../locales";
-import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
+import { StoreKey } from "../constant";
+import { getLang } from "../locales";
 import { createPersistStore } from "../utils/store";
 
 export interface Prompt {
@@ -158,9 +158,14 @@ export const usePromptStore = createPersistStore(
     },
 
     onRehydrateStorage(state) {
+      // Skip store rehydration on server side
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const PROMPT_URL = "./prompts.json";
       // const PROMPT_URL = "https://cos.xiaosi.cc/next/public/prompts.json";
       // const PROMPT_URL = "https://qn.xiaosi.cc/json/chat/prompts.json";
-      const PROMPT_URL = "./prompts.json"
       const GPT_PROMPT_URL =
         "https://qn.xiaosi.cc/json/chat/prompt_library.json";
 
