@@ -203,7 +203,7 @@ export function ArtifactsShareButton({
 }
 
 export function Artifacts() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [fileName, setFileName] = useState("");
