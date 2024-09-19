@@ -5,7 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: yarn install && yarn run dev
-    command: yarn run dev
+  - init: pnpm install && pnpm dev
+    command: pnpm dev
 
 
