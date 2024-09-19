@@ -90,6 +90,7 @@ const tw = {
       copyLastMessage: "複製最後一個回覆",
       copyLastCode: "複製最後一個代碼塊",
       showShortcutKey: "顯示快捷方式",
+      clearContext: "清除上下文",
     },
   },
   Export: {
