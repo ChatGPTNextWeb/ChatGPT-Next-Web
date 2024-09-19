@@ -13,12 +13,14 @@ const en: LocaleType = {
       : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
   },
   Auth: {
+    Return: "Return",
     Title: "Need Access Code",
     Tips: "Please enter access code below",
     SubTips: "Or enter your OpenAI or Google API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
+    SaasTips: "Too Complex, Use Immediately Now",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,

@@ -1,12 +1,22 @@
 .auth-page {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   width: 100%;
   flex-direction: column;
 
+  .auth-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    animation: slide-in-from-top ease 0.3s;
+  }
+
   .auth-logo {
+    margin-top: 10vh;
     transform: scale(1.4);
   }
 
@@ -14,6 +24,7 @@
     font-size: 24px;
     font-weight: bold;
     line-height: 2;
+    margin-bottom: 1vh;
   }
 
   .auth-tips {

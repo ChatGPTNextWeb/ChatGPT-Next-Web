@@ -9,6 +9,7 @@ import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
+import LeftIcon from "@/app/icons/left.svg";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -16,7 +17,9 @@ export function AuthPage() {
 
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
-  const goSaas = () => window.open(SAAS_CHAT_URL);
+  const goSaas = () => {
+    window.location.href = SAAS_CHAT_URL;
+  };
   const resetAccessCode = () => {
     accessStore.update((access) => {
       access.openaiApiKey = "";
@@ -33,6 +36,13 @@ export function AuthPage() {
 
   return (
     <div className={styles["auth-page"]}>
+      <div className={styles["auth-header"]}>
+        <IconButton
+          icon={<LeftIcon />}
+          text={Locale.Auth.Return}
+          onClick={() => navigate(Path.Home)}
+        ></IconButton>
+      </div>
       <div className={`no-dark ${styles["auth-logo"]}`}>
         <BotIcon />
       </div>

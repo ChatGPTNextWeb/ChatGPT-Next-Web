@@ -502,4 +502,4 @@ export const PLUGINS = [
   { name: "Search Chat", path: Path.SearchChat },
 ];
 
-export const SAAS_CHAT_URL = "https://nextchat.dev/chat";
+export const SAAS_CHAT_URL = "https://nextchat.dev";
