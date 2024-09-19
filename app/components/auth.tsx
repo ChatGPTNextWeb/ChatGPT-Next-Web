@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { Path, SAAS_CHAT_URL } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
-import Delete from "../icons/www-delete.svg";
+import Delete from "../icons/close.svg";
 import Arrow from "../icons/arrow.svg";
 import Logo from "../icons/logo.svg";
 import BotIcon from "../icons/bot.svg";
 import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
+import { safeLocalStorage } from "@/app/utils";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -112,20 +113,21 @@ export function AuthPage() {
 function TopBanner() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const storage = safeLocalStorage();
 
   useEffect(() => {
     // 检查 localStorage 中是否有标记
-    const bannerDismissed = localStorage.getItem("bannerDismissed");
+    const bannerDismissed = storage.getItem("bannerDismissed");
 
     // 如果标记不存在，存储默认值并显示横幅
     if (!bannerDismissed) {
-      localStorage.setItem("bannerDismissed", "false");
+      storage.setItem("bannerDismissed", "false");
       setIsVisible(true); // 显示横幅
     } else if (bannerDismissed === "true") {
       // 如果标记为 "true"，则隐藏横幅
       setIsVisible(false);
     }
-  }, []);
+  }, [storage]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -137,7 +139,7 @@ function TopBanner() {
 
   const handleClose = () => {
     setIsVisible(false);
-    localStorage.setItem("bannerDismissed", "true");
+    storage.setItem("bannerDismissed", "true");
   };
 
   if (!isVisible) {
