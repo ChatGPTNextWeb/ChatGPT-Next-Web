@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 import { getServerSideConfig } from "@/app/config/server";
-import {
-  ApiPath,
-  GEMINI_BASE_URL,
-  Google,
-  ModelProvider,
-} from "@/app/constant";
+import { ApiPath, GEMINI_BASE_URL, ModelProvider } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 
 const serverConfig = getServerSideConfig();
