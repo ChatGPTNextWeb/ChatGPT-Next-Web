@@ -1,19 +1,19 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
+
+# if you located in China, you can use taobao registry to speed up
+# RUN npm config set registry 'https://registry.npmmirror.com/'
+
+RUN npm install -g pnpm@latest-9
 
 FROM base AS deps
 
-RUN apk add --no-cache libc6-compat
-
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY .npmrc package.json pnpm-lock.yaml ./
 
-RUN yarn config set registry 'https://registry.npmmirror.com/'
-RUN yarn install
+RUN pnpm install
 
 FROM base AS builder
-
-RUN apk update && apk add --no-cache git
 
 ENV OPENAI_API_KEY=""
 ENV GOOGLE_API_KEY=""
@@ -23,7 +23,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn build
+RUN pnpm build
 
 FROM base AS runner
 WORKDIR /app
