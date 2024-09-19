@@ -76,7 +76,7 @@ However, Next.js has limited compatibility with older browsers, which can result
 You can disable chunking during building.
 
 For Vercel platform, you can add `DISABLE_CHUNK=1` to the environment variables and redeploy.
-For self-deployed projects, you can use `DISABLE_CHUNK=1 yarn build` during the build process.
+For self-deployed projects, you can use `DISABLE_CHUNK=1 pnpm build` during the build process.
 For Docker users, as the build is already completed during packaging, disabling this feature is currently not supported.
 
 Note that when you disable this feature, all resources will be loaded on the user's first visit. This may result in a longer white screen time if the user has a poor network connection, affecting the user experience. Please consider this when making a decision.

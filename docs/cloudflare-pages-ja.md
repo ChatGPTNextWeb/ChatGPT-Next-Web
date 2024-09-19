@@ -20,7 +20,7 @@ GitHub でこのプロジェクトをフォークし、dash.cloudflare.com に�
     - `NODE_VERSION=20.1`
     - `NEXT_TELEMETRY_DISABLE=1`
     - `OPENAI_API_KEY=your_own_API_key`
-    - `YARN_VERSION=1.22.19`
+    - `PNPM_VERSION=9.11.0`
     - `PHP_VERSION=7.4`
 
     必要に応じて、以下の項目を入力してください:

@@ -21,7 +21,7 @@
     - node_version=20.1`.
     - next_telemetry_disable=1`.
     - `OPENAI_API_KEY=자신의 API 키`
-    - ``yarn_version=1.22.19``
+    - ``PNPM_VERSION=9.11.0``
     - ``php_version=7.4``.
 
     실제 필요에 따라 다음 옵션을 선택적으로 입력합니다:

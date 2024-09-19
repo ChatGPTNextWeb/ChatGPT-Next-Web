@@ -381,11 +381,11 @@ BASE_URL=https://chatgpt1.nextweb.fun/api/proxy
 ### Local Development
 
 ```shell
-# 1. install nodejs and yarn first
+# 1. install nodejs and pnpm first
 # 2. config local env vars in `.env.local`
 # 3. run
-yarn install
-yarn dev
+pnpm install
+pnpm dev
 ```
 
 ## Deployment

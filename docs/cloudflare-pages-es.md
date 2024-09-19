@@ -22,7 +22,7 @@ Bifurca el proyecto en Github, luego inicia sesión en dash.cloudflare.com y ve 
     *   `NODE_VERSION=20.1`
     *   `NEXT_TELEMETRY_DISABLE=1`
     *   `OPENAI_API_KEY=你自己的API Key`
-    *   `YARN_VERSION=1.22.19`
+    *   `PNPM_VERSION=9.11.0`
     *   `PHP_VERSION=7.4`
 
     Dependiendo de sus necesidades reales, puede completar opcionalmente las siguientes opciones:

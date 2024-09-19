@@ -258,9 +258,9 @@ BASE_URL=https://b.nextweb.fun/api/proxy
 
 ### 本地开发
 
-1. 安装 nodejs 18 和 yarn，具体细节请询问 ChatGPT；
-2. 执行 `yarn install && yarn dev` 即可。⚠️ 注意：此命令仅用于本地开发，不要用于部署！
-3. 如果你想本地部署，请使用 `yarn install && yarn build && yarn start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
+1. 安装 nodejs 18 和 pnpm，具体细节请询问 ChatGPT；
+2. 执行 `pnpm install && pnpm dev` 即可。⚠️ 注意：此命令仅用于本地开发，不要用于部署！
+3. 如果你想本地部署，请使用 `pnpm install && pnpm build && pnpm start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
 
 ## 部署
 

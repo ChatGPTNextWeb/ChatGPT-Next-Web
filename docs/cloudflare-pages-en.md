@@ -22,7 +22,7 @@ Fork this project on GitHub, then log in to dash.cloudflare.com and go to Pages.
     - `NODE_VERSION=20.1`
     - `NEXT_TELEMETRY_DISABLE=1`
     - `OPENAI_API_KEY=your_own_API_key`
-    - `YARN_VERSION=1.22.19`
+    - `PNPM_VERSION=9.11.0`
     - `PHP_VERSION=7.4`
 
     Optionally fill in the following based on your needs:
