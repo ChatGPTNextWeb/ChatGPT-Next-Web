@@ -155,7 +155,7 @@ export const getServerSideConfig = () => {
   // );
 
   const allowedWebDevEndpoints = (
-    process.env.WHITE_WEBDEV_ENDPOINTS ?? ""
+    process.env.WHITE_WEBDAV_ENDPOINTS ?? ""
   ).split(",");
 
   return {
