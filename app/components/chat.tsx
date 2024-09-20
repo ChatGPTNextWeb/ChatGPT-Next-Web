@@ -743,36 +743,6 @@ export function ChatActions(props: {
         />
       )}
 
-      <!-- {showPlugins(currentProviderName, currentModel) && (
-        <ChatAction
-          onClick={() => {
-            if (pluginStore.getAll().length == 0) {
-              navigate(Path.Plugins);
-            } else {
-              setShowPluginSelector(true);
-            }
-          }}
-          text={Locale.Plugin.Name}
-          icon={<PluginIcon />}
-        />
-      )}
-      {showPluginSelector && (
-        <Selector
-          multiple
-          defaultSelectedValue={chatStore.currentSession().mask?.plugin}
-          items={pluginStore.getAll().map((item) => ({
-            title: `${item?.title}@${item?.version}`,
-            value: item?.id,
-          }))}
-          onClose={() => setShowPluginSelector(false)}
-          onSelection={(s) => {
-            chatStore.updateCurrentSession((session) => {
-              session.mask.plugin = s as string[];
-            });
-          }}
-        />
-      )} -->
-
       {!isMobileScreen && (
         <ChatAction
           onClick={() => props.setShowShortcutKeyModal(true)}
