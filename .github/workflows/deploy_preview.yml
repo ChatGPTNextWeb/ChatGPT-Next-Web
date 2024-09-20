@@ -49,7 +49,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache-npm
         with:
           path: ~/.npm

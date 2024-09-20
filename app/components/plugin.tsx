@@ -28,7 +28,7 @@ import {
 } from "./ui-lib";
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getClientConfig } from "../config/client";
 
 export function PluginPage() {
