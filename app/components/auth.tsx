@@ -13,10 +13,10 @@ import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
 
+const storage = safeLocalStorage();
 export function AuthPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
-
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
   const goSaas = () => {
@@ -113,7 +113,6 @@ export function AuthPage() {
 function TopBanner() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const storage = safeLocalStorage();
 
   useEffect(() => {
     // 检查 localStorage 中是否有标记
@@ -127,7 +126,7 @@ function TopBanner() {
       // 如果标记为 "true"，则隐藏横幅
       setIsVisible(false);
     }
-  }, [storage]);
+  }, []);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
