@@ -224,11 +224,11 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="小王的GPT"
-        subTitle="欢迎使用小王的ChatGPT."
+        title="ChatGPT-4.0"
+        subTitle="欢迎使用ChatGPT-4.0."
         logo={<ChatGptIcon />}
       >
-        <div className={styles["sidebar-header-bar"]}>
+        <!-- <div className={styles["sidebar-header-bar"]}>
           <IconButton
             icon={<MaskIcon />}
             text={shouldNarrow ? undefined : Locale.Mask.Name}
@@ -249,7 +249,7 @@ export function SideBar(props: { className?: string }) {
             onClick={() => setShowPluginSelector(true)}
             shadow
           />
-        </div>
+        </div>-->
         {showPluginSelector && (
           <Selector
             items={[
