@@ -83,12 +83,12 @@ export const DEFAULT_CONFIG = {
   },
 
   ttsConfig: {
-    enable: false,
+    enable: true,
     autoplay: false,
     engine: DEFAULT_TTS_ENGINE,
     model: DEFAULT_TTS_MODEL,
     voice: DEFAULT_TTS_VOICE,
-    speed: 1.0,
+    speed: 1.1,
   },
 };
 
@@ -180,7 +180,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4,
+    version: 4.1,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -227,7 +227,7 @@ export const useAppConfig = createPersistStore(
         state.lastUpdate = Date.now();
       }
 
-      if (version < 4) {
+      if (version < 4.1) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
