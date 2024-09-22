@@ -3,10 +3,8 @@
 import {
   ApiPath,
   DEFAULT_API_HOST,
-  DEFAULT_MODELS,
   Moonshot,
   REQUEST_TIMEOUT_MS,
-  ServiceProvider,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -15,28 +13,17 @@ import {
   ChatMessageTool,
   usePluginStore,
 } from "@/app/store";
-import { collectModelsWithDefaultModel } from "@/app/utils/model";
-import { preProcessImageContent, stream } from "@/app/utils/chat";
-import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-
+import { stream } from "@/app/utils/chat";
 import {
   ChatOptions,
   getHeaders,
   LLMApi,
   LLMModel,
-  LLMUsage,
-  MultimodalContent,
+  SpeechOptions,
 } from "../api";
-import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
-
-import { OpenAIListModelResponse, RequestPayload } from "./openai";
+import { RequestPayload } from "./openai";
 
 export class MoonshotApi implements LLMApi {
   private disableListModels = true;
@@ -70,6 +57,10 @@ export class MoonshotApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
