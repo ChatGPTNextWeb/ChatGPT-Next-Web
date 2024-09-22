@@ -48,6 +48,7 @@
     "heic2any": "^0.0.4",
     "html-entities": "^2.4.0",
     "html-to-image": "^1.11.11",
+    "idb-keyval": "^6.2.1",
     "html-to-text": "^9.0.5",
     "https-proxy-agent": "^7.0.2",
     "mammoth": "^1.7.1",

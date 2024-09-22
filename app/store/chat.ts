@@ -18,6 +18,7 @@ import {
   GEMINI_SUMMARIZE_MODEL,
   MYFILES_BROWSER_TOOLS_SYSTEM_PROMPT,
 } from "../constant";
+import { isDalle3, safeLocalStorage } from "../utils";
 import { getClientApi } from "../client/api";
 import type {
   ClientApi,
@@ -38,6 +39,20 @@ import { createPersistStore } from "../utils/store";
 import { FileInfo } from "../client/platforms/utils";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
+
+const localStorage = safeLocalStorage();
+
+export type ChatMessageTool = {
+  id: string;
+  index?: number;
+  type?: string;
+  function?: {
+    name: string;
+    arguments?: string;
+  };
+  content?: string;
+  isError?: boolean;
+};
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -670,6 +685,10 @@ ${file.partial}
         const config = useAppConfig.getState();
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+        // skip summarize when using dalle3?
+        if (isDalle3(modelConfig.model)) {
+          return;
+        }
 
         const api: ClientApi = getClientApi(modelConfig.providerName);
 
