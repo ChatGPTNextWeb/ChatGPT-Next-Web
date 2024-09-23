@@ -170,6 +170,28 @@ export const useChatStore = createPersistStore(
     }
 
     const methods = {
+      forkSession() {
+        // 获取当前会话
+        const currentSession = get().currentSession();
+        if (!currentSession) return;
+
+        const newSession = createEmptySession();
+
+        newSession.topic = currentSession.topic;
+        newSession.messages = [...currentSession.messages];
+        newSession.mask = {
+          ...currentSession.mask,
+          modelConfig: {
+            ...currentSession.mask.modelConfig,
+          },
+        };
+
+        set((state) => ({
+          currentSessionIndex: 0,
+          sessions: [newSession, ...state.sessions],
+        }));
+      },
+
       clearSessions() {
         set(() => ({
           sessions: [createEmptySession()],
