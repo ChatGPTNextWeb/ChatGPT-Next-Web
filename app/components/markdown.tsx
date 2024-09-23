@@ -128,7 +128,6 @@ export function PreCode(props: { children: any }) {
           className="copy-code-button"
           onClick={() => {
             if (ref.current) {
-              // const code = ref.current.innerText;
               copyToClipboard(
                 ref.current.querySelector("code")?.innerText ?? "",
               );
