@@ -1,6 +1,5 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  Moonshot,
   MOONSHOT_BASE_URL,
   ApiPath,
   ModelProvider,
@@ -10,7 +9,6 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
-import type { RequestPayload } from "@/app/client/platforms/openai";
 
 const serverConfig = getServerSideConfig();
 
