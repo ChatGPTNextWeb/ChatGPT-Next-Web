@@ -11,7 +11,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 12px 64px;
     box-sizing: border-box;
     background: var(--second);
@@ -22,8 +21,6 @@
       font-size: 14px;
       line-height: 150%;
       span {
-        display: inline-flex;
-        align-items: center;
         gap: 8px;
         a {
           display: inline-flex;
@@ -40,6 +37,20 @@
       top: 50%;
       right: 48px;
       transform: translateY(-50%);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .top-banner {
+      padding: 12px 24px 12px 12px;
+      .top-banner-close {
+        right: 10px;
+      }
+      .top-banner-inner {
+        .top-banner-logo {
+          margin-right: 8px;
+        }
+      }
     }
   }
 

@@ -113,11 +113,10 @@ export function AuthPage() {
 function TopBanner() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
   useEffect(() => {
     // 检查 localStorage 中是否有标记
     const bannerDismissed = storage.getItem("bannerDismissed");
-
     // 如果标记不存在，存储默认值并显示横幅
     if (!bannerDismissed) {
       storage.setItem("bannerDismissed", "false");
@@ -126,6 +125,15 @@ function TopBanner() {
       // 如果标记为 "true"，则隐藏横幅
       setIsVisible(false);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleMouseEnter = () => {
@@ -151,16 +159,16 @@ function TopBanner() {
       onMouseLeave={handleMouseLeave}
     >
       <div className={styles["top-banner-inner"]}>
+        <Logo className={styles["top-banner-logo"]}></Logo>
         <span>
-          <Logo></Logo>
           {Locale.Auth.TopTips}
           <a href={SAAS_CHAT_URL} rel="stylesheet">
             {Locale.Settings.Access.SaasStart.ChatNow}
-            <Arrow style={{ marginLeft: "8px" }} />
+            <Arrow style={{ marginLeft: "4px" }} />
           </a>
         </span>
       </div>
-      {isHovered && (
+      {(isHovered || isMobile) && (
         <Delete className={styles["top-banner-close"]} onClick={handleClose} />
       )}
     </div>
