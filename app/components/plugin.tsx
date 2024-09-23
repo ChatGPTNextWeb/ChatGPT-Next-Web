@@ -12,7 +12,6 @@ import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
-import EyeIcon from "../icons/eye.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import ReloadIcon from "../icons/reload.svg";
 import GithubIcon from "../icons/github.svg";
@@ -29,7 +28,6 @@ import {
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { getClientConfig } from "../config/client";
 
 export function PluginPage() {
   const navigate = useNavigate();
@@ -209,19 +207,11 @@ export function PluginPage() {
                   </div>
                 </div>
                 <div className={styles["mask-actions"]}>
-                  {m.builtin ? (
-                    <IconButton
-                      icon={<EyeIcon />}
-                      text={Locale.Plugin.Item.View}
-                      onClick={() => setEditingPluginId(m.id)}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={<EditIcon />}
-                      text={Locale.Plugin.Item.Edit}
-                      onClick={() => setEditingPluginId(m.id)}
-                    />
-                  )}
+                  <IconButton
+                    icon={<EditIcon />}
+                    text={Locale.Plugin.Item.Edit}
+                    onClick={() => setEditingPluginId(m.id)}
+                  />
                   {!m.builtin && (
                     <IconButton
                       icon={<DeleteIcon />}
@@ -323,23 +313,6 @@ export function PluginPage() {
                       });
                     }}
                   ></PasswordInput>
-                </ListItem>
-              )}
-              {!getClientConfig()?.isApp && (
-                <ListItem
-                  title={Locale.Plugin.Auth.Proxy}
-                  subTitle={Locale.Plugin.Auth.ProxyDescription}
-                >
-                  <input
-                    type="checkbox"
-                    checked={editingPlugin?.usingProxy}
-                    style={{ minWidth: 16 }}
-                    onChange={(e) => {
-                      pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
-                        plugin.usingProxy = e.currentTarget.checked;
-                      });
-                    }}
-                  ></input>
                 </ListItem>
               )}
             </List>
