@@ -60,12 +60,12 @@ export const FunctionToolService = {
     };
     if (authLocation == "header") {
       headers[headerName] = tokenValue;
-      // try using openaiApiKey for Dalle3 Plugin.
-      if (!tokenValue && plugin.id === "dalle3") {
-        const openaiApiKey = useAccessStore.getState().openaiApiKey;
-        if (openaiApiKey) {
-          headers[headerName] = `Bearer ${openaiApiKey}`;
-        }
+    }
+    // try using openaiApiKey for Dalle3 Plugin.
+    if (!tokenValue && plugin.id === "dalle3") {
+      const openaiApiKey = useAccessStore.getState().openaiApiKey;
+      if (openaiApiKey) {
+        headers[headerName] = `Bearer ${openaiApiKey}`;
       }
     }
     const api = new OpenAPIClientAxios({
