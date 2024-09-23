@@ -144,9 +144,9 @@ export default function UserLoginCore() {
               message: "登录失败",
               description: (
                 <span>
-                  无权限，请确认用户名正确并等待审批
+                  无权限，仅提供给熟人使用
                   <br />
-                  <span style={{ color: "red" }}>或联系管理员</span>
+                  <span style={{ color: "red" }}>请主动联系管理员解锁</span>
                 </span>
               ),
             });
