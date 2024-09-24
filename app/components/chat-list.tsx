@@ -1,5 +1,4 @@
 import DeleteIcon from "../icons/delete.svg";
-
 import styles from "./home.module.scss";
 import {
   DragDropContext,
@@ -134,7 +133,10 @@ export function ChatList(props: { narrow?: boolean }) {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext
+      onDragEnd={onDragEnd}
+      autoScrollerOptions={{ disabled: true }}
+    >
       <Droppable droppableId="chat-list">
         {(provided) => (
           <div
@@ -147,36 +149,40 @@ export function ChatList(props: { narrow?: boolean }) {
               // className={motionStyles["queue-simple"]}
               ease={["easeOutQuart", "easeInOutQuart"]}
               duration={[550, 450]}
+              type={["right", "left"]}
               animConfig={[
                 { opacity: [1, 0], translateY: [0, 30] },
                 { height: 0 },
               ]}
-              interval={150}
+              key={sessions.length}
+              // interval={150}
             >
               {sessions.map((item, i) => (
-                <ChatItem
-                  title={item.topic}
-                  time={new Date(item.lastUpdate).toLocaleString()}
-                  count={item.messages.length}
-                  key={item.id}
-                  id={item.id}
-                  index={i}
-                  selected={i === selectedIndex}
-                  onClick={() => {
-                    navigate(Path.Chat);
-                    selectSession(i);
-                  }}
-                  onDelete={async () => {
-                    if (
-                      (!props.narrow && !isMobileScreen) ||
-                      (await showConfirm(Locale.Home.DeleteChat))
-                    ) {
-                      chatStore.deleteSession(i);
-                    }
-                  }}
-                  narrow={props.narrow}
-                  mask={item.mask}
-                />
+                <div key={i}>
+                  <ChatItem
+                    title={item.topic}
+                    time={new Date(item.lastUpdate).toLocaleString()}
+                    count={item.messages.length}
+                    key={item.id}
+                    id={item.id}
+                    index={i}
+                    selected={i === selectedIndex}
+                    onClick={() => {
+                      navigate(Path.Chat);
+                      selectSession(i);
+                    }}
+                    onDelete={async () => {
+                      if (
+                        (!props.narrow && !isMobileScreen) ||
+                        (await showConfirm(Locale.Home.DeleteChat))
+                      ) {
+                        chatStore.deleteSession(i);
+                      }
+                    }}
+                    narrow={props.narrow}
+                    mask={item.mask}
+                  />
+                </div>
               ))}
             </QueueAnim>
             {provided.placeholder}
