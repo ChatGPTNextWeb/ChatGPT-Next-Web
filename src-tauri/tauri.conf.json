@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "productName": "NextChat",
-  "identifier": "NextChat.template.dev",
+  "identifier": "dev.nextchat.app",
   "version": "0.1.0",
   "build": {
     "beforeBuildCommand": "yarn export",
@@ -11,30 +11,38 @@
   },
   "plugins": {},
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
-        "title": "quantum",
-        "width": 800,
-        "height": 600
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "NextChat",
+        "width": 960,
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay"
       }
     ],
     "security": {
       "csp": null
-    },
-    "withGlobalTauri": false
+    }
   },
   "bundle": {
-   "macOS": {
-     "signingIdentity": "-"
-   },
-   "active": true,
-   "targets": "all",
-   "icon": [
-    "icons/32x32.png",
-    "icons/128x128.png",
-    "icons/128x128@2x.png",
-    "icons/icon.icns",
-    "icons/icon.ico"
-   ]
- }
+    "active": true,
+    "targets": "all",
+    "category": "Utility",
+    "copyright": "Copyright © 2024 GPTsMotion Tech LLC All Rights Reserved.",
+    "shortDescription": "NextChat App",
+    "longDescription": "Experience NextChat: Local-first, seamless, and designed for the ultimate chat experience",
+    "macOS": {
+      "signingIdentity": "-"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
 }
