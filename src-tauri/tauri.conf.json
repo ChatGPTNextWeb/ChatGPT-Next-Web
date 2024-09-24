@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "productName": "NextChat",
-  "identifier": "NextChat.template.dev",
-  "version": "0.1.0",
+  "identifier": "com.yida.chatgpt.next.web",
+  "version": "2.15.4",
   "build": {
     "beforeBuildCommand": "yarn export",
     "beforeDevCommand": "yarn export:dev",
@@ -13,7 +13,7 @@
   "app": {
     "windows": [
       {
-        "title": "quantum",
+        "title": "NextChat",
         "width": 800,
         "height": 600
       }
@@ -21,7 +21,7 @@
     "security": {
       "csp": null
     },
-    "withGlobalTauri": false
+    "withGlobalTauri": true
   },
   "bundle": {
    "macOS": {
