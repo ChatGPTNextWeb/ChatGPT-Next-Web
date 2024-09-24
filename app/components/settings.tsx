@@ -1465,6 +1465,20 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          <ListItem title="artifact" subTitle="artifacts">
+            <input
+              aria-label="artifacts"
+              type="checkbox"
+              checked={config.enableArtifacts}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableArtifacts = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />
