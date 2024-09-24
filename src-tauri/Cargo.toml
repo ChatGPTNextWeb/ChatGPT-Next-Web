@@ -9,37 +9,40 @@ default-run = "nextchat"
 edition = "2021"
 rust-version = "1.60"
 
+[lib]
+name = "nextchat"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.1", features = [] }
+tauri-build = { version = "2.0.0-rc", features = [] }
 
 [dependencies]
-serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.5.4", features = [ "http-all",
-    "notification-all",
-    "fs-all",
-    "clipboard-all",
-    "dialog-all",
-    "shell-open",
-    "updater",
-    "window-close",
-    "window-hide",
-    "window-maximize",
-    "window-minimize",
-    "window-set-icon",
-    "window-set-ignore-cursor-events",
-    "window-set-resizable",
-    "window-show",
-    "window-start-dragging",
-    "window-unmaximize",
-    "window-unminimize",
-] }
-tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+tauri = { version = "2.0.0-rc", features = [] }
+tauri-plugin-shell = "2.0.0-rc"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-devtools = "2.0.0-rc"
+specta = "=2.0.0-rc.20"
+tauri-plugin-updater = "2.0.0-rc"
+tauri-plugin-dialog = "2.0.0-rc"
+tauri-specta = { version = "=2.0.0-rc.15", features = ["derive", "javascript", "typescript"] }
+specta-typescript = "0.0.7"
+log = "0.4.22"
+
+# Optimize for smaller binary size
+[profile.release]
+panic = "abort"   # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true        # Enables link to optimizations
+opt-level = "s"   # Optimize for binary size
+strip = true      # Remove debug symbols
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
 # If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+
