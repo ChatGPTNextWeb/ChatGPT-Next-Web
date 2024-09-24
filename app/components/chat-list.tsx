@@ -145,12 +145,13 @@ export function ChatList(props: { narrow?: boolean }) {
             <QueueAnim
               delay={300}
               // className={motionStyles["queue-simple"]}
-              // ease={['easeOutQuart', 'easeInOutQuart']}
-              // duration={[550, 450]}
-              // animConfig={[
-              //   { opacity: [1, 0], translateY: [0, 30] },
-              //   { height: 0 },
-              // ]}
+              ease={["easeOutQuart", "easeInOutQuart"]}
+              duration={[550, 450]}
+              animConfig={[
+                { opacity: [1, 0], translateY: [0, 30] },
+                { height: 0 },
+              ]}
+              interval={150}
             >
               {sessions.map((item, i) => (
                 <ChatItem
