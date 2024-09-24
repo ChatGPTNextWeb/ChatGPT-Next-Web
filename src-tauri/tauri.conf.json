@@ -60,7 +60,7 @@
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "2023, Zhang Yifei All Rights Reserved.",
+      "copyright": "Copyright © 2024 GPTsMotion Tech LLC All Rights Reserved.",
       "deb": {
         "depends": []
       },
@@ -72,10 +72,10 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "NextChat is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "identifier": "dev.nextchat.app",
+      "longDescription": "Experience NextChat: Local-first, seamless, and designed for the ultimate chat experience",
       "macOS": {
-        "entitlements": null,
+        "entitlements": "./Entitlements.plist",
         "exceptionDomain": "",
         "frameworks": [],
         "providerShortName": null,
@@ -103,7 +103,7 @@
       "windows": {
         "installMode": "passive"
       },
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERFNDE4MENFM0Y1RTZBOTQKUldTVWFsNC96b0JCM3RqM2NmMnlFTmxIaStRaEJrTHNOU2VqRVlIV1hwVURoWUdVdEc1eDcxVEYK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDEyNUYzMzNFMDgzMTFGM0MKUldROEh6RUlQak5mRW5iYWszdGJReGtzUU9Tam9qUVg3T0plbFNoRUlqM1BFNHBuWmZuR0pISHcK"
     },
     "windows": [
       {

@@ -46,3 +46,8 @@ dev
 *.key.pub
 
 masks.json
+
+//builder file
+*.p8
+*.provisionprofile
+*.pkg

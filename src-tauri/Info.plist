@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>DTPlatformName</key>
+    <string>macosx</string>
+    <key>DTPlatformVersion</key>
+    <string>14.5</string>
+    <key>DTSDKBuild</key>
+    <string>23F73</string>
+    <key>DTSDKName</key>
+    <string>macosx14.5</string>
+    <key>DTXcode</key>
+    <string>1540</string>
+    <key>DTXcodeBuild</key>
+    <string>15F31d</string>
+</dict>
+</plist>
