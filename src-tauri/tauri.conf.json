@@ -14,9 +14,13 @@
     "withGlobalTauri": true,
     "windows": [
       {
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
         "title": "NextChat",
-        "width": 800,
-        "height": 600
+        "width": 960,
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay"
       }
     ],
     "security": {

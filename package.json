@@ -15,6 +15,7 @@
     "app:build": "yarn mask && yarn tauri build",
     "ios:init": "yarn tauri ios init",
     "ios:dev": "concurrently -r \"yarn mask:watch\" \"yarn tauri ios dev\"",
+    "ios:build": "yarn mask && yarn tauri ios build", 
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
