@@ -288,7 +288,7 @@ function _MarkDownContent(props: { content: string }) {
           }
           if (/\.(3gp|3g2|webm|ogv|mpeg|mp4|avi)$/.test(href)) {
             return (
-              <video controls>
+              <video controls width="99.9%">
                 <source src={href} />
               </video>
             );
