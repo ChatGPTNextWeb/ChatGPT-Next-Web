@@ -690,6 +690,7 @@ export function Settings() {
 
   const saasStartComponent = (
     <ListItem
+      className={styles["SubTitle-button"]}
       title={
         Locale.Settings.Access.SaasStart.Title +
         `${Locale.Settings.Access.SaasStart.Label}`
