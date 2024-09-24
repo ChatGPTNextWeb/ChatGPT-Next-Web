@@ -1466,9 +1466,12 @@ export function Settings() {
             ></input>
           </ListItem>
 
-          <ListItem title="artifact" subTitle="artifacts">
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
             <input
-              aria-label="artifacts"
+              aria-label={Locale.Mask.Config.Artifacts.Title}
               type="checkbox"
               checked={config.enableArtifacts}
               onChange={(e) =>
