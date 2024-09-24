@@ -21,6 +21,7 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
+import { useAppConfig } from "../store/config";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -92,7 +93,9 @@ export function PreCode(props: { children: any }) {
     }
   }, 600);
 
-  const enableArtifacts = session.mask?.enableArtifacts !== false;
+  const config = useAppConfig();
+  const enableArtifacts =
+    session.mask?.enableArtifacts !== false && config.enableArtifacts;
 
   //Wrap the paragraph for plain-text
   useEffect(() => {
