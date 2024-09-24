@@ -8,12 +8,14 @@ import Locale from "../locales";
 import Delete from "../icons/close.svg";
 import Arrow from "../icons/arrow.svg";
 import Logo from "../icons/logo.svg";
+import { useMobileScreen } from "@/app/utils";
 import BotIcon from "../icons/bot.svg";
 import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
 
 const storage = safeLocalStorage();
+
 export function AuthPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
@@ -113,7 +115,7 @@ export function AuthPage() {
 function TopBanner() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+  const isMobile = useMobileScreen();
   useEffect(() => {
     // 检查 localStorage 中是否有标记
     const bannerDismissed = storage.getItem("bannerDismissed");
@@ -125,15 +127,6 @@ function TopBanner() {
       // 如果标记为 "true"，则隐藏横幅
       setIsVisible(false);
     }
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 600);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleMouseEnter = () => {
