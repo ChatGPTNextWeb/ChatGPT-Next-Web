@@ -3,8 +3,7 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
 import { ServiceProvider, REQUEST_TIMEOUT_MS } from "./constant";
-import isObject from "lodash-es/isObject";
-import { fetch as tauriFetch, Body, ResponseType } from "@tauri-apps/api/http";
+import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language

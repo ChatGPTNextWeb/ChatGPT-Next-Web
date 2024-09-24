@@ -37,7 +37,7 @@ import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   copyToClipboard,
   downloadAs,
@@ -48,7 +48,6 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { nanoid } from "nanoid";
 import {
   DragDropContext,
   Droppable,
@@ -167,21 +166,23 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
 
-        <ListItem
-          title={Locale.Mask.Config.Artifacts.Title}
-          subTitle={Locale.Mask.Config.Artifacts.SubTitle}
-        >
-          <input
-            aria-label={Locale.Mask.Config.Artifacts.Title}
-            type="checkbox"
-            checked={props.mask.enableArtifacts !== false}
-            onChange={(e) => {
-              props.updateMask((mask) => {
-                mask.enableArtifacts = e.currentTarget.checked;
-              });
-            }}
-          ></input>
-        </ListItem>
+        {globalConfig.enableArtifacts && (
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.Artifacts.Title}
+              type="checkbox"
+              checked={props.mask.enableArtifacts !== false}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.enableArtifacts = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        )}
 
         {!props.shouldSyncFromGlobal ? (
           <ListItem
