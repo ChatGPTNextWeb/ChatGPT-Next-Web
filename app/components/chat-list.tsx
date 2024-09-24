@@ -5,6 +5,7 @@ import {
   Droppable,
   Draggable,
   OnDragEndResponder,
+  DraggableProvided,
 } from "@hello-pangea/dnd";
 
 import { useChatStore } from "../store";
@@ -32,7 +33,7 @@ export function ChatItem(props: {
   index: number;
   narrow?: boolean;
   mask: Mask;
-  provided;
+  provided: DraggableProvided;
 }) {
   const draggableRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -108,7 +109,6 @@ export function ChatList(props: { narrow?: boolean }) {
   const chatStore = useChatStore();
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
-
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
     if (!destination) {
@@ -123,6 +123,30 @@ export function ChatList(props: { narrow?: boolean }) {
     }
 
     moveSession(source.index, destination.index);
+  };
+
+  const onAdd = () => {
+    const { data } = this.state;
+    const i = Math.floor(Math.random() * this.data.length);
+    data.unshift({
+      key: Date.now(),
+      name: this.data[i].name,
+      age: this.data[i].age,
+      address: this.data[i].address,
+    });
+    this.setState({
+      data,
+      isPageTween: false,
+    });
+  };
+
+  const onDelete = (
+    key: number,
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    const data = this.state.data.filter((item) => item.key !== key);
+    this.setState({ data, isPageTween: false });
   };
 
   return (
@@ -174,6 +198,7 @@ export function ChatList(props: { narrow?: boolean }) {
               ]}
               key={sessions.length}
               // interval={150}
+              // TODO: 目前有一个问题，下面是遍历的所以每次元素变动都会重新全部渲染
             >
               {sessions.map((item, i) => (
                 <div key={item.id}>
