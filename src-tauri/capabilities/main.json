@@ -4,13 +4,24 @@
   "local": true,
   "windows": ["main"],
   "permissions": [
-    "dialog:default",
-    "dialog:allow-ask",
-    "dialog:allow-message",
-    "updater:default",
-    "updater:allow-check",
-    "updater:allow-download-and-install",
-    "core:event:allow-listen",
-    "core:event:default"
+    "core:default",
+    "core:window:allow-start-dragging",
+    "core:window:allow-maximize",
+    "http:default",
+    "http:allow-fetch",
+    "http:allow-fetch-cancel",
+    "http:allow-fetch-read-body",
+    "http:allow-fetch-send",
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [
+        {
+          "url": "https://*"
+        },
+        {
+          "url": "http://*"
+        }
+      ]
+    }
   ]
 }
