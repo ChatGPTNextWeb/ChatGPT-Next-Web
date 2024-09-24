@@ -7,7 +7,7 @@ import yaml from "js-yaml";
 import { adapter } from "../utils";
 import { useAccessStore } from "./access";
 
-const isApp = getClientConfig()?.buildMode === "export";
+const isApp = getClientConfig()?.isApp;
 
 export type Plugin = {
   id: string;
@@ -231,7 +231,6 @@ export const usePluginStore = createPersistStore(
     name: StoreKey.Plugin,
     version: 1,
     onRehydrateStorage(state) {
-      console.log("onRehydrateStorage", state);
       // Skip store rehydration on server side
       if (typeof window === "undefined") {
         return;
@@ -242,23 +241,29 @@ export const usePluginStore = createPersistStore(
         .then((res) => {
           Promise.all(
             res.map((item: any) =>
-              fetch(item.schema)
-                .then((res) => res.text())
-                .then((content) => ({
-                  ...item,
-                  content,
-                })),
+              // skip get schema
+              state.get(item.id)
+                ? item
+                : fetch(item.schema)
+                    .then((res) => res.text())
+                    .then((content) => ({
+                      ...item,
+                      content,
+                    }))
+                    .catch((e) => item),
             ),
           ).then((builtinPlugins: any) => {
-            builtinPlugins.forEach((item: any) => {
-              const plugin = state.create(item);
-              state.updatePlugin(plugin.id, (plugin) => {
-                const tool = FunctionToolService.add(plugin, true);
-                plugin.title = tool.api.definition.info.title;
-                plugin.version = tool.api.definition.info.version;
-                plugin.builtin = true;
+            builtinPlugins
+              .filter((item: any) => item?.content)
+              .forEach((item: any) => {
+                const plugin = state.create(item);
+                state.updatePlugin(plugin.id, (plugin) => {
+                  const tool = FunctionToolService.add(plugin, true);
+                  plugin.title = tool.api.definition.info.title;
+                  plugin.version = tool.api.definition.info.version;
+                  plugin.builtin = true;
+                });
               });
-            });
           });
         });
     },
