@@ -19,6 +19,9 @@ import { useRef, useEffect } from "react";
 import { showConfirm } from "./ui-lib";
 import { useMobileScreen } from "../utils";
 
+// motion
+import QueueAnim from "rc-queue-anim";
+
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
@@ -139,31 +142,42 @@ export function ChatList(props: { narrow?: boolean }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {sessions.map((item, i) => (
-              <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
-                index={i}
-                selected={i === selectedIndex}
-                onClick={() => {
-                  navigate(Path.Chat);
-                  selectSession(i);
-                }}
-                onDelete={async () => {
-                  if (
-                    (!props.narrow && !isMobileScreen) ||
-                    (await showConfirm(Locale.Home.DeleteChat))
-                  ) {
-                    chatStore.deleteSession(i);
-                  }
-                }}
-                narrow={props.narrow}
-                mask={item.mask}
-              />
-            ))}
+            <QueueAnim
+              delay={300}
+              // className={motionStyles["queue-simple"]}
+              // ease={['easeOutQuart', 'easeInOutQuart']}
+              // duration={[550, 450]}
+              // animConfig={[
+              //   { opacity: [1, 0], translateY: [0, 30] },
+              //   { height: 0 },
+              // ]}
+            >
+              {sessions.map((item, i) => (
+                <ChatItem
+                  title={item.topic}
+                  time={new Date(item.lastUpdate).toLocaleString()}
+                  count={item.messages.length}
+                  key={item.id}
+                  id={item.id}
+                  index={i}
+                  selected={i === selectedIndex}
+                  onClick={() => {
+                    navigate(Path.Chat);
+                    selectSession(i);
+                  }}
+                  onDelete={async () => {
+                    if (
+                      (!props.narrow && !isMobileScreen) ||
+                      (await showConfirm(Locale.Home.DeleteChat))
+                    ) {
+                      chatStore.deleteSession(i);
+                    }
+                  }}
+                  narrow={props.narrow}
+                  mask={item.mask}
+                />
+              ))}
+            </QueueAnim>
             {provided.placeholder}
           </div>
         )}
