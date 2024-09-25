@@ -21,7 +21,6 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
-
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
