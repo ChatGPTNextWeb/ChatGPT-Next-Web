@@ -7,8 +7,6 @@ import {
   usePluginStore,
   ChatMessageTool,
 } from "@/app/store";
-import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
 import { preProcessImageContent, stream } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
@@ -386,11 +384,7 @@ export class ClaudeApi implements LLMApi {
 
     // if endpoint is empty, use default endpoint
     if (baseUrl.trim().length === 0) {
-      const isApp = !!getClientConfig()?.isApp;
-
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/anthropic"
-        : ApiPath.Anthropic;
+      baseUrl = ApiPath.Anthropic;
     }
 
     if (!baseUrl.startsWith("http") && !baseUrl.startsWith("/api")) {

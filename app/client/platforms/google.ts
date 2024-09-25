@@ -8,8 +8,6 @@ import {
   SpeechOptions,
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -33,9 +31,8 @@ export class GeminiProApi implements LLMApi {
       baseUrl = accessStore.googleUrl;
     }
 
-    const isApp = !!getClientConfig()?.isApp;
     if (baseUrl.length === 0) {
-      baseUrl = isApp ? DEFAULT_API_HOST + `/api/proxy/google` : ApiPath.Google;
+      baseUrl = ApiPath.Google;
     }
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);

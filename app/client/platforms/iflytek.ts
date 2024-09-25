@@ -1,10 +1,5 @@
 "use client";
-import {
-  ApiPath,
-  DEFAULT_API_HOST,
-  Iflytek,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
+import { ApiPath, Iflytek, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import {
@@ -20,7 +15,6 @@ import {
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent, fetch } from "@/app/utils";
 
 import { RequestPayload } from "./openai";
@@ -38,9 +32,7 @@ export class SparkApi implements LLMApi {
     }
 
     if (baseUrl.length === 0) {
-      const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.Iflytek;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = ApiPath.Iflytek;
     }
 
     if (baseUrl.endsWith("/")) {
