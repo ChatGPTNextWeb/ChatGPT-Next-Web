@@ -298,12 +298,13 @@ export function Select(
     HTMLSelectElement
   >,
 ) {
-  const { className, children, align, ...otherProps } = props;
+  const { className, children, align, style, ...otherProps } = props;
   return (
     <div
       className={`${styles["select-with-icon"]} ${
         align === "left" ? styles["left-align-option"] : ""
       } ${className}`}
+      style={style}
     >
       <select className={styles["select-with-icon-select"]} {...otherProps}>
         {children}
