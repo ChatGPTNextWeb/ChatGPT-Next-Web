@@ -52,6 +52,8 @@ export const DEFAULT_CONFIG = {
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
+  enableArtifacts: true, // show artifacts config
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: true,
