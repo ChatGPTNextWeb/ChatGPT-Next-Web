@@ -2033,6 +2033,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-http",
  "tauri-plugin-log",
+ "wry 0.43.1 (git+https://github.com/lloydzhou/wry?branch=webkitgtk-data_manager-directory)",
 ]
 
 [[package]]

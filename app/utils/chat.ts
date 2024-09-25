@@ -10,6 +10,7 @@ import {
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "./format";
+import { fetch } from "@/app/utils";
 
 export function compressImage(file: Blob, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -287,6 +288,7 @@ export function stream(
       REQUEST_TIMEOUT_MS,
     );
     fetchEventSource(chatPath, {
+      fetch: fetch as any, // using tauriFetch or window.fetch
       ...chatPayload,
       async onopen(res) {
         clearTimeout(requestTimeoutId);

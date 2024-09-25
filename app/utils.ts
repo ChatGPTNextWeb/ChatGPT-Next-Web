@@ -287,6 +287,16 @@ export function showPlugins(provider: ServiceProvider, model: string) {
   return false;
 }
 
+export function fetch(
+  url: string,
+  options?: Record<string, unknown>,
+): Promise<any> {
+  if (window.__TAURI__) {
+    return tauriFetch(url, options);
+  }
+  return window.fetch(url, options);
+}
+
 export function adapter(config: Record<string, unknown>) {
   const { baseURL, url, params, ...rest } = config;
   const path = baseURL ? `${baseURL}${url}` : url;

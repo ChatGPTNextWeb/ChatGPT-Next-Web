@@ -23,7 +23,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
+import { getMessageTextContent, fetch } from "@/app/utils";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -197,6 +197,7 @@ export class ErnieApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);

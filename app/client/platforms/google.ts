@@ -20,6 +20,7 @@ import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
+  fetch,
 } from "@/app/utils";
 import { preProcessImageContent } from "@/app/utils/chat";
 
@@ -217,6 +218,7 @@ export class GeminiProApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);

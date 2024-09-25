@@ -17,7 +17,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { getMessageTextContent, isVisionModel, fetch } from "@/app/utils";
 import mapKeys from "lodash-es/mapKeys";
 import mapValues from "lodash-es/mapValues";
 import isArray from "lodash-es/isArray";
@@ -179,6 +179,7 @@ export class HunyuanApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
