@@ -125,30 +125,6 @@ export function ChatList(props: { narrow?: boolean }) {
     moveSession(source.index, destination.index);
   };
 
-  const onAdd = () => {
-    const { data } = this.state;
-    const i = Math.floor(Math.random() * this.data.length);
-    data.unshift({
-      key: Date.now(),
-      name: this.data[i].name,
-      age: this.data[i].age,
-      address: this.data[i].address,
-    });
-    this.setState({
-      data,
-      isPageTween: false,
-    });
-  };
-
-  const onDelete = (
-    key: number,
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    const data = this.state.data.filter((item) => item.key !== key);
-    this.setState({ data, isPageTween: false });
-  };
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable
