@@ -13,7 +13,10 @@ import BotIcon from "../icons/bot.svg";
 import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
-
+import {
+  trackSettingsPageGuideToCPaymentClick,
+  trackAuthorizationPageButtonToCPaymentClick,
+} from "../utils/auth-settings-events";
 const storage = safeLocalStorage();
 
 export function AuthPage() {
@@ -22,6 +25,7 @@ export function AuthPage() {
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
   const goSaas = () => {
+    trackAuthorizationPageButtonToCPaymentClick();
     window.location.href = SAAS_CHAT_URL;
   };
 
@@ -151,11 +155,17 @@ function TopBanner() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={styles["top-banner-inner"]}>
+      <div className={`${styles["top-banner-inner"]} no-dark`}>
         <Logo className={styles["top-banner-logo"]}></Logo>
         <span>
           {Locale.Auth.TopTips}
-          <a href={SAAS_CHAT_URL} rel="stylesheet">
+          <a
+            href={SAAS_CHAT_URL}
+            rel="stylesheet"
+            onClick={() => {
+              trackSettingsPageGuideToCPaymentClick();
+            }}
+          >
             {Locale.Settings.Access.SaasStart.ChatNow}
             <Arrow style={{ marginLeft: "4px" }} />
           </a>
