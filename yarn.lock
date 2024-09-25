@@ -1490,10 +1490,10 @@
     "@swc/counter" "^0.1.3"
     tslib "^2.4.0"
 
-"@tauri-apps/api@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.6.0.tgz#745b7e4e26782c3b2ad9510d558fa5bb2cf29186"
-  integrity sha512-rqI++FWClU5I2UBp4HXFvl+sBWkdigBkxnpJDQUWttNyG7IZP4FwQGhTNL5EOw0vI8i6eSAJ5frLqO7n7jbJdg==
+"@tauri-apps/api@^2.0.0-rc.4":
+  version "2.0.0-rc.5"
+  resolved "https://registry.npmjs.org/@tauri-apps/api/-/api-2.0.0-rc.5.tgz#9e790680f5cf691b0ae4c25c4de6696f340df401"
+  integrity sha512-JWs69pE9NsQdcqTpEVBepAZ08+jgQWuthIiTiaWRq/YlCLgnqq0KfC9sDem55uJ0YpgsytZuyj+m6b6q8oiD2g==
 
 "@tauri-apps/cli-darwin-arm64@2.0.0-rc.16":
   version "2.0.0-rc.16"
@@ -1560,6 +1560,13 @@
     "@tauri-apps/cli-win32-arm64-msvc" "2.0.0-rc.16"
     "@tauri-apps/cli-win32-ia32-msvc" "2.0.0-rc.16"
     "@tauri-apps/cli-win32-x64-msvc" "2.0.0-rc.16"
+
+"@tauri-apps/plugin-http@^2.0.0-rc.2":
+  version "2.0.0-rc.2"
+  resolved "https://registry.npmjs.org/@tauri-apps/plugin-http/-/plugin-http-2.0.0-rc.2.tgz#385a3c0808db86b59ab0b183c85e4fd2de989cbd"
+  integrity sha512-s/AbbMaQPgqnIOoObvWNAjJOV17gyf9G+U6gmvjLoFbt7D6jsujOUW6fn+Oe/+rzNSEeo1ZSVrUoMen5DgM+OA==
+  dependencies:
+    "@tauri-apps/api" "^2.0.0-rc.4"
 
 "@trysound/sax@0.2.0":
   version "0.2.0"

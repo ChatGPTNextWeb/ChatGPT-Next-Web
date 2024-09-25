@@ -1,6 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "productName": "NextChat",
+  "mainBinaryName": "next-chat",
   "identifier": "com.yida.chatgpt.next.web",
   "version": "2.15.4",
   "build": {

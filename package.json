@@ -15,7 +15,7 @@
     "app:build": "yarn mask && yarn tauri build",
     "ios:init": "yarn tauri ios init",
     "ios:dev": "concurrently -r \"yarn mask:watch\" \"yarn tauri ios dev\"",
-    "ios:build": "yarn mask && yarn tauri ios build", 
+    "ios:build": "yarn mask && yarn tauri ios build",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
@@ -25,6 +25,7 @@
     "@hello-pangea/dnd": "^16.5.0",
     "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^6.5.1",
+    "@tauri-apps/plugin-http": "^2.0.0-rc.2",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
     "axios": "^1.7.5",
@@ -55,7 +56,6 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@tauri-apps/api": "^1.6.0",
     "@tauri-apps/cli": "^2.0.0-rc.0",
     "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "^4.17.12",
