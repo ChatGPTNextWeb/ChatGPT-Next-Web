@@ -2,6 +2,7 @@ import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 import { getClientConfig } from "../config/client";
 import { SAAS_CHAT_URL } from "@/app/constant";
+const SAAS_CHAT_URL_WITH_PARAM = `${SAAS_CHAT_URL}?data=chat`;
 const isApp = !!getClientConfig()?.isApp;
 
 const id: PartialLocaleType = {
@@ -9,10 +10,10 @@ const id: PartialLocaleType = {
   Error: {
     Unauthorized: isApp
       ? `😆 Percakapan mengalami beberapa masalah, tidak perlu khawatir:
-   \\ 1️⃣ Jika Anda ingin memulai tanpa konfigurasi, [klik di sini untuk mulai mengobrol segera 🚀](${SAAS_CHAT_URL})
+   \\ 1️⃣ Jika Anda ingin memulai tanpa konfigurasi, [klik di sini untuk mulai mengobrol segera 🚀](${SAAS_CHAT_URL_WITH_PARAM})
    \\ 2️⃣ Jika Anda ingin menggunakan sumber daya OpenAI Anda sendiri, klik [di sini](/#/settings) untuk mengubah pengaturan ⚙️`
       : `😆 Percakapan mengalami beberapa masalah, tidak perlu khawatir:
-   \ 1️⃣ Jika Anda ingin memulai tanpa konfigurasi, [klik di sini untuk mulai mengobrol segera 🚀](${SAAS_CHAT_URL})
+   \ 1️⃣ Jika Anda ingin memulai tanpa konfigurasi, [klik di sini untuk mulai mengobrol segera 🚀](${SAAS_CHAT_URL_WITH_PARAM})
    \ 2️⃣ Jika Anda menggunakan versi penyebaran pribadi, klik [di sini](/#/auth) untuk memasukkan kunci akses 🔑
    \ 3️⃣ Jika Anda ingin menggunakan sumber daya OpenAI Anda sendiri, klik [di sini](/#/settings) untuk mengubah pengaturan ⚙️
 `,

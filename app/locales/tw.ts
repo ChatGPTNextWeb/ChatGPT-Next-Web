@@ -1,6 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 import { SAAS_CHAT_URL } from "@/app/constant";
+const SAAS_CHAT_URL_WITH_PARAM = `${SAAS_CHAT_URL}?data=chat`;
 const isApp = !!getClientConfig()?.isApp;
 
 const tw = {
@@ -8,10 +9,10 @@ const tw = {
   Error: {
     Unauthorized: isApp
       ? `😆 對話遇到了一些問題，不用慌:
-    \\ 1️⃣ 想要零配置開箱即用，[點擊這裡立刻開啟對話 🚀](${SAAS_CHAT_URL})
+    \\ 1️⃣ 想要零配置開箱即用，[點擊這裡立刻開啟對話 🚀](${SAAS_CHAT_URL_WITH_PARAM})
     \\ 2️⃣ 如果你想消耗自己的 OpenAI 資源，點擊[這裡](/#/settings)修改設定 ⚙️`
       : `😆 對話遇到了一些問題，不用慌:
-    \ 1️⃣ 想要零配置開箱即用，[點擊這裡立刻開啟對話 🚀](${SAAS_CHAT_URL})
+    \ 1️⃣ 想要零配置開箱即用，[點擊這裡立刻開啟對話 🚀](${SAAS_CHAT_URL_WITH_PARAM})
     \ 2️⃣ 如果你正在使用私有部署版本，點擊[這裡](/#/auth)輸入訪問秘鑰 🔑
     \ 3️⃣ 如果你想消耗自己的 OpenAI 資源，點擊[這裡](/#/settings)修改設定 ⚙️
  `,

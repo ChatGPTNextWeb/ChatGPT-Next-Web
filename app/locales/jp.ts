@@ -2,6 +2,7 @@ import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 import { getClientConfig } from "../config/client";
 import { SAAS_CHAT_URL } from "@/app/constant";
+const SAAS_CHAT_URL_WITH_PARAM = `${SAAS_CHAT_URL}?data=chat`;
 const isApp = !!getClientConfig()?.isApp;
 
 const jp: PartialLocaleType = {
@@ -9,10 +10,10 @@ const jp: PartialLocaleType = {
   Error: {
     Unauthorized: isApp
       ? `😆 会話中に問題が発生しましたが、心配しないでください:
-    \\ 1️⃣ 設定なしで始めたい場合は、[ここをクリックしてすぐにチャットを開始 🚀](${SAAS_CHAT_URL})
+    \\ 1️⃣ 設定なしで始めたい場合は、[ここをクリックしてすぐにチャットを開始 🚀](${SAAS_CHAT_URL_WITH_PARAM})
     \\ 2️⃣ 自分のOpenAIリソースを使用したい場合は、[ここをクリックして](/#/settings)設定を変更してください ⚙️`
       : `😆 会話中に問題が発生しましたが、心配しないでください:
-    \ 1️⃣ 設定なしで始めたい場合は、[ここをクリックしてすぐにチャットを開始 🚀](${SAAS_CHAT_URL})
+    \ 1️⃣ 設定なしで始めたい場合は、[ここをクリックしてすぐにチャットを開始 🚀](${SAAS_CHAT_URL_WITH_PARAM})
     \ 2️⃣ プライベートデプロイ版を使用している場合は、[ここをクリックして](/#/auth)アクセストークンを入力してください 🔑
     \ 3️⃣ 自分のOpenAIリソースを使用したい場合は、[ここをクリックして](/#/settings)設定を変更してください ⚙️
  `,

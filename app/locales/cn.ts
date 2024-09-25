@@ -2,7 +2,7 @@ import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 import { SAAS_CHAT_URL } from "@/app/constant";
 
-const SAAS_CHAT_URL_WITH_PARAM = `${SAAS_CHAT_URL}?data=title`;
+const SAAS_CHAT_URL_WITH_PARAM = `${SAAS_CHAT_URL}?data=chat`;
 const isApp = !!getClientConfig()?.isApp;
 
 const cn = {
