@@ -21,8 +21,6 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
-import { SAAS_CHAT_URL } from "@/app/constant";
-import { trackConversationGuideToCPaymentClick } from "../utils/auth-settings-events";
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -281,13 +279,7 @@ function _MarkDownContent(props: { content: string }) {
           const href = aProps.href || "";
           const isInternal = /^\/#/i.test(href);
           const target = isInternal ? "_self" : aProps.target ?? "_blank";
-          const handleClick = () => {
-            if (href === SAAS_CHAT_URL) {
-              trackConversationGuideToCPaymentClick();
-            }
-          };
-
-          return <a {...aProps} target={target} onClick={handleClick} />;
+          return <a {...aProps} target={target} />;
         },
       }}
     >
