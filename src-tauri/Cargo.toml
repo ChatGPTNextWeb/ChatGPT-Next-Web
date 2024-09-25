@@ -36,7 +36,7 @@ panic = "abort"   # Strip expensive panic clean-up logic
 codegen-units = 1 # Compile crates one after another so the compiler can optimize better
 lto = true        # Enables link to optimizations
 opt-level = "s"   # Optimize for binary size
-# strip = true      # Remove debug symbols
+strip = true      # Remove debug symbols
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
