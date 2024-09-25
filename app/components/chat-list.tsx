@@ -189,16 +189,14 @@ export function ChatList(props: { narrow?: boolean }) {
             {...provided.droppableProps}
           >
             <QueueAnim
-              delay={300}
+              delay={150}
               ease={["easeOutQuart", "easeInOutQuart"]}
               duration={[550, 450]}
               animConfig={[
-                { opacity: [1, 0], translateY: [0, 30] },
-                { height: 0 },
+                { opacity: [1, 0], translateY: [0, -30] },
+                { height: 0, translateY: [-30, 0], opacity: [0, 1] },
               ]}
-              key={sessions.length}
-              // interval={150}
-              // TODO: 目前有一个问题，下面是遍历的所以每次元素变动都会重新全部渲染
+              interval={150}
             >
               {sessions.map((item, i) => (
                 <div key={item.id}>
