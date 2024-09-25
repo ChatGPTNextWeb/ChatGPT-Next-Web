@@ -33,17 +33,12 @@ import {
   LLMModel,
   LLMUsage,
   MultimodalContent,
+  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
-  getMessageImages,
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
@@ -145,6 +140,44 @@ export class ChatGPTApi implements LLMApi {
       ];
     }
     return res.choices?.at(0)?.message?.content ?? res;
+  }
+
+  async speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    const requestPayload = {
+      model: options.model,
+      input: options.input,
+      voice: options.voice,
+      response_format: options.response_format,
+      speed: options.speed,
+    };
+
+    console.log("[Request] openai speech payload: ", requestPayload);
+
+    const controller = new AbortController();
+    options.onController?.(controller);
+
+    try {
+      const speechPath = this.path(OpenaiPath.SpeechPath);
+      const speechPayload = {
+        method: "POST",
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
+        headers: getHeaders(),
+      };
+
+      // make a fetch request
+      const requestTimeoutId = setTimeout(
+        () => controller.abort(),
+        REQUEST_TIMEOUT_MS,
+      );
+
+      const res = await fetch(speechPath, speechPayload);
+      clearTimeout(requestTimeoutId);
+      return await res.arrayBuffer();
+    } catch (e) {
+      console.log("[Request] failed to make a speech request", e);
+      throw e;
+    }
   }
 
   async chat(options: ChatOptions) {
