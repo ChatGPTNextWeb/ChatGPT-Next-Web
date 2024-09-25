@@ -3261,15 +3261,15 @@ comma-separated-tokens@^2.0.0:
   resolved "https://registry.yarnpkg.com/comma-separated-tokens/-/comma-separated-tokens-2.0.3.tgz#4e89c9458acb61bc8fef19f4529973b2392839ee"
   integrity sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==
 
+commander@2, commander@^2.20.0:
+  version "2.20.3"
+  resolved "https://registry.npmmirror.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
+  integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
+
 commander@7, commander@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
-
-commander@^2.20.0:
-  version "2.20.3"
-  resolved "https://registry.npmmirror.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
-  integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
 commander@^4.0.0:
   version "4.1.1"
@@ -3468,6 +3468,11 @@ cytoscape@^3.28.1:
   dependencies:
     internmap "1 - 2"
 
+d3-array@^1.2.0:
+  version "1.2.4"
+  resolved "https://registry.npmmirror.com/d3-array/-/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
+  integrity sha512-KHW6M86R+FUPYGb3R5XiYjXPq7VzwxZ22buHhAEVG5ztoEcZZMLov530mmccaqA1GghZArjQV46fuc8kUqhhHw==
+
 d3-axis@3:
   version "3.0.0"
   resolved "https://registry.npmmirror.com/d3-axis/-/d3-axis-3.0.0.tgz#c42a4a13e8131d637b745fc2973824cfeaf93322"
@@ -3591,6 +3596,11 @@ d3-polygon@3:
   version "3.0.1"
   resolved "https://registry.npmmirror.com/d3-polygon/-/d3-polygon-3.0.1.tgz#0b45d3dd1c48a29c8e057e6135693ec80bf16398"
   integrity sha512-3vbA7vXYwfe1SYhED++fPUQlWSYTTGmFmQiany/gdbiWgU/iEyQzyymwL9SkJjFFuCS4902BSzewVGsHHmHtXg==
+
+d3-polygon@^1.0.3:
+  version "1.0.6"
+  resolved "https://registry.npmmirror.com/d3-polygon/-/d3-polygon-1.0.6.tgz#0bf8cb8180a6dc107f518ddf7975e12abbfbd38e"
+  integrity sha512-k+RF7WvI08PC8reEoXa/w2nSg5AUMTi+peBD9cmFc+0ixHfbs4QmxxkarVal1IkVkgxVuk9JSHhJURHiyHKAuQ==
 
 "d3-quadtree@1 - 3", d3-quadtree@3:
   version "3.0.1"
@@ -3986,6 +3996,11 @@ dot-case@^3.0.4:
   dependencies:
     no-case "^3.0.4"
     tslib "^2.0.3"
+
+earcut@^2.1.1:
+  version "2.2.4"
+  resolved "https://registry.npmmirror.com/earcut/-/earcut-2.2.4.tgz#6d02fd4d68160c114825d06890a92ecaae60343a"
+  integrity sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==
 
 eastasianwidth@^0.2.0:
   version "0.2.0"
@@ -4724,6 +4739,18 @@ flatted@^3.1.0:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
+
+flubber@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.npmmirror.com/flubber/-/flubber-0.4.2.tgz#14452d4a838cc3b9f2fb6175da94e35acd55fbaa"
+  integrity sha512-79RkJe3rA4nvRCVc2uXjj7U/BAUq84TS3KHn6c0Hr9K64vhj83ZNLUziNx4pJoBumSPhOl5VjH+Z0uhi+eE8Uw==
+  dependencies:
+    d3-array "^1.2.0"
+    d3-polygon "^1.0.3"
+    earcut "^2.1.1"
+    svg-path-properties "^0.2.1"
+    svgpath "^2.2.1"
+    topojson-client "^3.0.0"
 
 follow-redirects@^1.15.6:
   version "1.15.6"
@@ -7242,6 +7269,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+performance-now@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
+  integrity sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
@@ -7420,6 +7452,13 @@ raf-schd@^4.0.3:
   version "4.0.3"
   resolved "https://registry.npmmirror.com/raf-schd/-/raf-schd-4.0.3.tgz#5d6c34ef46f8b2a0e880a8fcdb743efc5bfdbc1a"
   integrity sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==
+
+raf@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.npmmirror.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
+  integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
+  dependencies:
+    performance-now "^2.1.0"
 
 randombytes@^2.1.0:
   version "2.1.0"
@@ -7615,6 +7654,14 @@ rc-progress@~4.0.0:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.6"
     rc-util "^5.16.1"
+
+rc-queue-anim@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/rc-queue-anim/-/rc-queue-anim-2.0.0.tgz#e78cf9c0f333cb41327e9ed603357f156d0ddce2"
+  integrity sha512-tojpP72NbaWkwzmR/7x4gFpTBCYR/8I3Jb+KwSdOWpRIDrlmsA4ARAqSElG92GJ7CXAIjxavIGulcqJhXfzHYQ==
+  dependencies:
+    "@babel/runtime" "^7.11.1"
+    tween-one "^1.0.52"
 
 rc-rate@~2.13.0:
   version "2.13.0"
@@ -8606,6 +8653,11 @@ style-to-object@^1.0.0:
   dependencies:
     inline-style-parser "0.2.4"
 
+style-utils@^0.3.6:
+  version "0.3.8"
+  resolved "https://registry.npmmirror.com/style-utils/-/style-utils-0.3.8.tgz#6ba4271bcc766dee4730bd51b3ef2552908dc111"
+  integrity sha512-RmGftIhY4tqtD1ERwKsVEDlt/M6UyxN/rcr95UmlooWmhtL0RwVUYJkpo1kSx3ppd9/JZzbknhy742zbMAawjQ==
+
 styled-jsx@5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/styled-jsx/-/styled-jsx-5.1.1.tgz#839a1c3aaacc4e735fed0781b8619ea5d0009d1f"
@@ -8667,6 +8719,16 @@ svg-parser@^2.0.4:
   resolved "https://registry.yarnpkg.com/svg-parser/-/svg-parser-2.0.4.tgz#fdc2e29e13951736140b76cb122c8ee6630eb6b5"
   integrity sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==
 
+svg-path-properties@^0.2.1:
+  version "0.2.2"
+  resolved "https://registry.npmmirror.com/svg-path-properties/-/svg-path-properties-0.2.2.tgz#b073d81be7292eae0e233ab8a83f58dc27113296"
+  integrity sha512-GmrB+b6woz6CCdQe6w1GHs/1lt25l7SR5hmhF8jRdarpv/OgjLyuQygLu1makJapixeb1aQhP/Oa1iKi93o/aQ==
+
+svg-path-properties@^1.0.4:
+  version "1.3.0"
+  resolved "https://registry.npmmirror.com/svg-path-properties/-/svg-path-properties-1.3.0.tgz#7f47e61dcac380c9f4d04f642df7e69b127274fa"
+  integrity sha512-R1+z37FrqyS3UXDhajNfvMxKI0smuVdedqOo4YbAQUfGqA86B9mGvr2IEXrwjjvGzCtdIKy/ad9N8m6YclaKAw==
+
 svgo@^3.0.2:
   version "3.3.2"
   resolved "https://registry.npmmirror.com/svgo/-/svgo-3.3.2.tgz#ad58002652dffbb5986fc9716afe52d869ecbda8"
@@ -8679,6 +8741,11 @@ svgo@^3.0.2:
     css-what "^6.1.0"
     csso "^5.0.5"
     picocolors "^1.0.0"
+
+svgpath@^2.2.1:
+  version "2.6.0"
+  resolved "https://registry.npmmirror.com/svgpath/-/svgpath-2.6.0.tgz#5b160ef3d742b7dfd2d721bf90588d3450d7a90d"
+  integrity sha512-OIWR6bKzXvdXYyO4DK/UWa1VA1JeKq8E+0ug2DG98Y/vOmMpfZNj+TIG988HjfYSqtcy/hFOtZq/n/j5GSESNg==
 
 swr@^2.0.0:
   version "2.2.5"
@@ -8826,6 +8893,13 @@ toggle-selection@^1.0.6:
   resolved "https://registry.npmmirror.com/toggle-selection/-/toggle-selection-1.0.6.tgz#6e45b1263f2017fa0acc7d89d78b15b8bf77da32"
   integrity sha512-BiZS+C1OS8g/q2RRbJmy59xpyghNBqrr6k5L/uKBGRsTfxmu3ffiRnd8mlGPUVayg8pvfi5urfnu8TU7DVOkLQ==
 
+topojson-client@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.npmmirror.com/topojson-client/-/topojson-client-3.1.0.tgz#22e8b1ed08a2b922feeb4af6f53b6ef09a467b99"
+  integrity sha512-605uxS6bcYxGXw9qi62XyrV6Q3xwbndjachmNxu8HWTtVPxZfEJN9fd/SZS1Q54Sn2y0TMyMxFj/cJINqGHrKw==
+  dependencies:
+    commander "2"
+
 tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
@@ -8895,6 +8969,23 @@ tsx@^4.16.0:
     get-tsconfig "^4.7.5"
   optionalDependencies:
     fsevents "~2.3.3"
+
+tween-functions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmmirror.com/tween-functions/-/tween-functions-1.2.0.tgz#1ae3a50e7c60bb3def774eac707acbca73bbc3ff"
+  integrity sha512-PZBtLYcCLtEcjL14Fzb1gSxPBeL7nWvGhO5ZFPGqziCcr8uvHp0NDmdjBchp6KHL+tExcg0m3NISmKxhU394dA==
+
+tween-one@^1.0.52:
+  version "1.2.7"
+  resolved "https://registry.npmmirror.com/tween-one/-/tween-one-1.2.7.tgz#80051e9434f145c0e31623790378af0f23fe3d00"
+  integrity sha512-F+Z9LO9GsYqf0j5bgNhAF98RDrAZ7QjQrujJ2lVYSHl4+dBPW/atHluL2bwclZf8Vo0Yo96f6pw2uq1OGzpC/Q==
+  dependencies:
+    "@babel/runtime" "^7.11.1"
+    flubber "^0.4.2"
+    raf "^3.4.1"
+    style-utils "^0.3.6"
+    svg-path-properties "^1.0.4"
+    tween-functions "^1.2.0"
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
