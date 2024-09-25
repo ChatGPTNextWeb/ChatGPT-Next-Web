@@ -1,0 +1,38 @@
+name: Auto Rebase
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # This will run every hour
+  push:
+    branches:
+      - main  # Change this to the branch you want to watch for updates
+  workflow_dispatch:  # Allows manual triggering of the action
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/comfyanonymous/ComfyUI.git
+
+      - name: Fetch upstream changes
+        run: git fetch upstream
+
+      - name: Rebase branch
+        run: |
+          git config --global user.email jackalcooper@gmail.com
+          git config --global user.name tsai
+          git checkout master
+          git rebase upstream/master
+
+      - name: Push changes
+        run: git push origin master --force

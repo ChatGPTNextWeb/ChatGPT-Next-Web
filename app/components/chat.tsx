@@ -59,6 +59,7 @@ import {
   DEFAULT_TOPIC,
   ModelType,
   usePluginStore,
+  DEFAULT_CONFIG,
 } from "../store";
 
 import {
@@ -114,6 +115,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { useCookies } from "react-cookie";
 
 const localStorage = safeLocalStorage();
 import { ClientApi } from "../client/api";
@@ -1243,6 +1245,99 @@ function _Chat() {
   const context: RenderMessage[] = useMemo(() => {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
+
+  const [cookies, setCookie, removeCookie] = useCookies(["sfak"], {
+    doNotParse: true,
+  });
+
+  useEffect(() => {
+    const sfakValue = cookies.sfak;
+
+    const model = "Qwen/Qwen2-7B-Instruct";
+    config.update((config) => {
+      const ids = [
+        "stabilityai/stable-diffusion-xl-base-1.0",
+        "TencentARC/PhotoMaker",
+        "InstantX/InstantID",
+        "stabilityai/stable-diffusion-2-1",
+        "stabilityai/sd-turbo",
+        "stabilityai/sdxl-turbo",
+        "ByteDance/SDXL-Lightning",
+        "deepseek-ai/deepseek-llm-67b-chat",
+        "Qwen/Qwen1.5-14B-Chat",
+        "Qwen/Qwen1.5-7B-Chat",
+        "Qwen/Qwen1.5-110B-Chat",
+        "Qwen/Qwen1.5-32B-Chat",
+        "01-ai/Yi-1.5-6B-Chat",
+        "01-ai/Yi-1.5-9B-Chat-16K",
+        "01-ai/Yi-1.5-34B-Chat-16K",
+        "THUDM/chatglm3-6b",
+        "deepseek-ai/DeepSeek-V2-Chat",
+        "THUDM/glm-4-9b-chat",
+        "Qwen/Qwen2-72B-Instruct",
+        "Qwen/Qwen2-7B-Instruct",
+        "Qwen/Qwen2-57B-A14B-Instruct",
+        "stabilityai/stable-diffusion-3-medium",
+        "deepseek-ai/DeepSeek-Coder-V2-Instruct",
+        "Qwen/Qwen2-1.5B-Instruct",
+        "internlm/internlm2_5-7b-chat",
+        "BAAI/bge-large-en-v1.5",
+        "BAAI/bge-large-zh-v1.5",
+        "Pro/Qwen/Qwen2-7B-Instruct",
+        "Pro/Qwen/Qwen2-1.5B-Instruct",
+        "Pro/Qwen/Qwen1.5-7B-Chat",
+        "Pro/THUDM/glm-4-9b-chat",
+        "Pro/THUDM/chatglm3-6b",
+        "Pro/01-ai/Yi-1.5-9B-Chat-16K",
+        "Pro/01-ai/Yi-1.5-6B-Chat",
+        "Pro/internlm/internlm2_5-7b-chat",
+        "black-forest-labs/FLUX.1-schnell",
+        "FunAudioLLM/SenseVoiceSmall",
+        "netease-youdao/bce-embedding-base_v1",
+        "BAAI/bge-m3",
+        "internlm/internlm2_5-20b-chat",
+        "Qwen/Qwen2-Math-72B-Instruct",
+        "netease-youdao/bce-reranker-base_v1",
+        "BAAI/bge-reranker-v2-m3",
+        "deepseek-ai/DeepSeek-V2.5",
+        "Ascend/Qwen/Qwen2-72B-Instruct",
+      ];
+      config.customModels = ids
+        .sort()
+        .filter(
+          (id) =>
+            !id.toLowerCase().includes("voice") &&
+            !id.toLowerCase().includes("flux") &&
+            !id.toLowerCase().includes("stability") &&
+            !id.toLowerCase().includes("sdxl") &&
+            !id.toLowerCase().includes("photomaker") &&
+            !id.toLowerCase().includes("instantid") &&
+            !id.toLowerCase().includes("bge") &&
+            !id.toLowerCase().includes("bce"),
+        )
+        .join(","); // Filter out unwanted ids;
+      config.modelConfig.model = model as ModelType;
+      config.modelConfig.providerName = model as ServiceProvider;
+    });
+    if (sfakValue) {
+      chatStore.updateCurrentSession((session) => {
+        if (
+          session.mask.modelConfig.model == DEFAULT_CONFIG.modelConfig.model
+        ) {
+          session.mask.modelConfig.model = model as ModelType;
+          session.mask.modelConfig.providerName = model as ServiceProvider;
+        }
+      });
+      accessStore.update((access) => {
+        console.log("update access store with SF API key");
+        access.useCustomConfig = true;
+        access.openaiApiKey = sfakValue;
+        access.openaiUrl =
+          process.env.NEXT_PUBLIC_SF_NEXT_CHAT_SF_API_ENDPOINT!;
+      });
+      removeCookie("sfak");
+    }
+  }, []);
 
   if (
     context.length === 0 &&

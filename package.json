@@ -38,6 +38,7 @@
     "node-fetch": "^3.3.1",
     "openapi-client-axios": "^7.5.5",
     "react": "^18.2.0",
+    "react-cookie": "^7.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-router-dom": "^6.15.0",

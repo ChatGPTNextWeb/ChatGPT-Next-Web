@@ -77,7 +77,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 - I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어, Indonesia
 
 <div align="center">
-   
+
 ![主界面](./docs/images/cover.png)
 
 </div>
@@ -98,7 +98,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 ## What's New
 
 - 🚀 v2.15.0 Now supports Plugins! Read this: [NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
-- 🚀 v2.14.0 Now supports  Artifacts & SD 
+- 🚀 v2.14.0 Now supports  Artifacts & SD
 - 🚀 v2.10.1 support Google Gemini Pro model.
 - 🚀 v2.9.11 you can use azure endpoint now.
 - 🚀 v2.8 now we have a client that runs across all platforms!
@@ -149,7 +149,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 
 1. Get [OpenAI API Key](https://platform.openai.com/account/api-keys);
 2. Click
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), remember that `CODE` is your page password;
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsiliconflow%2FChatGPT-Next-Web&env=NEXT_PUBLIC_SF_NEXT_CHAT_CLIENT_ID&env=SF_NEXT_CHAT_SECRET&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), remember that `CODE` is your page password;
 3. Enjoy :)
 
 ## FAQ
@@ -343,7 +343,7 @@ Change default model
 ### `WHITE_WEBDAV_ENDPOINTS` (optional)
 
 You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format：
-- Each address must be a complete endpoint 
+- Each address must be a complete endpoint
 > `https://xxxx/yyy`
 - Multiple addresses are connected by ', '
 

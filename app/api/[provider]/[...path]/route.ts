@@ -1,3 +1,4 @@
+import { handle as oauthHandler } from "../../oauth_callback";
 import { ApiPath } from "@/app/constant";
 import { NextRequest } from "next/server";
 import { handle as openaiHandler } from "../../openai";
@@ -19,6 +20,8 @@ async function handle(
   const apiPath = `/api/${params.provider}`;
   console.log(`[${params.provider} Route] params `, params);
   switch (apiPath) {
+    case ApiPath.OAuth:
+      return oauthHandler(req, { params });
     case ApiPath.Azure:
       return azureHandler(req, { params });
     case ApiPath.Google:

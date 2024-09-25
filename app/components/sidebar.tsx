@@ -5,6 +5,8 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
+import SiliconFlowIcon from "../icons/sf.svg";
+import SiliconFlowActiveIcon from "../icons/sf.active.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -14,7 +16,12 @@ import DiscoveryIcon from "../icons/discovery.svg";
 
 import Locale from "../locales";
 
-import { useAppConfig, useChatStore } from "../store";
+import {
+  DEFAULT_CONFIG,
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+} from "../store";
 
 import {
   DEFAULT_SIDEBAR_WIDTH,
@@ -30,6 +37,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, Selector } from "./ui-lib";
+import { useCookies } from "react-cookie";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -216,6 +224,10 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
   const chatStore = useChatStore();
+  const accessStore = useAccessStore();
+  const [cookies, setCookie, removeCookie] = useCookies(["sfak"], {
+    doNotParse: true,
+  });
 
   return (
     <SideBarContainer
@@ -303,6 +315,53 @@ export function SideBar(props: { className?: string }) {
                 <IconButton
                   aria={Locale.Export.MessageFromChatGPT}
                   icon={<GithubIcon />}
+                  shadow
+                />
+              </a>
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <a
+                rel="noopener noreferrer"
+                onClick={() => {
+                  if (accessStore.useCustomConfig && accessStore.openaiApiKey) {
+                    const confirmLogout = window.confirm(
+                      "Are you sure you want to log out?",
+                    );
+                    if (confirmLogout) {
+                      chatStore.updateCurrentSession((session) => {
+                        session.mask.modelConfig.model =
+                          DEFAULT_CONFIG.modelConfig.model;
+                        session.mask.modelConfig.providerName =
+                          DEFAULT_CONFIG.modelConfig.providerName;
+                        accessStore.update((access) => {
+                          removeCookie("sfak");
+                          access.openaiApiKey = "";
+                          access.useCustomConfig = false;
+                          window.location.href = "/";
+                        });
+                      });
+                    }
+                  } else {
+                    window.location.href = `${
+                      process.env
+                        .NEXT_PUBLIC_SF_NEXT_CHAT_SF_ACCOUNT_ENDPOINT ||
+                      "https://account.siliconflow.cn"
+                    }/oauth?client_id=${
+                      process.env.NEXT_PUBLIC_SF_NEXT_CHAT_CLIENT_ID
+                    }`;
+                  }
+                }}
+              >
+                <IconButton
+                  aria={Locale.Export.MessageFromChatGPT}
+                  key={accessStore.openaiApiKey + accessStore.openaiUrl}
+                  icon={
+                    accessStore.useCustomConfig && accessStore.openaiApiKey ? (
+                      <SiliconFlowActiveIcon />
+                    ) : (
+                      <SiliconFlowIcon />
+                    )
+                  }
                   shadow
                 />
               </a>
