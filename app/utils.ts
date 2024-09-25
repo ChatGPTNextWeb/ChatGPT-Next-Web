@@ -294,7 +294,7 @@ export function adapter(config: Record<string, unknown>) {
     ? `${path}?${new URLSearchParams(params as any).toString()}`
     : path;
   if (window.__TAURI__) {
-    return tauriFetch(fetchUrl, rest)
+    return tauriFetch(fetchUrl as string, rest)
       .then((res) => res.text())
       .then((data: any) => ({ data }));
   }
