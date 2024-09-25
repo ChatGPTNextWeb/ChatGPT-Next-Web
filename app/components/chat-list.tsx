@@ -165,14 +165,14 @@ export function ChatList(props: { narrow?: boolean }) {
             {...provided.droppableProps}
           >
             <QueueAnim
-              delay={[300, 0]}
-              ease={["easeOutQuart", "easeInOutQuart"]}
+              delay={[100, 0]}
+              ease={"easeOutQuart"} // "easeInOutQuart"
               duration={[550, 450]}
               animConfig={[
                 { opacity: [1, 0], translateY: [0, -30] },
                 { height: 0 },
               ]}
-              // TODO：离场动画还是有点卡顿
+              // TODO：目前仅剩添加元素其他元素平移动画问题
               // interval={150}
             >
               {sessions.map((item, i) => (
