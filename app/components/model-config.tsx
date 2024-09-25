@@ -242,7 +242,8 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.CompressModel.SubTitle}
       >
         <Select
-          style={{ width: "60%" }}
+          withiconstyle={{ width: "60%" }}
+          iconselectstyles={{ maxWidth: "100%", whiteSpace: "normal" }}
           aria-label={Locale.Settings.CompressModel.Title}
           value={compressModelValue}
           onChange={(e) => {

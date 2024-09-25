@@ -294,19 +294,32 @@ export function Select(
   props: React.DetailedHTMLProps<
     React.SelectHTMLAttributes<HTMLSelectElement> & {
       align?: "left" | "center";
+      withiconstyle?: CSSProperties;
+      iconselectstyles?: CSSProperties;
     },
     HTMLSelectElement
   >,
 ) {
-  const { className, children, align, style, ...otherProps } = props;
+  const {
+    className,
+    children,
+    align,
+    withiconstyle,
+    iconselectstyles,
+    ...otherProps
+  } = props;
   return (
     <div
       className={`${styles["select-with-icon"]} ${
         align === "left" ? styles["left-align-option"] : ""
       } ${className}`}
-      style={style}
+      style={withiconstyle}
     >
-      <select className={styles["select-with-icon-select"]} {...otherProps}>
+      <select
+        className={styles["select-with-icon-select"]}
+        style={iconselectstyles}
+        {...otherProps}
+      >
         {children}
       </select>
       <DownIcon className={styles["select-with-icon-icon"]} />
