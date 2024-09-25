@@ -1,5 +1,5 @@
 import { ApiPath } from "@/app/constant";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { handle as openaiHandler } from "../../openai";
 import { handle as azureHandler } from "../../azure";
 import { handle as googleHandler } from "../../google";
