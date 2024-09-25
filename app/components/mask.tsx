@@ -166,21 +166,23 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
 
-        <ListItem
-          title={Locale.Mask.Config.Artifacts.Title}
-          subTitle={Locale.Mask.Config.Artifacts.SubTitle}
-        >
-          <input
-            aria-label={Locale.Mask.Config.Artifacts.Title}
-            type="checkbox"
-            checked={props.mask.enableArtifacts !== false}
-            onChange={(e) => {
-              props.updateMask((mask) => {
-                mask.enableArtifacts = e.currentTarget.checked;
-              });
-            }}
-          ></input>
-        </ListItem>
+        {globalConfig.enableArtifacts && (
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.Artifacts.Title}
+              type="checkbox"
+              checked={props.mask.enableArtifacts !== false}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.enableArtifacts = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        )}
 
         {!props.shouldSyncFromGlobal ? (
           <ListItem
