@@ -953,6 +953,7 @@ export const useChatStore = createPersistStore(
             messages: topicMessages,
             config: {
               model: modelConfig.compressModel,
+              providerName: modelConfig.compressProviderName,
               stream: false,
             },
             onFinish(message) {
