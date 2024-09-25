@@ -503,3 +503,4 @@ export const PLUGINS = [
 ];
 
 export const SAAS_CHAT_URL = "https://nextchat.dev/chat";
+export const SAAS_CHAT_UTM_URL = "https://nextchat.dev/chat?utm=github";
