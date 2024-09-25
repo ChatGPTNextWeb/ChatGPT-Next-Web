@@ -26,6 +26,9 @@ tauri = { version = "2.0.0-rc.15", features = [] }
 tauri-plugin-log = "2.0.0-rc"
 tauri-plugin-http = "2.0.0-rc"
 
+[replace]
+# using this version from github fixed data_directory for webkitgtk
+"wry:0.43.1" = { git = "https://github.com/lloydzhou/wry", branch="webkitgtk-data_manager-directory" }
 
 # Optimize for smaller binary size
 [profile.release]
