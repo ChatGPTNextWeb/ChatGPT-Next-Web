@@ -21,6 +21,7 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
+
 import { useAppConfig } from "../store/config";
 
 export function Mermaid(props: { code: string }) {
