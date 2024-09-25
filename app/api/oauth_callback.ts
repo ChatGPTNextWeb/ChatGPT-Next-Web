@@ -21,8 +21,6 @@ export async function handle(
       `${
         process.env.NEXT_PUBLIC_SF_NEXT_CHAT_SF_ACCOUNT_ENDPOINT ||
         "https://account.siliconflow.cn"
-      }/oauth?client_id=${
-        process.env.NEXT_PUBLIC_SF_NEXT_CHAT_CLIENT_ID
       }/api/open/oauth`,
       {
         method: "POST",
@@ -41,8 +39,6 @@ export async function handle(
     const tokenJson = await tokenFetch.json();
     const access_token = tokenJson.status ? tokenJson.data?.access_token : null;
     console.log("access_token", access_token);
-    // uat  https://cloud-uat.siliconflow.cn
-    // prod https://cloud.siliconflow.cn
     const apiKey = await fetch(
       `${
         process.env.NEXT_PUBLIC_SF_NEXT_CHAT_SF_CLOUD_ENDPOINT ||
