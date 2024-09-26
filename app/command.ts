@@ -39,6 +39,7 @@ interface ChatCommands {
   next?: Command;
   prev?: Command;
   clear?: Command;
+  fork?: Command;
   del?: Command;
 }
 

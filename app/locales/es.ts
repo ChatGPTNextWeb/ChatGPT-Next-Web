@@ -1,15 +1,21 @@
 import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 import { getClientConfig } from "../config/client";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const es: PartialLocaleType = {
   WIP: "En construcción...",
   Error: {
     Unauthorized: isApp
-      ? "Se detectó una clave API inválida. Por favor, ve a la página de [Configuración](/#/settings) para verificar si la clave API está configurada correctamente."
-      : "La contraseña de acceso es incorrecta o está vacía. Por favor, ve a la página de [Iniciar sesión](/#/auth) para ingresar la contraseña correcta, o en la página de [Configuración](/#/settings) para introducir tu propia clave API de OpenAI.",
+      ? `😆 La conversación encontró algunos problemas, no te preocupes:
+    \\ 1️⃣ Si deseas comenzar sin configuración, [haz clic aquí para empezar a chatear inmediatamente 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ Si deseas usar tus propios recursos de OpenAI, haz clic [aquí](/#/settings) para modificar la configuración ⚙️`
+      : `😆 La conversación encontró algunos problemas, no te preocupes:
+    \ 1️⃣ Si deseas comenzar sin configuración, [haz clic aquí para empezar a chatear inmediatamente 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ Si estás utilizando una versión de implementación privada, haz clic [aquí](/#/auth) para ingresar la clave de acceso 🔑
+    \ 3️⃣ Si deseas usar tus propios recursos de OpenAI, haz clic [aquí](/#/settings) para modificar la configuración ⚙️
+ `,
   },
   Auth: {
     Title: "Se requiere contraseña",
@@ -18,6 +24,11 @@ const es: PartialLocaleType = {
     Input: "Introduce el código de acceso aquí",
     Confirm: "Confirmar",
     Later: "Más tarde",
+    Return: "Regresar",
+    SaasTips:
+      "La configuración es demasiado complicada, quiero usarlo de inmediato",
+    TopTips:
+      "🥳 Oferta de lanzamiento de NextChat AI, desbloquea OpenAI o1, GPT-4o, Claude-3.5 y los últimos grandes modelos",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} conversaciones`,
@@ -44,6 +55,8 @@ const es: PartialLocaleType = {
       PinToastAction: "Ver",
       Delete: "Eliminar",
       Edit: "Editar",
+      RefreshTitle: "Actualizar título",
+      RefreshToast: "Se ha enviado la solicitud de actualización del título",
     },
     Commands: {
       new: "Nueva conversación",
@@ -292,6 +305,14 @@ const es: PartialLocaleType = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "Use NextChat AI",
+        Label: "(The most cost-effective solution)",
+        SubTitle:
+          "Officially maintained by NextChat, zero configuration ready to use, supports the latest large models like OpenAI o1, GPT-4o, and Claude-3.5",
+        ChatNow: "Chat Now",
+      },
+
       AccessCode: {
         Title: "Contraseña de acceso",
         SubTitle: "El administrador ha habilitado el acceso encriptado",
@@ -423,6 +444,10 @@ const es: PartialLocaleType = {
     },
 
     Model: "Modelo (model)",
+    CompressModel: {
+      Title: "Modelo de compresión",
+      SubTitle: "Modelo utilizado para comprimir el historial",
+    },
     Temperature: {
       Title: "Aleatoriedad (temperature)",
       SubTitle: "Cuanto mayor sea el valor, más aleatorio será el resultado",

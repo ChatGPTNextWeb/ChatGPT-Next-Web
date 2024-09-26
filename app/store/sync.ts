@@ -1,5 +1,4 @@
 import { getClientConfig } from "../config/client";
-import { Updater } from "../typing";
 import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
 import { createPersistStore } from "../utils/store";
 import {

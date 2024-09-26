@@ -15,6 +15,8 @@ import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
+import SpeakIcon from "../icons/speak.svg";
+import SpeakStopIcon from "../icons/speak-stop.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import LoadingButtonIcon from "../icons/loading.svg";
 import PromptIcon from "../icons/prompt.svg";
@@ -43,6 +45,7 @@ import QualityIcon from "../icons/hd.svg";
 import StyleIcon from "../icons/palette.svg";
 import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
+import ReloadIcon from "../icons/reload.svg";
 
 import {
   ChatMessage,
@@ -96,7 +99,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  LAST_INPUT_KEY,
+  DEFAULT_TTS_ENGINE,
+  ModelProvider,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
@@ -113,6 +117,11 @@ import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 
 const localStorage = safeLocalStorage();
+import { ClientApi } from "../client/api";
+import { createTTSPlayer } from "../utils/audio";
+import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
+
+const ttsPlayer = createTTSPlayer();
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -443,6 +452,7 @@ export function ChatActions(props: {
   hitBottom: boolean;
   uploading: boolean;
   setShowShortcutKeyModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserInput: (input: string) => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -520,8 +530,8 @@ export function ChatActions(props: {
 
     // if current model is not available
     // switch to first available model
-    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
-    if (isUnavaliableModel && models.length > 0) {
+    const isUnavailableModel = !models.some((m) => m.name === currentModel);
+    if (isUnavailableModel && models.length > 0) {
       // show next model to default model if exist
       let nextModel = models.find((model) => model.isDefault) || models[0];
       chatStore.updateCurrentSession((session) => {
@@ -625,7 +635,7 @@ export function ChatActions(props: {
           items={models.map((m) => ({
             title: `${m.displayName}${
               m?.provider?.providerName
-                ? "(" + m?.provider?.providerName + ")"
+                ? " (" + m?.provider?.providerName + ")"
                 : ""
             }`,
             value: `${m.name}@${m?.provider?.providerName}`,
@@ -982,6 +992,7 @@ function _Chat() {
       chatStore.updateCurrentSession(
         (session) => (session.clearContextIndex = session.messages.length),
       ),
+    fork: () => chatStore.forkSession(),
     del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
   });
 
@@ -1195,10 +1206,55 @@ function _Chat() {
     });
   };
 
+  const accessStore = useAccessStore();
+  const [speechStatus, setSpeechStatus] = useState(false);
+  const [speechLoading, setSpeechLoading] = useState(false);
+  async function openaiSpeech(text: string) {
+    if (speechStatus) {
+      ttsPlayer.stop();
+      setSpeechStatus(false);
+    } else {
+      var api: ClientApi;
+      api = new ClientApi(ModelProvider.GPT);
+      const config = useAppConfig.getState();
+      setSpeechLoading(true);
+      ttsPlayer.init();
+      let audioBuffer: ArrayBuffer;
+      const { markdownToTxt } = require("markdown-to-txt");
+      const textContent = markdownToTxt(text);
+      if (config.ttsConfig.engine !== DEFAULT_TTS_ENGINE) {
+        const edgeVoiceName = accessStore.edgeVoiceName();
+        const tts = new MsEdgeTTS();
+        await tts.setMetadata(
+          edgeVoiceName,
+          OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3,
+        );
+        audioBuffer = await tts.toArrayBuffer(textContent);
+      } else {
+        audioBuffer = await api.llm.speech({
+          model: config.ttsConfig.model,
+          input: textContent,
+          voice: config.ttsConfig.voice,
+          speed: config.ttsConfig.speed,
+        });
+      }
+      setSpeechStatus(true);
+      ttsPlayer
+        .play(audioBuffer, () => {
+          setSpeechStatus(false);
+        })
+        .catch((e) => {
+          console.error("[OpenAI Speech]", e);
+          showToast(prettyObject(e));
+          setSpeechStatus(false);
+        })
+        .finally(() => setSpeechLoading(false));
+    }
+  }
+
   const context: RenderMessage[] = useMemo(() => {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
-  const accessStore = useAccessStore();
 
   if (
     context.length === 0 &&
@@ -1553,6 +1609,17 @@ function _Chat() {
           </div>
         </div>
         <div className="window-actions">
+          <div className="window-action-button">
+            <IconButton
+              icon={<ReloadIcon />}
+              bordered
+              title={Locale.Chat.Actions.RefreshTitle}
+              onClick={() => {
+                showToast(Locale.Chat.Actions.RefreshToast);
+                chatStore.summarizeSession(true);
+              }}
+            />
+          </div>
           {!isMobileScreen && (
             <div className="window-action-button">
               <IconButton
@@ -1724,6 +1791,25 @@ function _Chat() {
                                   )
                                 }
                               />
+                              {config.ttsConfig.enable && (
+                                <ChatAction
+                                  text={
+                                    speechStatus
+                                      ? Locale.Chat.Actions.StopSpeech
+                                      : Locale.Chat.Actions.Speech
+                                  }
+                                  icon={
+                                    speechStatus ? (
+                                      <SpeakStopIcon />
+                                    ) : (
+                                      <SpeakIcon />
+                                    )
+                                  }
+                                  onClick={() =>
+                                    openaiSpeech(getMessageTextContent(message))
+                                  }
+                                />
+                              )}
                             </>
                           )}
                         </div>
@@ -1842,6 +1928,7 @@ function _Chat() {
             onSearch("");
           }}
           setShowShortcutKeyModal={setShowShortcutKeyModal}
+          setUserInput={setUserInput}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
