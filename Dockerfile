@@ -23,9 +23,13 @@
 ## ENV NEXT_SHARP_PATH /app/node_modules/sharp
 #RUN yarn build
 
-FROM sijinhui/chatgpt-next-web:buildcache as builder
+FROM sijinhui/chatgpt-next-web:buildcache as base
+
+FROM sijinhui/node:base AS builder
 WORKDIR /app
 COPY . .
+COPY --from=base /app/.next ./next
+COPY --from=base /app/node_modules ./node_modules
 RUN yarn install && yarn build
 
 FROM sijinhui/node:base AS runner
