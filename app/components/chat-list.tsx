@@ -22,7 +22,7 @@ import { useMobileScreen } from "../utils";
 // motion
 import QueueAnim from "rc-queue-anim";
 
-export function ChatItem(props: {
+function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
   title: string;
@@ -34,6 +34,7 @@ export function ChatItem(props: {
   narrow?: boolean;
   mask: Mask;
   provided: DraggableProvided;
+  isMobileScreen: boolean;
 }) {
   const draggableRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -57,8 +58,8 @@ export function ChatItem(props: {
         draggableRef.current = ele;
         props.provided.innerRef(ele);
       }}
-      {...props.provided.draggableProps}
-      {...props.provided.dragHandleProps}
+      {...(props.isMobileScreen ? {} : props.provided.draggableProps)}
+      {...(props.isMobileScreen ? {} : props.provided.dragHandleProps)}
       title={`${props.title}\n${Locale.ChatItem.ChatItemCount(props.count)}`}
     >
       {props.narrow ? (
@@ -84,7 +85,10 @@ export function ChatItem(props: {
       )}
 
       <div
-        className={styles["chat-item-delete"]}
+        className={
+          styles["chat-item-delete"] +
+          ` ${props.isMobileScreen ? styles["chat-item-delete-visible"] : ""}`
+        }
         onClickCapture={(e) => {
           props.onDelete?.();
           e.preventDefault();
@@ -155,6 +159,7 @@ export function ChatList(props: { narrow?: boolean }) {
             narrow={props.narrow}
             mask={sessions[rubic.source.index].mask}
             provided={provided}
+            isMobileScreen={isMobileScreen}
           />
         )}
       >
@@ -172,7 +177,7 @@ export function ChatList(props: { narrow?: boolean }) {
                 { opacity: [1, 0], translateY: [0, -30], height: [71, 0] },
                 { height: 0 },
               ]}
-              // TODO：修复添加元素其他元素平移动画问题，但下面的好像不生效全靠指定高度
+              // TODO：手机端好像还有点问题,先把拖拽关了
               onEnd={({ key, type, target }) => {
                 if (type === "enter") target.style.height = "auto";
               }}
@@ -205,6 +210,7 @@ export function ChatList(props: { narrow?: boolean }) {
                         narrow={props.narrow}
                         mask={item.mask}
                         provided={provided}
+                        isMobileScreen={isMobileScreen}
                       />
                     )}
                   </Draggable>
