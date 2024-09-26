@@ -5,6 +5,8 @@ module.exports = {
     args   : "start",
     env    : {
       PORT : 23000
-    }
+    },
+    autorestart: true,
+    interpreter: '/bin/bash',
   }]
 }

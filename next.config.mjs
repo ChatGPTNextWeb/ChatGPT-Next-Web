@@ -86,7 +86,11 @@ const nextConfig = {
   },
   experimental: {
     forceSwcTransforms: true,
-    serverComponentsExternalPackages: ["tiktoken"]
+    serverComponentsExternalPackages: ["tiktoken"],
+    // 加速跟踪依赖项
+    // turbotrace: {
+    //   logDetail: true,
+    // },
   },
   // externals: {
   //   'sharp': 'commonjs sharp'
