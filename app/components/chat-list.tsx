@@ -172,7 +172,7 @@ export function ChatList(props: { narrow?: boolean }) {
             <QueueAnim
               delay={[100, 0]}
               ease={"easeOutQuart"} // "easeInOutQuart"
-              duration={[550, 450]}
+              duration={[350, 450]}
               animConfig={[
                 { opacity: [1, 0], translateY: [0, -30], height: [71, 0] },
                 { height: 0 },
@@ -181,7 +181,7 @@ export function ChatList(props: { narrow?: boolean }) {
               onEnd={({ key, type, target }) => {
                 if (type === "enter") target.style.height = "auto";
               }}
-              // interval={150}
+              interval={50}
             >
               {sessions.map((item, i) => (
                 <div key={item.id}>
