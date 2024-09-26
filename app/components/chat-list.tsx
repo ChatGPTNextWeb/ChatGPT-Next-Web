@@ -169,10 +169,13 @@ export function ChatList(props: { narrow?: boolean }) {
               ease={"easeOutQuart"} // "easeInOutQuart"
               duration={[550, 450]}
               animConfig={[
-                { opacity: [1, 0], translateY: [0, -30] },
+                { opacity: [1, 0], translateY: [0, -30], height: [71, 0] },
                 { height: 0 },
               ]}
-              // TODO：目前仅剩添加元素其他元素平移动画问题
+              // TODO：修复添加元素其他元素平移动画问题，但下面的好像不生效全靠指定高度
+              onEnd={({ key, type, target }) => {
+                if (type === "enter") target.style.height = "auto";
+              }}
               // interval={150}
             >
               {sessions.map((item, i) => (
