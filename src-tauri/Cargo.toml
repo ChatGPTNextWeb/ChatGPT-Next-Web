@@ -25,6 +25,7 @@ log = "0.4"
 tauri = { version = "2.0.0-rc.15", features = [] }
 tauri-plugin-log = "2.0.0-rc"
 tauri-plugin-http = "2.0.0-rc.5"
+tauri-plugin-updater = "2.0.0-beta.0"
 
 [replace]
 # using this version from github fixed data_directory for webkitgtk
