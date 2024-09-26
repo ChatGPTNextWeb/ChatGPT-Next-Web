@@ -28,6 +28,13 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: cache.Dockerfile
+          file: cache.install.Dockerfile
+          push: true
+          tags: sijinhui/chatgpt-next-web:installcache
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: cache.build.Dockerfile
           push: true
           tags: sijinhui/chatgpt-next-web:buildcache
