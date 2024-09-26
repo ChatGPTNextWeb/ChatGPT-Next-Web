@@ -24,8 +24,15 @@ serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
 tauri = { version = "2.0.0-rc.15", features = [] }
 tauri-plugin-log = "2.0.0-rc"
+tauri-plugin-clipboard-manager = "2.0.0-rc.4"
+tauri-plugin-dialog = "2.0.0-rc.7"
+tauri-plugin-fs = "2.0.0-rc.5"
 tauri-plugin-http = "2.0.0-rc.5"
-tauri-plugin-updater = "2.0.0-beta.0"
+tauri-plugin-updater = "2.0.0-rc.3"
+tauri-plugin-notification = "2.0.0-rc.5"
+tauri-plugin-shell = "2.0.0-rc.3"
+tauri-plugin-window-state = "2.0.0-rc.5"
+
 
 [replace]
 # using this version from github fixed data_directory for webkitgtk
