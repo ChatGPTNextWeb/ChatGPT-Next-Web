@@ -434,7 +434,7 @@ export const DEFAULT_MODELS = [
   //   },
   // },
   {
-    name: "o1-preview-all",
+    name: "o1-preview",
     describe: "GPT,o1,最新模型,目前较贵",
     available: true,
     sorted: seq++,
