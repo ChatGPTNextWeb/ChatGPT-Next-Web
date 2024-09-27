@@ -5,12 +5,21 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_TTS_ENGINE,
+  DEFAULT_TTS_ENGINES,
+  DEFAULT_TTS_MODEL,
+  DEFAULT_TTS_MODELS,
+  DEFAULT_TTS_VOICE,
+  DEFAULT_TTS_VOICES,
   StoreKey,
   ServiceProvider,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
+export type TTSModelType = (typeof DEFAULT_TTS_MODELS)[number];
+export type TTSVoiceType = (typeof DEFAULT_TTS_VOICES)[number];
+export type TTSEngineType = (typeof DEFAULT_TTS_ENGINES)[number];
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -41,6 +50,8 @@ export const DEFAULT_CONFIG = {
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
+  enableArtifacts: true, // show artifacts config
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
@@ -68,11 +79,21 @@ export const DEFAULT_CONFIG = {
     quality: "standard" as DalleQuality,
     style: "vivid" as DalleStyle,
   },
+
+  ttsConfig: {
+    enable: false,
+    autoplay: false,
+    engine: DEFAULT_TTS_ENGINE,
+    model: DEFAULT_TTS_MODEL,
+    voice: DEFAULT_TTS_VOICE,
+    speed: 1.0,
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
 
 export type ModelConfig = ChatConfig["modelConfig"];
+export type TTSConfig = ChatConfig["ttsConfig"];
 
 export function limitNumber(
   x: number,
@@ -86,6 +107,21 @@ export function limitNumber(
 
   return Math.min(max, Math.max(min, x));
 }
+
+export const TTSConfigValidator = {
+  engine(x: string) {
+    return x as TTSEngineType;
+  },
+  model(x: string) {
+    return x as TTSModelType;
+  },
+  voice(x: string) {
+    return x as TTSVoiceType;
+  },
+  speed(x: number) {
+    return limitNumber(x, 0.25, 4.0, 1.0);
+  },
+};
 
 export const ModalConfigValidator = {
   model(x: string) {
@@ -143,6 +179,21 @@ export const useAppConfig = createPersistStore(
   {
     name: StoreKey.Config,
     version: 4,
+
+    merge(persistedState, currentState) {
+      const state = persistedState as ChatConfig | undefined;
+      if (!state) return { ...currentState };
+      const models = currentState.models.slice();
+      state.models.forEach((pModel) => {
+        const idx = models.findIndex(
+          (v) => v.name === pModel.name && v.provider === pModel.provider,
+        );
+        if (idx !== -1) models[idx] = pModel;
+        else models.push(pModel);
+      });
+      return { ...currentState, ...state, models: models };
+    },
+
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
