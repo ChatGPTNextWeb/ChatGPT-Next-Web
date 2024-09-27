@@ -11,7 +11,7 @@ console.log("[Next] build mode", mode);
 
 const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
 // const disableChunk = true;
-console.log("[Next] build with chunk: ", disableChunk);
+console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 // const isProd = process.env.NODE_ENV === 'production'
