@@ -1,4 +1,4 @@
-FROM hub.si.icu/library/node:22.1-alpine AS base
+FROM node:22.1-alpine AS base
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 # 设置时区环境变量

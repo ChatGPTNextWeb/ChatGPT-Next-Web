@@ -229,6 +229,13 @@
   opacity: 1;
 }
 
+/* 新增类，按钮持续显示 */
+.chat-item > .chat-item-delete-visible {
+  opacity: 0.5;
+  transform: translateX(-4px);
+}
+
+
 .chat-item-info {
   display: flex;
   justify-content: space-between;
