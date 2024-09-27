@@ -253,7 +253,6 @@ export const usePluginStore = createPersistStore(
                     .catch((e) => item),
             ),
           ).then((builtinPlugins: any) => {
-            return;
             builtinPlugins
               .filter((item: any) => item?.content)
               .forEach((item: any) => {
