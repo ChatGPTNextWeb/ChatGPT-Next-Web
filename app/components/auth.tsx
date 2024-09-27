@@ -45,7 +45,6 @@ export function AuthPage() {
 
   return (
     <div className={styles["auth-page"]}>
-      <TopBanner></TopBanner>
       <div className={styles["auth-header"]}>
         <IconButton
           icon={<LeftIcon />}
@@ -104,12 +103,6 @@ export function AuthPage() {
           text={Locale.Auth.Confirm}
           type="primary"
           onClick={goChat}
-        />
-        <IconButton
-          text={Locale.Auth.SaasTips}
-          onClick={() => {
-            goSaas();
-          }}
         />
       </div>
     </div>
