@@ -331,6 +331,7 @@ pre {
   
   .expanded {
     background-image: none;
+    justify-content: flex-end;
   }
   .collapsed {
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.06));
