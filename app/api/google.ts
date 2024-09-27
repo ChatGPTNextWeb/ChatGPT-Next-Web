@@ -102,7 +102,7 @@ async function request(req: NextRequest, apiKey: string) {
       "Cache-Control": "no-store",
       "x-google-api-key":
         req.headers.get("x-google-api-key") ||
-        (req.headers.get("Authorization") ?? "").replace("Bearer "),
+        (req.headers.get("Authorization") ?? "").replace("Bearer ", ""),
     },
     method: req.method,
     body: req.body,
