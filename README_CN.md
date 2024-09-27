@@ -54,7 +54,7 @@
 
 ### 打开自动更新
 
-> 如果你遇到了 Upstream Sync 执行错误，请手动 Sync Fork 一次！
+> 如果你遇到了 Upstream Sync 执行错误，请[手动 Sync Fork 一次](./README_CN.md#手动更新代码)！
 
 当你 fork 项目之后，由于 Github 的限制，需要手动去你 fork 后的项目的 Actions 页面启用 Workflows，并启用 Upstream Sync Action，启用之后即可开启每小时定时自动更新：
 
