@@ -91,7 +91,7 @@ async function request(req: NextRequest, apiKey: string) {
     },
     10 * 60 * 1000,
   );
-  const fetchUrl = `${baseUrl}${path}?key=${apiKey}${
+  const fetchUrl = `${baseUrl}${path}${
     req?.nextUrl?.searchParams?.get("alt") === "sse" ? "&alt=sse" : ""
   }`;
 
@@ -100,6 +100,9 @@ async function request(req: NextRequest, apiKey: string) {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
+      "x-google-api-key":
+        req.headers.get("x-google-api-key") ||
+        (req.headers.get("Authorization") ?? "").replace("Bearer ", ""),
     },
     method: req.method,
     body: req.body,
