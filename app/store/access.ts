@@ -211,10 +211,13 @@ export const useAccessStore = createPersistStore(
       })
         .then((res) => res.json())
         .then((res) => {
-          // Set default model from env request
-          let defaultModel = res.defaultModel ?? "";
-          if (defaultModel !== "")
-            DEFAULT_CONFIG.modelConfig.model = defaultModel;
+          const defaultModel = res.defaultModel ?? "";
+          if (defaultModel !== "") {
+            const [model, providerName] = defaultModel.split("@");
+            DEFAULT_CONFIG.modelConfig.model = model;
+            DEFAULT_CONFIG.modelConfig.providerName = providerName;
+          }
+
           return res;
         })
         .then((res: DangerConfig) => {
