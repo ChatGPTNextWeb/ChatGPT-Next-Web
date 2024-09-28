@@ -3,6 +3,7 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
 import { ServiceProvider } from "./constant";
+import { fetch } from "./utils/stream";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -284,46 +285,6 @@ export function showPlugins(provider: ServiceProvider, model: string) {
     return true;
   }
   return false;
-}
-
-export function fetch(
-  url: string,
-  options?: Record<string, unknown>,
-): Promise<any> {
-  if (window.__TAURI__) {
-    const tauriUri = window.__TAURI__.convertFileSrc(url, "sse");
-    return window.fetch(tauriUri, options).then((r) => {
-      // 1. create response,
-      // TODO using event to get status and statusText and headers
-      const { status, statusText } = r;
-      const { readable, writable } = new TransformStream();
-      const res = new Response(readable, { status, statusText });
-      // 2. call fetch_read_body multi times, and write to Response.body
-      const writer = writable.getWriter();
-      let unlisten;
-      window.__TAURI__.event
-        .listen("sse-response", (e) => {
-          const { id, payload } = e;
-          console.log("event", id, payload);
-          writer.ready.then(() => {
-            if (payload !== 0) {
-              writer.write(new Uint8Array(payload));
-            } else {
-              writer.releaseLock();
-              writable.close();
-              unlisten && unlisten();
-            }
-          });
-        })
-        .then((u) => (unlisten = u));
-      return res;
-    });
-  }
-  return window.fetch(url, options);
-}
-
-if (undefined !== window) {
-  window.tauriFetch = fetch;
 }
 
 export function adapter(config: Record<string, unknown>) {

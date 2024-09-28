@@ -1986,6 +1986,7 @@ checksum = "e4a24736216ec316047a1fc4252e27dabb04218aa4a3f37c6e7ddbf1f9782b54"
 name = "nextchat"
 version = "0.1.0"
 dependencies = [
+ "bytes",
  "futures-util",
  "percent-encoding",
  "reqwest",
@@ -2214,17 +2215,6 @@ checksum = "9aa2b01e1d916879f73a53d01d1d6cee68adbb31d6d9177a8cfce093cced1d50"
 dependencies = [
  "futures-core",
  "pin-project-lite",
-]
-
-[[package]]
-name = "os_info"
-version = "3.8.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae99c7fa6dd38c7cafe1ec085e804f8f555a2f8659b0dbe03f1f9963a9b51092"
-dependencies = [
- "log",
- "serde",
- "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3252,19 +3242,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sys-locale"
-version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f8a11bd9c338fdba09f7881ab41551932ad42e405f61d01e8406baea71c07aee"
-dependencies = [
- "js-sys",
- "libc",
- "wasm-bindgen",
- "web-sys",
- "windows-sys 0.45.0",
-]
-
-[[package]]
 name = "system-configuration"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3412,7 +3389,6 @@ dependencies = [
  "objc",
  "once_cell",
  "open",
- "os_info",
  "percent-encoding",
  "rand 0.8.5",
  "raw-window-handle",
@@ -3425,7 +3401,6 @@ dependencies = [
  "serde_repr",
  "serialize-to-javascript",
  "state",
- "sys-locale",
  "tar",
  "tauri-macros",
  "tauri-runtime",
@@ -4343,15 +4318,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "677d2418bec65e3338edb076e806bc1ec15693c5d0104683f2efe857f61056a9"
 dependencies = [
  "windows-targets 0.48.0",
-]
-
-[[package]]
-name = "windows-sys"
-version = "0.52.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
-dependencies = [
- "windows-targets 0.52.0",
 ]
 
 [[package]]

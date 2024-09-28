@@ -12,6 +12,7 @@ declare module "*.svg";
 
 declare interface Window {
   __TAURI__?: {
+    convertFileSrc(url: string, protocol?: string): string;
     writeText(text: string): Promise<void>;
     invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
     dialog: {
