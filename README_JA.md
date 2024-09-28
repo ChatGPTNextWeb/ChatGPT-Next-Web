@@ -54,7 +54,7 @@
 
 ### 自動更新を開く
 
-> Upstream Sync の実行エラーが発生した場合は、手動で Sync Fork してください！
+> Upstream Sync の実行エラーが発生した場合は、[手動で Sync Fork](./README_JA.md#手動でコードを更新する) してください！
 
 プロジェクトを fork した後、GitHub の制限により、fork 後のプロジェクトの Actions ページで Workflows を手動で有効にし、Upstream Sync Action を有効にする必要があります。有効化後、毎時の定期自動更新が可能になります：
 
