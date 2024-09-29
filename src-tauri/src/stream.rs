@@ -66,9 +66,7 @@ pub async fn stream_fetch(
   let res = response_future.await;
   let response = match res {
     Ok(res) => {
-      println!("Error: {:?}", res);
       // get response and emit to client
-      // .register_uri_scheme_protocol("stream", move |app_handle, request| {
       let mut headers = HashMap::new();
       for (name, value) in res.headers() {
         headers.insert(
@@ -84,7 +82,7 @@ pub async fn stream_fetch(
         while let Some(chunk) = stream.next().await {
           match chunk {
             Ok(bytes) => {
-              println!("chunk: {:?}", bytes);
+              // println!("chunk: {:?}", bytes);
               window.emit(event_name, ChunkPayload{ request_id, chunk: bytes }).unwrap();
             }
             Err(err) => {
