@@ -41,7 +41,7 @@ export class SparkApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = ApiPath.Iflytek;
-      baseUrl = isApp ? IFLYTEK_BASE_URL + apiPath : apiPath;
+      baseUrl = isApp ? IFLYTEK_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
