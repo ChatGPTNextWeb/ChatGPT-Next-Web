@@ -182,7 +182,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.2,
+    version: 4.3,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -229,15 +229,27 @@ export const useAppConfig = createPersistStore(
         state.lastUpdate = Date.now();
       }
 
-      if (version < 4.2) {
+      if (version < 3.9) {
+        state.modelConfig.template =
+          state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
+            ? state.modelConfig.template
+            : (config?.template ?? DEFAULT_INPUT_TEMPLATE);
+      }
+
+      if (version < 4) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
           DEFAULT_CONFIG.modelConfig.compressProviderName;
-        return { ...DEFAULT_CONFIG };
+      }
+
+      if (version < 4.3) {
+        state.models = DEFAULT_CONFIG.models;
       }
 
       return state as any;
     },
   },
 );
+
+// return { ...DEFAULT_CONFIG };

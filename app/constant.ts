@@ -434,6 +434,18 @@ export const DEFAULT_MODELS = [
   //   },
   // },
   {
+    name: "o1-mini",
+    describe: "GPT,最新模型mini版,较便宜",
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+      sorted: 2,
+    },
+  },
+  {
     name: "o1-preview",
     describe: "GPT,o1,最新模型,目前较贵",
     available: true,
