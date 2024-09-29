@@ -53,15 +53,33 @@ pub async fn stream_fetch(
   }
 
   let mut _headers = HeaderMap::new();
-  for (key, value) in headers {
-      _headers.insert(key.parse::<HeaderName>().unwrap(), value.parse().unwrap());
+  for (key, value) in &headers {
+    _headers.insert(key.parse::<HeaderName>().unwrap(), value.parse().unwrap());
   }
-  let body = bytes::Bytes::from(body);
 
-  let response_future = Client::new().request(
-    method.parse::<reqwest::Method>().map_err(|err| format!("failed to parse method: {}", err))?,
+  println!("method: {:?}", method);
+  println!("url: {:?}", url);
+  println!("headers: {:?}", headers);
+  println!("headers: {:?}", _headers);
+
+  let method = method.parse::<reqwest::Method>().map_err(|err| format!("failed to parse method: {}", err))?;
+  let client = Client::builder()
+    .user_agent("Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15")
+    .default_headers(_headers)
+    .build()
+    .map_err(|err| format!("failed to generate client: {}", err))?;
+
+  let mut request = client.request(
+    method.clone(),
     url.parse::<reqwest::Url>().map_err(|err| format!("failed to parse url: {}", err))?
-  ).headers(_headers).body(body).send();
+  );
+
+  if method == reqwest::Method::POST {
+    let body = bytes::Bytes::from(body);
+    println!("body: {:?}", body);
+    request = request.body(body);
+  }
+  let response_future = request.send();
 
   let res = response_future.await;
   let response = match res {

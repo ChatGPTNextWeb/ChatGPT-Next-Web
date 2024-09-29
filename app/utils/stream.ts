@@ -21,7 +21,12 @@ type StreamResponse = {
 
 export function fetch(url: string, options?: RequestInit): Promise<any> {
   if (window.__TAURI__) {
-    const { signal, method = "GET", headers = {}, body = [] } = options || {};
+    const {
+      signal,
+      method = "GET",
+      headers: _headers = {},
+      body = [],
+    } = options || {};
     let unlisten: Function | undefined;
     let request_id = 0;
     const ts = new TransformStream();
@@ -32,10 +37,10 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       writer.ready.then(() => {
         try {
           writer.releaseLock();
+          ts.writable.close();
         } catch (e) {
           console.error(e);
         }
-        ts.writable.close();
       });
     };
 
@@ -61,6 +66,19 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       })
       .then((u: Function) => (unlisten = u));
 
+    const headers = {
+      Accept: "*",
+      Connection: "close",
+      Origin: "http://localhost:3000",
+      Referer: "http://localhost:3000/",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "cross-site",
+      "User-Agent": navigator.userAgent,
+    };
+    for (const item of new Headers(_headers || {})) {
+      headers[item[0]] = item[1];
+    }
     return window.__TAURI__
       .invoke("stream_fetch", {
         method,
