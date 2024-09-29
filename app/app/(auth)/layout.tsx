@@ -2,6 +2,7 @@ import "@/app/app/login.scss";
 import { Metadata } from "next";
 import { ReactNode } from "react";
 import Image from "next/image";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 // import { VerifiedUser } from "@/lib/auth";
 // import { redirect } from "next/navigation";
 
@@ -34,7 +35,7 @@ export default async function AuthLayout({
           <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-500">
             Sign in to your account
           </h2>
-          {children}
+          <AntdRegistry>{children}</AntdRegistry>
         </div>
       </div>
     </div>

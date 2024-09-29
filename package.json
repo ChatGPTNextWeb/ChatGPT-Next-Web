@@ -18,7 +18,7 @@
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev"
   },
   "dependencies": {
-    "@ant-design/nextjs-registry": "^1.0.0",
+    "@ant-design/nextjs-registry": "^1.0.1",
     "@ant-design/pro-components": "^2.7.1",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
@@ -28,7 +28,7 @@
     "@svgr/webpack": "^8.1.0",
     "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.9",
-    "antd": "^5.15.1",
+    "antd": "^5.21.1",
     "axios": "^1.7.5",
     "bcryptjs": "^2.4.3",
     "cron": "^3.1.6",
