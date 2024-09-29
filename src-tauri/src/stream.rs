@@ -2,12 +2,13 @@
 //
 
 use std::error::Error;
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::collections::HashMap;
 use futures_util::{StreamExt};
 use reqwest::Client;
 use reqwest::header::{HeaderName, HeaderMap};
 
-static mut REQUEST_COUNTER: u32 = 0;
+static REQUEST_COUNTER: AtomicU32 = AtomicU32::new(0);
 
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct StreamResponse {
@@ -38,12 +39,8 @@ pub async fn stream_fetch(
   body: Vec<u8>,
 ) -> Result<StreamResponse, String> {
 
-  let mut request_id = 0;
   let event_name = "stream-response";
-  unsafe {
-    REQUEST_COUNTER += 1;
-    request_id = REQUEST_COUNTER;
-  }
+  let request_id = REQUEST_COUNTER.fetch_add(1, Ordering::SeqCst);
 
   let mut _headers = HeaderMap::new();
   for (key, value) in &headers {
@@ -72,6 +69,10 @@ pub async fn stream_fetch(
     // println!("body: {:?}", body);
     request = request.body(body);
   }
+
+  // println!("client: {:?}", client);
+  // println!("request: {:?}", request);
+
   let response_future = request.send();
 
   let res = response_future.await;
