@@ -32,15 +32,13 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
     const ts = new TransformStream();
     const writer = ts.writable.getWriter();
 
+    let closed = false;
     const close = () => {
+      if (closed) return;
+      closed = true;
       unlisten && unlisten();
       writer.ready.then(() => {
-        try {
-          writer.releaseLock();
-          ts.writable.close();
-        } catch (e) {
-          console.error(e);
-        }
+        writer.close().catch((e) => console.error(e));
       });
     };
 
@@ -55,10 +53,9 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
           return;
         }
         if (chunk) {
-          writer &&
-            writer.ready.then(() => {
-              writer && writer.write(new Uint8Array(chunk));
-            });
+          writer.ready.then(() => {
+            writer.write(new Uint8Array(chunk));
+          });
         } else if (status === 0) {
           // end of body
           close();
@@ -67,13 +64,8 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       .then((u: Function) => (unlisten = u));
 
     const headers = {
-      Accept: "*",
-      Connection: "close",
-      Origin: "http://localhost:3000",
-      Referer: "http://localhost:3000/",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
+      Accept: "application/json, text/plain, */*",
+      "Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
       "User-Agent": navigator.userAgent,
     };
     for (const item of new Headers(_headers || {})) {
@@ -81,7 +73,7 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
     }
     return window.__TAURI__
       .invoke("stream_fetch", {
-        method,
+        method: method.toUpperCase(),
         url,
         headers,
         // TODO FormData

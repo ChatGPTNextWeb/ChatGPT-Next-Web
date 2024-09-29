@@ -8,7 +8,7 @@ use reqwest::header::{HeaderName, HeaderMap};
 
 static mut REQUEST_COUNTER: u32 = 0;
 
-#[derive(Clone, serde::Serialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct StreamResponse {
   request_id: u32,
   status: u16,
@@ -66,6 +66,7 @@ pub async fn stream_fetch(
   let client = Client::builder()
     .user_agent("Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15")
     .default_headers(_headers)
+    .redirect(reqwest::redirect::Policy::limited(3))
     .build()
     .map_err(|err| format!("failed to generate client: {}", err))?;
 
@@ -104,7 +105,7 @@ pub async fn stream_fetch(
               window.emit(event_name, ChunkPayload{ request_id, chunk: bytes }).unwrap();
             }
             Err(err) => {
-              println!("Error: {:?}", err);
+              println!("Error chunk: {:?}", err);
             }
           }
         }
@@ -119,7 +120,7 @@ pub async fn stream_fetch(
       }
     }
     Err(err) => {
-      println!("Error: {:?}", err.source().expect("REASON").to_string());
+      println!("Error response: {:?}", err.source().expect("REASON").to_string());
       StreamResponse {
         request_id,
         status: 599,
@@ -128,6 +129,7 @@ pub async fn stream_fetch(
       }
     }
   };
+  println!("Response: {:?}", response);
   Ok(response)
 }
 
