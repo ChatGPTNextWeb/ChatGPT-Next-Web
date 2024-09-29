@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
 # 加速
+npm config set registry https://registry.npmmirror.com/
+# 新版需要这样设置
+yarn config set npmRegistryServer https://registry.npmmirror.com
 yarn config set registry 'https://registry.npmmirror.com/'
-yarn config set sharp_binary_host "https://npm.taobao.org/mirrors/sharp"
-yarn config set sharp_libvips_binary_host "https://npm.taobao.org/mirrors/sharp-libvips"
+yarn config set sharp_binary_host "https://npmmirror.com/mirrors/sharp"
+yarn config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips"
 ## 官方
 ##yarn config delete registry
 ##yarn config delete sharp_binary_host
