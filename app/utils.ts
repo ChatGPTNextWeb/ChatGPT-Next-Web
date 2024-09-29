@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
-import { ServiceProvider, REQUEST_TIMEOUT_MS } from "./constant";
-import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
+import { ServiceProvider } from "./constant";
+// import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
+import { fetch as tauriStreamFetch } from "./utils/stream";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -292,19 +293,22 @@ export function fetch(
   options?: Record<string, unknown>,
 ): Promise<any> {
   if (window.__TAURI__) {
-    const payload = options?.body || options?.data;
-    return tauriFetch(url, {
-      ...options,
-      body:
-        payload &&
-        ({
-          type: "Text",
-          payload,
-        } as any),
-      timeout: ((options?.timeout as number) || REQUEST_TIMEOUT_MS) / 1000,
-      responseType:
-        options?.responseType == "text" ? ResponseType.Text : ResponseType.JSON,
-    } as any);
+    return tauriStreamFetch(url, options)
+      .then((res) => res.text())
+      .then((data) => ({ data }));
+    // const payload = options?.body || options?.data;
+    // return tauriFetch(url, {
+    //   ...options,
+    //   body:
+    //     payload &&
+    //     ({
+    //       type: "Text",
+    //       payload,
+    //     } as any),
+    //   timeout: ((options?.timeout as number) || REQUEST_TIMEOUT_MS) / 1000,
+    //   responseType:
+    //     options?.responseType == "text" ? ResponseType.Text : ResponseType.JSON,
+    // } as any);
   }
   return window.fetch(url, options);
 }
