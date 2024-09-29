@@ -5,10 +5,8 @@ mod stream;
 
 fn main() {
   tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![stream::stream_fetch])
     .plugin(tauri_plugin_window_state::Builder::default().build())
-    .register_uri_scheme_protocol("stream", move |app_handle, request| {
-      stream::stream(app_handle, request)
-    })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

@@ -288,12 +288,16 @@ export function showPlugins(provider: ServiceProvider, model: string) {
 }
 
 export function adapter(config: Record<string, unknown>) {
-  const { baseURL, url, params, ...rest } = config;
+  const { baseURL, url, params, method, data, ...rest } = config;
   const path = baseURL ? `${baseURL}${url}` : url;
   const fetchUrl = params
     ? `${path}?${new URLSearchParams(params as any).toString()}`
     : path;
-  return fetch(fetchUrl as string, rest)
+  return fetch(fetchUrl as string, {
+    ...rest,
+    method,
+    body: method.toUpperCase() == "GET" ? undefined : data,
+  })
     .then((res) => res.text())
     .then((data) => ({ data }));
 }

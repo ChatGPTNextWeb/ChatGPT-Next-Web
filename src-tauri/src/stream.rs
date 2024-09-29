@@ -1,30 +1,25 @@
+//
+//
 
 use std::error::Error;
 use futures_util::{StreamExt};
 use reqwest::Client;
-use tauri::{ Manager, AppHandle };
-use tauri::http::{Request, ResponseBuilder};
-use tauri::http::Response;
+use reqwest::header::{HeaderName, HeaderMap};
 
 static mut REQUEST_COUNTER: u32 = 0;
 
 #[derive(Clone, serde::Serialize)]
-pub struct ErrorPayload {
-  request_id: u32,
-  error: String,
-}
-
-#[derive(Clone, serde::Serialize)]
-pub struct StatusPayload {
+pub struct StreamResponse {
   request_id: u32,
   status: u16,
+  status_text: String,
+  headers: HashMap<String, String>
 }
 
 #[derive(Clone, serde::Serialize)]
-pub struct HeaderPayload {
+pub struct EndPayload {
   request_id: u32,
-  name: String,
-  value: String,
+  status: u16,
 }
 
 #[derive(Clone, serde::Serialize)]
@@ -33,64 +28,90 @@ pub struct ChunkPayload {
   chunk: bytes::Bytes,
 }
 
-pub fn stream(app_handle: &AppHandle, request: &Request) -> Result<Response, Box<dyn Error>> {
+use std::collections::HashMap;
+
+#[derive(serde::Serialize)]
+pub struct CustomResponse {
+  message: String,
+  other_val: usize,
+}
+
+#[tauri::command]
+pub async fn stream_fetch(
+  window: tauri::Window,
+  method: String,
+  url: String,
+  headers: HashMap<String, String>,
+  body: Vec<u8>,
+) -> Result<StreamResponse, String> {
+
   let mut request_id = 0;
   let event_name = "stream-response";
   unsafe {
     REQUEST_COUNTER += 1;
     request_id = REQUEST_COUNTER;
   }
-  let path = request.uri().to_string().replace("stream://localhost/", "").replace("http://stream.localhost/", "");
-  let path = percent_encoding::percent_decode(path.as_bytes())
-    .decode_utf8_lossy()
-    .to_string();
-  // println!("path : {}", path);
-  let client = Client::new();
-  let handle = app_handle.app_handle();
-  // send http request
-  let body = reqwest::Body::from(request.body().clone());
-  let response_future = client.request(request.method().clone(), path)
-    .headers(request.headers().clone())
-    .body(body).send();
 
-  // get response and emit to client
-  tauri::async_runtime::spawn(async move {
-    let res = response_future.await;
+  let mut _headers = HeaderMap::new();
+  for (key, value) in headers {
+      _headers.insert(key.parse::<HeaderName>().unwrap(), value.parse().unwrap());
+  }
+  let body = bytes::Bytes::from(body);
 
-    match res {
-      Ok(res) => {
-        handle.emit_all(event_name, StatusPayload{ request_id, status: res.status().as_u16() }).unwrap();
-        for (name, value) in res.headers() {
-          handle.emit_all(event_name, HeaderPayload {
-            request_id,
-            name: name.to_string(),
-            value: std::str::from_utf8(value.as_bytes()).unwrap().to_string()
-          }).unwrap();
-        }
+  let response_future = Client::new().request(
+    method.parse::<reqwest::Method>().map_err(|err| format!("failed to parse method: {}", err))?,
+    url.parse::<reqwest::Url>().map_err(|err| format!("failed to parse url: {}", err))?
+  ).headers(_headers).body(body).send();
+
+  let res = response_future.await;
+  let response = match res {
+    Ok(res) => {
+      println!("Error: {:?}", res);
+      // get response and emit to client
+      // .register_uri_scheme_protocol("stream", move |app_handle, request| {
+      let mut headers = HashMap::new();
+      for (name, value) in res.headers() {
+        headers.insert(
+          name.as_str().to_string(),
+          std::str::from_utf8(value.as_bytes()).unwrap().to_string()
+        );
+      }
+      let status = res.status().as_u16();
+
+      tauri::async_runtime::spawn(async move {
         let mut stream = res.bytes_stream();
 
         while let Some(chunk) = stream.next().await {
           match chunk {
             Ok(bytes) => {
-              handle.emit_all(event_name, ChunkPayload{ request_id, chunk: bytes }).unwrap();
+              println!("chunk: {:?}", bytes);
+              window.emit(event_name, ChunkPayload{ request_id, chunk: bytes }).unwrap();
             }
             Err(err) => {
               println!("Error: {:?}", err);
             }
           }
         }
-        handle.emit_all(event_name, StatusPayload { request_id, status: 0 }).unwrap();
-      }
-      Err(err) => {
-        println!("Error: {:?}", err.source().expect("REASON").to_string());
-        handle.emit_all(event_name, ErrorPayload {
-          request_id,
-          error: err.source().expect("REASON").to_string()
-        }).unwrap();
+        window.emit(event_name, EndPayload { request_id, status: 0 }).unwrap();
+      });
+
+      StreamResponse {
+        request_id,
+        status,
+        status_text: "OK".to_string(),
+        headers,
       }
     }
-  });
-  return ResponseBuilder::new()
-    .header("Access-Control-Allow-Origin", "*")
-    .status(200).body(request_id.to_string().into())
+    Err(err) => {
+      println!("Error: {:?}", err.source().expect("REASON").to_string());
+      StreamResponse {
+        request_id,
+        status: 599,
+        status_text: err.source().expect("REASON").to_string(),
+        headers: HashMap::new(),
+      }
+    }
+  };
+  Ok(response)
 }
+
