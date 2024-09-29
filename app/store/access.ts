@@ -1,9 +1,17 @@
 import {
-  ApiPath,
-  DEFAULT_API_HOST,
   GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
+  OPENAI_BASE_URL,
+  ANTHROPIC_BASE_URL,
+  GEMINI_BASE_URL,
+  BAIDU_BASE_URL,
+  BYTEDANCE_BASE_URL,
+  ALIBABA_BASE_URL,
+  TENCENT_BASE_URL,
+  MOONSHOT_BASE_URL,
+  STABILITY_BASE_URL,
+  IFLYTEK_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -15,46 +23,6 @@ let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const isApp = getClientConfig()?.buildMode === "export";
 
-const DEFAULT_OPENAI_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/openai"
-  : ApiPath.OpenAI;
-
-const DEFAULT_GOOGLE_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/google"
-  : ApiPath.Google;
-
-const DEFAULT_ANTHROPIC_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/anthropic"
-  : ApiPath.Anthropic;
-
-const DEFAULT_BAIDU_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/baidu"
-  : ApiPath.Baidu;
-
-const DEFAULT_BYTEDANCE_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/bytedance"
-  : ApiPath.ByteDance;
-
-const DEFAULT_ALIBABA_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/alibaba"
-  : ApiPath.Alibaba;
-
-const DEFAULT_TENCENT_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/tencent"
-  : ApiPath.Tencent;
-
-const DEFAULT_MOONSHOT_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/moonshot"
-  : ApiPath.Moonshot;
-
-const DEFAULT_STABILITY_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/stability"
-  : ApiPath.Stability;
-
-const DEFAULT_IFLYTEK_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/iflytek"
-  : ApiPath.Iflytek;
-
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
@@ -62,7 +30,7 @@ const DEFAULT_ACCESS_STATE = {
   provider: ServiceProvider.OpenAI,
 
   // openai
-  openaiUrl: DEFAULT_OPENAI_URL,
+  openaiUrl: OPENAI_BASE_URL,
   openaiApiKey: "",
 
   // azure
@@ -71,44 +39,44 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: DEFAULT_GOOGLE_URL,
+  googleUrl: GEMINI_BASE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
   googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
 
   // anthropic
-  anthropicUrl: DEFAULT_ANTHROPIC_URL,
+  anthropicUrl: ANTHROPIC_BASE_URL,
   anthropicApiKey: "",
   anthropicApiVersion: "2023-06-01",
 
   // baidu
-  baiduUrl: DEFAULT_BAIDU_URL,
+  baiduUrl: BAIDU_BASE_URL,
   baiduApiKey: "",
   baiduSecretKey: "",
 
   // bytedance
-  bytedanceUrl: DEFAULT_BYTEDANCE_URL,
+  bytedanceUrl: BYTEDANCE_BASE_URL,
   bytedanceApiKey: "",
 
   // alibaba
-  alibabaUrl: DEFAULT_ALIBABA_URL,
+  alibabaUrl: ALIBABA_BASE_URL,
   alibabaApiKey: "",
 
   // moonshot
-  moonshotUrl: DEFAULT_MOONSHOT_URL,
+  moonshotUrl: MOONSHOT_BASE_URL,
   moonshotApiKey: "",
 
   //stability
-  stabilityUrl: DEFAULT_STABILITY_URL,
+  stabilityUrl: STABILITY_BASE_URL,
   stabilityApiKey: "",
 
   // tencent
-  tencentUrl: DEFAULT_TENCENT_URL,
+  tencentUrl: TENCENT_BASE_URL,
   tencentSecretKey: "",
   tencentSecretId: "",
 
   // iflytek
-  iflytekUrl: DEFAULT_IFLYTEK_URL,
+  iflytekUrl: IFLYTEK_BASE_URL,
   iflytekApiKey: "",
   iflytekApiSecret: "",
 
