@@ -214,7 +214,7 @@ export class GeminiProApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
-          fetch,
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);

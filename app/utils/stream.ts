@@ -63,7 +63,7 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       })
       .then((u: Function) => (unlisten = u));
 
-    const headers = {
+    const headers: Record<string, string> = {
       Accept: "application/json, text/plain, */*",
       "Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
       "User-Agent": navigator.userAgent,
