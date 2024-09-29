@@ -2,6 +2,7 @@
 //
 
 use std::error::Error;
+use std::collections::HashMap;
 use futures_util::{StreamExt};
 use reqwest::Client;
 use reqwest::header::{HeaderName, HeaderMap};
@@ -26,14 +27,6 @@ pub struct EndPayload {
 pub struct ChunkPayload {
   request_id: u32,
   chunk: bytes::Bytes,
-}
-
-use std::collections::HashMap;
-
-#[derive(serde::Serialize)]
-pub struct CustomResponse {
-  message: String,
-  other_val: usize,
 }
 
 #[tauri::command]
