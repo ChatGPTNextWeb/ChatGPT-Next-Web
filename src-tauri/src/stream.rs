@@ -57,14 +57,13 @@ pub async fn stream_fetch(
     _headers.insert(key.parse::<HeaderName>().unwrap(), value.parse().unwrap());
   }
 
-  println!("method: {:?}", method);
-  println!("url: {:?}", url);
-  println!("headers: {:?}", headers);
-  println!("headers: {:?}", _headers);
+  // println!("method: {:?}", method);
+  // println!("url: {:?}", url);
+  // println!("headers: {:?}", headers);
+  // println!("headers: {:?}", _headers);
 
   let method = method.parse::<reqwest::Method>().map_err(|err| format!("failed to parse method: {}", err))?;
   let client = Client::builder()
-    .user_agent("Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15")
     .default_headers(_headers)
     .redirect(reqwest::redirect::Policy::limited(3))
     .build()
@@ -77,7 +76,7 @@ pub async fn stream_fetch(
 
   if method == reqwest::Method::POST {
     let body = bytes::Bytes::from(body);
-    println!("body: {:?}", body);
+    // println!("body: {:?}", body);
     request = request.body(body);
   }
   let response_future = request.send();
@@ -129,7 +128,7 @@ pub async fn stream_fetch(
       }
     }
   };
-  println!("Response: {:?}", response);
+  // println!("Response: {:?}", response);
   Ok(response)
 }
 
