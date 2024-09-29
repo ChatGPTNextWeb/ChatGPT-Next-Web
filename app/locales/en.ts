@@ -1,7 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 // if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 
 const isApp = !!getClientConfig()?.isApp;
@@ -9,16 +9,26 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
-      ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      ? `😆 Oops, there's an issue. No worries:
+     \\ 1️⃣ New here? [Click to start chatting now 🚀](${SAAS_CHAT_UTM_URL})
+     \\ 2️⃣ Want to use your own OpenAI resources? [Click here](/#/settings) to change settings ⚙️`
+      : `😆 Oops, there's an issue. Let's fix it:
+     \ 1️⃣ New here? [Click to start chatting now 🚀](${SAAS_CHAT_UTM_URL})
+     \ 2️⃣ Using a private setup? [Click here](/#/auth) to enter your key 🔑
+     \ 3️⃣ Want to use your own OpenAI resources? [Click here](/#/settings) to change settings ⚙️
+     `,
   },
   Auth: {
+    Return: "Return",
     Title: "Need Access Code",
     Tips: "Please enter access code below",
     SubTips: "Or enter your OpenAI or Google API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
+    SaasTips: "Too Complex, Use Immediately Now",
+    TopTips:
+      "🥳 NextChat AI launch promotion: Instantly unlock the latest models like OpenAI o1, GPT-4o, Claude-3.5!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -301,6 +311,14 @@ const en: LocaleType = {
       NoAccess: "Enter API Key to check balance",
     },
     Access: {
+      SaasStart: {
+        Title: "Use NextChat AI",
+        Label: " (Most Cost-Effective Option)",
+        SubTitle:
+          "Maintained by NextChat, zero setup needed, unlock OpenAI o1, GPT-4o," +
+          " Claude-3.5 and more",
+        ChatNow: "Start Now",
+      },
       AccessCode: {
         Title: "Access Code",
         SubTitle: "Access control Enabled",
@@ -461,7 +479,7 @@ const en: LocaleType = {
         ApiKey: {
           Title: "API Key",
           SubTitle: "Obtain your API Key from Google AI",
-          Placeholder: "Enter your Google AI Studio API Key",
+          Placeholder: "Google AI API Key",
         },
 
         Endpoint: {

@@ -9,6 +9,7 @@ import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
+import FireIcon from "../icons/fire.svg";
 import EyeIcon from "../icons/eye.svg";
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -18,7 +19,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import ConnectionIcon from "../icons/connection.svg";
 import CloudSuccessIcon from "../icons/cloud-success.svg";
 import CloudFailIcon from "../icons/cloud-fail.svg";
-
+import { trackSettingsPageGuideToCPaymentClick } from "../utils/auth-settings-events";
 import {
   Input,
   List,
@@ -69,6 +70,7 @@ import {
   UPDATE_URL,
   Stability,
   Iflytek,
+  SAAS_CHAT_URL,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -681,6 +683,31 @@ export function Settings() {
           accessStore.update(
             (access) => (access.accessCode = e.currentTarget.value),
           );
+        }}
+      />
+    </ListItem>
+  );
+
+  const saasStartComponent = (
+    <ListItem
+      className={styles["subtitle-button"]}
+      title={
+        Locale.Settings.Access.SaasStart.Title +
+        `${Locale.Settings.Access.SaasStart.Label}`
+      }
+      subTitle={Locale.Settings.Access.SaasStart.SubTitle}
+    >
+      <IconButton
+        aria={
+          Locale.Settings.Access.SaasStart.Title +
+          Locale.Settings.Access.SaasStart.ChatNow
+        }
+        icon={<FireIcon />}
+        type={"primary"}
+        text={Locale.Settings.Access.SaasStart.ChatNow}
+        onClick={() => {
+          trackSettingsPageGuideToCPaymentClick();
+          window.location.href = SAAS_CHAT_URL;
         }}
       />
     </ListItem>
@@ -1465,6 +1492,23 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.Artifacts.Title}
+              type="checkbox"
+              checked={config.enableArtifacts}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableArtifacts = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />
@@ -1541,6 +1585,7 @@ export function Settings() {
         </List>
 
         <List id={SlotID.CustomModel}>
+          {saasStartComponent}
           {accessCodeComponent}
 
           {!accessStore.hideUserApiKey && (
