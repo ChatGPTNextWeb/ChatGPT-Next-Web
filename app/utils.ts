@@ -293,9 +293,7 @@ export function fetch(
   options?: Record<string, unknown>,
 ): Promise<any> {
   if (window.__TAURI__) {
-    return tauriStreamFetch(url, options)
-      .then((res) => res.text())
-      .then((data) => ({ data }));
+    return tauriStreamFetch(url, options);
     // const payload = options?.body || options?.data;
     // return tauriFetch(url, {
     //   ...options,
@@ -319,7 +317,9 @@ export function adapter(config: Record<string, unknown>) {
   const fetchUrl = params
     ? `${path}?${new URLSearchParams(params as any).toString()}`
     : path;
-  return fetch(fetchUrl as string, { ...rest, responseType: "text" });
+  return fetch(fetchUrl as string, { ...rest, responseType: "text" })
+    .then((res) => res.text())
+    .then((data) => ({ data }));
 }
 
 export function safeLocalStorage(): {

@@ -85,7 +85,15 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       .then((res: StreamResponse) => {
         request_id = res.request_id;
         const { status, status_text: statusText, headers } = res;
-        return new Response(ts.readable, { status, statusText, headers });
+        const response = new Response(ts.readable, {
+          status,
+          statusText,
+          headers,
+        });
+        if (status >= 300) {
+          setTimeout(close, 50);
+        }
+        return response;
       })
       .catch((e) => {
         console.error("stream error", e);
