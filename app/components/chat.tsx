@@ -438,14 +438,23 @@ function useScrollToBottom(
     if (dom) {
       requestAnimationFrame(() => {
         setAutoScroll(true);
-        dom.scrollTo(0, dom.scrollHeight);
+        // dom.scrollTo(0, dom.scrollHeight);
+        // 丝滑一点
+        dom.scrollTo({
+          top: dom.scrollHeight,
+          behavior: "smooth",
+        });
       });
     }
   }
 
   // auto scroll
   useEffect(() => {
-    if (autoScroll && !detach) {
+    // if (autoScroll && !detach) {
+    //   scrollDomToBottom();
+    // }
+    // 自动滚动一直有bug，直接强制修改了
+    if (autoScroll) {
       scrollDomToBottom();
     }
   });
