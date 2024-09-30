@@ -295,7 +295,7 @@ export function fetch(
   if (window.__TAURI__) {
     return tauriStreamFetch(url, {
       ...options,
-      body: options?.body || options?.data,
+      body: (options?.body || options?.data) as any,
     });
     // const payload = options?.body || options?.data;
     // return tauriFetch(url, {
