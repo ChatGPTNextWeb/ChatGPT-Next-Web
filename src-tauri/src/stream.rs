@@ -95,14 +95,18 @@ pub async fn stream_fetch(
           match chunk {
             Ok(bytes) => {
               // println!("chunk: {:?}", bytes);
-              window.emit(event_name, ChunkPayload{ request_id, chunk: bytes }).unwrap();
+              if let Err(e) = window.emit(event_name, ChunkPayload{ request_id, chunk: bytes }) {
+                println!("Failed to emit chunk payload: {:?}", e);
+              }
             }
             Err(err) => {
               println!("Error chunk: {:?}", err);
             }
           }
         }
-        window.emit(event_name, EndPayload { request_id, status: 0 }).unwrap();
+        if let Err(e) = window.emit(event_name, EndPayload{ request_id, status: 0 }) {
+          println!("Failed to emit end payload: {:?}", e);
+        }
       });
 
       StreamResponse {
