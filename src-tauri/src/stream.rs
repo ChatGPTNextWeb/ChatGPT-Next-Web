@@ -64,7 +64,7 @@ pub async fn stream_fetch(
     url.parse::<reqwest::Url>().map_err(|err| format!("failed to parse url: {}", err))?
   );
 
-  if method == reqwest::Method::POST {
+  if method == reqwest::Method::POST || method == reqwest::Method::PUT || method == reqwest::Method::PATCH {
     let body = bytes::Bytes::from(body);
     // println!("body: {:?}", body);
     request = request.body(body);
