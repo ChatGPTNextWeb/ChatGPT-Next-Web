@@ -35,7 +35,6 @@ export default function SetPasswordPage() {
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     // setLoading(true);
     // console.log('-------------', values)
-    // @ts-expect-error
     fetch(`/api/user/${session?.user?.id}`, {
       method: "PUT",
       credentials: "include",
@@ -61,31 +60,28 @@ export default function SetPasswordPage() {
           layout="vertical"
           onFinish={onFinish}
         >
-          {
-            // @ts-expect-error
-            status === "authenticated" && session?.user?.hasPassword && (
-              <Form.Item
-                name="user[old_password]"
-                label="Old password"
-                rules={[
-                  {
-                    validator: async (_, value) => {
-                      if (!value) {
-                        return Promise.reject(new Error("请填写该字段"));
-                      }
-                    },
+          {status === "authenticated" && session?.user?.hasPassword && (
+            <Form.Item
+              name="user[old_password]"
+              label="Old password"
+              rules={[
+                {
+                  validator: async (_, value) => {
+                    if (!value) {
+                      return Promise.reject(new Error("请填写该字段"));
+                    }
                   },
-                ]}
-              >
-                <Input
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  type="password"
-                  autoComplete="current-password"
-                  id="user_old_password"
-                />
-              </Form.Item>
-            )
-          }
+                },
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                autoComplete="current-password"
+                id="user_old_password"
+              />
+            </Form.Item>
+          )}
 
           <Form.Item
             name="user[password]"
