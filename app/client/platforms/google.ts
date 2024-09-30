@@ -1,5 +1,12 @@
 import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import {
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+  SpeechOptions,
+} from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
@@ -41,10 +48,6 @@ export class GeminiProApi implements LLMApi {
     let chatPath = [baseUrl, path].join("/");
 
     chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
-    // if chatPath.startsWith('http') then add key in query string
-    if (chatPath.startsWith("http") && accessStore.googleApiKey) {
-      chatPath += `&key=${accessStore.googleApiKey}`;
-    }
     return chatPath;
   }
   extractMessage(res: any) {
@@ -56,6 +59,10 @@ export class GeminiProApi implements LLMApi {
       ""
     );
   }
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions): Promise<void> {
     const apiClient = this;
     let multimodal = false;
