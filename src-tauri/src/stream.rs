@@ -47,10 +47,10 @@ pub async fn stream_fetch(
     _headers.insert(key.parse::<HeaderName>().unwrap(), value.parse().unwrap());
   }
 
-  println!("method: {:?}", method);
-  println!("url: {:?}", url);
-  println!("headers: {:?}", headers);
-  println!("headers: {:?}", _headers);
+  // println!("method: {:?}", method);
+  // println!("url: {:?}", url);
+  // println!("headers: {:?}", headers);
+  // println!("headers: {:?}", _headers);
 
   let method = method.parse::<reqwest::Method>().map_err(|err| format!("failed to parse method: {}", err))?;
   let client = Client::builder()
@@ -66,12 +66,12 @@ pub async fn stream_fetch(
 
   if method == reqwest::Method::POST || method == reqwest::Method::PUT || method == reqwest::Method::PATCH {
     let body = bytes::Bytes::from(body);
-    println!("body: {:?}", body);
+    // println!("body: {:?}", body);
     request = request.body(body);
   }
 
-  println!("client: {:?}", client);
-  println!("request: {:?}", request);
+  // println!("client: {:?}", client);
+  // println!("request: {:?}", request);
 
   let response_future = request.send();
 
@@ -94,7 +94,7 @@ pub async fn stream_fetch(
         while let Some(chunk) = stream.next().await {
           match chunk {
             Ok(bytes) => {
-              println!("chunk: {:?}", bytes);
+              // println!("chunk: {:?}", bytes);
               if let Err(e) = window.emit(event_name, ChunkPayload{ request_id, chunk: bytes }) {
                 println!("Failed to emit chunk payload: {:?}", e);
               }
@@ -126,7 +126,7 @@ pub async fn stream_fetch(
       }
     }
   };
-  println!("Response: {:?}", response);
+  // println!("Response: {:?}", response);
   Ok(response)
 }
 
