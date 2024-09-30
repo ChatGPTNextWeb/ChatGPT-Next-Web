@@ -293,7 +293,10 @@ export function fetch(
   options?: Record<string, unknown>,
 ): Promise<any> {
   if (window.__TAURI__) {
-    return tauriStreamFetch(url, options);
+    return tauriStreamFetch(url, {
+      ...options,
+      body: options?.body || options?.data,
+    });
     // const payload = options?.body || options?.data;
     // return tauriFetch(url, {
     //   ...options,
