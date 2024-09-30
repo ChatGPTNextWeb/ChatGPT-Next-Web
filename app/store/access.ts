@@ -2,6 +2,7 @@ import {
   GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
+  ApiPath,
   OPENAI_BASE_URL,
   ANTHROPIC_BASE_URL,
   GEMINI_BASE_URL,
@@ -23,6 +24,26 @@ let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const isApp = getClientConfig()?.buildMode === "export";
 
+const DEFAULT_OPENAI_URL = isApp ? OPENAI_BASE_URL : ApiPath.OpenAI;
+
+const DEFAULT_GOOGLE_URL = isApp ? GEMINI_BASE_URL : ApiPath.Google;
+
+const DEFAULT_ANTHROPIC_URL = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
+
+const DEFAULT_BAIDU_URL = isApp ? BAIDU_BASE_URL : ApiPath.Baidu;
+
+const DEFAULT_BYTEDANCE_URL = isApp ? BYTEDANCE_BASE_URL : ApiPath.ByteDance;
+
+const DEFAULT_ALIBABA_URL = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
+
+const DEFAULT_TENCENT_URL = isApp ? TENCENT_BASE_URL : ApiPath.Tencent;
+
+const DEFAULT_MOONSHOT_URL = isApp ? MOONSHOT_BASE_URL : ApiPath.Moonshot;
+
+const DEFAULT_STABILITY_URL = isApp ? STABILITY_BASE_URL : ApiPath.Stability;
+
+const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
+
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
@@ -30,7 +51,7 @@ const DEFAULT_ACCESS_STATE = {
   provider: ServiceProvider.OpenAI,
 
   // openai
-  openaiUrl: OPENAI_BASE_URL,
+  openaiUrl: DEFAULT_OPENAI_URL,
   openaiApiKey: "",
 
   // azure
@@ -39,44 +60,44 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: GEMINI_BASE_URL,
+  googleUrl: DEFAULT_GOOGLE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
   googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
 
   // anthropic
-  anthropicUrl: ANTHROPIC_BASE_URL,
+  anthropicUrl: DEFAULT_ANTHROPIC_URL,
   anthropicApiKey: "",
   anthropicApiVersion: "2023-06-01",
 
   // baidu
-  baiduUrl: BAIDU_BASE_URL,
+  baiduUrl: DEFAULT_BAIDU_URL,
   baiduApiKey: "",
   baiduSecretKey: "",
 
   // bytedance
-  bytedanceUrl: BYTEDANCE_BASE_URL,
+  bytedanceUrl: DEFAULT_BYTEDANCE_URL,
   bytedanceApiKey: "",
 
   // alibaba
-  alibabaUrl: ALIBABA_BASE_URL,
+  alibabaUrl: DEFAULT_ALIBABA_URL,
   alibabaApiKey: "",
 
   // moonshot
-  moonshotUrl: MOONSHOT_BASE_URL,
+  moonshotUrl: DEFAULT_MOONSHOT_URL,
   moonshotApiKey: "",
 
   //stability
-  stabilityUrl: STABILITY_BASE_URL,
+  stabilityUrl: DEFAULT_STABILITY_URL,
   stabilityApiKey: "",
 
   // tencent
-  tencentUrl: TENCENT_BASE_URL,
+  tencentUrl: DEFAULT_TENCENT_URL,
   tencentSecretKey: "",
   tencentSecretId: "",
 
   // iflytek
-  iflytekUrl: IFLYTEK_BASE_URL,
+  iflytekUrl: DEFAULT_IFLYTEK_URL,
   iflytekApiKey: "",
   iflytekApiSecret: "",
 
