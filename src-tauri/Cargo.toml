@@ -35,7 +35,6 @@ tauri = { version = "1.5.4", features = [ "http-all",
     "window-start-dragging",
     "window-unmaximize",
     "window-unminimize",
-    "linux-protocol-headers",
 ] }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 percent-encoding = "2.3.1"
