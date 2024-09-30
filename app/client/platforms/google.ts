@@ -48,10 +48,6 @@ export class GeminiProApi implements LLMApi {
     let chatPath = [baseUrl, path].join("/");
 
     chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
-    // if chatPath.startsWith('http') then add key in query string
-    if (chatPath.startsWith("http") && accessStore.googleApiKey) {
-      chatPath += `&key=${accessStore.googleApiKey}`;
-    }
     return chatPath;
   }
   extractMessage(res: any) {

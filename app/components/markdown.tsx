@@ -21,6 +21,7 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
+
 import { useAppConfig } from "../store/config";
 
 export function Mermaid(props: { code: string }) {
@@ -251,7 +252,7 @@ function tryWrapHtmlCode(text: string) {
       },
     )
     .replace(
-      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*?)([`]*?)([\n\r]*?)/g,
+      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*)([`]*)([\n\r]*?)/g,
       (match, bodyEnd, space, htmlEnd, newLine, quoteEnd) => {
         return !quoteEnd ? bodyEnd + space + htmlEnd + "\n```\n" : match;
       },
