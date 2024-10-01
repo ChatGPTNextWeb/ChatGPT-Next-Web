@@ -222,7 +222,10 @@ export function stream(
               ),
             )
               .then((res) => {
-                const content = JSON.stringify(res.data);
+                let content = res.data;
+                try {
+                  content = JSON.stringify(res.data);
+                } catch (e) {}
                 if (res.status >= 300) {
                   return Promise.reject(content);
                 }

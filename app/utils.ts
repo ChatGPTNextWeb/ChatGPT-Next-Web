@@ -320,9 +320,12 @@ export function adapter(config: Record<string, unknown>) {
   const fetchUrl = params
     ? `${path}?${new URLSearchParams(params as any).toString()}`
     : path;
-  return fetch(fetchUrl as string, { ...rest, responseType: "text" })
-    .then((res) => res.text())
-    .then((data) => ({ data }));
+  return fetch(fetchUrl as string, { ...rest, responseType: "text" }).then(
+    (res) => {
+      const { status, headers } = res;
+      return res.text().then((data) => ({ status, headers, data }));
+    },
+  );
 }
 
 export function safeLocalStorage(): {
