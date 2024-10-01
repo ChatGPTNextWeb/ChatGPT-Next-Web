@@ -37,10 +37,10 @@ WORKDIR /app
 
 RUN apk add proxychains-ng
 
-ENV PROXY_URL=""
-ENV OPENAI_API_KEY=""
-ENV GOOGLE_API_KEY=""
-ENV CODE=""
+ENV PROXY_URL="" \
+    OPENAI_API_KEY="" \
+    GOOGLE_API_KEY="" \
+    CODE=""
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
@@ -52,11 +52,11 @@ COPY --from=builder /app/.next/server ./.next/server
 
 RUN rm -f .env
 
-ENV HOSTNAME=""
-ENV PORT=23000
+ENV HOSTNAME="" \
+    PORT=23000 \
+    KEEP_ALIVE_TIMEOUT=30
 EXPOSE 23000
-# EXPOSE 23001
-ENV KEEP_ALIVE_TIMEOUT=30
+
 # ENV NEXT_SHARP_PATH /app/node_modules/sharp
 
 CMD wget -qO- myip.ipip.net ; if [ -n "$PROXY_URL" ]; then \
