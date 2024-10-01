@@ -37,6 +37,7 @@ export type ChatMessageTool = {
   };
   content?: string;
   isError?: boolean;
+  errorMsg?: string;
 };
 
 export type ChatMessage = RequestMessage & {

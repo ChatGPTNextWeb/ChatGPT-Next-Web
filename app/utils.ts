@@ -322,8 +322,10 @@ export function adapter(config: Record<string, unknown>) {
     : path;
   return fetch(fetchUrl as string, { ...rest, responseType: "text" }).then(
     (res) => {
-      const { status, headers } = res;
-      return res.text().then((data) => ({ status, headers, data }));
+      const { status, headers, statusText } = res;
+      return res
+        .text()
+        .then((data: string) => ({ status, statusText, headers, data }));
     },
   );
 }

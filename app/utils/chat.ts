@@ -222,10 +222,7 @@ export function stream(
               ),
             )
               .then((res) => {
-                let content = res.data;
-                try {
-                  content = JSON.stringify(res.data);
-                } catch (e) {}
+                let content = res.data || res?.statusText;
                 if (res.status >= 300) {
                   return Promise.reject(content);
                 }
@@ -240,7 +237,11 @@ export function stream(
                 return content;
               })
               .catch((e) => {
-                options?.onAfterTool?.({ ...tool, isError: true });
+                options?.onAfterTool?.({
+                  ...tool,
+                  isError: true,
+                  errorMsg: e.toString(),
+                });
                 return e.toString();
               })
               .then((content) => ({
