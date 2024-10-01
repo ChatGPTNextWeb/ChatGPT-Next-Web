@@ -324,7 +324,7 @@ export const useChatStore = createPersistStore(
         );
       },
 
-      currentSession() {
+      currentSession(): ChatSession {
         let index = get().currentSessionIndex;
         const sessions = get().sessions;
 
