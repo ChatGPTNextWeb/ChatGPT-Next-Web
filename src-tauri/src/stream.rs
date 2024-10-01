@@ -1,6 +1,7 @@
 //
 //
 
+use std::time::Duration;
 use std::error::Error;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::collections::HashMap;
@@ -56,6 +57,7 @@ pub async fn stream_fetch(
   let client = Client::builder()
     .default_headers(_headers)
     .redirect(reqwest::redirect::Policy::limited(3))
+    .connect_timeout(Duration::new(3, 0))
     .build()
     .map_err(|err| format!("failed to generate client: {}", err))?;
 
