@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { VerifiedUser, VerifiedAdminUser, VerifiedNeedSetPassword } from "@/lib/auth_client";
-import { CUS_JWT } from "@/lib/auth_type";
-
+import { VerifiedUser, VerifiedAdminUser } from "@/lib/auth_client";
 
 export default async function middleware(req: NextRequest) {
     const url = req.nextUrl;
@@ -17,8 +15,8 @@ export default async function middleware(req: NextRequest) {
     }
 
     const session = await getToken({ req });
-    const isUser = await VerifiedUser(session as CUS_JWT);
-    const isAdminUser = await VerifiedAdminUser(session as CUS_JWT);
+    const isUser = await VerifiedUser(session);
+    const isAdminUser = await VerifiedAdminUser(session);
     // console.log('----session', session, '---isUser', isUser, '---isAdmin', isAdminUser)
     // 管理员页面的api接口还是要认证的
     if (path.startsWith('/api/admin/')) {
@@ -45,7 +43,7 @@ export default async function middleware(req: NextRequest) {
         );
     }
 
-    // if (VerifiedNeedSetPassword(path, session as CUS_JWT)) {
+    // if (VerifiedNeedSetPassword(path, session)) {
     //   console.log('-0-0-- 需要修改密码', )
     //   // return NextResponse.redirect(new URL("/login/set-password", req.url))
     // }

@@ -127,7 +127,6 @@ export default function UserLoginCore() {
         // 手动获取一遍session
         getSession()
           .then((value) => {
-            // @ts-expect-error
             if (!value?.user?.hasPassword) {
               if (result_url === "/") {
                 result_url = "/login/set-password";

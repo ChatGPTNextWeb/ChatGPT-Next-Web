@@ -9,6 +9,9 @@ import { isEmail, isName } from "@/lib/auth_list";
 import {createTransport} from "nodemailer";
 import { comparePassword } from "@/lib/utils";
 import { randomBytes } from "crypto";
+import { type Session } from "next-auth";
+import { type JWT } from "next-auth/jwt";
+
 const SECURE_COOKIES:boolean = !!process.env.SECURE_COOKIES;
 
 let verificationTokens = new Map();
@@ -153,25 +156,23 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.user = user;
             } else {
-              const updateUser = await prisma.user.findUnique({ where: { id: token.sub }});
-              // console.log('========', updateUser)
+              const updateUser: User | null = await prisma.user.findUnique({ where: { id: token.sub }});
               if (!updateUser || !updateUser.allowToLogin) {
                 throw new Error('无法刷新令牌，用户状态不正确');
               }
-              token.user = updateUser;
+              token.user = updateUser as User;
             }
             return token;
         },
-        session: async ({ session, token }) => {
+        session: async ({ session, token }: {
+          session: Session,
+          token: JWT
+        }) => {
             session.user = {
                 ...session.user,
-                // @ts-expect-error
-                id: token?.sub,
-                // @ts-expect-error
+                id: token?.sub ?? "",
                 username: token?.user?.username || token?.user?.gh_username,
-                // @ts-expect-error
                 hasPassword: !!token?.user?.password,
-                // @ts-expect-error
                 isAdmin: token?.user?.isAdmin,
             };
             // console.log('555555555,', session, token)
