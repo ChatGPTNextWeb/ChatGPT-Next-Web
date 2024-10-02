@@ -1,6 +1,7 @@
 import LoginByGithub from "./loginByGithub";
 import LoginByGoogle from "./loginByGoogle";
 import UserLoginCore from "./user-login-core";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -14,7 +15,9 @@ export default function LoginPage() {
         {/*>*/}
         {/*  */}
         {/*</Suspense>*/}
-        <UserLoginCore />
+        <Suspense>
+          <UserLoginCore />
+        </Suspense>
       </div>
       <div className="mx-auto mt-4 w-11/12 max-w-xs sm:w-full inline-flex items-center justify-center">
         {/*<Suspense*/}

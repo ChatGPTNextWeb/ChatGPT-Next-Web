@@ -25,6 +25,7 @@ declare module "next-auth" {
     gh_username?: string;
     password?: string;
     isAdmin?: boolean;
+    allowToLogin?: boolean;
   }
 
 }

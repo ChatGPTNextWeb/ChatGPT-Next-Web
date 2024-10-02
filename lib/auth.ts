@@ -25,8 +25,8 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
         Github({
-            clientId: process.env.AUTH_GITHUB_ID as string,
-            clientSecret: process.env.AUTH_GITHUB_SECRET as string,
+            clientId: process.env.AUTH_GITHUB_ID ?? "",
+            clientSecret: process.env.AUTH_GITHUB_SECRET ?? "",
             profile(profile) {
                 return {
                     id: profile.id.toString(),
@@ -129,8 +129,8 @@ export const authOptions: NextAuthOptions = {
             }
         }),
         Google({
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
             allowDangerousEmailAccountLinking: true,
         }),
     ],
