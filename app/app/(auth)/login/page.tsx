@@ -32,7 +32,7 @@ export default function LoginPage() {
           {" "}
           其它登录方式{" "}
         </span>
-        <Space size="1">
+        <Space size={1}>
           <LoginByGithub />
           <LoginByGoogle />
         </Space>
