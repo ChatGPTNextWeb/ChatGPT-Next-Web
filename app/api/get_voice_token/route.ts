@@ -27,13 +27,10 @@ async function handle(
   const get_access_token = await getAccessToken();
 
   if (!get_access_token.ok) {
-    return NextResponse.json(
-      { error: "获取access_token失败" },
-      {
-        status: get_access_token.status,
-        statusText: get_access_token.statusText,
-      },
-    );
+    return NextResponse.json({ error: "获取access_token失败" }, {
+      status: get_access_token.status,
+      statusText: get_access_token.statusText,
+    } as any);
   }
   const access_token = await get_access_token.text();
 
@@ -42,3 +39,5 @@ async function handle(
 
 export const GET = handle;
 // export const POST = handle;
+
+export const runtime = "edge";
