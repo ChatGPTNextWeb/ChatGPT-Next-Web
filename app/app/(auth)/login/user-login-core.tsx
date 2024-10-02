@@ -14,6 +14,7 @@ import { UserOutlined, MailOutlined, LoadingOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
 import { SignInOptions } from "next-auth/react";
 import { getSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 export default function UserLoginCore() {
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,27 @@ export default function UserLoginCore() {
   const [notification, notificationContextHolder] =
     notificationModule.useNotification();
 
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  useEffect(() => {
+    switch (error) {
+      case "AccessDenied":
+        openNotification("error", {
+          message: "登录失败",
+          description: (
+            <span>
+              无权限，仅提供给熟人使用
+              <br />
+              <span style={{ color: "red" }}>请主动联系管理员解锁</span>
+            </span>
+          ),
+        });
+        break;
+      default:
+        break;
+    }
+  });
   const openNotification = (level: string, arms: NotificationArgsProps) => {
     if (level === "error") {
       notification.error({
@@ -119,6 +141,7 @@ export default function UserLoginCore() {
     }
     signIn(loginProvider, signInOptions).then((result) => {
       setLoading(false);
+      console.log("[auth log]", result);
       if (!result?.error) {
         // 如果没有密码，且登录成功了，说明需要设置密码
         let result_url =

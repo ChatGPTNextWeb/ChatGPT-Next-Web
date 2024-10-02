@@ -1,4 +1,5 @@
 import LoginByGithub from "./loginByGithub";
+import LoginByGoogle from "./loginByGoogle";
 import UserLoginCore from "./user-login-core";
 
 export default function LoginPage() {
@@ -28,6 +29,8 @@ export default function LoginPage() {
           其它登录方式{" "}
         </span>
         <LoginByGithub />
+        <LoginByGoogle />
+        <div className="w-5/12" />
       </div>
     </>
   );
