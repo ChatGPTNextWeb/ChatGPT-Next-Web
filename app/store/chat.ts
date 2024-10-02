@@ -76,6 +76,8 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+
+  overrideModelConfig?: Partial<ModelConfig>;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -511,7 +513,9 @@ export const useChatStore = createPersistStore(
         // short term memory
         const shortTermMemoryStartIndex = Math.max(
           0,
-          totalMessageCount - modelConfig.historyMessageCount,
+          totalMessageCount -
+            (session.overrideModelConfig?.historyMessageCount ??
+              modelConfig.historyMessageCount),
         );
 
         // lets concat send messages, including 4 parts:
@@ -637,7 +641,12 @@ export const useChatStore = createPersistStore(
         if (historyMsgLength > modelConfig?.max_tokens ?? 4000) {
           const n = toBeSummarizedMsgs.length;
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
-            Math.max(0, n - modelConfig.historyMessageCount),
+            Math.max(
+              0,
+              n -
+                (session.overrideModelConfig?.historyMessageCount ??
+                  modelConfig.historyMessageCount),
+            ),
           );
         }
         const memoryPrompt = get().getMemoryPrompt();
