@@ -20,7 +20,7 @@ export default function LoginByGoogle() {
             console.log("[auth log]", r);
           });
         }}
-        className={`bg-transparent hover:bg-transparent`}
+        className={`bg-transparent hover:bg-transparent h-6`}
       >
         {loading ? (
           <LoadingDots color="#A8A29E" />
@@ -35,9 +35,10 @@ export default function LoginByGoogle() {
             {/* */}
             {/*</svg>*/}
             <GoogleCircleFilled
+              className={`text-gray-500 dark:text-white cus-google-icon-color`}
               style={{
                 fontSize: "24px",
-                color: "rgb(107 114 128/var(--tw-text-opacity)) !import",
+                // color: "rgb(107 114 128/var(--tw-text-opacity)) !important",
               }}
             />
             {/*<p className="text-sm font-medium text-stone-600 dark:text-stone-400">*/}
