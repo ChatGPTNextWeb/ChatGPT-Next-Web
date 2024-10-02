@@ -2,6 +2,7 @@ import LoginByGithub from "./loginByGithub";
 import LoginByGoogle from "./loginByGoogle";
 import UserLoginCore from "./user-login-core";
 import { Suspense } from "react";
+import { Space } from "antd";
 
 export default function LoginPage() {
   return (
@@ -31,8 +32,10 @@ export default function LoginPage() {
           {" "}
           其它登录方式{" "}
         </span>
-        <LoginByGithub />
-        <LoginByGoogle />
+        <Space size="1">
+          <LoginByGithub />
+          <LoginByGoogle />
+        </Space>
         <div className="w-5/12" />
       </div>
     </>

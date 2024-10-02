@@ -130,3 +130,15 @@ input {
 #login-form .ant-input-group-addon {
   background-color: white;
 }
+
+.cus-google-icon-color {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128/var(--tw-text-opacity)) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .cus-google-icon-color {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+  }
+}
