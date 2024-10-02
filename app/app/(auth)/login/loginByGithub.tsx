@@ -9,7 +9,7 @@ export default function LoginByGithub() {
 
   return (
     <div
-      className={`group my-2 flex h-10 w-7/12 items-center justify-center space-x-2 rounded-md border border-stone-200 transition-colors duration-75 focus:outline-none dark:border-stone-700 `} //
+      className={`group my-2 flex h-10 w-1/12 items-center justify-center space-x-2 rounded-md border border-stone-200 transition-colors duration-75 focus:outline-none dark:border-stone-700 `} //
     >
       <button
         disabled={loading}
@@ -18,7 +18,7 @@ export default function LoginByGithub() {
           e.preventDefault();
           signIn("github");
         }}
-        className={`bg-transparent hover:bg-transparent mr-40`}
+        className={`bg-transparent hover:bg-transparent`}
       >
         {loading ? (
           <LoadingDots color="#A8A29E" />

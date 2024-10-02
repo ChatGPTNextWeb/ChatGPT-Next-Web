@@ -18,24 +18,24 @@ generator client {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
+  id              String     @id @default(cuid())
+  name            String?
   // if you are using Github OAuth, you can get rid of the username attribute (that is for Twitter OAuth)
-  username      String?    @unique
-  gh_username   String?    @unique
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
+  username        String?    @unique
+  gh_username     String?    @unique
+  email           String?    @unique
+  emailVerified   DateTime?
+  image           String?
+  password        String?
   // 默认每人每天限额20k，但数据库存储0
-  everyLimitToken Int?     @default(0)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  allowToLogin  Boolean    @default(true)
-  isAdmin       Boolean?   @default(false)
-  accounts      Account[]
-  sessions      Session[]
-  logs          LogEntry[]
+  everyLimitToken Int?       @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  allowToLogin    Boolean    @default(false)
+  isAdmin         Boolean?   @default(false)
+  accounts        Account[]
+  sessions        Session[]
+  logs            LogEntry[]
 }
 
 model Account {
@@ -46,11 +46,11 @@ model Account {
   providerAccountId        String
   refresh_token            String?
   refresh_token_expires_in Int?
-  access_token             String?
+  access_token             String? @db.VarChar(512)
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String?
+  id_token                 String? @db.Text
   session_state            String?
   oauth_token_secret       String?
   oauth_token              String?

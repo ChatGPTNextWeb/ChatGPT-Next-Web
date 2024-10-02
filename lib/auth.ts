@@ -1,7 +1,8 @@
 import {getServerSession, type NextAuthOptions, Theme} from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
-import EmailProvider from "next-auth/providers/email";
-import CredentialsProvider from "next-auth/providers/credentials";
+import Github from "next-auth/providers/github";
+import Email from "next-auth/providers/email";
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google"
 import {PrismaAdapter} from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import { User } from "@prisma/client";
@@ -23,7 +24,7 @@ export const authOptions: NextAuthOptions = {
     useSecureCookies: SECURE_COOKIES,
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
-        GitHubProvider({
+        Github({
             clientId: process.env.AUTH_GITHUB_ID as string,
             clientSecret: process.env.AUTH_GITHUB_SECRET as string,
             profile(profile) {
@@ -37,9 +38,10 @@ export const authOptions: NextAuthOptions = {
             },
             httpOptions: {
                 timeout: 50000,
-            }
+            },
+            allowDangerousEmailAccountLinking: true,
         }),
-        EmailProvider({
+        Email({
           server: {
             host: process.env.EMAIL_SERVER_HOST,
             port: parseInt(process.env.EMAIL_SERVER_PORT ?? "0"),
@@ -83,7 +85,7 @@ export const authOptions: NextAuthOptions = {
             }
           },
         }),
-        CredentialsProvider({
+        Credentials({
             // The name to display on the sign in form (e.g. "Sign in with...")
             name: "Credentials",
             // `credentials` is used to generate a form on the sign in page.
@@ -110,7 +112,7 @@ export const authOptions: NextAuthOptions = {
                         user['name'] = username;
                     }
                     // 目前用户不存在，则会创建新用户。
-                    let existingUser = await existUser(user); // await insertUser(user)
+                    let existingUser = await existUser(user);
                     if (!existingUser) {
                       user['allowToLogin'] = !!await getSetting("allowNewUser");
                       existingUser = await insertUser(user);
@@ -125,7 +127,12 @@ export const authOptions: NextAuthOptions = {
                     // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
                 }
             }
-        })
+        }),
+        Google({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            allowDangerousEmailAccountLinking: true,
+        }),
     ],
     pages: {
         signIn: `/login`,
@@ -180,13 +187,18 @@ export const authOptions: NextAuthOptions = {
         },
         // 过滤不存在的用户
         async signIn({ user, account, profile, email, credentials }) {
-            const existingUser = await existUser(user as User);
+            let existingUser = await existUser(user as User);
+            if (!existingUser) {
+                user['allowToLogin'] = !!await getSetting("allowNewUser");
+                existingUser = await insertUser(user)
+            }
             // console.log('---', user, 'account', account, 'email', email, 'exist', existingUser)
             // 顺便过滤掉不允许登录的用户
-            return !!existingUser && existingUser.allowToLogin;
+            return existingUser.allowToLogin;
         },
         // 重定向
         async redirect({ url, baseUrl }) {
+            console.log('---------', url, new URL(url), baseUrl)
             return baseUrl;
         }
     },

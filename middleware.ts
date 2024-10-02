@@ -24,11 +24,11 @@ export default async function middleware(req: NextRequest) {
         if (!isAdminUser) return NextResponse.json({error: '无管理员授权'}, { status: 401 });
     }
     // 不是用户且页面不是登录页
-    if (!isUser && path !== "/login" ) {
+    if (!isUser && !path.startsWith("/login") ) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
     // 如果登录了且页面是登录页面
-    if (isUser && path == "/login") {
+    if (isUser && path.startsWith("/login")) {
         return NextResponse.redirect(new URL("/", req.url))
     }
 
