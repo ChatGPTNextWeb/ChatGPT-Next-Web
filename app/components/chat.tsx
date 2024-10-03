@@ -1,3 +1,4 @@
+import { eld } from "eld";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   useState,
@@ -104,6 +105,7 @@ import {
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
   ServiceProvider,
+  MS_EDGE_TTS_VOICES,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -1214,7 +1216,11 @@ function _Chat() {
       const { markdownToTxt } = require("markdown-to-txt");
       const textContent = markdownToTxt(text);
       if (config.ttsConfig.engine !== DEFAULT_TTS_ENGINE) {
-        const edgeVoiceName = accessStore.edgeVoiceName();
+        const detectLang = eld.detect(text).language;
+        const edgeVoiceName =
+          detectLang in MS_EDGE_TTS_VOICES
+            ? MS_EDGE_TTS_VOICES[detectLang as keyof typeof MS_EDGE_TTS_VOICES]
+            : accessStore.edgeVoiceName();
         const tts = new MsEdgeTTS();
         await tts.setMetadata(
           edgeVoiceName,

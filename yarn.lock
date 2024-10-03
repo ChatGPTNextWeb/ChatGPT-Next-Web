@@ -3959,6 +3959,11 @@ eastasianwidth@^0.2.0:
   resolved "https://registry.yarnpkg.com/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
+eld@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/eld/-/eld-1.0.0.tgz#507cf2229fe3d809430fdfc3689edafeb53aafc1"
+  integrity sha512-+wehmSoVbWYIsQ0wDUN6b1QCGNvnfT49KD/W6QavCEq8D5/ANx+B+qy5m2sKOTh3MyBqMEDTUxc1wcajSAo/2Q==
+
 electron-to-chromium@^1.4.284:
   version "1.4.345"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.345.tgz#c90b7183b39245cddf0e990337469063bfced6f0"
