@@ -693,6 +693,17 @@ export const useChatStore = createPersistStore(
         }
 
         function isValidMessage(message: any): boolean {
+          if (message.startsWith("```") && message.endsWith("```")) {
+            const jsonString = message.slice(3, -3).trim();
+            try {
+              const jsonObject = JSON.parse(jsonString);
+              if (jsonObject.error) {
+                return false;
+              }
+            } catch (e) {
+              console.log("Invalid JSON format.");
+            }
+          }
           return typeof message === "string" && !message.startsWith("```json");
         }
       },
