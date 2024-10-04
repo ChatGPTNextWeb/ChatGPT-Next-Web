@@ -14,12 +14,19 @@ export function createWebDavClient(store: SyncStore) {
   return {
     async check() {
       try {
-        const res = await fetch(this.path(folder, proxyUrl), {
-          method: "MKCOL",
+        const res = await fetch(this.path(folder, proxyUrl, "MKCOL"), {
+          method: "GET",
           headers: this.headers(),
         });
-        console.log("[WebDav] check", res.status, res.statusText);
-        return [201, 200, 404, 301, 302, 307, 308].includes(res.status);
+        const success = [201, 200, 404, 405, 301, 302, 307, 308].includes(
+          res.status,
+        );
+        console.log(
+          `[WebDav] check ${success ? "success" : "failed"}, ${res.status} ${
+            res.statusText
+          }`,
+        );
+        return success;
       } catch (e) {
         console.error("[WebDav] failed to check", e);
       }
@@ -34,6 +41,10 @@ export function createWebDavClient(store: SyncStore) {
       });
 
       console.log("[WebDav] get key = ", key, res.status, res.statusText);
+
+      if (404 == res.status) {
+        return "";
+      }
 
       return await res.text();
     },
@@ -55,27 +66,31 @@ export function createWebDavClient(store: SyncStore) {
         authorization: `Basic ${auth}`,
       };
     },
-    path(path: string, proxyUrl: string = "") {
-      if (!path.endsWith("/")) {
-        path += "/";
-      }
+    path(path: string, proxyUrl: string = "", proxyMethod: string = "") {
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
 
-      if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
-        proxyUrl += "/";
+      if (proxyUrl.endsWith("/")) {
+        proxyUrl = proxyUrl.slice(0, -1);
       }
 
       let url;
-      if (proxyUrl.length > 0 || proxyUrl === "/") {
-        let u = new URL(proxyUrl + "/api/webdav/" + path);
+      const pathPrefix = "/api/webdav/";
+
+      try {
+        let u = new URL(proxyUrl + pathPrefix + path);
         // add query params
         u.searchParams.append("endpoint", config.endpoint);
+        proxyMethod && u.searchParams.append("proxy_method", proxyMethod);
         url = u.toString();
-      } else {
-        url = "/api/upstash/" + path + "?endpoint=" + config.endpoint;
+      } catch (e) {
+        url = pathPrefix + path + "?endpoint=" + config.endpoint;
+        if (proxyMethod) {
+          url += "&proxy_method=" + proxyMethod;
+        }
       }
+
       return url;
     },
   };

@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
-import { DEFAULT_MODELS } from "./constant";
+import { ServiceProvider, REQUEST_TIMEOUT_MS } from "./constant";
+import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
   // This will remove the specified punctuation from the end of the string
   // and also trim quotes from both the start and end if they exist.
-  return topic
-    // fix for gemini
-    .replace(/^["“”*]+|["“”*]+$/g, "")
-    .replace(/[，。！？”“"、,.!?*]*$/, "");
+  return (
+    topic
+      // fix for gemini
+      .replace(/^["“”*]+|["“”*]+$/g, "")
+      .replace(/[，。！？”“"、,.!?*]*$/, "")
+  );
 }
 
 export async function copyToClipboard(text: string) {
@@ -57,10 +60,7 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeTextFile(
-          result,
-          text
-        );
+        await window.__TAURI__.fs.writeTextFile(result, text);
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);
@@ -83,48 +83,6 @@ export async function downloadAs(text: string, filename: string) {
 
     document.body.removeChild(element);
   }
-}
-
-export function compressImage(file: File, maxSize: number): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (readerEvent: any) => {
-      const image = new Image();
-      image.onload = () => {
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
-        let width = image.width;
-        let height = image.height;
-        let quality = 0.9;
-        let dataUrl;
-
-        do {
-          canvas.width = width;
-          canvas.height = height;
-          ctx?.clearRect(0, 0, canvas.width, canvas.height);
-          ctx?.drawImage(image, 0, 0, width, height);
-          dataUrl = canvas.toDataURL("image/jpeg", quality);
-
-          if (dataUrl.length < maxSize) break;
-
-          if (quality > 0.5) {
-            // Prioritize quality reduction
-            quality -= 0.1;
-          } else {
-            // Then reduce the size
-            width *= 0.9;
-            height *= 0.9;
-          }
-        } while (dataUrl.length > maxSize);
-
-        resolve(dataUrl);
-      };
-      image.onerror = reject;
-      image.src = readerEvent.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }
 
 export function readFromFile() {
@@ -238,6 +196,7 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
   measureDom.style.width = width + "px";
   measureDom.innerText = dom.value !== "" ? dom.value : "1";
   measureDom.style.fontSize = dom.style.fontSize;
+  measureDom.style.fontFamily = dom.style.fontFamily;
   const endWithEmptyLine = dom.value.endsWith("\n");
   const height = parseFloat(window.getComputedStyle(measureDom).height);
   const singleLineHeight = parseFloat(
@@ -293,10 +252,140 @@ export function getMessageImages(message: RequestMessage): string[] {
 
 export function isVisionModel(model: string) {
   // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
+
   const visionKeywords = [
     "vision",
     "claude-3",
+    "gemini-1.5-pro",
+    "gemini-1.5-flash",
+    "gpt-4o",
+    "gpt-4o-mini",
   ];
+  const isGpt4Turbo =
+    model.includes("gpt-4-turbo") && !model.includes("preview");
 
-  return visionKeywords.some(keyword => model.includes(keyword));
+  return (
+    visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo
+  );
+}
+
+export function isDalle3(model: string) {
+  return "dall-e-3" === model;
+}
+
+export function showPlugins(provider: ServiceProvider, model: string) {
+  if (
+    provider == ServiceProvider.OpenAI ||
+    provider == ServiceProvider.Azure ||
+    provider == ServiceProvider.Moonshot
+  ) {
+    return true;
+  }
+  if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
+    return true;
+  }
+  return false;
+}
+
+export function fetch(
+  url: string,
+  options?: Record<string, unknown>,
+): Promise<any> {
+  if (window.__TAURI__) {
+    const payload = options?.body || options?.data;
+    return tauriFetch(url, {
+      ...options,
+      body:
+        payload &&
+        ({
+          type: "Text",
+          payload,
+        } as any),
+      timeout: ((options?.timeout as number) || REQUEST_TIMEOUT_MS) / 1000,
+      responseType:
+        options?.responseType == "text" ? ResponseType.Text : ResponseType.JSON,
+    } as any);
+  }
+  return window.fetch(url, options);
+}
+
+export function adapter(config: Record<string, unknown>) {
+  const { baseURL, url, params, ...rest } = config;
+  const path = baseURL ? `${baseURL}${url}` : url;
+  const fetchUrl = params
+    ? `${path}?${new URLSearchParams(params as any).toString()}`
+    : path;
+  return fetch(fetchUrl as string, { ...rest, responseType: "text" });
+}
+
+export function safeLocalStorage(): {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+  clear: () => void;
+} {
+  let storage: Storage | null;
+
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      storage = window.localStorage;
+    } else {
+      storage = null;
+    }
+  } catch (e) {
+    console.error("localStorage is not available:", e);
+    storage = null;
+  }
+
+  return {
+    getItem(key: string): string | null {
+      if (storage) {
+        return storage.getItem(key);
+      } else {
+        console.warn(
+          `Attempted to get item "${key}" from localStorage, but localStorage is not available.`,
+        );
+        return null;
+      }
+    },
+    setItem(key: string, value: string): void {
+      if (storage) {
+        storage.setItem(key, value);
+      } else {
+        console.warn(
+          `Attempted to set item "${key}" in localStorage, but localStorage is not available.`,
+        );
+      }
+    },
+    removeItem(key: string): void {
+      if (storage) {
+        storage.removeItem(key);
+      } else {
+        console.warn(
+          `Attempted to remove item "${key}" from localStorage, but localStorage is not available.`,
+        );
+      }
+    },
+    clear(): void {
+      if (storage) {
+        storage.clear();
+      } else {
+        console.warn(
+          "Attempted to clear localStorage, but localStorage is not available.",
+        );
+      }
+    },
+  };
+}
+
+export function getOperationId(operation: {
+  operationId?: string;
+  method: string;
+  path: string;
+}) {
+  // pattern '^[a-zA-Z0-9_-]+$'
+  return (
+    operation?.operationId ||
+    `${operation.method.toUpperCase()}${operation.path.replaceAll("/", "_")}`
+  );
 }

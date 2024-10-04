@@ -1,6 +1,7 @@
 import {
   ApiPath,
   DEFAULT_API_HOST,
+  GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
 } from "../constant";
@@ -8,13 +9,51 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
+import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
-const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/openai"
-    : ApiPath.OpenAI;
+const isApp = getClientConfig()?.buildMode === "export";
+
+const DEFAULT_OPENAI_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/openai"
+  : ApiPath.OpenAI;
+
+const DEFAULT_GOOGLE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/google"
+  : ApiPath.Google;
+
+const DEFAULT_ANTHROPIC_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/anthropic"
+  : ApiPath.Anthropic;
+
+const DEFAULT_BAIDU_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/baidu"
+  : ApiPath.Baidu;
+
+const DEFAULT_BYTEDANCE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/bytedance"
+  : ApiPath.ByteDance;
+
+const DEFAULT_ALIBABA_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/alibaba"
+  : ApiPath.Alibaba;
+
+const DEFAULT_TENCENT_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/tencent"
+  : ApiPath.Tencent;
+
+const DEFAULT_MOONSHOT_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/moonshot"
+  : ApiPath.Moonshot;
+
+const DEFAULT_STABILITY_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/stability"
+  : ApiPath.Stability;
+
+const DEFAULT_IFLYTEK_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/iflytek"
+  : ApiPath.Iflytek;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -32,9 +71,46 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: "",
+  googleUrl: DEFAULT_GOOGLE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
+  googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
+
+  // anthropic
+  anthropicUrl: DEFAULT_ANTHROPIC_URL,
+  anthropicApiKey: "",
+  anthropicApiVersion: "2023-06-01",
+
+  // baidu
+  baiduUrl: DEFAULT_BAIDU_URL,
+  baiduApiKey: "",
+  baiduSecretKey: "",
+
+  // bytedance
+  bytedanceUrl: DEFAULT_BYTEDANCE_URL,
+  bytedanceApiKey: "",
+
+  // alibaba
+  alibabaUrl: DEFAULT_ALIBABA_URL,
+  alibabaApiKey: "",
+
+  // moonshot
+  moonshotUrl: DEFAULT_MOONSHOT_URL,
+  moonshotApiKey: "",
+
+  //stability
+  stabilityUrl: DEFAULT_STABILITY_URL,
+  stabilityApiKey: "",
+
+  // tencent
+  tencentUrl: DEFAULT_TENCENT_URL,
+  tencentSecretKey: "",
+  tencentSecretId: "",
+
+  // iflytek
+  iflytekUrl: DEFAULT_IFLYTEK_URL,
+  iflytekApiKey: "",
+  iflytekApiSecret: "",
 
   // server config
   needCode: true,
@@ -43,6 +119,10 @@ const DEFAULT_ACCESS_STATE = {
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
+  defaultModel: "",
+
+  // tts config
+  edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };
 
 export const useAccessStore = createPersistStore(
@@ -53,6 +133,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
+    },
+
+    edgeVoiceName() {
+      this.fetch();
+
+      return get().edgeTTSVoiceName;
     },
 
     isValidOpenAI() {
@@ -67,6 +153,33 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["googleApiKey"]);
     },
 
+    isValidAnthropic() {
+      return ensure(get(), ["anthropicApiKey"]);
+    },
+
+    isValidBaidu() {
+      return ensure(get(), ["baiduApiKey", "baiduSecretKey"]);
+    },
+
+    isValidByteDance() {
+      return ensure(get(), ["bytedanceApiKey"]);
+    },
+
+    isValidAlibaba() {
+      return ensure(get(), ["alibabaApiKey"]);
+    },
+
+    isValidTencent() {
+      return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
+    },
+
+    isValidMoonshot() {
+      return ensure(get(), ["moonshotApiKey"]);
+    },
+    isValidIflytek() {
+      return ensure(get(), ["iflytekApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -75,6 +188,13 @@ export const useAccessStore = createPersistStore(
         this.isValidOpenAI() ||
         this.isValidAzure() ||
         this.isValidGoogle() ||
+        this.isValidAnthropic() ||
+        this.isValidBaidu() ||
+        this.isValidByteDance() ||
+        this.isValidAlibaba() ||
+        this.isValidTencent() ||
+        this.isValidMoonshot() ||
+        this.isValidIflytek() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
@@ -90,6 +210,16 @@ export const useAccessStore = createPersistStore(
         },
       })
         .then((res) => res.json())
+        .then((res) => {
+          const defaultModel = res.defaultModel ?? "";
+          if (defaultModel !== "") {
+            const [model, providerName] = defaultModel.split("@");
+            DEFAULT_CONFIG.modelConfig.model = model;
+            DEFAULT_CONFIG.modelConfig.providerName = providerName;
+          }
+
+          return res;
+        })
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));

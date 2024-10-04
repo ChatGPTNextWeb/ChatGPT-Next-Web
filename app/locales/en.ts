@@ -1,7 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 // if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 
 const isApp = !!getClientConfig()?.isApp;
@@ -9,16 +9,26 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
-      ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      ? `😆 Oops, there's an issue. No worries:
+     \\ 1️⃣ New here? [Click to start chatting now 🚀](${SAAS_CHAT_UTM_URL})
+     \\ 2️⃣ Want to use your own OpenAI resources? [Click here](/#/settings) to change settings ⚙️`
+      : `😆 Oops, there's an issue. Let's fix it:
+     \ 1️⃣ New here? [Click to start chatting now 🚀](${SAAS_CHAT_UTM_URL})
+     \ 2️⃣ Using a private setup? [Click here](/#/auth) to enter your key 🔑
+     \ 3️⃣ Want to use your own OpenAI resources? [Click here](/#/settings) to change settings ⚙️
+     `,
   },
   Auth: {
+    Return: "Return",
     Title: "Need Access Code",
     Tips: "Please enter access code below",
     SubTips: "Or enter your OpenAI or Google API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
+    SaasTips: "Too Complex, Use Immediately Now",
+    TopTips:
+      "🥳 NextChat AI launch promotion: Instantly unlock the latest models like OpenAI o1, GPT-4o, Claude-3.5!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -44,6 +54,11 @@ const en: LocaleType = {
       PinToastAction: "View",
       Delete: "Delete",
       Edit: "Edit",
+      FullScreen: "FullScreen",
+      RefreshTitle: "Refresh Title",
+      RefreshToast: "Title refresh request sent",
+      Speech: "Play",
+      StopSpeech: "Stop",
     },
     Commands: {
       new: "Start a new chat",
@@ -51,6 +66,7 @@ const en: LocaleType = {
       next: "Next Chat",
       prev: "Previous Chat",
       clear: "Clear Context",
+      fork: "Copy Chat",
       del: "Delete Chat",
     },
     InputActions: {
@@ -77,11 +93,21 @@ const en: LocaleType = {
       return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
+    StartSpeak: "Start Speak",
+    StopSpeak: "Stop Speak",
     Config: {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
     IsContext: "Contextual Prompt",
+    ShortcutKey: {
+      Title: "Keyboard Shortcuts",
+      newChat: "Open New Chat",
+      focusInput: "Focus Input Field",
+      copyLastMessage: "Copy Last Reply",
+      copyLastCode: "Copy Last Code Block",
+      showShortcutKey: "Show Shortcuts",
+    },
   },
   Export: {
     Title: "Export Messages",
@@ -105,6 +131,10 @@ const en: LocaleType = {
     Image: {
       Toast: "Capturing Image...",
       Modal: "Long press or right click to save image",
+    },
+    Artifacts: {
+      Title: "Share Artifacts",
+      Error: "Share Error",
     },
   },
   Select: {
@@ -131,6 +161,7 @@ const en: LocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
+    ShowPassword: "ShowPassword",
     Danger: {
       Reset: {
         Title: "Reset All Settings",
@@ -153,6 +184,12 @@ const en: LocaleType = {
     FontSize: {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
+    },
+    FontFamily: {
+      Title: "Chat Font Family",
+      SubTitle:
+        "Font Family of the chat content, leave empty to apply global default font",
+      Placeholder: "Font Family Name",
     },
     InjectSystemPrompts: {
       Title: "Inject System Prompts",
@@ -274,6 +311,14 @@ const en: LocaleType = {
       NoAccess: "Enter API Key to check balance",
     },
     Access: {
+      SaasStart: {
+        Title: "Use NextChat AI",
+        Label: " (Most Cost-Effective Option)",
+        SubTitle:
+          "Maintained by NextChat, zero setup needed, unlock OpenAI o1, GPT-4o," +
+          " Claude-3.5 and more",
+        ChatNow: "Start Now",
+      },
       AccessCode: {
         Title: "Access Code",
         SubTitle: "Access control Enabled",
@@ -296,7 +341,7 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "OpenAI Endpoint",
-          SubTitle: "Must starts with http(s):// or use /api/openai as default",
+          SubTitle: "Must start with http(s):// or use /api/openai as default",
         },
       },
       Azure: {
@@ -316,6 +361,116 @@ const en: LocaleType = {
           SubTitle: "Check your api version from azure console",
         },
       },
+      Anthropic: {
+        ApiKey: {
+          Title: "Anthropic API Key",
+          SubTitle:
+            "Use a custom Anthropic Key to bypass password access restrictions",
+          Placeholder: "Anthropic API Key",
+        },
+
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+
+        ApiVerion: {
+          Title: "API Version (claude api version)",
+          SubTitle: "Select and input a specific API version",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "Baidu API Key",
+          SubTitle: "Use a custom Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Baidu Secret Key",
+          SubTitle: "Use a custom Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "not supported, configure in .env",
+        },
+      },
+      Tencent: {
+        ApiKey: {
+          Title: "Tencent API Key",
+          SubTitle: "Use a custom Tencent API Key",
+          Placeholder: "Tencent API Key",
+        },
+        SecretKey: {
+          Title: "Tencent Secret Key",
+          SubTitle: "Use a custom Tencent Secret Key",
+          Placeholder: "Tencent Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "not supported, configure in .env",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "ByteDance API Key",
+          SubTitle: "Use a custom ByteDance API Key",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "Alibaba API Key",
+          SubTitle: "Use a custom Alibaba Cloud API Key",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Moonshot: {
+        ApiKey: {
+          Title: "Moonshot API Key",
+          SubTitle: "Use a custom Moonshot API Key",
+          Placeholder: "Moonshot API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Stability: {
+        ApiKey: {
+          Title: "Stability API Key",
+          SubTitle: "Use a custom Stability API Key",
+          Placeholder: "Stability API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Iflytek: {
+        ApiKey: {
+          Title: "Iflytek API Key",
+          SubTitle: "Use a Iflytek API Key",
+          Placeholder: "Iflytek API Key",
+        },
+        ApiSecret: {
+          Title: "Iflytek API Secret",
+          SubTitle: "Use a Iflytek API Secret",
+          Placeholder: "Iflytek API Secret",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       CustomModel: {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",
@@ -324,22 +479,30 @@ const en: LocaleType = {
         ApiKey: {
           Title: "API Key",
           SubTitle: "Obtain your API Key from Google AI",
-          Placeholder: "Enter your Google AI Studio API Key",
+          Placeholder: "Google AI API Key",
         },
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVersion: {
           Title: "API Version (specific to gemini-pro)",
           SubTitle: "Select a specific API version",
         },
+        GoogleSafetySettings: {
+          Title: "Google Safety Settings",
+          SubTitle: "Select a safety filtering level",
+        },
       },
     },
 
     Model: "Model",
+    CompressModel: {
+      Title: "Compression Model",
+      SubTitle: "Model used to compress history",
+    },
     Temperature: {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
@@ -361,6 +524,27 @@ const en: LocaleType = {
       Title: "Frequency Penalty",
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
+    },
+    TTS: {
+      Enable: {
+        Title: "Enable TTS",
+        SubTitle: "Enable text-to-speech service",
+      },
+      Autoplay: {
+        Title: "Enable Autoplay",
+        SubTitle:
+          "Automatically generate speech and play, you need to enable the text-to-speech switch first",
+      },
+      Model: "Model",
+      Voice: {
+        Title: "Voice",
+        SubTitle: "The voice to use when generating the audio",
+      },
+      Speed: {
+        Title: "Speed",
+        SubTitle: "The speed of the generated audio",
+      },
+      Engine: "TTS Engine",
     },
   },
   Store: {
@@ -391,11 +575,67 @@ const en: LocaleType = {
     Clear: "Context Cleared",
     Revert: "Revert",
   },
-  Plugin: {
-    Name: "Plugin",
+  Discovery: {
+    Name: "Discovery",
   },
   FineTuned: {
     Sysmessage: "You are an assistant that",
+  },
+  SearchChat: {
+    Name: "Search",
+    Page: {
+      Title: "Search Chat History",
+      Search: "Enter search query to search chat history",
+      NoResult: "No results found",
+      NoData: "No data",
+      Loading: "Loading...",
+
+      SubTitle: (count: number) => `Found ${count} results`,
+    },
+    Item: {
+      View: "View",
+    },
+  },
+  Plugin: {
+    Name: "Plugin",
+    Page: {
+      Title: "Plugins",
+      SubTitle: (count: number) => `${count} plugins`,
+      Search: "Search Plugin",
+      Create: "Create",
+      Find: "You can find awesome plugins on github: ",
+    },
+    Item: {
+      Info: (count: number) => `${count} method`,
+      View: "View",
+      Edit: "Edit",
+      Delete: "Delete",
+      DeleteConfirm: "Confirm to delete?",
+    },
+    Auth: {
+      None: "None",
+      Basic: "Basic",
+      Bearer: "Bearer",
+      Custom: "Custom",
+      CustomHeader: "Parameter Name",
+      Token: "Token",
+      Proxy: "Using Proxy",
+      ProxyDescription: "Using proxies to solve CORS error",
+      Location: "Location",
+      LocationHeader: "Header",
+      LocationQuery: "Query",
+      LocationBody: "Body",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Edit Plugin ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Auth: "Authentication Type",
+      Content: "OpenAPI Schema",
+      Load: "Load From URL",
+      Method: "Method",
+      Error: "OpenAPI Schema Error",
+    },
   },
   Mask: {
     Name: "Mask",
@@ -430,6 +670,10 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
+      },
+      Artifacts: {
+        Title: "Enable Artifacts",
+        SubTitle: "Can render HTML page when enable artifacts.",
       },
       Share: {
         Title: "Share This Mask",
@@ -468,10 +712,64 @@ const en: LocaleType = {
     Topic: "Topic",
     Time: "Time",
   },
-
   URLCommand: {
     Code: "Detected access code from url, confirm to apply? ",
     Settings: "Detected settings from url, confirm to apply?",
+  },
+  SdPanel: {
+    Prompt: "Prompt",
+    NegativePrompt: "Negative Prompt",
+    PleaseInput: (name: string) => `Please input ${name}`,
+    AspectRatio: "Aspect Ratio",
+    ImageStyle: "Image Style",
+    OutFormat: "Output Format",
+    AIModel: "AI Model",
+    ModelVersion: "Model Version",
+    Submit: "Submit",
+    ParamIsRequired: (name: string) => `${name} is required`,
+    Styles: {
+      D3Model: "3d-model",
+      AnalogFilm: "analog-film",
+      Anime: "anime",
+      Cinematic: "cinematic",
+      ComicBook: "comic-book",
+      DigitalArt: "digital-art",
+      Enhance: "enhance",
+      FantasyArt: "fantasy-art",
+      Isometric: "isometric",
+      LineArt: "line-art",
+      LowPoly: "low-poly",
+      ModelingCompound: "modeling-compound",
+      NeonPunk: "neon-punk",
+      Origami: "origami",
+      Photographic: "photographic",
+      PixelArt: "pixel-art",
+      TileTexture: "tile-texture",
+    },
+  },
+  Sd: {
+    SubTitle: (count: number) => `${count} images`,
+    Actions: {
+      Params: "See Params",
+      Copy: "Copy Prompt",
+      Delete: "Delete",
+      Retry: "Retry",
+      ReturnHome: "Return Home",
+      History: "History",
+    },
+    EmptyRecord: "No images yet",
+    Status: {
+      Name: "Status",
+      Success: "Success",
+      Error: "Error",
+      Wait: "Waiting",
+      Running: "Running",
+    },
+    Danger: {
+      Delete: "Confirm to delete?",
+    },
+    GenerateParams: "Generate Params",
+    Detail: "Detail",
   },
 };
 

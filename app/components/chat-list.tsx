@@ -1,5 +1,4 @@
 import DeleteIcon from "../icons/delete.svg";
-import BotIcon from "../icons/bot.svg";
 
 import styles from "./home.module.scss";
 import {
@@ -12,7 +11,7 @@ import {
 import { useChatStore } from "../store";
 
 import Locale from "../locales";
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
@@ -40,12 +39,16 @@ export function ChatItem(props: {
       });
     }
   }, [props.selected]);
+
+  const { pathname: currentPath } = useLocation();
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
           className={`${styles["chat-item"]} ${
-            props.selected && styles["chat-item-selected"]
+            props.selected &&
+            (currentPath === Path.Chat || currentPath === Path.Home) &&
+            styles["chat-item-selected"]
           }`}
           onClick={props.onClick}
           ref={(ele) => {

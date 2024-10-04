@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "NextChat",
-    "version": "2.11.3"
+    "version": "2.15.3"
   },
   "tauri": {
     "allowlist": {
@@ -50,6 +50,11 @@
       },
       "notification": {
         "all": true
+      },
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://*", "http://*"]
       }
     },
     "bundle": {
