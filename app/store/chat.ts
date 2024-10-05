@@ -153,6 +153,21 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
+const readFileContent = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch content from ${url}: ${response.statusText}`,
+      );
+    }
+    return await response.text();
+  } catch (error) {
+    console.error("Error reading file content:", error);
+    return "";
+  }
+};
+
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
@@ -326,9 +341,21 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string, attachImages?: string[]) {
+      async onUserInput(
+        content: string,
+        attachImages?: string[],
+        attachFiles?: string[],
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+
+        //read file content from the url
+        if (attachFiles && attachFiles.length > 0) {
+          content += " file content: \n";
+          for (let i = 0; i < attachFiles.length; i++) {
+            content += await readFileContent(attachFiles[i]);
+          }
+        }
 
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
