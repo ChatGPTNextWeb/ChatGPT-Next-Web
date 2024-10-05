@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
-import { RequestMessage } from "./client/api";
+import { RequestMessage, UploadFile } from "./client/api";
 import { ServiceProvider, REQUEST_TIMEOUT_MS } from "./constant";
 import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 
@@ -250,17 +250,17 @@ export function getMessageImages(message: RequestMessage): string[] {
   return urls;
 }
 
-export function getMessageFiles(message: RequestMessage): string[] {
+export function getMessageFiles(message: RequestMessage): UploadFile[] {
   if (typeof message.content === "string") {
     return [];
   }
-  const urls: string[] = [];
+  const files: UploadFile[] = [];
   for (const c of message.content) {
     if (c.type === "file_url") {
-      urls.push(c.file_url?.url ?? "");
+      files.push(c.file_url ? c.file_url : { name: "", url: "" });
     }
   }
-  return urls;
+  return files;
 }
 
 export function isVisionModel(model: string) {

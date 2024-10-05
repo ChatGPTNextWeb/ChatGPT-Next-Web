@@ -564,6 +564,32 @@
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
 
+.chat-message-item-files {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.chat-message-item-file {
+  display: flex;
+  flex-direction: row;
+  column-gap: 6px;
+
+}
+.chat-message-item-file-icon {
+  max-width: 16px;
+}
+
+.chat-message-item-file-name {
+  max-width:100%;  
+}
+
+
+
+
 
 @media only screen and (max-width: 600px) {
   $calc-image-width: calc(100vw/3*2/var(--image-count));

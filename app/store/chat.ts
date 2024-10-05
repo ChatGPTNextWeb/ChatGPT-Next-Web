@@ -162,7 +162,9 @@ const readFileContent = async (file: UploadFile): Promise<string> => {
         `Failed to fetch content from ${file.url}: ${response.statusText}`,
       );
     }
-    return await response.text();
+    const content = await response.text();
+    const result = file.name + "\n" + content;
+    return result;
   } catch (error) {
     console.error("Error reading file content:", error);
     return "";
@@ -356,26 +358,37 @@ export const useChatStore = createPersistStore(
 
         let mContent: string | MultimodalContent[] = userContent;
         let displayContent: string | MultimodalContent[] = userContent;
+        displayContent = [
+          {
+            type: "text",
+            text: userContent,
+          },
+        ];
 
         if (attachFiles && attachFiles.length > 0) {
-          let fileContent = userContent + " file content: \n";
+          let fileContent = userContent + " Here are the files: \n";
           for (let i = 0; i < attachFiles.length; i++) {
             fileContent += await readFileContent(attachFiles[i]);
           }
+          mContent = [
+            {
+              type: "text",
+              text: fileContent,
+            },
+          ];
+          displayContent = displayContent.concat(
+            attachFiles.map((file) => {
+              return {
+                type: "file_url",
+                file_url: {
+                  url: file.url,
+                  name: file.name,
+                },
+              };
+            }),
+          );
 
           if (attachImages && attachImages.length > 0) {
-            mContent = [
-              {
-                type: "text",
-                text: fileContent,
-              },
-            ];
-            displayContent = [
-              {
-                type: "text",
-                text: userContent,
-              },
-            ];
             mContent = mContent.concat(
               attachImages.map((url) => {
                 return {
@@ -387,20 +400,46 @@ export const useChatStore = createPersistStore(
               }),
             );
             displayContent = displayContent.concat(
-              attachFiles.map((file) => {
+              attachImages.map((url) => {
                 return {
-                  type: "file_url",
-                  file_url: {
-                    url: file.url,
-                    name: file.name,
+                  type: "image_url",
+                  image_url: {
+                    url: url,
                   },
                 };
               }),
             );
-          } else {
-            mContent = fileContent;
-            displayContent = userContent;
           }
+        } else if (attachImages && attachImages.length > 0) {
+          mContent = [
+            {
+              type: "text",
+              text: userContent,
+            },
+          ];
+          mContent = mContent.concat(
+            attachImages.map((url) => {
+              return {
+                type: "image_url",
+                image_url: {
+                  url: url,
+                },
+              };
+            }),
+          );
+          displayContent = displayContent.concat(
+            attachImages.map((url) => {
+              return {
+                type: "image_url",
+                image_url: {
+                  url: url,
+                },
+              };
+            }),
+          );
+        } else {
+          mContent = userContent;
+          displayContent = userContent;
         }
 
         let userMessage: ChatMessage = createMessage({

@@ -1941,9 +1941,37 @@ function _Chat() {
                       </div>
                     )}
                     {getMessageFiles(message).length > 0 && (
-                      <div>
+                      <div className={styles["chat-message-item-files"]}>
                         {getMessageFiles(message).map((file, index) => {
-                          return <div key={index}></div>;
+                          const extension: DefaultExtensionType = file.url
+                            .split(".")
+                            .pop()
+                            ?.toLowerCase() as DefaultExtensionType;
+                          const style = defaultStyles[extension];
+
+                          return (
+                            <a
+                              href={file.url}
+                              target="_blank"
+                              key={index}
+                              className={styles["chat-message-item-file"]}
+                            >
+                              <div
+                                className={
+                                  styles["chat-message-item-file-icon"]
+                                }
+                              >
+                                <FileIcon {...style} />
+                              </div>
+                              <div
+                                className={
+                                  styles["chat-message-item-file-name"]
+                                }
+                              >
+                                {file.name}
+                              </div>
+                            </a>
+                          );
                         })}
                       </div>
                     )}
