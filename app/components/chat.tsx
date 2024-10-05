@@ -98,6 +98,7 @@ import {
 } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { FileIcon, defaultStyles } from "react-file-icon";
+import type { DefaultExtensionType } from "react-file-icon";
 import {
   CHAT_PAGE_SIZE,
   DEFAULT_TTS_ENGINE,
@@ -2030,13 +2031,20 @@ function _Chat() {
             {attachFiles.length != 0 && (
               <div className={styles["attach-files"]}>
                 {attachFiles.map((file, index) => {
+                  const extension: DefaultExtensionType = file
+                    .split(".")
+                    .pop()
+                    ?.toLowerCase() as DefaultExtensionType;
+                  const style = defaultStyles[extension];
                   return (
-                    <div
-                      key={index}
-                      className={styles["attach-file"]}
-                      style={{ backgroundImage: `url("${file}")` }}
-                    >
-                      <FileIcon extension="csv" {...defaultStyles["csv"]} />
+                    <div key={index} className={styles["attach-file"]}>
+                      <div
+                        className={styles["attach-file-icon"]}
+                        key={extension}
+                      >
+                        <FileIcon {...style} />
+                      </div>
+                      <span>{extension}</span>
                       <div className={styles["attach-image-mask"]}>
                         <DeleteImageButton
                           deleteImage={() => {

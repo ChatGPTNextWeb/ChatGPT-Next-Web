@@ -61,15 +61,25 @@
 
 .attach-file {
   cursor: default;
+  display: flex;
+  //flex-direction: row;
+  column-gap: 4px;
+  //justify-content: flex-start;
+  color: var(--black);
+  font-size: 14px;
   //width: 64px;
-  width: 14px;
+  //width: 14px;
   height: 14px;
   //border: rgba($color: #888, $alpha: 0.2) 1px solid;
   border-radius: 5px;
   margin-right: 10px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--white);
+  //background-size: cover;
+  //background-position: center;
+  //background-color: var(--white);
+  
+  .attach-file-icon {
+    width: 32px;
+  }
 
   .attach-image-mask {
     width: 100%;
@@ -86,11 +96,11 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    //display: flex;
+    //align-items: center;
+    //justify-content: center;
     border-radius: 5px;
-    float: right;
+    float: left;
     background-color: var(--white);
   }
 }
