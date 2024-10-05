@@ -350,36 +350,57 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         //read file content from the url
-        if (attachFiles && attachFiles.length > 0) {
-          content += " file content: \n";
-          for (let i = 0; i < attachFiles.length; i++) {
-            content += await readFileContent(attachFiles[i]);
-          }
-        }
-
         const userContent = fillTemplateWith(content, modelConfig);
         console.log("[User Input] after template: ", userContent);
 
         let mContent: string | MultimodalContent[] = userContent;
+        let displayContent: string | MultimodalContent[] = userContent;
 
-        if (attachImages && attachImages.length > 0) {
-          mContent = [
-            {
-              type: "text",
-              text: userContent,
-            },
-          ];
-          mContent = mContent.concat(
-            attachImages.map((url) => {
-              return {
-                type: "image_url",
-                image_url: {
-                  url: url,
-                },
-              };
-            }),
-          );
+        if (attachFiles && attachFiles.length > 0) {
+          let fileContent = userContent + " file content: \n";
+          for (let i = 0; i < attachFiles.length; i++) {
+            fileContent += await readFileContent(attachFiles[i]);
+          }
+
+          if (attachImages && attachImages.length > 0) {
+            mContent = [
+              {
+                type: "text",
+                text: fileContent,
+              },
+            ];
+            displayContent = [
+              {
+                type: "text",
+                text: userContent,
+              },
+            ];
+            mContent = mContent.concat(
+              attachImages.map((url) => {
+                return {
+                  type: "image_url",
+                  image_url: {
+                    url: url,
+                  },
+                };
+              }),
+            );
+            displayContent = displayContent.concat(
+              attachFiles.map((url) => {
+                return {
+                  type: "file_url",
+                  file_url: {
+                    url: url,
+                  },
+                };
+              }),
+            );
+          } else {
+            mContent = fileContent;
+            displayContent = userContent;
+          }
         }
+
         let userMessage: ChatMessage = createMessage({
           role: "user",
           content: mContent,
@@ -400,7 +421,8 @@ export const useChatStore = createPersistStore(
         get().updateCurrentSession((session) => {
           const savedUserMessage = {
             ...userMessage,
-            content: mContent,
+            //content: mContent,
+            content: displayContent,
           };
           session.messages = session.messages.concat([
             savedUserMessage,

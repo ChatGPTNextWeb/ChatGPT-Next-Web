@@ -57,7 +57,7 @@
   display: flex;
   flex-direction: column;
   //row-gap: 11px;
-  height: 64px;
+  max-height: 64px;
 }
 
 .attach-file {
