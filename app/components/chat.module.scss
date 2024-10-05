@@ -56,29 +56,24 @@
   //bottom: 32px;
   display: flex;
   flex-direction: column;
-  row-gap: 11px;
+  //row-gap: 11px;
+  height: 64px;
 }
 
 .attach-file {
   cursor: default;
   display: flex;
-  //flex-direction: row;
+  flex-direction: row;
   column-gap: 4px;
-  //justify-content: flex-start;
+  justify-content: flex-start;
   color: var(--black);
   font-size: 14px;
-  //width: 64px;
-  //width: 14px;
-  height: 14px;
-  //border: rgba($color: #888, $alpha: 0.2) 1px solid;
   border-radius: 5px;
   margin-right: 10px;
-  //background-size: cover;
-  //background-position: center;
-  //background-color: var(--white);
-  
+
   .attach-file-icon {
-    width: 32px;
+    min-width: 16px;
+    max-width: 16px;
   }
 
   .attach-image-mask {
@@ -96,9 +91,6 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    //display: flex;
-    //align-items: center;
-    //justify-content: center;
     border-radius: 5px;
     float: left;
     background-color: var(--white);
