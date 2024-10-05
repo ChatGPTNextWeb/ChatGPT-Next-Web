@@ -507,7 +507,7 @@ export function ChatActions(props: {
   }, [models, currentModel, currentProviderName]);
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showPluginSelector, setShowPluginSelector] = useState(false);
-  // TODO: remember to make it false
+  // TODO: for developing purpose to set it to true
   const [showUploadImage, setShowUploadImage] = useState(true);
 
   const [showSizeSelector, setShowSizeSelector] = useState(false);
@@ -586,7 +586,7 @@ export function ChatActions(props: {
       )}
       <ChatAction
         onClick={props.uploadDocument}
-        text={"Upload Document"}
+        text={"Upload Plain Text File"}
         icon={props.uploading ? <LoadingButtonIcon /> : <UploadDocIcon />}
       />
       <ChatAction
