@@ -6,6 +6,7 @@ import type {
   ClientApi,
   MultimodalContent,
   RequestMessage,
+  UploadFile,
 } from "../client/api";
 import { getClientApi } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
@@ -153,12 +154,12 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
-const readFileContent = async (url: string): Promise<string> => {
+const readFileContent = async (file: UploadFile): Promise<string> => {
   try {
-    const response = await fetch(url);
+    const response = await fetch(file.url);
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch content from ${url}: ${response.statusText}`,
+        `Failed to fetch content from ${file.url}: ${response.statusText}`,
       );
     }
     return await response.text();
@@ -344,7 +345,7 @@ export const useChatStore = createPersistStore(
       async onUserInput(
         content: string,
         attachImages?: string[],
-        attachFiles?: string[],
+        attachFiles?: UploadFile[],
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
@@ -386,11 +387,12 @@ export const useChatStore = createPersistStore(
               }),
             );
             displayContent = displayContent.concat(
-              attachFiles.map((url) => {
+              attachFiles.map((file) => {
                 return {
                   type: "file_url",
                   file_url: {
-                    url: url,
+                    url: file.url,
+                    name: file.name,
                   },
                 };
               }),

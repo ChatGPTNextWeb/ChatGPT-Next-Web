@@ -36,7 +36,13 @@ export interface MultimodalContent {
   };
   file_url?: {
     url: string;
+    name: string;
   };
+}
+
+export interface UploadFile {
+  name: string;
+  url: string;
 }
 
 export interface RequestMessage {

@@ -69,11 +69,14 @@ import {
   useMobileScreen,
   getMessageTextContent,
   getMessageImages,
+  getMessageFiles,
   isVisionModel,
   isDalle3,
   showPlugins,
   safeLocalStorage,
 } from "../utils";
+
+import type { UploadFile } from "../client/api";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
 
@@ -448,7 +451,7 @@ export function ChatActions(props: {
   uploadDocument: () => void;
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
-  setAttachFiles: (files: string[]) => void;
+  setAttachFiles: (files: UploadFile[]) => void;
   setUploading: (uploading: boolean) => void;
   showPromptModal: () => void;
   scrollToBottom: () => void;
@@ -957,7 +960,7 @@ function _Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
-  const [attachFiles, setAttachFiles] = useState<string[]>([]);
+  const [attachFiles, setAttachFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
 
   // prompt hints
@@ -1475,11 +1478,11 @@ function _Chat() {
   );
 
   async function uploadDocument() {
-    const files: string[] = [];
+    const files: UploadFile[] = [];
     files.push(...attachFiles);
 
     files.push(
-      ...(await new Promise<string[]>((res, rej) => {
+      ...(await new Promise<UploadFile[]>((res, rej) => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = "text/*";
@@ -1487,12 +1490,12 @@ function _Chat() {
         fileInput.onchange = (event: any) => {
           setUploading(true);
           const files = event.target.files;
-          const imagesData: string[] = [];
+          const imagesData: UploadFile[] = [];
           for (let i = 0; i < files.length; i++) {
             const file = event.target.files[i];
             uploadImageRemote(file)
               .then((dataUrl) => {
-                imagesData.push(dataUrl);
+                imagesData.push({ name: file.name, url: dataUrl });
                 if (
                   imagesData.length === 3 ||
                   imagesData.length === files.length
@@ -1937,6 +1940,13 @@ function _Chat() {
                         })}
                       </div>
                     )}
+                    {getMessageFiles(message).length > 0 && (
+                      <div>
+                        {getMessageFiles(message).map((file, index) => {
+                          return <div key={index}></div>;
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   <div className={styles["chat-message-action-date"]}>
@@ -2032,7 +2042,7 @@ function _Chat() {
             {attachFiles.length != 0 && (
               <div className={styles["attach-files"]}>
                 {attachFiles.map((file, index) => {
-                  const extension: DefaultExtensionType = file
+                  const extension: DefaultExtensionType = file.url
                     .split(".")
                     .pop()
                     ?.toLowerCase() as DefaultExtensionType;
@@ -2045,7 +2055,27 @@ function _Chat() {
                       >
                         <FileIcon {...style} />
                       </div>
-                      <span>{extension}</span>
+                      {attachImages.length == 0 && (
+                        <div className={styles["attach-file-name-full"]}>
+                          {file.name}
+                        </div>
+                      )}
+                      {attachImages.length == 1 && (
+                        <div className={styles["attach-file-name-half"]}>
+                          {file.name}
+                        </div>
+                      )}
+                      {attachImages.length == 2 && (
+                        <div className={styles["attach-file-name-less"]}>
+                          {file.name}
+                        </div>
+                      )}
+                      {attachImages.length == 3 && (
+                        <div className={styles["attach-file-name-min"]}>
+                          {file.name}
+                        </div>
+                      )}
+
                       <div className={styles["attach-image-mask"]}>
                         <DeleteImageButton
                           deleteImage={() => {

@@ -71,9 +71,44 @@
   border-radius: 5px;
   margin-right: 10px;
 
+  .attach-file-name-full {
+    max-width:calc(62vw);
+    display:flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .attach-file-name-half {
+    max-width:calc(45vw);
+    display:flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .attach-file-name-less {
+    max-width:calc(28vw);
+    display:flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .attach-file-name-min {
+    max-width:calc(12vw);
+    display:flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   .attach-file-icon {
     min-width: 16px;
     max-width: 16px;
+  }
+  
+  .attach-file-icon:hover {
+    opacity: 0;
   }
 
   .attach-image-mask {
@@ -81,6 +116,7 @@
     height: 100%;
     opacity: 0;
     transition: all ease 0.2s;
+    position: absolute;
   }
 
   .attach-image-mask:hover {
@@ -88,8 +124,8 @@
   }
 
   .delete-image {
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 20px;
     cursor: pointer;
     border-radius: 5px;
     float: left;
