@@ -510,8 +510,7 @@ export function ChatActions(props: {
   }, [models, currentModel, currentProviderName]);
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showPluginSelector, setShowPluginSelector] = useState(false);
-  // TODO: for developing purpose to set it to true
-  const [showUploadImage, setShowUploadImage] = useState(true);
+  const [showUploadImage, setShowUploadImage] = useState(false);
 
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [showQualitySelector, setShowQualitySelector] = useState(false);
@@ -530,8 +529,7 @@ export function ChatActions(props: {
 
   useEffect(() => {
     const show = isVisionModel(currentModel);
-    //NOTE: temporary disable upload image
-    //setShowUploadImage(show);
+    setShowUploadImage(show);
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
@@ -1519,7 +1517,6 @@ function _Chat() {
       files.splice(3, filesLength - 3);
     }
     setAttachFiles(files);
-    console.log("upload files: ", files);
   }
 
   async function uploadImage() {
