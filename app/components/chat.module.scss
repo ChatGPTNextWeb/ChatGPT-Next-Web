@@ -1,9 +1,17 @@
 @import "../styles/animation.scss";
 
-.attach-images {
+.attachments {
   position: absolute;
   left: 30px;
   bottom: 32px;
+  display: flex;
+  flex-direction: row;
+}
+
+.attach-images {
+  //position: absolute;
+  //left: 30px;
+  //bottom: 32px;
   display: flex;
 }
 
@@ -41,6 +49,53 @@
     background-color: var(--white);
   }
 }
+
+.attach-files {
+  //position: absolute;
+  //left: 30px;
+  //bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 11px;
+}
+
+.attach-file {
+  cursor: default;
+  //width: 64px;
+  width: 14px;
+  height: 14px;
+  //border: rgba($color: #888, $alpha: 0.2) 1px solid;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--white);
+
+  .attach-image-mask {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all ease 0.2s;
+  }
+
+  .attach-image-mask:hover {
+    opacity: 1;
+  }
+
+  .delete-image {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    float: right;
+    background-color: var(--white);
+  }
+}
+
+
 
 .chat-input-actions {
   display: flex;

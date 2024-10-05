@@ -46,6 +46,7 @@ import StyleIcon from "../icons/palette.svg";
 import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import ReloadIcon from "../icons/reload.svg";
+import UploadDocIcon from "../icons/upload-doc.svg";
 
 import {
   ChatMessage,
@@ -96,6 +97,7 @@ import {
   showToast,
 } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
+import { FileIcon, defaultStyles } from "react-file-icon";
 import {
   CHAT_PAGE_SIZE,
   DEFAULT_TTS_ENGINE,
@@ -442,8 +444,10 @@ function useScrollToBottom(
 }
 
 export function ChatActions(props: {
+  uploadDocument: () => void;
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
+  setAttachFiles: (files: string[]) => void;
   setUploading: (uploading: boolean) => void;
   showPromptModal: () => void;
   scrollToBottom: () => void;
@@ -502,7 +506,8 @@ export function ChatActions(props: {
   }, [models, currentModel, currentProviderName]);
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showPluginSelector, setShowPluginSelector] = useState(false);
-  const [showUploadImage, setShowUploadImage] = useState(false);
+  // TODO: remember to make it false
+  const [showUploadImage, setShowUploadImage] = useState(true);
 
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [showQualitySelector, setShowQualitySelector] = useState(false);
@@ -521,7 +526,8 @@ export function ChatActions(props: {
 
   useEffect(() => {
     const show = isVisionModel(currentModel);
-    setShowUploadImage(show);
+    //NOTE: temporary disable upload image
+    //setShowUploadImage(show);
     if (!show) {
       props.setAttachImages([]);
       props.setUploading(false);
@@ -577,6 +583,11 @@ export function ChatActions(props: {
           icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
         />
       )}
+      <ChatAction
+        onClick={props.uploadDocument}
+        text={"Upload Document"}
+        icon={props.uploading ? <LoadingButtonIcon /> : <UploadDocIcon />}
+      />
       <ChatAction
         onClick={nextTheme}
         text={Locale.Chat.InputActions.Theme[theme]}
@@ -945,6 +956,7 @@ function _Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
   const [attachImages, setAttachImages] = useState<string[]>([]);
+  const [attachFiles, setAttachFiles] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
   // prompt hints
@@ -1460,6 +1472,51 @@ function _Chat() {
     [attachImages, chatStore],
   );
 
+  async function uploadDocument() {
+    const files: string[] = [];
+    files.push(...attachFiles);
+
+    files.push(
+      ...(await new Promise<string[]>((res, rej) => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "text/*";
+        fileInput.multiple = true;
+        fileInput.onchange = (event: any) => {
+          setUploading(true);
+          const files = event.target.files;
+          const imagesData: string[] = [];
+          for (let i = 0; i < files.length; i++) {
+            const file = event.target.files[i];
+            uploadImageRemote(file)
+              .then((dataUrl) => {
+                imagesData.push(dataUrl);
+                if (
+                  imagesData.length === 3 ||
+                  imagesData.length === files.length
+                ) {
+                  setUploading(false);
+                  res(imagesData);
+                }
+              })
+              .catch((e) => {
+                setUploading(false);
+                rej(e);
+              });
+          }
+        };
+        fileInput.click();
+      })),
+    );
+
+    const filesLength = files.length;
+    if (filesLength > 3) {
+      files.splice(3, filesLength - 3);
+    }
+    setAttachFiles(files);
+    console.log("upload files: ", files);
+  }
+
   async function uploadImage() {
     const images: string[] = [];
     images.push(...attachImages);
@@ -1897,8 +1954,10 @@ function _Chat() {
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
 
         <ChatActions
+          uploadDocument={uploadDocument}
           uploadImage={uploadImage}
           setAttachImages={setAttachImages}
+          setAttachFiles={setAttachFiles}
           setUploading={setUploading}
           showPromptModal={() => setShowPromptModal(true)}
           scrollToBottom={scrollToBottom}
@@ -1920,7 +1979,7 @@ function _Chat() {
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
-            attachImages.length != 0
+            attachImages.length != 0 || attachFiles.length != 0
               ? styles["chat-input-panel-inner-attach"]
               : ""
           }`}
@@ -1944,29 +2003,55 @@ function _Chat() {
               fontFamily: config.fontFamily,
             }}
           />
-          {attachImages.length != 0 && (
-            <div className={styles["attach-images"]}>
-              {attachImages.map((image, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={styles["attach-image"]}
-                    style={{ backgroundImage: `url("${image}")` }}
-                  >
-                    <div className={styles["attach-image-mask"]}>
-                      <DeleteImageButton
-                        deleteImage={() => {
-                          setAttachImages(
-                            attachImages.filter((_, i) => i !== index),
-                          );
-                        }}
-                      />
+          <div className={styles["attachments"]}>
+            {attachImages.length != 0 && (
+              <div className={styles["attach-images"]}>
+                {attachImages.map((image, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={styles["attach-image"]}
+                      style={{ backgroundImage: `url("${image}")` }}
+                    >
+                      <div className={styles["attach-image-mask"]}>
+                        <DeleteImageButton
+                          deleteImage={() => {
+                            setAttachImages(
+                              attachImages.filter((_, i) => i !== index),
+                            );
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
+            {attachFiles.length != 0 && (
+              <div className={styles["attach-files"]}>
+                {attachFiles.map((file, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={styles["attach-file"]}
+                      style={{ backgroundImage: `url("${file}")` }}
+                    >
+                      <FileIcon extension="csv" {...defaultStyles["csv"]} />
+                      <div className={styles["attach-image-mask"]}>
+                        <DeleteImageButton
+                          deleteImage={() => {
+                            setAttachFiles(
+                              attachFiles.filter((_, i) => i !== index),
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
