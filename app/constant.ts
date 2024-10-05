@@ -409,18 +409,6 @@ export const DEFAULT_MODELS = [
       sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
-  {
-    name: "gpt-4",
-    describe: "GPT-4,标准版",
-    available: true,
-    sorted: seq++,
-    provider: {
-      id: "azure",
-      providerName: "Azure",
-      providerType: "azure",
-      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
-    },
-  },
   // {
   //   name: "gpt-4o-2024-08-06",
   //   describe: "GPT-4o,最新版,省着点用",
@@ -435,26 +423,38 @@ export const DEFAULT_MODELS = [
   // },
   {
     name: "o1-mini",
-    describe: "GPT,最新模型mini版,较便宜",
+    describe: "GPT,最新模型mini版,较快的推理",
     available: true,
     sorted: seq++,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-      sorted: 2,
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
     name: "o1-preview",
-    describe: "GPT,o1,最新模型,目前较贵",
+    describe: "GPT,o1,最新模型,高级推理",
     available: true,
     sorted: seq++,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-      sorted: 2,
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
+    },
+  },
+  {
+    name: "gpt-4-turbo-2024-04-09",
+    describe: "GPT-4,标准版",
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "azure",
+      providerName: "Azure",
+      providerType: "azure",
+      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   },
   {
