@@ -37,6 +37,7 @@ export interface MultimodalContent {
   file_url?: {
     url: string;
     name: string;
+    tokenCount?: string;
   };
 }
 

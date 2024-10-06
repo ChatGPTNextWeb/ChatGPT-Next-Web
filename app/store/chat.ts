@@ -366,6 +366,7 @@ export const useChatStore = createPersistStore(
                 file_url: {
                   url: file.url,
                   name: file.name,
+                  tokenCount: file.tokenCount,
                 },
               };
             }),
@@ -424,7 +425,6 @@ export const useChatStore = createPersistStore(
           mContent = userContent;
           displayContent = userContent;
         }
-
         let userMessage: ChatMessage = createMessage({
           role: "user",
           content: mContent,

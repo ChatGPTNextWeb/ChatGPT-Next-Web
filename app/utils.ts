@@ -61,7 +61,6 @@ export const countTokens = async (file: UploadFile) => {
     }
   }
   let totalTokenCount = (totalTokens / 1000).toFixed(2).toString() + "K";
-  console.log(totalTokenCount);
   return totalTokenCount;
 };
 
