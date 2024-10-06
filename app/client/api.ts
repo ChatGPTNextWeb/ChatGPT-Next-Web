@@ -43,6 +43,7 @@ export interface MultimodalContent {
 export interface UploadFile {
   name: string;
   url: string;
+  tokenCount?: string;
 }
 
 export interface RequestMessage {

@@ -17,6 +17,54 @@ export function trimTopic(topic: string) {
   );
 }
 
+export const readFileContent = async (file: UploadFile): Promise<string> => {
+  try {
+    const response = await fetch(file.url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch content from ${file.url}: ${response.statusText}`,
+      );
+    }
+    const content = await response.text();
+    const result = file.name + "\n" + content;
+    return result;
+  } catch (error) {
+    console.error("Error reading file content:", error);
+    return "";
+  }
+};
+
+export const countTokens = async (file: UploadFile) => {
+  const text = await readFileContent(file);
+  let totalTokens = 0;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (char === " " && nextChar === " ") {
+      totalTokens += 0.081;
+    } else if ("NORabcdefghilnopqrstuvy ".includes(char)) {
+      totalTokens += 0.202;
+    } else if ("CHLMPQSTUVfkmspwx".includes(char)) {
+      totalTokens += 0.237;
+    } else if ("-.ABDEFGIKWY_\\r\\tz{ü".includes(char)) {
+      totalTokens += 0.304;
+    } else if ("!{{input}}(/;=JX`j\\n}ö".includes(char)) {
+      totalTokens += 0.416;
+    } else if ('"#%)*+56789<>?@Z[\\]^|§«äç’'.includes(char)) {
+      totalTokens += 0.479;
+    } else if (",01234:~Üß".includes(char) || char.charCodeAt(0) > 255) {
+      totalTokens += 0.658;
+    } else {
+      totalTokens += 0.98;
+    }
+  }
+  let totalTokenCount = (totalTokens / 1000).toFixed(2).toString() + "K";
+  console.log(totalTokenCount);
+  return totalTokenCount;
+};
+
 export async function copyToClipboard(text: string) {
   try {
     if (window.__TAURI__) {

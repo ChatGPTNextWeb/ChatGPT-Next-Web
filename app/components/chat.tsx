@@ -74,6 +74,7 @@ import {
   isDalle3,
   showPlugins,
   safeLocalStorage,
+  countTokens,
 } from "../utils";
 
 import type { UploadFile } from "../client/api";
@@ -1489,11 +1490,15 @@ function _Chat() {
           setUploading(true);
           const files = event.target.files;
           const imagesData: UploadFile[] = [];
-          for (let i = 0; i < files.length; i++) {
-            const file = event.target.files[i];
-            uploadImageRemote(file)
-              .then((dataUrl) => {
-                imagesData.push({ name: file.name, url: dataUrl });
+          (async () => {
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              try {
+                const dataUrl = await uploadImageRemote(file);
+                const fileData: UploadFile = { name: file.name, url: dataUrl };
+                const tokenCount = await countTokens(fileData);
+                fileData.tokenCount = tokenCount;
+                imagesData.push(fileData);
                 if (
                   imagesData.length === 3 ||
                   imagesData.length === files.length
@@ -1501,12 +1506,12 @@ function _Chat() {
                   setUploading(false);
                   res(imagesData);
                 }
-              })
-              .catch((e) => {
+              } catch (e) {
                 setUploading(false);
                 rej(e);
-              });
-          }
+              }
+            }
+          })();
         };
         fileInput.click();
       })),
@@ -1945,7 +1950,6 @@ function _Chat() {
                             .pop()
                             ?.toLowerCase() as DefaultExtensionType;
                           const style = defaultStyles[extension];
-
                           return (
                             <a
                               href={file.url}
@@ -1965,7 +1969,7 @@ function _Chat() {
                                   styles["chat-message-item-file-name"]
                                 }
                               >
-                                {file.name}
+                                {file.name} {file.tokenCount}
                               </div>
                             </a>
                           );
@@ -2082,22 +2086,22 @@ function _Chat() {
                       </div>
                       {attachImages.length == 0 && (
                         <div className={styles["attach-file-name-full"]}>
-                          {file.name}
+                          {file.name} {file.tokenCount}
                         </div>
                       )}
                       {attachImages.length == 1 && (
                         <div className={styles["attach-file-name-half"]}>
-                          {file.name}
+                          {file.name} {file.tokenCount}
                         </div>
                       )}
                       {attachImages.length == 2 && (
                         <div className={styles["attach-file-name-less"]}>
-                          {file.name}
+                          {file.name} {file.tokenCount}
                         </div>
                       )}
                       {attachImages.length == 3 && (
                         <div className={styles["attach-file-name-min"]}>
-                          {file.name}
+                          {file.name} {file.tokenCount}
                         </div>
                       )}
 

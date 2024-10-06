@@ -19,7 +19,7 @@ import {
   StoreKey,
 } from "../constant";
 import Locale, { getLang } from "../locales";
-import { isDalle3, safeLocalStorage } from "../utils";
+import { isDalle3, safeLocalStorage, readFileContent } from "../utils";
 import { prettyObject } from "../utils/format";
 import { createPersistStore } from "../utils/store";
 import { estimateTokenLength } from "../utils/token";
@@ -153,23 +153,6 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   return output;
 }
-
-const readFileContent = async (file: UploadFile): Promise<string> => {
-  try {
-    const response = await fetch(file.url);
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch content from ${file.url}: ${response.statusText}`,
-      );
-    }
-    const content = await response.text();
-    const result = file.name + "\n" + content;
-    return result;
-  } catch (error) {
-    console.error("Error reading file content:", error);
-    return "";
-  }
-};
 
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
