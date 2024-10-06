@@ -1959,7 +1959,8 @@ function _Chat() {
                             >
                               <div
                                 className={
-                                  styles["chat-message-item-file-icon"]
+                                  styles["chat-message-item-file-icon"] +
+                                  " no-dark"
                                 }
                               >
                                 <FileIcon {...style} />
@@ -2079,7 +2080,7 @@ function _Chat() {
                   return (
                     <div key={index} className={styles["attach-file"]}>
                       <div
-                        className={styles["attach-file-icon"]}
+                        className={styles["attach-file-icon"] + " no-dark"}
                         key={extension}
                       >
                         <FileIcon {...style} />
