@@ -1963,7 +1963,7 @@ function _Chat() {
                                   " no-dark"
                                 }
                               >
-                                <FileIcon {...style} />
+                                <FileIcon {...style} glyphColor="#303030" />
                               </div>
                               <div
                                 className={
@@ -2083,7 +2083,7 @@ function _Chat() {
                         className={styles["attach-file-icon"] + " no-dark"}
                         key={extension}
                       >
-                        <FileIcon {...style} />
+                        <FileIcon {...style} glyphColor="#303030" />
                       </div>
                       {attachImages.length == 0 && (
                         <div className={styles["attach-file-name-full"]}>
