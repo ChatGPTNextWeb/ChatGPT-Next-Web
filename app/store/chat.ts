@@ -351,6 +351,7 @@ export const useChatStore = createPersistStore(
         if (attachFiles && attachFiles.length > 0) {
           let fileContent = userContent + " Here are the files: \n";
           for (let i = 0; i < attachFiles.length; i++) {
+            fileContent += attachFiles[i].name + "\n";
             fileContent += await readFileContent(attachFiles[i]);
           }
           mContent = [

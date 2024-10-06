@@ -37,14 +37,14 @@ export interface MultimodalContent {
   file_url?: {
     url: string;
     name: string;
-    tokenCount?: string;
+    tokenCount?: number;
   };
 }
 
 export interface UploadFile {
   name: string;
   url: string;
-  tokenCount?: string;
+  tokenCount?: number;
 }
 
 export interface RequestMessage {

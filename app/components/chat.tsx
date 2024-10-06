@@ -80,6 +80,7 @@ import {
 import type { UploadFile } from "../client/api";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
+import { uploadImage as uploadFileRemote } from "@/app/utils/chat";
 
 import dynamic from "next/dynamic";
 
@@ -1193,7 +1194,9 @@ function _Chat() {
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(textContent, images, attachFiles)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -1488,20 +1491,20 @@ function _Chat() {
         fileInput.multiple = true;
         fileInput.onchange = (event: any) => {
           setUploading(true);
-          const files = event.target.files;
+          const inputFiles = event.target.files;
           const imagesData: UploadFile[] = [];
           (async () => {
-            for (let i = 0; i < files.length; i++) {
-              const file = files[i];
+            for (let i = 0; i < inputFiles.length; i++) {
+              const file = inputFiles[i];
               try {
-                const dataUrl = await uploadImageRemote(file);
+                const dataUrl = await uploadFileRemote(file);
                 const fileData: UploadFile = { name: file.name, url: dataUrl };
-                const tokenCount = await countTokens(fileData);
+                const tokenCount: number = await countTokens(fileData);
                 fileData.tokenCount = tokenCount;
                 imagesData.push(fileData);
                 if (
                   imagesData.length === 3 ||
-                  imagesData.length === files.length
+                  imagesData.length === inputFiles.length
                 ) {
                   setUploading(false);
                   res(imagesData);
@@ -1945,7 +1948,7 @@ function _Chat() {
                     {getMessageFiles(message).length > 0 && (
                       <div className={styles["chat-message-item-files"]}>
                         {getMessageFiles(message).map((file, index) => {
-                          const extension: DefaultExtensionType = file.url
+                          const extension: DefaultExtensionType = file.name
                             .split(".")
                             .pop()
                             ?.toLowerCase() as DefaultExtensionType;
@@ -1970,7 +1973,7 @@ function _Chat() {
                                   styles["chat-message-item-file-name"]
                                 }
                               >
-                                {file.name} {file.tokenCount}
+                                {file.name} {file.tokenCount}K
                               </div>
                             </a>
                           );
@@ -2072,7 +2075,7 @@ function _Chat() {
             {attachFiles.length != 0 && (
               <div className={styles["attach-files"]}>
                 {attachFiles.map((file, index) => {
-                  const extension: DefaultExtensionType = file.url
+                  const extension: DefaultExtensionType = file.name
                     .split(".")
                     .pop()
                     ?.toLowerCase() as DefaultExtensionType;
@@ -2087,22 +2090,22 @@ function _Chat() {
                       </div>
                       {attachImages.length == 0 && (
                         <div className={styles["attach-file-name-full"]}>
-                          {file.name} {file.tokenCount}
+                          {file.name} {file.tokenCount}K
                         </div>
                       )}
                       {attachImages.length == 1 && (
                         <div className={styles["attach-file-name-half"]}>
-                          {file.name} {file.tokenCount}
+                          {file.name} {file.tokenCount}K
                         </div>
                       )}
                       {attachImages.length == 2 && (
                         <div className={styles["attach-file-name-less"]}>
-                          {file.name} {file.tokenCount}
+                          {file.name} {file.tokenCount}K
                         </div>
                       )}
                       {attachImages.length == 3 && (
                         <div className={styles["attach-file-name-min"]}>
-                          {file.name} {file.tokenCount}
+                          {file.name} {file.tokenCount}K
                         </div>
                       )}
 

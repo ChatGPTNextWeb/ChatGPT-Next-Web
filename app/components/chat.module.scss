@@ -71,37 +71,32 @@
   border-radius: 5px;
   margin-right: 10px;
 
-  .attach-file-name-full {
-    max-width:calc(62vw);
-    display:flex;
+  %attach-file-name-common {
+     display:flex;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+ 
   }
+  .attach-file-name-full {
+    @extend %attach-file-name-common;
+    max-width:calc(62vw);
+     }
 
   .attach-file-name-half {
+    @extend %attach-file-name-common;
     max-width:calc(45vw);
-    display:flex;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
 
   .attach-file-name-less {
+    @extend %attach-file-name-common;
     max-width:calc(28vw);
-    display:flex;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
 
   .attach-file-name-min {
+    @extend %attach-file-name-common;
     max-width:calc(12vw);
-    display:flex;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
+      }
   .attach-file-icon {
     min-width: 16px;
     max-width: 16px;

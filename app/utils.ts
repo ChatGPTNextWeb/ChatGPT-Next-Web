@@ -18,6 +18,10 @@ export function trimTopic(topic: string) {
 }
 
 export const readFileContent = async (file: UploadFile): Promise<string> => {
+  const host_url = new URL(window.location.href);
+  if (!file.url.includes(host_url.host)) {
+    throw new Error(`The URL ${file.url} is not allowed to access.`);
+  }
   try {
     const response = await fetch(file.url);
     if (!response.ok) {
@@ -25,9 +29,10 @@ export const readFileContent = async (file: UploadFile): Promise<string> => {
         `Failed to fetch content from ${file.url}: ${response.statusText}`,
       );
     }
-    const content = await response.text();
-    const result = file.name + "\n" + content;
-    return result;
+    //const content = await response.text();
+    //const result = file.name + "\n" + content;
+    //return result;
+    return await response.text();
   } catch (error) {
     console.error("Error reading file content:", error);
     return "";
@@ -60,7 +65,7 @@ export const countTokens = async (file: UploadFile) => {
       totalTokens += 0.98;
     }
   }
-  let totalTokenCount = (totalTokens / 1000).toFixed(2).toString() + "K";
+  const totalTokenCount: number = +(totalTokens / 1000).toFixed(2);
   return totalTokenCount;
 };
 
@@ -303,8 +308,8 @@ export function getMessageFiles(message: RequestMessage): UploadFile[] {
   }
   const files: UploadFile[] = [];
   for (const c of message.content) {
-    if (c.type === "file_url") {
-      files.push(c.file_url ? c.file_url : { name: "", url: "" });
+    if (c.type === "file_url" && c.file_url) {
+      files.push(c.file_url);
     }
   }
   return files;
