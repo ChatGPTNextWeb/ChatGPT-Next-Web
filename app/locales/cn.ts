@@ -6,6 +6,7 @@ const isApp = !!getClientConfig()?.isApp;
 
 const cn = {
   WIP: "该功能仍在开发中……",
+  StreamTIp: "当前非流式响应，请稍候……",
   Error: {
     Unauthorized: isApp
       ? `😆 对话遇到了一些问题，不用慌:

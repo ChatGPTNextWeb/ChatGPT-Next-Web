@@ -7,6 +7,7 @@ import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 const en: LocaleType = {
   WIP: "Coming Soon...",
+  StreamTIp: "Currently generating a non-streaming response, please wait...",
   Error: {
     Unauthorized: isApp
       ? `😆 Oops, there's an issue. No worries:

@@ -1547,6 +1547,7 @@ function _Chat() {
   }
   // 加载状态结束，获取token
   const [loadingChange, setLoadingChange] = useState(false);
+  const currentModel = chatStore.currentSession().mask.modelConfig.model;
   useEffect(() => {
     if (!isLoading && loadingChange) {
       try {
@@ -1568,10 +1569,14 @@ function _Chat() {
           });
       } catch {}
     }
+    // 插入判断，展示非流式响应的提示
+    if (currentModel.startsWith("o1") && isLoading) {
+      showToast(Locale.StreamTIp, undefined, 5000);
+    }
     return () => {
       setLoadingChange(isLoading);
     };
-  }, [isLoading, loadingChange]);
+  }, [currentModel, isLoading, loadingChange]);
 
   // 快捷键 shortcut keys
   const [showShortcutKeyModal, setShowShortcutKeyModal] = useState(false);
