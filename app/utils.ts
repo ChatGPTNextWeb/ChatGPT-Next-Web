@@ -35,7 +35,7 @@ export const readFileContent = async (file: UploadFile): Promise<string> => {
     return await response.text();
   } catch (error) {
     console.error("Error reading file content:", error);
-    return "";
+    throw error;
   }
 };
 
