@@ -1,9 +1,17 @@
 @import "../styles/animation.scss";
 
-.attach-images {
+.attachments {
   position: absolute;
   left: 30px;
   bottom: 32px;
+  display: flex;
+  flex-direction: row;
+}
+
+.attach-images {
+  //position: absolute;
+  //left: 30px;
+  //bottom: 32px;
   display: flex;
 }
 
@@ -41,6 +49,86 @@
     background-color: var(--white);
   }
 }
+
+.attach-files {
+  //position: absolute;
+  //left: 30px;
+  //bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  //row-gap: 11px;
+  max-height: 64px;
+}
+
+.attach-file {
+  cursor: default;
+  display: flex;
+  flex-direction: row;
+  column-gap: 4px;
+  justify-content: flex-start;
+  color: var(--black);
+  font-size: 14px;
+  border-radius: 5px;
+  margin-right: 10px;
+
+  %attach-file-name-common {
+     display:flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+ 
+  }
+  .attach-file-name-full {
+    @extend %attach-file-name-common;
+    max-width:calc(62vw);
+     }
+
+  .attach-file-name-half {
+    @extend %attach-file-name-common;
+    max-width:calc(45vw);
+  }
+
+  .attach-file-name-less {
+    @extend %attach-file-name-common;
+    max-width:calc(28vw);
+  }
+
+  .attach-file-name-min {
+    @extend %attach-file-name-common;
+    max-width:calc(12vw);
+      }
+  .attach-file-icon {
+    min-width: 16px;
+    max-width: 16px;
+  }
+  
+  .attach-file-icon:hover {
+    opacity: 0;
+  }
+
+  .attach-image-mask {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all ease 0.2s;
+    position: absolute;
+  }
+
+  .attach-image-mask:hover {
+    opacity: 1;
+  }
+
+  .delete-image {
+    width: 16px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    float: left;
+    background-color: var(--white);
+  }
+}
+
+
 
 .chat-input-actions {
   display: flex;
@@ -470,6 +558,32 @@
   border-radius: 10px;
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
+
+.chat-message-item-files {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.chat-message-item-file {
+  display: flex;
+  flex-direction: row;
+  column-gap: 6px;
+
+}
+.chat-message-item-file-icon {
+  max-width: 16px;
+}
+
+.chat-message-item-file-name {
+  max-width:100%;  
+}
+
+
+
 
 
 @media only screen and (max-width: 600px) {
