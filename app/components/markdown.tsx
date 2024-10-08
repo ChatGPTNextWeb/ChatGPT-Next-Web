@@ -22,6 +22,8 @@ import {
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
 
+import { useAppConfig } from "../store/config";
+
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -92,7 +94,9 @@ export function PreCode(props: { children: any }) {
     }
   }, 600);
 
-  const enableArtifacts = session.mask?.enableArtifacts !== false;
+  const config = useAppConfig();
+  const enableArtifacts =
+    session.mask?.enableArtifacts !== false && config.enableArtifacts;
 
   //Wrap the paragraph for plain-text
   useEffect(() => {
@@ -128,8 +132,9 @@ export function PreCode(props: { children: any }) {
           className="copy-code-button"
           onClick={() => {
             if (ref.current) {
-              const code = ref.current.innerText;
-              copyToClipboard(code);
+              copyToClipboard(
+                ref.current.querySelector("code")?.innerText ?? "",
+              );
             }
           }}
         ></span>
@@ -202,23 +207,6 @@ function CustomCode(props: { children: any; className?: string }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
-}
-
 function escapeBrackets(text: string) {
   const pattern =
     /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
@@ -247,7 +235,7 @@ function tryWrapHtmlCode(text: string) {
       },
     )
     .replace(
-      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*?)([`]*?)([\n\r]*?)/g,
+      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*)([`]*)([\n\r]*?)/g,
       (match, bodyEnd, space, htmlEnd, newLine, quoteEnd) => {
         return !quoteEnd ? bodyEnd + space + htmlEnd + "\n```\n" : match;
       },
@@ -256,7 +244,7 @@ function tryWrapHtmlCode(text: string) {
 
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
-    return tryWrapHtmlCode(escapeBrackets(escapeDollarNumber(props.content)));
+    return tryWrapHtmlCode(escapeBrackets(props.content));
   }, [props.content]);
 
   return (
@@ -278,6 +266,20 @@ function _MarkDownContent(props: { content: string }) {
         p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";
+          if (/\.(aac|mp3|opus|wav)$/.test(href)) {
+            return (
+              <figure>
+                <audio controls src={href}></audio>
+              </figure>
+            );
+          }
+          if (/\.(3gp|3g2|webm|ogv|mpeg|mp4|avi)$/.test(href)) {
+            return (
+              <video controls width="99.9%">
+                <source src={href} />
+              </video>
+            );
+          }
           const isInternal = /^\/#/i.test(href);
           const target = isInternal ? "_self" : aProps.target ?? "_blank";
           return <a {...aProps} target={target} />;
