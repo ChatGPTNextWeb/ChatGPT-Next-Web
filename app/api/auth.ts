@@ -85,6 +85,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.Qwen:
         systemApiKey = serverConfig.alibabaApiKey;
         break;
+      case ModelProvider.Stepfun:
+        systemApiKey = serverConfig.stepfunApiKey;
+        break;
       case ModelProvider.Moonshot:
         systemApiKey = serverConfig.moonshotApiKey;
         break;

@@ -26,7 +26,10 @@ export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
 export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
 
+export const STEPFUN_BASE_URL = "https://api.stepfun.com";
+
 export const MOONSHOT_BASE_URL = "https://api.moonshot.cn";
+
 export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const CACHE_URL_PREFIX = "/api/cache";
@@ -56,6 +59,7 @@ export enum ApiPath {
   ByteDance = "/api/bytedance",
   Alibaba = "/api/alibaba",
   Tencent = "/api/tencent",
+  Stepfun = "/api/stepfun",
   Moonshot = "/api/moonshot",
   Iflytek = "/api/iflytek",
   Stability = "/api/stability",
@@ -109,6 +113,7 @@ export enum ServiceProvider {
   ByteDance = "ByteDance",
   Alibaba = "Alibaba",
   Tencent = "Tencent",
+  Stepfun = "Stepfun",
   Moonshot = "Moonshot",
   Stability = "Stability",
   Iflytek = "Iflytek",
@@ -132,6 +137,7 @@ export enum ModelProvider {
   Doubao = "Doubao",
   Qwen = "Qwen",
   Hunyuan = "Hunyuan",
+  Stepfun = "Stepfun",
   Moonshot = "Moonshot",
   Iflytek = "Iflytek",
 }
@@ -204,6 +210,11 @@ export const Alibaba = {
 
 export const Tencent = {
   ExampleEndpoint: TENCENT_BASE_URL,
+};
+
+export const Stepfun = {
+  ExampleEndpoint: STEPFUN_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const Moonshot = {
@@ -355,6 +366,17 @@ const tencentModels = [
   "hunyuan-vision",
 ];
 
+const stepfunModels = [
+  "step-1-8k",
+  "step-1-32k",
+  "step-1v-8k",
+  "step-1v-32k",
+  "step-1-128k",
+  "step-1-256k",
+  "step-1-flash",
+  "step-2-16k",
+];
+
 const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
 
 const iflytekModels = [
@@ -455,6 +477,17 @@ export const DEFAULT_MODELS = [
       sorted: 8,
     },
   })),
+  ...stepfunModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "stepfun",
+      providerName: "Stepfun",
+      providerType: "stepfun",
+      sorted: 9,
+    },
+  })),
   ...moonshotModes.map((name) => ({
     name,
     available: true,
@@ -463,7 +496,7 @@ export const DEFAULT_MODELS = [
       id: "moonshot",
       providerName: "Moonshot",
       providerType: "moonshot",
-      sorted: 9,
+      sorted: 10,
     },
   })),
   ...iflytekModels.map((name) => ({
@@ -474,7 +507,7 @@ export const DEFAULT_MODELS = [
       id: "iflytek",
       providerName: "Iflytek",
       providerType: "iflytek",
-      sorted: 10,
+      sorted: 11,
     },
   })),
 ] as const;

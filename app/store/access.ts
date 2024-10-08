@@ -43,6 +43,10 @@ const DEFAULT_TENCENT_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/tencent"
   : ApiPath.Tencent;
 
+const DEFAULT_STEPFUN_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/stepfun"
+  : ApiPath.Stepfun;
+
 const DEFAULT_MOONSHOT_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/moonshot"
   : ApiPath.Moonshot;
@@ -106,6 +110,10 @@ const DEFAULT_ACCESS_STATE = {
   tencentUrl: DEFAULT_TENCENT_URL,
   tencentSecretKey: "",
   tencentSecretId: "",
+
+  // stepfun
+  stepfunUrl: DEFAULT_STEPFUN_URL,
+  stepfunApiKey: "",
 
   // iflytek
   iflytekUrl: DEFAULT_IFLYTEK_URL,
@@ -173,9 +181,14 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
     },
 
+    isValidStepfun() {
+      return ensure(get(), ["stepfunApiKey"]);
+    },
+
     isValidMoonshot() {
       return ensure(get(), ["moonshotApiKey"]);
     },
+
     isValidIflytek() {
       return ensure(get(), ["iflytekApiKey"]);
     },
@@ -193,6 +206,7 @@ export const useAccessStore = createPersistStore(
         this.isValidByteDance() ||
         this.isValidAlibaba() ||
         this.isValidTencent() ||
+        this.isValidStepfun() ||
         this.isValidMoonshot() ||
         this.isValidIflytek() ||
         !this.enabledAccessControl() ||

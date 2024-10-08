@@ -56,6 +56,7 @@ import {
   Azure,
   Baidu,
   Tencent,
+  Stepfun,
   ByteDance,
   Alibaba,
   Moonshot,
@@ -1071,6 +1072,47 @@ export function Settings() {
     </>
   );
 
+  const stepfunConfigComponent = accessStore.provider ===
+    ServiceProvider.Stepfun && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Stepfun.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Stepfun.Endpoint.SubTitle +
+          Stepfun.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Stepfun.Endpoint.Title}
+          type="text"
+          value={accessStore.stepfunUrl}
+          placeholder={Stepfun.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.stepfunUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Stepfun.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Stepfun.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Stepfun.ApiKey.Title}
+          value={accessStore.stepfunApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Stepfun.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.stepfunApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const byteDanceConfigComponent = accessStore.provider ===
     ServiceProvider.ByteDance && (
     <>
@@ -1625,6 +1667,7 @@ export function Settings() {
                   {byteDanceConfigComponent}
                   {alibabaConfigComponent}
                   {tencentConfigComponent}
+                  {stepfunConfigComponent}
                   {moonshotConfigComponent}
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
