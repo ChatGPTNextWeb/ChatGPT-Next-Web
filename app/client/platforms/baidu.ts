@@ -14,6 +14,7 @@ import {
   LLMApi,
   LLMModel,
   MultimodalContent,
+  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -75,18 +76,30 @@ export class ErnieApi implements LLMApi {
     return [baseUrl, path].join("/");
   }
 
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
-      role: v.role,
+      // "error_code": 336006, "error_msg": "the role of message with even index in the messages must be user or function",
+      role: v.role === "system" ? "user" : v.role,
       content: getMessageTextContent(v),
     }));
 
     // "error_code": 336006, "error_msg": "the length of messages must be an odd number",
     if (messages.length % 2 === 0) {
-      messages.unshift({
-        role: "user",
-        content: " ",
-      });
+      if (messages.at(0)?.role === "user") {
+        messages.splice(1, 0, {
+          role: "assistant",
+          content: " ",
+        });
+      } else {
+        messages.unshift({
+          role: "user",
+          content: " ",
+        });
+      }
     }
 
     const modelConfig = {

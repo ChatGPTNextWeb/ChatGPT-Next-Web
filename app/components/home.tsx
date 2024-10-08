@@ -59,6 +59,17 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
+const PluginPage = dynamic(async () => (await import("./plugin")).PluginPage, {
+  loading: () => <Loading noLogo />,
+});
+
+const SearchChat = dynamic(
+  async () => (await import("./search-chat")).SearchChatPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 const Sd = dynamic(async () => (await import("./sd")).Sd, {
   loading: () => <Loading noLogo />,
 });
@@ -174,6 +185,8 @@ function Screen() {
             <Route path={Path.Home} element={<Chat />} />
             <Route path={Path.NewChat} element={<NewChat />} />
             <Route path={Path.Masks} element={<MaskPage />} />
+            <Route path={Path.Plugins} element={<PluginPage />} />
+            <Route path={Path.SearchChat} element={<SearchChat />} />
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
           </Routes>

@@ -51,6 +51,10 @@ const DEFAULT_STABILITY_URL = isApp
   ? DEFAULT_API_HOST + "/api/proxy/stability"
   : ApiPath.Stability;
 
+const DEFAULT_IFLYTEK_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/iflytek"
+  : ApiPath.Iflytek;
+
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
@@ -103,6 +107,11 @@ const DEFAULT_ACCESS_STATE = {
   tencentSecretKey: "",
   tencentSecretId: "",
 
+  // iflytek
+  iflytekUrl: DEFAULT_IFLYTEK_URL,
+  iflytekApiKey: "",
+  iflytekApiSecret: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -111,6 +120,9 @@ const DEFAULT_ACCESS_STATE = {
   disableFastLink: false,
   customModels: "",
   defaultModel: "",
+
+  // tts config
+  edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };
 
 export const useAccessStore = createPersistStore(
@@ -121,6 +133,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
+    },
+
+    edgeVoiceName() {
+      this.fetch();
+
+      return get().edgeTTSVoiceName;
     },
 
     isValidOpenAI() {
@@ -158,6 +176,9 @@ export const useAccessStore = createPersistStore(
     isValidMoonshot() {
       return ensure(get(), ["moonshotApiKey"]);
     },
+    isValidIflytek() {
+      return ensure(get(), ["iflytekApiKey"]);
+    },
 
     isAuthorized() {
       this.fetch();
@@ -171,8 +192,9 @@ export const useAccessStore = createPersistStore(
         this.isValidBaidu() ||
         this.isValidByteDance() ||
         this.isValidAlibaba() ||
-        this.isValidTencent ||
+        this.isValidTencent() ||
         this.isValidMoonshot() ||
+        this.isValidIflytek() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
@@ -189,10 +211,13 @@ export const useAccessStore = createPersistStore(
       })
         .then((res) => res.json())
         .then((res) => {
-          // Set default model from env request
-          let defaultModel = res.defaultModel ?? "";
-          DEFAULT_CONFIG.modelConfig.model =
-            defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
+          const defaultModel = res.defaultModel ?? "";
+          if (defaultModel !== "") {
+            const [model, providerName] = defaultModel.split("@");
+            DEFAULT_CONFIG.modelConfig.model = model;
+            DEFAULT_CONFIG.modelConfig.providerName = providerName;
+          }
+
           return res;
         })
         .then((res: DangerConfig) => {

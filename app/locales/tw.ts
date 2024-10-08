@@ -1,14 +1,20 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const tw = {
   WIP: "此功能仍在開發中……",
   Error: {
     Unauthorized: isApp
-      ? "偵測到無效的 API Key，請前往[設定](/#/settings)頁面檢查 API Key 是否設定正確。"
-      : "存取密碼不正確或尚未填寫，請前往[登入](/#/auth)頁面輸入正確的存取密碼，或者在[設定](/#/settings)頁面填入你自己的 OpenAI API Key。",
+      ? `😆 對話遇到了一些問題，不用慌:
+    \\ 1️⃣ 想要零配置開箱即用，[點擊這裡立刻開啟對話 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ 如果你想消耗自己的 OpenAI 資源，點擊[這裡](/#/settings)修改設定 ⚙️`
+      : `😆 對話遇到了一些問題，不用慌:
+    \ 1️⃣ 想要零配置開箱即用，[點擊這裡立刻開啟對話 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ 如果你正在使用私有部署版本，點擊[這裡](/#/auth)輸入訪問秘鑰 🔑
+    \ 3️⃣ 如果你想消耗自己的 OpenAI 資源，點擊[這裡](/#/settings)修改設定 ⚙️
+ `,
   },
 
   Auth: {
@@ -18,6 +24,10 @@ const tw = {
     Input: "在此處填寫存取密碼",
     Confirm: "確認",
     Later: "稍候再說",
+    Return: "返回",
+    SaasTips: "配置太麻煩，想要立即使用",
+    TopTips:
+      "🥳 NextChat AI 首發優惠，立刻解鎖 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
@@ -43,6 +53,8 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
+      RefreshTitle: "刷新標題",
+      RefreshToast: "已發送刷新標題請求",
     },
     Commands: {
       new: "新建聊天",
@@ -81,6 +93,14 @@ const tw = {
       SaveAs: "另存新檔",
     },
     IsContext: "預設提示詞",
+    ShortcutKey: {
+      Title: "鍵盤快捷方式",
+      newChat: "打開新聊天",
+      focusInput: "聚焦輸入框",
+      copyLastMessage: "複製最後一個回覆",
+      copyLastCode: "複製最後一個代碼塊",
+      showShortcutKey: "顯示快捷方式",
+    },
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",
@@ -277,6 +297,14 @@ const tw = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "使用 NextChat AI",
+        Label: "(性價比最高的方案)",
+        SubTitle:
+          "由 NextChat 官方維護，零配置開箱即用，支持 OpenAI o1、GPT-4o、Claude-3.5 等最新大模型",
+        ChatNow: "立刻對話",
+      },
+
       AccessCode: {
         Title: "存取密碼",
         SubTitle: "管理員已開啟加密存取",
@@ -360,6 +388,10 @@ const tw = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "壓縮模型",
+      SubTitle: "用於壓縮歷史記錄的模型",
+    },
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",
@@ -450,6 +482,21 @@ const tw = {
         SubTitle: "產生此角色範本的直達連結",
         Action: "複製連結",
       },
+    },
+  },
+  SearchChat: {
+    Name: "搜索",
+    Page: {
+      Title: "搜索聊天記錄",
+      Search: "輸入搜索關鍵詞",
+      NoResult: "沒有找到結果",
+      NoData: "沒有數據",
+      Loading: "加載中",
+
+      SubTitle: (count: number) => `找到 ${count} 條結果`,
+    },
+    Item: {
+      View: "查看",
     },
   },
   NewChat: {

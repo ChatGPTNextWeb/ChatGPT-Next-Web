@@ -1,5 +1,5 @@
 import { ApiPath } from "@/app/constant";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { handle as openaiHandler } from "../../openai";
 import { handle as azureHandler } from "../../azure";
 import { handle as googleHandler } from "../../google";
@@ -9,6 +9,8 @@ import { handle as bytedanceHandler } from "../../bytedance";
 import { handle as alibabaHandler } from "../../alibaba";
 import { handle as moonshotHandler } from "../../moonshot";
 import { handle as stabilityHandler } from "../../stability";
+import { handle as iflytekHandler } from "../../iflytek";
+import { handle as proxyHandler } from "../../proxy";
 
 async function handle(
   req: NextRequest,
@@ -34,8 +36,12 @@ async function handle(
       return moonshotHandler(req, { params });
     case ApiPath.Stability:
       return stabilityHandler(req, { params });
-    default:
+    case ApiPath.Iflytek:
+      return iflytekHandler(req, { params });
+    case ApiPath.OpenAI:
       return openaiHandler(req, { params });
+    default:
+      return proxyHandler(req, { params });
   }
 }
 

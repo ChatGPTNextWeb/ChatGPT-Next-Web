@@ -8,6 +8,7 @@ import {
   LLMApi,
   LLMModel,
   MultimodalContent,
+  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -89,10 +90,15 @@ export class HunyuanApi implements LLMApi {
     return res.Choices?.at(0)?.Message?.Content ?? "";
   }
 
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
-    const messages = options.messages.map((v) => ({
-      role: v.role,
+    const messages = options.messages.map((v, index) => ({
+      // "Messages 中 system 角色必须位于列表的最开始"
+      role: index !== 0 && v.role === "system" ? "user" : v.role,
       content: visionModel ? v.content : getMessageTextContent(v),
     }));
 

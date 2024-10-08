@@ -7,7 +7,6 @@ import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import DragIcon from "../icons/drag.svg";
@@ -254,11 +253,6 @@ export function SideBar(props: { className?: string }) {
         {showPluginSelector && (
           <Selector
             items={[
-              {
-                title: "👇 Please select the plugin you need to use",
-                value: "-",
-                disable: true,
-              },
               ...PLUGINS.map((item) => {
                 return {
                   title: item.name,
@@ -297,12 +291,20 @@ export function SideBar(props: { className?: string }) {
             </div>
             <div className={styles["sidebar-action"]}>
               <Link to={Path.Settings}>
-                <IconButton icon={<SettingsIcon />} shadow />
+                <IconButton
+                  aria={Locale.Settings.Title}
+                  icon={<SettingsIcon />}
+                  shadow
+                />
               </Link>
             </div>
             <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-                <IconButton icon={<GithubIcon />} shadow />
+                <IconButton
+                  aria={Locale.Export.MessageFromChatGPT}
+                  icon={<GithubIcon />}
+                  shadow
+                />
               </a>
             </div>
           </>
