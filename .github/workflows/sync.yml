@@ -26,7 +26,7 @@ jobs:
         with:
           upstream_sync_repo: ChatGPTNextWeb/ChatGPT-Next-Web
           upstream_sync_branch: main
-          target_sync_branch: main
+          target_sync_branch: latest_version
           target_repo_token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set
 
           # Set test_mode true to run tests instead of the true action!!
