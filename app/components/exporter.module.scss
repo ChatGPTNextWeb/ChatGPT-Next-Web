@@ -252,6 +252,12 @@
         }
       }
 
+      &-system {
+        .body {
+          background-color: var(--white);
+        }
+      }
+
       &-user {
         flex-direction: row-reverse;
 
