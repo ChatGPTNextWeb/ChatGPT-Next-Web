@@ -7,7 +7,7 @@ import yaml from "js-yaml";
 import { adapter, getOperationId } from "../utils";
 import { useAccessStore } from "./access";
 
-const isApp = getClientConfig()?.isApp;
+const isApp = getClientConfig()?.isApp !== false;
 
 export type Plugin = {
   id: string;

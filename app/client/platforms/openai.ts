@@ -2,8 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  // AZURE_MODELS,
-  DEFAULT_API_HOST,
+  OPENAI_BASE_URL,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
@@ -99,7 +98,7 @@ export class ChatGPTApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {

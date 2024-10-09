@@ -11,8 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 import { requestOpenai } from "./common";
 
-// const ALLOWED_PATH = new Set(Object.values({ ...OpenaiPath, ...AZURE_PATH }));
-const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
+const ALLOWED_PATH = new Set(Object.values(OpenaiPath));
 
 function getModels(remoteModelRes: OpenAIListModelResponse) {
   const config = getServerSideConfig();
@@ -48,7 +47,7 @@ export async function handle(
 
   const subpath = params.path.join("/");
 
-  if (!ALLOWD_PATH.has(subpath)) {
+  if (!ALLOWED_PATH.has(subpath)) {
     console.log("[OpenAI Route] forbidden path ", subpath);
     return NextResponse.json(
       {
@@ -57,7 +56,7 @@ export async function handle(
       },
       {
         status: 403,
-      },
+      } as any,
     );
   }
 
@@ -89,7 +88,7 @@ export async function handle(
       const availableModels = getModels(resJson);
       return NextResponse.json(availableModels, {
         status: response.status,
-      });
+      } as any);
     }
 
     return response;
