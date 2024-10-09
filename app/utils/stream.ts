@@ -91,7 +91,7 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
           headers,
         });
         if (status >= 300) {
-          setTimeout(close, 50);
+          setTimeout(close, 100);
         }
         return response;
       })
