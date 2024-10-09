@@ -28,7 +28,8 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       body = [],
     } = options || {};
     let unlisten: Function | undefined;
-    let request_id = 0;
+    let setRequestId: Function | undefined;
+    const requestIdPromise = new Promise((resolve) => (setRequestId = resolve));
     const ts = new TransformStream();
     const writer = ts.writable.getWriter();
 
@@ -47,20 +48,22 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
     }
     // @ts-ignore 2. listen response multi times, and write to Response.body
     window.__TAURI__.event
-      .listen("stream-response", (e: ResponseEvent) => {
-        const { request_id: rid, chunk, status } = e?.payload || {};
-        if (request_id != rid) {
-          return;
-        }
-        if (chunk) {
-          writer.ready.then(() => {
-            writer.write(new Uint8Array(chunk));
-          });
-        } else if (status === 0) {
-          // end of body
-          close();
-        }
-      })
+      .listen("stream-response", (e: ResponseEvent) =>
+        requestIdPromise.then((request_id) => {
+          const { request_id: rid, chunk, status } = e?.payload || {};
+          if (request_id != rid) {
+            return;
+          }
+          if (chunk) {
+            writer.ready.then(() => {
+              writer.write(new Uint8Array(chunk));
+            });
+          } else if (status === 0) {
+            // end of body
+            close();
+          }
+        }),
+      )
       .then((u: Function) => (unlisten = u));
 
     const headers: Record<string, string> = {
@@ -83,8 +86,8 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
             : [],
       })
       .then((res: StreamResponse) => {
-        request_id = res.request_id;
-        const { status, status_text: statusText, headers } = res;
+        const { request_id, status, status_text: statusText, headers } = res;
+        setRequestId?.(request_id);
         const response = new Response(ts.readable, {
           status,
           statusText,
