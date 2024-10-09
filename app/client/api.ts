@@ -231,7 +231,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   function getConfig() {
     const modelConfig = chatStore.currentSession().mask.modelConfig;
-    const isGoogle = modelConfig.providerName == ServiceProvider.Google;
+    const isGoogle = modelConfig.providerName === ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
     const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
@@ -272,7 +272,13 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   }
 
   function getAuthHeader(): string {
-    return isAzure ? "api-key" : isAnthropic ? "x-api-key" : "Authorization";
+    return isAzure
+      ? "api-key"
+      : isAnthropic
+      ? "x-api-key"
+      : isGoogle
+      ? "x-goog-api-key"
+      : "Authorization";
   }
 
   const {
@@ -283,14 +289,15 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     apiKey,
     isEnabledAccessControl,
   } = getConfig();
-  // when using google api in app, not set auth header
-  if (isGoogle && clientConfig?.isApp) return headers;
   // when using baidu api in app, not set auth header
   if (isBaidu && clientConfig?.isApp) return headers;
 
   const authHeader = getAuthHeader();
 
-  const bearerToken = getBearerToken(apiKey, isAzure || isAnthropic);
+  const bearerToken = getBearerToken(
+    apiKey,
+    isAzure || isAnthropic || isGoogle,
+  );
 
   if (bearerToken) {
     headers[authHeader] = bearerToken;
