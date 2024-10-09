@@ -16,7 +16,7 @@ import {
 } from "@/app/store";
 import { stream } from "@/app/utils/chat";
 import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
+import { GEMINI_BASE_URL } from "@/app/constant";
 
 import {
   getMessageTextContent,
@@ -26,6 +26,7 @@ import {
 import { preProcessImageContent } from "@/app/utils/chat";
 import { nanoid } from "nanoid";
 import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export class GeminiProApi implements LLMApi {
   path(path: string): string {
@@ -38,7 +39,7 @@ export class GeminiProApi implements LLMApi {
 
     const isApp = !!getClientConfig()?.isApp;
     if (baseUrl.length === 0) {
-      baseUrl = isApp ? DEFAULT_API_HOST + `/api/proxy/google` : ApiPath.Google;
+      baseUrl = isApp ? GEMINI_BASE_URL : ApiPath.Google;
     }
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
