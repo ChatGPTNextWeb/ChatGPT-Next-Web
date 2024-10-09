@@ -63,7 +63,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 
 企业版咨询: **business@nextchat.dev**
 
-<img width="300" src="https://github.com/user-attachments/assets/e88127a8-e7f7-4836-a04d-1187c97f5f80">
+<img width="300" src="https://github.com/user-attachments/assets/3d4305ac-6e95-489e-884b-51d51db5f692">
 
 ## Features
 
