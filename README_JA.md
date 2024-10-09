@@ -207,8 +207,8 @@ ByteDance API の URL。
 
 モデルリストを管理します。`+` でモデルを追加し、`-` でモデルを非表示にし、`モデル名=表示名` でモデルの表示名をカスタマイズし、カンマで区切ります。
 
-Azure モードでは、`modelName@azure=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
-> 例：`+gpt-3.5-turbo@azure=gpt35` この設定でモデルリストに `gpt35(Azure)` のオプションが表示されます。
+Azure モードでは、`modelName@Azure=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
+> 例：`+gpt-3.5-turbo@Azure=gpt35` この設定でモデルリストに `gpt35(Azure)` のオプションが表示されます。
 
 ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
 > 例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` この設定でモデルリストに `Doubao-lite-4k(ByteDance)` のオプションが表示されます。
