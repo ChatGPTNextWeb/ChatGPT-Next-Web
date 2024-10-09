@@ -1827,6 +1827,7 @@ function _Chat() {
                       {message?.tools?.map((tool) => (
                         <div
                           key={tool.id}
+                          title={tool?.errorMsg}
                           className={styles["chat-message-tool"]}
                         >
                           {tool.isError === false ? (

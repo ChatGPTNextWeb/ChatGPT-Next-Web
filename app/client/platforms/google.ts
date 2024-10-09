@@ -9,7 +9,7 @@ import {
 } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
+import { GEMINI_BASE_URL } from "@/app/constant";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -22,6 +22,7 @@ import {
   isVisionModel,
 } from "@/app/utils";
 import { preProcessImageContent } from "@/app/utils/chat";
+import { fetch } from "@/app/utils/stream";
 
 export class GeminiProApi implements LLMApi {
   path(path: string): string {
@@ -34,7 +35,7 @@ export class GeminiProApi implements LLMApi {
 
     const isApp = !!getClientConfig()?.isApp;
     if (baseUrl.length === 0) {
-      baseUrl = isApp ? DEFAULT_API_HOST + `/api/proxy/google` : ApiPath.Google;
+      baseUrl = isApp ? GEMINI_BASE_URL : ApiPath.Google;
     }
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
@@ -213,6 +214,7 @@ export class GeminiProApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);

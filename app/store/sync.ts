@@ -12,7 +12,6 @@ import { downloadAs, readFromFile } from "../utils";
 import { showToast } from "../components/ui-lib";
 import Locale from "../locales";
 import { createSyncClient, ProviderType } from "../utils/cloud";
-import { corsPath } from "../utils/cors";
 
 export interface WebDavConfig {
   server: string;
@@ -27,7 +26,7 @@ const DEFAULT_SYNC_STATE = {
   provider: ProviderType.WebDAV,
   enableAutoSync: true,
   useProxy: true,
-  proxyUrl: corsPath(ApiPath.Cors),
+  proxyUrl: ApiPath.Cors as string,
 
   webdav: {
     endpoint: "",
