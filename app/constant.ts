@@ -1,5 +1,3 @@
-import path from "path";
-
 export const OWNER = "ChatGPTNextWeb";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
@@ -13,7 +11,6 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
 export const STABILITY_BASE_URL = "https://api.stability.ai";
 
-export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
@@ -152,6 +149,7 @@ export const Anthropic = {
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
+  SpeechPath: "v1/audio/speech",
   ImagePath: "v1/images/generations",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
@@ -258,6 +256,20 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gemini-pro-vision": "2023-12",
 };
 
+export const DEFAULT_TTS_ENGINE = "OpenAI-TTS";
+export const DEFAULT_TTS_ENGINES = ["OpenAI-TTS", "Edge-TTS"];
+export const DEFAULT_TTS_MODEL = "tts-1";
+export const DEFAULT_TTS_VOICE = "alloy";
+export const DEFAULT_TTS_MODELS = ["tts-1", "tts-1-hd"];
+export const DEFAULT_TTS_VOICES = [
+  "alloy",
+  "echo",
+  "fable",
+  "onyx",
+  "nova",
+  "shimmer",
+];
+
 const openaiModels = [
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-1106",
@@ -279,7 +291,7 @@ const openaiModels = [
   "gpt-4-1106-preview",
   "dall-e-3",
   "o1-mini",
-  "o1-preview"
+  "o1-preview",
 ];
 
 const googleModels = [
@@ -488,3 +500,6 @@ export const PLUGINS = [
   { name: "Stable Diffusion", path: Path.Sd },
   { name: "Search Chat", path: Path.SearchChat },
 ];
+
+export const SAAS_CHAT_URL = "https://nextchat.dev/chat";
+export const SAAS_CHAT_UTM_URL = "https://nextchat.dev/chat?utm=github";
