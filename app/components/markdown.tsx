@@ -21,6 +21,7 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
+
 import { useAppConfig } from "../store/config";
 
 export function Mermaid(props: { code: string }) {
@@ -206,23 +207,6 @@ function CustomCode(props: { children: any; className?: string }) {
   );
 }
 
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
-}
-
 function escapeBrackets(text: string) {
   const pattern =
     /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
@@ -251,7 +235,7 @@ function tryWrapHtmlCode(text: string) {
       },
     )
     .replace(
-      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*?)([`]*?)([\n\r]*?)/g,
+      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*)([`]*)([\n\r]*?)/g,
       (match, bodyEnd, space, htmlEnd, newLine, quoteEnd) => {
         return !quoteEnd ? bodyEnd + space + htmlEnd + "\n```\n" : match;
       },
@@ -260,7 +244,7 @@ function tryWrapHtmlCode(text: string) {
 
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
-    return tryWrapHtmlCode(escapeBrackets(escapeDollarNumber(props.content)));
+    return tryWrapHtmlCode(escapeBrackets(props.content));
   }, [props.content]);
 
   return (

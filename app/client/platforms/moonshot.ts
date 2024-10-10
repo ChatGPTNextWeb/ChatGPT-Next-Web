@@ -2,7 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
+  MOONSHOT_BASE_URL,
   Moonshot,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
@@ -40,7 +40,7 @@ export class MoonshotApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = ApiPath.Moonshot;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? MOONSHOT_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
