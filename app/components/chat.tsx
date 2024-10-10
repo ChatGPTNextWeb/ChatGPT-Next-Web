@@ -874,6 +874,10 @@ export function ShortcutKeyModal(props: { onClose: () => void }) {
       title: Locale.Chat.ShortcutKey.showShortcutKey,
       keys: isMac ? ["⌘", "/"] : ["Ctrl", "/"],
     },
+    {
+      title: Locale.Chat.ShortcutKey.clearContext,
+      keys: isMac ? ["⌘", "Shift", "Delete"] : ["Ctrl", "Shift", "Delete"],
+    },
   ];
   return (
     <div className="modal-mask">
@@ -1559,6 +1563,22 @@ function _Chat() {
       else if ((event.metaKey || event.ctrlKey) && event.key === "/") {
         event.preventDefault();
         setShowShortcutKeyModal(true);
+      }
+      // 清除上下文 command + shift + delete
+      else if (
+        (event.metaKey || event.ctrlKey) &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "delete"
+      ) {
+        event.preventDefault();
+        chatStore.updateCurrentSession((session) => {
+          if (session.clearContextIndex === session.messages.length) {
+            session.clearContextIndex = undefined;
+          } else {
+            session.clearContextIndex = session.messages.length;
+            session.memoryPrompt = ""; // will clear memory
+          }
+        });
       }
     };
 
