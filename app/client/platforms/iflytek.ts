@@ -1,7 +1,7 @@
 "use client";
 import {
   ApiPath,
-  DEFAULT_API_HOST,
+  IFLYTEK_BASE_URL,
   Iflytek,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
@@ -22,6 +22,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 import { RequestPayload } from "./openai";
 
@@ -40,7 +41,7 @@ export class SparkApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = ApiPath.Iflytek;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? IFLYTEK_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -149,6 +150,7 @@ export class SparkApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
