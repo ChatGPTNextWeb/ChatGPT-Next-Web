@@ -34,3 +34,9 @@ declare interface Window {
     };
   };
 }
+
+declare module "eld" {
+  export const eld: {
+    detect: (text: string) => { language: string };
+  };
+}
