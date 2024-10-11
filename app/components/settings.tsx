@@ -49,7 +49,7 @@ import Locale, {
   changeLang,
   getLang,
 } from "../locales";
-import { copyToClipboard, clientUpdate } from "../utils";
+import { copyToClipboard, clientUpdate, semverCompare } from "../utils";
 import Link from "next/link";
 import {
   Anthropic,
@@ -585,7 +585,7 @@ export function Settings() {
   const [checkingUpdate, setCheckingUpdate] = useState(false);
   const currentVersion = updateStore.formatVersion(updateStore.version);
   const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
-  const hasNewVersion = currentVersion !== remoteId;
+  const hasNewVersion = semverCompare(currentVersion, remoteId) === -1;
   const updateUrl = getClientConfig()?.isApp ? RELEASE_URL : UPDATE_URL;
 
   function checkUpdate(force = false) {
