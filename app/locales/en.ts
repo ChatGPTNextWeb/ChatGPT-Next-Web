@@ -675,6 +675,11 @@ const en: LocaleType = {
         Title: "Enable Artifacts",
         SubTitle: "Can render HTML page when enable artifacts.",
       },
+      CodeFold: {
+        Title: "Enable CodeFold",
+        SubTitle:
+          "Automatically collapse/expand overly long code blocks when CodeFold is enabled",
+      },
       Share: {
         Title: "Share This Mask",
         SubTitle: "Generate a link to this mask",
