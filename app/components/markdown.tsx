@@ -196,11 +196,13 @@ function CustomCode(props: { children: any; className?: string }) {
       >
         {props.children}
       </code>
-      {showToggle && collapsed && (
+      {showToggle && (
         <div
           className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
         >
-          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
+          <button onClick={toggleCollapsed}>
+            {collapsed ? Locale.NewChat.More : Locale.NewChat.Less}
+          </button>
         </div>
       )}
     </>
