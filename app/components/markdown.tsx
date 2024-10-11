@@ -169,6 +169,12 @@ export function PreCode(props: { children: any }) {
 }
 
 function CustomCode(props: { children: any; className?: string }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const config = useAppConfig();
+  const enableCodeFold =
+    session.mask?.enableCodeFold != false && config.enableCodeFold;
+
   const ref = useRef<HTMLPreElement>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [showToggle, setShowToggle] = useState(false);
@@ -190,13 +196,13 @@ function CustomCode(props: { children: any; className?: string }) {
         className={props?.className}
         ref={ref}
         style={{
-          maxHeight: collapsed ? "400px" : "none",
+          maxHeight: enableCodeFold && collapsed ? "400px" : "none",
           overflowY: "hidden",
         }}
       >
         {props.children}
       </code>
-      {showToggle && collapsed && (
+      {showToggle && enableCodeFold && collapsed && (
         <div
           className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
         >

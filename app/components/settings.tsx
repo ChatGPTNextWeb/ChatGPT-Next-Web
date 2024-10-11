@@ -1509,6 +1509,21 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.CodeFold.Title}
+            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.CodeFold.Title}
+              type="checkbox"
+              checked={config.enableCodeFold}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.enableCodeFold = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />
