@@ -1517,6 +1517,7 @@ export function Settings() {
               aria-label={Locale.Mask.Config.CodeFold.Title}
               type="checkbox"
               checked={config.enableCodeFold}
+              data-testid="enable-code-fold-checkbox"
               onChange={(e) =>
                 updateConfig(
                   (config) => (config.enableCodeFold = e.currentTarget.checked),

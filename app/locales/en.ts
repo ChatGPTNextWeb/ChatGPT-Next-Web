@@ -678,7 +678,7 @@ const en: LocaleType = {
       CodeFold: {
         Title: "Enable CodeFold",
         SubTitle:
-          "Automatically collapse/expand overly long code block when enable CodeFold",
+          "Automatically collapse/expand overly long code blocks when CodeFold is enabled",
       },
       Share: {
         Title: "Share This Mask",

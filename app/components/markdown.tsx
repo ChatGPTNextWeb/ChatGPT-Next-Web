@@ -190,6 +190,16 @@ function CustomCode(props: { children: any; className?: string }) {
   const toggleCollapsed = () => {
     setCollapsed((collapsed) => !collapsed);
   };
+  const renderShowMoreButton = () => {
+    if (showToggle && enableCodeFold && collapsed) {
+      return (
+        <div className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}>
+          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
+        </div>
+      );
+    }
+    return null;
+  };
   return (
     <>
       <code
@@ -202,13 +212,8 @@ function CustomCode(props: { children: any; className?: string }) {
       >
         {props.children}
       </code>
-      {showToggle && enableCodeFold && collapsed && (
-        <div
-          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
-        >
-          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
-        </div>
-      )}
+      
+      {renderShowMoreButton()}
     </>
   );
 }
