@@ -78,22 +78,26 @@ export function AuthPage() {
       {!accessStore.hideUserApiKey ? (
         <>
           <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
-          <input
-            className={styles["auth-input"]}
-            type="password"
-            placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
+          <PasswordInput
+            style={{ marginTop: "3vh", marginBottom: "3vh" }}
+            aria={Locale.Settings.ShowPassword}
+            aria-label={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
             value={accessStore.openaiApiKey}
+            type="text"
+            placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
             onChange={(e) => {
               accessStore.update(
                 (access) => (access.openaiApiKey = e.currentTarget.value),
               );
             }}
           />
-          <input
-            className={styles["auth-input-second"]}
-            type="password"
-            placeholder={Locale.Settings.Access.Google.ApiKey.Placeholder}
+          <PasswordInput
+            style={{ marginTop: "3vh", marginBottom: "3vh" }}
+            aria={Locale.Settings.ShowPassword}
+            aria-label={Locale.Settings.Access.Google.ApiKey.Placeholder}
             value={accessStore.googleApiKey}
+            type="text"
+            placeholder={Locale.Settings.Access.Google.ApiKey.Placeholder}
             onChange={(e) => {
               accessStore.update(
                 (access) => (access.googleApiKey = e.currentTarget.value),
