@@ -34,6 +34,7 @@ import {
   LLMUsage,
   MultimodalContent,
   SpeechOptions,
+  TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
 import { getClientConfig } from "@/app/config/client";

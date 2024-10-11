@@ -99,6 +99,7 @@ import {
 } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import {
+  CHAT_PAGE_SIZE,
   DEFAULT_STT_ENGINE,
   DEFAULT_TTS_ENGINE,
   FIREFOX_DEFAULT_STT_ENGINE,
