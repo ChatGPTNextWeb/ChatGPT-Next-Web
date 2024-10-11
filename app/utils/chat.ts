@@ -223,6 +223,11 @@ export function stream(
             )
               .then((res) => {
                 let content = res.data || res?.statusText;
+                // hotfix #5614
+                content =
+                  typeof content === "string"
+                    ? content
+                    : JSON.stringify(content);
                 if (res.status >= 300) {
                   return Promise.reject(content);
                 }
@@ -245,6 +250,7 @@ export function stream(
                 return e.toString();
               })
               .then((content) => ({
+                name: tool.function.name,
                 role: "tool",
                 content,
                 tool_call_id: tool.id,
