@@ -205,6 +205,8 @@ const cn = {
       IsChecking: "正在检查更新...",
       FoundUpdate: (x: string) => `发现新版本：${x}`,
       GoToUpdate: "前往更新",
+      Success: "Update Succesfull.",
+      Failed: "Update Failed.",
     },
     SendKey: "发送键",
     Theme: "主题",

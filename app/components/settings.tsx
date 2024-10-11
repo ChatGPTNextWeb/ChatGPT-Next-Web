@@ -49,7 +49,7 @@ import Locale, {
   changeLang,
   getLang,
 } from "../locales";
-import { copyToClipboard } from "../utils";
+import { copyToClipboard, clientUpdate } from "../utils";
 import Link from "next/link";
 import {
   Anthropic,
@@ -1357,9 +1357,17 @@ export function Settings() {
             {checkingUpdate ? (
               <LoadingIcon />
             ) : hasNewVersion ? (
-              <Link href={updateUrl} target="_blank" className="link">
-                {Locale.Settings.Update.GoToUpdate}
-              </Link>
+              clientConfig?.isApp ? (
+                <IconButton
+                  icon={<ResetIcon></ResetIcon>}
+                  text={Locale.Settings.Update.GoToUpdate}
+                  onClick={() => clientUpdate()}
+                />
+              ) : (
+                <Link href={updateUrl} target="_blank" className="link">
+                  {Locale.Settings.Update.GoToUpdate}
+                </Link>
+              )
             ) : (
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
