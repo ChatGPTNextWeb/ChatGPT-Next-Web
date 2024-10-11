@@ -22,7 +22,6 @@ export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 export type TTSModelType = (typeof DEFAULT_TTS_MODELS)[number];
 export type TTSVoiceType = (typeof DEFAULT_TTS_VOICES)[number];
 export type TTSEngineType = (typeof DEFAULT_TTS_ENGINES)[number];
-
 export type STTEngineType = (typeof DEFAULT_STT_ENGINES)[number];
 
 export enum SubmitKey {
@@ -54,6 +53,8 @@ export const DEFAULT_CONFIG = {
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
+  enableArtifacts: true, // show artifacts config
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
@@ -73,8 +74,8 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
-    compressModel: "gpt-4o-mini" as ModelType,
-    compressProviderName: "OpenAI" as ServiceProvider,
+    compressModel: "",
+    compressProviderName: "",
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as DalleSize,
@@ -191,7 +192,22 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4,
+    version: 4.1,
+
+    merge(persistedState, currentState) {
+      const state = persistedState as ChatConfig | undefined;
+      if (!state) return { ...currentState };
+      const models = currentState.models.slice();
+      state.models.forEach((pModel) => {
+        const idx = models.findIndex(
+          (v) => v.name === pModel.name && v.provider === pModel.provider,
+        );
+        if (idx !== -1) models[idx] = pModel;
+        else models.push(pModel);
+      });
+      return { ...currentState, ...state, models: models };
+    },
+
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -229,7 +245,7 @@ export const useAppConfig = createPersistStore(
             : config?.template ?? DEFAULT_INPUT_TEMPLATE;
       }
 
-      if (version < 4) {
+      if (version < 4.1) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =

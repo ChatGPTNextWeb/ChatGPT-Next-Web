@@ -83,7 +83,7 @@ import dynamic from "next/dynamic";
 import { ChatControllerPool } from "../client/controller";
 import { DalleSize, DalleQuality, DalleStyle } from "../typing";
 import { Prompt, usePromptStore } from "../store/prompt";
-import Locale, { getLang, getSTTLang } from "../locales";
+import Locale from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
@@ -99,12 +99,10 @@ import {
 } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import {
-  CHAT_PAGE_SIZE,
   DEFAULT_STT_ENGINE,
   DEFAULT_TTS_ENGINE,
   FIREFOX_DEFAULT_STT_ENGINE,
   ModelProvider,
-  LAST_INPUT_KEY,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
@@ -123,11 +121,7 @@ import { MultimodalContent } from "../client/api";
 const localStorage = safeLocalStorage();
 import { ClientApi } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
-import {
-  OpenAITranscriptionApi,
-  SpeechApi,
-  WebTranscriptionApi,
-} from "../utils/speech";
+import { OpenAITranscriptionApi, WebTranscriptionApi } from "../utils/speech";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 const ttsPlayer = createTTSPlayer();
@@ -1048,6 +1042,7 @@ function _Chat() {
       chatStore.updateCurrentSession(
         (session) => (session.clearContextIndex = session.messages.length),
       ),
+    fork: () => chatStore.forkSession(),
     del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
   });
 
@@ -1872,6 +1867,7 @@ function _Chat() {
                       {message?.tools?.map((tool) => (
                         <div
                           key={tool.id}
+                          title={tool?.errorMsg}
                           className={styles["chat-message-tool"]}
                         >
                           {tool.isError === false ? (

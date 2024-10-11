@@ -2,7 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
+  OPENAI_BASE_URL,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
@@ -34,18 +34,11 @@ import {
   LLMUsage,
   MultimodalContent,
   SpeechOptions,
-  TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
-  getMessageImages,
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
@@ -86,7 +79,7 @@ export interface DalleRequestPayload {
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
-  path(path: string, model?: string): string {
+  path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
@@ -105,7 +98,7 @@ export class ChatGPTApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -164,7 +157,7 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const speechPath = this.path(OpenaiPath.SpeechPath, options.model);
+      const speechPath = this.path(OpenaiPath.SpeechPath);
       const speechPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -325,6 +318,7 @@ export class ChatGPTApi implements LLMApi {
         );
       }
       if (shouldStream) {
+        let index = -1;
         const [tools, funcs] = usePluginStore
           .getState()
           .getAsTools(
@@ -350,10 +344,10 @@ export class ChatGPTApi implements LLMApi {
             }>;
             const tool_calls = choices[0]?.delta?.tool_calls;
             if (tool_calls?.length > 0) {
-              const index = tool_calls[0]?.index;
               const id = tool_calls[0]?.id;
               const args = tool_calls[0]?.function?.arguments;
               if (id) {
+                index += 1;
                 runTools.push({
                   id,
                   type: tool_calls[0]?.type,
@@ -375,6 +369,8 @@ export class ChatGPTApi implements LLMApi {
             toolCallMessage: any,
             toolCallResult: any[],
           ) => {
+            // reset index value
+            index = -1;
             // @ts-ignore
             requestPayload?.messages?.splice(
               // @ts-ignore

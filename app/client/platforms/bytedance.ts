@@ -14,7 +14,6 @@ import {
   LLMModel,
   MultimodalContent,
   SpeechOptions,
-  TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -24,6 +23,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -80,9 +80,6 @@ export class DoubaoApi implements LLMApi {
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
-  }
-  transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
 
@@ -169,6 +166,7 @@ export class DoubaoApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
