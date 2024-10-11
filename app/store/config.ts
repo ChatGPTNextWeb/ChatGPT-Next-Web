@@ -83,7 +83,7 @@ export const DEFAULT_CONFIG = {
   },
 
   ttsConfig: {
-    enable: false,
+    enable: true,
     autoplay: false,
     engine: DEFAULT_TTS_ENGINE,
     model: DEFAULT_TTS_MODEL,
@@ -91,7 +91,7 @@ export const DEFAULT_CONFIG = {
     speed: 1.0,
   },
   sttConfig: {
-    enable: false,
+    enable: true,
     engine: DEFAULT_STT_ENGINE,
   },
 };
