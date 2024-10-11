@@ -694,18 +694,26 @@ export const useChatStore = createPersistStore(
         }
 
         function isValidMessage(message: any): boolean {
+          if (typeof message !== "string") {
+            return false;
+          }
           if (message.startsWith("```") && message.endsWith("```")) {
-            const jsonString = message.slice(3, -3).trim();
+            const codeBlockContent = message.slice(3, -3).trim();
+            const jsonString = codeBlockContent.replace(/^json\s*/i, '').trim();
             try {
+              // 返回 json 格式消息，含 error.message 字段，判定为错误回复，否则为正常回复
               const jsonObject = JSON.parse(jsonString);
-              if (jsonObject.error) {
+              if (jsonObject?.error?.message) {
                 return false;
               }
+              return true;
             } catch (e) {
               console.log("Invalid JSON format.");
+              // 非 json 格式，大概率是正常回复
+              return true;
             }
           }
-          return typeof message === "string" && !message.startsWith("```json");
+          return true;
         }
       },
 
