@@ -28,68 +28,68 @@ describe("is valid message module", () => {
     });
     test("error msg no.1", () => {
         const message = `
-        \`\`\`json
-        {
-            "error": true,
-            "msg": "金额不足"
-        }
-        \`\`\`
+\`\`\`json
+{
+    "error": true,
+    "msg": "金额不足"
+}
+\`\`\`
         `;
         expect(isValidMessage(message)).toBe(false);
     });
     test("error msg no.2", () => {
         const message = `
-        \`\`\`
-        {
-            "error": {
-                "message": "You didn't provide an API key. You need to provide your API key in an Authorization header using Bearer auth (i.e. Authorization: Bearer YOUR_KEY), or as the password field (with blank username) if you're accessing the API from your browser and are prompted for a username and password. You can obtain an API key from https://platform.openai.com/account/api-keys.",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": null
-            }
-        }
-        \`\`\`
+\`\`\`
+{
+    "error": {
+        "message": "You didn't provide an API key. You need to provide your API key in an Authorization header using Bearer auth (i.e. Authorization: Bearer YOUR_KEY), or as the password field (with blank username) if you're accessing the API from your browser and are prompted for a username and password. You can obtain an API key from https://platform.openai.com/account/api-keys.",
+        "type": "invalid_request_error",
+        "param": null,
+        "code": null
+    }
+}
+\`\`\`
         `;
         expect(isValidMessage(message)).toBe(false);
     });
     test("error msg no.3", () => {
         const message = `
-        \`\`\`
-        {
-            "error": {
-                "message": "Incorrect API key provided: 123456. You can find your API key at https://platform.openai.com/account/api-keys.",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": "invalid_api_key"
-            }
-        }
-        \`\`\`
+\`\`\`
+{
+    "error": {
+        "message": "Incorrect API key provided: 123456. You can find your API key at https://platform.openai.com/account/api-keys.",
+        "type": "invalid_request_error",
+        "param": null,
+        "code": "invalid_api_key"
+    }
+}
+\`\`\`
         `;
         expect(isValidMessage(message)).toBe(false);
     });
     test("error msg no.4", () => {
         const message = `
-        \`\`\`
-        {
-            "error": {
-                "message": "当前分组 default 下对于模型 gpt-4 无可用渠道 (request id: 2024101214105418395279367750613)",
-                "type": "one_api_error"
-            }
-        }
-        \`\`\`
+\`\`\`
+{
+    "error": {
+        "message": "当前分组 default 下对于模型 gpt-4 无可用渠道 (request id: 2024101214105418395279367750613)",
+        "type": "one_api_error"
+    }
+}
+\`\`\`
         `;
         expect(isValidMessage(message)).toBe(false);
     });
     test("error msg no.5", () => {
         const message = `
-        \`\`\`
-        {
-            "error": {
-                "message": "该令牌状态不可用 (request id: 2024101214105418395279367750613)",
-                "type": "one_api_error"
-            }
-        }
-        \`\`\`
+\`\`\`
+{
+    "error": {
+        "message": "该令牌状态不可用 (request id: 2024101214105418395279367750613)",
+        "type": "one_api_error"
+    }
+}
+\`\`\`
         `;
         expect(isValidMessage(message)).toBe(false);
     });
