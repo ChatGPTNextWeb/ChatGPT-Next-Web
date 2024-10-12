@@ -7,6 +7,7 @@ import {
   DEFAULT_SIDEBAR_WIDTH,
   DEFAULT_STT_ENGINE,
   DEFAULT_STT_ENGINES,
+  DEFAULT_STT_LANGUAGE,
   DEFAULT_TTS_ENGINE,
   DEFAULT_TTS_ENGINES,
   DEFAULT_TTS_MODEL,
@@ -94,6 +95,7 @@ export const DEFAULT_CONFIG = {
   sttConfig: {
     enable: true,
     engine: DEFAULT_STT_ENGINE,
+    language: DEFAULT_STT_LANGUAGE,
   },
 };
 

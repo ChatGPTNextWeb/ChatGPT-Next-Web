@@ -10,7 +10,8 @@ import React, {
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
-import VoiceWhiteIcon from "../icons/voice-white.svg";
+import VoiceOpenIcon from "../icons/vioce-open.svg";
+import VoiceCloseIcon from "../icons/vioce-close.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
@@ -830,7 +831,7 @@ export function ChatActions(props: {
             isListening ? await stopListening() : await startListening()
           }
           text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
-          icon={<VoiceWhiteIcon />}
+          icon={isListening ? <VoiceOpenIcon /> : <VoiceCloseIcon />}
         />
       )}
     </div>

@@ -2,7 +2,7 @@ import { STTConfig, STTConfigValidator } from "../store";
 
 import Locale from "../locales";
 import { ListItem, Select } from "./ui-lib";
-import { DEFAULT_STT_ENGINES } from "../constant";
+import { DEFAULT_STT_ENGINES, DEFAULT_STT_LANGUAGES } from "../constant";
 import { isFirefox } from "../utils";
 
 export function STTConfigList(props: {
@@ -25,20 +25,44 @@ export function STTConfigList(props: {
           }
         ></input>
       </ListItem>
-      {!isFirefox() && (
-        <ListItem title={Locale.Settings.STT.Engine.Title}>
+      <ListItem title={Locale.Settings.STT.Engine.Title}>
+        <Select
+          value={props.sttConfig.engine}
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.engine = STTConfigValidator.engine(
+                  e.currentTarget.value,
+                )),
+            );
+          }}
+        >
+          {isFirefox()
+            ? DEFAULT_STT_ENGINES.filter((v) => v !== "Web Speech API").map(
+                (v, i) => (
+                  <option value={v} key={i}>
+                    {v}
+                  </option>
+                ),
+              )
+            : DEFAULT_STT_ENGINES.map((v, i) => (
+                <option value={v} key={i}>
+                  {v}
+                </option>
+              ))}
+        </Select>
+      </ListItem>
+      {props.sttConfig.engine === "Web Speech API" && !isFirefox() && (
+        <ListItem title="语言选择">
           <Select
-            value={props.sttConfig.engine}
+            value={props.sttConfig.language}
             onChange={(e) => {
               props.updateConfig(
-                (config) =>
-                  (config.engine = STTConfigValidator.engine(
-                    e.currentTarget.value,
-                  )),
+                (config) => (config.language = e.currentTarget.value),
               );
             }}
           >
-            {DEFAULT_STT_ENGINES.map((v, i) => (
+            {DEFAULT_STT_LANGUAGES.map((v, i) => (
               <option value={v} key={i}>
                 {v}
               </option>

@@ -271,8 +271,22 @@ export const DEFAULT_TTS_VOICES = [
   "shimmer",
 ];
 
-export const DEFAULT_STT_ENGINE = "WebAPI";
-export const DEFAULT_STT_ENGINES = ["WebAPI", "OpenAI Whisper"];
+export const DEFAULT_STT_ENGINE = "Web Speech API";
+export const DEFAULT_STT_ENGINES = ["Web Speech API", "OpenAI Whisper"];
+export const DEFAULT_STT_LANGUAGE = "zh-CN";
+export const DEFAULT_STT_LANGUAGES = [
+  "zh-CN", // 中文（简体）
+  "en-US", // 英文
+  "fr-FR", // 法文
+  "de-DE", // 德文
+  "es-ES", // 西班牙文
+  "it-IT", // 意大利文
+  "ja-JP", // 日文
+  "ko-KR", // 韩文
+  "ru-RU", // 俄文
+  "pt-BR", // 葡萄牙文（巴西）
+  "ar-SA", // 阿拉伯文
+];
 export const FIREFOX_DEFAULT_STT_ENGINE = "OpenAI Whisper";
 
 const openaiModels = [
