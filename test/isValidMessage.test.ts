@@ -2,11 +2,12 @@ function isValidMessage(message: any): boolean {
     if (typeof message !== "string") {
         return false;
     }
+    message = message.trim();
     if (message.startsWith("```") && message.endsWith("```")) {
         const codeBlockContent = message.slice(3, -3).trim();
         const jsonString = codeBlockContent.replace(/^json\s*/i, '').trim();
         try {
-            // 返回 json 格式消息，含 error.message 字段，判定为错误回复，否则为正常回复
+            // 返回 json 格式消息，error 字段为 true 或者包含 error.message 字段，判定为错误回复，否则为正常回复
             const jsonObject = JSON.parse(jsonString);
             if (jsonObject?.error == true || jsonObject?.error?.message) {
                 return false;
@@ -14,7 +15,7 @@ function isValidMessage(message: any): boolean {
             return true;
         } catch (e) {
             console.log("Invalid JSON format.");
-            // 非 json 格式，大概率是正常回复
+            // 非 json 格式，通常可认为是正常回复
             return true;
         }
     }
@@ -22,10 +23,12 @@ function isValidMessage(message: any): boolean {
 }
 
 describe("is valid message module", () => {
-    test("error msg no.0", () => {
+    // 0. 正常的 string 文本
+    test("string msg", () => {
         const message = "Hello! How can I assist you today?";
         expect(isValidMessage(message)).toBe(true);
     });
+    // 1. 一些可能的错误消息
     test("error msg no.1", () => {
         const message = `
 \`\`\`json
@@ -92,5 +95,67 @@ describe("is valid message module", () => {
 \`\`\`
         `;
         expect(isValidMessage(message)).toBe(false);
+    });
+
+    // 2. 仅包含 ``` 的字符串
+    test("only code block markers", () => {
+        const message = "``` ```";
+        expect(isValidMessage(message)).toBe(true); // 空代码块，视为正常回复
+    });
+    test("only opening code block marker", () => {
+        const message = "```json\n{ \"key\": \"value\" }";
+        expect(isValidMessage(message)).toBe(true); // 不完整的代码块
+    });
+    test("only closing code block marker", () => {
+        const message = "{ \"key\": \"value\" } ```";
+        expect(isValidMessage(message)).toBe(true); // 不完整的代码块
+    });
+    // 3. 非 JSON 格式的代码块
+    test("code block with non-JSON content - plain text", () => {
+        const message = `
+\`\`\`json
+This is not a JSON string.
+\`\`\`
+        `;
+        expect(isValidMessage(message)).toBe(true); // 解析失败，视为正常回复
+    });
+    test("code block with non-JSON content - JavaScript", () => {
+        const message = `
+\`\`\`js
+function hello() {
+    console.log("Hello, world!");
+}
+\`\`\`
+        `.trim();
+        expect(isValidMessage(message)).toBe(true); // 解析失败，视为正常回复
+    });
+
+    // 4. JSON 格式但不包含 'error' 字段
+    test("JSON without error field", () => {
+        const message = `
+\`\`\`json
+{
+    "message": "Operation successful",
+    "data": {
+        "id": 1,
+        "name": "Test"
+    }
+}
+\`\`\`
+        `;
+        expect(isValidMessage(message)).toBe(true); // 无 error 字段，视为正常回复
+    });
+
+    // 5. JSON 格式，'error' 字段为 false
+    test("JSON with 'error': false", () => {
+        const message = `
+\`\`\`json
+{
+    "error": false,
+    "message": "Everything is fine."
+}
+\`\`\`
+        `;
+        expect(isValidMessage(message)).toBe(true); // error 为 false，视为正常回复
     });
 });

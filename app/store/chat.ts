@@ -739,6 +739,7 @@ export const useChatStore = createPersistStore(
           if (typeof message !== "string") {
             return false;
           }
+          message = message.trim();
           if (message.startsWith("```") && message.endsWith("```")) {
             const codeBlockContent = message.slice(3, -3).trim();
             const jsonString = codeBlockContent.replace(/^json\s*/i, '').trim();
