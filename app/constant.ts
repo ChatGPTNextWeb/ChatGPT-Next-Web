@@ -271,8 +271,8 @@ export const DEFAULT_TTS_VOICES = [
   "shimmer",
 ];
 
-export const DEFAULT_STT_ENGINE = "Web Speech API";
-export const DEFAULT_STT_ENGINES = ["Web Speech API", "OpenAI Whisper"];
+export const DEFAULT_STT_ENGINE = "OpenAI Whisper";
+export const DEFAULT_STT_ENGINES = ["OpenAI Whisper", "Web Speech API"];
 export const DEFAULT_STT_LANGUAGE = "zh-CN";
 export const DEFAULT_STT_LANGUAGES = [
   "zh-CN", // 中文（简体）

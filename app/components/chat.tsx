@@ -370,6 +370,7 @@ export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
+  recording?: boolean;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -378,7 +379,7 @@ export function ChatAction(props: {
     icon: 16,
   });
 
-  function updateWidth() {
+  function updateWidth(recording?: boolean) {
     if (!iconRef.current || !textRef.current) return;
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
     const textWidth = getWidth(textRef.current);
@@ -559,7 +560,7 @@ export function ChatActions(props: {
   useEffect(() => {
     if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
     setSpeechApi(
-      config.sttConfig.engine === DEFAULT_STT_ENGINE
+      config.sttConfig.engine !== DEFAULT_STT_ENGINE
         ? new WebTranscriptionApi((transcription) =>
             onRecognitionEnd(transcription),
           )
@@ -570,6 +571,7 @@ export function ChatActions(props: {
   }, []);
 
   const startListening = async () => {
+    showToast(Locale.Chat.StartSpeak);
     if (speechApi) {
       await speechApi.start();
       setIsListening(true);
@@ -582,6 +584,7 @@ export function ChatActions(props: {
       await speechApi.stop();
       setIsListening(false);
     }
+    showToast(Locale.Chat.CloseSpeak);
   };
   const onRecognitionEnd = (finalTranscript: string) => {
     console.log(finalTranscript);
@@ -832,6 +835,7 @@ export function ChatActions(props: {
           }
           text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
           icon={isListening ? <VoiceOpenIcon /> : <VoiceCloseIcon />}
+          recording={isListening}
         />
       )}
     </div>

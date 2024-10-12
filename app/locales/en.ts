@@ -94,7 +94,8 @@ const en: LocaleType = {
     },
     Send: "Send",
     StartSpeak: "Start Speak",
-    StopSpeak: "Stop Speak",
+    CloseSpeak: "Stop Speak",
+    StopSpeak: "Recording...",
     Config: {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",

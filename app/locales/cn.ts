@@ -92,8 +92,9 @@ const cn = {
       return inputHints + "，/ 触发补全，: 触发命令";
     },
     Send: "发送",
-    StartSpeak: "说话",
-    StopSpeak: "停止",
+    StartSpeak: "启用语音输入",
+    CloseSpeak: "关闭语音输入",
+    StopSpeak: "录音中....点击结束",
     Config: {
       Reset: "清除记忆",
       SaveAs: "存为面具",
