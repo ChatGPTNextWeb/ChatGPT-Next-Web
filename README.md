@@ -90,6 +90,12 @@
       - ⚠ 注意：已知在 vercel 环境下会出现调用不稳定的情况 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/89#issuecomment-1868887904
   
     - DuckDuckGo
+
+      - 环境变量：`DDG_API_PROXY_PREFIX`
+
+        配置后将在 DuckDuckGo 插件相关接口前拼接配置内容，如：`DDG_API_PROXY_PREFIX=https://example.com/` 则最终请求为：`https://example.com/https://duckduckgo.com`
+
+        可以结合类似 1234567Yang/cf-proxy-ex 这类代理项目来实现 DuckDuckGo 插件相关接口的代理
   
   - 计算
     - [Calculator](https://api.js.langchain.com/classes/langchain_tools_calculator.Calculator.html)

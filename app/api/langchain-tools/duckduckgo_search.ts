@@ -2,6 +2,8 @@ import { decode } from "html-entities";
 import { convert as htmlToText } from "html-to-text";
 import { Tool } from "@langchain/core/tools";
 
+const API_PROXY_PREFIX = process.env.DDG_API_PROXY_PREFIX ?? "";
+
 const SEARCH_REGEX =
   /DDG\.pageLayout\.load\('d',(\[.+\])\);DDG\.duckbar\.load\('images'/;
 const IMAGES_REGEX =
@@ -325,7 +327,7 @@ async function search(
   };
 
   const response = await fetch(
-    `https://links.duckduckgo.com/d.js?${queryString(queryObject)}`,
+    `${API_PROXY_PREFIX}https://links.duckduckgo.com/d.js?${queryString(queryObject)}`,
   );
   const data = await response.text();
 
@@ -369,7 +371,7 @@ async function search(
       description: decode(search.a),
       rawDescription: search.a,
       hostname: search.i,
-      icon: `https://external-content.duckduckgo.com/ip3/${search.i}.ico`,
+      icon: `${API_PROXY_PREFIX}https://external-content.duckduckgo.com/ip3/${search.i}.ico`,
       url: search.u,
       bang,
     });
@@ -456,7 +458,7 @@ function queryString(query: Record<string, string>) {
 async function getVQD(query: string, ia = "web") {
   try {
     const response = await fetch(
-      `https://duckduckgo.com/?${queryString({ q: query, ia })}`,
+      `${API_PROXY_PREFIX}https://duckduckgo.com/?${queryString({ q: query, ia })}`,
     );
     const data = await response.text();
     return VQD_REGEX.exec(data)![1];
@@ -516,16 +518,13 @@ export class DuckDuckGo extends Tool {
     const searchResults = await search(input, {
       safeSearch: SafeSearchType.OFF,
     });
-
     if (searchResults.noResults) {
       return "No good search result found";
     }
-
     const results = searchResults.results
       .slice(0, this.maxResults)
       .map(({ title, description, url }) => htmlToText(description))
       .join("\n\n");
-
     return results;
   }
 
