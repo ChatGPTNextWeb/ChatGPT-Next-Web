@@ -575,16 +575,18 @@ export function ChatActions(props: {
     if (speechApi) {
       await speechApi.start();
       setIsListening(true);
+      document.getElementById("chat-input")?.focus();
     }
   };
   const stopListening = async () => {
+    showToast(Locale.Chat.CloseSpeak);
     if (speechApi) {
       if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
         setIsTranscription(true);
       await speechApi.stop();
       setIsListening(false);
     }
-    showToast(Locale.Chat.CloseSpeak);
+    document.getElementById("chat-input")?.focus();
   };
   const onRecognitionEnd = (finalTranscript: string) => {
     console.log(finalTranscript);
