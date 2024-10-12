@@ -370,7 +370,6 @@ export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
-  recording?: boolean;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -379,7 +378,7 @@ export function ChatAction(props: {
     icon: 16,
   });
 
-  function updateWidth(recording?: boolean) {
+  function updateWidth() {
     if (!iconRef.current || !textRef.current) return;
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
     const textWidth = getWidth(textRef.current);
@@ -837,7 +836,6 @@ export function ChatActions(props: {
           }
           text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
           icon={isListening ? <VoiceOpenIcon /> : <VoiceCloseIcon />}
-          recording={isListening}
         />
       )}
     </div>
