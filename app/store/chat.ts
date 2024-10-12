@@ -743,15 +743,15 @@ export const useChatStore = createPersistStore(
             const codeBlockContent = message.slice(3, -3).trim();
             const jsonString = codeBlockContent.replace(/^json\s*/i, '').trim();
             try {
-              // 返回 json 格式消息，含 error.message 字段，判定为错误回复，否则为正常回复
+              // 返回 json 格式消息，error 字段为 true 或者包含 error.message 字段，判定为错误回复，否则为正常回复
               const jsonObject = JSON.parse(jsonString);
-              if (jsonObject?.error?.message) {
+              if (jsonObject?.error == true || jsonObject?.error?.message) {
                 return false;
               }
               return true;
             } catch (e) {
               console.log("Invalid JSON format.");
-              // 非 json 格式，大概率是正常回复
+              // 非 json 格式，通常可认为是正常回复
               return true;
             }
           }
