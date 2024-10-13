@@ -403,8 +403,9 @@ pre {
 audio {
   height: 35px;
 }
-
 audio::-webkit-media-controls-play-button,
- audio::-webkit-media-controls-panel {
- background-color: none;
- }
+audio::-webkit-media-controls-panel,
+audio::-moz-media-controls-play-button,
+audio::-moz-media-controls-panel {
+  background: none;
+}

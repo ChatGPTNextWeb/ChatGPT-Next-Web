@@ -90,6 +90,9 @@ export function arrayBufferToWav(buffer: ArrayBuffer): ArrayBuffer {
 
 // Helper function to write a string to the DataView
 function writeString(view: DataView, offset: number, string: string) {
+  if (offset + string.length > view.byteLength) {
+    throw new Error("String is too long for the available space in DataView");
+  }
   for (let i = 0; i < string.length; i++) {
     view.setUint8(offset + i, string.charCodeAt(i));
   }

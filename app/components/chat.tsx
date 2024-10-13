@@ -1122,12 +1122,11 @@ function _Chat() {
   };
 
   const updateMessageAudio = (msgId?: string, audio_url?: string) => {
-    chatStore.updateCurrentSession(
-      (session) =>
-        (session.messages = session.messages.map((m) =>
-          m.id === msgId ? { ...m, audio_url } : m,
-        )),
-    );
+    chatStore.updateCurrentSession((session) => {
+      session.messages = session.messages.map((m) =>
+        m.id === msgId ? { ...m, audio_url } : m,
+      );
+    });
   };
 
   const onDelete = (msgId: string) => {
@@ -1903,7 +1902,6 @@ function _Chat() {
                     )}
                     {message.audio_url && (
                       <audio
-                        id="audio"
                         preload="auto"
                         controls
                         className={styles["chat-message-item-audio"]}
