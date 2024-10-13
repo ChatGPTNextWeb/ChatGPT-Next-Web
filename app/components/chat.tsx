@@ -1245,7 +1245,7 @@ function _Chat() {
         });
         return audioUrl;
       } catch (e) {
-        console.error("[OpenAI Speech]", e);
+        console.error("[Speech Error]", e);
         showToast(prettyObject(e));
         setSpeechStatus(false);
       } finally {
