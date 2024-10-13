@@ -399,3 +399,12 @@ pre {
 .copyable {
   user-select: text;
 }
+
+audio {
+  height: 35px;
+}
+
+audio::-webkit-media-controls-play-button,
+ audio::-webkit-media-controls-panel {
+ background-color: none;
+ }

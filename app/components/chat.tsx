@@ -1121,6 +1121,15 @@ function _Chat() {
     );
   };
 
+  const updateMessageAudio = (msgId?: string, audio_url?: string) => {
+    chatStore.updateCurrentSession(
+      (session) =>
+        (session.messages = session.messages.map((m) =>
+          m.id === msgId ? { ...m, audio_url } : m,
+        )),
+    );
+  };
+
   const onDelete = (msgId: string) => {
     deleteMessage(msgId);
   };
@@ -1197,7 +1206,7 @@ function _Chat() {
   const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
-  async function openaiSpeech(text: string) {
+  async function openaiSpeech(text: string): Promise<string | undefined> {
     if (speechStatus) {
       ttsPlayer.stop();
       setSpeechStatus(false);
@@ -1230,11 +1239,12 @@ function _Chat() {
       try {
         const waveFile = arrayBufferToWav(audioBuffer);
         const audioFile = new Blob([waveFile], { type: "audio/wav" });
-        const url = uploadAudio(audioFile);
 
+        const audioUrl: string = await uploadImageRemote(audioFile);
         await ttsPlayer.play(audioBuffer, () => {
           setSpeechStatus(false);
         });
+        return audioUrl;
       } catch (e) {
         console.error("[OpenAI Speech]", e);
         showToast(prettyObject(e));
@@ -1508,53 +1518,6 @@ function _Chat() {
       images.splice(3, imagesLength - 3);
     }
     setAttachImages(images);
-  }
-
-  async function uploadAudio(file: Blob) {
-    const audioUrl: string = await uploadImageRemote(file);
-    console.log("audioUrl: ", audioUrl);
-    //const images: string[] = [];
-    //images.push(...attachImages);
-
-    //images.push(
-    //  ...(await new Promise<string[]>((res, rej) => {
-    //    const fileInput = document.createElement("input");
-    //    fileInput.type = "file";
-    //    fileInput.accept =
-    //      "image/png, image/jpeg, image/webp, image/heic, image/heif";
-    //    fileInput.multiple = true;
-    //    fileInput.onchange = (event: any) => {
-    //      setUploading(true);
-    //      const files = event.target.files;
-    //      const imagesData: string[] = [];
-    //      for (let i = 0; i < files.length; i++) {
-    //        const file = event.target.files[i];
-    //        uploadImageRemote(file)
-    //          .then((dataUrl) => {
-    //            imagesData.push(dataUrl);
-    //            if (
-    //              imagesData.length === 3 ||
-    //              imagesData.length === files.length
-    //            ) {
-    //              setUploading(false);
-    //              res(imagesData);
-    //            }
-    //          })
-    //          .catch((e) => {
-    //            setUploading(false);
-    //            rej(e);
-    //          });
-    //      }
-    //    };
-    //    fileInput.click();
-    //  })),
-    //);
-
-    //const imagesLength = images.length;
-    //if (imagesLength > 3) {
-    //  images.splice(3, imagesLength - 3);
-    //}
-    //setAttachImages(images);
   }
 
   // 快捷键 shortcut keys
@@ -1845,9 +1808,12 @@ function _Chat() {
                                       <SpeakIcon />
                                     )
                                   }
-                                  onClick={() =>
-                                    openaiSpeech(getMessageTextContent(message))
-                                  }
+                                  onClick={async () => {
+                                    const url = await openaiSpeech(
+                                      getMessageTextContent(message),
+                                    );
+                                    updateMessageAudio(message.id, url);
+                                  }}
                                 />
                               )}
                             </>
@@ -1881,7 +1847,11 @@ function _Chat() {
                       ))}
                     </div>
                   )}
-                  <div className={styles["chat-message-item"]}>
+                  <div
+                    className={`${styles["chat-message-item"]} ${
+                      message.audio_url ? styles["audio-message"] : ""
+                    }`}
+                  >
                     <Markdown
                       key={message.streaming ? "loading" : "done"}
                       content={getMessageTextContent(message)}
@@ -1929,6 +1899,17 @@ function _Chat() {
                           );
                         })}
                       </div>
+                    )}
+                    {message.audio_url && (
+                      <audio
+                        id="audio"
+                        preload="auto"
+                        controls
+                        className={styles["chat-message-item-audio"]}
+                      >
+                        <source type="audio/mp3" src={message.audio_url} />
+                        Sorry, your browser does not support HTML5 audio.
+                      </audio>
                     )}
                   </div>
 

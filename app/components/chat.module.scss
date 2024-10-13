@@ -430,7 +430,7 @@
 
 .chat-message-item {
   box-sizing: border-box;
-  max-width: 100%;
+  max-width: 300px;
   margin-top: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
@@ -441,6 +441,10 @@
   border: var(--border-in-light);
   position: relative;
   transition: all ease 0.3s;
+}
+
+.audio-message {
+  min-width: 350px;
 }
 
 .chat-message-item-image {
@@ -471,6 +475,10 @@
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
 
+.chat-message-item-audio {
+  margin-top: 10px;
+  width: 100%;
+}
 
 @media only screen and (max-width: 600px) {
   $calc-image-width: calc(100vw/3*2/var(--image-count));
@@ -519,7 +527,7 @@
   background-color: var(--second);
 
   &:hover {
-    min-width: 0;
+    //min-width: 350px;
   }
 }
 
