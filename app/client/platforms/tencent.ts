@@ -1,5 +1,5 @@
 "use client";
-import { ApiPath, DEFAULT_API_HOST, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { ApiPath, TENCENT_BASE_URL, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import {
@@ -22,6 +22,7 @@ import mapKeys from "lodash-es/mapKeys";
 import mapValues from "lodash-es/mapValues";
 import isArray from "lodash-es/isArray";
 import isObject from "lodash-es/isObject";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -70,9 +71,7 @@ export class HunyuanApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/tencent"
-        : ApiPath.Tencent;
+      baseUrl = isApp ? TENCENT_BASE_URL : ApiPath.Tencent;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -179,6 +178,7 @@ export class HunyuanApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
