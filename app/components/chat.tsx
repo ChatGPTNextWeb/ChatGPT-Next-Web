@@ -117,7 +117,7 @@ import { MultimodalContent } from "../client/api";
 
 const localStorage = safeLocalStorage();
 import { ClientApi } from "../client/api";
-import { createTTSPlayer } from "../utils/audio";
+import { createTTSPlayer, arrayBufferToWav } from "../utils/audio";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 const ttsPlayer = createTTSPlayer();
@@ -1228,11 +1228,13 @@ function _Chat() {
       }
       setSpeechStatus(true);
       try {
+        const waveFile = arrayBufferToWav(audioBuffer);
+        const audioFile = new Blob([waveFile], { type: "audio/wav" });
+        const url = uploadAudio(audioFile);
+
         await ttsPlayer.play(audioBuffer, () => {
           setSpeechStatus(false);
         });
-        const audioFile = new Blob([audioBuffer], { type: "audio/wav" });
-        const url = uploadAudio(audioFile);
       } catch (e) {
         console.error("[OpenAI Speech]", e);
         showToast(prettyObject(e));
