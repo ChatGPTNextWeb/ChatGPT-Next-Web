@@ -31,8 +31,7 @@ export function TTSConfigList(props: {
       ttsPlayer.stop();
       setSpeechStatus(false);
     } else {
-      var api: ClientApi;
-      api = new ClientApi(ModelProvider.GPT);
+      const api = new ClientApi(ModelProvider.GPT);
       const config = useAppConfig.getState();
       setSpeechLoading(true);
       ttsPlayer.init();
@@ -141,23 +140,25 @@ export function TTSConfigList(props: {
                     : Locale.Chat.Actions.Speech
                 }
                 onClick={() => {
-                  speechStatus
-                    ? (ttsPlayer.stop(), setSpeechStatus(false))
-                    : openaiSpeech(
-                        "NextChat,Unleash your imagination, experience the future of AI conversation.",
-                      );
+                  if (speechStatus) {
+                    ttsPlayer.stop();
+                    setSpeechStatus(false);
+                  } else {
+                    openaiSpeech(
+                      "NextChat,Unleash your imagination, experience the future of AI conversation.",
+                    );
+                  }
                 }}
               />
 
               <Select
                 value={props.ttsConfig.voice}
                 onChange={(e) => {
-                  props.updateConfig(
-                    (config) =>
-                      (config.voice = TTSConfigValidator.voice(
-                        e.currentTarget.value,
-                      )),
-                  );
+                  props.updateConfig((config) => {
+                    config.voice = TTSConfigValidator.voice(
+                      e.currentTarget.value,
+                    );
+                  });
                 }}
               >
                 {DEFAULT_TTS_VOICES.map((v, i) => (
