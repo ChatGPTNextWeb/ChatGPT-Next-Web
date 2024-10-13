@@ -1227,16 +1227,19 @@ function _Chat() {
         });
       }
       setSpeechStatus(true);
-      ttsPlayer
-        .play(audioBuffer, () => {
+      try {
+        await ttsPlayer.play(audioBuffer, () => {
           setSpeechStatus(false);
-        })
-        .catch((e) => {
-          console.error("[OpenAI Speech]", e);
-          showToast(prettyObject(e));
-          setSpeechStatus(false);
-        })
-        .finally(() => setSpeechLoading(false));
+        });
+        const audioFile = new Blob([audioBuffer], { type: "audio/wav" });
+        const url = uploadAudio(audioFile);
+      } catch (e) {
+        console.error("[OpenAI Speech]", e);
+        showToast(prettyObject(e));
+        setSpeechStatus(false);
+      } finally {
+        setSpeechLoading(false);
+      }
     }
   }
 
@@ -1503,6 +1506,53 @@ function _Chat() {
       images.splice(3, imagesLength - 3);
     }
     setAttachImages(images);
+  }
+
+  async function uploadAudio(file: Blob) {
+    const audioUrl: string = await uploadImageRemote(file);
+    console.log("audioUrl: ", audioUrl);
+    //const images: string[] = [];
+    //images.push(...attachImages);
+
+    //images.push(
+    //  ...(await new Promise<string[]>((res, rej) => {
+    //    const fileInput = document.createElement("input");
+    //    fileInput.type = "file";
+    //    fileInput.accept =
+    //      "image/png, image/jpeg, image/webp, image/heic, image/heif";
+    //    fileInput.multiple = true;
+    //    fileInput.onchange = (event: any) => {
+    //      setUploading(true);
+    //      const files = event.target.files;
+    //      const imagesData: string[] = [];
+    //      for (let i = 0; i < files.length; i++) {
+    //        const file = event.target.files[i];
+    //        uploadImageRemote(file)
+    //          .then((dataUrl) => {
+    //            imagesData.push(dataUrl);
+    //            if (
+    //              imagesData.length === 3 ||
+    //              imagesData.length === files.length
+    //            ) {
+    //              setUploading(false);
+    //              res(imagesData);
+    //            }
+    //          })
+    //          .catch((e) => {
+    //            setUploading(false);
+    //            rej(e);
+    //          });
+    //      }
+    //    };
+    //    fileInput.click();
+    //  })),
+    //);
+
+    //const imagesLength = images.length;
+    //if (imagesLength > 3) {
+    //  images.splice(3, imagesLength - 3);
+    //}
+    //setAttachImages(images);
   }
 
   // 快捷键 shortcut keys
