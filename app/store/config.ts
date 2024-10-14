@@ -56,6 +56,8 @@ export const DEFAULT_CONFIG = {
 
   enableArtifacts: true, // show artifacts config
 
+  enableCodeFold: true, // code fold config
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
