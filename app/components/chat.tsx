@@ -370,6 +370,7 @@ export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
+  isListening: boolean;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -391,7 +392,9 @@ export function ChatAction(props: {
 
   return (
     <div
-      className={`${styles["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} clickable ${
+        props.isListening ? styles["listening"] : ""
+      }`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
@@ -838,6 +841,7 @@ export function ChatActions(props: {
           }
           text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
           icon={isListening ? <VoiceOpenIcon /> : <VoiceCloseIcon />}
+          isListening={isListening}
         />
       )}
     </div>
