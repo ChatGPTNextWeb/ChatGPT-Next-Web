@@ -370,7 +370,7 @@ export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
-  isListening: boolean;
+  isListening?: boolean;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -574,7 +574,15 @@ export function ChatActions(props: {
     );
   }, []);
 
+  function playSound(fileName: string) {
+    const audio = new Audio(fileName);
+    audio.play().catch((error) => {
+      console.error("error:", error);
+    });
+  }
+
   const startListening = async () => {
+    playSound("/Recordingstart.mp3");
     showToast(Locale.Chat.StartSpeak);
     if (speechApi) {
       await speechApi.start();
@@ -590,6 +598,7 @@ export function ChatActions(props: {
       await speechApi.stop();
       setIsListening(false);
     }
+    playSound("/Recordingdone.mp3");
     document.getElementById("chat-input")?.focus();
   };
   const onRecognitionEnd = (finalTranscript: string) => {
