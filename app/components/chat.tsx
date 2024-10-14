@@ -558,10 +558,12 @@ export function ChatActions(props: {
 
   useEffect(() => {
     if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
+    const lang = config.sttConfig.lang;
     setSpeechApi(
       config.sttConfig.engine !== DEFAULT_STT_ENGINE
-        ? new WebTranscriptionApi((transcription) =>
-            onRecognitionEnd(transcription),
+        ? new WebTranscriptionApi(
+            (transcription) => onRecognitionEnd(transcription),
+            lang,
           )
         : new OpenAITranscriptionApi((transcription) =>
             onRecognitionEnd(transcription),

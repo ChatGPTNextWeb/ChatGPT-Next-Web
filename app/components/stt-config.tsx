@@ -55,10 +55,10 @@ export function STTConfigList(props: {
       {props.sttConfig.engine === "Web Speech API" && !isFirefox() && (
         <ListItem title="语言选择">
           <Select
-            value={props.sttConfig.language}
+            value={props.sttConfig.lang}
             onChange={(e) => {
               props.updateConfig(
-                (config) => (config.language = e.currentTarget.value),
+                (config) => (config.lang = e.currentTarget.value),
               );
             }}
           >

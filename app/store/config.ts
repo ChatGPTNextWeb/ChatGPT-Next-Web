@@ -95,7 +95,7 @@ export const DEFAULT_CONFIG = {
   sttConfig: {
     enable: true,
     engine: DEFAULT_STT_ENGINE,
-    language: DEFAULT_STT_LANGUAGE,
+    lang: DEFAULT_STT_LANGUAGE,
   },
 };
 

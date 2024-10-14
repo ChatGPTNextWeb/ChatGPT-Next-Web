@@ -93,7 +93,7 @@ export class WebTranscriptionApi extends SpeechApi {
 
   isListening = () => this.listeningStatus;
 
-  constructor(transcriptionCallback?: TranscriptionCallback) {
+  constructor(transcriptionCallback?: TranscriptionCallback, lang?: string) {
     super();
     if (isFirefox()) return;
     const SpeechRecognition =
@@ -102,7 +102,7 @@ export class WebTranscriptionApi extends SpeechApi {
     this.recognitionInstance = new SpeechRecognition();
     this.recognitionInstance.continuous = true;
     this.recognitionInstance.interimResults = true;
-    this.recognitionInstance.lang = getSTTLang();
+    this.recognitionInstance.lang = lang ?? getSTTLang();
     if (transcriptionCallback) {
       this.onTranscriptionReceived(transcriptionCallback);
     }
