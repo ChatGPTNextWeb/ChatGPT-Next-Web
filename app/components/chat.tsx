@@ -603,7 +603,9 @@ export function ChatActions(props: {
   };
   const onRecognitionEnd = (finalTranscript: string) => {
     console.log(finalTranscript);
-    if (finalTranscript) props.setUserInput(finalTranscript);
+    if (finalTranscript) {
+      props.setUserInput((prevInput) => prevInput + finalTranscript);
+    }
     if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
       setIsTranscription(false);
   };
