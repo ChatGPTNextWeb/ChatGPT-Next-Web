@@ -54,7 +54,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@tauri-apps/api": "^1.6.0",
+    "@tauri-apps/api": "^2.0.2",
     "@tauri-apps/cli": "1.5.11",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
