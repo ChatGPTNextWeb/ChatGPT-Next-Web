@@ -7,6 +7,8 @@ on:
     tags:
       - "!*"
   pull_request:
+    types:
+      - review_requested
 
 jobs:
   test:
