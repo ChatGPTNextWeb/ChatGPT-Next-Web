@@ -83,11 +83,28 @@ export function collectModelTable(
         let count = 0;
         for (const fullName in modelTable) {
           const [modelName, providerName] = fullName.split("@");
+
+          let match = false;
           if (
             customModelName == modelName &&
             (customProviderName === undefined ||
               customProviderName === providerName)
-          ) {
+          ) match = true; //orginal full name match
+
+          if (!match && m.startsWith("-")) {
+            // if not match and it's '-'
+            if (nameConfig.startsWith("@")) {
+              if (nameConfig === "@" + providerName) match = true;
+            } else {
+              if (customModelName.includes("*")) {
+                const regexPattern = customModelName.replace(/\*/g, ".*");
+                const regex = new RegExp("^" + regexPattern + "$", "i");
+                if (regex.test(modelName)) match = true;
+              }
+            }
+          }
+
+          if (match) {
             count += 1;
             modelTable[fullName]["available"] = available;
             // swap name and displayName for bytedance
