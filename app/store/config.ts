@@ -65,7 +65,7 @@ export const DEFAULT_CONFIG = {
     providerName: "OpenAI" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 4000,
+    max_completions_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
@@ -127,7 +127,7 @@ export const ModalConfigValidator = {
   model(x: string) {
     return x as ModelType;
   },
-  max_tokens(x: number) {
+  max_completions_tokens(x: number) {
     return limitNumber(x, 0, 512000, 1024);
   },
   presence_penalty(x: number) {
