@@ -64,7 +64,7 @@ export interface RequestPayload {
   presence_penalty: number;
   frequency_penalty: number;
   top_p: number;
-  max_tokens?: number;
+  max_completions_tokens?: number;
 }
 
 export interface DalleRequestPayload {
@@ -229,13 +229,16 @@ export class ChatGPTApi implements LLMApi {
         presence_penalty: !isO1 ? modelConfig.presence_penalty : 0,
         frequency_penalty: !isO1 ? modelConfig.frequency_penalty : 0,
         top_p: !isO1 ? modelConfig.top_p : 1,
-        // max_tokens: Math.max(modelConfig.max_tokens, 1024),
-        // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
+        // max_completions_tokens: Math.max(modelConfig.max_completions_tokens, 1024),
+        // Please do not ask me why not send max_completions_tokens, no reason, this param is just shit, I dont want to explain anymore.
       };
 
-      // add max_tokens to vision model
+      // add max_completions_tokens to vision model
       if (visionModel) {
-        requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
+        requestPayload["max_completions_tokens"] = Math.max(
+          modelConfig.max_completions_tokens,
+          4000,
+        );
       }
     }
 
