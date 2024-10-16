@@ -140,14 +140,9 @@ export function TTSConfigList(props: {
                     : Locale.Chat.Actions.Speech
                 }
                 onClick={() => {
-                  if (speechStatus) {
-                    ttsPlayer.stop();
-                    setSpeechStatus(false);
-                  } else {
-                    openaiSpeech(
-                      "NextChat,Unleash your imagination, experience the future of AI conversation.",
-                    );
-                  }
+                  openaiSpeech(
+                    "NextChat,Unleash your imagination, experience the future of AI conversation.",
+                  );
                 }}
               />
 
