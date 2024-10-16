@@ -205,6 +205,8 @@ const cn = {
       IsChecking: "正在检查更新...",
       FoundUpdate: (x: string) => `发现新版本：${x}`,
       GoToUpdate: "前往更新",
+      Success: "更新成功！",
+      Failed: "更新失败",
     },
     SendKey: "发送键",
     Theme: "主题",
@@ -495,8 +497,8 @@ const cn = {
 
     Model: "模型 (model)",
     CompressModel: {
-      Title: "压缩模型",
-      SubTitle: "用于压缩历史记录的模型",
+      Title: "对话摘要模型",
+      SubTitle: "用于压缩历史记录、生成对话标题的模型",
     },
     Temperature: {
       Title: "随机性 (temperature)",
@@ -664,6 +666,10 @@ const cn = {
       Artifacts: {
         Title: "启用Artifacts",
         SubTitle: "启用之后可以直接渲染HTML页面",
+      },
+      CodeFold: {
+        Title: "启用代码折叠",
+        SubTitle: "启用之后可以自动折叠/展开过长的代码块",
       },
       Share: {
         Title: "分享此面具",

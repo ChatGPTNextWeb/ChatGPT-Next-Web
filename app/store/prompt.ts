@@ -151,7 +151,7 @@ export const usePromptStore = createPersistStore(
       if (typeof window === "undefined") {
         return;
       }
-      
+
       const PROMPT_URL = "./prompts.json";
 
       type PromptList = Array<[string, string]>;
