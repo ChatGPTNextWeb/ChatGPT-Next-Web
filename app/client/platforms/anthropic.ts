@@ -13,6 +13,7 @@ import { getMessageTextContent, isVisionModel } from "@/app/utils";
 import { preProcessImageContent, stream } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export type MultiBlockContent = {
   type: "image" | "text";
