@@ -70,6 +70,7 @@ import {
   getMessageImages,
   isVisionModel,
   isDalle3,
+  removeOutdatedEntries,
   showPlugins,
   safeLocalStorage,
 } from "../utils";
@@ -987,6 +988,7 @@ function _Chat() {
   const chatCommands = useChatCommand({
     new: () => chatStore.newSession(),
     newm: () => navigate(Path.NewChat),
+    copy: () => chatStore.copySession(),
     prev: () => chatStore.nextSession(-1),
     next: () => chatStore.nextSession(1),
     clear: () =>
@@ -1118,10 +1120,20 @@ function _Chat() {
   };
 
   const deleteMessage = (msgId?: string) => {
-    chatStore.updateCurrentSession(
-      (session) =>
-        (session.messages = session.messages.filter((m) => m.id !== msgId)),
-    );
+    chatStore.updateCurrentSession((session) => {
+      session.deletedMessageIds &&
+        removeOutdatedEntries(session.deletedMessageIds);
+      session.messages = session.messages.filter((m) => {
+        if (m.id !== msgId) {
+          return true;
+        }
+        if (!session.deletedMessageIds) {
+          session.deletedMessageIds = {} as Record<string, number>;
+        }
+        session.deletedMessageIds[m.id] = Date.now();
+        return false;
+      });
+    });
   };
 
   const onDelete = (msgId: string) => {

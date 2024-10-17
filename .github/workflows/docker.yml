@@ -19,26 +19,26 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - 
+
+      -
         name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: yidadaa/chatgpt-next-web
+          images: ${{ secrets.DOCKER_USERNAME }}/chatgpt-next-web
           tags: |
             type=raw,value=latest
             type=ref,event=tag
-      
-      - 
+
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - 
+      -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      
-      - 
+
+      -
         name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -49,4 +49,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-            
+
