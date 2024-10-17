@@ -13,6 +13,7 @@ import {
   LLMApi,
   LLMModel,
   SpeechOptions,
+  TranscriptionOptions,
   MultimodalContent,
 } from "../api";
 import Locale from "../../locales";
@@ -86,6 +87,10 @@ export class QwenApi implements LLMApi {
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
+  transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
 

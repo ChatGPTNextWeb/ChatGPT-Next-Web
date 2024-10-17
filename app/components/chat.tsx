@@ -10,6 +10,8 @@ import React, {
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
+import VoiceOpenIcon from "../icons/vioce-open.svg";
+import VoiceCloseIcon from "../icons/vioce-close.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
@@ -72,6 +74,7 @@ import {
   isDalle3,
   showPlugins,
   safeLocalStorage,
+  isFirefox,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -98,7 +101,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
+  DEFAULT_STT_ENGINE,
   DEFAULT_TTS_ENGINE,
+  FIREFOX_DEFAULT_STT_ENGINE,
   ModelProvider,
   Path,
   REQUEST_TIMEOUT_MS,
@@ -117,6 +122,7 @@ import { MultimodalContent } from "../client/api";
 
 import { ClientApi } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
+import { OpenAITranscriptionApi, WebTranscriptionApi } from "../utils/speech";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 import { isEmpty } from "lodash-es";
@@ -367,6 +373,7 @@ export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
+  isListening?: boolean;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -388,7 +395,9 @@ export function ChatAction(props: {
 
   return (
     <div
-      className={`${styles["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} clickable ${
+        props.isListening ? styles["listening"] : ""
+      }`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
@@ -548,6 +557,61 @@ export function ChatActions(props: {
       );
     }
   }, [chatStore, currentModel, models]);
+
+  const [isListening, setIsListening] = useState(false);
+  const [isTranscription, setIsTranscription] = useState(false);
+  const [speechApi, setSpeechApi] = useState<any>(null);
+
+  useEffect(() => {
+    if (isFirefox()) config.sttConfig.engine = FIREFOX_DEFAULT_STT_ENGINE;
+    const lang = config.sttConfig.lang;
+    setSpeechApi(
+      config.sttConfig.engine !== DEFAULT_STT_ENGINE
+        ? new WebTranscriptionApi(
+            (transcription) => onRecognitionEnd(transcription),
+            lang,
+          )
+        : new OpenAITranscriptionApi((transcription) =>
+            onRecognitionEnd(transcription),
+          ),
+    );
+  }, []);
+
+  function playSound(fileName: string) {
+    const audio = new Audio(fileName);
+    audio.play().catch((error) => {
+      console.error("error:", error);
+    });
+  }
+
+  const startListening = async () => {
+    playSound("/Recordingstart.mp3");
+    showToast(Locale.Chat.StartSpeak);
+    if (speechApi) {
+      await speechApi.start();
+      setIsListening(true);
+      document.getElementById("chat-input")?.focus();
+    }
+  };
+  const stopListening = async () => {
+    showToast(Locale.Chat.CloseSpeak);
+    if (speechApi) {
+      if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
+        setIsTranscription(true);
+      await speechApi.stop();
+      setIsListening(false);
+    }
+    playSound("/Recordingdone.mp3");
+    document.getElementById("chat-input")?.focus();
+  };
+  const onRecognitionEnd = (finalTranscript: string) => {
+    console.log(finalTranscript);
+    if (finalTranscript) {
+      props.setUserInput((prevInput) => prevInput + finalTranscript);
+    }
+    if (config.sttConfig.engine !== DEFAULT_STT_ENGINE)
+      setIsTranscription(false);
+  };
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -781,6 +845,17 @@ export function ChatActions(props: {
           onClick={() => props.setShowShortcutKeyModal(true)}
           text={Locale.Chat.ShortcutKey.Title}
           icon={<ShortcutkeyIcon />}
+        />
+      )}
+
+      {config.sttConfig.enable && (
+        <ChatAction
+          onClick={async () =>
+            isListening ? await stopListening() : await startListening()
+          }
+          text={isListening ? Locale.Chat.StopSpeak : Locale.Chat.StartSpeak}
+          icon={isListening ? <VoiceOpenIcon /> : <VoiceCloseIcon />}
+          isListening={isListening}
         />
       )}
     </div>
@@ -1508,7 +1583,7 @@ function _Chat() {
     setAttachImages(images);
   }
 
-  // 快捷键 shortcut keys
+  // 快捷键
   const [showShortcutKeyModal, setShowShortcutKeyModal] = useState(false);
 
   useEffect(() => {

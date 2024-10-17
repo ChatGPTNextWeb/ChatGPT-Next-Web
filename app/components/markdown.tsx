@@ -193,7 +193,9 @@ function CustomCode(props: { children: any; className?: string }) {
   const renderShowMoreButton = () => {
     if (showToggle && enableCodeFold && collapsed) {
       return (
-        <div className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}>
+        <div
+          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
+        >
           <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
         </div>
       );

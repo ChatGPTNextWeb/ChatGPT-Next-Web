@@ -150,6 +150,7 @@ export const Anthropic = {
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   SpeechPath: "v1/audio/speech",
+  TranscriptionPath: "v1/audio/transcriptions",
   ImagePath: "v1/images/generations",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
@@ -269,6 +270,24 @@ export const DEFAULT_TTS_VOICES = [
   "nova",
   "shimmer",
 ];
+
+export const DEFAULT_STT_ENGINE = "OpenAI Whisper";
+export const DEFAULT_STT_ENGINES = ["OpenAI Whisper", "Web Speech API"];
+export const DEFAULT_STT_LANGUAGE = "zh-CN";
+export const DEFAULT_STT_LANGUAGES = [
+  "zh-CN", // 中文（简体）
+  "en-US", // 英文
+  "fr-FR", // 法文
+  "de-DE", // 德文
+  "es-ES", // 西班牙文
+  "it-IT", // 意大利文
+  "ja-JP", // 日文
+  "ko-KR", // 韩文
+  "ru-RU", // 俄文
+  "pt-BR", // 葡萄牙文（巴西）
+  "ar-SA", // 阿拉伯文
+];
+export const FIREFOX_DEFAULT_STT_ENGINE = "OpenAI Whisper";
 
 const openaiModels = [
   "gpt-3.5-turbo",

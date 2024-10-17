@@ -20,6 +20,7 @@ import {
   LLMApi,
   LLMModel,
   SpeechOptions,
+  TranscriptionOptions,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
@@ -61,6 +62,10 @@ export class MoonshotApi implements LLMApi {
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
+  transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
 
