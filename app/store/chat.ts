@@ -717,6 +717,7 @@ export const useChatStore = createPersistStore(
             },
             onFinish(message) {
               console.log("[Memory] ", message);
+              if (!isValidMessage(message)) return;
               get().updateCurrentSession((session) => {
                 session.lastSummarizeIndex = lastSummarizeIndex;
                 session.memoryPrompt = message; // Update the memory prompt for stored it in local storage
@@ -729,7 +730,27 @@ export const useChatStore = createPersistStore(
         }
 
         function isValidMessage(message: any): boolean {
-          return typeof message === "string" && !message.startsWith("```json");
+          if (typeof message !== "string") {
+            return false;
+          }
+          message = message.trim();
+          if (message.startsWith("```") && message.endsWith("```")) {
+            const codeBlockContent = message.slice(3, -3).trim();
+            const jsonString = codeBlockContent.replace(/^json\s*/i, '').trim();
+            try {
+              // 返回 json 格式消息，error 字段为 true 或者包含 error.message 字段，判定为错误回复，否则为正常回复
+              const jsonObject = JSON.parse(jsonString);
+              if (jsonObject?.error == true || jsonObject?.error?.message) {
+                return false;
+              }
+              return true;
+            } catch (e) {
+              console.log("Invalid JSON format.");
+              // 非 json 格式，通常可认为是正常回复
+              return true;
+            }
+          }
+          return true;
         }
       },
 
