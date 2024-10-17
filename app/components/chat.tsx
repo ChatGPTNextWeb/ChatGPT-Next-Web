@@ -116,7 +116,7 @@ import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 
 import { ClientApi } from "../client/api";
-import { createTTSPlayer } from "../utils/audio";
+import { createTTSPlayer, arrayBufferToWav } from "../utils/audio";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 import { isEmpty } from "lodash-es";
@@ -1124,6 +1124,14 @@ function _Chat() {
     );
   };
 
+  const updateMessageAudio = (msgId?: string, audio_url?: string) => {
+    chatStore.updateCurrentSession((session) => {
+      session.messages = session.messages.map((m) =>
+        m.id === msgId ? { ...m, audio_url } : m,
+      );
+    });
+  };
+
   const onDelete = (msgId: string) => {
     deleteMessage(msgId);
   };
@@ -1200,7 +1208,7 @@ function _Chat() {
   const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
-  async function openaiSpeech(text: string) {
+  async function openaiSpeech(text: string): Promise<string | undefined> {
     if (speechStatus) {
       ttsPlayer.stop();
       setSpeechStatus(false);
@@ -1230,16 +1238,22 @@ function _Chat() {
         });
       }
       setSpeechStatus(true);
-      ttsPlayer
-        .play(audioBuffer, () => {
+      try {
+        const waveFile = arrayBufferToWav(audioBuffer);
+        const audioFile = new Blob([waveFile], { type: "audio/wav" });
+
+        const audioUrl: string = await uploadImageRemote(audioFile);
+        await ttsPlayer.play(audioBuffer, () => {
           setSpeechStatus(false);
-        })
-        .catch((e) => {
-          console.error("[OpenAI Speech]", e);
-          showToast(prettyObject(e));
-          setSpeechStatus(false);
-        })
-        .finally(() => setSpeechLoading(false));
+        });
+        return audioUrl;
+      } catch (e) {
+        console.error("[Speech Error]", e);
+        showToast(prettyObject(e));
+        setSpeechStatus(false);
+      } finally {
+        setSpeechLoading(false);
+      }
     }
   }
 
@@ -1796,9 +1810,12 @@ function _Chat() {
                                       <SpeakIcon />
                                     )
                                   }
-                                  onClick={() =>
-                                    openaiSpeech(getMessageTextContent(message))
-                                  }
+                                  onClick={async () => {
+                                    const url = await openaiSpeech(
+                                      getMessageTextContent(message),
+                                    );
+                                    updateMessageAudio(message.id, url);
+                                  }}
                                 />
                               )}
                             </>
@@ -1833,7 +1850,11 @@ function _Chat() {
                       ))}
                     </div>
                   )}
-                  <div className={styles["chat-message-item"]}>
+                  <div
+                    className={`${styles["chat-message-item"]} ${
+                      message.audio_url ? styles["audio-message"] : ""
+                    }`}
+                  >
                     <Markdown
                       key={message.streaming ? "loading" : "done"}
                       content={getMessageTextContent(message)}
@@ -1881,6 +1902,16 @@ function _Chat() {
                           );
                         })}
                       </div>
+                    )}
+                    {message.audio_url && (
+                      <audio
+                        preload="auto"
+                        controls
+                        className={styles["chat-message-item-audio"]}
+                      >
+                        <source type="audio/mp3" src={message.audio_url} />
+                        Sorry, your browser does not support HTML5 audio.
+                      </audio>
                     )}
                   </div>
 
