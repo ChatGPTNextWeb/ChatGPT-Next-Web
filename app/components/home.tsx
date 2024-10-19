@@ -236,7 +236,7 @@ export function Home() {
     let running = true;
 
     setTimeout(async () => {
-      if (running && syncStore.cloudSync()) {
+      if (running && syncStore.cloudSync() && syncStore.autoSync.onStart) {
         try {
           await syncStore.sync();
           showToast(Locale.Settings.Sync.Success);

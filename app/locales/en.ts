@@ -257,6 +257,10 @@ const en: LocaleType = {
           UserName: "Backup Name",
           Password: "UpStash Redis REST Token",
         },
+
+        AutoSync: {
+          OnStartup: "Sync on startup",
+        },
       },
 
       LocalState: "Local Data",

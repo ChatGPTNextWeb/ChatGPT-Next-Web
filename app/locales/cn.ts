@@ -254,6 +254,10 @@ const cn = {
           UserName: "备份名称",
           Password: "UpStash Redis REST Token",
         },
+
+        AutoSync: {
+          OnStartup: "启动时自动同步",
+        },
       },
 
       LocalState: "本地数据",

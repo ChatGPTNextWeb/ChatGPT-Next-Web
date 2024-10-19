@@ -40,7 +40,7 @@ const DEFAULT_SYNC_STATE = {
   },
 
   autoSync: {
-    onStart: true,
+    onStart: false,
   },
 
   lastSyncTime: 0,
