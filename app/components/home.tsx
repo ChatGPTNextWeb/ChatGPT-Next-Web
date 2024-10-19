@@ -28,7 +28,9 @@ import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
-import { useAccessStore } from "../store";
+import { useSyncStore } from "../store/sync";
+import { showToast } from "./ui-lib";
+import Locale from "@/app/locales";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -224,11 +226,31 @@ export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+  const syncStore = useSyncStore();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
-    useAccessStore.getState().fetch();
   }, []);
+
+  useEffect(() => {
+    let running = true;
+
+    setTimeout(async () => {
+      if (running && syncStore.cloudSync()) {
+        try {
+          await syncStore.sync();
+          showToast(Locale.Settings.Sync.Success);
+        } catch (e: unknown) {
+          showToast(Locale.Settings.Sync.Fail);
+          console.error("[Sync]", e);
+        }
+      }
+    });
+
+    return () => {
+      running = false;
+    };
+  }, [syncStore]);
 
   if (!useHasHydrated()) {
     return <Loading />;
