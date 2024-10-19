@@ -250,7 +250,8 @@ export function Home() {
     return () => {
       running = false;
     };
-  }, [syncStore]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!useHasHydrated()) {
     return <Loading />;
