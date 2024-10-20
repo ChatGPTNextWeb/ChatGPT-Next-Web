@@ -1222,6 +1222,39 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.Artifacts.Title}
+              type="checkbox"
+              checked={config.enableArtifacts}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableArtifacts = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.CodeFold.Title}
+            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.CodeFold.Title}
+              type="checkbox"
+              checked={config.enableCodeFold}
+              data-testid="enable-code-fold-checkbox"
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.enableCodeFold = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />

@@ -111,6 +111,10 @@ const cn = {
       Toast: "正在生成截图",
       Modal: "长按或右键保存图片",
     },
+    Artifacts: {
+      Title: "分享页面",
+      Error: "分享失败",
+    },
   },
   Select: {
     Search: "搜索消息",
@@ -554,6 +558,14 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+      },
+      Artifacts: {
+        Title: "启用Artifacts",
+        SubTitle: "启用之后可以直接渲染HTML页面",
+      },
+      CodeFold: {
+        Title: "启用代码折叠",
+        SubTitle: "启用之后可以自动折叠/展开过长的代码块",
       },
       Share: {
         Title: "分享此面具",
