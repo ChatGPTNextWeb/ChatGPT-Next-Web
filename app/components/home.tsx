@@ -151,6 +151,33 @@ export function WindowContent(props: { children: React.ReactNode }) {
   );
 }
 
+function useSyncOnStart() {
+  const syncStore = useSyncStore();
+  useEffect(() => {
+    let running = true;
+    setTimeout(async () => {
+      if (!(running && syncStore.cloudSync() && syncStore.autoSync.onStart)) {
+        return;
+      }
+      console.debug("wtf", syncStore.autoSync, syncStore.cloudSync());
+      const dismissSyncingToast = showToast(Locale.Settings.Sync.IsSyncing);
+      try {
+        await syncStore.sync();
+        dismissSyncingToast();
+        showToast(Locale.Settings.Sync.Success);
+      } catch (e: unknown) {
+        dismissSyncingToast();
+        showToast(Locale.Settings.Sync.Fail);
+        console.error("[Sync]", e);
+      }
+    });
+    return () => {
+      running = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
@@ -167,6 +194,7 @@ function Screen() {
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+  useSyncOnStart();
 
   if (isArtifact) {
     return (
@@ -226,31 +254,8 @@ export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
-  const syncStore = useSyncStore();
-
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
-  }, []);
-
-  useEffect(() => {
-    let running = true;
-
-    setTimeout(async () => {
-      if (running && syncStore.cloudSync() && syncStore.autoSync.onStart) {
-        try {
-          await syncStore.sync();
-          showToast(Locale.Settings.Sync.Success);
-        } catch (e: unknown) {
-          showToast(Locale.Settings.Sync.Fail);
-          console.error("[Sync]", e);
-        }
-      }
-    });
-
-    return () => {
-      running = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!useHasHydrated()) {

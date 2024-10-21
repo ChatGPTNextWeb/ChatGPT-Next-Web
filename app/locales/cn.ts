@@ -223,6 +223,7 @@ const cn = {
       CloudState: "云端数据",
       NotSyncYet: "还没有进行过同步",
       Success: "同步成功",
+      IsSyncing: "正在同步...",
       Fail: "同步失败",
 
       Config: {

@@ -225,6 +225,7 @@ const en: LocaleType = {
       CloudState: "Last Update",
       NotSyncYet: "Not sync yet",
       Success: "Sync Success",
+      IsSyncing: "Sync in progress...",
       Fail: "Sync Fail",
 
       Config: {
