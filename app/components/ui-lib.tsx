@@ -229,13 +229,19 @@ export function showToast(
   content: string,
   action?: ToastProps["action"],
   delay = 3000,
-) {
+): () => void {
   const div = document.createElement("div");
   div.className = styles.show;
   document.body.appendChild(div);
 
   const root = createRoot(div);
+  let closeCalled = false;
   const close = () => {
+    if (closeCalled) {
+      return;
+    } else {
+      closeCalled = true;
+    }
     div.classList.add(styles.hide);
 
     setTimeout(() => {
@@ -249,6 +255,8 @@ export function showToast(
   }, delay);
 
   root.render(<Toast content={content} action={action} onClose={close} />);
+
+  return close;
 }
 
 export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
