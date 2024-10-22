@@ -130,7 +130,7 @@ export const useSyncStore = createPersistStore(
   }),
   {
     name: StoreKey.Sync,
-    version: 1.2,
+    version: 1.3,
 
     migrate(persistedState, version) {
       const newState = persistedState as typeof DEFAULT_SYNC_STATE;
@@ -146,6 +146,10 @@ export const useSyncStore = createPersistStore(
         ) {
           newState.proxyUrl = "";
         }
+      }
+
+      if (version < 1.3) {
+        newState.autoSync = { ...DEFAULT_SYNC_STATE.autoSync };
       }
 
       return newState as any;
