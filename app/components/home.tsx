@@ -28,6 +28,7 @@ import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
+import { useAccessStore } from "../store";
 import { useSyncStore } from "../store/sync";
 import { showToast } from "./ui-lib";
 import Locale from "@/app/locales";
@@ -159,7 +160,6 @@ function useSyncOnStart() {
       if (!(running && syncStore.cloudSync() && syncStore.autoSync.onStart)) {
         return;
       }
-      console.debug("wtf", syncStore.autoSync, syncStore.cloudSync());
       const dismissSyncingToast = showToast(Locale.Settings.Sync.IsSyncing);
       try {
         await syncStore.sync();
@@ -254,8 +254,10 @@ export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
+    useAccessStore.getState().fetch();
   }, []);
 
   if (!useHasHydrated()) {
