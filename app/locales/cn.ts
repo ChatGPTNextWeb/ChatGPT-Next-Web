@@ -9,19 +9,18 @@ const cn = {
   Error: {
     Unauthorized: isApp
       ? `😆 对话遇到了一些问题，不用慌:
-       \\ 1️⃣ 想要零配置开箱即用，[点击这里立刻开启对话 🚀](${SAAS_CHAT_UTM_URL})
-       \\ 2️⃣ 如果你想消耗自己的 OpenAI 资源，点击[这里](/#/settings)修改设置 ⚙️`
+       \\ 1️⃣ [点击这里立刻开启对话 🚀](${SAAS_CHAT_UTM_URL})
+       \\ 2️⃣ 点击[这里](/#/auth)输入访问秘钥 🔑`
       : `😆 对话遇到了一些问题，不用慌:
-       \ 1️⃣ 想要零配置开箱即用，[点击这里立刻开启对话 🚀](${SAAS_CHAT_UTM_URL})
-       \ 2️⃣ 如果你正在使用私有部署版本，点击[这里](/#/auth)输入访问秘钥 🔑
-       \ 3️⃣ 如果你想消耗自己的 OpenAI 资源，点击[这里](/#/settings)修改设置 ⚙️
+       \ 1️⃣ [点击这里立刻开启对话 🚀](${SAAS_CHAT_UTM_URL})
+       \ 2️⃣ 点击[这里](/#/auth)输入访问秘钥 🔑
        `,
   },
   Auth: {
     Return: "返回",
     Title: "需要密码",
     Tips: "管理员开启了密码验证，请在下方填入访问码",
-    SubTips: "或者输入你的 OpenAI 或 Google AI 密钥",
+    SubTips: "输入你的密钥",
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
