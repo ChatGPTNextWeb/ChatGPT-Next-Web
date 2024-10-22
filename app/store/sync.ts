@@ -55,8 +55,9 @@ export const useSyncStore = createPersistStore(
       if (!config) {
         return false;
       }
-      return Object.values(config).every((c) => c != null && c.toString().length > 0);
-    }
+      return Object.values(config).every(
+        (c) => c != null && c.toString().length > 0,
+      );
     },
 
     markSyncTime() {
