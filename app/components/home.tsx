@@ -154,10 +154,18 @@ export function WindowContent(props: { children: React.ReactNode }) {
 
 function useSyncOnStart() {
   const syncStore = useSyncStore();
+  const storeHasHydrated = useSyncStore((s) => s._hasHydrated);
   useEffect(() => {
     let running = true;
     setTimeout(async () => {
-      if (!(running && syncStore.cloudSync() && syncStore.autoSync.onStart)) {
+      if (
+        !(
+          storeHasHydrated &&
+          running &&
+          syncStore.cloudSync() &&
+          syncStore.autoSync.onStart
+        )
+      ) {
         return;
       }
       const dismissSyncingToast = showToast(Locale.Settings.Sync.IsSyncing);
@@ -175,7 +183,7 @@ function useSyncOnStart() {
       running = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [storeHasHydrated]);
 }
 
 function Screen() {
