@@ -52,7 +52,11 @@ export const useSyncStore = createPersistStore(
   (set, get) => ({
     cloudSync(): boolean {
       const config = get()[get().provider];
-      return Object.values(config).every((c) => c.toString().length > 0);
+      if (!config) {
+        return false;
+      }
+      return Object.values(config).every((c) => c != null && c.toString().length > 0);
+    }
     },
 
     markSyncTime() {
