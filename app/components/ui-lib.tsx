@@ -465,7 +465,108 @@ export function showImageModal(
     ),
   });
 }
+export function SearchSelector<T>(props: {
+  items: Array<{
+    title: string;
+    subTitle?: string;
+    value: T;
+    disable?: boolean;
+  }>;
+  defaultSelectedValue?: T[] | T;
+  onSelection?: (selection: T[]) => void;
+  onClose?: () => void;
+  multiple?: boolean;
+}) {
+  const [selectedValues, setSelectedValues] = useState<T[]>(
+    Array.isArray(props.defaultSelectedValue)
+      ? props.defaultSelectedValue
+      : props.defaultSelectedValue !== undefined
+        ? [props.defaultSelectedValue]
+        : [],
+  );
 
+  // 添加搜索状态
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSelection = (e: MouseEvent, value: T) => {
+    if (props.multiple) {
+      e.stopPropagation();
+      const newSelectedValues = selectedValues.includes(value)
+        ? selectedValues.filter((v) => v !== value)
+        : [...selectedValues, value];
+      setSelectedValues(newSelectedValues);
+      props.onSelection?.(newSelectedValues);
+    } else {
+      setSelectedValues([value]);
+      props.onSelection?.([value]);
+      props.onClose?.();
+    }
+  };
+
+  // 过滤列表项
+  const filteredItems = props.items.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.subTitle &&
+        item.subTitle.toLowerCase().includes(searchQuery.toLowerCase())),
+  );
+
+  return (
+    <div className={styles["selector"]} onClick={() => props.onClose?.()}>
+      <div
+        className={styles["selector-content"]}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <List>
+          {/* 搜索框 */}
+          <div className={styles["selector-search"]}>
+            <input
+              type="text"
+              className={styles["selector-search-input"]}
+              placeholder="search model"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          {filteredItems.map((item, i) => {
+            const selected = selectedValues.includes(item.value);
+            return (
+              <ListItem
+                className={`${styles["selector-item"]} ${
+                  item.disable && styles["selector-item-disabled"]
+                }`}
+                key={i}
+                title={item.title}
+                subTitle={item.subTitle}
+                onClick={(e) => {
+                  if (item.disable) {
+                    e.stopPropagation();
+                  } else {
+                    handleSelection(e, item.value);
+                  }
+                }}
+              >
+                {selected ? (
+                  <div
+                    style={{
+                      height: 10,
+                      width: 10,
+                      backgroundColor: "var(--primary)",
+                      borderRadius: 10,
+                    }}
+                  ></div>
+                ) : (
+                  <></>
+                )}
+              </ListItem>
+            );
+          })}
+        </List>
+      </div>
+    </div>
+  );
+}
 export function Selector<T>(props: {
   items: Array<{
     title: string;

@@ -96,6 +96,7 @@ import {
   List,
   ListItem,
   Modal,
+  SearchSelector,
   Selector,
   showConfirm,
   showPrompt,
@@ -678,7 +679,7 @@ export function ChatActions(props: {
         />
 
         {showModelSelector && (
-          <Selector
+          <SearchSelector
             defaultSelectedValue={`${currentModel}@${currentProviderName}`}
             items={models.map((m) => ({
               title: `${m.displayName}${

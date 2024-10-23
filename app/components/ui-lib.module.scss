@@ -311,4 +311,21 @@
       }
     }
   }
+
+  &-search {
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  &-search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 8px 12px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+  }
+
+  &-search-input:focus {
+    background-color: var(--gray-50);
+  }
 }
