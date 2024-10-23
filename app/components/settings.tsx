@@ -1206,11 +1206,11 @@ export function Settings() {
         <input
           aria-label={Locale.Settings.Access.XAI.Endpoint.Title}
           type="text"
-          value={accessStore.moonshotUrl}
+          value={accessStore.xaiUrl}
           placeholder={XAI.ExampleEndpoint}
           onChange={(e) =>
             accessStore.update(
-              (access) => (access.moonshotUrl = e.currentTarget.value),
+              (access) => (access.xaiUrl = e.currentTarget.value),
             )
           }
         ></input>
@@ -1221,12 +1221,12 @@ export function Settings() {
       >
         <PasswordInput
           aria-label={Locale.Settings.Access.XAI.ApiKey.Title}
-          value={accessStore.moonshotApiKey}
+          value={accessStore.xaiApiKey}
           type="text"
           placeholder={Locale.Settings.Access.XAI.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.moonshotApiKey = e.currentTarget.value),
+              (access) => (access.xaiApiKey = e.currentTarget.value),
             );
           }}
         />
