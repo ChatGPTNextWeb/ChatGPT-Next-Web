@@ -104,7 +104,7 @@ const DEFAULT_ACCESS_STATE = {
   iflytekApiKey: "",
   iflytekApiSecret: "",
 
-  // moonshot
+  // xai
   xaiUrl: DEFAULT_XAI_URL,
   xaiApiKey: "",
 
