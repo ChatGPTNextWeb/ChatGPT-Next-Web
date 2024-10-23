@@ -59,6 +59,7 @@ import {
   ByteDance,
   Alibaba,
   Moonshot,
+  XAI,
   Google,
   GoogleSafetySettingsThreshold,
   OPENAI_BASE_URL,
@@ -1194,6 +1195,45 @@ export function Settings() {
     </>
   );
 
+  const XAIConfigComponent = accessStore.provider === ServiceProvider.XAI && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.XAI.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.XAI.Endpoint.SubTitle + XAI.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.XAI.Endpoint.Title}
+          type="text"
+          value={accessStore.moonshotUrl}
+          placeholder={XAI.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.moonshotUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.XAI.ApiKey.Title}
+        subTitle={Locale.Settings.Access.XAI.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.XAI.ApiKey.Title}
+          value={accessStore.moonshotApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.XAI.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.moonshotApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
     <>
@@ -1652,6 +1692,7 @@ export function Settings() {
                   {moonshotConfigComponent}
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
+                  {XAIConfigComponent}
                 </>
               )}
             </>
