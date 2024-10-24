@@ -319,6 +319,8 @@ const anthropicModels = [
   "claude-3-opus-20240229",
   "claude-3-haiku-20240307",
   "claude-3-5-sonnet-20240620",
+  "claude-3-5-sonnet-20241022",  // aws model
+  "claude-3-5-sonnet-v2@20241022",  // gcp model
 ];
 
 const baiduModels = [
