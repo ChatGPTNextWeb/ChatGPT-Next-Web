@@ -12,6 +12,7 @@ import {
   getHeaders,
   LLMApi,
   LLMModel,
+  SpeechOptions,
   MultimodalContent,
 } from "../api";
 import Locale from "../../locales";
@@ -22,6 +23,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -81,6 +83,10 @@ export class QwenApi implements LLMApi {
 
   extractMessage(res: any) {
     return res?.output?.choices?.at(0)?.message?.content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
@@ -173,6 +179,7 @@ export class QwenApi implements LLMApi {
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
