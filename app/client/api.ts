@@ -20,6 +20,7 @@ import { QwenApi } from "./platforms/alibaba";
 import { HunyuanApi } from "./platforms/tencent";
 import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
+import { XAIApi } from "./platforms/xai";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -152,6 +153,9 @@ export class ClientApi {
       case ModelProvider.Iflytek:
         this.llm = new SparkApi();
         break;
+      case ModelProvider.XAI:
+        this.llm = new XAIApi();
+        break;
       default:
         this.llm = new ChatGPTApi();
     }
@@ -239,6 +243,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
     const isMoonshot = modelConfig.providerName === ServiceProvider.Moonshot;
     const isIflytek = modelConfig.providerName === ServiceProvider.Iflytek;
+    const isXAI = modelConfig.providerName === ServiceProvider.XAI;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -252,6 +257,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.alibabaApiKey
       : isMoonshot
       ? accessStore.moonshotApiKey
+      : isXAI
+      ? accessStore.xaiApiKey
       : isIflytek
       ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
         ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
@@ -266,6 +273,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       isAlibaba,
       isMoonshot,
       isIflytek,
+      isXAI,
       apiKey,
       isEnabledAccessControl,
     };
@@ -328,6 +336,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.Moonshot);
     case ServiceProvider.Iflytek:
       return new ClientApi(ModelProvider.Iflytek);
+    case ServiceProvider.XAI:
+      return new ClientApi(ModelProvider.XAI);
     default:
       return new ClientApi(ModelProvider.GPT);
   }
