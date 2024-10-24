@@ -42,6 +42,7 @@ import {
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
