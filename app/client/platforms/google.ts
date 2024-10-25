@@ -192,7 +192,9 @@ export class GeminiProApi implements LLMApi {
           requestPayload,
           getHeaders(),
           // @ts-ignore
-          [{ functionDeclarations: tools.map((tool) => tool.function) }],
+          tools.length > 0
+            ? [{ functionDeclarations: tools.map((tool) => tool.function) }]
+            : [],
           funcs,
           controller,
           // parseSSE
