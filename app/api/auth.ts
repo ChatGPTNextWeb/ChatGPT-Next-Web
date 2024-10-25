@@ -92,6 +92,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
         systemApiKey =
           serverConfig.iflytekApiKey + ":" + serverConfig.iflytekApiSecret;
         break;
+      case ModelProvider.XAI:
+        systemApiKey = serverConfig.xaiApiKey;
+        break;
       case ModelProvider.GPT:
       default:
         if (req.nextUrl.pathname.includes("azure/deployments")) {

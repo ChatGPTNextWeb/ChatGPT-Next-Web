@@ -183,6 +183,23 @@ export function MaskConfig(props: {
             ></input>
           </ListItem>
         )}
+        {globalConfig.enableCodeFold && (
+          <ListItem
+            title={Locale.Mask.Config.CodeFold.Title}
+            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.CodeFold.Title}
+              type="checkbox"
+              checked={props.mask.enableCodeFold !== false}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.enableCodeFold = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        )}
 
         {!props.shouldSyncFromGlobal ? (
           <ListItem
