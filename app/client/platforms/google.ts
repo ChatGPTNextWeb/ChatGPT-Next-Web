@@ -193,7 +193,8 @@ export class GeminiProApi implements LLMApi {
           getHeaders(),
           // @ts-ignore
           tools.length > 0
-            ? [{ functionDeclarations: tools.map((tool) => tool.function) }]
+            ? // @ts-ignore
+              [{ functionDeclarations: tools.map((tool) => tool.function) }]
             : [],
           funcs,
           controller,
