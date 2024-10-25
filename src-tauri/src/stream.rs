@@ -119,7 +119,9 @@ pub async fn stream_fetch(
       }
     }
     Err(err) => {
-      let error: String = err.source().expect("REASON").to_string();
+      let error: String = err.source()
+        .map(|e| e.to_string())
+        .unwrap_or_else(|| "Unknown error occurred".to_string());
       println!("Error response: {:?}", error);
       tauri::async_runtime::spawn( async move {
         if let Err(e) = window.emit(event_name, ChunkPayload{ request_id, chunk: error.into() }) {
