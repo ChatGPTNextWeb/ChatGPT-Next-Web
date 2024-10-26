@@ -100,7 +100,8 @@ export function fetch(url: string, options?: RequestInit): Promise<any> {
       })
       .catch((e) => {
         console.error("stream error", e);
-        throw e;
+        // throw e;
+        return new Response("", { status: 599 });
       });
   }
   return window.fetch(url, options);
