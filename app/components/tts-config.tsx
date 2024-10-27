@@ -17,6 +17,7 @@ import SpeakStopIcon from "../icons/speak-stop.svg";
 import { createTTSPlayer } from "../utils/audio";
 import { useAppConfig } from "../store";
 import { ClientApi } from "../client/api";
+import { showToast } from "../components/ui-lib";
 
 const ttsPlayer = createTTSPlayer();
 export function TTSConfigList(props: {
@@ -26,34 +27,50 @@ export function TTSConfigList(props: {
   const [speechLoading, setSpeechLoading] = useState(false);
   const [speechStatus, setSpeechStatus] = useState(false);
 
-  async function openaiSpeech(text: string) {
-    if (speechStatus) {
-      ttsPlayer.stop();
-      setSpeechStatus(false);
-    } else {
+  const config = useAppConfig.getState();
+
+  function stopSpeech() {
+    ttsPlayer.stop();
+    setSpeechStatus(false);
+  }
+
+  async function playSpeech(text: string, ttsConfig: TTSConfig) {
+    try {
       const api = new ClientApi(ModelProvider.GPT);
-      const config = useAppConfig.getState();
       setSpeechLoading(true);
       ttsPlayer.init();
-      let audioBuffer: ArrayBuffer;
-      audioBuffer = await api.llm.speech({
-        model: config.ttsConfig.model,
+
+      const audioBuffer = await api.llm.speech({
+        model: ttsConfig.model,
         input: text,
-        voice: config.ttsConfig.voice,
-        speed: config.ttsConfig.speed,
+        voice: ttsConfig.voice,
+        speed: ttsConfig.speed,
       });
+
       setSpeechStatus(true);
-      ttsPlayer
-        .play(audioBuffer, () => {
-          setSpeechStatus(false);
-        })
-        .catch((e) => {
-          console.error("[OpenAI Speech]", e);
-          setSpeechStatus(false);
-        })
-        .finally(() => setSpeechLoading(false));
+      await ttsPlayer.play(audioBuffer, () => {
+        setSpeechStatus(false);
+      });
+    } catch (error) {
+      console.error("[OpenAI Speech]", error);
+      setSpeechStatus(false);
+      // Implement user-facing error notification here
+      if (typeof (error as Error).message === "string") {
+        showToast((error as Error).message);
+      }
+    } finally {
+      setSpeechLoading(false);
     }
   }
+
+  async function openaiSpeech(text: string) {
+    if (speechStatus) {
+      stopSpeech();
+    } else {
+      await playSpeech(text, config.ttsConfig);
+    }
+  }
+
   return (
     <>
       <ListItem
