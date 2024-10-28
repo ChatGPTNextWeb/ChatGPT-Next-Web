@@ -309,7 +309,7 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 
 Change default model
 
-### `WHITE_WEBDEV_ENDPOINTS` (optional)
+### `WHITE_WEBDAV_ENDPOINTS` (optional)
 
 如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
 - 每一个地址必须是一个完整的 endpoint

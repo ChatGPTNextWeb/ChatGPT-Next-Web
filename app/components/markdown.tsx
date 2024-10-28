@@ -121,7 +121,25 @@ export function PreCode(props: { children: any }) {
           codeElement.style.whiteSpace = "pre-wrap";
         }
       });
-      setTimeout(renderArtifacts, 1);
+
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (
+            mutation.type === "characterData" ||
+            mutation.type === "childList"
+          ) {
+            renderArtifacts();
+            break;
+          }
+        }
+      });
+      observer.observe(ref.current, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+      renderArtifacts();
+      return () => observer.disconnect();
     }
   }, []);
 
