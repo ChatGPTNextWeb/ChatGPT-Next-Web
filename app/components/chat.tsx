@@ -15,6 +15,8 @@ import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
+import SpeakIcon from "../icons/speak.svg";
+import SpeakStopIcon from "../icons/speak-stop.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import LoadingButtonIcon from "../icons/loading.svg";
 import PromptIcon from "../icons/prompt.svg";
@@ -96,7 +98,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  LAST_INPUT_KEY,
+  DEFAULT_TTS_ENGINE,
+  ModelProvider,
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
@@ -112,7 +115,15 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
 
+import { ClientApi } from "../client/api";
+import { createTTSPlayer } from "../utils/audio";
+import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
+
+import { isEmpty } from "lodash-es";
+
 const localStorage = safeLocalStorage();
+
+const ttsPlayer = createTTSPlayer();
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -443,6 +454,7 @@ export function ChatActions(props: {
   hitBottom: boolean;
   uploading: boolean;
   setShowShortcutKeyModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserInput: (input: string) => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -981,6 +993,7 @@ function _Chat() {
       chatStore.updateCurrentSession(
         (session) => (session.clearContextIndex = session.messages.length),
       ),
+    fork: () => chatStore.forkSession(),
     del: () => chatStore.deleteSession(chatStore.currentSessionIndex),
   });
 
@@ -1005,7 +1018,7 @@ function _Chat() {
   };
 
   const doSubmit = (userInput: string) => {
-    if (userInput.trim() === "") return;
+    if (userInput.trim() === "" && isEmpty(attachImages)) return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
       setUserInput("");
@@ -1184,10 +1197,55 @@ function _Chat() {
     });
   };
 
+  const accessStore = useAccessStore();
+  const [speechStatus, setSpeechStatus] = useState(false);
+  const [speechLoading, setSpeechLoading] = useState(false);
+  async function openaiSpeech(text: string) {
+    if (speechStatus) {
+      ttsPlayer.stop();
+      setSpeechStatus(false);
+    } else {
+      var api: ClientApi;
+      api = new ClientApi(ModelProvider.GPT);
+      const config = useAppConfig.getState();
+      setSpeechLoading(true);
+      ttsPlayer.init();
+      let audioBuffer: ArrayBuffer;
+      const { markdownToTxt } = require("markdown-to-txt");
+      const textContent = markdownToTxt(text);
+      if (config.ttsConfig.engine !== DEFAULT_TTS_ENGINE) {
+        const edgeVoiceName = accessStore.edgeVoiceName();
+        const tts = new MsEdgeTTS();
+        await tts.setMetadata(
+          edgeVoiceName,
+          OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3,
+        );
+        audioBuffer = await tts.toArrayBuffer(textContent);
+      } else {
+        audioBuffer = await api.llm.speech({
+          model: config.ttsConfig.model,
+          input: textContent,
+          voice: config.ttsConfig.voice,
+          speed: config.ttsConfig.speed,
+        });
+      }
+      setSpeechStatus(true);
+      ttsPlayer
+        .play(audioBuffer, () => {
+          setSpeechStatus(false);
+        })
+        .catch((e) => {
+          console.error("[OpenAI Speech]", e);
+          showToast(prettyObject(e));
+          setSpeechStatus(false);
+        })
+        .finally(() => setSpeechLoading(false));
+    }
+  }
+
   const context: RenderMessage[] = useMemo(() => {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
-  const accessStore = useAccessStore();
 
   if (
     context.length === 0 &&
@@ -1724,6 +1782,25 @@ function _Chat() {
                                   )
                                 }
                               />
+                              {config.ttsConfig.enable && (
+                                <ChatAction
+                                  text={
+                                    speechStatus
+                                      ? Locale.Chat.Actions.StopSpeech
+                                      : Locale.Chat.Actions.Speech
+                                  }
+                                  icon={
+                                    speechStatus ? (
+                                      <SpeakStopIcon />
+                                    ) : (
+                                      <SpeakIcon />
+                                    )
+                                  }
+                                  onClick={() =>
+                                    openaiSpeech(getMessageTextContent(message))
+                                  }
+                                />
+                              )}
                             </>
                           )}
                         </div>
@@ -1741,6 +1818,7 @@ function _Chat() {
                       {message?.tools?.map((tool) => (
                         <div
                           key={tool.id}
+                          title={tool?.errorMsg}
                           className={styles["chat-message-tool"]}
                         >
                           {tool.isError === false ? (
@@ -1842,6 +1920,7 @@ function _Chat() {
             onSearch("");
           }}
           setShowShortcutKeyModal={setShowShortcutKeyModal}
+          setUserInput={setUserInput}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
