@@ -8,10 +8,6 @@ export {
   Serper,
   type SerperParameters,
 } from "@langchain/community/tools/serper";
-export {
-  GoogleCustomSearch,
-  type GoogleCustomSearchParams,
-} from "@langchain/community/tools/google_custom_search";
 export { AIPluginTool } from "@langchain/community/tools/aiplugin";
 export {
   WikipediaQueryRun,

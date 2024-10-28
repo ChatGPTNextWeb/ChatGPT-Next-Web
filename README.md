@@ -62,6 +62,7 @@
     - [GoogleCustomSearch](https://api.js.langchain.com/classes/langchain_tools.GoogleCustomSearch.html)
   
       - 环境变量：
+        - `GOOGLE_PLUGIN_API_PROXY_PREFIX` 与 `DDG_API_PROXY_PREFIX` 变量使用方法一致
         - ~~`GOOGLE_API_KEY`~~ `GOOGLE_SEARCH_API_KEY`
         - `GOOGLE_CSE_ID`
       - 申请参考：[说明](https://stackoverflow.com/questions/37083058/programmatically-searching-google-in-python-using-custom-search)
@@ -78,7 +79,9 @@
   
     - ChooseSearchEngine（作者：[hang666](https://github.com/hang666)）
   
-      - 环境变量：`CHOOSE_SEARCH_ENGINE`
+      - 环境变量：
+        - `CHOOSE_SEARCH_ENGINE`
+        - `GOOGLE_PLUGIN_API_PROXY_PREFIX` 与 `DDG_API_PROXY_PREFIX` 变量使用方法一致，只会对 google 进行代理
   
         可选项如下：
   

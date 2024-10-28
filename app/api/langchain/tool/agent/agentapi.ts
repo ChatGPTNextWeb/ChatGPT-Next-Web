@@ -28,6 +28,7 @@ import {
 import { convertToOpenAITool } from "@langchain/core/utils/function_calling";
 import { BaiduSearch } from "@/app/api/langchain-tools/baidu_search";
 import { GoogleSearch } from "@/app/api/langchain-tools/google_search";
+import { GoogleCustomSearch } from "@/app/api/langchain-tools/google_custom_search";
 import { formatToOpenAIToolMessages } from "langchain/agents/format_scratchpad/openai_tools";
 import {
   OpenAIToolsAgentOutputParser,
@@ -49,7 +50,6 @@ import {
   AIMessage,
 } from "@langchain/core/messages";
 import { MultimodalContent } from "@/app/client/api";
-import { GoogleCustomSearch } from "@/app/api/langchain-tools/langchian-tool-index";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 
 export interface RequestMessage {

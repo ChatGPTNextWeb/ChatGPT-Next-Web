@@ -4,6 +4,8 @@ import { Tool } from "@langchain/core/tools";
 import * as cheerio from "cheerio";
 import { getRandomUserAgent } from "./ua_tools";
 
+const API_PROXY_PREFIX = process.env.GOOGLE_PLUGIN_API_PROXY_PREFIX ?? "";
+
 interface SearchResults {
   /** The web results of the search. */
   results: SearchResult[];
@@ -31,7 +33,7 @@ async function search(
   const headers = new Headers();
   headers.append("User-Agent", getRandomUserAgent());
   const resp = await fetch(
-    `https://www.google.com/search?nfpr=1&num=${maxResults}&pws=0&q=${encodeURIComponent(
+    `${API_PROXY_PREFIX}https://www.google.com/search?nfpr=1&num=${maxResults}&pws=0&q=${encodeURIComponent(
       input,
     )}`,
     {
