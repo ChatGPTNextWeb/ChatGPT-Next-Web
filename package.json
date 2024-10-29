@@ -56,9 +56,9 @@
   "devDependencies": {
     "@tauri-apps/api": "^1.6.0",
     "@tauri-apps/cli": "1.5.11",
-    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.0",
-    "@types/jest": "^29.5.13",
+    "@types/jest": "^29.5.14",
     "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.11.30",
