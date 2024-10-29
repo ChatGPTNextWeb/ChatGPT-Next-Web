@@ -21,6 +21,7 @@ import {
 } from "./artifacts";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
+
 import { useAppConfig } from "../store/config";
 
 export function Mermaid(props: { code: string }) {
@@ -168,6 +169,12 @@ export function PreCode(props: { children: any }) {
 }
 
 function CustomCode(props: { children: any; className?: string }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const config = useAppConfig();
+  const enableCodeFold =
+    session.mask?.enableCodeFold !== false && config.enableCodeFold;
+
   const ref = useRef<HTMLPreElement>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [showToggle, setShowToggle] = useState(false);
@@ -183,44 +190,32 @@ function CustomCode(props: { children: any; className?: string }) {
   const toggleCollapsed = () => {
     setCollapsed((collapsed) => !collapsed);
   };
+  const renderShowMoreButton = () => {
+    if (showToggle && enableCodeFold && collapsed) {
+      return (
+        <div className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}>
+          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
+        </div>
+      );
+    }
+    return null;
+  };
   return (
     <>
       <code
         className={props?.className}
         ref={ref}
         style={{
-          maxHeight: collapsed ? "400px" : "none",
+          maxHeight: enableCodeFold && collapsed ? "400px" : "none",
           overflowY: "hidden",
         }}
       >
         {props.children}
       </code>
-      {showToggle && collapsed && (
-        <div
-          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
-        >
-          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
-        </div>
-      )}
+
+      {renderShowMoreButton()}
     </>
   );
-}
-
-function escapeDollarNumber(text: string) {
-  let escapedText = "";
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
-      char = "\\$";
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
 }
 
 function escapeBrackets(text: string) {
@@ -251,7 +246,7 @@ function tryWrapHtmlCode(text: string) {
       },
     )
     .replace(
-      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*?)([`]*?)([\n\r]*?)/g,
+      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*)([`]*)([\n\r]*?)/g,
       (match, bodyEnd, space, htmlEnd, newLine, quoteEnd) => {
         return !quoteEnd ? bodyEnd + space + htmlEnd + "\n```\n" : match;
       },
@@ -260,7 +255,7 @@ function tryWrapHtmlCode(text: string) {
 
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
-    return tryWrapHtmlCode(escapeBrackets(escapeDollarNumber(props.content)));
+    return tryWrapHtmlCode(escapeBrackets(props.content));
   }, [props.content]);
 
   return (

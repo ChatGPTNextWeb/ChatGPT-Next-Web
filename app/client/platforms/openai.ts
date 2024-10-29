@@ -2,7 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
+  OPENAI_BASE_URL,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
@@ -42,6 +42,7 @@ import {
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -98,7 +99,7 @@ export class ChatGPTApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -352,7 +353,7 @@ export class ChatGPTApi implements LLMApi {
         // make a fetch request
         const requestTimeoutId = setTimeout(
           () => controller.abort(),
-          isDalle3 || isO1 ? REQUEST_TIMEOUT_MS * 2 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
+          isDalle3 || isO1 ? REQUEST_TIMEOUT_MS * 4 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
         );
 
         const res = await fetch(chatPath, chatPayload);

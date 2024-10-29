@@ -1,11 +1,6 @@
 "use client";
 // azure and openai, using same models. so using same LLMApi.
-import {
-  ApiPath,
-  MOONSHOT_BASE_URL,
-  Moonshot,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
+import { ApiPath, XAI_BASE_URL, XAI, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -26,7 +21,7 @@ import { getMessageTextContent } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
-export class MoonshotApi implements LLMApi {
+export class XAIApi implements LLMApi {
   private disableListModels = true;
 
   path(path: string): string {
@@ -35,19 +30,19 @@ export class MoonshotApi implements LLMApi {
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.moonshotUrl;
+      baseUrl = accessStore.xaiUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.Moonshot;
-      baseUrl = isApp ? MOONSHOT_BASE_URL : apiPath;
+      const apiPath = ApiPath.XAI;
+      baseUrl = isApp ? XAI_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Moonshot)) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.XAI)) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -88,18 +83,16 @@ export class MoonshotApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
-      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
-      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] openai payload: ", requestPayload);
+    console.log("[Request] xai payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(Moonshot.ChatPath);
+      const chatPath = this.path(XAI.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
