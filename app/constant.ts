@@ -12,6 +12,8 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const STABILITY_BASE_URL = "https://api.stability.ai";
 
 export const OPENAI_BASE_URL = "https://api.openai.com";
+export const BEDROCK_BASE_URL =
+  "https://bedrock-runtime.us-west-2.amazonaws.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
@@ -49,6 +51,7 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "",
+  Bedrock = "/api/bedrock",
   Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
@@ -115,6 +118,7 @@ export enum ServiceProvider {
   Stability = "Stability",
   Iflytek = "Iflytek",
   XAI = "XAI",
+  Bedrock = "Bedrock",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -128,6 +132,7 @@ export enum GoogleSafetySettingsThreshold {
 
 export enum ModelProvider {
   Stability = "Stability",
+  Bedrock = "Bedrock",
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
@@ -302,6 +307,26 @@ const openaiModels = [
   "dall-e-3",
   "o1-mini",
   "o1-preview",
+];
+
+const bedrockModels = [
+  // Claude Models
+  "anthropic.claude-3-haiku-20240307-v1:0",
+  "anthropic.claude-3-sonnet-20240229-v1:0",
+  "anthropic.claude-3-opus-20240229-v1:0",
+  "anthropic.claude-3-5-sonnet-20240620-v1:0",
+  "anthropic.claude-3-5-sonnet-20241022-v2:0",
+  // Amazon Titan Models
+  "amazon.titan-text-express-v1",
+  "amazon.titan-text-lite-v1",
+  // Meta Llama Models
+  "meta.llama3-2-1b-instruct-v1:0",
+  "meta.llama3-2-3b-instruct-v1:0",
+  "meta.llama3-2-11b-instruct-v1:0",
+  //Mistral
+  "mistral.mistral-7b-instruct-v0:2",
+  "mistral.mixtral-8x7b-instruct-v0:1",
+  "mistral.mistral-large-2407-v1:0",
 ];
 
 const googleModels = [
@@ -497,6 +522,17 @@ export const DEFAULT_MODELS = [
       providerName: "XAI",
       providerType: "xai",
       sorted: 11,
+    },
+  })),
+  ...bedrockModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "bedrock",
+      providerName: "Bedrock",
+      providerType: "bedrock",
+      sorted: 12,
     },
   })),
 ] as const;

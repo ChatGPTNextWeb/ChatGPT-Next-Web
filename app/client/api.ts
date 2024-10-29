@@ -12,6 +12,7 @@ import {
   useChatStore,
 } from "../store";
 import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
+import { BedrockApi } from "./platforms/bedrock";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
@@ -129,6 +130,9 @@ export class ClientApi {
 
   constructor(provider: ModelProvider = ModelProvider.GPT) {
     switch (provider) {
+      case ModelProvider.Bedrock:
+        this.llm = new BedrockApi();
+        break;
       case ModelProvider.GeminiPro:
         this.llm = new GeminiProApi();
         break;
@@ -235,6 +239,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   function getConfig() {
     const modelConfig = chatStore.currentSession().mask.modelConfig;
+    const isBedrock = modelConfig.providerName === ServiceProvider.Bedrock;
     const isGoogle = modelConfig.providerName === ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
@@ -247,6 +252,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
+      : isBedrock
+      ? accessStore.awsAccessKeyId // Use AWS access key for Bedrock
       : isAzure
       ? accessStore.azureApiKey
       : isAnthropic
@@ -265,6 +272,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         : ""
       : accessStore.openaiApiKey;
     return {
+      isBedrock,
       isGoogle,
       isAzure,
       isAnthropic,
@@ -286,10 +294,13 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? "x-api-key"
       : isGoogle
       ? "x-goog-api-key"
+      : isBedrock
+      ? "x-api-key"
       : "Authorization";
   }
 
   const {
+    isBedrock,
     isGoogle,
     isAzure,
     isAnthropic,
@@ -302,17 +313,27 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   const authHeader = getAuthHeader();
 
-  const bearerToken = getBearerToken(
-    apiKey,
-    isAzure || isAnthropic || isGoogle,
-  );
-
-  if (bearerToken) {
-    headers[authHeader] = bearerToken;
-  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
-    headers["Authorization"] = getBearerToken(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
+  if (isBedrock) {
+    // Add AWS credentials for Bedrock
+    headers["X-Region"] = accessStore.awsRegion;
+    headers["X-Access-Key"] = accessStore.awsAccessKeyId;
+    headers["X-Secret-Key"] = accessStore.awsSecretAccessKey;
+    if (accessStore.awsSessionToken) {
+      headers["X-Session-Token"] = accessStore.awsSessionToken;
+    }
+  } else {
+    const bearerToken = getBearerToken(
+      apiKey,
+      isAzure || isAnthropic || isGoogle,
     );
+
+    if (bearerToken) {
+      headers[authHeader] = bearerToken;
+    } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+      headers["Authorization"] = getBearerToken(
+        ACCESS_CODE_PREFIX + accessStore.accessCode,
+      );
+    }
   }
 
   return headers;
@@ -320,6 +341,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
 export function getClientApi(provider: ServiceProvider): ClientApi {
   switch (provider) {
+    case ServiceProvider.Bedrock:
+      return new ClientApi(ModelProvider.Bedrock);
     case ServiceProvider.Google:
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:

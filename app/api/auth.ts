@@ -52,6 +52,28 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       msg: "you are not allowed to access with your own api key",
     };
   }
+  // Special handling for Bedrock
+  if (modelProvider === ModelProvider.Bedrock) {
+    const region = req.headers.get("X-Region");
+    const accessKeyId = req.headers.get("X-Access-Key");
+    const secretKey = req.headers.get("X-Secret-Key");
+
+    console.log("[Auth] Bedrock credentials:", {
+      region,
+      accessKeyId: accessKeyId ? "***" : undefined,
+      secretKey: secretKey ? "***" : undefined,
+    });
+
+    // Check if AWS credentials are provided
+    if (!region || !accessKeyId || !secretKey) {
+      return {
+        error: true,
+        msg: "Missing AWS credentials. Please configure Region, Access Key ID, and Secret Access Key in settings.",
+      };
+    }
+
+    return { error: false };
+  }
 
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
