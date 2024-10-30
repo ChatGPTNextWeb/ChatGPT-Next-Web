@@ -30,6 +30,8 @@ export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const XAI_BASE_URL = "https://api.x.ai";
 
+export const GLM_BASE_URL = "https://open.bigmodel.cn";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -62,6 +64,7 @@ export enum ApiPath {
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
   XAI = "/api/xai",
+  GLM = "/api/glm",
 }
 
 export enum SlotID {
@@ -115,6 +118,7 @@ export enum ServiceProvider {
   Stability = "Stability",
   Iflytek = "Iflytek",
   XAI = "XAI",
+  GLM = "GLM",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -138,6 +142,7 @@ export enum ModelProvider {
   Moonshot = "Moonshot",
   Iflytek = "Iflytek",
   XAI = "XAI",
+  GLM = "GLM",
 }
 
 export const Stability = {
@@ -223,6 +228,11 @@ export const Iflytek = {
 export const XAI = {
   ExampleEndpoint: XAI_BASE_URL,
   ChatPath: "v1/chat/completions",
+};
+
+export const GLM = {
+  ExampleEndpoint: GLM_BASE_URL,
+  ChatPath: "/api/paas/v4/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -376,6 +386,17 @@ const iflytekModels = [
 
 const xAIModes = ["grok-beta"];
 
+const glmModels = [
+  "glm-4-plus",
+  "glm-4-0520",
+  "glm-4",
+  "glm-4-air",
+  "glm-4-airx",
+  "glm-4-long",
+  "glm-4-flashx",
+  "glm-4-flash",
+];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -497,6 +518,17 @@ export const DEFAULT_MODELS = [
       providerName: "XAI",
       providerType: "xai",
       sorted: 11,
+    },
+  })),
+  ...glmModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "glm",
+      providerName: "GLM",
+      providerType: "glm",
+      sorted: 12,
     },
   })),
 ] as const;

@@ -457,6 +457,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      GLM: {
+        ApiKey: {
+          Title: "GLM API Key",
+          SubTitle: "Use a custom GLM API Key",
+          Placeholder: "GLM API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability API Key",

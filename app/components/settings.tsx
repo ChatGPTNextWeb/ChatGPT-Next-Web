@@ -72,6 +72,7 @@ import {
   Stability,
   Iflytek,
   SAAS_CHAT_URL,
+  GLM,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1234,6 +1235,45 @@ export function Settings() {
     </>
   );
 
+  const glmConfigComponent = accessStore.provider === ServiceProvider.GLM && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.GLM.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.GLM.Endpoint.SubTitle + GLM.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.GLM.Endpoint.Title}
+          type="text"
+          value={accessStore.glmUrl}
+          placeholder={GLM.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.glmUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.GLM.ApiKey.Title}
+        subTitle={Locale.Settings.Access.GLM.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.GLM.ApiKey.Title}
+          value={accessStore.glmApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.GLM.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.glmApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
     <>
@@ -1693,6 +1733,7 @@ export function Settings() {
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
                   {XAIConfigComponent}
+                  {glmConfigComponent}
                 </>
               )}
             </>
