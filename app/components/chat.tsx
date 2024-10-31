@@ -8,7 +8,7 @@ import React, {
   Fragment,
   RefObject,
 } from "react";
-
+import DocumentIcon from "../icons/document.svg";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -548,6 +548,91 @@ export function ChatActions(props: {
       );
     }
   }, [chatStore, currentModel, models]);
+  const isBedrockProvider = currentProviderName === ServiceProvider.Bedrock;
+
+  // ... (rest of the existing state and functions)
+
+  async function uploadDocument() {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".pdf,.csv,.doc,.docx,.xls,.xlsx,.html,.txt,.md";
+    fileInput.onchange = async (event: any) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      props.setUploading(true);
+      try {
+        // Convert file to base64
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (!e.target?.result) return reject("Failed to read file");
+            const base64 = (e.target.result as string).split(",")[1];
+            resolve(base64);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        // Get file extension
+        const format = file.name.split(".").pop()?.toLowerCase() || "";
+        const supportedFormats = [
+          "pdf",
+          "csv",
+          "doc",
+          "docx",
+          "xls",
+          "xlsx",
+          "html",
+          "txt",
+          "md",
+        ];
+
+        if (!supportedFormats.includes(format)) {
+          throw new Error("Unsupported file format");
+        }
+
+        // Format file size
+        const size = file.size;
+        let sizeStr = "";
+        if (size < 1024) {
+          sizeStr = size + " B";
+        } else if (size < 1024 * 1024) {
+          sizeStr = (size / 1024).toFixed(2) + " KB";
+        } else {
+          sizeStr = (size / (1024 * 1024)).toFixed(2) + " MB";
+        }
+
+        // Create document content with only filename and size
+        const documentContent = {
+          type: "document",
+          document: {
+            format,
+            name: file.name,
+            size: sizeStr,
+            source: {
+              bytes: base64,
+            },
+          },
+        };
+
+        // Submit the document content as a JSON string but only display filename and size
+        const displayContent = `Document: ${file.name} (${sizeStr})`;
+        chatStore.onUserInput(displayContent);
+
+        // Store the actual document content separately if needed
+        // chatStore.updateCurrentSession((session) => {
+        //   session.lastDocument = documentContent;
+        // });
+      } catch (error) {
+        console.error("Failed to upload document:", error);
+        showToast("Failed to upload document");
+      } finally {
+        props.setUploading(false);
+      }
+    };
+    fileInput.click();
+  }
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -578,6 +663,14 @@ export function ChatActions(props: {
           onClick={props.uploadImage}
           text={Locale.Chat.InputActions.UploadImage}
           icon={props.uploading ? <LoadingButtonIcon /> : <ImageIcon />}
+        />
+      )}
+      {/* Add document upload button for Bedrock */}
+      {isBedrockProvider && (
+        <ChatAction
+          onClick={uploadDocument}
+          text={Locale.Chat.InputActions.UploadDocument}
+          icon={props.uploading ? <LoadingButtonIcon /> : <DocumentIcon />}
         />
       )}
       <ChatAction

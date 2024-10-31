@@ -4,25 +4,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 import {
   BedrockRuntimeClient,
-  InvokeModelCommand,
+  ConverseStreamOutput,
   ValidationException,
+  ModelStreamErrorException,
+  ThrottlingException,
+  ServiceUnavailableException,
+  InternalServerException,
 } from "@aws-sdk/client-bedrock-runtime";
 import { validateModelId } from "./bedrock/utils";
-import {
-  ConverseRequest,
-  formatRequestBody,
-  parseModelResponse,
-} from "./bedrock/models";
+import { ConverseRequest, createConverseStreamCommand } from "./bedrock/models";
 
-interface ContentItem {
-  type: string;
-  text?: string;
-  image_url?: {
-    url: string;
-  };
-}
-
-const ALLOWED_PATH = new Set(["invoke", "converse"]);
+const ALLOWED_PATH = new Set(["converse"]);
 
 export async function handle(
   req: NextRequest,
@@ -57,29 +49,10 @@ export async function handle(
   }
 
   try {
-    if (subpath === "converse") {
-      const response = await handleConverseRequest(req);
-      return response;
-    } else {
-      const response = await handleInvokeRequest(req);
-      return response;
-    }
+    const response = await handleConverseRequest(req);
+    return response;
   } catch (e) {
     console.error("[Bedrock] ", e);
-
-    // Handle specific error cases
-    if (e instanceof ValidationException) {
-      return NextResponse.json(
-        {
-          error: true,
-          message:
-            "Model validation error. If using a Llama model, please provide a valid inference profile ARN.",
-          details: e.message,
-        },
-        { status: 400 },
-      );
-    }
-
     return NextResponse.json(
       {
         error: true,
@@ -92,9 +65,7 @@ export async function handle(
 }
 
 async function handleConverseRequest(req: NextRequest) {
-  const controller = new AbortController();
-
-  const region = req.headers.get("X-Region") || "us-east-1";
+  const region = req.headers.get("X-Region") || "us-west-2";
   const accessKeyId = req.headers.get("X-Access-Key") || "";
   const secretAccessKey = req.headers.get("X-Secret-Key") || "";
   const sessionToken = req.headers.get("X-Session-Token");
@@ -111,8 +82,6 @@ async function handleConverseRequest(req: NextRequest) {
     );
   }
 
-  console.log("[Bedrock] Using region:", region);
-
   const client = new BedrockRuntimeClient({
     region,
     credentials: {
@@ -121,168 +90,172 @@ async function handleConverseRequest(req: NextRequest) {
       sessionToken: sessionToken || undefined,
     },
   });
-
-  const timeoutId = setTimeout(
-    () => {
-      controller.abort();
-    },
-    10 * 60 * 1000,
-  );
 
   try {
     const body = (await req.json()) as ConverseRequest;
     const { modelId } = body;
 
-    // Validate model ID
     const validationError = validateModelId(modelId);
     if (validationError) {
-      throw new ValidationException({
-        message: validationError,
-        $metadata: {},
-      });
+      throw new Error(validationError);
     }
 
     console.log("[Bedrock] Invoking model:", modelId);
-    console.log("[Bedrock] Messages:", body.messages);
 
-    const requestBody = formatRequestBody(body);
-
-    const jsonString = JSON.stringify(requestBody);
-    const input = {
-      modelId,
-      contentType: "application/json",
-      accept: "application/json",
-      body: Uint8Array.from(Buffer.from(jsonString)),
-    };
-
-    console.log("[Bedrock] Request input:", {
-      ...input,
-      body: requestBody,
-    });
-
-    const command = new InvokeModelCommand(input);
+    const command = createConverseStreamCommand(body);
     const response = await client.send(command);
 
-    console.log("[Bedrock] Got response");
-
-    // Parse and format the response based on model type
-    const responseBody = new TextDecoder().decode(response.body);
-    const formattedResponse = parseModelResponse(responseBody, modelId);
-
-    return NextResponse.json(formattedResponse);
-  } catch (e) {
-    console.error("[Bedrock] Request error:", e);
-    throw e; // Let the main error handler deal with it
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
-
-async function handleInvokeRequest(req: NextRequest) {
-  const controller = new AbortController();
-
-  const region = req.headers.get("X-Region") || "us-east-1";
-  const accessKeyId = req.headers.get("X-Access-Key") || "";
-  const secretAccessKey = req.headers.get("X-Secret-Key") || "";
-  const sessionToken = req.headers.get("X-Session-Token");
-
-  if (!accessKeyId || !secretAccessKey) {
-    return NextResponse.json(
-      {
-        error: true,
-        message: "Missing AWS credentials",
-      },
-      {
-        status: 401,
-      },
-    );
-  }
-
-  const client = new BedrockRuntimeClient({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-      sessionToken: sessionToken || undefined,
-    },
-  });
-
-  const timeoutId = setTimeout(
-    () => {
-      controller.abort();
-    },
-    10 * 60 * 1000,
-  );
-
-  try {
-    const body = await req.json();
-    const { messages, model } = body;
-
-    // Validate model ID
-    const validationError = validateModelId(model);
-    if (validationError) {
-      throw new ValidationException({
-        message: validationError,
-        $metadata: {},
-      });
+    if (!response.stream) {
+      throw new Error("No stream in response");
     }
 
-    console.log("[Bedrock] Invoking model:", model);
-    console.log("[Bedrock] Messages:", messages);
+    // Create a ReadableStream for the response
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          const responseStream = response.stream;
+          if (!responseStream) {
+            throw new Error("No stream in response");
+          }
 
-    const requestBody = formatRequestBody({
-      modelId: model,
-      messages,
-      inferenceConfig: {
-        maxTokens: 2048,
-        temperature: 0.7,
-        topP: 0.9,
+          for await (const event of responseStream) {
+            const output = event as ConverseStreamOutput;
+
+            if ("messageStart" in output && output.messageStart?.role) {
+              controller.enqueue(
+                `data: ${JSON.stringify({
+                  type: "messageStart",
+                  role: output.messageStart.role,
+                })}\n\n`,
+              );
+            } else if (
+              "contentBlockStart" in output &&
+              output.contentBlockStart
+            ) {
+              controller.enqueue(
+                `data: ${JSON.stringify({
+                  type: "contentBlockStart",
+                  index: output.contentBlockStart.contentBlockIndex,
+                  start: output.contentBlockStart.start,
+                })}\n\n`,
+              );
+            } else if (
+              "contentBlockDelta" in output &&
+              output.contentBlockDelta?.delta
+            ) {
+              if ("text" in output.contentBlockDelta.delta) {
+                controller.enqueue(
+                  `data: ${JSON.stringify({
+                    type: "text",
+                    content: output.contentBlockDelta.delta.text,
+                  })}\n\n`,
+                );
+              } else if ("toolUse" in output.contentBlockDelta.delta) {
+                controller.enqueue(
+                  `data: ${JSON.stringify({
+                    type: "toolUse",
+                    input: output.contentBlockDelta.delta.toolUse?.input,
+                  })}\n\n`,
+                );
+              }
+            } else if (
+              "contentBlockStop" in output &&
+              output.contentBlockStop
+            ) {
+              controller.enqueue(
+                `data: ${JSON.stringify({
+                  type: "contentBlockStop",
+                  index: output.contentBlockStop.contentBlockIndex,
+                })}\n\n`,
+              );
+            } else if ("messageStop" in output && output.messageStop) {
+              controller.enqueue(
+                `data: ${JSON.stringify({
+                  type: "messageStop",
+                  stopReason: output.messageStop.stopReason,
+                  additionalModelResponseFields:
+                    output.messageStop.additionalModelResponseFields,
+                })}\n\n`,
+              );
+            } else if ("metadata" in output && output.metadata) {
+              controller.enqueue(
+                `data: ${JSON.stringify({
+                  type: "metadata",
+                  usage: output.metadata.usage,
+                  metrics: output.metadata.metrics,
+                  trace: output.metadata.trace,
+                })}\n\n`,
+              );
+            }
+          }
+          controller.close();
+        } catch (error) {
+          if (error instanceof ValidationException) {
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "ValidationException",
+                message: error.message,
+              })}\n\n`,
+            );
+          } else if (error instanceof ModelStreamErrorException) {
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "ModelStreamErrorException",
+                message: error.message,
+                originalStatusCode: error.originalStatusCode,
+                originalMessage: error.originalMessage,
+              })}\n\n`,
+            );
+          } else if (error instanceof ThrottlingException) {
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "ThrottlingException",
+                message: error.message,
+              })}\n\n`,
+            );
+          } else if (error instanceof ServiceUnavailableException) {
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "ServiceUnavailableException",
+                message: error.message,
+              })}\n\n`,
+            );
+          } else if (error instanceof InternalServerException) {
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "InternalServerException",
+                message: error.message,
+              })}\n\n`,
+            );
+          } else {
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "UnknownError",
+                message:
+                  error instanceof Error ? error.message : "Unknown error",
+              })}\n\n`,
+            );
+          }
+          controller.close();
+        }
       },
     });
 
-    const jsonString = JSON.stringify(requestBody);
-    const input = {
-      modelId: model,
-      contentType: "application/json",
-      accept: "application/json",
-      body: Uint8Array.from(Buffer.from(jsonString)),
-    };
-
-    console.log("[Bedrock] Request input:", {
-      ...input,
-      body: requestBody,
-    });
-
-    const command = new InvokeModelCommand(input);
-    const response = await client.send(command);
-
-    console.log("[Bedrock] Got response");
-
-    // Parse and format the response
-    const responseBody = new TextDecoder().decode(response.body);
-    const formattedResponse = parseModelResponse(responseBody, model);
-
-    // Extract text content from the response
-    let textContent = "";
-    if (formattedResponse.content && Array.isArray(formattedResponse.content)) {
-      textContent = formattedResponse.content
-        .filter((item: ContentItem) => item.type === "text")
-        .map((item: ContentItem) => item.text || "")
-        .join("");
-    } else if (typeof formattedResponse.content === "string") {
-      textContent = formattedResponse.content;
-    }
-
-    // Return plain text response
-    return new NextResponse(textContent, {
+    return new Response(stream, {
       headers: {
-        "Content-Type": "text/plain",
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
       },
     });
-  } catch (e) {
-    console.error("[Bedrock] Request error:", e);
-    throw e;
-  } finally {
-    clearTimeout(timeoutId);
+  } catch (error) {
+    console.error("[Bedrock] Request error:", error);
+    throw error;
   }
 }

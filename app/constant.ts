@@ -314,18 +314,12 @@ const bedrockModels = [
   "anthropic.claude-3-haiku-20240307-v1:0",
   "anthropic.claude-3-sonnet-20240229-v1:0",
   "anthropic.claude-3-opus-20240229-v1:0",
-  "anthropic.claude-3-5-sonnet-20240620-v1:0",
   "anthropic.claude-3-5-sonnet-20241022-v2:0",
-  // Amazon Titan Models
-  "amazon.titan-text-express-v1",
-  "amazon.titan-text-lite-v1",
   // Meta Llama Models
-  "meta.llama3-2-1b-instruct-v1:0",
-  "meta.llama3-2-3b-instruct-v1:0",
   "meta.llama3-2-11b-instruct-v1:0",
+  "meta.llama3-2-90b-instruct-v1:0",
   //Mistral
-  "mistral.mistral-7b-instruct-v0:2",
-  "mistral.mixtral-8x7b-instruct-v0:1",
+  "mistral.mistral-large-2402-v1:0",
   "mistral.mistral-large-2407-v1:0",
 ];
 

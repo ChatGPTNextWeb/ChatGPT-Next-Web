@@ -1,280 +1,405 @@
 import {
-  Message,
-  validateMessageOrder,
-  processDocumentContent,
-  BedrockTextBlock,
-  BedrockImageBlock,
-  BedrockDocumentBlock,
-} from "./utils";
+  ConverseStreamCommand,
+  type ConverseStreamCommandInput,
+  type Message,
+  type ContentBlock,
+  type SystemContentBlock,
+  type Tool,
+  type ToolChoice,
+  type ToolResultContentBlock,
+} from "@aws-sdk/client-bedrock-runtime";
 
 export interface ConverseRequest {
   modelId: string;
-  messages: Message[];
+  messages: {
+    role: "user" | "assistant" | "system";
+    content: string | ContentItem[];
+  }[];
   inferenceConfig?: {
     maxTokens?: number;
     temperature?: number;
     topP?: number;
+    stopSequences?: string[];
   };
-  system?: string;
-  tools?: Array<{
-    type: "function";
-    function: {
-      name: string;
-      description: string;
-      parameters: {
-        type: string;
-        properties: Record<string, any>;
-        required: string[];
-      };
-    };
-  }>;
+  toolConfig?: {
+    tools: Tool[];
+    toolChoice?: ToolChoice;
+  };
 }
 
 interface ContentItem {
-  type: string;
+  type: "text" | "image_url" | "document" | "tool_use" | "tool_result";
   text?: string;
   image_url?: {
-    url: string;
+    url: string; // base64 data URL
   };
   document?: {
-    format: string;
+    format:
+      | "pdf"
+      | "csv"
+      | "doc"
+      | "docx"
+      | "xls"
+      | "xlsx"
+      | "html"
+      | "txt"
+      | "md";
     name: string;
     source: {
-      bytes: string;
+      bytes: string; // base64
     };
+  };
+  tool_use?: {
+    tool_use_id: string;
+    name: string;
+    input: any;
+  };
+  tool_result?: {
+    tool_use_id: string;
+    content: ToolResultItem[];
+    status: "success" | "error";
   };
 }
 
-type ProcessedContent =
-  | ContentItem
-  | BedrockTextBlock
-  | BedrockImageBlock
-  | BedrockDocumentBlock
-  | {
-      type: string;
-      source: { type: string; media_type: string; data: string };
+interface ToolResultItem {
+  type: "text" | "image" | "document" | "json";
+  text?: string;
+  image?: {
+    format: "png" | "jpeg" | "gif" | "webp";
+    source: {
+      bytes: string; // base64
     };
-
-// Helper function to format request body based on model type
-export function formatRequestBody(request: ConverseRequest) {
-  const baseModel = request.modelId;
-  const messages = validateMessageOrder(request.messages).map((msg) => ({
-    role: msg.role,
-    content: Array.isArray(msg.content)
-      ? msg.content.map((item: ContentItem) => {
-          if (item.type === "image_url" && item.image_url?.url) {
-            // If it's a base64 image URL
-            const base64Match = item.image_url.url.match(
-              /^data:image\/([a-zA-Z]*);base64,([^"]*)$/,
-            );
-            if (base64Match) {
-              return {
-                type: "image",
-                source: {
-                  type: "base64",
-                  media_type: `image/${base64Match[1]}`,
-                  data: base64Match[2],
-                },
-              };
-            }
-            // If it's not a base64 URL, return as is
-            return item;
-          }
-          if ("document" in item) {
-            try {
-              return processDocumentContent(item);
-            } catch (error) {
-              console.error("Error processing document:", error);
-              return {
-                type: "text",
-                text: `[Document: ${item.document?.name || "Unknown"}]`,
-              };
-            }
-          }
-          return { type: "text", text: item.text };
-        })
-      : [{ type: "text", text: msg.content }],
-  }));
-
-  const systemPrompt = request.system
-    ? [{ type: "text", text: request.system }]
-    : undefined;
-
-  const baseConfig = {
-    max_tokens: request.inferenceConfig?.maxTokens || 2048,
-    temperature: request.inferenceConfig?.temperature || 0.7,
-    top_p: request.inferenceConfig?.topP || 0.9,
   };
+  document?: {
+    format:
+      | "pdf"
+      | "csv"
+      | "doc"
+      | "docx"
+      | "xls"
+      | "xlsx"
+      | "html"
+      | "txt"
+      | "md";
+    name: string;
+    source: {
+      bytes: string; // base64
+    };
+  };
+  json?: any;
+}
 
-  if (baseModel.startsWith("anthropic.claude")) {
-    return {
-      messages,
-      system: systemPrompt,
-      anthropic_version: "bedrock-2023-05-31",
-      ...baseConfig,
-      ...(request.tools && { tools: request.tools }),
-    };
-  } else if (
-    baseModel.startsWith("meta.llama") ||
-    baseModel.startsWith("mistral.")
-  ) {
-    return {
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: Array.isArray(m.content)
-          ? m.content.map((c: ProcessedContent) => {
-              if ("text" in c) return { type: "text", text: c.text || "" };
-              if ("image_url" in c)
-                return {
-                  type: "text",
-                  text: `[Image: ${c.image_url?.url || "URL not provided"}]`,
-                };
-              if ("document" in c)
-                return {
-                  type: "text",
-                  text: `[Document: ${c.document?.name || "Unknown"}]`,
-                };
-              return { type: "text", text: "" };
-            })
-          : [{ type: "text", text: m.content }],
-      })),
-      ...baseConfig,
-      stop_sequences: ["\n\nHuman:", "\n\nAssistant:"],
-    };
-  } else if (baseModel.startsWith("amazon.titan")) {
-    const formattedText = messages.map((m) => ({
-      role: m.role,
-      content: [
-        {
-          type: "text",
-          text: `${m.role === "user" ? "Human" : "Assistant"}: ${
-            Array.isArray(m.content)
-              ? m.content
-                  .map((c: ProcessedContent) => {
-                    if ("text" in c) return c.text || "";
-                    if ("image_url" in c)
-                      return `[Image: ${
-                        c.image_url?.url || "URL not provided"
-                      }]`;
-                    if ("document" in c)
-                      return `[Document: ${c.document?.name || "Unknown"}]`;
-                    return "";
-                  })
-                  .join("")
-              : m.content
-          }`,
-        },
-      ],
-    }));
-
-    return {
-      messages: formattedText,
-      textGenerationConfig: {
-        maxTokenCount: baseConfig.max_tokens,
-        temperature: baseConfig.temperature,
-        topP: baseConfig.top_p,
-        stopSequences: ["Human:", "Assistant:"],
-      },
-    };
+function convertContentToAWSBlock(item: ContentItem): ContentBlock | null {
+  if (item.type === "text" && item.text) {
+    return { text: item.text };
   }
 
-  throw new Error(`Unsupported model: ${baseModel}`);
-}
-
-// Helper function to parse and format response based on model type
-export function parseModelResponse(responseBody: string, modelId: string): any {
-  const baseModel = modelId;
-
-  try {
-    const response = JSON.parse(responseBody);
-
-    // Common response format for all models
-    const formatResponse = (content: string | any[]) => ({
-      role: "assistant",
-      content: Array.isArray(content)
-        ? content.map((item) => {
-            if (typeof item === "string") {
-              return { type: "text", text: item };
-            }
-            // Handle different content types
-            if ("text" in item) {
-              return { type: "text", text: item.text || "" };
-            }
-            if ("image" in item) {
-              return {
-                type: "image_url",
-                image_url: {
-                  url: `data:image/${
-                    item.source?.media_type || "image/png"
-                  };base64,${item.source?.data || ""}`,
-                },
-              };
-            }
-            // Document responses are converted to text
-            if ("document" in item) {
-              return {
-                type: "text",
-                text: `[Document Content]\n${item.text || ""}`,
-              };
-            }
-            return { type: "text", text: item.text || "" };
-          })
-        : [{ type: "text", text: content }],
-      stop_reason: response.stop_reason || response.stopReason || "end_turn",
-      usage: response.usage || {
-        input_tokens: 0,
-        output_tokens: 0,
-        total_tokens: 0,
-      },
-    });
-
-    if (baseModel.startsWith("anthropic.claude")) {
-      // Handle the new Converse API response format
-      if (response.output?.message) {
+  if (item.type === "image_url" && item.image_url?.url) {
+    const base64Match = item.image_url.url.match(
+      /^data:image\/([a-zA-Z]*);base64,([^"]*)/,
+    );
+    if (base64Match) {
+      const format = base64Match[1].toLowerCase();
+      if (
+        format === "png" ||
+        format === "jpeg" ||
+        format === "gif" ||
+        format === "webp"
+      ) {
+        const base64Data = base64Match[2];
         return {
-          role: response.output.message.role,
-          content: response.output.message.content.map((item: any) => {
-            if ("text" in item) return { type: "text", text: item.text || "" };
-            if ("image" in item) {
-              return {
-                type: "image_url",
-                image_url: {
-                  url: `data:${item.source?.media_type || "image/png"};base64,${
-                    item.source?.data || ""
-                  }`,
-                },
-              };
-            }
-            return { type: "text", text: item.text || "" };
-          }),
-          stop_reason: response.stopReason,
-          usage: response.usage,
+          image: {
+            format: format as "png" | "jpeg" | "gif" | "webp",
+            source: {
+              bytes: Uint8Array.from(Buffer.from(base64Data, "base64")),
+            },
+          },
         };
       }
-      // Fallback for older format
-      return formatResponse(
-        response.content ||
-          (response.completion
-            ? [{ type: "text", text: response.completion }]
-            : []),
-      );
-    } else if (baseModel.startsWith("meta.llama")) {
-      return formatResponse(response.generation || response.completion || "");
-    } else if (baseModel.startsWith("amazon.titan")) {
-      return formatResponse(response.results?.[0]?.outputText || "");
-    } else if (baseModel.startsWith("mistral.")) {
-      return formatResponse(
-        response.outputs?.[0]?.text || response.response || "",
-      );
     }
+  }
 
-    throw new Error(`Unsupported model: ${baseModel}`);
-  } catch (e) {
-    console.error("[Bedrock] Failed to parse response:", e);
-    // Return raw text as fallback
+  if (item.type === "document" && item.document) {
     return {
-      role: "assistant",
-      content: [{ type: "text", text: responseBody }],
+      document: {
+        format: item.document.format,
+        name: item.document.name,
+        source: {
+          bytes: Uint8Array.from(
+            Buffer.from(item.document.source.bytes, "base64"),
+          ),
+        },
+      },
     };
   }
+
+  if (item.type === "tool_use" && item.tool_use) {
+    return {
+      toolUse: {
+        toolUseId: item.tool_use.tool_use_id,
+        name: item.tool_use.name,
+        input: item.tool_use.input,
+      },
+    };
+  }
+
+  if (item.type === "tool_result" && item.tool_result) {
+    const toolResultContent = item.tool_result.content
+      .map((resultItem) => {
+        if (resultItem.type === "text" && resultItem.text) {
+          return { text: resultItem.text } as ToolResultContentBlock;
+        }
+        if (resultItem.type === "image" && resultItem.image) {
+          return {
+            image: {
+              format: resultItem.image.format,
+              source: {
+                bytes: Uint8Array.from(
+                  Buffer.from(resultItem.image.source.bytes, "base64"),
+                ),
+              },
+            },
+          } as ToolResultContentBlock;
+        }
+        if (resultItem.type === "document" && resultItem.document) {
+          return {
+            document: {
+              format: resultItem.document.format,
+              name: resultItem.document.name,
+              source: {
+                bytes: Uint8Array.from(
+                  Buffer.from(resultItem.document.source.bytes, "base64"),
+                ),
+              },
+            },
+          } as ToolResultContentBlock;
+        }
+        if (resultItem.type === "json" && resultItem.json) {
+          return { json: resultItem.json } as ToolResultContentBlock;
+        }
+        return null;
+      })
+      .filter((content): content is ToolResultContentBlock => content !== null);
+
+    if (toolResultContent.length === 0) {
+      return null;
+    }
+
+    return {
+      toolResult: {
+        toolUseId: item.tool_result.tool_use_id,
+        content: toolResultContent,
+        status: item.tool_result.status,
+      },
+    };
+  }
+
+  return null;
+}
+
+function convertContentToAWS(content: string | ContentItem[]): ContentBlock[] {
+  if (typeof content === "string") {
+    return [{ text: content }];
+  }
+
+  // Filter out null blocks and ensure each content block is valid
+  const blocks = content
+    .map(convertContentToAWSBlock)
+    .filter((block): block is ContentBlock => block !== null);
+
+  // If no valid blocks, provide a default text block
+  if (blocks.length === 0) {
+    return [{ text: "" }];
+  }
+
+  return blocks;
+}
+
+function formatMessages(messages: ConverseRequest["messages"]): {
+  messages: Message[];
+  systemPrompt?: SystemContentBlock[];
+} {
+  // Extract system messages
+  const systemMessages = messages.filter((msg) => msg.role === "system");
+  const nonSystemMessages = messages.filter((msg) => msg.role !== "system");
+
+  // Convert system messages to SystemContentBlock array
+  const systemPrompt =
+    systemMessages.length > 0
+      ? systemMessages.map((msg) => {
+          if (typeof msg.content === "string") {
+            return { text: msg.content } as SystemContentBlock;
+          }
+          // For multimodal content, convert each content item
+          const blocks = convertContentToAWS(msg.content);
+          return blocks[0] as SystemContentBlock; // Take first block as system content
+        })
+      : undefined;
+
+  // Format remaining messages
+  const formattedMessages = nonSystemMessages.reduce(
+    (acc: Message[], curr, idx) => {
+      // Skip if same role as previous message
+      if (idx > 0 && curr.role === nonSystemMessages[idx - 1].role) {
+        return acc;
+      }
+
+      const content = convertContentToAWS(curr.content);
+      if (content.length > 0) {
+        acc.push({
+          role: curr.role as "user" | "assistant",
+          content,
+        });
+      }
+      return acc;
+    },
+    [],
+  );
+
+  // Ensure conversation starts with user
+  if (formattedMessages.length === 0 || formattedMessages[0].role !== "user") {
+    formattedMessages.unshift({
+      role: "user",
+      content: [{ text: "Hello" }],
+    });
+  }
+
+  // Ensure conversation ends with user
+  if (formattedMessages[formattedMessages.length - 1].role !== "user") {
+    formattedMessages.push({
+      role: "user",
+      content: [{ text: "Continue" }],
+    });
+  }
+
+  return { messages: formattedMessages, systemPrompt };
+}
+
+export function formatRequestBody(
+  request: ConverseRequest,
+): ConverseStreamCommandInput {
+  const { messages, systemPrompt } = formatMessages(request.messages);
+  const input: ConverseStreamCommandInput = {
+    modelId: request.modelId,
+    messages,
+    ...(systemPrompt && { system: systemPrompt }),
+  };
+
+  if (request.inferenceConfig) {
+    input.inferenceConfig = {
+      maxTokens: request.inferenceConfig.maxTokens,
+      temperature: request.inferenceConfig.temperature,
+      topP: request.inferenceConfig.topP,
+      stopSequences: request.inferenceConfig.stopSequences,
+    };
+  }
+
+  if (request.toolConfig) {
+    input.toolConfig = {
+      tools: request.toolConfig.tools,
+      toolChoice: request.toolConfig.toolChoice,
+    };
+  }
+
+  // Create a clean version of the input for logging
+  const logInput = {
+    ...input,
+    messages: messages.map((msg) => ({
+      role: msg.role,
+      content: msg.content?.map((content) => {
+        if ("image" in content && content.image) {
+          return {
+            image: {
+              format: content.image.format,
+              source: { bytes: "[BINARY]" },
+            },
+          };
+        }
+        if ("document" in content && content.document) {
+          return {
+            document: { ...content.document, source: { bytes: "[BINARY]" } },
+          };
+        }
+        return content;
+      }),
+    })),
+  };
+
+  console.log(
+    "[Bedrock] Formatted request:",
+    JSON.stringify(logInput, null, 2),
+  );
+  return input;
+}
+
+export function createConverseStreamCommand(request: ConverseRequest) {
+  const input = formatRequestBody(request);
+  return new ConverseStreamCommand(input);
+}
+
+export interface StreamResponse {
+  type:
+    | "messageStart"
+    | "contentBlockStart"
+    | "contentBlockDelta"
+    | "contentBlockStop"
+    | "messageStop"
+    | "metadata"
+    | "error";
+  role?: string;
+  index?: number;
+  start?: any;
+  delta?: any;
+  stopReason?: string;
+  additionalModelResponseFields?: any;
+  usage?: any;
+  metrics?: any;
+  trace?: any;
+  error?: string;
+  message?: string;
+  originalStatusCode?: number;
+  originalMessage?: string;
+}
+
+export function parseStreamResponse(chunk: any): StreamResponse | null {
+  if (chunk.messageStart) {
+    return { type: "messageStart", role: chunk.messageStart.role };
+  }
+  if (chunk.contentBlockStart) {
+    return {
+      type: "contentBlockStart",
+      index: chunk.contentBlockStart.contentBlockIndex,
+      start: chunk.contentBlockStart.start,
+    };
+  }
+  if (chunk.contentBlockDelta) {
+    return {
+      type: "contentBlockDelta",
+      index: chunk.contentBlockDelta.contentBlockIndex,
+      delta: chunk.contentBlockDelta.delta,
+    };
+  }
+  if (chunk.contentBlockStop) {
+    return {
+      type: "contentBlockStop",
+      index: chunk.contentBlockStop.contentBlockIndex,
+    };
+  }
+  if (chunk.messageStop) {
+    return {
+      type: "messageStop",
+      stopReason: chunk.messageStop.stopReason,
+      additionalModelResponseFields:
+        chunk.messageStop.additionalModelResponseFields,
+    };
+  }
+  if (chunk.metadata) {
+    return {
+      type: "metadata",
+      usage: chunk.metadata.usage,
+      metrics: chunk.metadata.metrics,
+      trace: chunk.metadata.trace,
+    };
+  }
+  return null;
 }

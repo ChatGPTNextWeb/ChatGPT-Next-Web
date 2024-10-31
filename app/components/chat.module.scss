@@ -75,6 +75,17 @@
       pointer-events: none;
     }
 
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
     &:hover {
       --delay: 0.5s;
       width: var(--full-width);
@@ -393,8 +404,8 @@
 
     button {
       padding: 7px;
-    }
   }
+}
 
   /* Specific styles for iOS devices */
   @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
