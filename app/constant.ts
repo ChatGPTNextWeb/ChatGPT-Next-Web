@@ -118,7 +118,7 @@ export enum ServiceProvider {
   Stability = "Stability",
   Iflytek = "Iflytek",
   XAI = "XAI",
-  GLM = "GLM",
+  GLM = "ChatGLM",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -142,7 +142,7 @@ export enum ModelProvider {
   Moonshot = "Moonshot",
   Iflytek = "Iflytek",
   XAI = "XAI",
-  GLM = "GLM",
+  GLM = "ChatGLM",
 }
 
 export const Stability = {
@@ -525,9 +525,9 @@ export const DEFAULT_MODELS = [
     available: true,
     sorted: seq++,
     provider: {
-      id: "glm",
-      providerName: "GLM",
-      providerType: "glm",
+      id: "chatglm",
+      providerName: "ChatGLM",
+      providerType: "chatglm",
       sorted: 12,
     },
   })),
