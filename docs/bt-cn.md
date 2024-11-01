@@ -3,7 +3,7 @@
 ## 拥有自己的宝塔
 当你需要通过 宝塔面板 部署本项目之前，需要在服务器上先安装好 宝塔面板工具。 接下来的 部署流程 都建立在已有宝塔面板的前提下。宝塔安装请参考 ([宝塔官网](https://www.bt.cn/new/download.html))
 
-> 注意：本项目需要宝塔面板版本 9.2.0 以上
+> 注意：本项目需要宝塔面板版本 9.2.0 及以上
 
 ## 一键安装
 ![bt-install-1](./images/bt/bt-install-1.jpeg)
@@ -19,7 +19,7 @@
 
 ## 如何访问
 ![bt-install-3](./images/bt/bt-install-3.jpeg)
-通过根据服务器IP地址和配置的web端口(http://host:port)，在浏览器中打开 ChatGPT-Next-Web。
+通过根据 服务器IP地址 和配置的 web端口 http://$(host):$(port))，在浏览器中打开 ChatGPT-Next-Web。
 
 ![bt-install-4](./images/bt/bt-install-4.jpeg)
 若配置了 访问权限密码，访问大模型前需要登录，请点击 登录，获取访问权限。
