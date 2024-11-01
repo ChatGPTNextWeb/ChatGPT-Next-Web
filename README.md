@@ -397,6 +397,9 @@ yarn dev
 
 > [简体中文 > 如何部署到私人服务器](./README_CN.md#部署)
 
+### BT Install
+> [简体中文 > 如何通过宝塔一键部署](./docs/bt-cn.md)
+
 ### Docker (Recommended)
 
 ```shell
