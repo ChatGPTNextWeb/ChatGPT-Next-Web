@@ -22,7 +22,7 @@ export async function handle(
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.GLM);
+  const authResult = auth(req, ModelProvider.ChatGLM);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
