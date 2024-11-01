@@ -30,7 +30,7 @@ export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const XAI_BASE_URL = "https://api.x.ai";
 
-export const GLM_BASE_URL = "https://open.bigmodel.cn";
+export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
@@ -64,7 +64,7 @@ export enum ApiPath {
   Stability = "/api/stability",
   Artifacts = "/api/artifacts",
   XAI = "/api/xai",
-  GLM = "/api/glm",
+  ChatGLM = "/api/chatglm",
 }
 
 export enum SlotID {
@@ -118,7 +118,7 @@ export enum ServiceProvider {
   Stability = "Stability",
   Iflytek = "Iflytek",
   XAI = "XAI",
-  GLM = "ChatGLM",
+  ChatGLM = "ChatGLM",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -142,7 +142,7 @@ export enum ModelProvider {
   Moonshot = "Moonshot",
   Iflytek = "Iflytek",
   XAI = "XAI",
-  GLM = "ChatGLM",
+  ChatGLM = "ChatGLM",
 }
 
 export const Stability = {
@@ -230,8 +230,8 @@ export const XAI = {
   ChatPath: "v1/chat/completions",
 };
 
-export const GLM = {
-  ExampleEndpoint: GLM_BASE_URL,
+export const ChatGLM = {
+  ExampleEndpoint: CHATGLM_BASE_URL,
   ChatPath: "/api/paas/v4/chat/completions",
 };
 
@@ -386,7 +386,7 @@ const iflytekModels = [
 
 const xAIModes = ["grok-beta"];
 
-const glmModels = [
+const chatglmModels = [
   "glm-4-plus",
   "glm-4-0520",
   "glm-4",
@@ -520,7 +520,7 @@ export const DEFAULT_MODELS = [
       sorted: 11,
     },
   })),
-  ...glmModels.map((name) => ({
+  ...chatglmModels.map((name) => ({
     name,
     available: true,
     sorted: seq++,

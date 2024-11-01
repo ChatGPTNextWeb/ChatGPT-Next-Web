@@ -14,7 +14,7 @@ import {
   STABILITY_BASE_URL,
   IFLYTEK_BASE_URL,
   XAI_BASE_URL,
-  GLM_BASE_URL,
+  CHATGLM_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -48,7 +48,7 @@ const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
 
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
 
-const DEFAULT_GLM_URL = isApp ? GLM_BASE_URL : ApiPath.GLM;
+const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -111,9 +111,9 @@ const DEFAULT_ACCESS_STATE = {
   xaiUrl: DEFAULT_XAI_URL,
   xaiApiKey: "",
 
-  // glm
-  glmUrl: DEFAULT_GLM_URL,
-  glmApiKey: "",
+  // chatglm
+  chatglmUrl: DEFAULT_CHATGLM_URL,
+  chatglmApiKey: "",
 
   // server config
   needCode: true,
@@ -187,8 +187,8 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["xaiApiKey"]);
     },
 
-    isValidGLM() {
-      return ensure(get(), ["glmApiKey"]);
+    isValidChatGLM() {
+      return ensure(get(), ["chatglmApiKey"]);
     },
 
     isAuthorized() {
@@ -207,7 +207,7 @@ export const useAccessStore = createPersistStore(
         this.isValidMoonshot() ||
         this.isValidIflytek() ||
         this.isValidXAI() ||
-        this.isValidGLM() ||
+        this.isValidChatGLM() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );

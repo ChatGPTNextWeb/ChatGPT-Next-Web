@@ -72,7 +72,7 @@ import {
   Stability,
   Iflytek,
   SAAS_CHAT_URL,
-  GLM,
+  ChatGLM,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1235,38 +1235,40 @@ export function Settings() {
     </>
   );
 
-  const glmConfigComponent = accessStore.provider === ServiceProvider.GLM && (
+  const chatglmConfigComponent = accessStore.provider ===
+    ServiceProvider.ChatGLM && (
     <>
       <ListItem
-        title={Locale.Settings.Access.GLM.Endpoint.Title}
+        title={Locale.Settings.Access.ChatGLM.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.GLM.Endpoint.SubTitle + GLM.ExampleEndpoint
+          Locale.Settings.Access.ChatGLM.Endpoint.SubTitle +
+          ChatGLM.ExampleEndpoint
         }
       >
         <input
-          aria-label={Locale.Settings.Access.GLM.Endpoint.Title}
+          aria-label={Locale.Settings.Access.ChatGLM.Endpoint.Title}
           type="text"
-          value={accessStore.glmUrl}
-          placeholder={GLM.ExampleEndpoint}
+          value={accessStore.chatglmUrl}
+          placeholder={ChatGLM.ExampleEndpoint}
           onChange={(e) =>
             accessStore.update(
-              (access) => (access.glmUrl = e.currentTarget.value),
+              (access) => (access.chatglmUrl = e.currentTarget.value),
             )
           }
         ></input>
       </ListItem>
       <ListItem
-        title={Locale.Settings.Access.GLM.ApiKey.Title}
-        subTitle={Locale.Settings.Access.GLM.ApiKey.SubTitle}
+        title={Locale.Settings.Access.ChatGLM.ApiKey.Title}
+        subTitle={Locale.Settings.Access.ChatGLM.ApiKey.SubTitle}
       >
         <PasswordInput
-          aria-label={Locale.Settings.Access.GLM.ApiKey.Title}
-          value={accessStore.glmApiKey}
+          aria-label={Locale.Settings.Access.ChatGLM.ApiKey.Title}
+          value={accessStore.chatglmApiKey}
           type="text"
-          placeholder={Locale.Settings.Access.GLM.ApiKey.Placeholder}
+          placeholder={Locale.Settings.Access.ChatGLM.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.glmApiKey = e.currentTarget.value),
+              (access) => (access.chatglmApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1733,7 +1735,7 @@ export function Settings() {
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
                   {XAIConfigComponent}
-                  {glmConfigComponent}
+                  {chatglmConfigComponent}
                 </>
               )}
             </>

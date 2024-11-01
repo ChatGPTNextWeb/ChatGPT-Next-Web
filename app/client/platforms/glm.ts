@@ -1,5 +1,10 @@
 "use client";
-import { ApiPath, GLM_BASE_URL, GLM, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  ApiPath,
+  CHATGLM_BASE_URL,
+  ChatGLM,
+  REQUEST_TIMEOUT_MS,
+} from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -20,7 +25,7 @@ import { getMessageTextContent } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
-export class GLMApi implements LLMApi {
+export class ChatGLMApi implements LLMApi {
   private disableListModels = true;
 
   path(path: string): string {
@@ -29,19 +34,19 @@ export class GLMApi implements LLMApi {
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.glmUrl;
+      baseUrl = accessStore.chatglmUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.GLM;
-      baseUrl = isApp ? GLM_BASE_URL : apiPath;
+      const apiPath = ApiPath.ChatGLM;
+      baseUrl = isApp ? CHATGLM_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.GLM)) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.ChatGLM)) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -91,7 +96,7 @@ export class GLMApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(GLM.ChatPath);
+      const chatPath = this.path(ChatGLM.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),

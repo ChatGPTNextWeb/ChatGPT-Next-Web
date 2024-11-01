@@ -1,6 +1,6 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  GLM_BASE_URL,
+  CHATGLM_BASE_URL,
   ApiPath,
   ModelProvider,
   ServiceProvider,
@@ -42,9 +42,9 @@ async function request(req: NextRequest) {
   const controller = new AbortController();
 
   // alibaba use base url or just remove the path
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.GLM, "");
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.ChatGLM, "");
 
-  let baseUrl = serverConfig.glmUrl || GLM_BASE_URL;
+  let baseUrl = serverConfig.chatglmUrl || CHATGLM_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -92,7 +92,7 @@ async function request(req: NextRequest) {
         isModelAvailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.GLM as string,
+          ServiceProvider.ChatGLM as string,
         )
       ) {
         return NextResponse.json(

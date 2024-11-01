@@ -473,11 +473,11 @@ const cn = {
           SubTitle: "样例：",
         },
       },
-      GLM: {
+      ChatGLM: {
         ApiKey: {
           Title: "接口密钥",
-          SubTitle: "使用自定义 GLM API Key",
-          Placeholder: "GLM API Key",
+          SubTitle: "使用自定义 ChatGLM API Key",
+          Placeholder: "ChatGLM API Key",
         },
         Endpoint: {
           Title: "接口地址",

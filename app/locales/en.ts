@@ -457,11 +457,11 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
-      GLM: {
+      ChatGLM: {
         ApiKey: {
-          Title: "GLM API Key",
-          SubTitle: "Use a custom GLM API Key",
-          Placeholder: "GLM API Key",
+          Title: "ChatGLM API Key",
+          SubTitle: "Use a custom ChatGLM API Key",
+          Placeholder: "ChatGLM API Key",
         },
         Endpoint: {
           Title: "Endpoint Address",
