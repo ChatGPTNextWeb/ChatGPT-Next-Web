@@ -178,9 +178,10 @@ export function SideBarHeader(props: {
       >
         <div className={styles["sidebar-title-container"]}>
           <div className={styles["sidebar-title"]} data-tauri-drag-region>
-            {title}
+            舟joe Chat
           </div>
           <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
+            你自己的AI助手。
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>{logo}</div>
       </div>
