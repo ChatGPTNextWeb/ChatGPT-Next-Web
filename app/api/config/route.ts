@@ -17,6 +17,7 @@ const DANGER_CONFIG = {
   defaultModel: serverConfig.defaultModel,
   edgeTTSVoiceName: serverConfig.edgeTTSVoiceName,
   isUseOpenAIEndpointForAllModels: serverConfig.isUseOpenAIEndpointForAllModels,
+  disableModelProviderDisplay: serverConfig.disableModelProviderDisplay,
 };
 
 declare global {
