@@ -316,8 +316,8 @@ const bedrockModels = [
   "anthropic.claude-3-opus-20240229-v1:0",
   "anthropic.claude-3-5-sonnet-20241022-v2:0",
   // Meta Llama Models
-  "meta.llama3-2-11b-instruct-v1:0",
-  "meta.llama3-2-90b-instruct-v1:0",
+  "us.meta.llama3-2-11b-instruct-v1:0",
+  "us.meta.llama3-2-90b-instruct-v1:0",
   //Mistral
   "mistral.mistral-large-2402-v1:0",
   "mistral.mistral-large-2407-v1:0",
@@ -529,7 +529,7 @@ export const DEFAULT_MODELS = [
       id: "bedrock",
       providerName: "Bedrock",
       providerType: "bedrock",
-      sorted: 12,
+      sorted: 13,
     },
   })),
 ] as const;

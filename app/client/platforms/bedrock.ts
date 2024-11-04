@@ -239,7 +239,7 @@ export class BedrockApi implements LLMApi {
                   // Add error message as text content
                   content.push({
                     type: "text",
-                    text: `Error processing image: ${e.message}`,
+                    text: `Error processing image: ${e}`,
                   });
                 }
               }
