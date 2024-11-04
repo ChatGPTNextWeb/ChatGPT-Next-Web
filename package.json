@@ -58,7 +58,7 @@
     "@tauri-apps/cli": "1.5.11",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/react": "^16.0.0",
+    "@testing-library/react": "^16.0.1",
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "^4.17.12",
