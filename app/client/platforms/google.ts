@@ -274,7 +274,7 @@ export class GeminiProApi implements LLMApi {
           );
         }
         const message = apiClient.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
