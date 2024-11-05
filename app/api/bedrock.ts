@@ -41,10 +41,7 @@ export interface ConverseRequest {
 
 function supportsToolUse(modelId: string): boolean {
   // llama和mistral模型不支持工具调用
-  return (
-    modelId.toLowerCase().includes("claude-3") &&
-    modelId.toLowerCase().includes("claude-3-5")
-  );
+  return modelId.toLowerCase().includes("claude-3");
 }
 
 function formatRequestBody(

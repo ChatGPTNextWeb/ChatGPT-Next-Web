@@ -38,11 +38,9 @@ export class BedrockApi implements LLMApi {
   }
 
   extractMessage(res: any) {
-    console.log("[Response] bedrock response: ", res);
-    if (Array.isArray(res?.content)) {
-      return res.content;
-    }
-    return res;
+    console.log("[Response] claude response: ", res);
+
+    return res?.content?.[0]?.text;
   }
 
   async chat(options: ChatOptions): Promise<void> {
@@ -173,7 +171,6 @@ export class BedrockApi implements LLMApi {
         funcs,
         controller,
         // parseSSE
-        // parseSSE
         (text: string, runTools: ChatMessageTool[]) => {
           // console.log("parseSSE", text, runTools);
           let chunkJson:
@@ -269,13 +266,14 @@ export class BedrockApi implements LLMApi {
       };
 
       try {
-        controller.signal.onabort = () => options.onFinish("");
+        controller.signal.onabort = () =>
+          options.onFinish("", new Response(null, { status: 400 }));
 
         const res = await fetch(conversePath, payload);
         const resJson = await res.json();
 
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       } catch (e) {
         console.error("failed to chat", e);
         options.onError?.(e as Error);
