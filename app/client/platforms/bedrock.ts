@@ -1,12 +1,5 @@
 import { ApiPath } from "../../constant";
-import {
-  ChatOptions,
-  getHeaders,
-  LLMApi,
-  LLMModel,
-  LLMUsage,
-  SpeechOptions,
-} from "../api";
+import { ChatOptions, getHeaders, LLMApi, SpeechOptions } from "../api";
 import {
   useAppConfig,
   usePluginStore,
@@ -289,10 +282,13 @@ export class BedrockApi implements LLMApi {
       }
     }
   }
-  usage(): Promise<LLMUsage> {
-    throw new Error("Method not implemented.");
+  async usage() {
+    return {
+      used: 0,
+      total: 0,
+    };
   }
-  models(): Promise<LLMModel[]> {
-    throw new Error("Method not implemented.");
+  async models() {
+    return [];
   }
 }
