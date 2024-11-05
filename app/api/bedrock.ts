@@ -32,6 +32,11 @@ export interface ConverseRequest {
     topP?: number;
     stopSequences?: string[];
   };
+  tools?: {
+    name: string;
+    description?: string;
+    input_schema: any;
+  }[];
 }
 
 function formatRequestBody(
@@ -83,13 +88,31 @@ function formatRequestBody(
       : [{ text: msg.content || ";" } as ContentBlock],
   }));
 
-  return {
+  const input: ConverseStreamCommandInput = {
     modelId: request.modelId,
     messages,
     ...(request.inferenceConfig && {
       inferenceConfig: request.inferenceConfig,
     }),
   };
+
+  // 添加工具配置
+  if (request.tools?.length) {
+    input.toolConfig = {
+      tools: request.tools.map((tool) => ({
+        toolSpec: {
+          name: tool.name,
+          description: tool.description,
+          inputSchema: {
+            json: tool.input_schema, // 直接使用对象，不需要 JSON.stringify
+          },
+        },
+      })),
+      toolChoice: { auto: {} },
+    };
+  }
+
+  return input;
 }
 
 export async function handle(
@@ -137,8 +160,6 @@ export async function handle(
     });
 
     const body = (await req.json()) as ConverseRequest;
-    console.log("[Bedrock] Request:", body.modelId);
-
     const command = new ConverseStreamCommand(formatRequestBody(body));
     const response = await client.send(command);
 
