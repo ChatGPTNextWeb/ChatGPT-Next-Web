@@ -19,7 +19,7 @@ type StreamResponse = {
   headers: Record<string, string>;
 };
 
-export function fetch(url: string, options?: RequestInit): Promise<any> {
+export function fetch(url: string, options?: RequestInit): Promise<Response> {
   if (window.__TAURI__) {
     const {
       signal,
