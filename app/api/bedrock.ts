@@ -39,6 +39,14 @@ export interface ConverseRequest {
   }[];
 }
 
+function supportsToolUse(modelId: string): boolean {
+  // llama和mistral模型不支持工具调用
+  return (
+    modelId.toLowerCase().includes("claude-3") &&
+    modelId.toLowerCase().includes("claude-3-5")
+  );
+}
+
 function formatRequestBody(
   request: ConverseRequest,
 ): ConverseStreamCommandInput {
@@ -96,15 +104,15 @@ function formatRequestBody(
     }),
   };
 
-  // 添加工具配置
-  if (request.tools?.length) {
+  // 只有在支持工具调用的模型上才添加toolConfig
+  if (request.tools?.length && supportsToolUse(request.modelId)) {
     input.toolConfig = {
       tools: request.tools.map((tool) => ({
         toolSpec: {
           name: tool.name,
           description: tool.description,
           inputSchema: {
-            json: tool.input_schema, // 直接使用对象，不需要 JSON.stringify
+            json: tool.input_schema,
           },
         },
       })),
