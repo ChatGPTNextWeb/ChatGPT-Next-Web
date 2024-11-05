@@ -1,6 +1,10 @@
 "use client";
-// azure and openai, using same models. so using same LLMApi.
-import { ApiPath, XAI_BASE_URL, XAI, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  ApiPath,
+  CHATGLM_BASE_URL,
+  ChatGLM,
+  REQUEST_TIMEOUT_MS,
+} from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -21,7 +25,7 @@ import { getMessageTextContent } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
-export class XAIApi implements LLMApi {
+export class ChatGLMApi implements LLMApi {
   private disableListModels = true;
 
   path(path: string): string {
@@ -30,19 +34,19 @@ export class XAIApi implements LLMApi {
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.xaiUrl;
+      baseUrl = accessStore.chatglmUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.XAI;
-      baseUrl = isApp ? XAI_BASE_URL : apiPath;
+      const apiPath = ApiPath.ChatGLM;
+      baseUrl = isApp ? CHATGLM_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.XAI)) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.ChatGLM)) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -85,14 +89,14 @@ export class XAIApi implements LLMApi {
       top_p: modelConfig.top_p,
     };
 
-    console.log("[Request] xai payload: ", requestPayload);
+    console.log("[Request] glm payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(XAI.ChatPath);
+      const chatPath = this.path(ChatGLM.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),

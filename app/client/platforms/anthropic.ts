@@ -317,13 +317,14 @@ export class ClaudeApi implements LLMApi {
       };
 
       try {
-        controller.signal.onabort = () => options.onFinish("");
+        controller.signal.onabort = () =>
+          options.onFinish("", new Response(null, { status: 400 }));
 
         const res = await fetch(path, payload);
         const resJson = await res.json();
 
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       } catch (e) {
         console.error("failed to chat", e);
         options.onError?.(e as Error);

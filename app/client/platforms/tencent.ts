@@ -142,6 +142,7 @@ export class HunyuanApi implements LLMApi {
         let responseText = "";
         let remainText = "";
         let finished = false;
+        let responseRes: Response;
 
         // animate response to make it looks smooth
         function animateResponseText() {
@@ -171,7 +172,7 @@ export class HunyuanApi implements LLMApi {
         const finish = () => {
           if (!finished) {
             finished = true;
-            options.onFinish(responseText + remainText);
+            options.onFinish(responseText + remainText, responseRes);
           }
         };
 
@@ -187,7 +188,7 @@ export class HunyuanApi implements LLMApi {
               "[Tencent] request response content type: ",
               contentType,
             );
-
+            responseRes = res;
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
@@ -253,7 +254,7 @@ export class HunyuanApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
