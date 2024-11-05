@@ -1,7 +1,13 @@
 import { AES, enc } from "crypto-js";
 
-const SECRET_KEY = "your-secret-key"; // Replace this with a secure, randomly generated key
-
+const SECRET_KEY =
+  process.env.ENCRYPTION_KEY ||
+  "your-secret-key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // Replace this with a secure, randomly generated key
+if (!SECRET_KEY || SECRET_KEY.length < 32) {
+  throw new Error(
+    "ENCRYPTION_KEY environment variable must be set with at least 32 characters",
+  );
+}
 export function encrypt(data: string): string {
   try {
     return AES.encrypt(data, SECRET_KEY).toString();
