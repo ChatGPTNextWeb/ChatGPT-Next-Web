@@ -40,7 +40,6 @@ export interface ConverseRequest {
 }
 
 function supportsToolUse(modelId: string): boolean {
-  // llama和mistral模型不支持工具调用
   return modelId.toLowerCase().includes("claude-3");
 }
 
