@@ -724,13 +724,14 @@ export const useChatStore = createPersistStore(
               stream: false,
               providerName,
             },
-            onFinish(message) {
-              if (!isValidMessage(message)) return;
-              get().updateCurrentSession(
-                (session) =>
-                  (session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
-              );
+            onFinish(message, responseRes) {
+              if (responseRes?.status === 200) {
+                get().updateCurrentSession(
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
+              }
             },
           });
         }
@@ -744,7 +745,7 @@ export const useChatStore = createPersistStore(
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
-        if (historyMsgLength > modelConfig?.max_tokens ?? 4000) {
+        if (historyMsgLength > (modelConfig?.max_tokens || 4000)) {
           const n = toBeSummarizedMsgs.length;
           toBeSummarizedMsgs = toBeSummarizedMsgs.slice(
             Math.max(0, n - modelConfig.historyMessageCount),
@@ -790,21 +791,19 @@ export const useChatStore = createPersistStore(
             onUpdate(message) {
               session.memoryPrompt = message;
             },
-            onFinish(message) {
-              console.log("[Memory] ", message);
-              get().updateCurrentSession((session) => {
-                session.lastSummarizeIndex = lastSummarizeIndex;
-                session.memoryPrompt = message; // Update the memory prompt for stored it in local storage
-              });
+            onFinish(message, responseRes) {
+              if (responseRes?.status === 200) {
+                console.log("[Memory] ", message);
+                get().updateCurrentSession((session) => {
+                  session.lastSummarizeIndex = lastSummarizeIndex;
+                  session.memoryPrompt = message; // Update the memory prompt for stored it in local storage
+                });
+              }
             },
             onError(err) {
               console.error("[Summarize] ", err);
             },
           });
-        }
-
-        function isValidMessage(message: any): boolean {
-          return typeof message === "string" && !message.startsWith("```json");
         }
       },
 
