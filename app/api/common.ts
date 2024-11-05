@@ -71,7 +71,7 @@ export async function requestOpenai(req: NextRequest) {
         .filter((v) => !!v && !v.startsWith("-") && v.includes(modelName))
         .forEach((m) => {
           const [fullName, displayName] = m.split("=");
-          const [_, providerName] = fullName.split("@");
+          const [_, providerName] = fullName.split(/@(?!.*@)/);
           if (providerName === "azure" && !displayName) {
             const [_, deployId] = (serverConfig?.azureUrl ?? "").split(
               "deployments/",

@@ -645,7 +645,7 @@ export function ChatActions(props: {
           onClose={() => setShowModelSelector(false)}
           onSelection={(s) => {
             if (s.length === 0) return;
-            const [model, providerName] = s[0].split("@");
+            const [model, providerName] = s[0].split(/@(?!.*@)/);
             chatStore.updateCurrentSession((session) => {
               session.mask.modelConfig.model = model as ModelType;
               session.mask.modelConfig.providerName =

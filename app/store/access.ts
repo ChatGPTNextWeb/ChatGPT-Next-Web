@@ -226,7 +226,7 @@ export const useAccessStore = createPersistStore(
         .then((res) => {
           const defaultModel = res.defaultModel ?? "";
           if (defaultModel !== "") {
-            const [model, providerName] = defaultModel.split("@");
+            const [model, providerName] = defaultModel.split(/@(?!.*@)/);
             DEFAULT_CONFIG.modelConfig.model = model;
             DEFAULT_CONFIG.modelConfig.providerName = providerName;
           }

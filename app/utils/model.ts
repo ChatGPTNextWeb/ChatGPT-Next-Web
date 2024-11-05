@@ -79,10 +79,10 @@ export function collectModelTable(
         );
       } else {
         // 1. find model by name, and set available value
-        const [customModelName, customProviderName] = name.split("@");
+        const [customModelName, customProviderName] = name.split(/@(?!.*@)/);
         let count = 0;
         for (const fullName in modelTable) {
-          const [modelName, providerName] = fullName.split("@");
+          const [modelName, providerName] = fullName.split(/@(?!.*@)/);
           if (
             customModelName == modelName &&
             (customProviderName === undefined ||
@@ -102,7 +102,7 @@ export function collectModelTable(
         }
         // 2. if model not exists, create new model with available value
         if (count === 0) {
-          let [customModelName, customProviderName] = name.split("@");
+          let [customModelName, customProviderName] = name.split(/@(?!.*@)/);
           const provider = customProvider(
             customProviderName || customModelName,
           );
@@ -139,7 +139,7 @@ export function collectModelTableWithDefaultModel(
       for (const key of Object.keys(modelTable)) {
         if (
           modelTable[key].available &&
-          key.split("@").shift() == defaultModel
+          key.split(/@(?!.*@)/).shift() == defaultModel
         ) {
           modelTable[key].isDefault = true;
           break;
