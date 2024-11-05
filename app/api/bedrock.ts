@@ -1,6 +1,7 @@
 import { getServerSideConfig } from "../config/server";
 import { prettyObject } from "../utils/format";
 import { NextRequest, NextResponse } from "next/server";
+import { decrypt } from "../utils/encryption";
 import {
   BedrockRuntimeClient,
   ConverseStreamCommand,
@@ -12,12 +13,20 @@ import {
 
 const ALLOWED_PATH = new Set(["converse"]);
 
-function decrypt(str: string): string {
-  try {
-    return Buffer.from(str, "base64").toString().split("").reverse().join("");
-  } catch {
-    return "";
-  }
+// AWS Credential Validation Function
+function validateAwsCredentials(
+  region: string,
+  accessKeyId: string,
+  secretAccessKey: string,
+): boolean {
+  const regionRegex = /^[a-z]{2}-[a-z]+-\d+$/;
+  const accessKeyRegex = /^(AKIA|A3T|ASIA)[A-Z0-9]{16}$/;
+
+  return (
+    regionRegex.test(region) &&
+    accessKeyRegex.test(accessKeyId) &&
+    secretAccessKey.length === 40
+  );
 }
 
 export interface ConverseRequest {
@@ -140,6 +149,7 @@ export async function handle(
   let secretAccessKey = serverConfig.awsSecretKey;
   let sessionToken = undefined;
 
+  // Attempt to get credentials from headers if not in server config
   if (!region || !accessKeyId || !secretAccessKey) {
     region = decrypt(req.headers.get("X-Region") ?? "");
     accessKeyId = decrypt(req.headers.get("X-Access-Key") ?? "");
@@ -149,9 +159,13 @@ export async function handle(
       : undefined;
   }
 
-  if (!region || !accessKeyId || !secretAccessKey) {
+  // Validate AWS credentials
+  if (!validateAwsCredentials(region, accessKeyId, secretAccessKey)) {
     return NextResponse.json(
-      { error: true, msg: "Missing AWS credentials" },
+      {
+        error: true,
+        msg: "Invalid AWS credentials. Please check your region, access key, and secret key.",
+      },
       { status: 401 },
     );
   }
@@ -159,7 +173,11 @@ export async function handle(
   try {
     const client = new BedrockRuntimeClient({
       region,
-      credentials: { accessKeyId, secretAccessKey, sessionToken },
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+        sessionToken,
+      },
     });
 
     const body = (await req.json()) as ConverseRequest;

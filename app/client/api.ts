@@ -23,6 +23,7 @@ import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
+import { encrypt } from "../utils/encryption";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -330,13 +331,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   const authHeader = getAuthHeader();
 
   if (isBedrock) {
-    // 简单加密 AWS credentials
-    const encrypt = (str: string) =>
-      Buffer.from(str.split("").reverse().join("")).toString("base64");
-
+    // Secure encryption of AWS credentials using the new encryption utility
     headers["X-Region"] = encrypt(accessStore.awsRegion);
     headers["X-Access-Key"] = encrypt(accessStore.awsAccessKey);
     headers["X-Secret-Key"] = encrypt(accessStore.awsSecretKey);
+
     if (accessStore.awsSessionToken) {
       headers["X-Session-Token"] = encrypt(accessStore.awsSessionToken);
     }

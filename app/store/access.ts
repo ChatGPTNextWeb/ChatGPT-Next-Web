@@ -22,6 +22,7 @@ import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
 import { DEFAULT_CONFIG } from "./config";
+import { encrypt, decrypt } from "../utils/encryption";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -137,6 +138,9 @@ const DEFAULT_ACCESS_STATE = {
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };
 
+type AccessState = typeof DEFAULT_ACCESS_STATE;
+type BedrockCredentialKey = "awsAccessKey" | "awsSecretKey" | "awsSessionToken";
+
 export const useAccessStore = createPersistStore(
   { ...DEFAULT_ACCESS_STATE },
 
@@ -158,7 +162,43 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidBedrock() {
-      return ensure(get(), ["awsAccessKey", "awsSecretKey", "awsRegion"]);
+      const state = get();
+      return (
+        ensure(state, ["awsAccessKey", "awsSecretKey", "awsRegion"]) &&
+        this.validateAwsCredentials(
+          this.getDecryptedAwsCredential("awsAccessKey"),
+          this.getDecryptedAwsCredential("awsSecretKey"),
+          state.awsRegion,
+        )
+      );
+    },
+
+    validateAwsCredentials(
+      accessKey: string,
+      secretKey: string,
+      region: string,
+    ) {
+      // Comprehensive AWS credential validation
+      const accessKeyRegex = /^(AKIA|A3T|ASIA)[A-Z0-9]{16}$/;
+      const regionRegex = /^[a-z]{2}-[a-z]+-\d+$/;
+
+      return (
+        accessKeyRegex.test(accessKey) && // Validate access key format
+        secretKey.length === 40 && // Validate secret key length
+        regionRegex.test(region) && // Validate region format
+        accessKey !== "" &&
+        secretKey !== "" &&
+        region !== ""
+      );
+    },
+
+    setEncryptedAwsCredential(key: BedrockCredentialKey, value: string) {
+      set({ [key]: encrypt(value) });
+    },
+
+    getDecryptedAwsCredential(key: BedrockCredentialKey): string {
+      const encryptedValue = get()[key];
+      return encryptedValue ? decrypt(encryptedValue) : "";
     },
 
     isValidAzure() {
@@ -226,6 +266,7 @@ export const useAccessStore = createPersistStore(
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
     },
+
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
@@ -247,9 +288,25 @@ export const useAccessStore = createPersistStore(
 
           return res;
         })
-        .then((res: DangerConfig) => {
+
+        .then((res: Partial<AccessState>) => {
           console.log("[Config] got config from server", res);
-          set(() => ({ ...res }));
+          // Encrypt Bedrock-related sensitive data before storing
+          const encryptedRes = { ...res };
+          const keysToEncrypt: BedrockCredentialKey[] = [
+            "awsAccessKey",
+            "awsSecretKey",
+            "awsSessionToken",
+          ];
+
+          keysToEncrypt.forEach((key) => {
+            const value = encryptedRes[key];
+            if (value) {
+              (encryptedRes[key] as string) = encrypt(value as string);
+            }
+          });
+
+          set(() => ({ ...encryptedRes }));
         })
         .catch(() => {
           console.error("[Config] failed to fetch config");
