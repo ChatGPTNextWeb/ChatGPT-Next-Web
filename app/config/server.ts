@@ -13,8 +13,9 @@ declare global {
       OPENAI_ORG_ID?: string; // openai only
 
       // bedrock only
-      BEDROCK_URL?: string;
+      BEDROCK_REGION?: string;
       BEDROCK_API_KEY?: string;
+      BEDROCK_API_SECRET?: string;
 
       VERCEL?: string;
       BUILD_MODE?: "standalone" | "export";
@@ -173,8 +174,9 @@ export const getServerSideConfig = () => {
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
     isBedrock,
-    bedrockUrl: process.env.BEDROCK_URL,
-    bedrockApiKey: getApiKey(process.env.BEDROCK_API_KEY),
+    awsRegion: process.env.AWS_REGION,
+    awsAccessKey: process.env.AWS_ACCESS_KEY,
+    awsSecretKey: process.env.AWS_SECRET_KEY,
 
     isStability,
     stabilityUrl: process.env.STABILITY_URL,

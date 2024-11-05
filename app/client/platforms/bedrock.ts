@@ -8,7 +8,6 @@ import {
   SpeechOptions,
 } from "../api";
 import {
-  useAccessStore,
   useAppConfig,
   usePluginStore,
   useChatStore,
@@ -60,7 +59,6 @@ export class BedrockApi implements LLMApi {
 
   async chat(options: ChatOptions): Promise<void> {
     const visionModel = isVisionModel(options.config.model);
-    const accessStore = useAccessStore.getState();
     const shouldStream = !!options.config.stream;
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -68,12 +66,6 @@ export class BedrockApi implements LLMApi {
       ...{
         model: options.config.model,
       },
-    };
-    const headers: Record<string, string> = {
-      ...getHeaders(),
-      "X-Region": accessStore.awsRegion,
-      "X-Access-Key": accessStore.awsAccessKeyId,
-      "X-Secret-Key": accessStore.awsSecretAccessKey,
     };
 
     // try get base64image from local cache image_url
@@ -196,7 +188,7 @@ export class BedrockApi implements LLMApi {
       return stream(
         conversePath,
         requestBody,
-        headers,
+        getHeaders(),
         Array.isArray(tools)
           ? tools.map((tool: any) => ({
               name: tool?.function?.name,
@@ -208,14 +200,20 @@ export class BedrockApi implements LLMApi {
         controller,
         // parseSSE
         (text: string, runTools: ChatMessageTool[]) => {
-          const event = JSON.parse(text);
+          const parsed = JSON.parse(text);
+          const event = parsed.stream;
 
-          if (event.type === "messageStart") {
+          if (!event) {
+            console.warn("[Bedrock] Unexpected event format:", parsed);
             return "";
           }
 
-          if (event.type === "contentBlockStart" && event.start?.toolUse) {
-            const { toolUseId, name } = event.start.toolUse;
+          if (event.messageStart) {
+            return "";
+          }
+
+          if (event.contentBlockStart?.start?.toolUse) {
+            const { toolUseId, name } = event.contentBlockStart.start.toolUse;
             currentToolUse = {
               id: toolUseId,
               type: "function",
@@ -228,21 +226,34 @@ export class BedrockApi implements LLMApi {
             return "";
           }
 
-          if (event.type === "text" && event.content) {
-            return event.content;
+          if (event.contentBlockDelta?.delta?.text) {
+            return event.contentBlockDelta.delta.text;
           }
 
           if (
-            event.type === "toolUse" &&
-            event.input &&
+            event.contentBlockDelta?.delta?.toolUse?.input &&
             currentToolUse?.function
           ) {
-            currentToolUse.function.arguments += event.input;
+            currentToolUse.function.arguments +=
+              event.contentBlockDelta.delta.toolUse.input;
             return "";
           }
 
-          if (event.type === "error") {
-            throw new Error(event.message || "Unknown error");
+          if (
+            event.internalServerException ||
+            event.modelStreamErrorException ||
+            event.validationException ||
+            event.throttlingException ||
+            event.serviceUnavailableException
+          ) {
+            const errorMessage =
+              event.internalServerException?.message ||
+              event.modelStreamErrorException?.message ||
+              event.validationException?.message ||
+              event.throttlingException?.message ||
+              event.serviceUnavailableException?.message ||
+              "Unknown error";
+            throw new Error(errorMessage);
           }
 
           return "";
@@ -284,7 +295,7 @@ export class BedrockApi implements LLMApi {
       try {
         const response = await fetch(conversePath, {
           method: "POST",
-          headers,
+          headers: getHeaders(),
           body: JSON.stringify(requestBody),
           signal: controller.signal,
         });

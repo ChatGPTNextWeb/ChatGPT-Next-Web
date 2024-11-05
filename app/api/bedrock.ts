@@ -1,7 +1,6 @@
-import { ModelProvider } from "../constant";
+import { getServerSideConfig } from "../config/server";
 import { prettyObject } from "../utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "./auth";
 import {
   BedrockRuntimeClient,
   ConverseStreamCommand,
@@ -15,6 +14,15 @@ import {
   type ToolChoice,
   type ToolResultContentBlock,
 } from "@aws-sdk/client-bedrock-runtime";
+
+// 解密函数
+function decrypt(str: string): string {
+  try {
+    return Buffer.from(str, "base64").toString().split("").reverse().join("");
+  } catch {
+    return "";
+  }
+}
 
 // Constants and Types
 const ALLOWED_PATH = new Set(["converse"]);
@@ -92,26 +100,6 @@ type DocumentFormat =
   | "txt"
   | "md";
 
-// Validation Functions
-function validateModelId(modelId: string): string | null {
-  if (
-    modelId.startsWith("meta.llama") &&
-    !modelId.includes("inference-profile")
-  ) {
-    return "Llama models require an inference profile. Please use the full inference profile ARN.";
-  }
-  return null;
-}
-
-function validateDocumentSize(base64Data: string): boolean {
-  const sizeInBytes = (base64Data.length * 3) / 4;
-  const maxSize = 4.5 * 1024 * 1024;
-  if (sizeInBytes > maxSize) {
-    throw new Error("Document size exceeds 4.5 MB limit");
-  }
-  return true;
-}
-
 function validateImageSize(base64Data: string): boolean {
   const sizeInBytes = (base64Data.length * 3) / 4;
   const maxSize = 3.75 * 1024 * 1024;
@@ -145,21 +133,6 @@ function convertContentToAWSBlock(item: ContentItem): ContentBlock | null {
         };
       }
     }
-  }
-
-  if (item.type === "document" && item.document) {
-    validateDocumentSize(item.document.source.bytes);
-    return {
-      document: {
-        format: item.document.format,
-        name: item.document.name,
-        source: {
-          bytes: Uint8Array.from(
-            Buffer.from(item.document.source.bytes, "base64"),
-          ),
-        },
-      },
-    };
   }
 
   if (item.type === "tool_use" && item.tool_use) {
@@ -373,15 +346,48 @@ export async function handle(
     );
   }
 
-  const authResult = auth(req, ModelProvider.Bedrock);
-  if (authResult.error) {
-    return NextResponse.json(authResult, {
-      status: 401,
-    });
+  const serverConfig = getServerSideConfig();
+
+  // 首先尝试使用环境变量中的凭证
+  let region = serverConfig.awsRegion;
+  let accessKeyId = serverConfig.awsAccessKey;
+  let secretAccessKey = serverConfig.awsSecretKey;
+  let sessionToken = undefined;
+
+  // 如果环境变量中没有配置，则尝试使用前端传来的加密凭证
+  if (!region || !accessKeyId || !secretAccessKey) {
+    // 解密前端传来的凭证
+    region = decrypt(req.headers.get("X-Region") ?? "");
+    accessKeyId = decrypt(req.headers.get("X-Access-Key") ?? "");
+    secretAccessKey = decrypt(req.headers.get("X-Secret-Key") ?? "");
+    sessionToken = req.headers.get("X-Session-Token")
+      ? decrypt(req.headers.get("X-Session-Token") ?? "")
+      : undefined;
+  }
+
+  if (!region || !accessKeyId || !secretAccessKey) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "AWS credentials not found in environment variables or request headers",
+      },
+      {
+        status: 401,
+      },
+    );
   }
 
   try {
-    const response = await handleConverseRequest(req);
+    const client = new BedrockRuntimeClient({
+      region,
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+        sessionToken,
+      },
+    });
+
+    const response = await handleConverseRequest(req, client);
     return response;
   } catch (e) {
     console.error("[Bedrock] ", e);
@@ -396,41 +402,13 @@ export async function handle(
   }
 }
 
-async function handleConverseRequest(req: NextRequest) {
-  const region = req.headers.get("X-Region") || "us-west-2";
-  const accessKeyId = req.headers.get("X-Access-Key") || "";
-  const secretAccessKey = req.headers.get("X-Secret-Key") || "";
-  const sessionToken = req.headers.get("X-Session-Token");
-
-  if (!accessKeyId || !secretAccessKey) {
-    return NextResponse.json(
-      {
-        error: true,
-        message: "Missing AWS credentials",
-      },
-      {
-        status: 401,
-      },
-    );
-  }
-
-  const client = new BedrockRuntimeClient({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-      sessionToken: sessionToken || undefined,
-    },
-  });
-
+async function handleConverseRequest(
+  req: NextRequest,
+  client: BedrockRuntimeClient,
+) {
   try {
     const body = (await req.json()) as ConverseRequest;
     const { modelId } = body;
-
-    const validationError = validateModelId(modelId);
-    if (validationError) {
-      throw new Error(validationError);
-    }
 
     console.log("[Bedrock] Invoking model:", modelId);
 
@@ -455,8 +433,9 @@ async function handleConverseRequest(req: NextRequest) {
             if ("messageStart" in output && output.messageStart?.role) {
               controller.enqueue(
                 `data: ${JSON.stringify({
-                  type: "messageStart",
-                  role: output.messageStart.role,
+                  stream: {
+                    messageStart: { role: output.messageStart.role },
+                  },
                 })}\n\n`,
               );
             } else if (
@@ -465,9 +444,13 @@ async function handleConverseRequest(req: NextRequest) {
             ) {
               controller.enqueue(
                 `data: ${JSON.stringify({
-                  type: "contentBlockStart",
-                  index: output.contentBlockStart.contentBlockIndex,
-                  start: output.contentBlockStart.start,
+                  stream: {
+                    contentBlockStart: {
+                      contentBlockIndex:
+                        output.contentBlockStart.contentBlockIndex,
+                      start: output.contentBlockStart.start,
+                    },
+                  },
                 })}\n\n`,
               );
             } else if (
@@ -477,15 +460,30 @@ async function handleConverseRequest(req: NextRequest) {
               if ("text" in output.contentBlockDelta.delta) {
                 controller.enqueue(
                   `data: ${JSON.stringify({
-                    type: "text",
-                    content: output.contentBlockDelta.delta.text,
+                    stream: {
+                      contentBlockDelta: {
+                        delta: { text: output.contentBlockDelta.delta.text },
+                        contentBlockIndex:
+                          output.contentBlockDelta.contentBlockIndex,
+                      },
+                    },
                   })}\n\n`,
                 );
               } else if ("toolUse" in output.contentBlockDelta.delta) {
                 controller.enqueue(
                   `data: ${JSON.stringify({
-                    type: "toolUse",
-                    input: output.contentBlockDelta.delta.toolUse?.input,
+                    stream: {
+                      contentBlockDelta: {
+                        delta: {
+                          toolUse: {
+                            input:
+                              output.contentBlockDelta.delta.toolUse?.input,
+                          },
+                        },
+                        contentBlockIndex:
+                          output.contentBlockDelta.contentBlockIndex,
+                      },
+                    },
                   })}\n\n`,
                 );
               }
@@ -495,26 +493,36 @@ async function handleConverseRequest(req: NextRequest) {
             ) {
               controller.enqueue(
                 `data: ${JSON.stringify({
-                  type: "contentBlockStop",
-                  index: output.contentBlockStop.contentBlockIndex,
+                  stream: {
+                    contentBlockStop: {
+                      contentBlockIndex:
+                        output.contentBlockStop.contentBlockIndex,
+                    },
+                  },
                 })}\n\n`,
               );
             } else if ("messageStop" in output && output.messageStop) {
               controller.enqueue(
                 `data: ${JSON.stringify({
-                  type: "messageStop",
-                  stopReason: output.messageStop.stopReason,
-                  additionalModelResponseFields:
-                    output.messageStop.additionalModelResponseFields,
+                  stream: {
+                    messageStop: {
+                      stopReason: output.messageStop.stopReason,
+                      additionalModelResponseFields:
+                        output.messageStop.additionalModelResponseFields,
+                    },
+                  },
                 })}\n\n`,
               );
             } else if ("metadata" in output && output.metadata) {
               controller.enqueue(
                 `data: ${JSON.stringify({
-                  type: "metadata",
-                  usage: output.metadata.usage,
-                  metrics: output.metadata.metrics,
-                  trace: output.metadata.trace,
+                  stream: {
+                    metadata: {
+                      usage: output.metadata.usage,
+                      metrics: output.metadata.metrics,
+                      trace: output.metadata.trace,
+                    },
+                  },
                 })}\n\n`,
               );
             }
@@ -522,14 +530,17 @@ async function handleConverseRequest(req: NextRequest) {
           controller.close();
         } catch (error) {
           const errorResponse = {
-            type: "error",
-            error:
-              error instanceof Error ? error.constructor.name : "UnknownError",
-            message: error instanceof Error ? error.message : "Unknown error",
-            ...(error instanceof ModelStreamErrorException && {
-              originalStatusCode: error.originalStatusCode,
-              originalMessage: error.originalMessage,
-            }),
+            stream: {
+              error:
+                error instanceof Error
+                  ? error.constructor.name
+                  : "UnknownError",
+              message: error instanceof Error ? error.message : "Unknown error",
+              ...(error instanceof ModelStreamErrorException && {
+                originalStatusCode: error.originalStatusCode,
+                originalMessage: error.originalMessage,
+              }),
+            },
           };
           controller.enqueue(`data: ${JSON.stringify(errorResponse)}\n\n`);
           controller.close();

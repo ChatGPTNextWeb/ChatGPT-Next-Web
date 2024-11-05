@@ -261,7 +261,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const apiKey = isGoogle
       ? accessStore.googleApiKey
       : isBedrock
-      ? accessStore.awsAccessKeyId // Use AWS access key for Bedrock
+      ? accessStore.awsAccessKey // Use AWS access key for Bedrock
       : isAzure
       ? accessStore.azureApiKey
       : isAnthropic
@@ -322,12 +322,15 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   const authHeader = getAuthHeader();
 
   if (isBedrock) {
-    // Add AWS credentials for Bedrock
-    headers["X-Region"] = accessStore.awsRegion;
-    headers["X-Access-Key"] = accessStore.awsAccessKeyId;
-    headers["X-Secret-Key"] = accessStore.awsSecretAccessKey;
+    // 简单加密 AWS credentials
+    const encrypt = (str: string) =>
+      Buffer.from(str.split("").reverse().join("")).toString("base64");
+
+    headers["X-Region"] = encrypt(accessStore.awsRegion);
+    headers["X-Access-Key"] = encrypt(accessStore.awsAccessKey);
+    headers["X-Secret-Key"] = encrypt(accessStore.awsSecretKey);
     if (accessStore.awsSessionToken) {
-      headers["X-Session-Token"] = accessStore.awsSessionToken;
+      headers["X-Session-Token"] = encrypt(accessStore.awsSessionToken);
     }
   } else {
     const bearerToken = getBearerToken(

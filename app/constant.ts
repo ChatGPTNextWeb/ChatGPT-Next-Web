@@ -230,6 +230,10 @@ export const XAI = {
   ChatPath: "v1/chat/completions",
 };
 
+export const Bedrock = {
+  ChatPath: "converse",
+};
+
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 // export const DEFAULT_SYSTEM_TEMPLATE = `
 // You are ChatGPT, a large language model trained by {{ServiceProvider}}.
@@ -312,9 +316,11 @@ const openaiModels = [
 const bedrockModels = [
   // Claude Models
   "anthropic.claude-3-haiku-20240307-v1:0",
+  "anthropic.claude-3-5-haiku-20241022-v1:0",
   "anthropic.claude-3-sonnet-20240229-v1:0",
-  "anthropic.claude-3-opus-20240229-v1:0",
   "anthropic.claude-3-5-sonnet-20241022-v2:0",
+  "anthropic.claude-3-opus-20240229-v1:0",
+
   // Meta Llama Models
   "us.meta.llama3-2-11b-instruct-v1:0",
   "us.meta.llama3-2-90b-instruct-v1:0",

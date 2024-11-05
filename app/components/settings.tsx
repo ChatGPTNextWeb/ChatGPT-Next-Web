@@ -988,12 +988,12 @@ export function Settings() {
       >
         <PasswordInput
           aria-label={Locale.Settings.Access.Bedrock.AccessKey.Title}
-          value={accessStore.awsAccessKeyId}
+          value={accessStore.awsAccessKey}
           type="text"
           placeholder={Locale.Settings.Access.Bedrock.AccessKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.awsAccessKeyId = e.currentTarget.value),
+              (access) => (access.awsAccessKey = e.currentTarget.value),
             );
           }}
         />
@@ -1004,12 +1004,12 @@ export function Settings() {
       >
         <PasswordInput
           aria-label={Locale.Settings.Access.Bedrock.SecretKey.Title}
-          value={accessStore.awsSecretAccessKey}
+          value={accessStore.awsSecretKey}
           type="text"
           placeholder={Locale.Settings.Access.Bedrock.SecretKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.awsSecretAccessKey = e.currentTarget.value),
+              (access) => (access.awsSecretKey = e.currentTarget.value),
             );
           }}
         />

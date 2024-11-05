@@ -60,14 +60,11 @@ const DEFAULT_ACCESS_STATE = {
   openaiApiKey: "",
 
   // bedrock
-  bedrockUrl: DEFAULT_BEDROCK_URL,
-  bedrockApiKey: "",
   awsRegion: "",
-  awsAccessKeyId: "",
-  awsSecretAccessKey: "",
+  awsAccessKey: "",
+  awsSecretKey: "",
   awsSessionToken: "",
   awsCognitoUser: false,
-  awsInferenceProfile: "", // Added inference profile field
 
   // azure
   azureUrl: "",
@@ -154,11 +151,7 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidBedrock() {
-      return ensure(get(), [
-        "awsAccessKeyId",
-        "awsSecretAccessKey",
-        "awsRegion",
-      ]);
+      return ensure(get(), ["awsAccessKey", "awsSecretKey", "awsRegion"]);
     },
 
     isValidAzure() {
