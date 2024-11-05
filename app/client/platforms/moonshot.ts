@@ -180,7 +180,7 @@ export class MoonshotApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

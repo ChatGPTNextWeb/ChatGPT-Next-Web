@@ -264,6 +264,9 @@ BASE_URL=https://b.nextweb.fun/api/proxy
 
 ## 部署
 
+### 宝塔面板部署
+> [简体中文 > 如何通过宝塔一键部署](./docs/bt-cn.md)
+
 ### 容器部署 （推荐）
 
 > Docker 版本需要在 20 及其以上，否则会提示找不到镜像。
