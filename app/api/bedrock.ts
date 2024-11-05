@@ -100,7 +100,6 @@ function formatRequestBody(
     }),
   };
 
-  // 只有在支持工具调用的模型上才添加toolConfig
   if (request.tools?.length && supportsToolUse(request.modelId)) {
     input.toolConfig = {
       tools: request.tools.map((tool) => ({
