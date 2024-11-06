@@ -6,6 +6,7 @@ import {
   LLMModel,
   LLMUsage,
   SpeechOptions,
+  TranscriptionOptions,
 } from "../api";
 import {
   useAccessStore,
@@ -65,6 +66,10 @@ export class GeminiProApi implements LLMApi {
     );
   }
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
+  transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
 

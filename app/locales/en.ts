@@ -94,7 +94,8 @@ const en: LocaleType = {
     },
     Send: "Send",
     StartSpeak: "Start Speak",
-    StopSpeak: "Stop Speak",
+    CloseSpeak: "Stop Speak",
+    StopSpeak: "Recording...",
     Config: {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
@@ -569,6 +570,16 @@ const en: LocaleType = {
         SubTitle: "The speed of the generated audio",
       },
       Engine: "TTS Engine",
+    },
+    STT: {
+      Enable: {
+        Title: "Enable STT",
+        SubTitle: "Enable Speech-to-Text",
+      },
+      Engine: {
+        Title: "STT Engine",
+        SubTitle: "Text-to-Speech Engine",
+      },
     },
   },
   Store: {

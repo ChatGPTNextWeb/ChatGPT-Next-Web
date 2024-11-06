@@ -75,6 +75,14 @@
       pointer-events: none;
     }
 
+    &.listening {
+      width: var(--full-width);
+      .text {
+        opacity: 1;
+        transform: translate(0);
+      }
+    }
+
     &:hover {
       --delay: 0.5s;
       width: var(--full-width);
