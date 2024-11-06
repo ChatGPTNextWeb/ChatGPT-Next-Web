@@ -121,8 +121,8 @@ export enum ServiceProvider {
   Stability = "Stability",
   Iflytek = "Iflytek",
   XAI = "XAI",
-  Bedrock = "Bedrock",
   ChatGLM = "ChatGLM",
+  Bedrock = "Bedrock",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -136,7 +136,6 @@ export enum GoogleSafetySettingsThreshold {
 
 export enum ModelProvider {
   Stability = "Stability",
-  Bedrock = "Bedrock",
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
@@ -148,6 +147,7 @@ export enum ModelProvider {
   Iflytek = "Iflytek",
   XAI = "XAI",
   ChatGLM = "ChatGLM",
+  Bedrock = "Bedrock",
 }
 
 export const Stability = {

@@ -997,6 +997,7 @@ export function Settings() {
               (access) => (access.awsAccessKey = e.currentTarget.value),
             );
           }}
+          maskWhenShow={true}
         />
       </ListItem>
       <ListItem
@@ -1013,6 +1014,7 @@ export function Settings() {
               (access) => (access.awsSecretKey = e.currentTarget.value),
             );
           }}
+          maskWhenShow={true}
         />
       </ListItem>
       <ListItem
@@ -1029,6 +1031,7 @@ export function Settings() {
               (access) => (access.awsSessionToken = e.currentTarget.value),
             );
           }}
+          maskWhenShow={true}
         />
       </ListItem>
     </>
