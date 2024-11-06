@@ -148,7 +148,8 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             text={Locale.Chat.Config.Reset}
             onClick={async () => {
               if (await showConfirm(Locale.Memory.ResetConfirm)) {
-                chatStore.updateCurrentSession(
+                chatStore.updateTargetSession(
+                  session,
                   (session) => (session.memoryPrompt = ""),
                 );
               }
@@ -173,7 +174,10 @@ export function SessionConfigModel(props: { onClose: () => void }) {
           updateMask={(updater) => {
             const mask = { ...session.mask };
             updater(mask);
-            chatStore.updateCurrentSession((session) => (session.mask = mask));
+            chatStore.updateTargetSession(
+              session,
+              (session) => (session.mask = mask),
+            );
           }}
           shouldSyncFromGlobal
           extraListItems={
@@ -345,12 +349,14 @@ export function PromptHints(props: {
 
 function ClearContextDivider() {
   const chatStore = useChatStore();
+  const session = chatStore.currentSession();
 
   return (
     <div
       className={styles["clear-context"]}
       onClick={() =>
-        chatStore.updateCurrentSession(
+        chatStore.updateTargetSession(
+          session,
           (session) => (session.clearContextIndex = undefined),
         )
       }
@@ -460,6 +466,7 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
   const pluginStore = usePluginStore();
+  const session = chatStore.currentSession();
 
   // switch themes
   const theme = config.theme;
@@ -476,10 +483,9 @@ export function ChatActions(props: {
   const stopAll = () => ChatControllerPool.stopAll();
 
   // switch model
-  const currentModel = chatStore.currentSession().mask.modelConfig.model;
+  const currentModel = session.mask.modelConfig.model;
   const currentProviderName =
-    chatStore.currentSession().mask.modelConfig?.providerName ||
-    ServiceProvider.OpenAI;
+    session.mask.modelConfig?.providerName || ServiceProvider.OpenAI;
   const allModels = useAllModels();
   const models = useMemo(() => {
     const filteredModels = allModels.filter((m) => m.available);
@@ -513,12 +519,9 @@ export function ChatActions(props: {
   const dalle3Sizes: DalleSize[] = ["1024x1024", "1792x1024", "1024x1792"];
   const dalle3Qualitys: DalleQuality[] = ["standard", "hd"];
   const dalle3Styles: DalleStyle[] = ["vivid", "natural"];
-  const currentSize =
-    chatStore.currentSession().mask.modelConfig?.size ?? "1024x1024";
-  const currentQuality =
-    chatStore.currentSession().mask.modelConfig?.quality ?? "standard";
-  const currentStyle =
-    chatStore.currentSession().mask.modelConfig?.style ?? "vivid";
+  const currentSize = session.mask.modelConfig?.size ?? "1024x1024";
+  const currentQuality = session.mask.modelConfig?.quality ?? "standard";
+  const currentStyle = session.mask.modelConfig?.style ?? "vivid";
 
   const isMobileScreen = useMobileScreen();
 
@@ -536,7 +539,7 @@ export function ChatActions(props: {
     if (isUnavailableModel && models.length > 0) {
       // show next model to default model if exist
       let nextModel = models.find((model) => model.isDefault) || models[0];
-      chatStore.updateCurrentSession((session) => {
+      chatStore.updateTargetSession(session, (session) => {
         session.mask.modelConfig.model = nextModel.name;
         session.mask.modelConfig.providerName = nextModel?.provider
           ?.providerName as ServiceProvider;
@@ -547,7 +550,7 @@ export function ChatActions(props: {
           : nextModel.name,
       );
     }
-  }, [chatStore, currentModel, models]);
+  }, [chatStore, currentModel, models, session]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -614,7 +617,7 @@ export function ChatActions(props: {
         text={Locale.Chat.InputActions.Clear}
         icon={<BreakIcon />}
         onClick={() => {
-          chatStore.updateCurrentSession((session) => {
+          chatStore.updateTargetSession(session, (session) => {
             if (session.clearContextIndex === session.messages.length) {
               session.clearContextIndex = undefined;
             } else {
@@ -646,7 +649,7 @@ export function ChatActions(props: {
           onSelection={(s) => {
             if (s.length === 0) return;
             const [model, providerName] = s[0].split("@");
-            chatStore.updateCurrentSession((session) => {
+            chatStore.updateTargetSession(session, (session) => {
               session.mask.modelConfig.model = model as ModelType;
               session.mask.modelConfig.providerName =
                 providerName as ServiceProvider;
@@ -684,7 +687,7 @@ export function ChatActions(props: {
           onSelection={(s) => {
             if (s.length === 0) return;
             const size = s[0];
-            chatStore.updateCurrentSession((session) => {
+            chatStore.updateTargetSession(session, (session) => {
               session.mask.modelConfig.size = size;
             });
             showToast(size);
@@ -711,7 +714,7 @@ export function ChatActions(props: {
           onSelection={(q) => {
             if (q.length === 0) return;
             const quality = q[0];
-            chatStore.updateCurrentSession((session) => {
+            chatStore.updateTargetSession(session, (session) => {
               session.mask.modelConfig.quality = quality;
             });
             showToast(quality);
@@ -738,7 +741,7 @@ export function ChatActions(props: {
           onSelection={(s) => {
             if (s.length === 0) return;
             const style = s[0];
-            chatStore.updateCurrentSession((session) => {
+            chatStore.updateTargetSession(session, (session) => {
               session.mask.modelConfig.style = style;
             });
             showToast(style);
@@ -769,7 +772,7 @@ export function ChatActions(props: {
           }))}
           onClose={() => setShowPluginSelector(false)}
           onSelection={(s) => {
-            chatStore.updateCurrentSession((session) => {
+            chatStore.updateTargetSession(session, (session) => {
               session.mask.plugin = s as string[];
             });
           }}
@@ -812,7 +815,8 @@ export function EditMessageModal(props: { onClose: () => void }) {
             icon={<ConfirmIcon />}
             key="ok"
             onClick={() => {
-              chatStore.updateCurrentSession(
+              chatStore.updateTargetSession(
+                session,
                 (session) => (session.messages = messages),
               );
               props.onClose();
@@ -829,7 +833,8 @@ export function EditMessageModal(props: { onClose: () => void }) {
               type="text"
               value={session.topic}
               onInput={(e) =>
-                chatStore.updateCurrentSession(
+                chatStore.updateTargetSession(
+                  session,
                   (session) => (session.topic = e.currentTarget.value),
                 )
               }
@@ -990,7 +995,8 @@ function _Chat() {
     prev: () => chatStore.nextSession(-1),
     next: () => chatStore.nextSession(1),
     clear: () =>
-      chatStore.updateCurrentSession(
+      chatStore.updateTargetSession(
+        session,
         (session) => (session.clearContextIndex = session.messages.length),
       ),
     fork: () => chatStore.forkSession(),
@@ -1061,7 +1067,7 @@ function _Chat() {
   };
 
   useEffect(() => {
-    chatStore.updateCurrentSession((session) => {
+    chatStore.updateTargetSession(session, (session) => {
       const stopTiming = Date.now() - REQUEST_TIMEOUT_MS;
       session.messages.forEach((m) => {
         // check if should stop all stale messages
@@ -1087,7 +1093,7 @@ function _Chat() {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [session]);
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -1118,7 +1124,8 @@ function _Chat() {
   };
 
   const deleteMessage = (msgId?: string) => {
-    chatStore.updateCurrentSession(
+    chatStore.updateTargetSession(
+      session,
       (session) =>
         (session.messages = session.messages.filter((m) => m.id !== msgId)),
     );
@@ -1185,7 +1192,7 @@ function _Chat() {
   };
 
   const onPinMessage = (message: ChatMessage) => {
-    chatStore.updateCurrentSession((session) =>
+    chatStore.updateTargetSession(session, (session) =>
       session.mask.context.push(message),
     );
 
@@ -1711,14 +1718,17 @@ function _Chat() {
                                 });
                               }
                             }
-                            chatStore.updateCurrentSession((session) => {
-                              const m = session.mask.context
-                                .concat(session.messages)
-                                .find((m) => m.id === message.id);
-                              if (m) {
-                                m.content = newContent;
-                              }
-                            });
+                            chatStore.updateTargetSession(
+                              session,
+                              (session) => {
+                                const m = session.mask.context
+                                  .concat(session.messages)
+                                  .find((m) => m.id === message.id);
+                                if (m) {
+                                  m.content = newContent;
+                                }
+                              },
+                            );
                           }}
                         ></IconButton>
                       </div>
