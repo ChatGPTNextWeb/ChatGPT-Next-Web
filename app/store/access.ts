@@ -25,7 +25,6 @@ import { DEFAULT_CONFIG } from "./config";
 import { getModelProvider } from "../utils/model";
 import { encrypt, decrypt } from "../utils/encryption";
 
-
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const isApp = getClientConfig()?.buildMode === "export";
@@ -291,12 +290,12 @@ export const useAccessStore = createPersistStore(
           return res;
         })
         .then((res: DangerConfig) => {
-          console.log("[Config] got config from server", res);
+          console.log("[Config] received DangerConfig server configuration");
           set(() => ({ ...res }));
           return res;
         })
         .then((res: Partial<AccessState>) => {
-          console.log("[Config] got config from server", res);
+          console.log("[Config] received AccessState server configuration");
           // Encrypt Bedrock-related sensitive data before storing
           const encryptedRes = { ...res };
           const keysToEncrypt: BedrockCredentialKey[] = [
