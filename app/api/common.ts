@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import {
-  DEFAULT_MODELS,
-  OPENAI_BASE_URL,
-  GEMINI_BASE_URL,
-  ServiceProvider,
-} from "../constant";
-import { isModelAvailableInServer } from "../utils/model";
+import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
+import { getModelProvider, isModelAvailableInServer } from "../utils/model";
 
 const serverConfig = getServerSideConfig();
 
@@ -76,7 +71,7 @@ export async function requestOpenai(req: NextRequest) {
         .filter((v) => !!v && !v.startsWith("-") && v.includes(modelName))
         .forEach((m) => {
           const [fullName, displayName] = m.split("=");
-          const [_, providerName] = fullName.split("@");
+          const [_, providerName] = getModelProvider(fullName);
           if (providerName === "azure" && !displayName) {
             const [_, deployId] = (serverConfig?.azureUrl ?? "").split(
               "deployments/",
