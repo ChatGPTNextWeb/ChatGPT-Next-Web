@@ -1,33 +1,219 @@
 import VoiceIcon from "@/app/icons/voice.svg";
 import VoiceOffIcon from "@/app/icons/voice-off.svg";
 import Close24Icon from "@/app/icons/close-24.svg";
+import PowerIcon from "@/app/icons/power.svg";
+
 import styles from "./realtime-chat.module.scss";
 import clsx from "clsx";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 import { useAccessStore, useChatStore, ChatMessage } from "@/app/store";
+
+import { IconButton } from "@/app/components/button";
+
+import {
+  Modality,
+  RTClient,
+  RTInputAudioItem,
+  RTResponse,
+  TurnDetection,
+} from "rt-client";
+import { AudioHandler } from "@/app/lib/audio";
 
 interface RealtimeChatProps {
   onClose?: () => void;
   onStartVoice?: () => void;
   onPausedVoice?: () => void;
-  sampleRate?: number;
 }
 
 export function RealtimeChat({
   onClose,
   onStartVoice,
   onPausedVoice,
-  sampleRate = 24000,
 }: RealtimeChatProps) {
-  const [isVoicePaused, setIsVoicePaused] = useState(true);
-  const clientRef = useRef<null>(null);
   const currentItemId = useRef<string>("");
   const currentBotMessage = useRef<ChatMessage | null>();
   const currentUserMessage = useRef<ChatMessage | null>();
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore();
+
+  const [isRecording, setIsRecording] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [modality, setModality] = useState("audio");
+  const [isAzure, setIsAzure] = useState(false);
+  const [endpoint, setEndpoint] = useState("");
+  const [deployment, setDeployment] = useState("");
+  const [useVAD, setUseVAD] = useState(true);
+
+  const clientRef = useRef<RTClient | null>(null);
+  const audioHandlerRef = useRef<AudioHandler | null>(null);
+
+  const apiKey = accessStore.openaiApiKey;
+
+  const handleConnect = async () => {
+    if (!isConnected) {
+      try {
+        setIsConnecting(true);
+        clientRef.current = isAzure
+          ? new RTClient(new URL(endpoint), { key: apiKey }, { deployment })
+          : new RTClient(
+              { key: apiKey },
+              { model: "gpt-4o-realtime-preview-2024-10-01" },
+            );
+        const modalities: Modality[] =
+          modality === "audio" ? ["text", "audio"] : ["text"];
+        const turnDetection: TurnDetection = useVAD
+          ? { type: "server_vad" }
+          : null;
+        clientRef.current.configure({
+          instructions: "Hi",
+          input_audio_transcription: { model: "whisper-1" },
+          turn_detection: turnDetection,
+          tools: [],
+          temperature: 0.9,
+          modalities,
+        });
+        startResponseListener();
+
+        setIsConnected(true);
+      } catch (error) {
+        console.error("Connection failed:", error);
+      } finally {
+        setIsConnecting(false);
+      }
+    } else {
+      await disconnect();
+    }
+  };
+
+  const disconnect = async () => {
+    if (clientRef.current) {
+      try {
+        await clientRef.current.close();
+        clientRef.current = null;
+        setIsConnected(false);
+      } catch (error) {
+        console.error("Disconnect failed:", error);
+      }
+    }
+  };
+
+  const startResponseListener = async () => {
+    if (!clientRef.current) return;
+
+    try {
+      for await (const serverEvent of clientRef.current.events()) {
+        if (serverEvent.type === "response") {
+          await handleResponse(serverEvent);
+        } else if (serverEvent.type === "input_audio") {
+          await handleInputAudio(serverEvent);
+        }
+      }
+    } catch (error) {
+      if (clientRef.current) {
+        console.error("Response iteration error:", error);
+      }
+    }
+  };
+
+  const handleResponse = async (response: RTResponse) => {
+    for await (const item of response) {
+      if (item.type === "message" && item.role === "assistant") {
+        const message = {
+          type: item.role,
+          content: "",
+        };
+        // setMessages((prevMessages) => [...prevMessages, message]);
+        for await (const content of item) {
+          if (content.type === "text") {
+            for await (const text of content.textChunks()) {
+              message.content += text;
+              //   setMessages((prevMessages) => {
+              //     prevMessages[prevMessages.length - 1].content = message.content;
+              //     return [...prevMessages];
+              //   });
+            }
+          } else if (content.type === "audio") {
+            const textTask = async () => {
+              for await (const text of content.transcriptChunks()) {
+                message.content += text;
+                // setMessages((prevMessages) => {
+                //   prevMessages[prevMessages.length - 1].content =
+                //     message.content;
+                //   return [...prevMessages];
+                // });
+              }
+            };
+            const audioTask = async () => {
+              audioHandlerRef.current?.startStreamingPlayback();
+              for await (const audio of content.audioChunks()) {
+                audioHandlerRef.current?.playChunk(audio);
+              }
+            };
+            await Promise.all([textTask(), audioTask()]);
+          }
+        }
+      }
+    }
+  };
+
+  const handleInputAudio = async (item: RTInputAudioItem) => {
+    audioHandlerRef.current?.stopStreamingPlayback();
+    await item.waitForCompletion();
+    // setMessages((prevMessages) => [
+    //   ...prevMessages,
+    //   {
+    //     type: "user",
+    //     content: item.transcription || "",
+    //   },
+    // ]);
+  };
+
+  const toggleRecording = async () => {
+    if (!isRecording && clientRef.current) {
+      try {
+        if (!audioHandlerRef.current) {
+          audioHandlerRef.current = new AudioHandler();
+          await audioHandlerRef.current.initialize();
+        }
+        await audioHandlerRef.current.startRecording(async (chunk) => {
+          await clientRef.current?.sendAudio(chunk);
+        });
+        setIsRecording(true);
+      } catch (error) {
+        console.error("Failed to start recording:", error);
+      }
+    } else if (audioHandlerRef.current) {
+      try {
+        audioHandlerRef.current.stopRecording();
+        if (!useVAD) {
+          const inputAudio = await clientRef.current?.commitAudio();
+          await handleInputAudio(inputAudio!);
+          await clientRef.current?.generateResponse();
+        }
+        setIsRecording(false);
+      } catch (error) {
+        console.error("Failed to stop recording:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const initAudioHandler = async () => {
+      const handler = new AudioHandler();
+      await handler.initialize();
+      audioHandlerRef.current = handler;
+    };
+
+    initAudioHandler().catch(console.error);
+
+    return () => {
+      disconnect();
+      audioHandlerRef.current?.close().catch(console.error);
+    };
+  }, []);
 
   //   useEffect(() => {
   //     if (
@@ -223,12 +409,16 @@ export function RealtimeChat({
 
   const handleStartVoice = useCallback(() => {
     onStartVoice?.();
-    setIsVoicePaused(false);
+    handleConnect();
   }, []);
 
   const handlePausedVoice = () => {
     onPausedVoice?.();
-    setIsVoicePaused(true);
+  };
+
+  const handleClose = () => {
+    onClose?.();
+    disconnect();
   };
 
   return (
@@ -241,15 +431,39 @@ export function RealtimeChat({
         <div className={styles["icon-center"]}></div>
       </div>
       <div className={styles["bottom-icons"]}>
-        <div className={styles["icon-left"]}>
-          {isVoicePaused ? (
-            <VoiceOffIcon onClick={handleStartVoice} />
-          ) : (
-            <VoiceIcon onClick={handlePausedVoice} />
-          )}
+        <div>
+          <IconButton
+            icon={isRecording ? <VoiceOffIcon /> : <VoiceIcon />}
+            onClick={toggleRecording}
+            disabled={!isConnected}
+            bordered
+            shadow
+          />
         </div>
-        <div className={styles["icon-right"]} onClick={onClose}>
-          <Close24Icon />
+        <div className={styles["icon-center"]}>
+          <IconButton
+            icon={<PowerIcon />}
+            text={
+              isConnecting
+                ? "Connecting..."
+                : isConnected
+                ? "Disconnect"
+                : "Connect"
+            }
+            onClick={handleConnect}
+            disabled={isConnecting}
+            bordered
+            shadow
+          />
+        </div>
+        <div onClick={handleClose}>
+          <IconButton
+            icon={<Close24Icon />}
+            onClick={handleClose}
+            disabled={!isConnected}
+            bordered
+            shadow
+          />
         </div>
       </div>
     </div>

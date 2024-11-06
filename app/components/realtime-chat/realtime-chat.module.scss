@@ -24,11 +24,18 @@
   .bottom-icons {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     position: absolute;
     bottom: 20px;
     box-sizing: border-box;
     padding: 0 20px;
+  }
+  .icon-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
   }
 
   .icon-left,
