@@ -25,6 +25,7 @@ import {
   TurnDetection,
 } from "rt-client";
 import { AudioHandler } from "@/app/lib/audio";
+import { uploadImage } from "@/app/utils/chat";
 
 interface RealtimeChatProps {
   onClose?: () => void;
@@ -126,10 +127,15 @@ export function RealtimeChat({
 
   const handleResponse = async (response: RTResponse) => {
     for await (const item of response) {
+      console.log("handleResponse", item);
       if (item.type === "message" && item.role === "assistant") {
         const botMessage = createMessage({
           role: item.role,
           content: "",
+        });
+        // add bot message first
+        chatStore.updateTargetSession(session, (session) => {
+          session.messages = session.messages.concat([botMessage]);
         });
         for await (const content of item) {
           if (content.type === "text") {
@@ -149,12 +155,18 @@ export function RealtimeChat({
               }
             };
             await Promise.all([textTask(), audioTask()]);
-            chatStore.updateTargetSession(session, (session) => {
-              botMessage.date = new Date().toLocaleString();
-              session.messages = session.messages.concat([botMessage]);
-            });
           }
         }
+        // upload audio get audio_url
+        const blob = audioHandlerRef.current?.savePlayFile();
+        uploadImage(blob).then((audio_url) => {
+          botMessage.audio_url = audio_url;
+          botMessage.date = new Date().toLocaleString();
+          // update text and audio_url
+          chatStore.updateTargetSession((session) => {
+            session.messages = session.messages.concat();
+          });
+        });
       }
     }
   };
@@ -162,6 +174,9 @@ export function RealtimeChat({
   const handleInputAudio = async (item: RTInputAudioItem) => {
     audioHandlerRef.current?.stopStreamingPlayback();
     await item.waitForCompletion();
+    const { audioStartMillis, audioEndMillis } = item;
+    // TODO, save input audio_url, and update session
+    console.log("handleInputAudio", item, audioStartMillis, audioEndMillis);
     const userMessage = createMessage({
       role: "user",
       content: item.transcription,
