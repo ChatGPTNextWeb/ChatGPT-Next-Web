@@ -46,6 +46,7 @@ export interface ConverseRequest {
     description?: string;
     input_schema: any;
   }[];
+  stream?: boolean;
 }
 
 function supportsToolUse(modelId: string): boolean {
@@ -188,6 +189,30 @@ export async function handle(
       throw new Error("No stream in response");
     }
 
+    // If stream is false, accumulate the response and return as JSON
+    console.log("Body.stream==========" + body.stream);
+    if (body.stream === false) {
+      let fullResponse = {
+        content: "",
+      };
+
+      const responseStream =
+        response.stream as AsyncIterable<ConverseStreamOutput>;
+      for await (const event of responseStream) {
+        if (
+          "contentBlockDelta" in event &&
+          event.contentBlockDelta?.delta &&
+          "text" in event.contentBlockDelta.delta &&
+          event.contentBlockDelta.delta.text
+        ) {
+          fullResponse.content += event.contentBlockDelta.delta.text;
+        }
+      }
+
+      return NextResponse.json(fullResponse);
+    }
+
+    // Otherwise, return streaming response
     const stream = new ReadableStream({
       async start(controller) {
         try {

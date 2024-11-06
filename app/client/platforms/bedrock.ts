@@ -38,9 +38,11 @@ export class BedrockApi implements LLMApi {
   }
 
   extractMessage(res: any) {
-    console.log("[Response] claude response: ", res);
-
-    return res?.content?.[0]?.text;
+    console.log("[Response] Bedrock not stream response: ", res);
+    if (res.error) {
+      return "```\n" + JSON.stringify(res, null, 4) + "\n```";
+    }
+    return res?.content ?? res;
   }
 
   async chat(options: ChatOptions): Promise<void> {
@@ -144,6 +146,7 @@ export class BedrockApi implements LLMApi {
         topP: modelConfig.top_p,
         stopSequences: [],
       },
+      stream: shouldStream,
     };
 
     const conversePath = `${ApiPath.Bedrock}/converse`;
