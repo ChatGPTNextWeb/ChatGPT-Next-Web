@@ -232,7 +232,7 @@ export const XAI = {
 
 export const ChatGLM = {
   ExampleEndpoint: CHATGLM_BASE_URL,
-  ChatPath: "/api/paas/v4/chat/completions",
+  ChatPath: "api/paas/v4/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -327,12 +327,13 @@ const anthropicModels = [
   "claude-2.1",
   "claude-3-sonnet-20240229",
   "claude-3-opus-20240229",
+  "claude-3-opus-latest",
   "claude-3-haiku-20240307",
   "claude-3-5-haiku-20241022",
   "claude-3-5-sonnet-20240620",
   "claude-3-5-sonnet-20241022",
   "claude-3-5-sonnet-latest",
-  "claude-3-opus-latest",
+  "claude-3-5-haiku-latest",
 ];
 
 const baiduModels = [
