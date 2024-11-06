@@ -42,6 +42,7 @@ import {
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -352,7 +353,7 @@ export class ChatGPTApi implements LLMApi {
         // make a fetch request
         const requestTimeoutId = setTimeout(
           () => controller.abort(),
-          isDalle3 || isO1 ? REQUEST_TIMEOUT_MS * 2 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
+          isDalle3 || isO1 ? REQUEST_TIMEOUT_MS * 4 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
         );
 
         const res = await fetch(chatPath, chatPayload);
@@ -360,7 +361,7 @@ export class ChatGPTApi implements LLMApi {
 
         const resJson = await res.json();
         const message = await this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

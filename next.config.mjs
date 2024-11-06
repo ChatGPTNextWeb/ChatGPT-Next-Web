@@ -94,8 +94,12 @@ if (mode !== "export") {
         source: "/sharegpt",
         destination: "https://sharegpt.com/api/conversations",
       },
+      {
+        source: "/api/proxy/alibaba/:path*",
+        destination: "https://dashscope.aliyuncs.com/api/:path*",
+      },
     ];
-
+    
     return {
       beforeFiles: ret,
     };
