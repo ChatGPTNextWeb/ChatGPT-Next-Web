@@ -288,7 +288,11 @@ export const useAccessStore = createPersistStore(
 
           return res;
         })
-
+        .then((res: DangerConfig) => {
+          console.log("[Config] got config from server", res);
+          set(() => ({ ...res }));
+          return res;
+        })
         .then((res: Partial<AccessState>) => {
           console.log("[Config] got config from server", res);
           // Encrypt Bedrock-related sensitive data before storing
