@@ -237,7 +237,7 @@ export const XAI = {
 
 export const ChatGLM = {
   ExampleEndpoint: CHATGLM_BASE_URL,
-  ChatPath: "/api/paas/v4/chat/completions",
+  ChatPath: "api/paas/v4/chat/completions",
 };
 
 export const Bedrock = {
