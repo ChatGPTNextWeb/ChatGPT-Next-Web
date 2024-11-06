@@ -6,9 +6,14 @@ import PowerIcon from "@/app/icons/power.svg";
 import styles from "./realtime-chat.module.scss";
 import clsx from "clsx";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
-import { useAccessStore, useChatStore, ChatMessage } from "@/app/store";
+import {
+  useAccessStore,
+  useChatStore,
+  ChatMessage,
+  createMessage,
+} from "@/app/store";
 
 import { IconButton } from "@/app/components/button";
 
@@ -37,6 +42,7 @@ export function RealtimeChat({
   const currentUserMessage = useRef<ChatMessage | null>();
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore();
+  const session = chatStore.currentSession();
 
   const [isRecording, setIsRecording] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -121,29 +127,19 @@ export function RealtimeChat({
   const handleResponse = async (response: RTResponse) => {
     for await (const item of response) {
       if (item.type === "message" && item.role === "assistant") {
-        const message = {
-          type: item.role,
+        const botMessage = createMessage({
+          role: item.role,
           content: "",
-        };
-        // setMessages((prevMessages) => [...prevMessages, message]);
+        });
         for await (const content of item) {
           if (content.type === "text") {
             for await (const text of content.textChunks()) {
-              message.content += text;
-              //   setMessages((prevMessages) => {
-              //     prevMessages[prevMessages.length - 1].content = message.content;
-              //     return [...prevMessages];
-              //   });
+              botMessage.content += text;
             }
           } else if (content.type === "audio") {
             const textTask = async () => {
               for await (const text of content.transcriptChunks()) {
-                message.content += text;
-                // setMessages((prevMessages) => {
-                //   prevMessages[prevMessages.length - 1].content =
-                //     message.content;
-                //   return [...prevMessages];
-                // });
+                botMessage.content += text;
               }
             };
             const audioTask = async () => {
@@ -153,6 +149,10 @@ export function RealtimeChat({
               }
             };
             await Promise.all([textTask(), audioTask()]);
+            chatStore.updateTargetSession(session, (session) => {
+              botMessage.date = new Date().toLocaleString();
+              session.messages = session.messages.concat([botMessage]);
+            });
           }
         }
       }
@@ -162,13 +162,13 @@ export function RealtimeChat({
   const handleInputAudio = async (item: RTInputAudioItem) => {
     audioHandlerRef.current?.stopStreamingPlayback();
     await item.waitForCompletion();
-    // setMessages((prevMessages) => [
-    //   ...prevMessages,
-    //   {
-    //     type: "user",
-    //     content: item.transcription || "",
-    //   },
-    // ]);
+    const userMessage = createMessage({
+      role: "user",
+      content: item.transcription,
+    });
+    chatStore.updateTargetSession(session, (session) => {
+      session.messages = session.messages.concat([userMessage]);
+    });
   };
 
   const toggleRecording = async () => {
@@ -407,15 +407,6 @@ export function RealtimeChat({
   //     };
   //   }, [isRecording.current]);
 
-  const handleStartVoice = useCallback(() => {
-    onStartVoice?.();
-    handleConnect();
-  }, []);
-
-  const handlePausedVoice = () => {
-    onPausedVoice?.();
-  };
-
   const handleClose = () => {
     onClose?.();
     disconnect();
@@ -460,7 +451,6 @@ export function RealtimeChat({
           <IconButton
             icon={<Close24Icon />}
             onClick={handleClose}
-            disabled={!isConnected}
             bordered
             shadow
           />
