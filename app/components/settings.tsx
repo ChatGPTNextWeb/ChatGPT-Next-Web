@@ -477,6 +477,21 @@ function SyncConfigModal(props: { onClose?: () => void }) {
             </ListItem>
           </List>
         )}
+
+        <List>
+          <ListItem title={Locale.Settings.Sync.Config.AutoSync.OnStartup}>
+            <input
+              type="checkbox"
+              checked={syncStore.autoSync.onStart}
+              onChange={(e) => {
+                syncStore.update(
+                  (config) =>
+                    (config.autoSync.onStart = e.currentTarget.checked),
+                );
+              }}
+            />
+          </ListItem>
+        </List>
       </Modal>
     </div>
   );

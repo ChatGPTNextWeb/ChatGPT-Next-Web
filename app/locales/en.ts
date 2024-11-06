@@ -225,6 +225,7 @@ const en: LocaleType = {
       CloudState: "Last Update",
       NotSyncYet: "Not sync yet",
       Success: "Sync Success",
+      IsSyncing: "Sync in progress...",
       Fail: "Sync Fail",
 
       Config: {
@@ -256,6 +257,10 @@ const en: LocaleType = {
           Endpoint: "UpStash Redis REST Url",
           UserName: "Backup Name",
           Password: "UpStash Redis REST Token",
+        },
+
+        AutoSync: {
+          OnStartup: "Sync on startup",
         },
       },
 

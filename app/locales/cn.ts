@@ -223,6 +223,7 @@ const cn = {
       CloudState: "云端数据",
       NotSyncYet: "还没有进行过同步",
       Success: "同步成功",
+      IsSyncing: "正在同步...",
       Fail: "同步失败",
 
       Config: {
@@ -253,6 +254,10 @@ const cn = {
           Endpoint: "UpStash Redis REST Url",
           UserName: "备份名称",
           Password: "UpStash Redis REST Token",
+        },
+
+        AutoSync: {
+          OnStartup: "启动时自动同步",
         },
       },
 
