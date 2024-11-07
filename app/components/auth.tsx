@@ -18,6 +18,8 @@ import {
   trackSettingsPageGuideToCPaymentClick,
   trackAuthorizationPageButtonToCPaymentClick,
 } from "../utils/auth-settings-events";
+import clsx from "clsx";
+
 const storage = safeLocalStorage();
 
 export function AuthPage() {
@@ -54,7 +56,7 @@ export function AuthPage() {
           onClick={() => navigate(Path.Home)}
         ></IconButton>
       </div>
-      <div className={`no-dark ${styles["auth-logo"]}`}>
+      <div className={clsx("no-dark", styles["auth-logo"])}>
         <BotIcon />
       </div>
 
@@ -163,7 +165,7 @@ function TopBanner() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={`${styles["top-banner-inner"]} no-dark`}>
+      <div className={clsx(styles["top-banner-inner"], "no-dark")}>
         <Logo className={styles["top-banner-logo"]}></Logo>
         <span>
           {Locale.Auth.TopTips}
