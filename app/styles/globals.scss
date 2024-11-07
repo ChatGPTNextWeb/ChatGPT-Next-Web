@@ -399,3 +399,13 @@ pre {
 .copyable {
   user-select: text;
 }
+
+audio {
+  height: 35px;
+}
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-panel,
+audio::-moz-media-controls-play-button,
+audio::-moz-media-controls-panel {
+  background: none;
+}

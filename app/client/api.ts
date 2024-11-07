@@ -41,6 +41,7 @@ export interface MultimodalContent {
 export interface RequestMessage {
   role: MessageRole;
   content: string | MultimodalContent[];
+  audio_url?: string;
 }
 
 export interface LLMConfig {

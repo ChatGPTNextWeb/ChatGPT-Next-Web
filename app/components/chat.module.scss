@@ -443,6 +443,10 @@
   transition: all ease 0.3s;
 }
 
+.audio-message {
+  min-width: 350px;
+}
+
 .chat-message-item-image {
   width: 100%;
   margin-top: 10px;
@@ -471,6 +475,10 @@
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
 
+.chat-message-item-audio {
+  margin-top: 10px;
+  width: 100%;
+}
 
 @media only screen and (max-width: 600px) {
   $calc-image-width: calc(100vw/3*2/var(--image-count));
@@ -519,7 +527,7 @@
   background-color: var(--second);
 
   &:hover {
-    min-width: 0;
+    //min-width: 350px;
   }
 }
 
