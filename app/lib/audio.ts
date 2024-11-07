@@ -131,11 +131,11 @@ export class AudioHandler {
   _saveData(data: Int16Array, bytesPerSample = 16): Blob {
     const headerLength = 44;
     const numberOfChannels = 1;
-    const dataLength = data.length;
-    const wav = new Uint8Array(headerLength + dataLength * 2);
-    const view = new DataView(wav.buffer);
+    const byteLength = data.buffer.byteLength;
+    const header = new Uint8Array(headerLength);
+    const view = new DataView(header.buffer);
     view.setUint32(0, 1380533830, false); // RIFF identifier 'RIFF'
-    view.setUint32(4, 36 + dataLength * 2, true); // file length minus RIFF identifier length and file description length
+    view.setUint32(4, 36 + byteLength, true); // file length minus RIFF identifier length and file description length
     view.setUint32(8, 1463899717, false); // RIFF type 'WAVE'
     view.setUint32(12, 1718449184, false); // format chunk identifier 'fmt '
     view.setUint32(16, 16, true); // format chunk length
@@ -146,14 +146,13 @@ export class AudioHandler {
     view.setUint16(32, numberOfChannels * 2, true); // block align (channel count * bytes per sample)
     view.setUint16(34, bytesPerSample, true); // bits per sample
     view.setUint32(36, 1684108385, false); // data chunk identifier 'data'
-    view.setUint32(40, dataLength * 2, true); // data chunk length
-    for (let i = 0; i < dataLength; i++) {
-      view.setInt16(44 + i * 2, data[i], true);
-    }
-    return new Blob([view], { type: "audio/mpeg" });
+    view.setUint32(40, byteLength, true); // data chunk length
+
+    // using data.buffer, so no need to setUint16 to view.
+    return new Blob([view, data.buffer], { type: "audio/mpeg" });
   }
   savePlayFile() {
-    return this._saveData(this.playBuffer);
+    return this._saveData(new Int16Array(this.playBuffer));
   }
   async close() {
     this.workletNode?.disconnect();
