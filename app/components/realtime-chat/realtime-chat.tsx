@@ -56,6 +56,7 @@ export function RealtimeChat({
   const [deployment, setDeployment] = useState("");
   const [useVAD, setUseVAD] = useState(true);
   const [voice, setVoice] = useState<Voice>("alloy");
+  const [temperature, setTemperature] = useState(0.9);
 
   const clientRef = useRef<RTClient | null>(null);
   const audioHandlerRef = useRef<AudioHandler | null>(null);
@@ -84,7 +85,7 @@ export function RealtimeChat({
           input_audio_transcription: { model: "whisper-1" },
           turn_detection: turnDetection,
           tools: [],
-          temperature: 0.9,
+          temperature,
           modalities,
         });
         startResponseListener();
@@ -281,6 +282,14 @@ export function RealtimeChat({
     }),
     [],
   );
+
+  // update session params
+  useEffect(() => {
+    clientRef.current?.configure({ voice });
+  }, [voice]);
+  useEffect(() => {
+    clientRef.current?.configure({ temperature });
+  }, [temperature]);
 
   const handleClose = async () => {
     onClose?.();
