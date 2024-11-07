@@ -23,6 +23,7 @@ import {
   RTInputAudioItem,
   RTResponse,
   TurnDetection,
+  Voice,
 } from "rt-client";
 import { AudioHandler } from "@/app/lib/audio";
 import { uploadImage } from "@/app/utils/chat";
@@ -54,6 +55,7 @@ export function RealtimeChat({
   const [endpoint, setEndpoint] = useState("");
   const [deployment, setDeployment] = useState("");
   const [useVAD, setUseVAD] = useState(true);
+  const [voice, setVoice] = useState<Voice>("alloy");
 
   const clientRef = useRef<RTClient | null>(null);
   const audioHandlerRef = useRef<AudioHandler | null>(null);
@@ -78,6 +80,7 @@ export function RealtimeChat({
           : null;
         clientRef.current.configure({
           instructions: "",
+          voice,
           input_audio_transcription: { model: "whisper-1" },
           turn_detection: turnDetection,
           tools: [],
