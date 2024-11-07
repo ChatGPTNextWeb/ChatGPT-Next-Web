@@ -2035,14 +2035,16 @@ function _Chat() {
               [styles["chat-side-panel-show"]]: showChatSidePanel,
             })}
           >
-            <RealtimeChat
-              onClose={() => {
-                setShowChatSidePanel(false);
-              }}
-              onStartVoice={async () => {
-                console.log("start voice");
-              }}
-            />
+            {showChatSidePanel && (
+              <RealtimeChat
+                onClose={() => {
+                  setShowChatSidePanel(false);
+                }}
+                onStartVoice={async () => {
+                  console.log("start voice");
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
