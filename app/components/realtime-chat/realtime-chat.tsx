@@ -1,4 +1,3 @@
-import { useDebouncedCallback } from "use-debounce";
 import VoiceIcon from "@/app/icons/voice.svg";
 import VoiceOffIcon from "@/app/icons/voice-off.svg";
 import PowerIcon from "@/app/icons/power.svg";
@@ -8,12 +7,7 @@ import clsx from "clsx";
 
 import { useState, useRef, useEffect } from "react";
 
-import {
-  useAccessStore,
-  useChatStore,
-  ChatMessage,
-  createMessage,
-} from "@/app/store";
+import { useChatStore, createMessage, useAppConfig } from "@/app/store";
 
 import { IconButton } from "@/app/components/button";
 
@@ -23,7 +17,6 @@ import {
   RTInputAudioItem,
   RTResponse,
   TurnDetection,
-  Voice,
 } from "rt-client";
 import { AudioHandler } from "@/app/lib/audio";
 import { uploadImage } from "@/app/utils/chat";
@@ -39,41 +32,40 @@ export function RealtimeChat({
   onStartVoice,
   onPausedVoice,
 }: RealtimeChatProps) {
-  const currentItemId = useRef<string>("");
-  const currentBotMessage = useRef<ChatMessage | null>();
-  const currentUserMessage = useRef<ChatMessage | null>();
-  const accessStore = useAccessStore.getState();
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-
+  const config = useAppConfig();
   const [status, setStatus] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [modality, setModality] = useState("audio");
-  const [isAzure, setIsAzure] = useState(false);
-  const [endpoint, setEndpoint] = useState("");
-  const [deployment, setDeployment] = useState("");
   const [useVAD, setUseVAD] = useState(true);
-  const [voice, setVoice] = useState<Voice>("alloy");
-  const [temperature, setTemperature] = useState(0.9);
 
   const clientRef = useRef<RTClient | null>(null);
   const audioHandlerRef = useRef<AudioHandler | null>(null);
+  const initRef = useRef(false);
 
-  const apiKey = accessStore.openaiApiKey;
+  const temperature = config.realtimeConfig.temperature;
+  const apiKey = config.realtimeConfig.apiKey;
+  const model = config.realtimeConfig.model;
+  const azure = config.realtimeConfig.provider === "Azure";
+  const azureEndpoint = config.realtimeConfig.azure.endpoint;
+  const azureDeployment = config.realtimeConfig.azure.deployment;
+  const voice = config.realtimeConfig.voice;
 
   const handleConnect = async () => {
     if (isConnecting) return;
     if (!isConnected) {
       try {
         setIsConnecting(true);
-        clientRef.current = isAzure
-          ? new RTClient(new URL(endpoint), { key: apiKey }, { deployment })
-          : new RTClient(
+        clientRef.current = azure
+          ? new RTClient(
+              new URL(azureEndpoint),
               { key: apiKey },
-              { model: "gpt-4o-realtime-preview-2024-10-01" },
-            );
+              { deployment: azureDeployment },
+            )
+          : new RTClient({ key: apiKey }, { model });
         const modalities: Modality[] =
           modality === "audio" ? ["text", "audio"] : ["text"];
         const turnDetection: TurnDetection = useVAD
@@ -191,7 +183,6 @@ export function RealtimeChat({
         const blob = audioHandlerRef.current?.savePlayFile();
         uploadImage(blob!).then((audio_url) => {
           botMessage.audio_url = audio_url;
-          // botMessage.date = new Date().toLocaleString();
           // update text and audio_url
           chatStore.updateTargetSession(session, (session) => {
             session.messages = session.messages.concat();
@@ -258,31 +249,32 @@ export function RealtimeChat({
     }
   };
 
-  useEffect(
-    useDebouncedCallback(() => {
-      const initAudioHandler = async () => {
-        const handler = new AudioHandler();
-        await handler.initialize();
-        audioHandlerRef.current = handler;
-        await handleConnect();
-        await toggleRecording();
-      };
+  useEffect(() => {
+    // 防止重复初始化
+    if (initRef.current) return;
+    initRef.current = true;
 
-      initAudioHandler().catch((error) => {
-        setStatus(error);
-        console.error(error);
-      });
+    const initAudioHandler = async () => {
+      const handler = new AudioHandler();
+      await handler.initialize();
+      audioHandlerRef.current = handler;
+      await handleConnect();
+      await toggleRecording();
+    };
 
-      return () => {
-        if (isRecording) {
-          toggleRecording();
-        }
-        audioHandlerRef.current?.close().catch(console.error);
-        disconnect();
-      };
-    }),
-    [],
-  );
+    initAudioHandler().catch((error) => {
+      setStatus(error);
+      console.error(error);
+    });
+
+    return () => {
+      if (isRecording) {
+        toggleRecording();
+      }
+      audioHandlerRef.current?.close().catch(console.error);
+      disconnect();
+    };
+  }, []);
 
   // update session params
   useEffect(() => {
@@ -304,7 +296,7 @@ export function RealtimeChat({
     <div className={styles["realtime-chat"]}>
       <div
         className={clsx(styles["circle-mic"], {
-          [styles["pulse"]]: true,
+          [styles["pulse"]]: isRecording,
         })}
       >
         <div className={styles["icon-center"]}></div>
@@ -312,10 +304,11 @@ export function RealtimeChat({
       <div className={styles["bottom-icons"]}>
         <div>
           <IconButton
-            icon={isRecording ? <VoiceOffIcon /> : <VoiceIcon />}
+            icon={isRecording ? <VoiceIcon /> : <VoiceOffIcon />}
             onClick={toggleRecording}
             disabled={!isConnected}
-            type={isRecording ? "danger" : isConnected ? "primary" : null}
+            shadow
+            bordered
           />
         </div>
         <div className={styles["icon-center"]}>{status}</div>
@@ -323,7 +316,8 @@ export function RealtimeChat({
           <IconButton
             icon={<PowerIcon />}
             onClick={handleClose}
-            type={isConnecting || isConnected ? "danger" : "primary"}
+            shadow
+            bordered
           />
         </div>
       </div>

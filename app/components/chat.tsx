@@ -793,11 +793,13 @@ export function ChatActions(props: {
         )}
       </>
       <div className={styles["chat-input-actions-end"]}>
-        <ChatAction
-          onClick={() => props.setShowChatSidePanel(true)}
-          text={"Realtime Chat"}
-          icon={<HeadphoneIcon />}
-        />
+        {config.realtimeConfig.enable && (
+          <ChatAction
+            onClick={() => props.setShowChatSidePanel(true)}
+            text={"Realtime Chat"}
+            icon={<HeadphoneIcon />}
+          />
+        )}
       </div>
     </div>
   );
