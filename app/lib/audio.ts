@@ -54,6 +54,7 @@ export class AudioHandler {
           const uint8Data = new Uint8Array(int16Data.buffer);
           onChunk(uint8Data);
           // save recordBuffer
+          // @ts-ignore
           this.recordBuffer.push.apply(this.recordBuffer, int16Data);
         }
       };
@@ -95,6 +96,7 @@ export class AudioHandler {
     if (!this.isPlaying) return;
 
     const int16Data = new Int16Array(chunk.buffer);
+    // @ts-ignore
     this.playBuffer.push.apply(this.playBuffer, int16Data); // save playBuffer
 
     const float32Data = new Float32Array(int16Data.length);
@@ -155,6 +157,7 @@ export class AudioHandler {
     return new Blob([view, data.buffer], { type: "audio/mpeg" });
   }
   savePlayFile() {
+    // @ts-ignore
     return this._saveData(new Int16Array(this.playBuffer));
   }
   saveRecordFile(
@@ -168,6 +171,7 @@ export class AudioHandler {
       ? Math.floor((audioEndMillis * this.sampleRate) / 1000)
       : this.recordBuffer.length;
     return this._saveData(
+      // @ts-ignore
       new Int16Array(this.recordBuffer.slice(startIndex, endIndex)),
     );
   }
