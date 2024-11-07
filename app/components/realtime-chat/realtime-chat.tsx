@@ -45,6 +45,7 @@ export function RealtimeChat({
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
 
+  const [status, setStatus] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -94,15 +95,22 @@ export function RealtimeChat({
               await clientRef.current.sendItem({
                 type: "message",
                 role: role as any,
-                content: [{ type: "input_text", text: content as string }],
+                content: [
+                  {
+                    type: (role === "assistant" ? "text" : "input_text") as any,
+                    text: content as string,
+                  },
+                ],
               });
             }
           }
         } catch (error) {
           console.error("Set message failed:", error);
+          setStatus("Set message failed");
         }
       } catch (error) {
         console.error("Connection failed:", error);
+        setStatus("Connection failed");
       } finally {
         setIsConnecting(false);
       }
@@ -256,7 +264,10 @@ export function RealtimeChat({
         await toggleRecording();
       };
 
-      initAudioHandler().catch(console.error);
+      initAudioHandler().catch((error) => {
+        setStatus(error);
+        console.error(error);
+      });
 
       return () => {
         if (isRecording) {
@@ -272,9 +283,9 @@ export function RealtimeChat({
   const handleClose = async () => {
     onClose?.();
     if (isRecording) {
-      toggleRecording();
+      await toggleRecording();
     }
-    disconnect();
+    disconnect().catch(console.error);
   };
 
   return (
@@ -289,13 +300,13 @@ export function RealtimeChat({
       <div className={styles["bottom-icons"]}>
         <div>
           <IconButton
-            icon={!isRecording ? <VoiceOffIcon /> : <VoiceIcon />}
+            icon={isRecording ? <VoiceOffIcon /> : <VoiceIcon />}
             onClick={toggleRecording}
             disabled={!isConnected}
-            type={isConnecting || isConnected ? "danger" : "primary"}
+            type={isRecording ? "danger" : "primary"}
           />
         </div>
-        <div className={styles["icon-center"]}></div>
+        <div className={styles["icon-center"]}>{status}</div>
         <div>
           <IconButton
             icon={<PowerIcon />}
