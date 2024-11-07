@@ -76,7 +76,7 @@ export function RealtimeChat({
           ? { type: "server_vad" }
           : null;
         clientRef.current.configure({
-          instructions: "Hi",
+          instructions: "",
           input_audio_transcription: { model: "whisper-1" },
           turn_detection: turnDetection,
           tools: [],
@@ -86,6 +86,19 @@ export function RealtimeChat({
         startResponseListener();
 
         setIsConnected(true);
+        try {
+          const recentMessages = chatStore.getMessagesWithMemory();
+          for (const message of recentMessages) {
+            const { role, content } = message;
+            await clientRef.current.sendItem({
+              type: "message",
+              role,
+              content: [{ type: "input_text", text: content }],
+            });
+          }
+        } catch (error) {
+          console.error("Set message failed:", error);
+        }
       } catch (error) {
         console.error("Connection failed:", error);
       } finally {
