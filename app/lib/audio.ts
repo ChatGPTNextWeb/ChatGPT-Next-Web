@@ -3,6 +3,7 @@ export class AudioHandler {
   private workletNode: AudioWorkletNode | null = null;
   private stream: MediaStream | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
+  private recordBuffer: Int16Array[] = [];
   private readonly sampleRate = 24000;
 
   private nextPlayTime: number = 0;
@@ -52,6 +53,8 @@ export class AudioHandler {
 
           const uint8Data = new Uint8Array(int16Data.buffer);
           onChunk(uint8Data);
+          // save recordBuffer
+          this.recordBuffer.push.apply(this.recordBuffer, int16Data);
         }
       };
 
@@ -154,7 +157,22 @@ export class AudioHandler {
   savePlayFile() {
     return this._saveData(new Int16Array(this.playBuffer));
   }
+  saveRecordFile(
+    audioStartMillis: number | undefined,
+    audioEndMillis: number | undefined,
+  ) {
+    const startIndex = audioStartMillis
+      ? Math.floor((audioStartMillis * this.sampleRate) / 1000)
+      : 0;
+    const endIndex = audioEndMillis
+      ? Math.floor((audioEndMillis * this.sampleRate) / 1000)
+      : this.recordBuffer.length;
+    return this._saveData(
+      new Int16Array(this.recordBuffer.slice(startIndex, endIndex)),
+    );
+  }
   async close() {
+    this.recordBuffer = [];
     this.workletNode?.disconnect();
     this.source?.disconnect();
     this.stream?.getTracks().forEach((track) => track.stop());
