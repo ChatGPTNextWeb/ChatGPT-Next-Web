@@ -202,7 +202,6 @@ export function RealtimeChat({
   };
 
   const handleInputAudio = async (item: RTInputAudioItem) => {
-    audioHandlerRef.current?.stopStreamingPlayback();
     await item.waitForCompletion();
     if (item.transcription) {
       const userMessage = createMessage({
@@ -226,6 +225,8 @@ export function RealtimeChat({
         });
       });
     }
+    // stop streaming play after get input audio.
+    audioHandlerRef.current?.stopStreamingPlayback();
   };
 
   const toggleRecording = async () => {
