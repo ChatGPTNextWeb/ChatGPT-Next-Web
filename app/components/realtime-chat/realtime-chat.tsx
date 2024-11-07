@@ -90,11 +90,13 @@ export function RealtimeChat({
           const recentMessages = chatStore.getMessagesWithMemory();
           for (const message of recentMessages) {
             const { role, content } = message;
-            await clientRef.current.sendItem({
-              type: "message",
-              role,
-              content: [{ type: "input_text", text: content }],
-            });
+            if (typeof content === "string") {
+              await clientRef.current.sendItem({
+                type: "message",
+                role: role as any,
+                content: [{ type: "input_text", text: content as string }],
+              });
+            }
           }
         } catch (error) {
           console.error("Set message failed:", error);
