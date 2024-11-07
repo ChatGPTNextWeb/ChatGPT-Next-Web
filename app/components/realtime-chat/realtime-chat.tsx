@@ -106,7 +106,6 @@ export function RealtimeChat({
           }
         } catch (error) {
           console.error("Set message failed:", error);
-          setStatus("Set message failed");
         }
       } catch (error) {
         console.error("Connection failed:", error);
@@ -303,7 +302,7 @@ export function RealtimeChat({
             icon={isRecording ? <VoiceOffIcon /> : <VoiceIcon />}
             onClick={toggleRecording}
             disabled={!isConnected}
-            type={isRecording ? "danger" : "primary"}
+            type={isRecording ? "danger" : isConnected ? "primary" : null}
           />
         </div>
         <div className={styles["icon-center"]}>{status}</div>
