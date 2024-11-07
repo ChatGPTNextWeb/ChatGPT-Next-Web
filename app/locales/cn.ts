@@ -586,8 +586,8 @@ const cn = {
           SubTitle: "接口地址",
         },
         Deployment: {
-          Title: "部署",
-          SubTitle: "Deployment",
+          Title: "部署名称",
+          SubTitle: "部署名称",
         },
       },
       Temperature: {

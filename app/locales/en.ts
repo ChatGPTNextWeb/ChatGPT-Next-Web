@@ -594,8 +594,8 @@ const en: LocaleType = {
           SubTitle: "Endpoint",
         },
         Deployment: {
-          Title: "Deployment",
-          SubTitle: "Deployment",
+          Title: "Deployment Name",
+          SubTitle: "Deployment Name",
         },
       },
       Temperature: {
