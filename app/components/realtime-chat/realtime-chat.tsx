@@ -156,7 +156,7 @@ export function RealtimeChat({
             await Promise.all([textTask(), audioTask()]);
           }
           // update message.content
-          chatStore.updateTargetSession((session) => {
+          chatStore.updateTargetSession(session, (session) => {
             session.messages = session.messages.concat();
           });
         }
@@ -166,7 +166,7 @@ export function RealtimeChat({
           botMessage.audio_url = audio_url;
           // botMessage.date = new Date().toLocaleString();
           // update text and audio_url
-          chatStore.updateTargetSession((session) => {
+          chatStore.updateTargetSession(session, (session) => {
             session.messages = session.messages.concat();
           });
         });
@@ -194,7 +194,7 @@ export function RealtimeChat({
       );
       uploadImage(blob).then((audio_url) => {
         userMessage.audio_url = audio_url;
-        chatStore.updateTargetSession((session) => {
+        chatStore.updateTargetSession(session, (session) => {
           session.messages = session.messages.concat();
         });
       });
