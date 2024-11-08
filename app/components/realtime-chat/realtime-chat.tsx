@@ -20,6 +20,7 @@ import {
 } from "rt-client";
 import { AudioHandler } from "@/app/lib/audio";
 import { uploadImage } from "@/app/utils/chat";
+import { VoicePrint } from "@/app/components/voice-print";
 
 interface RealtimeChatProps {
   onClose?: () => void;
@@ -41,6 +42,7 @@ export function RealtimeChat({
   const [isConnecting, setIsConnecting] = useState(false);
   const [modality, setModality] = useState("audio");
   const [useVAD, setUseVAD] = useState(true);
+  const [frequencies, setFrequencies] = useState<Uint8Array | undefined>();
 
   const clientRef = useRef<RTClient | null>(null);
   const audioHandlerRef = useRef<AudioHandler | null>(null);
@@ -272,28 +274,38 @@ export function RealtimeChat({
       console.error(error);
     });
 
-    // TODO demo to get frequency. will pass audioHandlerRef.current to child component draw.
-    // TODO try using requestAnimationFrame
-    const interval = setInterval(() => {
-      if (audioHandlerRef.current) {
-        const data = audioHandlerRef.current.getByteFrequencyData();
-        console.log("getByteFrequencyData", data);
-      }
-    }, 1000);
-
     return () => {
       if (isRecording) {
         toggleRecording();
       }
-      audioHandlerRef.current
-        ?.close()
-        .catch(console.error)
-        .finally(() => {
-          clearInterval(interval);
-        });
+      audioHandlerRef.current?.close().catch(console.error);
       disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    let animationFrameId: number;
+
+    if (isConnected && isRecording) {
+      const animationFrame = () => {
+        if (audioHandlerRef.current) {
+          const freqData = audioHandlerRef.current.getByteFrequencyData();
+          setFrequencies(freqData);
+        }
+        animationFrameId = requestAnimationFrame(animationFrame);
+      };
+
+      animationFrameId = requestAnimationFrame(animationFrame);
+    } else {
+      setFrequencies(undefined);
+    }
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isConnected, isRecording]);
 
   // update session params
   useEffect(() => {
@@ -318,8 +330,9 @@ export function RealtimeChat({
           [styles["pulse"]]: isRecording,
         })}
       >
-        <div className={styles["icon-center"]}></div>
+        <VoicePrint frequencies={frequencies} isActive={isRecording} />
       </div>
+
       <div className={styles["bottom-icons"]}>
         <div>
           <IconButton
