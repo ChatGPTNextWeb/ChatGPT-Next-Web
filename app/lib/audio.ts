@@ -1,5 +1,8 @@
 export class AudioHandler {
   private context: AudioContext;
+  private mergeNode: ChannelMergerNode;
+  private analyserData: Uint8Array;
+  public analyser: AnalyserNode;
   private workletNode: AudioWorkletNode | null = null;
   private stream: MediaStream | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
@@ -13,6 +16,16 @@ export class AudioHandler {
 
   constructor() {
     this.context = new AudioContext({ sampleRate: this.sampleRate });
+    // using ChannelMergerNode to get merged audio data, and then get analyser data.
+    this.mergeNode = new ChannelMergerNode(this.context, { numberOfInputs: 2 });
+    this.analyser = new AnalyserNode(this.context, { fftSize: 256 });
+    this.analyserData = new Uint8Array(this.analyser.frequencyBinCount);
+    this.mergeNode.connect(this.analyser);
+  }
+
+  getByteFrequencyData() {
+    this.analyser.getByteFrequencyData(this.analyserData);
+    return this.analyserData;
   }
 
   async initialize() {
@@ -60,6 +73,7 @@ export class AudioHandler {
       };
 
       this.source.connect(this.workletNode);
+      this.source.connect(this.mergeNode, 0, 0);
       this.workletNode.connect(this.context.destination);
 
       this.workletNode.port.postMessage({ command: "START_RECORDING" });
@@ -114,6 +128,7 @@ export class AudioHandler {
     const source = this.context.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(this.context.destination);
+    source.connect(this.mergeNode, 0, 1);
 
     const chunkDuration = audioBuffer.length / this.sampleRate;
 

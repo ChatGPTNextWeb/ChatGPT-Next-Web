@@ -71,7 +71,7 @@ export function RealtimeChat({
         const turnDetection: TurnDetection = useVAD
           ? { type: "server_vad" }
           : null;
-        clientRef.current.configure({
+        await clientRef.current.configure({
           instructions: "",
           voice,
           input_audio_transcription: { model: "whisper-1" },
@@ -100,6 +100,7 @@ export function RealtimeChat({
               });
             }
           }
+          await clientRef.current.generateResponse();
         } catch (error) {
           console.error("Set message failed:", error);
         }
@@ -267,11 +268,25 @@ export function RealtimeChat({
       console.error(error);
     });
 
+    // TODO demo to get frequency. will pass audioHandlerRef.current to child component draw.
+    // TODO try using requestAnimationFrame
+    const interval = setInterval(() => {
+      if (audioHandlerRef.current) {
+        const data = audioHandlerRef.current.getByteFrequencyData();
+        console.log("getByteFrequencyData", data);
+      }
+    }, 100);
+
     return () => {
       if (isRecording) {
         toggleRecording();
       }
-      audioHandlerRef.current?.close().catch(console.error);
+      audioHandlerRef.current
+        ?.close()
+        .catch(console.error)
+        .finally(() => {
+          clearInterval(interval);
+        });
       disconnect();
     };
   }, []);
