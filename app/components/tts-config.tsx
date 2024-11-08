@@ -1,4 +1,4 @@
-import { PluginConfig, TTSConfig, TTSConfigValidator } from "../store";
+import { TTSConfig, TTSConfigValidator } from "../store";
 
 import Locale from "../locales";
 import { ListItem, Select } from "./ui-lib";
@@ -111,6 +111,7 @@ export function TTSConfigList(props: {
             subTitle={Locale.Settings.TTS.Speed.SubTitle}
           >
             <InputRange
+              aria={Locale.Settings.TTS.Speed.Title}
               value={props.ttsConfig.speed?.toFixed(1)}
               min="0.3"
               max="4.0"
