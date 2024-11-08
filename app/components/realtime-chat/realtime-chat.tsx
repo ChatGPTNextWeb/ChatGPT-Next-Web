@@ -100,7 +100,7 @@ export function RealtimeChat({
               });
             }
           }
-          await clientRef.current.generateResponse();
+          // await clientRef.current.generateResponse();
         } catch (error) {
           console.error("Set message failed:", error);
         }
@@ -156,6 +156,7 @@ export function RealtimeChat({
         chatStore.updateTargetSession(session, (session) => {
           session.messages = session.messages.concat([botMessage]);
         });
+        let hasAudio = false;
         for await (const content of item) {
           if (content.type === "text") {
             for await (const text of content.textChunks()) {
@@ -170,6 +171,7 @@ export function RealtimeChat({
             const audioTask = async () => {
               audioHandlerRef.current?.startStreamingPlayback();
               for await (const audio of content.audioChunks()) {
+                hasAudio = true;
                 audioHandlerRef.current?.playChunk(audio);
               }
             };
@@ -180,15 +182,17 @@ export function RealtimeChat({
             session.messages = session.messages.concat();
           });
         }
-        // upload audio get audio_url
-        const blob = audioHandlerRef.current?.savePlayFile();
-        uploadImage(blob!).then((audio_url) => {
-          botMessage.audio_url = audio_url;
-          // update text and audio_url
-          chatStore.updateTargetSession(session, (session) => {
-            session.messages = session.messages.concat();
+        if (hasAudio) {
+          // upload audio get audio_url
+          const blob = audioHandlerRef.current?.savePlayFile();
+          uploadImage(blob!).then((audio_url) => {
+            botMessage.audio_url = audio_url;
+            // update text and audio_url
+            chatStore.updateTargetSession(session, (session) => {
+              session.messages = session.messages.concat();
+            });
           });
-        });
+        }
       }
     }
   };
@@ -275,7 +279,7 @@ export function RealtimeChat({
         const data = audioHandlerRef.current.getByteFrequencyData();
         console.log("getByteFrequencyData", data);
       }
-    }, 100);
+    }, 1000);
 
     return () => {
       if (isRecording) {
